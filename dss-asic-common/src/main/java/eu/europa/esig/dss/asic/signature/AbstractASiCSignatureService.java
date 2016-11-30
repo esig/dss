@@ -6,10 +6,12 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUnsupportedOperationException;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.asic.ASiCContainerExtractor;
@@ -62,6 +64,41 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 	protected DSSDocument getEmbeddedMimetype() {
 		return archiveContent.getMimeTypeDocument();
 	}
+
+	protected void copyExistingArchiveWithSignatureList(DSSDocument archiveDocument, List<DSSDocument> signaturesToAdd, ByteArrayOutputStream baos) {
+		ZipOutputStream zos = null;
+		try {
+			zos = new ZipOutputStream(baos);
+			copyArchiveContentWithoutSignatures(archiveDocument, zos);
+			storeSignatures(signaturesToAdd, zos);
+		} catch (IOException e) {
+			throw new DSSException("Unable to extend the ASiC container", e);
+		} finally {
+			Utils.closeQuietly(zos);
+		}
+	}
+
+	private void copyArchiveContentWithoutSignatures(DSSDocument archiveDocument, ZipOutputStream zos) throws IOException {
+		ZipInputStream zis = null;
+		try {
+			zis = new ZipInputStream(archiveDocument.openStream());
+			ZipEntry entry;
+			while ((entry = zis.getNextEntry()) != null) {
+				final String name = entry.getName();
+				final ZipEntry newEntry = new ZipEntry(name);
+				if (!isSignatureFilename(name)) {
+					zos.putNextEntry(newEntry);
+					Utils.copy(zis, zos);
+				}
+			}
+		} finally {
+			Utils.closeQuietly(zis);
+		}
+	}
+
+	abstract boolean isSignatureFilename(String name);
+
+	abstract void storeSignatures(List<DSSDocument> signaturesToAdd, ZipOutputStream zos) throws IOException;
 
 	protected void storeSignedFiles(final List<DSSDocument> detachedDocuments, final ZipOutputStream zos) throws IOException {
 		for (DSSDocument detachedDocument : detachedDocuments) {

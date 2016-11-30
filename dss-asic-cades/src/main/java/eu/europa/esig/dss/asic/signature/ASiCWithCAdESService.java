@@ -141,53 +141,33 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 	@Override
 	public DSSDocument extendDocument(DSSDocument toExtendDocument, ASiCWithCAdESSignatureParameters parameters) throws DSSException {
-		// final DocumentValidator validator = SignedDocumentValidator.fromDocument(toExtendDocument);
-		// final DocumentValidator subordinatedValidator = validator.getSubordinatedValidator();
-		//
-		// CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
-		// final DSSDocument detachedContents = getDetachedContents(subordinatedValidator,
-		// parameters.getDetachedContent());
-		// cadesParameters.setDetachedContent(detachedContents);
-		// final DSSDocument signature = subordinatedValidator.getDocument();
-		// final DSSDocument signedDocument = getCAdESService().extendDocument(signature, cadesParameters);
-		//
-		// ByteArrayOutputStream baos = null;
-		// ZipOutputStream zos = null;
-		// ZipInputStream zis = null;
-		// try {
-		// baos = new ByteArrayOutputStream();
-		// zos = new ZipOutputStream(baos);
-		// zis = new ZipInputStream(toExtendDocument.openStream());
-		// ZipEntry entry;
-		// while ((entry = zis.getNextEntry()) != null) {
-		// final String name = entry.getName();
-		// final ZipEntry newEntry = new ZipEntry(name);
-		// if (ASiCUtils.isMimetype(name)) {
-		// storeMimetype(parameters.aSiC(), zos);
-		// } else if (ASiCUtils.isCAdES(name)) {
-		// zos.putNextEntry(newEntry);
-		// final InputStream inputStream = signedDocument.openStream();
-		// Utils.copy(inputStream, zos);
-		// Utils.closeQuietly(inputStream);
-		// } else {
-		// zos.putNextEntry(newEntry);
-		// Utils.copy(zis, zos);
-		// }
-		// }
-		// } catch (IOException e) {
-		// throw new DSSException("Unable to extend the ASiC container", e);
-		// } finally {
-		// Utils.closeQuietly(zis);
-		// Utils.closeQuietly(zos);
-		// Utils.closeQuietly(baos);
-		// }
-		//
-		// DSSDocument asicSignature = new InMemoryDocument(baos.toByteArray(), null, toExtendDocument.getMimeType());
-		// asicSignature.setName(
-		// DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(),
-		// parameters.aSiC().getContainerType()));
-		// return asicSignature;
-		return null;
+		if (!ASiCUtils.isArchive(toExtendDocument)) {
+			throw new DSSException("Unsupported file type");
+		}
+
+		extractCurrentArchive(toExtendDocument);
+		List<DSSDocument> signatureDocuments = getEmbeddedSignatures();
+
+		List<DSSDocument> extendedDocuments = new ArrayList<DSSDocument>();
+
+		for (DSSDocument signature : signatureDocuments) {
+			CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
+			DSSDocument extendDocument = getCAdESService().extendDocument(signature, cadesParameters);
+			extendedDocuments.add(extendDocument);
+		}
+
+		ByteArrayOutputStream baos = null;
+		try {
+			baos = new ByteArrayOutputStream();
+			copyExistingArchiveWithSignatureList(toExtendDocument, extendedDocuments, baos);
+		} finally {
+			Utils.closeQuietly(baos);
+		}
+
+		DSSDocument asicSignature = new InMemoryDocument(baos.toByteArray(), null, toExtendDocument.getMimeType());
+		asicSignature.setName(
+				DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
+		return asicSignature;
 	}
 
 	private List<DSSDocument> getToBeSigned(DSSDocument toSignDocument, boolean archive, ASiCParameters asicParameters) {
@@ -233,12 +213,18 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		return manifest;
 	}
 
-	private void storeSignatures(List<DSSDocument> signatures, ZipOutputStream zos) throws IOException {
+	@Override
+	void storeSignatures(List<DSSDocument> signatures, ZipOutputStream zos) throws IOException {
 		for (DSSDocument signature : signatures) {
 			final ZipEntry entrySignature = new ZipEntry(signature.getName());
 			zos.putNextEntry(entrySignature);
 			signature.writeTo(zos);
 		}
+	}
+
+	@Override
+	boolean isSignatureFilename(String name) {
+		return ASiCUtils.isCAdES(name);
 	}
 
 	private void storeASICEManifest(List<DSSDocument> manifestDocuments, ZipOutputStream zos) throws IOException {

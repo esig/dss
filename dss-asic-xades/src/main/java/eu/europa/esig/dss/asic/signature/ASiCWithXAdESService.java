@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.slf4j.Logger;
@@ -132,6 +131,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 			throw new DSSException("Unsupported file type");
 		}
 
+		extractCurrentArchive(toExtendDocument);
 		List<DSSDocument> signedDocuments = getEmbeddedSignedDocuments();
 		List<DSSDocument> signatureDocuments = getEmbeddedSignatures();
 
@@ -158,37 +158,6 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		return asicSignature;
 	}
 
-	private void copyExistingArchiveWithSignatureList(DSSDocument archiveDocument, List<DSSDocument> signaturesToAdd, ByteArrayOutputStream baos) {
-		ZipOutputStream zos = null;
-		try {
-			zos = new ZipOutputStream(baos);
-			copyArchiveContentWithoutSignatures(archiveDocument, zos);
-			storeSignatures(signaturesToAdd, zos);
-		} catch (IOException e) {
-			throw new DSSException("Unable to extend the ASiC container", e);
-		} finally {
-			Utils.closeQuietly(zos);
-		}
-	}
-
-	private void copyArchiveContentWithoutSignatures(DSSDocument archiveDocument, ZipOutputStream zos) throws IOException {
-		ZipInputStream zis = null;
-		try {
-			zis = new ZipInputStream(archiveDocument.openStream());
-			ZipEntry entry;
-			while ((entry = zis.getNextEntry()) != null) {
-				final String name = entry.getName();
-				final ZipEntry newEntry = new ZipEntry(name);
-				if (!ASiCUtils.isXAdES(name)) {
-					zos.putNextEntry(newEntry);
-					Utils.copy(zis, zos);
-				}
-			}
-		} finally {
-			Utils.closeQuietly(zis);
-		}
-	}
-
 	private void buildASiCContainer(List<DSSDocument> documents, List<DSSDocument> signatures, ASiCParameters asicParameters, ByteArrayOutputStream baos) {
 		ZipOutputStream zos = null;
 		try {
@@ -210,13 +179,19 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		}
 	}
 
-	private void storeSignatures(List<DSSDocument> signatures, ZipOutputStream zos) throws IOException {
+	@Override
+	void storeSignatures(List<DSSDocument> signatures, ZipOutputStream zos) throws IOException {
 		for (DSSDocument dssDocument : signatures) {
 			ZipEntry entrySignature = new ZipEntry(dssDocument.getName());
 			zos.putNextEntry(entrySignature);
 			Document xmlSignatureDoc = DomUtils.buildDOM(dssDocument);
 			DomUtils.writeDocumentTo(xmlSignatureDoc, zos);
 		}
+	}
+
+	@Override
+	boolean isSignatureFilename(String name) {
+		return ASiCUtils.isXAdES(name);
 	}
 
 	private String getSignatureFileName(final ASiCParameters asicParameters, List<DSSDocument> existingSignatures) {
