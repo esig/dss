@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.asic.validation;
 
+import java.io.File;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,6 +19,7 @@ public class ASiCEWith2SignaturesTest {
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(asicContainer);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setPolicyFile(new File("src/test/resources/bdoc-spec21.pdf"));
 		Reports reports = validator.validateDocument();
 		Assert.assertNotNull(reports);
 		// reports.print();

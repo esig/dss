@@ -3,6 +3,7 @@ package eu.europa.esig.dss.asic.signature;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -11,6 +12,7 @@ import java.util.zip.ZipOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -24,6 +26,7 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCParameters;
 import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.validation.ASiCEWithCAdESManifestValidator;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.utils.Utils;
@@ -147,13 +150,45 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		extractCurrentArchive(toExtendDocument);
 		List<DSSDocument> signatureDocuments = getEmbeddedSignatures();
+		List<DSSDocument> manifests = getEmbeddedManifests();
+		List<DSSDocument> signedDocuments = getEmbeddedSignedDocuments();
+		DSSDocument mimetype = getEmbeddedMimetype();
+
+		ASiCContainerType containerType = ASiCUtils.getContainerType(toExtendDocument, mimetype, null);
+		if (containerType == null) {
+			throw new DSSException("Unable to determine container type");
+		}
 
 		List<DSSDocument> extendedDocuments = new ArrayList<DSSDocument>();
 
 		for (DSSDocument signature : signatureDocuments) {
-			CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
-			DSSDocument extendDocument = getCAdESService().extendDocument(signature, cadesParameters);
-			extendedDocuments.add(extendDocument);
+
+			if (ASiCContainerType.ASiC_E == containerType) {
+
+				ASiCEWithCAdESManifestValidator manifestValidator = new ASiCEWithCAdESManifestValidator(signature, manifests, signedDocuments);
+				DSSDocument linkedManifest = manifestValidator.getLinkedManifest();
+
+				if (linkedManifest != null) {
+					String originalName = signature.getName();
+					CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
+					cadesParameters.setDetachedContents(Arrays.asList(linkedManifest));
+
+					DSSDocument extendDocument = getCAdESService().extendDocument(signature, cadesParameters);
+					extendDocument.setName(originalName);
+					extendedDocuments.add(extendDocument);
+				} else {
+					LOG.warn("Manifest not found for signature file '{}' -> NOT EXTENDED !!!", signature.getName());
+					extendedDocuments.add(signature);
+				}
+			} else {
+				String originalName = signature.getName();
+				CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
+				cadesParameters.setDetachedContents(signedDocuments);
+
+				DSSDocument extendDocument = getCAdESService().extendDocument(signature, cadesParameters);
+				extendDocument.setName(originalName);
+				extendedDocuments.add(extendDocument);
+			}
 		}
 
 		ByteArrayOutputStream baos = null;

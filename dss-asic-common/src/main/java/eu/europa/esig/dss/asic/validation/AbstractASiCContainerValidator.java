@@ -12,7 +12,6 @@ import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUnsupportedOperationException;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.asic.ASiCContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCUtils;
@@ -26,9 +25,6 @@ import eu.europa.esig.dss.validation.reports.Reports;
 public abstract class AbstractASiCContainerValidator extends SignedDocumentValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractASiCContainerValidator.class);
-
-	private static final String MIME_TYPE = "mimetype";
-	private static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
 
 	private ASiCExtractResult extractResult;
 
@@ -54,48 +50,12 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		extractResult = extractor.extract();
 
 		extractZipComment(document);
-		determineContainerType();
+		containerType = ASiCUtils.getContainerType(document, extractResult.getMimeTypeDocument(), zipComment);
 	}
 
 	abstract boolean isAcceptedSignature(String entryName);
 
 	abstract boolean isAcceptedManifest(String entryName);
-
-	private void determineContainerType() {
-		MimeType mimeTypeFromContainer = document.getMimeType();
-		DSSDocument mimeTypeDocument = extractResult.getMimeTypeDocument();
-		if (ASiCUtils.isASiCMimeType(mimeTypeFromContainer)) {
-			containerType = ASiCUtils.getASiCContainerType(mimeTypeFromContainer);
-		} else if (mimeTypeDocument != null) {
-			MimeType mimeTypeFromEmbeddedFile = getMimeType(mimeTypeDocument);
-			if (ASiCUtils.isASiCMimeType(mimeTypeFromEmbeddedFile)) {
-				containerType = ASiCUtils.getASiCContainerType(mimeTypeFromEmbeddedFile);
-			}
-		} else if (zipComment != null) {
-			int indexOf = zipComment.indexOf(MIME_TYPE_COMMENT);
-			if (indexOf > -1) {
-				String asicCommentMimeTypeString = zipComment.substring(MIME_TYPE_COMMENT.length() + indexOf);
-				MimeType mimeTypeFromZipComment = MimeType.fromMimeTypeString(asicCommentMimeTypeString);
-				if (ASiCUtils.isASiCMimeType(mimeTypeFromZipComment)) {
-					containerType = ASiCUtils.getASiCContainerType(mimeTypeFromZipComment);
-				}
-			}
-		}
-	}
-
-	private MimeType getMimeType(final DSSDocument mimeTypeDocument) throws DSSException {
-		InputStream is = null;
-		try {
-			is = mimeTypeDocument.openStream();
-			byte[] byteArray = Utils.toByteArray(is);
-			final String mimeTypeString = new String(byteArray, "UTF-8");
-			return MimeType.fromMimeTypeString(mimeTypeString);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		} finally {
-			Utils.closeQuietly(is);
-		}
-	}
 
 	private void extractZipComment(final DSSDocument document) {
 		InputStream is = null;

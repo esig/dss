@@ -14,6 +14,7 @@ import eu.europa.esig.dss.utils.Utils;
 public final class ASiCUtils {
 
 	private static final String MIME_TYPE = "mimetype";
+	private static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
 	private static final String META_INF_FOLDER = "META-INF/";
 
 	private ASiCUtils() {
@@ -140,4 +141,42 @@ public final class ASiCUtils {
 	public static boolean isFolder(String entryName) {
 		return entryName.endsWith("/");
 	}
+
+	public static MimeType getMimeType(final DSSDocument mimeTypeDocument) throws DSSException {
+		InputStream is = null;
+		try {
+			is = mimeTypeDocument.openStream();
+			byte[] byteArray = Utils.toByteArray(is);
+			final String mimeTypeString = new String(byteArray, "UTF-8");
+			return MimeType.fromMimeTypeString(mimeTypeString);
+		} catch (IOException e) {
+			throw new DSSException(e);
+		} finally {
+			Utils.closeQuietly(is);
+		}
+	}
+
+	public static ASiCContainerType getContainerType(DSSDocument archive, DSSDocument mimetype, String zipComment) {
+		ASiCContainerType containerType = null;
+		MimeType mimeTypeFromContainer = archive.getMimeType();
+		if (ASiCUtils.isASiCMimeType(mimeTypeFromContainer)) {
+			containerType = ASiCUtils.getASiCContainerType(mimeTypeFromContainer);
+		} else if (mimetype != null) {
+			MimeType mimeTypeFromEmbeddedFile = ASiCUtils.getMimeType(mimetype);
+			if (ASiCUtils.isASiCMimeType(mimeTypeFromEmbeddedFile)) {
+				containerType = ASiCUtils.getASiCContainerType(mimeTypeFromEmbeddedFile);
+			}
+		} else if (zipComment != null) {
+			int indexOf = zipComment.indexOf(MIME_TYPE_COMMENT);
+			if (indexOf > -1) {
+				String asicCommentMimeTypeString = zipComment.substring(MIME_TYPE_COMMENT.length() + indexOf);
+				MimeType mimeTypeFromZipComment = MimeType.fromMimeTypeString(asicCommentMimeTypeString);
+				if (ASiCUtils.isASiCMimeType(mimeTypeFromZipComment)) {
+					containerType = ASiCUtils.getASiCContainerType(mimeTypeFromZipComment);
+				}
+			}
+		}
+		return containerType;
+	}
+
 }
