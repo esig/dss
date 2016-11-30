@@ -20,15 +20,14 @@
  */
 package eu.europa.esig.dss.asic.extension;
 
+import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
-import eu.europa.esig.dss.SignatureForm;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.asic.ASiCSignatureParameters;
-import eu.europa.esig.dss.asic.signature.ASiCService;
+import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
+import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.extension.AbstractTestExtension;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
@@ -37,7 +36,7 @@ import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
-public abstract class AbstractTestASiCwithXAdESExtension extends AbstractTestExtension<ASiCSignatureParameters> {
+public abstract class AbstractTestASiCwithXAdESExtension extends AbstractTestExtension<ASiCWithXAdESSignatureParameters> {
 
 	@Override
 	protected DSSDocument getSignedDocument() throws Exception {
@@ -47,15 +46,14 @@ public abstract class AbstractTestASiCwithXAdESExtension extends AbstractTestExt
 		DSSDocument document = new InMemoryDocument("Hello world!".getBytes(), "test.bin");
 
 		// Sign
-		ASiCSignatureParameters signatureParameters = new ASiCSignatureParameters();
+		ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(entryUserA.getCertificate());
 		signatureParameters.setCertificateChain(entryUserA.getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
-		signatureParameters.aSiC().setUnderlyingForm(SignatureForm.XAdES);
+		signatureParameters.aSiC().setContainerType(getContainerType());
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		ASiCService service = new ASiCService(certificateVerifier);
+		ASiCWithXAdESService service = new ASiCWithXAdESService(certificateVerifier);
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
 
 		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
@@ -65,16 +63,18 @@ public abstract class AbstractTestASiCwithXAdESExtension extends AbstractTestExt
 	}
 
 	@Override
-	protected ASiCSignatureParameters getExtensionParameters() {
-		ASiCSignatureParameters extensionParameters = new ASiCSignatureParameters();
+	protected ASiCWithXAdESSignatureParameters getExtensionParameters() {
+		ASiCWithXAdESSignatureParameters extensionParameters = new ASiCWithXAdESSignatureParameters();
 		extensionParameters.setSignatureLevel(getFinalSignatureLevel());
-		extensionParameters.aSiC().setUnderlyingForm(SignatureForm.XAdES);
+		extensionParameters.aSiC().setContainerType(getContainerType());
 		return extensionParameters;
 	}
 
+	protected abstract ASiCContainerType getContainerType();
+
 	@Override
-	protected DocumentSignatureService<ASiCSignatureParameters> getSignatureServiceToExtend() throws Exception {
-		ASiCService service = new ASiCService(new CommonCertificateVerifier());
+	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters> getSignatureServiceToExtend() throws Exception {
+		ASiCWithXAdESService service = new ASiCWithXAdESService(new CommonCertificateVerifier());
 		CertificateService certificateService = new CertificateService();
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
 		return service;

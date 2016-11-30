@@ -55,24 +55,6 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 
 	protected abstract SignatureLevel getFinalSignatureLevel();
 
-	/**
-	 * This method is used in case of ASiC signatures
-	 *
-	 * @return
-	 */
-	protected SignatureLevel getOriginalUnderlyingSignatureLevel() {
-		return getOriginalSignatureLevel();
-	}
-
-	/**
-	 * This method is used in case of ASiC signatures
-	 *
-	 * @return
-	 */
-	protected SignatureLevel getFinalUnderlyingSignatureLevel() {
-		return getFinalSignatureLevel();
-	}
-
 	protected abstract DocumentSignatureService<SP> getSignatureServiceToExtend() throws Exception;
 
 	protected SignatureValue sign(SignatureAlgorithm algo, MockPrivateKeyEntry privateKey, ToBeSigned bytesToSign) throws GeneralSecurityException {
@@ -204,11 +186,11 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 	protected abstract SP getExtensionParameters();
 
 	private void checkOriginalLevel(DiagnosticData diagnosticData) {
-		assertEquals(getOriginalUnderlyingSignatureLevel().name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(getOriginalSignatureLevel().name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	private void checkFinalLevel(DiagnosticData diagnosticData) {
-		assertEquals(getFinalUnderlyingSignatureLevel().name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(getFinalSignatureLevel().name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	private void checkBLevelValid(DiagnosticData diagnosticData) {

@@ -147,11 +147,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	private final SignatureScopeFinder signatureScopeFinder;
 
-	/**
-	 * This variable contains the reference to the diagnostic data.
-	 */
-	private DiagnosticData jaxbDiagnosticData; // JAXB object
-
 	// Single policy document to use with all signatures.
 	protected File policyDocument;
 
@@ -455,7 +450,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	private DiagnosticData generateDiagnosticData() {
 
-		prepareDiagnosticData();
+		DiagnosticData diagnosticData = prepareDiagnosticData();
 
 		final ValidationContext validationContext = new SignatureValidationContext(validationCertPool);
 
@@ -484,22 +479,21 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 			final XmlSignature xmlSignature = validateSignature(signature);
 			usedCertificatesDigestAlgorithms.addAll(signature.getUsedCertificatesDigestAlgorithms());
-			jaxbDiagnosticData.getSignatures().add(xmlSignature);
+			diagnosticData.getSignatures().add(xmlSignature);
 		}
 		final Set<CertificateToken> processedCertificates = validationContext.getProcessedCertificates();
-		dealUsedCertificates(usedCertificatesDigestAlgorithms, processedCertificates);
 
-		jaxbDiagnosticData.setValidationDate(validationContext.getCurrentTime());
-		return jaxbDiagnosticData;
+		diagnosticData.setUsedCertificates(getUsedCertificates(usedCertificatesDigestAlgorithms, processedCertificates));
+		diagnosticData.setValidationDate(validationContext.getCurrentTime());
+		return diagnosticData;
 	}
 
 	/**
 	 * This method prepares the {@code DiagnosticData} object to store all
 	 * static information about the signatures being validated.
 	 */
-	private void prepareDiagnosticData() {
-
-		jaxbDiagnosticData = new DiagnosticData();
+	private DiagnosticData prepareDiagnosticData() {
+		DiagnosticData jaxbDiagnosticData = new DiagnosticData();
 
 		String absolutePath = document.getAbsolutePath();
 		String documentName = document.getName();
@@ -510,6 +504,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		} else {
 			jaxbDiagnosticData.setDocumentName("?");
 		}
+
+		return jaxbDiagnosticData;
 	}
 
 	/**
@@ -779,7 +775,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @param usedCertificatesDigestAlgorithms
 	 * @param usedCertTokens
 	 */
-	private void dealUsedCertificates(final Set<DigestAlgorithm> usedCertificatesDigestAlgorithms, final Set<CertificateToken> usedCertTokens) {
+	private List<XmlCertificate> getUsedCertificates(final Set<DigestAlgorithm> usedCertificatesDigestAlgorithms, final Set<CertificateToken> usedCertTokens) {
+		List<XmlCertificate> xmlCerts = new ArrayList<XmlCertificate>();
 		for (final CertificateToken certToken : usedCertTokens) {
 			final XmlCertificate xmlCert = dealCertificateDetails(usedCertificatesDigestAlgorithms, certToken);
 			// !!! Log the certificate
@@ -791,8 +788,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			dealTrustedService(certToken, xmlCert);
 			dealRevocationData(usedCertificatesDigestAlgorithms, certToken, xmlCert);
 			dealCertificateValidationInfo(certToken, xmlCert);
-			jaxbDiagnosticData.getUsedCertificates().add(xmlCert);
+			xmlCerts.add(xmlCert);
 		}
+		return xmlCerts;
 	}
 
 	/**

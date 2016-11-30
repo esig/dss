@@ -13,7 +13,6 @@ import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUnsupportedOperationException;
-import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.asic.ASiCContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCParameters;
@@ -147,10 +146,6 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 		String sigNumberStr = String.valueOf(signatureNumbre);
 		String zeroPad = "000";
 		return zeroPad.substring(sigNumberStr.length()) + sigNumberStr; // 2 -> 002
-	}
-
-	protected InMemoryDocument createASiCContainer(final ASiCParameters asicParameters, final ByteArrayOutputStream baos) {
-		return new InMemoryDocument(baos.toByteArray(), null, ASiCUtils.getMimeType(asicParameters));
 	}
 
 }

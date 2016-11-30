@@ -39,7 +39,7 @@ public class ASiCContainerExtractor {
 						result.getSignatureDocuments().add(getCurrentDocument(entryName, asicsInputStream));
 					} else if (ASiCUtils.isASiCManifestWithCAdES(entryName) || ASiCUtils.isASiCManifestWithXAdES(entryName)) {
 						result.getManifestDocuments().add(getCurrentDocument(entryName, asicsInputStream));
-					} else {
+					} else if (!ASiCUtils.isFolder(entryName)) {
 						unsupportedFiles.add(entryName);
 					}
 				} else if (!ASiCUtils.isFolder(entryName)) {

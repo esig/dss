@@ -18,30 +18,26 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.asic.extension.asics;
+package eu.europa.esig.dss.asic.extension.asice;
 
+import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.asic.extension.AbstractTestASiCwithCAdESExtension;
 
-public class ASiCsExtensionWithCAdESBToTTest extends AbstractTestASiCwithCAdESExtension {
+public class ASiCeExtensionWithCAdESBToTTest extends AbstractTestASiCwithCAdESExtension {
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {
-		return SignatureLevel.ASiC_S_BASELINE_B;
-	}
-
-	@Override
-	protected SignatureLevel getOriginalUnderlyingSignatureLevel() {
 		return SignatureLevel.CAdES_BASELINE_B;
 	}
 
 	@Override
 	protected SignatureLevel getFinalSignatureLevel() {
-		return SignatureLevel.ASiC_S_BASELINE_T;
+		return SignatureLevel.CAdES_BASELINE_T;
 	}
 
 	@Override
-	protected SignatureLevel getFinalUnderlyingSignatureLevel() {
-		return SignatureLevel.CAdES_BASELINE_T;
+	protected ASiCContainerType getContainerType() {
+		return ASiCContainerType.ASiC_E;
 	}
 }
