@@ -364,11 +364,6 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-asic</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-asic-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -778,13 +773,12 @@
 				<module>dss-detailed-report-jaxb</module>
 				<module>dss-reports</module>
 				<module>validation-policy</module>
-				<module>dss-asic</module>
-				<module>dss-asic-xades</module>
-				<module>dss-asic-cades</module>
-				<module>dss-asic-common</module>
+				<module>dss-xades</module>
 				<module>dss-cades</module>
 				<module>dss-pades</module>
-				<module>dss-xades</module>
+				<module>dss-asic-common</module>
+				<module>dss-asic-xades</module>
+				<module>dss-asic-cades</module>
 				<module>dss-remote-services</module>
 				<module>dss-rest-client</module>
 				<module>dss-rest</module>
@@ -835,13 +829,12 @@
 				<module>dss-detailed-report-jaxb</module>
 				<module>dss-reports</module>
 				<module>validation-policy</module>
-				<module>dss-asic</module>
+				<module>dss-cades</module>
+				<module>dss-xades</module>
+				<module>dss-pades</module>
+				<module>dss-asic-common</module>
 				<module>dss-asic-xades</module>
 				<module>dss-asic-cades</module>
-				<module>dss-asic-common</module>
-				<module>dss-cades</module>
-				<module>dss-pades</module>
-				<module>dss-xades</module>
 				<module>dss-remote-services</module>
 				<module>dss-rest-client</module>
 				<module>dss-rest</module>

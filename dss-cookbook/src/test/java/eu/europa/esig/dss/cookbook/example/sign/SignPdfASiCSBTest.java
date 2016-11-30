@@ -24,14 +24,14 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.asic.ASiCSignatureParameters;
-import eu.europa.esig.dss.asic.signature.ASiCService;
+import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
+import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
@@ -59,11 +59,11 @@ public class SignPdfASiCSBTest extends CookbookTools {
 		// tag::demo[]
 
 		// Preparing parameters for the AsicS signature
-		ASiCSignatureParameters parameters = new ASiCSignatureParameters();
+		ASiCWithXAdESSignatureParameters parameters = new ASiCWithXAdESSignatureParameters();
 		// We choose the level of the signature (-B, -T, -LT, LTA).
-		parameters.setSignatureLevel(SignatureLevel.ASiC_S_BASELINE_B);
-		// We choose the underlying format (XAdES or CAdES. XAdES is the default value)
-		parameters.aSiC().setUnderlyingForm(SignatureForm.XAdES);
+		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		// We choose the container type (ASiC-S or ASiC-E)
+		parameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
 		// We set the digest algorithm to use with the signature algorithm. You must use the
 		// same parameter when you invoke the method sign on the token. The default value is
@@ -77,8 +77,8 @@ public class SignPdfASiCSBTest extends CookbookTools {
 
 		// Create common certificate verifier
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
-		// Create ASiCS service for signature
-		ASiCService service = new ASiCService(commonCertificateVerifier);
+		// Create ASiC service for signature
+		ASiCWithXAdESService service = new ASiCWithXAdESService(commonCertificateVerifier);
 
 		// Get the SignedInfo segment that need to be signed.
 		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
