@@ -22,6 +22,7 @@ package eu.europa.esig.dss.cades.signature;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.List;
 
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.cms.Attribute;
@@ -76,7 +77,7 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 			final CAdESSignatureParameters parameters) throws DSSException {
 
 		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
-		cadesSignature.setDetachedContents(parameters.getDetachedContent());
+		cadesSignature.setDetachedContents(parameters.getDetachedContents());
 		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 		unsignedAttributes = addArchiveTimestampV3Attribute(cadesSignature, cmsSignedData, signerInformation, parameters, unsignedAttributes);
 		SignerInformation newSignerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
@@ -85,7 +86,8 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 
 	/**
 	 * The input for the archive-time-stamp-v3’s message imprint computation shall be the concatenation (in the
-	 * order shown by the list below) of the signed data hash (see bullet 2 below) and certain fields in their binary encoded
+	 * order shown by the list below) of the signed data hash (see bullet 2 below) and certain fields in their binary
+	 * encoded
 	 * form without any modification and including the tag, length and value octets:
 	 * <ol>
 	 * <li>The SignedData.encapContentInfo.eContentType.
@@ -116,16 +118,19 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 
 		final InputStream originalDocumentBytes = getOriginalDocumentBytes(cmsSignedData, parameters);
 
-		final byte[] encodedToTimestamp = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentBytes, timestampDigestAlgorithm);
+		final byte[] encodedToTimestamp = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentBytes,
+				timestampDigestAlgorithm);
 
-		final ASN1Object timeStampAttributeValue = getTimeStampAttributeValue(signatureTsa, encodedToTimestamp, timestampDigestAlgorithm, atsHashIndexAttribute);
+		final ASN1Object timeStampAttributeValue = getTimeStampAttributeValue(signatureTsa, encodedToTimestamp, timestampDigestAlgorithm,
+				atsHashIndexAttribute);
 
 		final AttributeTable newUnsignedAttributes = unsignedAttributes.add(OID.id_aa_ets_archiveTimestampV3, timeStampAttributeValue);
 		return newUnsignedAttributes;
 	}
 
 	/**
-	 * Returns the original document which is signed, either from cmsSignedData if possible, or from {@code parameters.getDetachedContent()}
+	 * Returns the original document which is signed, either from cmsSignedData if possible, or from
+	 * {@code parameters.getDetachedContent()}
 	 *
 	 * @param cmsSignedData
 	 * @param parameters
@@ -138,10 +143,10 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 		if (signedContent != null) {
 			return new ByteArrayInputStream(CMSUtils.getSignedContent(signedContent));
 		}
-		final DSSDocument detachedContent = parameters.getDetachedContent();
-		if (detachedContent == null) {
+		final List<DSSDocument> detachedContents = parameters.getDetachedContents();
+		if (detachedContents == null) {
 			throw new DSSException("In the case of detached signature the detached content must be set!");
 		}
-		return detachedContent.openStream();
+		return detachedContents.get(0).openStream(); // TODO improve
 	}
 }

@@ -158,7 +158,8 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	}
 
 	@Override
-	public DSSDocument getOriginalDocument(String signatureId) throws DSSException {
+	public List<DSSDocument> getOriginalDocuments(String signatureId) throws DSSException {
+		// TODO
 		throw new DSSUnsupportedOperationException("This method is not applicable for this kind of file!");
 	}
 

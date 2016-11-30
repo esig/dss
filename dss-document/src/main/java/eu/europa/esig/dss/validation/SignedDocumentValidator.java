@@ -217,16 +217,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public abstract boolean isSupported(DSSDocument dssDocument);
 
 	@Override
-	public DSSDocument getDocument() {
-		return document;
-	}
-
-	@Override
-	public List<DSSDocument> getDetachedContents() {
-		return detachedContents;
-	}
-
-	@Override
 	public void defineSigningCertificate(final CertificateToken token) {
 		if (token == null) {
 			throw new NullPointerException();

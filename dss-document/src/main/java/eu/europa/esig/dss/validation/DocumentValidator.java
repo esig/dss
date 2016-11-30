@@ -41,20 +41,6 @@ import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 public interface DocumentValidator {
 
 	/**
-	 * The document to validate, in the case of ASiC container this method returns the signature.
-	 *
-	 * @return {@code DSSDocument}
-	 */
-	DSSDocument getDocument();
-
-	/**
-	 * This method returns the {@code List} of the signed documents in the case of the detached signatures.
-	 *
-	 * @return the {@code List} of the detached document {@code DSSDocument}
-	 */
-	List<DSSDocument> getDetachedContents();
-
-	/**
 	 * Retrieves the signatures found in the document
 	 *
 	 * @return a list of AdvancedSignatures for validation purposes
@@ -166,13 +152,13 @@ public interface DocumentValidator {
 	Reports validateDocument(final ValidationPolicy validationPolicy);
 
 	/**
-	 * This method returns the signed document without his signature
+	 * This method returns the signed document(s) without their signature(s)
 	 *
 	 * @param signatureId
 	 *            the id of the signature to be removed.
 	 * @throws DSSException
 	 *             the exception is thrown when the removal is not possible.
 	 */
-	DSSDocument getOriginalDocument(final String signatureId) throws DSSException;
+	List<DSSDocument> getOriginalDocuments(final String signatureId) throws DSSException;
 
 }

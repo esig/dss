@@ -167,11 +167,14 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	}
 
 	@Override
-	public DSSDocument getOriginalDocument(final String signatureId) throws DSSException {
+	public List<DSSDocument> getOriginalDocuments(final String signatureId) throws DSSException {
 
 		if (Utils.isStringBlank(signatureId)) {
 			throw new NullPointerException("signatureId");
 		}
+
+		List<DSSDocument> result = new ArrayList<DSSDocument>();
+
 		final NodeList signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
 		List<AdvancedSignature> signatureList = getSignatures();
 
@@ -187,32 +190,21 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 					throw new DSSException("The signature must be enveloped or enveloping!");
 				} else if (isEnveloping(signatureEl)) {
 					List<Element> references = getSignatureObjects(signatureEl);
-					DSSDocument firstDocument = null;
-					DSSDocument inMemoryDocument = null;
 					for (Element element : references) {
 						String content = element.getTextContent();
 						content = isBase64Encoded(content) ? new String(Base64.decode(content)) : content;
-						if (inMemoryDocument == null) {
-							inMemoryDocument = new InMemoryDocument(content.getBytes());
-							firstDocument = inMemoryDocument;
-						} else {
-							DSSDocument document = new InMemoryDocument(content.getBytes());
-							inMemoryDocument.setNextDocument(document);
-							inMemoryDocument = document;
-						}
+						result.add(new InMemoryDocument(content.getBytes()));
 					}
-					return firstDocument;
 				} else {
 					signatureEl.getParentNode().removeChild(signatureEl);
 					final Node documentElement = rootElement.getDocumentElement();
 					byte[] documentBytes = DSSXMLUtils.serializeNode(documentElement);
 					documentBytes = isBase64Encoded(documentBytes) ? Base64.decode(documentBytes) : documentBytes;
-					final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
-					return inMemoryDocument;
+					result.add(new InMemoryDocument(documentBytes));
 				}
 			}
 		}
-		throw new DSSException("The signature with the given id was not found!");
+		return result;
 	}
 
 	private boolean isBase64Encoded(byte[] array) {

@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.cades;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.SignatureForm;
+import eu.europa.esig.dss.SignatureLevel;
 
 public class CAdESSignatureParameters extends AbstractSignatureParameters {
 
@@ -9,6 +11,14 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters {
 
 	private String contentIdentifierPrefix;
 	private String contentIdentifierSuffix;
+
+	@Override
+	public void setSignatureLevel(SignatureLevel signatureLevel) {
+		if (signatureLevel == null || SignatureForm.CAdES != signatureLevel.getSignatureForm()) {
+			throw new IllegalArgumentException("Only CAdES form is allowed !");
+		}
+		super.setSignatureLevel(signatureLevel);
+	}
 
 	public String getContentHintsType() {
 		return contentHintsType;
@@ -33,7 +43,8 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters {
 	 *
 	 * 5.10.2 content-identifier Attribute
 	 * The content-identifier attribute provides an identifier for the signed content, for use when a reference may be
-	 * later required to that content; for example, in the content-reference attribute in other signed data sent later. The
+	 * later required to that content; for example, in the content-reference attribute in other signed data sent later.
+	 * The
 	 * content-identifier shall be a signed attribute.
 	 * content-identifier attribute type values for the ES have an ASN.1 type ContentIdentifier, as defined in
 	 * ESS (RFC 2634 [5]).
@@ -61,7 +72,8 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters {
 	 *
 	 * 5.10.2 content-identifier Attribute
 	 * The content-identifier attribute provides an identifier for the signed content, for use when a reference may be
-	 * later required to that content; for example, in the content-reference attribute in other signed data sent later. The
+	 * later required to that content; for example, in the content-reference attribute in other signed data sent later.
+	 * The
 	 * content-identifier shall be a signed attribute.
 	 * content-identifier attribute type values for the ES have an ASN.1 type ContentIdentifier, as defined in
 	 * ESS (RFC 2634 [5]).

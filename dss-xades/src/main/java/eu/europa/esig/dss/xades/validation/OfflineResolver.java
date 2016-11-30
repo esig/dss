@@ -70,7 +70,7 @@ public class OfflineResolver extends ResourceResolverSpi {
 			}
 			try {
 				if (isKnown(documentUri) != null) {
-					LOG.debug("I state that I can resolve '" + documentUri+"' (external document)");
+					LOG.debug("I state that I can resolve '" + documentUri + "' (external document)");
 					return true;
 				}
 				final String baseUriString = context.baseUri;
@@ -128,20 +128,9 @@ public class OfflineResolver extends ResourceResolverSpi {
 	}
 
 	private DSSDocument isKnown(final String documentUri) {
-
 		for (final DSSDocument dssDocument : documents) {
-
 			if (isRightDocument(documentUri, dssDocument)) {
-
 				return dssDocument;
-			}
-			DSSDocument nextDssDocument = dssDocument.getNextDocument();
-			while (nextDssDocument != null) {
-
-				if (isRightDocument(documentUri, nextDssDocument)) {
-					return nextDssDocument;
-				}
-				nextDssDocument = nextDssDocument.getNextDocument();
 			}
 		}
 		return null;

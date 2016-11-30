@@ -22,8 +22,8 @@ public class MockDocumentValidator extends SignedDocumentValidator {
 	}
 
 	@Override
-	public DSSDocument getOriginalDocument(String signatureId) throws DSSException {
-		return null;
+	public List<DSSDocument> getOriginalDocuments(String signatureId) throws DSSException {
+		return Collections.emptyList();
 	}
 
 	@Override
