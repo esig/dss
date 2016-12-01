@@ -27,6 +27,8 @@ import org.apache.commons.codec.binary.Base64;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 
+import java.io.Serializable;
+
 /**
  * This class stocks the timestamp reference, which is composed of:
  * - digest algorithm used to calculate the digest value of the reference;
