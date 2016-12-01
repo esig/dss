@@ -2,6 +2,7 @@ package eu.europa.esig.dss.asic;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -92,8 +93,16 @@ public final class ASiCUtils {
 		return isSignatureTypeCorrect;
 	}
 
+	public static boolean isArchive(List<DSSDocument> docs) {
+		if (Utils.collectionSize(docs) == 1) {
+			DSSDocument doc = docs.get(0);
+			return isArchive(doc);
+		}
+		return false;
+	}
+
 	public static boolean isArchive(DSSDocument doc) {
-		return (doc.getName().endsWith(".zip") || doc.getName().endsWith(".bdoc") || doc.getName().endsWith(".asice") || doc.getName().endsWith(".asics"));
+		return doc.getName().endsWith(".zip") || doc.getName().endsWith(".bdoc") || doc.getName().endsWith(".asice") || doc.getName().endsWith(".asics");
 	}
 
 	public static boolean isASiCContainer(DSSDocument dssDocument) {

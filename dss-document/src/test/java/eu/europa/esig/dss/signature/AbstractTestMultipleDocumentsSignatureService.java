@@ -22,7 +22,6 @@ package eu.europa.esig.dss.signature;
 
 import java.util.List;
 
-import eu.europa.esig.dss.AbstractSerializableSignatureParameters;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.SignatureValue;
@@ -30,17 +29,17 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 
-public abstract class AbstractTestMultipleDocumentsSignatureService extends AbstractTestSignature {
+public abstract class AbstractTestMultipleDocumentsSignatureService<SP extends AbstractSignatureParameters> extends AbstractTestSignature<SP> {
 
 	protected abstract List<DSSDocument> getDocumentsToSign();
 
-	protected abstract MultipleDocumentsSignatureService<AbstractSerializableSignatureParameters> getService();
+	protected abstract MultipleDocumentsSignatureService<SP> getService();
 
 	@Override
 	protected DSSDocument sign() {
 		List<DSSDocument> toBeSigneds = getDocumentsToSign();
-		AbstractSignatureParameters params = getSignatureParameters();
-		MultipleDocumentsSignatureService<AbstractSerializableSignatureParameters> service = getService();
+		SP params = getSignatureParameters();
+		MultipleDocumentsSignatureService<SP> service = getService();
 		MockPrivateKeyEntry privateKeyEntry = getPrivateKeyEntry();
 
 		ToBeSigned dataToSign = service.getDataToSign(toBeSigneds, params);

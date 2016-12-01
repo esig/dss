@@ -27,16 +27,17 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 
-public abstract class AbstractTestDocumentSignatureService extends AbstractTestSignature {
+public abstract class AbstractTestDocumentSignatureService<SP extends AbstractSignatureParameters> extends AbstractTestSignature<SP> {
 
 	protected abstract DSSDocument getDocumentToSign();
 
-	protected abstract DocumentSignatureService<AbstractSignatureParameters> getService();
+	protected abstract DocumentSignatureService<SP> getService();
 
+	@Override
 	protected DSSDocument sign() {
 		DSSDocument toBeSigned = getDocumentToSign();
-		AbstractSignatureParameters params = getSignatureParameters();
-		DocumentSignatureService<AbstractSignatureParameters> service = getService();
+		SP params = getSignatureParameters();
+		DocumentSignatureService<SP> service = getService();
 		MockPrivateKeyEntry privateKeyEntry = getPrivateKeyEntry();
 
 		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);

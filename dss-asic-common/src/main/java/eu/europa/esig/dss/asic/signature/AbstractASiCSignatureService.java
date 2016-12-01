@@ -13,6 +13,7 @@ import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUnsupportedOperationException;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.asic.ASiCContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCParameters;
@@ -35,13 +36,13 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 		super(certificateVerifier);
 	}
 
-	protected void assertCanBeSign(DSSDocument toSignDocument, final ASiCParameters asicParameters) {
-		if (!canBeSigned(toSignDocument, asicParameters)) { // First verify if the file can be signed
+	protected void assertCanBeSign(List<DSSDocument> documents, final ASiCParameters asicParameters) {
+		if (!canBeSigned(documents, asicParameters)) { // First verify if the file can be signed
 			throw new DSSUnsupportedOperationException("You only can sign an ASiC container by using the same type of container and of signature");
 		}
 	}
 
-	abstract boolean canBeSigned(DSSDocument toSignDocument, ASiCParameters asicParameters);
+	abstract boolean canBeSigned(List<DSSDocument> documents, ASiCParameters asicParameters);
 
 	protected void extractCurrentArchive(DSSDocument archive) {
 		ASiCContainerExtractor extractor = new ASiCContainerExtractor(archive);
@@ -62,6 +63,22 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 
 	protected DSSDocument getEmbeddedMimetype() {
 		return archiveContent.getMimeTypeDocument();
+	}
+
+	protected DSSDocument createPackageZip(List<DSSDocument> documents) {
+		ByteArrayOutputStream baos = null;
+		ZipOutputStream zos = null;
+		try {
+			baos = new ByteArrayOutputStream();
+			zos = new ZipOutputStream(baos);
+			storeSignedFiles(documents, zos);
+		} catch (IOException e) {
+			throw new DSSException("Unable to create package.zip file", e);
+		} finally {
+			Utils.closeQuietly(zos);
+			Utils.closeQuietly(baos);
+		}
+		return new InMemoryDocument(baos.toByteArray(), "package.zip");
 	}
 
 	protected void copyExistingArchiveWithSignatureList(DSSDocument archiveDocument, List<DSSDocument> signaturesToAdd, ByteArrayOutputStream baos) {

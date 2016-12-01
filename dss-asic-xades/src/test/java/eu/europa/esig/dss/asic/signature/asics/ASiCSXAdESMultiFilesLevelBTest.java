@@ -18,42 +18,46 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.asic.signature.asice;
+package eu.europa.esig.dss.asic.signature.asics;
 
-import java.io.File;
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Before;
 
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
-import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
+import eu.europa.esig.dss.signature.AbstractTestMultipleDocumentsSignatureService;
+import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
-public class ASiCEXAdESLevelBPolicyIdTest extends AbstractTestDocumentSignatureService<ASiCWithXAdESSignatureParameters> {
+public class ASiCSXAdESMultiFilesLevelBTest extends AbstractTestMultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters> {
 
-	private DocumentSignatureService<ASiCWithXAdESSignatureParameters> service;
+	private MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
-	private DSSDocument documentToSign;
+	private List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
 	private MockPrivateKeyEntry privateKeyEntry;
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
+		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
+		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
 
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
@@ -62,29 +66,18 @@ public class ASiCEXAdESLevelBPolicyIdTest extends AbstractTestDocumentSignatureS
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
-		Policy policy = new Policy();
-		policy.setId("urn:oid:1.3.6.1.4.1.10015.1000.3.2.1");
-		policy.setQualifier("OIDAsURN");
-		policy.setDigestAlgorithm(DigestAlgorithm.SHA1);
-		policy.setDigestValue(Utils.fromBase64("gIHiaetEE94gbkCRygQ9WspxUdw="));
-		policy.setSpuri("https://www.sk.ee/repository/bdoc-spec21.pdf");
-		signatureParameters.bLevel().setSignaturePolicy(policy);
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCWithXAdESService(certificateVerifier);
 	}
 
 	@Override
-	protected File getPolicyFile() {
-		return new File("src/test/resources/bdoc-spec21.pdf");
-	}
-
-	@Override
-	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters> getService() {
-		return service;
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
+		assertEquals(1, Utils.collectionSize(signatureScopes)); // package.zip
 	}
 
 	@Override
@@ -94,7 +87,7 @@ public class ASiCEXAdESLevelBPolicyIdTest extends AbstractTestDocumentSignatureS
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.ASICE;
+		return MimeType.ASICS;
 	}
 
 	@Override
@@ -108,13 +101,18 @@ public class ASiCEXAdESLevelBPolicyIdTest extends AbstractTestDocumentSignatureS
 	}
 
 	@Override
-	protected DSSDocument getDocumentToSign() {
-		return documentToSign;
+	protected MockPrivateKeyEntry getPrivateKeyEntry() {
+		return privateKeyEntry;
 	}
 
 	@Override
-	protected MockPrivateKeyEntry getPrivateKeyEntry() {
-		return privateKeyEntry;
+	protected List<DSSDocument> getDocumentsToSign() {
+		return documentToSigns;
+	}
+
+	@Override
+	protected MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters> getService() {
+		return service;
 	}
 
 }

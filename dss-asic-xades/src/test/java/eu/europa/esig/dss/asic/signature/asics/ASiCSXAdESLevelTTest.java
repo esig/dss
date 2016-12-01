@@ -40,7 +40,7 @@ import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
-public class ASiCSXAdESLevelTTest extends AbstractTestDocumentSignatureService {
+public class ASiCSXAdESLevelTTest extends AbstractTestDocumentSignatureService<ASiCWithXAdESSignatureParameters> {
 
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;

@@ -32,13 +32,13 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
 
-public abstract class AbstractTestSignature {
+public abstract class AbstractTestSignature<SP extends AbstractSignatureParameters> {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractTestDocumentSignatureService.class);
 
 	protected abstract MockPrivateKeyEntry getPrivateKeyEntry();
 
-	protected abstract AbstractSignatureParameters getSignatureParameters();
+	protected abstract SP getSignatureParameters();
 
 	protected abstract MimeType getExpectedMime();
 

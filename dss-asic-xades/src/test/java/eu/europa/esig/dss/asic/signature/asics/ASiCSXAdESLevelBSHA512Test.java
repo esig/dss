@@ -40,7 +40,7 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
-public class ASiCSXAdESLevelBSHA512Test extends AbstractTestDocumentSignatureService {
+public class ASiCSXAdESLevelBSHA512Test extends AbstractTestDocumentSignatureService<ASiCWithXAdESSignatureParameters> {
 
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
