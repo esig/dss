@@ -1,8 +1,6 @@
 package eu.europa.esig.dss.cades;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.SignatureForm;
-import eu.europa.esig.dss.SignatureLevel;
 
 public class CAdESSignatureParameters extends AbstractSignatureParameters {
 
@@ -11,14 +9,6 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters {
 
 	private String contentIdentifierPrefix;
 	private String contentIdentifierSuffix;
-
-	@Override
-	public void setSignatureLevel(SignatureLevel signatureLevel) {
-		if (signatureLevel == null || SignatureForm.CAdES != signatureLevel.getSignatureForm()) {
-			throw new IllegalArgumentException("Only CAdES form is allowed !");
-		}
-		super.setSignatureLevel(signatureLevel);
-	}
 
 	public String getContentHintsType() {
 		return contentHintsType;

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import static eu.europa.esig.dss.XAdESNamespaces.XAdES;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -405,7 +406,23 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 *
 	 * @return {@code List} of {@code DSSReference}
 	 */
-	protected abstract List<DSSReference> createDefaultReferences();
+	private List<DSSReference> createDefaultReferences() {
+		final List<DSSReference> references = new ArrayList<DSSReference>();
+		references.add(createReference(detachedDocument, 1));
+		return references;
+	}
+
+	List<DSSReference> createReferencesForDocuments(List<DSSDocument> documents) {
+		List<DSSReference> references = new ArrayList<DSSReference>();
+		int referenceIndex = 1;
+		for (DSSDocument dssDocument : documents) {
+			references.add(createReference(dssDocument, referenceIndex));
+			referenceIndex++;
+		}
+		return references;
+	}
+
+	protected abstract DSSReference createReference(DSSDocument document, int referenceIndex);
 
 	/**
 	 * This method performs the reference transformation. Note that for the time being (4.3.0-RC) only two types of

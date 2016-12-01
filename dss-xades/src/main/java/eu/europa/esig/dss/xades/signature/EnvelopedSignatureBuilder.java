@@ -85,14 +85,12 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 	}
 
 	@Override
-	protected List<DSSReference> createDefaultReferences() {
-
-		final List<DSSReference> dssReferences = new ArrayList<DSSReference>();
+	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
 
 		DSSReference dssReference = new DSSReference();
-		dssReference.setId("r-id-1");
+		dssReference.setId("r-id-" + referenceIndex);
 		dssReference.setUri("");
-		dssReference.setContents(detachedDocument);
+		dssReference.setContents(document);
 		dssReference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
 
 		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
@@ -111,9 +109,8 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 		dssTransformList.add(dssTransform);
 
 		dssReference.setTransforms(dssTransformList);
-		dssReferences.add(dssReference);
 
-		return dssReferences;
+		return dssReference;
 	}
 
 	/**

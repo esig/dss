@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.asic;
 
+import eu.europa.esig.dss.SignatureForm;
+import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 
 public class ASiCWithCAdESSignatureParameters extends CAdESSignatureParameters {
@@ -16,6 +18,14 @@ public class ASiCWithCAdESSignatureParameters extends CAdESSignatureParameters {
 			aSiCParams = new ASiCParameters();
 		}
 		return aSiCParams;
+	}
+
+	@Override
+	public void setSignatureLevel(SignatureLevel signatureLevel) {
+		if (signatureLevel == null || SignatureForm.CAdES != signatureLevel.getSignatureForm()) {
+			throw new IllegalArgumentException("Only CAdES form is allowed !");
+		}
+		super.setSignatureLevel(signatureLevel);
 	}
 
 }

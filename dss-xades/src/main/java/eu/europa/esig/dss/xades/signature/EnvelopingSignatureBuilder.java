@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -65,48 +64,34 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 	 * @param certificateVerifier
 	 */
 	public EnvelopingSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier) {
-
 		super(params, origDoc, certificateVerifier);
 		setCanonicalizationMethods(params, CanonicalizationMethod.INCLUSIVE);
 	}
 
 	@Override
-	protected List<DSSReference> createDefaultReferences() {
-
-		final List<DSSReference> references = new ArrayList<DSSReference>();
-
-		DSSDocument document = detachedDocument;
-		int referenceId = 1;
-		do {
-			// <ds:Reference Id="signed-data-ref" Type="http://www.w3.org/2000/09/xmldsig#Object"
-			// URI="#signed-data-idfc5ff27ee49763d9ba88ba5bbc49f732">
-			final DSSReference reference = new DSSReference();
-			reference.setId("r-id-" + referenceId);
-			reference.setType(HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT);
-			reference.setUri("#o-id-" + referenceId);
-			reference.setContents(document);
-			reference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
-			if (reference.getContents().getMimeType() == MimeType.XML && params.isEmbedXML()) {
-				DSSTransform xmlTransform = new DSSTransform();
-				xmlTransform.setAlgorithm(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-				reference.setTransforms(Arrays.asList(xmlTransform));
-			} else {
-				DSSTransform base64Transform = new DSSTransform();
-				base64Transform.setAlgorithm(CanonicalizationMethod.BASE64);
-				reference.setTransforms(Arrays.asList(base64Transform));
-			}
-			references.add(reference);
-
-			referenceId++;
-			document = document.getNextDocument();
-		} while (document != null);
-
-		return references;
+	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
+		// <ds:Reference Id="signed-data-ref" Type="http://www.w3.org/2000/09/xmldsig#Object"
+		// URI="#signed-data-idfc5ff27ee49763d9ba88ba5bbc49f732">
+		final DSSReference reference = new DSSReference();
+		reference.setId("r-id-" + referenceIndex);
+		reference.setType(HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT);
+		reference.setUri("#o-id-" + referenceIndex);
+		reference.setContents(document);
+		reference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
+		if (reference.getContents().getMimeType() == MimeType.XML && params.isEmbedXML()) {
+			DSSTransform xmlTransform = new DSSTransform();
+			xmlTransform.setAlgorithm(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
+			reference.setTransforms(Arrays.asList(xmlTransform));
+		} else {
+			DSSTransform base64Transform = new DSSTransform();
+			base64Transform.setAlgorithm(CanonicalizationMethod.BASE64);
+			reference.setTransforms(Arrays.asList(base64Transform));
+		}
+		return reference;
 	}
 
 	@Override
 	protected DSSDocument transformReference(final DSSReference reference) {
-
 		return reference.getContents();
 	}
 
@@ -161,4 +146,5 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 		inMemoryDocument.setMimeType(MimeType.XML);
 		return inMemoryDocument;
 	}
+
 }

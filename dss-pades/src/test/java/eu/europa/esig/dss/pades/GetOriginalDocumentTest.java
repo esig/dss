@@ -2,6 +2,7 @@ package eu.europa.esig.dss.pades;
 
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
@@ -50,18 +51,19 @@ public class GetOriginalDocumentTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		DSSDocument removeResult = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
+		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
+
+		Assert.assertEquals(1, results.size());
 
 		InputStream is = document.openStream();
 		PDDocument pdf = PDDocument.load(is, true);
 		PDFTextStripper stripper = new PDFTextStripper();
 		String firstDocument = stripper.getText(pdf);
 
-		is = removeResult.openStream();
+		is = results.get(0).openStream();
 		pdf = PDDocument.load(is, true);
 		String secondDocument = stripper.getText(pdf);
 
-		// removeResult.save("C:\\Users\\axel.abinet\\Desktop\\test.pdf");
 		Assert.assertEquals(firstDocument, secondDocument);
 	}
 
@@ -90,13 +92,16 @@ public class GetOriginalDocumentTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		DSSDocument removeResult = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
+		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
+
+		Assert.assertEquals(1, results.size());
+
 		InputStream is = document.openStream();
 		PDDocument pdf = PDDocument.load(is, true);
 		PDFTextStripper stripper = new PDFTextStripper();
 		String firstDocument = stripper.getText(pdf);
 
-		is = removeResult.openStream();
+		is = results.get(0).openStream();
 		pdf = PDDocument.load(is, true);
 		String secondDocument = stripper.getText(pdf);
 

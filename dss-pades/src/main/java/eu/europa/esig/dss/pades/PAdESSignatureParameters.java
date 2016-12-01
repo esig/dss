@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.pades;
 
+import eu.europa.esig.dss.SignatureForm;
+import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 
 public class PAdESSignatureParameters extends CAdESSignatureParameters {
@@ -14,6 +16,14 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	 * This attribute is used to create visible signature in PAdES form
 	 */
 	private SignatureImageParameters imageParameters;
+
+	@Override
+	public void setSignatureLevel(SignatureLevel signatureLevel) {
+		if (signatureLevel == null || SignatureForm.PAdES != signatureLevel.getSignatureForm()) {
+			throw new IllegalArgumentException("Only PAdES form is allowed !");
+		}
+		super.setSignatureLevel(signatureLevel);
+	}
 
 	/**
 	 * @return the reason
