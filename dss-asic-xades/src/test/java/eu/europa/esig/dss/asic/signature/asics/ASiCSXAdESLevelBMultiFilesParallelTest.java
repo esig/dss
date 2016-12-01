@@ -1,21 +1,30 @@
 package eu.europa.esig.dss.asic.signature.asics;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
-import eu.europa.esig.dss.asic.signature.ASiCWithCAdESService;
+import eu.europa.esig.dss.asic.ASiCContainerExtractor;
+import eu.europa.esig.dss.asic.ASiCExtractResult;
+import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
+import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
@@ -26,70 +35,44 @@ import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-public class ASiCSCAdESLevelBSignFourTimeTest {
+public class ASiCSXAdESLevelBMultiFilesParallelTest {
 
 	@Test
 	public void test() throws Exception {
-		DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
+		List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
+		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
+		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
 
 		CertificateService certificateService = new CertificateService();
 		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
-		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
+		ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		ASiCWithCAdESService service = new ASiCWithCAdESService(certificateVerifier);
+		ASiCWithXAdESService service = new ASiCWithXAdESService(certificateVerifier);
 
-		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
+		ToBeSigned dataToSign = service.getDataToSign(documentToSigns, signatureParameters);
 		SignatureValue signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
-		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
+		DSSDocument signedDocument = service.signDocument(documentToSigns, signatureParameters, signatureValue);
 
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
 		certificateVerifier = new CommonCertificateVerifier();
-		service = new ASiCWithCAdESService(certificateVerifier);
+		service = new ASiCWithXAdESService(certificateVerifier);
 
 		dataToSign = service.getDataToSign(signedDocument, signatureParameters);
 		signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
 		DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
-
-		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
-		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
-		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
-
-		certificateVerifier = new CommonCertificateVerifier();
-		service = new ASiCWithCAdESService(certificateVerifier);
-
-		dataToSign = service.getDataToSign(resignedDocument, signatureParameters);
-		signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
-		resignedDocument = service.signDocument(resignedDocument, signatureParameters, signatureValue);
-
-		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
-		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
-		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
-
-		certificateVerifier = new CommonCertificateVerifier();
-		service = new ASiCWithCAdESService(certificateVerifier);
-
-		dataToSign = service.getDataToSign(resignedDocument, signatureParameters);
-		signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
-		resignedDocument = service.signDocument(resignedDocument, signatureParameters, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
@@ -98,9 +81,39 @@ public class ASiCSCAdESLevelBSignFourTimeTest {
 
 		while (reports != null) {
 			DiagnosticData diagnosticData = reports.getDiagnosticData();
-			assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-			Assert.assertNotEquals(Indication.FAILED, reports.getSimpleReport().getIndication(diagnosticData.getFirstSignatureId()));
+			List<String> signatureIdList = diagnosticData.getSignatureIdList();
+			for (String sigId : signatureIdList) {
+				assertTrue(diagnosticData.isBLevelTechnicallyValid(sigId));
+				Assert.assertNotEquals(Indication.FAILED, reports.getSimpleReport().getIndication(sigId));
+			}
 			reports = reports.getNextReports();
 		}
+
+		ASiCContainerExtractor extractor = new ASiCContainerExtractor(resignedDocument);
+		ASiCExtractResult result = extractor.extract();
+
+		assertEquals(0, result.getUnsupportedDocuments().size());
+
+		List<DSSDocument> signatureDocuments = result.getSignatureDocuments();
+		assertEquals(1, signatureDocuments.size());
+		String signatureFilename = signatureDocuments.get(0).getName();
+		assertTrue(signatureFilename.startsWith("META-INF/signature"));
+		assertTrue(signatureFilename.endsWith(".xml"));
+
+		List<DSSDocument> manifestDocuments = result.getManifestDocuments();
+		assertEquals(0, manifestDocuments.size());
+
+		List<DSSDocument> signedDocuments = result.getSignedDocuments();
+		assertEquals(1, signedDocuments.size()); // package.Zip
+
+		DSSDocument mimeTypeDocument = result.getMimeTypeDocument();
+
+		byte[] mimeTypeContent = DSSUtils.toByteArray(mimeTypeDocument);
+		try {
+			assertEquals(MimeType.ASICS.getMimeTypeString(), new String(mimeTypeContent, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			fail(e.getMessage());
+		}
+
 	}
 }

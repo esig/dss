@@ -8,6 +8,10 @@ import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
+/**
+ * This class is an implemention to validate ASiC containers with XAdES signature(s)
+ * 
+ */
 public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValidator {
 
 	private ASiCContainerWithXAdESValidator() {

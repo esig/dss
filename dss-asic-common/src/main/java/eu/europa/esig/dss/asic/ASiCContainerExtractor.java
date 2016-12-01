@@ -2,8 +2,6 @@ package eu.europa.esig.dss.asic;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -29,7 +27,6 @@ public class ASiCContainerExtractor {
 
 		ZipInputStream asicsInputStream = null;
 		try {
-			List<String> unsupportedFiles = new ArrayList<String>();
 			asicsInputStream = new ZipInputStream(asicContainer.openStream());
 			ZipEntry entry;
 			while ((entry = asicsInputStream.getNextEntry()) != null) {
@@ -40,7 +37,7 @@ public class ASiCContainerExtractor {
 					} else if (ASiCUtils.isASiCManifestWithCAdES(entryName) || ASiCUtils.isASiCManifestWithXAdES(entryName)) {
 						result.getManifestDocuments().add(getCurrentDocument(entryName, asicsInputStream));
 					} else if (!ASiCUtils.isFolder(entryName)) {
-						unsupportedFiles.add(entryName);
+						result.getUnsupportedDocuments().add(getCurrentDocument(entryName, asicsInputStream));
 					}
 				} else if (!ASiCUtils.isFolder(entryName)) {
 					if (ASiCUtils.isMimetype(entryName)) {
@@ -49,12 +46,12 @@ public class ASiCContainerExtractor {
 						result.getSignedDocuments().add(getCurrentDocument(entryName, asicsInputStream));
 					}
 				} else {
-					unsupportedFiles.add(entryName);
+					result.getUnsupportedDocuments().add(getCurrentDocument(entryName, asicsInputStream));
 				}
 			}
 
-			if (Utils.isCollectionNotEmpty(unsupportedFiles)) {
-				LOG.warn("Unsupported files : " + unsupportedFiles);
+			if (Utils.isCollectionNotEmpty(result.getUnsupportedDocuments())) {
+				LOG.warn("Unsupported files : " + result.getUnsupportedDocuments());
 			}
 
 		} catch (IOException e) {

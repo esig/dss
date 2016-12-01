@@ -98,8 +98,6 @@ public class ASiCECAdESLevelBSignFourTimeTest {
 
 		Reports reports = validator.validateDocument();
 
-		reports.print();
-
 		while (reports != null) {
 			DiagnosticData diagnosticData = reports.getDiagnosticData();
 			assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));

@@ -21,12 +21,10 @@
 package eu.europa.esig.dss.asic.signature.asics;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
-import java.util.List;
 
 import org.junit.Before;
 
@@ -48,8 +46,9 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
-public class ASiCSCAdESLevelBTest extends AbstractTestDocumentSignatureService<ASiCWithCAdESSignatureParameters> {
+public class ASiCSCAdESLevelBWithMimeTypeTest extends AbstractTestDocumentSignatureService<ASiCWithCAdESSignatureParameters> {
 
+	private static final String APPLICATION_VND_OASIS_OPENDOCUMENT_TEXT = "application/vnd.oasis.opendocument.text";
 	private DocumentSignatureService<ASiCWithCAdESSignatureParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
@@ -68,6 +67,7 @@ public class ASiCSCAdESLevelBTest extends AbstractTestDocumentSignatureService<A
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+		signatureParameters.aSiC().setMimeType(APPLICATION_VND_OASIS_OPENDOCUMENT_TEXT);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCWithCAdESService(certificateVerifier);
@@ -79,27 +79,10 @@ public class ASiCSCAdESLevelBTest extends AbstractTestDocumentSignatureService<A
 
 		ASiCContainerExtractor extractor = new ASiCContainerExtractor(doc);
 		ASiCExtractResult extract = extractor.extract();
-
-		assertEquals(0, extract.getUnsupportedDocuments().size());
-
-		List<DSSDocument> signatureDocuments = extract.getSignatureDocuments();
-		assertEquals(1, signatureDocuments.size());
-		String signatureFilename = signatureDocuments.get(0).getName();
-		assertTrue(signatureFilename.startsWith("META-INF/signature"));
-		assertTrue(signatureFilename.endsWith(".p7s"));
-
-		List<DSSDocument> manifestDocuments = extract.getManifestDocuments();
-		assertEquals(0, manifestDocuments.size());
-
-		List<DSSDocument> signedDocuments = extract.getSignedDocuments();
-		assertEquals(1, signedDocuments.size());
-		assertEquals("test.text", signedDocuments.get(0).getName());
-
 		DSSDocument mimeTypeDocument = extract.getMimeTypeDocument();
-
 		byte[] mimeTypeContent = DSSUtils.toByteArray(mimeTypeDocument);
 		try {
-			assertEquals(MimeType.ASICS.getMimeTypeString(), new String(mimeTypeContent, "UTF-8"));
+			assertEquals(APPLICATION_VND_OASIS_OPENDOCUMENT_TEXT, new String(mimeTypeContent, "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			fail(e.getMessage());
 		}

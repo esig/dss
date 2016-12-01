@@ -18,11 +18,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.asic.signature.asice;
+package eu.europa.esig.dss.asic.signature.asics;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.junit.Before;
 
@@ -34,25 +32,23 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.signature.AbstractTestMultipleDocumentsSignatureService;
-import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
+import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-public class ASiCECAdESMultiFilesLevelBTest extends AbstractTestMultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters> {
+public class ASiCSCAdESLevelBWithZipCommentTest extends AbstractTestDocumentSignatureService<ASiCWithCAdESSignatureParameters> {
 
-	private MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters> service;
+	private DocumentSignatureService<ASiCWithCAdESSignatureParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
-	private List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
+	private DSSDocument documentToSign;
 	private MockPrivateKeyEntry privateKeyEntry;
 
 	@Before
 	public void init() throws Exception {
-		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
-		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
+		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
 
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
@@ -62,23 +58,16 @@ public class ASiCECAdESMultiFilesLevelBTest extends AbstractTestMultipleDocument
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+		signatureParameters.aSiC().setZipComment(true);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCWithCAdESService(certificateVerifier);
 	}
 
 	@Override
-	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
-		// List<String> signatureIdList = diagnosticData.getSignatureIdList();
-		// assertEquals(2, Utils.collectionSize(signatureIdList));
-		//
-		// for (String signatureId : signatureIdList) {
-		// SignatureWrapper signature = diagnosticData.getSignatureById(signatureId);
-		// List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
-		// assertEquals(1, Utils.collectionSize(signatureScopes));
-		// }
-		// TODO
+	protected DocumentSignatureService<ASiCWithCAdESSignatureParameters> getService() {
+		return service;
 	}
 
 	@Override
@@ -88,7 +77,7 @@ public class ASiCECAdESMultiFilesLevelBTest extends AbstractTestMultipleDocument
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.ASICE;
+		return MimeType.ASICS;
 	}
 
 	@Override
@@ -102,18 +91,13 @@ public class ASiCECAdESMultiFilesLevelBTest extends AbstractTestMultipleDocument
 	}
 
 	@Override
+	protected DSSDocument getDocumentToSign() {
+		return documentToSign;
+	}
+
+	@Override
 	protected MockPrivateKeyEntry getPrivateKeyEntry() {
 		return privateKeyEntry;
-	}
-
-	@Override
-	protected List<DSSDocument> getDocumentsToSign() {
-		return documentToSigns;
-	}
-
-	@Override
-	protected MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters> getService() {
-		return service;
 	}
 
 }

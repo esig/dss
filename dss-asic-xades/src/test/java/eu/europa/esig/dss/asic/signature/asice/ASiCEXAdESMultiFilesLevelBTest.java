@@ -21,7 +21,10 @@
 package eu.europa.esig.dss.asic.signature.asice;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,10 +33,13 @@ import org.junit.Before;
 
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.asic.ASiCContainerExtractor;
+import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
@@ -71,6 +77,39 @@ public class ASiCEXAdESMultiFilesLevelBTest extends AbstractTestMultipleDocument
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCWithXAdESService(certificateVerifier);
+	}
+
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		InMemoryDocument doc = new InMemoryDocument(byteArray);
+
+		ASiCContainerExtractor extractor = new ASiCContainerExtractor(doc);
+		ASiCExtractResult extract = extractor.extract();
+
+		assertEquals(0, extract.getUnsupportedDocuments().size());
+
+		List<DSSDocument> signatureDocuments = extract.getSignatureDocuments();
+		assertEquals(1, signatureDocuments.size());
+		String signatureFilename = signatureDocuments.get(0).getName();
+		assertTrue(signatureFilename.startsWith("META-INF/signature"));
+		assertTrue(signatureFilename.endsWith(".xml"));
+
+		List<DSSDocument> manifestDocuments = extract.getManifestDocuments();
+		assertEquals(1, manifestDocuments.size());
+		String manifestFilename = manifestDocuments.get(0).getName();
+		assertEquals("META-INF/manifest.xml", manifestFilename);
+
+		List<DSSDocument> signedDocuments = extract.getSignedDocuments();
+		assertEquals(2, signedDocuments.size());
+
+		DSSDocument mimeTypeDocument = extract.getMimeTypeDocument();
+
+		byte[] mimeTypeContent = DSSUtils.toByteArray(mimeTypeDocument);
+		try {
+			assertEquals(MimeType.ASICE.getMimeTypeString(), new String(mimeTypeContent, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			fail(e.getMessage());
+		}
 	}
 
 	@Override

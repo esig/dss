@@ -11,6 +11,7 @@ public class ASiCExtractResult {
 	private List<DSSDocument> signatureDocuments = new ArrayList<DSSDocument>();
 	private List<DSSDocument> manifestDocuments = new ArrayList<DSSDocument>();
 	private List<DSSDocument> signedDocuments = new ArrayList<DSSDocument>();
+	private List<DSSDocument> unsupportedDocuments = new ArrayList<DSSDocument>();
 
 	public DSSDocument getMimeTypeDocument() {
 		return mimeTypeDocument;
@@ -42,6 +43,14 @@ public class ASiCExtractResult {
 
 	public void setSignedDocuments(List<DSSDocument> signedDocuments) {
 		this.signedDocuments = signedDocuments;
+	}
+
+	public List<DSSDocument> getUnsupportedDocuments() {
+		return unsupportedDocuments;
+	}
+
+	public void setUnsupportedDocuments(List<DSSDocument> unsupportedDocuments) {
+		this.unsupportedDocuments = unsupportedDocuments;
 	}
 
 }

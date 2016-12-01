@@ -62,6 +62,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 				existingXAdESSignatureASiCS = embeddedSignatures.get(0);
 			}
 		} else {
+			// If ASiC-S and more than one file, we need to create a new zip with the documents to be signed
 			if (ASiCUtils.isASiCS(asicParameters) && Utils.collectionSize(toSignDocuments) > 1) {
 				documents.add(createPackageZip(toSignDocuments));
 			} else {
@@ -97,7 +98,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 			}
 
 		} else {
-
+			// If ASiC-S and more than one file, we need to create a new zip with the documents to be signed
 			if (ASiCUtils.isASiCS(asicParameters) && Utils.collectionSize(toSignDocuments) > 1) {
 				documents.add(createPackageZip(toSignDocuments));
 			} else {

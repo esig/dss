@@ -18,13 +18,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.asic.signature.asics;
+package eu.europa.esig.dss.asic.signature.asice;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,23 +42,25 @@ import eu.europa.esig.dss.asic.ASiCContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.signature.AbstractTestMultipleDocumentsSignatureService;
+import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-public class ASiCSCAdESLevelBTest extends AbstractTestDocumentSignatureService<ASiCWithCAdESSignatureParameters> {
+public class ASiCECAdESLevelBMultiFilesTest extends AbstractTestMultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters> {
 
-	private DocumentSignatureService<ASiCWithCAdESSignatureParameters> service;
+	private MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
-	private DSSDocument documentToSign;
+	private List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
 	private MockPrivateKeyEntry privateKeyEntry;
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
+		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
+		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
 
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
@@ -67,7 +70,7 @@ public class ASiCSCAdESLevelBTest extends AbstractTestDocumentSignatureService<A
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCWithCAdESService(certificateVerifier);
@@ -89,25 +92,35 @@ public class ASiCSCAdESLevelBTest extends AbstractTestDocumentSignatureService<A
 		assertTrue(signatureFilename.endsWith(".p7s"));
 
 		List<DSSDocument> manifestDocuments = extract.getManifestDocuments();
-		assertEquals(0, manifestDocuments.size());
+		assertEquals(1, manifestDocuments.size());
+		String manifestFilename = manifestDocuments.get(0).getName();
+		assertTrue(manifestFilename.startsWith("META-INF/ASiCManifest"));
+		assertTrue(manifestFilename.endsWith(".xml"));
 
 		List<DSSDocument> signedDocuments = extract.getSignedDocuments();
-		assertEquals(1, signedDocuments.size());
-		assertEquals("test.text", signedDocuments.get(0).getName());
+		assertEquals(2, signedDocuments.size());
 
 		DSSDocument mimeTypeDocument = extract.getMimeTypeDocument();
 
 		byte[] mimeTypeContent = DSSUtils.toByteArray(mimeTypeDocument);
 		try {
-			assertEquals(MimeType.ASICS.getMimeTypeString(), new String(mimeTypeContent, "UTF-8"));
+			assertEquals(MimeType.ASICE.getMimeTypeString(), new String(mimeTypeContent, "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			fail(e.getMessage());
 		}
 	}
 
 	@Override
-	protected DocumentSignatureService<ASiCWithCAdESSignatureParameters> getService() {
-		return service;
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		// List<String> signatureIdList = diagnosticData.getSignatureIdList();
+		// assertEquals(2, Utils.collectionSize(signatureIdList));
+		//
+		// for (String signatureId : signatureIdList) {
+		// SignatureWrapper signature = diagnosticData.getSignatureById(signatureId);
+		// List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
+		// assertEquals(1, Utils.collectionSize(signatureScopes));
+		// }
+		// TODO
 	}
 
 	@Override
@@ -117,7 +130,7 @@ public class ASiCSCAdESLevelBTest extends AbstractTestDocumentSignatureService<A
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.ASICS;
+		return MimeType.ASICE;
 	}
 
 	@Override
@@ -131,13 +144,18 @@ public class ASiCSCAdESLevelBTest extends AbstractTestDocumentSignatureService<A
 	}
 
 	@Override
-	protected DSSDocument getDocumentToSign() {
-		return documentToSign;
+	protected MockPrivateKeyEntry getPrivateKeyEntry() {
+		return privateKeyEntry;
 	}
 
 	@Override
-	protected MockPrivateKeyEntry getPrivateKeyEntry() {
-		return privateKeyEntry;
+	protected List<DSSDocument> getDocumentsToSign() {
+		return documentToSigns;
+	}
+
+	@Override
+	protected MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters> getService() {
+		return service;
 	}
 
 }
