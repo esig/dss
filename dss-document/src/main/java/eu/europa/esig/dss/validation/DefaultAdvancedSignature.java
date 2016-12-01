@@ -120,22 +120,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	@Override
-	public void setDetachedContents(final DSSDocument... detachedContents) {
-
-		for (final DSSDocument detachedContent : detachedContents) {
-
-			if (detachedContent != null) {
-
-				if (this.detachedContents == null) {
-
-					this.detachedContents = new ArrayList<DSSDocument>();
-				}
-				this.detachedContents.add(detachedContent);
-			}
-		}
-	}
-
-	@Override
 	public void setDetachedContents(final List<DSSDocument> detachedContents) {
 		this.detachedContents = detachedContents;
 	}

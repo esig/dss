@@ -50,15 +50,8 @@ public interface AdvancedSignature extends Serializable {
 	/**
 	 * This method allows to set the signed contents in the case of the detached signature.
 	 *
-	 * @param detachedContents array of {@code DSSDocument} representing the signed detached contents.
-	 */
-	void setDetachedContents(final DSSDocument... detachedContents);
-
-
-	/**
-	 * This method allows to set the signed contents in the case of the detached signature.
-	 *
-	 * @param detachedContents {@code List} of {@code DSSDocument} representing the signed detached contents.
+	 * @param detachedContents
+	 *            {@code List} of {@code DSSDocument} representing the signed detached contents.
 	 */
 	void setDetachedContents(final List<DSSDocument> detachedContents);
 
@@ -68,10 +61,12 @@ public interface AdvancedSignature extends Serializable {
 	CertificateToken getProvidedSigningCertificateToken();
 
 	/**
-	 * This method allows to provide a signing certificate to be used in the validation process. It can happen in the case of a non-AdES signature without the signing certificate
+	 * This method allows to provide a signing certificate to be used in the validation process. It can happen in the
+	 * case of a non-AdES signature without the signing certificate
 	 * within the signature.
 	 *
-	 * @param certificateToken {@code CertificateToken} representing the signing certificate token.
+	 * @param certificateToken
+	 *            {@code CertificateToken} representing the signing certificate token.
 	 */
 	void setProvidedSigningCertificateToken(final CertificateToken certificateToken);
 
@@ -136,7 +131,8 @@ public interface AdvancedSignature extends Serializable {
 	/**
 	 * This setter allows to indicate the master signature. It means that this is a countersignature.
 	 *
-	 * @param masterSignature {@code AdvancedSignature}
+	 * @param masterSignature
+	 *            {@code AdvancedSignature}
 	 */
 	void setMasterSignature(final AdvancedSignature masterSignature);
 
@@ -146,7 +142,8 @@ public interface AdvancedSignature extends Serializable {
 	AdvancedSignature getMasterSignature();
 
 	/**
-	 * This method returns the signing certificate token or null if there is no valid signing certificate. Note that to determinate the signing certificate the signature must be
+	 * This method returns the signing certificate token or null if there is no valid signing certificate. Note that to
+	 * determinate the signing certificate the signature must be
 	 * validated: the method {@code checkSignatureIntegrity} must be called.
 	 *
 	 * @return
@@ -154,8 +151,10 @@ public interface AdvancedSignature extends Serializable {
 	CertificateToken getSigningCertificateToken();
 
 	/**
-	 * Verifies the signature integrity; checks if the signed content has not been tampered with. In the case of a non-AdES signature no including the signing certificate then the
-	 * latter  must be provided by calling {@code setProvidedSigningCertificateToken} In the case of a detached signature the signed content must be provided by calling {@code
+	 * Verifies the signature integrity; checks if the signed content has not been tampered with. In the case of a
+	 * non-AdES signature no including the signing certificate then the
+	 * latter must be provided by calling {@code setProvidedSigningCertificateToken} In the case of a detached signature
+	 * the signed content must be provided by calling {@code
 	 * setProvidedSigningCertificateToken}
 	 *
 	 * @return SignatureCryptographicVerification with all the information collected during the validation process.
@@ -163,7 +162,8 @@ public interface AdvancedSignature extends Serializable {
 	SignatureCryptographicVerification checkSignatureIntegrity();
 
 	/**
-	 * This method checks the protection of the certificates included within the signature (XAdES: KeyInfo) against the substitution attack.
+	 * This method checks the protection of the certificates included within the signature (XAdES: KeyInfo) against the
+	 * substitution attack.
 	 */
 	void checkSigningCertificate();
 
@@ -271,8 +271,10 @@ public interface AdvancedSignature extends Serializable {
 	 * element), the signature time-stamp(s) present in the AdES-T form, the certification path references and the
 	 * revocation status references.
 	 *
-	 * @param timestampToken {@code TimestampToken} or null during the creation process
-	 * @param canonicalizationMethod canonicalization method
+	 * @param timestampToken
+	 *            {@code TimestampToken} or null during the creation process
+	 * @param canonicalizationMethod
+	 *            canonicalization method
 	 * @return {@code byte} array representing the canonicalized data to be timestamped
 	 */
 	byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod);
@@ -304,7 +306,8 @@ public interface AdvancedSignature extends Serializable {
 	 * Archive timestamp seals the data of the signature in a specific order. We need to retrieve the data for each
 	 * timestamp.
 	 *
-	 * @param timestampToken null when adding a new archive timestamp
+	 * @param timestampToken
+	 *            null when adding a new archive timestamp
 	 * @param canonicalizationMethod
 	 * @return {@code byte} array representing the canonicalized data to be timestamped
 	 */
@@ -318,7 +321,8 @@ public interface AdvancedSignature extends Serializable {
 	List<AdvancedSignature> getCounterSignatures();
 
 	/**
-	 * Returns the {@code List} of {@code TimestampReference} representing digest value of the certification path references and the revocation status references. (XAdES
+	 * Returns the {@code List} of {@code TimestampReference} representing digest value of the certification path
+	 * references and the revocation status references. (XAdES
 	 * example: CompleteCertificateRefs and CompleteRevocationRefs elements)
 	 *
 	 * @return a {@code List} of {@code TimestampReference}
@@ -358,15 +362,18 @@ public interface AdvancedSignature extends Serializable {
 	Set<DigestAlgorithm> getUsedCertificatesDigestAlgorithms();
 
 	/**
-	 * @param signatureLevel {@code SignatureLevel} to be checked
-	 * @return true if the signature contains the data needed for this {@code SignatureLevel}. Doesn't mean any validity of the data found.
+	 * @param signatureLevel
+	 *            {@code SignatureLevel} to be checked
+	 * @return true if the signature contains the data needed for this {@code SignatureLevel}. Doesn't mean any validity
+	 *         of the data found.
 	 */
 	boolean isDataForSignatureLevelPresent(final SignatureLevel signatureLevel);
 
 	SignatureLevel getDataFoundUpToLevel();
 
 	/**
-	 * @return the list of signature levels for this type of signature, in the simple to complete order. Example: B,T,LT,LTA
+	 * @return the list of signature levels for this type of signature, in the simple to complete order. Example:
+	 *         B,T,LT,LTA
 	 */
 	SignatureLevel[] getSignatureLevels();
 
@@ -375,7 +382,8 @@ public interface AdvancedSignature extends Serializable {
 	void validateTimestamps();
 
 	/**
-	 * This method allows the structure validation of the signature. In the case of an XML signature a validation against XSD schema is performed.
+	 * This method allows the structure validation of the signature. In the case of an XML signature a validation
+	 * against XSD schema is performed.
 	 *
 	 * @return null if the validation does not apply, true if the structure is valid otherwise false
 	 */

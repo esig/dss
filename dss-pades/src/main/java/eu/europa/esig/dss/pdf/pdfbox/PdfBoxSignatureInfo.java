@@ -22,10 +22,12 @@ package eu.europa.esig.dss.pdf.pdfbox;
 
 import java.io.IOException;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.bouncycastle.cms.CMSException;
 
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.pdf.PdfDssDict;
@@ -56,8 +58,8 @@ class PdfBoxSignatureInfo extends PdfBoxCMSInfo implements PdfSignatureInfo {
 		try {
 			cades = new CAdESSignature(cms, validationCertPool);
 			content = cms;
-			final InMemoryDocument detachedContent = new InMemoryDocument(getSignedDocumentBytes());
-			cades.setDetachedContents(detachedContent);
+			final DSSDocument detachedContent = new InMemoryDocument(getSignedDocumentBytes());
+			cades.setDetachedContents(Arrays.asList(detachedContent));
 		} catch (CMSException e) {
 			throw new IOException(e);
 		}
