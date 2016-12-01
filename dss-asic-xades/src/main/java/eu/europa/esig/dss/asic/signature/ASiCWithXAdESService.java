@@ -24,14 +24,12 @@ import eu.europa.esig.dss.asic.ASiCNamespace;
 import eu.europa.esig.dss.asic.ASiCParameters;
 import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
-import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithXAdESSignatureParameters>
-		implements MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters> {
+public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithXAdESSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCWithXAdESService.class);
 
@@ -45,13 +43,6 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	public ASiCWithXAdESService(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 		LOG.debug("+ ASiCService with XAdES created");
-	}
-
-	@Override
-	public ToBeSigned getDataToSign(DSSDocument toSignDocument, ASiCWithXAdESSignatureParameters parameters) throws DSSException {
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
-		documents.add(toSignDocument);
-		return getDataToSign(documents, parameters);
 	}
 
 	@Override
@@ -80,14 +71,6 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 		XAdESSignatureParameters xadesParameters = getXAdESParameters(parameters, existingXAdESSignatureASiCS);
 		return getXAdESService().getDataToSign(documents, xadesParameters);
-	}
-
-	@Override
-	public DSSDocument signDocument(DSSDocument toSignDocument, ASiCWithXAdESSignatureParameters parameters, SignatureValue signatureValue)
-			throws DSSException {
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
-		documents.add(toSignDocument);
-		return signDocument(documents, parameters, signatureValue);
 	}
 
 	@Override

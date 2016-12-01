@@ -8,8 +8,8 @@
 	</parent>
 	
 	<artifactId>dss-asic-cades</artifactId>
+	<name>DSS ASiC with CAdES signature(s)</name>
 	<description>DSS ASiC with CAdES contains the code for the creation and validation of ASiC containers with CAdES signature(s).</description>
-	
 	
 	<dependencies>
 		<dependency>

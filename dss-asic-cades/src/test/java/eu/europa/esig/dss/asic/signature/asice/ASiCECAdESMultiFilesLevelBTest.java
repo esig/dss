@@ -18,38 +18,41 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.asic.signature.asics;
+package eu.europa.esig.dss.asic.signature.asice;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Before;
 
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.signature.AbstractTestMultipleDocumentsSignatureService;
+import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-public class ASiCSCAdESLevelBSHA512Test extends AbstractTestDocumentSignatureService<ASiCWithCAdESSignatureParameters> {
+public class ASiCECAdESMultiFilesLevelBTest extends AbstractTestMultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters> {
 
-	private DocumentSignatureService<ASiCWithCAdESSignatureParameters> service;
+	private MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
-	private DSSDocument documentToSign;
+	private List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
 	private MockPrivateKeyEntry privateKeyEntry;
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
+		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
+		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
 
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
@@ -58,7 +61,6 @@ public class ASiCSCAdESLevelBSHA512Test extends AbstractTestDocumentSignatureSer
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
@@ -67,8 +69,16 @@ public class ASiCSCAdESLevelBSHA512Test extends AbstractTestDocumentSignatureSer
 	}
 
 	@Override
-	protected DocumentSignatureService<ASiCWithCAdESSignatureParameters> getService() {
-		return service;
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		// List<String> signatureIdList = diagnosticData.getSignatureIdList();
+		// assertEquals(2, Utils.collectionSize(signatureIdList));
+		//
+		// for (String signatureId : signatureIdList) {
+		// SignatureWrapper signature = diagnosticData.getSignatureById(signatureId);
+		// List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
+		// assertEquals(1, Utils.collectionSize(signatureScopes));
+		// }
+		// TODO
 	}
 
 	@Override
@@ -92,13 +102,18 @@ public class ASiCSCAdESLevelBSHA512Test extends AbstractTestDocumentSignatureSer
 	}
 
 	@Override
-	protected DSSDocument getDocumentToSign() {
-		return documentToSign;
+	protected MockPrivateKeyEntry getPrivateKeyEntry() {
+		return privateKeyEntry;
 	}
 
 	@Override
-	protected MockPrivateKeyEntry getPrivateKeyEntry() {
-		return privateKeyEntry;
+	protected List<DSSDocument> getDocumentsToSign() {
+		return documentToSigns;
+	}
+
+	@Override
+	protected MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters> getService() {
+		return service;
 	}
 
 }

@@ -39,7 +39,7 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
-public class ASiCECAdESLevelBTest extends AbstractTestDocumentSignatureService {
+public class ASiCECAdESLevelBTest extends AbstractTestDocumentSignatureService<ASiCWithCAdESSignatureParameters> {
 
 	private DocumentSignatureService<ASiCWithCAdESSignatureParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;

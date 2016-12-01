@@ -3,6 +3,7 @@ package eu.europa.esig.dss.asic.signature;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
@@ -14,15 +15,19 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUnsupportedOperationException;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCParameters;
 import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
+import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
-public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureParameters> extends AbstractSignatureService<SP> {
+public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureParameters> extends AbstractSignatureService<SP>
+		implements MultipleDocumentsSignatureService<SP> {
 
 	private static final long serialVersionUID = 243114076381526665L;
 
@@ -40,6 +45,16 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 		if (!canBeSigned(documents, asicParameters)) { // First verify if the file can be signed
 			throw new DSSUnsupportedOperationException("You only can sign an ASiC container by using the same type of container and of signature");
 		}
+	}
+
+	@Override
+	public ToBeSigned getDataToSign(DSSDocument toSignDocument, SP parameters) throws DSSException {
+		return getDataToSign(Arrays.asList(toSignDocument), parameters);
+	}
+
+	@Override
+	public DSSDocument signDocument(DSSDocument toSignDocument, SP parameters, SignatureValue signatureValue) throws DSSException {
+		return signDocument(Arrays.asList(toSignDocument), parameters, signatureValue);
 	}
 
 	abstract boolean canBeSigned(List<DSSDocument> documents, ASiCParameters asicParameters);
