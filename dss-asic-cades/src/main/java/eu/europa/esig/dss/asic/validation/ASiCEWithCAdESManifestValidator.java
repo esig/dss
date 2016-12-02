@@ -56,7 +56,7 @@ public class ASiCEWithCAdESManifestValidator {
 	}
 
 	private boolean checkManifestDigests(Document manifestDom) {
-		NodeList dataObjectReferences = DomUtils.getNodeList(manifestDom, "/asic:ASiCManifest/asic:SigReference/asic:DataObjectReference");
+		NodeList dataObjectReferences = DomUtils.getNodeList(manifestDom, "/asic:ASiCManifest/asic:DataObjectReference");
 		if (dataObjectReferences == null || dataObjectReferences.getLength() == 0) {
 			LOG.warn("No DataObjectReference found in manifest file");
 			return false;

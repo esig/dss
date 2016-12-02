@@ -57,7 +57,7 @@ public class ASiCEWithCAdESManifestBuilder {
 
 		for (DSSDocument document : documents) {
 			final String detachedDocumentName = document.getName();
-			final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, sigReferenceDom, ASiCNamespace.ASiC,
+			final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.ASiC,
 					ASiCNamespace.ASiC_DATA_OBJECT_REFERENCE);
 			dataObjectReferenceDom.setAttribute("URI", detachedDocumentName);
 
