@@ -21,9 +21,10 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.asic.ASiCContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
+import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
+import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
@@ -89,7 +90,7 @@ public class ASiCSXAdESLevelBMultiFilesParallelTest {
 			reports = reports.getNextReports();
 		}
 
-		ASiCContainerExtractor extractor = new ASiCContainerExtractor(resignedDocument);
+		AbstractASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(resignedDocument);
 		ASiCExtractResult result = extractor.extract();
 
 		assertEquals(0, result.getUnsupportedDocuments().size());

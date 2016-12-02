@@ -12,13 +12,13 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 
-public class ASiCContainerExtractor {
+public abstract class AbstractASiCContainerExtractor {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ASiCContainerExtractor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractASiCContainerExtractor.class);
 
 	private final DSSDocument asicContainer;
 
-	public ASiCContainerExtractor(DSSDocument asicContainer) {
+	protected AbstractASiCContainerExtractor(DSSDocument asicContainer) {
 		this.asicContainer = asicContainer;
 	}
 
@@ -32,9 +32,9 @@ public class ASiCContainerExtractor {
 			while ((entry = asicsInputStream.getNextEntry()) != null) {
 				String entryName = entry.getName();
 				if (ASiCUtils.isMetaInfFolder(entryName)) {
-					if (ASiCUtils.isCAdES(entryName) || ASiCUtils.isXAdES(entryName)) {
+					if (isAllowedSignature(entryName)) {
 						result.getSignatureDocuments().add(getCurrentDocument(entryName, asicsInputStream));
-					} else if (ASiCUtils.isASiCManifestWithCAdES(entryName) || ASiCUtils.isASiCManifestWithXAdES(entryName)) {
+					} else if (isAllowedManifest(entryName)) {
 						result.getManifestDocuments().add(getCurrentDocument(entryName, asicsInputStream));
 					} else if (!ASiCUtils.isFolder(entryName)) {
 						result.getUnsupportedDocuments().add(getCurrentDocument(entryName, asicsInputStream));
@@ -62,6 +62,10 @@ public class ASiCContainerExtractor {
 
 		return result;
 	}
+
+	abstract boolean isAllowedManifest(String entryName);
+
+	abstract boolean isAllowedSignature(String entryName);
 
 	private DSSDocument getCurrentDocument(String filepath, ZipInputStream zis) throws IOException {
 		ByteArrayOutputStream baos = null;

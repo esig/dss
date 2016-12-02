@@ -23,7 +23,9 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCNamespace;
 import eu.europa.esig.dss.asic.ASiCParameters;
 import eu.europa.esig.dss.asic.ASiCUtils;
+import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
+import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -245,6 +247,11 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		}
 		xadesParameters.setRootDocument(rootDocument);
 		return xadesParameters;
+	}
+
+	@Override
+	AbstractASiCContainerExtractor getArchiveExtractor(DSSDocument archive) {
+		return new ASiCWithXAdESContainerExtractor(archive);
 	}
 
 	@Override

@@ -38,9 +38,10 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.asic.ASiCContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
+import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
+import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.signature.AbstractTestMultipleDocumentsSignatureService;
@@ -83,7 +84,7 @@ public class ASiCEXAdESMultiFilesLevelBTest extends AbstractTestMultipleDocument
 	protected void onDocumentSigned(byte[] byteArray) {
 		InMemoryDocument doc = new InMemoryDocument(byteArray);
 
-		ASiCContainerExtractor extractor = new ASiCContainerExtractor(doc);
+		AbstractASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(doc);
 		ASiCExtractResult extract = extractor.extract();
 
 		assertEquals(0, extract.getUnsupportedDocuments().size());

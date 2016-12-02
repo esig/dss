@@ -25,7 +25,9 @@ import eu.europa.esig.dss.SigningOperation;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCParameters;
 import eu.europa.esig.dss.asic.ASiCUtils;
+import eu.europa.esig.dss.asic.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.validation.ASiCEWithCAdESManifestValidator;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
@@ -268,6 +270,11 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	@Override
 	boolean isSignatureFilename(String name) {
 		return ASiCUtils.isCAdES(name);
+	}
+
+	@Override
+	AbstractASiCContainerExtractor getArchiveExtractor(DSSDocument archive) {
+		return new ASiCWithCAdESContainerExtractor(archive);
 	}
 
 	private void storeASICEManifest(List<DSSDocument> manifestDocuments, ZipOutputStream zos) throws IOException {

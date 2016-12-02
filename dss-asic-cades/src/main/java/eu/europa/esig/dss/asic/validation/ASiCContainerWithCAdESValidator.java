@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.asic.ASiCUtils;
+import eu.europa.esig.dss.asic.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.validation.DocumentValidator;
 
@@ -33,13 +35,8 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	}
 
 	@Override
-	boolean isAcceptedSignature(String entryName) {
-		return ASiCUtils.isCAdES(entryName);
-	}
-
-	@Override
-	boolean isAcceptedManifest(String entryName) {
-		return ASiCUtils.isASiCManifestWithCAdES(entryName);
+	AbstractASiCContainerExtractor getArchiveExtractor() {
+		return new ASiCWithCAdESContainerExtractor(document);
 	}
 
 	@Override

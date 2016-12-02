@@ -12,9 +12,9 @@ import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUnsupportedOperationException;
-import eu.europa.esig.dss.asic.ASiCContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCUtils;
+import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
@@ -46,16 +46,14 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	}
 
 	protected void analyseEntries() {
-		ASiCContainerExtractor extractor = new ASiCContainerExtractor(document);
+		AbstractASiCContainerExtractor extractor = getArchiveExtractor();
 		extractResult = extractor.extract();
 
 		extractZipComment(document);
 		containerType = ASiCUtils.getContainerType(document, extractResult.getMimeTypeDocument(), zipComment);
 	}
 
-	abstract boolean isAcceptedSignature(String entryName);
-
-	abstract boolean isAcceptedManifest(String entryName);
+	abstract AbstractASiCContainerExtractor getArchiveExtractor();
 
 	private void extractZipComment(final DSSDocument document) {
 		InputStream is = null;

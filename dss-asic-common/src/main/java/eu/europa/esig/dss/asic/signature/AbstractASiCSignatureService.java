@@ -17,10 +17,10 @@ import eu.europa.esig.dss.DSSUnsupportedOperationException;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.asic.ASiCContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCParameters;
 import eu.europa.esig.dss.asic.ASiCUtils;
+import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
@@ -60,9 +60,11 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 	abstract boolean canBeSigned(List<DSSDocument> documents, ASiCParameters asicParameters);
 
 	protected void extractCurrentArchive(DSSDocument archive) {
-		ASiCContainerExtractor extractor = new ASiCContainerExtractor(archive);
+		AbstractASiCContainerExtractor extractor = getArchiveExtractor(archive);
 		archiveContent = extractor.extract();
 	}
+
+	abstract AbstractASiCContainerExtractor getArchiveExtractor(DSSDocument archive);
 
 	protected List<DSSDocument> getEmbeddedSignatures() {
 		return archiveContent.getSignatureDocuments();

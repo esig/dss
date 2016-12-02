@@ -5,6 +5,8 @@ import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.asic.ASiCUtils;
+import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
+import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
@@ -29,13 +31,8 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	}
 
 	@Override
-	boolean isAcceptedSignature(String entryName) {
-		return ASiCUtils.isXAdES(entryName);
-	}
-
-	@Override
-	boolean isAcceptedManifest(String entryName) {
-		return ASiCUtils.isASiCManifestWithXAdES(entryName);
+	AbstractASiCContainerExtractor getArchiveExtractor() {
+		return new ASiCWithXAdESContainerExtractor(document);
 	}
 
 	@Override
