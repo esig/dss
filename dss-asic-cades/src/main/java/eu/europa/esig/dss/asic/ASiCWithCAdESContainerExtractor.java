@@ -10,7 +10,8 @@ public class ASiCWithCAdESContainerExtractor extends AbstractASiCContainerExtrac
 
 	@Override
 	boolean isAllowedManifest(String entryName) {
-		return ASiCUtils.isASiCManifestWithCAdES(entryName);
+		final boolean manifest = entryName.startsWith(META_INF_FOLDER + "ASiCManifest") && entryName.endsWith(".xml");
+		return manifest;
 	}
 
 	@Override

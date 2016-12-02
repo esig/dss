@@ -21,10 +21,6 @@ public final class ASiCUtils {
 	private ASiCUtils() {
 	}
 
-	public static boolean isMimetype(String entryName) {
-		return MIME_TYPE.equalsIgnoreCase(entryName);
-	}
-
 	public static boolean isSignature(final String entryName) {
 		final boolean signature = entryName.startsWith(META_INF_FOLDER) && entryName.contains("signature") && !entryName.contains("Manifest");
 		return signature;
@@ -123,32 +119,14 @@ public final class ASiCUtils {
 		return ((preamble[0] == 'P') && (preamble[1] == 'K'));
 	}
 
-	public static boolean isASiCManifestWithCAdES(String entryName) {
-		final boolean manifest = entryName.startsWith(META_INF_FOLDER + "ASiCManifest") && entryName.endsWith(".xml");
-		return manifest;
-	}
-
-	public static boolean isASiCManifestWithXAdES(String entryName) {
-		final boolean manifest = entryName.equals(META_INF_FOLDER + "manifest.xml");
-		return manifest;
-	}
-
 	public static boolean isXAdES(final String entryName) {
 		final boolean signature = isSignature(entryName) && entryName.endsWith(".xml");
 		return signature;
 	}
 
 	public static boolean isCAdES(final String entryName) {
-		final boolean signature = isSignature(entryName) && (entryName.endsWith(".p7s") || entryName.endsWith(".p7m"));
+		final boolean signature = isSignature(entryName) && (entryName.endsWith(".p7s"));
 		return signature;
-	}
-
-	public static boolean isMetaInfFolder(String entryName) {
-		return entryName.startsWith(META_INF_FOLDER);
-	}
-
-	public static boolean isFolder(String entryName) {
-		return entryName.endsWith("/");
 	}
 
 	public static MimeType getMimeType(final DSSDocument mimeTypeDocument) throws DSSException {

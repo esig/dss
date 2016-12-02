@@ -10,7 +10,8 @@ public class ASiCWithXAdESContainerExtractor extends AbstractASiCContainerExtrac
 
 	@Override
 	boolean isAllowedManifest(String entryName) {
-		return ASiCUtils.isASiCManifestWithXAdES(entryName);
+		final boolean manifest = entryName.equals(META_INF_FOLDER + "manifest.xml");
+		return manifest;
 	}
 
 	@Override
