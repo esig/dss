@@ -15,7 +15,7 @@ import eu.europa.esig.dss.utils.Utils;
 public final class ASiCUtils {
 
 	private static final String MIME_TYPE = "mimetype";
-	private static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
+	public static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
 	private static final String META_INF_FOLDER = "META-INF/";
 
 	private ASiCUtils() {

@@ -171,7 +171,7 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 
 	protected void storeZipComment(final ASiCParameters asicParameters, final ZipOutputStream zos) {
 		if (asicParameters.isZipComment()) {
-			zos.setComment("mimetype=" + ASiCUtils.getMimeTypeString(asicParameters));
+			zos.setComment(ASiCUtils.MIME_TYPE_COMMENT + ASiCUtils.getMimeTypeString(asicParameters));
 		}
 	}
 

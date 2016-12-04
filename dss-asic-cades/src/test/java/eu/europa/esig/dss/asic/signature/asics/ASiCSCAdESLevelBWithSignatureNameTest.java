@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.asic.signature.asics;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
@@ -45,6 +46,7 @@ import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
@@ -103,6 +105,9 @@ public class ASiCSCAdESLevelBWithSignatureNameTest extends AbstractTestDocumentS
 		} catch (UnsupportedEncodingException e) {
 			fail(e.getMessage());
 		}
+
+		assertTrue(Utils.isStringEmpty(extract.getZipComment()));
+
 	}
 
 	@Override

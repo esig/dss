@@ -7,11 +7,20 @@ import eu.europa.esig.dss.DSSDocument;
 
 public class ASiCExtractResult {
 
+	private String zipComment;
 	private DSSDocument mimeTypeDocument;
 	private List<DSSDocument> signatureDocuments = new ArrayList<DSSDocument>();
 	private List<DSSDocument> manifestDocuments = new ArrayList<DSSDocument>();
 	private List<DSSDocument> signedDocuments = new ArrayList<DSSDocument>();
 	private List<DSSDocument> unsupportedDocuments = new ArrayList<DSSDocument>();
+
+	public String getZipComment() {
+		return zipComment;
+	}
+
+	public void setZipComment(String zipComment) {
+		this.zipComment = zipComment;
+	}
 
 	public DSSDocument getMimeTypeDocument() {
 		return mimeTypeDocument;
