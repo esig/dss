@@ -24,10 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.bouncycastle.util.encoders.Base64;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -44,12 +40,10 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 /**
  * Validation of PDF document.
- *
  */
 public class PDFDocumentValidator extends SignedDocumentValidator {
 
 	final PDFSignatureService pdfSignatureService;
-	private static final String BASE64_REGEX = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$";
 
 	/**
 	 * Default constructor used with reflexion (see SignedDocumentValidator)
@@ -70,7 +64,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
-		int headerLength = 500;
+		int headerLength = 50;
 		byte[] preamble = new byte[headerLength];
 		DSSUtils.readToArray(dssDocument, headerLength, preamble);
 		String preambleString = new String(preamble);
@@ -122,8 +116,6 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 					try {
 						is = document.openStream();
 						byte[] content = Utils.toByteArray(is);
-						content = isBase64Encoded(content) ? Base64.decode(content) : content;
-
 						result.add(new InMemoryDocument(content));
 					} catch (IOException e) {
 						throw new DSSException("Unable to retrieve the original document for document '" + document.getName() + "'");
@@ -134,16 +126,6 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 			}
 		}
 		return result;
-	}
-
-	private boolean isBase64Encoded(byte[] array) {
-		return isBase64Encoded(new String(array));
-	}
-
-	private boolean isBase64Encoded(String text) {
-		Pattern pattern = Pattern.compile(BASE64_REGEX);
-		Matcher matcher = pattern.matcher(text);
-		return matcher.matches();
 	}
 
 }

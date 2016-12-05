@@ -25,8 +25,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.util.List;
 
-import javax.xml.bind.DatatypeConverter;
-
 import org.junit.Test;
 
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -47,7 +45,7 @@ public class XAdESValidationTest {
 		SignaturePolicy policy = xadesSignature.getPolicyId();
 		assertEquals(POLICY_ID, policy.getIdentifier());
 		assertEquals(DigestAlgorithm.SHA256, policy.getDigestAlgorithm());
-		assertEquals(POLICY_DIGEST_VALUE, DatatypeConverter.printBase64Binary(policy.getDigestValue()));
+		assertEquals(POLICY_DIGEST_VALUE, policy.getDigestValue());
 		assertEquals(POLICY_URL, policy.getUrl());
 	}
 

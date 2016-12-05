@@ -6,13 +6,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
@@ -40,7 +43,13 @@ public class PolicySPURITest {
 	public void testWithFilePolicy() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-728/CADES-B-DETACHED-withpolicy1586434883385020407.cades");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		validator.setPolicyFile(new File("src/test/resources/validation/dss-728/politica_de_firma_anexo_1.pdf"));
+
+		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
+		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();
+		signaturePoliciesByUrl.put("https://sede.060.gob.es/politica_de_firma_anexo_1.pdf",
+				new FileDocument(new File("src/test/resources/validation/dss-728/politica_de_firma_anexo_1.pdf")));
+		signaturePolicyProvider.setSignaturePoliciesByUrl(signaturePoliciesByUrl);
+		validator.setSignaturePolicyProvider(signaturePolicyProvider);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 		detachedContents.add(new FileDocument("src/test/resources/validation/dss-728/InfoSelladoTiempo.pdf"));

@@ -207,7 +207,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 
 		if (!SignatureForm.PAdES.equals(parameters.getSignatureLevel().getSignatureForm())) {
 
-			final SignatureCryptographicVerification signatureCryptographicVerification = cadesSignature.checkSignatureIntegrity();
+			final SignatureCryptographicVerification signatureCryptographicVerification = cadesSignature.getSignatureCryptographicVerification();
 			if (!signatureCryptographicVerification.isSignatureIntact()) {
 
 				final String errorMessage = signatureCryptographicVerification.getErrorMessage();

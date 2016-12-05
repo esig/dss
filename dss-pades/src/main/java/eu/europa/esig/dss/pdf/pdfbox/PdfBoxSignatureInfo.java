@@ -32,7 +32,6 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -66,8 +65,8 @@ class PdfBoxSignatureInfo extends PdfBoxCMSInfo implements PdfSignatureInfo {
 	}
 
 	@Override
-	protected SignatureCryptographicVerification checkIntegrityOnce() {
-		return cades.checkSignatureIntegrity();
+	protected void checkIntegrityOnce() {
+		cades.checkSignatureIntegrity();
 	}
 
 	@Override

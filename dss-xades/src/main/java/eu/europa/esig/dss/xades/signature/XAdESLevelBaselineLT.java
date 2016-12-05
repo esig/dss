@@ -96,10 +96,8 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
 	protected void checkSignatureIntegrity() throws DSSException {
-
-		final SignatureCryptographicVerification signatureCryptographicVerification = xadesSignature.checkSignatureIntegrity();
+		final SignatureCryptographicVerification signatureCryptographicVerification = xadesSignature.getSignatureCryptographicVerification();
 		if (!signatureCryptographicVerification.isSignatureIntact()) {
-
 			final String errorMessage = signatureCryptographicVerification.getErrorMessage();
 			throw new DSSException("Cryptographic signature verification has failed" + (errorMessage.isEmpty() ? "." : (" / " + errorMessage)));
 		}

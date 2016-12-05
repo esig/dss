@@ -40,6 +40,7 @@ import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.RevocationToken;
+import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.crl.CRLToken;
 import eu.europa.esig.dss.x509.crl.ListCRLSource;
 import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
@@ -73,6 +74,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 */
 	protected SignatureCryptographicVerification signatureCryptographicVerification;
 
+	protected String structureValidation;
+
 	/**
 	 * The reference to the object containing all candidates to the signing certificate.
 	 */
@@ -100,6 +103,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	protected OfflineOCSPSource offlineOCSPSource;
 
 	private AdvancedSignature masterSignature;
+
+	protected SignaturePolicy signaturePolicy;
 
 	/**
 	 * This list represents all digest algorithms used to calculate the digest values of certificates.
@@ -260,6 +265,14 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return masterSignature;
 	}
 
+	@Override
+	public SignatureCryptographicVerification getSignatureCryptographicVerification() {
+		if (signatureCryptographicVerification == null) {
+			checkSignatureIntegrity();
+		}
+		return signatureCryptographicVerification;
+	}
+
 	public static class RevocationDataForInclusion {
 
 		public final List<CRLToken> crlTokens;
@@ -293,12 +306,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		// This ensures that the variable candidatesForSigningCertificate has been initialized
 		candidatesForSigningCertificate = getCandidatesForSigningCertificate();
 		// This ensures that the variable signatureCryptographicVerification has been initialized
-		signatureCryptographicVerification = checkSignatureIntegrity();
+		checkSignatureIntegrity();
+		signatureCryptographicVerification = getSignatureCryptographicVerification();
 		final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
 		if (theCertificateValidity != null) {
-
 			if (theCertificateValidity.isValid()) {
-
 				final CertificateToken signingCertificateToken = theCertificateValidity.getCertificateToken();
 				return signingCertificateToken;
 			}
@@ -405,8 +417,12 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	@Override
-	public String validateStructure() {
-		return null;
+	public void validateStructure() {
+	}
+
+	@Override
+	public String getStructureValidationResult() {
+		return structureValidation;
 	}
 
 	/**
@@ -453,6 +469,15 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public Set<DigestAlgorithm> getUsedCertificatesDigestAlgorithms() {
 		return usedCertificatesDigestAlgorithms;
+	}
+
+	@Override
+	public SignaturePolicy getPolicyId() {
+		return signaturePolicy;
+	}
+
+	@Override
+	public void checkSignaturePolicy(SignaturePolicyProvider signaturePolicyDetector) {
 	}
 
 }

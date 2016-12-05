@@ -71,11 +71,7 @@ public interface DocumentValidator {
 	 */
 	void defineSigningCertificate(final CertificateToken x509Certificate);
 
-	void setPolicyFile(final File policyDocument);
-
 	void setValidationLevel(ValidationLevel validationLevel);
-
-	void setPolicyFile(final String signatureId, final File policyDocument);
 
 	/**
 	 * This method provides the possibility to set the specific {@code ProcessExecutor}
@@ -83,6 +79,13 @@ public interface DocumentValidator {
 	 * @param processExecutor
 	 */
 	void setProcessExecutor(final ProcessExecutor processExecutor);
+
+	/**
+	 * This method allows to set a provider for Signature policies
+	 * 
+	 * @param signaturePolicyProvider
+	 */
+	void setSignaturePolicyProvider(SignaturePolicyProvider signaturePolicyProvider);
 
 	/**
 	 * Validates the document and all its signatures. The default constraint file is used.

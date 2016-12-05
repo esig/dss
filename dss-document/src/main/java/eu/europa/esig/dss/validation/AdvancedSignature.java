@@ -159,7 +159,12 @@ public interface AdvancedSignature extends Serializable {
 	 *
 	 * @return SignatureCryptographicVerification with all the information collected during the validation process.
 	 */
-	SignatureCryptographicVerification checkSignatureIntegrity();
+	void checkSignatureIntegrity();
+
+	/**
+	 * @return SignatureCryptographicVerification with all the information collected during the validation process.
+	 */
+	SignatureCryptographicVerification getSignatureCryptographicVerification();
 
 	/**
 	 * This method checks the protection of the certificates included within the signature (XAdES: KeyInfo) against the
@@ -222,7 +227,7 @@ public interface AdvancedSignature extends Serializable {
 	/**
 	 * Get certificates embedded in the signature
 	 *
-	 * @reutrn a list of certificate contained within the signature
+	 * @return a list of certificate contained within the signature
 	 */
 	List<CertificateToken> getCertificates();
 
@@ -382,10 +387,12 @@ public interface AdvancedSignature extends Serializable {
 	void validateTimestamps();
 
 	/**
-	 * This method allows the structure validation of the signature. In the case of an XML signature a validation
-	 * against XSD schema is performed.
-	 *
-	 * @return null if the validation does not apply, true if the structure is valid otherwise false
+	 * This method allows the structure validation of the signature.
 	 */
-	String validateStructure();
+	void validateStructure();
+
+	String getStructureValidationResult();
+
+	void checkSignaturePolicy(SignaturePolicyProvider signaturePolicyDetector);
+
 }

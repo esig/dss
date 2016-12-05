@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
-import javax.xml.bind.DatatypeConverter;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.transform.stream.StreamSource;
 
@@ -89,6 +88,7 @@ import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.OCSPRef;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampInclude;
 import eu.europa.esig.dss.validation.TimestampReference;
@@ -620,21 +620,20 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public SignaturePolicy getPolicyId() {
-
+	public void checkSignaturePolicy(SignaturePolicyProvider signaturePolicyProvider) {
 		final Element policyIdentifier = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_POLICY_IDENTIFIER);
 		if (policyIdentifier != null) {
-
 			// There is a policy
 			final Element policyId = DomUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_ID);
 			if (policyId != null) {
 				// Explicit policy
 				String policyIdString = policyId.getTextContent();
 				// urn:oid:1.2.3 --> 1.2.3
+				String policyUrlString = null;
 				if (policyIdString.indexOf(':') >= 0) {
 					policyIdString = policyIdString.substring(policyIdString.lastIndexOf(':') + 1);
 				}
-				final SignaturePolicy signaturePolicy = new SignaturePolicy(policyIdString);
+				signaturePolicy = new SignaturePolicy(policyIdString);
 				final Node policyDigestMethod = DomUtils.getNode(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_METHOD);
 				final String policyDigestMethodString = policyDigestMethod.getTextContent();
 				if (Utils.isStringNotEmpty(policyDigestMethodString)) {
@@ -643,21 +642,21 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 				final Element policyDigestValue = DomUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_VALUE);
 				final String digestValue = policyDigestValue.getTextContent().trim();
-				signaturePolicy.setDigestValue(DatatypeConverter.parseBase64Binary(digestValue));
+				signaturePolicy.setDigestValue(digestValue);
 				final Element policyUrl = DomUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_SPURI);
 				if (policyUrl != null) {
-					signaturePolicy.setUrl(policyUrl.getTextContent().trim());
+					policyUrlString = policyUrl.getTextContent().trim();
+					signaturePolicy.setUrl(policyUrlString);
 				}
-				return signaturePolicy;
+				signaturePolicy.setPolicyContent(signaturePolicyProvider.getSignaturePolicy(policyIdString, policyUrlString));
 			} else {
 				// Implicit policy
 				final Element signaturePolicyImplied = DomUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__SIGNATURE_POLICY_IMPLIED);
 				if (signaturePolicyImplied != null) {
-					return new SignaturePolicy();
+					signaturePolicy = new SignaturePolicy();
 				}
 			}
 		}
-		return null;
 	}
 
 	@Override
@@ -1338,10 +1337,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public SignatureCryptographicVerification checkSignatureIntegrity() {
-
+	public void checkSignatureIntegrity() {
 		if (signatureCryptographicVerification != null) {
-			return signatureCryptographicVerification;
+			return;
 		}
 		signatureCryptographicVerification = new SignatureCryptographicVerification();
 		final Document document = signatureElement.getOwnerDocument();
@@ -1430,7 +1428,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 			signatureCryptographicVerification.setErrorMessage(e.getMessage() + "/ XAdESSignature/Line number/" + lineNumber);
 		}
-		return signatureCryptographicVerification;
 	}
 
 	/**
@@ -2111,12 +2108,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public String validateStructure() {
-
+	public void validateStructure() {
 		final String string = DomUtils.xmlToString(signatureElement);
 		StringReader stringReader = new StringReader(string);
-		final String validated = DSSXMLUtils.validateAgainstXSD(new StreamSource(stringReader));
-		return validated;
+		structureValidation = DSSXMLUtils.validateAgainstXSD(new StreamSource(stringReader));
 	}
 
 	/**

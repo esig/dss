@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,6 +22,7 @@ import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
@@ -178,7 +178,7 @@ public abstract class AbstractTestSignature<SP extends AbstractSignatureParamete
 	protected Reports getValidationReport(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		validator.setPolicyFile(getPolicyFile());
+		validator.setSignaturePolicyProvider(getSignaturePolicyProvider());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertTrue(Utils.isCollectionNotEmpty(signatures));
@@ -187,7 +187,7 @@ public abstract class AbstractTestSignature<SP extends AbstractSignatureParamete
 		return reports;
 	}
 
-	protected File getPolicyFile() {
+	private SignaturePolicyProvider getSignaturePolicyProvider() {
 		return null;
 	}
 
