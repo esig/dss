@@ -187,7 +187,7 @@ public abstract class AbstractTestSignature<SP extends AbstractSignatureParamete
 		return reports;
 	}
 
-	private SignaturePolicyProvider getSignaturePolicyProvider() {
+	protected SignaturePolicyProvider getSignaturePolicyProvider() {
 		return null;
 	}
 

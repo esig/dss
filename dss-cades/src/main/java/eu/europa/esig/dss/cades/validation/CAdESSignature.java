@@ -810,8 +810,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 			return roles;
 		} catch (Exception e) {
-
-			throw new DSSException("Error when dealing with certified signer roles: [" + asn1EncodableAttrValue.toString() + "]", e);
+			LOG.error("Error when dealing with certified signer roles: [" + asn1EncodableAttrValue.toString() + "]", e);
+			return null;
 		}
 	}
 

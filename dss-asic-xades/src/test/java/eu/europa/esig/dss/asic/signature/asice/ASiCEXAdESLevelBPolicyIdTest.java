@@ -22,12 +22,15 @@ package eu.europa.esig.dss.asic.signature.asice;
 
 import java.io.File;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Before;
 
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
@@ -43,6 +46,7 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 
 public class ASiCEXAdESLevelBPolicyIdTest extends AbstractTestDocumentSignatureService<ASiCWithXAdESSignatureParameters> {
 
@@ -78,8 +82,12 @@ public class ASiCEXAdESLevelBPolicyIdTest extends AbstractTestDocumentSignatureS
 	}
 
 	@Override
-	protected File getPolicyFile() {
-		return new File("src/test/resources/bdoc-spec21.pdf");
+	protected SignaturePolicyProvider getSignaturePolicyProvider() {
+		SignaturePolicyProvider spp = new SignaturePolicyProvider();
+		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();
+		signaturePoliciesByUrl.put("https://www.sk.ee/repository/bdoc-spec21.pdf", new FileDocument(new File("src/test/resources/bdoc-spec21.pdf")));
+		spp.setSignaturePoliciesByUrl(signaturePoliciesByUrl);
+		return spp;
 	}
 
 	@Override

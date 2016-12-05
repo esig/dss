@@ -5,15 +5,19 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -47,6 +51,13 @@ public class ETSISamplesValidationTest {
 	@Test
 	public void testValidate() {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(fileToTest));
+
+		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
+		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();
+		signaturePoliciesByUrl.put("https://www.sk.ee/repository/bdoc-spec21.pdf", new FileDocument(new File("src/test/resources/bdoc-spec21.pdf")));
+		signaturePolicyProvider.setSignaturePoliciesByUrl(signaturePoliciesByUrl);
+		validator.setSignaturePolicyProvider(signaturePolicyProvider);
+
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		Reports validateDocument = validator.validateDocument();
