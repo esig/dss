@@ -1,10 +1,12 @@
 package eu.europa.esig.dss.asic.signature.asics;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
+import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import eu.europa.esig.dss.ASiCContainerType;
@@ -101,11 +103,12 @@ public class ASiCSXAdESLevelBSignFourTimeTest {
 		Reports reports = validator.validateDocument();
 		reports.print();
 
-		while (reports != null) {
-			DiagnosticData diagnosticData = reports.getDiagnosticData();
-			assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-			Assert.assertNotEquals(Indication.FAILED, reports.getSimpleReport().getIndication(diagnosticData.getFirstSignatureId()));
-			reports = reports.getNextReports();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		List<String> signatureIdList = diagnosticData.getSignatureIdList();
+		assertEquals(4, signatureIdList.size());
+		for (String sigId : signatureIdList) {
+			assertTrue(diagnosticData.isBLevelTechnicallyValid(sigId));
+			assertNotEquals(Indication.FAILED, reports.getSimpleReport().getIndication(sigId));
 		}
 	}
 }

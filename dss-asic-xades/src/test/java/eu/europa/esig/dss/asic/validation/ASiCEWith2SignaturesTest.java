@@ -1,10 +1,12 @@
 package eu.europa.esig.dss.asic.validation;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -13,6 +15,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 public class ASiCEWith2SignaturesTest {
 
@@ -28,10 +31,9 @@ public class ASiCEWith2SignaturesTest {
 		signaturePolicyProvider.setSignaturePoliciesByUrl(signaturePoliciesByUrl);
 		validator.setSignaturePolicyProvider(signaturePolicyProvider);
 		Reports reports = validator.validateDocument();
-		Assert.assertNotNull(reports);
-		// reports.print();
-		reports = reports.getNextReports();
-		Assert.assertNotNull(reports);
-		// reports.print();
+		assertNotNull(reports);
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertEquals(2, diagnosticData.getSignatureIdList().size());
 	}
 }

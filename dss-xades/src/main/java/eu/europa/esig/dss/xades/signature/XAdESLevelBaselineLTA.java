@@ -109,7 +109,7 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 		final List<TimestampToken> archiveTimestamps = xadesSignature.getArchiveTimestamps();
 		if (archiveTimestamps.size() > 0) {
 			final TimestampToken timestampToken = archiveTimestamps.get(archiveTimestamps.size() - 1);
-			id = timestampToken.getDSSId().asXmlId();
+			id = timestampToken.getDSSIdAsString();
 		}
 
 		timeStampValidationDataDom.setAttribute("Id", "id-" + id);

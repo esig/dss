@@ -273,7 +273,7 @@ public class DiagnosticDataBuilder {
 
 	private XmlChainItem getXmlChainItem(CertificateToken token) {
 		final XmlChainItem chainItem = new XmlChainItem();
-		chainItem.setId(token.getDSSId().asXmlId());
+		chainItem.setId(token.getDSSIdAsString());
 		chainItem.setSource(getCertificateMainSourceType(token).name());
 		return chainItem;
 	}
@@ -660,8 +660,10 @@ public class DiagnosticDataBuilder {
 
 	private List<XmlSignatureScope> getXmlSignatureScopes(List<SignatureScope> scopes) {
 		List<XmlSignatureScope> xmlScopes = new ArrayList<XmlSignatureScope>();
-		for (SignatureScope xmlSignatureScope : scopes) {
-			xmlScopes.add(getXmlSignatureScope(xmlSignatureScope));
+		if (Utils.isCollectionNotEmpty(scopes)) {
+			for (SignatureScope xmlSignatureScope : scopes) {
+				xmlScopes.add(getXmlSignatureScope(xmlSignatureScope));
+			}
 		}
 		return xmlScopes;
 	}

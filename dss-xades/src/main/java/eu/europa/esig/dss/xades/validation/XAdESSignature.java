@@ -1275,7 +1275,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			} else {
 				continue;
 			}
-			timestampedTimestamps.add(timestampToken.getDSSId().asXmlId());
+			timestampedTimestamps.add(timestampToken.getDSSIdAsString());
 		}
 	}
 

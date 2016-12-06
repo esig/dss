@@ -548,7 +548,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 						LOG.error("Unknown signature policy qualifier id: " + policyQualifierInfoId + " with value: " + policyQualifierInfoValue);
 					}
 				} catch (Exception e) {
-					LOG.error("Unable to read SigPolicyQualifierInfo " + ii, e);
+					LOG.error("Unable to read SigPolicyQualifierInfo " + ii, e.getMessage());
 				}
 			}
 		}
@@ -930,7 +930,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			default:
 				throw new DSSException("TimeStampType not supported : " + timestampType);
 			}
-			timestampedTimestamps.add(timestampToken.getDSSId().asXmlId());
+			timestampedTimestamps.add(timestampToken.getDSSIdAsString());
 		}
 	}
 

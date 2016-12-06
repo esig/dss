@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.asic.signature.asics;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -9,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import eu.europa.esig.dss.ASiCContainerType;
@@ -80,14 +80,12 @@ public class ASiCSCAdESLevelBMultiFilesParallelTest {
 
 		Reports reports = validator.validateDocument();
 
-		while (reports != null) {
-			DiagnosticData diagnosticData = reports.getDiagnosticData();
-			List<String> signatureIdList = diagnosticData.getSignatureIdList();
-			for (String sigId : signatureIdList) {
-				assertTrue(diagnosticData.isBLevelTechnicallyValid(sigId));
-				Assert.assertNotEquals(Indication.FAILED, reports.getSimpleReport().getIndication(sigId));
-			}
-			reports = reports.getNextReports();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		List<String> signatureIdList = diagnosticData.getSignatureIdList();
+		assertEquals(2, signatureIdList.size());
+		for (String sigId : signatureIdList) {
+			assertTrue(diagnosticData.isBLevelTechnicallyValid(sigId));
+			assertNotEquals(Indication.FAILED, reports.getSimpleReport().getIndication(sigId));
 		}
 
 		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(resignedDocument);

@@ -237,7 +237,7 @@ public class PAdESSignature extends CAdESSignature {
 		usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
 
 		for (TimestampToken token : super.getSignatureTimestamps()) {
-			timestampedTimestamps.add(token.getDSSId().asXmlId());
+			timestampedTimestamps.add(token.getDSSIdAsString());
 		}
 
 		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures) {
@@ -263,7 +263,7 @@ public class PAdESSignature extends CAdESSignature {
 					timestampToken.setTimestampedReferences(references);
 					archiveTimestampTokenList.add(timestampToken);
 				}
-				timestampedTimestamps.add(timestampToken.getDSSId().asXmlId());
+				timestampedTimestamps.add(timestampToken.getDSSIdAsString());
 			}
 
 		}
