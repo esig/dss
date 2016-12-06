@@ -144,17 +144,13 @@ public class DiagnosticDataBuilder {
 			signingCertificateToken = theCertificateValidity.getCertificateToken();
 		}
 
-		// signingCertificateValidity can be null in case of a non AdES signature.
-
 		xmlSignature.setCertificateChain(getXmlForCertificateChain(signingCertificateToken));
 
 		xmlSignature.setBasicSignature(getXmlBasicSignature(signature, signingCertificateToken));
 
 		xmlSignature.setPolicy(getXmlPolicy(signature.getPolicyId()));
 
-		// if (signatureScopeFinder != null) {
-		// xmlSignature.setSignatureScopes(getXmlSignatureScopes(signatureScopeFinder.findSignatureScope(signature)));
-		// }
+		xmlSignature.setSignatureScopes(getXmlSignatureScopes(signature.getSignatureScopes()));
 
 		return xmlSignature;
 	}

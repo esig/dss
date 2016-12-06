@@ -111,6 +111,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 */
 	protected Set<DigestAlgorithm> usedCertificatesDigestAlgorithms = new HashSet<DigestAlgorithm>();
 
+	private List<SignatureScope> signatureScopes;
+
 	/**
 	 * @param certPool
 	 *            can be null
@@ -478,6 +480,16 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	@Override
 	public void checkSignaturePolicy(SignaturePolicyProvider signaturePolicyDetector) {
+	}
+
+	@Override
+	public void findSignatureScope(SignatureScopeFinder signatureScopeFinder) {
+		signatureScopes = signatureScopeFinder.findSignatureScope(this);
+	}
+
+	@Override
+	public List<SignatureScope> getSignatureScopes() {
+		return signatureScopes;
 	}
 
 }

@@ -395,4 +395,8 @@ public interface AdvancedSignature extends Serializable {
 
 	void checkSignaturePolicy(SignaturePolicyProvider signaturePolicyDetector);
 
+	void findSignatureScope(SignatureScopeFinder signatureScopeFinder);
+
+	List<SignatureScope> getSignatureScopes();
+
 }

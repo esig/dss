@@ -322,6 +322,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				signature.validateStructure();
 			}
 			signature.checkSignaturePolicy(signaturePolicyProvider);
+
+			if (signatureScopeFinder != null) {
+				signature.findSignatureScope(signatureScopeFinder);
+			}
 		}
 
 		executor.setDiagnosticData(generateDiagnosticData(validationContext, allSignatureList));
