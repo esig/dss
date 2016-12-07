@@ -13,7 +13,6 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
-import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.validation.DocumentValidator;
 
 public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValidator {
@@ -44,7 +43,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		if (validators == null) {
 			validators = new ArrayList<DocumentValidator>();
 			for (final DSSDocument signature : getSignatureDocuments()) {
-				CMSDocumentValidator cadesValidator = new CMSDocumentValidator(signature);
+				CMSDocumentForASiCValidator cadesValidator = new CMSDocumentForASiCValidator(signature);
 				cadesValidator.setCertificateVerifier(certificateVerifier);
 				cadesValidator.setProcessExecutor(processExecutor);
 				cadesValidator.setSignaturePolicyProvider(signaturePolicyProvider);

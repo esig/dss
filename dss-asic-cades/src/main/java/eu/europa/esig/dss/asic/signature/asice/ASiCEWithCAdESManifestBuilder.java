@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.asic.signature;
+package eu.europa.esig.dss.asic.signature.asice;
 
 import java.util.List;
 

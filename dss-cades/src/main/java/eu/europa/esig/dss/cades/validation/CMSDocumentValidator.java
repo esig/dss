@@ -39,7 +39,6 @@ import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.x509.CertificatePool;
 
 /**
  * Validation of CMS document
@@ -155,13 +154,6 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 		Pattern pattern = Pattern.compile(BASE64_REGEX);
 		Matcher matcher = pattern.matcher(text);
 		return matcher.matches();
-	}
-
-	/**
-	 * For ASiC usage
-	 */
-	public void setValidationCertPool(CertificatePool validationCertPool) {
-		this.validationCertPool = validationCertPool;
 	}
 
 }

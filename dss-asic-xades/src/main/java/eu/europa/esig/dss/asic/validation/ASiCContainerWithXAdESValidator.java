@@ -8,7 +8,6 @@ import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
 /**
  * This class is an implemention to validate ASiC containers with XAdES signature(s)
@@ -40,7 +39,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 		if (validators == null) {
 			validators = new ArrayList<DocumentValidator>();
 			for (final DSSDocument signature : getSignatureDocuments()) {
-				XMLDocumentValidator xadesValidator = new XMLDocumentValidator(signature);
+				XMLDocumentForASiCValidator xadesValidator = new XMLDocumentForASiCValidator(signature);
 				xadesValidator.setCertificateVerifier(certificateVerifier);
 				xadesValidator.setProcessExecutor(processExecutor);
 				xadesValidator.setValidationCertPool(validationCertPool);

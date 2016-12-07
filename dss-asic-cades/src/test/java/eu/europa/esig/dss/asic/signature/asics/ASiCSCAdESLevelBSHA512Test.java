@@ -60,7 +60,7 @@ public class ASiCSCAdESLevelBSHA512Test extends AbstractTestDocumentSignatureSer
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new ASiCWithCAdESService(certificateVerifier);
@@ -78,7 +78,7 @@ public class ASiCSCAdESLevelBSHA512Test extends AbstractTestDocumentSignatureSer
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.ASICE;
+		return MimeType.ASICS;
 	}
 
 	@Override

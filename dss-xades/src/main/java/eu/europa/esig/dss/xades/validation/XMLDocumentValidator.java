@@ -43,7 +43,6 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
@@ -74,8 +73,8 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	}
 
 	/**
-	 * The default constructor for XMLDocumentValidator. The created instance is initialised with default
-	 * {@code XPathQueryHolder} and {@code XAdES111XPathQueryHolder}.
+	 * The default constructor for XMLDocumentValidator. The created instance is initialised with default {@code XPathQueryHolder} and
+	 * {@code XAdES111XPathQueryHolder}.
 	 *
 	 * @param dssDocument
 	 *            The instance of {@code DSSDocument} to validate
@@ -274,13 +273,6 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	 */
 	public Document getRootElement() {
 		return rootElement;
-	}
-
-	/**
-	 * For ASiC usage
-	 */
-	public void setValidationCertPool(CertificatePool validationCertPool) {
-		this.validationCertPool = validationCertPool;
 	}
 
 }

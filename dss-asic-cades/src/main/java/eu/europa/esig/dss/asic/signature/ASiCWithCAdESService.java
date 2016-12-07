@@ -16,9 +16,7 @@ import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.SigningOperation;
@@ -28,6 +26,7 @@ import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.GetDataToSignHelper;
 import eu.europa.esig.dss.asic.validation.ASiCEWithCAdESManifestValidator;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
@@ -37,9 +36,6 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithCAdESSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCWithCAdESService.class);
-
-	private final static String ZIP_ENTRY_ASICS_METAINF_CADES_SIGNATURE = META_INF + "signature.p7s";
-	private final static String ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE = META_INF + "signature001.p7s";
 
 	public ASiCWithCAdESService(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
@@ -51,22 +47,11 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		final ASiCParameters asicParameters = parameters.aSiC();
 		assertCanBeSign(toSignDocuments, asicParameters);
 
-		boolean archive = ASiCUtils.isArchive(toSignDocuments);
-		if (archive) {
-			DSSDocument archiveDoc = toSignDocuments.get(0);
-			extractCurrentArchive(archiveDoc);
-		}
-
-		List<DSSDocument> docs = getToBeSigned(toSignDocuments, archive, asicParameters);
-		DSSDocument toBeSigned = null;
-		if (ASiCUtils.isASiCE(asicParameters)) {
-			toBeSigned = getASiCManifest(docs, parameters);
-		} else {
-			toBeSigned = docs.get(0);
-		}
+		GetDataToSignHelper dataToSignHelper = ASiCWithCAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
 
 		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
-		return getCAdESService().getDataToSign(toBeSigned, cadesParameters);
+		cadesParameters.setDetachedContents(dataToSignHelper.getDetachedContents());
+		return getCAdESService().getDataToSign(dataToSignHelper.getToBeSigned(), cadesParameters);
 	}
 
 	@Override
@@ -77,29 +62,16 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		assertCanBeSign(toSignDocuments, asicParameters);
 		assertSigningDateInCertificateValidityRange(parameters);
 
-		boolean archive = ASiCUtils.isArchive(toSignDocuments);
-		if (archive) {
-			DSSDocument archiveDoc = toSignDocuments.get(0);
-			extractCurrentArchive(archiveDoc);
-		}
+		GetDataToSignHelper dataToSignHelper = ASiCWithCAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
 
-		List<DSSDocument> signatures = getEmbeddedSignatures();
-		List<DSSDocument> manifests = getEmbeddedManifests();
-
-		List<DSSDocument> documentsToBeSigned = getToBeSigned(toSignDocuments, archive, asicParameters);
-		DSSDocument toBeSigned = null;
-		if (ASiCUtils.isASiCE(asicParameters)) {
-			DSSDocument manifest = getASiCManifest(documentsToBeSigned, parameters);
-			manifests.add(manifest);
-			toBeSigned = manifest; // ASiC-E, we sign the manifest which contains the digests of the documents
-		} else {
-			toBeSigned = documentsToBeSigned.get(0);
-		}
+		List<DSSDocument> signatures = dataToSignHelper.getSignatures();
+		List<DSSDocument> manifests = dataToSignHelper.getManifestFiles();
 
 		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
-		final DSSDocument signature = getCAdESService().signDocument(toBeSigned, cadesParameters, signatureValue);
-		String newSignatureFileName = getSignatureFileName(asicParameters, signatures);
-		signature.setName(newSignatureFileName);
+		cadesParameters.setDetachedContents(dataToSignHelper.getDetachedContents());
+		final DSSDocument signature = getCAdESService().signDocument(dataToSignHelper.getToBeSigned(), cadesParameters, signatureValue);
+		String newSignatureFileName = dataToSignHelper.getSignatureFilename();
+		signature.setName(dataToSignHelper.getSignatureFilename());
 
 		if (ASiCUtils.isASiCS(asicParameters)) {
 			Iterator<DSSDocument> iterator = signatures.iterator();
@@ -111,7 +83,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		}
 		signatures.add(signature);
 
-		final DSSDocument asicSignature = buildASiCContainer(documentsToBeSigned, signatures, manifests, asicParameters);
+		final DSSDocument asicSignature = buildASiCContainer(dataToSignHelper.getSignedDocuments(), signatures, manifests, asicParameters);
 		asicSignature
 				.setName(DSSUtils.getFinalFileName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
 		parameters.reinitDeterministicId();
@@ -209,55 +181,6 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		return asicSignature;
 	}
 
-	private List<DSSDocument> getToBeSigned(List<DSSDocument> toSignDocuments, boolean archive, ASiCParameters asicParameters) {
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
-		if (ASiCUtils.isASiCS(asicParameters)) {
-			if (archive) {
-				List<DSSDocument> embeddedSignedDocuments = getEmbeddedSignedDocuments();
-				int nbDocs = Utils.collectionSize(embeddedSignedDocuments);
-				if (nbDocs != 1) {
-					throw new DSSException("Invalid ASiC-S container (" + nbDocs + " signed document(s) instead of 1)");
-				}
-				documents.addAll(embeddedSignedDocuments);
-			} else {
-				// ASiC-S -> 1 file (or zip with multi files)
-				int nbDocs = Utils.collectionSize(toSignDocuments);
-				if (nbDocs > 1) {
-					documents.add(createPackageZip(toSignDocuments));
-				} else if (nbDocs == 1) {
-					documents.addAll(toSignDocuments);
-				} else {
-					throw new DSSException("Invalid ASiC-S container (" + nbDocs + " signed document(s) instead of 1)");
-				}
-			}
-		} else {
-			if (archive) {
-				List<DSSDocument> embeddedSignedDocuments = getEmbeddedSignedDocuments();
-				documents.addAll(embeddedSignedDocuments);
-			} else {
-				documents.addAll(toSignDocuments);
-			}
-		}
-		return documents;
-	}
-
-	private DSSDocument getASiCManifest(List<DSSDocument> documents, ASiCWithCAdESSignatureParameters parameters) {
-		ASiCEWithCAdESManifestBuilder manifestBuilder = new ASiCEWithCAdESManifestBuilder(documents, parameters.getDigestAlgorithm(),
-				getSignatureFileName(parameters.aSiC(), getEmbeddedSignatures()));
-
-		DSSDocument manifest = null;
-		ByteArrayOutputStream baos = null;
-		try {
-			baos = new ByteArrayOutputStream();
-			DomUtils.writeDocumentTo(manifestBuilder.build(), baos);
-			String name = getASiCManifestFilename(getEmbeddedManifests());
-			manifest = new InMemoryDocument(baos.toByteArray(), name, MimeType.XML);
-		} finally {
-			Utils.closeQuietly(baos);
-		}
-		return manifest;
-	}
-
 	@Override
 	void storeSignatures(List<DSSDocument> signatures, ZipOutputStream zos) throws IOException {
 		for (DSSDocument signature : signatures) {
@@ -283,28 +206,6 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			zos.putNextEntry(entrySignature);
 			manifestDocument.writeTo(zos);
 		}
-	}
-
-	private String getSignatureFileName(final ASiCParameters asicParameters, List<DSSDocument> existingSignatures) {
-		if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
-			return META_INF + asicParameters.getSignatureFileName();
-		}
-		final boolean asice = ASiCUtils.isASiCE(asicParameters);
-		if (asice) {
-			if (Utils.isCollectionNotEmpty(existingSignatures)) {
-				return ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE.replace("001", getSignatureNumber(existingSignatures));
-			} else {
-				return ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE;
-			}
-		} else {
-			return ZIP_ENTRY_ASICS_METAINF_CADES_SIGNATURE;
-		}
-	}
-
-	private String getASiCManifestFilename(List<DSSDocument> existingManifests) {
-		String suffix = Utils.isCollectionEmpty(existingManifests) ? Utils.EMPTY_STRING : String.valueOf(existingManifests.size());
-		final String asicManifestZipEntryName = META_INF + "ASiCManifest" + suffix + ".xml";
-		return asicManifestZipEntryName;
 	}
 
 	private CAdESService getCAdESService() {
