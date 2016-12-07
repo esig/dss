@@ -3,7 +3,9 @@ package eu.europa.esig.dss.cades.signature;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -24,11 +26,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-/**
- * @author axel.abinet
- *
- */
-public class CAdESDoubleSignatureTest {
+public class CAdESDoubleSignatureDetachedTest {
 
 	@Test
 	public void test() throws Exception {
@@ -41,7 +39,7 @@ public class CAdESDoubleSignatureTest {
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -55,8 +53,11 @@ public class CAdESDoubleSignatureTest {
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		detachedContents.add(documentToSign);
+		signatureParameters.setDetachedContents(detachedContents);
 
 		certificateVerifier = new CommonCertificateVerifier();
 		service = new CAdESService(certificateVerifier);
@@ -66,6 +67,7 @@ public class CAdESDoubleSignatureTest {
 		DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);
+		validator.setDetachedContents(detachedContents);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
