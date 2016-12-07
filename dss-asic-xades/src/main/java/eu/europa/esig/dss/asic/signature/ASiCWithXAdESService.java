@@ -52,24 +52,12 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		final ASiCParameters asicParameters = parameters.aSiC();
 		assertCanBeSign(toSignDocuments, asicParameters);
 
+		boolean archive = ASiCUtils.isArchive(toSignDocuments);
+
+		List<DSSDocument> documents = getToBeSigned(toSignDocuments, asicParameters, archive);
 		DSSDocument existingXAdESSignatureASiCS = null;
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
-		if (ASiCUtils.isArchive(toSignDocuments)) {
-			DSSDocument archive = toSignDocuments.get(0);
-			// If archive, we copy the documents to be signed
-			extractCurrentArchive(archive);
-			documents.addAll(getEmbeddedSignedDocuments());
-			List<DSSDocument> embeddedSignatures = getEmbeddedSignatures();
-			if (ASiCUtils.isASiCS(asicParameters) && Utils.collectionSize(embeddedSignatures) == 1) {
-				existingXAdESSignatureASiCS = embeddedSignatures.get(0);
-			}
-		} else {
-			// If ASiC-S and more than one file, we need to create a new zip with the documents to be signed
-			if (ASiCUtils.isASiCS(asicParameters) && Utils.collectionSize(toSignDocuments) > 1) {
-				documents.add(createPackageZip(toSignDocuments));
-			} else {
-				documents.addAll(toSignDocuments);
-			}
+		if (archive) {
+			existingXAdESSignatureASiCS = getExistingXAdESSignatureASiCS(asicParameters);
 		}
 
 		XAdESSignatureParameters xadesParameters = getXAdESParameters(parameters, existingXAdESSignatureASiCS);
@@ -83,29 +71,14 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		assertCanBeSign(toSignDocuments, asicParameters);
 		assertSigningDateInCertificateValidityRange(parameters);
 
-		boolean isArchive = ASiCUtils.isArchive(toSignDocuments);
+		boolean asicContainer = ASiCUtils.isArchive(toSignDocuments);
 
-		DSSDocument existingXAdESSignatureASiCS = null;
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
 		List<DSSDocument> signatures = new ArrayList<DSSDocument>();
-		if (isArchive) {
-			DSSDocument archive = toSignDocuments.get(0);
-			// If archive, we copy the documents to be signed
-			extractCurrentArchive(archive);
-			documents.addAll(getEmbeddedSignedDocuments());
-
+		List<DSSDocument> documents = getToBeSigned(toSignDocuments, asicParameters, asicContainer);
+		DSSDocument existingXAdESSignatureASiCS = null;
+		if (asicContainer) {
 			signatures = getEmbeddedSignatures();
-			if (ASiCUtils.isASiCS(asicParameters) && Utils.collectionSize(signatures) == 1) {
-				existingXAdESSignatureASiCS = signatures.get(0);
-			}
-
-		} else {
-			// If ASiC-S and more than one file, we need to create a new zip with the documents to be signed
-			if (ASiCUtils.isASiCS(asicParameters) && Utils.collectionSize(toSignDocuments) > 1) {
-				documents.add(createPackageZip(toSignDocuments));
-			} else {
-				documents.addAll(toSignDocuments);
-			}
+			existingXAdESSignatureASiCS = getExistingXAdESSignatureASiCS(asicParameters);
 		}
 
 		XAdESSignatureParameters xadesParameters = getXAdESParameters(parameters, existingXAdESSignatureASiCS);
@@ -120,7 +93,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		ByteArrayOutputStream baos = null;
 		try {
 			baos = new ByteArrayOutputStream();
-			if (isArchive) {
+			if (asicContainer) {
 				DSSDocument archive = toSignDocuments.get(0);
 				copyExistingArchiveWithSignatureList(archive, signatures, baos);
 			} else {
@@ -135,6 +108,35 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 				.setName(DSSUtils.getFinalFileName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
 		parameters.reinitDeterministicId();
 		return asicSignature;
+	}
+
+	private List<DSSDocument> getToBeSigned(List<DSSDocument> toSignDocuments, ASiCParameters asicParameters, boolean asicContainer) {
+		List<DSSDocument> documents = new ArrayList<DSSDocument>();
+		if (asicContainer) {
+			DSSDocument archive = toSignDocuments.get(0);
+			// If archive, we copy the documents to be signed
+			extractCurrentArchive(archive);
+			documents.addAll(getEmbeddedSignedDocuments());
+		} else {
+			// If ASiC-S and more than one file, we need to create a new zip with the documents to be signed
+			if (ASiCUtils.isASiCS(asicParameters) && Utils.collectionSize(toSignDocuments) > 1) {
+				documents.add(createPackageZip(toSignDocuments));
+			} else {
+				documents.addAll(toSignDocuments);
+			}
+		}
+		return documents;
+	}
+
+	/**
+	 * In case of ASiC-S, we add a signature in the unique file (signatures.xml)
+	 */
+	private DSSDocument getExistingXAdESSignatureASiCS(ASiCParameters asicParameters) {
+		List<DSSDocument> embeddedSignatures = getEmbeddedSignatures();
+		if (ASiCUtils.isASiCS(asicParameters) && Utils.collectionSize(embeddedSignatures) == 1) {
+			return embeddedSignatures.get(0);
+		}
+		return null;
 	}
 
 	@Override
