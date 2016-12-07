@@ -41,14 +41,17 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 
 	@Override
 	List<DocumentValidator> getValidators() {
-		List<DocumentValidator> validators = new ArrayList<DocumentValidator>();
-		for (final DSSDocument signature : getSignatureDocuments()) {
-			CMSDocumentValidator cadesValidator = new CMSDocumentValidator(signature);
-			cadesValidator.setCertificateVerifier(certificateVerifier);
-			cadesValidator.setProcessExecutor(processExecutor);
-			cadesValidator.setSignaturePolicyProvider(signaturePolicyProvider);
-			cadesValidator.setDetachedContents(getSignedDocuments(signature));
-			validators.add(cadesValidator);
+		if (validators == null) {
+			validators = new ArrayList<DocumentValidator>();
+			for (final DSSDocument signature : getSignatureDocuments()) {
+				CMSDocumentValidator cadesValidator = new CMSDocumentValidator(signature);
+				cadesValidator.setCertificateVerifier(certificateVerifier);
+				cadesValidator.setProcessExecutor(processExecutor);
+				cadesValidator.setSignaturePolicyProvider(signaturePolicyProvider);
+				cadesValidator.setValidationCertPool(validationCertPool);
+				cadesValidator.setDetachedContents(getSignedDocuments(signature));
+				validators.add(cadesValidator);
+			}
 		}
 		return validators;
 	}

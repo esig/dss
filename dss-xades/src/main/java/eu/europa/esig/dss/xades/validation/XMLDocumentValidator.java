@@ -43,6 +43,7 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
@@ -124,12 +125,8 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 			return signatures;
 		}
 
-		ensureCertificatePoolInitialized();
-
 		signatures = new ArrayList<AdvancedSignature>();
 		final NodeList signatureNodeList = DomUtils.getNodeList(rootElement, "//ds:Signature[not(parent::xades:CounterSignature)]");
-		// final NodeList signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS,
-		// XPathQueryHolder.XMLE_SIGNATURE);
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 
 			final Element signatureEl = (Element) signatureNodeList.item(ii);
@@ -269,7 +266,6 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	 * Removes all of the elements from the list of query holders. The list will be empty after this call returns.
 	 */
 	public void clearQueryHolders() {
-
 		xPathQueryHolders.clear();
 	}
 
@@ -279,4 +275,12 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	public Document getRootElement() {
 		return rootElement;
 	}
+
+	/**
+	 * For ASiC usage
+	 */
+	public void setValidationCertPool(CertificatePool validationCertPool) {
+		this.validationCertPool = validationCertPool;
+	}
+
 }

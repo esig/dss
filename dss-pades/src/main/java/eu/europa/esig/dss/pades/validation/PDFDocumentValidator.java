@@ -78,8 +78,6 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	public List<AdvancedSignature> getSignatures() {
 		final List<AdvancedSignature> signatures = new ArrayList<AdvancedSignature>();
 
-		ensureCertificatePoolInitialized();
-
 		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfSignatureValidationCallback() {
 
 			@Override

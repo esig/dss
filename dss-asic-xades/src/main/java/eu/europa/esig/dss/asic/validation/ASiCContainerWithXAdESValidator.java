@@ -37,14 +37,17 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 
 	@Override
 	List<DocumentValidator> getValidators() {
-		List<DocumentValidator> validators = new ArrayList<DocumentValidator>();
-		for (final DSSDocument signature : getSignatureDocuments()) {
-			XMLDocumentValidator xadesValidator = new XMLDocumentValidator(signature);
-			xadesValidator.setCertificateVerifier(certificateVerifier);
-			xadesValidator.setProcessExecutor(processExecutor);
-			xadesValidator.setSignaturePolicyProvider(signaturePolicyProvider);
-			xadesValidator.setDetachedContents(getSignedDocuments());
-			validators.add(xadesValidator);
+		if (validators == null) {
+			validators = new ArrayList<DocumentValidator>();
+			for (final DSSDocument signature : getSignatureDocuments()) {
+				XMLDocumentValidator xadesValidator = new XMLDocumentValidator(signature);
+				xadesValidator.setCertificateVerifier(certificateVerifier);
+				xadesValidator.setProcessExecutor(processExecutor);
+				xadesValidator.setValidationCertPool(validationCertPool);
+				xadesValidator.setSignaturePolicyProvider(signaturePolicyProvider);
+				xadesValidator.setDetachedContents(getSignedDocuments());
+				validators.add(xadesValidator);
+			}
 		}
 		return validators;
 	}

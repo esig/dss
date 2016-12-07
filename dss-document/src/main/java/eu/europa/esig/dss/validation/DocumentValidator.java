@@ -164,4 +164,6 @@ public interface DocumentValidator {
 	 */
 	List<DSSDocument> getOriginalDocuments(final String signatureId) throws DSSException;
 
+	List<AdvancedSignature> processSignaturesValidation(ValidationContext validationContext, boolean structuralValidation);
+
 }

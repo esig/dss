@@ -39,6 +39,7 @@ import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.x509.CertificatePool;
 
 /**
  * Validation of CMS document
@@ -109,9 +110,6 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	public List<AdvancedSignature> getSignatures() {
 		List<AdvancedSignature> signatures = new ArrayList<AdvancedSignature>();
 		if (cmsSignedData != null) {
-
-			ensureCertificatePoolInitialized();
-
 			for (final Object signerInformationObject : cmsSignedData.getSignerInfos().getSigners()) {
 
 				final SignerInformation signerInformation = (SignerInformation) signerInformationObject;
@@ -158,4 +156,12 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 		Matcher matcher = pattern.matcher(text);
 		return matcher.matches();
 	}
+
+	/**
+	 * For ASiC usage
+	 */
+	public void setValidationCertPool(CertificatePool validationCertPool) {
+		this.validationCertPool = validationCertPool;
+	}
+
 }

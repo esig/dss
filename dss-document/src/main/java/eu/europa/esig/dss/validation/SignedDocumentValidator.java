@@ -30,7 +30,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -170,9 +169,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	@Override
 	public void defineSigningCertificate(final CertificateToken token) {
 		if (token == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("Token is not defined");
 		}
-		providedSigningCertificateToken = token;
+		if (validationCertPool == null) {
+			throw new NullPointerException("Certificate pool is not instantiated");
+		}
+		providedSigningCertificateToken = validationCertPool.getInstance(token, CertificateSourceType.OTHER);
 	}
 
 	/**
@@ -188,6 +190,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	@Override
 	public void setCertificateVerifier(final CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
+		if (validationCertPool == null) {
+			validationCertPool = certificateVerifier.createValidationPool();
+		}
 	}
 
 	@Override
@@ -211,7 +216,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	@Override
 	public Reports validateDocument(final URL validationPolicyURL) {
-
 		if (validationPolicyURL == null) {
 			return validateDocument((InputStream) null);
 		}
@@ -224,7 +228,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	@Override
 	public Reports validateDocument(final String policyResourcePath) {
-
 		if (policyResourcePath == null) {
 			return validateDocument((InputStream) null);
 		}
@@ -284,15 +287,22 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			throw new NullPointerException("CertificateVerifier not defined");
 		}
 
-		ensureCertificatePoolInitialized();
 		ensureSignaturePolicyDetectorInitialized();
 
-		Date date1 = new Date();
-
-		final List<AdvancedSignature> allSignatureList = getAllSignatures();
-
+		boolean structuralValidation = isRequireStructuralValidation(validationPolicy);
 		final ValidationContext validationContext = new SignatureValidationContext(validationCertPool);
 
+		List<AdvancedSignature> allSignatureList = processSignaturesValidation(validationContext, structuralValidation);
+
+		DiagnosticData diagnosticData = generateDiagnosticData(allSignatureList, validationContext.getProcessedCertificates(),
+				validationContext.getCurrentTime());
+
+		return processValidationPolicy(diagnosticData, validationPolicy);
+	}
+
+	@Override
+	public List<AdvancedSignature> processSignaturesValidation(final ValidationContext validationContext, boolean structuralValidation) {
+		final List<AdvancedSignature> allSignatureList = getAllSignatures();
 		// The list of all signing certificates is created to allow a parallel
 		// validation.
 		prepareCertificatesAndTimestamps(allSignatureList, validationContext);
@@ -303,12 +313,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		final ListOCSPSource signatureOCSPSource = getSignatureOcspSource(allSignatureList);
 		certificateVerifier.setSignatureOCSPSource(signatureOCSPSource);
 
-		validationContext.initialize(certificateVerifier);
-
 		validationContext.setCurrentTime(provideProcessExecutorInstance().getCurrentTime());
+		validationContext.initialize(certificateVerifier);
 		validationContext.validate();
 
-		boolean structuralValidation = isRequireStructuralValidation(validationPolicy);
 		for (final AdvancedSignature signature : allSignatureList) {
 			signature.checkSigningCertificate();
 			signature.checkSignatureIntegrity();
@@ -322,27 +330,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				signature.findSignatureScope(signatureScopeFinder);
 			}
 		}
-
-		DiagnosticData diagnosticData = generateDiagnosticData(allSignatureList, validationContext.getProcessedCertificates(),
-				validationContext.getCurrentTime());
-
-		Date date2 = new Date();
-
-		if (LOG.isTraceEnabled()) {
-			final long dateDiff = DSSUtils.getDateDiff(date1, date2, TimeUnit.MILLISECONDS);
-			LOG.trace("DiagnosticData building : " + dateDiff + " ms.");
-		}
-
-		final Reports reports = processValidationPolicy(diagnosticData, validationPolicy);
-
-		Date date3 = new Date();
-
-		if (LOG.isTraceEnabled()) {
-			final long dateDiff = DSSUtils.getDateDiff(date2, date3, TimeUnit.MILLISECONDS);
-			LOG.trace("Reports building: " + dateDiff + " ms.");
-		}
-
-		return reports;
+		return allSignatureList;
 	}
 
 	protected Reports processValidationPolicy(DiagnosticData diagnosticData, ValidationPolicy validationPolicy) {
@@ -354,22 +342,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		return reports;
 	}
 
-	protected void ensureCertificatePoolInitialized() {
-		if (validationCertPool == null) {
-			if (certificateVerifier == null) {
-				LOG.warn("No need of certificate pool ??");
-				return;
-			}
-			Date start = new Date();
-			validationCertPool = certificateVerifier.createValidationPool();
-			if (providedSigningCertificateToken != null) {
-				validationCertPool.getInstance(providedSigningCertificateToken, CertificateSourceType.OTHER);
-			}
-			Date end = new Date();
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("CertificatePool building : {} ms.", DSSUtils.getDateDiff(start, end, TimeUnit.MILLISECONDS));
-			}
-		}
+	@Override
+	public void setSignaturePolicyProvider(SignaturePolicyProvider signaturePolicyProvider) {
+		this.signaturePolicyProvider = signaturePolicyProvider;
 	}
 
 	protected void ensureSignaturePolicyDetectorInitialized() {
@@ -397,11 +372,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		return processExecutor;
 	}
 
-	@Override
-	public void setSignaturePolicyProvider(SignaturePolicyProvider signaturePolicyProvider) {
-		this.signaturePolicyProvider = signaturePolicyProvider;
-	}
-
 	/**
 	 * This method generates the diagnostic data. This is the set of all data
 	 * extracted from the signature, associated certificates and trusted lists.
@@ -424,7 +394,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *
 	 * @return {@code List} of {@code AdvancedSignature} to validate
 	 */
-	protected List<AdvancedSignature> getAllSignatures() {
+	private List<AdvancedSignature> getAllSignatures() {
 		final List<AdvancedSignature> allSignatureList = new ArrayList<AdvancedSignature>();
 		List<AdvancedSignature> signatureList = getSignatures();
 		for (final AdvancedSignature signature : signatureList) {
@@ -442,7 +412,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *            including the countersignatures
 	 * @return {@code ListCRLSource}
 	 */
-	protected ListCRLSource getSignatureCrlSource(final List<AdvancedSignature> allSignatureList) {
+	private ListCRLSource getSignatureCrlSource(final List<AdvancedSignature> allSignatureList) {
 		final ListCRLSource signatureCrlSource = new ListCRLSource();
 		for (final AdvancedSignature signature : allSignatureList) {
 			signatureCrlSource.addAll(signature.getCRLSource());
@@ -458,7 +428,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *            including the countersignatures
 	 * @return {@code ListOCSPSource}
 	 */
-	protected ListOCSPSource getSignatureOcspSource(final List<AdvancedSignature> allSignatureList) {
+	private ListOCSPSource getSignatureOcspSource(final List<AdvancedSignature> allSignatureList) {
 		final ListOCSPSource signatureOcspSource = new ListOCSPSource();
 		for (final AdvancedSignature signature : allSignatureList) {
 			signatureOcspSource.addAll(signature.getOCSPSource());
@@ -474,7 +444,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *            {@code ValidationContext} is the implementation of the
 	 *            validators for: certificates, timestamps and revocation data.
 	 */
-	protected void prepareCertificatesAndTimestamps(final List<AdvancedSignature> allSignatureList, final ValidationContext validationContext) {
+	private void prepareCertificatesAndTimestamps(final List<AdvancedSignature> allSignatureList, final ValidationContext validationContext) {
 		for (final AdvancedSignature signature : allSignatureList) {
 			final List<CertificateToken> candidates = signature.getCertificateSource().getCertificates();
 			for (final CertificateToken certificateToken : candidates) {
@@ -484,7 +454,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		}
 	}
 
-	protected boolean isRequireStructuralValidation(ValidationPolicy validationPolicy) {
+	private boolean isRequireStructuralValidation(ValidationPolicy validationPolicy) {
 		return ((validationPolicy != null) && (validationPolicy.getStructuralValidationConstraint(Context.SIGNATURE) != null));
 	}
 

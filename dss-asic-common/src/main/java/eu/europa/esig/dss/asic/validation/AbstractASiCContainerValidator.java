@@ -13,10 +13,11 @@ import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.ValidationContext;
 
 public abstract class AbstractASiCContainerValidator extends SignedDocumentValidator {
+
+	protected List<DocumentValidator> validators;
 
 	private ASiCExtractResult extractResult;
 
@@ -49,10 +50,17 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	}
 
 	@Override
+	public List<AdvancedSignature> processSignaturesValidation(final ValidationContext validationContext, boolean structuralValidation) {
+		List<AdvancedSignature> allSignatures = new ArrayList<AdvancedSignature>();
+		List<DocumentValidator> validators = getValidators();
+		for (DocumentValidator documentValidator : validators) { // CAdES / XAdES
+			allSignatures.addAll(documentValidator.processSignaturesValidation(validationContext, structuralValidation));
+		}
+		return allSignatures;
+	}
+
+	@Override
 	public List<AdvancedSignature> getSignatures() {
-
-		ensureCertificatePoolInitialized();
-
 		List<AdvancedSignature> allSignatures = new ArrayList<AdvancedSignature>();
 		List<DocumentValidator> validators = getValidators();
 		for (DocumentValidator documentValidator : validators) {
@@ -62,28 +70,6 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	}
 
 	abstract List<DocumentValidator> getValidators();
-
-	@Override
-	public Reports validateDocument(final ValidationPolicy validationPolicy) {
-
-		ensureCertificatePoolInitialized();
-
-		Reports first = null;
-		Reports previous = null;
-
-		List<DocumentValidator> validators = getValidators();
-		for (DocumentValidator validator : validators) {
-			Reports currentReport = validator.validateDocument(validationPolicy);
-			if (first == null) {
-				first = currentReport;
-			} else {
-				previous.setNextReport(currentReport);
-			}
-			previous = currentReport;
-		}
-
-		return first;
-	}
 
 	protected List<DSSDocument> getSignatureDocuments() {
 		return extractResult.getSignatureDocuments();
