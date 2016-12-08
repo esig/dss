@@ -6,16 +6,16 @@ import java.util.List;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.asic.ASiCParameters;
-import eu.europa.esig.dss.asic.signature.GetDataToSignASiCWithCAdESHelper;
+import eu.europa.esig.dss.asic.signature.GetDataToSignASiCWithXAdESHelper;
 import eu.europa.esig.dss.utils.Utils;
 
-public class DataToSignASiCSWithCAdESFromArchive extends AbstractGetDataToSignASiCSWithCAdES implements GetDataToSignASiCWithCAdESHelper {
+public class DataToSignASiCSWithXAdESFromArchive extends AbstractGetDataToSignASiCSWithXAdES implements GetDataToSignASiCWithXAdESHelper {
 
 	private final List<DSSDocument> embeddedSignatures;
 	private final List<DSSDocument> embeddedSignedFiles;
 	private final ASiCParameters asicParameters;
 
-	public DataToSignASiCSWithCAdESFromArchive(List<DSSDocument> embeddedSignatures, List<DSSDocument> embeddedSignedFiles, ASiCParameters asicParameters) {
+	public DataToSignASiCSWithXAdESFromArchive(List<DSSDocument> embeddedSignatures, List<DSSDocument> embeddedSignedFiles, ASiCParameters asicParameters) {
 		this.embeddedSignatures = embeddedSignatures;
 		this.embeddedSignedFiles = embeddedSignedFiles;
 		this.asicParameters = asicParameters;
@@ -27,17 +27,18 @@ public class DataToSignASiCSWithCAdESFromArchive extends AbstractGetDataToSignAS
 	}
 
 	@Override
-	public DSSDocument getToBeSigned() {
+	public List<DSSDocument> getToBeSigned() {
+		return embeddedSignedFiles;
+	}
+
+	@Override
+	public DSSDocument getExistingSignature() {
+		// The new signature is added in the existing file
 		int nbEmbeddedSignatures = Utils.collectionSize(embeddedSignatures);
 		if (nbEmbeddedSignatures != 1) {
 			throw new DSSException("Unable to select the embedded signature (nb found:" + nbEmbeddedSignatures + ")");
 		}
 		return embeddedSignatures.get(0);
-	}
-
-	@Override
-	public List<DSSDocument> getDetachedContents() {
-		return getSignedDocuments();
 	}
 
 	@Override

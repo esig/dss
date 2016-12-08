@@ -5,9 +5,9 @@ import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
-import eu.europa.esig.dss.asic.GetDataToSignHelper;
+import eu.europa.esig.dss.asic.signature.GetDataToSignASiCWithCAdESHelper;
 
-public class DataToSignASiCEWithCAdESFromArchive extends AbstractDataToSignASiCEWithCAdES implements GetDataToSignHelper {
+public class DataToSignASiCEWithCAdESFromArchive extends AbstractDataToSignASiCEWithCAdES implements GetDataToSignASiCWithCAdESHelper {
 
 	private final List<DSSDocument> signedDocuments;
 	private final List<DSSDocument> existingSignatures;
@@ -39,12 +39,6 @@ public class DataToSignASiCEWithCAdESFromArchive extends AbstractDataToSignASiCE
 
 	@Override
 	public List<DSSDocument> getDetachedContents() {
-		return null;
-	}
-
-	@Override
-	public DSSDocument getExistingSignature() {
-		// ASiC-E -> new file
 		return null;
 	}
 

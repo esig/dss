@@ -26,7 +26,6 @@ import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
-import eu.europa.esig.dss.asic.GetDataToSignHelper;
 import eu.europa.esig.dss.asic.validation.ASiCEWithCAdESManifestValidator;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
@@ -47,7 +46,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		final ASiCParameters asicParameters = parameters.aSiC();
 		assertCanBeSign(toSignDocuments, asicParameters);
 
-		GetDataToSignHelper dataToSignHelper = ASiCWithCAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
+		GetDataToSignASiCWithCAdESHelper dataToSignHelper = ASiCWithCAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
 
 		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
 		cadesParameters.setDetachedContents(dataToSignHelper.getDetachedContents());
@@ -62,7 +61,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		assertCanBeSign(toSignDocuments, asicParameters);
 		assertSigningDateInCertificateValidityRange(parameters);
 
-		GetDataToSignHelper dataToSignHelper = ASiCWithCAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
+		GetDataToSignASiCWithCAdESHelper dataToSignHelper = ASiCWithCAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
 
 		List<DSSDocument> signatures = dataToSignHelper.getSignatures();
 		List<DSSDocument> manifests = dataToSignHelper.getManifestFiles();
@@ -88,34 +87,6 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 				.setName(DSSUtils.getFinalFileName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
 		parameters.reinitDeterministicId();
 		return asicSignature;
-	}
-
-	private DSSDocument buildASiCContainer(List<DSSDocument> documentsToBeSigned, List<DSSDocument> signatures, List<DSSDocument> manifestDocuments,
-			ASiCParameters asicParameters) {
-
-		ByteArrayOutputStream baos = null;
-		ZipOutputStream zos = null;
-		try {
-			baos = new ByteArrayOutputStream();
-			zos = new ZipOutputStream(baos);
-
-			if (ASiCUtils.isASiCE(asicParameters)) {
-				storeASICEManifest(manifestDocuments, zos);
-			}
-
-			storeSignatures(signatures, zos);
-			storeSignedFiles(documentsToBeSigned, zos);
-			storeMimetype(asicParameters, zos);
-			storeZipComment(asicParameters, zos);
-
-		} catch (IOException e) {
-			throw new DSSException("Unable to build the ASiC Container", e);
-		} finally {
-			Utils.closeQuietly(zos);
-			Utils.closeQuietly(baos);
-		}
-
-		return new InMemoryDocument(baos.toByteArray(), null, ASiCUtils.getMimeType(asicParameters));
 	}
 
 	@Override
@@ -198,14 +169,6 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	@Override
 	AbstractASiCContainerExtractor getArchiveExtractor(DSSDocument archive) {
 		return new ASiCWithCAdESContainerExtractor(archive);
-	}
-
-	private void storeASICEManifest(List<DSSDocument> manifestDocuments, ZipOutputStream zos) throws IOException {
-		for (DSSDocument manifestDocument : manifestDocuments) {
-			final ZipEntry entrySignature = new ZipEntry(manifestDocument.getName());
-			zos.putNextEntry(entrySignature);
-			manifestDocument.writeTo(zos);
-		}
 	}
 
 	private CAdESService getCAdESService() {

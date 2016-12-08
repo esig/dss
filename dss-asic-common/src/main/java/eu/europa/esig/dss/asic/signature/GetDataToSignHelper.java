@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.asic;
+package eu.europa.esig.dss.asic.signature;
 
 import java.util.List;
 
@@ -7,12 +7,6 @@ import eu.europa.esig.dss.DSSDocument;
 public interface GetDataToSignHelper {
 
 	String getSignatureFilename();
-
-	DSSDocument getToBeSigned();
-
-	List<DSSDocument> getDetachedContents();
-
-	DSSDocument getExistingSignature();
 
 	List<DSSDocument> getSignedDocuments();
 

@@ -7,7 +7,6 @@ import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
-import eu.europa.esig.dss.asic.GetDataToSignHelper;
 import eu.europa.esig.dss.asic.signature.asice.DataToSignASiCEWithCAdESFromArchive;
 import eu.europa.esig.dss.asic.signature.asice.DataToSignASiCEWithCAdESFromFiles;
 import eu.europa.esig.dss.asic.signature.asics.DataToSignASiCSWithCAdESFromArchive;
@@ -15,7 +14,7 @@ import eu.europa.esig.dss.asic.signature.asics.DataToSignASiCSWithCAdESFromFiles
 
 public class ASiCWithCAdESDataToSignHelperBuilder {
 
-	public static GetDataToSignHelper getGetDataToSignHelper(List<DSSDocument> documents, ASiCWithCAdESSignatureParameters parameters) {
+	public static GetDataToSignASiCWithCAdESHelper getGetDataToSignHelper(List<DSSDocument> documents, ASiCWithCAdESSignatureParameters parameters) {
 
 		boolean asice = ASiCUtils.isASiCE(parameters.aSiC());
 		boolean archive = ASiCUtils.isArchive(documents);

@@ -3,6 +3,7 @@ package eu.europa.esig.dss.asic.signature;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -35,9 +36,6 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCWithXAdESService.class);
 
-	private final static String ZIP_ENTRY_ASICS_METAINF_XADES_SIGNATURE = META_INF + "signatures.xml";
-	private final static String ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE = META_INF + "signatures001.xml";
-
 	static {
 		DomUtils.registerNamespace("asic", ASiCNamespace.ASiC);
 	}
@@ -52,16 +50,10 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		final ASiCParameters asicParameters = parameters.aSiC();
 		assertCanBeSign(toSignDocuments, asicParameters);
 
-		boolean archive = ASiCUtils.isArchive(toSignDocuments);
+		GetDataToSignASiCWithXAdESHelper dataToSignHelper = ASiCWithXAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
 
-		List<DSSDocument> documents = getToBeSigned(toSignDocuments, asicParameters, archive);
-		DSSDocument existingXAdESSignatureASiCS = null;
-		if (archive) {
-			existingXAdESSignatureASiCS = getExistingXAdESSignatureASiCS(asicParameters);
-		}
-
-		XAdESSignatureParameters xadesParameters = getXAdESParameters(parameters, existingXAdESSignatureASiCS);
-		return getXAdESService().getDataToSign(documents, xadesParameters);
+		XAdESSignatureParameters xadesParameters = getXAdESParameters(parameters, dataToSignHelper.getExistingSignature());
+		return getXAdESService().getDataToSign(dataToSignHelper.getToBeSigned(), xadesParameters);
 	}
 
 	@Override
@@ -71,72 +63,32 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		assertCanBeSign(toSignDocuments, asicParameters);
 		assertSigningDateInCertificateValidityRange(parameters);
 
-		boolean asicContainer = ASiCUtils.isArchive(toSignDocuments);
+		GetDataToSignASiCWithXAdESHelper dataToSignHelper = ASiCWithXAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
 
-		List<DSSDocument> signatures = new ArrayList<DSSDocument>();
-		List<DSSDocument> documents = getToBeSigned(toSignDocuments, asicParameters, asicContainer);
-		DSSDocument existingXAdESSignatureASiCS = null;
-		if (asicContainer) {
-			signatures = getEmbeddedSignatures();
-			existingXAdESSignatureASiCS = getExistingXAdESSignatureASiCS(asicParameters);
-		}
+		List<DSSDocument> signatures = dataToSignHelper.getSignatures();
+		List<DSSDocument> manifestFiles = dataToSignHelper.getManifestFiles();
+		List<DSSDocument> signedDocuments = dataToSignHelper.getSignedDocuments();
 
-		XAdESSignatureParameters xadesParameters = getXAdESParameters(parameters, existingXAdESSignatureASiCS);
-		final DSSDocument newSignature = getXAdESService().signDocument(documents, xadesParameters, signatureValue);
-		newSignature.setName(getSignatureFileName(asicParameters, signatures));
+		XAdESSignatureParameters xadesParameters = getXAdESParameters(parameters, dataToSignHelper.getExistingSignature());
+		final DSSDocument newSignature = getXAdESService().signDocument(dataToSignHelper.getSignedDocuments(), xadesParameters, signatureValue);
+		String newSignatureFilename = dataToSignHelper.getSignatureFilename();
+		newSignature.setName(newSignatureFilename);
 
-		if (existingXAdESSignatureASiCS != null) {
-			signatures.remove(existingXAdESSignatureASiCS);
+		if (ASiCUtils.isASiCS(asicParameters)) {
+			Iterator<DSSDocument> iterator = signatures.iterator();
+			while (iterator.hasNext()) {
+				if (Utils.areStringsEqual(newSignatureFilename, iterator.next().getName())) {
+					iterator.remove(); // remove existing file to be replaced
+				}
+			}
 		}
 		signatures.add(newSignature);
 
-		ByteArrayOutputStream baos = null;
-		try {
-			baos = new ByteArrayOutputStream();
-			if (asicContainer) {
-				DSSDocument archive = toSignDocuments.get(0);
-				copyExistingArchiveWithSignatureList(archive, signatures, baos);
-			} else {
-				buildASiCContainer(documents, signatures, asicParameters, baos);
-			}
-		} finally {
-			Utils.closeQuietly(baos);
-		}
-
-		final InMemoryDocument asicSignature = new InMemoryDocument(baos.toByteArray(), null, ASiCUtils.getMimeType(asicParameters));
+		final DSSDocument asicSignature = buildASiCContainer(signedDocuments, signatures, manifestFiles, asicParameters);
 		asicSignature
 				.setName(DSSUtils.getFinalFileName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
 		parameters.reinitDeterministicId();
 		return asicSignature;
-	}
-
-	private List<DSSDocument> getToBeSigned(List<DSSDocument> toSignDocuments, ASiCParameters asicParameters, boolean asicContainer) {
-		List<DSSDocument> documents = new ArrayList<DSSDocument>();
-		if (asicContainer) {
-			DSSDocument archive = toSignDocuments.get(0);
-			// If archive, we copy the documents to be signed
-			extractCurrentArchive(archive);
-			documents.addAll(getEmbeddedSignedDocuments());
-		} else {
-			// If ASiC-S and more than one file, we need to create a new zip with the documents to be signed
-			if (ASiCUtils.isASiCS(asicParameters) && Utils.collectionSize(toSignDocuments) > 1) {
-				documents.add(createPackageZip(toSignDocuments));
-			} else {
-				documents.addAll(toSignDocuments);
-			}
-		}
-		return documents;
-	}
-
-	/**
-	 * In case of ASiC-S, we add a signature in the unique file (signatures.xml)
-	 */
-	private DSSDocument getExistingXAdESSignatureASiCS(ASiCParameters asicParameters) {
-		List<DSSDocument> embeddedSignatures = getEmbeddedSignatures();
-		if (ASiCUtils.isASiCS(asicParameters) && Utils.collectionSize(embeddedSignatures) == 1) {
-			return embeddedSignatures.get(0);
-		}
-		return null;
 	}
 
 	@Override
@@ -172,27 +124,6 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		return asicSignature;
 	}
 
-	private void buildASiCContainer(List<DSSDocument> documents, List<DSSDocument> signatures, ASiCParameters asicParameters, ByteArrayOutputStream baos) {
-		ZipOutputStream zos = null;
-		try {
-			zos = new ZipOutputStream(baos);
-
-			if (ASiCUtils.isASiCE(asicParameters)) {
-				storeASICEManifest(documents, zos);
-			}
-
-			storeSignatures(signatures, zos);
-			storeSignedFiles(documents, zos);
-			storeMimetype(asicParameters, zos);
-			storeZipComment(asicParameters, zos);
-
-		} catch (IOException e) {
-			throw new DSSException("Unable to build the ASiC Container", e);
-		} finally {
-			Utils.closeQuietly(zos);
-		}
-	}
-
 	@Override
 	void storeSignatures(List<DSSDocument> signatures, ZipOutputStream zos) throws IOException {
 		for (DSSDocument dssDocument : signatures) {
@@ -206,29 +137,6 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	@Override
 	boolean isSignatureFilename(String name) {
 		return ASiCUtils.isXAdES(name);
-	}
-
-	private String getSignatureFileName(final ASiCParameters asicParameters, List<DSSDocument> existingSignatures) {
-		if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
-			return META_INF + asicParameters.getSignatureFileName();
-		}
-		final boolean asice = ASiCUtils.isASiCE(asicParameters);
-		if (asice) {
-			if (Utils.isCollectionNotEmpty(existingSignatures)) {
-				return ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE.replace("001", getSignatureNumber(existingSignatures));
-			} else {
-				return ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE;
-			}
-		} else {
-			return ZIP_ENTRY_ASICS_METAINF_XADES_SIGNATURE;
-		}
-	}
-
-	private void storeASICEManifest(final List<DSSDocument> documentsToBeSigned, final ZipOutputStream zos) throws IOException {
-		final ZipEntry entry = new ZipEntry(META_INF + "manifest.xml");
-		zos.putNextEntry(entry);
-		ASiCEWithXAdESManifestBuilder manifestBuilder = new ASiCEWithXAdESManifestBuilder(documentsToBeSigned);
-		DomUtils.writeDocumentTo(manifestBuilder.build(), zos);
 	}
 
 	private XAdESService getXAdESService() {

@@ -10,20 +10,13 @@ import java.util.zip.ZipOutputStream;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.asic.ASiCParameters;
 import eu.europa.esig.dss.utils.Utils;
 
-public abstract class AbstractASiCSGetDataToSign {
+public abstract class AbstractGetDataToSignASiCS {
 
 	private final static String ZIP_ENTRY_DETACHED_FILE = "detached-file";
 
-	protected String getSignatureFileName(final ASiCParameters asicParameters) {
-		if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
-			return "META-INF/" + asicParameters.getSignatureFileName();
-		}
-		return "META-INF/signature.p7s";
-	}
-
+	/* In case of multi-files and ASiC-S, we need to create a zip with all files to be signed */
 	protected DSSDocument createPackageZip(List<DSSDocument> documents) {
 		ByteArrayOutputStream baos = null;
 		ZipOutputStream zos = null;
@@ -40,7 +33,7 @@ public abstract class AbstractASiCSGetDataToSign {
 		return new InMemoryDocument(baos.toByteArray(), "package.zip");
 	}
 
-	protected void storeSignedFiles(final List<DSSDocument> documents, final ZipOutputStream zos) throws IOException {
+	private void storeSignedFiles(final List<DSSDocument> documents, final ZipOutputStream zos) throws IOException {
 		for (DSSDocument document : documents) {
 			InputStream is = null;
 			try {

@@ -31,7 +31,6 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 
 	private static final long serialVersionUID = 243114076381526665L;
 
-	protected final static String META_INF = "META-INF/";
 	private final static String ZIP_ENTRY_DETACHED_FILE = "detached-file";
 	private final static String ZIP_ENTRY_MIMETYPE = "mimetype";
 
@@ -47,6 +46,8 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 		}
 	}
 
+	abstract boolean canBeSigned(List<DSSDocument> documents, ASiCParameters asicParameters);
+
 	@Override
 	public ToBeSigned getDataToSign(DSSDocument toSignDocument, SP parameters) throws DSSException {
 		return getDataToSign(Arrays.asList(toSignDocument), parameters);
@@ -56,8 +57,6 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 	public DSSDocument signDocument(DSSDocument toSignDocument, SP parameters, SignatureValue signatureValue) throws DSSException {
 		return signDocument(Arrays.asList(toSignDocument), parameters, signatureValue);
 	}
-
-	abstract boolean canBeSigned(List<DSSDocument> documents, ASiCParameters asicParameters);
 
 	protected void extractCurrentArchive(DSSDocument archive) {
 		AbstractASiCContainerExtractor extractor = getArchiveExtractor(archive);
@@ -80,22 +79,6 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 
 	protected DSSDocument getEmbeddedMimetype() {
 		return archiveContent.getMimeTypeDocument();
-	}
-
-	protected DSSDocument createPackageZip(List<DSSDocument> documents) {
-		ByteArrayOutputStream baos = null;
-		ZipOutputStream zos = null;
-		try {
-			baos = new ByteArrayOutputStream();
-			zos = new ZipOutputStream(baos);
-			storeSignedFiles(documents, zos);
-		} catch (IOException e) {
-			throw new DSSException("Unable to create package.zip file", e);
-		} finally {
-			Utils.closeQuietly(zos);
-			Utils.closeQuietly(baos);
-		}
-		return new InMemoryDocument(baos.toByteArray(), "package.zip");
 	}
 
 	protected void copyExistingArchiveWithSignatureList(DSSDocument archiveDocument, List<DSSDocument> signaturesToAdd, ByteArrayOutputStream baos) {
@@ -131,9 +114,45 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 
 	abstract boolean isSignatureFilename(String name);
 
+	protected DSSDocument buildASiCContainer(List<DSSDocument> documentsToBeSigned, List<DSSDocument> signatures, List<DSSDocument> manifestDocuments,
+			ASiCParameters asicParameters) {
+
+		ByteArrayOutputStream baos = null;
+		ZipOutputStream zos = null;
+		try {
+			baos = new ByteArrayOutputStream();
+			zos = new ZipOutputStream(baos);
+
+			if (ASiCUtils.isASiCE(asicParameters)) {
+				storeASICEManifest(manifestDocuments, zos);
+			}
+
+			storeSignatures(signatures, zos);
+			storeSignedFiles(documentsToBeSigned, zos);
+			storeMimetype(asicParameters, zos);
+			storeZipComment(asicParameters, zos);
+
+		} catch (IOException e) {
+			throw new DSSException("Unable to build the ASiC Container", e);
+		} finally {
+			Utils.closeQuietly(zos);
+			Utils.closeQuietly(baos);
+		}
+
+		return new InMemoryDocument(baos.toByteArray(), null, ASiCUtils.getMimeType(asicParameters));
+	}
+
+	private void storeASICEManifest(List<DSSDocument> manifestDocuments, ZipOutputStream zos) throws IOException {
+		for (DSSDocument manifestDocument : manifestDocuments) {
+			final ZipEntry entrySignature = new ZipEntry(manifestDocument.getName());
+			zos.putNextEntry(entrySignature);
+			manifestDocument.writeTo(zos);
+		}
+	}
+
 	abstract void storeSignatures(List<DSSDocument> signaturesToAdd, ZipOutputStream zos) throws IOException;
 
-	protected void storeSignedFiles(final List<DSSDocument> detachedDocuments, final ZipOutputStream zos) throws IOException {
+	private void storeSignedFiles(final List<DSSDocument> detachedDocuments, final ZipOutputStream zos) throws IOException {
 		for (DSSDocument detachedDocument : detachedDocuments) {
 			InputStream is = null;
 			try {
@@ -151,7 +170,7 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 		}
 	}
 
-	protected void storeMimetype(final ASiCParameters asicParameters, final ZipOutputStream zos) throws IOException {
+	private void storeMimetype(final ASiCParameters asicParameters, final ZipOutputStream zos) throws IOException {
 		final byte[] mimeTypeBytes = ASiCUtils.getMimeTypeString(asicParameters).getBytes("UTF-8");
 		final ZipEntry entryMimetype = getZipEntryMimeType(mimeTypeBytes);
 		zos.putNextEntry(entryMimetype);
@@ -173,13 +192,6 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 		if (asicParameters.isZipComment()) {
 			zos.setComment(ASiCUtils.MIME_TYPE_COMMENT + ASiCUtils.getMimeTypeString(asicParameters));
 		}
-	}
-
-	protected String getSignatureNumber(List<DSSDocument> existingSignatures) {
-		int signatureNumbre = existingSignatures.size() + 1;
-		String sigNumberStr = String.valueOf(signatureNumbre);
-		String zeroPad = "000";
-		return zeroPad.substring(sigNumberStr.length()) + sigNumberStr; // 2 -> 002
 	}
 
 }

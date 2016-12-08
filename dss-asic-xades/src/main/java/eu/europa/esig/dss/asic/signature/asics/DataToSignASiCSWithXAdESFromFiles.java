@@ -7,17 +7,17 @@ import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.asic.ASiCParameters;
-import eu.europa.esig.dss.asic.signature.GetDataToSignASiCWithCAdESHelper;
+import eu.europa.esig.dss.asic.signature.GetDataToSignASiCWithXAdESHelper;
 import eu.europa.esig.dss.utils.Utils;
 
-public class DataToSignASiCSWithCAdESFromFiles extends AbstractGetDataToSignASiCSWithCAdES implements GetDataToSignASiCWithCAdESHelper {
+public class DataToSignASiCSWithXAdESFromFiles extends AbstractGetDataToSignASiCSWithXAdES implements GetDataToSignASiCWithXAdESHelper {
 
 	private final List<DSSDocument> filesToBeSigned;
 	private final ASiCParameters asicParameters;
 
 	private List<DSSDocument> signedDocuments;
 
-	public DataToSignASiCSWithCAdESFromFiles(List<DSSDocument> filesToBeSigned, ASiCParameters asicParameters) {
+	public DataToSignASiCSWithXAdESFromFiles(List<DSSDocument> filesToBeSigned, ASiCParameters asicParameters) {
 		this.filesToBeSigned = filesToBeSigned;
 		this.asicParameters = asicParameters;
 	}
@@ -28,12 +28,12 @@ public class DataToSignASiCSWithCAdESFromFiles extends AbstractGetDataToSignASiC
 	}
 
 	@Override
-	public DSSDocument getToBeSigned() {
-		return getSignedDocuments().get(0);
+	public List<DSSDocument> getToBeSigned() {
+		return getSignedDocuments();
 	}
 
 	@Override
-	public List<DSSDocument> getDetachedContents() {
+	public DSSDocument getExistingSignature() {
 		return null;
 	}
 
