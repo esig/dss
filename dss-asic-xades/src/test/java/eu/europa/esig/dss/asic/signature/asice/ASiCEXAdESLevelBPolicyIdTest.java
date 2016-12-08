@@ -36,7 +36,6 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
@@ -66,7 +65,6 @@ public class ASiCEXAdESLevelBPolicyIdTest extends AbstractTestDocumentSignatureS
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 		Policy policy = new Policy();

@@ -32,7 +32,6 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
@@ -60,7 +59,6 @@ public class ASiCEXAdESLevelBInclusiveCanonicalizationTest extends AbstractTestD
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setSignedInfoCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
 		signatureParameters.setSignedPropertiesCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
