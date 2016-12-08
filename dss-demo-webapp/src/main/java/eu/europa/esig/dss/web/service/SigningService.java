@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.web.service;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,22 +15,26 @@ import org.springframework.stereotype.Component;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.asic.ASiCSignatureParameters;
-import eu.europa.esig.dss.asic.signature.ASiCService;
+import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
+import eu.europa.esig.dss.asic.signature.ASiCWithCAdESService;
+import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.web.WebAppUtils;
+import eu.europa.esig.dss.web.model.AbstractSignatureForm;
 import eu.europa.esig.dss.web.model.ExtensionForm;
-import eu.europa.esig.dss.web.model.NexuSignatureDocumentForm;
+import eu.europa.esig.dss.web.model.SignatureDocumentForm;
+import eu.europa.esig.dss.web.model.SignatureMultipleDocumentsForm;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -49,24 +54,26 @@ public class SigningService {
 	private XAdESService xadesService;
 
 	@Autowired
-	private ASiCService asicService;
+	private ASiCWithCAdESService asicWithCAdESService;
+
+	@Autowired
+	private ASiCWithXAdESService asicWithXAdESService;
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public DSSDocument extend(ExtensionForm extensionForm) {
 
 		SignatureForm signatureForm = extensionForm.getSignatureForm();
-		SignatureForm asicUnderlyingForm = extensionForm.getAsicUnderlyingForm();
 
 		DSSDocument signedDocument = WebAppUtils.toDSSDocument(extensionForm.getSignedFile());
 		DSSDocument originalDocument = WebAppUtils.toDSSDocument(extensionForm.getOriginalFile());
 
 		DocumentSignatureService service = getSignatureService(signatureForm);
 
-		AbstractSignatureParameters parameters = getSignatureParameters(signatureForm, asicUnderlyingForm);
+		AbstractSignatureParameters parameters = getSignatureParameters(signatureForm);
 		parameters.setSignatureLevel(extensionForm.getSignatureLevel());
 
 		if (originalDocument != null) {
-			parameters.setDetachedContent(originalDocument);
+			parameters.setDetachedContents(Arrays.asList(originalDocument));
 		}
 
 		DSSDocument extendedDoc = service.extendDocument(signedDocument, parameters);
@@ -74,8 +81,8 @@ public class SigningService {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public ToBeSigned getDataToSign(NexuSignatureDocumentForm form) {
-		logger.info("Start getDataToSign");
+	public ToBeSigned getDataToSign(SignatureDocumentForm form) {
+		logger.info("Start getDataToSign with one document");
 		DocumentSignatureService service = getSignatureService(form.getSignatureForm());
 
 		AbstractSignatureParameters parameters = fillParameters(form);
@@ -87,46 +94,55 @@ public class SigningService {
 		} catch (Exception e) {
 			logger.error("Unable to execute getDataToSign : " + e.getMessage(), e);
 		}
-		logger.info("End getDataToSign");
+		logger.info("End getDataToSign with one document");
 		return toBeSigned;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public DSSDocument signDocument(NexuSignatureDocumentForm form) {
-		logger.info("Start signDocument");
-		DocumentSignatureService service = getSignatureService(form.getSignatureForm());
+	public ToBeSigned getDataToSign(SignatureMultipleDocumentsForm form) {
+		logger.info("Start getDataToSign with multiple documents");
+		MultipleDocumentsSignatureService service = getASiCSignatureService(form.getSignatureForm());
 
 		AbstractSignatureParameters parameters = fillParameters(form);
 
-		DSSDocument signedDocument = null;
+		ToBeSigned toBeSigned = null;
 		try {
-			DSSDocument toSignDocument = WebAppUtils.toDSSDocument(form.getDocumentToSign());
-			SignatureAlgorithm sigAlgorithm = SignatureAlgorithm.getAlgorithm(form.getEncryptionAlgorithm(), form.getDigestAlgorithm());
-			SignatureValue signatureValue = new SignatureValue(sigAlgorithm, DatatypeConverter.parseBase64Binary(form.getBase64SignatureValue()));
-			signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+			List<DSSDocument> toSignDocuments = WebAppUtils.toDSSDocuments(form.getDocumentsToSign());
+			toBeSigned = service.getDataToSign(toSignDocuments, parameters);
 		} catch (Exception e) {
-			logger.error("Unable to execute signDocument : " + e.getMessage(), e);
+			logger.error("Unable to execute getDataToSign : " + e.getMessage(), e);
 		}
-		logger.info("End signDocument");
-		return signedDocument;
+		logger.info("End getDataToSign with multiple documents");
+		return toBeSigned;
 	}
 
-	private AbstractSignatureParameters fillParameters(NexuSignatureDocumentForm form) {
-		AbstractSignatureParameters parameters = getSignatureParameters(form.getSignatureForm(), form.getAsicUnderlyingForm());
+	private AbstractSignatureParameters fillParameters(SignatureMultipleDocumentsForm form) {
+		AbstractSignatureParameters parameters = null;
+		if (SignatureForm.XAdES == form.getSignatureForm()) {
+			parameters = new ASiCWithXAdESSignatureParameters();
+		} else {
+			parameters = new ASiCWithCAdESSignatureParameters();
+		}
+
+		fillParameters(parameters, form);
+
+		return parameters;
+	}
+
+	private AbstractSignatureParameters fillParameters(SignatureDocumentForm form) {
+		AbstractSignatureParameters parameters = getSignatureParameters(form.getSignatureForm());
 		parameters.setSignaturePackaging(form.getSignaturePackaging());
+
+		fillParameters(parameters, form);
+
+		return parameters;
+	}
+
+	private void fillParameters(AbstractSignatureParameters parameters, AbstractSignatureForm form) {
 		parameters.setSignatureLevel(form.getSignatureLevel());
 		parameters.setDigestAlgorithm(form.getDigestAlgorithm());
 		// parameters.setEncryptionAlgorithm(form.getEncryptionAlgorithm()); retrieved from certificate
 		parameters.bLevel().setSigningDate(form.getSigningDate());
-
-		if (Utils.isStringNotEmpty(form.getPolicyOid()) && Utils.isStringNotEmpty(form.getPolicyBase64HashValue())
-				&& (form.getPolicyDigestAlgorithm() != null)) {
-			Policy signaturePolicy = new Policy();
-			signaturePolicy.setId(form.getPolicyOid());
-			signaturePolicy.setDigestAlgorithm(form.getPolicyDigestAlgorithm());
-			signaturePolicy.setDigestValue(Utils.fromBase64(form.getPolicyBase64HashValue()));
-			parameters.bLevel().setSignaturePolicy(signaturePolicy);
-		}
 
 		parameters.setSignWithExpiredCertificate(form.isSignWithExpiredCertificate());
 
@@ -142,8 +158,46 @@ public class SigningService {
 			}
 			parameters.setCertificateChain(certificateChain);
 		}
+	}
 
-		return parameters;
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public DSSDocument signDocument(SignatureDocumentForm form) {
+		logger.info("Start signDocument with one document");
+		DocumentSignatureService service = getSignatureService(form.getSignatureForm());
+
+		AbstractSignatureParameters parameters = fillParameters(form);
+
+		DSSDocument signedDocument = null;
+		try {
+			DSSDocument toSignDocument = WebAppUtils.toDSSDocument(form.getDocumentToSign());
+			SignatureAlgorithm sigAlgorithm = SignatureAlgorithm.getAlgorithm(form.getEncryptionAlgorithm(), form.getDigestAlgorithm());
+			SignatureValue signatureValue = new SignatureValue(sigAlgorithm, DatatypeConverter.parseBase64Binary(form.getBase64SignatureValue()));
+			signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+		} catch (Exception e) {
+			logger.error("Unable to execute signDocument : " + e.getMessage(), e);
+		}
+		logger.info("End signDocument with one document");
+		return signedDocument;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public DSSDocument signDocument(SignatureMultipleDocumentsForm form) {
+		logger.info("Start signDocument with multiple documents");
+		MultipleDocumentsSignatureService service = getASiCSignatureService(form.getSignatureForm());
+
+		AbstractSignatureParameters parameters = fillParameters(form);
+
+		DSSDocument signedDocument = null;
+		try {
+			List<DSSDocument> toSignDocuments = WebAppUtils.toDSSDocuments(form.getDocumentsToSign());
+			SignatureAlgorithm sigAlgorithm = SignatureAlgorithm.getAlgorithm(form.getEncryptionAlgorithm(), form.getDigestAlgorithm());
+			SignatureValue signatureValue = new SignatureValue(sigAlgorithm, DatatypeConverter.parseBase64Binary(form.getBase64SignatureValue()));
+			signedDocument = service.signDocument(toSignDocuments, parameters, signatureValue);
+		} catch (Exception e) {
+			logger.error("Unable to execute signDocument : " + e.getMessage(), e);
+		}
+		logger.info("End signDocument with multiple documents");
+		return signedDocument;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -159,9 +213,21 @@ public class SigningService {
 		case XAdES:
 			service = xadesService;
 			break;
-		case ASiC_S:
-		case ASiC_E:
-			service = asicService;
+		default:
+			logger.error("Unknow signature form : " + signatureForm);
+		}
+		return service;
+	}
+
+	@SuppressWarnings("rawtypes")
+	private MultipleDocumentsSignatureService getASiCSignatureService(SignatureForm signatureForm) {
+		MultipleDocumentsSignatureService service = null;
+		switch (signatureForm) {
+		case CAdES:
+			service = asicWithCAdESService;
+			break;
+		case XAdES:
+			service = asicWithXAdESService;
 			break;
 		default:
 			logger.error("Unknow signature form : " + signatureForm);
@@ -169,7 +235,7 @@ public class SigningService {
 		return service;
 	}
 
-	private AbstractSignatureParameters getSignatureParameters(SignatureForm signatureForm, SignatureForm underlyingForm) {
+	private AbstractSignatureParameters getSignatureParameters(SignatureForm signatureForm) {
 		AbstractSignatureParameters parameters = null;
 		switch (signatureForm) {
 		case CAdES:
@@ -182,14 +248,6 @@ public class SigningService {
 			break;
 		case XAdES:
 			parameters = new XAdESSignatureParameters();
-			break;
-		case ASiC_S:
-		case ASiC_E:
-			ASiCSignatureParameters asicParameters = new ASiCSignatureParameters();
-			if (underlyingForm != null) {
-				asicParameters.aSiC().setUnderlyingForm(underlyingForm);
-			}
-			parameters = asicParameters;
 			break;
 		default:
 			logger.error("Unknow signature form : " + signatureForm);

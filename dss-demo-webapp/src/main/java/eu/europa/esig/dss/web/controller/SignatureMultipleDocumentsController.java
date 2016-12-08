@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -33,25 +34,24 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.web.editor.EnumPropertyEditor;
 import eu.europa.esig.dss.web.model.DataToSignParams;
 import eu.europa.esig.dss.web.model.GetDataToSignResponse;
-import eu.europa.esig.dss.web.model.NexuSignatureDocumentForm;
 import eu.europa.esig.dss.web.model.SignDocumentResponse;
+import eu.europa.esig.dss.web.model.SignatureMultipleDocumentsForm;
 import eu.europa.esig.dss.web.model.SignatureValueAsString;
 import eu.europa.esig.dss.web.service.SigningService;
 
 @Controller
-@SessionAttributes(value = { "signatureDocumentForm", "signedDocument" })
-@RequestMapping(value = "/nexu")
-public class NexuController {
+@SessionAttributes(value = { "signatureMultipleDocumentsForm", "signedDocument" })
+@RequestMapping(value = "/sign-multiple-documents")
+public class SignatureMultipleDocumentsController {
 
-	private static final Logger logger = LoggerFactory.getLogger(NexuController.class);
+	private static final Logger logger = LoggerFactory.getLogger(SignatureMultipleDocumentsController.class);
 
-	private static final String SIGNATURE_PARAMETERS = "nexu-signature-parameters";
+	private static final String SIGNATURE_PARAMETERS = "signature-multiple-documents-parameters";
 	private static final String SIGNATURE_PROCESS = "nexu-signature-process";
 
 	@Autowired
@@ -59,8 +59,8 @@ public class NexuController {
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(ASiCContainerType.class, new EnumPropertyEditor(ASiCContainerType.class));
 		binder.registerCustomEditor(SignatureForm.class, new EnumPropertyEditor(SignatureForm.class));
-		binder.registerCustomEditor(SignaturePackaging.class, new EnumPropertyEditor(SignaturePackaging.class));
 		binder.registerCustomEditor(SignatureLevel.class, new EnumPropertyEditor(SignatureLevel.class));
 		binder.registerCustomEditor(DigestAlgorithm.class, new EnumPropertyEditor(DigestAlgorithm.class));
 		binder.registerCustomEditor(EncryptionAlgorithm.class, new EnumPropertyEditor(EncryptionAlgorithm.class));
@@ -68,33 +68,33 @@ public class NexuController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String showSignatureParameters(Model model, HttpServletRequest request) {
-		NexuSignatureDocumentForm signatureDocumentForm = new NexuSignatureDocumentForm();
-		model.addAttribute("signatureDocumentForm", signatureDocumentForm);
+		SignatureMultipleDocumentsForm signatureDocumentForm = new SignatureMultipleDocumentsForm();
+		model.addAttribute("signatureMultipleDocumentsForm", signatureDocumentForm);
 		return SIGNATURE_PARAMETERS;
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	public String sendSignatureParameters(Model model, HttpServletRequest response,
-			@ModelAttribute("signatureDocumentForm") @Valid NexuSignatureDocumentForm signatureDocumentForm, BindingResult result) {
+			@ModelAttribute("signatureMultipleDocumentsForm") @Valid SignatureMultipleDocumentsForm signatureDocumentForm, BindingResult result) {
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
 				logger.error(error.getDefaultMessage());
 			}
 			return SIGNATURE_PARAMETERS;
 		}
-		model.addAttribute("signatureDocumentForm", signatureDocumentForm);
+		model.addAttribute("signatureMultipleDocumentsForm", signatureDocumentForm);
 		return SIGNATURE_PROCESS;
 	}
 
 	@RequestMapping(value = "/get-data-to-sign", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public GetDataToSignResponse getDataToSign(Model model, @RequestBody @Valid DataToSignParams params,
-			@ModelAttribute("signatureDocumentForm") @Valid NexuSignatureDocumentForm signatureDocumentForm, BindingResult result) {
+			@ModelAttribute("signatureMultipleDocumentsForm") @Valid SignatureMultipleDocumentsForm signatureDocumentForm, BindingResult result) {
 		signatureDocumentForm.setBase64Certificate(params.getSigningCertificate());
 		signatureDocumentForm.setBase64CertificateChain(params.getCertificateChain());
 		signatureDocumentForm.setEncryptionAlgorithm(params.getEncryptionAlgorithm());
 		signatureDocumentForm.setSigningDate(new Date());
-		model.addAttribute("signatureDocumentForm", signatureDocumentForm);
+		model.addAttribute("signatureMultipleDocumentsForm", signatureDocumentForm);
 
 		ToBeSigned dataToSign = signingService.getDataToSign(signatureDocumentForm);
 		if (dataToSign == null) {
@@ -109,7 +109,7 @@ public class NexuController {
 	@RequestMapping(value = "/sign-document", method = RequestMethod.POST)
 	@ResponseBody
 	public SignDocumentResponse signDocument(Model model, @RequestBody @Valid SignatureValueAsString signatureValue,
-			@ModelAttribute("signatureDocumentForm") @Valid NexuSignatureDocumentForm signatureDocumentForm, BindingResult result) {
+			@ModelAttribute("signatureMultipleDocumentsForm") @Valid SignatureMultipleDocumentsForm signatureDocumentForm, BindingResult result) {
 
 		signatureDocumentForm.setBase64SignatureValue(signatureValue.getSignatureValue());
 
@@ -139,14 +139,14 @@ public class NexuController {
 		return null;
 	}
 
-	@ModelAttribute("signatureForms")
-	public SignatureForm[] getSignatureForms() {
-		return SignatureForm.values();
+	@ModelAttribute("asicContainerTypes")
+	public ASiCContainerType[] getASiCContainerTypes() {
+		return ASiCContainerType.values();
 	}
 
-	@ModelAttribute("signaturePackagings")
-	public SignaturePackaging[] getSignaturePackagings() {
-		return SignaturePackaging.values();
+	@ModelAttribute("signatureForms")
+	public SignatureForm[] getSignatureForms() {
+		return new SignatureForm[] { SignatureForm.CAdES, SignatureForm.XAdES };
 	}
 
 	@ModelAttribute("digestAlgos")
@@ -155,4 +155,5 @@ public class NexuController {
 				DigestAlgorithm.SHA512 };
 		return algos;
 	}
+
 }

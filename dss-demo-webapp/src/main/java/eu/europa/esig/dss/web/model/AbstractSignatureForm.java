@@ -3,18 +3,14 @@ package eu.europa.esig.dss.web.model;
 import java.util.Date;
 import java.util.List;
 
-import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 
-public class NexuSignatureDocumentForm {
+public abstract class AbstractSignatureForm {
 
 	// @AssertTrue(message = "{error.nexu.not.found}")
 	private boolean nexuDetected;
@@ -23,27 +19,14 @@ public class NexuSignatureDocumentForm {
 
 	private boolean signWithExpiredCertificate;
 
-	private MultipartFile documentToSign;
-
 	@NotNull(message = "{error.signature.form.mandatory}")
 	private SignatureForm signatureForm;
-
-	private SignatureForm asicUnderlyingForm;
-
-	@NotNull(message = "{error.signature.packaging.mandatory}")
-	private SignaturePackaging signaturePackaging;
 
 	@NotNull(message = "{error.signature.level.mandatory}")
 	private SignatureLevel signatureLevel;
 
 	@NotNull(message = "{error.digest.algo.mandatory}")
 	private DigestAlgorithm digestAlgorithm;
-
-	private String policyOid;
-
-	private DigestAlgorithm policyDigestAlgorithm;
-
-	private String policyBase64HashValue;
 
 	private String base64Certificate;
 
@@ -77,36 +60,12 @@ public class NexuSignatureDocumentForm {
 		this.signWithExpiredCertificate = signWithExpiredCertificate;
 	}
 
-	public MultipartFile getDocumentToSign() {
-		return documentToSign;
-	}
-
-	public void setDocumentToSign(MultipartFile documentToSign) {
-		this.documentToSign = documentToSign;
-	}
-
 	public SignatureForm getSignatureForm() {
 		return signatureForm;
 	}
 
 	public void setSignatureForm(SignatureForm signatureForm) {
 		this.signatureForm = signatureForm;
-	}
-
-	public SignatureForm getAsicUnderlyingForm() {
-		return asicUnderlyingForm;
-	}
-
-	public void setAsicUnderlyingForm(SignatureForm asicUnderlyingForm) {
-		this.asicUnderlyingForm = asicUnderlyingForm;
-	}
-
-	public SignaturePackaging getSignaturePackaging() {
-		return signaturePackaging;
-	}
-
-	public void setSignaturePackaging(SignaturePackaging signaturePackaging) {
-		this.signaturePackaging = signaturePackaging;
 	}
 
 	public SignatureLevel getSignatureLevel() {
@@ -157,41 +116,4 @@ public class NexuSignatureDocumentForm {
 		this.base64SignatureValue = base64SignatureValue;
 	}
 
-	public String getPolicyOid() {
-		return policyOid;
-	}
-
-	public void setPolicyOid(String policyOid) {
-		this.policyOid = policyOid;
-	}
-
-	public DigestAlgorithm getPolicyDigestAlgorithm() {
-		return policyDigestAlgorithm;
-	}
-
-	public void setPolicyDigestAlgorithm(DigestAlgorithm policyDigestAlgorithm) {
-		this.policyDigestAlgorithm = policyDigestAlgorithm;
-	}
-
-	public String getPolicyBase64HashValue() {
-		return policyBase64HashValue;
-	}
-
-	public void setPolicyBase64HashValue(String policyBase64HashValue) {
-		this.policyBase64HashValue = policyBase64HashValue;
-	}
-
-	@AssertTrue(message = "{error.to.sign.file.mandatory}")
-	public boolean isDocumentToSign() {
-		return (documentToSign != null) && (!documentToSign.isEmpty());
-	}
-
-	@AssertTrue(message = "{error.signature.underlying.form.mandatory}")
-	public boolean isAsicUnderlyingFormValid() {
-		if (SignatureForm.ASiC_S.equals(signatureForm) || SignatureForm.ASiC_E.equals(signatureForm)) {
-			return SignatureForm.CAdES.equals(asicUnderlyingForm) || SignatureForm.XAdES.equals(asicUnderlyingForm);
-		} else {
-			return true;
-		}
-	}
 }
