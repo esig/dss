@@ -735,6 +735,31 @@ public final class DSSXMLUtils {
 	}
 
 	/**
+	 * Creates a DOM Document object of the specified type with its document element.
+	 *
+	 * @param namespaceURI  the namespace URI of the document element to create or null
+	 * @param qualifiedName the qualified name of the document element to be created or null
+	 * @param element       document {@code Element}
+	 * @return {@code Document}
+	 */
+	public static Document createDocument(final String namespaceURI, final String qualifiedName, final Element element) {
+		ensureDocumentBuilder();
+
+		DOMImplementation domImpl;
+		try {
+			domImpl = dbFactory.newDocumentBuilder().getDOMImplementation();
+		} catch (ParserConfigurationException e) {
+			throw new DSSException(e);
+		}
+		final Document newDocument = domImpl.createDocument(namespaceURI, qualifiedName, null);
+		final Element newElement = newDocument.getDocumentElement();
+		newDocument.adoptNode(element);
+		newElement.appendChild(element);
+
+		return newDocument;
+	}
+
+	/**
 	 * Converts a given {@code Date} to a new {@code XMLGregorianCalendar}.
 	 *
 	 * @param date
