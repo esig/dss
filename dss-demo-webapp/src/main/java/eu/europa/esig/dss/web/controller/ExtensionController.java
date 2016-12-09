@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
@@ -38,6 +39,7 @@ public class ExtensionController {
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(ASiCContainerType.class, new EnumPropertyEditor(ASiCContainerType.class));
 		binder.registerCustomEditor(SignatureForm.class, new EnumPropertyEditor(SignatureForm.class));
 		binder.registerCustomEditor(SignaturePackaging.class, new EnumPropertyEditor(SignaturePackaging.class));
 		binder.registerCustomEditor(SignatureLevel.class, new EnumPropertyEditor(SignatureLevel.class));
@@ -67,6 +69,11 @@ public class ExtensionController {
 		}
 
 		return null;
+	}
+
+	@ModelAttribute("asicContainerTypes")
+	public ASiCContainerType[] getASiCContainerTypes() {
+		return ASiCContainerType.values();
 	}
 
 	@ModelAttribute("signatureForms")

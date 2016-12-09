@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
@@ -62,14 +63,15 @@ public class SigningService {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public DSSDocument extend(ExtensionForm extensionForm) {
 
+		ASiCContainerType containerType = extensionForm.getContainerType();
 		SignatureForm signatureForm = extensionForm.getSignatureForm();
 
 		DSSDocument signedDocument = WebAppUtils.toDSSDocument(extensionForm.getSignedFile());
 		DSSDocument originalDocument = WebAppUtils.toDSSDocument(extensionForm.getOriginalFile());
 
-		DocumentSignatureService service = getSignatureService(signatureForm);
+		DocumentSignatureService service = getSignatureService(containerType, signatureForm);
 
-		AbstractSignatureParameters parameters = getSignatureParameters(signatureForm);
+		AbstractSignatureParameters parameters = getSignatureParameters(containerType, signatureForm);
 		parameters.setSignatureLevel(extensionForm.getSignatureLevel());
 
 		if (originalDocument != null) {
@@ -83,7 +85,7 @@ public class SigningService {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public ToBeSigned getDataToSign(SignatureDocumentForm form) {
 		logger.info("Start getDataToSign with one document");
-		DocumentSignatureService service = getSignatureService(form.getSignatureForm());
+		DocumentSignatureService service = getSignatureService(null, form.getSignatureForm());
 
 		AbstractSignatureParameters parameters = fillParameters(form);
 
@@ -117,16 +119,7 @@ public class SigningService {
 	}
 
 	private AbstractSignatureParameters fillParameters(SignatureMultipleDocumentsForm form) {
-		AbstractSignatureParameters finalParameters = null;
-		if (SignatureForm.XAdES == form.getSignatureForm()) {
-			ASiCWithXAdESSignatureParameters parameters = new ASiCWithXAdESSignatureParameters();
-			parameters.aSiC().setContainerType(form.getContainerType());
-			finalParameters = parameters;
-		} else {
-			ASiCWithCAdESSignatureParameters parameters = new ASiCWithCAdESSignatureParameters();
-			parameters.aSiC().setContainerType(form.getContainerType());
-			finalParameters = parameters;
-		}
+		AbstractSignatureParameters finalParameters = getASiCSignatureParameters(form.getContainerType(), form.getSignatureForm());
 
 		fillParameters(finalParameters, form);
 
@@ -134,7 +127,7 @@ public class SigningService {
 	}
 
 	private AbstractSignatureParameters fillParameters(SignatureDocumentForm form) {
-		AbstractSignatureParameters parameters = getSignatureParameters(form.getSignatureForm());
+		AbstractSignatureParameters parameters = getSignatureParameters(null, form.getSignatureForm());
 		parameters.setSignaturePackaging(form.getSignaturePackaging());
 
 		fillParameters(parameters, form);
@@ -167,7 +160,7 @@ public class SigningService {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public DSSDocument signDocument(SignatureDocumentForm form) {
 		logger.info("Start signDocument with one document");
-		DocumentSignatureService service = getSignatureService(form.getSignatureForm());
+		DocumentSignatureService service = getSignatureService(null, form.getSignatureForm());
 
 		AbstractSignatureParameters parameters = fillParameters(form);
 
@@ -205,22 +198,50 @@ public class SigningService {
 	}
 
 	@SuppressWarnings("rawtypes")
-	private DocumentSignatureService getSignatureService(SignatureForm signatureForm) {
+	private DocumentSignatureService getSignatureService(ASiCContainerType containerType, SignatureForm signatureForm) {
 		DocumentSignatureService service = null;
-		switch (signatureForm) {
-		case CAdES:
-			service = cadesService;
-			break;
-		case PAdES:
-			service = padesService;
-			break;
-		case XAdES:
-			service = xadesService;
-			break;
-		default:
-			logger.error("Unknow signature form : " + signatureForm);
+		if (containerType != null) {
+			service = (DocumentSignatureService) getASiCSignatureService(signatureForm);
+		} else {
+			switch (signatureForm) {
+			case CAdES:
+				service = cadesService;
+				break;
+			case PAdES:
+				service = padesService;
+				break;
+			case XAdES:
+				service = xadesService;
+				break;
+			default:
+				logger.error("Unknow signature form : " + signatureForm);
+			}
 		}
 		return service;
+	}
+
+	private AbstractSignatureParameters getSignatureParameters(ASiCContainerType containerType, SignatureForm signatureForm) {
+		AbstractSignatureParameters parameters = null;
+		if (containerType != null) {
+			parameters = getASiCSignatureParameters(containerType, signatureForm);
+		} else {
+			switch (signatureForm) {
+			case CAdES:
+				parameters = new CAdESSignatureParameters();
+				break;
+			case PAdES:
+				PAdESSignatureParameters padesParams = new PAdESSignatureParameters();
+				padesParams.setSignatureSize(9472 * 2); // double reserved space for signature
+				parameters = padesParams;
+				break;
+			case XAdES:
+				parameters = new XAdESSignatureParameters();
+				break;
+			default:
+				logger.error("Unknow signature form : " + signatureForm);
+			}
+		}
+		return parameters;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -239,22 +260,21 @@ public class SigningService {
 		return service;
 	}
 
-	private AbstractSignatureParameters getSignatureParameters(SignatureForm signatureForm) {
+	private AbstractSignatureParameters getASiCSignatureParameters(ASiCContainerType containerType, SignatureForm signatureForm) {
 		AbstractSignatureParameters parameters = null;
 		switch (signatureForm) {
 		case CAdES:
-			parameters = new CAdESSignatureParameters();
-			break;
-		case PAdES:
-			PAdESSignatureParameters padesParams = new PAdESSignatureParameters();
-			padesParams.setSignatureSize(9472 * 2); // double reserved space for signature
-			parameters = padesParams;
+			ASiCWithCAdESSignatureParameters asicCadesParams = new ASiCWithCAdESSignatureParameters();
+			asicCadesParams.aSiC().setContainerType(containerType);
+			parameters = asicCadesParams;
 			break;
 		case XAdES:
-			parameters = new XAdESSignatureParameters();
+			ASiCWithXAdESSignatureParameters asicXadesParams = new ASiCWithXAdESSignatureParameters();
+			asicXadesParams.aSiC().setContainerType(containerType);
+			parameters = asicXadesParams;
 			break;
 		default:
-			logger.error("Unknow signature form : " + signatureForm);
+			logger.error("Unknow signature form for ASiC container: " + signatureForm);
 		}
 		return parameters;
 	}

@@ -20,21 +20,7 @@
         </div>
     </div>
     
-    <div class="form-group">
-	    <form:label path="signatureForm" cssClass="col-sm-2 control-label">
-	        <spring:message code="label.asic.container.type" />
-	    </form:label>
-	    <div class="col-sm-6">
-	        <c:forEach var="asicType" items="${asicContainerTypes}">
-	            <label class="radio-inline">
-	                <form:radiobutton path="containerType" value="${asicType}" /> <spring:message code="label.${asicType}" />
-	            </label>
-	        </c:forEach>
-	    </div>
-	    <div class="col-xs-4">
-	        <form:errors path="containerType" cssClass="text-danger" />
-	    </div>
-	</div>
+	<jsp:include page="fields/containerTypeField.jsp" />
 
     <jsp:include page="fields/signatureForm.jsp" />
     
