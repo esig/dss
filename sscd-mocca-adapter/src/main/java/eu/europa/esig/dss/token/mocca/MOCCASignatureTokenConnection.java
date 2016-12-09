@@ -77,6 +77,10 @@ public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
 		this.callback = new PINGUIAdapter(callback);
 	}
 
+	public void set_signatureCards(List<SignatureCard> _signatureCards) {
+		this._signatureCards = _signatureCards;
+	}
+
 	@Override
 	public void close() {
 
