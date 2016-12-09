@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,28 +87,38 @@ public class MSCAPISignatureToken extends AbstractSignatureTokenConnection {
 			keyStoreVeritable = (KeyStoreSpi) field.get(keyStore);
 
 			if ("sun.security.mscapi.KeyStore$MY".equals(keyStoreVeritable.getClass().getName())) {
-				Collection<?> entries;
-				String alias, hashCode;
-				X509Certificate[] certificates;
 
 				field = keyStoreVeritable.getClass().getEnclosingClass().getDeclaredField("entries");
 				field.setAccessible(true);
-				entries = (Collection<?>) field.get(keyStoreVeritable);
+				Object entriesObject = field.get(keyStoreVeritable);
+				if (entriesObject instanceof Map) {
+					// Old issue fixed in JDK 7u121 and JDK8
+					// More info :
+					// https://bugs.openjdk.java.net/browse/JDK-6483657
+					// http://hg.openjdk.java.net/jdk8u/jdk8u/jdk/rev/0901dc70ae2b
+					return;
+				} else if (entriesObject instanceof Collection<?>) {
+					Collection<?> entries = (Collection<?>) entriesObject;
+					String alias, hashCode;
+					X509Certificate[] certificates;
 
-				for (Object entry : entries) {
-					field = entry.getClass().getDeclaredField("certChain");
-					field.setAccessible(true);
-					certificates = (X509Certificate[]) field.get(entry);
+					for (Object entry : entries) {
+						field = entry.getClass().getDeclaredField("certChain");
+						field.setAccessible(true);
+						certificates = (X509Certificate[]) field.get(entry);
 
-					hashCode = Integer.toString(certificates[0].hashCode());
+						hashCode = Integer.toString(certificates[0].hashCode());
 
-					field = entry.getClass().getDeclaredField("alias");
-					field.setAccessible(true);
-					alias = (String) field.get(entry);
+						field = entry.getClass().getDeclaredField("alias");
+						field.setAccessible(true);
+						alias = (String) field.get(entry);
 
-					if (!alias.equals(hashCode)) {
-						field.set(entry, alias.concat(" - ").concat(hashCode));
+						if (!alias.equals(hashCode)) {
+							field.set(entry, alias.concat(" - ").concat(hashCode));
+						}
 					}
+				} else {
+					LOG.warn("Unsupported entries type : " + entriesObject.getClass().getName());
 				}
 			}
 		} catch (Exception exception) {
