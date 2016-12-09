@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
+import java.util.HashMap;
 
 /**
  * Class holding all MS CAPI API access logic.
@@ -89,7 +90,11 @@ public class MSCAPISignatureToken extends AbstractSignatureTokenConnection {
 
 				field = keyStoreVeritable.getClass().getEnclosingClass().getDeclaredField("entries");
 				field.setAccessible(true);
-				entries = (Collection<?>) field.get(keyStoreVeritable);
+                                try{
+                                    entries = (Collection<?>) field.get(keyStoreVeritable);
+                                }catch(ClassCastException exception){
+                                    entries = (Collection<?>) ((HashMap)field.get(keyStoreVeritable)).values();
+                                }
 
 				for (Object entry : entries) {
 					field = entry.getClass().getDeclaredField("certChain");
