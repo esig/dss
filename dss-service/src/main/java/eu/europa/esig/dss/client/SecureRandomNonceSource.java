@@ -21,17 +21,18 @@
 package eu.europa.esig.dss.client;
 
 import java.math.BigInteger;
+import java.security.SecureRandom;
 
 /**
- * Interface which allows to produce Nonce value.
- * 
+ * This class produces nonce values based on a SecureRandom.
  */
-public interface NonceSource {
+public class SecureRandomNonceSource implements NonceSource {
 
-	/**
-	 * This methods allows to retrieve an unique new value to be use as nonce
-	 * 
-	 */
-	BigInteger getNonce();
+	private static SecureRandom secureRandom = new SecureRandom();
+
+	@Override
+	public BigInteger getNonce() {
+		return BigInteger.valueOf(secureRandom.nextLong());
+	}
 
 }

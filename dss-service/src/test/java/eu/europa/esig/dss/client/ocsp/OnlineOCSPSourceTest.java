@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.client.NonceSource;
+import eu.europa.esig.dss.client.SecureRandomNonceSource;
 import eu.europa.esig.dss.client.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.ocsp.OCSPToken;
@@ -46,7 +46,7 @@ public class OnlineOCSPSourceTest {
 	public void testOCSPWithNonce() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		ocspSource.setDataLoader(new OCSPDataLoader());
-		ocspSource.setNonceSource(new NonceSource());
+		ocspSource.setNonceSource(new SecureRandomNonceSource());
 		OCSPToken ocspToken = ocspSource.getOCSPToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
 	}

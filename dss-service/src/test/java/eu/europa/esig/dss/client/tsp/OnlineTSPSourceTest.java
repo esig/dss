@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.client.NonceSource;
+import eu.europa.esig.dss.client.SecureRandomNonceSource;
 import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.client.http.commons.TimestampDataLoader;
@@ -58,8 +58,8 @@ public class OnlineTSPSourceTest {
 	@Test
 	public void testWithNonce() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
-		tspSource.setNonceSource(new NonceSource());
 		tspSource.setDataLoader(new NativeHTTPDataLoader());
+		tspSource.setNonceSource(new SecureRandomNonceSource());
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
 		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
