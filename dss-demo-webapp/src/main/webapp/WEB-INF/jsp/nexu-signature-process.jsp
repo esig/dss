@@ -14,8 +14,6 @@
 	<strong id="errorText">Oops... an error occurred </strong><span id="errorcontent"></span>
 </div>
 
-<%-- <script src="${pageContext.request.contextPath}/js/nexu-deploy.js" type="text/javascript"></script> --%>
-
 <script src="scripts/nexu.js" type="text/javascript"></script>
 
 <script type="text/javascript" defer>
@@ -46,7 +44,7 @@
 		    tokenId = certificateData.response.tokenId.id;
 		    keyId = certificateData.response.keyId;
 		    var toSend = { signingCertificate: signingCertificate, certificateChain: certificateChain, encryptionAlgorithm: encryptionAlgorithm };
-		    callUrl("nexu/get-data-to-sign", "POST",  JSON.stringify(toSend) , sign, error);
+		    callUrl("${rootUrl}" +"/get-data-to-sign", "POST",  JSON.stringify(toSend) , sign, error);
 		}
 	}
 	
@@ -58,7 +56,7 @@
 			$("#error").show();
 		} else {
 			updateProgressBar("Signing the digest...", "50%");
-			var digestAlgo = "${signatureDocumentForm.digestAlgorithm.name}";
+			var digestAlgo = "${digestAlgorithm.name}";
 			nexu_sign_with_token_infos(tokenId, keyId, dataToSignResponse.dataToSign, digestAlgo, signDocument, error);
 		}
 	}
@@ -67,12 +65,12 @@
 		updateProgressBar("Signing the document...", "75%");
 		var signatureValue = signatureData.response.signatureValue;
 		var toSend = {signatureValue:signatureValue};
-	    callUrl("nexu/sign-document", "POST", JSON.stringify(toSend), downloadSignedDocument, error);
+	    callUrl("${rootUrl}"+"/sign-document", "POST", JSON.stringify(toSend), downloadSignedDocument, error);
 	}
 	
 	function downloadSignedDocument(signDocumentResponse) {
 		var url = signDocumentResponse.urlToDownload;
-		url = "nexu/download";
+		url = "${rootUrl}" + "/download";
 		window.open(url, "_self");
 		updateProgressBar("Done !", "100%");
 		$('#bar').removeClass('progress-bar-striped active');

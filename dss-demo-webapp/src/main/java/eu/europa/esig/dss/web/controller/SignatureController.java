@@ -83,6 +83,8 @@ public class SignatureController {
 			return SIGNATURE_PARAMETERS;
 		}
 		model.addAttribute("signatureDocumentForm", signatureDocumentForm);
+		model.addAttribute("digestAlgorithm", signatureDocumentForm.getDigestAlgorithm());
+		model.addAttribute("rootUrl", "sign-a-document");
 		return SIGNATURE_PROCESS;
 	}
 

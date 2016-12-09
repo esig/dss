@@ -117,16 +117,20 @@ public class SigningService {
 	}
 
 	private AbstractSignatureParameters fillParameters(SignatureMultipleDocumentsForm form) {
-		AbstractSignatureParameters parameters = null;
+		AbstractSignatureParameters finalParameters = null;
 		if (SignatureForm.XAdES == form.getSignatureForm()) {
-			parameters = new ASiCWithXAdESSignatureParameters();
+			ASiCWithXAdESSignatureParameters parameters = new ASiCWithXAdESSignatureParameters();
+			parameters.aSiC().setContainerType(form.getContainerType());
+			finalParameters = parameters;
 		} else {
-			parameters = new ASiCWithCAdESSignatureParameters();
+			ASiCWithCAdESSignatureParameters parameters = new ASiCWithCAdESSignatureParameters();
+			parameters.aSiC().setContainerType(form.getContainerType());
+			finalParameters = parameters;
 		}
 
-		fillParameters(parameters, form);
+		fillParameters(finalParameters, form);
 
-		return parameters;
+		return finalParameters;
 	}
 
 	private AbstractSignatureParameters fillParameters(SignatureDocumentForm form) {

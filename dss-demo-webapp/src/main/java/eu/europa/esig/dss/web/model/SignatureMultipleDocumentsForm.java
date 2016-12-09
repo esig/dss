@@ -35,7 +35,7 @@ public class SignatureMultipleDocumentsForm extends AbstractSignatureForm {
 
 	@AssertTrue(message = "{error.to.sign.files.mandatory}")
 	public boolean isDocumentToSign() {
-		return Utils.isCollectionEmpty(documentsToSign);
+		return Utils.isCollectionNotEmpty(documentsToSign);
 	}
 
 }

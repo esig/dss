@@ -59,8 +59,8 @@ public class SignatureMultipleDocumentsController {
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(ASiCContainerType.class, new EnumPropertyEditor(ASiCContainerType.class));
 		binder.registerCustomEditor(SignatureForm.class, new EnumPropertyEditor(SignatureForm.class));
+		binder.registerCustomEditor(ASiCContainerType.class, new EnumPropertyEditor(ASiCContainerType.class));
 		binder.registerCustomEditor(SignatureLevel.class, new EnumPropertyEditor(SignatureLevel.class));
 		binder.registerCustomEditor(DigestAlgorithm.class, new EnumPropertyEditor(DigestAlgorithm.class));
 		binder.registerCustomEditor(EncryptionAlgorithm.class, new EnumPropertyEditor(EncryptionAlgorithm.class));
@@ -68,35 +68,37 @@ public class SignatureMultipleDocumentsController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String showSignatureParameters(Model model, HttpServletRequest request) {
-		SignatureMultipleDocumentsForm signatureDocumentForm = new SignatureMultipleDocumentsForm();
-		model.addAttribute("signatureMultipleDocumentsForm", signatureDocumentForm);
+		SignatureMultipleDocumentsForm signatureMultipleDocumentsForm = new SignatureMultipleDocumentsForm();
+		model.addAttribute("signatureMultipleDocumentsForm", signatureMultipleDocumentsForm);
 		return SIGNATURE_PARAMETERS;
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	public String sendSignatureParameters(Model model, HttpServletRequest response,
-			@ModelAttribute("signatureMultipleDocumentsForm") @Valid SignatureMultipleDocumentsForm signatureDocumentForm, BindingResult result) {
+			@ModelAttribute("signatureMultipleDocumentsForm") @Valid SignatureMultipleDocumentsForm signatureMultipleDocumentsForm, BindingResult result) {
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
 				logger.error(error.getDefaultMessage());
 			}
 			return SIGNATURE_PARAMETERS;
 		}
-		model.addAttribute("signatureMultipleDocumentsForm", signatureDocumentForm);
+		model.addAttribute("signatureMultipleDocumentsForm", signatureMultipleDocumentsForm);
+		model.addAttribute("digestAlgorithm", signatureMultipleDocumentsForm.getDigestAlgorithm());
+		model.addAttribute("rootUrl", "sign-multiple-documents");
 		return SIGNATURE_PROCESS;
 	}
 
 	@RequestMapping(value = "/get-data-to-sign", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public GetDataToSignResponse getDataToSign(Model model, @RequestBody @Valid DataToSignParams params,
-			@ModelAttribute("signatureMultipleDocumentsForm") @Valid SignatureMultipleDocumentsForm signatureDocumentForm, BindingResult result) {
-		signatureDocumentForm.setBase64Certificate(params.getSigningCertificate());
-		signatureDocumentForm.setBase64CertificateChain(params.getCertificateChain());
-		signatureDocumentForm.setEncryptionAlgorithm(params.getEncryptionAlgorithm());
-		signatureDocumentForm.setSigningDate(new Date());
-		model.addAttribute("signatureMultipleDocumentsForm", signatureDocumentForm);
+			@ModelAttribute("signatureMultipleDocumentsForm") @Valid SignatureMultipleDocumentsForm signatureMultipleDocumentsForm, BindingResult result) {
+		signatureMultipleDocumentsForm.setBase64Certificate(params.getSigningCertificate());
+		signatureMultipleDocumentsForm.setBase64CertificateChain(params.getCertificateChain());
+		signatureMultipleDocumentsForm.setEncryptionAlgorithm(params.getEncryptionAlgorithm());
+		signatureMultipleDocumentsForm.setSigningDate(new Date());
+		model.addAttribute("signatureMultipleDocumentsForm", signatureMultipleDocumentsForm);
 
-		ToBeSigned dataToSign = signingService.getDataToSign(signatureDocumentForm);
+		ToBeSigned dataToSign = signingService.getDataToSign(signatureMultipleDocumentsForm);
 		if (dataToSign == null) {
 			return null;
 		}
@@ -109,11 +111,11 @@ public class SignatureMultipleDocumentsController {
 	@RequestMapping(value = "/sign-document", method = RequestMethod.POST)
 	@ResponseBody
 	public SignDocumentResponse signDocument(Model model, @RequestBody @Valid SignatureValueAsString signatureValue,
-			@ModelAttribute("signatureMultipleDocumentsForm") @Valid SignatureMultipleDocumentsForm signatureDocumentForm, BindingResult result) {
+			@ModelAttribute("signatureMultipleDocumentsForm") @Valid SignatureMultipleDocumentsForm signatureMultipleDocumentsForm, BindingResult result) {
 
-		signatureDocumentForm.setBase64SignatureValue(signatureValue.getSignatureValue());
+		signatureMultipleDocumentsForm.setBase64SignatureValue(signatureValue.getSignatureValue());
 
-		DSSDocument document = signingService.signDocument(signatureDocumentForm);
+		DSSDocument document = signingService.signDocument(signatureMultipleDocumentsForm);
 		InMemoryDocument signedDocument = new InMemoryDocument(DSSUtils.toByteArray(document), document.getName(), document.getMimeType());
 		model.addAttribute("signedDocument", signedDocument);
 
@@ -155,5 +157,4 @@ public class SignatureMultipleDocumentsController {
 				DigestAlgorithm.SHA512 };
 		return algos;
 	}
-
 }
