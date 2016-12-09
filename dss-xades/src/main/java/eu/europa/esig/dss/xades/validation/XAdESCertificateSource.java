@@ -31,11 +31,11 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DSSXMLUtils;
-import eu.europa.esig.dss.XPathQueryHolder;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
  * This class provides the mechanism to retrieve certificates contained in a XAdES signature.
@@ -58,9 +58,12 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	/**
 	 * The default constructor for XAdESCertificateSource. All certificates are extracted during instantiation.
 	 *
-	 * @param signatureElement {@code Element} that contains an XML signature
-	 * @param xPathQueryHolder adapted {@code XPathQueryHolder}
-	 * @param certificatePool  {@code CertificatePool} to use to declare the found certificates
+	 * @param signatureElement
+	 *            {@code Element} that contains an XML signature
+	 * @param xPathQueryHolder
+	 *            adapted {@code XPathQueryHolder}
+	 * @param certificatePool
+	 *            {@code CertificatePool} to use to declare the found certificates
 	 */
 	public XAdESCertificateSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder, final CertificatePool certificatePool) {
 
@@ -90,7 +93,8 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	/**
-	 * @param xPathQuery XPath query
+	 * @param xPathQuery
+	 *            XPath query
 	 * @return
 	 */
 	private List<CertificateToken> getCertificates(final String xPathQuery) {
@@ -102,13 +106,17 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 			final Element certificateElement = (Element) nodeList.item(ii);
 
 			final byte[] derEncoded = Base64.decodeBase64(certificateElement.getTextContent());
-			final CertificateToken cert = DSSUtils.loadCertificate(derEncoded);
-			final CertificateToken certToken = addCertificate(cert);
-			if (!list.contains(certToken)) {
+			try {
+				final CertificateToken cert = DSSUtils.loadCertificate(derEncoded);
+				final CertificateToken certToken = addCertificate(cert);
+				if (!list.contains(certToken)) {
 
-				final String idIdentifier = DSSXMLUtils.getIDIdentifier(certificateElement);
-				certToken.setXmlId(idIdentifier);
-				list.add(certToken);
+					final String idIdentifier = DSSXMLUtils.getIDIdentifier(certificateElement);
+					certToken.setXmlId(idIdentifier);
+					list.add(certToken);
+				}
+			} catch (Exception e) {
+				LOG.warn("Unable to parse certificate '" + certificateElement.getTextContent() + "' : " + e.getMessage());
 			}
 		}
 		return list;

@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades;
 import java.io.Serializable;
 
 /**
- * This class This class manages the internal variables used in the process of creating of a signature and which allows to
+ * This class manages the internal variables used in the process of creating of a signature and which allows to
  * accelerate the generation.<br>
  */
 public class ProfileParameters implements Serializable {

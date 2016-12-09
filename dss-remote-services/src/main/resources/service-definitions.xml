@@ -7,5 +7,8 @@
 		<property name="padesService" ref="padesService" />
 		<property name="asicService" ref="asicService" />
 	</bean>
+	<bean id="remoteValidationService" class="eu.europa.esig.dss.validation.RemoteDocumentValidationService">
+		<property name="verifier" ref="certificateVerifier" />
+	</bean>
 
 </beans>

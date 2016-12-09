@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>4.6.0</version>
+		<version>4.7.0</version>
 	</parent>
 
 	<artifactId>dss-demo-webapp</artifactId>
@@ -27,42 +27,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
-					<execution>
-						<id>copy</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-									<artifactId>dss-demo-applet-package</artifactId>
-									<type>jar</type>
-									<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>
-									<destFileName>/jar/signature-applet-r5.jar</destFileName>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-					<execution>
-						<id>copy-light-applet</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-									<artifactId>dss-light-applet-package</artifactId>
-									<type>jar</type>
-									<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}</outputDirectory>
-									<destFileName>/jar/light-signature-applet.jar</destFileName>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
 					<execution>
 						<id>copy-standalone-zip</id>
 						<phase>process-resources</phase>
@@ -184,22 +148,6 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-policy-jaxb</artifactId>
 		</dependency>
-		<!-- PKCS12 is executed on the webapp (not applet) -->
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-token</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-demo-applet-package</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-light-applet-package</artifactId>
-			<scope>provided</scope>
-		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-standalone-app-package</artifactId>
@@ -230,11 +178,21 @@
 			<artifactId>dss-soap</artifactId>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-validation-soap</artifactId>
+			<scope>compile</scope>
+		</dependency>
 		
 		<!-- REST -->
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-rest</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-validation-rest</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		
@@ -264,10 +222,6 @@
 			<artifactId>tiles-template</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
@@ -293,6 +247,12 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		
 		<dependency>
@@ -305,6 +265,12 @@
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>fop</artifactId>
 			<version>2.0</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		
 		<dependency>
@@ -340,7 +306,13 @@
 	       <artifactId>selenium-java</artifactId>
 	       <version>2.41.0</version>
 	       <scope>test</scope>
-	   </dependency>
+	       <exclusions>
+	       	<exclusion>
+	       		<artifactId>commons-logging</artifactId>
+	       		<groupId>commons-logging</groupId>
+	       	</exclusion>
+	       </exclusions>
+		</dependency>
 	</dependencies>
 
 	<profiles>
@@ -393,6 +365,9 @@
 								<goals>
 									<goal>shutdown</goal>
 								</goals>
+								<configuration>
+									<skipErrorOnShutdown>true</skipErrorOnShutdown>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>

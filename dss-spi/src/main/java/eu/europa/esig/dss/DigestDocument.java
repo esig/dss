@@ -59,16 +59,6 @@ public class DigestDocument extends FileDocument {
 		super(file);
 	}
 
-	@Override
-	public InputStream openStream() throws DSSException {
-		throw new DSSUnsupportedOperationException("Cannot open DigestDocument");
-	}
-
-	@Override
-	public byte[] getBytes() throws DSSException {
-		throw new DSSUnsupportedOperationException("The underlying file is too large to convert it into byte array!");
-	}
-
 	/**
 	 * This method allows to add a pair: {@code DigestAlgorithm} and the corresponding digest value calculated externally on the encapsulated file. The digest value is base 64 encoded.
 	 *
@@ -89,11 +79,6 @@ public class DigestDocument extends FileDocument {
 			base64EncodeDigest = super.getDigest(digestAlgorithm);
 		}
 		return base64EncodeDigest;
-	}
-
-	@Override
-	public String getBase64Encoded() {
-		throw new DSSUnsupportedOperationException("Cannot get a base64 encoded from a DigestDocument");
 	}
 
 }

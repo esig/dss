@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -33,6 +34,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +47,8 @@ import eu.europa.esig.dss.ResourceLoader;
 import eu.europa.esig.dss.client.http.Protocol;
 
 /**
- * This class provides some caching features to handle the resources. The default cache folder is set to {@code java.io.tmpdir}. The urls of the resources is transformed to the
+ * This class provides some caching features to handle the resources. The default cache folder is set to
+ * {@code java.io.tmpdir}. The urls of the resources is transformed to the
  * file name by replacing the special characters by {@code _}
  */
 public class FileCacheDataLoader extends CommonsDataLoader {
@@ -60,10 +63,13 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 
 	private List<String> toIgnored;
 
+	private Long cacheExpirationTime;
+
 	/**
 	 * This method allows to set the file cache directory. If the cache folder does not exists then it's created.
 	 *
-	 * @param fileCacheDirectory {@code File} pointing the cache folder to be used.
+	 * @param fileCacheDirectory
+	 *            {@code File} pointing the cache folder to be used.
 	 */
 	public void setFileCacheDirectory(final File fileCacheDirectory) {
 
@@ -71,14 +77,29 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 		this.fileCacheDirectory.mkdirs();
 	}
 
+	/**
+	 * Sets the expiration time for the cached files in milliseconds.
+	 * If more time has passed from the cache file's last modified time, then a fresh copy is downloaded and cached,
+	 * otherwise a cached copy is used.
+	 *
+	 * If the expiration time is not set, then the cache does not expire.
+	 *
+	 * @param cacheExpirationTimeInMilliseconds
+	 */
+	public void setCacheExpirationTime(long cacheExpirationTimeInMilliseconds) {
+		this.cacheExpirationTime = cacheExpirationTimeInMilliseconds;
+	}
+
 	public void setResourceLoader(final ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
 	}
 
 	/**
-	 * This methods allows to indicate if the resource must be obtained. If this method has been invoked then only the provided URL will be processed.
+	 * This methods allows to indicate if the resource must be obtained. If this method has been invoked then only the
+	 * provided URL will be processed.
 	 *
-	 * @param url to be processed
+	 * @param url
+	 *            to be processed
 	 */
 	public void addToBeLoaded(final String url) {
 
@@ -93,10 +114,12 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 	}
 
 	/**
-	 * This methods allows to indicate which resources must be ignored. It is useful in a test environment where some of fake sources a not available. It prevents to wait for the
+	 * This methods allows to indicate which resources must be ignored. It is useful in a test environment where some of
+	 * fake sources a not available. It prevents to wait for the
 	 * timeout.
 	 *
-	 * @param urlString to be ignored. It can be the original URL or the cache file name
+	 * @param urlString
+	 *            to be ignored. It can be the original URL or the cache file name
 	 */
 	public void addToBeIgnored(final String urlString) {
 
@@ -120,13 +143,14 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 		final String fileName = ResourceLoader.getNormalizedFileName(url);
 		final File file = getCacheFile(fileName);
 		final boolean fileExists = file.exists();
-		if (fileExists && !refresh) {
+		final boolean isCacheExpired = isCacheExpired(file);
+		if (fileExists && !refresh && !isCacheExpired) {
 
 			LOG.debug("Cached file was used");
 			final byte[] bytes = DSSUtils.toByteArray(file);
 			return bytes;
 		} else {
-			if(!fileExists) {
+			if (!fileExists) {
 				LOG.debug("There is no cached file!");
 			} else {
 				LOG.debug("The refresh is forced!");
@@ -194,8 +218,10 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 	/**
 	 * Allows to add a given array of {@code byte} as a cache file representing by the {@code urlString}.
 	 *
-	 * @param urlString the URL to add to the cache
-	 * @param bytes     the content of the cache file
+	 * @param urlString
+	 *            the URL to add to the cache
+	 * @param bytes
+	 *            the content of the cache file
 	 */
 	public void saveBytesInCache(final String urlString, final byte[] bytes) {
 
@@ -240,6 +266,7 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 
 		HttpPost httpRequest = null;
 		HttpResponse httpResponse = null;
+		CloseableHttpClient client = null;
 		try {
 
 			final URI uri = URI.create(urlString.trim());
@@ -254,7 +281,8 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 				httpRequest.setHeader(CONTENT_TYPE, contentType);
 			}
 
-			httpResponse = super.getHttpResponse(httpRequest, urlString);
+			client = getHttpClient(urlString);
+			httpResponse = super.getHttpResponse(client, httpRequest, urlString);
 
 			returnedBytes = readHttpResponse(urlString, httpResponse);
 			if (returnedBytes.length != 0) {
@@ -265,13 +293,34 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			if (httpRequest != null) {
-				httpRequest.releaseConnection();
+			try {
+				if (httpRequest != null) {
+					httpRequest.releaseConnection();
+				}
+				if (httpResponse != null) {
+					EntityUtils.consumeQuietly(httpResponse.getEntity());
+				}
 			}
-			if (httpResponse != null) {
-				EntityUtils.consumeQuietly(httpResponse.getEntity());
+
+			finally {
+				closeClient(client);
 			}
 		}
 		return returnedBytes;
+	}
+
+	private boolean isCacheExpired(File file) {
+		if (cacheExpirationTime == null) {
+			return false;
+		}
+		if (!file.exists()) {
+			return true;
+		}
+		long currentTime = new Date().getTime();
+		if (file.lastModified() + cacheExpirationTime < currentTime) {
+			LOG.debug("Cache is expired");
+			return true;
+		}
+		return false;
 	}
 }

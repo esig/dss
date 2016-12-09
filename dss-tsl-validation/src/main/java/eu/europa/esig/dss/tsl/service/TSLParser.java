@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import javax.security.auth.x500.X500Principal;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -60,6 +59,7 @@ import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceExtension;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
+import eu.europa.esig.dss.tsl.TSLServiceStatus;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.jaxb.ecc.CriteriaListType;
 import eu.europa.esig.jaxb.ecc.KeyUsageBitType;
@@ -77,13 +77,13 @@ import eu.europa.esig.jaxb.tsl.ExtensionsListType;
 import eu.europa.esig.jaxb.tsl.InternationalNamesType;
 import eu.europa.esig.jaxb.tsl.MultiLangNormStringType;
 import eu.europa.esig.jaxb.tsl.NextUpdateType;
+import eu.europa.esig.jaxb.tsl.NonEmptyMultiLangURIListType;
 import eu.europa.esig.jaxb.tsl.NonEmptyMultiLangURIType;
 import eu.europa.esig.jaxb.tsl.NonEmptyURIListType;
 import eu.europa.esig.jaxb.tsl.ObjectFactory;
 import eu.europa.esig.jaxb.tsl.OtherTSLPointerType;
 import eu.europa.esig.jaxb.tsl.PostalAddressType;
 import eu.europa.esig.jaxb.tsl.ServiceHistoryInstanceType;
-import eu.europa.esig.jaxb.tsl.ServiceHistoryType;
 import eu.europa.esig.jaxb.tsl.TSPInformationType;
 import eu.europa.esig.jaxb.tsl.TSPServiceInformationType;
 import eu.europa.esig.jaxb.tsl.TSPServiceType;
@@ -100,6 +100,8 @@ import eu.europa.esig.jaxb.xades.ObjectIdentifierType;
 public class TSLParser implements Callable<TSLParserResult> {
 
 	private static final Logger logger = LoggerFactory.getLogger(TSLParser.class);
+
+	private static final String ENGLISH_LANGUAGE = "en";
 
 	private static final String TSL_MIME_TYPE = "application/vnd.etsi.tsl+xml";
 
@@ -141,6 +143,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 		tslModel.setDistributionPoints(getDistributionPoints(tsl));
 		tslModel.setPointers(getMachineProcessableTSLPointers(tsl));
 		tslModel.setServiceProviders(getServiceProviders(tsl));
+		tslModel.setEnglishSchemeInformationURIs(getEnglishSchemeInformationURIs(tsl));
 		return tslModel;
 	}
 
@@ -277,22 +280,6 @@ public class TSLParser implements Callable<TSLParserResult> {
 		return certificates;
 	}
 
-	private List<X500Principal> extractX500Principals(DigitalIdentityListType digitalIdentityListType) {
-		List<X500Principal> result = new ArrayList<X500Principal>();
-		List<DigitalIdentityType> digitalIds = digitalIdentityListType.getDigitalId();
-		for (DigitalIdentityType digitalId : digitalIds) {
-			if (digitalId.getX509SubjectName() != null) {
-				try {
-					X500Principal x500Principal = DSSUtils.getX500Principal(digitalId.getX509SubjectName());
-					result.add(x500Principal);
-				} catch (Exception e) {
-					logger.warn("Unable to load X500Principal : " + e.getMessage());
-				}
-			}
-		}
-		return result;
-	}
-
 	private List<TSLServiceProvider> getServiceProviders(TrustStatusListType tsl) {
 		List<TSLServiceProvider> serviceProviders = new ArrayList<TSLServiceProvider>();
 		TrustServiceProviderListType trustServiceProviderList = tsl.getTrustServiceProviderList();
@@ -320,37 +307,51 @@ public class TSLParser implements Callable<TSLParserResult> {
 	private List<TSLService> getServices(TSPServicesListType tspServices) {
 		List<TSLService> services = new ArrayList<TSLService>();
 		if ((tspServices != null) && CollectionUtils.isNotEmpty(tspServices.getTSPService())) {
-			Date previousStartDate = null;
 			for (TSPServiceType tslService : tspServices.getTSPService()) {
 				if (tslService.getServiceInformation() != null) {
-					TSLService service = getService(tslService.getServiceInformation());
-					previousStartDate = service.getStartDate();
-					services.add(service);
-				}
-				ServiceHistoryType serviceHistory = tslService.getServiceHistory();
-				if ((serviceHistory != null) && CollectionUtils.isNotEmpty(serviceHistory.getServiceHistoryInstance())) {
-					for (ServiceHistoryInstanceType serviceHistoryInstance : serviceHistory.getServiceHistoryInstance()) {
-						TSLService service = getService(serviceHistoryInstance, previousStartDate);
-						previousStartDate = service.getStartDate();
-						services.add(service);
-					}
+					services.add(getService(tslService));
 				}
 			}
 		}
 		return services;
 	}
 
-	private TSLService getService(TSPServiceInformationType serviceInfo) {
+	private TSLService getService(TSPServiceType tslService) {
 		TSLService service = new TSLService();
+		TSPServiceInformationType serviceInfo = tslService.getServiceInformation();
 		service.setName(getEnglishOrFirst(serviceInfo.getServiceName()));
-		service.setStatus(serviceInfo.getServiceStatus());
-		service.setStartDate(convertToDate(serviceInfo.getStatusStartingTime()));
 		service.setType(serviceInfo.getServiceTypeIdentifier());
 		service.setCertificateUrls(extractCertificatesUrls(serviceInfo));
 		service.setCertificates(extractCertificates(serviceInfo.getServiceDigitalIdentity()));
-		service.setX500Principals(extractX500Principals(serviceInfo.getServiceDigitalIdentity()));
 		service.setExtensions(extractExtensions(serviceInfo.getServiceInformationExtensions()));
+		service.setStatus(getStatusHistory(tslService));
 		return service;
+	}
+
+	private List<TSLServiceStatus> getStatusHistory(TSPServiceType tslService) {
+		List<TSLServiceStatus> statusHistoryList = new ArrayList<TSLServiceStatus>();
+
+		TSPServiceInformationType serviceInfo = tslService.getServiceInformation();
+
+		TSLServiceStatus status = new TSLServiceStatus();
+		status.setStatus(serviceInfo.getServiceStatus());
+		Date nextEndDate = convertToDate(serviceInfo.getStatusStartingTime());
+		status.setStartDate(nextEndDate);
+		statusHistoryList.add(status);
+
+		if (tslService.getServiceHistory() != null && CollectionUtils.isNotEmpty(tslService.getServiceHistory().getServiceHistoryInstance())) {
+			for (ServiceHistoryInstanceType serviceHistory : tslService.getServiceHistory().getServiceHistoryInstance()) {
+				TSLServiceStatus statusHistory = new TSLServiceStatus();
+				statusHistory.setStatus(serviceHistory.getServiceStatus());
+				statusHistory.setEndDate(nextEndDate);
+				nextEndDate = convertToDate(serviceHistory.getStatusStartingTime());
+				statusHistory.setStartDate(nextEndDate);
+
+				statusHistoryList.add(statusHistory);
+			}
+		}
+
+		return statusHistoryList;
 	}
 
 	private List<String> extractCertificatesUrls(TSPServiceInformationType serviceInfo) {
@@ -369,20 +370,6 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 	private boolean isCertificateURI(String value) {
 		return StringUtils.endsWithIgnoreCase(value, ".crt");
-	}
-
-	private TSLService getService(ServiceHistoryInstanceType serviceHistory, Date endDate) {
-		TSLService service = new TSLService();
-		service.setName(getEnglishOrFirst(serviceHistory.getServiceName()));
-		service.setStatus(serviceHistory.getServiceStatus());
-		service.setType(serviceHistory.getServiceTypeIdentifier());
-		service.setStartDate(convertToDate(serviceHistory.getStatusStartingTime()));
-		service.setEndDate(endDate);
-		service.setCertificateUrls(new ArrayList<String>());
-		service.setCertificates(extractCertificates(serviceHistory.getServiceDigitalIdentity()));
-		service.setX500Principals(extractX500Principals(serviceHistory.getServiceDigitalIdentity()));
-		service.setExtensions(extractExtensions(serviceHistory.getServiceInformationExtensions()));
-		return service;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -451,7 +438,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 					IdentifierType identifier = oidType.getIdentifier();
 					String id = identifier.getValue();
 
-					// ES TSL :  <ns4:Identifier Qualifier="OIDAsURN">urn:oid:1.3.6.1.4.1.36035.1.3.1</ns4:Identifier>
+					// ES TSL : <ns4:Identifier Qualifier="OIDAsURN">urn:oid:1.3.6.1.4.1.36035.1.3.1</ns4:Identifier>
 					if (id.indexOf(':') >= 0) {
 						id = id.substring(id.lastIndexOf(':') + 1);
 					}
@@ -488,7 +475,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 			return null;
 		}
 		for (PostalAddressType c : tspInformation.getTSPAddress().getPostalAddresses().getPostalAddress()) {
-			if ("en".equalsIgnoreCase(c.getLang())) {
+			if (ENGLISH_LANGUAGE.equalsIgnoreCase(c.getLang())) {
 				a = c;
 				break;
 			}
@@ -532,11 +519,24 @@ public class TSLParser implements Callable<TSLParserResult> {
 			return null;
 		}
 		for (MultiLangNormStringType s : names.getName()) {
-			if ("en".equalsIgnoreCase(s.getLang())) {
+			if (ENGLISH_LANGUAGE.equalsIgnoreCase(s.getLang())) {
 				return s.getValue();
 			}
 		}
 		return names.getName().get(0).getValue();
+	}
+
+	private List<String> getEnglishSchemeInformationURIs(TrustStatusListType tsl) {
+		List<String> result = new ArrayList<String>();
+		NonEmptyMultiLangURIListType schemeInformationURI = tsl.getSchemeInformation().getSchemeInformationURI();
+		if (schemeInformationURI != null && CollectionUtils.isNotEmpty(schemeInformationURI.getURI())) {
+			for (NonEmptyMultiLangURIType uri : schemeInformationURI.getURI()) {
+				if (ENGLISH_LANGUAGE.equals(uri.getLang())) {
+					result.add(uri.getValue());
+				}
+			}
+		}
+		return result;
 	}
 
 }

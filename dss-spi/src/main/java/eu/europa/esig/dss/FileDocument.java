@@ -81,14 +81,6 @@ public class FileDocument extends CommonDocument {
 	}
 
 	@Override
-	public byte[] getBytes() throws DSSException {
-		final InputStream inputStream = openStream();
-		final byte[] bytes = DSSUtils.toByteArray(inputStream);
-		IOUtils.closeQuietly(inputStream);
-		return bytes;
-	}
-
-	@Override
 	public void save(final String path) throws IOException {
 		final InputStream inputStream = openStream();
 		DSSUtils.saveToFile(inputStream, path);
@@ -104,11 +96,4 @@ public class FileDocument extends CommonDocument {
 		return base64Encode;
 	}
 
-	@Override
-	public String getBase64Encoded() {
-		final InputStream inputStream = openStream();
-		final byte[] bytes = DSSUtils.toByteArray(inputStream);
-		IOUtils.closeQuietly(inputStream);
-		return Base64.encodeBase64String(bytes);
-	}
 }

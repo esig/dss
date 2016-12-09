@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:dss="http://dss.esig.europa.eu/validation/diagnostic">
+                xmlns:dss="http://dss.esig.europa.eu/validation/simple-report">
                 
 	<xsl:output method="html" encoding="utf-8" indent="yes" omit-xml-declaration="yes" />
 
@@ -41,9 +41,9 @@
         <xsl:variable name="idSig" select="@Id" />
         <xsl:variable name="indicationCssClass">
         	<xsl:choose>
-				<xsl:when test="$indicationText='VALID'">success</xsl:when>
+				<xsl:when test="$indicationText='TOTAL_PASSED'">success</xsl:when>
 				<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
-				<xsl:when test="$indicationText='INVALID'">danger</xsl:when>
+				<xsl:when test="$indicationText='TOTAL_FAILED'">danger</xsl:when>
 			</xsl:choose>
         </xsl:variable>
         
@@ -65,7 +65,7 @@
 					<dd>
 						<xsl:attribute name="class">text-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
 						<xsl:choose>
-							<xsl:when test="$indicationText='VALID'">
+							<xsl:when test="$indicationText='TOTAL_PASSED'">
 								<span>
 									<xsl:attribute name="class">glyphicon glyphicon-ok-sign</xsl:attribute>
 								</span>
@@ -75,7 +75,7 @@
 									<xsl:attribute name="class">glyphicon glyphicon-question-sign</xsl:attribute>
 								</span>
 							</xsl:when>
-							<xsl:when test="$indicationText='INVALID'">
+							<xsl:when test="$indicationText='TOTAL_FAILED'">
 								<span>
 									<xsl:attribute name="class">glyphicon glyphicon-remove-sign</xsl:attribute>
 								</span>
@@ -98,13 +98,13 @@
 		        <xsl:apply-templates select="dss:SubIndication">
 		            <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
 		        </xsl:apply-templates>
-			    <xsl:apply-templates select="dss:Error">
+			    <xsl:apply-templates select="dss:Errors">
 				    <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
 			    </xsl:apply-templates>
-			    <xsl:apply-templates select="dss:Warning">
+			    <xsl:apply-templates select="dss:Warnings">
 				    <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
 			    </xsl:apply-templates>
-		        <xsl:apply-templates select="dss:Info">
+		        <xsl:apply-templates select="dss:Infos">
 		            <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
 		        </xsl:apply-templates>
 		        
@@ -133,7 +133,7 @@
 		            <dd><xsl:value-of select="count(preceding-sibling::dss:Signature) + 1"/> out of <xsl:value-of select="count(ancestor::*/dss:Signature)"/></dd>
 		        </dl>
 		        
-		        <xsl:for-each select="./dss:SignatureScopes/dss:SignatureScope">
+		        <xsl:for-each select="dss:SignatureScope">
 			        <dl>
 			    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
 			            <dt>Signature scope:</dt>
@@ -146,7 +146,7 @@
     	</div>
     </xsl:template>
 
-	<xsl:template match="dss:SubIndication|dss:Error|dss:Warning|dss:Info">
+	<xsl:template match="dss:SubIndication|dss:Errors|dss:Warnings|dss:Infos">
 		<xsl:param name="indicationClass" />
 		<dl>
     		<xsl:attribute name="class">dl-horizontal</xsl:attribute>

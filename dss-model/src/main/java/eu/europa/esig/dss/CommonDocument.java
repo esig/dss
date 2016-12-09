@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
 
 /**
@@ -36,6 +39,17 @@ public abstract class CommonDocument implements DSSDocument {
 	protected String name;
 
 	protected String absolutePath;
+	
+	@Override
+	public void writeTo(OutputStream stream) throws IOException {
+		byte[] buffer = new byte[1024];
+		int count = -1;
+		InputStream inStream = openStream();
+		while((count = inStream.read(buffer)) > 0) {
+			stream.write(buffer, 0, count);
+		}
+		inStream.close();
+	}
 
 	@Override
 	public MimeType getMimeType() {

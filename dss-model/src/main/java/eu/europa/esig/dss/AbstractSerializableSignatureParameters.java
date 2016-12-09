@@ -57,8 +57,6 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 */
 	private BLevelParameters bLevelParams = new BLevelParameters();
 
-	private String deterministicId;
-
 	private TimestampParameters signatureTimestampParameters;
 	private TimestampParameters archiveTimestampParameters;
 	private TimestampParameters contentTimestampParameters;
@@ -93,11 +91,12 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	/**
 	 * Set signature level. This field cannot be null.
 	 *
-	 * @param signatureLevel the value
+	 * @param signatureLevel
+	 *            the value
 	 */
-	public void setSignatureLevel(final SignatureLevel signatureLevel) throws NullPointerException {
+	public void setSignatureLevel(final SignatureLevel signatureLevel) {
 		if (signatureLevel == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("signatureLevel");
 		}
 		this.signatureLevel = signatureLevel;
 	}
@@ -114,7 +113,8 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	/**
 	 * Set Signature packaging
 	 *
-	 * @param signaturePackaging the value
+	 * @param signaturePackaging
+	 *            the value
 	 */
 	public void setSignaturePackaging(final SignaturePackaging signaturePackaging) {
 		this.signaturePackaging = signaturePackaging;
@@ -128,7 +128,8 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	}
 
 	/**
-	 * @param digestAlgorithm the digest algorithm to set
+	 * @param digestAlgorithm
+	 *            the digest algorithm to set
 	 */
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
 		this.digestAlgorithm = digestAlgorithm;
@@ -138,7 +139,8 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	}
 
 	/**
-	 * This setter should be used only when dealing with web services (or when signing in three steps). Usually the encryption algorithm is automatically extrapolated from the
+	 * This setter should be used only when dealing with web services (or when signing in three steps). Usually the
+	 * encryption algorithm is automatically extrapolated from the
 	 * private key.
 	 *
 	 * @param encryptionAlgorithm
@@ -153,7 +155,8 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	}
 
 	/**
-	 * @return the encryption algorithm. It's determined by the privateKeyEntry and is null until the privateKeyEntry is set.
+	 * @return the encryption algorithm. It's determined by the privateKeyEntry and is null until the privateKeyEntry is
+	 *         set.
 	 */
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
 		return encryptionAlgorithm;
@@ -213,26 +216,13 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		this.contentTimestampParameters = contentTimestampParameters;
 	}
 
-	/**
-	 * This methods reinits the deterministicId to force to recompute it
-	 */
-	public void reinitDeterministicId() {
-		deterministicId = null;
-	}
-
 	@Override
 	public String toString() {
-		return "SignatureParameters{" +
-				"signWithExpiredCertificate=" + signWithExpiredCertificate +
-				", signatureLevel=" + signatureLevel +
-				", signaturePackaging=" + signaturePackaging +
-				", signatureAlgorithm=" + signatureAlgorithm +
-				", encryptionAlgorithm=" + encryptionAlgorithm +
-				", digestAlgorithm=" + digestAlgorithm +
-				", bLevelParams=" + bLevelParams +
-				", deterministicId='" + deterministicId + '\'' +
-				", signatureTimestampParameters=" + ((signatureTimestampParameters == null) ? null : signatureTimestampParameters.toString()) +
-				", archiveTimestampParameters=" + ((archiveTimestampParameters == null) ? null : archiveTimestampParameters.toString()) +'}';
+		return "SignatureParameters{" + "signWithExpiredCertificate=" + signWithExpiredCertificate + ", signatureLevel=" + signatureLevel
+				+ ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm=" + signatureAlgorithm + ", encryptionAlgorithm=" + encryptionAlgorithm
+				+ ", digestAlgorithm=" + digestAlgorithm + ", bLevelParams=" + bLevelParams
+				+ ", signatureTimestampParameters=" + ((signatureTimestampParameters == null) ? null : signatureTimestampParameters.toString())
+				+ ", archiveTimestampParameters=" + ((archiveTimestampParameters == null) ? null : archiveTimestampParameters.toString()) + '}';
 	}
 
 	@Override
@@ -242,7 +232,6 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		result = (prime * result) + ((archiveTimestampParameters == null) ? 0 : archiveTimestampParameters.hashCode());
 		result = (prime * result) + ((bLevelParams == null) ? 0 : bLevelParams.hashCode());
 		result = (prime * result) + ((contentTimestampParameters == null) ? 0 : contentTimestampParameters.hashCode());
-		result = (prime * result) + ((deterministicId == null) ? 0 : deterministicId.hashCode());
 		result = (prime * result) + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
 		result = (prime * result) + ((encryptionAlgorithm == null) ? 0 : encryptionAlgorithm.hashCode());
 		result = (prime * result) + (signWithExpiredCertificate ? 1231 : 1237);
@@ -286,13 +275,6 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		} else if (!contentTimestampParameters.equals(other.contentTimestampParameters)) {
 			return false;
 		}
-		if (deterministicId == null) {
-			if (other.deterministicId != null) {
-				return false;
-			}
-		} else if (!deterministicId.equals(other.deterministicId)) {
-			return false;
-		}
 		if (digestAlgorithm != other.digestAlgorithm) {
 			return false;
 		}
@@ -320,6 +302,5 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		}
 		return true;
 	}
-
 
 }

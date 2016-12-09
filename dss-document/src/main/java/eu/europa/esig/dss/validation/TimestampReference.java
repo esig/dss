@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.io.Serializable;
+
 import org.apache.commons.codec.binary.Base64;
 
 import eu.europa.esig.dss.DSSUtils;
@@ -32,11 +34,11 @@ import eu.europa.esig.dss.DigestAlgorithm;
  * - the timestamp reference category {@code TimestampReferenceCategory};
  * - signature id in the case where the reference apply to the signature.
  */
-public class TimestampReference {
+public class TimestampReference implements Serializable {
 
 	private String signatureId;
 
-	private String digestAlgorithm;
+	private DigestAlgorithm digestAlgorithm;
 	private String digestValue;
 	private TimestampReferenceCategory category;
 
@@ -46,12 +48,17 @@ public class TimestampReference {
 			throw new NullPointerException();
 		}
 		this.signatureId = signatureId;
-		this.digestAlgorithm = DigestAlgorithm.SHA1.name();
+		this.digestAlgorithm = DigestAlgorithm.SHA1;
 		this.digestValue = Base64.encodeBase64String(DSSUtils.digest(DigestAlgorithm.SHA1, signatureId.getBytes()));
 		this.category = TimestampReferenceCategory.SIGNATURE;
 	}
 
-	public TimestampReference(final String digestAlgorithm, final String digestValue) {
+	public TimestampReference(final String signatureId, final TimestampReferenceCategory category) {
+		this(signatureId);
+		this.category = category;
+	}
+
+	public TimestampReference(final DigestAlgorithm digestAlgorithm, final String digestValue) {
 
 		if (digestAlgorithm == null) {
 			throw new NullPointerException("digestAlgorithm");
@@ -64,13 +71,13 @@ public class TimestampReference {
 		this.category = TimestampReferenceCategory.CERTIFICATE;
 	}
 
-	public TimestampReference(final String digestAlgorithm, final String digestValue, final TimestampReferenceCategory category) {
+	public TimestampReference(final DigestAlgorithm digestAlgorithm, final String digestValue, final TimestampReferenceCategory category) {
 
 		this(digestAlgorithm, digestValue);
 		this.category = category;
 	}
 
-	public String getDigestAlgorithm() {
+	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgorithm;
 	}
 

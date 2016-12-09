@@ -4,11 +4,15 @@ import javax.validation.constraints.AssertTrue;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import eu.europa.esig.dss.validation.executor.ValidationLevel;
+
 public class ValidationForm {
 
 	private MultipartFile signedFile;
 
 	private MultipartFile originalFile;
+
+	private ValidationLevel validationLevel;
 
 	private boolean defaultPolicy;
 
@@ -28,6 +32,14 @@ public class ValidationForm {
 
 	public void setOriginalFile(MultipartFile originalFile) {
 		this.originalFile = originalFile;
+	}
+
+	public ValidationLevel getValidationLevel() {
+		return validationLevel;
+	}
+
+	public void setValidationLevel(ValidationLevel validationLevel) {
+		this.validationLevel = validationLevel;
 	}
 
 	public boolean isDefaultPolicy() {

@@ -63,11 +63,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.keys.content.x509.XMLX509SKI;
 import org.bouncycastle.cert.X509CRLHolder;
-import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CRLConverter;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,8 +79,11 @@ public final class DSSUtils {
 
 	private static final Logger logger = LoggerFactory.getLogger(DSSUtils.class);
 
-	public static final String CERT_BEGIN = "-----BEGIN CERTIFICATE-----\n";
+	public static final String CERT_BEGIN = "-----BEGIN CERTIFICATE-----";
 	public static final String CERT_END = "-----END CERTIFICATE-----";
+
+	public static final String CRL_BEGIN = "-----BEGIN X509 CRL-----";
+	public static final String CRL_END = "-----END X509 CRL-----";
 
 	private static final BouncyCastleProvider securityProvider = new BouncyCastleProvider();
 
@@ -95,6 +97,8 @@ public final class DSSUtils {
 	 * The default date pattern: "yyyy-MM-dd"
 	 */
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+
+	private static final String NEW_LINE = "\n";
 
 	static {
 		try {
@@ -182,7 +186,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_TIME_FORMAT}. If an exception is frown durring the prsing then null is returned.
+	 * Converts the given string representation of the date using the {@code DEFAULT_DATE_TIME_FORMAT}. If an exception
+	 * is frown durring the prsing then null is returned.
 	 *
 	 * @param dateString
 	 *            the date string representation
@@ -315,20 +320,105 @@ public final class DSSUtils {
 	 *
 	 * @param cert
 	 * @return
-	 * @throws java.security.cert.CertificateEncodingException
+	 * @throws DSSException
 	 */
 	public static String convertToPEM(final CertificateToken cert) throws DSSException {
-		final Base64 encoder = new Base64(64);
 		final byte[] derCert = cert.getEncoded();
-		final String pemCertPre = new String(encoder.encode(derCert));
-		final String pemCert = CERT_BEGIN + pemCertPre + CERT_END;
+		String pemCertPre = Base64.encodeBase64String(derCert);
+		final String pemCert = CERT_BEGIN + NEW_LINE + pemCertPre + NEW_LINE + CERT_END;
 		return pemCert;
 	}
 
 	/**
-	 * This method loads a certificate from the given resource. The certificate must be DER-encoded and may be supplied in binary or printable
-	 * (Base64) encoding. If the certificate is provided in Base64 encoding, it must be bounded at the beginning by -----BEGIN CERTIFICATE-----, and
-	 * must be bounded at the end by -----END CERTIFICATE-----. It throws an {@code DSSException} or return {@code null} when the
+	 * This method converts the given CRL into its PEM string.
+	 *
+	 * @param crl
+	 * @return
+	 */
+	public static String convertCrlToPEM(final X509CRL crl) throws DSSException {
+		try {
+			final byte[] derCrl = crl.getEncoded();
+			String pemCrlPre = Base64.encodeBase64String(derCrl);
+			final String pemCrl = CRL_BEGIN + NEW_LINE + pemCrlPre + NEW_LINE + CRL_END;
+			return pemCrl;
+		} catch (CRLException e) {
+			throw new DSSException("Unable to convert CRL to PEM encoding : " + e.getMessage());
+		}
+	}
+
+	/**
+	 * This method returns true if the inputStream contains a PEM encoded item
+	 * 
+	 * @return true if PEM encoded
+	 */
+	public static boolean isPEM(InputStream is) {
+		try {
+			String startPEM = "-----BEGIN";
+			int headerLength = 100;
+			byte[] preamble = new byte[headerLength];
+			if (is.read(preamble, 0, headerLength) > 0) {
+				String startArray = new String(preamble);
+				return startArray.startsWith(startPEM);
+			}
+			return false;
+		} catch (Exception e) {
+			throw new DSSException("Unable to read InputStream");
+		}
+	}
+
+	/**
+	 * This method returns true if the byteArray contains a PEM encoded item
+	 * 
+	 * @return true if PEM encoded
+	 */
+	public static boolean isPEM(byte[] byteArray) {
+		try {
+			String startPEM = "-----BEGIN";
+			int headerLength = 100;
+			byte[] preamble = new byte[headerLength];
+			System.arraycopy(byteArray, 0, preamble, 0, headerLength);
+			String startArray = new String(preamble);
+			return startArray.startsWith(startPEM);
+		} catch (Exception e) {
+			throw new DSSException("Unable to read InputStream");
+		}
+	}
+
+	/**
+	 * This method converts a PEM encoded certificate to DER encoded
+	 * 
+	 * @param pemCert
+	 *            the String which contains the PEM encoded certificate
+	 * @return the binaries of the DER encoded certificate
+	 */
+	public static byte[] convertToDER(String pemCert) {
+		String base64 = pemCert.replace(CERT_BEGIN, "");
+		base64 = base64.replace(CERT_END, "");
+		base64 = base64.replaceAll("\\s", "");
+		return Base64.decodeBase64(base64);
+	}
+
+	/**
+	 * This method converts a PEM encoded crl to DER encoded
+	 * 
+	 * @param pemCert
+	 *            the String which contains the PEM encoded CRL
+	 * @return the binaries of the DER encoded crl
+	 */
+	public static byte[] convertCRLToDER(String pemCRL) {
+		String base64 = pemCRL.replace(CRL_BEGIN, "");
+		base64 = base64.replace(CRL_END, "");
+		base64 = base64.replaceAll("\\s", "");
+		return Base64.decodeBase64(base64);
+	}
+
+	/**
+	 * This method loads a certificate from the given resource. The certificate must be DER-encoded and may be supplied
+	 * in binary or printable
+	 * (Base64) encoding. If the certificate is provided in Base64 encoding, it must be bounded at the beginning by
+	 * -----BEGIN CERTIFICATE-----, and
+	 * must be bounded at the end by -----END CERTIFICATE-----. It throws an {@code DSSException} or return {@code null}
+	 * when the
 	 * certificate cannot be loaded.
 	 *
 	 * @param path
@@ -341,9 +431,12 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method loads a certificate from the given location. The certificate must be DER-encoded and may be supplied in binary or printable
-	 * (Base64) encoding. If the certificate is provided in Base64 encoding, it must be bounded at the beginning by -----BEGIN CERTIFICATE-----, and
-	 * must be bounded at the end by -----END CERTIFICATE-----. It throws an {@code DSSException} or return {@code null} when the
+	 * This method loads a certificate from the given location. The certificate must be DER-encoded and may be supplied
+	 * in binary or printable
+	 * (Base64) encoding. If the certificate is provided in Base64 encoding, it must be bounded at the beginning by
+	 * -----BEGIN CERTIFICATE-----, and
+	 * must be bounded at the end by -----END CERTIFICATE-----. It throws an {@code DSSException} or return {@code null}
+	 * when the
 	 * certificate cannot be loaded.
 	 *
 	 * @param file
@@ -356,8 +449,10 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method loads a certificate from the given location. The certificate must be DER-encoded and may be supplied in binary or printable (Base64) encoding. If the
-	 * certificate is provided in Base64 encoding, it must be bounded at the beginning by -----BEGIN CERTIFICATE-----, and must be bounded at the end by -----END CERTIFICATE-----.
+	 * This method loads a certificate from the given location. The certificate must be DER-encoded and may be supplied
+	 * in binary or printable (Base64) encoding. If the
+	 * certificate is provided in Base64 encoding, it must be bounded at the beginning by -----BEGIN CERTIFICATE-----,
+	 * and must be bounded at the end by -----END CERTIFICATE-----.
 	 * It throws an {@code DSSException} or return {@code null} when the certificate cannot be loaded.
 	 *
 	 * @param inputStream
@@ -374,9 +469,12 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method loads a certificate from the byte array. The certificate must be DER-encoded and may be supplied in binary or printable
-	 * (Base64) encoding. If the certificate is provided in Base64 encoding, it must be bounded at the beginning by -----BEGIN CERTIFICATE-----, and
-	 * must be bounded at the end by -----END CERTIFICATE-----. It throws an {@code DSSException} or return {@code null} when the
+	 * This method loads a certificate from the byte array. The certificate must be DER-encoded and may be supplied in
+	 * binary or printable
+	 * (Base64) encoding. If the certificate is provided in Base64 encoding, it must be bounded at the beginning by
+	 * -----BEGIN CERTIFICATE-----, and
+	 * must be bounded at the end by -----END CERTIFICATE-----. It throws an {@code DSSException} or return {@code null}
+	 * when the
 	 * certificate cannot be loaded.
 	 *
 	 * @param input
@@ -403,9 +501,12 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method loads the issuer certificate from the given location (AIA). The certificate must be DER-encoded and may be supplied in binary or
-	 * printable (Base64) encoding. If the certificate is provided in Base64 encoding, it must be bounded at the beginning by -----BEGIN
-	 * CERTIFICATE-----, and must be bounded at the end by -----END CERTIFICATE-----. It throws an {@code DSSException} or return {@code null} when the certificate cannot be loaded.
+	 * This method loads the issuer certificate from the given location (AIA). The certificate must be DER-encoded and
+	 * may be supplied in binary or
+	 * printable (Base64) encoding. If the certificate is provided in Base64 encoding, it must be bounded at the
+	 * beginning by -----BEGIN
+	 * CERTIFICATE-----, and must be bounded at the end by -----END CERTIFICATE-----. It throws an {@code DSSException}
+	 * or return {@code null} when the certificate cannot be loaded.
 	 *
 	 * @param cert
 	 *            certificate for which the issuer should be loaded
@@ -451,25 +552,6 @@ public final class DSSUtils {
 		}
 
 		return null;
-	}
-
-	/**
-	 * This method return SKI bytes from certificate or null.
-	 *
-	 * @param x509Certificate
-	 *            {@code X509Certificate}
-	 * @return ski bytes from the given certificate
-	 * @throws Exception
-	 */
-	public static byte[] getSki(final CertificateToken certificateToken) throws DSSException {
-		try {
-			final byte[] skiBytesFromCert = XMLX509SKI.getSKIBytesFromCert(certificateToken.getCertificate());
-			return skiBytesFromCert;
-		} catch (XMLSecurityException e) {
-			return null;
-		} catch (Exception e) {
-			throw new DSSException(e);
-		}
 	}
 
 	/**
@@ -524,7 +606,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method digests the given {@code InputStream} with SHA1 algorithm and encode returned array of bytes as hex string.
+	 * This method digests the given {@code InputStream} with SHA1 algorithm and encode returned array of bytes as hex
+	 * string.
 	 *
 	 * @param inputStream
 	 * @return
@@ -589,6 +672,31 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * This method allows to digest the data with the given algorithm.
+	 *
+	 * @param digestAlgorithm
+	 *            the algorithm to use
+	 * @param document
+	 *            the document containing data to digest
+	 * @return digested array of bytes
+	 */
+	public static byte[] digest(final DigestAlgorithm digestAlgorithm, final DSSDocument document) throws DSSException {
+		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
+		byte[] buffer = new byte[1024];
+		int count = -1;
+		InputStream stream = document.openStream();
+		try {
+			while ((count = stream.read(buffer)) > 0) {
+				messageDigest.update(buffer, 0, count);
+			}
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+		final byte[] digestValue = messageDigest.digest();
+		return digestValue;
+	}
+
+	/**
 	 * @param digestAlgorithm
 	 * @return
 	 * @throws NoSuchAlgorithmException
@@ -636,20 +744,6 @@ public final class DSSUtils {
 		}
 		final byte[] digestValue = messageDigest.digest();
 		return digestValue;
-	}
-
-	/**
-	 * Returns a {@code X509CertificateHolder} encapsulating the given {@code X509Certificate}.
-	 *
-	 * @param x509Certificate
-	 * @return a X509CertificateHolder holding this certificate
-	 */
-	public static X509CertificateHolder getX509CertificateHolder(final CertificateToken certToken) {
-		try {
-			return new X509CertificateHolder(certToken.getEncoded());
-		} catch (Exception e) {
-			throw new DSSException(e);
-		}
 	}
 
 	/**
@@ -713,7 +807,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns the {@code InputStream} based on the given {@code String} and char set. This stream does not need to be closed, it is based on {@code ByteArrayInputStream}.
+	 * This method returns the {@code InputStream} based on the given {@code String} and char set. This stream does not
+	 * need to be closed, it is based on {@code ByteArrayInputStream}.
 	 *
 	 * @param string
 	 *            {@code String} to convert
@@ -746,7 +841,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns an {@code InputStream} which does not need to be closed, based on {@code ByteArrayInputStream}.
+	 * This method returns an {@code InputStream} which does not need to be closed, based on
+	 * {@code ByteArrayInputStream}.
 	 *
 	 * @param file
 	 *            {@code File} to read
@@ -843,6 +939,16 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * Get the contents of an {@code DSSDocument} as a {@code byte[]}.
+	 *
+	 * @param document
+	 * @return
+	 */
+	public static byte[] toByteArray(final DSSDocument document) {
+		return toByteArray(document.openStream());
+	}
+
+	/**
 	 * Get the contents of an {@code InputStream} as a {@code byte[]}.
 	 *
 	 * @param inputStream
@@ -892,7 +998,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method saves the given {@code InputStream} to a file representing by the provided path. The {@code InputStream} is not closed.
+	 * This method saves the given {@code InputStream} to a file representing by the provided path. The
+	 * {@code InputStream} is not closed.
 	 *
 	 * @param inputStream
 	 *            {@code InputStream} to save
@@ -920,6 +1027,24 @@ public final class DSSUtils {
 			final byte[] encoded = x509CRL.getEncoded();
 			return encoded;
 		} catch (CRLException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	public static byte[] getEncoded(BasicOCSPResp basicOCSPResp) {
+		try {
+			final byte[] encoded = basicOCSPResp.getEncoded();
+			return encoded;
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	public static byte[] getEncoded(OCSPResp ocspResp) {
+		try {
+			final byte[] encoded = ocspResp.getEncoded();
+			return encoded;
+		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}
@@ -972,7 +1097,7 @@ public final class DSSUtils {
 		ByteBuffer buffer = ByteBuffer.allocate(8);
 		buffer.put(bytes, 0, Long.SIZE / 8);
 		// TODO: (Bob: 2014 Jan 22) To be checked if it is not platform dependent?
-		buffer.flip();//need flip
+		buffer.flip();// need flip
 		return buffer.getLong();
 	}
 
@@ -983,7 +1108,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns the {@code X500Principal} corresponding to the given string or {@code null} if the conversion is not possible.
+	 * This method returns the {@code X500Principal} corresponding to the given string or {@code null} if the conversion
+	 * is not possible.
 	 *
 	 * @param x500PrincipalString
 	 *            a {@code String} representation of the {@code X500Principal}
@@ -1000,7 +1126,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method compares two {@code X500Principal}s. {@code X500Principal.CANONICAL} and {@code X500Principal.RFC2253} forms are compared.
+	 * This method compares two {@code X500Principal}s. {@code X500Principal.CANONICAL} and
+	 * {@code X500Principal.RFC2253} forms are compared.
 	 * TODO: (Bob: 2014 Feb 20) To be investigated why the standard equals does not work!?
 	 *
 	 * @param firstX500Principal
@@ -1051,7 +1178,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns an UTC date base on the year, the month and the day. The year must be encoded as 1978... and not 78
+	 * This method returns an UTC date base on the year, the month and the day. The year must be encoded as 1978... and
+	 * not 78
 	 *
 	 * @param year
 	 *            the value used to set the YEAR calendar field.
@@ -1108,7 +1236,7 @@ public final class DSSUtils {
 	 */
 	public static String getMessageId(final String message) {
 
-		final String message_ = message./*replace('\'', '_').*/toLowerCase().replaceAll("[^a-z_]", " ");
+		final String message_ = message./* replace('\'', '_'). */toLowerCase().replaceAll("[^a-z_]", " ");
 		StringBuilder nameId = new StringBuilder();
 		final StringTokenizer stringTokenizer = new StringTokenizer(message_);
 		while (stringTokenizer.hasMoreElements()) {
@@ -1155,20 +1283,23 @@ public final class DSSUtils {
 			destinationFile.createNewFile();
 		}
 
+		FileInputStream fis = null;
+		FileOutputStream fos = null;
 		FileChannel source = null;
 		FileChannel destination = null;
 
 		try {
-			source = new FileInputStream(sourceFile).getChannel();
-			destination = new FileOutputStream(destinationFile).getChannel();
+			fis = new FileInputStream(sourceFile);
+			fos = new FileOutputStream(destinationFile);
+			source = fis.getChannel();
+			destination = fos.getChannel();
 			destination.transferFrom(source, 0, source.size());
 		} finally {
-			if (source != null) {
-				source.close();
-			}
-			if (destination != null) {
-				destination.close();
-			}
+			IOUtils.closeQuietly(source);
+			IOUtils.closeQuietly(fis);
+
+			IOUtils.closeQuietly(destination);
+			IOUtils.closeQuietly(fos);
 		}
 	}
 
@@ -1205,7 +1336,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns the summary of the given exception. The analysis of the stack trace stops when the provided class is found.
+	 * This method returns the summary of the given exception. The analysis of the stack trace stops when the provided
+	 * class is found.
 	 *
 	 * @param exception
 	 *            {@code Exception} to summarize
@@ -1274,7 +1406,8 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Concatenates all the arrays into a new array. The new array contains all of the element of each array followed by all of the elements of the next array. When an array is
+	 * Concatenates all the arrays into a new array. The new array contains all of the element of each array followed by
+	 * all of the elements of the next array. When an array is
 	 * returned, it is always a new array.
 	 *
 	 * @param arrays
@@ -1333,23 +1466,23 @@ public final class DSSUtils {
 
 		SignatureForm signatureForm = level.getSignatureForm();
 		switch (signatureForm) {
-			case XAdES:
-				finalName.append("xml");
-				break;
-			case CAdES:
-				finalName.append("pkcs7");
-				break;
-			case PAdES:
-				finalName.append("pdf");
-				break;
-			case ASiC_S:
-				finalName.append("asics");
-				break;
-			case ASiC_E:
-				finalName.append("asice");
-				break;
-			default:
-				break;
+		case XAdES:
+			finalName.append("xml");
+			break;
+		case CAdES:
+			finalName.append("pkcs7");
+			break;
+		case PAdES:
+			finalName.append("pdf");
+			break;
+		case ASiC_S:
+			finalName.append("asics");
+			break;
+		case ASiC_E:
+			finalName.append("asice");
+			break;
+		default:
+			break;
 		}
 
 		return finalName.toString();

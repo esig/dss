@@ -28,6 +28,7 @@ import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.ocsp.ResponderID;
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.RespID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +39,9 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.OCSPToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.ocsp.OCSPSource;
+import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 /**
  * Check the status of the certificate using an OCSPSource
@@ -62,7 +63,6 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 	 * @param validationCertPool
 	 */
 	public OCSPCertificateVerifier(final OCSPSource ocspSource, final CertificatePool validationCertPool) {
-
 		this.ocspSource = ocspSource;
 		this.validationCertPool = validationCertPool;
 	}
@@ -78,15 +78,14 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 		try {
 			final OCSPToken ocspToken = ocspSource.getOCSPToken(toCheckToken, toCheckToken.getIssuerToken());
 			if (ocspToken == null) {
-				if (logger.isInfoEnabled()) {
-					logger.debug("No matching OCSP response found for " + toCheckToken.getDSSIdAsString());
-				}
+				logger.debug("No matching OCSP response found for " + toCheckToken.getDSSIdAsString());
 			} else {
-
+				ocspToken.extractInfo();
 				final boolean found = extractSigningCertificateFromResponse(ocspToken);
 				if (!found) {
 					extractSigningCertificateFormResponderId(ocspToken);
 				}
+				toCheckToken.addRevocationToken(ocspToken);
 			}
 			return ocspToken;
 		} catch (DSSException e) {
@@ -97,31 +96,37 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 	}
 
 	private boolean extractSigningCertificateFromResponse(OCSPToken ocspToken) {
-		for (final X509CertificateHolder x509CertificateHolder : ocspToken.getBasicOCSPResp().getCerts()) {
-			CertificateToken certificateToken = DSSASN1Utils.getCertificate(x509CertificateHolder);
-			CertificateToken certToken = validationCertPool.getInstance(certificateToken, CertificateSourceType.OCSP_RESPONSE);
-			if (ocspToken.isSignedBy(certToken)) {
-				return true;
+		BasicOCSPResp basicOCSPResp = ocspToken.getBasicOCSPResp();
+		if (basicOCSPResp != null) {
+			for (final X509CertificateHolder x509CertificateHolder : basicOCSPResp.getCerts()) {
+				CertificateToken certificateToken = DSSASN1Utils.getCertificate(x509CertificateHolder);
+				CertificateToken certToken = validationCertPool.getInstance(certificateToken, CertificateSourceType.OCSP_RESPONSE);
+				if (ocspToken.isSignedBy(certToken)) {
+					return true;
+				}
 			}
 		}
 		return false;
 	}
 
-	private	void extractSigningCertificateFormResponderId(OCSPToken ocspToken) {
-		final RespID responderId = ocspToken.getBasicOCSPResp().getResponderId();
-		final ResponderID responderIdAsASN1Object = responderId.toASN1Object();
-		final DERTaggedObject derTaggedObject = (DERTaggedObject) responderIdAsASN1Object.toASN1Primitive();
-		if (2 == derTaggedObject.getTagNo()) {
-			throw new DSSException("Certificate's key hash management not implemented yet!");
-		}
-		final ASN1Primitive derObject = derTaggedObject.getObject();
-		final byte[] derEncoded = DSSASN1Utils.getDEREncoded(derObject);
-		final X500Principal x500Principal_ = new X500Principal(derEncoded);
-		final X500Principal x500Principal = DSSUtils.getNormalizedX500Principal(x500Principal_);
-		final List<CertificateToken> certificateTokens = validationCertPool.get(x500Principal);
-		for (final CertificateToken issuerCertificateToken : certificateTokens) {
-			if (ocspToken.isSignedBy(issuerCertificateToken)) {
-				break;
+	private void extractSigningCertificateFormResponderId(OCSPToken ocspToken) {
+		BasicOCSPResp basicOCSPResp = ocspToken.getBasicOCSPResp();
+		if (basicOCSPResp != null) {
+			final RespID responderId = basicOCSPResp.getResponderId();
+			final ResponderID responderIdAsASN1Object = responderId.toASN1Primitive();
+			final DERTaggedObject derTaggedObject = (DERTaggedObject) responderIdAsASN1Object.toASN1Primitive();
+			if (2 == derTaggedObject.getTagNo()) {
+				throw new DSSException("Certificate's key hash management not implemented yet!");
+			}
+			final ASN1Primitive derObject = derTaggedObject.getObject();
+			final byte[] derEncoded = DSSASN1Utils.getDEREncoded(derObject);
+			final X500Principal x500Principal_ = new X500Principal(derEncoded);
+			final X500Principal x500Principal = DSSUtils.getNormalizedX500Principal(x500Principal_);
+			final List<CertificateToken> certificateTokens = validationCertPool.get(x500Principal);
+			for (final CertificateToken issuerCertificateToken : certificateTokens) {
+				if (ocspToken.isSignedBy(issuerCertificateToken)) {
+					break;
+				}
 			}
 		}
 	}

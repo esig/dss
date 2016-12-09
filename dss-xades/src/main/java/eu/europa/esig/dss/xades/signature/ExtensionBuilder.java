@@ -24,9 +24,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSXMLUtils;
-import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdESNamespaces;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 
 public abstract class ExtensionBuilder extends XAdESBuilder {
@@ -132,13 +132,8 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		final NodeList signedDataObjectPropertiesNodeList = currentSignatureDom.getElementsByTagNameNS(XAdESNamespaces.XAdES, "SignedDataObjectProperties");
 		final int length = signedDataObjectPropertiesNodeList.getLength();
 		if (length == 1) {
-
 			signedDataObjectPropertiesDom = (Element) signedDataObjectPropertiesNodeList.item(0);
-		} else if (length == 0) {
-
-			signedDataObjectPropertiesDom = DSSXMLUtils.addElement(documentDom, signedPropertiesDom, XAdESNamespaces.XAdES, "xades:SignedDataObjectProperties");
-		} else {
-
+		} else if (length > 1 ) {
 			throw new DSSException("The signature contains more than one SignedDataObjectProperties element! Extension is not possible.");
 		}
 	}

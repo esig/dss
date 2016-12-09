@@ -187,6 +187,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
             optimalSize = imgParams.getDimension();
         }
         PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(doc, ImageFactory.create(imgParams), imgParams.getPage());
+        imgParams.recalculateAxis(visibleSig);
         visibleSig.xAxis(imgParams.getxAxis()).yAxis(imgParams.getyAxis()).width((float) optimalSize.getWidth()).height((float) optimalSize.getHeight());
 
         PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();

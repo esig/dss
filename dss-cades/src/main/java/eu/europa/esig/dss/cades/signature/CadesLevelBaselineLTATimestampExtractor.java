@@ -24,6 +24,7 @@ import static eu.europa.esig.dss.OID.id_aa_ATSHashIndex;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -40,7 +41,6 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.DERObjectIdentifier;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERSet;
@@ -69,17 +69,14 @@ import eu.europa.esig.dss.x509.CertificateToken;
 /**
  * Extracts the necessary information to compute the CAdES Archive Timestamp V3.
  *
- *
- *
- *
- *
  */
 public class CadesLevelBaselineLTATimestampExtractor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CadesLevelBaselineLTATimestampExtractor.class);
 	public static final DigestAlgorithm DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO = DigestAlgorithm.SHA256;
 	/**
-	 * If the algorithm identifier in ATSHashIndex has the default value (DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO) then it can be omitted.
+	 * If the algorithm identifier in ATSHashIndex has the default value (DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO) then it
+	 * can be omitted.
 	 */
 	private static final boolean OMIT_ALGORITHM_IDENTIFIER_IF_DEFAULT = true;
 
@@ -98,7 +95,8 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	/**
 	 * This is the default constructor for the {@code CadesLevelBaselineLTATimestampExtractor}.
 	 *
-	 * @param cadesSignature {@code CAdESSignature} related to the archive timestamp
+	 * @param cadesSignature
+	 *            {@code CAdESSignature} related to the archive timestamp
 	 */
 	public CadesLevelBaselineLTATimestampExtractor(final CAdESSignature cadesSignature) {
 
@@ -110,7 +108,8 @@ public class CadesLevelBaselineLTATimestampExtractor {
 
 	/**
 	 * The ats-hash-index unsigned attribute provides an unambiguous imprint of the essential components of a CAdES
-	 * signature for use in the archive time-stamp (see 6.4.3). These essential components are elements of the following ASN.1
+	 * signature for use in the archive time-stamp (see 6.4.3). These essential components are elements of the following
+	 * ASN.1
 	 * SET OF structures: unsignedAttrs, SignedData.certificates, and SignedData.crls.
 	 *
 	 * The ats-hash-index attribute value has the ASN.1 syntax ATSHashIndex:
@@ -200,7 +199,10 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	private ASN1Sequence getVerifiedCertificatesHashIndex(TimestampToken timestampToken) throws DSSException {
 
 		final ASN1Sequence certHashes = getCertificatesHashIndex(timestampToken);
-		final ArrayList<DEROctetString> certHashesList = Collections.list(certHashes.getObjects());
+		final List<DEROctetString> certHashesList = new ArrayList<DEROctetString>();
+		if (certHashes != null) {
+			certHashesList.addAll(Collections.list(certHashes.getObjects()));
+		}
 
 		final List<CertificateToken> certificates = cadesSignature.getCertificatesWithinSignatureAndTimestamps();
 		for (final CertificateToken certificateToken : certificates) {
@@ -274,7 +276,10 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	private ASN1Sequence getVerifiedCRLsHashIndex(TimestampToken timestampToken) throws DSSException {
 
 		final ASN1Sequence crlHashes = getCRLHashIndex(timestampToken);
-		final ArrayList<DEROctetString> crlHashesList = Collections.list(crlHashes.getObjects());
+		final List<DEROctetString> crlHashesList = new ArrayList<DEROctetString>();
+		if (crlHashes != null) {
+			crlHashesList.addAll(Collections.list(crlHashes.getObjects()));
+		}
 
 		final SignedData signedData = SignedData.getInstance(cadesSignature.getCmsSignedData().toASN1Structure().getContent());
 		final ASN1Set signedDataCRLs = signedData.getCRLs();
@@ -297,7 +302,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		return crlHashes;
 	}
 
-	private void handleRevocationEncoded(ArrayList<DEROctetString> crlHashesList, byte[] ocspHolderEncoded) {
+	private void handleRevocationEncoded(List<DEROctetString> crlHashesList, byte[] ocspHolderEncoded) {
 
 		final byte[] digest = DSSUtils.digest(hashIndexDigestAlgorithm, ocspHolderEncoded);
 		final DEROctetString derOctetStringDigest = new DEROctetString(digest);
@@ -354,8 +359,10 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * We check that every hash attribute found in the timestamp token is found if the signerInformation.
 	 *
 	 * If there is more unsigned attributes in the signerInformation than present in the hash attributes list
-	 * (and there is at least the archiveTimestampAttributeV3), we don't report any error nor which attributes are signed by the timestamp.
-	 * If there is some attributes that are not present or altered in the signerInformation, we just return some empty sequence to make
+	 * (and there is at least the archiveTimestampAttributeV3), we don't report any error nor which attributes are
+	 * signed by the timestamp.
+	 * If there is some attributes that are not present or altered in the signerInformation, we just return some empty
+	 * sequence to make
 	 * sure that the timestamped data will not match. We do not report which attributes hash are present if any.
 	 *
 	 * If there is not attribute at all in the archive timestamp hash index, that would means we didn't check anything.
@@ -366,9 +373,11 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 */
 	@SuppressWarnings("unchecked")
 	private ASN1Sequence getVerifiedUnsignedAttributesHashIndex(SignerInformation signerInformation, TimestampToken timestampToken) throws DSSException {
-
 		final ASN1Sequence unsignedAttributesHashes = getUnsignedAttributesHashIndex(timestampToken);
-		final ArrayList<DEROctetString> timestampUnsignedAttributesHashesList = Collections.list(unsignedAttributesHashes.getObjects());
+		final List<DEROctetString> timestampUnsignedAttributesHashesList = new ArrayList<DEROctetString>();
+		if (unsignedAttributesHashes != null) {
+			timestampUnsignedAttributesHashesList.addAll(Collections.list(unsignedAttributesHashes.getObjects()));
+		}
 
 		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 		final ASN1EncodableVector asn1EncodableVector = unsignedAttributes.toASN1EncodableVector();
@@ -408,11 +417,14 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 */
 	private ASN1Sequence getUnsignedAttributesHashIndex(TimestampToken timestampToken) {
 		final ASN1Sequence timestampAttributeAtsHashIndexValue = getAtsHashIndex(timestampToken);
-		int unsignedAttributesIndex = 2;
-		if (timestampAttributeAtsHashIndexValue.size() > 3) {
-			unsignedAttributesIndex++;
+		if (timestampAttributeAtsHashIndexValue != null) {
+			int unsignedAttributesIndex = 2;
+			if (timestampAttributeAtsHashIndexValue.size() > 3) {
+				unsignedAttributesIndex++;
+			}
+			return (ASN1Sequence) timestampAttributeAtsHashIndexValue.getObjectAt(unsignedAttributesIndex).toASN1Primitive();
 		}
-		return (ASN1Sequence) timestampAttributeAtsHashIndexValue.getObjectAt(unsignedAttributesIndex).toASN1Primitive();
+		return null;
 	}
 
 	/**
@@ -423,11 +435,14 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 */
 	private ASN1Sequence getCRLHashIndex(TimestampToken timestampToken) {
 		final ASN1Sequence timestampAttributeAtsHashIndexValue = getAtsHashIndex(timestampToken);
-		int crlIndex = 1;
-		if (timestampAttributeAtsHashIndexValue.size() > 3) {
-			crlIndex++;
+		if (timestampAttributeAtsHashIndexValue != null) {
+			int crlIndex = 1;
+			if (timestampAttributeAtsHashIndexValue.size() > 3) {
+				crlIndex++;
+			}
+			return (ASN1Sequence) timestampAttributeAtsHashIndexValue.getObjectAt(crlIndex).toASN1Primitive();
 		}
-		return (ASN1Sequence) timestampAttributeAtsHashIndexValue.getObjectAt(crlIndex).toASN1Primitive();
+		return null;
 	}
 
 	/**
@@ -437,13 +452,15 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * @return
 	 */
 	private ASN1Sequence getCertificatesHashIndex(TimestampToken timestampToken) {
-
 		final ASN1Sequence timestampAttributeAtsHashIndexValue = getAtsHashIndex(timestampToken);
-		int certificateIndex = 0;
-		if (timestampAttributeAtsHashIndexValue.size() > 3) {
-			certificateIndex++;
+		if (timestampAttributeAtsHashIndexValue != null) {
+			int certificateIndex = 0;
+			if (timestampAttributeAtsHashIndexValue.size() > 3) {
+				certificateIndex++;
+			}
+			return (ASN1Sequence) timestampAttributeAtsHashIndexValue.getObjectAt(certificateIndex).toASN1Primitive();
 		}
-		return (ASN1Sequence) timestampAttributeAtsHashIndexValue.getObjectAt(certificateIndex).toASN1Primitive();
+		return null;
 	}
 
 	/**
@@ -455,7 +472,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	private AlgorithmIdentifier getAlgorithmIdentifier(final TimestampToken timestampToken) {
 
 		final ASN1Sequence timestampAttributeAtsHashIndexValue = getAtsHashIndex(timestampToken);
-		if (timestampAttributeAtsHashIndexValue.size() > 3) {
+		if (timestampAttributeAtsHashIndexValue != null && timestampAttributeAtsHashIndexValue.size() > 3) {
 
 			final int algorithmIndex = 0;
 			final ASN1Encodable asn1Encodable = timestampAttributeAtsHashIndexValue.getObjectAt(algorithmIndex);
@@ -465,9 +482,10 @@ public class CadesLevelBaselineLTATimestampExtractor {
 				final ASN1ObjectIdentifier asn1ObjectIdentifier = (ASN1ObjectIdentifier) asn1Sequence.getObjectAt(0);
 				hashIndexDigestAlgorithm = DigestAlgorithm.forOID(asn1ObjectIdentifier.getId());
 				return AlgorithmIdentifier.getInstance(asn1Sequence);
-			} else if (asn1Encodable instanceof DERObjectIdentifier) {
+			} else if (asn1Encodable instanceof ASN1ObjectIdentifier) {
 
-				// TODO (16/11/2014): The relevance and usefulness of the test case must be checked (do the signatures like this exist?)
+				// TODO (16/11/2014): The relevance and usefulness of the test case must be checked (do the signatures
+				// like this exist?)
 				ASN1ObjectIdentifier derObjectIdentifier = ASN1ObjectIdentifier.getInstance(asn1Encodable);
 				hashIndexDigestAlgorithm = DigestAlgorithm.forOID(derObjectIdentifier.getId());
 				return new AlgorithmIdentifier(derObjectIdentifier);
@@ -479,13 +497,19 @@ public class CadesLevelBaselineLTATimestampExtractor {
 
 	/**
 	 * @param timestampToken
-	 * @return the content of SignedAttribute: ATS-hash-index unsigned attribute {itu-t(0) identified-organization(4) etsi(0) electronic-signature-standard(1733) attributes(2) 5}
+	 * @return the content of SignedAttribute: ATS-hash-index unsigned attribute {itu-t(0) identified-organization(4)
+	 *         etsi(0) electronic-signature-standard(1733) attributes(2) 5}
 	 */
 	private ASN1Sequence getAtsHashIndex(TimestampToken timestampToken) {
 		final AttributeTable timestampTokenUnsignedAttributes = timestampToken.getUnsignedAttributes();
 		final Attribute atsHashIndexAttribute = timestampTokenUnsignedAttributes.get(id_aa_ATSHashIndex);
-		final ASN1Set attrValues = atsHashIndexAttribute.getAttrValues();
-		return (ASN1Sequence) attrValues.getObjectAt(0).toASN1Primitive();
+		if (atsHashIndexAttribute != null) {
+			final ASN1Set attrValues = atsHashIndexAttribute.getAttrValues();
+			if (attrValues != null && attrValues.size() > 0) {
+				return (ASN1Sequence) attrValues.getObjectAt(0).toASN1Primitive();
+			}
+		}
+		return null;
 	}
 
 	private AlgorithmIdentifier getHashIndexDigestAlgorithmIdentifier() {
@@ -496,7 +520,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		}
 	}
 
-	public byte[] getArchiveTimestampDataV3(SignerInformation signerInformation, Attribute atsHashIndexAttribute, byte[] originalDocument,
+	public byte[] getArchiveTimestampDataV3(SignerInformation signerInformation, Attribute atsHashIndexAttribute, InputStream originalDocument,
 			DigestAlgorithm digestAlgorithm) throws DSSException {
 
 		final CMSSignedData cmsSignedData = cadesSignature.getCmsSignedData();
@@ -504,8 +528,10 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		final byte[] signedDataDigest = DSSUtils.digest(digestAlgorithm, originalDocument);
 		final byte[] encodedFields = getSignedFields(signerInformation);
 		final byte[] encodedAtsHashIndex = DSSASN1Utils.getDEREncoded(atsHashIndexAttribute.getAttrValues().getObjectAt(0));
-		/** The input for the archive-time-stamp-v3’s message imprint computation shall be the concatenation (in the
-		 * order shown by the list below) of the signed data hash (see bullet 2 below) and certain fields in their binary encoded
+		/**
+		 * The input for the archive-time-stamp-v3’s message imprint computation shall be the concatenation (in the
+		 * order shown by the list below) of the signed data hash (see bullet 2 below) and certain fields in their
+		 * binary encoded
 		 * form without any modification and including the tag, length and value octets:
 		 */
 		final byte[] dataToTimestamp = DSSUtils.concatenate(encodedContentType, signedDataDigest, encodedFields, encodedAtsHashIndex);
@@ -564,8 +590,8 @@ public class CadesLevelBaselineLTATimestampExtractor {
 			LOG.debug("getSignedFields DigestEncryptionAlgorithm={}", Base64.decodeBase64(derEncodedDigestEncryptionAlgorithm));
 			LOG.debug("getSignedFields EncryptedDigest={}", Base64.decodeBase64(derEncodedEncryptedDigest));
 		}
-		final byte[] concatenatedArrays = DSSUtils
-				.concatenate(derEncodedVersion, derEncodedSid, derEncodedDigestAlgorithm, derEncodedSignedAttributes, derEncodedDigestEncryptionAlgorithm, derEncodedEncryptedDigest);
+		final byte[] concatenatedArrays = DSSUtils.concatenate(derEncodedVersion, derEncodedSid, derEncodedDigestAlgorithm, derEncodedSignedAttributes,
+				derEncodedDigestEncryptionAlgorithm, derEncodedEncryptedDigest);
 		return concatenatedArrays;
 	}
 }

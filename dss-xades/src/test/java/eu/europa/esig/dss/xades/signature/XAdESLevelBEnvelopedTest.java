@@ -27,6 +27,7 @@ import org.apache.xml.security.utils.Base64;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -51,7 +52,7 @@ public class XAdESLevelBEnvelopedTest extends AbstractTestSignature {
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
-		System.out.println("Base64 orignal file : "+Base64.encode(documentToSign.getBytes()));
+		System.out.println("Base64 orignal file : "+Base64.encode(DSSUtils.toByteArray(documentToSign)));
 
 
 		CertificateService certificateService = new CertificateService();

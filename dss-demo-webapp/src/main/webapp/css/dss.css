@@ -9,3 +9,13 @@
 .navbar-nav>li>a {
     line-height: 44px;
 }
+
+#reportSelectorPanel .panel-heading {
+	margin-left: 0px;
+	padding-left: 0px;
+}
+
+.tooltip-inner {
+    max-width: none;
+    white-space: nowrap;
+}

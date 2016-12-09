@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>4.6.0</version>
+		<version>4.7.0</version>
 	</parent>
 	
   	<artifactId>dss-policy-jaxb</artifactId>
@@ -39,7 +39,7 @@
 									<goal>generate</goal>
 								</goals>
 								<configuration>
-									<schemaDirectory>src/main/xsd</schemaDirectory>
+									<schemaDirectory>src/main/resources/xsd</schemaDirectory>
 									<generatePackage>eu.europa.esig.jaxb.policy</generatePackage>
 									<schemaIncludes>
 										<schemaInclude>policy.xsd</schemaInclude>
@@ -49,6 +49,7 @@
 									</bindingIncludes>
 									<specVersion>2.1</specVersion>
 									<encoding>UTF-8</encoding>
+									<locale>en</locale>
 								</configuration>
 							</execution>
 						</executions>

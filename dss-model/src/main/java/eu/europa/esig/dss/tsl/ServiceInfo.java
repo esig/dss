@@ -22,7 +22,6 @@ package eu.europa.esig.dss.tsl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,35 +65,11 @@ public class ServiceInfo implements Serializable {
 	 */
 	private String serviceName;
 
-	/**
-	 * <tsl:TrustServiceProvider><tsl:TSPServices><tsl:TSPService><tsl:ServiceInformation><tsl:ServiceStatus>
-	 */
-	private String status;
-
-	/**
-	 * <tsl:TrustServiceProvider><tsl:TSPServices><tsl:TSPService><tsl:ServiceInformation><tsl:StatusStartingTime>
-	 */
-	private Date statusStartDate;
-
-	/**
-	 * The start date of the previous service history or null if current service
-	 */
-	private Date statusEndDate;
+	private List<ServiceInfoStatus> status = new ArrayList<ServiceInfoStatus>();
 
 	private Map<String, List<Condition>> qualifiersAndConditions = new HashMap<String, List<Condition>>();
 
 	private boolean tlWellSigned;
-
-	/**
-	 * <tsl:TrustServiceProvider>
-	 * - <tsl:TSPServices>
-	 * - - <tsl:TSPService>
-	 * - - - <tsl:ServiceInformation>
-	 * - - - - <tsl:ServiceInformationExtensions>
-	 * - - - - - <tsl:Extension Critical="false">
-	 * - - - - - - <tsl:ExpiredCertsRevocationInfo>
-	 */
-	private Date expiredCertsRevocationInfo;
 
 	/**
 	 * Add a qualifier and the corresponding conditionEntry
@@ -103,7 +78,6 @@ public class ServiceInfo implements Serializable {
 	 * @param condition
 	 */
 	public void addQualifierAndCondition(String qualifier, Condition condition) {
-
 		List<Condition> conditions = qualifiersAndConditions.get(qualifier);
 		if (conditions == null) {
 
@@ -121,39 +95,13 @@ public class ServiceInfo implements Serializable {
 	 * @return
 	 */
 	public String getServiceName() {
-
 		return serviceName;
 	}
 
 	/**
 	 * @return
 	 */
-	public String getStatus() {
-
-		return status;
-	}
-
-	/**
-	 * @return
-	 */
-	public Date getStatusEndDate() {
-
-		return statusEndDate;
-	}
-
-	/**
-	 * @return
-	 */
-	public Date getStatusStartDate() {
-
-		return statusStartDate;
-	}
-
-	/**
-	 * @return
-	 */
 	public String getTspElectronicAddress() {
-
 		return tspElectronicAddress;
 	}
 
@@ -161,7 +109,6 @@ public class ServiceInfo implements Serializable {
 	 * @return
 	 */
 	public String getTspName() {
-
 		return tspName;
 	}
 
@@ -169,7 +116,6 @@ public class ServiceInfo implements Serializable {
 	 * @return
 	 */
 	public String getTspPostalAddress() {
-
 		return tspPostalAddress;
 	}
 
@@ -177,7 +123,6 @@ public class ServiceInfo implements Serializable {
 	 * @return
 	 */
 	public String getTspTradeName() {
-
 		return tspTradeName;
 	}
 
@@ -187,7 +132,6 @@ public class ServiceInfo implements Serializable {
 	 * @return
 	 */
 	public String getType() {
-
 		return type;
 	}
 
@@ -195,7 +139,6 @@ public class ServiceInfo implements Serializable {
 	 * @return the tlWellSigned
 	 */
 	public boolean isTlWellSigned() {
-
 		return tlWellSigned;
 	}
 
@@ -203,39 +146,14 @@ public class ServiceInfo implements Serializable {
 	 * @param serviceName
 	 */
 	public void setServiceName(String serviceName) {
-
 		this.serviceName = trim(serviceName);
 	}
 
 	/**
-	 * @param status
-	 */
-	public void setStatus(String status) {
-
-		this.status = trim(status);
-	}
-
-	/**
-	 * @param statusStartDate
-	 */
-	public void setStatusStartDate(Date statusStartDate) {
-
-		this.statusStartDate = statusStartDate;
-	}
-
-	/**
-	 * @param statusEndDate
-	 */
-	public void setStatusEndDate(Date statusEndDate) {
-
-		this.statusEndDate = statusEndDate;
-	}
-
-	/**
-	 * @param tlWellSigned the tlWellSigned to set
+	 * @param tlWellSigned
+	 *            the tlWellSigned to set
 	 */
 	public void setTlWellSigned(boolean tlWellSigned) {
-
 		this.tlWellSigned = tlWellSigned;
 	}
 
@@ -243,7 +161,6 @@ public class ServiceInfo implements Serializable {
 	 * @param tspElectronicAddress
 	 */
 	public void setTspElectronicAddress(String tspElectronicAddress) {
-
 		this.tspElectronicAddress = trim(tspElectronicAddress);
 	}
 
@@ -251,7 +168,6 @@ public class ServiceInfo implements Serializable {
 	 * @param tspName
 	 */
 	public void setTspName(String tspName) {
-
 		this.tspName = trim(tspName);
 	}
 
@@ -259,7 +175,6 @@ public class ServiceInfo implements Serializable {
 	 * @param tspPostalAddress
 	 */
 	public void setTspPostalAddress(String tspPostalAddress) {
-
 		this.tspPostalAddress = trim(tspPostalAddress);
 	}
 
@@ -267,7 +182,6 @@ public class ServiceInfo implements Serializable {
 	 * @param tspTradeName
 	 */
 	public void setTspTradeName(String tspTradeName) {
-
 		this.tspTradeName = trim(tspTradeName);
 	}
 
@@ -277,18 +191,15 @@ public class ServiceInfo implements Serializable {
 	 * @param type
 	 */
 	public void setType(String type) {
-
 		this.type = trim(type);
 	}
 
-	public Date getExpiredCertsRevocationInfo() {
-
-		return expiredCertsRevocationInfo;
+	public List<ServiceInfoStatus> getStatus() {
+		return status;
 	}
 
-	public void setExpiredCertsRevocationInfo(Date expiredCertsRevocationInfo) {
-
-		this.expiredCertsRevocationInfo = expiredCertsRevocationInfo;
+	public void setStatus(List<ServiceInfoStatus> status) {
+		this.status = status;
 	}
 
 	/**
@@ -296,20 +207,12 @@ public class ServiceInfo implements Serializable {
 	 * @return
 	 */
 	public String toString(String indent) {
-
 		try {
-
 			StringBuffer buffer = new StringBuffer();
 			buffer.append(indent).append("Type                      \t= ").append(type).append('\n');
 			buffer.append(indent).append("TSPName                   \t= ").append(tspName).append('\n');
 			buffer.append(indent).append("ServiceName               \t= ").append(serviceName).append('\n');
 			buffer.append(indent).append("Status                    \t= ").append(status).append('\n');
-			if (statusStartDate != null) {
-				buffer.append(indent).append("StatusStartDate           \t= ").append(statusStartDate).append('\n');
-			}
-			if (statusEndDate != null) {
-				buffer.append(indent).append("StatusEndDate           \t= ").append(statusEndDate).append('\n');
-			}
 			for (final Entry<String, List<Condition>> conditionEntry : qualifiersAndConditions.entrySet()) {
 
 				buffer.append(indent).append("QualifiersAndConditions    \t= ").append(conditionEntry.getKey()).append(":").append('\n');
@@ -325,14 +228,9 @@ public class ServiceInfo implements Serializable {
 			buffer.append(indent).append("TSPTradeName              \t= ").append(tspTradeName).append('\n');
 			buffer.append(indent).append("TSPPostalAddress          \t= ").append(tspPostalAddress).append('\n');
 			buffer.append(indent).append("TSPElectronicAddress      \t= ").append(tspElectronicAddress).append("\n\n");
-
-			if (expiredCertsRevocationInfo != null) {
-				buffer.append(indent).append("ExpiredCertsRevocationInfo\t= ").append(expiredCertsRevocationInfo).append("\n\n");
-			}
 			buffer.append(indent).append("TLWellSigned              \t= ").append(tlWellSigned).append('\n');
 			return buffer.toString();
 		} catch (Exception e) {
-
 			return super.toString();
 		}
 	}
@@ -355,10 +253,7 @@ public class ServiceInfo implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result)
-				+ ((serviceName == null) ? 0 : serviceName.hashCode());
-		result = (prime * result)
-				+ ((statusStartDate == null) ? 0 : statusStartDate.hashCode());
+		result = (prime * result) + ((serviceName == null) ? 0 : serviceName.hashCode());
 		result = (prime * result) + ((tspName == null) ? 0 : tspName.hashCode());
 		return result;
 	}
@@ -380,13 +275,6 @@ public class ServiceInfo implements Serializable {
 				return false;
 			}
 		} else if (!serviceName.equals(other.serviceName)) {
-			return false;
-		}
-		if (statusStartDate == null) {
-			if (other.statusStartDate != null) {
-				return false;
-			}
-		} else if (!statusStartDate.equals(other.statusStartDate)) {
 			return false;
 		}
 		if (tspName == null) {

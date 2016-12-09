@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><ValidationData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+<?xml version="1.0" encoding="UTF-8"?><ValidationData xmlns="http://dss.esig.europa.eu/validation/detailed-report">
 	<BasicBuildingBlocks>
 		<Signature Id="id-e15d323ce2d560672179fb9a907471a84d967522c2e8f5dec3036386284ef657">
 			<ISC>
@@ -24,7 +24,7 @@
 					<Status>OK</Status>
 				</Constraint>
 				<Conclusion>
-					<Indication>VALID</Indication>
+					<Indication>PASSED</Indication>
 				</Conclusion>
 			</ISC>
 			<VCI>
@@ -34,7 +34,7 @@
 					<Info Identifier="1.3.158.36061701.0.0.1.10.4.0.12" Notice="[EN: Signature policy for documents signed electronically by public administrations. SK: Podpisová politika pre ZEP. http://www.nbusr.sk/en/electronic-signature/signature-policies/index.html]"/>
 				</Constraint>
 				<Conclusion>
-					<Indication>VALID</Indication>
+					<Indication>PASSED</Indication>
 				</Conclusion>
 			</VCI>
 			<CV>
@@ -47,13 +47,13 @@
 					<Status>NOT OK</Status>
 				</Constraint>
 				<Conclusion>
-					<Indication>INVALID</Indication>
+					<Indication>FAILED</Indication>
 					<SubIndication>HASH_FAILURE</SubIndication>
 					<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 				</Conclusion>
 			</CV>
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
@@ -82,7 +82,7 @@
 					<Status>OK</Status>
 				</Constraint>
 				<Conclusion>
-					<Indication>VALID</Indication>
+					<Indication>PASSED</Indication>
 				</Conclusion>
 			</ISC>
 			<VCI>
@@ -92,7 +92,7 @@
 					<Info Identifier="NO_POLICY"/>
 				</Constraint>
 				<Conclusion>
-					<Indication>VALID</Indication>
+					<Indication>PASSED</Indication>
 				</Conclusion>
 			</VCI>
 			<CV>
@@ -105,13 +105,13 @@
 					<Status>NOT OK</Status>
 				</Constraint>
 				<Conclusion>
-					<Indication>INVALID</Indication>
+					<Indication>FAILED</Indication>
 					<SubIndication>HASH_FAILURE</SubIndication>
 					<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 				</Conclusion>
 			</CV>
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
@@ -140,7 +140,7 @@
 					<Status>OK</Status>
 				</Constraint>
 				<Conclusion>
-					<Indication>VALID</Indication>
+					<Indication>PASSED</Indication>
 				</Conclusion>
 			</ISC>
 			<VCI>
@@ -150,7 +150,7 @@
 					<Info Identifier="NO_POLICY"/>
 				</Constraint>
 				<Conclusion>
-					<Indication>VALID</Indication>
+					<Indication>PASSED</Indication>
 				</Conclusion>
 			</VCI>
 			<CV>
@@ -163,13 +163,13 @@
 					<Status>NOT OK</Status>
 				</Constraint>
 				<Conclusion>
-					<Indication>INVALID</Indication>
+					<Indication>FAILED</Indication>
 					<SubIndication>HASH_FAILURE</SubIndication>
 					<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 				</Conclusion>
 			</CV>
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
@@ -198,7 +198,7 @@
 					<Status>OK</Status>
 				</Constraint>
 				<Conclusion>
-					<Indication>VALID</Indication>
+					<Indication>PASSED</Indication>
 				</Conclusion>
 			</ISC>
 			<VCI>
@@ -208,7 +208,7 @@
 					<Info Identifier="NO_POLICY"/>
 				</Constraint>
 				<Conclusion>
-					<Indication>VALID</Indication>
+					<Indication>PASSED</Indication>
 				</Conclusion>
 			</VCI>
 			<CV>
@@ -221,13 +221,13 @@
 					<Status>NOT OK</Status>
 				</Constraint>
 				<Conclusion>
-					<Indication>INVALID</Indication>
+					<Indication>FAILED</Indication>
 					<SubIndication>HASH_FAILURE</SubIndication>
 					<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 				</Conclusion>
 			</CV>
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
@@ -256,7 +256,7 @@
 					<Status>OK</Status>
 				</Constraint>
 				<Conclusion>
-					<Indication>VALID</Indication>
+					<Indication>PASSED</Indication>
 				</Conclusion>
 			</ISC>
 			<VCI>
@@ -266,7 +266,7 @@
 					<Info Identifier="1.3.158.36061701.0.0.1.10.4.0.12" Notice="[EN: Signature policy for documents signed electronically by public administrations. SK: Podpisová politika pre ZEP. http://www.nbusr.sk/en/electronic-signature/signature-policies/index.html]"/>
 				</Constraint>
 				<Conclusion>
-					<Indication>VALID</Indication>
+					<Indication>PASSED</Indication>
 				</Conclusion>
 			</VCI>
 			<CV>
@@ -279,13 +279,13 @@
 					<Status>NOT OK</Status>
 				</Constraint>
 				<Conclusion>
-					<Indication>INVALID</Indication>
+					<Indication>FAILED</Indication>
 					<SubIndication>HASH_FAILURE</SubIndication>
 					<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 				</Conclusion>
 			</CV>
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
@@ -294,35 +294,35 @@
 	<BasicValidationData>
 		<Signature Id="id-e15d323ce2d560672179fb9a907471a84d967522c2e8f5dec3036386284ef657">
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
 		</Signature>
 		<Signature Id="id-e8350f615330846b508da68f63e53eaa92df3e8bed1dc757573630decbd02463">
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
 		</Signature>
 		<Signature Id="id-4931988d2bb6fd87d0bad415f86e8b73d50425814c588616bc522180f1360770">
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
 		</Signature>
 		<Signature Id="id-032d9060af5266df45ea7ee8ce33064da7c5b4c070a42f9a357dd04d9b194c71">
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
 		</Signature>
 		<Signature Id="id-9aaf27d0f965718ca5eba824e5d2ec6d406876a07068bec32a13144cbaaecfef">
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
@@ -339,7 +339,7 @@
 							<Info CertificateId="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</ISC>
 					<CV>
@@ -356,7 +356,7 @@
 							<Status>OK</Status>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</CV>
 					<SAV>
@@ -365,7 +365,7 @@
 							<Status>OK</Status>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</SAV>
 					<XCV>
@@ -399,7 +399,7 @@
 							<Info CertificateId="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</ISC>
 					<CV>
@@ -416,7 +416,7 @@
 							<Status>OK</Status>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</CV>
 					<SAV>
@@ -425,7 +425,7 @@
 							<Status>OK</Status>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</SAV>
 					<XCV>
@@ -461,7 +461,7 @@
 							<Info CertificateId="93a3a101335fa7324b5711e923074713fbb2bb49b201f9f181db2a7956899e06"/>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</ISC>
 					<CV>
@@ -478,7 +478,7 @@
 							<Status>OK</Status>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</CV>
 					<SAV>
@@ -487,7 +487,7 @@
 							<Status>OK</Status>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</SAV>
 					<XCV>
@@ -521,7 +521,7 @@
 							<Info CertificateId="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</ISC>
 					<CV>
@@ -538,7 +538,7 @@
 							<Status>OK</Status>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</CV>
 					<SAV>
@@ -547,7 +547,7 @@
 							<Status>OK</Status>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</SAV>
 					<XCV>
@@ -583,7 +583,7 @@
 							<Info CertificateId="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</ISC>
 					<CV>
@@ -600,7 +600,7 @@
 							<Status>OK</Status>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</CV>
 					<SAV>
@@ -609,7 +609,7 @@
 							<Status>OK</Status>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</SAV>
 					<XCV>
@@ -645,7 +645,7 @@
 							<Info CertificateId="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</ISC>
 					<CV>
@@ -662,7 +662,7 @@
 							<Status>OK</Status>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</CV>
 					<SAV>
@@ -671,7 +671,7 @@
 							<Status>OK</Status>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</SAV>
 					<XCV>
@@ -707,7 +707,7 @@
 							<Info CertificateId="91320ed8fb991b23aba8b40862d23257998a77d54b3ceef67d6bb63c9584cb81"/>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</ISC>
 					<CV>
@@ -724,7 +724,7 @@
 							<Status>OK</Status>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</CV>
 					<SAV>
@@ -733,7 +733,7 @@
 							<Status>OK</Status>
 						</Constraint>
 						<Conclusion>
-							<Indication>VALID</Indication>
+							<Indication>PASSED</Indication>
 						</Conclusion>
 					</SAV>
 					<XCV>
@@ -767,7 +767,7 @@
 				<Status>NOT OK</Status>
 			</Constraint>
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
@@ -778,7 +778,7 @@
 				<Status>NOT OK</Status>
 			</Constraint>
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
@@ -789,7 +789,7 @@
 				<Status>NOT OK</Status>
 			</Constraint>
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
@@ -800,7 +800,7 @@
 				<Status>NOT OK</Status>
 			</Constraint>
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
@@ -811,7 +811,7 @@
 				<Status>NOT OK</Status>
 			</Constraint>
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
@@ -822,11 +822,11 @@
 			<Constraint>
 				<Name NameId="PSV_IATVC">Is AdES-T validation conclusive?</Name>
 				<Status>NOT OK</Status>
-				<Info Field="Indication">INVALID</Info>
+				<Info Field="Indication">FAILED</Info>
 				<Info Field="SubIndication">HASH_FAILURE</Info>
 			</Constraint>
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
@@ -835,11 +835,11 @@
 			<Constraint>
 				<Name NameId="PSV_IATVC">Is AdES-T validation conclusive?</Name>
 				<Status>NOT OK</Status>
-				<Info Field="Indication">INVALID</Info>
+				<Info Field="Indication">FAILED</Info>
 				<Info Field="SubIndication">HASH_FAILURE</Info>
 			</Constraint>
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
@@ -848,11 +848,11 @@
 			<Constraint>
 				<Name NameId="PSV_IATVC">Is AdES-T validation conclusive?</Name>
 				<Status>NOT OK</Status>
-				<Info Field="Indication">INVALID</Info>
+				<Info Field="Indication">FAILED</Info>
 				<Info Field="SubIndication">HASH_FAILURE</Info>
 			</Constraint>
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
@@ -861,11 +861,11 @@
 			<Constraint>
 				<Name NameId="PSV_IATVC">Is AdES-T validation conclusive?</Name>
 				<Status>NOT OK</Status>
-				<Info Field="Indication">INVALID</Info>
+				<Info Field="Indication">FAILED</Info>
 				<Info Field="SubIndication">HASH_FAILURE</Info>
 			</Constraint>
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>
@@ -874,11 +874,11 @@
 			<Constraint>
 				<Name NameId="PSV_IATVC">Is AdES-T validation conclusive?</Name>
 				<Status>NOT OK</Status>
-				<Info Field="Indication">INVALID</Info>
+				<Info Field="Indication">FAILED</Info>
 				<Info Field="SubIndication">HASH_FAILURE</Info>
 			</Constraint>
 			<Conclusion>
-				<Indication>INVALID</Indication>
+				<Indication>FAILED</Indication>
 				<SubIndication>HASH_FAILURE</SubIndication>
 				<Error NameId="BBB_CV_IRDOI_ANS">The reference data object(s) is not intact!</Error>
 			</Conclusion>

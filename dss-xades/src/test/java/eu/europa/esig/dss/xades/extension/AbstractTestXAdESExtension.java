@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.xades.extension;
 
 import java.io.File;
-import java.util.Date;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
@@ -57,9 +56,9 @@ public abstract class AbstractTestXAdESExtension extends AbstractTestExtension<X
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		XAdESService service = new XAdESService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
 
-		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);;
+		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
 		SignatureValue signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
 		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
 		return signedDocument;
@@ -69,7 +68,7 @@ public abstract class AbstractTestXAdESExtension extends AbstractTestExtension<X
 	protected DocumentSignatureService<XAdESSignatureParameters> getSignatureServiceToExtend() throws Exception {
 		XAdESService service = new XAdESService(new CommonCertificateVerifier());
 		CertificateService certificateService = new CertificateService();
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1), new Date()));
+		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
 		return service;
 	}
 

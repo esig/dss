@@ -20,17 +20,14 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import javax.smartcardio.CardException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import be.fedict.eid.applet.Messages;
 import be.fedict.eid.applet.sc.PcscEid;
@@ -43,6 +40,8 @@ import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class EidNativeSignatureTokenConnection extends AbstractSignatureTokenConnection {
+
+	private static final Logger logger = LoggerFactory.getLogger(EidNativeSignatureTokenConnection.class);
 
 	private PcscEid eid;
 
@@ -67,34 +66,21 @@ public class EidNativeSignatureTokenConnection extends AbstractSignatureTokenCon
 			List<DSSPrivateKeyEntry> entries = new ArrayList<DSSPrivateKeyEntry>();
 			entries.add(new EidPrivateKeyEntry(new CertificateToken(signatureChain.get(0)), signatureChain));
 			return entries;
-		} catch (CardException ex) {
-			Logger.getLogger(EidNativeSignatureTokenConnection.class.getName()).log(Level.SEVERE, null, ex);
-			throw new DSSException(ex);
-		} catch (IOException ex) {
-			Logger.getLogger(EidNativeSignatureTokenConnection.class.getName()).log(Level.SEVERE, null, ex);
-			throw new DSSException(ex);
-		} catch (CertificateException ex) {
-			Logger.getLogger(EidNativeSignatureTokenConnection.class.getName()).log(Level.SEVERE, null, ex);
-			throw new DSSException(ex);
+		} catch (Exception e) {
+			logger.error("An error occured while retrieving keys : " + e.getMessage(), e);
+			throw new DSSException(e);
 		}
 	}
 
-	//	@Override
-	public byte[] encryptDigest(byte[] digestValue,  DigestAlgorithm digestAlgo, DSSPrivateKeyEntry keyEntry) throws NoSuchAlgorithmException {
+	// @Override
+	public byte[] encryptDigest(byte[] digestValue, DigestAlgorithm digestAlgo, DSSPrivateKeyEntry keyEntry) throws NoSuchAlgorithmException {
 		try {
 			eid.isEidPresent();
 			return eid.sign(digestValue, digestAlgo.getName());
-		} catch (CardException ex) {
-			Logger.getLogger(EidNativeSignatureTokenConnection.class.getName()).log(Level.SEVERE, null, ex);
-			throw new RuntimeException(ex);
-		}  catch (IOException ex) {
-			Logger.getLogger(EidNativeSignatureTokenConnection.class.getName()).log(Level.SEVERE, null, ex);
-			throw new RuntimeException(ex);
-		} catch (InterruptedException ex) {
-			Logger.getLogger(EidNativeSignatureTokenConnection.class.getName()).log(Level.SEVERE, null, ex);
-			throw new RuntimeException(ex);
+		} catch (Exception e) {
+			logger.error("An error occured while encrypting digest : " + e.getMessage(), e);
+			throw new DSSException(e);
 		}
 	}
 
 }
-

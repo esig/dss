@@ -47,6 +47,8 @@ public interface PdfSignatureOrDocTimestampInfo {
 
 	X509Certificate getSigningCertificate();
 
+	byte[] getContent();
+
 	/**
 	 * @return the byte of what is signed (without signature, but with the placeholder)
 	 */

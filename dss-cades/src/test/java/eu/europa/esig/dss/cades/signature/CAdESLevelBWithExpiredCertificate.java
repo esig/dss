@@ -14,7 +14,6 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.signature.AbstractTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
@@ -22,13 +21,13 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.dss.validation.report.SimpleReport;
+import eu.europa.esig.dss.validation.reports.SimpleReport;
 
 /**
  * Cryptographic signature is valid with expired certificate
  *
  */
-public class CAdESLevelBWithExpiredCertificate extends AbstractTestSignature {
+public class CAdESLevelBWithExpiredCertificate extends AbstractCAdESTestSignature {
 
 	private DocumentSignatureService<CAdESSignatureParameters> service;
 	private CAdESSignatureParameters signatureParameters;
@@ -59,10 +58,10 @@ public class CAdESLevelBWithExpiredCertificate extends AbstractTestSignature {
 	@Override
 	protected void verifySimpleReport(SimpleReport simpleReport) {
 		super.verifySimpleReport(simpleReport);
-		String indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
+		Indication indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
 		assertEquals(Indication.INDETERMINATE, indication);
-		String subIndication = simpleReport.getSubIndication(simpleReport.getFirstSignatureId());
-		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, subIndication);
+		SubIndication subIndication = simpleReport.getSubIndication(simpleReport.getFirstSignatureId());
+		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, subIndication);
 	}
 
 	@Override

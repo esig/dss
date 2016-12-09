@@ -1,0 +1,233 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" 
+	targetNamespace="http://dss.esig.europa.eu/validation/detailed-report" 
+	xmlns="http://dss.esig.europa.eu/validation/detailed-report"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="DetailedReport">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element type="Signature" name="Signatures" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="Signature">
+		<xs:sequence>
+			<xs:element type="ValidationProcessBasicSignatures" name="ValidationProcessBasicSignatures" minOccurs="0" />
+			<xs:element type="ValidationProcessTimestamps" name="ValidationProcessTimestamps" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="ValidationProcessLongTermData" name="ValidationProcessLongTermData" minOccurs="0" />
+			<xs:element type="ValidationProcessArchivalData" name="ValidationProcessArchivalData" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="required" />
+		<xs:attribute name="Type" type="xs:string" use="optional" />
+	</xs:complexType>
+
+	<xs:complexType name="BasicBuildingBlocks">
+		<xs:sequence>
+			<xs:element type="FC" name="FC" minOccurs="0" />
+			<xs:element type="ISC" name="ISC" minOccurs="0" />
+			<xs:element type="VCI" name="VCI" minOccurs="0" />
+			<xs:element type="CV"  name="CV"  minOccurs="0" />
+			<xs:element type="SAV" name="SAV" minOccurs="0" />
+			<xs:element type="XCV" name="XCV" minOccurs="0" />
+			<xs:element type="PSV" name="PSV" minOccurs="0" />
+			<xs:element type="PCV" name="PCV" minOccurs="0" />
+			<xs:element type="VTS" name="VTS" minOccurs="0" />
+			<xs:element type="Conclusion" name="Conclusion" />
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="required" />
+		<xs:attribute name="Type" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="ConstraintsConclusion">
+		<xs:sequence>
+			<xs:element type="Constraint" name="Constraint" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="Conclusion" name="Conclusion" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ValidationProcessBasicSignatures">	
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ValidationProcessTimestamps">	
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="Id" type="xs:string" use="required" />
+				<xs:attribute name="Type" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ValidationProcessLongTermData">	
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ValidationProcessArchivalData">	
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="FC">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ISC">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="VCI">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RFC">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CV">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SAV">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="XCV">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+					<xs:element name="SubXCV" type="SubXCV" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SubXCV">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+					<xs:element name="RFC" type="RFC" minOccurs="0" />
+				</xs:sequence>
+				<xs:attribute name="Id" type="xs:string" use="required" />
+				<xs:attribute name="TrustAnchor" type="xs:boolean" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="VTS">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+        			<xs:element name="ControlTime" type="xs:dateTime" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PCV">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+        			<xs:element name="ControlTime" type="xs:dateTime" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PSV">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ERV">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion" />
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="Constraint">
+		<xs:sequence>
+			<xs:element type="Name" name="Name" />
+			<xs:element type="Status" name="Status" />
+			<xs:element type="Name" name="Error" minOccurs="0" />
+			<xs:element type="Name" name="Warning" minOccurs="0" />
+			<xs:element type="Name" name="Info" minOccurs="0" />
+			<xs:element type="xs:string" name="AdditionalInfo" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="optional" /> <!-- In case of constraint with a BBB -->
+	</xs:complexType>
+
+	<xs:complexType name="Conclusion">
+		<xs:sequence>
+			<xs:element type="Indication" name="Indication" />
+			<xs:element type="SubIndication" name="SubIndication" minOccurs="0" />
+			<xs:element type="Name" name="Errors" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="Name" name="Warnings" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="Name" name="Infos" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Name">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="NameId" type="xs:string" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:simpleType name="Status" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="OK" />
+			<xs:enumeration value="NOT OK" />
+			<xs:enumeration value="IGNORED" />
+			<xs:enumeration value="INFORMATION" />
+			<xs:enumeration value="WARNING" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="Indication" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PASSED" />
+			<xs:enumeration value="INDETERMINATE" />
+			<xs:enumeration value="FAILED" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="SubIndication" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NO_SIGNING_CERTIFICATE_FOUND" />
+			<xs:enumeration value="FORMAT_FAILURE" />
+			<xs:enumeration value="SIGNATURE_POLICY_NOT_AVAILABLE" />
+			<xs:enumeration value="POLICY_PROCESSING_ERROR" />
+			<xs:enumeration value="OUT_OF_BOUNDS_NO_POE" />
+			<xs:enumeration value="NO_CERTIFICATE_CHAIN_FOUND" />
+			<xs:enumeration value="TRY_LATER" />
+			<xs:enumeration value="REVOKED_NO_POE" />
+			<xs:enumeration value="REVOKED_CA_NO_POE" />
+			<xs:enumeration value="CHAIN_CONSTRAINTS_FAILURE" />
+			<xs:enumeration value="CRYPTO_CONSTRAINTS_FAILURE" />
+			<xs:enumeration value="CRYPTO_CONSTRAINTS_FAILURE_NO_POE" />
+			<xs:enumeration value="SIGNED_DATA_NOT_FOUND" />
+			<xs:enumeration value="HASH_FAILURE" />
+			<xs:enumeration value="SIG_CRYPTO_FAILURE" />
+			<xs:enumeration value="SIG_CONSTRAINTS_FAILURE" />
+			<xs:enumeration value="NOT_YET_VALID" />
+			<xs:enumeration value="TIMESTAMP_ORDER_FAILURE" />
+			<xs:enumeration value="REVOKED" />
+			<xs:enumeration value="EXPIRED" />
+			<xs:enumeration value="NO_POE" />
+			<xs:enumeration value="CERTIFICATE_CHAIN_GENERAL_FAILURE" />
+			<xs:enumeration value="UNEXPECTED_ERROR" />
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>

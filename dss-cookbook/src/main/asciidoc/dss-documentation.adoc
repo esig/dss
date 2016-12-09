@@ -1,4 +1,7 @@
+:toc: left
 = Digital Signature Service
+:description: Documentation of the open source project DSS (Digital Signature Service). This project allows to produce/validate advanced electronic signatures (AdES).
+:keywords: electronic signature, XAdES, CAdES, PAdES, ASiC, open source, validation
 version : {dssVersion} - {docdate}
 
 == Introduction
@@ -122,19 +125,15 @@ Please note that the DSS framework is still under maintenance and new features w
 
 [cols=4]
 |=======================
-|Ref.			|Title																	|Reference					|Version
-|[[R01]]	R01	|XAdES Specifications													|ETSI TS 101 903			|1.4.2
-|[[R02]]	R02	|CAdES Specifications													|ETSI TS 101 733			|2.2.1
-|[[R03]]	R03	|PAdES Specifications													|ETSI TS 102 778 part 1-6	|1.x.x
-|[[R04]]	R04	|ASiC Specifications													|ETSI TS 102 918			|1.1.1
-|[[R05]]	R05	|Document management - Portable document format - Part 1: PDF 1.7		|ISO 32000-1				|1
-|[[R06]]	R06	|XAdES Baseline profiles  												|ETSI TS 103 171			|2.1.1
-|[[R07]]	R07	|CAdES Baseline profiles												|ETSI TS 103 173			|2.2.1
-|[[R08]]	R08	|PAdES Baseline profiles												|ETSI TS 103 172			|2.1.1
-|[[R09]]	R09	|ASiC Baseline profiles													|ETSI TS 103 174			|2.1.1
-|[[R10]]	R10	|Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures.	|DIRECTIVE 1999/93/EC	|
-|[[R11]]	R11	|Internet X.509 Public Key Infrastructure - Time-Stamp Protocol (TSP)	|RFC 3161					|
-|[[R12]]	R12	|Electronic Signatures and Infrastructures - Signature verification procedures and policies	|ETSI TS 102 853	|1.1.1
+|Ref.			|Title																			|Reference					|Version
+|[[R01]]	R01	|ESI - XAdES digital signatures													|ETSI EN 319 132 part 1-2	|1.0.0
+|[[R02]]	R02	|ESI - CAdES digital signatures													|ETSI EN 319 122 part 1-2	|1.1.1
+|[[R03]]	R03	|ESI - PAdES digital signatures													|ETSI EN 319 142 part 1-2	|1.1.1
+|[[R04]]	R04	|ESI - Associated Signature Containers (ASiC)									|ETSI EN 319 162 part 1-2	|1.1.1
+|[[R05]]	R05	|Document management - Portable document format - Part 1: PDF 1.7				|ISO 32000-1				|1
+|[[R06]]	R06	|Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures.	|DIRECTIVE 1999/93/EC	|
+|[[R07]]	R07	|Internet X.509 Public Key Infrastructure - Time-Stamp Protocol (TSP)			|RFC 3161					|
+|[[R08]]	R08	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|ETSI EN 319 102-1			|1.0.0
 
 |=======================
 
@@ -148,6 +147,7 @@ Please note that the DSS framework is still under maintenance and new features w
 
 DSS framework is a multi-modules project which can be builded with Maven.
 
+[horizontal]
 dss-model:: Data model used in almost every modules.
 dss-token:: Token definitions and implementations for MS CAPI, PKCS#11, PKCS#12.
 dss-document:: Common module to sign and validate document. This module doen't contain any implementation.
@@ -158,26 +158,27 @@ dss-xades:: Implementation of the XAdES signature, extension and validation.
 dss-spi:: Interfaces, util classes to manipulate ASN1, compute digests,... 
 dss-service:: Implementations to communicate with online resources (TSP, CRL, OCSP). 
 dss-tsl-validation:: Module which allows to load / parse / validate LOTL and TSLs.
-dss-demo-applet:: Applet which allows to sign a document with different formats and tokens. This applet uses SOAP webservices.
-dss-demo-applet-package:: Packaging module for dss-demo-applet.
-dss-light-applet:: Ligth applet which allows to interact with SSCD (load certificates and sign digest).
-dss-light-applet-package:: Packaging module for dss-light-applet.
 dss-standalone-app:: Standalone application which allows to sign a document with different formats and tokens (JavaFX).
 dss-standalone-app-package:: Packaging module for dss-standalone-app.
 dss-demo-webapp:: Demonstration web application which presents a part of the DSS possibilities.
 dss-demo-bundle:: Packaging module for dss-demo-webapp.
-validation-policy:: Business of the signature's validation.
+validation-policy:: Business of the signature's validation (ETSI EN 319 102).
 dss-rest:: REST webservices to sign (getDataToSign, signDocument methods) and extend a signature.
 dss-rest-client:: Client for the REST webservices.
 dss-soap:: SOAP webservices to sign (getDataToSign, signDocument methods) and extend a signature.
 dss-soap-client:: Client for the SOAP webservices.
+dss-validation-rest:: REST webservices to validate a signature.
+dss-validation-rest-client:: Client for the REST webservices.
+dss-validation-soap:: SOAP webservices to validate a signature.
+dss-validation-soap-client:: Client for the SOAP webservices.
 dss-remote-services:: Common code between dss-rest and dss-soap.
-dss-webservices:: Old SOAP webservices which allows to sign / extend / validate a signature.
-dss-webservices-client:: Client for dss-webservices.
 sscd-mocca-adapter:: Implementation for MOCCA token.
 dss-policy-jaxb:: JAXB model of the validation policy.
-dss-tsl-jaxb:: JAXB model of the TSL.
 dss-diagnostic-jaxb:: JAXB model of the diagnostic data.
+dss-simple-report-jaxb:: JAXB model of the simple report.
+dss-detailed-report-jaxb:: JAXB model of the detailed report.
+dss-reports:: Wrappers to easily manipulate the reports JAXB models (diagnostic-data, simple-report, detailed-report).
+dss-tsl-jaxb:: JAXB model of the TSL.
 dss-test:: Mocks and util classes for unit tests.
 dss-cookbook:: Samples and documentation of DSS used to generate this documentation.
 
@@ -205,7 +206,6 @@ Note that the new version (v4) of the DSS framework is compatible with the basel
 The simplest way to address the digital signature passes through the XAdES format. Indeed, it allows to visualize the content of the signature with a simple text editor. Thus it becomes much easier to make the connection between theoretical concepts and their implementation. Before embarking on the use of the DSS framework, it is advisable to read the following documents:
 
  * XAdES Specifications (cf. <<R01>>)
- * XAdES Baseline Profile (cf. <<R06>>)
 
 After reading these documents, it is clear that:
 
@@ -214,16 +214,16 @@ After reading these documents, it is clear that:
 
 ===	XAdES Profiles
 
-The new ETSI standard [17] defines four conformance levels to address the growing need to protect the validity of the signature in time. Henceforth to denote the level of the signature the word "level" will be used. Follows the list of levels defined in the standard:
+The new ETSI standard defines four conformance levels to address the growing need to protect the validity of the signature in time. Henceforth to denote the level of the signature the word "level" will be used. Follows the list of levels defined in the standard:
 
- * XAdES-BASELINE-*B*: Basic Electronic Signature
+ * XAdES-BASELINE-*B*: _Basic Electronic Signature_
 The lowest and simplest version just containing the SignedInfo, SignatureValue, KeyInfo and SignedProperties. This level combines the old -BES and -EPES levels.
 This form extends the definition of an electronic signature to conform to the identified signature policy.
- * XAdES-BASELINE-*T*: Signature timestamp
+ * XAdES-BASELINE-*T*: _Signature with a timestamp_
 A timestamp regarding the time of signing is added to protect against repudiation.
- * XAdES-BASELINE-*LT*: Long Term level
+ * XAdES-BASELINE-*LT*: _Signature with Long Term Data_
 Certificates and revocation data are embedded to allow verification in future even if their original source is not available. This level is equivalent to the old -XL level.
- * XAdES-BASELINE-*LTA*: Long Term with Archive timestamp
+ * XAdES-BASELINE-*LTA*: _Signature with Long Term Data and Archive timestamp_
 By using periodical timestamping (e.g. each year) compromising is prevented which could be caused by weakening previous signatures during a long-time storage period. This level is equivalent to the old -A level.
 
 NOTE: Old levels: -BES, -EPES, -C, -X, -XL, -A are not supported any more when signing.
@@ -240,27 +240,31 @@ To start, let's take a simple XML document:
 <test>Hello World !</test>
 ----
 
-Since this is an XML document, we will use the XAdES signature and more particularly XAdES-BASELINE-B level, which is the lowest level of protection: just satisfying Directive (cf. <<R10>>) legal requirements for advanced signature. The normal process of signing wants to sign first with the level -B or level-T, and then later when it becomes necessary to complete the signature with superior levels. However, the framework allows signing directly with any level. The use of CAdES format for signing an XML document is also possible, but will be discussed later.
+Since this is an XML document, we will use the XAdES signature and more particularly XAdES-BASELINE-B level, which is the lowest level of protection: just satisfying Directive (cf. <<R06>>) legal requirements for advanced signature. The normal process of signing wants to sign first with the level -B or level-T, and then later when it becomes necessary to complete the signature with superior levels. However, the framework allows signing directly with any level.
 When signing data, the resulting signature needs to be linked with the data to which it applies. This can be done either by creating a data set which combines the signature and the data (e.g. by enveloping the data with the signature or including a signature element in the data set) or placing the signature in a separate resource and having some external means for associating the signature with the data. So, we need to define the packaging of the signature, namely ENVELOPED, ENVELOPING or DETACHED.
  
  * *ENVELOPED :* when the signature applies to data that surround the rest of the document;
  * *ENVELOPING :* when the signed data form a sub-element of the signature itself;
  * *DETACHED :* when the signature relates to the external resources separated from it.
 
-For our example we will use ENVELOPED packaging.
+For our example, we will use ENVELOPED packaging.
 
-To write our Java code, we still need to specify the type of KeyStore to use for signing our document, more simply, where the private key can be found. We can choose between three different connection tokens:
+The DSS framework uses 3 atomic steps to sign a document :
 
- * PKCS#11, 
- * PKCS#12,
- * MS CAPI
+. Compute the digest to be signed;
+. Sign the digest; 
+. Sign the document (add the signed digest).
 
-The DSS also provides the support for MOCCA framework to communicate with the Smartcard with PC/SC, but it involves the installation of the MOCCA and IAIK libraries. To use a Java KeyStore please refer to the following paragraphs: #JavaKeyStore, #JKSSignatureToken and #Signing_with_JKSSignatureToken.
-In the package "eu.europa.ec.markt.dss.signature.token", we can find three corresponding Java classes:
+The DSS fully manages the steps 1 and 3. We need to specify how to do the signature operation. DSS offers some implementations in the dss-token module
 
- * Pkcs11SignatureToken,
- * Pkcs12SignatureToken,
- * MSCAPISignatureToken.
+To write our Java code, we still need to specify the type of KeyStore to use for signing our document, more simply, where the private key can be found. In the package "eu.europa.esig.dss.token", we can choose between different connection tokens :
+
+ * *Pkcs11SignatureToken :* allows to communicate with SmartCards with the PKCS#11 interface. It requires some installed drivers (dll, sso,...) 
+ * *Pkcs12SignatureToken :* allows to sign with a PKC#12 keystore (.p12 file).
+ * *MSCAPISignatureToken :* handles the signature with MS CAPI (the Microsoft interface to communicate with SmartCards).
+ * *JKSSignatureToken :* allows to sign with a Java Key Store (.jks file).
+
+NOTE: The DSS also provides the support for MOCCA framework to communicate with the Smartcard with PC/SC, but it involves the installation of the MOCCA and IAIK libraries.
 
 To know more about the use of the different signature tokens, please consult "Management of Signature Tokens" chapter.
 
@@ -288,22 +292,18 @@ What you may notice is that to sign a document we need to:
 The encryption algorithm is determined by the private key and therefore cannot be compelled by the setter of the signature parameters object. It will cause an inconsistency in the signature making its validation impossible. This setter can be used in a particular context where the signing process is distributed on different machines and the private key is known only to the signature value creation process. See clause "Signing process" for more information.
 In the case where the private key entry object is not available, it is possible to choose the signing certificate and its certificate chain as in the following example:
 
-[source,java]
+[source,java,indent=0]
 ----
-// We set the signing certificate
-parameters.setSigningCertificate(certificateToken);
-// We set the certificate chain
-parameters.setCertificateChain(certificateChain);
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoCertificateChain]
 ----
 
 Integrating the certificate chain in the signature simplifies the build of a prospective certificate chain during the validation process.
 
 By default the framework uses the current date time to set the signing date, but in the case where it is necessary to indicate the different time it is possible to use the setter "setSigningDate(Date)" as in the example:
 
-[source,java]
+[source,java,indent=0]
 ----
-// We set the date of the signature.
-parameters.bLevel().setSigningDate(new Date());
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoSigningDate]
 ----
 
 When the specific service is instantiated a certificate verifier must be set. This object is used to provide four different sources of information:
@@ -313,27 +313,22 @@ When the specific service is instantiated a certificate verifier must be set. Th
  * the source of OCSP;
  * the source of CRL.
  
-In the current implementation this object is only used when profile -LT or -LTA are created. In the next release it will be used to identify the trust anchor and by the same limit the number of certificates included within the KeyInfo.
+In the current implementation this object is only used when profile -LT or -LTA are created. 
 
 ===== Signing process
 
 Once the parameters of the signature were identified the service object itself must be created. The service used will depend on the type of document to sign. In our case it is an XML file, so we will instantiate a XAdES service. The process of signing takes place in three stages. The first is the "getDataToSign ()" method call, passing as a parameter the document to be signed and the previously selected settings. This step returns the data which is going to be digested and encrypted. In our case it corresponds to the SignedInfo XMLDSig element.  
 
-[source,java]
+[source,java,indent=0]
 ----
-// Create XAdES service for signature
-XAdESService service = new XAdESService(commonCertificateVerifier);
-
-// Get the SignedInfo XML segment that need to be signed.
-ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoSigningProcessGetDataToSign]
 ----
 
 The next step is a call to the function "sign()" which is invoked on the object token representing the KeyStore and not on the service. This method takes three parameters. The first is the array of bytes that must be signed. It is obtained by the previous method invocation. The second is the algorithm used to create the digest. You have the choice between SHA1, SHA256, and SHA512 (this list is not exhaustive). And the last one is the private key entry.
 
-[source,java]
+[source,java,indent=0]
 ----
-DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-SignatureValue signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKey);
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoSigningProcessSign]
 ----
 
 The last step of this process is the integration of the signature value in the signature and linking of that one to the signed document based on the selected packaging method. This is the method "signDocument()" on the service. We must pass to it three parameters: again the document to sign, the signature parameters and the value of the signature obtained in the previous step.
@@ -342,9 +337,9 @@ This separation into three steps allows use cases where different environments h
 
 When the breakdown of this process is not necessary than a simple call to only one method can be done as in the following example:
 
-[source,java]
+[source,java,indent=0]
 ----
-DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoSigningProcessSignDocument]
 ----
 
 ===== Additional attributes
@@ -356,9 +351,8 @@ For this type (XAdES-BASELINE-B) of signature it is possible to identify some ad
  * CommitmentTypeIndication - identifies the commitment undertaken by the signer in signing (a) signed data object(s) in the context of the selected signature policy.
  * AllDataObjectsTimeStamp - each time-stamp token within this property covers the full set of references defined in the Signature's SignedInfo element, excluding references of type "SignedProperties".
  * IndividualDataObjectsTimeStamp - each time-stamp token within this property covers selected signed data objects.
- * CounterSignature - contains signature(s) produced on the signature.
 
-The DSS framework allows to setup the following signed properties: SignerRole, SignatureProductionPlace, CommitmentTypeIndication, AllDataObjectsTimestamp, IndividualDataObjectsTimeStamp and CounterSignature.
+The DSS framework allows to setup the following signed properties: SignerRole, SignatureProductionPlace, CommitmentTypeIndication, AllDataObjectsTimestamp and IndividualDataObjectsTimeStamp.
 
 [[SignXmlXadesBProperties.java]]
 [source,java,indent=0]
@@ -426,7 +420,7 @@ include::samples/xades-explicit-policy.xml[]
 
 XAdES-BASELINE-T is a signature for which there exists a trusted time associated to the signature. It provides the initial steps towards providing long term validity and more specifically it provides a protection against repudiation. This extension of the signature can be created as well during the generation process as validation process. However, the case when these validation data are not added during the generation process should no longer occur. The XAdES-BASELINE-T trusted time indications must be created before the signing certificate has been revoked or expired and close to the time that the XAdES signature was produced. The XAdES-BASELINE-T form must be built on a XAdES-BASELINE-B form. The DSS framework allows extending the old -BES and -EPES profiles to the new BASELINE-T profile, indeed there is no difference in the structure of the signature.
 
-To implement this profile of signature you must indicate to the service the TSA source, which delivers from each Timestamp Request a Timestamp Response (RFC 3161 (cf. <<R11>>)) containing tokens. Below is the source code that creates a XAdES-BASELINE-T signature. For our example we will use a virtual provider. In a real situation, you can use OnlineTSPSource class encompassing communication with Time Stamping Authority based on RFC 3161 (cf. <<R11>>) or you can implement your own class using TSPSource interface (see "TSP Sources" chapter for more details).
+To implement this profile of signature you must indicate to the service the TSA source, which delivers from each Timestamp Request a Timestamp Response (RFC 3161 (cf. <<R07>>)) containing tokens. Below is the source code that creates a XAdES-BASELINE-T signature. For our example we will use a virtual provider. In a real situation, you can use OnlineTSPSource class encompassing communication with Time Stamping Authority based on RFC 3161 (cf. <<R07>>) or you can implement your own class using TSPSource interface (see "TSP Sources" chapter for more details).
 
 [[SignXmlXadesTTest.java]]
 [source,java,indent=0]
@@ -509,12 +503,7 @@ NOTE: when trust anchor baseline profile policy is defined only the certificates
 
 === Multiple signatures
 
-In everyday life, there are many examples where it is necessary to have multiple signatures covering the same document, such as a contract to purchase a vehicle. Depending on the fact that the order of the signatures is important or not, we can establish two basic categories for multiple signatures:
- 
- * independent signatures; 
- * countersignatures.
-
-Independent signatures are parallel signatures where the ordering of the signatures is not important. The computation of these signatures is performed on exactly the same input but using different private keys.
+In everyday life, there are many examples where it is necessary to have multiple signatures covering the same document, such as a contract to purchase a vehicle. Independent signatures are parallel signatures where the ordering of the signatures is not important. The computation of these signatures is performed on exactly the same input but using different private keys.
 
 === The XML Signature Extension (XAdES)
 
@@ -563,11 +552,11 @@ In case there is a need to use only a specific query holder the following steps 
 
 == The signature validation
 
-Generally and following ETSI standard, the validation process of an electronic signature must provide one of the three following status: INVALID, VALID or INDETERMINATE. A VALID response indicates that the signature has passed verification and it complies with the signature validation policy. An INVALID response indicates that either the signature format is incorrect or that the digital signature value fails verification. An INDETERMINATE validation response indicates that the format and digital signature verifications have not failed but there is insufficient information to determine if the electronic signature is valid. For each of the validation checks, the validation process must provide information justifying the reasons for the resulting status indication as a result of the check against the applicable constraints. In addition, the ETSI standard defines a consistent and accurate way for justifying statuses under a set of sub-indications.
+Generally and following ETSI standard, the validation process of an electronic signature must provide one of the three following status: TOTAL-FAILED, TOTAL-PASSED or INDETERMINATE. A TOTAL-PASSED response indicates that the signature has passed verification and it complies with the signature validation policy. An TOTAL_FAILED response indicates that either the signature format is incorrect or that the digital signature value fails verification. An INDETERMINATE validation response indicates that the format and digital signature verifications have not failed but there is insufficient information to determine if the electronic signature is valid. For each of the validation checks, the validation process must provide information justifying the reasons for the resulting status indication as a result of the check against the applicable constraints. In addition, the ETSI standard defines a consistent and accurate way for justifying statuses under a set of sub-indications.
 
 ===	Validation Process
 
-Since version 3 of the DSS framework the validation process is based on the new ETSI standard <<R12>>. It is driven by the validation policy and allows long term signature validation. It not only verifies the existence of certain data and their validity, but it also checks the temporal dependences between these elements. The signature check is done following basic building blocks. On the simplified diagram below, showing the process of the signature validation, you can follow the relationships between each building block which represents a logic set of checks used in validation process.
+Since version 4.7 of the DSS framework the validation process is based on the latest ETSI standard <<R08>>. It is driven by the validation policy and allows long term signature validation. It not only verifies the existence of certain data and their validity, but it also checks the temporal dependences between these elements. The signature check is done following basic building blocks. On the simplified diagram below, showing the process of the signature validation, you can follow the relationships between each building block which represents a logic set of checks used in validation process.
 
 image::sig_validation_process.jpg[]
 
@@ -612,8 +601,31 @@ On 16 October 2009 the European Commission adopted a Decision setting out measur
 
 In order to allow access to the trusted lists of all Member States in an easy manner, the European Commission has published a central list with links to national "trusted lists". This central list will now be designated in the document under the abbreviation LOTL.
 
-TODO
+The LOTL is published by the EU at the following URL : https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml. This XML file contains the list of the trusted list. This file must be signed by an allowed certificate. To know who has the permission to sign / publish the LOTL, we need to refer to the Official Journal Of the Union (http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2015.435.01.0001.01.ENG).
 
+The signature format of the LOTL and TL should be XAdES-BASELINE-B. If the LOTL signature is valid, its content can be trusted. The LOTL contains for each country some informations : urls of the XML/PDF files, the allowed certificates to sign, ...
+
+So, we trusted the LOTL, we can process each trusted list. If they are valid, we can trust the service providers and its certificates.
+
+To build the source of trust, DSS requires : 
+
+ * the LOTL url (XML); 
+ * the LOTL country code;
+ * a trust store which contains allowed certificates (extracted from the OJ).
+ 
+Bellow, you can find a complete example to load the LOTL and its linked TL.
+ 
+[[LOTLLoadingTest.java]]
+[source,java,indent=0]
+.LOTLLoadingTest.java
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/LOTLLoadingTest.java[tags=demo]
+----
+
+The TrustedListsCertificateSource is updated with the trusted certificates. 
+
+To generate the trust store, there's an utility class CreateKeyStoreApp in the dss-cookbook module.
+ 
 ===	Validation Result Materials
 
 The result of the validation process consists of three elements: 
@@ -638,7 +650,7 @@ The result of the validation process is based on very complex rules. The purpose
 
 ==== Detailed Report
 
-This is a sample of the detailed validation report. Its structure is based on the ETSI standard <<R12>> and is built around Basic Building Blocks, Basic Validation Data, Timestamp Validation Data, AdES-T Validation Data and Long Term Validation Data. Some segments were deleted to make reading easier. They are marked by three dots:
+This is a sample of the detailed validation report. Its structure is based on the ETSI standard <<R08>> and is built around Basic Building Blocks, Basic Validation Data, Timestamp Validation Data, AdES-T Validation Data and Long Term Validation Data. Some segments were deleted to make reading easier. They are marked by three dots:
 
 [source,xml]
 .Detailed Report 
@@ -646,15 +658,24 @@ This is a sample of the detailed validation report. Its structure is based on th
 include::samples/detailed-report-example.xml[]
 ----
 
-For example the Basic Building Blocks are divided into five elements:
+For example the Basic Building Blocks are divided into seven elements:
 
- * ISC - Identification of Signer's Certificate
+ * FC - Format Checking
+ * ISC - Identification of the Signing Certificate
  * VCI - Validation Context Initialization
- * XCV - X.509 Certificate Validation
+ * RFC - Revocation Freshness Checker
+ * XCV - X.509 certificate validation
  * CV - Cryptographic Verification
  * SAV - Signature Acceptance Validation
  
-Each block contains a number of rules that are executed sequentially. The rules are driven by the constraints defined in the validation policy. The result of each rule is OK or NOT OK. The process is stopped when the first rule fails. Each block also contains a conclusion. If all rules are met then the conclusion node indicates VALID. Otherwise INVALID or INDETERMINATE indication is returned depending on the ETSI standard definition. 
+The following additional elements also can be execute in case of validation in the past : 
+
+ * PCV - Past Certificate Validation
+ * VTS - Validation Time Sliding process
+ * POE extraction - Proof Of Existence extraction 
+ * PSV - Past Signature Validation
+ 
+Each block contains a number of rules that are executed sequentially. The rules are driven by the constraints defined in the validation policy. The result of each rule is OK or NOT OK. The process is stopped when the first rule fails. Each block also contains a conclusion. If all rules are met then the conclusion node indicates PASSED. Otherwise FAILED or INDETERMINATE indication is returned depending on the ETSI standard definition. 
 
 ==== Diagnostic Data
 
@@ -701,11 +722,11 @@ The standard ISO 32000-1 (cf. <<R05>>) allows defining a file format for portabl
  * Providing a placeholder field for signatures,
  * Checking signatures for validity.
 
-PAdES defines eight different profiles to be used with advanced electronic signature in the meaning of European Union Directive 1999/93/EC (cf. <<R10>>):
+PAdES defines eight different profiles to be used with advanced electronic signature in the meaning of European Union Directive 1999/93/EC (cf. <<R06>>):
 
- * PAdES Basic - PDF signature as specified in ISO 32000-1 (cf. <<R05>>). The profile is specified in TS 102 778-2 (cf. <<R03>>).
- * PAdES-BES Profile - based upon CAdES-BES as specified in TS 101 733 (cf. <<R02>>) with the option of a signature time-stamp (CAdES-T).
- * PAdES-EPES profile - based upon CAdES-EPES as specified in TS 101 733 (cf. <<R02>>). This profile is the same as the PAdES - BES with the addition of a signature policy identifier and optionally a commitment type indication.
+ * PAdES Basic - PDF signature as specified in ISO 32000-1 (cf. <<R05>>). The profile is specified in ETSI EN 319 142 (cf. <<R03>>).
+ * PAdES-BES Profile - based upon CAdES-BES as specified in ETSI EN 319 122 (cf. <<R02>>) with the option of a signature time-stamp (CAdES-T).
+ * PAdES-EPES profile - based upon CAdES-EPES as specified in ETSI EN 319 122 (cf. <<R02>>). This profile is the same as the PAdES - BES with the addition of a signature policy identifier and optionally a commitment type indication.
  * PAdES-LTV Profile - This profile supports the long term validation of PDF Signatures and can be used in conjunction with the above-mentioned profiles.
  * Four other PAdES profiles for XML Content.
 
@@ -728,7 +749,7 @@ All these parameters are optional.
 
  * *SignaturePolicyOID :* The string representation of the OID of the signature policy to use when signing.
 
- * *SignaturePolicyHashValue :* The value of the hash of the signature policy, computed the same way as in clause 5.8.1 of CAdES (TS 101 733 (cf. <<R02>>)).
+ * *SignaturePolicyHashValue :* The value of the hash of the signature policy, computed the same way as in clause 5.2.9 of CAdES (ETSI EN 319 122 (cf. <<R02>>)).
 
  * *SignaturePolicyHashAlgorithm :* The hash function used to compute the value of the SignaturePolicyHashValue entry. Entries must be represented the same way as in table 257 of ISO 32000-1 (cf. <<R05>>).
 
@@ -744,7 +765,7 @@ The extension of a signature of the level PAdES-BASELINE-B up to PAdES-BASELINE-
 
 === PAdES Visible Signature
 
-The framework also allows to create PDF files with visible signature as specified in TS 102 778-6 (cf. <<R03>>). In the SignatureParameters object, there's a special attribute named ImageParameters. This parameter let you custom the visual signature (with text, with image or with image and text).
+The framework also allows to create PDF files with visible signature as specified in ETSI EN 319 142 (cf. <<R03>>). In the SignatureParameters object, there's a special attribute named ImageParameters. This parameter let you custom the visual signature (with text, with image or with image and text).
 Below is an example of code to perform a PADES-BASELINE-B type signature with a visible signature:
 
 [[SignPdfPadesBVisibleTest.java]]
@@ -756,13 +777,32 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBV
 
 == ASiC signature and validation
 
-When creating a digital signature, the user must choose between different packaging elements, namely enveloping, enveloped or detached. This choice is not obvious, because in one case the signature will alter the signed document and in the other case it is possible to lose the association between the signed document and its signature. That's where the standard ETSI TS 102 918 (cf. <<R04>>) offers a standardized use of container forms to establish a common way for associating data objects with advanced signatures or time-stamp tokens.
+When creating a digital signature, the user must choose between different packaging elements, namely enveloping, enveloped or detached. This choice is not obvious, because in one case the signature will alter the signed document and in the other case it is possible to lose the association between the signed document and its signature. That's where the standard ETSI EN 319 162 (cf. <<R04>>) offers a standardized use of container forms to establish a common way for associating data objects with advanced signatures or time-stamp tokens.
 
 A number of application environments use ZIP based container formats to package sets of files together with meta-information. ASiC technical specification is designed to operate with a range of such ZIP based application environments. Rather than enforcing a single packaging structure, ASiC describes how these package formats can be used to associate advanced electronic signatures with any data objects.
 
 The standard defines two types of containers; the first (ASiC-S) allows you to associate one or more signatures with a single data element. In this case the structure of the signature can be based (in a general way) on a single CAdES signature or on multiple XAdES signatures or finally on a single TST; the second is an extended container (ASiC-E) that includes multiple data objects. Each data object may be signed by one or more signatures which structure is similar to ASiC-S. This second type of container is compatible with OCF, UCF and ODF formats.
 
-For the moment the DSS framework uses only ASIC-S based on XAdES signature type of containers.
+For the moment the DSS framework has some restriction on the containers you can generate, depending on the input file. If the input file is already an ASiC container, the output container must be the same type of container based on the same type of signature. If the input is any other file, the output does not have any restriction.
+
+|===
+|Input |Output
+
+|ASiC-S CAdES
+|ASiC-S CAdES
+
+|ASiC-S XAdES
+|ASiC-S XAdES
+
+|ASiC-E CAdES
+|ASiC-E CAdES
+
+|ASiC-E XAdES
+|ASiC-E XAdES
+
+|Binary
+|ASiC-S CAdES, ASiC-S XAdES, ASiC-E CAdES, ASiC-E XAdES
+|===
 
 This is an example of the source code for signing a document using ASiCS-S based on XAdES-B:
 
@@ -830,3 +870,109 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/MSCAPISnip
 === Other Implementations
 
 As you can see, it is easy to add another implementation of the SignatureTokenConnection, thus enabling the framework to use other API than the provided three (PKCS#11, PKCS#12 and MS CAPI). For example, it is likely that in the future PC/SC will be the preferred way of accessing a Smartcard. Although PKCS#11 is currently the most used API, DSS framework is extensible and can use PC/SC. For our design example we propose to use PC/SC to communicate with the Smartcard.
+
+== Management of certificates sources
+
+The validation of a certificate requires the access to some other certificates from multiple sources like trusted lists, trust store, the signature itself: certificates can be contained inside or any other source. 
+Within the framework, an X509 certificate is modelled through the class:
+
+ * eu.europa.esig.dss.x509.CertificateToken 
+ 
+This encapsulation helps make certificate handling more suited to the needs of the validation in the context of trust. Each certificate is unambiguously identified by its issuer DN and serial number. The framework associates a unique internal identifier to each certificate but this identifier is not calculated on the data contained in the certificate and therefore varies from one application to another. However, it is independent of its source. It allows to easily comparing certificates issued by different sources.
+Certificate tokens are grouped into pools. A certificate token can be declared in several pools. The class that models a pool is called:
+
+ * eu.europa.esig.dss.x509.CertificatePool
+ 
+This class allows keeping only one occurrence of the certificate in the given context (i.e. validation). Two pools of certificates can be merged using the method:
+
+ * eu.europa.esig.dss.x509.CertificatePool#merge
+ 
+The CertificateSource interface provides abstraction for accessing a certificate, regardless of the source. However, each source has its own type:
+
+ * eu.europa.esig.dss.x509.CertificateSourceType
+ 
+This information is used, for example, to distinguish between the certificate from a trusted source and the others. A source has one and only one type, but a certificate token can be found in multiple sources. 
+The DSS framework supplies some standard implementations, but also gives the possibility to implement owner solutions. Among the standard solutions you can find:
+
+ * eu.europa.esig.dss.x509.CommonCertificateSource
+ 
+This is the superclass of almost of the certificate sources. 
+It implements the common method CommonCertificateSource#get returns the list of CertificateToken(s) corresponding to the given subject distinguished name. Note that the content of the encapsulated certificates pool can be different from the content of the source. Only CertificateToken(s) present in the source are taken into account.
+It exposes also the method CommonCertificateSource#addCertificate which gives the possibility to add manually any X509Certificate as a part of this source and as a part of the encapsulated pool. If the certificate is already present in the pool its source type is associated to the token. 
+
+ * eu.europa.esig.dss.x509.SignatureCertificateSource
+ 
+Some certificate sources are based on data encapsulated within the signature. That means that the set of certificates is available and the software only needs to find the certificate using its subject name. This class adds also new methods to obtain specialized  list of certificates contained in the source:.
+
+ ** SignatureCertificateSource#getKeyInfoCertificates
+ ** SignatureCertificateSource#getEncapsulatedCertificates
+
+ * eu.europa.esig.dss.tsl.TrustedListsCertificateSource
+ 
+Certificates coming from the list of Trusted Lists. This class gives the mechanism to define the set of trusted certificates (trust anchors). They are used in the validation process to decide if the prospective certificate chain has a trust anchor. See chapter 5.2 to know more about EU Trusted Lists.
+
+== Management of CRL and OCSP sources
+
+A CRL is a time-stamped list identifying revoked certificates. It is signed by a Certificate Authority (CA) and made freely available in a public repository. Each revoked certificate is identified in a CRL by its certificate serial number. The Online Certificate Status Protocol (OCSP) is an Internet protocol used for obtaining the revocation status of an X.509 digital certificate. For every certificate, the validity has to be checked via CRL or OCSP responses. The information may originate from different CRLSources or OCSPSources: 
+For easing the usage of such sources, DSS implements a CRLSource and OCSPSource interfaces, which offer a generic, uniform way of accessing CRL and OCSP sources. Furthermore, a caching mechanism can be easily attached to those sources, optimizing the access time to revocation information by reducing network connections to online servers.
+The interface CRLSource defines the method which returns CRLToken for the given certificate: 
+
+[source,java]
+----
+CRLToken findCrl(CertificateToken certificateToken) throws DSSException;
+----
+
+The interface OCSPSource defines the method which returns OCSPToken for the given certificate/issuer certificate couple:
+
+[source,java]
+----
+OCSPToken getOCSPToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken);
+----
+
+We use these classes during the certificate validation process through "validationContext" object (based on ValidationContext class) which is a "cache" for one validation request that contains every object retrieved so far. This object in turn instantiates a "verifier" based on CSPAndCRLCertificateVerifier class whose role is to fetch revocation data by querying an OCSP server first and then a CRL server if no OCSP response could be retrieved.
+In general we can distinguish three main sources:
+
+ * Offline sources;
+ * Online sources;
+ * Sources with the cache mechanism.
+
+=== Other implementations of CRL and OCSP Sources
+
+Such sources find the status of a certificate either from a list stored locally or using the information contained in the advanced signature or online way. Here is the list of sources already implemented in the DSS framework:
+
+ * CRL sources
+ ** JdbcCacheCRLSource : Retrieves information from a JDBC datasource
+ ** OfflineCRLSource : This class that implements in a generic way the findCrl method that operates on the different CRLs implemented in children classes.
+ *** ListCRLSource : This source maintains a list of CRLToken. 
+ *** SignatureCRLSource : The advanced signature contains a list of CRL that was needed to validate the signature. This class is a basic skeleton that is able to retrieve the needed CRL from a list. The child needs to retrieve the list of wrapped CRLs.
+ **** CAdESCRLSource : Retrieves information from a CAdES signature.
+ **** PAdESCRLSource : Retrieves information from a PAdES signature.
+ **** XAdESCRLSource : Retrieves information from a XAdES signature.
+ **** MockCRLSource : A class of test that can instantiate a list of certificate revocation lists from a directory where should be the individual lists (each individual list file must end with the extension ".crl").
+ ** OnlineCRLSource : This is a representation of an Online CRL repository. This implementation will contact using HTTP protocol the CRL Responder to download the CRLs from the given URI. Note that certificate"s Authority Information Access (AIA) extension is used to find issuer's resources location like CRT file and/or Online Certificate Status Protocol (OCSP). The URIs of CRL server will be extracted from this property (OID value: 1.3.6.1.5.5.7.48.1.3).
+ * OCSP sources
+ ** OfflineOCSPSource : An abstract class that helps to implement OCSPSource with an already loaded list of OCSPToken. It implements in a generic way the getOCSPResponse method that operates on the different OCSP implementations in children classes.
+ *** ListOCSPSource : Implements an OCSPSource from a list of OCSPToken.
+ *** SignatureOCSPSource : The advanced signature contains a list of OCSPResp that was needed to validate the signature. This class is a basic skeleton that is able to retrieve the needed OCSPResp from a list. The children need to retrieve the list of wrapped OCSPResp.
+ **** CAdESOCSPSource : Retrieves information from a CAdES signature.
+ **** PAdESOCSPSource : Retrieves information from a PAdES signature.
+ **** XAdESOCSPSource : Retrieves information from a XAdES signature.
+ **** MockOCSPSource : A class of test that can instantiate a list of OCSPToken from a directory where should be the individual DER Encoded X509 certificates files (each individual file must end with the extension ".der").
+ ** OnlineOCSPSource : This is a representation of an Online OCSP repository. This implementation will contact using HTTP protocol the OCSP Responder to retrieve the OCSP response. Note that certificate's Authority Information Access (AIA) extension is used to find issuer's resources location like CRT file and/or Online Certificate Status Protocol (OCSP). The URIs of OCSP server will be extracted from this property (OID value: 1.3.6.1.5.5.7.48.1). 
+
+== TSP Sources
+
+The Time Stamp Authority by creating time-stamp tokens provides independent and irrefutable proof of time for business transactions, e-documents and digital signatures. The TSA must comply with the IETF RFC 3161 specifications (cf. <<R07>>). A time-stamp is obtained by sending the digest value of the given data and digest algorithm to the Time Stamp Authority. The returned time-stamp is a signed data that contains the digest value, the identity of the TSA, and the time of stamping. This proves that the given data existed before the time of stamping.
+The DSS framework proposes TSPSource interface to implement the communication with TSA. The class OnlineTSPSource is the default implementation of TSP using HTTP(S) communication layer.
+The following bit of Java code illustrates how you might use this class:
+
+[[OnlineTSPSource.java]]
+[source,java,indent=0]
+.OnlineTSPSource.java
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/OnlineTSPSourceTest.java[tags=demo]
+----
+
+=== Time-stamp policy:
+
+A time-stamp policy is a "named set of rules that indicates the applicability of a time-stamp token to a particular community and/or class of application with common security requirements". A TSA may define its own policy which enhances the policy defined in RFC 3628. Such a policy shall incorporate or further constrain the requirements identified in RFC 3628. A time-stamp policy may be defined by the user of times-stamp services.

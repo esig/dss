@@ -29,6 +29,7 @@ import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -146,7 +147,8 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 				if (certificateChain != null) {
 					for (Certificate chainCert : certificateChain) {
 						logger.debug("Alias " + alias + " Cert " + ((X509Certificate) chainCert).getSubjectDN());
-						CertificateToken certToken = certPool.getInstance(new CertificateToken((X509Certificate) chainCert), CertificateSourceType.OCSP_RESPONSE);
+						CertificateToken certToken = certPool.getInstance(new CertificateToken((X509Certificate) chainCert),
+								CertificateSourceType.OCSP_RESPONSE);
 						if (!list.contains(certToken)) {
 							list.add(certToken);
 						}
@@ -214,6 +216,11 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 			logger.error("Unable to retrieve certificates from the keystore : " + e.getMessage(), e);
 		}
 		return list;
+	}
+
+	@Override
+	public List<CertificateToken> getCertificates() {
+		return Collections.unmodifiableList(getCertificatesFromKeyStore());
 	}
 
 	private KeyStore getKeyStore() {

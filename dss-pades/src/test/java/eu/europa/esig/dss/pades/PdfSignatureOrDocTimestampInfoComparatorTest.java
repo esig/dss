@@ -27,14 +27,14 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 	public void init() {
 
 		/*
-		[0, 91747, 124517, 723]
-		[0, 126092, 158862, 626]
-		[0, 160367, 193137, 642]
+		 * [0, 91747, 124517, 723]
+		 * [0, 126092, 158862, 626]
+		 * [0, 160367, 193137, 642]
 		 */
 
-		mock0 = new MockPdfSignature(new int[] {0, 91747, 124517, 723});
-		mock1 = new MockPdfSignature(new int[] {0, 126092, 158862, 626});
-		mock2 = new MockPdfSignature(new int[] {0, 160367, 193137, 642});
+		mock0 = new MockPdfSignature(new int[] { 0, 91747, 124517, 723 });
+		mock1 = new MockPdfSignature(new int[] { 0, 126092, 158862, 626 });
+		mock2 = new MockPdfSignature(new int[] { 0, 160367, 193137, 642 });
 	}
 
 	@Test
@@ -54,7 +54,7 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 	}
 
 	@Test
-	public void test2(){
+	public void test2() {
 		List<PdfSignatureOrDocTimestampInfo> listToSort = new ArrayList<PdfSignatureOrDocTimestampInfo>();
 
 		listToSort.add(mock2);
@@ -69,7 +69,7 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 	}
 
 	@Test
-	public void test3(){
+	public void test3() {
 		List<PdfSignatureOrDocTimestampInfo> listToSort = new ArrayList<PdfSignatureOrDocTimestampInfo>();
 
 		listToSort.add(mock1);
@@ -163,6 +163,11 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		@Override
 		public boolean isTimestamp() {
 			return false;
+		}
+
+		@Override
+		public byte[] getContent() {
+			return null;
 		}
 
 	}

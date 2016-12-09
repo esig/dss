@@ -81,7 +81,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 
 		final DSSDocument toSignData = getToSignData(toSignDocument, parameters, originalCmsSignedData);
 
-		final CMSProcessableByteArray content = new CMSProcessableByteArray(toSignData.getBytes());
+		final CMSProcessableByteArray content = new CMSProcessableByteArray(DSSUtils.toByteArray(toSignData));
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
 		CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
 		final byte[] bytes = customContentSigner.getOutputStream().toByteArray();
@@ -108,7 +108,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 				originalCmsSignedData);
 
 		final DSSDocument toSignData = getToSignData(toSignDocument, parameters, originalCmsSignedData);
-		final CMSProcessableByteArray content = new CMSProcessableByteArray(toSignData.getBytes());
+		final CMSProcessableByteArray content = new CMSProcessableByteArray(DSSUtils.toByteArray(toSignData));
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
 		final CMSSignedData cmsSignedData = CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
 		DSSDocument signature = new CMSSignedDocument(cmsSignedData);
@@ -209,7 +209,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 		CMSSignedData cmsSignedData = null;
 		try {
 			// check if input dssDocument is already signed
-			cmsSignedData = new CMSSignedData(dssDocument.getBytes());
+			cmsSignedData = new CMSSignedData(DSSUtils.toByteArray(dssDocument));
 			final SignaturePackaging signaturePackaging = parameters.getSignaturePackaging();
 			if (signaturePackaging == SignaturePackaging.ENVELOPING) {
 

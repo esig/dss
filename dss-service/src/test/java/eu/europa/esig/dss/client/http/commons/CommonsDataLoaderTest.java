@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSUtils;
@@ -15,9 +16,10 @@ public class CommonsDataLoaderTest {
 
 	private static final String URL_TO_LOAD = "http://certs.eid.belgium.be/belgiumrs2.crt";
 
+	private CommonsDataLoader dataLoader = new CommonsDataLoader();
+
 	@Test
 	public void testGet() {
-		CommonsDataLoader dataLoader = new CommonsDataLoader();
 		byte[] bytesArray = dataLoader.get(URL_TO_LOAD);
 
 		NativeHTTPDataLoader dataLoader2 = new NativeHTTPDataLoader();
@@ -27,6 +29,24 @@ public class CommonsDataLoaderTest {
 
 		CertificateToken certificate = DSSUtils.loadCertificate(bytesArray);
 		assertNotNull(certificate);
+	}
+
+	@Test
+	public void ldapTest1() {
+		String url = "ldap://x500.gov.si/ou=sigen-ca,o=state-institutions,c=si?certificateRevocationList?base";
+		assertTrue(ArrayUtils.isNotEmpty(dataLoader.get(url)));
+	}
+
+	@Test
+	public void ldapTest2() {
+		String url = "ldap://postarca.posta.si/ou=POSTArCA,o=POSTA,c=SI?certificateRevocationList";
+		assertTrue(ArrayUtils.isNotEmpty(dataLoader.get(url)));
+	}
+
+	@Test
+	public void ldapTest3() {
+		String url = "ldap://acldap.nlb.si/o=ACNLB,c=SI?certificateRevocationList";
+		assertTrue(ArrayUtils.isNotEmpty(dataLoader.get(url)));
 	}
 
 }

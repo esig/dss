@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified" 
+	targetNamespace="http://dss.esig.europa.eu/validation/simple-report"
+	xmlns="http://dss.esig.europa.eu/validation/simple-report" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="SimpleReport">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Policy">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element type="xs:string" name="PolicyName" />
+							<xs:element type="xs:string" name="PolicyDescription" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element type="xs:dateTime" name="ValidationTime" />
+				<xs:element type="xs:string" name="DocumentName" />
+				<xs:element type="xs:int" name="ValidSignaturesCount" />
+				<xs:element type="xs:int" name="SignaturesCount" />
+				<xs:element name="Signature" maxOccurs="unbounded" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element type="xs:dateTime" name="SigningTime" minOccurs="0" />
+							<xs:element type="xs:string" name="SignedBy" />
+							<xs:element type="Indication" name="Indication" />
+							<xs:element type="xs:string" name="SignatureLevel" />
+							<xs:element type="SubIndication" name="SubIndication" minOccurs="0" />
+							<xs:element type="xs:string" name="Errors" minOccurs="0" maxOccurs="unbounded" />
+							<xs:element type="xs:string" name="Warnings" minOccurs="0" maxOccurs="unbounded" />
+							<xs:element type="xs:string" name="Infos" minOccurs="0" maxOccurs="unbounded" />
+							<xs:element name="SignatureScope" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute type="xs:string" name="name"/>
+											<xs:attribute type="xs:string" name="scope"/>
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute type="xs:string" name="Id" use="required" />
+						<xs:attribute type="xs:string" name="Type" use="optional" />
+						<xs:attribute type="xs:string" name="ParentId" use="optional" />
+						<xs:attribute type="xs:string" name="SignatureFormat" use="required" />
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+
+	<xs:simpleType name="Indication" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="TOTAL_PASSED" />
+			<xs:enumeration value="INDETERMINATE" />
+			<xs:enumeration value="TOTAL_FAILED" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="SubIndication" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NO_SIGNING_CERTIFICATE_FOUND" />
+			<xs:enumeration value="FORMAT_FAILURE" />
+			<xs:enumeration value="SIGNATURE_POLICY_NOT_AVAILABLE" />
+			<xs:enumeration value="POLICY_PROCESSING_ERROR" />
+			<xs:enumeration value="OUT_OF_BOUNDS_NO_POE" />
+			<xs:enumeration value="NO_CERTIFICATE_CHAIN_FOUND" />
+			<xs:enumeration value="TRY_LATER" />
+			<xs:enumeration value="REVOKED_NO_POE" />
+			<xs:enumeration value="REVOKED_CA_NO_POE" />
+			<xs:enumeration value="CHAIN_CONSTRAINTS_FAILURE" />
+			<xs:enumeration value="CRYPTO_CONSTRAINTS_FAILURE" />
+			<xs:enumeration value="CRYPTO_CONSTRAINTS_FAILURE_NO_POE" />
+			<xs:enumeration value="SIGNED_DATA_NOT_FOUND" />
+			<xs:enumeration value="HASH_FAILURE" />
+			<xs:enumeration value="SIG_CRYPTO_FAILURE" />
+			<xs:enumeration value="SIG_CONSTRAINTS_FAILURE" />
+			<xs:enumeration value="NOT_YET_VALID" />
+			<xs:enumeration value="TIMESTAMP_ORDER_FAILURE" />
+			<xs:enumeration value="REVOKED" />
+			<xs:enumeration value="EXPIRED" />
+			<xs:enumeration value="NO_POE" />
+			<xs:enumeration value="CERTIFICATE_CHAIN_GENERAL_FAILURE" />
+			<xs:enumeration value="UNEXPECTED_ERROR" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+</xs:schema>

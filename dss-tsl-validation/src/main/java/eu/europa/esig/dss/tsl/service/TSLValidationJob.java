@@ -38,6 +38,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
@@ -51,7 +52,8 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 
 /**
- * This class is job class which allows to launch TSL loading/parsing/validation. An instance of this class can be injected in a Spring quartz job.
+ * This class is job class which allows to launch TSL loading/parsing/validation. An instance of this class can be
+ * injected in a Spring quartz job.
  */
 public class TSLValidationJob {
 
@@ -63,6 +65,13 @@ public class TSLValidationJob {
 	private TSLRepository repository;
 	private String lotlCode;
 	private String lotlUrl;
+
+	/*
+	 * Official journal URL where the allowed certificates can be found. This URL is present in the LOTL
+	 * (SchemeInformationURI)
+	 */
+	private String ojUrl;
+
 	private KeyStoreCertificateSource dssKeyStore;
 	private boolean checkLOTLSignature = true;
 	private boolean checkTSLSignatures = true;
@@ -86,6 +95,10 @@ public class TSLValidationJob {
 
 	public void setLotlUrl(String lotlUrl) {
 		this.lotlUrl = lotlUrl;
+	}
+
+	public void setOjUrl(String ojUrl) {
+		this.ojUrl = ojUrl;
 	}
 
 	public void setDssKeyStore(KeyStoreCertificateSource dssKeyStore) {
@@ -149,7 +162,8 @@ public class TSLValidationJob {
 					String countryCode = entry.getKey();
 					if (!lotlCode.equals(countryCode)) {
 						TSLValidationModel countryModel = entry.getValue();
-						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), countryCode, dssKeyStore, getPotentialSigners(pointers, countryCode));
+						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), countryCode, dssKeyStore,
+								getPotentialSigners(pointers, countryCode));
 						futureValidationResults.add(executorService.submit(tslValidator));
 					}
 				}
@@ -170,11 +184,16 @@ public class TSLValidationJob {
 			resultLoaderLOTL = result.get();
 		} catch (Exception e) {
 			logger.error("Unable to load the LOTL : " + e.getMessage(), e);
-			return;
+			throw new DSSException("Unable to load the LOTL : " + e.getMessage());
+		}
+		if (resultLoaderLOTL.getContent() == null) {
+			logger.error("Unable to load the LOTL: content is empty");
+			throw new DSSException("Unable to load the LOTL: content is empty");
 		}
 
 		TSLValidationModel europeanModel = null;
-		if (!repository.isLastVersion(resultLoaderLOTL)) {
+		boolean newLotl = !repository.isLastVersion(resultLoaderLOTL);
+		if (newLotl) {
 			europeanModel = repository.storeInCache(resultLoaderLOTL);
 		} else {
 			europeanModel = repository.getByCountry(resultLoaderLOTL.getCountryCode());
@@ -191,6 +210,10 @@ public class TSLValidationJob {
 			}
 		}
 
+		if (!isLatestDssKeystore(parseResult)) {
+			logger.warn("DSS keystore is out-dated !");
+		}
+
 		if (checkLOTLSignature && (europeanModel.getValidationResult() == null)) {
 			try {
 				TSLValidationResult validationResult = validateLOTL(europeanModel);
@@ -200,14 +223,26 @@ public class TSLValidationJob {
 			}
 		}
 
-		analyzeCountryPointers(parseResult.getPointers());
+		analyzeCountryPointers(parseResult.getPointers(), newLotl);
 
 		repository.synchronize();
 
 		logger.debug("TSL Validation Job is finishing ...");
 	}
 
-	private void analyzeCountryPointers(List<TSLPointer> pointers) {
+	/**
+	 * This method checks if the OJ url is still correct. If not, the DSS keystore is outdated.
+	 * 
+	 * @param parseResult
+	 * 
+	 * @return
+	 */
+	private boolean isLatestDssKeystore(TSLParserResult parseResult) {
+		List<String> englishSchemeInformationURIs = parseResult.getEnglishSchemeInformationURIs();
+		return englishSchemeInformationURIs.contains(ojUrl);
+	}
+
+	private void analyzeCountryPointers(List<TSLPointer> pointers, boolean newLotl) {
 		List<Future<TSLLoaderResult>> futureLoaderResults = new ArrayList<Future<TSLLoaderResult>>();
 		for (TSLPointer tslPointer : pointers) {
 			if (CollectionUtils.isEmpty(filterTerritories) || filterTerritories.contains(tslPointer.getTerritory())) {
@@ -234,9 +269,9 @@ public class TSLValidationJob {
 					futureParseResults.add(executorService.submit(new TSLParser(fis)));
 				}
 
-				if (checkTSLSignatures && (countryModel.getValidationResult() == null)) {
-					TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), loaderResult.getCountryCode(), dssKeyStore, getPotentialSigners(pointers,
-							loaderResult.getCountryCode()));
+				if (checkTSLSignatures && (countryModel.getValidationResult() == null || newLotl)) {
+					TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), loaderResult.getCountryCode(), dssKeyStore,
+							getPotentialSigners(pointers, loaderResult.getCountryCode()));
 					futureValidationResults.add(executorService.submit(tslValidator));
 				}
 			} catch (Exception e) {

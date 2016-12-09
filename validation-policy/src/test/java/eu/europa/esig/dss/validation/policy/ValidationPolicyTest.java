@@ -2,25 +2,38 @@ package eu.europa.esig.dss.validation.policy;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
 
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+
+import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 public class ValidationPolicyTest {
 
 	@Test
 	public void test1() throws Exception {
 
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		InputStream schemaStream = ValidationPolicyTest.class.getResourceAsStream("/xsd/policy.xsd");
+		Schema schema = sf.newSchema(new StreamSource(schemaStream));
 
-		byte[] data = IOUtils.toByteArray(getClass().getResourceAsStream("/policy/constraint.xml"));
+		JAXBContext jaxbContext = JAXBContext.newInstance(eu.europa.esig.jaxb.policy.ObjectFactory.class);
+		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+		unmarshaller.setSchema(schema);
 
-		EtsiValidationPolicy policy = new EtsiValidationPolicy(dbf.newDocumentBuilder().parse(new ByteArrayInputStream(data)));
+		ConstraintsParameters constraints = (ConstraintsParameters) unmarshaller.unmarshal(new File("src/main/resources/policy/constraint.xml"));
+		assertNotNull(constraints);
+
+		EtsiValidationPolicy policy = new EtsiValidationPolicy(constraints);
 
 		assertNotNull(policy);
 	}
-
 }

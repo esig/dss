@@ -42,9 +42,11 @@ public final class DSSPDFUtils {
 	/**
 	 * This method returns the temporary {@code File} with the provided contents.
 	 *
-	 * @param pdfData {@code InputStream} representing the contents of the returned {@code File}
+	 * @param pdfData
+	 *            {@code InputStream} representing the contents of the returned {@code File}
 	 * @return {@code File} with the given contents
-	 * @throws DSSException in case of any {@code IOException}
+	 * @throws DSSException
+	 *             in case of any {@code IOException}
 	 */
 	public static File getFileFromPdfData(final InputStream pdfData) throws DSSException {
 
@@ -52,6 +54,8 @@ public final class DSSPDFUtils {
 		try {
 
 			final File file = File.createTempFile("sd-dss-", ".pdf");
+			file.deleteOnExit();
+
 			fileOutputStream = new FileOutputStream(file);
 			IOUtils.copy(pdfData, fileOutputStream);
 			return file;
@@ -72,17 +76,16 @@ public final class DSSPDFUtils {
 	 * @throws DSSException
 	 */
 	public static FileOutputStream getFileOutputStream(final File toSignFile, final File signedFile) throws DSSException {
-
 		FileInputStream fileInputStream = null;
 		try {
-
 			final FileOutputStream fileOutputStream = new FileOutputStream(signedFile);
 			fileInputStream = new FileInputStream(toSignFile);
 			IOUtils.copy(fileInputStream, fileOutputStream);
 			return fileOutputStream;
 		} catch (IOException e) {
-			IOUtils.closeQuietly(fileInputStream);
 			throw new DSSException(e);
+		} finally {
+			IOUtils.closeQuietly(fileInputStream);
 		}
 	}
 

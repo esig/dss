@@ -33,8 +33,13 @@ import eu.europa.esig.dss.x509.ocsp.ListOCSPSource;
 import eu.europa.esig.dss.x509.ocsp.OCSPSource;
 
 /**
- * This class provides the different sources used to verify the status of a certificate using the trust model. There are four different types of sources to be defined:<br /> -
- * Trusted certificates source;<br /> - Adjunct certificates source (not trusted);<br /> - OCSP source;<br /> - CRL source.<br />
+ * This class provides the different sources used to verify the status of a certificate using the trust model. There are
+ * four different types of sources to be defined:<br />
+ * -
+ * Trusted certificates source;<br />
+ * - Adjunct certificates source (not trusted);<br />
+ * - OCSP source;<br />
+ * - CRL source.<br />
  *
  * The {@code DataLoader} should be provided to give access to the certificates through AIA.
  *
@@ -46,12 +51,14 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private static final Logger LOG = LoggerFactory.getLogger(CommonCertificateVerifier.class);
 
 	/**
-	 * This field contains the reference to the trusted certificate source. This source is fixed, it means that the same source is used for different validations.
+	 * This field contains the reference to the trusted certificate source. This source is fixed, it means that the same
+	 * source is used for different validations.
 	 */
 	private CertificateSource trustedCertSource;
 
 	/**
-	 * This field contains the reference to any certificate source, can contain the trust store, or the any intermediate certificates.
+	 * This field contains the reference to any certificate source, can contain the trust store, or the any intermediate
+	 * certificates.
 	 */
 	private CertificateSource adjunctCertSource;
 
@@ -89,9 +96,11 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	/**
-	 * This constructor allows to create {@code CommonCertificateVerifier} without {@code DataLoader}. It means that only a profile -B signatures can be created.
+	 * This constructor allows to create {@code CommonCertificateVerifier} without {@code DataLoader}. It means that
+	 * only a profile -B signatures can be created.
 	 *
-	 * @param simpleCreationOnly if true the {@code CommonCertificateVerifier} will not contain {@code DataLoader}.
+	 * @param simpleCreationOnly
+	 *            if true the {@code CommonCertificateVerifier} will not contain {@code DataLoader}.
 	 */
 	public CommonCertificateVerifier(final boolean simpleCreationOnly) {
 		if (!simpleCreationOnly) {
@@ -102,12 +111,17 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	/**
 	 * The constructor with key parameters.
 	 *
-	 * @param trustedCertSource the reference to the trusted certificate source.
-	 * @param crlSource         contains the reference to the {@code OCSPSource}.
-	 * @param ocspSource        contains the reference to the {@code CRLSource}.
-	 * @param dataLoader        contains the reference to a data loader used to access AIA certificate source.
+	 * @param trustedCertSource
+	 *            the reference to the trusted certificate source.
+	 * @param crlSource
+	 *            contains the reference to the {@code OCSPSource}.
+	 * @param ocspSource
+	 *            contains the reference to the {@code CRLSource}.
+	 * @param dataLoader
+	 *            contains the reference to a data loader used to access AIA certificate source.
 	 */
-	public CommonCertificateVerifier(final CertificateSource trustedCertSource, final CRLSource crlSource, final OCSPSource ocspSource, final DataLoader dataLoader) {
+	public CommonCertificateVerifier(final CertificateSource trustedCertSource, final CRLSource crlSource, final OCSPSource ocspSource,
+			final DataLoader dataLoader) {
 
 		LOG.info("+ New CommonCertificateVerifier created with parameters.");
 		this.trustedCertSource = trustedCertSource;
@@ -149,7 +163,8 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	/**
 	 * Defines the source of CRL used by this class
 	 *
-	 * @param crlSource the crlSource to set
+	 * @param crlSource
+	 *            the crlSource to set
 	 */
 	@Override
 	public void setCrlSource(final CRLSource crlSource) {
@@ -160,7 +175,8 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	/**
 	 * Defines the source of OCSP used by this class
 	 *
-	 * @param ocspSource the ocspSource to set
+	 * @param ocspSource
+	 *            the ocspSource to set
 	 */
 	@Override
 	public void setOcspSource(final OCSPSource ocspSource) {
@@ -169,9 +185,11 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	/**
-	 * Defines how the certificates from the Trusted Lists are retrieved. This source should provide trusted certificates. These certificates are used as trust anchors.
+	 * Defines how the certificates from the Trusted Lists are retrieved. This source should provide trusted
+	 * certificates. These certificates are used as trust anchors.
 	 *
-	 * @param trustedCertSource The source of trusted certificates.
+	 * @param trustedCertSource
+	 *            The source of trusted certificates.
 	 */
 	@Override
 	public void setTrustedCertSource(final CertificateSource trustedCertSource) {
@@ -231,14 +249,11 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public CertificatePool createValidationPool() {
-
 		final CertificatePool validationPool = new CertificatePool();
 		if (trustedCertSource != null) {
-
 			validationPool.merge(trustedCertSource.getCertificatePool());
 		}
 		if (adjunctCertSource != null) {
-
 			validationPool.merge(adjunctCertSource.getCertificatePool());
 		}
 		return validationPool;

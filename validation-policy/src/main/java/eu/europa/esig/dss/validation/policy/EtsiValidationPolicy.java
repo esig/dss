@@ -21,649 +21,706 @@
 package eu.europa.esig.dss.validation.policy;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.XmlDom;
-import eu.europa.esig.dss.validation.policy.rules.AttributeName;
+import eu.europa.esig.dss.validation.DateUtils;
+import eu.europa.esig.jaxb.policy.Algo;
+import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
+import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;
+import eu.europa.esig.jaxb.policy.CertificateConstraints;
+import eu.europa.esig.jaxb.policy.ConstraintsParameters;
+import eu.europa.esig.jaxb.policy.CryptographicConstraint;
+import eu.europa.esig.jaxb.policy.LevelConstraint;
+import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
+import eu.europa.esig.jaxb.policy.RevocationConstraints;
+import eu.europa.esig.jaxb.policy.SignatureConstraints;
+import eu.europa.esig.jaxb.policy.SignedAttributesConstraints;
+import eu.europa.esig.jaxb.policy.TimeConstraint;
+import eu.europa.esig.jaxb.policy.TimestampConstraints;
+import eu.europa.esig.jaxb.policy.UnsignedAttributesConstraints;
+import eu.europa.esig.jaxb.policy.ValueConstraint;
 
 /**
  * This class encapsulates the constraint file that controls the policy to be used during the validation process. It
- * adds the functions to direct access to the file data. It is the implementation of the ETSI 102853 standard.
+ * adds the functions to direct access to the
+ * file data. It is the implementation of the ETSI 102853 standard.
  */
-public class EtsiValidationPolicy extends ValidationPolicy {
+public class EtsiValidationPolicy implements ValidationPolicy {
 
-	protected static final String TRUE = "true";
-	protected static final String FALSE = "false";
+	private static final Logger logger = LoggerFactory.getLogger(EtsiValidationPolicy.class);
 
-	private long maxRevocationFreshnessString;
+	private ConstraintsParameters policy;
 
-	private String maxRevocationFreshnessUnit;
-
-	private Long maxRevocationFreshness;
-
-	private Long timestampDelayTime;
-	private Map<String, Date> algorithmExpirationDate = new HashMap<String, Date>();
-
-	public EtsiValidationPolicy(Document document) {
-
-		super(document);
+	public EtsiValidationPolicy(ConstraintsParameters policy) {
+		this.policy = policy;
 	}
 
 	@Override
-	public boolean isRevocationFreshnessToBeChecked() {
-
-		return null != getElement("/ConstraintsParameters/Revocation/RevocationFreshness/");
-	}
-
-	@Override
-	public String getFormatedMaxRevocationFreshness() {
-
-		if (maxRevocationFreshness == null) {
-
-			getMaxRevocationFreshness();
+	public Date getAlgorithmExpirationDate(final String algorithm, Context context, SubContext subContext) {
+		CryptographicConstraint signatureCryptographicConstraint = getCertificateCryptographicConstraint(context, subContext);
+		if (signatureCryptographicConstraint != null) {
+			return extractExpirationDate(algorithm, signatureCryptographicConstraint);
 		}
-		return maxRevocationFreshnessString + " " + maxRevocationFreshnessUnit;
+		signatureCryptographicConstraint = getCertificateCryptographicConstraint(Context.SIGNATURE, SubContext.SIGNING_CERT);
+		if (signatureCryptographicConstraint != null) {
+			return extractExpirationDate(algorithm, signatureCryptographicConstraint);
+		}
+		return null;
 	}
 
-	@Override
-	public Long getMaxRevocationFreshness() {
-
-		if (maxRevocationFreshness == null) {
-
-			maxRevocationFreshness = Long.MAX_VALUE;
-
-			final XmlDom revocationFreshness = getElement("/ConstraintsParameters/Revocation/RevocationFreshness");
-			if (revocationFreshness != null) {
-
-				maxRevocationFreshnessString = getLongValue("/ConstraintsParameters/Revocation/RevocationFreshness/text()");
-				maxRevocationFreshnessUnit = getValue("/ConstraintsParameters/Revocation/RevocationFreshness/@Unit");
-				maxRevocationFreshness = RuleUtils.convertDuration(maxRevocationFreshnessUnit, "MILLISECONDS", maxRevocationFreshnessString);
-				if (maxRevocationFreshness == 0) {
-
-					maxRevocationFreshness = Long.MAX_VALUE;
+	private Date extractExpirationDate(final String algorithm, CryptographicConstraint signatureCryptographicConstraint) {
+		AlgoExpirationDate algoExpirationDate = signatureCryptographicConstraint.getAlgoExpirationDate();
+		String dateFormat = DateUtils.DEFAULT_DATE_FORMAT;
+		if (algoExpirationDate != null) {
+			if (StringUtils.isNotEmpty(algoExpirationDate.getFormat())) {
+				dateFormat = algoExpirationDate.getFormat();
+			}
+			List<Algo> algos = algoExpirationDate.getAlgo();
+			String foundExpirationDate = null;
+			for (Algo algo : algos) {
+				if (StringUtils.equalsIgnoreCase(algo.getValue(), algorithm)) {
+					foundExpirationDate = algo.getDate();
 				}
 			}
-		}
-		return maxRevocationFreshness;
-	}
-
-	@Override
-	public Date getAlgorithmExpirationDate(final String algorithm) {
-
-		Date date = algorithmExpirationDate.get(algorithm);
-		if (date == null) {
-
-			final XmlDom algoExpirationDateDom = getElement("/ConstraintsParameters/Timestamp/Cryptographic/AlgoExpirationDate");
-			if (algoExpirationDateDom == null) {
-
-				return null;
+			if (StringUtils.isNotEmpty(foundExpirationDate)) {
+				return DateUtils.parseDate(dateFormat, foundExpirationDate);
 			}
-			String expirationDateFormat = algoExpirationDateDom.getValue("./@Format");
-			if (expirationDateFormat.isEmpty()) {
+		}
+		return null;
+	}
 
-				expirationDateFormat = "yyyy-MM-dd";
+	@Override
+	public MultiValuesConstraint getSignaturePolicyConstraint(Context context) {
+		SignatureConstraints signatureConstraints = getSignatureConstraintsByContext(context);
+		if (signatureConstraints != null) {
+			return signatureConstraints.getAcceptablePolicies();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getSignaturePolicyIdentifiedConstraint(Context context) {
+		SignatureConstraints signatureConstraints = getSignatureConstraintsByContext(context);
+		if (signatureConstraints != null) {
+			return signatureConstraints.getPolicyAvailable();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getSignaturePolicyPolicyHashValid(Context context) {
+		SignatureConstraints signatureConstraints = getSignatureConstraintsByContext(context);
+		if (signatureConstraints != null) {
+			return signatureConstraints.getPolicyHashMatch();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getSignatureFormatConstraint(Context context) {
+		SignatureConstraints signatureConstraints = getSignatureConstraintsByContext(context);
+		if (signatureConstraints != null) {
+			return signatureConstraints.getAcceptableFormats();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getStructuralValidationConstraint(Context context) {
+		SignatureConstraints signatureConstraints = getSignatureConstraintsByContext(context);
+		if (signatureConstraints != null) {
+			return signatureConstraints.getStructuralValidation();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getSigningTimeConstraint() {
+		SignatureConstraints mainSignature = policy.getSignatureConstraints();
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getSigningTime();
 			}
+		}
+		return null;
+	}
 
-			final String expirationDateString = algoExpirationDateDom.getValue("./Algo[@Name='%s']/text()", algorithm);
-			if (expirationDateString.isEmpty()) {
-
-				throw new DSSException(String.format("The the expiration date is not defined for '%s' algorithm!", algorithm));
+	@Override
+	public ValueConstraint getContentTypeConstraint() {
+		SignatureConstraints mainSignature = policy.getSignatureConstraints();
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getContentType();
 			}
-			date = DSSUtils.parseDate(expirationDateFormat, expirationDateString);
-			algorithmExpirationDate.put(algorithm, date);
-		}
-		return date;
-	}
-
-	@Override
-	public SignaturePolicyConstraint getSignaturePolicyConstraint() {
-
-		final String level = getValue("/ConstraintsParameters/MainSignature/AcceptablePolicies/@Level");
-		if (StringUtils.isNotBlank(level)) {
-
-			final SignaturePolicyConstraint constraint = new SignaturePolicyConstraint(level);
-
-			final List<XmlDom> policyList = getElements("/ConstraintsParameters/MainSignature/AcceptablePolicies/Id");
-			final List<String> identifierList = XmlDom.convertToStringList(policyList);
-			constraint.setIdentifiers(identifierList);
-			constraint.setExpectedValue(identifierList.toString());
-			return constraint;
 		}
 		return null;
 	}
 
 	@Override
-	public Constraint getStructuralValidationConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/MainSignature/StructuralValidation";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getSigningTimeConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedSignedQProperties/SigningTime";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getContentTypeConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentType";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-
-	@Override
-	public Constraint getContentHintsConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentHints";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getContentIdentifierConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentIdentifier";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getCommitmentTypeIndicationConstraint() {
-
-		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/CommitmentTypeIndication/@Level");
-		if (StringUtils.isNotBlank(level)) {
-
-			final Constraint constraint = new Constraint(level);
-			final List<XmlDom> commitmentTypeIndications = getElements("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/CommitmentTypeIndication/Identifier");
-			final List<String> identifierList = XmlDom.convertToStringList(commitmentTypeIndications);
-			constraint.setExpectedValue(identifierList.toString());
-			constraint.setIdentifiers(identifierList);
-			return constraint;
+	public LevelConstraint getCounterSignatureConstraint() {
+		SignatureConstraints mainSignature = policy.getSignatureConstraints();
+		if (mainSignature != null) {
+			UnsignedAttributesConstraints unsignedAttributeConstraints = mainSignature.getUnsignedAttributes();
+			if (unsignedAttributeConstraints != null) {
+				return unsignedAttributeConstraints.getCounterSignature();
+			}
 		}
 		return null;
 	}
 
 	@Override
-	public Constraint getSignerLocationConstraint() {
-
-		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/SignerLocation/@Level");
-		if (StringUtils.isNotBlank(level)) {
-
-			final Constraint constraint = new Constraint(level);
-			return constraint;
+	public ValueConstraint getContentHintsConstraint() {
+		SignatureConstraints mainSignature = policy.getSignatureConstraints();
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getContentHints();
+			}
 		}
 		return null;
 	}
 
 	@Override
-	public Constraint getContentTimestampPresenceConstraint() {
-
-		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentTimestamp/@Level");
-		if (StringUtils.isNotBlank(level)) {
-
-			final Constraint constraint = new Constraint(level);
-			return constraint;
+	public ValueConstraint getContentIdentifierConstraint() {
+		SignatureConstraints mainSignature = policy.getSignatureConstraints();
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getContentIdentifier();
+			}
 		}
 		return null;
 	}
 
 	@Override
-	public Constraint getClaimedRoleConstraint() {
-
-		final String level = getValue("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ClaimedRoles/@Level");
-		if (StringUtils.isNotBlank(level)) {
-
-			final Constraint constraint = new Constraint(level);
-			final List<XmlDom> claimedRoles = getElements("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ClaimedRoles/Role");
-			final List<String> claimedRoleList = XmlDom.convertToStringList(claimedRoles);
-			constraint.setExpectedValue(claimedRoleList.toString());
-			constraint.setIdentifiers(claimedRoleList);
-			return constraint;
+	public MultiValuesConstraint getCommitmentTypeIndicationConstraint() {
+		SignatureConstraints mainSignature = policy.getSignatureConstraints();
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getCommitmentTypeIndication();
+			}
 		}
 		return null;
 	}
 
 	@Override
-	public List<String> getClaimedRoles() {
-
-		final List<XmlDom> list = getElements("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ClaimedRoles/Role");
-		final List<String> claimedRoles = XmlDom.convertToStringList(list);
-		return claimedRoles;
+	public LevelConstraint getSignerLocationConstraint() {
+		SignatureConstraints mainSignature = policy.getSignatureConstraints();
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getSignerLocation();
+			}
+		}
+		return null;
 	}
 
 	@Override
-	public boolean shouldCheckIfCertifiedRoleIsPresent() {
-
-		final long count = getCountValue("count(/ConstraintsParameters/MainSignature/MandatedSignedQProperties/CertifiedRoles/Role)");
-		return count > 0;
+	public MultiValuesConstraint getClaimedRoleConstraint() {
+		SignatureConstraints mainSignature = policy.getSignatureConstraints();
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributes = mainSignature.getSignedAttributes();
+			if (signedAttributes != null) {
+				return signedAttributes.getClaimedRoles();
+			}
+		}
+		return null;
 	}
 
 	@Override
-	public List<String> getCertifiedRoles() {
-
-		final List<XmlDom> list = getElements("/ConstraintsParameters/MainSignature/MandatedSignedQProperties/CertifiedRoles/Role");
-		final List<String> claimedRoles = XmlDom.convertToStringList(list);
-		return claimedRoles;
+	public MultiValuesConstraint getCertifiedRolesConstraint() {
+		SignatureConstraints mainSignature = policy.getSignatureConstraints();
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributes = mainSignature.getSignedAttributes();
+			if (signedAttributes != null) {
+				return signedAttributes.getCertifiedRoles();
+			}
+		}
+		return null;
 	}
 
 	@Override
 	public String getPolicyName() {
-
-		final String policy = getValue("/ConstraintsParameters/@Name");
-		return policy;
+		return policy.getName();
 	}
 
 	@Override
 	public String getPolicyDescription() {
-
-		final String description = getValue("/ConstraintsParameters/Description/text()");
-		return description;
+		return policy.getDescription();
 	}
 
 	@Override
-	public Long getTimestampDelayTime() {
+	public CryptographicConstraint getSignatureCryptographicConstraint(Context context) {
+		BasicSignatureConstraints basicSignature = getBasicSignatureConstraintsByContext(context);
+		if (basicSignature != null) {
+			return basicSignature.getCryptographic();
+		}
+		return null;
+	}
 
-		if (timestampDelayTime == null) {
+	@Override
+	public CryptographicConstraint getCertificateCryptographicConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getCryptographic();
+		}
+		return null;
+	}
 
-			final XmlDom timestampDelayPresent = getElement("/ConstraintsParameters/Timestamp/TimestampDelay");
-			if (timestampDelayPresent == null) {
+	@Override
+	public MultiValuesConstraint getCertificateKeyUsageConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getKeyUsage();
+		}
+		return null;
+	}
 
-				return null;
+	@Override
+	public MultiValuesConstraint getCertificateSurnameConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getSurname();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateGivenNameConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getGivenName();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateCommonNameConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getCommonName();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificatePseudonymConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getPseudonym();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateCountryConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getCountry();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateOrganizationNameConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getOrganizationName();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateOrganizationUnitConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getOrganizationUnit();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateNotExpiredConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getNotExpired();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getProspectiveCertificateChainConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getProspectiveCertificateChain();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateSignatureConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getSignature();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getRevocationDataAvailableConstraint(final Context context, final SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getRevocationDataAvailable();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getRevocationDataNextUpdatePresentConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getRevocationDataNextUpdatePresent();
+		}
+		return null;
+
+	}
+
+	@Override
+	public LevelConstraint getCertificateNotRevokedConstraint(final Context context, final SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getNotRevoked();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateNotOnHoldConstraint(final Context context, final SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getNotOnHold();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getTrustedServiceStatusConstraint(Context context) {
+		BasicSignatureConstraints sigConstraints = getBasicSignatureConstraintsByContext(context);
+		if (sigConstraints != null) {
+			return sigConstraints.getTrustedServiceStatus();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getTrustedServiceTypeIdentifierConstraint(Context context) {
+		BasicSignatureConstraints sigConstraints = getBasicSignatureConstraintsByContext(context);
+		if (sigConstraints != null) {
+			return sigConstraints.getTrustedServiceTypeIdentifier();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificatePolicyIdsConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getPolicyIds();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateQCStatementIdsConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getQCStatementIds();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateIssuedToNaturalPersonConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getIssuedToNaturalPerson();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateQualificationConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getQualification();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateSupportedBySSCDConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getSupportedBySSCD();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateIssuedToLegalPersonConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getIssuedToLegalPerson();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getSigningCertificateRecognitionConstraint(Context context) {
+		CertificateConstraints certificateConstraints = getSigningCertificateByContext(context);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getRecognition();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getSigningCertificateSignedConstraint(final Context context) {
+		SignatureConstraints mainSignature = getSignatureConstraintsByContext(context);
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getSigningCertificateSigned();
 			}
-			final long timestampDelay = getLongValue("/ConstraintsParameters/Timestamp/TimestampDelay/text()");
-			final String timestampUnit = getValue("/ConstraintsParameters/Timestamp/TimestampDelay/@Unit");
-			timestampDelayTime = RuleUtils.convertDuration(timestampUnit, "MILLISECONDS", timestampDelay);
-		}
-		return timestampDelayTime;
-	}
-
-	@Override
-	public String getCertifiedRolesAttendance() {
-
-		String attendance = getValue("ConstraintsParameters/MainSignature/MandatedSignedQProperties/ClaimedRoles/@Attendance");
-		return attendance;
-	}
-
-	@Override
-	public SignatureCryptographicConstraint getSignatureCryptographicConstraint(final String context) {
-
-		final String rootXPathQuery = String.format("/ConstraintsParameters/%s/Cryptographic", context);
-		return getSignatureCryptographicConstraint_(rootXPathQuery, context, null);
-	}
-
-	@Override
-	public SignatureCryptographicConstraint getSignatureCryptographicConstraint(final String context, final String subContext) {
-
-		final String rootXPathQuery = String.format("/ConstraintsParameters/%s/%s/Cryptographic", context, subContext);
-		return getSignatureCryptographicConstraint_(rootXPathQuery, context, subContext);
-	}
-
-	@Override
-	protected SignatureCryptographicConstraint getSignatureCryptographicConstraint_(final String rootXPathQuery, final String context, final String subContext) {
-
-		final String level = getValue(rootXPathQuery + "/@Level");
-		if (StringUtils.isNotBlank(level)) {
-
-			final SignatureCryptographicConstraint constraint = new SignatureCryptographicConstraint(level, context, subContext);
-
-			final List<XmlDom> encryptionAlgoList = getElements(rootXPathQuery + "/AcceptableEncryptionAlgo/Algo");
-			final List<String> encryptionAlgoStringList = XmlDom.convertToStringList(encryptionAlgoList);
-			constraint.setEncryptionAlgorithms(encryptionAlgoStringList);
-
-			final List<XmlDom> digestAlgoList = getElements(rootXPathQuery + "/AcceptableDigestAlgo/Algo");
-			final List<String> digestAlgoStringList = XmlDom.convertToStringList(digestAlgoList);
-			constraint.setDigestAlgorithms(digestAlgoStringList);
-
-			final List<XmlDom> miniPublicKeySizeList = getElements(rootXPathQuery + "/MiniPublicKeySize/Algo");
-			final Map<String, String> miniPublicKeySizeStringMap = XmlDom.convertToStringMap(miniPublicKeySizeList, AttributeName.SIZE);
-			constraint.setMinimumPublicKeySizes(miniPublicKeySizeStringMap);
-
-			final List<XmlDom> algoExpirationDateList = getElements("/ConstraintsParameters/Cryptographic/AlgoExpirationDate/Algo");
-			final Map<String, Date> algoExpirationDateStringMap = XmlDom.convertToStringDateMap(algoExpirationDateList, AttributeName.DATE);
-			constraint.setAlgorithmExpirationDates(algoExpirationDateStringMap);
-
-			return constraint;
 		}
 		return null;
 	}
 
 	@Override
-	public Constraint getSigningCertificateKeyUsageConstraint(final String context) {
-
-		final String level = getValue("/ConstraintsParameters/%s/SigningCertificate/KeyUsage/@Level", context);
-		if (StringUtils.isNotBlank(level)) {
-
-			final Constraint constraint = new Constraint(level);
-			final List<XmlDom> keyUsages = getElements("/ConstraintsParameters/%s/SigningCertificate/KeyUsage/Identifier", context);
-			final List<String> identifierList = XmlDom.convertToStringList(keyUsages);
-			constraint.setExpectedValue(identifierList.toString());
-			constraint.setIdentifiers(identifierList);
-			return constraint;
-		}
-		return null;
-	}
-
-	@Override
-	public CertificateExpirationConstraint getSigningCertificateExpirationConstraint(final String context, final String subContext) {
-
-		final String level = getValue(String.format("/ConstraintsParameters/%s/%s/Expiration/@Level", context, subContext));
-		if (StringUtils.isNotBlank(level)) {
-
-			final CertificateExpirationConstraint constraint = new CertificateExpirationConstraint(level);
-			return constraint;
-		}
-		return null;
-	}
-
-	@Override
-	public Constraint getProspectiveCertificateChainConstraint(final String context) {
-
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/ProspectiveCertificateChain", context);
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getCertificateSignatureConstraint(final String context, final String subContext) {
-
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/%s/Signature", context, subContext);
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getRevocationDataAvailableConstraint(final String context, final String subContext) {
-
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/%s/RevocationDataAvailable", context, subContext);
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getRevocationDataIsTrustedConstraint(final String context, final String subContext) {
-
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/%s/RevocationDataIsTrusted", context, subContext);
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getRevocationDataFreshnessConstraint(final String context, final String subContext) {
-
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/%s/RevocationDataFreshness", context, subContext);
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getSigningCertificateRevokedConstraint(final String context, final String subContext) {
-
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/%s/Revoked", context, subContext);
-		return getBasicConstraint(XP_ROOT, false);
-	}
-
-	@Override
-	public Constraint getSigningCertificateOnHoldConstraint(final String context, final String subContext) {
-
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/%s/OnHold", context, subContext);
-		return getBasicConstraint(XP_ROOT, false);
-	}
-
-	@Override
-	public Constraint getSigningCertificateTSLValidityConstraint(final String context) {
-
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/TSLValidity", context);
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getSigningCertificateTSLStatusConstraint(final String context) {
-
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/TSLStatus", context);
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getSigningCertificateTSLStatusAndValidityConstraint(final String context) {
-
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/TSLStatusAndValidity", context);
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getIntermediateCertificateRevokedConstraint(final String context) {
-
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/CACertificate/Revoked", context);
-		return getBasicConstraint(XP_ROOT, false);
-	}
-
-	@Override
-	public Constraint getChainConstraint() {
-
-		final String level = getValue("/ConstraintsParameters/MainSignature/CertificateChain/@Level");
-		if (StringUtils.isNotBlank(level)) {
-
-			final Constraint constraint = new Constraint(level);
-			return constraint;
-		}
-		return null;
-	}
-
-	@Override
-	public Constraint getSigningCertificateQualificationConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/MainSignature/SigningCertificate/Qualification";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getSigningCertificateSupportedBySSCDConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/MainSignature/SigningCertificate/SupportedBySSCD";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getSigningCertificateIssuedToLegalPersonConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/MainSignature/SigningCertificate/IssuedToLegalPerson";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getSigningCertificateRecognitionConstraint(final String context) {
-
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/Recognition", context);
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getSigningCertificateSignedConstraint(final String context) {
-
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/Signed", context);
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getSigningCertificateAttributePresentConstraint(final String context) {
-
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/AttributePresent", context);
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getSigningCertificateDigestValuePresentConstraint(final String context) {
-
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/DigestValuePresent", context);
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getSigningCertificateDigestValueMatchConstraint(final String context) {
-
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/DigestValueMatch", context);
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getSigningCertificateIssuerSerialMatchConstraint(final String context) {
-
-		final String XP_ROOT = String.format("/ConstraintsParameters/%s/SigningCertificate/IssuerSerialMatch", context);
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getReferenceDataExistenceConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/MainSignature/ReferenceDataExistence";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getReferenceDataIntactConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/MainSignature/ReferenceDataIntact";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getSignatureIntactConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/MainSignature/SignatureIntact";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	protected Constraint getBasicConstraint(final String XP_ROOT, final boolean defaultExpectedValue) {
-
-		final String level = getValue(XP_ROOT + "/@Level");
-		if (StringUtils.isNotBlank(level)) {
-
-			final Constraint constraint = new Constraint(level);
-			String expectedValue = getValue(XP_ROOT + "/text()");
-			if (StringUtils.isBlank(expectedValue)) {
-				expectedValue = defaultExpectedValue ? TRUE : FALSE;
+	public LevelConstraint getSigningCertificateAttributePresentConstraint(Context context) {
+		SignatureConstraints mainSignature = getSignatureConstraintsByContext(context);
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getSigningCertificatePresent();
 			}
-			constraint.setExpectedValue(expectedValue);
-			return constraint;
 		}
 		return null;
 	}
 
 	@Override
-	public BasicValidationProcessValidConstraint getBasicValidationProcessConclusionConstraint() {
-
-		final BasicValidationProcessValidConstraint constraint = new BasicValidationProcessValidConstraint("FAIL");
-		constraint.setExpectedValue(TRUE);
-		return constraint;
-	}
-
-	@Override
-	public Constraint getMessageImprintDataFoundConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/Timestamp/MessageImprintDataFound";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getMessageImprintDataIntactConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/Timestamp/MessageImprintDataIntact";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public TimestampValidationProcessValidConstraint getTimestampValidationProcessConstraint() {
-
-		final TimestampValidationProcessValidConstraint constraint = new TimestampValidationProcessValidConstraint("FAIL");
-		constraint.setExpectedValue(TRUE);
-		return constraint;
-	}
-
-	@Override
-	public Constraint getRevocationTimeConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/Timestamp/RevocationTimeAgainstBestSignatureTime";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/Timestamp/BestSignatureTimeBeforeIssuanceDateOfSigningCertificate";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getSigningCertificateValidityAtBestSignatureTimeConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/Timestamp/SigningCertificateValidityAtBestSignatureTime";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getAlgorithmReliableAtBestSignatureTimeConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/Timestamp/AlgorithmReliableAtBestSignatureTime";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-
-	@Override
-	public Constraint getTimestampCoherenceConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/Timestamp/Coherence";
-		return getBasicConstraint(XP_ROOT, true);
-	}
-
-	@Override
-	public Constraint getTimestampDelaySigningTimePropertyConstraint() {
-
-		final Long timestampDelay = getTimestampDelayTime();
-		if ((timestampDelay != null) && (timestampDelay > 0)) {
-
-			final Constraint constraint = new Constraint("FAIL");
-			constraint.setExpectedValue(TRUE);
-			return constraint;
+	public LevelConstraint getSigningCertificateDigestValuePresentConstraint(Context context) {
+		SignatureConstraints mainSignature = getSignatureConstraintsByContext(context);
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getCertDigestPresent();
+			}
 		}
 		return null;
 	}
 
 	@Override
-	public Constraint getContentTimestampImprintIntactConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentTimestamp/MessageImprintDataIntact";
-		return getBasicConstraint(XP_ROOT, true);
+	public LevelConstraint getSigningCertificateDigestValueMatchConstraint(Context context) {
+		SignatureConstraints mainSignature = getSignatureConstraintsByContext(context);
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getCertDigestMatch();
+			}
+		}
+		return null;
 	}
 
 	@Override
-	public Constraint getContentTimestampImprintFoundConstraint() {
-		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedSignedQProperties/ContentTimestamp/MessageImprintDataFound";
-		return getBasicConstraint(XP_ROOT, true);
+	public LevelConstraint getSigningCertificateIssuerSerialMatchConstraint(Context context) {
+		SignatureConstraints mainSignature = getSignatureConstraintsByContext(context);
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getIssuerSerialMatch();
+			}
+		}
+		return null;
 	}
 
 	@Override
-	public Constraint getCounterSignatureReferenceDataExistenceConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedUnsignedQProperties/CounterSignature/ReferenceDataExistence";
-		return getBasicConstraint(XP_ROOT, true);
+	public LevelConstraint getReferenceDataExistenceConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getReferenceDataExistence();
+		}
+		return null;
 	}
 
 	@Override
-	public Constraint getCounterSignatureReferenceDataIntactConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedUnsignedQProperties/CounterSignature/ReferenceDataIntact";
-		return getBasicConstraint(XP_ROOT, true);
+	public LevelConstraint getReferenceDataIntactConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getReferenceDataIntact();
+		}
+		return null;
 	}
 
 	@Override
-	public Constraint getCounterSignatureIntactConstraint() {
-
-		final String XP_ROOT = "/ConstraintsParameters/MainSignature/MandatedUnsignedQProperties/CounterSignature/SignatureIntact";
-		return getBasicConstraint(XP_ROOT, true);
+	public LevelConstraint getSignatureIntactConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getSignatureIntact();
+		}
+		return null;
 	}
+
+	@Override
+	public LevelConstraint getMessageImprintDataFoundConstraint() {
+		TimestampConstraints timestamp = policy.getTimestamp();
+		if (timestamp != null) {
+			return timestamp.getMessageImprintDataFound();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getMessageImprintDataIntactConstraint() {
+		TimestampConstraints timestamp = policy.getTimestamp();
+		if (timestamp != null) {
+			return timestamp.getMessageImprintDataIntact();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint() {
+		TimestampConstraints timestamp = policy.getTimestamp();
+		if (timestamp != null) {
+			return timestamp.getBestSignatureTimeBeforeIssuanceDateOfSigningCertificate();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getSigningCertificateValidityAtBestSignatureTimeConstraint() {
+		TimestampConstraints timestamp = policy.getTimestamp();
+		if (timestamp != null) {
+			return timestamp.getSigningCertificateValidityAtBestSignatureTime();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getAlgorithmReliableAtBestSignatureTimeConstraint() {
+		TimestampConstraints timestamp = policy.getTimestamp();
+		if (timestamp != null) {
+			return timestamp.getAlgorithmReliableAtBestSignatureTime();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getTimestampCoherenceConstraint() {
+		TimestampConstraints timestampConstraints = policy.getTimestamp();
+		if (timestampConstraints != null) {
+			return timestampConstraints.getCoherence();
+		}
+		return null;
+	}
+
+	@Override
+	public TimeConstraint getTimestampDelaySigningTimePropertyConstraint() {
+		TimestampConstraints timestampConstraints = policy.getTimestamp();
+		if (timestampConstraints != null) {
+			return timestampConstraints.getTimestampDelay();
+		}
+		return null;
+	}
+
+	@Override
+	public TimeConstraint getRevocationFreshnessConstraint() {
+		RevocationConstraints revocationConstraints = policy.getRevocation();
+		if (revocationConstraints != null) {
+			return revocationConstraints.getRevocationFreshness();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getContentTimestampConstraint() {
+		SignatureConstraints mainSignature = policy.getSignatureConstraints();
+		if (mainSignature != null) {
+			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
+			if (signedAttributeConstraints != null) {
+				return signedAttributeConstraints.getContentTimeStamp();
+			}
+		}
+		return null;
+	}
+
+	private CertificateConstraints getSigningCertificateByContext(Context context) {
+		return getCertificateConstraints(context, SubContext.SIGNING_CERT);
+	}
+
+	private CertificateConstraints getCertificateConstraints(Context context, SubContext subContext) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			if (SubContext.SIGNING_CERT.equals(subContext)) {
+				return basicSignatureConstraints.getSigningCertificate();
+			} else if (SubContext.CA_CERTIFICATE.equals(subContext)) {
+				return basicSignatureConstraints.getCACertificate();
+			}
+		}
+		return null;
+	}
+
+	private BasicSignatureConstraints getBasicSignatureConstraintsByContext(Context context) {
+		switch (context) {
+		case SIGNATURE:
+			SignatureConstraints mainSignature = policy.getSignatureConstraints();
+			if (mainSignature != null) {
+				return mainSignature.getBasicSignatureConstraints();
+			}
+			break;
+		case COUNTER_SIGNATURE:
+			SignatureConstraints counterSignature = policy.getCounterSignatureConstraints();
+			if (counterSignature != null) {
+				return counterSignature.getBasicSignatureConstraints();
+			}
+			break;
+		case TIMESTAMP:
+			TimestampConstraints timestampConstraints = policy.getTimestamp();
+			if (timestampConstraints != null) {
+				return timestampConstraints.getBasicSignatureConstraints();
+			}
+			break;
+		case REVOCATION:
+			RevocationConstraints revocationConstraints = policy.getRevocation();
+			if (revocationConstraints != null) {
+				return revocationConstraints.getBasicSignatureConstraints();
+			}
+		default:
+			logger.warn("Unsupported context " + context);
+			break;
+		}
+		return null;
+	}
+
+	private SignatureConstraints getSignatureConstraintsByContext(Context context) {
+		switch (context) {
+		case SIGNATURE:
+			return policy.getSignatureConstraints();
+		case COUNTER_SIGNATURE:
+			return policy.getCounterSignatureConstraints();
+		default:
+			logger.warn("Unsupported context " + context);
+			break;
+		}
+		return null;
+	}
+
 }
-

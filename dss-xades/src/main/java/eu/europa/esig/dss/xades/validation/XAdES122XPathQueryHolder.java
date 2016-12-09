@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.XAdESNamespaces;
-import eu.europa.esig.dss.XPathQueryHolder;
+import eu.europa.esig.dss.xades.XAdESNamespaces;
+import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
  * TODO

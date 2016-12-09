@@ -33,9 +33,9 @@ import java.util.List;
 
 import javax.crypto.Cipher;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.xml.security.utils.Base64;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -150,8 +150,8 @@ public class CAdESLevelBTest extends AbstractTestSignature {
 				logger.info("SEQ cert " + i + " : " + seqCertif);
 
 				X509CertificateHolder certificateHolder = new X509CertificateHolder(seqCertif.getEncoded());
-				X509Certificate certificate = new JcaX509CertificateConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME).getCertificate(
-						certificateHolder);
+				X509Certificate certificate = new JcaX509CertificateConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME)
+						.getCertificate(certificateHolder);
 
 				certificate.checkValidity();
 
@@ -261,14 +261,14 @@ public class CAdESLevelBTest extends AbstractTestSignature {
 			DigestInfo digestInfo = new DigestInfo(seqDecrypt);
 			assertEquals(oidDigestAlgo, digestInfo.getAlgorithmId().getAlgorithm());
 
-			String decryptedDigestEncodeBase64 = Base64.encode(digestInfo.getDigest());
+			String decryptedDigestEncodeBase64 = Base64.encodeBase64String(digestInfo.getDigest());
 			logger.info("Decrypted Base64 : " + decryptedDigestEncodeBase64);
 
 			byte[] encoded = signedInfo.getAuthenticatedAttributes().getEncoded();
 			MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA256.getName());
 			byte[] digestOfAuthenticatedAttributes = messageDigest.digest(encoded);
 
-			String computedDigestEncodeBase64 = Base64.encode(digestOfAuthenticatedAttributes);
+			String computedDigestEncodeBase64 = Base64.encodeBase64String(digestOfAuthenticatedAttributes);
 			logger.info("Computed Base64 : " + computedDigestEncodeBase64);
 
 			assertEquals(decryptedDigestEncodeBase64, computedDigestEncodeBase64);

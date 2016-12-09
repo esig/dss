@@ -61,9 +61,6 @@ public class SignatureSoapServiceTest {
 
 		parameters = new RemoteSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
-		parameters.setSigningCertificate(new RemoteCertificate(entry.getCertificate().getCertificate().getEncoded()));
-		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
 		RemoteDocument extendedDocument = soapClient.extendDocument(new ExtendDocumentDTO(signedDocument, parameters));
 
