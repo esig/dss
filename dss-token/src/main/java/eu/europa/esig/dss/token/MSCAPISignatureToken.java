@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +90,11 @@ public class MSCAPISignatureToken extends AbstractSignatureTokenConnection {
 
 				field = keyStoreVeritable.getClass().getEnclosingClass().getDeclaredField("entries");
 				field.setAccessible(true);
-				entries = (Collection<?>) field.get(keyStoreVeritable);
+				try{
+                                        entries = (Collection<?>) field.get(keyStoreVeritable);
+                                }catch(ClassCastException exception){
+                                        entries = (Collection<?>) ((HashMap)field.get(keyStoreVeritable)).values();
+                                }
 
 				for (Object entry : entries) {
 					field = entry.getClass().getDeclaredField("certChain");
