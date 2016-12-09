@@ -10,7 +10,7 @@
 
     <div class="form-group">
         <form:label path="documentsToSign" cssClass="col-sm-2 control-label">
-            <spring:message code="label.to.sign.file" />
+            <spring:message code="label.to.sign.files" />
         </form:label>
         <div class="col-sm-4">
             <input type="file" name="documentsToSign" size="50" multiple="multiple"/> 
