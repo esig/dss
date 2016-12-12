@@ -10,23 +10,23 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.utils.Utils;
 
 @SuppressWarnings("serial")
-public class SoapDocumentSignatureServiceImpl implements SoapDocumentSignatureService {
+public class RestMultipleDocumentSignatureServiceImpl implements RestMultipleDocumentSignatureService {
 
-	private RemoteDocumentSignatureService<RemoteDocument, RemoteSignatureParameters> service;
+	private RemoteMultipleDocumentsSignatureService<RemoteDocument, RemoteSignatureParameters> service;
 
-	public void setService(RemoteDocumentSignatureService<RemoteDocument, RemoteSignatureParameters> service) {
+	public void setService(RemoteMultipleDocumentsSignatureService<RemoteDocument, RemoteSignatureParameters> service) {
 		this.service = service;
 	}
 
 	@Override
-	public ToBeSigned getDataToSign(DataToSignOneDocumentDTO dataToSignDto) throws DSSException {
-		return service.getDataToSign(dataToSignDto.getToSignDocument(), dataToSignDto.getParameters());
+	public ToBeSigned getDataToSign(DataToSignMultipleDocumentsDTO dataToSignDto) throws DSSException {
+		return service.getDataToSign(dataToSignDto.getToSignDocuments(), dataToSignDto.getParameters());
 	}
 
 	@Override
-	public RemoteDocument signDocument(SignOneDocumentDTO signDocumentDto) throws DSSException {
+	public RemoteDocument signDocument(SignMultipleDocumentDTO signDocumentDto) throws DSSException {
 		return toRemoteDocument(
-				service.signDocument(signDocumentDto.getToSignDocument(), signDocumentDto.getParameters(), signDocumentDto.getSignatureValue()));
+				service.signDocument(signDocumentDto.getToSignDocuments(), signDocumentDto.getParameters(), signDocumentDto.getSignatureValue()));
 	}
 
 	@Override

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.signature;
 
 import java.io.Serializable;
+import java.util.List;
 
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
@@ -28,49 +29,41 @@ import eu.europa.esig.dss.RemoteSignatureParameters;
 /**
  * This class is a DTO to transfer required objects to execute getDataToSign method
  * It's only possible to transfer an object by POST and REST.
- * It's impossible to transfer big objects ny GET (url size limitation)
+ * It's impossible to transfer big objects by GET (url size limitation)
  */
 @SuppressWarnings("serial")
-public class DataToSignDTO implements Serializable {
+public class DataToSignMultipleDocumentsDTO extends AbstractDataToSignDTO implements Serializable {
 
-	private RemoteDocument toSignDocument;
-	private RemoteSignatureParameters parameters;
+	private List<RemoteDocument> toSignDocuments;
 
-	public DataToSignDTO() {
+	public DataToSignMultipleDocumentsDTO() {
+		super(null);
 	}
 
-	public DataToSignDTO(RemoteDocument toSignDocument, RemoteSignatureParameters parameters) {
-		this.toSignDocument = toSignDocument;
-		this.parameters = parameters;
+	public DataToSignMultipleDocumentsDTO(List<RemoteDocument> toSignDocuments, RemoteSignatureParameters parameters) {
+		super(parameters);
+		this.toSignDocuments = toSignDocuments;
 	}
 
-	public RemoteDocument getToSignDocument() {
-		return toSignDocument;
+	public List<RemoteDocument> getToSignDocuments() {
+		return toSignDocuments;
 	}
 
-	public void setToSignDocument(RemoteDocument toSignDocument) {
-		this.toSignDocument = toSignDocument;
-	}
-
-	public RemoteSignatureParameters getParameters() {
-		return parameters;
-	}
-
-	public void setParameters(RemoteSignatureParameters parameters) {
-		this.parameters = parameters;
+	public void setToSignDocuments(List<RemoteDocument> toSignDocuments) {
+		this.toSignDocuments = toSignDocuments;
 	}
 
 	@Override
 	public String toString() {
-		return "DataToSignDTO [toSignDocument=" + toSignDocument + ", parameters=" + parameters + "]";
+		return "DataToSignDTO [toSignDocument=" + toSignDocuments + ", parameters=" + getParameters() + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + ((parameters == null) ? 0 : parameters.hashCode());
-		result = (prime * result) + ((toSignDocument == null) ? 0 : toSignDocument.hashCode());
+		result = (prime * result) + ((getParameters() == null) ? 0 : getParameters().hashCode());
+		result = (prime * result) + ((toSignDocuments == null) ? 0 : toSignDocuments.hashCode());
 		return result;
 	}
 
@@ -85,19 +78,19 @@ public class DataToSignDTO implements Serializable {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		DataToSignDTO other = (DataToSignDTO) obj;
-		if (parameters == null) {
-			if (other.parameters != null) {
+		DataToSignMultipleDocumentsDTO other = (DataToSignMultipleDocumentsDTO) obj;
+		if (getParameters() == null) {
+			if (other.getParameters() != null) {
 				return false;
 			}
-		} else if (!parameters.equals(other.parameters)) {
+		} else if (!getParameters().equals(other.getParameters())) {
 			return false;
 		}
-		if (toSignDocument == null) {
-			if (other.toSignDocument != null) {
+		if (toSignDocuments == null) {
+			if (other.toSignDocuments != null) {
 				return false;
 			}
-		} else if (!toSignDocument.equals(other.toSignDocument)) {
+		} else if (!toSignDocuments.equals(other.toSignDocuments)) {
 			return false;
 		}
 		return true;

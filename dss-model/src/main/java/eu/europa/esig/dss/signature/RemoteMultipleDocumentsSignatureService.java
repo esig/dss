@@ -73,4 +73,16 @@ public interface RemoteMultipleDocumentsSignatureService<DOC, SP extends Abstrac
 	 */
 	DSSDocument signDocument(final List<DOC> toSignDocuments, final SP parameters, SignatureValue signatureValue) throws DSSException;
 
+	/**
+	 * Extends the level of the signatures in the {@code toExtendDocument}
+	 *
+	 * @param toExtendDocument
+	 *            document to extend
+	 * @param parameters
+	 *            set of the driving signing parameters
+	 * @return
+	 * @throws DSSException
+	 */
+	DSSDocument extendDocument(final DOC toExtendDocument, final SP parameters) throws DSSException;
+
 }

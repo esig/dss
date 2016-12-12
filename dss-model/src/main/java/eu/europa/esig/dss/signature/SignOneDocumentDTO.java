@@ -24,53 +24,42 @@ import java.io.Serializable;
 
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
+import eu.europa.esig.dss.SignatureValue;
 
 /**
- * This class is a DTO to transfer required objects to execute extendDocument method
+ * This class is a DTO to transfer required objects to execute signDocument method
  * It's only possible to transfer an object by POST and REST.
  * It's impossible to transfer big objects by GET (url size limitation)
  */
 @SuppressWarnings("serial")
-public class ExtendDocumentDTO implements Serializable {
+public class SignOneDocumentDTO extends AbstractSignDocumentDTO implements Serializable {
 
-	private RemoteDocument toExtendDocument;
-	private RemoteSignatureParameters parameters;
+	private RemoteDocument toSignDocument;
 
-	public ExtendDocumentDTO() {
+	public SignOneDocumentDTO() {
+		super(null, null);
 	}
 
-	public ExtendDocumentDTO(RemoteDocument toExtendDocument, RemoteSignatureParameters parameters) {
-		this.toExtendDocument = toExtendDocument;
-		this.parameters = parameters;
+	public SignOneDocumentDTO(RemoteDocument toSignDocument, RemoteSignatureParameters parameters, SignatureValue signatureValue) {
+		super(parameters, signatureValue);
+		this.toSignDocument = toSignDocument;
 	}
 
-	public RemoteDocument getToExtendDocument() {
-		return toExtendDocument;
+	public RemoteDocument getToSignDocument() {
+		return toSignDocument;
 	}
 
-	public void setToExtendDocument(RemoteDocument toExtendDocument) {
-		this.toExtendDocument = toExtendDocument;
-	}
-
-	public RemoteSignatureParameters getParameters() {
-		return parameters;
-	}
-
-	public void setParameters(RemoteSignatureParameters parameters) {
-		this.parameters = parameters;
-	}
-
-	@Override
-	public String toString() {
-		return "DataToSignDTO [toExtendDocument=" + toExtendDocument + ", parameters=" + parameters + "]";
+	public void setToSignDocument(RemoteDocument toSignDocument) {
+		this.toSignDocument = toSignDocument;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + ((parameters == null) ? 0 : parameters.hashCode());
-		result = (prime * result) + ((toExtendDocument == null) ? 0 : toExtendDocument.hashCode());
+		result = (prime * result) + ((getParameters() == null) ? 0 : getParameters().hashCode());
+		result = (prime * result) + ((getSignatureValue() == null) ? 0 : getSignatureValue().hashCode());
+		result = (prime * result) + ((toSignDocument == null) ? 0 : toSignDocument.hashCode());
 		return result;
 	}
 
@@ -85,22 +74,34 @@ public class ExtendDocumentDTO implements Serializable {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		ExtendDocumentDTO other = (ExtendDocumentDTO) obj;
-		if (parameters == null) {
-			if (other.parameters != null) {
+		SignOneDocumentDTO other = (SignOneDocumentDTO) obj;
+		if (getParameters() == null) {
+			if (other.getParameters() != null) {
 				return false;
 			}
-		} else if (!parameters.equals(other.parameters)) {
+		} else if (!getParameters().equals(other.getParameters())) {
 			return false;
 		}
-		if (toExtendDocument == null) {
-			if (other.toExtendDocument != null) {
+		if (getSignatureValue() == null) {
+			if (other.getSignatureValue() != null) {
 				return false;
 			}
-		} else if (!toExtendDocument.equals(other.toExtendDocument)) {
+		} else if (!getSignatureValue().equals(other.getSignatureValue())) {
+			return false;
+		}
+		if (toSignDocument == null) {
+			if (other.toSignDocument != null) {
+				return false;
+			}
+		} else if (!toSignDocument.equals(other.toSignDocument)) {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "SignDocumentDTO [toSignDocument=" + toSignDocument + ", parameters=" + getParameters() + ", signatureValue=" + getSignatureValue() + "]";
 	}
 
 }
