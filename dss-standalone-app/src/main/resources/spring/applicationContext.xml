@@ -42,7 +42,12 @@
 		<property name="tspSource" ref="tspSource" />
 	</bean>
 
-	<bean id="asicService" class="eu.europa.esig.dss.asic.signature.ASiCService">
+	<bean id="asicWithCadesService" class="eu.europa.esig.dss.asic.signature.ASiCWithCAdESService">
+		<constructor-arg ref="certificateVerifier" />
+		<property name="tspSource" ref="tspSource" />
+	</bean>
+	
+	<bean id="asicWithXadesService" class="eu.europa.esig.dss.asic.signature.ASiCWithXAdESService">
 		<constructor-arg ref="certificateVerifier" />
 		<property name="tspSource" ref="tspSource" />
 	</bean>

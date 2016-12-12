@@ -2,21 +2,22 @@ package eu.europa.esig.dss.standalone.model;
 
 import java.io.File;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureTokenType;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public class SignatureModel {
 
 	private ObjectProperty<File> fileToSign = new SimpleObjectProperty<File>();
+	private ObjectProperty<ASiCContainerType> asicContainerType = new SimpleObjectProperty<ASiCContainerType>();
 	private ObjectProperty<SignatureForm> signatureForm = new SimpleObjectProperty<SignatureForm>();
-	private ObjectProperty<SignatureForm> asicUnderlyingForm = new SimpleObjectProperty<SignatureForm>();
 	private ObjectProperty<SignaturePackaging> signaturePackaging = new SimpleObjectProperty<SignaturePackaging>();
 	private ObjectProperty<SignatureLevel> signatureLevel = new SimpleObjectProperty<SignatureLevel>();
 	private ObjectProperty<DigestAlgorithm> digestAlgorithm = new SimpleObjectProperty<DigestAlgorithm>();
@@ -49,16 +50,16 @@ public class SignatureModel {
 		return signatureForm;
 	}
 
-	public SignatureForm getAsicUnderlyingForm() {
-		return asicUnderlyingForm.get();
+	public ASiCContainerType getAsicContainerType() {
+		return asicContainerType.get();
 	}
 
-	public void setAsicUnderlyingForm(SignatureForm asicUnderlyingForm) {
-		this.asicUnderlyingForm.set(asicUnderlyingForm);
+	public void setAsicContainerType(ASiCContainerType asicContainerType) {
+		this.asicContainerType.set(asicContainerType);
 	}
 
-	public ObjectProperty<SignatureForm> asicUnderlyingFormProperty() {
-		return asicUnderlyingForm;
+	public ObjectProperty<ASiCContainerType> asicContainerTypeProperty() {
+		return asicContainerType;
 	}
 
 	public SignaturePackaging getSignaturePackaging() {
