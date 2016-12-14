@@ -60,6 +60,18 @@ public class SignatureController implements Initializable {
 	private TypedToggleGroup<SignaturePackaging> toggleSigPackaging;
 
 	@FXML
+	private RadioButton cadesRadio;
+
+	@FXML
+	private RadioButton padesRadio;
+
+	@FXML
+	private RadioButton xadesRadio;
+
+	@FXML
+	private HBox hSignaturePackaging;
+
+	@FXML
 	private RadioButton envelopedRadio;
 
 	@FXML
@@ -152,8 +164,13 @@ public class SignatureController implements Initializable {
 			}
 		});
 
-		BooleanBinding isASiC = model.asicContainerTypeProperty().isEqualTo(ASiCContainerType.ASiC_S)
-				.or(model.asicContainerTypeProperty().isEqualTo(ASiCContainerType.ASiC_E));
+		toggleAsicContainerType.getSelectedValueProperty().addListener(new ChangeListener<ASiCContainerType>() {
+
+			@Override
+			public void changed(ObservableValue<? extends ASiCContainerType> observable, ASiCContainerType oldValue, ASiCContainerType newValue) {
+				updateSignatureFormForASiC(newValue);
+			}
+		});
 
 		// Binds values with model
 		toggleAsicContainerType.getSelectedValueProperty().bindBidirectional(model.asicContainerTypeProperty());
@@ -197,18 +214,16 @@ public class SignatureController implements Initializable {
 		labelPkcs12File.visibleProperty().bind(model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS12));
 
 		BooleanBinding isMandatoryFieldsEmpty = model.fileToSignProperty().isNull().or(model.signatureFormProperty().isNull())
-				.or(model.signaturePackagingProperty().isNull()).or(model.digestAlgorithmProperty().isNull()).or(model.tokenTypeProperty().isNull());
+				.or(model.digestAlgorithmProperty().isNull()).or(model.tokenTypeProperty().isNull());
 
-		// TODO
-		// BooleanBinding isUnderlyingEmpty = model.signatureFormProperty().isEqualTo(SignatureForm.ASiC_S)
-		// .or(model.signatureFormProperty().isEqualTo(SignatureForm.ASiC_E)).and(model.asicUnderlyingFormProperty().isNull());
+		BooleanBinding isASiCorPackagingPresent = model.asicContainerTypeProperty().isNull().and(model.signaturePackagingProperty().isNull());
 
 		BooleanBinding isEmptyFileOrPassword = model.pkcsFileProperty().isNull().or(model.passwordProperty().isEmpty());
 
 		BooleanBinding isPKCSIncomplete = model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS11)
 				.or(model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS12)).and(isEmptyFileOrPassword);
 
-		final BooleanBinding disableSignButton = isMandatoryFieldsEmpty/* TODO .or(isUnderlyingEmpty) */.or(isPKCSIncomplete);
+		final BooleanBinding disableSignButton = isMandatoryFieldsEmpty.or(isASiCorPackagingPresent).or(isPKCSIncomplete);
 
 		signButton.disableProperty().bind(disableSignButton);
 
@@ -246,6 +261,25 @@ public class SignatureController implements Initializable {
 				service.start();
 			}
 		});
+	}
+
+	protected void updateSignatureFormForASiC(ASiCContainerType newValue) {
+		model.setAsicContainerType(newValue);
+
+		reinitSignatureFormats();
+		reinitSignaturePackagings();
+
+		if (newValue != null) { // ASiC
+			cadesRadio.setDisable(false);
+			xadesRadio.setDisable(false);
+			hSignaturePackaging.setVisible(false);
+		} else {
+			cadesRadio.setDisable(false);
+			padesRadio.setDisable(false);
+			xadesRadio.setDisable(false);
+			hSignaturePackaging.setVisible(true);
+		}
+
 	}
 
 	protected void updateSignatureForm(SignatureForm signatureForm) {
@@ -288,6 +322,16 @@ public class SignatureController implements Initializable {
 				break;
 			}
 		}
+	}
+
+	private void reinitSignatureFormats() {
+		cadesRadio.setDisable(true);
+		padesRadio.setDisable(true);
+		xadesRadio.setDisable(true);
+
+		cadesRadio.setSelected(false);
+		padesRadio.setSelected(false);
+		xadesRadio.setSelected(false);
 	}
 
 	private void reinitSignaturePackagings() {

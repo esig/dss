@@ -48,7 +48,7 @@
 		<HBox fx:id="hSignatureFormat" styleClass="hbox-style">
 			<children>
 				<Label text="Signature format" styleClass="label-style" />
-				<RadioButton mnemonicParsing="false" text="CAdES">
+				<RadioButton mnemonicParsing="false" text="CAdES" fx:id="cadesRadio">
 					<toggleGroup>
 						<TypedToggleGroup fx:id="toogleSigFormat" />
 					</toggleGroup>
@@ -56,12 +56,12 @@
 						<SignatureForm fx:value="CAdES"/>
 					</userData>
 				</RadioButton>
-				<RadioButton mnemonicParsing="false" text="PAdES" toggleGroup="$toogleSigFormat">
+				<RadioButton mnemonicParsing="false" text="PAdES" fx:id="padesRadio" toggleGroup="$toogleSigFormat">
 					<userData>
 						<SignatureForm fx:value="PAdES"/>
 					</userData>
 				</RadioButton>
-				<RadioButton mnemonicParsing="false" text="XAdES" toggleGroup="$toogleSigFormat">
+				<RadioButton mnemonicParsing="false" text="XAdES" fx:id="xadesRadio" toggleGroup="$toogleSigFormat">
 					<userData>
 						<SignatureForm fx:value="XAdES"/>
 					</userData>
