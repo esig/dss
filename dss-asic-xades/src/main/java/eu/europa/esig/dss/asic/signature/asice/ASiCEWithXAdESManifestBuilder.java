@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.asic.ManifestNamespace;
 
 /**
  * This class is used to build the manifest.xml file (ASiC-E).
@@ -27,8 +28,6 @@ import eu.europa.esig.dss.MimeType;
  */
 public class ASiCEWithXAdESManifestBuilder {
 
-	public static final String MANIFEST_NS = "urn:oasis:names:tc:opendocument:xmlns:manifest:1.0";
-
 	private final List<DSSDocument> documents;
 
 	public ASiCEWithXAdESManifestBuilder(List<DSSDocument> documents) {
@@ -37,17 +36,17 @@ public class ASiCEWithXAdESManifestBuilder {
 
 	public Document build() {
 		final Document documentDom = DomUtils.buildDOM();
-		final Element manifestDom = documentDom.createElementNS(MANIFEST_NS, "manifest:manifest");
+		final Element manifestDom = documentDom.createElementNS(ManifestNamespace.NS, ManifestNamespace.MANIFEST);
 		documentDom.appendChild(manifestDom);
 
-		final Element rootDom = DomUtils.addElement(documentDom, manifestDom, MANIFEST_NS, "manifest:file-entry");
-		rootDom.setAttribute("manifest:full-path", "/");
-		rootDom.setAttribute("manifest:media-type", MimeType.ASICE.getMimeTypeString());
+		final Element rootDom = DomUtils.addElement(documentDom, manifestDom, ManifestNamespace.NS, ManifestNamespace.FILE_ENTRY);
+		rootDom.setAttribute(ManifestNamespace.FULL_PATH, "/");
+		rootDom.setAttribute(ManifestNamespace.MEDIA_TYPE, MimeType.ASICE.getMimeTypeString());
 
 		for (DSSDocument document : documents) {
-			Element fileDom = DomUtils.addElement(documentDom, manifestDom, MANIFEST_NS, "manifest:file-entry");
-			fileDom.setAttribute("manifest:full-path", document.getName());
-			fileDom.setAttribute("manifest:media-type", document.getMimeType().getMimeTypeString());
+			Element fileDom = DomUtils.addElement(documentDom, manifestDom, ManifestNamespace.NS, ManifestNamespace.FILE_ENTRY);
+			fileDom.setAttribute(ManifestNamespace.FULL_PATH, document.getName());
+			fileDom.setAttribute(ManifestNamespace.MEDIA_TYPE, document.getMimeType().getMimeTypeString());
 		}
 
 		return documentDom;

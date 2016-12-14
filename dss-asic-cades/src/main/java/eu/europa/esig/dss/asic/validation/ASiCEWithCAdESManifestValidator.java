@@ -22,7 +22,7 @@ public class ASiCEWithCAdESManifestValidator {
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithCAdESManifestValidator.class);
 
 	static {
-		DomUtils.registerNamespace("asic", ASiCNamespace.ASiC);
+		DomUtils.registerNamespace("asic", ASiCNamespace.NS);
 	}
 
 	private final DSSDocument signature;

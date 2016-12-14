@@ -37,7 +37,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCWithXAdESService.class);
 
 	static {
-		DomUtils.registerNamespace("asic", ASiCNamespace.ASiC);
+		DomUtils.registerNamespace("asic", ASiCNamespace.NS);
 	}
 
 	public ASiCWithXAdESService(CertificateVerifier certificateVerifier) {
@@ -153,7 +153,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		if (existingXAdESSignatureASiCS != null) {
 			rootDocument = DomUtils.buildDOM(existingXAdESSignatureASiCS);
 		} else {
-			rootDocument = DomUtils.createDocument(ASiCNamespace.ASiC, ASiCNamespace.XADES_SIGNATURES);
+			rootDocument = DomUtils.createDocument(ASiCNamespace.NS, ASiCNamespace.XADES_SIGNATURES);
 		}
 		xadesParameters.setRootDocument(rootDocument);
 		return xadesParameters;

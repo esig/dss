@@ -48,17 +48,17 @@ public class ASiCEWithCAdESManifestBuilder {
 
 	public Document build() {
 		final Document documentDom = DomUtils.buildDOM();
-		final Element asicManifestDom = documentDom.createElementNS(ASiCNamespace.ASiC, ASiCNamespace.ASiC_MANIFEST);
+		final Element asicManifestDom = documentDom.createElementNS(ASiCNamespace.NS, ASiCNamespace.ASIC_MANIFEST);
 		documentDom.appendChild(asicManifestDom);
 
-		final Element sigReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.ASiC, ASiCNamespace.ASiC_SIG_REFERENCE);
+		final Element sigReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.NS, ASiCNamespace.SIG_REFERENCE);
 		sigReferenceDom.setAttribute("URI", signatureUri);
 		sigReferenceDom.setAttribute("MimeType", MimeType.PKCS7.getMimeTypeString());
 
 		for (DSSDocument document : documents) {
 			final String detachedDocumentName = document.getName();
-			final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.ASiC,
-					ASiCNamespace.ASiC_DATA_OBJECT_REFERENCE);
+			final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.NS,
+					ASiCNamespace.DATA_OBJECT_REFERENCE);
 			dataObjectReferenceDom.setAttribute("URI", detachedDocumentName);
 
 			final Element digestMethodDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestMethod");
