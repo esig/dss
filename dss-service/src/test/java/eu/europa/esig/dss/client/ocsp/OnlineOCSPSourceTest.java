@@ -1,8 +1,10 @@
 package eu.europa.esig.dss.client.ocsp;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
@@ -23,7 +25,7 @@ public class OnlineOCSPSourceTest {
 	@Before
 	public void init() {
 		certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
-		rootToken = DSSUtils.loadCertificate(new File("src/test/resources/LTQCACA.crt"));
+		rootToken = DSSUtils.loadCertificate(new File("src/test/resources/CALT.crt"));
 	}
 
 	@Test
@@ -40,6 +42,8 @@ public class OnlineOCSPSourceTest {
 		ocspSource.setDataLoader(new OCSPDataLoader());
 		OCSPToken ocspToken = ocspSource.getOCSPToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
+		assertNotNull(ocspToken.getBasicOCSPResp());
+		assertFalse(ocspToken.isUseNonce());
 	}
 
 	@Test
@@ -49,6 +53,8 @@ public class OnlineOCSPSourceTest {
 		ocspSource.setNonceSource(new SecureRandomNonceSource());
 		OCSPToken ocspToken = ocspSource.getOCSPToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
+		assertTrue(ocspToken.isUseNonce());
+		assertTrue(ocspToken.isNonceMatch());
 	}
 
 }
