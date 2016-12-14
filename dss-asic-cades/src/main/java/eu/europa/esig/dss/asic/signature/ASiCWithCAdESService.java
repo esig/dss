@@ -91,7 +91,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 	@Override
 	public DSSDocument extendDocument(DSSDocument toExtendDocument, ASiCWithCAdESSignatureParameters parameters) throws DSSException {
-		if (!ASiCUtils.isArchive(toExtendDocument)) {
+		if (!ASiCUtils.isASiCContainer(toExtendDocument)) {
 			throw new DSSException("Unsupported file type");
 		}
 

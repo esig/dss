@@ -91,14 +91,9 @@ public final class ASiCUtils {
 
 	public static boolean isArchive(List<DSSDocument> docs) {
 		if (Utils.collectionSize(docs) == 1) {
-			DSSDocument doc = docs.get(0);
-			return isArchive(doc);
+			return isASiCContainer(docs.get(0));
 		}
 		return false;
-	}
-
-	public static boolean isArchive(DSSDocument doc) {
-		return doc.getName().endsWith(".zip") || doc.getName().endsWith(".bdoc") || doc.getName().endsWith(".asice") || doc.getName().endsWith(".asics");
 	}
 
 	public static boolean isASiCContainer(DSSDocument dssDocument) {
