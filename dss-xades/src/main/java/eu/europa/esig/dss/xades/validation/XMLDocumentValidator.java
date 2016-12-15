@@ -73,7 +73,8 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	}
 
 	/**
-	 * The default constructor for XMLDocumentValidator. The created instance is initialised with default {@code XPathQueryHolder} and
+	 * The default constructor for XMLDocumentValidator. The created instance is initialised with default
+	 * {@code XPathQueryHolder} and
 	 * {@code XAdES111XPathQueryHolder}.
 	 *
 	 * @param dssDocument
@@ -130,6 +131,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 			final Element signatureEl = (Element) signatureNodeList.item(ii);
 			final XAdESSignature xadesSignature = new XAdESSignature(signatureEl, xPathQueryHolders, validationCertPool);
+			xadesSignature.setSignatureFilename(document.getName());
 			xadesSignature.setDetachedContents(detachedContents);
 			xadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
 			signatures.add(xadesSignature);

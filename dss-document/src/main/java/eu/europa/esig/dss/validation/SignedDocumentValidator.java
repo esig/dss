@@ -26,10 +26,8 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -294,10 +292,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		List<AdvancedSignature> allSignatureList = processSignaturesValidation(validationContext, structuralValidation);
 
-		DiagnosticData diagnosticData = generateDiagnosticData(allSignatureList, validationContext.getProcessedCertificates(),
-				validationContext.getCurrentTime());
+		DiagnosticDataBuilder builder = new DiagnosticDataBuilder();
+		builder.document(document).containerInfo(getContainerInfo()).foundSignatures(allSignatureList)
+				.usedCertificates(validationContext.getProcessedCertificates()).validationDate(validationContext.getCurrentTime());
 
-		return processValidationPolicy(diagnosticData, validationPolicy);
+		return processValidationPolicy(builder.build(), validationPolicy);
 	}
 
 	@Override
@@ -331,6 +330,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			}
 		}
 		return allSignatureList;
+	}
+
+	/**
+	 * This method allows to retrieve the container information (ASiC Container)
+	 * 
+	 * @return
+	 */
+	protected ContainerInfo getContainerInfo() {
+		return null;
 	}
 
 	protected Reports processValidationPolicy(DiagnosticData diagnosticData, ValidationPolicy validationPolicy) {
@@ -370,22 +378,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			processExecutor = new CustomProcessExecutor();
 		}
 		return processExecutor;
-	}
-
-	/**
-	 * This method generates the diagnostic data. This is the set of all data
-	 * extracted from the signature, associated certificates and trusted lists.
-	 * The diagnostic data contains also the results of basic computations (hash
-	 * check, signature integrity, certificates chain...
-	 */
-	protected DiagnosticData generateDiagnosticData(List<AdvancedSignature> allSignatures, Set<CertificateToken> certificates, Date validationDate) {
-		DiagnosticDataBuilder builder = new DiagnosticDataBuilder();
-		builder.setSignedDocument(document);
-		builder.setSignatures(allSignatures);
-		builder.setUsedCertificates(certificates);
-		builder.setValidationDate(validationDate);
-
-		return builder.build();
 	}
 
 	/**

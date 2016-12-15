@@ -43,6 +43,18 @@ import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
 public interface AdvancedSignature extends Serializable {
 
 	/**
+	 * This method returns the signature filename (useful for ASiC and multiple signature files)
+	 * 
+	 * @return the signature filename
+	 */
+	String getSignatureFilename();
+
+	/**
+	 * This method allows to set the signature filename (useful in case of ASiC)
+	 */
+	void setSignatureFilename(String signatureFilename);
+
+	/**
 	 * @return in the case of the detached signature this is the {@code List} of signed contents.
 	 */
 	List<DSSDocument> getDetachedContents();

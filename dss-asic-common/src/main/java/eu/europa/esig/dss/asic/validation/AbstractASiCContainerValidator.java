@@ -7,10 +7,12 @@ import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUnsupportedOperationException;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.ContainerInfo;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
@@ -57,6 +59,29 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 			allSignatures.addAll(documentValidator.processSignaturesValidation(validationContext, structuralValidation));
 		}
 		return allSignatures;
+	}
+
+	/**
+	 * This method allows to retrieve the container information (ASiC Container)
+	 * 
+	 * @return
+	 */
+	@Override
+	protected ContainerInfo getContainerInfo() {
+		ContainerInfo containerInfo = new ContainerInfo();
+		containerInfo.setContainerType(containerType);
+		containerInfo.setZipComment(extractResult.getZipComment());
+
+		DSSDocument mimeTypeDocument = extractResult.getMimeTypeDocument();
+		if (mimeTypeDocument != null) {
+			String mimeTypeContent = DSSUtils.toString(DSSUtils.toByteArray(mimeTypeDocument));
+			containerInfo.setMimeTypeFilePresent(true);
+			containerInfo.setMimeTypeContent(mimeTypeContent);
+		} else {
+			containerInfo.setMimeTypeFilePresent(false);
+		}
+
+		return containerInfo;
 	}
 
 	@Override

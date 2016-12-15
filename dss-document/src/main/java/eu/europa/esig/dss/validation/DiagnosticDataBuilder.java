@@ -34,6 +34,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlMessage;
@@ -69,50 +70,107 @@ public class DiagnosticDataBuilder {
 	private static final Logger LOG = LoggerFactory.getLogger(DiagnosticDataBuilder.class);
 
 	private DSSDocument signedDocument;
+	private ContainerInfo containerInfo;
 	private List<AdvancedSignature> signatures;
 	private Set<CertificateToken> usedCertificates;
 	private Date validationDate;
 
-	public void setSignedDocument(DSSDocument signedDocument) {
+	/**
+	 * This method allows to set the document which is analysed
+	 * 
+	 * @param signedDocument
+	 *            the document which is analysed
+	 * @return the builder
+	 */
+	public DiagnosticDataBuilder document(DSSDocument signedDocument) {
 		this.signedDocument = signedDocument;
+		return this;
 	}
 
-	public void setSignatures(List<AdvancedSignature> signatures) {
+	/**
+	 * This method allows to set the container info (ASiC)
+	 * 
+	 * @param containerInfo
+	 *            the container information
+	 * @return the builder
+	 */
+	public DiagnosticDataBuilder containerInfo(ContainerInfo containerInfo) {
+		this.containerInfo = containerInfo;
+		return this;
+	}
+
+	/**
+	 * This method allows to set the found signatures
+	 * 
+	 * @param signatures
+	 *            the found signatures
+	 * @return the builder
+	 */
+	public DiagnosticDataBuilder foundSignatures(List<AdvancedSignature> signatures) {
 		this.signatures = signatures;
+		return this;
 	}
 
-	public void setUsedCertificates(Set<CertificateToken> usedCertificates) {
+	/**
+	 * This method allows to set the used certificates
+	 * 
+	 * @param usedCertificates
+	 *            the used certificates
+	 * @return the builder
+	 */
+	public DiagnosticDataBuilder usedCertificates(Set<CertificateToken> usedCertificates) {
 		this.usedCertificates = usedCertificates;
+		return this;
 	}
 
-	public void setValidationDate(Date validationDate) {
+	/**
+	 * This method allows to set the validation date
+	 * 
+	 * @param validationDate
+	 *            the validation date
+	 * @return the builder
+	 */
+	public DiagnosticDataBuilder validationDate(Date validationDate) {
 		this.validationDate = validationDate;
+		return this;
 	}
 
 	public DiagnosticData build() {
-		DiagnosticData diagnosticData = prepareDiagnosticData();
+		DiagnosticData diagnosticData = new DiagnosticData();
+		diagnosticData.setDocumentName(removeSpecialCharsForXml(signedDocument.getName()));
+		diagnosticData.setValidationDate(validationDate);
+		diagnosticData.setContainerInfo(getXmlContainerInfo());
 
 		Set<DigestAlgorithm> allUsedCertificatesDigestAlgorithms = new HashSet<DigestAlgorithm>();
 		for (AdvancedSignature advancedSignature : signatures) {
 			allUsedCertificatesDigestAlgorithms.addAll(advancedSignature.getUsedCertificatesDigestAlgorithms());
 
-			XmlSignature xmlSignature = getXmlSignature(advancedSignature);
-			xmlSignature.setTimestamps(getXmlTimestamps(advancedSignature));
-
-			diagnosticData.getSignatures().add(xmlSignature);
+			diagnosticData.getSignatures().add(getXmlSignature(advancedSignature));
 		}
 
 		for (CertificateToken certificateToken : usedCertificates) {
-			XmlCertificate xmlCertificate = getXmlCertificate(allUsedCertificatesDigestAlgorithms, certificateToken);
-			xmlCertificate.getTrustedServiceProvider().addAll(getXmlTrustedServiceProviders(certificateToken));
-			diagnosticData.getUsedCertificates().add(xmlCertificate);
+			diagnosticData.getUsedCertificates().add(getXmlCertificate(allUsedCertificatesDigestAlgorithms, certificateToken));
 		}
 
 		return diagnosticData;
 	}
 
+	private XmlContainerInfo getXmlContainerInfo() {
+		if (containerInfo != null) {
+			XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+			xmlContainerInfo.setContainerType(containerInfo.getContainerType().name());
+			xmlContainerInfo.setZipComment(containerInfo.getZipComment());
+			xmlContainerInfo.setMimeTypeFilePresent(containerInfo.isMimeTypeFilePresent());
+			xmlContainerInfo.setMimeTypeContent(containerInfo.getMimeTypeContent());
+			return xmlContainerInfo;
+		}
+		return null;
+	}
+
 	private XmlSignature getXmlSignature(AdvancedSignature signature) {
 		XmlSignature xmlSignature = new XmlSignature();
+
+		xmlSignature.setSignatureFilename(removeSpecialCharsForXml(signature.getSignatureFilename()));
 
 		final AdvancedSignature masterSignature = signature.getMasterSignature();
 		if (masterSignature != null) {
@@ -150,6 +208,8 @@ public class DiagnosticDataBuilder {
 
 		xmlSignature.setPolicy(getXmlPolicy(signature.getPolicyId()));
 
+		xmlSignature.setTimestamps(getXmlTimestamps(signature));
+
 		xmlSignature.setSignatureScopes(getXmlSignatureScopes(signature.getSignatureScopes()));
 
 		return xmlSignature;
@@ -166,32 +226,14 @@ public class DiagnosticDataBuilder {
 	}
 
 	/**
-	 * This method prepares the {@code DiagnosticData} object to store all
-	 * static information about the signatures being validated.
-	 */
-	private DiagnosticData prepareDiagnosticData() {
-		DiagnosticData jaxbDiagnosticData = new DiagnosticData();
-
-		String absolutePath = signedDocument.getAbsolutePath();
-		String documentName = signedDocument.getName();
-		if (Utils.isStringNotEmpty(absolutePath)) {
-			jaxbDiagnosticData.setDocumentName(removeSpecialCharsForXml(absolutePath));
-		} else if (Utils.isStringNotEmpty(documentName)) {
-			jaxbDiagnosticData.setDocumentName(removeSpecialCharsForXml(documentName));
-		} else {
-			jaxbDiagnosticData.setDocumentName("?");
-		}
-
-		jaxbDiagnosticData.setValidationDate(validationDate);
-		return jaxbDiagnosticData;
-	}
-
-	/**
 	 * Escape special characters which cause problems with jaxb or
 	 * documentbuilderfactory and namespace aware mode
 	 */
 	private String removeSpecialCharsForXml(String text) {
-		return text.replaceAll("&", "");
+		if (Utils.isStringNotEmpty(text)) {
+			return text.replaceAll("&", "");
+		}
+		return Utils.EMPTY_STRING;
 	}
 
 	private XmlRevocation getXmlRevocation(RevocationToken revocationToken, String xmlId, Set<DigestAlgorithm> usedDigestAlgorithms) {
@@ -734,6 +776,8 @@ public class DiagnosticDataBuilder {
 				xmlCert.getRevocation().add(getXmlRevocation(revocationToken, xmlId, usedDigestAlgorithms));
 			}
 		}
+
+		xmlCert.getTrustedServiceProvider().addAll(getXmlTrustedServiceProviders(certToken));
 
 		return xmlCert;
 	}

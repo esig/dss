@@ -113,12 +113,24 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	private List<SignatureScope> signatureScopes;
 
+	private String signatureFilename;
+
 	/**
 	 * @param certPool
 	 *            can be null
 	 */
 	protected DefaultAdvancedSignature(final CertificatePool certPool) {
 		this.certPool = certPool;
+	}
+
+	@Override
+	public String getSignatureFilename() {
+		return signatureFilename;
+	}
+
+	@Override
+	public void setSignatureFilename(String signatureFilename) {
+		this.signatureFilename = signatureFilename;
 	}
 
 	@Override

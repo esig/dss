@@ -86,6 +86,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 					if (pdfSignatureInfo.getCades() != null) {
 
 						final PAdESSignature padesSignature = new PAdESSignature(document, pdfSignatureInfo, validationCertPool);
+						padesSignature.setSignatureFilename(document.getName());
 						padesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
 						signatures.add(padesSignature);
 					}
