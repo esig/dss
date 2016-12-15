@@ -42,7 +42,7 @@ public class ASiCEWithCAdESManifestValidator {
 			try {
 				is = manifestDocument.openStream();
 				Document manifestDom = DomUtils.buildDOM(is);
-				String signatureURI = DomUtils.getValue(manifestDom, "/asic:ASiCManifest/asic:SigReference/@URI");
+				String signatureURI = DomUtils.getValue(manifestDom, ASiCNamespace.XPATH_ASIC_SIGREF_URL);
 				if (Utils.areStringsEqual(expectedSignatureURI, signatureURI) && checkManifestDigests(manifestDom)) {
 					return manifestDocument;
 				}
@@ -56,7 +56,7 @@ public class ASiCEWithCAdESManifestValidator {
 	}
 
 	private boolean checkManifestDigests(Document manifestDom) {
-		NodeList dataObjectReferences = DomUtils.getNodeList(manifestDom, "/asic:ASiCManifest/asic:DataObjectReference");
+		NodeList dataObjectReferences = DomUtils.getNodeList(manifestDom, ASiCNamespace.XPATH_ASIC_DATA_OBJECT_REFERENCE);
 		if (dataObjectReferences == null || dataObjectReferences.getLength() == 0) {
 			LOG.warn("No DataObjectReference found in manifest file");
 			return false;

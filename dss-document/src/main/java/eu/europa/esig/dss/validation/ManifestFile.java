@@ -5,6 +5,7 @@ import java.util.List;
 public class ManifestFile {
 
 	private String filename;
+	private String signatureFilename;
 	private List<String> entries;
 
 	public String getFilename() {
@@ -13,6 +14,14 @@ public class ManifestFile {
 
 	public void setFilename(String filename) {
 		this.filename = filename;
+	}
+
+	public String getSignatureFilename() {
+		return signatureFilename;
+	}
+
+	public void setSignatureFilename(String signatureFilename) {
+		this.signatureFilename = signatureFilename;
 	}
 
 	public List<String> getEntries() {

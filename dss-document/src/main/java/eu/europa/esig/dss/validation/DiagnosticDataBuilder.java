@@ -176,7 +176,8 @@ public class DiagnosticDataBuilder {
 			for (ManifestFile manifestFile : manifestFiles) {
 				XmlManifestFile xmlManifest = new XmlManifestFile();
 				xmlManifest.setFilename(manifestFile.getFilename());
-				xmlManifest.getFileEntries().addAll(xmlManifest.getFileEntries());
+				xmlManifest.setSignatureFilename(manifestFile.getSignatureFilename());
+				xmlManifest.getEntries().addAll(manifestFile.getEntries());
 				xmlManifests.add(xmlManifest);
 			}
 			return xmlManifests;
@@ -243,8 +244,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	/**
-	 * Escape special characters which cause problems with jaxb or
-	 * documentbuilderfactory and namespace aware mode
+	 * Escape special characters which cause problems with jaxb or documentbuilderfactory and namespace aware mode
 	 */
 	private String removeSpecialCharsForXml(String text) {
 		if (Utils.isStringNotEmpty(text)) {
@@ -446,8 +446,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	/**
-	 * This method deals with the signature policy. The retrieved information is
-	 * transformed to the JAXB object.
+	 * This method deals with the signature policy. The retrieved information is transformed to the JAXB object.
 	 *
 	 * @param signaturePolicy
 	 *            The Signature Policy
@@ -477,9 +476,7 @@ public class DiagnosticDataBuilder {
 		}
 
 		/**
-		 * ETSI 102 853: 3) Obtain the digest of the resulting document against
-		 * which the digest value present in the property/attribute will be
-		 * checked:
+		 * ETSI 102 853: 3) Obtain the digest of the resulting document against which the digest value present in the property/attribute will be checked:
 		 */
 		final DSSDocument policyContent = signaturePolicy.getPolicyContent();
 		byte[] policyBytes = null;
@@ -515,12 +512,9 @@ public class DiagnosticDataBuilder {
 				xmlPolicy.setAsn1Processable(true);
 
 				/**
-				 * a) If the resulting document is based on TR 102 272 [i.2]
-				 * (ESI: ASN.1 format for signature policies), use the digest
-				 * value present in the SignPolicyDigest element from the
-				 * resulting document. Check that the digest algorithm indicated
-				 * in the SignPolicyDigestAlg from the resulting document is
-				 * equal to the digest algorithm indicated in the property.
+				 * a) If the resulting document is based on TR 102 272 [i.2] (ESI: ASN.1 format for signature policies), use the digest value present in the
+				 * SignPolicyDigest element from the resulting document. Check that the digest algorithm indicated in the SignPolicyDigestAlg from the resulting
+				 * document is equal to the digest algorithm indicated in the property.
 				 */
 
 				final ASN1Sequence signPolicyHashAlgObject = (ASN1Sequence) asn1Sequence.getObjectAt(0);
@@ -528,20 +522,14 @@ public class DiagnosticDataBuilder {
 				DigestAlgorithm signPolicyHashAlgFromPolicy = DigestAlgorithm.forOID(signPolicyHashAlgIdentifier.getAlgorithm().getId());
 
 				/**
-				 * b) If the resulting document is based on TR 102 038 [i.3]
-				 * ((ESI) XML format for signature policies), use the digest
-				 * value present in signPolicyHash element from the resulting
-				 * document. Check that the digest algorithm indicated in the
-				 * signPolicyHashAlg from the resulting document is equal to the
-				 * digest algorithm indicated in the attribute.
+				 * b) If the resulting document is based on TR 102 038 [i.3] ((ESI) XML format for signature policies), use the digest value present in
+				 * signPolicyHash element from the resulting document. Check that the digest algorithm indicated in the signPolicyHashAlg from the resulting
+				 * document is equal to the digest algorithm indicated in the attribute.
 				 */
 
 				/**
-				 * The use of a zero-sigPolicyHash value is to ensure backwards
-				 * compatibility with earlier versions of the current document.
-				 * If sigPolicyHash is zero, then the hash value should not be
-				 * checked against the calculated hash value of the signature
-				 * policy.
+				 * The use of a zero-sigPolicyHash value is to ensure backwards compatibility with earlier versions of the current document. If sigPolicyHash is
+				 * zero, then the hash value should not be checked against the calculated hash value of the signature policy.
 				 */
 				if (!signPolicyHashAlgFromPolicy.equals(signPolicyHashAlgFromSignature)) {
 					xmlPolicy.setProcessingError("The digest algorithm indicated in the SignPolicyHashAlg from the resulting document ("
@@ -574,9 +562,7 @@ public class DiagnosticDataBuilder {
 				}
 			} else {
 				/**
-				 * c) In all other cases, compute the digest using the digesting
-				 * algorithm indicated in the children of the
-				 * property/attribute.
+				 * c) In all other cases, compute the digest using the digesting algorithm indicated in the children of the property/attribute.
 				 */
 				String recalculatedDigestValue = DatatypeConverter.printBase64Binary(DSSUtils.digest(signPolicyHashAlgFromSignature, policyBytes));
 				boolean equal = Utils.areStringsEqual(digestValue, recalculatedDigestValue);
@@ -800,8 +786,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	/**
-	 * This method deals with the trusted service information in case of trusted
-	 * certificate. The retrieved information is transformed to the JAXB object.
+	 * This method deals with the trusted service information in case of trusted certificate. The retrieved information is transformed to the JAXB object.
 	 *
 	 * @param certToken
 	 * @param xmlCert
@@ -856,8 +841,7 @@ public class DiagnosticDataBuilder {
 	}
 
 	/**
-	 * Retrieves all the qualifiers for which the corresponding conditionEntry
-	 * is true.
+	 * Retrieves all the qualifiers for which the corresponding conditionEntry is true.
 	 *
 	 * @param certificateToken
 	 * @return

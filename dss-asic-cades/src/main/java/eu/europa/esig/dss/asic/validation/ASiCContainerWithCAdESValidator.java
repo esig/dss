@@ -14,7 +14,12 @@ import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.validation.DocumentValidator;
+import eu.europa.esig.dss.validation.ManifestFile;
 
+/**
+ * This class is an implementation to validate ASiC containers with CAdES signature(s)
+ * 
+ */
 public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCContainerWithCAdESValidator.class);
@@ -73,6 +78,18 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 			LOG.warn("Unknown asic container type (returns all signed documents)");
 			return getSignedDocuments();
 		}
+	}
+
+	@Override
+	protected List<ManifestFile> getManifestFilesDecriptions() {
+		List<ManifestFile> descriptions = new ArrayList<ManifestFile>();
+		List<DSSDocument> manifestDocuments = getManifestDocuments();
+		for (DSSDocument manifestDocument : manifestDocuments) {
+			ASiCEWithCAdESManifestParser parser = new ASiCEWithCAdESManifestParser(manifestDocument);
+			descriptions.add(parser.getDescription());
+		}
+
+		return descriptions;
 	}
 
 }

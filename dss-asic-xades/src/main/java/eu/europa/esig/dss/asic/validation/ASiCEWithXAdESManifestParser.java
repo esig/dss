@@ -14,22 +14,33 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.ManifestNamespace;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ManifestFile;
 
-public class ASiCEWithXAdESManifestValidator {
+public class ASiCEWithXAdESManifestParser {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithXAdESManifestValidator.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithXAdESManifestParser.class);
 
 	static {
 		DomUtils.registerNamespace("manifest", ManifestNamespace.NS);
 	}
 
+	private final DSSDocument signatureDocument;
 	private final DSSDocument manifestDocument;
 
-	public ASiCEWithXAdESManifestValidator(DSSDocument manifestDocument) {
+	public ASiCEWithXAdESManifestParser(DSSDocument signatureDocument, DSSDocument manifestDocument) {
+		this.signatureDocument = signatureDocument;
 		this.manifestDocument = manifestDocument;
 	}
 
-	public List<String> getCoveredFiles() {
+	public ManifestFile getDescription() {
+		ManifestFile description = new ManifestFile();
+		description.setSignatureFilename(signatureDocument.getName());
+		description.setFilename(manifestDocument.getName());
+		description.setEntries(getEntries());
+		return description;
+	}
+
+	private List<String> getEntries() {
 		List<String> result = new ArrayList<String>();
 		InputStream is = null;
 		try {

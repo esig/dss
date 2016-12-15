@@ -15,6 +15,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ContainerInfo;
 import eu.europa.esig.dss.validation.DocumentValidator;
+import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
 
@@ -91,8 +92,12 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 			containerInfo.setSignedDocumentFilenames(signedDocumentFilenames);
 		}
 
+		containerInfo.setManifestFiles(getManifestFilesDecriptions());
+
 		return containerInfo;
 	}
+
+	protected abstract List<ManifestFile> getManifestFilesDecriptions();
 
 	@Override
 	public List<AdvancedSignature> getSignatures() {

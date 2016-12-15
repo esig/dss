@@ -8,9 +8,10 @@ import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.validation.DocumentValidator;
+import eu.europa.esig.dss.validation.ManifestFile;
 
 /**
- * This class is an implemention to validate ASiC containers with XAdES signature(s)
+ * This class is an implementation to validate ASiC containers with XAdES signature(s)
  * 
  */
 public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValidator {
@@ -49,6 +50,21 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 			}
 		}
 		return validators;
+	}
+
+	@Override
+	protected List<ManifestFile> getManifestFilesDecriptions() {
+		List<ManifestFile> descriptions = new ArrayList<ManifestFile>();
+		List<DSSDocument> signatureDocuments = getSignatureDocuments();
+		List<DSSDocument> manifestDocuments = getManifestDocuments();
+		// All signatures uses the same file : manifest.xml
+		for (DSSDocument signatureDoc : signatureDocuments) {
+			for (DSSDocument manifestDoc : manifestDocuments) {
+				ASiCEWithXAdESManifestParser manifestParser = new ASiCEWithXAdESManifestParser(signatureDoc, manifestDoc);
+				descriptions.add(manifestParser.getDescription());
+			}
+		}
+		return descriptions;
 	}
 
 }

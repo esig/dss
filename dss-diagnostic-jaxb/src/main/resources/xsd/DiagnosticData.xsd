@@ -54,9 +54,16 @@
 	
 	<xs:complexType name="ManifestFile">
 		<xs:sequence>
-			<xs:element name="FileEntries" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Filename" type="xs:string" minOccurs="0" />
+			<xs:element name="SignatureFilename" type="xs:string" minOccurs="0" />
+			<xs:element name="Entries" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Entry" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 		</xs:sequence>
-		<xs:attribute name="Filename" type="xs:string" use="required" />
 	</xs:complexType>
 
 	<xs:complexType name="Signature">

@@ -32,6 +32,9 @@ public final class ASiCNamespace {
 	public static final String SIG_REFERENCE = "asic:SigReference";
 	public static final String DATA_OBJECT_REFERENCE = "asic:DataObjectReference";
 
+	public static final String XPATH_ASIC_SIGREF_URL = "/asic:ASiCManifest/asic:SigReference/@URI";
+	public static final String XPATH_ASIC_DATA_OBJECT_REFERENCE = "/asic:ASiCManifest/asic:DataObjectReference";
+
 	private ASiCNamespace() {
 	}
 }
