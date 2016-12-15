@@ -11,6 +11,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ContainerInfo;
 import eu.europa.esig.dss.validation.DocumentValidator;
@@ -79,6 +80,15 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 			containerInfo.setMimeTypeContent(mimeTypeContent);
 		} else {
 			containerInfo.setMimeTypeFilePresent(false);
+		}
+
+		List<DSSDocument> signedDocuments = extractResult.getSignedDocuments();
+		if (Utils.isCollectionNotEmpty(signedDocuments)) {
+			List<String> signedDocumentFilenames = new ArrayList<String>();
+			for (DSSDocument dssDocument : signedDocuments) {
+				signedDocumentFilenames.add(dssDocument.getName());
+			}
+			containerInfo.setSignedDocumentFilenames(signedDocumentFilenames);
 		}
 
 		return containerInfo;

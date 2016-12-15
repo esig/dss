@@ -33,12 +33,36 @@
 			<xs:element name="ZipComment" type="xs:string" minOccurs="0" />
 			<xs:element name="MimeTypeFilePresent" type="xs:boolean" minOccurs="0" />
 			<xs:element name="MimeTypeContent" type="xs:string" minOccurs="0" />
+			
+			<xs:element name="ManifestFiles" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ManifestFile" type="ManifestFile" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="ContentFiles" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ContentFile" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ManifestFile">
+		<xs:sequence>
+			<xs:element name="FileEntries" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="Filename" type="xs:string" use="required" />
 	</xs:complexType>
 
 	<xs:complexType name="Signature">
 		<xs:sequence>
 			<xs:element name="SignatureFilename" type="xs:string" />
+			<xs:element name="LinkedManifest" type="xs:string" minOccurs="0" />
 			<xs:element name="ParentId" type="xs:string" minOccurs="0" />
 			<xs:element name="ErrorMessage" type="xs:string" minOccurs="0" />
 			<xs:element name="DateTime" type="xs:dateTime" minOccurs="0" />

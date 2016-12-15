@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.validation;
 
+import java.util.List;
+
 import eu.europa.esig.dss.ASiCContainerType;
 
 public class ContainerInfo {
@@ -8,6 +10,9 @@ public class ContainerInfo {
 	private String zipComment;
 	private boolean mimeTypeFilePresent;
 	private String mimeTypeContent;
+
+	private List<String> signedDocumentFilenames;
+	private List<ManifestFile> manifestFiles;
 
 	public ASiCContainerType getContainerType() {
 		return containerType;
@@ -39,6 +44,22 @@ public class ContainerInfo {
 
 	public void setMimeTypeContent(String mimeTypeContent) {
 		this.mimeTypeContent = mimeTypeContent;
+	}
+
+	public List<String> getSignedDocumentFilenames() {
+		return signedDocumentFilenames;
+	}
+
+	public void setSignedDocumentFilenames(List<String> signedDocumentFilenames) {
+		this.signedDocumentFilenames = signedDocumentFilenames;
+	}
+
+	public List<ManifestFile> getManifestFiles() {
+		return manifestFiles;
+	}
+
+	public void setManifestFiles(List<ManifestFile> manifestFiles) {
+		this.manifestFiles = manifestFiles;
 	}
 
 }

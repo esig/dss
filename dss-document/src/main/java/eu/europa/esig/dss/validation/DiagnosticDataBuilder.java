@@ -37,6 +37,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlManifestFile;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlMessage;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
@@ -162,7 +163,23 @@ public class DiagnosticDataBuilder {
 			xmlContainerInfo.setZipComment(containerInfo.getZipComment());
 			xmlContainerInfo.setMimeTypeFilePresent(containerInfo.isMimeTypeFilePresent());
 			xmlContainerInfo.setMimeTypeContent(containerInfo.getMimeTypeContent());
+			xmlContainerInfo.setContentFiles(containerInfo.getSignedDocumentFilenames());
+			xmlContainerInfo.setManifestFiles(getXmlManifests(containerInfo.getManifestFiles()));
 			return xmlContainerInfo;
+		}
+		return null;
+	}
+
+	private List<XmlManifestFile> getXmlManifests(List<ManifestFile> manifestFiles) {
+		if (Utils.isCollectionNotEmpty(manifestFiles)) {
+			List<XmlManifestFile> xmlManifests = new ArrayList<XmlManifestFile>();
+			for (ManifestFile manifestFile : manifestFiles) {
+				XmlManifestFile xmlManifest = new XmlManifestFile();
+				xmlManifest.setFilename(manifestFile.getFilename());
+				xmlManifest.getFileEntries().addAll(xmlManifest.getFileEntries());
+				xmlManifests.add(xmlManifest);
+			}
+			return xmlManifests;
 		}
 		return null;
 	}
