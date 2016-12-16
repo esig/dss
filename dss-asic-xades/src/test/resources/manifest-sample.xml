@@ -3,5 +3,4 @@
 	<manifest:file-entry manifest:full-path="/" manifest:media-type="application/vnd.etsi.asic-e+zip"/>
 	<manifest:file-entry manifest:full-path="test.txt" manifest:media-type="text/plain"/>
 	<manifest:file-entry manifest:full-path="test-data-file.bin" manifest:media-type="application/octet-stream"/>
-	<manifest:file-entry manifest:full-path="META-INF/signature1.xml" manifest:media-type="signature/bdoc-1.0/TM" />
 </manifest:manifest>

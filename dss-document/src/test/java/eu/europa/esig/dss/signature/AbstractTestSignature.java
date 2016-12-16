@@ -235,7 +235,7 @@ public abstract class AbstractTestSignature<SP extends AbstractSignatureParamete
 	}
 
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertEquals(getSignatureParameters().getSignatureLevel().name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(getSignatureParameters().getSignatureLevel().toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {
