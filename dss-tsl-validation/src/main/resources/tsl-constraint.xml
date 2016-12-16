@@ -2,7 +2,7 @@
 	<Description>Policy to validate Trusted Lists</Description>
 	<SignatureConstraints>
 		<AcceptableFormats Level="FAIL">
-			<Id>XAdES_BASELINE_B</Id>
+			<Id>XAdES-BASELINE-B</Id>
 		</AcceptableFormats>
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />

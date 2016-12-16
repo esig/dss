@@ -33,6 +33,7 @@ import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
 import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;
 import eu.europa.esig.jaxb.policy.CertificateConstraints;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
+import eu.europa.esig.jaxb.policy.ContainerConstraints;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
@@ -719,6 +720,51 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		default:
 			logger.warn("Unsupported context " + context);
 			break;
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getAcceptedContainerTypes() {
+		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		if (containerConstraints != null) {
+			return containerConstraints.getAcceptableContainerTypes();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getZipCommentPresentConstraint() {
+		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		if (containerConstraints != null) {
+			return containerConstraints.getZipCommentPresent();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getAcceptedZipComments() {
+		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		if (containerConstraints != null) {
+			return containerConstraints.getAcceptableZipComment();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getMimeTypeFilePresentCheck() {
+		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		if (containerConstraints != null) {
+			return containerConstraints.getMimeTypeFilePresent();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getAcceptedMimeTypeContents() {
+		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		if (containerConstraints != null) {
+			return containerConstraints.getAcceptableMimeTypeFileContent();
 		}
 		return null;
 	}

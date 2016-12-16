@@ -26,6 +26,21 @@ public enum MessageTag {
 	BBB_FC_IEFF("Is the expected format found?"),
 	BBB_FC_IEFF_ANS("The expected format is not found!"),
 	
+	BBB_FC_IECTF("Is the expected container type found?"),
+	BBB_FC_IECTF_ANS("The expected container type is not found!"),
+
+	BBB_FC_ITZCP("Is the zip comment present?"),
+	BBB_FC_ITZCP_ANS("The zip comment is absent!"),
+	
+	BBB_FC_ITEZCF("Is the expected zip comment found?"),
+	BBB_FC_ITEZCF_ANS("The expected zip comment is not found!"),
+	
+	BBB_FC_ITMFP("Is the mimetype file present?"),
+	BBB_FC_ITMFP_ANS("The mimetype file is absent!"),
+	
+	BBB_FC_IEMCF("Is the expected mimetype content found?"),
+	BBB_FC_IEMCF_ANS("The expected mimetype content is not found!"),
+	
 	/* BBB -> CV */
 	BBB_CV_IRDOF("Is the reference data object(s) found?"),
 	BBB_CV_IRDOF_ANS("The reference data object(s) is not found!"),
