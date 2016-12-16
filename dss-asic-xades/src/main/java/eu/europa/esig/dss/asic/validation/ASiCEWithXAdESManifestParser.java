@@ -51,7 +51,7 @@ public class ASiCEWithXAdESManifestParser {
 				for (int i = 0; i < nodeList.getLength(); i++) {
 					Element fileEntryElement = (Element) nodeList.item(i);
 					String fullpathValue = fileEntryElement.getAttribute(ManifestNamespace.FULL_PATH);
-					if (!isContainerDefinition(fullpathValue) && !isSignatureFile(fullpathValue)) {
+					if (!isContainerDefinition(fullpathValue)) {
 						result.add(fullpathValue);
 					}
 				}
@@ -62,14 +62,6 @@ public class ASiCEWithXAdESManifestParser {
 			Utils.closeQuietly(is);
 		}
 		return result;
-	}
-
-	/**
-	 * Sometimes signature files can be listed in the manifest file
-	 * 
-	 */
-	private boolean isSignatureFile(String fullpathValue) {
-		return fullpathValue.matches("META-INF/.*signature.*\\.xml");
 	}
 
 	private boolean isContainerDefinition(String fullpathValue) {
