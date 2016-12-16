@@ -101,7 +101,7 @@ public class XAdESLevelBWith2ReferencesTest {
 
 		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
 		assertEquals(privateKeyEntry.getCertificateChain().length, signatureCertificateChain.size() - 1);
-		assertEquals(signatureParameters.getSignatureLevel().name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(signatureParameters.getSignatureLevel().toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Test
@@ -142,7 +142,7 @@ public class XAdESLevelBWith2ReferencesTest {
 
 		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
 		assertEquals(privateKeyEntry.getCertificateChain().length, signatureCertificateChain.size() - 1);
-		assertEquals(signatureParameters.getSignatureLevel().name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(signatureParameters.getSignatureLevel().toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Test
@@ -184,7 +184,7 @@ public class XAdESLevelBWith2ReferencesTest {
 
 		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
 		assertEquals(privateKeyEntry.getCertificateChain().length, signatureCertificateChain.size() - 1);
-		assertEquals(signatureParameters.getSignatureLevel().name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(signatureParameters.getSignatureLevel().toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Test
@@ -222,6 +222,6 @@ public class XAdESLevelBWith2ReferencesTest {
 
 		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
 		assertEquals(privateKeyEntry.getCertificateChain().length, signatureCertificateChain.size() - 1);
-		assertEquals(signatureParameters.getSignatureLevel().name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(signatureParameters.getSignatureLevel().toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 }

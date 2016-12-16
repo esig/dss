@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +17,7 @@ import org.junit.Test;
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -75,10 +78,16 @@ public class ASiCSXAdESLevelBMultiFilesParallelTest {
 		signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
 		DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);
+		resignedDocument.writeTo(new FileOutputStream(new File("target/resigned.asics")));
+
+		DSSDocument docToCheck = new FileDocument(new File("target/resigned.asics"));
+
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(docToCheck);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
+
+		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<String> signatureIdList = diagnosticData.getSignatureIdList();
@@ -88,7 +97,7 @@ public class ASiCSXAdESLevelBMultiFilesParallelTest {
 			assertNotEquals(Indication.FAILED, reports.getSimpleReport().getIndication(sigId));
 		}
 
-		AbstractASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(resignedDocument);
+		AbstractASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(docToCheck);
 		ASiCExtractResult result = extractor.extract();
 
 		assertEquals(0, result.getUnsupportedDocuments().size());

@@ -16,11 +16,12 @@ public class ASiCWithModifiedCertValuesTest {
 	/* File contains empty tags or blank lines for level LT */
 	@Test
 	public void test() {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument("src/test/resources/validation/Signature-ASiC_LT_modified_cert_values.asice"));
+		SignedDocumentValidator validator = SignedDocumentValidator
+				.fromDocument(new FileDocument("src/test/resources/validation/Signature-ASiC_LT_modified_cert_values.asice"));
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		assertEquals(SignatureLevel.XAdES_BASELINE_T.name(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(SignatureLevel.XAdES_BASELINE_T.toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 }
