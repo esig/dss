@@ -2,6 +2,7 @@ package eu.europa.esig.dss.asic.signature;
 
 import java.util.List;
 
+import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCUtils;
@@ -16,6 +17,7 @@ public class ASiCWithCAdESDataToSignHelperBuilder {
 
 	public static GetDataToSignASiCWithCAdESHelper getGetDataToSignHelper(List<DSSDocument> documents, ASiCWithCAdESSignatureParameters parameters) {
 
+		BLevelParameters bLevel = parameters.bLevel();
 		boolean asice = ASiCUtils.isASiCE(parameters.aSiC());
 		boolean archive = ASiCUtils.isArchive(documents);
 
@@ -32,7 +34,7 @@ public class ASiCWithCAdESDataToSignHelperBuilder {
 			if (asice) {
 				return new DataToSignASiCEWithCAdESFromFiles(documents, parameters);
 			} else {
-				return new DataToSignASiCSWithCAdESFromFiles(documents, parameters.aSiC());
+				return new DataToSignASiCSWithCAdESFromFiles(documents, bLevel.getSigningDate(), parameters.aSiC());
 			}
 		}
 	}

@@ -3,6 +3,7 @@ package eu.europa.esig.dss.asic.signature.asics;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -13,12 +14,14 @@ import eu.europa.esig.dss.utils.Utils;
 public class DataToSignASiCSWithXAdESFromFiles extends AbstractGetDataToSignASiCSWithXAdES implements GetDataToSignASiCWithXAdESHelper {
 
 	private final List<DSSDocument> filesToBeSigned;
+	private final Date signingDate;
 	private final ASiCParameters asicParameters;
 
 	private List<DSSDocument> signedDocuments;
 
-	public DataToSignASiCSWithXAdESFromFiles(List<DSSDocument> filesToBeSigned, ASiCParameters asicParameters) {
+	public DataToSignASiCSWithXAdESFromFiles(List<DSSDocument> filesToBeSigned, Date signingDate, ASiCParameters asicParameters) {
 		this.filesToBeSigned = filesToBeSigned;
+		this.signingDate = signingDate;
 		this.asicParameters = asicParameters;
 	}
 
@@ -41,7 +44,7 @@ public class DataToSignASiCSWithXAdESFromFiles extends AbstractGetDataToSignASiC
 	public List<DSSDocument> getSignedDocuments() {
 		if (signedDocuments == null) {
 			if (Utils.collectionSize(filesToBeSigned) > 1) {
-				signedDocuments = Arrays.asList(createPackageZip(filesToBeSigned));
+				signedDocuments = Arrays.asList(createPackageZip(filesToBeSigned, signingDate));
 			} else {
 				signedDocuments = new ArrayList<DSSDocument>(filesToBeSigned);
 			}

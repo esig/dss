@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -25,11 +26,12 @@ public class DataToSignASiCSWithXAdESFromFilesTest {
 
 	@Test
 	public void zipContentEquals() throws Exception {
+		Date now = new Date();
 		ASiCParameters asicParameters = new ASiCParameters();
 		List<DSSDocument> filesToBeSigned = new ArrayList<DSSDocument>();
 		filesToBeSigned.add(new InMemoryDocument("Hello".getBytes(), "test.xml"));
 		filesToBeSigned.add(new InMemoryDocument("Bye".getBytes(), "test2.xml"));
-		DataToSignASiCSWithXAdESFromFiles dataToSign = new DataToSignASiCSWithXAdESFromFiles(filesToBeSigned, asicParameters);
+		DataToSignASiCSWithXAdESFromFiles dataToSign = new DataToSignASiCSWithXAdESFromFiles(filesToBeSigned, now, asicParameters);
 		assertNotNull(dataToSign);
 
 		List<DSSDocument> toBeSigned = dataToSign.getToBeSigned();
@@ -48,7 +50,7 @@ public class DataToSignASiCSWithXAdESFromFilesTest {
 
 		Thread.sleep(2000);
 
-		DataToSignASiCSWithXAdESFromFiles dataToSign2 = new DataToSignASiCSWithXAdESFromFiles(filesToBeSigned, asicParameters);
+		DataToSignASiCSWithXAdESFromFiles dataToSign2 = new DataToSignASiCSWithXAdESFromFiles(filesToBeSigned, now, asicParameters);
 		DSSDocument twice = dataToSign2.getToBeSigned().get(0);
 		byte[] digestTwice = DSSUtils.digest(DigestAlgorithm.SHA256, twice);
 
