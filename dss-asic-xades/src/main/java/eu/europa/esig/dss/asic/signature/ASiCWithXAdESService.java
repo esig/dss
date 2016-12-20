@@ -177,7 +177,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 				isSignatureTypeCorrect = ASiCUtils.isArchiveContainsCorrectSignatureExtension(archive, ".xml");
 			}
 		}
-		return (isMimetypeCorrect && isSignatureTypeCorrect);
+		return isMimetypeCorrect && isSignatureTypeCorrect;
 	}
 
 }

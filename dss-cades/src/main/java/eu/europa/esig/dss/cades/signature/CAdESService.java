@@ -45,6 +45,7 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
 /**
@@ -105,7 +106,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
 		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, true);
 		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
-		if ((originalCmsSignedData == null) && SignaturePackaging.DETACHED.equals(packaging) && (parameters.getDetachedContents() == null)) {
+		if ((originalCmsSignedData == null) && SignaturePackaging.DETACHED.equals(packaging) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
 			parameters.setDetachedContents(Arrays.asList(toSignDocument));
 		}
 
@@ -151,7 +152,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	 */
 	private DSSDocument getToSignData(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters, final CMSSignedData originalCmsSignedData) {
 		final List<DSSDocument> detachedContents = parameters.getDetachedContents();
-		if (detachedContents != null) {
+		if (Utils.isCollectionNotEmpty(detachedContents)) {
 			// CAdES only can sign one document
 			// (ASiC-S -> the document to sign /
 			// ASiC-E -> ASiCManifest)

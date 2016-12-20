@@ -31,7 +31,7 @@ public class DataToSignASiCEWithCAdESFromFiles extends AbstractDataToSignASiCEWi
 
 	@Override
 	public List<DSSDocument> getDetachedContents() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override

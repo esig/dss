@@ -40,7 +40,6 @@ public class ASiCS_CAdESLTACheckTimeStampIDTest {
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
-		;
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		ASiCWithCAdESService service = new ASiCWithCAdESService(certificateVerifier);

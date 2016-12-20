@@ -16,7 +16,7 @@ import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractGetDataToSignASiCS {
 
-	private final static String ZIP_ENTRY_DETACHED_FILE = "detached-file";
+	private static final String ZIP_ENTRY_DETACHED_FILE = "detached-file";
 
 	/* In case of multi-files and ASiC-S, we need to create a zip with all files to be signed */
 	protected DSSDocument createPackageZip(List<DSSDocument> documents, Date signingDate) {

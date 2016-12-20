@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.asic;
 
+import eu.europa.esig.dss.SignatureForm;
+import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class ASiCWithXAdESSignatureParameters extends XAdESSignatureParameters {
@@ -12,10 +14,15 @@ public class ASiCWithXAdESSignatureParameters extends XAdESSignatureParameters {
 	private ASiCParameters aSiCParams = new ASiCParameters();
 
 	public ASiCParameters aSiC() {
-		if (aSiCParams == null) {
-			aSiCParams = new ASiCParameters();
-		}
 		return aSiCParams;
+	}
+
+	@Override
+	public void setSignatureLevel(SignatureLevel signatureLevel) {
+		if (signatureLevel == null || SignatureForm.XAdES != signatureLevel.getSignatureForm()) {
+			throw new IllegalArgumentException("Only XAdES form is allowed !");
+		}
+		super.setSignatureLevel(signatureLevel);
 	}
 
 }

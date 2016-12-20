@@ -12,8 +12,8 @@ import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractDataToSignASiCEWithXAdES {
 
-	private final static String META_INF = "META-INF/";
-	private final static String ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE = META_INF + "signatures001.xml";
+	private static final String META_INF = "META-INF/";
+	private static final String ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE = META_INF + "signatures001.xml";
 
 	protected DSSDocument getASiCManifest(List<DSSDocument> documents) {
 		ASiCEWithXAdESManifestBuilder manifestBuilder = new ASiCEWithXAdESManifestBuilder(documents);

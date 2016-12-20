@@ -31,8 +31,8 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 
 	private static final long serialVersionUID = 243114076381526665L;
 
-	private final static String ZIP_ENTRY_DETACHED_FILE = "detached-file";
-	private final static String ZIP_ENTRY_MIMETYPE = "mimetype";
+	private static final String ZIP_ENTRY_DETACHED_FILE = "detached-file";
+	private static final String ZIP_ENTRY_MIMETYPE = "mimetype";
 
 	private ASiCExtractResult archiveContent = new ASiCExtractResult();
 

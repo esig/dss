@@ -14,9 +14,6 @@ public class ASiCWithCAdESSignatureParameters extends CAdESSignatureParameters {
 	private ASiCParameters aSiCParams = new ASiCParameters();
 
 	public ASiCParameters aSiC() {
-		if (aSiCParams == null) {
-			aSiCParams = new ASiCParameters();
-		}
 		return aSiCParams;
 	}
 

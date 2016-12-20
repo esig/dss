@@ -15,6 +15,9 @@ import eu.europa.esig.dss.asic.signature.asics.DataToSignASiCSWithCAdESFromFiles
 
 public class ASiCWithCAdESDataToSignHelperBuilder {
 
+	private ASiCWithCAdESDataToSignHelperBuilder() {
+	}
+
 	public static GetDataToSignASiCWithCAdESHelper getGetDataToSignHelper(List<DSSDocument> documents, ASiCWithCAdESSignatureParameters parameters) {
 
 		BLevelParameters bLevel = parameters.bLevel();

@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.asic.signature.asice;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -39,7 +40,7 @@ public class DataToSignASiCEWithCAdESFromArchive extends AbstractDataToSignASiCE
 
 	@Override
 	public List<DSSDocument> getDetachedContents() {
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override

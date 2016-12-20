@@ -13,8 +13,8 @@ import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractDataToSignASiCEWithCAdES {
 
-	private final static String META_INF = "META-INF/";
-	private final static String ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE = META_INF + "signature001.p7s";
+	private static final String META_INF = "META-INF/";
+	private static final String ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE = META_INF + "signature001.p7s";
 
 	protected DSSDocument getASiCManifest(List<DSSDocument> documents, List<DSSDocument> signatures, List<DSSDocument> manifests,
 			ASiCWithCAdESSignatureParameters parameters) {
@@ -54,8 +54,7 @@ public abstract class AbstractDataToSignASiCEWithCAdES {
 
 	private String getASiCManifestFilename(List<DSSDocument> existingManifests) {
 		String suffix = Utils.isCollectionEmpty(existingManifests) ? Utils.EMPTY_STRING : String.valueOf(existingManifests.size());
-		final String asicManifestZipEntryName = META_INF + "ASiCManifest" + suffix + ".xml";
-		return asicManifestZipEntryName;
+		return META_INF + "ASiCManifest" + suffix + ".xml";
 	}
 
 }

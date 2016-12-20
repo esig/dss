@@ -22,8 +22,7 @@ public final class ASiCUtils {
 	}
 
 	public static boolean isSignature(final String entryName) {
-		final boolean signature = entryName.startsWith(META_INF_FOLDER) && entryName.contains("signature") && !entryName.contains("Manifest");
-		return signature;
+		return entryName.startsWith(META_INF_FOLDER) && entryName.contains("signature") && !entryName.contains("Manifest");
 	}
 
 	public static String getMimeTypeString(final ASiCParameters asicParameters) {
@@ -111,17 +110,15 @@ public final class ASiCUtils {
 			Utils.closeQuietly(is);
 		}
 
-		return ((preamble[0] == 'P') && (preamble[1] == 'K'));
+		return (preamble[0] == 'P') && (preamble[1] == 'K');
 	}
 
 	public static boolean isXAdES(final String entryName) {
-		final boolean signature = isSignature(entryName) && entryName.endsWith(".xml");
-		return signature;
+		return isSignature(entryName) && entryName.endsWith(".xml");
 	}
 
 	public static boolean isCAdES(final String entryName) {
-		final boolean signature = isSignature(entryName) && (entryName.endsWith(".p7s"));
-		return signature;
+		return isSignature(entryName) && (entryName.endsWith(".p7s"));
 	}
 
 	public static MimeType getMimeType(final DSSDocument mimeTypeDocument) throws DSSException {

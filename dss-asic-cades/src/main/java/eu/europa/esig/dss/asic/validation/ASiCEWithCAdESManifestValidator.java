@@ -113,7 +113,7 @@ public class ASiCEWithCAdESManifestValidator {
 			String digestBase64 = digestValueElement.getTextContent();
 			return Utils.fromBase64(digestBase64);
 		}
-		return null;
+		return new byte[] {};
 	}
 
 }

@@ -56,8 +56,8 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	@Override
 	public List<AdvancedSignature> processSignaturesValidation(final ValidationContext validationContext, boolean structuralValidation) {
 		List<AdvancedSignature> allSignatures = new ArrayList<AdvancedSignature>();
-		List<DocumentValidator> validators = getValidators();
-		for (DocumentValidator documentValidator : validators) { // CAdES / XAdES
+		List<DocumentValidator> currentValidators = getValidators();
+		for (DocumentValidator documentValidator : currentValidators) { // CAdES / XAdES
 			allSignatures.addAll(documentValidator.processSignaturesValidation(validationContext, structuralValidation));
 		}
 		return allSignatures;
@@ -102,8 +102,8 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	@Override
 	public List<AdvancedSignature> getSignatures() {
 		List<AdvancedSignature> allSignatures = new ArrayList<AdvancedSignature>();
-		List<DocumentValidator> validators = getValidators();
-		for (DocumentValidator documentValidator : validators) {
+		List<DocumentValidator> currentValidators = getValidators();
+		for (DocumentValidator documentValidator : currentValidators) {
 			allSignatures.addAll(documentValidator.getSignatures());
 		}
 		return allSignatures;

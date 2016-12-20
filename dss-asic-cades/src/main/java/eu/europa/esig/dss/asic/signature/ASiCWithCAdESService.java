@@ -76,7 +76,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			Iterator<DSSDocument> iterator = signatures.iterator();
 			while (iterator.hasNext()) {
 				if (Utils.areStringsEqual(newSignatureFileName, iterator.next().getName())) {
-					iterator.remove(); // remove existing file to be replaced
+					// remove existing file to be replaced
+					iterator.remove();
 				}
 			}
 		}
@@ -197,7 +198,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 				isSignatureTypeCorrect = ASiCUtils.isArchiveContainsCorrectSignatureExtension(archiveDoc, ".p7s");
 			}
 		}
-		return (isMimetypeCorrect && isSignatureTypeCorrect);
+		return isMimetypeCorrect && isSignatureTypeCorrect;
 	}
 
 }
