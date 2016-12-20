@@ -10,14 +10,15 @@
 		</AcceptableContainerTypes>
 <!-- 		<ZipCommentPresent Level="WARN" /> -->
 <!-- 		<AcceptableZipComment Level="WARN"> -->
-			<Id>mimetype=application/vnd.etsi.asic-s+zip</Id>
-			<Id>mimetype=application/vnd.etsi.asic-e+zip</Id>
-		</AcceptableZipComment>
+<!-- 			<Id>mimetype=application/vnd.etsi.asic-s+zip</Id> -->
+<!-- 			<Id>mimetype=application/vnd.etsi.asic-e+zip</Id> -->
+<!-- 		</AcceptableZipComment> -->
 		<MimeTypeFilePresent Level="FAIL" />
 		<AcceptableMimeTypeFileContent Level="WARN">
 			<Id>application/vnd.etsi.asic-s+zip</Id>
 			<Id>application/vnd.etsi.asic-e+zip</Id>
 		</AcceptableMimeTypeFileContent>
+		<ManifestFilePresent Level="FAIL" />
 		<AllFilesSigned Level="WARN" />
 	</ContainerConstraints>
 	<SignatureConstraints>

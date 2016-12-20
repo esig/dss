@@ -373,4 +373,6 @@ public interface ValidationPolicy {
 
 	LevelConstraint getAllFilesSignedConstraint();
 
+	LevelConstraint getManifestFilePresentConstraint();
+
 }

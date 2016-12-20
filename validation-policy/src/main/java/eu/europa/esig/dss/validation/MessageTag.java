@@ -40,6 +40,12 @@ public enum MessageTag {
 	
 	BBB_FC_IEMCF("Is the expected mimetype content found?"),
 	BBB_FC_IEMCF_ANS("The expected mimetype content is not found!"),
+
+	BBB_FC_IMFP_ASICE("Is the manifest file present (ASiC-E)?"),
+	BBB_FC_IMFP_ASICE_ANS("The manifest file is absent!"),
+	
+	BBB_FC_IMFP_ASICS("Is the manifest file absent (ASiC-S)?"),
+	BBB_FC_IMFP_ASICS_ANS("The manifest file is present!"),
 	
 	/* BBB -> CV */
 	BBB_CV_IRDOF("Is the reference data object(s) found?"),

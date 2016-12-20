@@ -25,6 +25,7 @@
 			<xs:element name="AcceptableZipComment" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="MimeTypeFilePresent" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="AcceptableMimeTypeFileContent" type="tns:MultiValuesConstraint" minOccurs="0" />
+			<xs:element name="ManifestFilePresent" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="AllFilesSigned" type="tns:LevelConstraint" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>

@@ -9,6 +9,7 @@ import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableMimetypeFil
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableZipCommentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ContainerTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.ManifestFilePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.MimeTypeFilePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ZipCommentPresentCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
@@ -56,6 +57,7 @@ public class FormatChecking extends Chain<XmlFC> {
 
 			item = item.setNextItem(mimetypeFileContentCheck());
 
+			item = item.setNextItem(manifestFilePresentCheck());
 		}
 	}
 
@@ -87,6 +89,11 @@ public class FormatChecking extends Chain<XmlFC> {
 	private ChainItem<XmlFC> mimetypeFileContentCheck() {
 		MultiValuesConstraint constraint = policy.getAcceptedMimeTypeContentsConstraint();
 		return new AcceptableMimetypeFileContentCheck(result, diagnosticData.getMimetypeFileContent(), constraint);
+	}
+
+	private ChainItem<XmlFC> manifestFilePresentCheck() {
+		LevelConstraint constraint = policy.getManifestFilePresentConstraint();
+		return new ManifestFilePresentCheck(result, diagnosticData.getContainerInfo(), constraint);
 	}
 
 }

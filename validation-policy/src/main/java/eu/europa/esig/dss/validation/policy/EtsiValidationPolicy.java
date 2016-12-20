@@ -778,4 +778,13 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		return null;
 	}
 
+	@Override
+	public LevelConstraint getManifestFilePresentConstraint() {
+		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		if (containerConstraints != null) {
+			return containerConstraints.getManifestFilePresent();
+		}
+		return null;
+	}
+
 }
