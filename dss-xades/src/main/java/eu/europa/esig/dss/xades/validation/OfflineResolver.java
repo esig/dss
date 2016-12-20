@@ -35,6 +35,8 @@ import org.w3c.dom.Attr;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -47,15 +49,15 @@ public class OfflineResolver extends ResourceResolverSpi {
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineResolver.class);
 
 	private final List<DSSDocument> documents;
+	private final DigestAlgorithm digestAlgorithm;
 
 	static {
-
 		Init.init();
 	}
 
-	public OfflineResolver(final List<DSSDocument> documents) {
-
+	public OfflineResolver(final List<DSSDocument> documents, DigestAlgorithm digestAlgorithm) {
 		this.documents = documents;
+		this.digestAlgorithm = digestAlgorithm;
 	}
 
 	@Override
@@ -105,13 +107,15 @@ public class OfflineResolver extends ResourceResolverSpi {
 		}
 		documentUri = DSSUtils.decodeUrl(documentUri);
 		final DSSDocument document = getDocument(documentUri);
-		if (document != null) {
+		if (document instanceof DigestDocument) {
 
-			// The input stream is closed automatically by XMLSignatureInput class
+			DigestDocument digestDoc = (DigestDocument) document;
+			XMLSignatureInput result = new XMLSignatureInput(digestDoc.getDigest(digestAlgorithm));
+			result.setSourceURI(documentUri);
+			return result;
 
-			// TODO-Bob (05/09/2014): There is an error concerning the input streams base64 encoded. Some extra bytes
-			// are added within the santuario which breaks the HASH.
-			// TODO-Vin (05/09/2014): Can you create an isolated test-case JIRA DSS-?
+		} else if (document != null) {
+
 			InputStream inputStream = document.openStream();
 			final XMLSignatureInput result = new XMLSignatureInput(inputStream);
 			result.setSourceURI(documentUri);
