@@ -9,12 +9,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.asic.ASiCNamespace;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This class is used to generate the ASiCManifest.xml content (ASiC-E)
@@ -57,17 +55,14 @@ public class ASiCEWithCAdESManifestBuilder {
 
 		for (DSSDocument document : documents) {
 			final String detachedDocumentName = document.getName();
-			final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.NS,
-					ASiCNamespace.DATA_OBJECT_REFERENCE);
+			final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.NS, ASiCNamespace.DATA_OBJECT_REFERENCE);
 			dataObjectReferenceDom.setAttribute("URI", detachedDocumentName);
 
 			final Element digestMethodDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestMethod");
 			digestMethodDom.setAttribute("Algorithm", digestAlgorithm.getXmlId());
 
 			final Element digestValueDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestValue");
-			final byte[] digest = DSSUtils.digest(digestAlgorithm, document);
-			final String base64Encoded = Utils.toBase64(digest);
-			final Text textNode = documentDom.createTextNode(base64Encoded);
+			final Text textNode = documentDom.createTextNode(document.getDigest(digestAlgorithm));
 			digestValueDom.appendChild(textNode);
 		}
 

@@ -566,31 +566,6 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method allows to digest the data with the given algorithm.
-	 *
-	 * @param digestAlgorithm
-	 *            the algorithm to use
-	 * @param document
-	 *            the document containing data to digest
-	 * @return digested array of bytes
-	 */
-	public static byte[] digest(final DigestAlgorithm digestAlgorithm, final DSSDocument document) throws DSSException {
-		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
-		byte[] buffer = new byte[1024];
-		int count = -1;
-		InputStream stream = document.openStream();
-		try {
-			while ((count = stream.read(buffer)) > 0) {
-				messageDigest.update(buffer, 0, count);
-			}
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-		final byte[] digestValue = messageDigest.digest();
-		return digestValue;
-	}
-
-	/**
 	 * @param digestAlgorithm
 	 * @return
 	 * @throws NoSuchAlgorithmException

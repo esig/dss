@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -44,22 +43,23 @@ public class DataToSignASiCSWithXAdESFromFilesTest {
 		String base64 = Utils.toBase64(byteArray);
 		LOG.info(base64);
 
-		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, dssDocument);
+		String digest = dssDocument.getDigest(DigestAlgorithm.SHA256);
 
-		LOG.info(Utils.toBase64(digest));
+		LOG.info(digest);
 
 		Thread.sleep(2000);
 
 		DataToSignASiCSWithXAdESFromFiles dataToSign2 = new DataToSignASiCSWithXAdESFromFiles(filesToBeSigned, now, asicParameters);
 		DSSDocument twice = dataToSign2.getToBeSigned().get(0);
-		byte[] digestTwice = DSSUtils.digest(DigestAlgorithm.SHA256, twice);
+
+		String digestTwice = twice.getDigest(DigestAlgorithm.SHA256);
 
 		String base64twice = Utils.toBase64(DSSUtils.toByteArray(twice));
 		LOG.info(base64twice);
-		LOG.info(Utils.toBase64(digestTwice));
+		LOG.info(digestTwice);
 
 		assertEquals(base64, base64twice);
-		assertTrue(Arrays.equals(digest, digestTwice));
+		assertTrue(Utils.areStringsEqual(digest, digestTwice));
 
 	}
 }

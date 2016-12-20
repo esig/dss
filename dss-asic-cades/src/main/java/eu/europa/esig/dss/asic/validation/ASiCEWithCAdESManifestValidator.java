@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.asic.validation;
 
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -11,7 +10,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.ASiCNamespace;
@@ -78,12 +76,12 @@ public class ASiCEWithCAdESManifestValidator {
 					return false;
 				}
 
-				byte[] expectedDigest = getDigestValue(dataObjectReference);
-				byte[] computedDigest = DSSUtils.digest(digestAlgo, signedFile);
-				if (!Arrays.equals(expectedDigest, computedDigest)) {
+				String expectedDigestB64 = getDigestValue(dataObjectReference);
+				String computedDigestB64 = signedFile.getDigest(digestAlgo);
+				if (!Utils.areStringsEqual(expectedDigestB64, computedDigestB64)) {
 					LOG.warn("Digest value doesn't match for signed data with name '{}'", filename);
-					LOG.warn("Expected : '{}'", Utils.toBase64(expectedDigest));
-					LOG.warn("Computed : '{}'", Utils.toBase64(computedDigest));
+					LOG.warn("Expected : '{}'", expectedDigestB64);
+					LOG.warn("Computed : '{}'", computedDigestB64);
 					return false;
 				}
 
@@ -107,13 +105,12 @@ public class ASiCEWithCAdESManifestValidator {
 		return DigestAlgorithm.forXML(xmlName, null);
 	}
 
-	private byte[] getDigestValue(Element element) {
+	private String getDigestValue(Element element) {
 		Element digestValueElement = DomUtils.getElement(element, "ds:DigestValue");
 		if (digestValueElement != null) {
-			String digestBase64 = digestValueElement.getTextContent();
-			return Utils.fromBase64(digestBase64);
+			return digestValueElement.getTextContent();
 		}
-		return new byte[] {};
+		return Utils.EMPTY_STRING;
 	}
 
 }
