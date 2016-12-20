@@ -160,7 +160,10 @@ public class DiagnosticDataBuilder {
 		if (containerInfo != null) {
 			XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 			xmlContainerInfo.setContainerType(containerInfo.getContainerType().getReadable());
-			xmlContainerInfo.setZipComment(containerInfo.getZipComment());
+			String zipComment = containerInfo.getZipComment();
+			if (Utils.isStringNotBlank(zipComment)) {
+				xmlContainerInfo.setZipComment(zipComment);
+			}
 			xmlContainerInfo.setMimeTypeFilePresent(containerInfo.isMimeTypeFilePresent());
 			xmlContainerInfo.setMimeTypeContent(containerInfo.getMimeTypeContent());
 			xmlContainerInfo.setContentFiles(containerInfo.getSignedDocumentFilenames());

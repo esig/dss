@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -13,6 +16,8 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 
 public final class ASiCUtils {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ASiCUtils.class);
 
 	private static final String MIME_TYPE = "mimetype";
 	public static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
@@ -135,7 +140,7 @@ public final class ASiCUtils {
 		}
 	}
 
-	public static ASiCContainerType getContainerType(DSSDocument archive, DSSDocument mimetype, String zipComment) {
+	public static ASiCContainerType getContainerType(DSSDocument archive, DSSDocument mimetype, String zipComment, List<DSSDocument> signedDocuments) {
 		ASiCContainerType containerType = null;
 		MimeType mimeTypeFromContainer = archive.getMimeType();
 		if (ASiCUtils.isASiCMimeType(mimeTypeFromContainer)) {
@@ -145,7 +150,7 @@ public final class ASiCUtils {
 			if (ASiCUtils.isASiCMimeType(mimeTypeFromEmbeddedFile)) {
 				containerType = ASiCUtils.getASiCContainerType(mimeTypeFromEmbeddedFile);
 			}
-		} else if (zipComment != null) {
+		} else if (Utils.isStringNotBlank(zipComment)) {
 			int indexOf = zipComment.indexOf(MIME_TYPE_COMMENT);
 			if (indexOf > -1) {
 				String asicCommentMimeTypeString = zipComment.substring(MIME_TYPE_COMMENT.length() + indexOf);
@@ -153,6 +158,13 @@ public final class ASiCUtils {
 				if (ASiCUtils.isASiCMimeType(mimeTypeFromZipComment)) {
 					containerType = ASiCUtils.getASiCContainerType(mimeTypeFromZipComment);
 				}
+			}
+		} else {
+			LOG.warn("Unable to define the ASiC Container type with its properties");
+			if (Utils.collectionSize(signedDocuments) <= 1) {
+				containerType = ASiCContainerType.ASiC_S;
+			} else {
+				containerType = ASiCContainerType.ASiC_E;
 			}
 		}
 		return containerType;

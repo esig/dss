@@ -44,7 +44,8 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		AbstractASiCContainerExtractor extractor = getArchiveExtractor();
 		extractResult = extractor.extract();
 
-		containerType = ASiCUtils.getContainerType(document, extractResult.getMimeTypeDocument(), extractResult.getZipComment());
+		containerType = ASiCUtils.getContainerType(document, extractResult.getMimeTypeDocument(), extractResult.getZipComment(),
+				extractResult.getSignedDocuments());
 	}
 
 	abstract AbstractASiCContainerExtractor getArchiveExtractor();

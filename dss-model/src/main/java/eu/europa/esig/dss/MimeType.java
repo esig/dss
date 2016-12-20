@@ -48,15 +48,21 @@ public class MimeType implements Serializable {
 	private static Map<String, MimeType> fileExtensions = new HashMap<String, MimeType>() {
 		{
 			put("xml", XML);
+
+			put("pkcs7", PKCS7);
+			put("p7s", PKCS7);
+
 			put("pdf", PDF);
+
 			put("asics", ASICS);
 			put("scs", ASICS);
+
 			put("asice", ASICE);
-			put("bdoc", ASICE); // estonian bdoc file type is handled as asic-e
-								// document
 			put("sce", ASICE);
+			// estonian bdoc file type is handled as asic-e document
+			put("bdoc", ASICE);
+
 			put("txt", TEXT);
-			put("zip", ASICE); // plugtest and CZ
 		}
 	};
 
@@ -79,8 +85,8 @@ public class MimeType implements Serializable {
 			throw new DSSException("'" + mimeTypeString + "' is not conformant mime-type string!");
 		}
 		if (mimeTypes.get(mimeTypeString) != null) {
-			throw new DSSException("'" + mimeTypeString
-					+ "' corresponding MimeType exists already! Use #fromMimeTypeString method to obtain the corresponding object.");
+			throw new DSSException(
+					"'" + mimeTypeString + "' corresponding MimeType exists already! Use #fromMimeTypeString method to obtain the corresponding object.");
 		}
 		this.mimeTypeString = mimeTypeString;
 		mimeTypes.put(mimeTypeString, this);

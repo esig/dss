@@ -102,7 +102,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		List<DSSDocument> signedDocuments = getEmbeddedSignedDocuments();
 		DSSDocument mimetype = getEmbeddedMimetype();
 
-		ASiCContainerType containerType = ASiCUtils.getContainerType(toExtendDocument, mimetype, null);
+		ASiCContainerType containerType = ASiCUtils.getContainerType(toExtendDocument, mimetype, null, signedDocuments);
 		if (containerType == null) {
 			throw new DSSException("Unable to determine container type");
 		}
