@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.asic.signature.asice;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -43,6 +44,7 @@ import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.asic.validation.ASiCEWithXAdESManifestParser;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.signature.AbstractTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
@@ -51,6 +53,7 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
@@ -99,6 +102,13 @@ public class ASiCEXAdESMultiFilesLevelBTest extends AbstractTestMultipleDocument
 		assertEquals(1, manifestDocuments.size());
 		String manifestFilename = manifestDocuments.get(0).getName();
 		assertEquals("META-INF/manifest.xml", manifestFilename);
+
+		ASiCEWithXAdESManifestParser parse = new ASiCEWithXAdESManifestParser(signatureDocuments.get(0), manifestDocuments.get(0));
+		ManifestFile description = parse.getDescription();
+		assertNotNull(description);
+		assertNotNull(description.getFilename());
+		assertNotNull(description.getSignatureFilename());
+		assertTrue(Utils.isCollectionNotEmpty(description.getEntries()));
 
 		List<DSSDocument> signedDocuments = extract.getSignedDocuments();
 		assertEquals(2, signedDocuments.size());

@@ -700,4 +700,8 @@ public class DiagnosticData {
 		return null;
 	}
 
+	public XmlContainerInfo getContainerInfo() {
+		return diagnosticData.getContainerInfo();
+	}
+
 }

@@ -34,6 +34,7 @@ import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.utils.Utils;
@@ -125,7 +126,7 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 				}
 			} else {
 				// detached file
-				result.add(new FullSignatureScope(uri));
+				result.add(new FullSignatureScope(DSSUtils.decodeUrl(uri)));
 			}
 		}
 		return result;

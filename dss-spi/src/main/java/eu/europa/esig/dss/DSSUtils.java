@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
@@ -1330,6 +1331,15 @@ public final class DSSUtils {
 
 	public static String getFinalFileName(DSSDocument originalFile, SigningOperation operation, SignatureLevel level) {
 		return getFinalFileName(originalFile, operation, level, null);
+	}
+
+	public static String decodeUrl(String uri) {
+		try {
+			return URLDecoder.decode(uri, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			logger.error("Unable to decode '" + uri + "' : " + e.getMessage(), e);
+		}
+		return uri;
 	}
 
 }

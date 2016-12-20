@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.xades.validation;
 
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.List;
 
 import org.apache.xml.security.Init;
@@ -36,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -64,7 +63,7 @@ public class OfflineResolver extends ResourceResolverSpi {
 		final Attr uriAttr = context.attr;
 		if (uriAttr != null) {
 			String documentUri = uriAttr.getNodeValue();
-			documentUri = decodeUrl(documentUri);
+			documentUri = DSSUtils.decodeUrl(documentUri);
 			if ("".equals(documentUri) || documentUri.startsWith("#")) {
 				return false;
 			}
@@ -104,7 +103,7 @@ public class OfflineResolver extends ResourceResolverSpi {
 		} else if (uriAttr != null) {
 			documentUri = uriAttr.getNodeValue();
 		}
-		documentUri = decodeUrl(documentUri);
+		documentUri = DSSUtils.decodeUrl(documentUri);
 		final DSSDocument document = getDocument(documentUri);
 		if (document != null) {
 
@@ -174,12 +173,4 @@ public class OfflineResolver extends ResourceResolverSpi {
 		return documents != null && documents.size() == 1;
 	}
 
-	private String decodeUrl(String documentUri) {
-		try {
-			return URLDecoder.decode(documentUri, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			LOG.error("Unable to decode '" + documentUri + "' : " + e.getMessage(), e);
-		}
-		return documentUri;
-	}
 }

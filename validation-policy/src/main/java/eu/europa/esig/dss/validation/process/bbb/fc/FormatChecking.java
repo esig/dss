@@ -65,7 +65,7 @@ public class FormatChecking extends Chain<XmlFC> {
 	}
 
 	private ChainItem<XmlFC> containerTypeCheck() {
-		MultiValuesConstraint constraint = policy.getAcceptedContainerTypes();
+		MultiValuesConstraint constraint = policy.getAcceptedContainerTypesConstraint();
 		return new ContainerTypeCheck(result, diagnosticData.getContainerType(), constraint);
 	}
 
@@ -75,17 +75,17 @@ public class FormatChecking extends Chain<XmlFC> {
 	}
 
 	private ChainItem<XmlFC> acceptableZipCommentCheck() {
-		MultiValuesConstraint constraint = policy.getAcceptedZipComments();
+		MultiValuesConstraint constraint = policy.getAcceptedZipCommentsConstraint();
 		return new AcceptableZipCommentCheck(result, diagnosticData.getZipComment(), constraint);
 	}
 
 	private ChainItem<XmlFC> mimetypeFilePresentCheck() {
-		LevelConstraint constraint = policy.getMimeTypeFilePresentCheck();
+		LevelConstraint constraint = policy.getMimeTypeFilePresentConstraint();
 		return new MimeTypeFilePresentCheck(result, diagnosticData.isMimetypeFilePresent(), constraint);
 	}
 
 	private ChainItem<XmlFC> mimetypeFileContentCheck() {
-		MultiValuesConstraint constraint = policy.getAcceptedMimeTypeContents();
+		MultiValuesConstraint constraint = policy.getAcceptedMimeTypeContentsConstraint();
 		return new AcceptableMimetypeFileContentCheck(result, diagnosticData.getMimetypeFileContent(), constraint);
 	}
 

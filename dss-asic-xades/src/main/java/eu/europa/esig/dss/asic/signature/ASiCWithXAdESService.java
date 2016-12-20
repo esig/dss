@@ -70,7 +70,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		List<DSSDocument> signedDocuments = dataToSignHelper.getSignedDocuments();
 
 		XAdESSignatureParameters xadesParameters = getXAdESParameters(parameters, dataToSignHelper.getExistingSignature());
-		final DSSDocument newSignature = getXAdESService().signDocument(dataToSignHelper.getSignedDocuments(), xadesParameters, signatureValue);
+		final DSSDocument newSignature = getXAdESService().signDocument(dataToSignHelper.getToBeSigned(), xadesParameters, signatureValue);
 		String newSignatureFilename = dataToSignHelper.getSignatureFilename();
 		newSignature.setName(newSignatureFilename);
 

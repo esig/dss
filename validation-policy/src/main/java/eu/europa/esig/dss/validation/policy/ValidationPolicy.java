@@ -361,14 +361,16 @@ public interface ValidationPolicy {
 
 	LevelConstraint getCertificateIssuedToNaturalPersonConstraint(Context context, SubContext subContext);
 
-	MultiValuesConstraint getAcceptedContainerTypes();
+	MultiValuesConstraint getAcceptedContainerTypesConstraint();
 
 	LevelConstraint getZipCommentPresentConstraint();
 
-	MultiValuesConstraint getAcceptedZipComments();
+	MultiValuesConstraint getAcceptedZipCommentsConstraint();
 
-	LevelConstraint getMimeTypeFilePresentCheck();
+	LevelConstraint getMimeTypeFilePresentConstraint();
 
-	MultiValuesConstraint getAcceptedMimeTypeContents();
+	MultiValuesConstraint getAcceptedMimeTypeContentsConstraint();
+
+	LevelConstraint getAllFilesSignedConstraint();
 
 }

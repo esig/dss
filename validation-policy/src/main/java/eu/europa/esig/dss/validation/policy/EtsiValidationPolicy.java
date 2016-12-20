@@ -725,7 +725,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public MultiValuesConstraint getAcceptedContainerTypes() {
+	public MultiValuesConstraint getAcceptedContainerTypesConstraint() {
 		ContainerConstraints containerConstraints = policy.getContainerConstraints();
 		if (containerConstraints != null) {
 			return containerConstraints.getAcceptableContainerTypes();
@@ -743,7 +743,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public MultiValuesConstraint getAcceptedZipComments() {
+	public MultiValuesConstraint getAcceptedZipCommentsConstraint() {
 		ContainerConstraints containerConstraints = policy.getContainerConstraints();
 		if (containerConstraints != null) {
 			return containerConstraints.getAcceptableZipComment();
@@ -752,7 +752,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getMimeTypeFilePresentCheck() {
+	public LevelConstraint getMimeTypeFilePresentConstraint() {
 		ContainerConstraints containerConstraints = policy.getContainerConstraints();
 		if (containerConstraints != null) {
 			return containerConstraints.getMimeTypeFilePresent();
@@ -761,10 +761,19 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public MultiValuesConstraint getAcceptedMimeTypeContents() {
+	public MultiValuesConstraint getAcceptedMimeTypeContentsConstraint() {
 		ContainerConstraints containerConstraints = policy.getContainerConstraints();
 		if (containerConstraints != null) {
 			return containerConstraints.getAcceptableMimeTypeFileContent();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getAllFilesSignedConstraint() {
+		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		if (containerConstraints != null) {
+			return containerConstraints.getAllFilesSigned();
 		}
 		return null;
 	}

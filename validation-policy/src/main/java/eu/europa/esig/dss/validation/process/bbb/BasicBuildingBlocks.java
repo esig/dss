@@ -158,7 +158,7 @@ public class BasicBuildingBlocks {
 	}
 
 	private XmlCV executeCryptographicVerification() {
-		CryptographicVerification cv = new CryptographicVerification(token, context, policy);
+		CryptographicVerification cv = new CryptographicVerification(diagnosticData, token, context, policy);
 		return cv.execute();
 	}
 

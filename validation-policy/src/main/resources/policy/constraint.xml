@@ -8,8 +8,8 @@
 			<Id>ASiC-S</Id>
 			<Id>ASiC-E</Id>
 		</AcceptableContainerTypes>
-		<ZipCommentPresent Level="IGNORE" />
-		<AcceptableZipComment Level="IGNORE">
+<!-- 		<ZipCommentPresent Level="WARN" /> -->
+<!-- 		<AcceptableZipComment Level="WARN"> -->
 			<Id>mimetype=application/vnd.etsi.asic-s+zip</Id>
 			<Id>mimetype=application/vnd.etsi.asic-e+zip</Id>
 		</AcceptableZipComment>
