@@ -22,7 +22,12 @@ public class ASiCWithCAdESDataToSignHelperBuilder {
 		boolean archive = ASiCUtils.isArchive(documents);
 
 		if (archive) {
-			ASiCWithCAdESContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(documents.get(0));
+			DSSDocument archiveDoc = documents.get(0);
+			if (!ASiCUtils.isArchiveContainsCorrectSignatureExtension(archiveDoc, ".p7s")) {
+				throw new UnsupportedOperationException("Container type doesn't match");
+			}
+
+			ASiCWithCAdESContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(archiveDoc);
 			ASiCExtractResult extract = extractor.extract();
 			if (asice) {
 				return new DataToSignASiCEWithCAdESFromArchive(extract.getSignedDocuments(), extract.getSignatureDocuments(), extract.getManifestDocuments(),

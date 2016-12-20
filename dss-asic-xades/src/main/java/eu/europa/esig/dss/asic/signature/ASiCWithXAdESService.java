@@ -93,7 +93,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 	@Override
 	public DSSDocument extendDocument(DSSDocument toExtendDocument, ASiCWithXAdESSignatureParameters parameters) throws DSSException {
-		if (!ASiCUtils.isASiCContainer(toExtendDocument)) {
+		if (!ASiCUtils.isASiCContainer(toExtendDocument) || !ASiCUtils.isArchiveContainsCorrectSignatureExtension(toExtendDocument, ".xml")) {
 			throw new DSSException("Unsupported file type");
 		}
 
