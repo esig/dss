@@ -22,6 +22,8 @@ package eu.europa.esig.dss.xades;
 
 import java.io.Serializable;
 
+import eu.europa.esig.dss.XAdESNamespaces;
+
 /**
  * This class hold all XPath queries schema-dependent. It was created to cope with old signatures bases on http://uri.etsi.org/01903/v1.1.1.
  *

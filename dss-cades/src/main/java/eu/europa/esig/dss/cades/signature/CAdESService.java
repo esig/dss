@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
@@ -54,10 +57,12 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	private final CMSSignedDataBuilder cmsSignedDataBuilder;
 
 	/**
-	 * This is the constructor to create an instance of the {@code CAdESService}. A certificate verifier must be provided.
+	 * This is the constructor to create an instance of the {@code CAdESService}. A certificate verifier must be
+	 * provided.
 	 *
 	 * @param certificateVerifier
-	 *            {@code CertificateVerifier} provides information on the sources to be used in the validation process in the context of a signature.
+	 *            {@code CertificateVerifier} provides information on the sources to be used in the validation process
+	 *            in the context of a signature.
 	 */
 	public CAdESService(final CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
@@ -76,8 +81,8 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, false);
 		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
 
-		final CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner, signerInfoGeneratorBuilder,
-				originalCmsSignedData);
+		final CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
+				signerInfoGeneratorBuilder, originalCmsSignedData);
 
 		final DSSDocument toSignData = getToSignData(toSignDocument, parameters, originalCmsSignedData);
 
@@ -89,7 +94,8 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	}
 
 	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters, SignatureValue signatureValue) throws DSSException {
+	public DSSDocument signDocument(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters, SignatureValue signatureValue)
+			throws DSSException {
 
 		assertSigningDateInCertificateValidityRange(parameters);
 		final SignaturePackaging packaging = parameters.getSignaturePackaging();
@@ -99,13 +105,12 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
 		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, true);
 		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
-		if ((originalCmsSignedData == null) && SignaturePackaging.DETACHED.equals(packaging) && (parameters.getDetachedContent() == null)) {
-
-			parameters.setDetachedContent(toSignDocument);
+		if ((originalCmsSignedData == null) && SignaturePackaging.DETACHED.equals(packaging) && (parameters.getDetachedContents() == null)) {
+			parameters.setDetachedContents(Arrays.asList(toSignDocument));
 		}
 
-		final CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner, signerInfoGeneratorBuilder,
-				originalCmsSignedData);
+		final CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
+				signerInfoGeneratorBuilder, originalCmsSignedData);
 
 		final DSSDocument toSignData = getToSignData(toSignDocument, parameters, originalCmsSignedData);
 		final CMSProcessableByteArray content = new CMSProcessableByteArray(DSSUtils.toByteArray(toSignData));
@@ -145,9 +150,12 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	 * @return
 	 */
 	private DSSDocument getToSignData(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters, final CMSSignedData originalCmsSignedData) {
-		final DSSDocument detachedContent = parameters.getDetachedContent();
-		if (detachedContent != null) {
-			return detachedContent;
+		final List<DSSDocument> detachedContents = parameters.getDetachedContents();
+		if (detachedContents != null) {
+			// CAdES only can sign one document
+			// (ASiC-S -> the document to sign /
+			// ASiC-E -> ASiCManifest)
+			return detachedContents.get(0);
 		} else {
 			if (originalCmsSignedData == null) {
 				return toSignDocument;
@@ -184,14 +192,14 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	private SignatureExtension<CAdESSignatureParameters> getExtensionProfile(final CAdESSignatureParameters parameters, final boolean onlyLastCMSSignature) {
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		switch (signatureLevel) {
-			case CAdES_BASELINE_T:
-				return new CAdESLevelBaselineT(tspSource, onlyLastCMSSignature);
-			case CAdES_BASELINE_LT:
-				return new CAdESLevelBaselineLT(tspSource, certificateVerifier, onlyLastCMSSignature);
-			case CAdES_BASELINE_LTA:
-				return new CAdESLevelBaselineLTA(tspSource, certificateVerifier, onlyLastCMSSignature);
-			default:
-				throw new DSSException("Unsupported signature format " + signatureLevel);
+		case CAdES_BASELINE_T:
+			return new CAdESLevelBaselineT(tspSource, onlyLastCMSSignature);
+		case CAdES_BASELINE_LT:
+			return new CAdESLevelBaselineLT(tspSource, certificateVerifier, onlyLastCMSSignature);
+		case CAdES_BASELINE_LTA:
+			return new CAdESLevelBaselineLTA(tspSource, certificateVerifier, onlyLastCMSSignature);
+		default:
+			throw new DSSException("Unsupported signature format " + signatureLevel);
 		}
 	}
 

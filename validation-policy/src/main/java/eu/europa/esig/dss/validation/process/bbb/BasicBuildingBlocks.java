@@ -137,7 +137,7 @@ public class BasicBuildingBlocks {
 
 	private XmlFC executeFormatChecking() {
 		if (Context.SIGNATURE.equals(context)) {
-			FormatChecking fc = new FormatChecking((SignatureWrapper) token, context, policy);
+			FormatChecking fc = new FormatChecking(diagnosticData, (SignatureWrapper) token, context, policy);
 			return fc.execute();
 		} else {
 			return null;
@@ -158,7 +158,7 @@ public class BasicBuildingBlocks {
 	}
 
 	private XmlCV executeCryptographicVerification() {
-		CryptographicVerification cv = new CryptographicVerification(token, context, policy);
+		CryptographicVerification cv = new CryptographicVerification(diagnosticData, token, context, policy);
 		return cv.execute();
 	}
 
@@ -195,7 +195,7 @@ public class BasicBuildingBlocks {
 		} else {
 			logger.info("Unsupported context " + context);
 		}
-		return aav!=null ? aav.execute() : null;
+		return aav != null ? aav.execute() : null;
 	}
 
 }

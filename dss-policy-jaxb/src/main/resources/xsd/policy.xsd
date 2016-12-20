@@ -7,6 +7,7 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element type="xs:string" name="Description"/>
+				<xs:element name="ContainerConstraints" type="tns:ContainerConstraints" minOccurs="0" />
 				<xs:element name="SignatureConstraints" type="tns:SignatureConstraints" minOccurs="0" />
 				<xs:element name="CounterSignatureConstraints" type="tns:SignatureConstraints" minOccurs="0" />
 				<xs:element name="Timestamp" type="tns:TimestampConstraints" minOccurs="0" />
@@ -16,6 +17,18 @@
 			<xs:attribute type="xs:string" name="Name"/>
 		</xs:complexType>
 	</xs:element>
+
+	<xs:complexType name="ContainerConstraints">
+		<xs:sequence>
+			<xs:element name="AcceptableContainerTypes" type="tns:MultiValuesConstraint" minOccurs="0" />
+			<xs:element name="ZipCommentPresent" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="AcceptableZipComment" type="tns:MultiValuesConstraint" minOccurs="0" />
+			<xs:element name="MimeTypeFilePresent" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="AcceptableMimeTypeFileContent" type="tns:MultiValuesConstraint" minOccurs="0" />
+			<xs:element name="ManifestFilePresent" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="AllFilesSigned" type="tns:LevelConstraint" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
 
 	<xs:complexType name="SignatureConstraints">
 		<xs:sequence>

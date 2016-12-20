@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static eu.europa.esig.dss.xades.XAdESNamespaces.XAdES;
+import static eu.europa.esig.dss.XAdESNamespaces.XAdES;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
 import java.math.BigInteger;
@@ -40,6 +40,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
@@ -137,6 +138,8 @@ public abstract class XAdESBuilder {
 	public static final String TYPE = "Type";
 	public static final String URI = "URI";
 
+	public static final String QUALIFIER = "Qualifier";
+
 	public static final String XMLNS_DS = "xmlns:ds";
 	public static final String XMLNS_XADES = "xmlns:xades";
 
@@ -231,10 +234,10 @@ public abstract class XAdESBuilder {
 				}
 				DSSReference dssReference = references.get(0);
 
-				Document doc = DSSXMLUtils.buildDOM(originalDocument.openStream());
+				Document doc = DomUtils.buildDOM(originalDocument.openStream());
 				Element root = doc.getDocumentElement();
 
-				Document doc2 = DSSXMLUtils.buildDOM();
+				Document doc2 = DomUtils.buildDOM();
 				final Element dom = doc2.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
 				final Element dom2 = doc2.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
 				doc2.appendChild(dom2);
@@ -285,9 +288,9 @@ public abstract class XAdESBuilder {
 
 		for (final CertificateToken certificate : certificates) {
 
-			final Element certDom = DSSXMLUtils.addElement(documentDom, signingCertificateDom, XAdES, XADES_CERT);
+			final Element certDom = DomUtils.addElement(documentDom, signingCertificateDom, XAdES, XADES_CERT);
 
-			final Element certDigestDom = DSSXMLUtils.addElement(documentDom, certDom, XAdES, XADES_CERT_DIGEST);
+			final Element certDigestDom = DomUtils.addElement(documentDom, certDom, XAdES, XADES_CERT_DIGEST);
 
 			final DigestAlgorithm signingCertificateDigestMethod = params.getSigningCertificateDigestMethod();
 			incorporateDigestMethod(certDigestDom, signingCertificateDigestMethod);
@@ -295,16 +298,16 @@ public abstract class XAdESBuilder {
 			final InMemoryDocument inMemoryCertificate = new InMemoryDocument(certificate.getEncoded());
 			incorporateDigestValue(certDigestDom, signingCertificateDigestMethod, inMemoryCertificate);
 
-			final Element issuerSerialDom = DSSXMLUtils.addElement(documentDom, certDom, XAdES, XADES_ISSUER_SERIAL);
+			final Element issuerSerialDom = DomUtils.addElement(documentDom, certDom, XAdES, XADES_ISSUER_SERIAL);
 
-			final Element x509IssuerNameDom = DSSXMLUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_ISSUER_NAME);
+			final Element x509IssuerNameDom = DomUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_ISSUER_NAME);
 			final String issuerX500PrincipalName = certificate.getIssuerX500Principal().getName();
-			DSSXMLUtils.setTextNode(documentDom, x509IssuerNameDom, issuerX500PrincipalName);
+			DomUtils.setTextNode(documentDom, x509IssuerNameDom, issuerX500PrincipalName);
 
-			final Element x509SerialNumberDom = DSSXMLUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_SERIAL_NUMBER);
+			final Element x509SerialNumberDom = DomUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_SERIAL_NUMBER);
 			final BigInteger serialNumber = certificate.getSerialNumber();
 			final String serialNumberString = new String(serialNumber.toString());
-			DSSXMLUtils.setTextNode(documentDom, x509SerialNumberDom, serialNumberString);
+			DomUtils.setTextNode(documentDom, x509SerialNumberDom, serialNumberString);
 		}
 	}
 

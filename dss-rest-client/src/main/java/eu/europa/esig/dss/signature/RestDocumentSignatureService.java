@@ -35,7 +35,7 @@ import eu.europa.esig.dss.ToBeSigned;
 /**
  * This REST interface provides operations for the signature creation and for its extension.
  */
-@Path("SignatureService")
+@Path("SignatureOneDocumentService")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public interface RestDocumentSignatureService extends Serializable {
@@ -45,14 +45,14 @@ public interface RestDocumentSignatureService extends Serializable {
 	 */
 	@POST
 	@Path("getDataToSign")
-	ToBeSigned getDataToSign(DataToSignDTO dataToSign) throws DSSException;
+	ToBeSigned getDataToSign(DataToSignOneDocumentDTO dataToSign) throws DSSException;
 
 	/**
 	 * Signs the toSignDocument with the provided signatureValue.
 	 */
 	@POST
 	@Path("signDocument")
-	RemoteDocument signDocument(SignDocumentDTO signDocument) throws DSSException;
+	RemoteDocument signDocument(SignOneDocumentDTO signDocument) throws DSSException;
 
 	/**
 	 * Extends the level of the signatures in the toExtendDocument

@@ -19,7 +19,8 @@
         <div class="panel panel-default">
             <div class="panel-heading">e-Signature</div>
             <div class="list-group hidden-print">
-                <a href="<spring:url value="/nexu" />" class="list-group-item${currentPage eq '/nexu' ? ' active' : ''}">NexU</a>
+                <a href="<spring:url value="/sign-a-document" />" class="list-group-item${currentPage eq '/sign-a-document' ? ' active' : ''}">Sign a document</a>
+                <a href="<spring:url value="/sign-multiple-documents" />" class="list-group-item${currentPage eq '/sign-multiple-documents' ? ' active' : ''}">Sign multiple documents</a>
                 <a href="<spring:url value="/signature-standalone" />" class="list-group-item${currentPage eq '/signature-standalone' ? ' active' : ''}">Standalone application</a>
                 <a href="<spring:url value="/signature-rest" />" class="list-group-item${currentPage eq '/signature-rest' ? ' active' : ''}">REST/SOAP WebServices</a>
             </div>

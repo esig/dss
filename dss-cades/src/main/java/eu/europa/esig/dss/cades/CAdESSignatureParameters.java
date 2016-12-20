@@ -33,7 +33,8 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters {
 	 *
 	 * 5.10.2 content-identifier Attribute
 	 * The content-identifier attribute provides an identifier for the signed content, for use when a reference may be
-	 * later required to that content; for example, in the content-reference attribute in other signed data sent later. The
+	 * later required to that content; for example, in the content-reference attribute in other signed data sent later.
+	 * The
 	 * content-identifier shall be a signed attribute.
 	 * content-identifier attribute type values for the ES have an ASN.1 type ContentIdentifier, as defined in
 	 * ESS (RFC 2634 [5]).
@@ -61,7 +62,8 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters {
 	 *
 	 * 5.10.2 content-identifier Attribute
 	 * The content-identifier attribute provides an identifier for the signed content, for use when a reference may be
-	 * later required to that content; for example, in the content-reference attribute in other signed data sent later. The
+	 * later required to that content; for example, in the content-reference attribute in other signed data sent later.
+	 * The
 	 * content-identifier shall be a signed attribute.
 	 * content-identifier attribute type values for the ES have an ASN.1 type ContentIdentifier, as defined in
 	 * ESS (RFC 2634 [5]).

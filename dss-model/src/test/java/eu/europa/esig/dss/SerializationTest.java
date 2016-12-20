@@ -17,7 +17,7 @@ public class SerializationTest {
 
 	@Test
 	public void testSerializationSignatureLevel() throws Exception {
-		SignatureLevel asicEBaselineB = SignatureLevel.ASiC_E_BASELINE_B;
+		SignatureLevel asicEBaselineB = SignatureLevel.XAdES_BASELINE_B;
 		byte[] serialized = serialize(asicEBaselineB);
 		SignatureLevel unserialized = unserialize(serialized, SignatureLevel.class);
 		assertEquals(asicEBaselineB, unserialized);
@@ -128,7 +128,7 @@ public class SerializationTest {
 	@Test
 	public void testSerialization2() throws Exception {
 		MockSignatureParameters testObj = new MockSignatureParameters();
-		testObj.setSignatureLevel(SignatureLevel.ASiC_E_BASELINE_B);
+		testObj.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		testObj.setSignaturePackaging(SignaturePackaging.DETACHED);
 		testObj.setSignWithExpiredCertificate(false);
 		testObj.setDigestAlgorithm(DigestAlgorithm.SHA1);

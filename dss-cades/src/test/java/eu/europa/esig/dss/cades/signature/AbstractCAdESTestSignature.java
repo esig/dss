@@ -12,9 +12,9 @@ import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
 
-import eu.europa.esig.dss.signature.AbstractTestSignature;
+import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
 
-public abstract class AbstractCAdESTestSignature extends AbstractTestSignature {
+public abstract class AbstractCAdESTestSignature extends AbstractTestDocumentSignatureService {
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {

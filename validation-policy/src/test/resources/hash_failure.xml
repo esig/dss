@@ -4,6 +4,7 @@
     <ValidationDate>2016-05-04T15:50:00</ValidationDate>
     <Signatures>
 	    <Signature Id="Signature-1462660098">
+	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
 	        <DateTime>2016-04-19T11:50:47</DateTime>
 	        <SignatureFormat>XAdES_BASELINE_B</SignatureFormat>
 	        <BasicSignature>
@@ -35,6 +36,7 @@
 	        </SignatureScopes>
 	    </Signature>
 	    <Signature Id="Signature-1758282779">
+	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
 	        <DateTime>2016-04-19T11:53:08</DateTime>
 	        <SignatureFormat>XAdES_BASELINE_B</SignatureFormat>
 	        <BasicSignature>

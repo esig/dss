@@ -25,7 +25,11 @@
   	</dependency>
   	<dependency>
     	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-  		<artifactId>dss-asic</artifactId>
+  		<artifactId>dss-asic-cades</artifactId>
+  	</dependency>
+  	<dependency>
+    	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+  		<artifactId>dss-asic-xades</artifactId>
   	</dependency>
   </dependencies>
 </project>

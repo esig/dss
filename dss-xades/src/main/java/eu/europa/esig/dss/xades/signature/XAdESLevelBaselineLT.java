@@ -25,7 +25,9 @@ import java.util.List;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
@@ -35,8 +37,6 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.crl.CRLToken;
 import eu.europa.esig.dss.x509.ocsp.OCSPToken;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.XAdESNamespaces;
 
 /**
  * LT profile of XAdES signature
@@ -96,10 +96,8 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
 	protected void checkSignatureIntegrity() throws DSSException {
-
-		final SignatureCryptographicVerification signatureCryptographicVerification = xadesSignature.checkSignatureIntegrity();
+		final SignatureCryptographicVerification signatureCryptographicVerification = xadesSignature.getSignatureCryptographicVerification();
 		if (!signatureCryptographicVerification.isSignatureIntact()) {
-
 			final String errorMessage = signatureCryptographicVerification.getErrorMessage();
 			throw new DSSException("Cryptographic signature verification has failed" + (errorMessage.isEmpty() ? "." : (" / " + errorMessage)));
 		}
@@ -145,7 +143,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 
 		if (!revocationsForInclusion.isEmpty()) {
 
-			final Element revocationValuesDom = DSSXMLUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:RevocationValues");
+			final Element revocationValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:RevocationValues");
 
 			incorporateCrlTokens(revocationValuesDom, revocationsForInclusion.crlTokens);
 			incorporateOcspTokens(revocationValuesDom, revocationsForInclusion.ocspTokens);
@@ -159,13 +157,13 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 			return;
 		}
 		// ...<xades:CRLValues/>
-		final Element crlValuesDom = DSSXMLUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:CRLValues");
+		final Element crlValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:CRLValues");
 
 		for (final RevocationToken revocationToken : crlTokens) {
 
 			final byte[] encodedCRL = revocationToken.getEncoded();
 			final String base64EncodedCRL = Utils.toBase64(encodedCRL);
-			DSSXMLUtils.addTextElement(documentDom, crlValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedCRLValue", base64EncodedCRL);
+			DomUtils.addTextElement(documentDom, crlValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedCRLValue", base64EncodedCRL);
 		}
 	}
 
@@ -178,13 +176,13 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 
 		// ...<xades:OCSPValues>
 		// .........<xades:EncapsulatedOCSPValue>MIIERw...
-		final Element ocspValuesDom = DSSXMLUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:OCSPValues");
+		final Element ocspValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:OCSPValues");
 
 		for (final RevocationToken revocationToken : ocspTokens) {
 
 			final byte[] encodedOCSP = revocationToken.getEncoded();
 			final String base64EncodedOCSP = Utils.toBase64(encodedOCSP);
-			DSSXMLUtils.addTextElement(documentDom, ocspValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedOCSPValue", base64EncodedOCSP);
+			DomUtils.addTextElement(documentDom, ocspValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedOCSPValue", base64EncodedOCSP);
 		}
 	}
 

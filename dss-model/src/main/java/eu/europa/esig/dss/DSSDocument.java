@@ -32,14 +32,15 @@ import java.io.Serializable;
 public interface DSSDocument extends Serializable {
 
 	/**
-	 * Opens a {@code InputStream} on the {@code DSSDocument} contents. The type of the {@code InputStream} depends on the type of the {@code DSSDocument}. The stream must be
+	 * Opens a {@code InputStream} on the {@code DSSDocument} contents. The type of the {@code InputStream} depends on
+	 * the type of the {@code DSSDocument}. The stream must be
 	 * closed in case of the {@code FileDocument}.
 	 *
 	 * @return an {@code InputStream}
 	 * @throws DSSException
 	 */
 	InputStream openStream() throws DSSException;
-	
+
 	/**
 	 * Writes the content of the document to the provided OutputStream
 	 * 
@@ -49,16 +50,18 @@ public interface DSSDocument extends Serializable {
 	void writeTo(OutputStream stream) throws IOException;
 
 	/**
-	 * Returns the name of the document. If the {@code DSSDocument} was built based on the {@code File} then the file name is returned.
+	 * Returns the name of the document. If the {@code DSSDocument} was built based on the {@code File} then the file
+	 * name is returned.
 	 *
-	 * @return {@code String}  representing the name of the current {@code DSSDocument}
+	 * @return {@code String} representing the name of the current {@code DSSDocument}
 	 */
 	String getName();
 
 	/**
 	 * This method sets the name of the {@code DSSDocument}.
 	 *
-	 * @param name {@code String}
+	 * @param name
+	 *            {@code String}
 	 */
 	void setName(String name);
 
@@ -79,31 +82,26 @@ public interface DSSDocument extends Serializable {
 	/**
 	 * This method sets the mime-type of the {@code DSSDocument}.
 	 *
-	 * @param mimeType {@code MimeType}
+	 * @param mimeType
+	 *            {@code MimeType}
 	 */
 	void setMimeType(final MimeType mimeType);
 
 	/**
 	 * Save the content of the DSSDocument to the file.
 	 *
-	 * @param filePath the path to the file to be created
+	 * @param filePath
+	 *            the path to the file to be created
 	 */
 	void save(final String filePath) throws IOException;
 
 	/**
 	 * This method returns the encoded digest value of the current {@code DSSDocument} using the base64 algorithm.
 	 *
-	 * @param digestAlgorithm {@code DigestAlgorithm}
+	 * @param digestAlgorithm
+	 *            {@code DigestAlgorithm}
 	 * @return base64 encoded {@code String}
 	 */
 	String getDigest(final DigestAlgorithm digestAlgorithm);
 
-	/**
-	 * This method return the next {@code DSSDocument}.
-	 *
-	 * @return {@code DSSDocument}
-	 */
-	DSSDocument getNextDocument();
-
-	void setNextDocument(final DSSDocument nextDocument);
 }

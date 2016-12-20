@@ -6,7 +6,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.xml.security.utils.Base64;
 import org.junit.Test;
@@ -17,6 +19,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
@@ -31,7 +34,11 @@ public class DSS874Test {
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		validator.setPolicyFile(policyDocument);
+		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
+		Map<String, DSSDocument> signaturePoliciesById = new HashMap<String, DSSDocument>();
+		signaturePoliciesById.put("2.16.724.1.3.1.1.2.1.9", new FileDocument(policyDocument));
+		signaturePolicyProvider.setSignaturePoliciesById(signaturePoliciesById);
+		validator.setSignaturePolicyProvider(signaturePolicyProvider);
 		Reports reports = validator.validateDocument();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();

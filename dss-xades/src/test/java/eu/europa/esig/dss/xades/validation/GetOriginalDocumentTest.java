@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -60,10 +58,14 @@ public class GetOriginalDocumentTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		DSSDocument removeResult = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
+		List<DSSDocument> originals = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
+		Assert.assertEquals(1, originals.size());
+
+		DSSDocument original = originals.get(0);
+
 		Canonicalizer canon = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
 		String firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(document)));
-		String secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(removeResult)));
+		String secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(original)));
 		Assert.assertEquals(firstDocument, secondDocument);
 	}
 
@@ -92,10 +94,14 @@ public class GetOriginalDocumentTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		DSSDocument result = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
+		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
+		Assert.assertEquals(1, results.size());
+
+		DSSDocument dssDocument = results.get(0);
+
 		Canonicalizer canon = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
 		String firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(document)));
-		String secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(result)));
+		String secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(dssDocument)));
 		Assert.assertEquals(firstDocument, secondDocument);
 	}
 
@@ -124,8 +130,7 @@ public class GetOriginalDocumentTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		DSSDocument result = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
-		assertNotNull(result);
+		validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
 	}
 
 	@Test
@@ -180,16 +185,19 @@ public class GetOriginalDocumentTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		DSSDocument result = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
-		Assert.assertNotNull(result);
-		Assert.assertNotNull(result.getNextDocument());
+		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
+		Assert.assertEquals(2, results.size());
+
+		DSSDocument orig1 = results.get(0);
+		DSSDocument orig2 = results.get(1);
+
 		Canonicalizer canon = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
 		String firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(doc1)));
-		String secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(result)));
+		String secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(orig1)));
 		Assert.assertEquals(firstDocument, secondDocument);
+
 		firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(doc2)));
-		secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(result.getNextDocument())));
+		secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(orig2)));
 		Assert.assertEquals(firstDocument, secondDocument);
-		Assert.assertNull(result.getNextDocument().getNextDocument());
 	}
 }

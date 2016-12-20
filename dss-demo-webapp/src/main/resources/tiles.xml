@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE tiles-definitions PUBLIC
-        "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
-        "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">   
 
 <tiles-definitions>
 
@@ -14,9 +12,13 @@
     </definition>
     
     <!-- Nexu -->
-    <definition name="nexu-signature-parameters" extends="main">
-        <put-attribute name="content" value="/WEB-INF/jsp/nexu-signature-parameters.jsp" />
+    <definition name="signature-parameters" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/signature-parameters.jsp" />
     </definition>
+    <definition name="signature-multiple-documents-parameters" extends="main">
+        <put-attribute name="content" value="/WEB-INF/jsp/signature-multiple-documents-parameters.jsp" />
+    </definition>
+    
     <definition name="nexu-signature-process" extends="main">
         <put-attribute name="content" value="/WEB-INF/jsp/nexu-signature-process.jsp" />
     </definition>

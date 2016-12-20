@@ -22,12 +22,10 @@ package eu.europa.esig.dss;
 
 /**
  * Different signature forms.<br>
- * NOTE: ASiC-S is supported only with XAdES; ASiC-E is not supported yet.
- *
  */
 public enum SignatureForm {
 
-	XAdES, CAdES, PAdES, ASiC_S, ASiC_E;
+	XAdES, CAdES, PAdES;
 
 	public String getReadable() {
 		String name = this.name();

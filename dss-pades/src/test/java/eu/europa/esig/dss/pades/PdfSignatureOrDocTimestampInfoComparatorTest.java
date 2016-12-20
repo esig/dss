@@ -15,7 +15,6 @@ import org.junit.Test;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 
 public class PdfSignatureOrDocTimestampInfoComparatorTest {
 
@@ -97,8 +96,7 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		}
 
 		@Override
-		public SignatureCryptographicVerification checkIntegrity() {
-			return null;
+		public void checkIntegrity() {
 		}
 
 		@Override

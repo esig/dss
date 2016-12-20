@@ -34,6 +34,7 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -71,27 +72,25 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 	 */
 	@Override
 	protected Document buildRootDocumentDom() {
-		return DSSXMLUtils.buildDOM(detachedDocument);
+		return DomUtils.buildDOM(detachedDocument);
 	}
 
 	@Override
 	protected Node getParentNodeOfSignature() {
 		final String xPathLocationString = params.getXPathLocationString();
 		if (Utils.isStringNotEmpty(xPathLocationString)) {
-			return DSSXMLUtils.getElement(documentDom, xPathLocationString);
+			return DomUtils.getElement(documentDom, xPathLocationString);
 		}
 		return documentDom.getDocumentElement();
 	}
 
 	@Override
-	protected List<DSSReference> createDefaultReferences() {
-
-		final List<DSSReference> dssReferences = new ArrayList<DSSReference>();
+	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
 
 		DSSReference dssReference = new DSSReference();
-		dssReference.setId("r-id-1");
+		dssReference.setId("r-id-" + referenceIndex);
 		dssReference.setUri("");
-		dssReference.setContents(detachedDocument);
+		dssReference.setContents(document);
 		dssReference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
 
 		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
@@ -110,9 +109,8 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 		dssTransformList.add(dssTransform);
 
 		dssReference.setTransforms(dssTransformList);
-		dssReferences.add(dssReference);
 
-		return dssReferences;
+		return dssReference;
 	}
 
 	/**
@@ -141,7 +139,7 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 		// Check if the reference is related to the whole document
 		if (Utils.isStringNotBlank(uri) && uri.startsWith("#") && !isXPointer(uri)) {
 
-			final Document document = DSSXMLUtils.buildDOM(dssDocument);
+			final Document document = DomUtils.buildDOM(dssDocument);
 			DSSXMLUtils.recursiveIdBrowse(document.getDocumentElement());
 			final String uri_id = uri.substring(1);
 			nodeToTransform = document.getElementById(uri_id);
@@ -162,11 +160,11 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 				// Node). Further investigation is needed.
 				final byte[] transformedBytes = nodeToTransform == null ? transformXPath.transform(dssDocument) : transformXPath.transform(nodeToTransform);
 				dssDocument = new InMemoryDocument(transformedBytes);
-				nodeToTransform = DSSXMLUtils.buildDOM(dssDocument);
+				nodeToTransform = DomUtils.buildDOM(dssDocument);
 			} else if (DSSXMLUtils.canCanonicalize(transformAlgorithm)) {
 
 				if (nodeToTransform == null) {
-					nodeToTransform = DSSXMLUtils.buildDOM(dssDocument);
+					nodeToTransform = DomUtils.buildDOM(dssDocument);
 				}
 				transformedReferenceBytes = DSSXMLUtils.canonicalizeSubtree(transformAlgorithm, nodeToTransform);
 				// The supposition is made that the last transformation is the canonicalization

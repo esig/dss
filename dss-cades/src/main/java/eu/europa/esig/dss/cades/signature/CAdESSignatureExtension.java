@@ -141,7 +141,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 		for (SignerInformation signerInformation : signerInformationCollection) {
 
 			final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
-			cadesSignature.setDetachedContents(parameters.getDetachedContent());
+			cadesSignature.setDetachedContents(parameters.getDetachedContents());
 			assertSignatureValid(cadesSignature, parameters);
 			final SignerInformation newSignerInformation = extendCMSSignature(cmsSignedData, signerInformation, parameters);
 			newSignerInformationList.add(newSignerInformation);
@@ -175,7 +175,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 			if (lastSignerInformation == signerInformation) {
 
 				final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
-				cadesSignature.setDetachedContents(parameters.getDetachedContent());
+				cadesSignature.setDetachedContents(parameters.getDetachedContents());
 				assertSignatureValid(cadesSignature, parameters);
 				final SignerInformation newSignerInformation = extendCMSSignature(cmsSignedData, signerInformation, parameters);
 				newSignerInformationList.add(newSignerInformation);
@@ -207,7 +207,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 
 		if (!SignatureForm.PAdES.equals(parameters.getSignatureLevel().getSignatureForm())) {
 
-			final SignatureCryptographicVerification signatureCryptographicVerification = cadesSignature.checkSignatureIntegrity();
+			final SignatureCryptographicVerification signatureCryptographicVerification = cadesSignature.getSignatureCryptographicVerification();
 			if (!signatureCryptographicVerification.isSignatureIntact()) {
 
 				final String errorMessage = signatureCryptographicVerification.getErrorMessage();

@@ -15,6 +15,10 @@
 	<bean id="dataLoader" class="eu.europa.esig.dss.client.http.commons.CommonsDataLoader">
 		<property name="proxyPreferenceManager" ref="proxyPreferenceManager"/>
 	</bean>
+	
+	<bean id="timestampDataLoader" class="eu.europa.esig.dss.client.http.commons.TimestampDataLoader">
+		<property name="proxyPreferenceManager" ref="proxyPreferenceManager"/>
+	</bean>
 
 	<bean id="ocspDataLoader" class="eu.europa.esig.dss.client.http.commons.OCSPDataLoader">
 		<property name="proxyPreferenceManager" ref="proxyPreferenceManager"/>
@@ -43,7 +47,7 @@
 
 	<bean id="tspSource" class="eu.europa.esig.dss.client.tsp.OnlineTSPSource">
 		<property name="tspServer" value="http://tsa.belgium.be/connect"/>
-		<property name="dataLoader" ref="dataLoader"/>
+		<property name="dataLoader" ref="timestampDataLoader"/>
 	</bean>
 	
 	<bean id="cadesService" class="eu.europa.esig.dss.cades.signature.CAdESService">
@@ -61,7 +65,12 @@
 		<property name="tspSource" ref="tspSource" />
 	</bean>
 
-	<bean id="asicService" class="eu.europa.esig.dss.asic.signature.ASiCService">
+	<bean id="asicWithCadesService" class="eu.europa.esig.dss.asic.signature.ASiCWithCAdESService">
+		<constructor-arg ref="certificateVerifier" />
+		<property name="tspSource" ref="tspSource" />
+	</bean>
+	
+	<bean id="asicWithXadesService" class="eu.europa.esig.dss.asic.signature.ASiCWithXAdESService">
 		<constructor-arg ref="certificateVerifier" />
 		<property name="tspSource" ref="tspSource" />
 	</bean>

@@ -46,7 +46,7 @@ public class XAdESBWithoutSignedDataObjectPropertiesToLTATest {
 		Reports reports = validator.validateDocument();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		Assert.assertEquals(SignatureLevel.XAdES_BASELINE_LTA.name(), diagnosticData.getSignatureFormat(simpleReport.getFirstSignatureId()));
+		Assert.assertEquals(SignatureLevel.XAdES_BASELINE_LTA.toString(), diagnosticData.getSignatureFormat(simpleReport.getFirstSignatureId()));
 	}
 
 }

@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,14 @@ public final class WebAppUtils {
 			logger.error("Cannot read  file : " + e.getMessage(), e);
 		}
 		return null;
+	}
+
+	public static List<DSSDocument> toDSSDocuments(List<MultipartFile> documentsToSign) {
+		List<DSSDocument> dssDocuments = new ArrayList<DSSDocument>();
+		for (MultipartFile multipartFile : documentsToSign) {
+			dssDocuments.add(toDSSDocument(multipartFile));
+		}
+		return dssDocuments;
 	}
 
 }

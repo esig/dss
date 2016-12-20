@@ -29,14 +29,14 @@ import org.w3c.dom.Element;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.TimestampParameters;
+import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.XAdESNamespaces;
 
 /**
  * Holds level LTA aspects of XAdES
@@ -96,7 +96,7 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	 */
 	private void incorporateTimestampValidationData(final ValidationContext validationContext) {
 
-		final Element timeStampValidationDataDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES141,
+		final Element timeStampValidationDataDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES141,
 				"xades141:TimeStampValidationData");
 
 		final Set<CertificateToken> toIncludeSetOfCertificates = xadesSignature.getCertificatesForInclusion(validationContext);
@@ -109,7 +109,7 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 		final List<TimestampToken> archiveTimestamps = xadesSignature.getArchiveTimestamps();
 		if (archiveTimestamps.size() > 0) {
 			final TimestampToken timestampToken = archiveTimestamps.get(archiveTimestamps.size() - 1);
-			id = timestampToken.getDSSId().asXmlId();
+			id = timestampToken.getDSSIdAsString();
 		}
 
 		timeStampValidationDataDom.setAttribute("Id", "id-" + id);

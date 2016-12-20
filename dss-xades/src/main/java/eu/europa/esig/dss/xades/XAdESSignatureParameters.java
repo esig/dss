@@ -6,6 +6,8 @@ import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.SignatureForm;
+import eu.europa.esig.dss.SignatureLevel;
 
 public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
@@ -29,15 +31,23 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	private List<DSSReference> dssReferences;
 
 	private String xPathLocationString;
-	
+
 	private boolean en319132 = true;
 
 	/**
-	 *	This attribute is used to inject ASiC root (inclusive canonicalization)
+	 * This attribute is used to inject ASiC root (inclusive canonicalization)
 	 */
 	private Document rootDocument;
 
 	private boolean embedXML;
+
+	@Override
+	public void setSignatureLevel(SignatureLevel signatureLevel) {
+		if (signatureLevel == null || SignatureForm.XAdES != signatureLevel.getSignatureForm()) {
+			throw new IllegalArgumentException("Only XAdES form is allowed !");
+		}
+		super.setSignatureLevel(signatureLevel);
+	}
 
 	/**
 	 * This property is a part of the standard:<br>
@@ -70,7 +80,8 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	/**
 	 * Set the canonicalization algorithm to be used when dealing with SignedInfo.
 	 *
-	 * @param signedInfoCanonicalizationMethod the canonicalization algorithm to be used when dealing with SignedInfo.
+	 * @param signedInfoCanonicalizationMethod
+	 *            the canonicalization algorithm to be used when dealing with SignedInfo.
 	 */
 	public void setSignedInfoCanonicalizationMethod(final String signedInfoCanonicalizationMethod) {
 		this.signedInfoCanonicalizationMethod = signedInfoCanonicalizationMethod;
@@ -86,7 +97,8 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	/**
 	 * Set the canonicalization algorithm to be used when dealing with SignedProperties.
 	 *
-	 * @param signedPropertiesCanonicalizationMethod the canonicalization algorithm to be used when dealing with SignedInfo.
+	 * @param signedPropertiesCanonicalizationMethod
+	 *            the canonicalization algorithm to be used when dealing with SignedInfo.
 	 */
 	public void setSignedPropertiesCanonicalizationMethod(final String signedPropertiesCanonicalizationMethod) {
 		this.signedPropertiesCanonicalizationMethod = signedPropertiesCanonicalizationMethod;
@@ -106,7 +118,9 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
 	/**
 	 * Defines the area where the signature will be added (XAdES Enveloped)
-	 * @param xPathLocationString the xpath location of the signature
+	 * 
+	 * @param xPathLocationString
+	 *            the xpath location of the signature
 	 */
 	public void setXPathLocationString(String xPathLocationString) {
 		this.xPathLocationString = xPathLocationString;
@@ -142,5 +156,5 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	public void setEmbedXML(boolean embedXML) {
 		this.embedXML = embedXML;
 	}
-	
+
 }

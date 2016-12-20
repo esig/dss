@@ -41,20 +41,6 @@ import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 public interface DocumentValidator {
 
 	/**
-	 * The document to validate, in the case of ASiC container this method returns the signature.
-	 *
-	 * @return {@code DSSDocument}
-	 */
-	DSSDocument getDocument();
-
-	/**
-	 * This method returns the {@code List} of the signed documents in the case of the detached signatures.
-	 *
-	 * @return the {@code List} of the detached document {@code DSSDocument}
-	 */
-	List<DSSDocument> getDetachedContents();
-
-	/**
 	 * Retrieves the signatures found in the document
 	 *
 	 * @return a list of AdvancedSignatures for validation purposes
@@ -85,11 +71,7 @@ public interface DocumentValidator {
 	 */
 	void defineSigningCertificate(final CertificateToken x509Certificate);
 
-	void setPolicyFile(final File policyDocument);
-
 	void setValidationLevel(ValidationLevel validationLevel);
-
-	void setPolicyFile(final String signatureId, final File policyDocument);
 
 	/**
 	 * This method provides the possibility to set the specific {@code ProcessExecutor}
@@ -97,6 +79,13 @@ public interface DocumentValidator {
 	 * @param processExecutor
 	 */
 	void setProcessExecutor(final ProcessExecutor processExecutor);
+
+	/**
+	 * This method allows to set a provider for Signature policies
+	 * 
+	 * @param signaturePolicyProvider
+	 */
+	void setSignaturePolicyProvider(SignaturePolicyProvider signaturePolicyProvider);
 
 	/**
 	 * Validates the document and all its signatures. The default constraint file is used.
@@ -166,25 +155,15 @@ public interface DocumentValidator {
 	Reports validateDocument(final ValidationPolicy validationPolicy);
 
 	/**
-	 * This method returns always {@code null} in case of the no ASiC containers.
-	 *
-	 * @return {@code SignedDocumentValidator} which corresponds to the next signature found within an ASiC-E container.
-	 *         {@code null} if there is no more signatures.
-	 */
-	DocumentValidator getNextValidator();
-
-	/**
-	 * @return
-	 */
-	DocumentValidator getSubordinatedValidator();
-
-	/**
-	 * This method returns the signed document without his signature
+	 * This method returns the signed document(s) without their signature(s)
 	 *
 	 * @param signatureId
 	 *            the id of the signature to be removed.
 	 * @throws DSSException
 	 *             the exception is thrown when the removal is not possible.
 	 */
-	DSSDocument getOriginalDocument(final String signatureId) throws DSSException;
+	List<DSSDocument> getOriginalDocuments(final String signatureId) throws DSSException;
+
+	List<AdvancedSignature> processSignaturesValidation(ValidationContext validationContext, boolean structuralValidation);
+
 }

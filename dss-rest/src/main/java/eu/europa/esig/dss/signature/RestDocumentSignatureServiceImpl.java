@@ -19,12 +19,12 @@ public class RestDocumentSignatureServiceImpl implements RestDocumentSignatureSe
 	}
 
 	@Override
-	public ToBeSigned getDataToSign(DataToSignDTO dataToSignDto) throws DSSException {
+	public ToBeSigned getDataToSign(DataToSignOneDocumentDTO dataToSignDto) throws DSSException {
 		return service.getDataToSign(dataToSignDto.getToSignDocument(), dataToSignDto.getParameters());
 	}
 
 	@Override
-	public RemoteDocument signDocument(SignDocumentDTO signDocumentDto) throws DSSException {
+	public RemoteDocument signDocument(SignOneDocumentDTO signDocumentDto) throws DSSException {
 		return toRemoteDocument(
 				service.signDocument(signDocumentDto.getToSignDocument(), signDocumentDto.getParameters(), signDocumentDto.getSignatureValue()));
 	}

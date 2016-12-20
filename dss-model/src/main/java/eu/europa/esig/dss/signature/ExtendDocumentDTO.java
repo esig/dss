@@ -28,7 +28,7 @@ import eu.europa.esig.dss.RemoteSignatureParameters;
 /**
  * This class is a DTO to transfer required objects to execute extendDocument method
  * It's only possible to transfer an object by POST and REST.
- * It's impossible to transfer big objects ny GET (url size limitation)
+ * It's impossible to transfer big objects by GET (url size limitation)
  */
 @SuppressWarnings("serial")
 public class ExtendDocumentDTO implements Serializable {

@@ -24,8 +24,6 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.Set;
 
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
-
 /**
  * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
  */
@@ -33,7 +31,7 @@ public interface PdfSignatureOrDocTimestampInfo {
 
 	int[] getSignatureByteRange();
 
-	SignatureCryptographicVerification checkIntegrity();
+	void checkIntegrity();
 
 	String getLocation();
 

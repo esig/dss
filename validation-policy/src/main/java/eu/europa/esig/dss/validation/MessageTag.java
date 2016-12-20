@@ -26,6 +26,27 @@ public enum MessageTag {
 	BBB_FC_IEFF("Is the expected format found?"),
 	BBB_FC_IEFF_ANS("The expected format is not found!"),
 	
+	BBB_FC_IECTF("Is the expected container type found?"),
+	BBB_FC_IECTF_ANS("The expected container type is not found!"),
+
+	BBB_FC_ITZCP("Is the zip comment present?"),
+	BBB_FC_ITZCP_ANS("The zip comment is absent!"),
+	
+	BBB_FC_ITEZCF("Is the expected zip comment found?"),
+	BBB_FC_ITEZCF_ANS("The expected zip comment is not found!"),
+	
+	BBB_FC_ITMFP("Is the mimetype file present?"),
+	BBB_FC_ITMFP_ANS("The mimetype file is absent!"),
+	
+	BBB_FC_IEMCF("Is the expected mimetype content found?"),
+	BBB_FC_IEMCF_ANS("The expected mimetype content is not found!"),
+
+	BBB_FC_IMFP_ASICE("Is the manifest file present (ASiC-E)?"),
+	BBB_FC_IMFP_ASICE_ANS("The manifest file is absent!"),
+	
+	BBB_FC_IMFP_ASICS("Is the manifest file absent (ASiC-S)?"),
+	BBB_FC_IMFP_ASICS_ANS("The manifest file is present!"),
+	
 	/* BBB -> CV */
 	BBB_CV_IRDOF("Is the reference data object(s) found?"),
 	BBB_CV_IRDOF_ANS("The reference data object(s) is not found!"),
@@ -33,6 +54,8 @@ public enum MessageTag {
 	BBB_CV_IRDOI_ANS("The reference data object(s) is not intact!"),
 	BBB_CV_ISI("Is the signature intact?"),
 	BBB_CV_ISI_ANS("The signature is not intact!"),
+	BBB_CV_IAFS("Is all files signed?"),
+	BBB_CV_IAFS_ANS("All files are not signed!"),
 	
 	/* BBB -> ICS */
 	BBB_ICS_ISCI("Is there an identified candidate for the signing certificate?"),

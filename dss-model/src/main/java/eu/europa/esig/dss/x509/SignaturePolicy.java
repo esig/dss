@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.x509;
 
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 
 /**
@@ -41,8 +42,15 @@ public class SignaturePolicy {
 	public static final String IMPLICIT_POLICY = "IMPLICIT_POLICY";
 
 	private String identifier;
+
 	private DigestAlgorithm digestAlgorithm;
-	private byte[] digestValue;
+
+	/*
+	 * Base64 encoded digest value
+	 */
+	private String digestValue;
+
+	private DSSDocument policyContent;
 
 	/**
 	 * Two qualifiers for the signature policy have been identified so far:
@@ -83,11 +91,11 @@ public class SignaturePolicy {
 		this.digestAlgorithm = digestAlgorithm;
 	}
 
-	public byte[] getDigestValue() {
+	public String getDigestValue() {
 		return digestValue;
 	}
 
-	public void setDigestValue(final byte[] digestValue) {
+	public void setDigestValue(final String digestValue) {
 		this.digestValue = digestValue;
 	}
 
@@ -105,6 +113,14 @@ public class SignaturePolicy {
 
 	public void setNotice(final String notice) {
 		this.notice = notice;
+	}
+
+	public DSSDocument getPolicyContent() {
+		return policyContent;
+	}
+
+	public void setPolicyContent(DSSDocument policyContent) {
+		this.policyContent = policyContent;
 	}
 
 }
