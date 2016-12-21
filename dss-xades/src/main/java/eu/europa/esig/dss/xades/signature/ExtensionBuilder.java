@@ -24,9 +24,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.XAdESNamespaces;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 
 public abstract class ExtensionBuilder extends XAdESBuilder {
@@ -93,7 +93,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			unsignedPropertiesDom = (Element) qualifyingPropertiesNodeList.item(0);
 		} else if (length == 0) {
 
-			unsignedPropertiesDom = DSSXMLUtils.addElement(documentDom, qualifyingPropertiesDom, XAdESNamespaces.XAdES, "xades:UnsignedProperties");
+			unsignedPropertiesDom = DomUtils.addElement(documentDom, qualifyingPropertiesDom, XAdESNamespaces.XAdES, "xades:UnsignedProperties");
 		} else {
 
 			throw new DSSException("The signature contains more then one UnsignedProperties element! Extension is not possible.");
@@ -115,7 +115,8 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			unsignedSignaturePropertiesDom = (Element) unsignedSignaturePropertiesNodeList.item(0);
 		} else if (length == 0) {
 
-			unsignedSignaturePropertiesDom = DSSXMLUtils.addElement(documentDom, unsignedPropertiesDom, XAdESNamespaces.XAdES, "xades:UnsignedSignatureProperties");
+			unsignedSignaturePropertiesDom = DomUtils.addElement(documentDom, unsignedPropertiesDom, XAdESNamespaces.XAdES,
+					"xades:UnsignedSignatureProperties");
 		} else {
 
 			throw new DSSException("The signature contains more then one UnsignedSignatureProperties element! Extension is not possible.");
@@ -133,7 +134,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		final int length = signedDataObjectPropertiesNodeList.getLength();
 		if (length == 1) {
 			signedDataObjectPropertiesDom = (Element) signedDataObjectPropertiesNodeList.item(0);
-		} else if (length > 1 ) {
+		} else if (length > 1) {
 			throw new DSSException("The signature contains more than one SignedDataObjectProperties element! Extension is not possible.");
 		}
 	}

@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.security.cert.X509Certificate;
-
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.tsp.TimeStampToken;
@@ -34,7 +32,6 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
 
 /**
@@ -78,8 +75,7 @@ class PdfBoxDocTimestampInfo extends PdfBoxCMSInfo implements PdfDocTimestampInf
 	}
 
 	@Override
-	public SignatureCryptographicVerification checkIntegrityOnce() {
-
+	public void checkIntegrityOnce() {
 		final SignatureCryptographicVerification signatureCryptographicVerification = new SignatureCryptographicVerification();
 		signatureCryptographicVerification.setReferenceDataFound(false);
 		signatureCryptographicVerification.setReferenceDataIntact(false);
@@ -89,13 +85,6 @@ class PdfBoxDocTimestampInfo extends PdfBoxCMSInfo implements PdfDocTimestampInf
 		}
 		signatureCryptographicVerification.setReferenceDataIntact(timestampToken.matchData(getSignedDocumentBytes()));
 		signatureCryptographicVerification.setSignatureIntact(timestampToken.isSignatureValid());
-		return signatureCryptographicVerification;
-	}
-
-	@Override
-	public X509Certificate getSigningCertificate() {
-		final CertificateToken signingCertificate = timestampToken.getIssuerToken();
-		return signingCertificate == null ? null : signingCertificate.getCertificate();
 	}
 
 	@Override

@@ -47,6 +47,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getSigningCertificate();
 	}
 
+	public String getSignatureFilename() {
+		return signature.getSignatureFilename();
+	}
+
 	public boolean isStructuralValidationValid() {
 		return (signature.getStructuralValidation() != null) && signature.getStructuralValidation().isValid();
 	}

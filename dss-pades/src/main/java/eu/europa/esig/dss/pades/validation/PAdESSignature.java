@@ -51,7 +51,6 @@ import eu.europa.esig.dss.validation.CertificateRef;
 import eu.europa.esig.dss.validation.CertifiedRole;
 import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.OCSPRef;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampReference;
 import eu.europa.esig.dss.validation.TimestampReferenceCategory;
@@ -238,7 +237,7 @@ public class PAdESSignature extends CAdESSignature {
 		usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
 
 		for (TimestampToken token : super.getSignatureTimestamps()) {
-			timestampedTimestamps.add(token.getDSSId().asXmlId());
+			timestampedTimestamps.add(token.getDSSIdAsString());
 		}
 
 		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures) {
@@ -264,7 +263,7 @@ public class PAdESSignature extends CAdESSignature {
 					timestampToken.setTimestampedReferences(references);
 					archiveTimestampTokenList.add(timestampToken);
 				}
-				timestampedTimestamps.add(timestampToken.getDSSId().asXmlId());
+				timestampedTimestamps.add(timestampToken.getDSSIdAsString());
 			}
 
 		}
@@ -296,13 +295,8 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public SignatureCryptographicVerification checkSignatureIntegrity() {
-
-		if (signatureCryptographicVerification != null) {
-			return signatureCryptographicVerification;
-		}
-		signatureCryptographicVerification = super.checkSignatureIntegrity();
-		return signatureCryptographicVerification;
+	public void checkSignatureIntegrity() {
+		super.checkSignatureIntegrity();
 	}
 
 	@Override

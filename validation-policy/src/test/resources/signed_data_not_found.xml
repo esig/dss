@@ -4,6 +4,7 @@
     <ValidationDate>2016-05-04T15:05:00</ValidationDate>
     <Signatures>
 	    <Signature Id="xmldsig-6e324f10-469a-409e-b311-88190b11d92e">
+	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
 	        <ErrorMessage>The Reference for URI  has no XMLSignatureInput&lt;br/&gt;
 	Could not find a resolver for URI null and Base / XAdESSignature/Line number/1393</ErrorMessage>
 	        <DateTime>2014-10-14T14:51:00</DateTime>

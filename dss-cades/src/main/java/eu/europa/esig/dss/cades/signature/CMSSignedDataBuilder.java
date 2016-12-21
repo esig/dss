@@ -29,6 +29,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
@@ -51,6 +52,7 @@ import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.util.Store;
 
 import eu.europa.esig.dss.DSSASN1Utils;
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
@@ -252,7 +254,9 @@ public class CMSSignedDataBuilder {
 			cmsSignedDataGenerator.addOtherRevocationInfo(id_ri_ocsp_response, otherRevocationInfoFormatStoreOcsp);
 			final boolean encapsulate = cmsSignedData.getSignedContent() != null;
 			if (!encapsulate) {
-				final InputStream inputStream = parameters.getDetachedContent().openStream();
+				List<DSSDocument> detachedContents = parameters.getDetachedContents();
+				// CAdES can only sign one document
+				final InputStream inputStream = detachedContents.get(0).openStream();
 				final CMSProcessableByteArray content = new CMSProcessableByteArray(DSSUtils.toByteArray(inputStream));
 				Utils.closeQuietly(inputStream);
 				cmsSignedData = cmsSignedDataGenerator.generate(content, encapsulate);

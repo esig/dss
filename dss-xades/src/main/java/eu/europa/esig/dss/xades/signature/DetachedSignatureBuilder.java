@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
@@ -32,9 +30,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 /**
@@ -65,7 +63,7 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 		if (params.getRootDocument() != null) {
 			return params.getRootDocument();
 		}
-		return DSSXMLUtils.buildDOM();
+		return DomUtils.buildDOM();
 	}
 
 	@Override
@@ -77,30 +75,19 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 	}
 
 	@Override
-	protected List<DSSReference> createDefaultReferences() {
-
-		final List<DSSReference> references = new ArrayList<DSSReference>();
-
-		DSSDocument currentDetachedDocument = detachedDocument;
-		int referenceIndex = 1;
-		do {
-			// <ds:Reference Id="detached-ref-id" URI="xml_example.xml">
-			final DSSReference reference = new DSSReference();
-			reference.setId("r-id-" + referenceIndex++);
-			final String fileURI = currentDetachedDocument.getName() != null ? currentDetachedDocument.getName() : "";
-			try {
-				reference.setUri(URLEncoder.encode(fileURI, "UTF-8"));
-			} catch (Exception e) {
-				logger.warn("Unable to encode uri '" + fileURI + "' : " + e.getMessage());
-				reference.setUri(fileURI);
-			}
-			reference.setContents(currentDetachedDocument);
-			reference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
-
-			references.add(reference);
-			currentDetachedDocument = currentDetachedDocument.getNextDocument();
-		} while (currentDetachedDocument != null);
-		return references;
+	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
+		final DSSReference reference = new DSSReference();
+		reference.setId("r-id-" + referenceIndex);
+		final String fileURI = document.getName() != null ? document.getName() : "";
+		try {
+			reference.setUri(URLEncoder.encode(fileURI, "UTF-8"));
+		} catch (Exception e) {
+			logger.warn("Unable to encode uri '" + fileURI + "' : " + e.getMessage());
+			reference.setUri(fileURI);
+		}
+		reference.setContents(document);
+		reference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
+		return reference;
 	}
 
 	@Override

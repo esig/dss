@@ -22,9 +22,9 @@ import org.apache.fop.apps.MimeConstants;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 
+import eu.europa.esig.dss.DSSXmlErrorListener;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.DSSXmlErrorListener;
 
 @Component
 public class FOPService {
@@ -46,7 +46,7 @@ public class FOPService {
 		foUserAgent.setCreator("DSS Webapp");
 		foUserAgent.setAccessibility(true);
 
-		TransformerFactory transformerFactory = DSSXMLUtils.getSecureTransformerFactory();
+		TransformerFactory transformerFactory = DomUtils.getSecureTransformerFactory();
 
 		InputStream simpleIS = FOPService.class.getResourceAsStream("/xslt/pdf/simple-report.xslt");
 		templateSimpleReport = transformerFactory.newTemplates(new StreamSource(simpleIS));

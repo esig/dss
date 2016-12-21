@@ -8,6 +8,7 @@
 			<xs:sequence>
 				<xs:element name="DocumentName" type="xs:string" />
 				<xs:element name="ValidationDate" type="xs:dateTime" />
+				<xs:element name="ContainerInfo" type="ContainerInfo" minOccurs="0" />
 				<xs:element name="Signatures" minOccurs="0">
 					<xs:complexType>
 						<xs:sequence>
@@ -25,9 +26,49 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
+	
+	<xs:complexType name="ContainerInfo">
+		<xs:sequence>
+			<xs:element name="ContainerType" type="xs:string" minOccurs="0" />
+			<xs:element name="ZipComment" type="xs:string" minOccurs="0" />
+			<xs:element name="MimeTypeFilePresent" type="xs:boolean" minOccurs="0" />
+			<xs:element name="MimeTypeContent" type="xs:string" minOccurs="0" />
+			
+			<xs:element name="ManifestFiles" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ManifestFile" type="ManifestFile" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="ContentFiles" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ContentFile" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ManifestFile">
+		<xs:sequence>
+			<xs:element name="Filename" type="xs:string" minOccurs="0" />
+			<xs:element name="SignatureFilename" type="xs:string" minOccurs="0" />
+			<xs:element name="Entries" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Entry" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
 
 	<xs:complexType name="Signature">
 		<xs:sequence>
+			<xs:element name="SignatureFilename" type="xs:string" />
 			<xs:element name="ParentId" type="xs:string" minOccurs="0" />
 			<xs:element name="ErrorMessage" type="xs:string" minOccurs="0" />
 			<xs:element name="DateTime" type="xs:dateTime" minOccurs="0" />
@@ -343,8 +384,8 @@
 			<xs:element name="Available" type="xs:boolean" minOccurs="0" />
 			<xs:element name="Status" type="xs:boolean" />
 			<xs:element name="Reason" type="xs:string" minOccurs="0" />
-			<xs:element name="ProductionDate" type="xs:dateTime" />
-			<xs:element name="ThisUpdate" type="xs:dateTime" />
+			<xs:element name="ProductionDate" type="xs:dateTime" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
+			<xs:element name="ThisUpdate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="NextUpdate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="RevocationDate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="ExpiredCertsOnCRL" type="xs:dateTime" minOccurs="0" /> <!-- CRL -->
@@ -352,7 +393,7 @@
 
 			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValues" minOccurs="0" />
 			
-			<xs:element name="BasicSignature" type="BasicSignature" />
+			<xs:element name="BasicSignature" type="BasicSignature" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
 			<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
 

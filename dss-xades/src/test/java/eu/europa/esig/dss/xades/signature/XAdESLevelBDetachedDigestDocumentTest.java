@@ -37,7 +37,7 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.signature.AbstractTestSignature;
+import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
@@ -48,7 +48,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBDetachedDigestDocumentTest extends AbstractTestSignature {
+public class XAdESLevelBDetachedDigestDocumentTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -58,11 +58,13 @@ public class XAdESLevelBDetachedDigestDocumentTest extends AbstractTestSignature
 	@Before
 	public void init() throws Exception {
 		File file = new File("src/test/resources/sample.xml");
-		DigestDocument digestDocument = new DigestDocument(file);
 		FileInputStream fis = new FileInputStream(file);
 		byte[] bytes = Utils.toByteArray(fis);
 		Utils.closeQuietly(fis);
 		String computedDigest = Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, bytes));
+
+		DigestDocument digestDocument = new DigestDocument();
+		digestDocument.setName("sample.xml");
 		digestDocument.addDigest(DigestAlgorithm.SHA256, computedDigest);
 
 		documentToSign = digestDocument;

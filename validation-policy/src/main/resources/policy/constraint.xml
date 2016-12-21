@@ -3,6 +3,24 @@
 		Qualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes
 		signer's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).
 	</Description>
+	<ContainerConstraints>
+		<AcceptableContainerTypes Level="FAIL">
+			<Id>ASiC-S</Id>
+			<Id>ASiC-E</Id>
+		</AcceptableContainerTypes>
+<!-- 		<ZipCommentPresent Level="WARN" /> -->
+<!-- 		<AcceptableZipComment Level="WARN"> -->
+<!-- 			<Id>mimetype=application/vnd.etsi.asic-s+zip</Id> -->
+<!-- 			<Id>mimetype=application/vnd.etsi.asic-e+zip</Id> -->
+<!-- 		</AcceptableZipComment> -->
+		<MimeTypeFilePresent Level="FAIL" />
+		<AcceptableMimeTypeFileContent Level="WARN">
+			<Id>application/vnd.etsi.asic-s+zip</Id>
+			<Id>application/vnd.etsi.asic-e+zip</Id>
+		</AcceptableMimeTypeFileContent>
+		<ManifestFilePresent Level="FAIL" />
+		<AllFilesSigned Level="WARN" />
+	</ContainerConstraints>
 	<SignatureConstraints>
 		<AcceptablePolicies Level="FAIL">
 			<Id>ANY_POLICY</Id>

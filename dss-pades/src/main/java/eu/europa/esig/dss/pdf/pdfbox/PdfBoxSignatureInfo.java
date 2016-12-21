@@ -21,18 +21,17 @@
 package eu.europa.esig.dss.pdf.pdfbox;
 
 import java.io.IOException;
-import java.security.cert.X509Certificate;
+import java.util.Arrays;
 
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.bouncycastle.cms.CMSException;
 
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 class PdfBoxSignatureInfo extends PdfBoxCMSInfo implements PdfSignatureInfo {
 
@@ -56,22 +55,16 @@ class PdfBoxSignatureInfo extends PdfBoxCMSInfo implements PdfSignatureInfo {
 		try {
 			cades = new CAdESSignature(cms, validationCertPool);
 			content = cms;
-			final InMemoryDocument detachedContent = new InMemoryDocument(getSignedDocumentBytes());
-			cades.setDetachedContents(detachedContent);
+			final DSSDocument detachedContent = new InMemoryDocument(getSignedDocumentBytes());
+			cades.setDetachedContents(Arrays.asList(detachedContent));
 		} catch (CMSException e) {
 			throw new IOException(e);
 		}
 	}
 
 	@Override
-	protected SignatureCryptographicVerification checkIntegrityOnce() {
-		return cades.checkSignatureIntegrity();
-	}
-
-	@Override
-	public X509Certificate getSigningCertificate() {
-		CertificateToken signingCertificate = cades.getSigningCertificateToken();
-		return signingCertificate == null ? null : signingCertificate.getCertificate();
+	protected void checkIntegrityOnce() {
+		cades.checkSignatureIntegrity();
 	}
 
 	@Override

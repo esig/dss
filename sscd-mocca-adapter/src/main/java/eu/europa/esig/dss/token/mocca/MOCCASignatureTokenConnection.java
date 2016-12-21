@@ -31,7 +31,7 @@ import javax.smartcardio.Card;
 import javax.smartcardio.CardTerminal;
 
 import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.DERInteger;
+import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.DERSequence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,11 +69,16 @@ public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
 	 * SignatureAlgorithm property of the key after the connection has been opened (you can get the SignatureAlgorithm
 	 * name from the key)
 	 *
-	 * @param callback provides the PIN
+	 * @param callback
+	 *            provides the PIN
 	 */
 	public MOCCASignatureTokenConnection(PasswordInputCallback callback) {
 
 		this.callback = new PINGUIAdapter(callback);
+	}
+
+	public void set_signatureCards(List<SignatureCard> _signatureCards) {
+		this._signatureCards = _signatureCards;
 	}
 
 	@Override
@@ -221,8 +226,8 @@ public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
 
 		final ASN1EncodableVector v = new ASN1EncodableVector();
 
-		v.add(new DERInteger(r));
-		v.add(new DERInteger(s));
+		v.add(new ASN1Integer(r));
+		v.add(new ASN1Integer(s));
 
 		return DSSASN1Utils.getDEREncoded(new DERSequence(v));
 	}

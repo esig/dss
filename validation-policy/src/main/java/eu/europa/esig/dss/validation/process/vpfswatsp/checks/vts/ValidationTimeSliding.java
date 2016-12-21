@@ -233,7 +233,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 			}
 		}
 
-		return certNotBefore.before(thisUpdate) && (certNotAfter.compareTo(notAfterRevoc) >= 0);
+		return thisUpdate != null && certNotBefore.before(thisUpdate) && (certNotAfter.compareTo(notAfterRevoc) >= 0);
 	}
 
 	private boolean isIssuanceBeforeControlTime(RevocationWrapper revocationData) {

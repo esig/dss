@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.cades.signature;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
@@ -31,7 +32,7 @@ public class CAdESDoubleSignatureTest {
 
 	@Test
 	public void test() throws Exception {
-		DSSDocument documentToSign = new InMemoryDocument("Hello Wolrd !".getBytes(), "test.text");
+		DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
 		CertificateService certificateService = new CertificateService();
 		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
@@ -69,8 +70,9 @@ public class CAdESDoubleSignatureTest {
 
 		Reports reports = validator.validateDocument();
 
-		// reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		assertEquals(2, diagnosticData.getSignatureIdList().size());
 
 		for (String id : diagnosticData.getSignatureIdList()) {
 			assertTrue(diagnosticData.isBLevelTechnicallyValid(id));

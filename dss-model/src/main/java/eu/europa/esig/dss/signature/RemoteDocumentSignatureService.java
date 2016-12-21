@@ -29,17 +29,20 @@ import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 
 /**
- * This interface {@code DocumentSignatureService} provides operations for the signature creation and for its extension.
- *
+ * This interface {@code RemoteDocumentSignatureService} provides operations for the signature creation and for its
+ * extension.
  *
  */
 public interface RemoteDocumentSignatureService<DOC, SP extends AbstractSerializableSignatureParameters> extends Serializable {
 
 	/**
-	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocument} and {@code parameters}. (Added in version 4) When
-	 * {@code toSignDocument} contains an already existing signature the returned bytes are related to a new parallel signature.
+	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocument} and {@code parameters}
+	 * .
+	 * When {@code toSignDocument} contains an already existing signature the returned bytes are related to a new
+	 * parallel signature.
 	 *
-	 * - Enveloped signature (XML): a new signature is added and the signed data corresponds to that pointed by the first signature;
+	 * - Enveloped signature (XML): a new signature is added and the signed data corresponds to that pointed by the
+	 * first signature;
 	 *
 	 * - Enveloping signature:
 	 *

@@ -77,7 +77,8 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	public RevocationWrapper getLatestRevocationData() {
 		RevocationWrapper latest = null;
 		for (RevocationWrapper revoc : getRevocationData()) {
-			if (latest == null || (revoc.getProductionDate() != null && revoc.getProductionDate().after(latest.getProductionDate()))) {
+			if (latest == null || (latest.getProductionDate() != null && revoc != null && revoc.getProductionDate() != null
+					&& revoc.getProductionDate().after(latest.getProductionDate()))) {
 				latest = revoc;
 			}
 		}

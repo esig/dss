@@ -29,6 +29,7 @@ import java.util.Set;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
@@ -661,6 +662,46 @@ public class DiagnosticData {
 
 	public eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData getJaxbModel() {
 		return diagnosticData;
+	}
+
+	public boolean isContainerInfoPresent() {
+		return diagnosticData.getContainerInfo() != null;
+	}
+
+	public String getContainerType() {
+		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+		if (containerInfo != null) {
+			return containerInfo.getContainerType();
+		}
+		return null;
+	}
+
+	public String getZipComment() {
+		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+		if (containerInfo != null) {
+			return containerInfo.getZipComment();
+		}
+		return null;
+	}
+
+	public boolean isMimetypeFilePresent() {
+		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+		if (containerInfo != null) {
+			return containerInfo.isMimeTypeFilePresent();
+		}
+		return false;
+	}
+
+	public String getMimetypeFileContent() {
+		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+		if (containerInfo != null) {
+			return containerInfo.getMimeTypeContent();
+		}
+		return null;
+	}
+
+	public XmlContainerInfo getContainerInfo() {
+		return diagnosticData.getContainerInfo();
 	}
 
 }

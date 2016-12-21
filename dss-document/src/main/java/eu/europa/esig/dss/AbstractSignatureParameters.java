@@ -36,9 +36,9 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	private String deterministicId;
 
 	/**
-	 * The document to be signed
+	 * The documents to be signed
 	 */
-	private DSSDocument detachedContent;
+	private List<DSSDocument> detachedContents;
 
 	/**
 	 * This field contains the signing certificate.
@@ -56,7 +56,8 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	private List<TimestampToken> contentTimestamps;
 
 	/**
-	 * Returns the list of the {@code TimestampToken} to be incorporated within the signature and representing the content-timestamp.
+	 * Returns the list of the {@code TimestampToken} to be incorporated within the signature and representing the
+	 * content-timestamp.
 	 *
 	 * @return {@code List} of {@code TimestampToken}
 	 */
@@ -69,7 +70,8 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	}
 
 	/**
-	 * The ID of xades:SignedProperties is contained in the signed content of the xades Signature. We must create this ID in a deterministic way.
+	 * The ID of xades:SignedProperties is contained in the signed content of the xades Signature. We must create this
+	 * ID in a deterministic way.
 	 *
 	 * @return
 	 */
@@ -83,23 +85,26 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	}
 
 	/**
-	 * This method returns the document to sign. In the case of the DETACHED signature this is the detached document.
+	 * This method returns the documents to sign. In the case of the DETACHED signature this is the detached document.
 	 *
 	 * @return
 	 */
-	public DSSDocument getDetachedContent() {
-		return detachedContent;
+	public List<DSSDocument> getDetachedContents() {
+		return detachedContents;
 	}
 
 	/**
-	 * When signing this method is internally invoked by the {@code AbstractSignatureService} and the related variable {@code detachedContent} is overwritten by the service
-	 * parameter. In the case of the DETACHED signature this is the detached document. In the case of ASiC-S this is the document to be signed.<p />
+	 * When signing this method is internally invoked by the {@code AbstractSignatureService} and the related variable
+	 * {@code detachedContent} is overwritten by the service
+	 * parameter. In the case of the DETACHED signature this is the detached document. In the case of ASiC-S this is the
+	 * document to be signed.
+	 * <p />
 	 * When extending this method must be invoked to indicate the {@code detachedContent}.
 	 *
 	 * @param detachedContent
 	 */
-	public void setDetachedContent(final DSSDocument detachedContent) {
-		this.detachedContent = detachedContent;
+	public void setDetachedContents(final List<DSSDocument> detachedContents) {
+		this.detachedContents = detachedContents;
 	}
 
 	/**
@@ -112,7 +117,8 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	}
 
 	/**
-	 * Set the signing certificate. If this certificate is not a part of the certificate chain then it's added as the first one of the chain.
+	 * Set the signing certificate. If this certificate is not a part of the certificate chain then it's added as the
+	 * first one of the chain.
 	 *
 	 * @param signingCertificate
 	 *            the value
@@ -150,7 +156,8 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	}
 
 	/**
-	 * This method sets the list of certificates which constitute the chain. If the certificate is already present in the array then it is ignored.
+	 * This method sets the list of certificates which constitute the chain. If the certificate is already present in
+	 * the array then it is ignored.
 	 *
 	 * @param certificateChainArray
 	 *            the array containing all certificates composing the chain

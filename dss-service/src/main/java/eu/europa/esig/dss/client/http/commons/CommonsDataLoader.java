@@ -432,7 +432,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		try {
 			return DSSUtils.toByteArray(new URL(urlString).openStream());
 		} catch (IOException e) {
-			LOG.warn("An IO error occured while reading url "+urlString, e);
+			LOG.warn("An IO error occured while reading url " + urlString, e);
 		}
 		return null;
 	}
@@ -446,7 +446,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	 * @param urlString
 	 * @return
 	 */
-	private byte[] ldapGet(final String urlString) {
+	protected byte[] ldapGet(final String urlString) {
 
 		final Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");

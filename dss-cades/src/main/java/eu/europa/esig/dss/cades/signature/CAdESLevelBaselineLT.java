@@ -80,7 +80,7 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 
 		// add a LT level or replace an existing LT level
 		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
-		cadesSignature.setDetachedContents(parameters.getDetachedContent());
+		cadesSignature.setDetachedContents(parameters.getDetachedContents());
 		if (!cadesSignature.isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_T)) {
 			signerInformation = cadesProfileT.extendCMSSignature(cmsSignedData, signerInformation, parameters);
 		}
@@ -91,7 +91,7 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 	@Override
 	protected CMSSignedData postExtendCMSSignedData(CMSSignedData cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters) {
 		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
-		cadesSignature.setDetachedContents(parameters.getDetachedContent());
+		cadesSignature.setDetachedContents(parameters.getDetachedContents());
 		final ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
 
 		Store<X509CertificateHolder> certificatesStore = cmsSignedData.getCertificates();

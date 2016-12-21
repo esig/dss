@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.cades.validation;
 
 import java.util.Date;
+import java.util.List;
 
 import org.bouncycastle.util.encoders.Base64;
 import org.junit.Assert;
@@ -54,9 +55,11 @@ public class GetOriginalDocumentTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		DSSDocument removeResult = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
+		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
+		Assert.assertEquals(1, results.size());
+
 		String firstDocument = new String(Utils.toByteArray(document.openStream()));
-		String secondDocument = new String(Utils.toByteArray(removeResult.openStream()));
+		String secondDocument = new String(Utils.toByteArray(results.get(0).openStream()));
 		Assert.assertEquals(firstDocument, secondDocument);
 	}
 
@@ -85,9 +88,11 @@ public class GetOriginalDocumentTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		DSSDocument removeResult = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
+		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
+		Assert.assertEquals(1, results.size());
+
 		String firstDocument = new String(HELLO_WORLD.getBytes());
-		String secondDocument = new String(Utils.toByteArray(removeResult.openStream()));
+		String secondDocument = new String(Utils.toByteArray(results.get(0).openStream()));
 		Assert.assertEquals(firstDocument, secondDocument);
 	}
 
@@ -116,6 +121,6 @@ public class GetOriginalDocumentTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		DSSDocument removeResult = validator.getOriginalDocument(reports.getDiagnosticData().getFirstSignatureId());
+		validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
 	}
 }

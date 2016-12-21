@@ -36,10 +36,6 @@ public class DataController {
 				packagings.add(SignaturePackaging.ENVELOPING);
 				packagings.add(SignaturePackaging.DETACHED);
 				break;
-			case ASiC_S:
-			case ASiC_E:
-				packagings.add(SignaturePackaging.DETACHED);
-				break;
 			default:
 				break;
 			}
@@ -76,22 +72,6 @@ public class DataController {
 				levels.add(SignatureLevel.XAdES_BASELINE_T);
 				levels.add(SignatureLevel.XAdES_BASELINE_LT);
 				levels.add(SignatureLevel.XAdES_BASELINE_LTA);
-				break;
-			case ASiC_S:
-				if (Utils.isTrue(isSign)) {
-					levels.add(SignatureLevel.ASiC_S_BASELINE_B);
-				}
-				levels.add(SignatureLevel.ASiC_S_BASELINE_T);
-				levels.add(SignatureLevel.ASiC_S_BASELINE_LT);
-				levels.add(SignatureLevel.ASiC_S_BASELINE_LTA);
-				break;
-			case ASiC_E:
-				if (Utils.isTrue(isSign)) {
-					levels.add(SignatureLevel.ASiC_E_BASELINE_B);
-				}
-				levels.add(SignatureLevel.ASiC_E_BASELINE_T);
-				levels.add(SignatureLevel.ASiC_E_BASELINE_LT);
-				levels.add(SignatureLevel.ASiC_E_BASELINE_LTA);
 				break;
 			default:
 				break;

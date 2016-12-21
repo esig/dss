@@ -23,27 +23,15 @@ package eu.europa.esig.dss.client;
 import java.math.BigInteger;
 
 /**
- * This class implements a dedicated nonce source.
- *
+ * Interface which allows to produce Nonce value.
+ * 
  */
-public class NonceSource {
+public interface NonceSource {
 
-	private BigInteger nonce;
-
-	public NonceSource() {
-		this. nonce = BigInteger.valueOf(System.currentTimeMillis());
-	}
-
-	public NonceSource(BigInteger nonce) {
-		this.nonce = nonce;
-	}
-
-	public BigInteger getNonce() {
-		return nonce;
-	}
-
-	public void setNonce(BigInteger nonce) {
-		this.nonce = nonce;
-	}
+	/**
+	 * This methods allows to retrieve an unique new value to be use as nonce
+	 * 
+	 */
+	BigInteger getNonce();
 
 }

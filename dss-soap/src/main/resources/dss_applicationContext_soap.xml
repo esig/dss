@@ -15,8 +15,20 @@
     <bean id="soapSignatureService" class="eu.europa.esig.dss.signature.SoapDocumentSignatureServiceImpl">
     	<property name="service" ref="remoteSignatureService" />
     </bean>
+    <bean id="soapMultiDocumentsSignatureService" class="eu.europa.esig.dss.signature.SoapMultipleDocumentsSignatureServiceImpl">
+    	<property name="service" ref="remoteMultipleDocumentsSignatureService" />
+    </bean>
 
-	<jaxws:endpoint id="jaxwsSignatureService" implementor="#soapSignatureService" address="/SignatureService">
+	<jaxws:endpoint id="jaxwsSignatureService" implementor="#soapSignatureService" address="/soap/signature/one-document">
+		<jaxws:features>
+			<cxf:logging />
+		</jaxws:features>
+		<jaxws:properties>
+	      <entry key="mtom-enabled" value="true"/>
+	    </jaxws:properties>
+	</jaxws:endpoint>
+	
+	<jaxws:endpoint id="jaxwsMultipleDocumentsSignatureService" implementor="#soapMultiDocumentsSignatureService" address="/soap/signature/multiple-documents">
 		<jaxws:features>
 			<cxf:logging />
 		</jaxws:features>
@@ -25,12 +37,4 @@
 	    </jaxws:properties>
 	</jaxws:endpoint>
 
-    <!-- VALIDATION SERVICE 
-    <bean id="dss.validation.validationService" class="eu.europa.esig.dss.ws.impl.ValidationServiceImpl">
-        <property name="certificateVerifier" ref="certificateVerifier"/>
-    </bean>
-
-    <jaxws:endpoint id="validationService" implementor="#dss.validation.validationService" address="/validationService" />
-
--->
 </beans>

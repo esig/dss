@@ -12,6 +12,8 @@
     
     <jsp:include page="fields/originalFileField.jsp" />
     
+	<jsp:include page="fields/containerTypeField.jsp" />
+    
     <jsp:include page="fields/signatureForm.jsp" />
     
     <jsp:include page="fields/signatureLevel.jsp" />

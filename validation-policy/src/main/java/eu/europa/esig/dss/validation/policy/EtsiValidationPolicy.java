@@ -33,6 +33,7 @@ import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
 import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;
 import eu.europa.esig.jaxb.policy.CertificateConstraints;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
+import eu.europa.esig.jaxb.policy.ContainerConstraints;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
@@ -719,6 +720,69 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		default:
 			logger.warn("Unsupported context " + context);
 			break;
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getAcceptedContainerTypesConstraint() {
+		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		if (containerConstraints != null) {
+			return containerConstraints.getAcceptableContainerTypes();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getZipCommentPresentConstraint() {
+		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		if (containerConstraints != null) {
+			return containerConstraints.getZipCommentPresent();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getAcceptedZipCommentsConstraint() {
+		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		if (containerConstraints != null) {
+			return containerConstraints.getAcceptableZipComment();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getMimeTypeFilePresentConstraint() {
+		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		if (containerConstraints != null) {
+			return containerConstraints.getMimeTypeFilePresent();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getAcceptedMimeTypeContentsConstraint() {
+		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		if (containerConstraints != null) {
+			return containerConstraints.getAcceptableMimeTypeFileContent();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getAllFilesSignedConstraint() {
+		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		if (containerConstraints != null) {
+			return containerConstraints.getAllFilesSigned();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getManifestFilePresentConstraint() {
+		ContainerConstraints containerConstraints = policy.getContainerConstraints();
+		if (containerConstraints != null) {
+			return containerConstraints.getManifestFilePresent();
 		}
 		return null;
 	}

@@ -5,8 +5,16 @@
 		<property name="cadesService" ref="cadesService" />
 		<property name="xadesService" ref="xadesService" />
 		<property name="padesService" ref="padesService" />
-		<property name="asicService" ref="asicService" />
+		<property name="asicWithCAdESService" ref="asicWithCadesService" />
+		<property name="asicWithXAdESService" ref="asicWithXadesService" />
 	</bean>
+	
+	<bean id="remoteMultipleDocumentsSignatureService" class="eu.europa.esig.dss.signature.RemoteMultipleDocumentsSignatureServiceImpl">
+		<property name="xadesService" ref="xadesService" />
+		<property name="asicWithCAdESService" ref="asicWithCadesService" />
+		<property name="asicWithXAdESService" ref="asicWithXadesService" />
+	</bean>
+	
 	<bean id="remoteValidationService" class="eu.europa.esig.dss.validation.RemoteDocumentValidationService">
 		<property name="verifier" ref="certificateVerifier" />
 	</bean>

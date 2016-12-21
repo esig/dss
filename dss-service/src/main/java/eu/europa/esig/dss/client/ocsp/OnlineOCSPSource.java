@@ -25,6 +25,8 @@ import java.math.BigInteger;
 import java.security.Security;
 
 import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1OctetString;
+import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERTaggedObject;
@@ -129,7 +131,12 @@ public class OnlineOCSPSource implements OCSPSource {
 			final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
 			ocspToken.setCertId(certId);
 
-			final byte[] content = buildOCSPRequest(certId);
+			BigInteger nonce = null;
+			if (nonceSource != null) {
+				nonce = nonceSource.getNonce();
+			}
+
+			final byte[] content = buildOCSPRequest(certId, nonce);
 
 			final byte[] ocspRespBytes = dataLoader.post(ocspAccessLocation, content);
 			if (Utils.isArrayEmpty(ocspRespBytes)) {
@@ -147,7 +154,7 @@ public class OnlineOCSPSource implements OCSPSource {
 
 				if (nonceSource != null) {
 					ocspToken.setUseNonce(true);
-					ocspToken.setNonceMatch(isNonceMatch(basicOCSPResp));
+					ocspToken.setNonceMatch(isNonceMatch(basicOCSPResp, nonce));
 				}
 			}
 			return ocspToken;
@@ -158,7 +165,7 @@ public class OnlineOCSPSource implements OCSPSource {
 		}
 	}
 
-	private byte[] buildOCSPRequest(final CertificateID certId) throws DSSException {
+	private byte[] buildOCSPRequest(final CertificateID certId, BigInteger nonce) throws DSSException {
 		try {
 			final OCSPReqBuilder ocspReqBuilder = new OCSPReqBuilder();
 			ocspReqBuilder.addRequest(certId);
@@ -166,8 +173,9 @@ public class OnlineOCSPSource implements OCSPSource {
 			 * The nonce extension is used to bind a request to a response to prevent replay attacks.
 			 * RFC 6960 (OCSP) section 4.1.2 such extensions SHOULD NOT be flagged as critical
 			 */
-			if (nonceSource != null) {
-				Extension extension = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, false, new DEROctetString(nonceSource.getNonce().toByteArray()));
+			if (nonce != null) {
+				DEROctetString encodedNonceValue = new DEROctetString(new DEROctetString(nonce.toByteArray()).getEncoded());
+				Extension extension = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, false, encodedNonceValue);
 				Extensions extensions = new Extensions(extension);
 				ocspReqBuilder.setRequestExtensions(extensions);
 			}
@@ -181,11 +189,23 @@ public class OnlineOCSPSource implements OCSPSource {
 		}
 	}
 
-	private boolean isNonceMatch(final BasicOCSPResp basicOCSPResp) {
+	private boolean isNonceMatch(final BasicOCSPResp basicOCSPResp, BigInteger expectedNonceValue) {
 		Extension extension = basicOCSPResp.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
-		DEROctetString derReceivedNonce = (DEROctetString) extension.getExtnValue();
-		BigInteger receivedNonce = new BigInteger(derReceivedNonce.getOctets());
-		return receivedNonce.equals(nonceSource.getNonce());
+		ASN1OctetString extnValue = extension.getExtnValue();
+		ASN1Primitive value;
+		try {
+			value = ASN1Primitive.fromByteArray(extnValue.getOctets());
+		} catch (IOException ex) {
+			logger.warn("Invalid encoding of nonce extension value in OCSP response", ex);
+			return false;
+		}
+		if (value instanceof DEROctetString) {
+			BigInteger receivedNonce = new BigInteger(((DEROctetString) value).getOctets());
+			return expectedNonceValue.equals(receivedNonce);
+		} else {
+			logger.warn("Nonce extension value in OCSP response is not an OCTET STRING");
+			return false;
+		}
 	}
 
 	/**

@@ -5,9 +5,12 @@ import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.cv.checks.AllFilesSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataExistenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
@@ -17,14 +20,16 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
  */
 public class CryptographicVerification extends Chain<XmlCV> {
 
+	private final DiagnosticData diagnosticData;
 	private final TokenProxy token;
 
 	private final ValidationPolicy validationPolicy;
 	private final Context context;
 
-	public CryptographicVerification(TokenProxy token, Context context, ValidationPolicy validationPolicy) {
+	public CryptographicVerification(DiagnosticData diagnosticData, TokenProxy token, Context context, ValidationPolicy validationPolicy) {
 		super(new XmlCV());
 
+		this.diagnosticData = diagnosticData;
 		this.token = token;
 		this.context = context;
 		this.validationPolicy = validationPolicy;
@@ -64,6 +69,11 @@ public class CryptographicVerification extends Chain<XmlCV> {
 		 * SIG_CRYPTO_FAILURE.
 		 */
 		item = item.setNextItem(signatureIntact());
+
+		/* ASiC Container */
+		if (diagnosticData.isContainerInfoPresent() && Context.SIGNATURE == context) {
+			item = item.setNextItem(allFilesSignedCheck());
+		}
 	}
 
 	private ChainItem<XmlCV> referenceDataFound() {
@@ -79,6 +89,11 @@ public class CryptographicVerification extends Chain<XmlCV> {
 	private ChainItem<XmlCV> signatureIntact() {
 		LevelConstraint constraint = validationPolicy.getSignatureIntactConstraint(context);
 		return new SignatureIntactCheck(result, token, constraint);
+	}
+
+	private ChainItem<XmlCV> allFilesSignedCheck() {
+		LevelConstraint constraint = validationPolicy.getAllFilesSignedConstraint();
+		return new AllFilesSignedCheck(result, (SignatureWrapper) token, diagnosticData.getContainerInfo(), constraint);
 	}
 
 }

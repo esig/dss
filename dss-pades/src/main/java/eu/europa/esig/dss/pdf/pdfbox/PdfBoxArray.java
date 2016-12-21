@@ -67,7 +67,7 @@ class PdfBoxArray implements PdfArray {
 		if (cosStream == null) {
 			throw new RuntimeException("Cannot find value for " + val + " of class " + val.getClass());
 		}
-		final byte[] bytes = DSSUtils.toByteArray(cosStream.getUnfilteredStream());
+		final byte[] bytes = DSSUtils.toByteArray(cosStream.createInputStream());
 		return bytes;
 	}
 

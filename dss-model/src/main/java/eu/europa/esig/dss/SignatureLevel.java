@@ -30,11 +30,7 @@ public enum SignatureLevel {
 
 	CMS_NOT_ETSI, CAdES_BASELINE_LTA, CAdES_BASELINE_LT, CAdES_BASELINE_T, CAdES_BASELINE_B, CAdES_101733_C, CAdES_101733_X, CAdES_101733_A,
 
-	PDF_NOT_ETSI, PAdES_BASELINE_LTA, PAdES_BASELINE_LT, PAdES_BASELINE_T, PAdES_BASELINE_B,
-
-	ASiC_S_BASELINE_LTA, ASiC_S_BASELINE_LT, ASiC_S_BASELINE_T, ASiC_S_BASELINE_B,
-
-	ASiC_E_BASELINE_LTA, ASiC_E_BASELINE_LT, ASiC_E_BASELINE_T, ASiC_E_BASELINE_B;
+	PDF_NOT_ETSI, PAdES_BASELINE_LTA, PAdES_BASELINE_LT, PAdES_BASELINE_T, PAdES_BASELINE_B;
 
 	/**
 	 * Returns the SignatureLevel based on the name (String)
@@ -57,43 +53,33 @@ public enum SignatureLevel {
 	public SignatureForm getSignatureForm() {
 
 		switch (this) {
-			case XML_NOT_ETSI:
-			case XAdES_C:
-			case XAdES_X:
-			case XAdES_XL:
-			case XAdES_A:
-			case XAdES_BASELINE_LTA:
-			case XAdES_BASELINE_LT:
-			case XAdES_BASELINE_T:
-			case XAdES_BASELINE_B:
-				return SignatureForm.XAdES;
-			case CMS_NOT_ETSI:
-			case CAdES_BASELINE_LTA:
-			case CAdES_BASELINE_LT:
-			case CAdES_BASELINE_T:
-			case CAdES_BASELINE_B:
-			case CAdES_101733_A:
-			case CAdES_101733_C:
-			case CAdES_101733_X:
-				return SignatureForm.CAdES;
-			case PDF_NOT_ETSI:
-			case PAdES_BASELINE_B:
-			case PAdES_BASELINE_T:
-			case PAdES_BASELINE_LT:
-			case PAdES_BASELINE_LTA:
-				return SignatureForm.PAdES;
-			case ASiC_S_BASELINE_B:
-			case ASiC_S_BASELINE_T:
-			case ASiC_S_BASELINE_LT:
-			case ASiC_S_BASELINE_LTA:
-				return SignatureForm.ASiC_S;
-			case ASiC_E_BASELINE_B:
-			case ASiC_E_BASELINE_T:
-			case ASiC_E_BASELINE_LT:
-			case ASiC_E_BASELINE_LTA:
-				return SignatureForm.ASiC_E;
-			default:
-				return null;
+		case XML_NOT_ETSI:
+		case XAdES_C:
+		case XAdES_X:
+		case XAdES_XL:
+		case XAdES_A:
+		case XAdES_BASELINE_LTA:
+		case XAdES_BASELINE_LT:
+		case XAdES_BASELINE_T:
+		case XAdES_BASELINE_B:
+			return SignatureForm.XAdES;
+		case CMS_NOT_ETSI:
+		case CAdES_BASELINE_LTA:
+		case CAdES_BASELINE_LT:
+		case CAdES_BASELINE_T:
+		case CAdES_BASELINE_B:
+		case CAdES_101733_A:
+		case CAdES_101733_C:
+		case CAdES_101733_X:
+			return SignatureForm.CAdES;
+		case PDF_NOT_ETSI:
+		case PAdES_BASELINE_B:
+		case PAdES_BASELINE_T:
+		case PAdES_BASELINE_LT:
+		case PAdES_BASELINE_LTA:
+			return SignatureForm.PAdES;
+		default:
+			return null;
 		}
 	}
 }

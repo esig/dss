@@ -13,10 +13,10 @@
     <li>XAdES enveloped signature can be used to sign an XML file.</li>
     <li>PDF files can be signed with an enveloped PAdES signature.</li>
     <li>CAdES enveloping or detached signatures can be used to sign any arbitrary files.</li>
-    <li>ASiC-S signature can be used to sign any type of files.</li>
+    <li>ASiC-S or ASiC-E containers can be used to sign at least one document.</li>
     <li>The multiple parallel signatures can be created.</li>
     <li>A user can use PKCS#11-compliant SSCD, MS-CAPI, MOCCA and PKCS#12 to sign.</li>
-    <li>Any kind of signature: CAdES, PAdES, XAdES or ASiC-S can be validated.</li>
+    <li>Any kind of signature: CAdES, PAdES, XAdES, ASiC-S or ASiC-E can be validated.</li>
     <li>A validation policy can be applied.</li>
     <li>Two validation reports are available: Simple and Detailed.</li>
     <li>The Diagnostic Data representing each static information used during the validation process is available.</li>

@@ -34,12 +34,14 @@ import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.FullSignatureScope;
 import eu.europa.esig.dss.validation.SignatureScope;
 import eu.europa.esig.dss.validation.SignatureScopeFinder;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.XAdESNamespaces;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
@@ -83,11 +85,11 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 		final List<Element> signatureReferences = xadesSignature.getSignatureReferences();
 		for (final Element signatureReference : signatureReferences) {
 
-			final String type = DSSXMLUtils.getValue(signatureReference, "@Type");
+			final String type = DomUtils.getValue(signatureReference, "@Type");
 			if (xadesSignature.getXPathQueryHolder().XADES_SIGNED_PROPERTIES.equals(type)) {
 				continue;
 			}
-			final String uri = DSSXMLUtils.getValue(signatureReference, "@URI");
+			final String uri = DomUtils.getValue(signatureReference, "@URI");
 			final List<String> transformations = getTransformationNames(signatureReference);
 			if (Utils.isStringBlank(uri)) {
 				// self contained document
@@ -104,14 +106,14 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 				}
 				final String xmlIdOfSignedElement = uri.substring(1);
 				final String xPathString = XPathQueryHolder.XPATH_OBJECT + "[@Id='" + xmlIdOfSignedElement + "']";
-				Element signedElement = DSSXMLUtils.getElement(xadesSignature.getSignatureElement(), xPathString);
+				Element signedElement = DomUtils.getElement(xadesSignature.getSignatureElement(), xPathString);
 				if (signedElement != null) {
 					if (unsignedObjects.remove(signedElement)) {
 						signedObjects.add(signedElement);
 						result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations));
 					}
 				} else {
-					signedElement = DSSXMLUtils.getElement(xadesSignature.getSignatureElement().getOwnerDocument().getDocumentElement(),
+					signedElement = DomUtils.getElement(xadesSignature.getSignatureElement().getOwnerDocument().getDocumentElement(),
 							"//*" + "[@Id='" + xmlIdOfSignedElement + "']");
 					if (signedElement != null) {
 
@@ -124,7 +126,7 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 				}
 			} else {
 				// detached file
-				result.add(new FullSignatureScope(uri));
+				result.add(new FullSignatureScope(DSSUtils.decodeUrl(uri)));
 			}
 		}
 		return result;
@@ -132,12 +134,12 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 
 	private List<String> getTransformationNames(final Element signatureReference) {
 
-		final NodeList nodeList = DSSXMLUtils.getNodeList(signatureReference, "./ds:Transforms/ds:Transform");
+		final NodeList nodeList = DomUtils.getNodeList(signatureReference, "./ds:Transforms/ds:Transform");
 		final List<String> algorithms = new ArrayList<String>(nodeList.getLength());
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 
 			final Element transformation = (Element) nodeList.item(ii);
-			final String algorithm = DSSXMLUtils.getValue(transformation, "@Algorithm");
+			final String algorithm = DomUtils.getValue(transformation, "@Algorithm");
 			if (transformationToIgnore.contains(algorithm)) {
 				continue;
 			}

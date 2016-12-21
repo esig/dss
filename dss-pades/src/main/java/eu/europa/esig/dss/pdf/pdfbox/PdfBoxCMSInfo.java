@@ -35,7 +35,6 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 
 abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 
@@ -56,7 +55,6 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	private final byte[] signedBytes;
 
 	private boolean verified;
-	private SignatureCryptographicVerification verifyResult;
 	private String uniqueId;
 
 	private Set<PdfSignatureOrDocTimestampInfo> outerSignatures = new HashSet<PdfSignatureOrDocTimestampInfo>();
@@ -85,16 +83,15 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	}
 
 	@Override
-	public SignatureCryptographicVerification checkIntegrity() {
+	public void checkIntegrity() {
 		if (!verified) {
-			verifyResult = checkIntegrityOnce();
-			LOG.debug("Verify embedded CAdES Signature on signedBytes size {}. Signature intact: {}", signedBytes.length, verifyResult);
+			checkIntegrityOnce();
+			LOG.debug("Verify embedded CAdES Signature on signedBytes size {}.", signedBytes.length);
 			verified = true;
 		}
-		return verifyResult;
 	}
 
-	protected abstract SignatureCryptographicVerification checkIntegrityOnce();
+	protected abstract void checkIntegrityOnce();
 
 	/**
 	 * @return the byte of the originally signed document

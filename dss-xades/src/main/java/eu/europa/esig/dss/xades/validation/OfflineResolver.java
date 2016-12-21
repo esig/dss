@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.xades.validation;
 
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.List;
 
 import org.apache.xml.security.Init;
@@ -36,6 +34,9 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -48,15 +49,15 @@ public class OfflineResolver extends ResourceResolverSpi {
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineResolver.class);
 
 	private final List<DSSDocument> documents;
+	private final DigestAlgorithm digestAlgorithm;
 
 	static {
-
 		Init.init();
 	}
 
-	public OfflineResolver(final List<DSSDocument> documents) {
-
+	public OfflineResolver(final List<DSSDocument> documents, DigestAlgorithm digestAlgorithm) {
 		this.documents = documents;
+		this.digestAlgorithm = digestAlgorithm;
 	}
 
 	@Override
@@ -64,13 +65,13 @@ public class OfflineResolver extends ResourceResolverSpi {
 		final Attr uriAttr = context.attr;
 		if (uriAttr != null) {
 			String documentUri = uriAttr.getNodeValue();
-			documentUri = decodeUrl(documentUri);
+			documentUri = DSSUtils.decodeUrl(documentUri);
 			if ("".equals(documentUri) || documentUri.startsWith("#")) {
 				return false;
 			}
 			try {
 				if (isKnown(documentUri) != null) {
-					LOG.debug("I state that I can resolve '" + documentUri+"' (external document)");
+					LOG.debug("I state that I can resolve '" + documentUri + "' (external document)");
 					return true;
 				}
 				final String baseUriString = context.baseUri;
@@ -104,15 +105,17 @@ public class OfflineResolver extends ResourceResolverSpi {
 		} else if (uriAttr != null) {
 			documentUri = uriAttr.getNodeValue();
 		}
-		documentUri = decodeUrl(documentUri);
+		documentUri = DSSUtils.decodeUrl(documentUri);
 		final DSSDocument document = getDocument(documentUri);
-		if (document != null) {
+		if (document instanceof DigestDocument) {
 
-			// The input stream is closed automatically by XMLSignatureInput class
+			DigestDocument digestDoc = (DigestDocument) document;
+			XMLSignatureInput result = new XMLSignatureInput(digestDoc.getDigest(digestAlgorithm));
+			result.setSourceURI(documentUri);
+			return result;
 
-			// TODO-Bob (05/09/2014): There is an error concerning the input streams base64 encoded. Some extra bytes
-			// are added within the santuario which breaks the HASH.
-			// TODO-Vin (05/09/2014): Can you create an isolated test-case JIRA DSS-?
+		} else if (document != null) {
+
 			InputStream inputStream = document.openStream();
 			final XMLSignatureInput result = new XMLSignatureInput(inputStream);
 			result.setSourceURI(documentUri);
@@ -128,20 +131,9 @@ public class OfflineResolver extends ResourceResolverSpi {
 	}
 
 	private DSSDocument isKnown(final String documentUri) {
-
 		for (final DSSDocument dssDocument : documents) {
-
 			if (isRightDocument(documentUri, dssDocument)) {
-
 				return dssDocument;
-			}
-			DSSDocument nextDssDocument = dssDocument.getNextDocument();
-			while (nextDssDocument != null) {
-
-				if (isRightDocument(documentUri, nextDssDocument)) {
-					return nextDssDocument;
-				}
-				nextDssDocument = nextDssDocument.getNextDocument();
 			}
 		}
 		return null;
@@ -185,12 +177,4 @@ public class OfflineResolver extends ResourceResolverSpi {
 		return documents != null && documents.size() == 1;
 	}
 
-	private String decodeUrl(String documentUri) {
-		try {
-			return URLDecoder.decode(documentUri, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			LOG.error("Unable to decode '" + documentUri + "' : " + e.getMessage(), e);
-		}
-		return documentUri;
-	}
 }

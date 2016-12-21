@@ -15,10 +15,15 @@
     <bean id="restSignatureService" class="eu.europa.esig.dss.signature.RestDocumentSignatureServiceImpl">
     	<property name="service" ref="remoteSignatureService" />
     </bean>
+    
+    <bean id="restMultipleDocumentsSignatureService" class="eu.europa.esig.dss.signature.RestMultipleDocumentSignatureServiceImpl">
+    	<property name="service" ref="remoteMultipleDocumentsSignatureService" />
+    </bean>
 
 	<jaxrs:server id="jaxrsSignatureService" address="/rest/signature">
 		<jaxrs:serviceBeans>
 			<ref bean="restSignatureService" />
+			<ref bean="restMultipleDocumentsSignatureService" />
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
 			<bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
@@ -27,4 +32,5 @@
 			<cxf:logging />
 		</jaxrs:features>
 	</jaxrs:server>
+
 </beans>

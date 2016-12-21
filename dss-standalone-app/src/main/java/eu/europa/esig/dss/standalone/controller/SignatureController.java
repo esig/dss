@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.MimeType;
@@ -50,13 +51,25 @@ public class SignatureController implements Initializable {
 	private Button fileSelectButton;
 
 	@FXML
+	private TypedToggleGroup<ASiCContainerType> toggleAsicContainerType;
+
+	@FXML
 	private TypedToggleGroup<SignatureForm> toogleSigFormat;
 
 	@FXML
-	private TypedToggleGroup<SignatureForm> toggleAsicUnderlying;
+	private TypedToggleGroup<SignaturePackaging> toggleSigPackaging;
 
 	@FXML
-	private TypedToggleGroup<SignaturePackaging> toggleSigPackaging;
+	private RadioButton cadesRadio;
+
+	@FXML
+	private RadioButton padesRadio;
+
+	@FXML
+	private RadioButton xadesRadio;
+
+	@FXML
+	private HBox hSignaturePackaging;
 
 	@FXML
 	private RadioButton envelopedRadio;
@@ -78,9 +91,6 @@ public class SignatureController implements Initializable {
 
 	@FXML
 	private TypedToggleGroup<SignatureTokenType> toggleSigToken;
-
-	@FXML
-	private HBox hUnderlyingSignatureFormat;
 
 	@FXML
 	private HBox hPkcsFile;
@@ -130,7 +140,6 @@ public class SignatureController implements Initializable {
 		model = new SignatureModel();
 
 		// Allows to collapse items
-		hUnderlyingSignatureFormat.managedProperty().bind(hUnderlyingSignatureFormat.visibleProperty());
 		hPkcsFile.managedProperty().bind(hPkcsFile.visibleProperty());
 		hPkcsPassword.managedProperty().bind(hPkcsPassword.visibleProperty());
 		labelPkcs11File.managedProperty().bind(labelPkcs11File.visibleProperty());
@@ -155,12 +164,16 @@ public class SignatureController implements Initializable {
 			}
 		});
 
-		// Displays underlying format in case of ASiC
-		BooleanBinding isASiC = model.signatureFormProperty().isEqualTo(SignatureForm.ASiC_S).or(model.signatureFormProperty().isEqualTo(SignatureForm.ASiC_E));
-		hUnderlyingSignatureFormat.visibleProperty().bind(isASiC);
+		toggleAsicContainerType.getSelectedValueProperty().addListener(new ChangeListener<ASiCContainerType>() {
+
+			@Override
+			public void changed(ObservableValue<? extends ASiCContainerType> observable, ASiCContainerType oldValue, ASiCContainerType newValue) {
+				updateSignatureFormForASiC(newValue);
+			}
+		});
 
 		// Binds values with model
-		toggleAsicUnderlying.getSelectedValueProperty().bindBidirectional(model.asicUnderlyingFormProperty());
+		toggleAsicContainerType.getSelectedValueProperty().bindBidirectional(model.asicContainerTypeProperty());
 		toggleSigPackaging.getSelectedValueProperty().bindBidirectional(model.signaturePackagingProperty());
 		toggleDigestAlgo.getSelectedValueProperty().bindBidirectional(model.digestAlgorithmProperty());
 		comboLevel.valueProperty().bindBidirectional(model.signatureLevelProperty());
@@ -201,17 +214,16 @@ public class SignatureController implements Initializable {
 		labelPkcs12File.visibleProperty().bind(model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS12));
 
 		BooleanBinding isMandatoryFieldsEmpty = model.fileToSignProperty().isNull().or(model.signatureFormProperty().isNull())
-				.or(model.signaturePackagingProperty().isNull()).or(model.digestAlgorithmProperty().isNull()).or(model.tokenTypeProperty().isNull());
+				.or(model.digestAlgorithmProperty().isNull()).or(model.tokenTypeProperty().isNull());
 
-		BooleanBinding isUnderlyingEmpty = model.signatureFormProperty().isEqualTo(SignatureForm.ASiC_S)
-				.or(model.signatureFormProperty().isEqualTo(SignatureForm.ASiC_E)).and(model.asicUnderlyingFormProperty().isNull());
+		BooleanBinding isASiCorPackagingPresent = model.asicContainerTypeProperty().isNull().and(model.signaturePackagingProperty().isNull());
 
 		BooleanBinding isEmptyFileOrPassword = model.pkcsFileProperty().isNull().or(model.passwordProperty().isEmpty());
 
 		BooleanBinding isPKCSIncomplete = model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS11)
 				.or(model.tokenTypeProperty().isEqualTo(SignatureTokenType.PKCS12)).and(isEmptyFileOrPassword);
 
-		final BooleanBinding disableSignButton = isMandatoryFieldsEmpty.or(isUnderlyingEmpty).or(isPKCSIncomplete);
+		final BooleanBinding disableSignButton = isMandatoryFieldsEmpty.or(isASiCorPackagingPresent).or(isPKCSIncomplete);
 
 		signButton.disableProperty().bind(disableSignButton);
 
@@ -251,6 +263,25 @@ public class SignatureController implements Initializable {
 		});
 	}
 
+	protected void updateSignatureFormForASiC(ASiCContainerType newValue) {
+		model.setAsicContainerType(newValue);
+
+		reinitSignatureFormats();
+		reinitSignaturePackagings();
+
+		if (newValue != null) { // ASiC
+			cadesRadio.setDisable(false);
+			xadesRadio.setDisable(false);
+			hSignaturePackaging.setVisible(false);
+		} else {
+			cadesRadio.setDisable(false);
+			padesRadio.setDisable(false);
+			xadesRadio.setDisable(false);
+			hSignaturePackaging.setVisible(true);
+		}
+
+	}
+
 	protected void updateSignatureForm(SignatureForm signatureForm) {
 		model.setSignatureForm(signatureForm);
 
@@ -287,28 +318,20 @@ public class SignatureController implements Initializable {
 						SignatureLevel.XAdES_BASELINE_LTA);
 				comboLevel.setValue(SignatureLevel.XAdES_BASELINE_B);
 				break;
-			case ASiC_S:
-				detachedRadio.setDisable(false);
-
-				detachedRadio.setSelected(true);
-
-				comboLevel.getItems().addAll(SignatureLevel.ASiC_S_BASELINE_B, SignatureLevel.ASiC_S_BASELINE_T, SignatureLevel.ASiC_S_BASELINE_LT,
-						SignatureLevel.ASiC_S_BASELINE_LTA);
-				comboLevel.setValue(SignatureLevel.ASiC_S_BASELINE_B);
-				break;
-			case ASiC_E:
-				detachedRadio.setDisable(false);
-
-				detachedRadio.setSelected(true);
-
-				comboLevel.getItems().addAll(SignatureLevel.ASiC_E_BASELINE_B, SignatureLevel.ASiC_E_BASELINE_T, SignatureLevel.ASiC_E_BASELINE_LT,
-						SignatureLevel.ASiC_E_BASELINE_LTA);
-				comboLevel.setValue(SignatureLevel.ASiC_E_BASELINE_B);
-				break;
 			default:
 				break;
 			}
 		}
+	}
+
+	private void reinitSignatureFormats() {
+		cadesRadio.setDisable(true);
+		padesRadio.setDisable(true);
+		xadesRadio.setDisable(true);
+
+		cadesRadio.setSelected(false);
+		padesRadio.setSelected(false);
+		xadesRadio.setSelected(false);
 	}
 
 	private void reinitSignaturePackagings() {

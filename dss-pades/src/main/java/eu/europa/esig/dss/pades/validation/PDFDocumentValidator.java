@@ -21,13 +21,9 @@
 package eu.europa.esig.dss.pades.validation;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.pdfbox.io.IOUtils;
-import org.bouncycastle.util.encoders.Base64;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -44,12 +40,10 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 /**
  * Validation of PDF document.
- *
  */
 public class PDFDocumentValidator extends SignedDocumentValidator {
 
 	final PDFSignatureService pdfSignatureService;
-	private static final String BASE64_REGEX = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$";
 
 	/**
 	 * Default constructor used with reflexion (see SignedDocumentValidator)
@@ -70,7 +64,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
-		int headerLength = 500;
+		int headerLength = 50;
 		byte[] preamble = new byte[headerLength];
 		DSSUtils.readToArray(dssDocument, headerLength, preamble);
 		String preambleString = new String(preamble);
@@ -84,8 +78,6 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	public List<AdvancedSignature> getSignatures() {
 		final List<AdvancedSignature> signatures = new ArrayList<AdvancedSignature>();
 
-		ensureCertificatePoolInitialized();
-
 		pdfSignatureService.validateSignatures(validationCertPool, document, new PdfSignatureValidationCallback() {
 
 			@Override
@@ -94,6 +86,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 					if (pdfSignatureInfo.getCades() != null) {
 
 						final PAdESSignature padesSignature = new PAdESSignature(document, pdfSignatureInfo, validationCertPool);
+						padesSignature.setSignatureFilename(document.getName());
 						padesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
 						signatures.add(padesSignature);
 					}
@@ -106,48 +99,32 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	}
 
 	@Override
-	public DSSDocument getOriginalDocument(String signatureId) throws DSSException {
+	public List<DSSDocument> getOriginalDocuments(String signatureId) throws DSSException {
 		if (Utils.isStringBlank(signatureId)) {
 			throw new NullPointerException("signatureId");
 		}
+		List<DSSDocument> result = new ArrayList<DSSDocument>();
+
 		List<AdvancedSignature> signatures = getSignatures();
 		for (AdvancedSignature signature : signatures) {
 			PAdESSignature padesSignature = (PAdESSignature) signature;
 			if (padesSignature.getId().equals(signatureId)) {
 				CAdESSignature cadesSignature = padesSignature.getCAdESSignature();
-				DSSDocument inMemoryDocument = null;
-				DSSDocument firstDocument = null;
 				for (DSSDocument document : cadesSignature.getDetachedContents()) {
-					byte[] content;
+					InputStream is = null;
 					try {
-						content = IOUtils.toByteArray(document.openStream());
+						is = document.openStream();
+						byte[] content = Utils.toByteArray(is);
+						result.add(new InMemoryDocument(content));
 					} catch (IOException e) {
-						throw new DSSException(e);
-					}
-					content = isBase64Encoded(content) ? Base64.decode(content) : content;
-					if (firstDocument == null) {
-						firstDocument = new InMemoryDocument(content);
-						inMemoryDocument = firstDocument;
-					} else {
-						DSSDocument doc = new InMemoryDocument(content);
-						inMemoryDocument.setNextDocument(document);
-						inMemoryDocument = document;
+						throw new DSSException("Unable to retrieve the original document for document '" + document.getName() + "'");
+					} finally {
+						Utils.closeQuietly(is);
 					}
 				}
-				return firstDocument;
 			}
 		}
-		throw new DSSException("The signature with the given id was not found!");
-	}
-
-	private boolean isBase64Encoded(byte[] array) {
-		return isBase64Encoded(new String(array));
-	}
-
-	private boolean isBase64Encoded(String text) {
-		Pattern pattern = Pattern.compile(BASE64_REGEX);
-		Matcher matcher = pattern.matcher(text);
-		return matcher.matches();
+		return result;
 	}
 
 }

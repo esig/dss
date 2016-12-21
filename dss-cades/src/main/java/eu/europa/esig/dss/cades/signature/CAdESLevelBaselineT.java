@@ -47,9 +47,10 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 	}
 
 	@Override
-	protected SignerInformation extendCMSSignature(CMSSignedData signedData, SignerInformation signerInformation, CAdESSignatureParameters parameters)  throws DSSException {
+	protected SignerInformation extendCMSSignature(CMSSignedData signedData, SignerInformation signerInformation, CAdESSignatureParameters parameters)
+			throws DSSException {
 		final CAdESSignature cadesSignature = new CAdESSignature(signedData, signerInformation);
-		cadesSignature.setDetachedContents(parameters.getDetachedContent());
+		cadesSignature.setDetachedContents(parameters.getDetachedContents());
 		assertExtendSignaturePossible(cadesSignature);
 
 		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
@@ -72,10 +73,10 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 		}
 	}
 
-	private AttributeTable addSignatureTimestampAttribute(SignerInformation signerInformation, AttributeTable unsignedAttributes, CAdESSignatureParameters parameters) {
+	private AttributeTable addSignatureTimestampAttribute(SignerInformation signerInformation, AttributeTable unsignedAttributes,
+			CAdESSignatureParameters parameters) {
 		ASN1Object signatureTimeStamp = getTimeStampAttributeValue(signatureTsa, signerInformation.getSignature(), parameters);
 		return unsignedAttributes.add(PKCSObjectIdentifiers.id_aa_signatureTimeStampToken, signatureTimeStamp);
 	}
-
 
 }

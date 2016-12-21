@@ -2,7 +2,6 @@ package eu.europa.esig.dss.pades;
 
 import static org.junit.Assert.assertEquals;
 
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -15,7 +14,6 @@ import org.junit.Test;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 
 public class PdfSignatureOrDocTimestampInfoComparatorTest {
 
@@ -97,8 +95,7 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		}
 
 		@Override
-		public SignatureCryptographicVerification checkIntegrity() {
-			return null;
+		public void checkIntegrity() {
 		}
 
 		@Override
@@ -123,11 +120,6 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 
 		@Override
 		public Date getSigningDate() {
-			return null;
-		}
-
-		@Override
-		public X509Certificate getSigningCertificate() {
 			return null;
 		}
 

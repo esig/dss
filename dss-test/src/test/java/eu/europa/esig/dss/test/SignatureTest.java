@@ -14,7 +14,6 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -161,7 +160,7 @@ public class SignatureTest {
 		if (toBeSignedsByDigest.containsKey(digest)) {
 			return toBeSignedsByDigest.get(digest);
 		} else {
-			ToBeSigned dataToSign = new ToBeSigned(DSSUtils.digest(digest, dssDocument));
+			ToBeSigned dataToSign = new ToBeSigned(Utils.fromBase64(dssDocument.getDigest(digest)));
 			toBeSignedsByDigest.put(digest, dataToSign);
 			return dataToSign;
 		}

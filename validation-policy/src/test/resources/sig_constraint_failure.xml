@@ -4,6 +4,7 @@
     <ValidationDate>2016-05-04T15:55:00</ValidationDate>
     <Signatures>
 	    <Signature Id="id-f6fa8e7d67936a16b15109757654e3db">
+	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
 	        <ErrorMessage>java.lang.NullPointerException</ErrorMessage>
 	        <SignatureFormat>CAdES_BASELINE_T</SignatureFormat>
 	        <BasicSignature>

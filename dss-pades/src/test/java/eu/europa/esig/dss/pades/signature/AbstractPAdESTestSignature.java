@@ -17,12 +17,12 @@ import org.bouncycastle.asn1.cms.SignerInfo;
 
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
-import eu.europa.esig.dss.signature.AbstractTestSignature;
+import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public abstract class AbstractPAdESTestSignature extends AbstractTestSignature {
+public abstract class AbstractPAdESTestSignature extends AbstractTestDocumentSignatureService {
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {

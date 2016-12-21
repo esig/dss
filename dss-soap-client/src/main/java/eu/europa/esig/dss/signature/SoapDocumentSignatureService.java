@@ -33,7 +33,8 @@ import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.ToBeSigned;
 
 /**
- * Interface for the Contract of the Signature Web Service. The signing web service allows to create a new signature or to extend existing one. Different forms of signature:
+ * Interface for the Contract of the Signature Web Service. The signing web service allows to create a new signature or
+ * to extend existing one. Different forms of signature:
  * XAdES, CAdES, PAdES, ASiC-S are accepted.
  * The digital signature of a document in a web environment is performed in three steps:
  * 1. Creating a byte stream representing the data to be signed.
@@ -42,8 +43,9 @@ import eu.europa.esig.dss.ToBeSigned;
  * The process is controlled by a set of parameters.
  */
 @WebService
-@WSDLDocumentation("The signing web service allows to create a new signature or to extend existing one. Different forms of signature:XAdES, CAdES, PAdES, ASiC-S are accepted.\n"
-		+ " The digital signature of a document in a web environment is performed in three steps:\n" + " 1. Creating a byte stream representing the data to be signed.\n"
+@WSDLDocumentation("The signing web service allows to create a new signature or to extend existing one. Different forms of signature:XAdES, CAdES, PAdES, ASiC-S and ASiC-E are accepted.\n"
+		+ " The digital signature of a document in a web environment is performed in three steps:\n"
+		+ " 1. Creating a byte stream representing the data to be signed.\n"
 		+ " 2. Hashing of the data previously obtained and its encryption. This step is performed locally (not by the web service).\n"
 		+ " 3. The creation of the envelope containing all the elements of a digital signature.\n" + " The process is controlled by a set of parameters.")
 public interface SoapDocumentSignatureService extends Serializable {
@@ -58,7 +60,7 @@ public interface SoapDocumentSignatureService extends Serializable {
 	 */
 	@WSDLDocumentation("This method retrieves the stream of data that need to be hashed and encrypted. It takes one parameter composed of : the document to sign and the set of parameters.")
 	@WebResult(name = "response")
-	ToBeSigned getDataToSign(@WebParam(name = "dataToSignDTO") DataToSignDTO dataToSign) throws DSSException;
+	ToBeSigned getDataToSign(@WebParam(name = "dataToSignDTO") DataToSignOneDocumentDTO dataToSign) throws DSSException;
 
 	/**
 	 * This web service operation signs a document according to a previously signed digest, a level of signature, some
@@ -72,7 +74,7 @@ public interface SoapDocumentSignatureService extends Serializable {
 	@WSDLDocumentation("This method creates the signature containing the provided encrypted hash value and all requested elements. It requests one paramaters composed of : the document to "
 			+ "sign, the set of driving parameters and the encrypted hash value of bytes that need to be protected by the digital signature.")
 	@WebResult(name = "response")
-	RemoteDocument signDocument(@WebParam(name = "signDocumentDTO") SignDocumentDTO signDocument) throws DSSException;
+	RemoteDocument signDocument(@WebParam(name = "signDocumentDTO") SignOneDocumentDTO signDocument) throws DSSException;
 
 	/**
 	 * This web service operation extends the signature of a given document to the level of the signature provided. The

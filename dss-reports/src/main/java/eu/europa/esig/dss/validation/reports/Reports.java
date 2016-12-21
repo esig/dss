@@ -66,12 +66,6 @@ public class Reports {
 
 	protected SimpleReport simpleReportWrapper;
 
-	/**
-	 * This variable defines the sequence of the reports related to a document
-	 * to validate. It's only used with ASiC-E container.
-	 */
-	private Reports nextReports;
-
 	private String xmlDiagnosticData;
 	private String xmlDetailedReport;
 	private String xmlSimpleReport;
@@ -131,46 +125,16 @@ public class Reports {
 	}
 
 	/**
-	 * This method allows to set the sequence of the reports related to a
-	 * document to validate. It's only used with ASiC-E container.
-	 *
-	 * @param nextReports
-	 */
-	public void setNextReport(final Reports nextReports) {
-		this.nextReports = nextReports;
-	}
-
-	/**
-	 * @return {@code Reports} which corresponds to the next signature found
-	 *         with in the ASiC-E container. {@code null} if there is no more
-	 *         signatures.
-	 */
-	public Reports getNextReports() {
-		return nextReports;
-	}
-
-	/**
 	 * For debug purpose.
 	 */
 	public void print() {
-
-		String reportDeep = "#";
-		Reports currentReports = this;
-		do {
-
-			System.out.println("[" + reportDeep + "] ----------------Diagnostic data-----------------");
-			System.out.println(currentReports.getXmlDiagnosticData());
-
-			System.out.println("[" + reportDeep + "] ----------------Validation report---------------");
-			System.out.println(currentReports.getXmlDetailedReport());
-
-			System.out.println("[" + reportDeep + "] ----------------Simple report-------------------");
-			System.out.println(currentReports.getXmlSimpleReport());
-
-			System.out.println("[" + reportDeep + "] END ------------------------------------------------");
-			reportDeep += "#";
-			currentReports = currentReports.getNextReports();
-		} while (currentReports != null);
+		System.out.println("----------------Diagnostic data-----------------");
+		System.out.println(getXmlDiagnosticData());
+		System.out.println("----------------Validation report---------------");
+		System.out.println(getXmlDetailedReport());
+		System.out.println("----------------Simple report-------------------");
+		System.out.println(getXmlSimpleReport());
+		System.out.println("------------------------------------------------");
 	}
 
 	public String getXmlDiagnosticData() {

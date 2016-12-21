@@ -30,6 +30,7 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -100,7 +101,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	private List<CertificateToken> getCertificates(final String xPathQuery) {
 
 		final List<CertificateToken> list = new ArrayList<CertificateToken>();
-		final NodeList nodeList = DSSXMLUtils.getNodeList(signatureElement, xPathQuery);
+		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQuery);
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 
 			final Element certificateElement = (Element) nodeList.item(ii);
