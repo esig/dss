@@ -51,7 +51,7 @@ public class ASiCEWithXAdESManifestParser {
 				for (int i = 0; i < nodeList.getLength(); i++) {
 					Element fileEntryElement = (Element) nodeList.item(i);
 					String fullpathValue = fileEntryElement.getAttribute(ManifestNamespace.FULL_PATH);
-					if (!isContainerDefinition(fullpathValue)) {
+					if (!isFolder(fullpathValue)) {
 						result.add(fullpathValue);
 					}
 				}
@@ -64,8 +64,8 @@ public class ASiCEWithXAdESManifestParser {
 		return result;
 	}
 
-	private boolean isContainerDefinition(String fullpathValue) {
-		return "/".equals(fullpathValue);
+	private boolean isFolder(String fullpathValue) {
+		return fullpathValue.endsWith("/");
 	}
 
 }
