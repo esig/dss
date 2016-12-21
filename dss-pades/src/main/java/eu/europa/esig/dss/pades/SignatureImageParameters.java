@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.pades;
 
-import java.io.File;
+import eu.europa.esig.dss.DSSDocument;
 
 /**
  * Parameters for a visible signature creation
@@ -33,7 +33,7 @@ public class SignatureImageParameters {
 	/**
 	 * This variable contains the image to use (company logo,...)
 	 */
-	private File image;
+	private DSSDocument image;
 
 	/**
 	 * This variable defines the page where the image will appear (1st page by
@@ -56,11 +56,11 @@ public class SignatureImageParameters {
 	 */
 	private SignatureImageTextParameters textParameters;
 
-	public File getImage() {
+	public DSSDocument getImage() {
 		return image;
 	}
 
-	public void setImage(File image) {
+	public void setImage(DSSDocument image) {
 		this.image = image;
 	}
 

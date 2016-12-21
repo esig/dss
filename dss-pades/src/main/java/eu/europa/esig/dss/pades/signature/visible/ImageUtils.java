@@ -3,8 +3,6 @@ package eu.europa.esig.dss.pades.signature.visible;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -24,6 +22,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
@@ -49,21 +48,27 @@ public class ImageUtils {
 					textParamaters.getBackgroundColor(), DPI);
 
 			if (imageParameters.getImage() != null) {
-				switch (textParamaters.getSignerNamePosition()) {
-				case LEFT:
-					buffImg = ImagesMerger.mergeOnRight(ImageIO.read(imageParameters.getImage()), buffImg, textParamaters.getBackgroundColor());
-					break;
-				case RIGHT:
-					buffImg = ImagesMerger.mergeOnRight(buffImg, ImageIO.read(imageParameters.getImage()), textParamaters.getBackgroundColor());
-					break;
-				case TOP:
-					buffImg = ImagesMerger.mergeOnTop(ImageIO.read(imageParameters.getImage()), buffImg, textParamaters.getBackgroundColor());
-					break;
-				case BOTTOM:
-					buffImg = ImagesMerger.mergeOnTop(buffImg, ImageIO.read(imageParameters.getImage()), textParamaters.getBackgroundColor());
-					break;
-				default:
-					break;
+				InputStream is = null;
+				try {
+					is = imageParameters.getImage().openStream();
+					switch (textParamaters.getSignerNamePosition()) {
+					case LEFT:
+						buffImg = ImagesMerger.mergeOnRight(ImageIO.read(is), buffImg, textParamaters.getBackgroundColor());
+						break;
+					case RIGHT:
+						buffImg = ImagesMerger.mergeOnRight(buffImg, ImageIO.read(is), textParamaters.getBackgroundColor());
+						break;
+					case TOP:
+						buffImg = ImagesMerger.mergeOnTop(ImageIO.read(is), buffImg, textParamaters.getBackgroundColor());
+						break;
+					case BOTTOM:
+						buffImg = ImagesMerger.mergeOnTop(buffImg, ImageIO.read(is), textParamaters.getBackgroundColor());
+						break;
+					default:
+						break;
+					}
+				} finally {
+					Utils.closeQuietly(is);
 				}
 			}
 			return convertToInputStream(buffImg, DPI);
@@ -72,7 +77,7 @@ public class ImageUtils {
 		}
 	}
 
-	public static ImageAndResolution readAndDisplayMetadata(File file) throws IOException {
+	public static ImageAndResolution readAndDisplayMetadata(DSSDocument image) throws IOException {
 
 		Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("jpeg");
 		if (!readers.hasNext()) {
@@ -82,17 +87,22 @@ public class ImageUtils {
 		// pick the first available ImageReader
 		ImageReader reader = readers.next();
 
-		ImageInputStream iis = ImageIO.createImageInputStream(file);
+		ImageInputStream iis = null;
+		try {
+			iis = ImageIO.createImageInputStream(image.openStream());
 
-		// attach source to the reader
-		reader.setInput(iis, true);
+			// attach source to the reader
+			reader.setInput(iis, true);
 
-		// read metadata of first image
-		IIOMetadata metadata = reader.getImageMetadata(0);
-		Node asTree = metadata.getAsTree("javax_imageio_jpeg_image_1.0");
-		ImageAndResolution res = readResolution(asTree, new FileInputStream(file));
-		return res;
+			// read metadata of first image
+			IIOMetadata metadata = reader.getImageMetadata(0);
 
+			Node asTree = metadata.getAsTree("javax_imageio_jpeg_image_1.0");
+			ImageAndResolution res = readResolution(asTree, image.openStream());
+			return res;
+		} finally {
+			Utils.closeQuietly(iis);
+		}
 	}
 
 	private static ImageAndResolution readResolution(Node node, InputStream is) {
