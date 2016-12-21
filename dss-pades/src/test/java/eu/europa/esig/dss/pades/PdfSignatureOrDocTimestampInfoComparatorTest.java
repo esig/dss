@@ -2,7 +2,6 @@ package eu.europa.esig.dss.pades;
 
 import static org.junit.Assert.assertEquals;
 
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -121,11 +120,6 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 
 		@Override
 		public Date getSigningDate() {
-			return null;
-		}
-
-		@Override
-		public X509Certificate getSigningCertificate() {
 			return null;
 		}
 

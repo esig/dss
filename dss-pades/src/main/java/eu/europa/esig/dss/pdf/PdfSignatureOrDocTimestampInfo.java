@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.Set;
 
@@ -42,8 +41,6 @@ public interface PdfSignatureOrDocTimestampInfo {
 	String getSubFilter();
 
 	Date getSigningDate();
-
-	X509Certificate getSigningCertificate();
 
 	byte[] getContent();
 

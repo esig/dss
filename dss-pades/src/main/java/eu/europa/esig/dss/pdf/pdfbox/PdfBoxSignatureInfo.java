@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pdf.pdfbox;
 
 import java.io.IOException;
-import java.security.cert.X509Certificate;
 import java.util.Arrays;
 
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
@@ -33,7 +32,6 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 class PdfBoxSignatureInfo extends PdfBoxCMSInfo implements PdfSignatureInfo {
 
@@ -67,12 +65,6 @@ class PdfBoxSignatureInfo extends PdfBoxCMSInfo implements PdfSignatureInfo {
 	@Override
 	protected void checkIntegrityOnce() {
 		cades.checkSignatureIntegrity();
-	}
-
-	@Override
-	public X509Certificate getSigningCertificate() {
-		CertificateToken signingCertificate = cades.getSigningCertificateToken();
-		return signingCertificate == null ? null : signingCertificate.getCertificate();
 	}
 
 	@Override
