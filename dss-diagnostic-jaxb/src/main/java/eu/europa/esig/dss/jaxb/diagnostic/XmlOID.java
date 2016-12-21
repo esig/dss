@@ -16,15 +16,15 @@ import javax.xml.bind.annotation.XmlValue;
 
 
 /**
- * <p>Java class for anonymous complex type.
+ * <p>Java class for OID complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType>
+ * &lt;complexType name="OID">
  *   &lt;simpleContent>
  *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
- *       &lt;attribute name="Id" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="Description" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/extension>
  *   &lt;/simpleContent>
  * &lt;/complexType>
@@ -33,15 +33,15 @@ import javax.xml.bind.annotation.XmlValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
+@XmlType(name = "OID", propOrder = {
     "value"
 })
-public class XmlSignedSignature {
+public class XmlOID {
 
     @XmlValue
     protected String value;
-    @XmlAttribute(name = "Id", required = true)
-    protected String id;
+    @XmlAttribute(name = "Description")
+    protected String description;
 
     /**
      * Gets the value of the value property.
@@ -68,27 +68,27 @@ public class XmlSignedSignature {
     }
 
     /**
-     * Gets the value of the id property.
+     * Gets the value of the description property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getId() {
-        return id;
+    public String getDescription() {
+        return description;
     }
 
     /**
-     * Sets the value of the id property.
+     * Sets the value of the description property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setId(String value) {
-        this.id = value;
+    public void setDescription(String value) {
+        this.description = value;
     }
 
 }

@@ -11,6 +11,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyIdsCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.Level;
@@ -20,12 +21,14 @@ public class CertificatePolicyIdsCheckTest {
 
 	@Test
 	public void certificatePolicyIdsCheck() throws Exception {
-		List<String> policyIds = new ArrayList<String>();
-		policyIds.add("1.3.76.38.1.1.1");
+		List<XmlOID> policyIds = new ArrayList<XmlOID>();
+		XmlOID oid = new XmlOID();
+		oid.setValue("1.3.76.38.1.1.1");
+		policyIds.add(oid);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
-		constraint.getId().add(policyIds.get(0));
+		constraint.getId().add("1.3.76.38.1.1.1");
 
 		XmlCertificate xc = new XmlCertificate();
 		xc.setCertificatePolicyIds(policyIds);
@@ -41,8 +44,10 @@ public class CertificatePolicyIdsCheckTest {
 
 	@Test
 	public void failedCertificatePolicyIdsCheck() throws Exception {
-		List<String> policyIds = new ArrayList<String>();
-		policyIds.add("1.3.76.38.1.1.1");
+		List<XmlOID> policyIds = new ArrayList<XmlOID>();
+		XmlOID oid = new XmlOID();
+		oid.setValue("1.3.76.38.1.1.1");
+		policyIds.add(oid);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);

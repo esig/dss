@@ -7,13 +7,14 @@ import java.util.List;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.CertificatePolicyOids;
+import eu.europa.esig.dss.QCStatementOids;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
-import eu.europa.esig.dss.validation.policy.CertificatePolicyIdentifiers;
-import eu.europa.esig.dss.validation.policy.QCStatementPolicyIdentifiers;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQualifiedCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.Level;
@@ -26,10 +27,12 @@ public class CertificateQualifiedCheckTest {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
-		List<String> qcStatementIds = new ArrayList<String>();
-		qcStatementIds.add(QCStatementPolicyIdentifiers.QC_COMPLIANT);
-
 		XmlCertificate xc = new XmlCertificate();
+
+		List<XmlOID> qcStatementIds = new ArrayList<XmlOID>();
+		XmlOID oid = new XmlOID();
+		oid.setValue(QCStatementOids.QC_COMPLIANT.getOid());
+		qcStatementIds.add(oid);
 		xc.setQCStatementIds(qcStatementIds);
 
 		XmlSubXCV result = new XmlSubXCV();
@@ -47,7 +50,11 @@ public class CertificateQualifiedCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.getCertificatePolicyIds().add(CertificatePolicyIdentifiers.QCP_PUBLIC);
+		List<XmlOID> certPolicies = new ArrayList<XmlOID>();
+		XmlOID oid = new XmlOID();
+		oid.setValue(CertificatePolicyOids.QCP_PUBLIC.getOid());
+		certPolicies.add(oid);
+		xc.setCertificatePolicyIds(certPolicies);
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificateQualifiedCheck cqc = new CertificateQualifiedCheck(result, new CertificateWrapper(xc), constraint);

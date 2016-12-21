@@ -39,6 +39,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlManifestFile;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlMessage;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
@@ -773,9 +774,9 @@ public class DiagnosticDataBuilder {
 		xmlCert.setSigningCertificate(getXmlSigningCertificate(issuerToken));
 		xmlCert.setCertificateChain(getXmlForCertificateChain(issuerToken));
 
-		xmlCert.setQCStatementIds(DSSASN1Utils.getQCStatementsIdList(certToken));
-		xmlCert.setQCTypes(DSSASN1Utils.getQCTypesIdList(certToken));
-		xmlCert.setCertificatePolicyIds(DSSASN1Utils.getPolicyIdentifiers(certToken));
+		xmlCert.setQCStatementIds(getXmlOids(DSSASN1Utils.getQCStatementsIdList(certToken)));
+		xmlCert.setQCTypes(getXmlOids(DSSASN1Utils.getQCTypesIdList(certToken)));
+		xmlCert.setCertificatePolicyIds(getXmlOids(DSSASN1Utils.getPolicyIdentifiers(certToken)));
 
 		xmlCert.setSelfSigned(certToken.isSelfSigned());
 		xmlCert.setTrusted(certToken.isTrusted());
@@ -794,6 +795,17 @@ public class DiagnosticDataBuilder {
 		xmlCert.getTrustedServiceProvider().addAll(getXmlTrustedServiceProviders(certToken));
 
 		return xmlCert;
+	}
+
+	private List<XmlOID> getXmlOids(List<String> oidList) {
+		List<XmlOID> result = new ArrayList<XmlOID>();
+		for (String oid : oidList) {
+			XmlOID xmlOID = new XmlOID();
+			xmlOID.setValue(oid);
+			xmlOID.setDescription(OidRepository.getDescription(oid));
+			result.add(xmlOID);
+		}
+		return result;
 	}
 
 	/**

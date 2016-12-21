@@ -10,6 +10,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSupportedBySSCDCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.Level;
@@ -23,11 +24,12 @@ public class CertificateSupportedBySSCDCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.getCertificatePolicyIds().add("0.4.0.1456.1.1");
+		XmlOID oid = new XmlOID();
+		oid.setValue("0.4.0.1456.1.1");
+		xc.getCertificatePolicyIds().add(oid);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateSupportedBySSCDCheck csbsc = new CertificateSupportedBySSCDCheck(result, new CertificateWrapper(xc),
-				constraint);
+		CertificateSupportedBySSCDCheck csbsc = new CertificateSupportedBySSCDCheck(result, new CertificateWrapper(xc), constraint);
 		csbsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -41,11 +43,13 @@ public class CertificateSupportedBySSCDCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.getCertificatePolicyIds().add("0.4.0.1456.1.12");
+
+		XmlOID oid = new XmlOID();
+		oid.setValue("0.4.0.1456.1.12");
+		xc.getCertificatePolicyIds().add(oid);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateSupportedBySSCDCheck csbsc = new CertificateSupportedBySSCDCheck(result, new CertificateWrapper(xc),
-				constraint);
+		CertificateSupportedBySSCDCheck csbsc = new CertificateSupportedBySSCDCheck(result, new CertificateWrapper(xc), constraint);
 		csbsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

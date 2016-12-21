@@ -184,21 +184,21 @@
 			<xs:element name="CertificatePolicyIds" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="oid" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="oid" type="OID" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="QCStatementIds" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="oid" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="oid" type="OID" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="QCTypes" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="oid" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="oid" type="OID" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -210,6 +210,13 @@
 		<xs:attribute name="Id" type="xs:string" use="required" />
 	</xs:complexType>
 	
+	<xs:complexType name="OID">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="Description" type="xs:string" use="optional" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
 	
 	<xs:complexType name="DistinguishedName">
 		<xs:simpleContent>

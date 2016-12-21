@@ -13,6 +13,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
@@ -245,30 +246,38 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public List<String> getPolicyIds() {
-		List<String> certificatePolicyIds = certificate.getCertificatePolicyIds();
+		List<XmlOID> certificatePolicyIds = certificate.getCertificatePolicyIds();
 		if (Utils.isCollectionNotEmpty(certificatePolicyIds)) {
-			return certificatePolicyIds;
+			return getOidValues(certificatePolicyIds);
 		} else {
 			return Collections.emptyList();
 		}
 	}
 
 	public List<String> getQCStatementIds() {
-		List<String> certificateQCStatementIds = certificate.getQCStatementIds();
+		List<XmlOID> certificateQCStatementIds = certificate.getQCStatementIds();
 		if (Utils.isCollectionNotEmpty(certificateQCStatementIds)) {
-			return certificateQCStatementIds;
+			return getOidValues(certificateQCStatementIds);
 		} else {
 			return Collections.emptyList();
 		}
 	}
 
 	public List<String> getQCTypes() {
-		List<String> certificateQCTypeIds = certificate.getQCTypes();
+		List<XmlOID> certificateQCTypeIds = certificate.getQCTypes();
 		if (Utils.isCollectionNotEmpty(certificateQCTypeIds)) {
-			return certificateQCTypeIds;
+			return getOidValues(certificateQCTypeIds);
 		} else {
 			return Collections.emptyList();
 		}
+	}
+
+	private List<String> getOidValues(List<XmlOID> xmlOids) {
+		List<String> result = new ArrayList<String>();
+		for (XmlOID xmlOID : xmlOids) {
+			result.add(xmlOID.getValue());
+		}
+		return result;
 	}
 
 }
