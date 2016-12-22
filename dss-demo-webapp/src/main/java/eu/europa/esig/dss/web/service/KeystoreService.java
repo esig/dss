@@ -8,7 +8,6 @@ import javax.xml.bind.DatatypeConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.web.model.CertificateDTO;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -38,8 +37,8 @@ public class KeystoreService {
 		dto.setNotBefore(certificate.getNotBefore());
 		dto.setNotAfter(certificate.getNotAfter());
 
-		byte[] digestSHA256 = DSSUtils.digest(DigestAlgorithm.SHA256, certificate.getEncoded());
-		byte[] digestSHA1 = DSSUtils.digest(DigestAlgorithm.SHA1, certificate.getEncoded());
+		byte[] digestSHA256 = certificate.getDigest(DigestAlgorithm.SHA256);
+		byte[] digestSHA1 = certificate.getDigest(DigestAlgorithm.SHA1);
 
 		dto.setSha256Hex(getPrintableHex(digestSHA256));
 		dto.setSha1Hex(getPrintableHex(digestSHA1));

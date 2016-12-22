@@ -37,7 +37,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
-import javax.xml.bind.DatatypeConverter;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -556,10 +555,6 @@ public class CertificateToken extends Token {
 
 	public Principal getSubjectDN() {
 		return x509Certificate.getSubjectDN();
-	}
-
-	public String getBase64Encoded() {
-		return DatatypeConverter.printBase64Binary(getEncoded());
 	}
 
 }

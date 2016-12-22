@@ -480,7 +480,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				 * failed and INVALID/FORMAT_FAILURE is
 				 * returned.
 				 */
-				final byte[] digest = DSSUtils.digest(digestAlgorithm, certificateToken.getEncoded());
+				final byte[] digest = certificateToken.getDigest(digestAlgorithm);
 				certificateValidity.setDigestEqual(false);
 				BigInteger serialNumber = new BigInteger("0");
 				if (Arrays.equals(digest, storedBase64DigestValue)) {
@@ -2066,7 +2066,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
 
-		final TimestampReference reference = new TimestampReference(DigestAlgorithm.SHA1, DSSUtils.digest(DigestAlgorithm.SHA1, certificateToken));
+		final TimestampReference reference = new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(certificateToken.getDigest(DigestAlgorithm.SHA1)));
 		return reference;
 	}
 

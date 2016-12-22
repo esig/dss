@@ -12,7 +12,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
-import javax.xml.bind.DatatypeConverter;
 
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -295,7 +294,7 @@ public class DiagnosticDataBuilder {
 	private List<XmlDigestAlgoAndValue> getXmlDigestAlgoAndValues(Set<DigestAlgorithm> usedDigestAlgorithms, Token token) {
 		List<XmlDigestAlgoAndValue> result = new ArrayList<XmlDigestAlgoAndValue>();
 		for (final DigestAlgorithm digestAlgorithm : usedDigestAlgorithms) {
-			result.add(getXmlDigestAlgoAndValue(digestAlgorithm, DSSUtils.digest(digestAlgorithm, token)));
+			result.add(getXmlDigestAlgoAndValue(digestAlgorithm, Utils.toBase64(token.getDigest(digestAlgorithm))));
 		}
 		return result;
 	}
@@ -552,8 +551,7 @@ public class DiagnosticDataBuilder {
 					xmlPolicy.setDigestAlgorithmsEqual(true);
 				}
 
-				String recalculatedDigestValue = DatatypeConverter
-						.printBase64Binary(DSSASN1Utils.getAsn1SignaturePolicyDigest(signPolicyHashAlgFromPolicy, policyBytes));
+				String recalculatedDigestValue = Utils.toBase64(DSSASN1Utils.getAsn1SignaturePolicyDigest(signPolicyHashAlgFromPolicy, policyBytes));
 
 				boolean equal = Utils.areStringsEqual(digestValue, recalculatedDigestValue);
 				xmlPolicy.setStatus(equal);
@@ -564,7 +562,7 @@ public class DiagnosticDataBuilder {
 				}
 
 				final ASN1OctetString signPolicyHash = (ASN1OctetString) asn1Sequence.getObjectAt(2);
-				final String policyDigestValueFromPolicy = DatatypeConverter.printBase64Binary(signPolicyHash.getOctets());
+				final String policyDigestValueFromPolicy = Utils.toBase64(signPolicyHash.getOctets());
 				equal = Utils.areStringsEqual(digestValue, policyDigestValueFromPolicy);
 				xmlPolicy.setStatus(equal);
 				if (!equal) {
@@ -573,10 +571,9 @@ public class DiagnosticDataBuilder {
 				}
 			} else {
 				/**
-				 * c) In all other cases, compute the digest using the digesting algorithm indicated in the children of
-				 * the property/attribute.
+				 * c) In all other cases, compute the digest using the digesting algorithm indicated in the children of the property/attribute.
 				 */
-				String recalculatedDigestValue = DatatypeConverter.printBase64Binary(DSSUtils.digest(signPolicyHashAlgFromSignature, policyBytes));
+				String recalculatedDigestValue = Utils.toBase64(DSSUtils.digest(signPolicyHashAlgFromSignature, policyBytes));
 				boolean equal = Utils.areStringsEqual(digestValue, recalculatedDigestValue);
 				xmlPolicy.setStatus(equal);
 				if (!equal) {
@@ -786,8 +783,7 @@ public class DiagnosticDataBuilder {
 		if (Utils.isCollectionNotEmpty(revocationTokens)) {
 			for (RevocationToken revocationToken : revocationTokens) {
 				// In case of CRL, the X509CRL can be the same for different certificates
-				byte[] digestForId = DSSUtils.digest(DigestAlgorithm.SHA256, certToken.getEncoded(), revocationToken.getEncoded());
-				String xmlId = DatatypeConverter.printHexBinary(digestForId);
+				String xmlId = Utils.toHex(certToken.getDigest(DigestAlgorithm.SHA256)) + Utils.toHex(revocationToken.getDigest(DigestAlgorithm.SHA256));
 				xmlCert.getRevocation().add(getXmlRevocation(revocationToken, xmlId, usedDigestAlgorithms));
 			}
 		}

@@ -320,7 +320,7 @@ public class PAdESSignature extends CAdESSignature {
 			for (CertificateToken certificateToken : certList) {
 				CertificateRef ref = new CertificateRef();
 				ref.setDigestAlgorithm(DigestAlgorithm.SHA1);
-				ref.setDigestValue(DSSUtils.digest(DigestAlgorithm.SHA1, certificateToken.getEncoded()));
+				ref.setDigestValue(certificateToken.getDigest(DigestAlgorithm.SHA1));
 				refs.add(ref);
 			}
 		}

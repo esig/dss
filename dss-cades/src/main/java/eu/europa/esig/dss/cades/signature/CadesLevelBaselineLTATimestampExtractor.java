@@ -174,8 +174,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 
 		final List<CertificateToken> certificateTokens = cadesSignature.getCertificates();
 		for (final CertificateToken certificateToken : certificateTokens) {
-			final byte[] encodedCertificate = certificateToken.getEncoded();
-			final byte[] digest = DSSUtils.digest(hashIndexDigestAlgorithm, encodedCertificate);
+			final byte[] digest = certificateToken.getDigest(hashIndexDigestAlgorithm);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Adding to CertificatesHashIndex DSS-Identifier: {} with hash {}", certificateToken.getDSSId(), Utils.toHex(digest));
 			}
@@ -205,9 +204,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 
 		final List<CertificateToken> certificates = cadesSignature.getCertificatesWithinSignatureAndTimestamps();
 		for (final CertificateToken certificateToken : certificates) {
-
-			final byte[] encodedCertificate = certificateToken.getEncoded();
-			final byte[] digest = DSSUtils.digest(hashIndexDigestAlgorithm, encodedCertificate);
+			final byte[] digest = certificateToken.getDigest(hashIndexDigestAlgorithm);
 			final DEROctetString derOctetStringDigest = new DEROctetString(digest);
 			if (certHashesList.remove(derOctetStringDigest)) {
 				// attribute present in signature and in timestamp

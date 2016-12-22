@@ -72,16 +72,16 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
- * This class holds the CAdES-B signature profile; it supports the inclusion of the mandatory signed
- * id_aa_ets_sigPolicyId attribute as specified in ETSI TS 101 733 V1.8.1, clause 5.8.1.
+ * This class holds the CAdES-B signature profile; it supports the inclusion of the mandatory signed id_aa_ets_sigPolicyId attribute as specified in ETSI TS 101
+ * 733 V1.8.1, clause 5.8.1.
  *
  *
  *
@@ -442,8 +442,8 @@ public class CAdESLevelBaselineB {
 
 	private void addSigningCertificateAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) throws DSSException {
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-		final byte[] encoded = parameters.getSigningCertificate().getEncoded();
-		final byte[] certHash = DSSUtils.digest(digestAlgorithm, encoded);
+		CertificateToken signingToken = parameters.getSigningCertificate();
+		final byte[] certHash = signingToken.getDigest(digestAlgorithm);
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Adding Certificate Hash {} with algorithm {}", Utils.toHex(certHash), digestAlgorithm.getName());
 		}

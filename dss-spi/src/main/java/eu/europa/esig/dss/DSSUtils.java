@@ -67,7 +67,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.Token;
 
 public final class DSSUtils {
 
@@ -540,14 +539,6 @@ public final class DSSUtils {
 	public static String replaceStrStr(final String string, final String oldPattern, final String newPattern) {
 		final StringBuffer stringBuffer = replaceStrStr(new StringBuffer(string), oldPattern, newPattern);
 		return stringBuffer.toString();
-	}
-
-	/**
-	 * This method allows to digest a token
-	 */
-	public static String digest(DigestAlgorithm digestAlgoritm, Token token) {
-		byte[] digest = digest(digestAlgoritm, token.getEncoded());
-		return Utils.toBase64(digest);
 	}
 
 	/**

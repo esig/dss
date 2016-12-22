@@ -384,7 +384,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			final Attribute signingCertificateAttributeV1) {
 
 		final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
-		final byte[] signingTokenCertHash = DSSUtils.digest(digestAlgorithm, signingCertificateValidity.getCertificateToken().getEncoded());
+		final byte[] signingTokenCertHash = signingCertificateValidity.getCertificateToken().getDigest(digestAlgorithm);
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Candidate Certificate Hash {} with algorithm {}", Utils.toHex(signingTokenCertHash), digestAlgorithm.getName());
 		}
@@ -437,8 +437,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(algorithmId);
 				signingCertificateValidity.setDigestAlgorithm(digestAlgorithm);
 				if (digestAlgorithm != lastDigestAlgorithm) {
-
-					signingTokenCertHash = DSSUtils.digest(digestAlgorithm, signingCertificateValidity.getCertificateToken().getEncoded());
+					signingTokenCertHash = signingCertificateValidity.getCertificateToken().getDigest(digestAlgorithm);
 					if (LOG.isDebugEnabled()) {
 						LOG.debug("Candidate Certificate Hash {} with algorithm {}", Utils.toHex(signingTokenCertHash), digestAlgorithm.getName());
 					}

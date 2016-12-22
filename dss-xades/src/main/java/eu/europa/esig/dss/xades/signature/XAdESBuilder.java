@@ -41,13 +41,13 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -275,9 +275,30 @@ public abstract class XAdESBuilder {
 	}
 
 	/**
-	 * Incorporates the certificate's references as a child of the given parent node. The first element of the
-	 * {@code X509Certificate} {@code List} MUST be the signing
-	 * certificate.
+	 * This method creates the ds:DigestValue DOM object.
+	 *
+	 * @param parentDom
+	 * @param digestAlgorithm
+	 *            digest algorithm
+	 * @param token
+	 *            to digest array of bytes
+	 */
+	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm, final Token token) {
+		// <ds:DigestValue>b/JEDQH2S1Nfe4Z3GSVtObN34aVB1kMrEbVQZswThfQ=</ds:DigestValue>
+		final Element digestValueDom = documentDom.createElementNS(XMLNS, DS_DIGEST_VALUE);
+		final String base64EncodedDigestBytes = Utils.toBase64(token.getDigest(digestAlgorithm));
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
+		}
+		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
+		digestValueDom.appendChild(textNode);
+
+		parentDom.appendChild(digestValueDom);
+	}
+
+	/**
+	 * Incorporates the certificate's references as a child of the given parent node. The first element of the {@code X509Certificate} {@code List} MUST be the
+	 * signing certificate.
 	 *
 	 * @param signingCertificateDom
 	 *            DOM parent element
@@ -295,8 +316,7 @@ public abstract class XAdESBuilder {
 			final DigestAlgorithm signingCertificateDigestMethod = params.getSigningCertificateDigestMethod();
 			incorporateDigestMethod(certDigestDom, signingCertificateDigestMethod);
 
-			final InMemoryDocument inMemoryCertificate = new InMemoryDocument(certificate.getEncoded());
-			incorporateDigestValue(certDigestDom, signingCertificateDigestMethod, inMemoryCertificate);
+			incorporateDigestValue(certDigestDom, signingCertificateDigestMethod, certificate);
 
 			final Element issuerSerialDom = DomUtils.addElement(documentDom, certDom, XAdES, XADES_ISSUER_SERIAL);
 
