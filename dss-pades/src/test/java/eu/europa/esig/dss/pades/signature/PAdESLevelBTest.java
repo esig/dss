@@ -109,6 +109,8 @@ public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 		service = new PAdESService(certificateVerifier);
 	}
 
+	// Annotation for error_probe
+	@SuppressWarnings("InsecureCryptoUsage")
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 

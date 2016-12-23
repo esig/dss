@@ -47,7 +47,7 @@
 		<tiles.version>3.0.7</tiles.version>
 		<slf4j.version>1.7.21</slf4j.version>
 		<logback-classic.version>1.1.8</logback-classic.version>
-		<bouncycastle.version>1.55</bouncycastle.version>
+		<bouncycastle.version>1.56</bouncycastle.version>
 		<cxf.version>3.1.8</cxf.version>
 		<junit.version>4.11</junit.version>
 		<jackson-jaxrs-json-provider.version>2.5.4</jackson-jaxrs-json-provider.version>

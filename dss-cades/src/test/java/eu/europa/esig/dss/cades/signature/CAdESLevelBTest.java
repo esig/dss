@@ -75,7 +75,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
-public class CAdESLevelBTest extends AbstractTestDocumentSignatureService {
+public class CAdESLevelBTest extends AbstractTestDocumentSignatureService<CAdESSignatureParameters> {
 
 	private static final String HELLO_WORLD = "Hello World";
 
@@ -105,6 +105,8 @@ public class CAdESLevelBTest extends AbstractTestDocumentSignatureService {
 
 	}
 
+	// Annotation for error_probe
+	@SuppressWarnings("InsecureCryptoUsage")
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		try {
