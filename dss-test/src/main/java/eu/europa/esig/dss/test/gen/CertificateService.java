@@ -55,6 +55,7 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
@@ -65,22 +66,27 @@ public class CertificateService {
 
 	private static final BouncyCastleProvider SECURITY_PROVIDER = new BouncyCastleProvider();
 
+	private static final int MAX = Integer.MAX_VALUE;
+
 	static {
 		Security.addProvider(SECURITY_PROVIDER);
 	}
 
+	// Annotation for error_probe
+	@SuppressWarnings("InsecureCryptoUsage")
 	public KeyPair generateKeyPair(final EncryptionAlgorithm algorithm) throws GeneralSecurityException {
 		if (algorithm == EncryptionAlgorithm.ECDSA) {
 			return generateECDSAKeyPair();
-		} else {
-			KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(algorithm.getName(), SECURITY_PROVIDER);
-			if (algorithm == EncryptionAlgorithm.DSA) {
-				keyGenerator.initialize(1024);
-			} else {
-				keyGenerator.initialize(2048);
-			}
+		} else if (algorithm == EncryptionAlgorithm.RSA) {
+			KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance("RSA", SECURITY_PROVIDER);
+			keyGenerator.initialize(2048);
+			return keyGenerator.generateKeyPair();
+		} else if (algorithm == EncryptionAlgorithm.DSA) {
+			KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance("DSA", SECURITY_PROVIDER);
+			keyGenerator.initialize(1024);
 			return keyGenerator.generateKeyPair();
 		}
+		throw new DSSException("Unknown algo : " + algorithm);
 	}
 
 	private KeyPair generateECDSAKeyPair() throws GeneralSecurityException {
@@ -107,7 +113,7 @@ public class CertificateService {
 		MockPrivateKeyEntry rootEntry = generateSelfSignedCertificate(algorithm, rootCrl);
 
 		Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
-		Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 100000)); // 1000d
+		Date notAfter = new Date(System.currentTimeMillis() + MAX); // 1000d
 
 		return generateCertificateChain(algorithm, rootEntry, notBefore, notAfter);
 	}
@@ -118,7 +124,7 @@ public class CertificateService {
 
 	public MockPrivateKeyEntry generateCertificateChain(final SignatureAlgorithm algorithm, MockPrivateKeyEntry rootEntry) throws Exception {
 		Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
-		Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 100000)); // 1000d
+		Date notAfter = new Date(System.currentTimeMillis() + MAX); // 1000d
 
 		return generateCertificateChain(algorithm, rootEntry, notBefore, notAfter);
 	}
@@ -137,7 +143,7 @@ public class CertificateService {
 		X500Name issuer = new X500Name("CN=RootSelfSignedFake,O=DSS-test");
 
 		Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
-		Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 100000)); // 1000d
+		Date notAfter = new Date(System.currentTimeMillis() + MAX); // 1000d
 
 		CertificateToken certificate = null;
 		if (rootCrl) {
@@ -155,7 +161,7 @@ public class CertificateService {
 		X500Name subject = new X500Name("CN=RootSubjectTSP,O=DSS-test");
 
 		final Date notBefore = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000)); // yesterday
-		final Date notAfter = new Date(System.currentTimeMillis() + (10 * 24 * 60 * 60 * 100000)); // 1000d
+		final Date notAfter = new Date(System.currentTimeMillis() + MAX); // 1000d
 
 		// generate certificate
 		CertificateToken cert = generateTspCertificate(algorithm, keyPair, issuer, subject, notBefore, notAfter);

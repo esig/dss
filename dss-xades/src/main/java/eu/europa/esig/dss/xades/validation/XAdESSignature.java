@@ -716,15 +716,18 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<CertifiedRole> getCertifiedSignerRoles() {
-
 		/**
 		 * <!-- Start EncapsulatedPKIDataType-->
-		 * <xsd:element name="EncapsulatedPKIData" type="EncapsulatedPKIDataType"/> <xsd:complexType
-		 * name="EncapsulatedPKIDataType"> <xsd:simpleContent> <xsd:extension base="xsd:base-64Binary"> <xsd:attribute
-		 * name="Id" type="xsd:ID" use="optional"/>
-		 * <xsd:attribute name="Encoding" type="xsd:anyURI" use="optional"/> </xsd:extension> </xsd:simpleContent>
-		 * </xsd:complexType> <!-- End
-		 * EncapsulatedPKIDataType -->
+		 * <xsd:element name="EncapsulatedPKIData" type="EncapsulatedPKIDataType"/>
+		 * <xsd:complexType name="EncapsulatedPKIDataType">
+		 * <xsd:simpleContent>
+		 * <xsd:extension base="xsd:base-64Binary">
+		 * <xsd:attribute name="Id" type="xsd:ID" use="optional"/>
+		 * <xsd:attribute name="Encoding" type="xsd:anyURI" use="optional"/>
+		 * </xsd:extension>
+		 * </xsd:simpleContent>
+		 * </xsd:complexType>
+		 * <!-- End EncapsulatedPKIDataType -->
 		 */
 		NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CERTIFIED_ROLE);
 		if (nodeList.getLength() == 0) {
@@ -735,13 +738,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 		final List<CertifiedRole> roles = new ArrayList<CertifiedRole>();
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
-
 			final Element certEl = (Element) nodeList.item(ii);
 			final String textContent = certEl.getTextContent();
-			final CertificateToken x509Certificate = DSSUtils.loadCertificateFromBase64EncodedString(textContent);
-			if (!roles.contains(x509Certificate)) {
-
-				roles.add(new CertifiedRole());
+			CertifiedRole role = new CertifiedRole();
+			role.setRole(textContent);
+			if (!roles.contains(role)) {
+				roles.add(role);
 			}
 		}
 		return roles;
