@@ -23,7 +23,6 @@ package eu.europa.esig.dss;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.cert.CertificateParsingException;
-import java.security.cert.X509CRL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
 
 import javax.naming.InvalidNameException;
@@ -92,7 +90,7 @@ import eu.europa.esig.dss.x509.CertificateToken;
 public final class DSSASN1Utils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSASN1Utils.class);
-	
+
 	private static final String QC_TYPE_STATEMENT_OID = "0.4.0.1862.1.6";
 
 	/**
@@ -343,6 +341,7 @@ public final class DSSASN1Utils {
 	/**
 	 * Get the list of all QCStatement Ids that are present in the certificate.
 	 * (As per ETSI EN 319 412-5 V2.1.1)
+	 * 
 	 * @param x509Certificate
 	 * @return
 	 */
@@ -359,10 +358,11 @@ public final class DSSASN1Utils {
 		}
 		return extensionIdList;
 	}
-	
+
 	/**
 	 * Get the list of all QCType Ids that are present in the certificate.
 	 * (As per ETSI EN 319 412-5 V2.1.1)
+	 * 
 	 * @param certToken
 	 * @return
 	 */
@@ -376,24 +376,24 @@ public final class DSSASN1Utils {
 				final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(ii));
 				if (QC_TYPE_STATEMENT_OID.equals(statement.getStatementId().getId())) {
 					final ASN1Encodable qcTypeInfo1 = statement.getStatementInfo();
-					if ( qcTypeInfo1 instanceof ASN1Sequence ) {
+					if (qcTypeInfo1 instanceof ASN1Sequence) {
 						final ASN1Sequence qcTypeInfo = (ASN1Sequence) qcTypeInfo1;
 						for (int jj = 0; jj < qcTypeInfo.size(); jj++) {
 							final ASN1Encodable e1 = qcTypeInfo.getObjectAt(jj);
-							if ( e1 instanceof ASN1ObjectIdentifier ) {
+							if (e1 instanceof ASN1ObjectIdentifier) {
 								final ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) e1;
-								qcTypesIdList.add( oid.getId() );
+								qcTypesIdList.add(oid.getId());
 							} else {
-								throw new IllegalStateException( "ASN1Sequence in QcTypes does not contain ASN1ObjectIdentifer, but " + e1.getClass().getName() );
+								throw new IllegalStateException("ASN1Sequence in QcTypes does not contain ASN1ObjectIdentifer, but " + e1.getClass().getName());
 							}
 						}
 					} else {
-						throw new IllegalStateException( "QcTypes not an ASN1Sequence, but " + qcTypeInfo1.getClass().getName() );
+						throw new IllegalStateException("QcTypes not an ASN1Sequence, but " + qcTypeInfo1.getClass().getName());
 					}
 				}
 			}
 		}
-		
+
 		return qcTypesIdList;
 	}
 
@@ -664,23 +664,6 @@ public final class DSSASN1Utils {
 			String value = extractAttributeFromX500Principal(oid, cert.getSubjectX500Principal());
 			if (value != null) {
 				return value;
-			}
-		}
-		return null;
-	}
-
-	public static Date getExpiredCertsOnCRL(X509CRL x509crl) {
-		Set<String> nonCriticalExtensionOIDs = x509crl.getNonCriticalExtensionOIDs();
-		if ((nonCriticalExtensionOIDs != null) && nonCriticalExtensionOIDs.contains(OID.id_ce_expiredCertsOnCRL.getId())) {
-			byte[] extensionValue = x509crl.getExtensionValue(OID.id_ce_expiredCertsOnCRL.getId());
-			if (Utils.isArrayNotEmpty(extensionValue)) {
-				try {
-					ASN1OctetString octetString = (ASN1OctetString) ASN1Primitive.fromByteArray(extensionValue);
-					ASN1GeneralizedTime generalTime = (ASN1GeneralizedTime) ASN1Primitive.fromByteArray(octetString.getOctets());
-					return generalTime.getDate();
-				} catch (Exception e) {
-					LOG.error("Unable to retrieve id_ce_expiredCertsOnCRL on CRL : " + e.getMessage(), e);
-				}
 			}
 		}
 		return null;

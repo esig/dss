@@ -21,7 +21,10 @@
 package eu.europa.esig.dss.x509.crl;
 
 import java.security.cert.X509CRL;
+import java.util.Date;
 
+import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -30,7 +33,12 @@ import eu.europa.esig.dss.x509.CertificateToken;
  */
 public class CRLValidity {
 
-	private X509CRL x509CRL = null;
+	private String key;
+	private byte[] crlEncoded = null;
+	private SignatureAlgorithm signatureAlgorithm;
+	private Date nextUpdate;
+	private Date thisUpdate;
+	private Date expiredCertsOnCRL;
 	private boolean issuerX509PrincipalMatches = false;
 	private boolean signatureIntact = false;
 	private boolean crlSignKeyUsage = false;
@@ -38,12 +46,65 @@ public class CRLValidity {
 	private CertificateToken issuerToken = null;
 	private String signatureInvalidityReason = "";
 
+	private X509CRL x509Crl;
+
 	public X509CRL getX509CRL() {
-		return x509CRL;
+		if (x509Crl == null) {
+			x509Crl = DSSUtils.loadCRL(crlEncoded);
+		}
+		return x509Crl;
 	}
 
-	public void setX509CRL(X509CRL x509crl) {
-		x509CRL = x509crl;
+	public void setX509CRL(X509CRL x509Crl) {
+		this.x509Crl = x509Crl;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public byte[] getCrlEncoded() {
+		return crlEncoded;
+	}
+
+	public void setCrlEncoded(byte[] crlEncoded) {
+		this.crlEncoded = crlEncoded;
+	}
+
+	public SignatureAlgorithm getSignatureAlgorithm() {
+		return signatureAlgorithm;
+	}
+
+	public void setSignatureAlgorithm(SignatureAlgorithm signatureAlgorithm) {
+		this.signatureAlgorithm = signatureAlgorithm;
+	}
+
+	public Date getNextUpdate() {
+		return nextUpdate;
+	}
+
+	public void setNextUpdate(Date nextUpdate) {
+		this.nextUpdate = nextUpdate;
+	}
+
+	public Date getThisUpdate() {
+		return thisUpdate;
+	}
+
+	public void setThisUpdate(Date thisUpdate) {
+		this.thisUpdate = thisUpdate;
+	}
+
+	public Date getExpiredCertsOnCRL() {
+		return expiredCertsOnCRL;
+	}
+
+	public void setExpiredCertsOnCRL(Date expiredCertsOnCRL) {
+		this.expiredCertsOnCRL = expiredCertsOnCRL;
 	}
 
 	public boolean isIssuerX509PrincipalMatches() {
@@ -105,14 +166,13 @@ public class CRLValidity {
 	 * @return {@code true} if the CRL is valid {@code false} otherwise.
 	 */
 	boolean isValid() {
-
 		return issuerX509PrincipalMatches && signatureIntact && crlSignKeyUsage && !unknownCriticalExtension;
 	}
 
 	@Override
 	public String toString() {
-		return "CRLValidity{" + "issuerX509PrincipalMatches=" + issuerX509PrincipalMatches + ", signatureIntact=" + signatureIntact
-				+ ", crlSignKeyUsage=" + crlSignKeyUsage + ", unknownCriticalExtension=" + unknownCriticalExtension + ", issuerToken=" + issuerToken
-				+ ", signatureInvalidityReason='" + signatureInvalidityReason + '\'' + '}';
+		return "CRLValidity{" + "issuerX509PrincipalMatches=" + issuerX509PrincipalMatches + ", signatureIntact=" + signatureIntact + ", crlSignKeyUsage="
+				+ crlSignKeyUsage + ", unknownCriticalExtension=" + unknownCriticalExtension + ", issuerToken=" + issuerToken + ", signatureInvalidityReason='"
+				+ signatureInvalidityReason + '\'' + '}';
 	}
 }

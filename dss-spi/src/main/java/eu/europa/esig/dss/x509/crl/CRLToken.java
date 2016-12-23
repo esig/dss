@@ -21,21 +21,17 @@
 package eu.europa.esig.dss.x509.crl;
 
 import java.math.BigInteger;
-import java.security.cert.CRLException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509CRLEntry;
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSNotApplicableMethodException;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.TokenValidationExtraInfo;
@@ -63,41 +59,29 @@ public class CRLToken extends RevocationToken {
 	 *            validity of the CRL
 	 */
 	public CRLToken(final CertificateToken certificateToken, final CRLValidity crlValidity) {
-
-		ensureNotNull(crlValidity);
+		if (crlValidity == null) {
+			throw new NullPointerException();
+		}
 		this.crlValidity = crlValidity;
-		setDefaultValues();
+		copyCommonValuesFromCRL();
 		setRevocationStatus(certificateToken);
 		LOG.debug("+CRLToken");
 	}
 
-	private void ensureNotNull(final CRLValidity crlValidity) {
+	private void copyCommonValuesFromCRL() {
+		this.signatureAlgorithm = crlValidity.getSignatureAlgorithm();
+		this.thisUpdate = crlValidity.getThisUpdate();
+		this.productionDate = crlValidity.getThisUpdate(); // dates are equals in case of CRL
+		this.nextUpdate = crlValidity.getNextUpdate();
+		this.expiredCertsOnCRL = crlValidity.getExpiredCertsOnCRL();
 
-		if (crlValidity == null) {
-			throw new NullPointerException();
-		}
-		if (crlValidity.getX509CRL() == null) {
-			throw new NullPointerException();
-		}
-	}
+		this.issuerToken = crlValidity.getIssuerToken();
+		this.issuerX500Principal = crlValidity.getIssuerToken().getSubjectX500Principal();
 
-	private void setDefaultValues() {
-
-		final X509CRL x509crl = crlValidity.getX509CRL();
-		final String sigAlgOID = x509crl.getSigAlgOID();
-		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOID(sigAlgOID);
-		this.signatureAlgorithm = signatureAlgorithm;
-		this.thisUpdate = x509crl.getThisUpdate();
-		this.productionDate = x509crl.getThisUpdate(); // dates are equals in case of CRL
-		this.nextUpdate = x509crl.getNextUpdate();
-		this.expiredCertsOnCRL = DSSASN1Utils.getExpiredCertsOnCRL(x509crl);
-
-		issuerX500Principal = x509crl.getIssuerX500Principal();
 		this.extraInfo = new TokenValidationExtraInfo();
 
-		issuerToken = crlValidity.getIssuerToken();
-		signatureValid = crlValidity.isSignatureIntact();
-		signatureInvalidityReason = crlValidity.getSignatureInvalidityReason();
+		this.signatureValid = crlValidity.isSignatureIntact();
+		this.signatureInvalidityReason = crlValidity.getSignatureInvalidityReason();
 	}
 
 	/**
@@ -105,12 +89,9 @@ public class CRLToken extends RevocationToken {
 	 *            the {@code CertificateToken} which is managed by this CRL.
 	 */
 	private void setRevocationStatus(final CertificateToken certificateToken) {
-
 		final CertificateToken issuerToken = certificateToken.getIssuerToken();
 		if (!issuerToken.equals(crlValidity.getIssuerToken())) {
-
 			if (!crlValidity.isSignatureIntact()) {
-
 				throw new DSSException(crlValidity.getSignatureInvalidityReason());
 			}
 			throw new DSSException("The CRLToken is not signed by the same issuer as the CertificateToken to be verified!");
@@ -138,6 +119,10 @@ public class CRLToken extends RevocationToken {
 		throw new DSSNotApplicableMethodException(this.getClass());
 	}
 
+	public CRLValidity getCrlValidity() {
+		return crlValidity;
+	}
+
 	/**
 	 * This method returns the DSS abbreviation of the CRLToken. It is used for
 	 * debugging purpose.
@@ -146,18 +131,13 @@ public class CRLToken extends RevocationToken {
 	 */
 	@Override
 	public String getAbbreviation() {
-
 		return "CRLToken[" + (productionDate == null ? "?" : DSSUtils.formatInternal(productionDate)) + ", signedBy="
 				+ (issuerToken == null ? "?" : issuerToken.getDSSIdAsString()) + "]";
 	}
 
 	@Override
 	public byte[] getEncoded() {
-		try {
-			return crlValidity.getX509CRL().getEncoded();
-		} catch (CRLException e) {
-			throw new DSSException("CRL encoding error: " + e.getMessage(), e);
-		}
+		return crlValidity.getCrlEncoded();
 	}
 
 	/**
@@ -171,25 +151,12 @@ public class CRLToken extends RevocationToken {
 		return crlValidity.isValid();
 	}
 
-	/**
-	 * Gets the thisUpdate date from the CRL.
-	 *
-	 * @return the thisUpdate date from the CRL.
-	 */
-	@Override
-	public Date getThisUpdate() {
-		return crlValidity.getX509CRL().getThisUpdate();
-	}
-
 	@Override
 	public String toString(String indentStr) {
-
 		try {
-
 			StringBuilder out = new StringBuilder();
 			out.append(indentStr).append("CRLToken[\n");
 			indentStr += "\t";
-			out.append(indentStr).append("Version: ").append(crlValidity.getX509CRL().getVersion()).append('\n');
 			out.append(indentStr).append("Production time: ").append(productionDate == null ? "?" : DSSUtils.formatInternal(productionDate)).append('\n');
 			out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');
 			out.append(indentStr).append("Status: ").append(getStatus()).append('\n');
@@ -209,7 +176,6 @@ public class CRLToken extends RevocationToken {
 			out.append(indentStr).append("]");
 			return out.toString();
 		} catch (Exception e) {
-
 			return ((Object) this).toString();
 		}
 	}

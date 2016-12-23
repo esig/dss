@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.security.cert.X509CRL;
 import java.util.List;
 
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
@@ -70,12 +69,4 @@ public class DSSASN1UtilsTest {
 		assertNotNull(DSSASN1Utils.getSki(certNoSKIextension, true));
 	}
 
-	@Test
-	public void getExpiredCertsOnCRL() throws Exception {
-		X509CRL x509crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/crl_with_expiredCertsOnCRL_extension.crl"));
-		assertNotNull(DSSASN1Utils.getExpiredCertsOnCRL(x509crl));
-
-		x509crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/LTRCA.crl"));
-		assertNull(DSSASN1Utils.getExpiredCertsOnCRL(x509crl));
-	}
 }

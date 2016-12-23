@@ -20,12 +20,13 @@
  */
 package eu.europa.esig.dss.client.crl;
 
-import java.security.cert.X509CRL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.Date;
 import java.util.List;
 
@@ -36,19 +37,16 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.crl.CRLSource;
 import eu.europa.esig.dss.x509.crl.CRLToken;
-import eu.europa.esig.dss.x509.crl.CRLUtils;
 import eu.europa.esig.dss.x509.crl.CRLValidity;
 
 /**
  * CRLSource that retrieve information from a JDBC datasource
- *
- *
  */
-
 public class JdbcCacheCRLSource implements CRLSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JdbcCacheCRLSource.class);
@@ -56,66 +54,74 @@ public class JdbcCacheCRLSource implements CRLSource {
 	/**
 	 * used in the init method to check if the table exists
 	 */
-	public static final String SQL_INIT_CHECK_EXISTENCE = "SELECT COUNT(*) FROM CACHED_CRL";
+	private static final String SQL_INIT_CHECK_EXISTENCE = "SELECT COUNT(*) FROM CACHED_CRL";
 
 	/**
 	 * used in the init method to create the table, if not existing: ID (char40 = SHA1 length) and DATA (blob)
 	 */
-	public static final String SQL_INIT_CREATE_TABLE = "CREATE TABLE CACHED_CRL (ID CHAR(40), DATA LONGVARBINARY)";
+	private static final String SQL_INIT_CREATE_TABLE = "CREATE TABLE CACHED_CRL (ID CHAR(40), DATA LONGVARBINARY, SIGNATURE_ALGORITHM VARCHAR(20), THIS_UPDATE TIMESTAMP, NEXT_UPDATE TIMESTAMP, EXPIRED_CERTS_ON_CRL TIMESTAMP, ISSUER LONGVARBINARY, ISSUER_PRINCIPAL_MATCH BOOLEAN, SIGNATURE_INTACT BOOLEAN, CRL_SIGN_KEY_USAGE BOOLEAN, UNKNOWN_CRITICAL_EXTENSION BOOLEAN, SIGNATURE_INVALID_REASON VARCHAR(256))";
 
 	/**
 	 * used in the find method to select the crl via the id
 	 */
-	public static final String SQL_FIND_QUERY = "SELECT * FROM CACHED_CRL WHERE ID = ?";
+	private static final String SQL_FIND_QUERY = "SELECT * FROM CACHED_CRL WHERE ID = ?";
 
 	/**
 	 * used in the find method when selecting the crl via the id to get the ID (char20) from the resultset
 	 */
-	public static final String SQL_FIND_QUERY_ID = "ID";
+	private static final String SQL_FIND_QUERY_ID = "ID";
 
 	/**
 	 * used in the find method when selecting the crl via the id to get the DATA (blob) from the resultset
 	 */
-	public static final String SQL_FIND_QUERY_DATA = "DATA";
+	private static final String SQL_FIND_QUERY_DATA = "DATA";
+
+	/**
+	 * used in the find method when selecting the issuer certificate via the id to get the ISSUER (blob) from the
+	 * resultset
+	 */
+	private static final String SQL_FIND_QUERY_ISSUER = "ISSUER";
+
+	private static final String SQL_FIND_QUERY_THIS_UPDATE = "THIS_UPDATE";
+
+	private static final String SQL_FIND_QUERY_NEXT_UPDATE = "NEXT_UPDATE";
+
+	private static final String SQL_FIND_QUERY_EXPIRED_CERTS_ON_CRL = "EXPIRED_CERTS_ON_CRL";
+
+	private static final String SQL_FIND_QUERY_SIGNATURE_ALGO = "SIGNATURE_ALGORITHM";
+
+	private static final String SQL_FIND_QUERY_ISSUER_PRINCIPAL_MATCH = "ISSUER_PRINCIPAL_MATCH";
+
+	private static final String SQL_FIND_QUERY_SIGNATURE_INTACT = "SIGNATURE_INTACT";
+
+	private static final String SQL_FIND_QUERY_CRL_SIGN_KEY_USAGE = "CRL_SIGN_KEY_USAGE";
+
+	private static final String SQL_FIND_QUERY_UNKNOWN_CRITICAL_EXTENSION = "UNKNOWN_CRITICAL_EXTENSION";
+
+	private static final String SQL_FIND_QUERY_SIGNATURE_INVALID_REASON = "SIGNATURE_INVALID_REASON";
 
 	/**
 	 * used via the find method to insert a new record
 	 */
-	public static final String SQL_FIND_INSERT = "INSERT INTO CACHED_CRL (ID, DATA) VALUES (?, ?)";
+	private static final String SQL_FIND_INSERT = "INSERT INTO CACHED_CRL (ID, DATA, SIGNATURE_ALGORITHM, THIS_UPDATE, NEXT_UPDATE, EXPIRED_CERTS_ON_CRL, ISSUER, ISSUER_PRINCIPAL_MATCH, SIGNATURE_INTACT, CRL_SIGN_KEY_USAGE, UNKNOWN_CRITICAL_EXTENSION, SIGNATURE_INVALID_REASON) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	/**
 	 * used via the find method to update an existing record via the id
 	 */
-	public static final String SQL_FIND_UPDATE = "UPDATE CACHED_CRL SET DATA = ? WHERE ID = ?";
+	private static final String SQL_FIND_UPDATE = "UPDATE CACHED_CRL SET DATA = ?, SIGNATURE_ALGORITHM = ?, THIS_UPDATE = ?, NEXT_UPDATE = ?, EXPIRED_CERTS_ON_CRL = ?, ISSUER = ?, ISSUER_PRINCIPAL_MATCH = ?, SIGNATURE_INTACT = ?, CRL_SIGN_KEY_USAGE = ?, UNKNOWN_CRITICAL_EXTENSION = ?, SIGNATURE_INVALID_REASON = ?  WHERE ID = ?";
 
 	private OnlineCRLSource cachedSource;
 
 	private DataSource dataSource;
 
-	private String sqlInitCheckExistence = SQL_INIT_CHECK_EXISTENCE;
-
-	private String sqlInitCreateTable = SQL_INIT_CREATE_TABLE;
-
-	private String sqlFindQuery = SQL_FIND_QUERY;
-
-	private String sqlFindQueryId = SQL_FIND_QUERY_ID;
-
-	private String sqlFindQueryData = SQL_FIND_QUERY_DATA;
-
-	private String sqlFindInsert = SQL_FIND_INSERT;
-
-	private String sqlFindUpdate = SQL_FIND_UPDATE;
-
 	/**
 	 * The default constructor for JdbcCRLSource.
 	 */
 	public JdbcCacheCRLSource() {
-
 	}
 
 	@Override
 	public CRLToken findCrl(final CertificateToken certificateToken) throws DSSException {
-
 		if (certificateToken == null) {
 			return null;
 		}
@@ -132,39 +138,30 @@ public class JdbcCacheCRLSource implements CRLSource {
 		try {
 
 			final String key = DSSUtils.getSHA1Digest(crlUrl);
-			final CachedCRL dbCrl = findCrlInDB(key);
-			if (dbCrl != null) {
-
-				X509CRL x509Crl = DSSUtils.loadCRL(dbCrl.getCrl());
-				if (x509Crl.getNextUpdate().after(new Date())) {
-
+			final CRLValidity storedValidity = findCrlInDB(key);
+			if (storedValidity != null) {
+				if (storedValidity.getNextUpdate().after(new Date())) {
 					LOG.debug("CRL in cache");
-					final CRLValidity crlValidity = CRLUtils.isValidCRL(x509Crl, issuerToken);
-					final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
+					final CRLToken crlToken = new CRLToken(certificateToken, storedValidity);
 					crlToken.setSourceURL(crlUrl);
 					if (crlToken.isValid()) {
-
 						return crlToken;
 					}
 				}
 			}
 			final CRLToken crlToken = cachedSource.findCrl(certificateToken);
 			if ((crlToken != null) && crlToken.isValid()) {
-
-				if (dbCrl == null) {
-
-					LOG.info("CRL not in cache");
-					insertCrlInDb(key, crlToken.getEncoded());
+				if (storedValidity == null) {
+					LOG.info("CRL '{}' not in cache", crlUrl);
+					insertCrlInDb(key, crlToken.getCrlValidity());
 				} else {
-
-					LOG.debug("CRL expired");
-					updateCrlInDb(key, crlToken.getEncoded());
+					LOG.debug("CRL '{}' expired", crlUrl);
+					updateCrlInDb(key, crlToken.getCrlValidity());
 				}
 			}
 			return crlToken;
 		} catch (SQLException e) {
-
-			LOG.info("Error with the cache data store");
+			LOG.info("Error with the cache data store", e);
 		}
 		return null;
 	}
@@ -174,7 +171,6 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 *            the cachedSource to set
 	 */
 	public void setCachedSource(OnlineCRLSource cachedSource) {
-
 		this.cachedSource = cachedSource;
 	}
 
@@ -184,8 +180,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 * @throws Exception
 	 */
 	private void initDao() throws Exception {
-
-		/* Create the table iff it doesn't exist. */
+		/* Create the table if it doesn't exist. */
 		if (!tableExists()) {
 			createTable();
 		}
@@ -197,18 +192,16 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 * @throws java.sql.SQLException
 	 */
 	private void createTable() throws SQLException {
-
 		Connection c = null;
 		Statement s = null;
 		try {
 			c = getDataSource().getConnection();
 			s = c.createStatement();
-			s.executeQuery(sqlInitCreateTable);
+			s.executeQuery(SQL_INIT_CREATE_TABLE);
 			c.commit();
 		} finally {
 			closeQuietly(c, s, null);
 		}
-
 	}
 
 	/**
@@ -217,14 +210,13 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 * @return true if the table exists.
 	 */
 	private boolean tableExists() {
-
 		Connection c = null;
 		Statement s = null;
 		boolean tableExists;
 		try {
 			c = getDataSource().getConnection();
 			s = c.createStatement();
-			s.executeQuery(sqlInitCheckExistence);
+			s.executeQuery(SQL_INIT_CHECK_EXISTENCE);
 			tableExists = true;
 		} catch (SQLException e) {
 			tableExists = false;
@@ -242,20 +234,29 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 * @return the cached crl
 	 * @throws java.sql.SQLException
 	 */
-	private CachedCRL findCrlInDB(String key) throws SQLException {
-
+	private CRLValidity findCrlInDB(String key) throws SQLException {
 		Connection c = null;
 		PreparedStatement s = null;
 		ResultSet rs = null;
 		try {
 			c = getDataSource().getConnection();
-			s = c.prepareStatement(sqlFindQuery);
+			s = c.prepareStatement(SQL_FIND_QUERY);
 			s.setString(1, key);
 			rs = s.executeQuery();
 			if (rs.next()) {
-				CachedCRL cached = new CachedCRL();
-				cached.setKey(rs.getString(sqlFindQueryId));
-				cached.setCrl(rs.getBytes(sqlFindQueryData));
+				CRLValidity cached = new CRLValidity();
+				cached.setKey(rs.getString(SQL_FIND_QUERY_ID));
+				cached.setCrlEncoded(rs.getBytes(SQL_FIND_QUERY_DATA));
+				cached.setSignatureAlgorithm(SignatureAlgorithm.valueOf(rs.getString(SQL_FIND_QUERY_SIGNATURE_ALGO)));
+				cached.setThisUpdate(rs.getTimestamp(SQL_FIND_QUERY_THIS_UPDATE));
+				cached.setNextUpdate(rs.getTimestamp(SQL_FIND_QUERY_NEXT_UPDATE));
+				cached.setExpiredCertsOnCRL(rs.getTimestamp(SQL_FIND_QUERY_EXPIRED_CERTS_ON_CRL));
+				cached.setIssuerToken(DSSUtils.loadCertificate(rs.getBytes(SQL_FIND_QUERY_ISSUER)));
+				cached.setCrlSignKeyUsage(rs.getBoolean(SQL_FIND_QUERY_CRL_SIGN_KEY_USAGE));
+				cached.setUnknownCriticalExtension(rs.getBoolean(SQL_FIND_QUERY_UNKNOWN_CRITICAL_EXTENSION));
+				cached.setIssuerX509PrincipalMatches(rs.getBoolean(SQL_FIND_QUERY_ISSUER_PRINCIPAL_MATCH));
+				cached.setSignatureIntact(rs.getBoolean(SQL_FIND_QUERY_SIGNATURE_INTACT));
+				cached.setSignatureInvalidityReason(rs.getString(SQL_FIND_QUERY_SIGNATURE_INVALID_REASON));
 				return cached;
 			}
 		} finally {
@@ -274,16 +275,44 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 *            the encoded CRL
 	 * @throws java.sql.SQLException
 	 */
-	private void insertCrlInDb(String key, byte[] encoded) throws SQLException {
-
+	private void insertCrlInDb(String key, CRLValidity token) throws SQLException {
 		Connection c = null;
 		PreparedStatement s = null;
 		ResultSet rs = null;
 		try {
 			c = getDataSource().getConnection();
-			s = c.prepareStatement(sqlFindInsert);
+			s = c.prepareStatement(SQL_FIND_INSERT);
+
 			s.setString(1, key);
-			s.setBytes(2, encoded);
+
+			s.setBytes(2, token.getCrlEncoded());
+
+			s.setString(3, token.getSignatureAlgorithm().name());
+
+			if (token.getThisUpdate() != null) {
+				s.setTimestamp(4, new Timestamp(token.getThisUpdate().getTime()));
+			} else {
+				s.setNull(4, Types.TIMESTAMP);
+			}
+
+			if (token.getNextUpdate() != null) {
+				s.setTimestamp(5, new Timestamp(token.getNextUpdate().getTime()));
+			} else {
+				s.setNull(5, Types.TIMESTAMP);
+			}
+
+			if (token.getExpiredCertsOnCRL() != null) {
+				s.setTimestamp(6, new Timestamp(token.getExpiredCertsOnCRL().getTime()));
+			} else {
+				s.setNull(6, Types.TIMESTAMP);
+			}
+
+			s.setBytes(7, token.getIssuerToken().getEncoded());
+			s.setBoolean(8, token.isIssuerX509PrincipalMatches());
+			s.setBoolean(9, token.isSignatureIntact());
+			s.setBoolean(10, token.isCrlSignKeyUsage());
+			s.setBoolean(11, token.isUnknownCriticalExtension());
+			s.setString(12, token.getSignatureInvalidityReason());
 			s.executeUpdate();
 		} finally {
 			closeQuietly(c, s, rs);
@@ -299,16 +328,43 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 *            the encoded CRL
 	 * @throws java.sql.SQLException
 	 */
-	private void updateCrlInDb(String key, byte[] encoded) throws SQLException {
-
+	private void updateCrlInDb(String key, CRLValidity token) throws SQLException {
 		Connection c = null;
 		PreparedStatement s = null;
 		ResultSet rs = null;
 		try {
 			c = getDataSource().getConnection();
-			s = c.prepareStatement(sqlFindUpdate);
-			s.setBytes(1, encoded);
-			s.setString(2, key);
+			s = c.prepareStatement(SQL_FIND_UPDATE);
+			s.setBytes(1, token.getCrlEncoded());
+
+			s.setString(2, token.getSignatureAlgorithm().name());
+
+			if (token.getThisUpdate() != null) {
+				s.setTimestamp(3, new Timestamp(token.getThisUpdate().getTime()));
+			} else {
+				s.setNull(3, Types.TIMESTAMP);
+			}
+
+			if (token.getNextUpdate() != null) {
+				s.setTimestamp(4, new Timestamp(token.getNextUpdate().getTime()));
+			} else {
+				s.setNull(4, Types.TIMESTAMP);
+			}
+
+			if (token.getExpiredCertsOnCRL() != null) {
+				s.setTimestamp(5, new Timestamp(token.getExpiredCertsOnCRL().getTime()));
+			} else {
+				s.setNull(5, Types.TIMESTAMP);
+			}
+
+			s.setBytes(6, token.getIssuerToken().getEncoded());
+			s.setBoolean(7, token.isIssuerX509PrincipalMatches());
+			s.setBoolean(8, token.isSignatureIntact());
+			s.setBoolean(9, token.isCrlSignKeyUsage());
+			s.setBoolean(10, token.isUnknownCriticalExtension());
+			s.setString(11, token.getSignatureInvalidityReason());
+
+			s.setString(12, key);
 			s.executeUpdate();
 		} finally {
 			closeQuietly(c, s, rs);
@@ -320,7 +376,6 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 * @return the dataSource
 	 */
 	private DataSource getDataSource() {
-
 		return dataSource;
 	}
 
@@ -330,156 +385,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 * @throws Exception
 	 */
 	public void setDataSource(DataSource dataSource) throws Exception {
-
 		this.dataSource = dataSource;
 		initDao();
-	}
-
-	/**
-	 * used in the init method to check if the table exists
-	 *
-	 * @return the value
-	 */
-	public String getSqlInitCheckExistence() {
-
-		return sqlInitCheckExistence;
-	}
-
-	/**
-	 * used in the init method to check if the table exists
-	 *
-	 * @param sqlInitCheckExistence
-	 *            the value
-	 */
-	public void setSqlInitCheckExistence(final String sqlInitCheckExistence) {
-
-		this.sqlInitCheckExistence = sqlInitCheckExistence;
-	}
-
-	/**
-	 * used in the init method to create the table, if not existing: ID (char20) and DATA (blob)
-	 *
-	 * @return the value
-	 */
-	public String getSqlInitCreateTable() {
-
-		return sqlInitCreateTable;
-	}
-
-	/**
-	 * used in the init method to create the table, if not existing: ID (char20) and DATA (blob)
-	 *
-	 * @param sqlInitCreateTable
-	 *            the value
-	 */
-	public void setSqlInitCreateTable(final String sqlInitCreateTable) {
-
-		this.sqlInitCreateTable = sqlInitCreateTable;
-	}
-
-	/**
-	 * used in the find method to select the crl via the id
-	 *
-	 * @return the value
-	 */
-	public String getSqlFindQuery() {
-
-		return sqlFindQuery;
-	}
-
-	/**
-	 * used in the find method to select the crl via the id
-	 *
-	 * @param sqlFindQuery
-	 *            the value
-	 */
-	public void setSqlFindQuery(final String sqlFindQuery) {
-
-		this.sqlFindQuery = sqlFindQuery;
-	}
-
-	/**
-	 * used in the find method when selecting the crl via the id to get the ID (char20) from the resultset
-	 *
-	 * @return the value
-	 */
-	public String getSqlFindQueryId() {
-
-		return sqlFindQueryId;
-	}
-
-	/**
-	 * used in the find method when selecting the crl via the id to get the ID (char20) from the resultset
-	 *
-	 * @param sqlFindQueryId
-	 *            the value
-	 */
-	public void setSqlFindQueryId(final String sqlFindQueryId) {
-
-		this.sqlFindQueryId = sqlFindQueryId;
-	}
-
-	/**
-	 * used in the find method when selecting the crl via the id to get the DATA (blob) from the resultset
-	 *
-	 * @return the value
-	 */
-	public String getSqlFindQueryData() {
-
-		return sqlFindQueryData;
-	}
-
-	/**
-	 * used in the find method when selecting the crl via the id to get the DATA (blob) from the resultset
-	 *
-	 * @param sqlFindQueryData
-	 *            the value
-	 */
-	public void setSqlFindQueryData(final String sqlFindQueryData) {
-
-		this.sqlFindQueryData = sqlFindQueryData;
-	}
-
-	/**
-	 * used via the find method to insert a new record
-	 *
-	 * @return the value
-	 */
-	public String getSqlFindInsert() {
-
-		return sqlFindInsert;
-	}
-
-	/**
-	 * used via the find method to insert a new record
-	 *
-	 * @param sqlFindInsert
-	 *            the value
-	 */
-	public void setSqlFindInsert(final String sqlFindInsert) {
-
-		this.sqlFindInsert = sqlFindInsert;
-	}
-
-	/**
-	 * used via the find method to update an existing record via the id
-	 *
-	 * @return the value
-	 */
-	public String getSqlFindUpdate() {
-
-		return sqlFindUpdate;
-	}
-
-	/**
-	 * used via the find method to update an existing record via the id
-	 *
-	 * @param sqlFindUpdate
-	 *            the value
-	 */
-	public void setSqlFindUpdate(final String sqlFindUpdate) {
-
-		this.sqlFindUpdate = sqlFindUpdate;
 	}
 
 	/**
@@ -493,7 +400,6 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 *            the ResultSet
 	 */
 	private void closeQuietly(Connection c, Statement s, ResultSet rs) {
-
 		try {
 			if (rs != null) {
 				rs.close();
@@ -507,6 +413,5 @@ public class JdbcCacheCRLSource implements CRLSource {
 		} catch (SQLException e) {
 			// purposely empty
 		}
-
 	}
 }

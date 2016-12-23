@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.security.cert.X509CRL;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -102,7 +101,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 			if (revocationToken instanceof CRLToken) {
 
-				final X509CRL crl = ((CRLToken) revocationToken).getX509crl();
+				final CRLToken crl = ((CRLToken) revocationToken);
 
 				final Element crlRefDom = DomUtils.addElement(documentDom, crlRefsDom, XAdESNamespaces.XAdES, "xades:CRLRef");
 
