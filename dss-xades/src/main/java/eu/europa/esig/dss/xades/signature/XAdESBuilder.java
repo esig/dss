@@ -29,6 +29,7 @@ import java.util.Set;
 
 import javax.xml.crypto.dsig.XMLSignature;
 
+import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -36,6 +37,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -297,7 +299,8 @@ public abstract class XAdESBuilder {
 	}
 
 	/**
-	 * Incorporates the certificate's references as a child of the given parent node. The first element of the {@code X509Certificate} {@code List} MUST be the
+	 * Incorporates the certificate's references as a child of the given parent node. The first element of the
+	 * {@code X509Certificate} {@code List} MUST be the
 	 * signing certificate.
 	 *
 	 * @param signingCertificateDom
@@ -306,29 +309,43 @@ public abstract class XAdESBuilder {
 	 *            {@code List} of the certificates to be incorporated
 	 */
 	protected void incorporateCertificateRef(final Element signingCertificateDom, final Set<CertificateToken> certificates) {
-
 		for (final CertificateToken certificate : certificates) {
-
-			final Element certDom = DomUtils.addElement(documentDom, signingCertificateDom, XAdES, XADES_CERT);
-
-			final Element certDigestDom = DomUtils.addElement(documentDom, certDom, XAdES, XADES_CERT_DIGEST);
-
-			final DigestAlgorithm signingCertificateDigestMethod = params.getSigningCertificateDigestMethod();
-			incorporateDigestMethod(certDigestDom, signingCertificateDigestMethod);
-
-			incorporateDigestValue(certDigestDom, signingCertificateDigestMethod, certificate);
-
-			final Element issuerSerialDom = DomUtils.addElement(documentDom, certDom, XAdES, XADES_ISSUER_SERIAL);
-
-			final Element x509IssuerNameDom = DomUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_ISSUER_NAME);
-			final String issuerX500PrincipalName = certificate.getIssuerX500Principal().getName();
-			DomUtils.setTextNode(documentDom, x509IssuerNameDom, issuerX500PrincipalName);
-
-			final Element x509SerialNumberDom = DomUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_SERIAL_NUMBER);
-			final BigInteger serialNumber = certificate.getSerialNumber();
-			final String serialNumberString = new String(serialNumber.toString());
-			DomUtils.setTextNode(documentDom, x509SerialNumberDom, serialNumberString);
+			final Element certDom = incorporateCert(signingCertificateDom, certificate);
+			incorporateIssuerV1(certDom, certificate);
 		}
+	}
+
+	protected Element incorporateCert(final Element parentDom, final CertificateToken certificate) {
+		final Element certDom = DomUtils.addElement(documentDom, parentDom, XAdES, XADES_CERT);
+
+		final Element certDigestDom = DomUtils.addElement(documentDom, certDom, XAdES, XADES_CERT_DIGEST);
+
+		final DigestAlgorithm signingCertificateDigestMethod = params.getSigningCertificateDigestMethod();
+		incorporateDigestMethod(certDigestDom, signingCertificateDigestMethod);
+
+		incorporateDigestValue(certDigestDom, signingCertificateDigestMethod, certificate);
+		return certDom;
+	}
+
+	protected void incorporateIssuerV1(final Element parentDom, final CertificateToken certificate) {
+		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, XAdES, XADES_ISSUER_SERIAL);
+
+		final Element x509IssuerNameDom = DomUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_ISSUER_NAME);
+		final String issuerX500PrincipalName = certificate.getIssuerX500Principal().getName();
+		DomUtils.setTextNode(documentDom, x509IssuerNameDom, issuerX500PrincipalName);
+
+		final Element x509SerialNumberDom = DomUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_SERIAL_NUMBER);
+		final BigInteger serialNumber = certificate.getSerialNumber();
+		final String serialNumberString = new String(serialNumber.toString());
+		DomUtils.setTextNode(documentDom, x509SerialNumberDom, serialNumberString);
+	}
+
+	protected void incorporateIssuerV2(final Element parentDom, final CertificateToken certificate) {
+		final Element issuerSerialDom = DomUtils.addElement(documentDom, parentDom, XAdES, XADES_ISSUER_SERIAL_V2);
+
+		IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(certificate);
+		String issuerBase64 = Utils.toBase64(DSSASN1Utils.getDEREncoded(issuerSerial));
+		DomUtils.setTextNode(documentDom, issuerSerialDom, issuerBase64);
 	}
 
 }
