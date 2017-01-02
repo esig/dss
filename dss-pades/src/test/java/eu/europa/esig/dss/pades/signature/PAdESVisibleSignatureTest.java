@@ -101,6 +101,29 @@ public class PAdESVisibleSignatureTest {
 	}
 
 	@Test
+	public void testGeneratedImageOnlyPNG() throws IOException {
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new FileDocument(new File("src/test/resources/signature-image.png")));
+		imageParameters.setxAxis(100);
+		imageParameters.setyAxis(100);
+		signatureParameters.setImageParameters(imageParameters);
+
+		signAndValidate();
+	}
+
+	@Test
+	public void testGeneratedImageOnlyPngUnZoom() throws IOException {
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new FileDocument(new File("src/test/resources/signature-image.png")));
+		imageParameters.setxAxis(100);
+		imageParameters.setyAxis(100);
+		imageParameters.setZoom(50); // reduces 50%
+		signatureParameters.setImageParameters(imageParameters);
+
+		signAndValidate();
+	}
+
+	@Test
 	public void testGeneratedImageAndTextOnTop() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(new FileInputStream("src/test/resources/small-red.jpg")));

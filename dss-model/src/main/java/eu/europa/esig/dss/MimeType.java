@@ -45,6 +45,9 @@ public class MimeType implements Serializable {
 	public static final MimeType ODS = new MimeType("application/vnd.oasis.opendocument.spreadsheet");
 	public static final MimeType TEXT = new MimeType("text/plain");
 
+	public static final MimeType PNG = new MimeType("image/png");
+	public static final MimeType JPEG = new MimeType("image/jpeg");
+
 	private String mimeTypeString;
 
 	private static Map<String, MimeType> fileExtensions = new HashMap<String, MimeType>() {
@@ -69,6 +72,10 @@ public class MimeType implements Serializable {
 			put("ods", ODS);
 
 			put("txt", TEXT);
+
+			put("png", PNG);
+			put("jpg", JPEG);
+			put("jpeg", JPEG);
 		}
 	};
 

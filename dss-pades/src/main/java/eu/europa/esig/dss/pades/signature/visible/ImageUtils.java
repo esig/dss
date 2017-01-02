@@ -5,6 +5,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Iterator;
 
 import javax.imageio.IIOImage;
@@ -18,12 +20,15 @@ import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.utils.Utils;
@@ -36,21 +41,24 @@ import eu.europa.esig.dss.utils.Utils;
  */
 public class ImageUtils {
 
+	private static final Logger LOG = LoggerFactory.getLogger(ImageUtils.class);
+
 	private static final int DPI = 300;
 
 	public static ImageAndResolution create(final SignatureImageParameters imageParameters) throws IOException {
 
 		SignatureImageTextParameters textParamaters = imageParameters.getTextParameters();
 
+		DSSDocument image = imageParameters.getImage();
 		if ((textParamaters != null) && Utils.isStringNotEmpty(textParamaters.getText())) {
 
 			BufferedImage buffImg = ImageTextWriter.createTextImage(textParamaters.getText(), textParamaters.getFont(), textParamaters.getTextColor(),
 					textParamaters.getBackgroundColor(), DPI);
 
-			if (imageParameters.getImage() != null) {
+			if (image != null) {
 				InputStream is = null;
 				try {
-					is = imageParameters.getImage().openStream();
+					is = image.openStream();
 					switch (textParamaters.getSignerNamePosition()) {
 					case LEFT:
 						buffImg = ImagesMerger.mergeOnRight(ImageIO.read(is), buffImg, textParamaters.getBackgroundColor());
@@ -72,12 +80,36 @@ public class ImageUtils {
 				}
 			}
 			return convertToInputStream(buffImg, DPI);
+		}
+
+		// Image only
+		return readAndDisplayMetadata(image);
+	}
+
+	private static ImageAndResolution readAndDisplayMetadata(DSSDocument image) throws IOException {
+		if (isImageWithContentType(image, MimeType.JPEG)) {
+			return readAndDisplayMetadataJPEG(image);
+		} else if (isImageWithContentType(image, MimeType.PNG)) {
+			return readAndDisplayMetadataPNG(image);
+		}
+		throw new DSSException("Unsupported image type");
+	}
+
+	private static boolean isImageWithContentType(DSSDocument image, MimeType expectedContentType) {
+		if (image.getMimeType() != null) {
+			return expectedContentType == image.getMimeType();
 		} else {
-			return readAndDisplayMetadata(imageParameters.getImage());
+			String contentType = null;
+			try {
+				contentType = Files.probeContentType(Paths.get(image.getAbsolutePath()));
+			} catch (IOException e) {
+				LOG.warn("Unable to retrieve the content-type : " + e.getMessage());
+			}
+			return Utils.areStringsEqual(expectedContentType.getMimeTypeString(), contentType);
 		}
 	}
 
-	public static ImageAndResolution readAndDisplayMetadata(DSSDocument image) throws IOException {
+	public static ImageAndResolution readAndDisplayMetadataJPEG(DSSDocument image) throws IOException {
 
 		Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("jpeg");
 		if (!readers.hasNext()) {
@@ -98,14 +130,52 @@ public class ImageUtils {
 			IIOMetadata metadata = reader.getImageMetadata(0);
 
 			Node asTree = metadata.getAsTree("javax_imageio_jpeg_image_1.0");
-			ImageAndResolution res = readResolution(asTree, image.openStream());
+			ImageAndResolution res = readResolutionJPEG(asTree, image.openStream());
 			return res;
 		} finally {
 			Utils.closeQuietly(iis);
 		}
 	}
 
-	private static ImageAndResolution readResolution(Node node, InputStream is) {
+	public static ImageAndResolution readAndDisplayMetadataPNG(DSSDocument image) throws IOException {
+
+		Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("png");
+		if (!readers.hasNext()) {
+			throw new DSSException("No writer for PNG found");
+		}
+
+		// pick the first available ImageReader
+		ImageReader reader = readers.next();
+
+		ImageInputStream iis = null;
+		try {
+			iis = ImageIO.createImageInputStream(image.openStream());
+
+			// attach source to the reader
+			reader.setInput(iis, true);
+
+			int hdpi = 96, vdpi = 96;
+			double mm2inch = 25.4;
+
+			NodeList lst;
+			Element node = (Element) reader.getImageMetadata(0).getAsTree("javax_imageio_1.0");
+			lst = node.getElementsByTagName("HorizontalPixelSize");
+			if (lst != null && lst.getLength() == 1) {
+				hdpi = (int) (mm2inch / Float.parseFloat(((Element) lst.item(0)).getAttribute("value")));
+			}
+
+			lst = node.getElementsByTagName("VerticalPixelSize");
+			if (lst != null && lst.getLength() == 1) {
+				vdpi = (int) (mm2inch / Float.parseFloat(((Element) lst.item(0)).getAttribute("value")));
+			}
+
+			return new ImageAndResolution(image.openStream(), hdpi, vdpi);
+		} finally {
+			Utils.closeQuietly(iis);
+		}
+	}
+
+	private static ImageAndResolution readResolutionJPEG(Node node, InputStream is) {
 
 		Element root = (Element) node;
 
