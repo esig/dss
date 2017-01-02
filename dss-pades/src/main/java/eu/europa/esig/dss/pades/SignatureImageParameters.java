@@ -30,6 +30,8 @@ public class SignatureImageParameters {
 
 	public static final int DEFAULT_PAGE = 1;
 
+	public static final int NO_SCALING = 100;
+
 	/**
 	 * This variable contains the image to use (company logo,...)
 	 */
@@ -50,6 +52,11 @@ public class SignatureImageParameters {
 	 * This variable defines the position of the image in the PDF page (Y axis)
 	 */
 	private float yAxis;
+
+	/**
+	 * This variable defines a percent to zoom (100% means no scaling).
+	 */
+	private int zoom = NO_SCALING;
 
 	/**
 	 * This variable is use to defines the text to generate on the image
@@ -78,6 +85,14 @@ public class SignatureImageParameters {
 
 	public void setyAxis(float yAxis) {
 		this.yAxis = yAxis;
+	}
+
+	public int getZoom() {
+		return zoom;
+	}
+
+	public void setZoom(int zoom) {
+		this.zoom = zoom;
 	}
 
 	public int getPage() {
