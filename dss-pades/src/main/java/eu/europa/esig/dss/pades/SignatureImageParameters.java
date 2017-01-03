@@ -29,6 +29,7 @@ import java.io.File;
 public class SignatureImageParameters {
 
 	public static final int DEFAULT_PAGE = 1;
+	public static final float DEFAULT_SCALE = 1f;
 
 	/**
 	 * This variable contains the image to use (company logo,...)
@@ -52,8 +53,16 @@ public class SignatureImageParameters {
 	private float yAxis;
 
 	/**
+	 * This variable defines the scaling factor of image in the PDF
+	 */
+	private float scale = DEFAULT_SCALE;
+
+
+
+	/**
 	 * This variable is use to defines the text to generate on the image
 	 */
+
 	private SignatureImageTextParameters textParameters;
 
 	public File getImage() {
@@ -78,6 +87,14 @@ public class SignatureImageParameters {
 
 	public void setyAxis(float yAxis) {
 		this.yAxis = yAxis;
+	}
+
+	public float getScale() {
+		return scale;
+	}
+
+	public void setScale(float scale) {
+		this.scale = scale;
 	}
 
 	public int getPage() {

@@ -205,7 +205,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		try {
 			PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(doc, is, imgParams.getPage());
 			visibleSig.xAxis(imgParams.getxAxis()).yAxis(imgParams.getyAxis());
-			visibleSig.width(ires.toXPoint(visibleSig.getWidth())).height(ires.toYPoint(visibleSig.getHeight()));
+			visibleSig.width(visibleSig.getWidth()*imgParams.getScale()).height(visibleSig.getHeight()*imgParams.getScale());
 
 			PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
 			signatureProperties.visualSignEnabled(true).setPdVisibleSignature(visibleSig).buildSignature();
