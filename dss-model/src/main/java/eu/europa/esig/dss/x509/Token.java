@@ -34,7 +34,8 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.TokenIdentifier;
 
 /**
- * This is the base class for the different types of tokens (certificate, OCSP, CRL, Timestamp) used in the process of signature validation.
+ * This is the base class for the different types of tokens (certificate, OCSP, CRL, Timestamp) used in the process of
+ * signature validation.
  */
 @SuppressWarnings("serial")
 public abstract class Token implements Serializable {
@@ -260,7 +261,7 @@ public abstract class Token implements Serializable {
 		byte[] digestValue = digests.get(digestAlgorithm);
 		if (digestValue == null) {
 			try {
-				MessageDigest md = MessageDigest.getInstance(digestAlgorithm.getName());
+				MessageDigest md = MessageDigest.getInstance(digestAlgorithm.getJavaName());
 				digestValue = md.digest(getEncoded());
 				digests.put(digestAlgorithm, digestValue);
 			} catch (Exception e) {
