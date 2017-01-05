@@ -203,8 +203,22 @@
 				</xs:complexType>
 			</xs:element>
 			
-			<xs:element name="TrustedServiceProvider" type="TrustedServiceProvider" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="Revocation" type="Revocation" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="TrustedLists" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TrustedList" type="TrustedList" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="Revocations" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Revocation" type="Revocation" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
 			<xs:element name="Info" type="InfoType" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
@@ -353,10 +367,42 @@
 		<xs:attribute name="Type" type="xs:string" use="required" />
 	</xs:complexType>
 	
+	<xs:complexType name="TrustedList">
+		<xs:sequence>
+			<xs:element name="CountryCode" type="xs:string" />
+			<xs:element name="Url" type="xs:string" />	
+			<xs:element name="Available" type="xs:boolean" />
+			<xs:element name="WellSigned" type="xs:boolean" />
+			<xs:element name="Expired" type="xs:boolean" />
+			<xs:element name="Version5" type="xs:boolean" />
+			
+			<xs:element name="TrustedServiceProviders" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TrustedServiceProvider" type="TrustedServiceProvider" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
 	<xs:complexType name="TrustedServiceProvider">
 		<xs:sequence>
 			<xs:element name="TSPName" type="xs:string" />
 			<xs:element name="TSPServiceName" type="xs:string" />
+			
+			<xs:element name="TrustedServices" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TrustedService" type="TrustedService" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="TrustedService">
+		<xs:sequence>
 			<xs:element name="TSPServiceType" type="xs:string" />
 			<xs:element name="Status" type="xs:string" />
 			<xs:element name="StartDate" type="xs:dateTime" />
@@ -379,7 +425,6 @@
 			</xs:element>
 			
 			<xs:element name="expiredCertsRevocationInfo" type="xs:dateTime" minOccurs="0" />
-			<xs:element name="WellSigned" type="xs:boolean" />
 		</xs:sequence>
 	</xs:complexType>
 	

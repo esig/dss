@@ -32,7 +32,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.TimestampType;
 
@@ -392,40 +391,6 @@ public class DiagnosticData {
 	public String getCertificateSerialNumber(final String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
 		return certificate.getSerialNumber();
-	}
-
-	/**
-	 * This method returns the associated TSPServiceName.
-	 *
-	 * @param dssCertificateId
-	 *            DSS certificate identifier to be checked
-	 * @return TSPServiceName
-	 */
-	public String getCertificateTSPServiceName(final String dssCertificateId) {
-		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return certificate.getCertificateTSPServiceName();
-	}
-
-	public String getCertificateTSPServiceType(XmlCertificate xmlCertificate) {
-		List<XmlTrustedServiceProvider> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
-		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProvider trustedServiceProvider : trustedServiceProviders) {
-				return trustedServiceProvider.getTSPServiceType(); // TODO correct ?? return first one
-			}
-		}
-		return Utils.EMPTY_STRING;
-	}
-
-	/**
-	 * This method indicates if the associated trusted list is well signed.
-	 *
-	 * @param dssCertificateId
-	 *            DSS certificate identifier to be checked
-	 * @return TSPServiceName
-	 */
-	public boolean isCertificateRelatedTSLWellSigned(final String dssCertificateId) {
-		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return certificate.isCertificateRelatedTSLWellSigned();
 	}
 
 	/**

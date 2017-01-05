@@ -32,6 +32,10 @@ public class ServiceInfo implements Serializable {
 
 	private static final long serialVersionUID = 4903410679096343832L;
 
+	private String tlCountryCode;
+
+	private String tlUrl;
+
 	/**
 	 * <tsl:TrustServiceProvider><tsl:TSPInformation><tsl:TSPName>
 	 */
@@ -64,7 +68,29 @@ public class ServiceInfo implements Serializable {
 
 	private TimeDependentValues<ServiceInfoStatus> status = new TimeDependentValues<ServiceInfoStatus>();
 
+	private boolean tlAvailable;
+
 	private boolean tlWellSigned;
+
+	private boolean tlExpired;
+
+	private boolean tlVersion5;
+
+	public String getTlCountryCode() {
+		return tlCountryCode;
+	}
+
+	public void setTlCountryCode(String tlCountryCode) {
+		this.tlCountryCode = tlCountryCode;
+	}
+
+	public String getTlUrl() {
+		return tlUrl;
+	}
+
+	public void setTlUrl(String tlUrl) {
+		this.tlUrl = tlUrl;
+	}
 
 	/**
 	 * @return
@@ -174,7 +200,31 @@ public class ServiceInfo implements Serializable {
 	}
 
 	public void setStatus(TimeDependentValues<ServiceInfoStatus> status) {
-		this.status = new TimeDependentValues<ServiceInfoStatus>( status );
+		this.status = new TimeDependentValues<ServiceInfoStatus>(status);
+	}
+
+	public boolean isTlAvailable() {
+		return tlAvailable;
+	}
+
+	public void setTlAvailable(boolean tlAvailable) {
+		this.tlAvailable = tlAvailable;
+	}
+
+	public boolean isTlExpired() {
+		return tlExpired;
+	}
+
+	public void setTlExpired(boolean tlExpired) {
+		this.tlExpired = tlExpired;
+	}
+
+	public boolean isTlVersion5() {
+		return tlVersion5;
+	}
+
+	public void setTlVersion5(boolean tlVersion5) {
+		this.tlVersion5 = tlVersion5;
 	}
 
 	/**

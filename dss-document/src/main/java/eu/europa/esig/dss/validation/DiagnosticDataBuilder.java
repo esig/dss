@@ -50,6 +50,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.KeyUsageBit;
@@ -571,7 +572,8 @@ public class DiagnosticDataBuilder {
 				}
 			} else {
 				/**
-				 * c) In all other cases, compute the digest using the digesting algorithm indicated in the children of the property/attribute.
+				 * c) In all other cases, compute the digest using the digesting algorithm indicated in the children of
+				 * the property/attribute.
 				 */
 				String recalculatedDigestValue = Utils.toBase64(DSSUtils.digest(signPolicyHashAlgFromSignature, policyBytes));
 				boolean equal = Utils.areStringsEqual(digestValue, recalculatedDigestValue);
@@ -784,11 +786,11 @@ public class DiagnosticDataBuilder {
 			for (RevocationToken revocationToken : revocationTokens) {
 				// In case of CRL, the X509CRL can be the same for different certificates
 				String xmlId = Utils.toHex(certToken.getDigest(DigestAlgorithm.SHA256)) + Utils.toHex(revocationToken.getDigest(DigestAlgorithm.SHA256));
-				xmlCert.getRevocation().add(getXmlRevocation(revocationToken, xmlId, usedDigestAlgorithms));
+				xmlCert.getRevocations().add(getXmlRevocation(revocationToken, xmlId, usedDigestAlgorithms));
 			}
 		}
 
-		xmlCert.getTrustedServiceProvider().addAll(getXmlTrustedServiceProviders(certToken));
+		xmlCert.getTrustedLists().addAll(getXmlTrustedLists(certToken));
 
 		return xmlCert;
 	}
@@ -804,6 +806,15 @@ public class DiagnosticDataBuilder {
 		return result;
 	}
 
+	private List<XmlTrustedList> getXmlTrustedLists(CertificateToken certToken) {
+		List<XmlTrustedList> results = new ArrayList<XmlTrustedList>();
+		Set<ServiceInfo> services = getLinkedTrustedServices(certToken);
+		if (Utils.isCollectionNotEmpty(services)) {
+
+		}
+		return results;
+	}
+
 	/**
 	 * This method deals with the trusted service information in case of trusted certificate. The retrieved information
 	 * is transformed to the JAXB object.
@@ -812,6 +823,16 @@ public class DiagnosticDataBuilder {
 	 * @param xmlCert
 	 */
 	private List<XmlTrustedServiceProvider> getXmlTrustedServiceProviders(final CertificateToken certToken) {
+		List<XmlTrustedServiceProvider> xmlTSPs = new ArrayList<XmlTrustedServiceProvider>();
+		if (Utils.isCollectionNotEmpty(services)) {
+			for (final ServiceInfo serviceInfo : services) {
+				xmlTSPs.add(getXmlTrustedServiceProvider(serviceInfo, certToken));
+			}
+		}
+		return xmlTSPs;
+	}
+
+	private Set<ServiceInfo> getLinkedTrustedServices(final CertificateToken certToken) {
 		Set<ServiceInfo> services = null;
 		if (certToken.isTrusted()) {
 			services = certToken.getAssociatedTSPS();
@@ -821,13 +842,7 @@ public class DiagnosticDataBuilder {
 				services = trustAnchor.getAssociatedTSPS();
 			}
 		}
-		List<XmlTrustedServiceProvider> xmlTSPs = new ArrayList<XmlTrustedServiceProvider>();
-		if (Utils.isCollectionNotEmpty(services)) {
-			for (final ServiceInfo serviceInfo : services) {
-				xmlTSPs.add(getXmlTrustedServiceProvider(serviceInfo, certToken));
-			}
-		}
-		return xmlTSPs;
+		return services;
 	}
 
 	private XmlTrustedServiceProvider getXmlTrustedServiceProvider(final ServiceInfo serviceInfo, final CertificateToken certToken) {
