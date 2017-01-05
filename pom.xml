@@ -737,12 +737,12 @@
 
 	<distributionManagement>
 		<repository>
-			<id>joinup-nexus</id>
-			<url>https://joinup.ec.europa.eu/nexus/content/repositories/releases/</url>
+			<id>cefdigital-nexus</id>
+			<url>https://ec.europa.eu/cefdigital/artifact/content/repositories/esignaturedss</url>
 		</repository>
 		<snapshotRepository>
-			<id>joinup-nexus</id>
-			<url>https://joinup.ec.europa.eu/nexus/content/repositories/snapshots</url>
+			<id>cefdigital-nexus</id>
+			<url>https://ec.europa.eu/cefdigital/artifact/content/repositories/esignaturedss-snapshots</url>
 		</snapshotRepository>
 		<site>
 			<id>joinup-site</id>
