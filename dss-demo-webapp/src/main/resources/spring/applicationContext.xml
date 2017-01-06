@@ -48,9 +48,6 @@
     
     <!-- TSL Loader -->
 	<bean id="tslRepository" class="eu.europa.esig.dss.tsl.service.TSLRepository">
-		<property name="allowExpiredTSLs" value="false" />
-		<property name="allowInvalidSignatures" value="false" />
-		<property name="allowIndeterminateSignatures" value="false" />
 		<property name="trustedListsCertificateSource" ref="trustedListSource" />
 	</bean>
 	

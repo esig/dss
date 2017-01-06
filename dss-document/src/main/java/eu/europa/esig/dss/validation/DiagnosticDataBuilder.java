@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.KeyUsageBit;
@@ -810,26 +812,103 @@ public class DiagnosticDataBuilder {
 		List<XmlTrustedList> results = new ArrayList<XmlTrustedList>();
 		Set<ServiceInfo> services = getLinkedTrustedServices(certToken);
 		if (Utils.isCollectionNotEmpty(services)) {
-
+			Map<String, List<ServiceInfo>> servicesByCountries = classifyByCountry(services);
+			for (List<ServiceInfo> servicesByCountry : servicesByCountries.values()) {
+				ServiceInfo first = servicesByCountry.get(0);
+				XmlTrustedList trustedList = new XmlTrustedList();
+				trustedList.setCountryCode(first.getTlCountryCode());
+				trustedList.setUrl(first.getTlUrl());
+				trustedList.setAvailable(first.isTlAvailable());
+				trustedList.setExpired(isExpired(first));
+				trustedList.setVersion5(first.isTlVersion5());
+				trustedList.setWellSigned(first.isTlWellSigned());
+				trustedList.setTrustedServiceProviders(getXmlTrustedServiceProviders(servicesByCountry, certToken));
+				results.add(trustedList);
+			}
 		}
 		return results;
 	}
 
-	/**
-	 * This method deals with the trusted service information in case of trusted certificate. The retrieved information
-	 * is transformed to the JAXB object.
-	 *
-	 * @param certToken
-	 * @param xmlCert
-	 */
-	private List<XmlTrustedServiceProvider> getXmlTrustedServiceProviders(final CertificateToken certToken) {
-		List<XmlTrustedServiceProvider> xmlTSPs = new ArrayList<XmlTrustedServiceProvider>();
-		if (Utils.isCollectionNotEmpty(services)) {
-			for (final ServiceInfo serviceInfo : services) {
-				xmlTSPs.add(getXmlTrustedServiceProvider(serviceInfo, certToken));
+	private boolean isExpired(ServiceInfo first) {
+		Date nextUpdate = first.getNextUpdate();
+		boolean expired = false;
+		if (nextUpdate == null || validationDate.after(nextUpdate)) {
+			expired = true;
+		}
+		return expired;
+	}
+
+	private List<XmlTrustedServiceProvider> getXmlTrustedServiceProviders(List<ServiceInfo> servicesByCountry, CertificateToken certToken) {
+		List<XmlTrustedServiceProvider> result = new ArrayList<XmlTrustedServiceProvider>();
+		Map<String, List<ServiceInfo>> servicesByProviders = classifyByServiceProvider(servicesByCountry);
+		for (List<ServiceInfo> serviceByProvider : servicesByProviders.values()) {
+			ServiceInfo first = serviceByProvider.get(0);
+			XmlTrustedServiceProvider serviceProvider = new XmlTrustedServiceProvider();
+			serviceProvider.setTSPName(first.getTspName());
+			serviceProvider.setTSPServiceName(first.getServiceName());
+			serviceProvider.setTrustedServices(getXmlTrustedServices(serviceByProvider, certToken));
+			result.add(serviceProvider);
+		}
+		return result;
+	}
+
+	private List<XmlTrustedService> getXmlTrustedServices(List<ServiceInfo> serviceInfos, CertificateToken certToken) {
+		List<XmlTrustedService> result = new ArrayList<XmlTrustedService>();
+		for (ServiceInfo serviceInfo : serviceInfos) {
+			List<ServiceInfoStatus> serviceStatusAfterOfEqualsCertIssuance = serviceInfo.getStatus().getAfter(certToken.getNotBefore());
+			if (Utils.isCollectionNotEmpty(serviceStatusAfterOfEqualsCertIssuance)) {
+				for (ServiceInfoStatus serviceInfoStatus : serviceStatusAfterOfEqualsCertIssuance) {
+					XmlTrustedService trustedService = new XmlTrustedService();
+					trustedService.setTSPServiceType(serviceInfo.getType());
+					trustedService.setStatus(serviceInfoStatus.getStatus());
+					trustedService.setStartDate(serviceInfoStatus.getStartDate());
+					trustedService.setEndDate(serviceInfoStatus.getEndDate());
+
+					List<String> qualifiers = getQualifiers(serviceInfoStatus, certToken);
+					if (Utils.isCollectionNotEmpty(qualifiers)) {
+						trustedService.setQualifiers(qualifiers);
+					}
+
+					List<String> additionalServiceInfoUris = serviceInfoStatus.getAdditionalServiceInfoUris();
+					if (Utils.isCollectionNotEmpty(additionalServiceInfoUris)) {
+						trustedService.setAdditionalServiceInfoUris(additionalServiceInfoUris);
+					}
+
+					trustedService.setExpiredCertsRevocationInfo(serviceInfoStatus.getExpiredCertsRevocationInfo());
+
+					result.add(trustedService);
+				}
 			}
 		}
-		return xmlTSPs;
+		return result;
+	}
+
+	private Map<String, List<ServiceInfo>> classifyByServiceProvider(List<ServiceInfo> services) {
+		Map<String, List<ServiceInfo>> servicesByProviders = new HashMap<String, List<ServiceInfo>>();
+		for (ServiceInfo serviceInfo : services) {
+			String tradeName = serviceInfo.getTspTradeName();
+			List<ServiceInfo> servicesByProvider = servicesByProviders.get(tradeName);
+			if (servicesByProvider == null) {
+				servicesByProvider = new ArrayList<ServiceInfo>();
+				servicesByProviders.put(tradeName, servicesByProvider);
+			}
+			servicesByProvider.add(serviceInfo);
+		}
+		return servicesByProviders;
+	}
+
+	private Map<String, List<ServiceInfo>> classifyByCountry(Set<ServiceInfo> services) {
+		Map<String, List<ServiceInfo>> servicesByCountries = new HashMap<String, List<ServiceInfo>>();
+		for (ServiceInfo serviceInfo : services) {
+			String countryCode = serviceInfo.getTlCountryCode();
+			List<ServiceInfo> servicesByCountry = servicesByCountries.get(countryCode);
+			if (servicesByCountry == null) {
+				servicesByCountry = new ArrayList<ServiceInfo>();
+				servicesByCountries.put(countryCode, servicesByCountry);
+			}
+			servicesByCountry.add(serviceInfo);
+		}
+		return servicesByCountries;
 	}
 
 	private Set<ServiceInfo> getLinkedTrustedServices(final CertificateToken certToken) {
@@ -845,46 +924,16 @@ public class DiagnosticDataBuilder {
 		return services;
 	}
 
-	private XmlTrustedServiceProvider getXmlTrustedServiceProvider(final ServiceInfo serviceInfo, final CertificateToken certToken) {
-		final XmlTrustedServiceProvider xmlTSP = new XmlTrustedServiceProvider();
-		xmlTSP.setTSPName(serviceInfo.getTspName());
-		xmlTSP.setTSPServiceName(serviceInfo.getServiceName());
-		xmlTSP.setTSPServiceType(serviceInfo.getType());
-		xmlTSP.setWellSigned(serviceInfo.isTlWellSigned());
-
-		final ServiceInfoStatus serviceStatusAtCertIssuance = serviceInfo.getStatus().getCurrent(certToken.getNotBefore());
-		if (serviceStatusAtCertIssuance != null) {
-
-			xmlTSP.setStatus(serviceStatusAtCertIssuance.getStatus());
-			xmlTSP.setStartDate(serviceStatusAtCertIssuance.getStartDate());
-			xmlTSP.setEndDate(serviceStatusAtCertIssuance.getEndDate());
-
-			// Check of the associated conditions to identify the qualifiers
-			final List<String> qualifiers = getQualifiers(serviceStatusAtCertIssuance, certToken);
-			if (Utils.isCollectionNotEmpty(qualifiers)) {
-				xmlTSP.setQualifiers(qualifiers);
-			}
-
-			List<String> additionalServiceInfoUris = serviceStatusAtCertIssuance.getAdditionalServiceInfoUris();
-			if (Utils.isCollectionNotEmpty(additionalServiceInfoUris)) {
-				xmlTSP.setAdditionalServiceInfoUris(additionalServiceInfoUris);
-			}
-
-			xmlTSP.setExpiredCertsRevocationInfo(serviceStatusAtCertIssuance.getExpiredCertsRevocationInfo());
-		}
-		return xmlTSP;
-	}
-
 	/**
 	 * Retrieves all the qualifiers for which the corresponding conditionEntry is true.
 	 *
 	 * @param certificateToken
 	 * @return
 	 */
-	private List<String> getQualifiers(ServiceInfoStatus serviceStatusAtCertIssuance, CertificateToken certificateToken) {
+	private List<String> getQualifiers(ServiceInfoStatus serviceInfoStatus, CertificateToken certificateToken) {
 		LOG.trace("--> GET_QUALIFIERS()");
 		List<String> list = new ArrayList<String>();
-		final Map<String, List<Condition>> qualifiersAndConditions = serviceStatusAtCertIssuance.getQualifiersAndConditions();
+		final Map<String, List<Condition>> qualifiersAndConditions = serviceInfoStatus.getQualifiersAndConditions();
 		for (Entry<String, List<Condition>> conditionEntry : qualifiersAndConditions.entrySet()) {
 			List<Condition> conditions = conditionEntry.getValue();
 			LOG.trace("  --> " + conditions);

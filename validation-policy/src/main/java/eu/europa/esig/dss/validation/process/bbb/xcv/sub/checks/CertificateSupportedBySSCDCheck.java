@@ -1,12 +1,9 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.CertificatePolicyIdentifiers;
 import eu.europa.esig.dss.validation.policy.QCStatementPolicyIdentifiers;
-import eu.europa.esig.dss.validation.policy.ServiceQualification;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -25,26 +22,15 @@ public class CertificateSupportedBySSCDCheck extends ChainItem<XmlSubXCV> {
 	@Override
 	protected boolean process() {
 
+		// This check only uses the certificate (not the TL)
+
 		// checks in policy id extension
 		boolean policyIdSupportedByQSCD = CertificatePolicyIdentifiers.isSupportedByQSCD(certificate);
 
 		// checks in QC statement extension
 		boolean qcStatementSupportedByQSCD = QCStatementPolicyIdentifiers.isSupportedByQSCD(certificate);
 
-		/**
-		 * • The content of a Trusted service Status List;<br>
-		 * • The content of a Trusted List through information provided in the
-		 * Sie field of the applicable service entry; or
-		 */
-
-		List<String> qualifiers = certificate.getCertificateTSPServiceQualifiers();
-
-		boolean sie = ServiceQualification.isQcWithSSCD(qualifiers);
-
-		if (!(policyIdSupportedByQSCD || qcStatementSupportedByQSCD || sie)) {
-			return false;
-		}
-		return true;
+		return policyIdSupportedByQSCD || qcStatementSupportedByQSCD;
 	}
 
 	@Override

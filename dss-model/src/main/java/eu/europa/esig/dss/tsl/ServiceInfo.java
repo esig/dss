@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.tsl;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import eu.europa.esig.dss.util.TimeDependentValues;
 
@@ -72,9 +73,9 @@ public class ServiceInfo implements Serializable {
 
 	private boolean tlWellSigned;
 
-	private boolean tlExpired;
-
 	private boolean tlVersion5;
+
+	private Date nextUpdate;
 
 	public String getTlCountryCode() {
 		return tlCountryCode;
@@ -211,20 +212,20 @@ public class ServiceInfo implements Serializable {
 		this.tlAvailable = tlAvailable;
 	}
 
-	public boolean isTlExpired() {
-		return tlExpired;
-	}
-
-	public void setTlExpired(boolean tlExpired) {
-		this.tlExpired = tlExpired;
-	}
-
 	public boolean isTlVersion5() {
 		return tlVersion5;
 	}
 
 	public void setTlVersion5(boolean tlVersion5) {
 		this.tlVersion5 = tlVersion5;
+	}
+
+	public Date getNextUpdate() {
+		return nextUpdate;
+	}
+
+	public void setNextUpdate(Date nextUpdate) {
+		this.nextUpdate = nextUpdate;
 	}
 
 	/**

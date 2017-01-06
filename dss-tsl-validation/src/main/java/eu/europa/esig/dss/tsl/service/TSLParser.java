@@ -137,6 +137,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 		TSLParserResult tslModel = new TSLParserResult();
 		tslModel.setTerritory(getTerritory(tsl));
 		tslModel.setSequenceNumber(getSequenceNumber(tsl));
+		tslModel.setVersion(getVersion(tsl));
 		tslModel.setIssueDate(getIssueDate(tsl));
 		tslModel.setNextUpdateDate(getNextUpdate(tsl));
 		tslModel.setDistributionPoints(getDistributionPoints(tsl));
@@ -144,6 +145,14 @@ public class TSLParser implements Callable<TSLParserResult> {
 		tslModel.setServiceProviders(getServiceProviders(tsl));
 		tslModel.setEnglishSchemeInformationURIs(getEnglishSchemeInformationURIs(tsl));
 		return tslModel;
+	}
+
+	private int getVersion(TrustStatusListType tsl) {
+		BigInteger tslVersionIdentifier = tsl.getSchemeInformation().getTSLVersionIdentifier();
+		if (tslVersionIdentifier != null) {
+			return tslVersionIdentifier.intValue();
+		}
+		return -1;
 	}
 
 	private int getSequenceNumber(TrustStatusListType tsl) {

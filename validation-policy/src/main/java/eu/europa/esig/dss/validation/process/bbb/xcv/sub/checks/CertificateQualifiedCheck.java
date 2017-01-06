@@ -1,12 +1,9 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.CertificatePolicyIdentifiers;
 import eu.europa.esig.dss.validation.policy.QCStatementPolicyIdentifiers;
-import eu.europa.esig.dss.validation.policy.ServiceQualification;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -25,16 +22,13 @@ public class CertificateQualifiedCheck extends ChainItem<XmlSubXCV> {
 	@Override
 	protected boolean process() {
 
+		// This check only uses the certificate (not the TL)
+
 		boolean isQCCompliant = QCStatementPolicyIdentifiers.isQCCompliant(certificate);
 		boolean isQCP = CertificatePolicyIdentifiers.isQCP(certificate);
 		boolean isQCPPlus = CertificatePolicyIdentifiers.isQCPPlus(certificate);
 
-		// The content of a Trusted List through information provided in the Sie field of the applicable service entry
-		List<String> qualifiers = certificate.getCertificateTSPServiceQualifiers();
-		boolean isQcStatementInSIE = ServiceQualification.isQcStatement(qualifiers);
-		boolean isNotQualifiedInSIE = ServiceQualification.isNotQualified(qualifiers);
-
-		return ( ! isNotQualifiedInSIE ) && ( isQCCompliant || isQCP || isQCPPlus || isQcStatementInSIE );
+		return (isQCCompliant || isQCP || isQCPPlus);
 	}
 
 	@Override

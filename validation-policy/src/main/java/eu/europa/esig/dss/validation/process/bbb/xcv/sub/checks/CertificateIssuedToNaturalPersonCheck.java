@@ -1,11 +1,8 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.CertificatePolicyIdentifiers;
-import eu.europa.esig.dss.validation.policy.ServiceQualification;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -23,12 +20,8 @@ public class CertificateIssuedToNaturalPersonCheck extends ChainItem<XmlSubXCV> 
 
 	@Override
 	protected boolean process() {
-		List<String> qualifiers = certificate.getCertificateTSPServiceQualifiers();
-
-		boolean tlNotLegal = !ServiceQualification.isQcForLegalPerson(qualifiers); // TODO improve
-		boolean certPolicy = CertificatePolicyIdentifiers.isNatural(certificate);
-
-		return tlNotLegal || certPolicy;
+		// This check only uses the certificate (not the TL)
+		return CertificatePolicyIdentifiers.isNatural(certificate);
 	}
 
 	@Override
