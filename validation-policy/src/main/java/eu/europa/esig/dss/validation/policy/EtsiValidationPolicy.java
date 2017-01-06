@@ -30,6 +30,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DateUtils;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
+import eu.europa.esig.jaxb.policy.Article32;
 import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;
 import eu.europa.esig.jaxb.policy.CertificateConstraints;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
@@ -783,6 +784,92 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		ContainerConstraints containerConstraints = policy.getContainerConstraints();
 		if (containerConstraints != null) {
 			return containerConstraints.getManifestFilePresent();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean isArticle32ConstraintPresent() {
+		return policy.getArticle32() != null;
+	}
+
+	@Override
+	public LevelConstraint getLOTLAvailableConstraint() {
+		Article32 article32 = policy.getArticle32();
+		if (article32 != null) {
+			return article32.getLOTLAvailable();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getLOTLWellSignedConstraint() {
+		Article32 article32 = policy.getArticle32();
+		if (article32 != null) {
+			return article32.getLOTLWellSigned();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getLOTLNotExpiredConstraint() {
+		Article32 article32 = policy.getArticle32();
+		if (article32 != null) {
+			return article32.getLOTLNotExpired();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getLOTLVersion5Constraint() {
+		Article32 article32 = policy.getArticle32();
+		if (article32 != null) {
+			return article32.getLOTLVersion5();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getTLAvailableConstraint() {
+		Article32 article32 = policy.getArticle32();
+		if (article32 != null) {
+			return article32.getTLAvailable();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getTLWellSignedConstraint() {
+		Article32 article32 = policy.getArticle32();
+		if (article32 != null) {
+			return article32.getTLWellSigned();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getTLNotExpiredConstraint() {
+		Article32 article32 = policy.getArticle32();
+		if (article32 != null) {
+			return article32.getTLNotExpired();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getTLVersion5Constraint() {
+		Article32 article32 = policy.getArticle32();
+		if (article32 != null) {
+			return article32.getTLVersion5();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getTLConsistencyConstraint() {
+		Article32 article32 = policy.getArticle32();
+		if (article32 != null) {
+			return article32.getTLConsistency();
 		}
 		return null;
 	}

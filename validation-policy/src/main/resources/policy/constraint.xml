@@ -370,4 +370,18 @@
 		Date="2035-02-24">SHA384</Algo> <Algo Date="2035-02-24">SHA512</Algo> <Algo Date="2017-02-24">RIPEMD160</Algo> <Algo Date="2017-02-24">DSA128</Algo> <Algo Date="2015-02-24">RSA1024</Algo> 
 		<Algo Date="2015-02-24">RSA1536</Algo> <Algo Date="2020-02-24">RSA2048</Algo> <Algo Date="2020-02-24">RSA3072</Algo> <Algo Date="2035-02-24">RSA4096</Algo> <Algo Date="2035-02-24">ECDSA192</Algo> 
 		<Algo Date="2035-02-24">ECDSA256</Algo> </AlgoExpirationDate> </Cryptographic> -->
+	
+	<!-- eIDAS REGL 910/EU/2014 -->
+	<Article32>
+		<LOTLAvailable Level="WARN" />
+		<LOTLWellSigned Level="WARN" />
+		<LOTLNotExpired Level="WARN" />
+		<LOTLVersion5 Level="FAIL" />
+			
+		<TLAvailable Level="WARN" />
+		<TLWellSigned Level="WARN" />
+		<TLNotExpired Level="WARN" />
+		<TLVersion5 Level="FAIL" />
+		<TLConsistency Level="WARN" />
+	</Article32>
 </ConstraintsParameters>

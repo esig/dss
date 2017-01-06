@@ -23,6 +23,16 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
+				
+				<xs:element name="ListOfTrustedLists" type="TrustedList" minOccurs="0" />
+				<xs:element name="TrustedLists" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="TrustedList" type="TrustedList" minOccurs="0" maxOccurs="unbounded" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -202,11 +212,11 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
-			
-			<xs:element name="TrustedLists" minOccurs="0">
+						
+			<xs:element name="TrustedServiceProviders" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="TrustedList" type="TrustedList" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="TrustedServiceProvider" type="TrustedServiceProvider" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -375,14 +385,6 @@
 			<xs:element name="WellSigned" type="xs:boolean" />
 			<xs:element name="Expired" type="xs:boolean" />
 			<xs:element name="Version5" type="xs:boolean" />
-			
-			<xs:element name="TrustedServiceProviders" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="TrustedServiceProvider" type="TrustedServiceProvider" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -390,6 +392,7 @@
 		<xs:sequence>
 			<xs:element name="TSPName" type="xs:string" />
 			<xs:element name="TSPServiceName" type="xs:string" />
+			<xs:element name="CountryCode" type="xs:string" />
 			
 			<xs:element name="TrustedServices" minOccurs="0">
 				<xs:complexType>
@@ -403,12 +406,12 @@
 	
 	<xs:complexType name="TrustedService">
 		<xs:sequence>
-			<xs:element name="TSPServiceType" type="xs:string" />
+			<xs:element name="ServiceType" type="xs:string" />
 			<xs:element name="Status" type="xs:string" />
 			<xs:element name="StartDate" type="xs:dateTime" />
 			<xs:element name="EndDate" type="xs:dateTime" minOccurs="0" />
 			
-			<xs:element name="Qualifiers" minOccurs="0">
+			<xs:element name="CapturedQualifiers" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="Qualifier" type="xs:string" minOccurs="1" maxOccurs="unbounded" />

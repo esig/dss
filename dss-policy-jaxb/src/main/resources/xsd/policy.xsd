@@ -13,6 +13,7 @@
 				<xs:element name="Timestamp" type="tns:TimestampConstraints" minOccurs="0" />
 				<xs:element name="Revocation" type="tns:RevocationConstraints" minOccurs="0" />
 				<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0" />
+				<xs:element name="Article32" type="tns:Article32" minOccurs="0" />
 			</xs:sequence>
 			<xs:attribute type="xs:string" name="Name"/>
 		</xs:complexType>
@@ -154,6 +155,24 @@
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
+	</xs:complexType>
+	
+	<!-- eIDAS REGL 910/EU/2014 -->
+	<xs:complexType name="Article32">
+		<xs:sequence>
+		
+			<xs:element name="LOTLAvailable" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="LOTLWellSigned" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="LOTLNotExpired" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="LOTLVersion5" type="tns:LevelConstraint" minOccurs="0" />
+			
+			<xs:element name="TLAvailable" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="TLWellSigned" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="TLNotExpired" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="TLVersion5" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="TLConsistency" type="tns:LevelConstraint" minOccurs="0" />
+			
+		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="ListAlgo">

@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.utils.Utils;
@@ -42,21 +41,18 @@ public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckI
 			return true;
 		}
 
-		List<XmlTrustedList> trustedListInfo = certificate.getTrustedListInfo();
-		if (Utils.isCollectionNotEmpty(trustedListInfo)) {
-			for (XmlTrustedList xmlTrustedList : trustedListInfo) {
-				List<XmlTrustedServiceProvider> tsps = xmlTrustedList.getTrustedServiceProviders();
-				for (XmlTrustedServiceProvider tsp : tsps) {
-					for (XmlTrustedService trustedService : tsp.getTrustedServices()) {
-						serviceTypeStr = Utils.trim(trustedService.getTSPServiceType());
-						Date statusStartDate = trustedService.getStartDate();
-						if (processValueCheck(serviceTypeStr) && statusStartDate != null) {
-							Date statusEndDate = trustedService.getEndDate();
-							// The issuing time of the certificate should be into the validity period of the associated
-							// service
-							if ((usageTime.compareTo(statusStartDate) >= 0) && ((statusEndDate == null) || usageTime.before(statusEndDate))) {
-								return true;
-							}
+		List<XmlTrustedServiceProvider> tsps = certificate.getTrustedServiceProviders();
+		if (Utils.isCollectionNotEmpty(tsps)) {
+			for (XmlTrustedServiceProvider tsp : tsps) {
+				for (XmlTrustedService trustedService : tsp.getTrustedServices()) {
+					serviceTypeStr = Utils.trim(trustedService.getServiceType());
+					Date statusStartDate = trustedService.getStartDate();
+					if (processValueCheck(serviceTypeStr) && statusStartDate != null) {
+						Date statusEndDate = trustedService.getEndDate();
+						// The issuing time of the certificate should be into the validity period of the associated
+						// service
+						if ((usageTime.compareTo(statusStartDate) >= 0) && ((statusEndDate == null) || usageTime.before(statusEndDate))) {
+							return true;
 						}
 					}
 				}

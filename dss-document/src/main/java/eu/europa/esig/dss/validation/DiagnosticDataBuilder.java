@@ -51,7 +51,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.tsl.Condition;
@@ -792,7 +791,7 @@ public class DiagnosticDataBuilder {
 			}
 		}
 
-		xmlCert.getTrustedLists().addAll(getXmlTrustedLists(certToken));
+		xmlCert.getTrustedServiceProviders().addAll(getXmlTrustedServiceProviders(certToken));
 
 		return xmlCert;
 	}
@@ -808,42 +807,42 @@ public class DiagnosticDataBuilder {
 		return result;
 	}
 
-	private List<XmlTrustedList> getXmlTrustedLists(CertificateToken certToken) {
-		List<XmlTrustedList> results = new ArrayList<XmlTrustedList>();
-		Set<ServiceInfo> services = getLinkedTrustedServices(certToken);
-		if (Utils.isCollectionNotEmpty(services)) {
-			Map<String, List<ServiceInfo>> servicesByCountries = classifyByCountry(services);
-			for (List<ServiceInfo> servicesByCountry : servicesByCountries.values()) {
-				ServiceInfo first = servicesByCountry.get(0);
-				XmlTrustedList trustedList = new XmlTrustedList();
-				trustedList.setCountryCode(first.getTlCountryCode());
-				trustedList.setUrl(first.getTlUrl());
-				trustedList.setAvailable(first.isTlAvailable());
-				trustedList.setExpired(isExpired(first));
-				trustedList.setVersion5(first.isTlVersion5());
-				trustedList.setWellSigned(first.isTlWellSigned());
-				trustedList.setTrustedServiceProviders(getXmlTrustedServiceProviders(servicesByCountry, certToken));
-				results.add(trustedList);
-			}
-		}
-		return results;
-	}
+	// private List<XmlTrustedList> getXmlTrustedLists(CertificateToken certToken) {
+	// List<XmlTrustedList> results = new ArrayList<XmlTrustedList>();
+	// Set<ServiceInfo> services = getLinkedTrustedServices(certToken);
+	// if (Utils.isCollectionNotEmpty(services)) {
+	// for (List<ServiceInfo> servicesByCountry : servicesByCountries.values()) {
+	// ServiceInfo first = servicesByCountry.get(0);
+	// XmlTrustedList trustedList = new XmlTrustedList();
+	// trustedList.setCountryCode(first.getTlCountryCode());
+	// trustedList.setUrl(first.getTlUrl());
+	// trustedList.setAvailable(first.isTlAvailable());
+	// trustedList.setExpired(isExpired(first));
+	// trustedList.setVersion5(first.isTlVersion5());
+	// trustedList.setWellSigned(first.isTlWellSigned());
+	// results.add(trustedList);
+	// }
+	// }
+	// return results;
+	// }
+	//
+	// private boolean isExpired(ServiceInfo first) {
+	// Date nextUpdate = first.getNextUpdate();
+	// boolean expired = false;
+	// if (nextUpdate == null || validationDate.after(nextUpdate)) {
+	// expired = true;
+	// }
+	// return expired;
+	// }
 
-	private boolean isExpired(ServiceInfo first) {
-		Date nextUpdate = first.getNextUpdate();
-		boolean expired = false;
-		if (nextUpdate == null || validationDate.after(nextUpdate)) {
-			expired = true;
-		}
-		return expired;
-	}
-
-	private List<XmlTrustedServiceProvider> getXmlTrustedServiceProviders(List<ServiceInfo> servicesByCountry, CertificateToken certToken) {
+	private List<XmlTrustedServiceProvider> getXmlTrustedServiceProviders(CertificateToken certToken) {
 		List<XmlTrustedServiceProvider> result = new ArrayList<XmlTrustedServiceProvider>();
-		Map<String, List<ServiceInfo>> servicesByProviders = classifyByServiceProvider(servicesByCountry);
+		Set<ServiceInfo> services = getLinkedTrustedServices(certToken);
+		Map<String, List<ServiceInfo>> servicesByProviders = classifyByServiceProvider(services);
 		for (List<ServiceInfo> serviceByProvider : servicesByProviders.values()) {
 			ServiceInfo first = serviceByProvider.get(0);
 			XmlTrustedServiceProvider serviceProvider = new XmlTrustedServiceProvider();
+			serviceProvider.setCountryCode(first.getTlCountryCode());
 			serviceProvider.setTSPName(first.getTspName());
 			serviceProvider.setTSPServiceName(first.getServiceName());
 			serviceProvider.setTrustedServices(getXmlTrustedServices(serviceByProvider, certToken));
@@ -859,14 +858,15 @@ public class DiagnosticDataBuilder {
 			if (Utils.isCollectionNotEmpty(serviceStatusAfterOfEqualsCertIssuance)) {
 				for (ServiceInfoStatus serviceInfoStatus : serviceStatusAfterOfEqualsCertIssuance) {
 					XmlTrustedService trustedService = new XmlTrustedService();
-					trustedService.setTSPServiceType(serviceInfo.getType());
+
+					trustedService.setServiceType(serviceInfoStatus.getType());
 					trustedService.setStatus(serviceInfoStatus.getStatus());
 					trustedService.setStartDate(serviceInfoStatus.getStartDate());
 					trustedService.setEndDate(serviceInfoStatus.getEndDate());
 
 					List<String> qualifiers = getQualifiers(serviceInfoStatus, certToken);
 					if (Utils.isCollectionNotEmpty(qualifiers)) {
-						trustedService.setQualifiers(qualifiers);
+						trustedService.setCapturedQualifiers(qualifiers);
 					}
 
 					List<String> additionalServiceInfoUris = serviceInfoStatus.getAdditionalServiceInfoUris();
@@ -883,7 +883,7 @@ public class DiagnosticDataBuilder {
 		return result;
 	}
 
-	private Map<String, List<ServiceInfo>> classifyByServiceProvider(List<ServiceInfo> services) {
+	private Map<String, List<ServiceInfo>> classifyByServiceProvider(Set<ServiceInfo> services) {
 		Map<String, List<ServiceInfo>> servicesByProviders = new HashMap<String, List<ServiceInfo>>();
 		for (ServiceInfo serviceInfo : services) {
 			String tradeName = serviceInfo.getTspTradeName();
@@ -895,20 +895,6 @@ public class DiagnosticDataBuilder {
 			servicesByProvider.add(serviceInfo);
 		}
 		return servicesByProviders;
-	}
-
-	private Map<String, List<ServiceInfo>> classifyByCountry(Set<ServiceInfo> services) {
-		Map<String, List<ServiceInfo>> servicesByCountries = new HashMap<String, List<ServiceInfo>>();
-		for (ServiceInfo serviceInfo : services) {
-			String countryCode = serviceInfo.getTlCountryCode();
-			List<ServiceInfo> servicesByCountry = servicesByCountries.get(countryCode);
-			if (servicesByCountry == null) {
-				servicesByCountry = new ArrayList<ServiceInfo>();
-				servicesByCountries.put(countryCode, servicesByCountry);
-			}
-			servicesByCountry.add(serviceInfo);
-		}
-		return servicesByCountries;
 	}
 
 	private Set<ServiceInfo> getLinkedTrustedServices(final CertificateToken certToken) {

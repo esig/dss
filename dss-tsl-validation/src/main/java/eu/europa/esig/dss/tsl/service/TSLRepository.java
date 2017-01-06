@@ -207,24 +207,17 @@ public class TSLRepository {
 	void synchronize() {
 		if (trustedListsCertificateSource != null) {
 			Map<String, TSLValidationModel> allMapTSLValidationModels = getAllMapTSLValidationModels();
-			for (TSLValidationModel model : allMapTSLValidationModels.values()) {
+			for (Entry<String, TSLValidationModel> entry : allMapTSLValidationModels.entrySet()) {
+				String countryCode = entry.getKey();
+				TSLValidationModel model = entry.getValue();
 				if (!model.isCertificateSourceSynchronized()) {
-					boolean tlWellSigned = false;
-					TSLValidationResult validationResult = model.getValidationResult();
-					if ((validationResult != null) && validationResult.isValid()) {
-						tlWellSigned = true;
-					}
-
 					TSLParserResult parseResult = model.getParseResult();
 					if (parseResult != null) {
-						boolean tlVersion5 = (parseResult.getVersion() == 5);
-						Date nextUpdateDate = parseResult.getNextUpdateDate();
 						List<TSLServiceProvider> serviceProviders = parseResult.getServiceProviders();
 						for (TSLServiceProvider serviceProvider : serviceProviders) {
 							for (TSLService service : serviceProvider.getServices()) {
 								for (CertificateToken certificate : service.getCertificates()) {
-									trustedListsCertificateSource.addCertificate(certificate,
-											getServiceInfo(serviceProvider, service, model.getUrl(), tlWellSigned, tlVersion5, nextUpdateDate));
+									trustedListsCertificateSource.addCertificate(certificate, getServiceInfo(serviceProvider, service, countryCode));
 								}
 							}
 						}
@@ -237,8 +230,7 @@ public class TSLRepository {
 		}
 	}
 
-	private ServiceInfo getServiceInfo(TSLServiceProvider serviceProvider, TSLService service, String tlUrl, boolean tlWellSigned, boolean tlVersion5,
-			Date nextUpdateDate) {
+	private ServiceInfo getServiceInfo(TSLServiceProvider serviceProvider, TSLService service, String countryCode) {
 		ServiceInfo serviceInfo = new ServiceInfo();
 
 		serviceInfo.setTspName(serviceProvider.getName());
@@ -247,14 +239,13 @@ public class TSLRepository {
 		serviceInfo.setTspElectronicAddress(serviceProvider.getElectronicAddress());
 
 		serviceInfo.setServiceName(service.getName());
-		serviceInfo.setType(service.getType());
 
 		final MutableTimeDependentValues<ServiceInfoStatus> status = new MutableTimeDependentValues<ServiceInfoStatus>();
 		final TimeDependentValues<TSLServiceStatusAndInformationExtensions> serviceStatus = service.getStatusAndInformationExtensions();
 		if (serviceStatus != null) {
 			for (TSLServiceStatusAndInformationExtensions tslServiceStatus : serviceStatus) {
 				final Map<String, List<Condition>> qualifiersAndConditions = getMapConditionsByQualifier(tslServiceStatus);
-				final ServiceInfoStatus s = new ServiceInfoStatus(tslServiceStatus.getStatus(), qualifiersAndConditions,
+				final ServiceInfoStatus s = new ServiceInfoStatus(tslServiceStatus.getType(), tslServiceStatus.getStatus(), qualifiersAndConditions,
 						tslServiceStatus.getAdditionalServiceInfoUris(), tslServiceStatus.getExpiredCertsRevocationInfo(), tslServiceStatus.getStartDate(),
 						tslServiceStatus.getEndDate());
 
@@ -262,10 +253,7 @@ public class TSLRepository {
 			}
 		}
 		serviceInfo.setStatus(status);
-		serviceInfo.setTlUrl(tlUrl);
-		serviceInfo.setTlVersion5(tlVersion5);
-		serviceInfo.setTlWellSigned(tlWellSigned);
-		serviceInfo.setNextUpdate(nextUpdateDate);
+		serviceInfo.setTlCountryCode(countryCode);
 		return serviceInfo;
 	}
 
