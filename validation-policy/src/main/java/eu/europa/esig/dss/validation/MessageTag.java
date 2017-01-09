@@ -248,6 +248,15 @@ public enum MessageTag {
 	VTS_IRC_ANS("The revocation data is not consistant!"),
 	VTS_ICTBRD("Is the issuance date before control-time ?"),
 	VTS_ICTBRD_ANS("The issuance date of revocation data is not before control-time!"),
+
+	TL_EXP("Is the trusted list not expired ?"),
+	TL_EXP_ANS("The trusted list is expired!"),
+	TL_FRESH("Is the trusted list fresh ?"),
+	TL_FRESH_ANS("The trusted list is not fresh!"),
+	TL_VERSION("Is the trusted list has the expected version ?"),
+	TL_VERSION_ANS("The trusted list has not the expected version!"),
+	TL_WS("Is the trusted list well signed ?"),
+	TL_WS_ANS("The trusted list is not well signed!"),
 	
 	EMPTY("");
 

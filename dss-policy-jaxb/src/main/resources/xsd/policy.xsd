@@ -160,18 +160,13 @@
 	<!-- eIDAS REGL 910/EU/2014 -->
 	<xs:complexType name="Article32">
 		<xs:sequence>
-		
-			<xs:element name="LOTLAvailable" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="LOTLWellSigned" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="LOTLNotExpired" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="LOTLVersion5" type="tns:LevelConstraint" minOccurs="0" />
 			
-			<xs:element name="TLAvailable" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="TLWellSigned" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="TLFreshness" type="tns:TimeConstraint" minOccurs="0" />
 			<xs:element name="TLNotExpired" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="TLVersion5" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="TLConsistency" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="TLWellSigned" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="TLVersion" type="tns:ValueConstraint" minOccurs="0" />
 			
+			<xs:element name="TLConsistency" type="tns:LevelConstraint" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	

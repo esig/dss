@@ -32,6 +32,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.TimestampType;
 
@@ -667,6 +668,14 @@ public class DiagnosticData {
 
 	public XmlContainerInfo getContainerInfo() {
 		return diagnosticData.getContainerInfo();
+	}
+
+	public List<XmlTrustedList> getTrustedLists() {
+		return diagnosticData.getTrustedLists();
+	}
+
+	public XmlTrustedList getListOfTrustedLists() {
+		return diagnosticData.getListOfTrustedLists();
 	}
 
 }

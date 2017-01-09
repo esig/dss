@@ -10,18 +10,20 @@ package eu.europa.esig.dss.jaxb.detailedreport;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for VCI complex type.
+ * <p>Java class for TLAnalysis complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="VCI">
+ * &lt;complexType name="TLAnalysis">
  *   &lt;complexContent>
  *     &lt;extension base="{http://dss.esig.europa.eu/validation/detailed-report}ConstraintsConclusion">
+ *       &lt;attribute name="CountryCode" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -30,10 +32,36 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "VCI")
-public class XmlVCI
+@XmlType(name = "TLAnalysis")
+public class XmlTLAnalysis
     extends XmlConstraintsConclusion
 {
 
+    @XmlAttribute(name = "CountryCode", required = true)
+    protected String countryCode;
+
+    /**
+     * Gets the value of the countryCode property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    /**
+     * Sets the value of the countryCode property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setCountryCode(String value) {
+        this.countryCode = value;
+    }
 
 }

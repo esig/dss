@@ -14,6 +14,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.process.art32.Article32Block;
 import eu.europa.esig.dss.validation.process.bbb.BasicBuildingBlocks;
 import eu.europa.esig.dss.validation.process.vpfbs.ValidationProcessForBasicSignatures;
 import eu.europa.esig.dss.validation.process.vpfltvd.ValidationProcessForSignaturesWithLongTermValidationData;
@@ -66,6 +67,11 @@ public class DetailedReportBuilder {
 			}
 
 			detailedReport.getSignatures().add(signatureAnalysis);
+		}
+
+		if (policy.isArticle32ConstraintPresent()) {
+			Article32Block article32 = new Article32Block(diagnosticData, policy, currentTime);
+			detailedReport.setArticle32Block(article32.execute());
 		}
 
 		return detailedReport;

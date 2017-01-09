@@ -379,21 +379,13 @@ public interface ValidationPolicy {
 
 	boolean isArticle32ConstraintPresent();
 
-	LevelConstraint getLOTLAvailableConstraint();
-
-	LevelConstraint getLOTLWellSignedConstraint();
-
-	LevelConstraint getLOTLNotExpiredConstraint();
-
-	LevelConstraint getLOTLVersion5Constraint();
-
-	LevelConstraint getTLAvailableConstraint();
+	TimeConstraint getTLFreshnessConstraint();
 
 	LevelConstraint getTLWellSignedConstraint();
 
 	LevelConstraint getTLNotExpiredConstraint();
 
-	LevelConstraint getTLVersion5Constraint();
+	ValueConstraint getTLVersionConstraint();
 
 	LevelConstraint getTLConsistencyConstraint();
 

@@ -373,15 +373,10 @@
 	
 	<!-- eIDAS REGL 910/EU/2014 -->
 	<Article32>
-		<LOTLAvailable Level="WARN" />
-		<LOTLWellSigned Level="WARN" />
-		<LOTLNotExpired Level="WARN" />
-		<LOTLVersion5 Level="FAIL" />
-			
-		<TLAvailable Level="WARN" />
-		<TLWellSigned Level="WARN" />
+		<TLFreshness Level="WARN" Unit="HOURS" Value="6" />
 		<TLNotExpired Level="WARN" />
-		<TLVersion5 Level="FAIL" />
+		<TLWellSigned Level="WARN" />
+		<TLVersion Level="FAIL" value="5" />
 		<TLConsistency Level="WARN" />
 	</Article32>
 </ConstraintsParameters>

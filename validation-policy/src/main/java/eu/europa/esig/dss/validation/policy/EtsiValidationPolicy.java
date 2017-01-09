@@ -794,46 +794,10 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getLOTLAvailableConstraint() {
+	public TimeConstraint getTLFreshnessConstraint() {
 		Article32 article32 = policy.getArticle32();
 		if (article32 != null) {
-			return article32.getLOTLAvailable();
-		}
-		return null;
-	}
-
-	@Override
-	public LevelConstraint getLOTLWellSignedConstraint() {
-		Article32 article32 = policy.getArticle32();
-		if (article32 != null) {
-			return article32.getLOTLWellSigned();
-		}
-		return null;
-	}
-
-	@Override
-	public LevelConstraint getLOTLNotExpiredConstraint() {
-		Article32 article32 = policy.getArticle32();
-		if (article32 != null) {
-			return article32.getLOTLNotExpired();
-		}
-		return null;
-	}
-
-	@Override
-	public LevelConstraint getLOTLVersion5Constraint() {
-		Article32 article32 = policy.getArticle32();
-		if (article32 != null) {
-			return article32.getLOTLVersion5();
-		}
-		return null;
-	}
-
-	@Override
-	public LevelConstraint getTLAvailableConstraint() {
-		Article32 article32 = policy.getArticle32();
-		if (article32 != null) {
-			return article32.getTLAvailable();
+			return article32.getTLFreshness();
 		}
 		return null;
 	}
@@ -857,10 +821,10 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getTLVersion5Constraint() {
+	public ValueConstraint getTLVersionConstraint() {
 		Article32 article32 = policy.getArticle32();
 		if (article32 != null) {
-			return article32.getTLVersion5();
+			return article32.getTLVersion();
 		}
 		return null;
 	}

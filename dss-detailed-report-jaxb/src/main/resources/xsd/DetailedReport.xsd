@@ -9,6 +9,7 @@
 			<xs:sequence>
 				<xs:element type="Signature" name="Signatures" minOccurs="0" maxOccurs="unbounded" />
 				<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element type="Article32Block" name="Article32Block" minOccurs="0" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -39,6 +40,20 @@
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 		<xs:attribute name="Type" type="xs:string" use="required" />
+	</xs:complexType>
+	
+	<xs:complexType name="Article32Block">
+		<xs:sequence>
+			<xs:element type="TLAnalysis" name="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="TLAnalysis">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="CountryCode" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="ConstraintsConclusion">
