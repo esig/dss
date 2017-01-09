@@ -23,13 +23,16 @@ package eu.europa.esig.dss.tsl;
 import java.util.Date;
 
 /**
- * This class is a DTO which contains all results (TSLParser / TSLValidator). Instances of this class are stored in TSLRepository
+ * This class is a DTO which contains all results (TSLParser / TSLValidator). Instances of this class are stored in
+ * TSLRepository
  */
 public class TSLValidationModel {
 
 	private String url;
 	private String filepath;
 	private String sha256FileContent;
+
+	private boolean lotl;
 
 	private boolean certificateSourceSynchronized;
 	private Date loadedDate;
@@ -59,6 +62,14 @@ public class TSLValidationModel {
 
 	public void setSha256FileContent(String sha256FileContent) {
 		this.sha256FileContent = sha256FileContent;
+	}
+
+	public boolean isLotl() {
+		return lotl;
+	}
+
+	public void setLotl(boolean lotl) {
+		this.lotl = lotl;
 	}
 
 	public boolean isCertificateSourceSynchronized() {

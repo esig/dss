@@ -51,13 +51,17 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfoStatus;
+import eu.europa.esig.dss.tsl.TLInfo;
+import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
@@ -76,6 +80,7 @@ public class DiagnosticDataBuilder {
 	private ContainerInfo containerInfo;
 	private List<AdvancedSignature> signatures;
 	private Set<CertificateToken> usedCertificates;
+	private TrustedListsCertificateSource trustedListCertSource;
 	private Date validationDate;
 
 	/**
@@ -127,6 +132,20 @@ public class DiagnosticDataBuilder {
 	}
 
 	/**
+	 * This method allows to set the TrustedListsCertificateSource
+	 * 
+	 * @param trustedCertSource
+	 *            the trusted lists certificate source
+	 * @return the builder
+	 */
+	public DiagnosticDataBuilder trustedListsCertificateSource(CertificateSource trustedCertSource) {
+		if (trustedCertSource instanceof TrustedListsCertificateSource) {
+			this.trustedListCertSource = (TrustedListsCertificateSource) trustedCertSource;
+		}
+		return this;
+	}
+
+	/**
 	 * This method allows to set the validation date
 	 * 
 	 * @param validationDate
@@ -151,11 +170,42 @@ public class DiagnosticDataBuilder {
 			diagnosticData.getSignatures().add(getXmlSignature(advancedSignature));
 		}
 
+		Set<String> countryCodes = new HashSet<String>();
 		for (CertificateToken certificateToken : usedCertificates) {
 			diagnosticData.getUsedCertificates().add(getXmlCertificate(allUsedCertificatesDigestAlgorithms, certificateToken));
+
+			X500Principal x500Principal = certificateToken.getSubjectX500Principal();
+			String countryCode = DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.C, x500Principal);
+			countryCodes.add(countryCode);
+		}
+
+		if (trustedListCertSource != null) {
+			for (String countryCode : countryCodes) {
+				diagnosticData.getTrustedLists().add(getXmlTrustedList(countryCode, trustedListCertSource.getTlInfo(countryCode)));
+			}
+
+			diagnosticData.setListOfTrustedLists(getXmlTrustedList("LOTL", trustedListCertSource.getLotlInfo()));
 		}
 
 		return diagnosticData;
+	}
+
+	private XmlTrustedList getXmlTrustedList(String countryCode, TLInfo tlInfo) {
+		if (tlInfo != null) {
+			XmlTrustedList result = new XmlTrustedList();
+			result.setCountryCode(tlInfo.getCountryCode());
+			result.setUrl(tlInfo.getUrl());
+			result.setIssueDate(tlInfo.getIssueDate());
+			result.setNextUpdate(tlInfo.getNextUpdate());
+			result.setLastLoading(tlInfo.getLastLoading());
+			result.setSequenceNumber(tlInfo.getSequenceNumber());
+			result.setVersion(tlInfo.getVersion());
+			result.setWellSigned(tlInfo.isWellSigned());
+			return result;
+		} else {
+			LOG.warn("Not info found for country " + countryCode);
+			return null;
+		}
 	}
 
 	private XmlContainerInfo getXmlContainerInfo() {
@@ -885,14 +935,16 @@ public class DiagnosticDataBuilder {
 
 	private Map<String, List<ServiceInfo>> classifyByServiceProvider(Set<ServiceInfo> services) {
 		Map<String, List<ServiceInfo>> servicesByProviders = new HashMap<String, List<ServiceInfo>>();
-		for (ServiceInfo serviceInfo : services) {
-			String tradeName = serviceInfo.getTspTradeName();
-			List<ServiceInfo> servicesByProvider = servicesByProviders.get(tradeName);
-			if (servicesByProvider == null) {
-				servicesByProvider = new ArrayList<ServiceInfo>();
-				servicesByProviders.put(tradeName, servicesByProvider);
+		if (Utils.isCollectionNotEmpty(services)) {
+			for (ServiceInfo serviceInfo : services) {
+				String tradeName = serviceInfo.getTspTradeName();
+				List<ServiceInfo> servicesByProvider = servicesByProviders.get(tradeName);
+				if (servicesByProvider == null) {
+					servicesByProvider = new ArrayList<ServiceInfo>();
+					servicesByProviders.put(tradeName, servicesByProvider);
+				}
+				servicesByProvider.add(serviceInfo);
 			}
-			servicesByProvider.add(serviceInfo);
 		}
 		return servicesByProviders;
 	}

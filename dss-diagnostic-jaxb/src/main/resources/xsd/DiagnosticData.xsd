@@ -24,7 +24,6 @@
 					</xs:complexType>
 				</xs:element>
 				
-				<xs:element name="ListOfTrustedLists" type="TrustedList" minOccurs="0" />
 				<xs:element name="TrustedLists" minOccurs="0">
 					<xs:complexType>
 						<xs:sequence>
@@ -32,6 +31,7 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
+				<xs:element name="ListOfTrustedLists" type="TrustedList" minOccurs="0" />
 				
 			</xs:sequence>
 		</xs:complexType>
@@ -377,14 +377,42 @@
 		<xs:attribute name="Type" type="xs:string" use="required" />
 	</xs:complexType>
 	
+	<xs:complexType name="Revocation">
+		<xs:sequence>
+			<xs:element name="Origin" type="xs:string" />
+			<xs:element name="Source" type="xs:string" />
+			<xs:element name="SourceAddress" type="xs:string" minOccurs="0" />
+			<xs:element name="Available" type="xs:boolean" minOccurs="0" />
+			<xs:element name="Status" type="xs:boolean" />
+			<xs:element name="Reason" type="xs:string" minOccurs="0" />
+			<xs:element name="ProductionDate" type="xs:dateTime" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
+			<xs:element name="ThisUpdate" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="NextUpdate" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="RevocationDate" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="ExpiredCertsOnCRL" type="xs:dateTime" minOccurs="0" /> <!-- CRL -->
+			<xs:element name="ArchiveCutOff" type="xs:dateTime" minOccurs="0" /> <!-- OCSP -->
+
+			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValues" minOccurs="0" />
+			
+			<xs:element name="BasicSignature" type="BasicSignature" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
+			<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
+			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
+
+			<xs:element name="Info" type="InfoType" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="required" />
+	</xs:complexType>
+	
 	<xs:complexType name="TrustedList">
 		<xs:sequence>
 			<xs:element name="CountryCode" type="xs:string" />
 			<xs:element name="Url" type="xs:string" />	
-			<xs:element name="Available" type="xs:boolean" />
+			<xs:element name="SequenceNumber" type="xs:int" minOccurs="0" />
+			<xs:element name="Version" type="xs:int" minOccurs="0" />
+			<xs:element name="LastLoading" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="IssueDate" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="NextUpdate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="WellSigned" type="xs:boolean" />
-			<xs:element name="Expired" type="xs:boolean" />
-			<xs:element name="Version5" type="xs:boolean" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -429,32 +457,6 @@
 			
 			<xs:element name="expiredCertsRevocationInfo" type="xs:dateTime" minOccurs="0" />
 		</xs:sequence>
-	</xs:complexType>
-	
-	<xs:complexType name="Revocation">
-		<xs:sequence>
-			<xs:element name="Origin" type="xs:string" />
-			<xs:element name="Source" type="xs:string" />
-			<xs:element name="SourceAddress" type="xs:string" minOccurs="0" />
-			<xs:element name="Available" type="xs:boolean" minOccurs="0" />
-			<xs:element name="Status" type="xs:boolean" />
-			<xs:element name="Reason" type="xs:string" minOccurs="0" />
-			<xs:element name="ProductionDate" type="xs:dateTime" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
-			<xs:element name="ThisUpdate" type="xs:dateTime" minOccurs="0" />
-			<xs:element name="NextUpdate" type="xs:dateTime" minOccurs="0" />
-			<xs:element name="RevocationDate" type="xs:dateTime" minOccurs="0" />
-			<xs:element name="ExpiredCertsOnCRL" type="xs:dateTime" minOccurs="0" /> <!-- CRL -->
-			<xs:element name="ArchiveCutOff" type="xs:dateTime" minOccurs="0" /> <!-- OCSP -->
-
-			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValues" minOccurs="0" />
-			
-			<xs:element name="BasicSignature" type="BasicSignature" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
-			<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
-			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
-
-			<xs:element name="Info" type="InfoType" minOccurs="0" />
-		</xs:sequence>
-		<xs:attribute name="Id" type="xs:string" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="DigestAlgoAndValues">

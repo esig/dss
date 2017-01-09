@@ -46,6 +46,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfoStatus;
+import eu.europa.esig.dss.tsl.TLInfo;
 import eu.europa.esig.dss.tsl.TSLConditionsForQualifiers;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
 import eu.europa.esig.dss.tsl.TSLParserResult;
@@ -54,7 +55,6 @@ import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.tsl.TSLValidationModel;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
-import eu.europa.esig.dss.tsl.TSLValidationSummary;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.util.MutableTimeDependentValues;
 import eu.europa.esig.dss.util.TimeDependentValues;
@@ -210,6 +210,7 @@ public class TSLRepository {
 			for (Entry<String, TSLValidationModel> entry : allMapTSLValidationModels.entrySet()) {
 				String countryCode = entry.getKey();
 				TSLValidationModel model = entry.getValue();
+				// Synchronize certpool
 				if (!model.isCertificateSourceSynchronized()) {
 					TSLParserResult parseResult = model.getParseResult();
 					if (parseResult != null) {
@@ -217,6 +218,8 @@ public class TSLRepository {
 						for (TSLServiceProvider serviceProvider : serviceProviders) {
 							for (TSLService service : serviceProvider.getServices()) {
 								for (CertificateToken certificate : service.getCertificates()) {
+									// Update info
+									trustedListsCertificateSource.removeCertificate(certificate);
 									trustedListsCertificateSource.addCertificate(certificate, getServiceInfo(serviceProvider, service, countryCode));
 								}
 							}
@@ -224,10 +227,58 @@ public class TSLRepository {
 					}
 					model.setCertificateSourceSynchronized(true);
 				}
+
+				// Synchronize tlInfos
+				trustedListsCertificateSource.updateTlInfo(countryCode, getTlInfo(countryCode, model));
+
 			}
 			logger.info("Nb of loaded trusted lists : " + allMapTSLValidationModels.size());
 			logger.info("Nb of trusted certificates : " + trustedListsCertificateSource.getNumberOfTrustedCertificates());
 		}
+	}
+
+	private TLInfo getTlInfo(String countryCode, TSLValidationModel model) {
+		TLInfo info = new TLInfo();
+		info.setCountryCode(countryCode);
+		info.setUrl(model.getUrl());
+		info.setLastLoading(model.getLoadedDate());
+		info.setLotl(model.isLotl());
+
+		TSLParserResult parseResult = model.getParseResult();
+		if (parseResult != null) {
+			info.setIssueDate(parseResult.getIssueDate());
+			info.setNextUpdate(parseResult.getNextUpdateDate());
+			info.setSequenceNumber(parseResult.getSequenceNumber());
+			info.setVersion(parseResult.getVersion());
+
+			int nbServiceProviders = 0;
+			int nbServices = 0;
+			int nbCertificates = 0;
+			List<TSLServiceProvider> serviceProviders = parseResult.getServiceProviders();
+			if (serviceProviders != null) {
+				nbServiceProviders = serviceProviders.size();
+				for (TSLServiceProvider tslServiceProvider : serviceProviders) {
+					List<TSLService> services = tslServiceProvider.getServices();
+					if (services != null) {
+						nbServices += services.size();
+						for (TSLService tslService : services) {
+							List<CertificateToken> certificates = tslService.getCertificates();
+							nbCertificates += Utils.collectionSize(certificates);
+						}
+					}
+				}
+			}
+			info.setNbServiceProviders(nbServiceProviders);
+			info.setNbServices(nbServices);
+			info.setNbCertificates(nbCertificates);
+		}
+
+		TSLValidationResult validationResult = model.getValidationResult();
+		if (validationResult != null) {
+			info.setWellSigned(validationResult.isValid());
+		}
+
+		return info;
 	}
 
 	private ServiceInfo getServiceInfo(TSLServiceProvider serviceProvider, TSLService service, String countryCode) {
@@ -277,53 +328,12 @@ public class TSLRepository {
 		return qualifiersAndConditions;
 	}
 
-	public List<TSLValidationSummary> getSummary() {
-		Map<String, TSLValidationModel> map = getAllMapTSLValidationModels();
-		List<TSLValidationSummary> summaries = new ArrayList<TSLValidationSummary>();
-		for (Entry<String, TSLValidationModel> entry : map.entrySet()) {
-			String country = entry.getKey();
-			TSLValidationModel model = entry.getValue();
-			TSLValidationSummary summary = new TSLValidationSummary();
-			summary.setCountry(country);
-			summary.setLoadedDate(model.getLoadedDate());
-			summary.setTslUrl(model.getUrl());
-
-			TSLParserResult parseResult = model.getParseResult();
-			if (parseResult != null) {
-				summary.setSequenceNumber(parseResult.getSequenceNumber());
-				summary.setIssueDate(parseResult.getIssueDate());
-				summary.setNextUpdateDate(parseResult.getNextUpdateDate());
-
-				int nbServiceProviders = 0;
-				int nbServices = 0;
-				int nbCertificatesAndX500Principals = 0;
-				List<TSLServiceProvider> serviceProviders = parseResult.getServiceProviders();
-				if (serviceProviders != null) {
-					nbServiceProviders = serviceProviders.size();
-					for (TSLServiceProvider tslServiceProvider : serviceProviders) {
-						List<TSLService> services = tslServiceProvider.getServices();
-						if (services != null) {
-							nbServices += services.size();
-							for (TSLService tslService : services) {
-								List<CertificateToken> certificates = tslService.getCertificates();
-								nbCertificatesAndX500Principals += Utils.collectionSize(certificates);
-							}
-						}
-					}
-				}
-				summary.setNbServiceProviders(nbServiceProviders);
-				summary.setNbServices(nbServices);
-				summary.setNbCertificatesAndX500Principals(nbCertificatesAndX500Principals);
-			}
-
-			TSLValidationResult validationResult = model.getValidationResult();
-			if (validationResult != null) {
-				summary.setIndication(validationResult.getIndication());
-			}
-
-			summaries.add(summary);
+	public Map<String, TLInfo> getSummary() {
+		if (trustedListsCertificateSource != null) {
+			return Collections.unmodifiableMap(new TreeMap<String, TLInfo>(trustedListsCertificateSource.getSummary()));
+		} else {
+			return Collections.emptyMap();
 		}
-		return summaries;
 	}
 
 }
