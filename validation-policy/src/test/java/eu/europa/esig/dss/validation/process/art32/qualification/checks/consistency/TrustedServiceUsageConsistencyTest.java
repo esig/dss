@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.validation.policy.ServiceQualification;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.TrustedServiceCondition;
 
 public class TrustedServiceUsageConsistencyTest {
 

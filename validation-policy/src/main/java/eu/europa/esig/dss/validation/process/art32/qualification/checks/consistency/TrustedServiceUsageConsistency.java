@@ -4,7 +4,6 @@ import java.util.List;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.validation.policy.ServiceQualification;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.TrustedServiceCondition;
 
 /**
  * A Trusted Service can only have one of these values {QcForEsig, QcForEseal or QcForWSA} or none.

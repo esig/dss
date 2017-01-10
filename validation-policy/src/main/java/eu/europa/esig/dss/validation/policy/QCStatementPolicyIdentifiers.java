@@ -9,7 +9,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 /**
  * Qualified Certificate Statement constants
  */
-public class QCStatementPolicyIdentifiers {
+public final class QCStatementPolicyIdentifiers {
 
 	private QCStatementPolicyIdentifiers() {
 	}
