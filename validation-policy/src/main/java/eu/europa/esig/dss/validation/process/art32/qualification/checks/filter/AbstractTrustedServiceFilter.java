@@ -23,6 +23,16 @@ public abstract class AbstractTrustedServiceFilter implements TrustedServiceFilt
 		return result;
 	}
 
-	abstract List<XmlTrustedService> getAcceptableServices(List<XmlTrustedService> originServices);
+	private List<XmlTrustedService> getAcceptableServices(List<XmlTrustedService> originServices) {
+		List<XmlTrustedService> result = new ArrayList<XmlTrustedService>();
+		for (XmlTrustedService service : originServices) {
+			if (isAcceptable(service)) {
+				result.add(service);
+			}
+		}
+		return result;
+	}
+
+	abstract boolean isAcceptable(XmlTrustedService service);
 
 }

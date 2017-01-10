@@ -1,10 +1,9 @@
 package eu.europa.esig.dss.validation.process.art32.qualification.checks.filter;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -22,74 +21,54 @@ public class ServiceByDateFilterTest {
 	public void testInRange() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE2);
 
-		List<XmlTrustedService> trustedServices = new ArrayList<XmlTrustedService>();
-
 		XmlTrustedService service = new XmlTrustedService();
 		service.setStartDate(DATE1);
 		service.setEndDate(DATE3);
-		trustedServices.add(service);
 
-		List<XmlTrustedService> acceptableServices = filter.getAcceptableServices(trustedServices);
-		assertEquals(1, acceptableServices.size());
+		assertTrue(filter.isAcceptable(service));
 	}
 
 	@Test
 	public void testNoEndRange() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE2);
 
-		List<XmlTrustedService> trustedServices = new ArrayList<XmlTrustedService>();
-
 		XmlTrustedService service = new XmlTrustedService();
 		service.setStartDate(DATE1);
-		trustedServices.add(service);
 
-		List<XmlTrustedService> acceptableServices = filter.getAcceptableServices(trustedServices);
-		assertEquals(1, acceptableServices.size());
+		assertTrue(filter.isAcceptable(service));
 	}
 
 	@Test
 	public void testNotInRange() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE3);
 
-		List<XmlTrustedService> trustedServices = new ArrayList<XmlTrustedService>();
-
 		XmlTrustedService service = new XmlTrustedService();
 		service.setStartDate(DATE1);
 		service.setEndDate(DATE2);
-		trustedServices.add(service);
 
-		List<XmlTrustedService> acceptableServices = filter.getAcceptableServices(trustedServices);
-		assertEquals(0, acceptableServices.size());
+		assertFalse(filter.isAcceptable(service));
 	}
 
 	@Test
 	public void testInRangeSameStartDate() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE1);
 
-		List<XmlTrustedService> trustedServices = new ArrayList<XmlTrustedService>();
-
 		XmlTrustedService service = new XmlTrustedService();
 		service.setStartDate(DATE1);
 		service.setEndDate(DATE3);
-		trustedServices.add(service);
 
-		List<XmlTrustedService> acceptableServices = filter.getAcceptableServices(trustedServices);
-		assertEquals(1, acceptableServices.size());
+		assertTrue(filter.isAcceptable(service));
 	}
 
 	@Test
 	public void testInRangeSameEndDate() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE3);
 
-		List<XmlTrustedService> trustedServices = new ArrayList<XmlTrustedService>();
-
 		XmlTrustedService service = new XmlTrustedService();
 		service.setStartDate(DATE1);
 		service.setEndDate(DATE3);
-		trustedServices.add(service);
 
-		List<XmlTrustedService> acceptableServices = filter.getAcceptableServices(trustedServices);
-		assertEquals(1, acceptableServices.size());
+		assertTrue(filter.isAcceptable(service));
 	}
 
 }
