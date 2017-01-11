@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd;
 
-import eu.europa.esig.dss.validation.process.art32.EIDASConstants;
+import eu.europa.esig.dss.validation.process.art32.EIDASUtils;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualifiedStatus;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.cert.SSCDByCertificatePostEIDAS;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.cert.SSCDByCertificatePreEIDAS;
@@ -14,10 +14,10 @@ public final class SSCDStrategyFactory {
 	}
 
 	public static SSCDStrategy createSSCDFromCert(CertificateWrapper signingCertificate) {
-		if (EIDASConstants.EIDAS_DATE.before(signingCertificate.getNotBefore())) {
-			return new SSCDByCertificatePreEIDAS(signingCertificate);
-		} else {
+		if (EIDASUtils.isPostEIDAS(signingCertificate.getNotBefore())) {
 			return new SSCDByCertificatePostEIDAS(signingCertificate);
+		} else {
+			return new SSCDByCertificatePreEIDAS(signingCertificate);
 		}
 	}
 

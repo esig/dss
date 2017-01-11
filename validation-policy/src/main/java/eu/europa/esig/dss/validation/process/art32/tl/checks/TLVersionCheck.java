@@ -11,7 +11,7 @@ import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.art32.EIDASConstants;
+import eu.europa.esig.dss.validation.process.art32.EIDASUtils;
 import eu.europa.esig.jaxb.policy.ValueConstraint;
 
 public class TLVersionCheck extends ChainItem<XmlTLAnalysis> {
@@ -32,7 +32,7 @@ public class TLVersionCheck extends ChainItem<XmlTLAnalysis> {
 	@Override
 	protected boolean process() {
 
-		if (EIDASConstants.EIDAS_GRACE_DATE.after(currentTime)) {
+		if (!EIDASUtils.isPostGracePeriod(currentTime)) {
 			return true;
 		}
 

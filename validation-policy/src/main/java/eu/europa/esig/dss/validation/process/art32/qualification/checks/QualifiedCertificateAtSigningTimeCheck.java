@@ -21,6 +21,8 @@ public class QualifiedCertificateAtSigningTimeCheck extends ChainItem<XmlSignatu
 	private final Date signingTime;
 	private final List<TrustedServiceWrapper> servicesForESign;
 
+	private QualifiedStatus status;
+
 	public QualifiedCertificateAtSigningTimeCheck(XmlSignatureAnalysis result, CertificateWrapper signingCertificate, Date signingTime,
 			List<TrustedServiceWrapper> servicesForESign, LevelConstraint constraint) {
 		super(result, constraint);
@@ -34,9 +36,13 @@ public class QualifiedCertificateAtSigningTimeCheck extends ChainItem<XmlSignatu
 	protected boolean process() {
 
 		QualificationFromCertAndTL qualification = new QualificationFromCertAndTL(signingCertificate, servicesForESign, signingTime);
-		QualifiedStatus status = qualification.getQualifiedStatus();
+		status = qualification.getQualifiedStatus();
 
 		return QualifiedStatus.isQC(status);
+	}
+
+	public QualifiedStatus getStatus() {
+		return status;
 	}
 
 	@Override

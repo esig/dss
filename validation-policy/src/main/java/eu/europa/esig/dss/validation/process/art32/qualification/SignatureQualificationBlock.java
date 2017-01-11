@@ -10,9 +10,11 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.CertificatePathTrustedCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.QualifiedCertificateAtCertificateIssuanceCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.QualifiedCertificateAtSigningTimeCheck;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.SSCDCertificateAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.ServiceConsistencyCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.filter.TrustedServicesFilterFactory;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualifiedStatus;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
@@ -66,7 +68,12 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 			// TODO
 
 			// (f) the electronic signature was created by a qualified electronic signature creation device;
-			item = item.setNextItem(sscdAtSigningTime(signingCertificate, signature.getDateTime(), servicesForESign));
+			// TODO find a way to avoid execute twice
+			QualifiedCertificateAtSigningTimeCheck qualifiedCertificateAtSigningTime = (QualifiedCertificateAtSigningTimeCheck) qualifiedCertificateAtSigningTime(
+					signingCertificate, signature.getDateTime(), servicesForESign);
+			qualifiedCertificateAtSigningTime.execute();
+			QualifiedStatus qualifiedStatusAtSigningTime = qualifiedCertificateAtSigningTime.getStatus();
+			item = item.setNextItem(sscdAtSigningTime(signingCertificate, signature.getDateTime(), servicesForESign, qualifiedStatusAtSigningTime));
 
 		}
 
@@ -91,8 +98,9 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 	}
 
 	private ChainItem<XmlSignatureAnalysis> sscdAtSigningTime(CertificateWrapper signingCertificate, Date signingTime,
-			List<TrustedServiceWrapper> servicesForESign) {
-		return new SSCDCertificateAtSigningTime(result, signingCertificate, signingTime, servicesForESign);
+			List<TrustedServiceWrapper> servicesForESign, QualifiedStatus qualifiedStatusAtSigningTime) {
+		return new SSCDCertificateAtSigningTimeCheck(result, signingCertificate, signingTime, servicesForESign, qualifiedStatusAtSigningTime,
+				getWarnLevelConstraint());
 	}
 
 }

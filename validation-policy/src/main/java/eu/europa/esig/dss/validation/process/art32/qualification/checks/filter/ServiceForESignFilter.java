@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.validation.process.art32.qualification.checks.filter;
 
 import eu.europa.esig.dss.validation.process.art32.AdditionalServiceInformation;
-import eu.europa.esig.dss.validation.process.art32.EIDASConstants;
+import eu.europa.esig.dss.validation.process.art32.EIDASUtils;
 import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
 import eu.europa.esig.dss.validation.process.art32.TrustedServiceStatus;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
@@ -10,7 +10,7 @@ public class ServiceForESignFilter extends AbstractTrustedServiceFilter {
 
 	@Override
 	boolean isAcceptable(TrustedServiceWrapper service) {
-		if (service.getStartDate().compareTo(EIDASConstants.EIDAS_DATE) >= 0) {
+		if (EIDASUtils.isPostEIDAS(service.getStartDate())) {
 			return isCaQc(service) && hasAcceptableStatusAfterEIDAS(service) && hasAdditionnalServiceInfoForEsign(service);
 		} else {
 			return isCaQc(service) && hasAcceptableStatusBeforeEIDAS(service);
