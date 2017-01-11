@@ -6,11 +6,11 @@ import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualifie
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualifiedStatus;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
-public class PreEIDASQualificationByCertificate implements QualificationStrategy {
+public class QualificationByCertificatePreEIDAS implements QualificationStrategy {
 
 	private final CertificateWrapper signingCertificate;
 
-	public PreEIDASQualificationByCertificate(CertificateWrapper signingCertificate) {
+	public QualificationByCertificatePreEIDAS(CertificateWrapper signingCertificate) {
 		this.signingCertificate = signingCertificate;
 	}
 

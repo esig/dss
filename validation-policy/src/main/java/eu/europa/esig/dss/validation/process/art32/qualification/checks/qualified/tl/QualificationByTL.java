@@ -3,8 +3,7 @@ package eu.europa.esig.dss.validation.process.art32.qualification.checks.qualifi
 import java.util.List;
 
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.policy.ServiceQualification;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.CertificateCondition;
+import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualificationStrategy;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualifiedStatus;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
@@ -32,24 +31,26 @@ public class QualificationByTL implements QualificationStrategy {
 			// If overrules
 			if (Utils.isCollectionNotEmpty(capturedQualifiers)) {
 
-				CertificateCondition isQCTypeESign = new CertificateWithQCTypeESignCondition();
-
 				if (ServiceQualification.isNotQualified(capturedQualifiers)) {
 					return QualifiedStatus.NOT_QC;
-				} else if (ServiceQualification.isQcForLegalPerson(capturedQualifiers) || ServiceQualification.isQcForEseal(capturedQualifiers)
-						|| ServiceQualification.isQcForWSA(capturedQualifiers)) {
-					return QualifiedStatus.QC_NOT_FOR_ESIGN;
-				} else if (ServiceQualification.isQcStatement(capturedQualifiers) && ServiceQualification.isQcForEsig(capturedQualifiers)) {
-					return QualifiedStatus.QC_FOR_ESIGN;
-				} else if (ServiceQualification.isQcStatement(capturedQualifiers) && isQCTypeESign.check(signingCertificate)) {
-					return QualifiedStatus.QC_FOR_ESIGN;
-				} else {
-					return qualifiedStatusFromCert;
 				}
 
-			} else {
-				return qualifiedStatusFromCert;
+				if (ServiceQualification.isQcForLegalPerson(capturedQualifiers) || ServiceQualification.isQcForEseal(capturedQualifiers)
+						|| ServiceQualification.isQcForWSA(capturedQualifiers)) {
+					return QualifiedStatus.QC_NOT_FOR_ESIGN;
+				}
+
+				if (ServiceQualification.isQcStatement(capturedQualifiers) && ServiceQualification.isQcForEsig(capturedQualifiers)) {
+					return QualifiedStatus.QC_FOR_ESIGN;
+				}
+
+				CertificateWithQCTypeESignCondition isQCTypeESign = new CertificateWithQCTypeESignCondition(signingCertificate);
+				if (ServiceQualification.isQcStatement(capturedQualifiers) && isQCTypeESign.check()) {
+					return QualifiedStatus.QC_FOR_ESIGN;
+				}
+
 			}
+			return qualifiedStatusFromCert;
 		}
 	}
 

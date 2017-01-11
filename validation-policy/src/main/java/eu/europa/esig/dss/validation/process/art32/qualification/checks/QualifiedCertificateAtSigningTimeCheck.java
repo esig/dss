@@ -34,9 +34,9 @@ public class QualifiedCertificateAtSigningTimeCheck extends ChainItem<XmlSignatu
 	protected boolean process() {
 
 		QualificationFromCertAndTL qualification = new QualificationFromCertAndTL(signingCertificate, servicesForESign, signingTime);
-		QualifiedStatus qualifiedStatus = qualification.getQualifiedStatus();
+		QualifiedStatus status = qualification.getQualifiedStatus();
 
-		return QualifiedStatus.QC_FOR_ESIGN == qualifiedStatus || QualifiedStatus.QC_NOT_FOR_ESIGN == qualifiedStatus;
+		return QualifiedStatus.isQC(status);
 	}
 
 	@Override

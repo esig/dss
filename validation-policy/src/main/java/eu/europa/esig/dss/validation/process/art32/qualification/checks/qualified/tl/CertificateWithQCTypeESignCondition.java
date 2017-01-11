@@ -1,14 +1,20 @@
 package eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.tl;
 
 import eu.europa.esig.dss.validation.policy.QCStatementPolicyIdentifiers;
-import eu.europa.esig.dss.validation.policy.QCTypeIdentifiers;
+import eu.europa.esig.dss.validation.process.art32.QCTypeIdentifiers;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.CertificateCondition;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
 public class CertificateWithQCTypeESignCondition implements CertificateCondition {
 
+	private final CertificateWrapper certificate;
+
+	public CertificateWithQCTypeESignCondition(CertificateWrapper certificate) {
+		this.certificate = certificate;
+	}
+
 	@Override
-	public boolean check(CertificateWrapper certificate) {
+	public boolean check() {
 
 		// (SigCert includes QcCompliance+QcType1 xor QcCompliance only xor QcType1 only (otherwise no effect))
 

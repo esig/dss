@@ -1,16 +1,16 @@
 package eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.cert;
 
 import eu.europa.esig.dss.validation.policy.QCStatementPolicyIdentifiers;
-import eu.europa.esig.dss.validation.policy.QCTypeIdentifiers;
+import eu.europa.esig.dss.validation.process.art32.QCTypeIdentifiers;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualificationStrategy;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualifiedStatus;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
-public class PostEIDASQualificationByCertificate implements QualificationStrategy {
+public class QualificationByCertificatePostEIDAS implements QualificationStrategy {
 
 	private final CertificateWrapper signingCertificate;
 
-	public PostEIDASQualificationByCertificate(CertificateWrapper signingCertificate) {
+	public QualificationByCertificatePostEIDAS(CertificateWrapper signingCertificate) {
 		this.signingCertificate = signingCertificate;
 	}
 

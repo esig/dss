@@ -1,9 +1,9 @@
 package eu.europa.esig.dss.validation.process.art32.qualification.checks.filter;
 
-import eu.europa.esig.dss.validation.policy.AdditionalServiceInformation;
-import eu.europa.esig.dss.validation.policy.ServiceQualification;
-import eu.europa.esig.dss.validation.policy.TrustedServiceStatus;
+import eu.europa.esig.dss.validation.process.art32.AdditionalServiceInformation;
 import eu.europa.esig.dss.validation.process.art32.EIDASConstants;
+import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
+import eu.europa.esig.dss.validation.process.art32.TrustedServiceStatus;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public class ServiceForESignFilter extends AbstractTrustedServiceFilter {

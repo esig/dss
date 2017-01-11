@@ -1,8 +1,8 @@
 package eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified;
 
 import eu.europa.esig.dss.validation.process.art32.EIDASConstants;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.cert.PostEIDASQualificationByCertificate;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.cert.PreEIDASQualificationByCertificate;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.cert.QualificationByCertificatePostEIDAS;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.cert.QualificationByCertificatePreEIDAS;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.tl.QualificationByTL;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
@@ -14,9 +14,9 @@ public final class QualificationStrategyFactory {
 
 	public static QualificationStrategy createQualificationFromCert(CertificateWrapper signingCertificate) {
 		if (EIDASConstants.EIDAS_DATE.before(signingCertificate.getNotBefore())) {
-			return new PreEIDASQualificationByCertificate(signingCertificate);
+			return new QualificationByCertificatePreEIDAS(signingCertificate);
 		} else {
-			return new PostEIDASQualificationByCertificate(signingCertificate);
+			return new QualificationByCertificatePostEIDAS(signingCertificate);
 		}
 	}
 

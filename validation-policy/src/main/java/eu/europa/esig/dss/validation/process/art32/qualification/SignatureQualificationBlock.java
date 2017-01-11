@@ -63,6 +63,11 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 			// 1. was issued by a qualified trust service provider
 			item = item.setNextItem(qualifiedCertificateAtIssuance(signingCertificate, servicesForESign));
 
+			// TODO
+
+			// (f) the electronic signature was created by a qualified electronic signature creation device;
+			item = item.setNextItem(sscdAtSigningTime(signingCertificate, signature.getDateTime(), servicesForESign));
+
 		}
 
 	}
@@ -83,6 +88,11 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 	private ChainItem<XmlSignatureAnalysis> qualifiedCertificateAtIssuance(CertificateWrapper signingCertificate,
 			List<TrustedServiceWrapper> servicesForESign) {
 		return new QualifiedCertificateAtCertificateIssuanceCheck(result, signingCertificate, servicesForESign, getWarnLevelConstraint());
+	}
+
+	private ChainItem<XmlSignatureAnalysis> sscdAtSigningTime(CertificateWrapper signingCertificate, Date signingTime,
+			List<TrustedServiceWrapper> servicesForESign) {
+		return new SSCDCertificateAtSigningTime(result, signingCertificate, signingTime, servicesForESign);
 	}
 
 }

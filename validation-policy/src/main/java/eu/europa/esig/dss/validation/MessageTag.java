@@ -272,6 +272,9 @@ public enum MessageTag {
 	
 	ART32_QC_AT_CC("Is qualifed certificate at issuance time? (Article 32 1. b)"),
 	ART32_QC_AT_CC_ANS("The certificate is not qualified at issuance time!"),
+
+	ART32_SSCD_AT_ST("Is created by a SSCD? (Article 32 1. a)"),
+	ART32_SSCD_AT_ST_ANS("The electronic signature is not created by a SSCD!"),
 	
 	EMPTY("");
 

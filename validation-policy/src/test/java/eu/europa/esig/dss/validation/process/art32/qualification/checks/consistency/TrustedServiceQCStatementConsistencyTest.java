@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.validation.policy.ServiceQualification;
+import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public class TrustedServiceQCStatementConsistencyTest {

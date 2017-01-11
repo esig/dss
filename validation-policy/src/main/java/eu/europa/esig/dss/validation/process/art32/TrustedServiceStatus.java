@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.policy;
+package eu.europa.esig.dss.validation.process.art32;
 
 /**
  * ETSI TS 119 612 V2.2.1
