@@ -24,12 +24,12 @@ public class TLWellSignedCheck extends ChainItem<XmlTLAnalysis> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.TL_WS;
+		return MessageTag.ART32_TL_WS;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.TL_WS_ANS;
+		return MessageTag.ART32_TL_WS_ANS;
 	}
 
 	@Override

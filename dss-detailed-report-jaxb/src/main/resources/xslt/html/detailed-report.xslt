@@ -11,6 +11,8 @@
 	    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='COUNTER_SIGNATURE']"/>
 	    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='TIMESTAMP']"/>
 	    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='REVOCATION']"/>
+	    
+	    <xsl:apply-templates select="dss:Article32"/>
     </xsl:template>
 
     <xsl:template match="dss:BasicBuildingBlocks">    

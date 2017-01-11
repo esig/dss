@@ -45,6 +45,7 @@
 	<xs:complexType name="Article32Block">
 		<xs:sequence>
 			<xs:element type="TLAnalysis" name="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="SignatureAnalysis" name="SignatureAnalysis" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -52,6 +53,14 @@
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
 				<xs:attribute name="CountryCode" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="SignatureAnalysis">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="Id" type="xs:string" use="required" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

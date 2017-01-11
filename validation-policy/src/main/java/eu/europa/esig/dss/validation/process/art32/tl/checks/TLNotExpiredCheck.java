@@ -32,12 +32,12 @@ public class TLNotExpiredCheck extends ChainItem<XmlTLAnalysis> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.TL_EXP;
+		return MessageTag.ART32_TL_EXP;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.TL_EXP_ANS;
+		return MessageTag.ART32_TL_EXP_ANS;
 	}
 
 	@Override

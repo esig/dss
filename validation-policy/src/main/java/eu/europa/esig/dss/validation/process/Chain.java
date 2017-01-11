@@ -78,4 +78,10 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 		return constraint;
 	}
 
+	protected LevelConstraint getWarnLevelConstraint() {
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.WARN);
+		return constraint;
+	}
+
 }

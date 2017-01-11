@@ -61,7 +61,7 @@ public class TimeDependentValues<T extends TimeDependent> implements Iterable<T>
 		List<T> result = new ArrayList<T>();
 		for (final T x : list) {
 			Date endDate = x.getEndDate();
-			if (endDate == null || endDate.compareTo(notBefore) >= 0) {
+			if (endDate == null || (endDate.compareTo(notBefore) >= 0)) {
 				result.add(x);
 			}
 		}

@@ -2,8 +2,8 @@ package eu.europa.esig.dss.validation.process.art32.qualification.checks.consist
 
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.validation.policy.ServiceQualification;
+import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 /**
  * A Trusted Service can not have QCForESig and QCForLegalPerson qualifiers for the same certificate.
@@ -11,7 +11,7 @@ import eu.europa.esig.dss.validation.policy.ServiceQualification;
 public class TrustedServiceLegalPersonConsistency implements TrustedServiceCondition {
 
 	@Override
-	public boolean isConsistent(XmlTrustedService trustedService) {
+	public boolean isConsistent(TrustedServiceWrapper trustedService) {
 
 		List<String> capturedQualifiers = trustedService.getCapturedQualifiers();
 

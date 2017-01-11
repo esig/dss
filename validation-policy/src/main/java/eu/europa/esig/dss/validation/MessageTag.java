@@ -249,14 +249,29 @@ public enum MessageTag {
 	VTS_ICTBRD("Is the issuance date before control-time ?"),
 	VTS_ICTBRD_ANS("The issuance date of revocation data is not before control-time!"),
 
-	TL_EXP("Is the trusted list not expired ?"),
-	TL_EXP_ANS("The trusted list is expired!"),
-	TL_FRESH("Is the trusted list fresh ?"),
-	TL_FRESH_ANS("The trusted list is not fresh!"),
-	TL_VERSION("Is the trusted list has the expected version ?"),
-	TL_VERSION_ANS("The trusted list has not the expected version!"),
-	TL_WS("Is the trusted list well signed ?"),
-	TL_WS_ANS("The trusted list is not well signed!"),
+	ART32_TL_EXP("Is the trusted list not expired ?"),
+	ART32_TL_EXP_ANS("The trusted list is expired!"),
+	ART32_TL_FRESH("Is the trusted list fresh ?"),
+	ART32_TL_FRESH_ANS("The trusted list is not fresh!"),
+	ART32_TL_VERSION("Is the trusted list has the expected version ?"),
+	ART32_TL_VERSION_ANS("The trusted list has not the expected version!"),
+	ART32_TL_WS("Is the trusted list well signed ?"),
+	ART32_TL_WS_ANS("The trusted list is not well signed!"),
+	
+	ART32_TL_SERV_CONS("Are trusted services consistent ?"),
+	ART32_TL_SERV_CONS_ANS1("Trusted service not consistent! (QCStatement vs NotQualified)"),
+	ART32_TL_SERV_CONS_ANS2("Trusted service not consistent! (legal person vs esign)"),
+	ART32_TL_SERV_CONS_ANS3("Trusted service not consistent! (QSCD vs NotQSCD)"),
+	ART32_TL_SERV_CONS_ANS4("Trusted service not consistent! (multiple usages)"),
+
+	ART32_TRUSTED_CERT_PATH("Is the certificate path trusted?"),
+	ART32_TRUSTED_CERT_PATH_ANS("The certificate path is not trusted!"),
+
+	ART32_QC_AT_ST("Is qualifed certificate at signing time? (Article 32 1. a)"),
+	ART32_QC_AT_ST_ANS("The certificate is not qualified at signing time!"),
+	
+	ART32_QC_AT_CC("Is qualifed certificate at issuance time? (Article 32 1. b)"),
+	ART32_QC_AT_CC_ANS("The certificate is not qualified at issuance time!"),
 	
 	EMPTY("");
 

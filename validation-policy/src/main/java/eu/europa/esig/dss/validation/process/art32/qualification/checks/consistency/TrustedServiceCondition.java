@@ -1,9 +1,9 @@
 package eu.europa.esig.dss.validation.process.art32.qualification.checks.consistency;
 
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
+import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public interface TrustedServiceCondition {
 
-	boolean isConsistent(XmlTrustedService trustedService);
+	boolean isConsistent(TrustedServiceWrapper trustedService);
 
 }

@@ -2,7 +2,7 @@ package eu.europa.esig.dss.validation.process.art32.qualification.checks.filter;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
+import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public class ServiceByDateFilter extends AbstractTrustedServiceFilter {
 
@@ -13,7 +13,7 @@ public class ServiceByDateFilter extends AbstractTrustedServiceFilter {
 	}
 
 	@Override
-	boolean isAcceptable(XmlTrustedService service) {
+	boolean isAcceptable(TrustedServiceWrapper service) {
 		Date startDate = service.getStartDate();
 		Date endDate = service.getEndDate();
 		return ((date.compareTo(startDate) >= 0) && (endDate == null || (date.compareTo(endDate) <= 0)));

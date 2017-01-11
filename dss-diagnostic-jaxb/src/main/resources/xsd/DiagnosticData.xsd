@@ -213,7 +213,7 @@
 				</xs:complexType>
 			</xs:element>
 						
-			<xs:element name="TrustedServiceProviders" minOccurs="0">
+			<xs:element name="TrustedServiceProviders">
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="TrustedServiceProvider" type="TrustedServiceProvider" minOccurs="0" maxOccurs="unbounded" />
@@ -422,7 +422,7 @@
 			<xs:element name="TSPServiceName" type="xs:string" />
 			<xs:element name="CountryCode" type="xs:string" />
 			
-			<xs:element name="TrustedServices" minOccurs="0">
+			<xs:element name="TrustedServices">
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="TrustedService" type="TrustedService" minOccurs="0" maxOccurs="unbounded" />
@@ -439,18 +439,18 @@
 			<xs:element name="StartDate" type="xs:dateTime" />
 			<xs:element name="EndDate" type="xs:dateTime" minOccurs="0" />
 			
-			<xs:element name="CapturedQualifiers" minOccurs="0">
+			<xs:element name="CapturedQualifiers">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="Qualifier" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+						<xs:element name="Qualifier" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
 			
-			<xs:element name="AdditionalServiceInfoUris" minOccurs="0">
+			<xs:element name="AdditionalServiceInfoUris">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="URI" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+						<xs:element name="URI" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>

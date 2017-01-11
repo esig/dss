@@ -170,14 +170,16 @@ public class DiagnosticDataBuilder {
 			diagnosticData.getSignatures().add(getXmlSignature(advancedSignature));
 		}
 
+		List<XmlCertificate> xmlCertificates = new ArrayList<XmlCertificate>();
 		Set<String> countryCodes = new HashSet<String>();
 		for (CertificateToken certificateToken : usedCertificates) {
-			diagnosticData.getUsedCertificates().add(getXmlCertificate(allUsedCertificatesDigestAlgorithms, certificateToken));
+			xmlCertificates.add(getXmlCertificate(allUsedCertificatesDigestAlgorithms, certificateToken));
 
 			X500Principal x500Principal = certificateToken.getSubjectX500Principal();
 			String countryCode = DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.C, x500Principal);
 			countryCodes.add(countryCode);
 		}
+		diagnosticData.setUsedCertificates(Collections.unmodifiableList(xmlCertificates));
 
 		if (trustedListCertSource != null) {
 			for (String countryCode : countryCodes) {
@@ -841,7 +843,7 @@ public class DiagnosticDataBuilder {
 			}
 		}
 
-		xmlCert.getTrustedServiceProviders().addAll(getXmlTrustedServiceProviders(certToken));
+		xmlCert.setTrustedServiceProviders(getXmlTrustedServiceProviders(certToken));
 
 		return xmlCert;
 	}
@@ -857,34 +859,6 @@ public class DiagnosticDataBuilder {
 		return result;
 	}
 
-	// private List<XmlTrustedList> getXmlTrustedLists(CertificateToken certToken) {
-	// List<XmlTrustedList> results = new ArrayList<XmlTrustedList>();
-	// Set<ServiceInfo> services = getLinkedTrustedServices(certToken);
-	// if (Utils.isCollectionNotEmpty(services)) {
-	// for (List<ServiceInfo> servicesByCountry : servicesByCountries.values()) {
-	// ServiceInfo first = servicesByCountry.get(0);
-	// XmlTrustedList trustedList = new XmlTrustedList();
-	// trustedList.setCountryCode(first.getTlCountryCode());
-	// trustedList.setUrl(first.getTlUrl());
-	// trustedList.setAvailable(first.isTlAvailable());
-	// trustedList.setExpired(isExpired(first));
-	// trustedList.setVersion5(first.isTlVersion5());
-	// trustedList.setWellSigned(first.isTlWellSigned());
-	// results.add(trustedList);
-	// }
-	// }
-	// return results;
-	// }
-	//
-	// private boolean isExpired(ServiceInfo first) {
-	// Date nextUpdate = first.getNextUpdate();
-	// boolean expired = false;
-	// if (nextUpdate == null || validationDate.after(nextUpdate)) {
-	// expired = true;
-	// }
-	// return expired;
-	// }
-
 	private List<XmlTrustedServiceProvider> getXmlTrustedServiceProviders(CertificateToken certToken) {
 		List<XmlTrustedServiceProvider> result = new ArrayList<XmlTrustedServiceProvider>();
 		Set<ServiceInfo> services = getLinkedTrustedServices(certToken);
@@ -898,7 +872,7 @@ public class DiagnosticDataBuilder {
 			serviceProvider.setTrustedServices(getXmlTrustedServices(serviceByProvider, certToken));
 			result.add(serviceProvider);
 		}
-		return result;
+		return Collections.unmodifiableList(result);
 	}
 
 	private List<XmlTrustedService> getXmlTrustedServices(List<ServiceInfo> serviceInfos, CertificateToken certToken) {
@@ -930,7 +904,7 @@ public class DiagnosticDataBuilder {
 				}
 			}
 		}
-		return result;
+		return Collections.unmodifiableList(result);
 	}
 
 	private Map<String, List<ServiceInfo>> classifyByServiceProvider(Set<ServiceInfo> services) {

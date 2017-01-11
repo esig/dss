@@ -5,8 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.validation.policy.ServiceQualification;
+import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public class TrustedServiceQSCDConsistencyTest {
 
@@ -14,27 +14,27 @@ public class TrustedServiceQSCDConsistencyTest {
 
 	@Test
 	public void testNoInfo() {
-		XmlTrustedService service = new XmlTrustedService();
+		TrustedServiceWrapper service = new TrustedServiceWrapper();
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
 	public void testSSCD() {
-		XmlTrustedService service = new XmlTrustedService();
+		TrustedServiceWrapper service = new TrustedServiceWrapper();
 		service.getCapturedQualifiers().add(ServiceQualification.QC_WITH_QSCD);
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
 	public void testNoSSCD() {
-		XmlTrustedService service = new XmlTrustedService();
+		TrustedServiceWrapper service = new TrustedServiceWrapper();
 		service.getCapturedQualifiers().add(ServiceQualification.QC_NO_QSCD);
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
 	public void testConflict() {
-		XmlTrustedService service = new XmlTrustedService();
+		TrustedServiceWrapper service = new TrustedServiceWrapper();
 		service.getCapturedQualifiers().add(ServiceQualification.QC_WITH_QSCD);
 		service.getCapturedQualifiers().add(ServiceQualification.QC_NO_QSCD);
 		assertFalse(condition.isConsistent(service));

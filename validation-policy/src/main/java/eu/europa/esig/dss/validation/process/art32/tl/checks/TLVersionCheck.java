@@ -53,12 +53,12 @@ public class TLVersionCheck extends ChainItem<XmlTLAnalysis> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.TL_VERSION;
+		return MessageTag.ART32_TL_VERSION;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.TL_VERSION_ANS;
+		return MessageTag.ART32_TL_VERSION_ANS;
 	}
 
 	@Override

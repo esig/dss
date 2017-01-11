@@ -9,7 +9,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
+import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public class ServiceByDateFilterTest {
 
@@ -21,7 +21,7 @@ public class ServiceByDateFilterTest {
 	public void testInRange() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE2);
 
-		XmlTrustedService service = new XmlTrustedService();
+		TrustedServiceWrapper service = new TrustedServiceWrapper();
 		service.setStartDate(DATE1);
 		service.setEndDate(DATE3);
 
@@ -32,7 +32,7 @@ public class ServiceByDateFilterTest {
 	public void testNoEndRange() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE2);
 
-		XmlTrustedService service = new XmlTrustedService();
+		TrustedServiceWrapper service = new TrustedServiceWrapper();
 		service.setStartDate(DATE1);
 
 		assertTrue(filter.isAcceptable(service));
@@ -42,7 +42,7 @@ public class ServiceByDateFilterTest {
 	public void testNotInRange() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE3);
 
-		XmlTrustedService service = new XmlTrustedService();
+		TrustedServiceWrapper service = new TrustedServiceWrapper();
 		service.setStartDate(DATE1);
 		service.setEndDate(DATE2);
 
@@ -53,7 +53,7 @@ public class ServiceByDateFilterTest {
 	public void testInRangeSameStartDate() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE1);
 
-		XmlTrustedService service = new XmlTrustedService();
+		TrustedServiceWrapper service = new TrustedServiceWrapper();
 		service.setStartDate(DATE1);
 		service.setEndDate(DATE3);
 
@@ -64,7 +64,7 @@ public class ServiceByDateFilterTest {
 	public void testInRangeSameEndDate() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE3);
 
-		XmlTrustedService service = new XmlTrustedService();
+		TrustedServiceWrapper service = new TrustedServiceWrapper();
 		service.setStartDate(DATE1);
 		service.setEndDate(DATE3);
 
