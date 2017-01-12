@@ -267,13 +267,16 @@ public enum MessageTag {
 	ART32_TRUSTED_CERT_PATH("Is the certificate path trusted?"),
 	ART32_TRUSTED_CERT_PATH_ANS("The certificate path is not trusted!"),
 
-	ART32_QC_AT_ST("Is qualifed certificate at signing time? (Article 32 1. a)"),
+	ART32_QC_AT_ST("Is qualifed certificate at signing time?"),
 	ART32_QC_AT_ST_ANS("The certificate is not qualified at signing time!"),
 	
-	ART32_QC_AT_CC("Is qualifed certificate at issuance time? (Article 32 1. b)"),
+	ART32_QC_AT_CC("Is qualifed certificate at issuance time?"),
 	ART32_QC_AT_CC_ANS("The certificate is not qualified at issuance time!"),
 
-	ART32_SSCD_AT_ST("Is created by a SSCD? (Article 32 1. a)"),
+	ART32_PSEUDO_USE("Is pseudo used ?"),
+	ART32_PSEUDO_USE_ANS("A pseudonym is used"),
+
+	ART32_SSCD_AT_ST("Is created by a SSCD?"),
 	ART32_SSCD_AT_ST_ANS("The electronic signature is not created by a SSCD!"),
 	
 	EMPTY("");

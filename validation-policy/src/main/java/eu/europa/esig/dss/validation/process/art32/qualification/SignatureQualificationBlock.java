@@ -8,6 +8,7 @@ import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.CertificatePathTrustedCheck;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.PseudoUsageCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.QualifiedCertificateAtCertificateIssuanceCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.QualifiedCertificateAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.SSCDCertificateAtSigningTimeCheck;
@@ -67,6 +68,10 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 
 			// TODO
 
+			// (e) the use of any pseudonym is clearly indicated to the relying party if a pseudonym was used at the
+			// time of signing;
+			item = item.setNextItem(pseudoUsage(signingCertificate));
+
 			// (f) the electronic signature was created by a qualified electronic signature creation device;
 			// TODO find a way to avoid execute twice
 			QualifiedCertificateAtSigningTimeCheck qualifiedCertificateAtSigningTime = (QualifiedCertificateAtSigningTimeCheck) qualifiedCertificateAtSigningTime(
@@ -95,6 +100,10 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 	private ChainItem<XmlSignatureAnalysis> qualifiedCertificateAtIssuance(CertificateWrapper signingCertificate,
 			List<TrustedServiceWrapper> servicesForESign) {
 		return new QualifiedCertificateAtCertificateIssuanceCheck(result, signingCertificate, servicesForESign, getWarnLevelConstraint());
+	}
+
+	private ChainItem<XmlSignatureAnalysis> pseudoUsage(CertificateWrapper signingCertificate) {
+		return new PseudoUsageCheck(result, signingCertificate, getInfoLevelConstraint());
 	}
 
 	private ChainItem<XmlSignatureAnalysis> sscdAtSigningTime(CertificateWrapper signingCertificate, Date signingTime,
