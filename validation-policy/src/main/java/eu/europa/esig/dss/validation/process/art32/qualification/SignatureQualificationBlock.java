@@ -7,13 +7,17 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.CertificateNotRevokedAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.CertificatePathTrustedCheck;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.CertificateUsedToSignDataCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.Condition;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.DataIntegrityCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.PseudoUsageCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.QualifiedCertificateAtCertificateIssuanceCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.QualifiedCertificateAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.SSCDCertificateAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.ServiceConsistencyCheck;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.UniqueCertificateCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.filter.TrustedServicesFilterFactory;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
@@ -56,7 +60,7 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 			// 2. Consistency of trusted services ?
 			item = item.setNextItem(servicesConsistency(servicesForESign));
 
-			// Art32 :
+			// Article 32 :
 			// (a) the certificate that supports the signature was, at the time of signing, a qualified certificate for
 			// electronic signature complying with Annex I;
 			QualifiedCertificateAtSigningTimeCheck qualifiedCertificateAtSigningTime = (QualifiedCertificateAtSigningTimeCheck) qualifiedCertificateAtSigningTime(
@@ -67,7 +71,15 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 			// 1. was issued by a qualified trust service provider
 			item = item.setNextItem(qualifiedCertificateAtIssuance(signingCertificate, servicesForESign));
 
-			// TODO
+			// 2. was valid at the time of signing;
+			item = item.setNextItem(certificateNotRevokedAtSigningTime(signingCertificate, signature.getDateTime()));
+
+			// (c) the signature validation data corresponds to the data provided to the relying party;
+			item = item.setNextItem(certificateUsedToSignData());
+
+			// (d) the unique set of data representing the signatory in the certificate is correctly provided to the
+			// relying party;
+			item = item.setNextItem(uniqueCertificate(signingCertificate));
 
 			// (e) the use of any pseudonym is clearly indicated to the relying party if a pseudonym was used at the
 			// time of signing;
@@ -75,6 +87,9 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 
 			// (f) the electronic signature was created by a qualified electronic signature creation device;
 			item = item.setNextItem(sscdAtSigningTime(signingCertificate, signature.getDateTime(), servicesForESign, qualifiedCertificateAtSigningTime));
+
+			// (g) the integrity of the signed data has not been compromised;
+			item = item.setNextItem(dataIntegrity());
 
 		}
 
@@ -98,6 +113,18 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 		return new QualifiedCertificateAtCertificateIssuanceCheck(result, signingCertificate, servicesForESign, getWarnLevelConstraint());
 	}
 
+	private ChainItem<XmlSignatureAnalysis> certificateNotRevokedAtSigningTime(CertificateWrapper signingCertificate, Date signingTime) {
+		return new CertificateNotRevokedAtSigningTimeCheck(result, signingCertificate, signingTime, getWarnLevelConstraint());
+	}
+
+	private ChainItem<XmlSignatureAnalysis> certificateUsedToSignData() {
+		return new CertificateUsedToSignDataCheck(result, signature, getWarnLevelConstraint());
+	}
+
+	private ChainItem<XmlSignatureAnalysis> uniqueCertificate(CertificateWrapper signingCertificate) {
+		return new UniqueCertificateCheck(result, signingCertificate, getWarnLevelConstraint());
+	}
+
 	private ChainItem<XmlSignatureAnalysis> pseudoUsage(CertificateWrapper signingCertificate) {
 		return new PseudoUsageCheck(result, signingCertificate, getInfoLevelConstraint());
 	}
@@ -106,6 +133,10 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 			List<TrustedServiceWrapper> servicesForESign, Condition qualifiedStatusAtSigningTime) {
 		return new SSCDCertificateAtSigningTimeCheck(result, signingCertificate, signingTime, servicesForESign, qualifiedStatusAtSigningTime,
 				getWarnLevelConstraint());
+	}
+
+	private ChainItem<XmlSignatureAnalysis> dataIntegrity() {
+		return new DataIntegrityCheck(result, signature, getWarnLevelConstraint());
 	}
 
 }

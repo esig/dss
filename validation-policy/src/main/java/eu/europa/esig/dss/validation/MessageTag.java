@@ -273,11 +273,23 @@ public enum MessageTag {
 	ART32_QC_AT_CC("Is qualifed certificate at issuance time?"),
 	ART32_QC_AT_CC_ANS("The certificate is not qualified at issuance time!"),
 
+	ART32_USED_CERT("Is the used certificate?"),
+	ART32_USED_CERT_ANS("The certificate is not used to sign the data!"),
+	
+	ART32_UNIQUE_CERT("Is the certificate unique ?"),
+	ART32_UNIQUE_CERT_ANS("The certificate cannot be defined as unique!"),
+
 	ART32_PSEUDO_USE("Is pseudo used ?"),
 	ART32_PSEUDO_USE_ANS("A pseudonym is used"),
 
+	ART32_CERT_REVOKED_AT_ST("Is the certificate not revoked at signing time?"),
+	ART32_CERT_REVOKED_AT_ST_ANS("The certificate is revoked at signing time!"),
+
 	ART32_SSCD_AT_ST("Is created by a SSCD?"),
 	ART32_SSCD_AT_ST_ANS("The electronic signature is not created by a SSCD!"),
+
+	ART32_DATA_INTEGRITY("Is the integrity of the signed data not compromised?"),
+	ART32_DATA_INTEGRITY_ANS("The integrity of the signed data has been compromised!"),
 	
 	EMPTY("");
 
