@@ -8,6 +8,7 @@ import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.CertificatePathTrustedCheck;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.Condition;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.PseudoUsageCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.QualifiedCertificateAtCertificateIssuanceCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.QualifiedCertificateAtSigningTimeCheck;
@@ -15,7 +16,6 @@ import eu.europa.esig.dss.validation.process.art32.qualification.checks.SSCDCert
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.ServiceConsistencyCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.filter.TrustedServicesFilterFactory;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualifiedStatus;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
@@ -59,8 +59,9 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 			// Art32 :
 			// (a) the certificate that supports the signature was, at the time of signing, a qualified certificate for
 			// electronic signature complying with Annex I;
-
-			item = item.setNextItem(qualifiedCertificateAtSigningTime(signingCertificate, signature.getDateTime(), servicesForESign));
+			QualifiedCertificateAtSigningTimeCheck qualifiedCertificateAtSigningTime = (QualifiedCertificateAtSigningTimeCheck) qualifiedCertificateAtSigningTime(
+					signingCertificate, signature.getDateTime(), servicesForESign);
+			item = item.setNextItem(qualifiedCertificateAtSigningTime);
 
 			// (b) the qualified certificate
 			// 1. was issued by a qualified trust service provider
@@ -73,12 +74,7 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 			item = item.setNextItem(pseudoUsage(signingCertificate));
 
 			// (f) the electronic signature was created by a qualified electronic signature creation device;
-			// TODO find a way to avoid execute twice
-			QualifiedCertificateAtSigningTimeCheck qualifiedCertificateAtSigningTime = (QualifiedCertificateAtSigningTimeCheck) qualifiedCertificateAtSigningTime(
-					signingCertificate, signature.getDateTime(), servicesForESign);
-			qualifiedCertificateAtSigningTime.execute();
-			QualifiedStatus qualifiedStatusAtSigningTime = qualifiedCertificateAtSigningTime.getStatus();
-			item = item.setNextItem(sscdAtSigningTime(signingCertificate, signature.getDateTime(), servicesForESign, qualifiedStatusAtSigningTime));
+			item = item.setNextItem(sscdAtSigningTime(signingCertificate, signature.getDateTime(), servicesForESign, qualifiedCertificateAtSigningTime));
 
 		}
 
@@ -107,7 +103,7 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 	}
 
 	private ChainItem<XmlSignatureAnalysis> sscdAtSigningTime(CertificateWrapper signingCertificate, Date signingTime,
-			List<TrustedServiceWrapper> servicesForESign, QualifiedStatus qualifiedStatusAtSigningTime) {
+			List<TrustedServiceWrapper> servicesForESign, Condition qualifiedStatusAtSigningTime) {
 		return new SSCDCertificateAtSigningTimeCheck(result, signingCertificate, signingTime, servicesForESign, qualifiedStatusAtSigningTime,
 				getWarnLevelConstraint());
 	}

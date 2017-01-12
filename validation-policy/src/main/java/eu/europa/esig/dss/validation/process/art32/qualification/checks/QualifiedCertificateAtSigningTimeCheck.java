@@ -10,12 +10,13 @@ import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualificationFromCertAndTL;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualificationStrategy;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualifiedStatus;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class QualifiedCertificateAtSigningTimeCheck extends ChainItem<XmlSignatureAnalysis> {
+public class QualifiedCertificateAtSigningTimeCheck extends ChainItem<XmlSignatureAnalysis> implements QualificationStrategy, Condition {
 
 	private final CertificateWrapper signingCertificate;
 	private final Date signingTime;
@@ -38,11 +39,17 @@ public class QualifiedCertificateAtSigningTimeCheck extends ChainItem<XmlSignatu
 		QualificationFromCertAndTL qualification = new QualificationFromCertAndTL(signingCertificate, servicesForESign, signingTime);
 		status = qualification.getQualifiedStatus();
 
-		return QualifiedStatus.isQC(status);
+		return check();
 	}
 
-	public QualifiedStatus getStatus() {
+	@Override
+	public QualifiedStatus getQualifiedStatus() {
 		return status;
+	}
+
+	@Override
+	public boolean check() {
+		return QualifiedStatus.isQC(status);
 	}
 
 	@Override

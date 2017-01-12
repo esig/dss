@@ -2,11 +2,11 @@ package eu.europa.esig.dss.validation.process.art32.qualification.checks.qualifi
 
 import eu.europa.esig.dss.validation.policy.CertificatePolicyIdentifiers;
 import eu.europa.esig.dss.validation.policy.QCStatementPolicyIdentifiers;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualificationStrategy;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.AbstractQualificationCondition;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualifiedStatus;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
-public class QualificationByCertificatePreEIDAS implements QualificationStrategy {
+public class QualificationByCertificatePreEIDAS extends AbstractQualificationCondition {
 
 	private final CertificateWrapper signingCertificate;
 

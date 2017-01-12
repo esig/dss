@@ -4,27 +4,26 @@ import java.util.List;
 
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualifiedStatus;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.SSCDStatus;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.SSCDStrategy;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.Condition;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.AbstractSSCDCondition;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
-public class SSCDByTL implements SSCDStrategy {
+public class SSCDByTL extends AbstractSSCDCondition {
 
 	private final TrustedServiceWrapper trustedService;
-	private final QualifiedStatus qualifiedStatus;
-	private final SSCDStatus sscdFromCertificate;
+	private final Condition qualified;
+	private final Condition sscdFromCertificate;
 
-	public SSCDByTL(TrustedServiceWrapper trustedService, QualifiedStatus qualifiedStatus, SSCDStatus sscdFromCertificate) {
+	public SSCDByTL(TrustedServiceWrapper trustedService, Condition qualified, Condition sscdFromCertificate) {
 		this.trustedService = trustedService;
-		this.qualifiedStatus = qualifiedStatus;
+		this.qualified = qualified;
 		this.sscdFromCertificate = sscdFromCertificate;
 	}
 
 	@Override
-	public SSCDStatus getSSCDStatus() {
-		if (trustedService == null || !QualifiedStatus.isQC(qualifiedStatus)) {
-			return SSCDStatus.NOT_SSCD;
+	public boolean check() {
+		if (trustedService == null || !qualified.check()) {
+			return false;
 		} else {
 			List<String> capturedQualifiers = trustedService.getCapturedQualifiers();
 
@@ -32,17 +31,17 @@ public class SSCDByTL implements SSCDStrategy {
 			if (Utils.isCollectionNotEmpty(capturedQualifiers)) {
 
 				if (ServiceQualification.isQcNoSSCD(capturedQualifiers)) {
-					return SSCDStatus.NOT_SSCD;
+					return false;
 				}
 
 				if (ServiceQualification.isQcWithSSCD(capturedQualifiers) || ServiceQualification.isQcSscdStatusAsInCert(capturedQualifiers)
 						|| ServiceQualification.isQcSscdManagedOnBehalf(capturedQualifiers)) {
-					return SSCDStatus.SSCD;
+					return true;
 				}
 
 			}
 
-			return sscdFromCertificate;
+			return sscdFromCertificate.check();
 		}
 	}
 

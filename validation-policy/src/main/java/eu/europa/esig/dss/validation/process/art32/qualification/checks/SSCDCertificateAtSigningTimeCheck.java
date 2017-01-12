@@ -9,7 +9,6 @@ import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualifiedStatus;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.SSCDFromCertAndTL;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.SSCDStatus;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.SSCDStrategy;
@@ -21,23 +20,23 @@ public class SSCDCertificateAtSigningTimeCheck extends ChainItem<XmlSignatureAna
 
 	private final CertificateWrapper signingCertificate;
 	private final Date signingTime;
-	private final QualifiedStatus qualifiedStatus;
+	private final Condition qualified;
 	private final List<TrustedServiceWrapper> servicesForESign;
 
 	public SSCDCertificateAtSigningTimeCheck(XmlSignatureAnalysis result, CertificateWrapper signingCertificate, Date signingTime,
-			List<TrustedServiceWrapper> servicesForESign, QualifiedStatus qualifiedStatus, LevelConstraint constraint) {
+			List<TrustedServiceWrapper> servicesForESign, Condition qualified, LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.signingCertificate = signingCertificate;
 		this.signingTime = signingTime;
-		this.qualifiedStatus = qualifiedStatus;
+		this.qualified = qualified;
 		this.servicesForESign = new ArrayList<TrustedServiceWrapper>(servicesForESign);
 	}
 
 	@Override
 	protected boolean process() {
 
-		SSCDStrategy strategy = new SSCDFromCertAndTL(signingCertificate, servicesForESign, qualifiedStatus, signingTime);
+		SSCDStrategy strategy = new SSCDFromCertAndTL(signingCertificate, servicesForESign, qualified, signingTime);
 		SSCDStatus status = strategy.getSSCDStatus();
 
 		return SSCDStatus.SSCD == status;

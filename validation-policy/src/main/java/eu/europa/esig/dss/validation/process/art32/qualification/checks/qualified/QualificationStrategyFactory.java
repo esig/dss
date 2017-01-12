@@ -21,8 +21,8 @@ public final class QualificationStrategyFactory {
 	}
 
 	public static QualificationStrategy createQualificationFromTL(TrustedServiceWrapper trustedService, CertificateWrapper signingCertificate,
-			QualifiedStatus qualifiedStatusFromCert) {
-		return new QualificationByTL(trustedService, signingCertificate, qualifiedStatusFromCert);
+			QualificationStrategy qualifiedInCert) {
+		return new QualificationByTL(trustedService, signingCertificate, qualifiedInCert);
 	}
 
 }

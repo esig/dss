@@ -10,7 +10,7 @@ import eu.europa.esig.dss.validation.process.art32.qualification.checks.filter.T
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
-public class QualificationFromCertAndTL implements QualificationStrategy {
+public class QualificationFromCertAndTL extends AbstractQualificationCondition {
 
 	private final CertificateWrapper signingCertificate;
 	private final List<TrustedServiceWrapper> servicesForESign;
@@ -30,15 +30,14 @@ public class QualificationFromCertAndTL implements QualificationStrategy {
 		List<TrustedServiceWrapper> servicesAtGivenDate = filterByDate.filter(servicesForESign);
 
 		// 2. retrieve certificate qualification from the certificate itself
-		QualificationStrategy qualificationStrategy = QualificationStrategyFactory.createQualificationFromCert(signingCertificate);
-		QualifiedStatus qualifiedStatusFromSigCert = qualificationStrategy.getQualifiedStatus();
+		QualificationStrategy qualificationInCert = QualificationStrategyFactory.createQualificationFromCert(signingCertificate);
 
 		// 1 TSP and 1 TS // TODO improve
 		TrustedServiceWrapper trustedService = getUniqueTrustedService(servicesAtGivenDate);
 
 		// 3. Apply TL overruling(s)
 		QualificationStrategy qualificationFromCertAndTL = QualificationStrategyFactory.createQualificationFromTL(trustedService, signingCertificate,
-				qualifiedStatusFromSigCert);
+				qualificationInCert);
 
 		return qualificationFromCertAndTL.getQualifiedStatus();
 	}

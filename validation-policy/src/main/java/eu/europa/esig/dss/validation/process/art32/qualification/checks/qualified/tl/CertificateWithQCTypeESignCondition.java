@@ -2,10 +2,10 @@ package eu.europa.esig.dss.validation.process.art32.qualification.checks.qualifi
 
 import eu.europa.esig.dss.validation.policy.QCStatementPolicyIdentifiers;
 import eu.europa.esig.dss.validation.process.art32.QCTypeIdentifiers;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.CertificateCondition;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.Condition;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
-public class CertificateWithQCTypeESignCondition implements CertificateCondition {
+public class CertificateWithQCTypeESignCondition implements Condition {
 
 	private final CertificateWrapper certificate;
 

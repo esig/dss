@@ -4,21 +4,22 @@ import java.util.List;
 
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.AbstractQualificationCondition;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualificationStrategy;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualifiedStatus;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
-public class QualificationByTL implements QualificationStrategy {
+public class QualificationByTL extends AbstractQualificationCondition {
 
 	private final TrustedServiceWrapper trustedService;
 	private final CertificateWrapper signingCertificate;
-	private final QualifiedStatus qualifiedStatusFromCert;
+	private final QualificationStrategy qualifiedInCert;
 
-	public QualificationByTL(TrustedServiceWrapper trustedService, CertificateWrapper signingCertificate, QualifiedStatus qualifiedStatusFromCert) {
+	public QualificationByTL(TrustedServiceWrapper trustedService, CertificateWrapper signingCertificate, QualificationStrategy qualifiedInCert) {
 		this.trustedService = trustedService;
 		this.signingCertificate = signingCertificate;
-		this.qualifiedStatusFromCert = qualifiedStatusFromCert;
+		this.qualifiedInCert = qualifiedInCert;
 	}
 
 	@Override
@@ -50,7 +51,7 @@ public class QualificationByTL implements QualificationStrategy {
 				}
 
 			}
-			return qualifiedStatusFromCert;
+			return qualifiedInCert.getQualifiedStatus();
 		}
 	}
 
