@@ -13,6 +13,7 @@
     <mvc:resources mapping="/fonts/**" location="/fonts/" />
     <mvc:resources mapping="/images/**" location="/images/" />
     <mvc:resources mapping="/scripts/**" location="/scripts/" />
+    <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/" />
     <mvc:resources mapping="/jar/**" location="/jar/" />
     <mvc:resources mapping="/downloads/**" location="/downloads/" />
     <mvc:resources mapping="/doc/**" location="/doc/" />

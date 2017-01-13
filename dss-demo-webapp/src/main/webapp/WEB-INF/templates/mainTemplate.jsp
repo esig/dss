@@ -14,18 +14,17 @@
 	<title><spring:message code="application.title" /></title>
 
     <!-- Bootstrap -->
-    <link href="<c:url value="/css/jquery-ui.min.css" />" rel="stylesheet" />
-    <link href="<c:url value="/css/bootstrap.min.css" />" rel="stylesheet" />
-    <link href="<c:url value="/css/bootstrap-theme.min.css" />" rel="stylesheet" />
+    <link href="<c:url value="/webjars/jquery-ui/1.11.1/jquery-ui.min.css" />" rel="stylesheet" />
+    <link href="<c:url value="/webjars/bootstrap/3.3.7/css/bootstrap.min.css" />" rel="stylesheet" />
+    <link href="<c:url value="/webjars/bootstrap/3.3.7/css/bootstrap-theme.min.css" />" rel="stylesheet" />
+    <link href="<c:url value="/webjars/google-code-prettify/1.0.4/src/prettify.css" />" rel="stylesheet" />
     <link href="<c:url value="/css/dss.css" />" rel="stylesheet" />
     
-    <script type="text/javascript" src="<c:url value="/scripts/jquery-1.11.2.min.js" />"></script>
-    <script type="text/javascript" src="<c:url value="/scripts/jquery-ui.min.js" />"></script>
+    <script type="text/javascript" src="<c:url value="/webjars/jquery/1.11.1/jquery.min.js" />"></script>
+    <script type="text/javascript" src="<c:url value="/webjars/jquery-ui/1.11.1/jquery-ui.min.js" />"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script type="text/javascript" src="<c:url value="/scripts/bootstrap.min.js" />"></script>
-    <script type="text/javascript" src="<c:url value="/scripts/prettify.js" />"></script>
-    <%--Used in signature.jsp --%>
-    <script type="text/javascript" src="<c:url value="/scripts/detect_browser_version.js" />"></script>
+    <script type="text/javascript" src="<c:url value="/webjars/bootstrap/3.3.7/js/bootstrap.min.js" />"></script>
+    <script type="text/javascript" src="<c:url value="/webjars/google-code-prettify/1.0.4/src/run_prettify.js" />"></script>
   </head>
   <body>
        <nav class="navbar navbar-default hidden-print">

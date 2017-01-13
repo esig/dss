@@ -46,7 +46,5 @@
         $(this).tab('show')
     });
     
-    $('.collapse').collapse();
-    
     $('[data-toggle="tooltip"]').tooltip();
 </script>
