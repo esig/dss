@@ -9,6 +9,7 @@ import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.Condition;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualificationFromCertAndTL;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualificationStrategy;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualifiedStatus;
@@ -54,12 +55,12 @@ public class QualifiedCertificateAtSigningTimeCheck extends ChainItem<XmlSignatu
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.ART32_QC_AT_ST;
+		return MessageTag.QUAL_QC_AT_ST;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.ART32_QC_AT_ST_ANS;
+		return MessageTag.QUAL_QC_AT_ST_ANS;
 	}
 
 	@Override

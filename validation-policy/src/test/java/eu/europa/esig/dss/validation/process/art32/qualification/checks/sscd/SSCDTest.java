@@ -18,9 +18,9 @@ import eu.europa.esig.dss.QCStatementOids;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.process.Condition;
+import eu.europa.esig.dss.validation.process.ConditionBuilder;
 import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.Condition;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.ConditionBuilder;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 

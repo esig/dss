@@ -9,6 +9,7 @@ import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.Condition;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.SSCDFromCertAndTL;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.SSCDStatus;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.SSCDStrategy;
@@ -51,12 +52,12 @@ public class SSCDCertificateAtSigningTimeCheck extends ChainItem<XmlSignatureAna
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.ART32_SSCD_AT_ST;
+		return MessageTag.QUAL_SSCD_AT_ST;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.ART32_SSCD_AT_ST_ANS;
+		return MessageTag.QUAL_SSCD_AT_ST_ANS;
 	}
 
 	@Override

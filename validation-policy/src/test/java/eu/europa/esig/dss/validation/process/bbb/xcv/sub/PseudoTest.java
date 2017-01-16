@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.process.art32.qualification.checks.pseudo;
+package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.pseudo.CertificateHasPseudoCondition;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
 public class PseudoTest {

@@ -1,6 +1,6 @@
-package eu.europa.esig.dss.validation.process.art32.qualification.checks;
+package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -9,11 +9,11 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class UniqueCertificateCheck extends ChainItem<XmlSignatureAnalysis> {
+public class SerialNumberCheck extends ChainItem<XmlSubXCV> {
 
 	private final CertificateWrapper certificate;
 
-	public UniqueCertificateCheck(XmlSignatureAnalysis result, CertificateWrapper certificate, LevelConstraint constraint) {
+	public SerialNumberCheck(XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.certificate = certificate;
@@ -21,17 +21,17 @@ public class UniqueCertificateCheck extends ChainItem<XmlSignatureAnalysis> {
 
 	@Override
 	protected boolean process() {
-		return Utils.isStringNotBlank(certificate.getSerialNumber()) && Utils.isStringNotBlank(certificate.getCertificateDN());
+		return Utils.isStringNotBlank(certificate.getSerialNumber());
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.ART32_UNIQUE_CERT;
+		return MessageTag.QUAL_UNIQUE_CERT;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.ART32_UNIQUE_CERT_ANS;
+		return MessageTag.QUAL_UNIQUE_CERT_ANS;
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class UniqueCertificateCheck extends ChainItem<XmlSignatureAnalysis> {
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return null;
+		return SubIndication.SIG_CONSTRAINTS_FAILURE;
 	}
 
 }

@@ -3,8 +3,8 @@ package eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.tl
 import java.util.List;
 
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.process.Condition;
 import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.Condition;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.AbstractSSCDCondition;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 

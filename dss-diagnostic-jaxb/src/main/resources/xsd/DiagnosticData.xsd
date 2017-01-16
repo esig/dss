@@ -167,6 +167,29 @@
 			<xs:element name="OrganizationalUnit" type="xs:string" minOccurs="0"/>
 			<xs:element name="Surname" type="xs:string" minOccurs="0"/>
 			<xs:element name="Pseudonym" type="xs:string" minOccurs="0"/>
+			
+			<xs:element name="AuthorityInformationAccessUrls" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Url" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CRLDistributionPoints" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Url" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="OCSPAccessUrls" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Url" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
 			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValues" minOccurs="0" />
 			<xs:element name="NotAfter" type="xs:dateTime" />
 			<xs:element name="NotBefore" type="xs:dateTime" />

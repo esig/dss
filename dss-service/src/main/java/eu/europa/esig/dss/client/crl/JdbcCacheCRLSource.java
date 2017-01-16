@@ -35,6 +35,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -129,7 +130,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 		if (issuerToken == null) {
 			return null;
 		}
-		final List<String> crlUrls = cachedSource.getCrlUrl(certificateToken);
+		final List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificateToken);
 		if (Utils.isCollectionEmpty(crlUrls)) {
 			return null;
 		}

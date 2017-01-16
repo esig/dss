@@ -220,6 +220,18 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return Utils.EMPTY_STRING;
 	}
 
+	public List<String> getAuthorityInformationAccessUrls() {
+		return certificate.getAuthorityInformationAccessUrls();
+	}
+
+	public List<String> getCRLDistributionPoints() {
+		return certificate.getCRLDistributionPoints();
+	}
+
+	public List<String> getOCSPAccessUrls() {
+		return certificate.getOCSPAccessUrls();
+	}
+
 	public List<String> getPolicyIds() {
 		List<XmlOID> certificatePolicyIds = certificate.getCertificatePolicyIds();
 		if (Utils.isCollectionNotEmpty(certificatePolicyIds)) {

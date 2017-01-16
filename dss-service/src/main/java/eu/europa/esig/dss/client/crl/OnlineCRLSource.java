@@ -24,16 +24,6 @@ import java.security.cert.X509CRL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.DERIA5String;
-import org.bouncycastle.asn1.DERTaggedObject;
-import org.bouncycastle.asn1.x509.CRLDistPoint;
-import org.bouncycastle.asn1.x509.DistributionPoint;
-import org.bouncycastle.asn1.x509.DistributionPointName;
-import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.asn1.x509.GeneralName;
-import org.bouncycastle.asn1.x509.GeneralNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,11 +120,13 @@ public class OnlineCRLSource implements CRLSource {
 		if (issuerToken == null) {
 			return null;
 		}
-		final List<String> crlUrls = getCrlUrl(certificateToken);
+		final List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificateToken);
 		LOG.info("CRL's URL for " + certificateToken.getAbbreviation() + " : " + crlUrls);
 		if (Utils.isCollectionEmpty(crlUrls)) {
 			return null;
 		}
+
+		prioritize(crlUrls);
 		final DataLoader.DataAndUrl dataAndUrl = downloadCrl(crlUrls);
 		if (dataAndUrl == null) {
 			return null;
@@ -173,65 +165,6 @@ public class OnlineCRLSource implements CRLSource {
 			LOG.warn("", e);
 		}
 		return null;
-	}
-
-	/**
-	 * Gives back the {@code List} of CRL URI meta-data found within the given X509 certificate.
-	 *
-	 * @param certificateToken
-	 *            the X509 certificate
-	 * @return the {@code List} of CRL URI, or {@code null} if the extension is not present
-	 * @throws DSSException
-	 */
-	public List<String> getCrlUrl(final CertificateToken certificateToken) throws DSSException {
-
-		final String id = Extension.cRLDistributionPoints.getId();
-		final byte[] crlDistributionPointsBytes = certificateToken.getCertificate().getExtensionValue(id);
-
-		if (null == crlDistributionPointsBytes) {
-
-			return null;
-		}
-		try {
-
-			final List<String> urls = new ArrayList<String>();
-			final ASN1Sequence asn1Sequence = DSSASN1Utils.getAsn1SequenceFromDerOctetString(crlDistributionPointsBytes);
-			final CRLDistPoint distPoint = CRLDistPoint.getInstance(asn1Sequence);
-			final DistributionPoint[] distributionPoints = distPoint.getDistributionPoints();
-			for (final DistributionPoint distributionPoint : distributionPoints) {
-
-				final DistributionPointName distributionPointName = distributionPoint.getDistributionPoint();
-				if (DistributionPointName.FULL_NAME != distributionPointName.getType()) {
-					continue;
-				}
-				final GeneralNames generalNames = (GeneralNames) distributionPointName.getName();
-				final GeneralName[] names = generalNames.getNames();
-				for (final GeneralName name : names) {
-
-					if (name.getTagNo() != GeneralName.uniformResourceIdentifier) {
-
-						LOG.debug("Not a uniform resource identifier");
-						continue;
-					}
-					ASN1Primitive asn1Primitive = name.toASN1Primitive();
-					if (asn1Primitive instanceof DERTaggedObject) {
-
-						final DERTaggedObject taggedObject = (DERTaggedObject) asn1Primitive;
-						asn1Primitive = taggedObject.getObject();
-					}
-					final DERIA5String derStr = DERIA5String.getInstance(asn1Primitive);
-					final String urlStr = derStr.getString();
-					urls.add(urlStr);
-				}
-			}
-			prioritize(urls);
-			return urls;
-		} catch (Exception e) {
-			if (e instanceof DSSException) {
-				throw (DSSException) e;
-			}
-			throw new DSSException(e);
-		}
 	}
 
 	/**

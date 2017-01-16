@@ -40,12 +40,12 @@ public class TLFreshnessCheck extends ChainItem<XmlTLAnalysis> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.ART32_TL_FRESH;
+		return MessageTag.QUAL_TL_FRESH;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.ART32_TL_FRESH_ANS;
+		return MessageTag.QUAL_TL_FRESH_ANS;
 	}
 
 	@Override

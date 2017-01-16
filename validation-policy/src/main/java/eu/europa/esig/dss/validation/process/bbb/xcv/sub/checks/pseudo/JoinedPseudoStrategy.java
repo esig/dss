@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.process.art32.qualification.checks.pseudo;
+package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.pseudo;
 
 import java.util.ArrayList;
 import java.util.List;

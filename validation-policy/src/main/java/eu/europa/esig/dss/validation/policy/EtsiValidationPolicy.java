@@ -349,6 +349,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getCertificatePseudoUsageConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getUsePseudonym();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateSerialNumberConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getSerialNumberPresent();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getCertificateNotExpiredConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
@@ -362,6 +380,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
 		if (basicSignatureConstraints != null) {
 			return basicSignatureConstraints.getProspectiveCertificateChain();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateAuthorityInfoAccessPresentConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getAuthorityInfoAccessPresent();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateRevocationInfoAccessPresentConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getRevocationInfoAccessPresent();
 		}
 		return null;
 	}

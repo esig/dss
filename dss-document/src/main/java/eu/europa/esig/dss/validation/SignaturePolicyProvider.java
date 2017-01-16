@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.utils.Utils;
 
 public class SignaturePolicyProvider {
 
@@ -53,6 +54,10 @@ public class SignaturePolicyProvider {
 		if (dssDocument == null && dataLoader != null) {
 			try {
 				byte[] bytes = dataLoader.get(url);
+				if (Utils.isArrayEmpty(bytes)) {
+					LOG.warn("Empty content for url '{}'", url);
+					return null;
+				}
 				dssDocument = new InMemoryDocument(bytes);
 				signaturePoliciesByUrl.put(url, dssDocument);
 			} catch (Exception e) {

@@ -187,7 +187,10 @@ public class DiagnosticDataBuilder {
 
 		if (trustedListCertSource != null) {
 			for (String countryCode : countryCodes) {
-				diagnosticData.getTrustedLists().add(getXmlTrustedList(countryCode, trustedListCertSource.getTlInfo(countryCode)));
+				TLInfo tlInfo = trustedListCertSource.getTlInfo(countryCode);
+				if (tlInfo != null) {
+					diagnosticData.getTrustedLists().add(getXmlTrustedList(countryCode, tlInfo));
+				}
 			}
 
 			diagnosticData.setListOfTrustedLists(getXmlTrustedList("LOTL", trustedListCertSource.getLotlInfo()));
@@ -810,6 +813,10 @@ public class DiagnosticDataBuilder {
 		xmlCert.setOrganizationalUnit(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.OU, x500Principal));
 		xmlCert.setSurname(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.SURNAME, x500Principal));
 		xmlCert.setPseudonym(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.PSEUDONYM, x500Principal));
+
+		xmlCert.setAuthorityInformationAccessUrls(DSSASN1Utils.getCAAccessLocations(certToken));
+		xmlCert.setOCSPAccessUrls(DSSASN1Utils.getOCSPAccessLocations(certToken));
+		xmlCert.setCRLDistributionPoints(DSSASN1Utils.getCrlUrls(certToken));
 
 		xmlCert.setDigestAlgoAndValues(getXmlDigestAlgoAndValues(usedDigestAlgorithms, certToken));
 

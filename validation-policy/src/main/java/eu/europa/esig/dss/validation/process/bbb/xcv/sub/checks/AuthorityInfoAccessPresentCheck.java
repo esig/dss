@@ -1,23 +1,19 @@
-package eu.europa.esig.dss.validation.process.art32.qualification.checks;
+package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.pseudo.JoinedPseudoStrategy;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.pseudo.PseudoStrategy;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class PseudoUsageCheck extends ChainItem<XmlSignatureAnalysis> {
+public class AuthorityInfoAccessPresentCheck extends ChainItem<XmlSubXCV> {
 
 	private final CertificateWrapper certificate;
 
-	private String pseudo;
-
-	public PseudoUsageCheck(XmlSignatureAnalysis result, CertificateWrapper certificate, LevelConstraint constraint) {
+	public AuthorityInfoAccessPresentCheck(XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.certificate = certificate;
@@ -25,19 +21,17 @@ public class PseudoUsageCheck extends ChainItem<XmlSignatureAnalysis> {
 
 	@Override
 	protected boolean process() {
-		PseudoStrategy pseudoStrategy = new JoinedPseudoStrategy();
-		pseudo = pseudoStrategy.getPseudo(certificate);
-		return Utils.isStringEmpty(pseudo);
+		return Utils.isCollectionNotEmpty(certificate.getAuthorityInformationAccessUrls());
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.ART32_PSEUDO_USE;
+		return MessageTag.BBB_XCV_AIA_PRES;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.ART32_PSEUDO_USE_ANS;
+		return MessageTag.BBB_XCV_AIA_PRES_ANS;
 	}
 
 	@Override
@@ -47,7 +41,7 @@ public class PseudoUsageCheck extends ChainItem<XmlSignatureAnalysis> {
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return null;
+		return SubIndication.SIG_CONSTRAINTS_FAILURE;
 	}
 
 }

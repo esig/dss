@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.process.art32.qualification.checks.pseudo;
+package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.pseudo;
 
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;

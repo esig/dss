@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd;
 
+import eu.europa.esig.dss.validation.process.Condition;
 import eu.europa.esig.dss.validation.process.art32.EIDASUtils;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.Condition;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.cert.SSCDByCertificatePostEIDAS;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.cert.SSCDByCertificatePreEIDAS;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.tl.SSCDByTL;

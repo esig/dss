@@ -114,6 +114,8 @@
 			<xs:element name="Recognition" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="Signature" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="NotExpired" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="AuthorityInfoAccessPresent" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="RevocationInfoAccessPresent" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="RevocationDataAvailable" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="RevocationDataNextUpdatePresent" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="RevocationDataFreshness" type="tns:LevelConstraint" minOccurs="0" />
@@ -125,6 +127,7 @@
 			<xs:element name="OrganizationUnit" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="OrganizationName" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="Country" type="tns:MultiValuesConstraint" minOccurs="0" />
+			<xs:element name="SerialNumberPresent" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="NotRevoked" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="NotOnHold" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="PolicyIds" type="tns:MultiValuesConstraint" minOccurs="0" />
@@ -133,6 +136,7 @@
 			<xs:element name="SupportedBySSCD" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="IssuedToNaturalPerson" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="IssuedToLegalPerson" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="UsePseudonym" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>

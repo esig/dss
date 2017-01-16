@@ -1,6 +1,7 @@
-package eu.europa.esig.dss.validation.process.art32.qualification.checks;
+package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -8,28 +9,29 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class CertificatePathTrustedCheck extends ChainItem<XmlSignatureAnalysis> {
+public class RevocationInfoAccessPresentCheck extends ChainItem<XmlSubXCV> {
 
-	private final CertificateWrapper signingCertificate;
+	private final CertificateWrapper certificate;
 
-	public CertificatePathTrustedCheck(XmlSignatureAnalysis result, CertificateWrapper signingCertificate, LevelConstraint constraint) {
+	public RevocationInfoAccessPresentCheck(XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
 		super(result, constraint);
-		this.signingCertificate = signingCertificate;
+
+		this.certificate = certificate;
 	}
 
 	@Override
 	protected boolean process() {
-		return signingCertificate != null && signingCertificate.hasTrustedServices();
+		return Utils.isCollectionNotEmpty(certificate.getCRLDistributionPoints()) || Utils.isCollectionNotEmpty(certificate.getOCSPAccessUrls());
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.QUAL_TRUSTED_CERT_PATH;
+		return MessageTag.BBB_XCV_REVOC_PRES;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.QUAL_TRUSTED_CERT_PATH_ANS;
+		return MessageTag.BBB_XCV_REVOC_PRES_ANS;
 	}
 
 	@Override
@@ -39,7 +41,7 @@ public class CertificatePathTrustedCheck extends ChainItem<XmlSignatureAnalysis>
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return null;
+		return SubIndication.SIG_CONSTRAINTS_FAILURE;
 	}
 
 }

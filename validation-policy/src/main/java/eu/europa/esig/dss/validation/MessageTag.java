@@ -183,6 +183,12 @@ public enum MessageTag {
 	BBB_XCV_ICSI("Is the certificate's signature intact?"),
 	BBB_XCV_ICSI_ANS("The signature of the certificate is spoiled or it is not possible to validate it!"),
 	BBB_XCV_OCSP_NO_CHECK("The certificate has the id-pkix-ocsp-nocheck extension (RFC is skipped)"),
+	BBB_XCV_PSEUDO_USE("Is pseudo used ?"),
+	BBB_XCV_PSEUDO_USE_ANS("A pseudonym is used"),
+	BBB_XCV_AIA_PRES("Is authority info access present?"),
+	BBB_XCV_AIA_PRES_ANS("Authority info access is not present!"),
+	BBB_XCV_REVOC_PRES("Is revocation info access present?"),
+	BBB_XCV_REVOC_PRES_ANS("Revocation info access is not present!"),
 
 	BBB_XCV_ISCGCOUN("Has the certificate given country-name?"),
 	BBB_XCV_ISCGCOUN_ANS("The certificate has not expected country-name!"),
@@ -249,47 +255,31 @@ public enum MessageTag {
 	VTS_ICTBRD("Is the issuance date before control-time ?"),
 	VTS_ICTBRD_ANS("The issuance date of revocation data is not before control-time!"),
 
-	ART32_TL_EXP("Is the trusted list not expired ?"),
-	ART32_TL_EXP_ANS("The trusted list is expired!"),
-	ART32_TL_FRESH("Is the trusted list fresh ?"),
-	ART32_TL_FRESH_ANS("The trusted list is not fresh!"),
-	ART32_TL_VERSION("Is the trusted list has the expected version ?"),
-	ART32_TL_VERSION_ANS("The trusted list has not the expected version!"),
-	ART32_TL_WS("Is the trusted list well signed ?"),
-	ART32_TL_WS_ANS("The trusted list is not well signed!"),
+	QUAL_TL_EXP("Is the trusted list not expired ?"),
+	QUAL_TL_EXP_ANS("The trusted list is expired!"),
+	QUAL_TL_FRESH("Is the trusted list fresh ?"),
+	QUAL_TL_FRESH_ANS("The trusted list is not fresh!"),
+	QUAL_TL_VERSION("Is the trusted list has the expected version ?"),
+	QUAL_TL_VERSION_ANS("The trusted list has not the expected version!"),
+	QUAL_TL_WS("Is the trusted list well signed ?"),
+	QUAL_TL_WS_ANS("The trusted list is not well signed!"),
 	
-	ART32_TL_SERV_CONS("Are trusted services consistent ?"),
-	ART32_TL_SERV_CONS_ANS1("Trusted service not consistent! (QCStatement vs NotQualified)"),
-	ART32_TL_SERV_CONS_ANS2("Trusted service not consistent! (legal person vs esign)"),
-	ART32_TL_SERV_CONS_ANS3("Trusted service not consistent! (QSCD vs NotQSCD)"),
-	ART32_TL_SERV_CONS_ANS4("Trusted service not consistent! (multiple usages)"),
+	QUAL_TL_SERV_CONS("Are trusted services consistent ?"),
+	QUAL_TL_SERV_CONS_ANS1("Trusted service not consistent! (QCStatement vs NotQualified)"),
+	QUAL_TL_SERV_CONS_ANS2("Trusted service not consistent! (legal person vs esign)"),
+	QUAL_TL_SERV_CONS_ANS3("Trusted service not consistent! (QSCD vs NotQSCD)"),
+	QUAL_TL_SERV_CONS_ANS4("Trusted service not consistent! (multiple usages)"),
 
-	ART32_TRUSTED_CERT_PATH("Is the certificate path trusted?"),
-	ART32_TRUSTED_CERT_PATH_ANS("The certificate path is not trusted!"),
-
-	ART32_QC_AT_ST("Is qualifed certificate at signing time?"),
-	ART32_QC_AT_ST_ANS("The certificate is not qualified at signing time!"),
-	
-	ART32_QC_AT_CC("Is qualifed certificate at issuance time?"),
-	ART32_QC_AT_CC_ANS("The certificate is not qualified at issuance time!"),
-
-	ART32_USED_CERT("Is the used certificate?"),
-	ART32_USED_CERT_ANS("The certificate is not used to sign the data!"),
-	
-	ART32_UNIQUE_CERT("Is the certificate unique ?"),
-	ART32_UNIQUE_CERT_ANS("The certificate cannot be defined as unique!"),
-
-	ART32_PSEUDO_USE("Is pseudo used ?"),
-	ART32_PSEUDO_USE_ANS("A pseudonym is used"),
-
-	ART32_CERT_REVOKED_AT_ST("Is the certificate not revoked at signing time?"),
-	ART32_CERT_REVOKED_AT_ST_ANS("The certificate is revoked at signing time!"),
-
-	ART32_SSCD_AT_ST("Is created by a SSCD?"),
-	ART32_SSCD_AT_ST_ANS("The electronic signature is not created by a SSCD!"),
-
-	ART32_DATA_INTEGRITY("Is the integrity of the signed data not compromised?"),
-	ART32_DATA_INTEGRITY_ANS("The integrity of the signed data has been compromised!"),
+	QUAL_TRUSTED_CERT_PATH("Is the certificate path trusted?"),
+	QUAL_TRUSTED_CERT_PATH_ANS("The certificate path is not trusted!"),
+	QUAL_QC_AT_ST("Is qualifed certificate at signing time?"),
+	QUAL_QC_AT_ST_ANS("The certificate is not qualified at signing time!"),
+	QUAL_QC_AT_CC("Is qualifed certificate at issuance time?"),
+	QUAL_QC_AT_CC_ANS("The certificate is not qualified at issuance time!"),
+	QUAL_UNIQUE_CERT("Is the certificate unique ?"),
+	QUAL_UNIQUE_CERT_ANS("The certificate cannot be defined as unique!"),
+	QUAL_SSCD_AT_ST("Is created by a SSCD?"),
+	QUAL_SSCD_AT_ST_ANS("The electronic signature is not created by a SSCD!"),
 	
 	EMPTY("");
 

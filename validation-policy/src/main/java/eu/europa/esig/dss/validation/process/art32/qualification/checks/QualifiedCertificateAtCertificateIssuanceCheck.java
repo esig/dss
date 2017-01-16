@@ -38,12 +38,12 @@ public class QualifiedCertificateAtCertificateIssuanceCheck extends ChainItem<Xm
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.ART32_QC_AT_CC;
+		return MessageTag.QUAL_QC_AT_CC;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.ART32_QC_AT_CC_ANS;
+		return MessageTag.QUAL_QC_AT_CC_ANS;
 	}
 
 	@Override

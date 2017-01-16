@@ -5,7 +5,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.Condition;
+import eu.europa.esig.dss.validation.process.Condition;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.filter.TrustedServicesFilterFactory;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
