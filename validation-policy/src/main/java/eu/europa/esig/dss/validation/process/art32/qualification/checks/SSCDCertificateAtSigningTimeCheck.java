@@ -16,12 +16,14 @@ import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class SSCDCertificateAtSigningTimeCheck extends ChainItem<XmlSignatureAnalysis> {
+public class SSCDCertificateAtSigningTimeCheck extends ChainItem<XmlSignatureAnalysis> implements Condition {
 
 	private final CertificateWrapper signingCertificate;
 	private final Date signingTime;
 	private final Condition qualified;
 	private final List<TrustedServiceWrapper> servicesForESign;
+
+	private SSCDStatus status;
 
 	public SSCDCertificateAtSigningTimeCheck(XmlSignatureAnalysis result, CertificateWrapper signingCertificate, Date signingTime,
 			List<TrustedServiceWrapper> servicesForESign, Condition qualified, LevelConstraint constraint) {
@@ -34,12 +36,17 @@ public class SSCDCertificateAtSigningTimeCheck extends ChainItem<XmlSignatureAna
 	}
 
 	@Override
+	public boolean check() {
+		return SSCDStatus.SSCD == status;
+	}
+
+	@Override
 	protected boolean process() {
 
 		SSCDStrategy strategy = new SSCDFromCertAndTL(signingCertificate, servicesForESign, qualified, signingTime);
-		SSCDStatus status = strategy.getSSCDStatus();
+		status = strategy.getSSCDStatus();
 
-		return SSCDStatus.SSCD == status;
+		return check();
 	}
 
 	@Override

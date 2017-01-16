@@ -3,8 +3,13 @@ package eu.europa.esig.dss.validation.process.art32.qualification;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignatureQualification;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.CertificateNotRevokedAtSigningTimeCheck;
@@ -20,6 +25,7 @@ import eu.europa.esig.dss.validation.process.art32.qualification.checks.ServiceC
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.UniqueCertificateCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.filter.TrustedServicesFilterFactory;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualifiedStatus;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
@@ -29,16 +35,17 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 
 	private final SignatureWrapper signature;
 	private final DiagnosticData diagnosticData;
-	private final ValidationPolicy policy;
 
-	public SignatureQualificationBlock(SignatureWrapper signature, DiagnosticData diagnosticData, ValidationPolicy policy) {
+	private QualifiedCertificateAtSigningTimeCheck qualifiedAtSigningTime;
+	private SSCDCertificateAtSigningTimeCheck sscdAtSigningTime;
+
+	public SignatureQualificationBlock(SignatureWrapper signature, DiagnosticData diagnosticData) {
 		super(new XmlSignatureAnalysis());
 
 		result.setId(signature.getId());
 
 		this.signature = signature;
 		this.diagnosticData = diagnosticData;
-		this.policy = policy;
 	}
 
 	@Override
@@ -63,9 +70,9 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 			// Article 32 :
 			// (a) the certificate that supports the signature was, at the time of signing, a qualified certificate for
 			// electronic signature complying with Annex I;
-			QualifiedCertificateAtSigningTimeCheck qualifiedCertificateAtSigningTime = (QualifiedCertificateAtSigningTimeCheck) qualifiedCertificateAtSigningTime(
-					signingCertificate, signature.getDateTime(), servicesForESign);
-			item = item.setNextItem(qualifiedCertificateAtSigningTime);
+			qualifiedAtSigningTime = (QualifiedCertificateAtSigningTimeCheck) qualifiedCertificateAtSigningTime(signingCertificate, signature.getDateTime(),
+					servicesForESign);
+			item = item.setNextItem(qualifiedAtSigningTime);
 
 			// (b) the qualified certificate
 			// 1. was issued by a qualified trust service provider
@@ -86,13 +93,63 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 			item = item.setNextItem(pseudoUsage(signingCertificate));
 
 			// (f) the electronic signature was created by a qualified electronic signature creation device;
-			item = item.setNextItem(sscdAtSigningTime(signingCertificate, signature.getDateTime(), servicesForESign, qualifiedCertificateAtSigningTime));
+			sscdAtSigningTime = (SSCDCertificateAtSigningTimeCheck) sscdAtSigningTime(signingCertificate, signature.getDateTime(), servicesForESign,
+					qualifiedAtSigningTime);
+			item = item.setNextItem(sscdAtSigningTime);
 
 			// (g) the integrity of the signed data has not been compromised;
 			item = item.setNextItem(dataIntegrity());
 
 		}
+	}
 
+	@Override
+	protected void addAdditionalInfo() {
+		determineFinalQualification();
+		collectErrorsWarnsInfos();
+	}
+
+	private void determineFinalQualification() {
+		SignatureQualification sigQualif = null;
+		if (qualifiedAtSigningTime != null && sscdAtSigningTime != null) {
+			if (QualifiedStatus.QC_FOR_ESIGN == qualifiedAtSigningTime.getQualifiedStatus()) {
+				if (sscdAtSigningTime.check()) {
+					sigQualif = SignatureQualification.QESig;
+				} else {
+					sigQualif = SignatureQualification.AdESig_QC;
+				}
+			} else {
+				sigQualif = SignatureQualification.AdES;
+			}
+		}
+		result.setSignatureQualification(sigQualif);
+	}
+
+	private void collectErrorsWarnsInfos() {
+		XmlConclusion conclusion = result.getConclusion();
+		List<XmlConstraint> constraints = result.getConstraint();
+		for (XmlConstraint xmlConstraint : constraints) {
+			XmlName constraintError = xmlConstraint.getError();
+			if (constraintError != null) {
+				conclusion.getErrors().add(constraintError);
+			}
+			XmlName constraintWarning = xmlConstraint.getWarning();
+			if (constraintWarning != null) {
+				conclusion.getWarnings().add(constraintWarning);
+			}
+			XmlName constraintInfo = xmlConstraint.getInfo();
+			if (constraintInfo != null) {
+				conclusion.getInfos().add(constraintInfo);
+			}
+		}
+
+		if (Utils.isCollectionNotEmpty(conclusion.getErrors())) {
+			conclusion.setIndication(Indication.FAILED);
+		} else if (Utils.isCollectionNotEmpty(conclusion.getWarnings())) {
+			conclusion.setIndication(Indication.INDETERMINATE);
+		} else {
+			conclusion.setIndication(Indication.PASSED);
+		}
 	}
 
 	private ChainItem<XmlSignatureAnalysis> certificatePathTrusted(CertificateWrapper signingCertificate) {

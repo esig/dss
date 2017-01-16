@@ -34,8 +34,7 @@ public class SSCDByTL extends AbstractSSCDCondition {
 					return false;
 				}
 
-				if (ServiceQualification.isQcWithSSCD(capturedQualifiers) || ServiceQualification.isQcSscdStatusAsInCert(capturedQualifiers)
-						|| ServiceQualification.isQcSscdManagedOnBehalf(capturedQualifiers)) {
+				if (ServiceQualification.isQcWithSSCD(capturedQualifiers) || ServiceQualification.isQcSscdManagedOnBehalf(capturedQualifiers)) {
 					return true;
 				}
 

@@ -48,7 +48,7 @@ public class Article32Block {
 		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
 		if (Utils.isCollectionNotEmpty(allSignatures)) {
 			for (SignatureWrapper signature : allSignatures) {
-				SignatureQualificationBlock sigQualBlock = new SignatureQualificationBlock(signature, diagnosticData, policy);
+				SignatureQualificationBlock sigQualBlock = new SignatureQualificationBlock(signature, diagnosticData);
 				block.getSignatureAnalysis().add(sigQualBlock.execute());
 			}
 		}

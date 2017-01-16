@@ -61,6 +61,7 @@
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
 				<xs:attribute name="Id" type="xs:string" use="required" />
+				<xs:attribute name="SignatureQualification" type="SignatureQualification" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -253,5 +254,14 @@
 			<xs:enumeration value="UNEXPECTED_ERROR" />
 		</xs:restriction>
 	</xs:simpleType>
+	
+	<xs:simpleType name="SignatureQualification" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="QESig" />
+			<xs:enumeration value="AdESig_QC" />
+			<xs:enumeration value="AdES" />
+		</xs:restriction>
+	</xs:simpleType>
+	
 
 </xs:schema>

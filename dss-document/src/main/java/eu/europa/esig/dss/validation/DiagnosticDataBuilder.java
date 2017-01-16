@@ -177,7 +177,11 @@ public class DiagnosticDataBuilder {
 
 			X500Principal x500Principal = certificateToken.getSubjectX500Principal();
 			String countryCode = DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.C, x500Principal);
-			countryCodes.add(countryCode);
+			if (Utils.isStringNotBlank(countryCode)) {
+				countryCodes.add(countryCode);
+			} else {
+				LOG.warn("No country code defined for cert : " + certificateToken.getDSSIdAsString());
+			}
 		}
 		diagnosticData.setUsedCertificates(Collections.unmodifiableList(xmlCertificates));
 

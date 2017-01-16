@@ -27,7 +27,7 @@
     			Validation Policy : <xsl:value-of select="dss:PolicyName"/>
 	        </div>
     		<div>
-    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 	        	<xsl:attribute name="id">collapsePolicy</xsl:attribute>
 	        	<p>
 	        		<xsl:value-of select="dss:PolicyDescription"/>
@@ -56,7 +56,7 @@
     			Signature <xsl:value-of select="$idSig" />
 	        </div>
     		<div>
-    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 				<xsl:attribute name="id">collapseSig<xsl:value-of select="$idSig" /></xsl:attribute>
 			
 				<dl>
@@ -168,7 +168,7 @@
     			Document Information
 	        </div>
     		<div>
-    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 	        	<xsl:attribute name="id">collapseInfo</xsl:attribute>
 	        	<dl>
 		    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>

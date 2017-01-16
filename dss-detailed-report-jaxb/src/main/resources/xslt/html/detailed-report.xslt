@@ -15,7 +15,7 @@
 		       	Validation (ETSI EN 319 102-1)
 		    </div>
 		    <div>
-				<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+				<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 		        <xsl:attribute name="id">collapseETSI</xsl:attribute>
 		        
 				<xsl:apply-templates select="dss:Signatures"/>
@@ -25,7 +25,11 @@
 				<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='REVOCATION']"/>
 			</div>
 	    </div>
-	    
+	    		
+   		<xsl:apply-templates select="dss:Article32Block"/>
+    </xsl:template>
+
+    <xsl:template match="dss:Article32Block">
 	    <div>
     		<xsl:attribute name="class">panel panel-primary</xsl:attribute>
 	   		<div>
@@ -35,15 +39,38 @@
 		       	Qualification (EIDAS 910/EU/2014 Article 32)
 		    </div>
 		    <div>
-				<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+				<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 		        <xsl:attribute name="id">collapseArt32</xsl:attribute>
-	    		
-	    		<xsl:apply-templates select="dss:Article32Block"/>
-	    	</div>
-	    </div>
-    </xsl:template>
-
-    <xsl:template match="dss:BasicBuildingBlocks">    
+		        
+				<xsl:apply-templates select="dss:TLAnalysis" />
+				<xsl:apply-templates select="dss:SignatureAnalysis" />
+			</div>
+		</div>
+	</xsl:template>
+	
+	<xsl:template match="dss:Signatures">
+		<div>
+			<xsl:attribute name="class">panel panel-primary</xsl:attribute>
+			<div>
+				<xsl:attribute name="class">panel-heading</xsl:attribute>
+				<xsl:attribute name="data-target">#collapseSignatureValidationData<xsl:value-of select="@Id"/></xsl:attribute>
+				<xsl:attribute name="data-toggle">collapse</xsl:attribute>
+				Signature <xsl:value-of select="@Id"/>
+			</div>
+			<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
+				<div>
+					<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
+					<xsl:attribute name="id">collapseSignatureValidationData<xsl:value-of select="@Id"/></xsl:attribute>
+					<xsl:apply-templates select="dss:ValidationProcessBasicSignatures" />
+					<xsl:call-template name="TimestampValidation" />
+					<xsl:apply-templates select="dss:ValidationProcessLongTermData" />
+					<xsl:apply-templates select="dss:ValidationProcessArchivalData" />
+				</div>
+			</xsl:if>
+		</div>
+	</xsl:template>
+	
+	<xsl:template match="dss:BasicBuildingBlocks">    
        <div>
        		<xsl:if test="@Id != ''">
        			<xsl:attribute name="id"><xsl:value-of select="@Id"/></xsl:attribute>
@@ -72,33 +99,6 @@
 	   		</xsl:if>
 	   	</div>
     </xsl:template>
-    
-    <xsl:template match="dss:Article32Block">
-		<xsl:apply-templates select="dss:TLAnalysis" />
-		<xsl:apply-templates select="dss:SignatureAnalysis" />
-	</xsl:template>
-	
-	<xsl:template match="dss:Signatures">
-		<div>
-			<xsl:attribute name="class">panel panel-primary</xsl:attribute>
-			<div>
-				<xsl:attribute name="class">panel-heading</xsl:attribute>
-				<xsl:attribute name="data-target">#collapseSignatureValidationData<xsl:value-of select="@Id"/></xsl:attribute>
-				<xsl:attribute name="data-toggle">collapse</xsl:attribute>
-				Signature <xsl:value-of select="@Id"/>
-			</div>
-			<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
-				<div>
-					<xsl:attribute name="class">panel-body collapse</xsl:attribute>
-					<xsl:attribute name="id">collapseSignatureValidationData<xsl:value-of select="@Id"/></xsl:attribute>
-					<xsl:apply-templates select="dss:ValidationProcessBasicSignatures" />
-					<xsl:call-template name="TimestampValidation" />
-					<xsl:apply-templates select="dss:ValidationProcessLongTermData" />
-					<xsl:apply-templates select="dss:ValidationProcessArchivalData" />
-				</div>
-			</xsl:if>
-		</div>
-	</xsl:template>
 
 	<xsl:template match="dss:ValidationProcessBasicSignatures">
 		<div>
@@ -133,7 +133,7 @@
 				</div>
 				<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 		    		<div>
-		    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+		    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 			        	<xsl:attribute name="id">collapseBasicValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
 			        	<xsl:apply-templates/>
 		    		</div>
@@ -154,7 +154,7 @@
 					Validation Process for Timestamps
 				</div>
 				<div>
-					<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+					<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 					<xsl:attribute name="id">collapseTimestampValidation<xsl:value-of select="@Id"/></xsl:attribute>
 			    	<xsl:for-each select="dss:ValidationProcessTimestamps">
 				    	<div>
@@ -189,7 +189,7 @@
 						        </div>
 								<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 						    		<div>
-						    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+						    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 							        	<xsl:attribute name="id">collapseTimestampValidationData<xsl:value-of select="@Id"/></xsl:attribute>
 							        	<xsl:apply-templates/>
 						    		</div>
@@ -235,7 +235,7 @@
 		        </div>
 				<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 		    		<div>
-		    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+		    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 			        	<xsl:attribute name="id">collapseArchivalValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
 			        	<xsl:apply-templates/>
 		    		</div>
@@ -276,7 +276,7 @@
 	    			Validation Process for Signatures with Time and Signatures with Long-Term Validation Data
 		        </div>
 	    		<div>
-	    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+	    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 		        	<xsl:attribute name="id">collapseLongTermValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
 		        	<xsl:apply-templates/>
 	    		</div>
@@ -317,7 +317,7 @@
 		        </div>
 				<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 		    		<div>
-		    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+		    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 			        	<xsl:attribute name="id">collapseTL<xsl:value-of select="@CountryCode"/></xsl:attribute>
 			        	<xsl:apply-templates/>
 		    		</div>
@@ -355,10 +355,16 @@
 				        	<xsl:value-of select="dss:Conclusion/dss:SubIndication"/>
 			        	</span>
 			        </xsl:if>
-	    			Article 32
+			        
+			        <span>
+						<xsl:attribute name="class">pull-right</xsl:attribute>
+						<xsl:value-of select="@SignatureQualification"/>	       			
+	       			</span>
+			        
+	    			Signature <xsl:value-of select="@Id"/>
 		        </div>
 	    		<div>
-	    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+	    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 		        	<xsl:attribute name="id">collapseSigAnalysis<xsl:value-of select="@Id"/></xsl:attribute>
 		        	<xsl:apply-templates/>
 	    		</div>
@@ -480,7 +486,7 @@
 		        
 		       	<xsl:if test="@TrustAnchor != 'true'">
 		    		<div>
-		    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+		    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 			        	<xsl:attribute name="id">collapseSubXCV<xsl:value-of select="@Id"/></xsl:attribute>
 			        	<xsl:apply-templates/>
 		    		</div>
@@ -511,7 +517,7 @@
 	    			Revocation Freshness Checker (RFC)
 		        </div>
 	    		<div>
-	    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+	    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 		        	<xsl:attribute name="id">collapseRFC<xsl:value-of select="@Id"/></xsl:attribute>
 		        	<xsl:apply-templates/>
 	    		</div>
