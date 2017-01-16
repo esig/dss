@@ -280,6 +280,8 @@ public enum MessageTag {
 	QUAL_UNIQUE_CERT_ANS("The certificate cannot be defined as unique!"),
 	QUAL_QSCD_AT_ST("Is created by a QSCD?"),
 	QUAL_QSCD_AT_ST_ANS("The electronic signature is not created by a QSCD!"),
+	QUAL_IS_ADES("Is AdES ?"),
+	QUAL_IS_ADES_ANS("The signature is not an AdES!"),
 	
 	EMPTY("");
 

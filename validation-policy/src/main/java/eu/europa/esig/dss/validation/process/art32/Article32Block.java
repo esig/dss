@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlArticle32Block;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -15,11 +16,13 @@ import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 public class Article32Block {
 
+	private final XmlConclusion etsi319102Conclusion;
 	private final DiagnosticData diagnosticData;
 	private final ValidationPolicy policy;
 	private final Date currentTime;
 
-	public Article32Block(DiagnosticData diagnosticData, ValidationPolicy policy, Date currentTime) {
+	public Article32Block(XmlConclusion etsi319102Conclusion, DiagnosticData diagnosticData, ValidationPolicy policy, Date currentTime) {
+		this.etsi319102Conclusion = etsi319102Conclusion;
 		this.diagnosticData = diagnosticData;
 		this.policy = policy;
 		this.currentTime = currentTime;
@@ -48,7 +51,7 @@ public class Article32Block {
 		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
 		if (Utils.isCollectionNotEmpty(allSignatures)) {
 			for (SignatureWrapper signature : allSignatures) {
-				SignatureQualificationBlock sigQualBlock = new SignatureQualificationBlock(signature, diagnosticData);
+				SignatureQualificationBlock sigQualBlock = new SignatureQualificationBlock(etsi319102Conclusion, signature, diagnosticData);
 				block.getSignatureAnalysis().add(sigQualBlock.execute());
 			}
 		}
