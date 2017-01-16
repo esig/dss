@@ -1,23 +1,23 @@
-package eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.tl;
+package eu.europa.esig.dss.validation.process.art32.qualification.checks.qscd.tl;
 
 import java.util.List;
 
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Condition;
 import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.AbstractSSCDCondition;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.qscd.AbstractQSCDCondition;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
-public class SSCDByTL extends AbstractSSCDCondition {
+public class QSCDByTL extends AbstractQSCDCondition {
 
 	private final TrustedServiceWrapper trustedService;
 	private final Condition qualified;
-	private final Condition sscdFromCertificate;
+	private final Condition qscdFromCertificate;
 
-	public SSCDByTL(TrustedServiceWrapper trustedService, Condition qualified, Condition sscdFromCertificate) {
+	public QSCDByTL(TrustedServiceWrapper trustedService, Condition qualified, Condition qscdFromCertificate) {
 		this.trustedService = trustedService;
 		this.qualified = qualified;
-		this.sscdFromCertificate = sscdFromCertificate;
+		this.qscdFromCertificate = qscdFromCertificate;
 	}
 
 	@Override
@@ -30,17 +30,17 @@ public class SSCDByTL extends AbstractSSCDCondition {
 			// If overrules
 			if (Utils.isCollectionNotEmpty(capturedQualifiers)) {
 
-				if (ServiceQualification.isQcNoSSCD(capturedQualifiers)) {
+				if (ServiceQualification.isQcNoQSCD(capturedQualifiers)) {
 					return false;
 				}
 
-				if (ServiceQualification.isQcWithSSCD(capturedQualifiers) || ServiceQualification.isQcSscdManagedOnBehalf(capturedQualifiers)) {
+				if (ServiceQualification.isQcWithQSCD(capturedQualifiers) || ServiceQualification.isQcQSCDManagedOnBehalf(capturedQualifiers)) {
 					return true;
 				}
 
 			}
 
-			return sscdFromCertificate.check();
+			return qscdFromCertificate.check();
 		}
 	}
 

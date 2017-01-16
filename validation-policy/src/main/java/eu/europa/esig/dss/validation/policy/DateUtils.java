@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.validation.policy;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

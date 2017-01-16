@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd;
+package eu.europa.esig.dss.validation.process.art32.qualification.checks.qscd;
 
 import java.util.Date;
 import java.util.List;
@@ -11,14 +11,14 @@ import eu.europa.esig.dss.validation.process.art32.qualification.checks.filter.T
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
-public class SSCDFromCertAndTL extends AbstractSSCDCondition {
+public class QSCDFromCertAndTL extends AbstractQSCDCondition {
 
 	private final CertificateWrapper signingCertificate;
 	private final List<TrustedServiceWrapper> servicesForESign;
 	private final Condition qualified;
 	private final Date date;
 
-	public SSCDFromCertAndTL(CertificateWrapper signingCertificate, List<TrustedServiceWrapper> servicesForESign, Condition qualified, Date date) {
+	public QSCDFromCertAndTL(CertificateWrapper signingCertificate, List<TrustedServiceWrapper> servicesForESign, Condition qualified, Date date) {
 		this.signingCertificate = signingCertificate;
 		this.servicesForESign = servicesForESign;
 		this.qualified = qualified;
@@ -33,14 +33,14 @@ public class SSCDFromCertAndTL extends AbstractSSCDCondition {
 		List<TrustedServiceWrapper> servicesAtGivenDate = filterByDate.filter(servicesForESign);
 
 		// 2. retrieve certificate qualification from the certificate itself
-		Condition sscdInCert = SSCDConditionFactory.createSSCDFromCert(signingCertificate);
+		Condition qscdInCert = QSCDConditionFactory.createQSCDFromCert(signingCertificate);
 
 		// 1 TSP and 1 TS // TODO improve
 		TrustedServiceWrapper trustedService = getUniqueTrustedService(servicesAtGivenDate);
 
 		// 3. Apply TL overruling(s)
-		Condition sscdFromCertAndTL = SSCDConditionFactory.createSSCDFromTL(trustedService, qualified, sscdInCert);
-		return sscdFromCertAndTL.check();
+		Condition qscdFromCertAndTL = QSCDConditionFactory.createQSCDFromTL(trustedService, qualified, qscdInCert);
+		return qscdFromCertAndTL.check();
 	}
 
 	private TrustedServiceWrapper getUniqueTrustedService(List<TrustedServiceWrapper> servicesAtGivenDate) {

@@ -11,15 +11,15 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSupportedBySSCDCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSupportedByQSCDCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class CertificateSupportedBySSCDCheckTest {
+public class CertificateSupportedByQSCDCheckTest {
 
 	@Test
-	public void certificateSupportedBySSCDCheck() throws Exception {
+	public void certificateSupportedByQSCDCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -29,7 +29,7 @@ public class CertificateSupportedBySSCDCheckTest {
 		xc.getCertificatePolicyIds().add(oid);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateSupportedBySSCDCheck csbsc = new CertificateSupportedBySSCDCheck(result, new CertificateWrapper(xc), constraint);
+		CertificateSupportedByQSCDCheck csbsc = new CertificateSupportedByQSCDCheck(result, new CertificateWrapper(xc), constraint);
 		csbsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -38,7 +38,7 @@ public class CertificateSupportedBySSCDCheckTest {
 	}
 
 	@Test
-	public void failedCertificateSupportedBySSCDCheck() throws Exception {
+	public void failedCertificateSupportedByQSCDCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -49,7 +49,7 @@ public class CertificateSupportedBySSCDCheckTest {
 		xc.getCertificatePolicyIds().add(oid);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateSupportedBySSCDCheck csbsc = new CertificateSupportedBySSCDCheck(result, new CertificateWrapper(xc), constraint);
+		CertificateSupportedByQSCDCheck csbsc = new CertificateSupportedByQSCDCheck(result, new CertificateWrapper(xc), constraint);
 		csbsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

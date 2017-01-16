@@ -21,7 +21,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQCSta
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQualifiedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateRevokedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSignatureValidCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSupportedBySSCDCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSupportedByQSCDCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CommonNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CountryCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.GivenNameCheck;
@@ -109,7 +109,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(certificateQualified(currentCertificate, subContext));
 
-		item = item.setNextItem(certificateSupportedBySSCD(currentCertificate, subContext));
+		item = item.setNextItem(certificateSupportedByQSCD(currentCertificate, subContext));
 
 		item = item.setNextItem(pseudoUsage(currentCertificate, subContext));
 
@@ -241,9 +241,9 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		return new CertificateQualifiedCheck(result, certificate, constraint);
 	}
 
-	private ChainItem<XmlSubXCV> certificateSupportedBySSCD(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getCertificateSupportedBySSCDConstraint(context, subContext);
-		return new CertificateSupportedBySSCDCheck(result, certificate, constraint);
+	private ChainItem<XmlSubXCV> certificateSupportedByQSCD(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateSupportedByQSCDConstraint(context, subContext);
+		return new CertificateSupportedByQSCDCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateIssuedToLegalPerson(CertificateWrapper certificate, SubContext subContext) {

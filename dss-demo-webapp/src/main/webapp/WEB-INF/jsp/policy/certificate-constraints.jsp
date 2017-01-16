@@ -96,11 +96,11 @@
             <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.Qualification.Level" />
         </jsp:include>
 
-        <spring:message code="label.policy.supportedBySSCD" var="translation" />
+        <spring:message code="label.policy.supportedByQSCD" var="translation" />
         <jsp:include page="level-constraint.jsp">
             <jsp:param name="label" value="${translation}" />
-            <jsp:param name="levelValue" value="${currentCertificate.supportedBySSCD.level}" />
-            <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.SupportedBySSCD.Level" />
+            <jsp:param name="levelValue" value="${currentCertificate.supportedByQSCD.level}" />
+            <jsp:param name="pathToBind" value="${param.pathToBindPrefix}.SupportedByQSCD.Level" />
         </jsp:include>
 
         <spring:message code="label.policy.issuedToLegalPerson" var="translation" />

@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.policy;
+package eu.europa.esig.dss.validation.process;
 
 import java.util.List;
 

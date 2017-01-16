@@ -15,7 +15,7 @@
     <li>CAdES enveloping or detached signatures can be used to sign any arbitrary files.</li>
     <li>ASiC-S or ASiC-E containers can be used to sign at least one document.</li>
     <li>The multiple parallel signatures can be created.</li>
-    <li>A user can use PKCS#11-compliant SSCD, MS-CAPI, MOCCA and PKCS#12 to sign.</li>
+    <li>A user can use PKCS#11-compliant QSCD, MS-CAPI, MOCCA and PKCS#12 to sign.</li>
     <li>Any kind of signature: CAdES, PAdES, XAdES, ASiC-S or ASiC-E can be validated.</li>
     <li>A validation policy can be applied.</li>
     <li>Two validation reports are available: Simple and Detailed.</li>

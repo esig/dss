@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.cert;
 
-import eu.europa.esig.dss.validation.policy.QCStatementPolicyIdentifiers;
+import eu.europa.esig.dss.validation.process.QCStatementPolicyIdentifiers;
 import eu.europa.esig.dss.validation.process.art32.QCTypeIdentifiers;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.AbstractQualificationCondition;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualifiedStatus;

@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.validation.process;
 
 public enum MessageTag {
 
@@ -162,8 +162,8 @@ public enum MessageTag {
 	BBB_XCV_CMDCIITNP_ANS("The certificate is not issued to a natural person."),
 	BBB_XCV_CMDCIQC("Certificate meta-data constraints: Is the signer's certificate qualified?"),
 	BBB_XCV_CMDCIQC_ANS("The certificate is not qualified!"),
-	BBB_XCV_CMDCISSCD("Certificate meta-data constraints: Is supported by SSCD?"),
-	BBB_XCV_CMDCISSCD_ANS("The certificate is not supported by SSCD!"),
+	BBB_XCV_CMDCIQSCD("Certificate meta-data constraints: Is supported by QSCD?"),
+	BBB_XCV_CMDCIQSCD_ANS("The certificate is not supported by QSCD!"),
 	BBB_XCV_ICTIVRSC("Is the current time in the validity range of the signer's certificate?"),
 	BBB_XCV_ICTIVRSC_ANS("The current time is not in the validity range of the signer's certificate."),
 	BBB_XCV_IRDPFC("Is the revocation data present for the certificate?"),
@@ -278,8 +278,8 @@ public enum MessageTag {
 	QUAL_QC_AT_CC_ANS("The certificate is not qualified at issuance time!"),
 	QUAL_UNIQUE_CERT("Is the certificate unique ?"),
 	QUAL_UNIQUE_CERT_ANS("The certificate cannot be defined as unique!"),
-	QUAL_SSCD_AT_ST("Is created by a SSCD?"),
-	QUAL_SSCD_AT_ST_ANS("The electronic signature is not created by a SSCD!"),
+	QUAL_QSCD_AT_ST("Is created by a QSCD?"),
+	QUAL_QSCD_AT_ST_ANS("The electronic signature is not created by a QSCD!"),
 	
 	EMPTY("");
 

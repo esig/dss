@@ -100,11 +100,7 @@ public class SimpleReport {
 		XmlSignature signature = getSignatureById(signatureId);
 		SignatureType signatureType = SignatureType.NA;
 		if (signature != null) {
-			try {
-				signatureType = SignatureType.valueOf(signature.getSignatureLevel());
-			} catch (IllegalArgumentException e) {
-				signatureType = SignatureType.NA;
-			}
+			signatureType = SignatureType.forName(signature.getSignatureLevel());
 		}
 		return signatureType;
 	}

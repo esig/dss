@@ -69,4 +69,28 @@ public class DSSASN1UtilsTest {
 		assertNotNull(DSSASN1Utils.getSki(certNoSKIextension, true));
 	}
 
+	@Test
+	public void getAccessLocation() {
+		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
+		List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(certificate);
+		assertEquals(1, Utils.collectionSize(ocspAccessLocations));
+		assertEquals("http://ocsp.luxtrust.lu", ocspAccessLocations.get(0));
+	}
+
+	@Test
+	public void getCAAccessLocations() {
+		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
+		List<String> caLocations = DSSASN1Utils.getCAAccessLocations(certificate);
+		assertEquals(1, Utils.collectionSize(caLocations));
+		assertEquals("http://ca.luxtrust.lu/LTQCA.crt", caLocations.get(0));
+	}
+
+	@Test
+	public void getCrlUrls() {
+		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
+		List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificate);
+		assertEquals(1, Utils.collectionSize(crlUrls));
+		assertEquals("http://crl.luxtrust.lu/LTQCA.crl", crlUrls.get(0));
+	}
+
 }

@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.validation.process.art32.qualification.checks.filter;
 
-import eu.europa.esig.dss.validation.process.art32.AdditionalServiceInformation;
 import eu.europa.esig.dss.validation.process.art32.EIDASUtils;
 import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
 import eu.europa.esig.dss.validation.process.art32.TrustedServiceStatus;

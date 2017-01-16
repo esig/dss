@@ -3,6 +3,8 @@ package eu.europa.esig.dss.validation.process.art32.qualification.checks.consist
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
@@ -21,22 +23,21 @@ public class TrustedServiceQCStatementConsistencyTest {
 	@Test
 	public void testQCStatementOnly() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.getCapturedQualifiers().add(ServiceQualification.QC_STATEMENT);
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_STATEMENT));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
 	public void testNoQualifiedOnly() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.getCapturedQualifiers().add(ServiceQualification.NOT_QUALIFIED);
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.NOT_QUALIFIED));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
 	public void testConflict() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.getCapturedQualifiers().add(ServiceQualification.QC_STATEMENT);
-		service.getCapturedQualifiers().add(ServiceQualification.NOT_QUALIFIED);
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.NOT_QUALIFIED, ServiceQualification.QC_STATEMENT));
 		assertFalse(condition.isConsistent(service));
 	}
 

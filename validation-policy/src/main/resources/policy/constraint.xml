@@ -62,7 +62,7 @@
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 <!-- 				<Qualification Level="WARN" /> -->
-<!-- 				<SupportedBySSCD Level="WARN" /> -->
+<!-- 				<SupportedByQSCD Level="WARN" /> -->
 <!-- 				<IssuedToNaturalPerson Level="INFORM" /> -->
 <!-- 				<IssuedToLegalPerson Level="INFORM" /> -->
 				<UsePseudonym Level="INFORM" />

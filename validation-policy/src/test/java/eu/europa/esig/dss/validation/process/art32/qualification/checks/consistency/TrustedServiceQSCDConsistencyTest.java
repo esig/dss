@@ -3,6 +3,8 @@ package eu.europa.esig.dss.validation.process.art32.qualification.checks.consist
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
@@ -19,24 +21,23 @@ public class TrustedServiceQSCDConsistencyTest {
 	}
 
 	@Test
-	public void testSSCD() {
+	public void testQSCD() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.getCapturedQualifiers().add(ServiceQualification.QC_WITH_QSCD);
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_WITH_QSCD));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testNoSSCD() {
+	public void testNoQSCD() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.getCapturedQualifiers().add(ServiceQualification.QC_NO_QSCD);
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_NO_QSCD));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
 	public void testConflict() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.getCapturedQualifiers().add(ServiceQualification.QC_WITH_QSCD);
-		service.getCapturedQualifiers().add(ServiceQualification.QC_NO_QSCD);
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_NO_QSCD, ServiceQualification.QC_WITH_QSCD));
 		assertFalse(condition.isConsistent(service));
 	}
 

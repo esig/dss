@@ -6,7 +6,7 @@ import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 /**
- * A Trusted Service can not have SSCD and NoSSCD qualifiers for the same certificate.
+ * A Trusted Service can not have QSCD and NoQSCD qualifiers for the same certificate.
  * 
  */
 public class TrustedServiceQSCDConsistency implements TrustedServiceCondition {
@@ -15,13 +15,13 @@ public class TrustedServiceQSCDConsistency implements TrustedServiceCondition {
 	public boolean isConsistent(TrustedServiceWrapper trustedService) {
 		List<String> capturedQualifiers = trustedService.getCapturedQualifiers();
 
-		boolean sscd = ServiceQualification.isQcWithSSCD(capturedQualifiers) || ServiceQualification.isQcSscdStatusAsInCert(capturedQualifiers)
-				|| ServiceQualification.isQcSscdManagedOnBehalf(capturedQualifiers);
+		boolean qscd = ServiceQualification.isQcWithQSCD(capturedQualifiers) || ServiceQualification.isQcQSCDStatusAsInCert(capturedQualifiers)
+				|| ServiceQualification.isQcQSCDManagedOnBehalf(capturedQualifiers);
 
-		boolean noSscd = ServiceQualification.isQcNoSSCD(capturedQualifiers);
+		boolean noQscd = ServiceQualification.isQcNoQSCD(capturedQualifiers);
 
-		if (sscd) {
-			return !noSscd;
+		if (qscd) {
+			return !noQscd;
 		}
 
 		return true;

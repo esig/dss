@@ -1,15 +1,15 @@
-package eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.cert;
+package eu.europa.esig.dss.validation.process.art32.qualification.checks.qscd.cert;
 
-import eu.europa.esig.dss.validation.policy.CertificatePolicyIdentifiers;
-import eu.europa.esig.dss.validation.policy.QCStatementPolicyIdentifiers;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.AbstractSSCDCondition;
+import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
+import eu.europa.esig.dss.validation.process.QCStatementPolicyIdentifiers;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.qscd.AbstractQSCDCondition;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
-public class SSCDByCertificatePreEIDAS extends AbstractSSCDCondition {
+public class QSCDByCertificatePreEIDAS extends AbstractQSCDCondition {
 
 	private final CertificateWrapper certificate;
 
-	public SSCDByCertificatePreEIDAS(CertificateWrapper certificate) {
+	public QSCDByCertificatePreEIDAS(CertificateWrapper certificate) {
 		this.certificate = certificate;
 	}
 

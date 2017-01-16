@@ -22,6 +22,8 @@ package eu.europa.esig.dss.validation.process.art32;
 
 import java.util.List;
 
+import eu.europa.esig.dss.utils.Utils;
+
 public final class ServiceQualification {
 
 	private ServiceQualification() {
@@ -76,7 +78,7 @@ public final class ServiceQualification {
 	 * qualified, do contain proper machine processable information about whether or not their private key residing in
 	 * an SSCD;
 	 */
-	public static final String QCSSCD_STATUS_AS_IN_CERT = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCSSCDStatusAsInCert";
+	public static final String QC_SSCD_STATUS_AS_IN_CERT = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCSSCDStatusAsInCert";
 
 	/**
 	 * QCQSCDStatusAsInCert ("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert"): to indicate
@@ -84,7 +86,7 @@ public final class ServiceQualification {
 	 * qualified, do contain proper machine processable information about whether or not their private key residing in a
 	 * QSCD;
 	 */
-	public static final String QCQSCD_STATUS_AS_IN_CERT = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert";
+	public static final String QC_QSCD_STATUS_AS_IN_CERT = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert";
 
 	/**
 	 * QCQSCDManagedOnBehalf ("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDManagedOnBehalf"): to indicate
@@ -92,7 +94,7 @@ public final class ServiceQualification {
 	 * qualified, have their private key residing in a QSCD for which the generation and management of that private key
 	 * is done by the qualified TSP on behalf of the entity whose identity is certified in the certificate;
 	 */
-	public static final String QCQSCD_MANAGED_ON_BEHALF = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDManagedOnBehalf";
+	public static final String QC_QSCD_MANAGED_ON_BEHALF = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDManagedOnBehalf";
 
 	/**
 	 * QCForLegalPerson("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForLegalPerson"): to indicate that all
@@ -127,43 +129,53 @@ public final class ServiceQualification {
 	}
 
 	public static boolean isQcStatement(List<String> qualifiers) {
-		return qualifiers.contains(QC_STATEMENT);
+		return listContains(qualifiers, QC_STATEMENT);
 	}
 
 	public static boolean isNotQualified(List<String> qualifiers) {
-		return qualifiers.contains(NOT_QUALIFIED);
+		return listContains(qualifiers, NOT_QUALIFIED);
 	}
 
-	public static boolean isQcNoSSCD(List<String> qualifiers) {
-		return qualifiers.contains(QC_NO_QSCD) || qualifiers.contains(QC_NO_SSCD);
+	public static boolean isQcNoQSCD(List<String> qualifiers) {
+		return listContains(qualifiers, QC_NO_QSCD, QC_NO_SSCD);
 	}
 
 	public static boolean isQcForLegalPerson(List<String> qualifiers) {
-		return qualifiers.contains(QC_FOR_LEGAL_PERSON);
+		return listContains(qualifiers, QC_FOR_LEGAL_PERSON);
 	}
 
-	public static boolean isQcSscdStatusAsInCert(List<String> qualifiers) {
-		return qualifiers.contains(QCQSCD_STATUS_AS_IN_CERT) || qualifiers.contains(QCSSCD_STATUS_AS_IN_CERT);
+	public static boolean isQcQSCDStatusAsInCert(List<String> qualifiers) {
+		return listContains(qualifiers, QC_QSCD_STATUS_AS_IN_CERT, QC_SSCD_STATUS_AS_IN_CERT);
 	}
 
-	public static boolean isQcSscdManagedOnBehalf(List<String> qualifiers) {
-		return qualifiers.contains(QCQSCD_MANAGED_ON_BEHALF);
+	public static boolean isQcQSCDManagedOnBehalf(List<String> qualifiers) {
+		return listContains(qualifiers, QC_QSCD_MANAGED_ON_BEHALF);
 	}
 
-	public static boolean isQcWithSSCD(List<String> qualifiers) {
-		return qualifiers.contains(QC_WITH_QSCD) || qualifiers.contains(QC_WITH_SSCD);
+	public static boolean isQcWithQSCD(List<String> qualifiers) {
+		return listContains(qualifiers, QC_WITH_QSCD, QC_WITH_SSCD);
 	}
 
 	public static boolean isQcForEsig(List<String> qualifiers) {
-		return qualifiers.contains(QC_FOR_ESIG);
+		return listContains(qualifiers, QC_FOR_ESIG);
 	}
 
 	public static boolean isQcForEseal(List<String> qualifiers) {
-		return qualifiers.contains(QC_FOR_ESEAL);
+		return listContains(qualifiers, QC_FOR_ESEAL);
 	}
 
 	public static boolean isQcForWSA(List<String> qualifiers) {
-		return qualifiers.contains(QC_FOR_WSA);
+		return listContains(qualifiers, QC_FOR_WSA);
 	}
 
+	private static boolean listContains(List<String> qualifiers, String... expecteds) {
+		if (Utils.isCollectionNotEmpty(qualifiers)) {
+			for (String expected : expecteds) {
+				if (qualifiers.contains(expected)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

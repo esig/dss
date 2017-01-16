@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.validation.process;
 
 public class AdditionalInfo {
 

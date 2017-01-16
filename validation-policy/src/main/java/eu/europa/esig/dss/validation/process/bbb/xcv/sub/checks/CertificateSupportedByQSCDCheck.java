@@ -1,20 +1,20 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
-import eu.europa.esig.dss.validation.MessageTag;
-import eu.europa.esig.dss.validation.policy.CertificatePolicyIdentifiers;
-import eu.europa.esig.dss.validation.policy.QCStatementPolicyIdentifiers;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.validation.process.QCStatementPolicyIdentifiers;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class CertificateSupportedBySSCDCheck extends ChainItem<XmlSubXCV> {
+public class CertificateSupportedByQSCDCheck extends ChainItem<XmlSubXCV> {
 
 	private final CertificateWrapper certificate;
 
-	public CertificateSupportedBySSCDCheck(XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
+	public CertificateSupportedByQSCDCheck(XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
 		super(result, constraint);
 		this.certificate = certificate;
 	}
@@ -35,12 +35,12 @@ public class CertificateSupportedBySSCDCheck extends ChainItem<XmlSubXCV> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.BBB_XCV_CMDCISSCD;
+		return MessageTag.BBB_XCV_CMDCIQSCD;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_XCV_CMDCISSCD_ANS;
+		return MessageTag.BBB_XCV_CMDCIQSCD_ANS;
 	}
 
 	@Override

@@ -3,6 +3,8 @@ package eu.europa.esig.dss.validation.process.art32.qualification.checks.consist
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
@@ -21,15 +23,14 @@ public class TrustedServiceUsageConsistencyTest {
 	@Test
 	public void testForEsigUsage() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.getCapturedQualifiers().add(ServiceQualification.QC_FOR_ESIG);
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_ESIG));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
 	public void testForEsigAndEsealsUsage() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.getCapturedQualifiers().add(ServiceQualification.QC_FOR_ESIG);
-		service.getCapturedQualifiers().add(ServiceQualification.QC_FOR_ESEAL);
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_ESIG, ServiceQualification.QC_FOR_ESEAL));
 		assertFalse(condition.isConsistent(service));
 	}
 

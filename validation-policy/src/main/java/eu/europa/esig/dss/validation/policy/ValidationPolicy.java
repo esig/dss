@@ -253,13 +253,12 @@ public interface ValidationPolicy {
 
 	/**
 	 * Indicates if the end user certificate used in validating the signature is mandated to be supported by a secure
-	 * signature creation device (SSCD) as
-	 * defined in Directive 1999/93/EC [9].
+	 * signature creation device (QSCD).
 	 *
-	 * @return {@code LevelConstraint} if SupportedBySSCD for a given context element is present in the constraint file,
+	 * @return {@code LevelConstraint} if SupportedByQSCD for a given context element is present in the constraint file,
 	 *         null otherwise.
 	 */
-	LevelConstraint getCertificateSupportedBySSCDConstraint(Context context, SubContext subContext);
+	LevelConstraint getCertificateSupportedByQSCDConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @return {@code LevelConstraint} if IssuedToLegalPerson for a given context element is present in the constraint

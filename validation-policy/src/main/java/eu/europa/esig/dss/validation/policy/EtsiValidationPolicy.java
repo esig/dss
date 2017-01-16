@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.DateUtils;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
 import eu.europa.esig.jaxb.policy.Article32;
@@ -503,10 +502,10 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getCertificateSupportedBySSCDConstraint(Context context, SubContext subContext) {
+	public LevelConstraint getCertificateSupportedByQSCDConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getSupportedBySSCD();
+			return certificateConstraints.getSupportedByQSCD();
 		}
 		return null;
 	}

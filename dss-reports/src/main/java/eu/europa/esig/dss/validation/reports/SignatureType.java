@@ -25,21 +25,37 @@ public enum SignatureType {
 	/**
 	 * Qualified Electronic Signature
 	 */
-	QES,
-
-	/**
-	 * Advanced Electronic Signature
-	 */
-	AdES,
+	QESig,
 
 	/**
 	 * Advanced Electronic Signature supported by a Qualified Certificate
 	 */
-	AdESqc,
+	AdESig_QC,
+
+	/**
+	 * Advanced Electronic Signature
+	 */
+	AdESig,
+
+	AdES,
+
+	NOT_AdES_QC,
+
+	NOT_AdES,
 
 	/**
 	 * Not Applicable
 	 */
-	NA
+	NA;
+
+	/**
+	 * SignatureType can be null
+	 */
+	public static SignatureType forName(String value) {
+		if ((value != null) && !value.isEmpty()) {
+			return SignatureType.valueOf(value);
+		}
+		return NA;
+	}
 
 }

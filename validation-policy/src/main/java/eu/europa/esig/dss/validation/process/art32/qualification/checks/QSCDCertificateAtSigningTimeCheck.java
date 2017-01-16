@@ -5,28 +5,28 @@ import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
-import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.Condition;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.SSCDFromCertAndTL;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.SSCDStatus;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd.SSCDStrategy;
+import eu.europa.esig.dss.validation.process.MessageTag;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.qscd.QSCDFromCertAndTL;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.qscd.QSCDStatus;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.qscd.QSCDStrategy;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class SSCDCertificateAtSigningTimeCheck extends ChainItem<XmlSignatureAnalysis> implements Condition {
+public class QSCDCertificateAtSigningTimeCheck extends ChainItem<XmlSignatureAnalysis> implements Condition {
 
 	private final CertificateWrapper signingCertificate;
 	private final Date signingTime;
 	private final Condition qualified;
 	private final List<TrustedServiceWrapper> servicesForESign;
 
-	private SSCDStatus status;
+	private QSCDStatus status;
 
-	public SSCDCertificateAtSigningTimeCheck(XmlSignatureAnalysis result, CertificateWrapper signingCertificate, Date signingTime,
+	public QSCDCertificateAtSigningTimeCheck(XmlSignatureAnalysis result, CertificateWrapper signingCertificate, Date signingTime,
 			List<TrustedServiceWrapper> servicesForESign, Condition qualified, LevelConstraint constraint) {
 		super(result, constraint);
 
@@ -38,26 +38,26 @@ public class SSCDCertificateAtSigningTimeCheck extends ChainItem<XmlSignatureAna
 
 	@Override
 	public boolean check() {
-		return SSCDStatus.SSCD == status;
+		return QSCDStatus.QSCD == status;
 	}
 
 	@Override
 	protected boolean process() {
 
-		SSCDStrategy strategy = new SSCDFromCertAndTL(signingCertificate, servicesForESign, qualified, signingTime);
-		status = strategy.getSSCDStatus();
+		QSCDStrategy strategy = new QSCDFromCertAndTL(signingCertificate, servicesForESign, qualified, signingTime);
+		status = strategy.getQSCDStatus();
 
 		return check();
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.QUAL_SSCD_AT_ST;
+		return MessageTag.QUAL_QSCD_AT_ST;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.QUAL_SSCD_AT_ST_ANS;
+		return MessageTag.QUAL_QSCD_AT_ST_ANS;
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.process.art32.qualification.checks.sscd;
+package eu.europa.esig.dss.validation.process.art32.qualification.checks.qscd;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -24,7 +24,7 @@ import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
-public class SSCDTest {
+public class QSCDTest {
 
 	private static final String UNKNOWN_OID = "0.0.0";
 
@@ -37,32 +37,32 @@ public class SSCDTest {
 	@Test
 	public void testPreEmpty() {
 		CertificateWrapper signingCertificate = createPreEIDAS(Collections.<String> emptyList(), Collections.<String> emptyList());
-		notSSCD(signingCertificate);
+		notQSCD(signingCertificate);
 	}
 
 	@Test
-	public void testPreSSCDStatement() {
+	public void testPreQSCDStatement() {
 		CertificateWrapper signingCertificate = createPreEIDAS(Arrays.asList(QCStatementOids.QC_SSCD.getOid()), Collections.<String> emptyList());
-		sscd(signingCertificate);
+		qscd(signingCertificate);
 	}
 
 	@Test
 	public void testPreUnknownStatement() {
 		CertificateWrapper signingCertificate = createPreEIDAS(Arrays.asList(UNKNOWN_OID), Collections.<String> emptyList());
-		notSSCD(signingCertificate);
+		notQSCD(signingCertificate);
 	}
 
 	@Test
-	public void testPreSSCDPolicyId() {
+	public void testPreQSCDPolicyId() {
 		CertificateWrapper signingCertificate = createPreEIDAS(Collections.<String> emptyList(),
 				Arrays.asList(CertificatePolicyOids.QCP_PUBLIC_WITH_SSCD.getOid()));
-		sscd(signingCertificate);
+		qscd(signingCertificate);
 	}
 
 	@Test
 	public void testPreUnknownPolicyId() {
 		CertificateWrapper signingCertificate = createPreEIDAS(Collections.<String> emptyList(), Arrays.asList(UNKNOWN_OID));
-		notSSCD(signingCertificate);
+		notQSCD(signingCertificate);
 	}
 
 	// --------------------- POST EIDAS
@@ -70,72 +70,79 @@ public class SSCDTest {
 	@Test
 	public void testPostEmpty() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Collections.<String> emptyList(), Collections.<String> emptyList());
-		notSSCD(signingCertificate);
+		notQSCD(signingCertificate);
 	}
 
 	@Test
-	public void testPostSSCDStatement() {
+	public void testPostQSCDStatement() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatementOids.QC_SSCD.getOid()), Collections.<String> emptyList());
-		sscd(signingCertificate);
+		qscd(signingCertificate);
 	}
 
 	@Test
 	public void testPostUnknownStatement() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(UNKNOWN_OID), Collections.<String> emptyList());
-		notSSCD(signingCertificate);
+		notQSCD(signingCertificate);
 	}
 
 	@Test
-	public void testPostSSCDPolicyId() {
+	public void testPostQSCDPolicyId() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Collections.<String> emptyList(),
 				Arrays.asList(CertificatePolicyOids.QCP_PUBLIC_WITH_SSCD.getOid()));
-		notSSCD(signingCertificate);
+		notQSCD(signingCertificate);
 	}
 
 	@Test
 	public void testPostUnknownPolicyId() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Collections.<String> emptyList(), Arrays.asList(UNKNOWN_OID));
-		notSSCD(signingCertificate);
+		notQSCD(signingCertificate);
 	}
 
 	// -------------------- Overrules
 
 	@Test
 	public void trustedServiceNull() {
-		notSSCD(null, ConditionBuilder.condTrue(), ConditionBuilder.condTrue());
+		notQSCD(null, ConditionBuilder.condTrue(), ConditionBuilder.condTrue());
 	}
 
 	@Test
 	public void trustedServiceButNoQC() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		notSSCD(service, ConditionBuilder.condFalse(), ConditionBuilder.condTrue());
+		notQSCD(service, ConditionBuilder.condFalse(), ConditionBuilder.condTrue());
 	}
 
 	@Test
 	public void trustedServiceNoOverules() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		sscd(service, ConditionBuilder.condTrue(), ConditionBuilder.condTrue());
+		qscd(service, ConditionBuilder.condTrue(), ConditionBuilder.condTrue());
 	}
 
 	@Test
-	public void trustedServiceOverrulesNotSSCD() {
+	public void trustedServiceOverrulesNotQSCD() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_NO_QSCD));
-		notSSCD(service, ConditionBuilder.condTrue(), ConditionBuilder.condTrue());
+		notQSCD(service, ConditionBuilder.condTrue(), ConditionBuilder.condTrue());
 	}
 
 	@Test
-	public void trustedServiceOverrulesSSCD() {
+	public void trustedServiceOverrulesQSCD() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QCQSCD_STATUS_AS_IN_CERT));
-		sscd(service, ConditionBuilder.condTrue(), ConditionBuilder.condFalse());
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_QSCD_MANAGED_ON_BEHALF));
+		qscd(service, ConditionBuilder.condTrue(), ConditionBuilder.condFalse());
+	}
+
+	@Test
+	public void trustedServiceOverrulesQSCDAsInCert() {
+		TrustedServiceWrapper service = new TrustedServiceWrapper();
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_QSCD_STATUS_AS_IN_CERT));
+		notQSCD(service, ConditionBuilder.condTrue(), ConditionBuilder.condFalse());
 	}
 
 	@Test
 	public void trustedServiceUnknownOverrule() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
 		service.setCapturedQualifiers(Arrays.asList("Test"));
-		notSSCD(service, ConditionBuilder.condTrue(), ConditionBuilder.condFalse());
+		notQSCD(service, ConditionBuilder.condTrue(), ConditionBuilder.condFalse());
 	}
 
 	private CertificateWrapper createPreEIDAS(List<String> qcStatementIds, List<String> certificatePolicyIds) {
@@ -176,23 +183,23 @@ public class SSCDTest {
 		return result;
 	}
 
-	private void sscd(CertificateWrapper signingCertificate) {
-		Condition condition = SSCDConditionFactory.createSSCDFromCert(signingCertificate);
+	private void qscd(CertificateWrapper signingCertificate) {
+		Condition condition = QSCDConditionFactory.createQSCDFromCert(signingCertificate);
 		assertTrue(condition.check());
 	}
 
-	private void sscd(TrustedServiceWrapper trustedService, Condition qualified, Condition sscdInCert) {
-		Condition condition = SSCDConditionFactory.createSSCDFromTL(trustedService, qualified, sscdInCert);
+	private void qscd(TrustedServiceWrapper trustedService, Condition qualified, Condition qscdInCert) {
+		Condition condition = QSCDConditionFactory.createQSCDFromTL(trustedService, qualified, qscdInCert);
 		assertTrue(condition.check());
 	}
 
-	private void notSSCD(CertificateWrapper signingCertificate) {
-		Condition condition = SSCDConditionFactory.createSSCDFromCert(signingCertificate);
+	private void notQSCD(CertificateWrapper signingCertificate) {
+		Condition condition = QSCDConditionFactory.createQSCDFromCert(signingCertificate);
 		assertFalse(condition.check());
 	}
 
-	private void notSSCD(TrustedServiceWrapper trustedService, Condition qualified, Condition sscdInCert) {
-		Condition condition = SSCDConditionFactory.createSSCDFromTL(trustedService, qualified, sscdInCert);
+	private void notQSCD(TrustedServiceWrapper trustedService, Condition qualified, Condition qscdInCert) {
+		Condition condition = QSCDConditionFactory.createQSCDFromTL(trustedService, qualified, qscdInCert);
 		assertFalse(condition.check());
 	}
 }
