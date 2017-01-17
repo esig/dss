@@ -20,8 +20,7 @@ public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
 	private final CertificateWrapper certificate;
 	private final SubContext subContext;
 
-	public CertificateRevokedCheck(XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint,
-			SubContext subContext) {
+	public CertificateRevokedCheck(XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint, SubContext subContext) {
 		super(result, constraint);
 		this.certificate = certificate;
 		this.subContext = subContext;
@@ -30,19 +29,20 @@ public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
 	@Override
 	protected boolean process() {
 		RevocationWrapper revocationData = certificate.getLatestRevocationData();
-		boolean isRevoked = (revocationData != null) && !revocationData.isStatus()
-				&& !CRLReasonEnum.certificateHold.name().equals(revocationData.getReason());
+		boolean isRevoked = (revocationData != null) && !revocationData.isStatus() && !CRLReasonEnum.certificateHold.name().equals(revocationData.getReason());
 		return !isRevoked;
 	}
 
 	@Override
 	protected String getAdditionalInfo() {
 		RevocationWrapper revocationData = certificate.getLatestRevocationData();
-		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
-		String revocationDateStr = revocationData.getRevocationDate() == null ? " ? "
-				: sdf.format(revocationData.getRevocationDate());
-		Object[] params = new Object[] { revocationData.getReason(), revocationDateStr };
-		return MessageFormat.format(AdditionalInfo.REVOCATION, params);
+		if (revocationData != null && revocationData.getRevocationDate() != null) {
+			SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
+			String revocationDateStr = sdf.format(revocationData.getRevocationDate());
+			Object[] params = new Object[] { revocationData.getReason(), revocationDateStr };
+			return MessageFormat.format(AdditionalInfo.REVOCATION, params);
+		}
+		return null;
 	}
 
 	@Override

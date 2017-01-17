@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureQualification;
@@ -106,6 +104,7 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 	protected void addAdditionalInfo() {
 		determineFinalQualification();
 		collectErrorsWarnsInfos();
+		setIndication();
 	}
 
 	private void determineFinalQualification() {
@@ -124,30 +123,16 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 		result.setSignatureQualification(sigQualif);
 	}
 
-	private void collectErrorsWarnsInfos() {
+	private void setIndication() {
 		XmlConclusion conclusion = result.getConclusion();
-		List<XmlConstraint> constraints = result.getConstraint();
-		for (XmlConstraint xmlConstraint : constraints) {
-			XmlName constraintError = xmlConstraint.getError();
-			if (constraintError != null) {
-				conclusion.getErrors().add(constraintError);
+		if (conclusion != null) {
+			if (Utils.isCollectionNotEmpty(conclusion.getErrors())) {
+				conclusion.setIndication(Indication.FAILED);
+			} else if (Utils.isCollectionNotEmpty(conclusion.getWarnings())) {
+				conclusion.setIndication(Indication.INDETERMINATE);
+			} else {
+				conclusion.setIndication(Indication.PASSED);
 			}
-			XmlName constraintWarning = xmlConstraint.getWarning();
-			if (constraintWarning != null) {
-				conclusion.getWarnings().add(constraintWarning);
-			}
-			XmlName constraintInfo = xmlConstraint.getInfo();
-			if (constraintInfo != null) {
-				conclusion.getInfos().add(constraintInfo);
-			}
-		}
-
-		if (Utils.isCollectionNotEmpty(conclusion.getErrors())) {
-			conclusion.setIndication(Indication.FAILED);
-		} else if (Utils.isCollectionNotEmpty(conclusion.getWarnings())) {
-			conclusion.setIndication(Indication.INDETERMINATE);
-		} else {
-			conclusion.setIndication(Indication.PASSED);
 		}
 	}
 

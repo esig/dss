@@ -186,14 +186,18 @@ public class DiagnosticDataBuilder {
 		diagnosticData.setUsedCertificates(Collections.unmodifiableList(xmlCertificates));
 
 		if (trustedListCertSource != null) {
+			boolean addLOTL = false;
 			for (String countryCode : countryCodes) {
 				TLInfo tlInfo = trustedListCertSource.getTlInfo(countryCode);
 				if (tlInfo != null) {
 					diagnosticData.getTrustedLists().add(getXmlTrustedList(countryCode, tlInfo));
+					addLOTL = true;
 				}
 			}
 
-			diagnosticData.setListOfTrustedLists(getXmlTrustedList("LOTL", trustedListCertSource.getLotlInfo()));
+			if (addLOTL) {
+				diagnosticData.setListOfTrustedLists(getXmlTrustedList("LOTL", trustedListCertSource.getLotlInfo()));
+			}
 		}
 
 		return diagnosticData;

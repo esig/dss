@@ -36,7 +36,7 @@
 	   			<xsl:attribute name="class">panel-heading</xsl:attribute>
 	    		<xsl:attribute name="data-target">#collapseArt32</xsl:attribute>
 		       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
-		       	Qualification (EIDAS 910/EU/2014 Article 32)
+		       	Qualification (ETSI TS 119 172-4)
 		    </div>
 		    <div>
 				<xsl:attribute name="class">panel-body collapse in</xsl:attribute>

@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +12,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
@@ -25,14 +27,14 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 
-	private final Date currentTime;
+	private final Date validationDate;
 	private final TokenProxy token;
 	private final CryptographicConstraint constraint;
 	private MessageTag errorMessage = MessageTag.EMPTY;
 
 	public CryptographicCheck(T result, TokenProxy token, Date currentTime, CryptographicConstraint constraint) {
 		super(result, constraint);
-		this.currentTime = currentTime;
+		this.validationDate = currentTime;
 		this.token = token;
 		this.constraint = constraint;
 	}
@@ -83,7 +85,7 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 				errorMessage = MessageTag.ASCCM_ANS_4;
 				return false;
 			}
-			if (expirationDate.before(currentTime)) {
+			if (expirationDate.before(validationDate)) {
 				errorMessage = MessageTag.ASCCM_ANS_5;
 				return false;
 			}
@@ -95,7 +97,7 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 				errorMessage = MessageTag.ASCCM_ANS_4;
 				return false;
 			}
-			if (expirationDate.before(currentTime)) {
+			if (expirationDate.before(validationDate)) {
 				errorMessage = MessageTag.ASCCM_ANS_5;
 				return false;
 			}
@@ -159,6 +161,13 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE;
+	}
+
+	@Override
+	protected String getAdditionalInfo() {
+		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
+		Object[] params = new Object[] { sdf.format(validationDate) };
+		return MessageFormat.format(AdditionalInfo.VALIDATION_TIME, params);
 	}
 
 }

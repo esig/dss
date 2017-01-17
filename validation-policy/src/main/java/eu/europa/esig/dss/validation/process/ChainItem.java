@@ -151,16 +151,8 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		List<XmlName> previousErrors = getPreviousErrors();
 		if (Utils.isCollectionNotEmpty(previousErrors)) {
 			conclusion.getErrors().addAll(previousErrors);
-		}
-
-		MessageTag errorMessageTag = getErrorMessageTag();
-		if (errorMessageTag != null) {
-			XmlName errorMessage = new XmlName();
-			errorMessage.setNameId(errorMessageTag.name());
-			errorMessage.setValue(errorMessageTag.getMessage());
-			conclusion.getErrors().add(errorMessage);
 		} else {
-			logger.error("MessageTag is not defined!");
+			conclusion.getErrors().add(buildXmlName(getErrorMessageTag()));
 		}
 
 		result.setConclusion(conclusion);
@@ -176,27 +168,19 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 
 	private void recordConstraint(XmlStatus status) {
 		XmlConstraint xmlConstraint = new XmlConstraint();
-		xmlConstraint.setName(buildConstraintName());
+		xmlConstraint.setName(buildXmlName(getMessageTag()));
 		xmlConstraint.setStatus(status);
 		xmlConstraint.setId(bbbId);
 		if (XmlStatus.NOT_OK.equals(status) || XmlStatus.WARNING.equals(status) || XmlStatus.INFORMATION.equals(status)) {
-			xmlConstraint.setAdditionalInfo(getAdditionalInfo());
-			XmlName message = new XmlName();
-			MessageTag errorMessageTag = getErrorMessageTag();
-			if (errorMessageTag != null) {
-				message.setNameId(errorMessageTag.name());
-				message.setValue(errorMessageTag.getMessage());
-			} else {
-				logger.error("MessageTag is not defined!");
-			}
 			if (XmlStatus.NOT_OK.equals(status)) {
-				xmlConstraint.setError(message);
+				xmlConstraint.setError(buildXmlName(getErrorMessageTag()));
 			} else if (XmlStatus.WARNING.equals(status)) {
-				xmlConstraint.setWarning(message);
+				xmlConstraint.setWarning(buildXmlName(getErrorMessageTag()));
 			} else if (XmlStatus.INFORMATION.equals(status)) {
-				xmlConstraint.setInfo(message);
+				xmlConstraint.setInfo(buildXmlName(getErrorMessageTag()));
 			}
 		}
+		xmlConstraint.setAdditionalInfo(getAdditionalInfo());
 		addConstraint(xmlConstraint);
 	}
 
@@ -208,16 +192,15 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		result.getConstraint().add(constraint);
 	}
 
-	private XmlName buildConstraintName() {
-		MessageTag tag = getMessageTag();
-		XmlName name = new XmlName();
-		if (tag != null) {
-			name.setNameId(tag.name());
-			name.setValue(tag.getMessage());
+	private XmlName buildXmlName(MessageTag messageTag) {
+		XmlName xmlName = new XmlName();
+		if (messageTag != null) {
+			xmlName.setNameId(messageTag.name());
+			xmlName.setValue(messageTag.getMessage());
 		} else {
-			logger.error("MessageTag is not defined!");
+			logger.error("MessageTag is null");
 		}
-		return name;
+		return xmlName;
 	}
 
 	/**
