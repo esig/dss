@@ -19,6 +19,8 @@ public class QualifiedCertificateAtCertificateIssuanceCheck extends ChainItem<Xm
 	private final CertificateWrapper signingCertificate;
 	private final List<TrustedServiceWrapper> servicesForESign;
 
+	private QualifiedStatus status;
+
 	public QualifiedCertificateAtCertificateIssuanceCheck(XmlSignatureAnalysis result, CertificateWrapper signingCertificate,
 			List<TrustedServiceWrapper> servicesForESign, LevelConstraint constraint) {
 		super(result, constraint);
@@ -31,9 +33,14 @@ public class QualifiedCertificateAtCertificateIssuanceCheck extends ChainItem<Xm
 	protected boolean process() {
 
 		QualificationFromCertAndTL qualification = new QualificationFromCertAndTL(signingCertificate, servicesForESign, signingCertificate.getNotBefore());
-		QualifiedStatus status = qualification.getQualifiedStatus();
+		status = qualification.getQualifiedStatus();
 
 		return QualifiedStatus.isQC(status);
+	}
+
+	@Override
+	protected String getAdditionalInfo() {
+		return status.getLabel();
 	}
 
 	@Override

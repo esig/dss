@@ -44,6 +44,11 @@ public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 
 	}
 
+	@Override
+	protected void addAdditionalInfo() {
+		collectErrorsWarnsInfos();
+	}
+
 	private ChainItem<XmlTLAnalysis> tlFreshness() {
 		TimeConstraint constraint = policy.getTLFreshnessConstraint();
 		return new TLFreshnessCheck(result, currentTL, currentTime, constraint);

@@ -5,10 +5,11 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.Condition;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class AdESCheck extends ChainItem<XmlSignatureAnalysis> {
+public class AdESCheck extends ChainItem<XmlSignatureAnalysis> implements Condition {
 
 	private final XmlConclusion etsi319102Conclusion;
 
@@ -19,11 +20,14 @@ public class AdESCheck extends ChainItem<XmlSignatureAnalysis> {
 	}
 
 	@Override
+	public boolean check() {
+		return process();
+	}
+
+	@Override
 	protected boolean process() {
-		if (etsi319102Conclusion != null) {
-			return Indication.PASSED == etsi319102Conclusion.getIndication();
-		}
-		return false;
+
+		return isValidConclusion(etsi319102Conclusion);
 	}
 
 	@Override

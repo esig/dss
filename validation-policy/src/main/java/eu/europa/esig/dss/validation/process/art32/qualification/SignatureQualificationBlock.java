@@ -31,6 +31,7 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 	private final SignatureWrapper signature;
 	private final DiagnosticData diagnosticData;
 
+	private AdESCheck adesCheck;
 	private QualifiedCertificateAtSigningTimeCheck qualifiedAtSigningTime;
 	private QSCDCertificateAtSigningTimeCheck qscdAtSigningTime;
 
@@ -50,9 +51,12 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 		String signingCertificateId = signature.getSigningCertificateId();
 		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(signingCertificateId);
 
-		ChainItem<XmlSignatureAnalysis> item = firstItem = certificatePathTrusted(signingCertificate);
+		ChainItem<XmlSignatureAnalysis> item = firstItem = isAdES(etsi319102Conclusion);
+		adesCheck = (AdESCheck) item;
 
-		if (signingCertificate != null) {
+		item = item.setNextItem(certificatePathTrusted(signingCertificate));
+
+		if (signingCertificate != null && signingCertificate.hasTrustedServices()) {
 
 			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
 
@@ -62,8 +66,6 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 
 			// 2. Consistency of trusted services ?
 			item = item.setNextItem(servicesConsistency(servicesForESign));
-
-			item = item.setNextItem(isAdES(etsi319102Conclusion));
 
 			// Article 32 :
 			// (a) the certificate that supports the signature was, at the time of signing, a qualified certificate for
@@ -108,17 +110,16 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 	}
 
 	private void determineFinalQualification() {
-		SignatureQualification sigQualif = null;
+		SignatureQualification sigQualif = SignatureQualification.NA;
+		boolean ades = adesCheck.check();
+
 		if (qualifiedAtSigningTime != null && qscdAtSigningTime != null) {
-			if (QualifiedStatus.QC_FOR_ESIGN == qualifiedAtSigningTime.getQualifiedStatus()) {
-				if (qscdAtSigningTime.check()) {
-					sigQualif = SignatureQualification.QESig;
-				} else {
-					sigQualif = SignatureQualification.AdESig_QC;
-				}
-			} else {
-				sigQualif = SignatureQualification.AdES;
-			}
+			QualifiedStatus qualifiedStatus = qualifiedAtSigningTime.getQualifiedStatus();
+			boolean qc = QualifiedStatus.isQC(qualifiedStatus);
+			boolean esig = QualifiedStatus.isForEsign(qualifiedStatus);
+			boolean qscd = qscdAtSigningTime.check();
+
+			sigQualif = QualificationMatrix.getSignatureQualification(ades, qc, esig, qscd);
 		}
 		result.setSignatureQualification(sigQualif);
 	}

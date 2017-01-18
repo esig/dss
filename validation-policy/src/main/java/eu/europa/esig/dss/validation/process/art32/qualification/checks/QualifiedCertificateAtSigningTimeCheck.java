@@ -54,6 +54,11 @@ public class QualifiedCertificateAtSigningTimeCheck extends ChainItem<XmlSignatu
 	}
 
 	@Override
+	protected String getAdditionalInfo() {
+		return status.getLabel();
+	}
+
+	@Override
 	protected MessageTag getMessageTag() {
 		return MessageTag.QUAL_QC_AT_ST;
 	}
