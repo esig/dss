@@ -1,5 +1,8 @@
 package eu.europa.esig.dss.validation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum SignatureQualification {
 
 	/**
@@ -25,7 +28,7 @@ public enum SignatureQualification {
 	/**
 	 * Advanced Electronic Signature
 	 */
-	ADESIG("AdES", "Advanced Electronic Signature"),
+	ADESIG("AdESig", "Advanced Electronic Signature"),
 
 	/**
 	 * Advanced Electronic Signature or Seal
@@ -35,32 +38,32 @@ public enum SignatureQualification {
 	/**
 	 * Indeterminate Qualified Electronic Signature
 	 */
-	INDETERMINATE_QESIG("QESig", "Indeterminate Qualified Electronic Signature"),
+	INDETERMINATE_QESIG("Indeterminate QESig", "Indeterminate Qualified Electronic Signature"),
 
 	/**
 	 * Indeterminate Qualified Electronic Signature or Seal
 	 */
-	INDETERMINATE_QES("QES", "Indeterminate Qualified Electronic Signature or Seal"),
+	INDETERMINATE_QES("Indeterminate QES", "Indeterminate Qualified Electronic Signature or Seal"),
 
 	/**
 	 * Indeterminate Advanced Electronic Signature supported by a Qualified Certificate
 	 */
-	INDETERMINATE_ADESIG_QC("AdESig-QC", "Indeterminate Advanced Electronic Signature supported by a Qualified Certificate"),
+	INDETERMINATE_ADESIG_QC("Indeterminate AdESig-QC", "Indeterminate Advanced Electronic Signature supported by a Qualified Certificate"),
 
 	/**
 	 * Indeterminate Advanced Electronic Signature or Seal supported by a Qualified Certificate
 	 */
-	INDETERMINATE_ADES_QC("AdES-QC", "Indeterminate Advanced Electronic Signature or Seal supported by a Qualified Certificate"),
+	INDETERMINATE_ADES_QC("Indeterminate AdES-QC", "Indeterminate Advanced Electronic Signature or Seal supported by a Qualified Certificate"),
 
 	/**
 	 * Indeterminate Advanced Electronic Signature
 	 */
-	INDETERMINATE_ADESIG("AdES", "Indeterminate Advanced Electronic Signature"),
+	INDETERMINATE_ADESIG("Indeterminate AdESig", "Indeterminate Advanced Electronic Signature"),
 
 	/**
 	 * Indeterminate Advanced Electronic Signature or Seal
 	 */
-	INDETERMINATE_ADES("AdES", "Indeterminate Advanced Electronic Signature or Seal"),
+	INDETERMINATE_ADES("Indeterminate AdES", "Indeterminate Advanced Electronic Signature or Seal"),
 
 	/**
 	 * Not Advanced Electronic Signature but supported by a Qualified Certificate
@@ -81,6 +84,19 @@ public enum SignatureQualification {
 	 * Not Applicable
 	 */
 	NA("N/A", "Not applicable");
+
+	private static class Registry {
+
+		private final static Map<String, SignatureQualification> QUALIFS_BY_READABLE = registerByReadable();
+
+		private static Map<String, SignatureQualification> registerByReadable() {
+			final Map<String, SignatureQualification> map = new HashMap<String, SignatureQualification>();
+			for (final SignatureQualification qualification : values()) {
+				map.put(qualification.readable, qualification);
+			}
+			return map;
+		}
+	}
 
 	private final String readable;
 	private final String label;
@@ -104,6 +120,16 @@ public enum SignatureQualification {
 	public static SignatureQualification forName(String value) {
 		if ((value != null) && !value.isEmpty()) {
 			return SignatureQualification.valueOf(value);
+		}
+		return null;
+	}
+
+	/**
+	 * SignatureQualification can be null
+	 */
+	public static SignatureQualification fromReadable(String readable) {
+		if ((readable != null) && !readable.isEmpty()) {
+			return Registry.QUALIFS_BY_READABLE.get(readable);
 		}
 		return null;
 	}

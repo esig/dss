@@ -141,7 +141,14 @@
     		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
             <dt>Qualification:</dt>
             <dd>
-					<xsl:value-of select="." />
+				<xsl:value-of select="." />
+				<span>
+	    			<xsl:attribute name="class">glyphicon glyphicon-info-sign text-info</xsl:attribute>
+					<xsl:attribute name="style">margin-left : 10px</xsl:attribute>
+					<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+					<xsl:attribute name="data-placement">right</xsl:attribute>
+					<xsl:attribute name="title"><xsl:value-of select="@description" /></xsl:attribute>
+	    		</span>					
         	</dd>
         </dl>
 	</xsl:template>

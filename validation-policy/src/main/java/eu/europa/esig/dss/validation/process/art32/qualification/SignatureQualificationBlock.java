@@ -11,7 +11,7 @@ import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.Condition;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.AdESCheck;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.AdESAcceptableCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.CertificatePathTrustedCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.QSCDCertificateAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.QualifiedCertificateAtCertificateIssuanceCheck;
@@ -31,7 +31,7 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 	private final SignatureWrapper signature;
 	private final DiagnosticData diagnosticData;
 
-	private AdESCheck adesCheck;
+	private AdESAcceptableCheck adesCheck;
 	private QualifiedCertificateAtSigningTimeCheck qualifiedAtSigningTime;
 	private QSCDCertificateAtSigningTimeCheck qscdAtSigningTime;
 
@@ -52,7 +52,7 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(signingCertificateId);
 
 		ChainItem<XmlSignatureAnalysis> item = firstItem = isAdES(etsi319102Conclusion);
-		adesCheck = (AdESCheck) item;
+		adesCheck = (AdESAcceptableCheck) item;
 
 		item = item.setNextItem(certificatePathTrusted(signingCertificate));
 
@@ -119,7 +119,7 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 			boolean esig = QualifiedStatus.isForEsign(qualifiedStatus);
 			boolean qscd = qscdAtSigningTime.check();
 
-			sigQualif = QualificationMatrix.getSignatureQualification(ades, qc, esig, qscd);
+			sigQualif = QualificationMatrix.getSignatureQualification(etsi319102Conclusion.getIndication(), qc, esig, qscd);
 		}
 		result.setSignatureQualification(sigQualif);
 	}
@@ -146,7 +146,7 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 	}
 
 	private ChainItem<XmlSignatureAnalysis> isAdES(XmlConclusion etsi319102Conclusion) {
-		return new AdESCheck(result, etsi319102Conclusion, getWarnLevelConstraint());
+		return new AdESAcceptableCheck(result, etsi319102Conclusion, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlSignatureAnalysis> qualifiedCertificateAtSigningTime(CertificateWrapper signingCertificate, Date signingTime,

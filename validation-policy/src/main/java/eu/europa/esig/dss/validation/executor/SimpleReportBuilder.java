@@ -38,11 +38,13 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.jaxb.simplereport.XmlPolicy;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
+import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureLevel;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureScope;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AttributeValue;
@@ -180,12 +182,32 @@ public class SimpleReportBuilder {
 			break;
 		}
 
-		Indication indication = constraintsConclusion.getConclusion().getIndication();
-		SubIndication subIndication = constraintsConclusion.getConclusion().getSubIndication();
-
-		List<String> errorList = xmlSignature.getErrors();
-
 		XmlConclusion conclusion = constraintsConclusion.getConclusion();
+		Indication indication = conclusion.getIndication();
+		SubIndication subIndication = conclusion.getSubIndication();
+
+		Set<String> errorList = new HashSet<String>();
+		Set<String> warnList = new HashSet<String>();
+		Set<String> infoList = new HashSet<String>();
+
+		XmlArticle32Block article32Block = detailedReport.getArticle32Block();
+		if (article32Block != null) {
+			List<XmlTLAnalysis> tlAnalysis = article32Block.getTLAnalysis();
+			for (XmlTLAnalysis xmlTLAnalysis : tlAnalysis) {
+				collectErrors(errorList, xmlTLAnalysis);
+				collectWarnings(warnList, xmlTLAnalysis);
+				collectInfos(infoList, xmlTLAnalysis);
+			}
+			List<XmlSignatureAnalysis> signatureAnalysis = article32Block.getSignatureAnalysis();
+			for (XmlSignatureAnalysis analysis : signatureAnalysis) {
+				if (Utils.areStringsEqual(analysis.getId(), signatureId)) {
+					collectErrors(errorList, analysis);
+					collectWarnings(warnList, analysis);
+					collectInfos(infoList, analysis);
+				}
+			}
+		}
+
 		List<XmlName> errors = conclusion.getErrors();
 		if (Utils.isCollectionNotEmpty(errors)) {
 			for (XmlName error : errors) {
@@ -194,8 +216,12 @@ public class SimpleReportBuilder {
 		}
 
 		// TODO refactor
-		xmlSignature.getWarnings().addAll(getWarnings(signatureId));
-		xmlSignature.getInfos().addAll(getInfos(signatureId));
+		warnList.addAll(getWarnings(signatureId));
+		infoList.addAll(getInfos(signatureId));
+
+		xmlSignature.getErrors().addAll(errorList);
+		xmlSignature.getWarnings().addAll(warnList);
+		xmlSignature.getInfos().addAll(infoList);
 
 		if (Indication.PASSED.equals(indication)) {
 			validSignatureCount++;
@@ -228,7 +254,6 @@ public class SimpleReportBuilder {
 				collectWarnings(warns, xmlSignature.getValidationProcessArchivalData());
 			}
 		}
-		// Collections.sort(warns);
 		return warns;
 	}
 
@@ -249,6 +274,19 @@ public class SimpleReportBuilder {
 					XmlName warning = constraint.getWarning();
 					if (warning != null) {
 						result.add(warning.getValue());
+					}
+				}
+			}
+		}
+	}
+
+	private void collectErrors(Set<String> result, XmlConstraintsConclusion constraintConclusion) {
+		if (constraintConclusion != null) {
+			if (Utils.isCollectionNotEmpty(constraintConclusion.getConstraint())) {
+				for (XmlConstraint constraint : constraintConclusion.getConstraint()) {
+					XmlName error = constraint.getError();
+					if (error != null) {
+						result.add(error.getValue());
 					}
 				}
 			}
@@ -291,7 +329,6 @@ public class SimpleReportBuilder {
 				collectInfos(infos, xmlSignature.getValidationProcessArchivalData());
 			}
 		}
-		// Collections.sort(infos);
 		return infos;
 	}
 
@@ -426,7 +463,10 @@ public class SimpleReportBuilder {
 				}
 			}
 			if (qualification != null) {
-				xmlSignature.setSignatureLevel(qualification.name());
+				XmlSignatureLevel sigLevel = new XmlSignatureLevel();
+				sigLevel.setValue(qualification);
+				sigLevel.setDescription(qualification.getLabel());
+				xmlSignature.setSignatureLevel(sigLevel);
 			}
 		}
 	}

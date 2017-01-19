@@ -24,10 +24,10 @@
 				<xs:element name="Signature" maxOccurs="unbounded" minOccurs="0">
 					<xs:complexType>
 						<xs:sequence>
+							<xs:element type="xs:string" name="Filename" minOccurs="0" />
 							<xs:element type="xs:dateTime" name="SigningTime" minOccurs="0" />
 							<xs:element type="xs:string" name="SignedBy" />
-							<xs:element type="xs:string" name="SignatureLevel" minOccurs="0" />
-							<xs:element type="xs:string" name="Filename" minOccurs="0" />
+							<xs:element type="SignatureLevel" name="SignatureLevel" minOccurs="0" />
 							<xs:element type="Indication" name="Indication" />
 							<xs:element type="SubIndication" name="SubIndication" minOccurs="0" />
 							<xs:element type="xs:string" name="Errors" minOccurs="0" maxOccurs="unbounded" />
@@ -53,7 +53,6 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-
 
 	<xs:simpleType name="Indication" final="restriction">
 		<xs:restriction base="xs:string">
@@ -88,6 +87,39 @@
 			<xs:enumeration value="NO_POE" />
 			<xs:enumeration value="CERTIFICATE_CHAIN_GENERAL_FAILURE" />
 			<xs:enumeration value="UNEXPECTED_ERROR" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="SignatureLevel">
+	  <xs:simpleContent>
+	    <xs:extension base="SignatureQualification">
+	      <xs:attribute name="description" type="xs:string" />
+	    </xs:extension>
+	  </xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="SignatureQualification" final="restriction">
+		<xs:restriction base="xs:string">
+		
+			<xs:enumeration value="QESig" />
+			<xs:enumeration value="QES" />
+			<xs:enumeration value="AdESig-QC" />
+			<xs:enumeration value="AdES-QC" />
+			<xs:enumeration value="AdESig" />
+			<xs:enumeration value="AdES" />
+		
+			<xs:enumeration value="Indeterminate QESig" />
+			<xs:enumeration value="Indeterminate QES" />
+			<xs:enumeration value="Indeterminate AdESig-QC" />
+			<xs:enumeration value="Indeterminate AdES-QC" />
+			<xs:enumeration value="Indeterminate AdESig" />
+			<xs:enumeration value="Indeterminate AdES" />
+			
+			<xs:enumeration value="Not AdES but QC with QSCD" />
+			<xs:enumeration value="Not AdES but QC" />
+			<xs:enumeration value="Not AdES" />
+			
+			<xs:enumeration value="N/A" />
 		</xs:restriction>
 	</xs:simpleType>
 	

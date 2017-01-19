@@ -583,7 +583,6 @@
 						<xsl:attribute name="style">margin-left : 10px</xsl:attribute>
 						<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 						<xsl:attribute name="data-placement">right</xsl:attribute>
-						<xsl:attribute name="style">margin-left : 10px</xsl:attribute>
 						<xsl:attribute name="title"><xsl:value-of select="dss:AdditionalInfo" /></xsl:attribute>
 		    		</span>
 	    		</xsl:if>

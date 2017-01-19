@@ -9,11 +9,11 @@ import eu.europa.esig.dss.validation.process.Condition;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class AdESCheck extends ChainItem<XmlSignatureAnalysis> implements Condition {
+public class AdESAcceptableCheck extends ChainItem<XmlSignatureAnalysis> implements Condition {
 
 	private final XmlConclusion etsi319102Conclusion;
 
-	public AdESCheck(XmlSignatureAnalysis result, XmlConclusion etsi319102Conclusion, LevelConstraint constraint) {
+	public AdESAcceptableCheck(XmlSignatureAnalysis result, XmlConclusion etsi319102Conclusion, LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.etsi319102Conclusion = etsi319102Conclusion;
@@ -26,8 +26,7 @@ public class AdESCheck extends ChainItem<XmlSignatureAnalysis> implements Condit
 
 	@Override
 	protected boolean process() {
-
-		return isValidConclusion(etsi319102Conclusion);
+		return isAcceptableConclusion(etsi319102Conclusion);
 	}
 
 	@Override

@@ -13,19 +13,20 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import eu.europa.esig.dss.validation.SignatureQualification;
 
 
 /**
- * <p>Java class for anonymous complex type.
+ * <p>Java class for SignatureLevel complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType>
+ * &lt;complexType name="SignatureLevel">
  *   &lt;simpleContent>
- *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
- *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="scope" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *     &lt;extension base="&lt;http://dss.esig.europa.eu/validation/simple-report>SignatureQualification">
+ *       &lt;attribute name="description" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/extension>
  *   &lt;/simpleContent>
  * &lt;/complexType>
@@ -34,17 +35,16 @@ import javax.xml.bind.annotation.XmlValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
+@XmlType(name = "SignatureLevel", propOrder = {
     "value"
 })
-public class XmlSignatureScope {
+public class XmlSignatureLevel {
 
     @XmlValue
-    protected String value;
-    @XmlAttribute(name = "name")
-    protected String name;
-    @XmlAttribute(name = "scope")
-    protected String scope;
+    @XmlJavaTypeAdapter(Adapter4 .class)
+    protected SignatureQualification value;
+    @XmlAttribute(name = "description")
+    protected String description;
 
     /**
      * Gets the value of the value property.
@@ -54,7 +54,7 @@ public class XmlSignatureScope {
      *     {@link String }
      *     
      */
-    public String getValue() {
+    public SignatureQualification getValue() {
         return value;
     }
 
@@ -66,56 +66,32 @@ public class XmlSignatureScope {
      *     {@link String }
      *     
      */
-    public void setValue(String value) {
+    public void setValue(SignatureQualification value) {
         this.value = value;
     }
 
     /**
-     * Gets the value of the name property.
+     * Gets the value of the description property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
     }
 
     /**
-     * Sets the value of the name property.
+     * Sets the value of the description property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setName(String value) {
-        this.name = value;
-    }
-
-    /**
-     * Gets the value of the scope property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getScope() {
-        return scope;
-    }
-
-    /**
-     * Sets the value of the scope property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setScope(String value) {
-        this.scope = value;
+    public void setDescription(String value) {
+        this.description = value;
     }
 
 }

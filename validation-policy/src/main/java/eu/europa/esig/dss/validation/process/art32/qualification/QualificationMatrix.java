@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.validation.process.art32.qualification;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.validation.SignatureQualification;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
 
 public final class QualificationMatrix {
 
@@ -68,11 +70,26 @@ public final class QualificationMatrix {
 
 	}
 
-	public static SignatureQualification getSignatureQualification(boolean ades, boolean qc, boolean esig, boolean qscd) {
+	public static SignatureQualification getSignatureQualification(Indication ades, boolean qc, boolean esig, boolean qscd) {
 		return QUALIFS[getInt(ades)][getInt(qc)][getInt(esig)][getInt(qscd)];
 	}
 
 	private static int getInt(boolean bool) {
 		return bool ? 1 : 0;
+	}
+
+	private static int getInt(Indication indication) {
+		switch (indication) {
+		case FAILED:
+		case TOTAL_FAILED:
+			return 0;
+		case PASSED:
+		case TOTAL_PASSED:
+			return 1;
+		case INDETERMINATE:
+			return 2;
+		default:
+			throw new DSSException("Unsupported indication " + indication);
+		}
 	}
 }

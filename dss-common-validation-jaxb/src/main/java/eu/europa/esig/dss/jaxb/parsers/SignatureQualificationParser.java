@@ -5,12 +5,12 @@ import eu.europa.esig.dss.validation.SignatureQualification;
 public class SignatureQualificationParser {
 
 	public static SignatureQualification parse(String v) {
-		return SignatureQualification.forName(v);
+		return SignatureQualification.fromReadable(v);
 	}
 
 	public static String print(SignatureQualification v) {
 		if (v != null) {
-			return v.name();
+			return v.getReadable();
 		}
 		return null;
 	}
