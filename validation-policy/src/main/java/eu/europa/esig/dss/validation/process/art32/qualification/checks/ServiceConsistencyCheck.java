@@ -26,32 +26,32 @@ public class ServiceConsistencyCheck extends ChainItem<XmlSignatureAnalysis> {
 
 	@Override
 	protected boolean process() {
-
-		if (Utils.isCollectionNotEmpty(trustedServices)) {
-			for (TrustedServiceWrapper trustedService : trustedServices) {
-
-				if (!TrustedServiceChecker.isQCStatementConsistent(trustedService)) {
-					errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS1;
-					return false;
-				}
-
-				if (!TrustedServiceChecker.isLegalPersonConsistent(trustedService)) {
-					errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS2;
-					return false;
-				}
-
-				if (!TrustedServiceChecker.isQSCDConsistent(trustedService)) {
-					errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS3;
-					return false;
-				}
-
-				if (!TrustedServiceChecker.isUsageConsistent(trustedService)) {
-					errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS4;
-					return false;
-				}
-			}
+		if (Utils.isCollectionEmpty(trustedServices)) {
+			return false;
 		}
 
+		for (TrustedServiceWrapper trustedService : trustedServices) {
+
+			if (!TrustedServiceChecker.isQCStatementConsistent(trustedService)) {
+				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS1;
+				return false;
+			}
+
+			if (!TrustedServiceChecker.isLegalPersonConsistent(trustedService)) {
+				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS2;
+				return false;
+			}
+
+			if (!TrustedServiceChecker.isQSCDConsistent(trustedService)) {
+				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS3;
+				return false;
+			}
+
+			if (!TrustedServiceChecker.isUsageConsistent(trustedService)) {
+				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS4;
+				return false;
+			}
+		}
 		return true;
 	}
 

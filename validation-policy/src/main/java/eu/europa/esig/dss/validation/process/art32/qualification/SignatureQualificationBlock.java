@@ -31,7 +31,6 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 	private final SignatureWrapper signature;
 	private final DiagnosticData diagnosticData;
 
-	private AdESAcceptableCheck adesCheck;
 	private QualifiedCertificateAtSigningTimeCheck qualifiedAtSigningTime;
 	private QSCDCertificateAtSigningTimeCheck qscdAtSigningTime;
 
@@ -52,7 +51,6 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(signingCertificateId);
 
 		ChainItem<XmlSignatureAnalysis> item = firstItem = isAdES(etsi319102Conclusion);
-		adesCheck = (AdESAcceptableCheck) item;
 
 		item = item.setNextItem(certificatePathTrusted(signingCertificate));
 
@@ -111,7 +109,6 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 
 	private void determineFinalQualification() {
 		SignatureQualification sigQualif = SignatureQualification.NA;
-		boolean ades = adesCheck.check();
 
 		if (qualifiedAtSigningTime != null && qscdAtSigningTime != null) {
 			QualifiedStatus qualifiedStatus = qualifiedAtSigningTime.getQualifiedStatus();
@@ -142,7 +139,7 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 	}
 
 	private ChainItem<XmlSignatureAnalysis> servicesConsistency(List<TrustedServiceWrapper> servicesForESign) {
-		return new ServiceConsistencyCheck(result, servicesForESign, getWarnLevelConstraint());
+		return new ServiceConsistencyCheck(result, servicesForESign, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlSignatureAnalysis> isAdES(XmlConclusion etsi319102Conclusion) {
