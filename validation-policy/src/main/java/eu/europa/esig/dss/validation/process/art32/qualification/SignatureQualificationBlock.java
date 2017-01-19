@@ -2,20 +2,24 @@ package eu.europa.esig.dss.validation.process.art32.qualification;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureQualification;
+import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.Condition;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.AcceptableTrustedListCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.AdESAcceptableCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.CertificatePathTrustedCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.QSCDCertificateAtSigningTimeCheck;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.QualifiedCertificateAtCertificateIssuanceCheck;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.QualifiedCertificateAtSigningTimeCheck;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.QualifiedCertificateForESignAtCertificateIssuanceCheck;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.QualifiedCertificateForESignAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.ServiceConsistencyCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.filter.TrustedServicesFilterFactory;
@@ -28,20 +32,25 @@ import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 
 	private final XmlConclusion etsi319102Conclusion;
+	private final List<XmlTLAnalysis> tlAnalysis;
 	private final SignatureWrapper signature;
 	private final DiagnosticData diagnosticData;
+	private final ValidationPolicy policy;
 
-	private QualifiedCertificateAtSigningTimeCheck qualifiedAtSigningTime;
+	private QualifiedCertificateForESignAtSigningTimeCheck qualifiedAtSigningTime;
 	private QSCDCertificateAtSigningTimeCheck qscdAtSigningTime;
 
-	public SignatureQualificationBlock(XmlConclusion etsi319102Conclusion, SignatureWrapper signature, DiagnosticData diagnosticData) {
+	public SignatureQualificationBlock(XmlConclusion etsi319102Conclusion, List<XmlTLAnalysis> tlAnalysis, SignatureWrapper signature,
+			DiagnosticData diagnosticData, ValidationPolicy policy) {
 		super(new XmlSignatureAnalysis());
 
 		result.setId(signature.getId());
 
 		this.etsi319102Conclusion = etsi319102Conclusion;
+		this.tlAnalysis = tlAnalysis;
 		this.signature = signature;
 		this.diagnosticData = diagnosticData;
+		this.policy = policy;
 	}
 
 	@Override
@@ -56,6 +65,19 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 
 		if (signingCertificate != null && signingCertificate.hasTrustedServices()) {
 
+			XmlTLAnalysis lotlAnalysis = getTLAnalysis(diagnosticData.getLOTLCountryCode());
+			if (lotlAnalysis != null) {
+				item = item.setNextItem(isAcceptableTL(lotlAnalysis));
+			}
+
+			Set<String> trustedListCountryCodes = signingCertificate.getTrustedListCountryCodes();
+			for (String countryCode : trustedListCountryCodes) {
+				XmlTLAnalysis currentTL = getTLAnalysis(countryCode);
+				if (currentTL != null) {
+					item = item.setNextItem(isAcceptableTL(currentTL));
+				}
+			}
+
 			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
 
 			// 1. filter by service for esign
@@ -68,7 +90,7 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 			// Article 32 :
 			// (a) the certificate that supports the signature was, at the time of signing, a qualified certificate for
 			// electronic signature complying with Annex I;
-			qualifiedAtSigningTime = (QualifiedCertificateAtSigningTimeCheck) qualifiedCertificateAtSigningTime(signingCertificate, signature.getDateTime(),
+			qualifiedAtSigningTime = (QualifiedCertificateForESignAtSigningTimeCheck) qualifiedCertificateAtSigningTime(signingCertificate, signature.getDateTime(),
 					servicesForESign);
 			item = item.setNextItem(qualifiedAtSigningTime);
 
@@ -100,17 +122,27 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 		}
 	}
 
+	private XmlTLAnalysis getTLAnalysis(String countryCode) {
+		for (XmlTLAnalysis xmlTLAnalysis : tlAnalysis) {
+			if (Utils.areStringsEqual(countryCode, xmlTLAnalysis.getCountryCode())) {
+				return xmlTLAnalysis;
+			}
+		}
+		return null;
+	}
+
 	@Override
 	protected void addAdditionalInfo() {
-		determineFinalQualification();
 		collectErrorsWarnsInfos();
 		setIndication();
+
+		determineFinalQualification();
 	}
 
 	private void determineFinalQualification() {
 		SignatureQualification sigQualif = SignatureQualification.NA;
 
-		if (qualifiedAtSigningTime != null && qscdAtSigningTime != null) {
+		if (isAcceptableConclusion() && qualifiedAtSigningTime != null && qscdAtSigningTime != null) {
 			QualifiedStatus qualifiedStatus = qualifiedAtSigningTime.getQualifiedStatus();
 			boolean qc = QualifiedStatus.isQC(qualifiedStatus);
 			boolean esig = QualifiedStatus.isForEsign(qualifiedStatus);
@@ -118,7 +150,13 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 
 			sigQualif = QualificationMatrix.getSignatureQualification(etsi319102Conclusion.getIndication(), qc, esig, qscd);
 		}
+
 		result.setSignatureQualification(sigQualif);
+	}
+
+	private boolean isAcceptableConclusion() {
+		XmlConclusion conclusion = result.getConclusion();
+		return conclusion != null && Indication.FAILED != conclusion.getIndication();
 	}
 
 	private void setIndication() {
@@ -138,8 +176,12 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 		return new CertificatePathTrustedCheck(result, signingCertificate, getFailLevelConstraint());
 	}
 
+	private ChainItem<XmlSignatureAnalysis> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
+		return new AcceptableTrustedListCheck(result, xmlTLAnalysis, getFailLevelConstraint());
+	}
+
 	private ChainItem<XmlSignatureAnalysis> servicesConsistency(List<TrustedServiceWrapper> servicesForESign) {
-		return new ServiceConsistencyCheck(result, servicesForESign, getFailLevelConstraint());
+		return new ServiceConsistencyCheck(result, servicesForESign, policy.getTLConsistencyConstraint());
 	}
 
 	private ChainItem<XmlSignatureAnalysis> isAdES(XmlConclusion etsi319102Conclusion) {
@@ -148,12 +190,12 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 
 	private ChainItem<XmlSignatureAnalysis> qualifiedCertificateAtSigningTime(CertificateWrapper signingCertificate, Date signingTime,
 			List<TrustedServiceWrapper> servicesForESign) {
-		return new QualifiedCertificateAtSigningTimeCheck(result, signingCertificate, signingTime, servicesForESign, getWarnLevelConstraint());
+		return new QualifiedCertificateForESignAtSigningTimeCheck(result, signingCertificate, signingTime, servicesForESign, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlSignatureAnalysis> qualifiedCertificateAtIssuance(CertificateWrapper signingCertificate,
 			List<TrustedServiceWrapper> servicesForESign) {
-		return new QualifiedCertificateAtCertificateIssuanceCheck(result, signingCertificate, servicesForESign, getWarnLevelConstraint());
+		return new QualifiedCertificateForESignAtCertificateIssuanceCheck(result, signingCertificate, servicesForESign, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlSignatureAnalysis> qscdAtSigningTime(CertificateWrapper signingCertificate, Date signingTime,

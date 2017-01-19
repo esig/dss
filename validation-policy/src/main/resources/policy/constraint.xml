@@ -351,9 +351,9 @@
 	<!-- eIDAS REGL 910/EU/2014 -->
 	<Article32>
 		<TLFreshness Level="WARN" Unit="HOURS" Value="6" />
-		<TLNotExpired Level="WARN" />
+		<TLNotExpired Level="FAIL" />
 		<TLWellSigned Level="WARN" />
 		<TLVersion Level="FAIL" value="5" />
-		<TLConsistency Level="WARN" />
+		<TLConsistency Level="FAIL" />
 	</Article32>
 </ConstraintsParameters>

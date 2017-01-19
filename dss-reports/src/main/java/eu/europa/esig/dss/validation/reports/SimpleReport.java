@@ -26,7 +26,9 @@ import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
+import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureLevel;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignatureQualification;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 
@@ -96,13 +98,14 @@ public class SimpleReport {
 	 * @param signatureId
 	 * @return {@code SignatureType}
 	 */
-	public SignatureType getSignatureLevel(final String signatureId) {
+	public SignatureQualification getSignatureQualification(final String signatureId) {
 		XmlSignature signature = getSignatureById(signatureId);
-		SignatureType signatureType = SignatureType.NA;
-		if (signature != null) {
-			signatureType = SignatureType.forName(signature.getSignatureLevel());
+		XmlSignatureLevel signatureLevel = signature.getSignatureLevel();
+		SignatureQualification qualif = SignatureQualification.NA;
+		if (signatureLevel != null) {
+			qualif = signatureLevel.getValue();
 		}
-		return signatureType;
+		return qualif;
 	}
 
 	/**

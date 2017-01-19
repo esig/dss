@@ -175,12 +175,11 @@ public class DiagnosticDataBuilder {
 		for (CertificateToken certificateToken : usedCertificates) {
 			xmlCertificates.add(getXmlCertificate(allUsedCertificatesDigestAlgorithms, certificateToken));
 
-			X500Principal x500Principal = certificateToken.getSubjectX500Principal();
-			String countryCode = DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.C, x500Principal);
-			if (Utils.isStringNotBlank(countryCode)) {
-				countryCodes.add(countryCode);
-			} else {
-				LOG.warn("No country code defined for cert : " + certificateToken.getDSSIdAsString());
+			Set<ServiceInfo> associatedTSPS = certificateToken.getAssociatedTSPS();
+			if (Utils.isCollectionNotEmpty(associatedTSPS)) {
+				for (ServiceInfo serviceInfo : associatedTSPS) {
+					countryCodes.add(serviceInfo.getTlCountryCode());
+				}
 			}
 		}
 		diagnosticData.setUsedCertificates(Collections.unmodifiableList(xmlCertificates));

@@ -13,7 +13,7 @@ public enum SignatureQualification {
 	/**
 	 * Qualified Electronic Signature or Seal
 	 */
-	QES("QES", "Qualified Electronic Signature or Seal"),
+	QES_NOT_SIG("QES not Sign", "Qualified Electronic Signature or Seal"),
 
 	/**
 	 * Advanced Electronic Signature supported by a Qualified Certificate
@@ -23,7 +23,7 @@ public enum SignatureQualification {
 	/**
 	 * Advanced Electronic Signature or Seal supported by a Qualified Certificate
 	 */
-	ADES_QC("AdES-QC", "Advanced Electronic Signature or Seal supported by a Qualified Certificate"),
+	ADES_QC_NOT_SIG("AdES-QC not Sig", "Advanced Electronic Signature or Seal supported by a Qualified Certificate"),
 
 	/**
 	 * Advanced Electronic Signature
@@ -33,7 +33,7 @@ public enum SignatureQualification {
 	/**
 	 * Advanced Electronic Signature or Seal
 	 */
-	ADES("AdES", "Advanced Electronic Signature or Seal"),
+	ADES("AdES?", "Advanced Electronic Signature or Seal"),
 
 	/**
 	 * Indeterminate Qualified Electronic Signature
@@ -43,7 +43,7 @@ public enum SignatureQualification {
 	/**
 	 * Indeterminate Qualified Electronic Signature or Seal
 	 */
-	INDETERMINATE_QES("Indeterminate QES", "Indeterminate Qualified Electronic Signature or Seal"),
+	INDETERMINATE_QES_NOT_SIG("Indeterminate QES not Sign", "Indeterminate Qualified Electronic Signature or Seal"),
 
 	/**
 	 * Indeterminate Advanced Electronic Signature supported by a Qualified Certificate
@@ -53,7 +53,7 @@ public enum SignatureQualification {
 	/**
 	 * Indeterminate Advanced Electronic Signature or Seal supported by a Qualified Certificate
 	 */
-	INDETERMINATE_ADES_QC("Indeterminate AdES-QC", "Indeterminate Advanced Electronic Signature or Seal supported by a Qualified Certificate"),
+	INDETERMINATE_ADES_QC_NOT_SIG("Indeterminate AdES-QC not Sign", "Indeterminate Advanced Electronic Signature or Seal supported by a Qualified Certificate"),
 
 	/**
 	 * Indeterminate Advanced Electronic Signature
@@ -63,7 +63,7 @@ public enum SignatureQualification {
 	/**
 	 * Indeterminate Advanced Electronic Signature or Seal
 	 */
-	INDETERMINATE_ADES("Indeterminate AdES", "Indeterminate Advanced Electronic Signature or Seal"),
+	INDETERMINATE_ADES("Indeterminate AdES?", "Indeterminate Advanced Electronic Signature or Seal"),
 
 	/**
 	 * Not Advanced Electronic Signature but supported by a Qualified Certificate

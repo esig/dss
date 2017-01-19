@@ -286,6 +286,9 @@
     
     <xsl:template match="dss:TLAnalysis">
     	<div>
+       		<xsl:if test="@CountryCode != ''">
+       			<xsl:attribute name="id"><xsl:value-of select="@CountryCode"/></xsl:attribute>
+       		</xsl:if>
     		<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
 	        <xsl:variable name="indicationCssClass">
 	        	<xsl:choose>

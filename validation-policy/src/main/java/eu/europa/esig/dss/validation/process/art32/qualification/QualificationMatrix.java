@@ -29,10 +29,10 @@ public final class QualificationMatrix {
 		// AdES
 
 		QUALIFS[ADES][QC][ESIG][QSCD] = SignatureQualification.QESIG;
-		QUALIFS[ADES][QC][NOT_ESIG][QSCD] = SignatureQualification.QES;
+		QUALIFS[ADES][QC][NOT_ESIG][QSCD] = SignatureQualification.QES_NOT_SIG;
 
 		QUALIFS[ADES][QC][ESIG][NOT_QSCD] = SignatureQualification.ADESIG_QC;
-		QUALIFS[ADES][QC][NOT_ESIG][NOT_QSCD] = SignatureQualification.ADES_QC;
+		QUALIFS[ADES][QC][NOT_ESIG][NOT_QSCD] = SignatureQualification.ADES_QC_NOT_SIG;
 
 		QUALIFS[ADES][NOT_QC][ESIG][NOT_QSCD] = SignatureQualification.ADESIG;
 		QUALIFS[ADES][NOT_QC][NOT_ESIG][NOT_QSCD] = SignatureQualification.ADES;
@@ -43,10 +43,10 @@ public final class QualificationMatrix {
 		// Indeterminate AdES
 
 		QUALIFS[INDETERMINATE_ADES][QC][ESIG][QSCD] = SignatureQualification.INDETERMINATE_QESIG;
-		QUALIFS[INDETERMINATE_ADES][QC][NOT_ESIG][QSCD] = SignatureQualification.INDETERMINATE_QES;
+		QUALIFS[INDETERMINATE_ADES][QC][NOT_ESIG][QSCD] = SignatureQualification.INDETERMINATE_QES_NOT_SIG;
 
 		QUALIFS[INDETERMINATE_ADES][QC][ESIG][NOT_QSCD] = SignatureQualification.INDETERMINATE_ADESIG_QC;
-		QUALIFS[INDETERMINATE_ADES][QC][NOT_ESIG][NOT_QSCD] = SignatureQualification.INDETERMINATE_ADES_QC;
+		QUALIFS[INDETERMINATE_ADES][QC][NOT_ESIG][NOT_QSCD] = SignatureQualification.INDETERMINATE_ADES_QC_NOT_SIG;
 
 		QUALIFS[INDETERMINATE_ADES][NOT_QC][ESIG][NOT_QSCD] = SignatureQualification.INDETERMINATE_ADESIG;
 		QUALIFS[INDETERMINATE_ADES][NOT_QC][NOT_ESIG][NOT_QSCD] = SignatureQualification.INDETERMINATE_ADES;

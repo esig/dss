@@ -678,4 +678,12 @@ public class DiagnosticData {
 		return diagnosticData.getListOfTrustedLists();
 	}
 
+	public String getLOTLCountryCode() {
+		XmlTrustedList listOfTrustedLists = diagnosticData.getListOfTrustedLists();
+		if (listOfTrustedLists != null) {
+			return listOfTrustedLists.getCountryCode();
+		}
+		return null;
+	}
+
 }

@@ -272,15 +272,18 @@ public enum MessageTag {
 
 	QUAL_TRUSTED_CERT_PATH("Is the certificate path trusted?"),
 	QUAL_TRUSTED_CERT_PATH_ANS("The certificate path is not trusted!"),
-	QUAL_QC_AT_ST("Is qualifed certificate at signing time?"),
-	QUAL_QC_AT_ST_ANS("The certificate is not qualified at signing time!"),
-	QUAL_QC_AT_CC("Is qualifed certificate at issuance time?"),
-	QUAL_QC_AT_CC_ANS("The certificate is not qualified at issuance time!"),
+
+	QUAL_TRUSTED_LIST_ACCEPT("Is the trusted list acceptable?"),
+	QUAL_TRUSTED_LIST_ACCEPT_ANS("The trusted list is not acceptable!"),
+	QUAL_QC_AT_ST("Is qualifed certificate for eSign at signing time?"),
+	QUAL_QC_AT_ST_ANS("The certificate is not qualified for eSign at signing time!"),
+	QUAL_QC_AT_CC("Is qualifed certificate for eSign at issuance time?"),
+	QUAL_QC_AT_CC_ANS("The certificate is not qualified for eSign at issuance time!"),
 	QUAL_UNIQUE_CERT("Is the certificate unique ?"),
 	QUAL_UNIQUE_CERT_ANS("The certificate cannot be defined as unique!"),
 	QUAL_QSCD_AT_ST("Is created by a QSCD?"),
 	QUAL_QSCD_AT_ST_ANS("The electronic signature is not created by a QSCD!"),
-	QUAL_IS_ADES("Is acceptable AdES ?"),
+	QUAL_IS_ADES("Is acceptable AdES (ETSI EN 319 102-1) ?"),
 	QUAL_IS_ADES_ANS("The signature is not an acceptable AdES!"),
 	
 	EMPTY("");

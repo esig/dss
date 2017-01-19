@@ -270,4 +270,13 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return result;
 	}
 
+	public Set<String> getTrustedListCountryCodes() {
+		Set<String> countryCodes = new HashSet<String>();
+		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProviders();
+		for (XmlTrustedServiceProvider tsp : trustedServiceProviders) {
+			countryCodes.add(tsp.getCountryCode());
+		}
+		return countryCodes;
+	}
+
 }
