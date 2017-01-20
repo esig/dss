@@ -107,7 +107,7 @@ public class OnlineOCSPSource implements OCSPSource {
 	@Override
 	public OCSPToken getOCSPToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		if (dataLoader == null) {
-			throw new NullPointerException("DataLoad is not provided !");
+			throw new NullPointerException("DataLoader is not provided !");
 		}
 
 		try {
@@ -122,11 +122,7 @@ public class OnlineOCSPSource implements OCSPSource {
 
 			String ocspAccessLocation = ocspAccessLocations.get(0);
 
-			OCSPToken ocspToken = new OCSPToken();
-			ocspToken.setSourceURL(ocspAccessLocation);
-
 			final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
-			ocspToken.setCertId(certId);
 
 			BigInteger nonce = null;
 			if (nonceSource != null) {
@@ -137,15 +133,18 @@ public class OnlineOCSPSource implements OCSPSource {
 
 			final byte[] ocspRespBytes = dataLoader.post(ocspAccessLocation, content);
 			if (Utils.isArrayEmpty(ocspRespBytes)) {
-				return ocspToken;
+				return null;
 			}
-			ocspToken.setAvailable(true);
 
 			final OCSPResp ocspResp = new OCSPResp(ocspRespBytes);
 
 			OCSPRespStatus status = OCSPRespStatus.fromInt(ocspResp.getStatus());
-			ocspToken.setResponseStatus(status);
 			if (OCSPRespStatus.SUCCESSFUL.equals(status)) {
+				OCSPToken ocspToken = new OCSPToken();
+				ocspToken.setResponseStatus(status);
+				ocspToken.setSourceURL(ocspAccessLocation);
+				ocspToken.setCertId(certId);
+				ocspToken.setAvailable(true);
 				final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
 				ocspToken.setBasicOCSPResp(basicOCSPResp);
 
@@ -153,8 +152,11 @@ public class OnlineOCSPSource implements OCSPSource {
 					ocspToken.setUseNonce(true);
 					ocspToken.setNonceMatch(isNonceMatch(basicOCSPResp, nonce));
 				}
+				return ocspToken;
+			} else {
+				certificateToken.extraInfo().infoOCSPException("OCSP Response status : " + status);
+				return null;
 			}
-			return ocspToken;
 		} catch (OCSPException e) {
 			throw new DSSException(e);
 		} catch (IOException e) {
