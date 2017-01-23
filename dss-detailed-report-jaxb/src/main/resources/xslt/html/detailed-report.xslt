@@ -26,21 +26,21 @@
 			</div>
 	    </div>
 	    		
-   		<xsl:apply-templates select="dss:Article32Block"/>
+   		<xsl:apply-templates select="dss:QMatrixBlock"/>
     </xsl:template>
 
-    <xsl:template match="dss:Article32Block">
+    <xsl:template match="dss:QMatrixBlock">
 	    <div>
     		<xsl:attribute name="class">panel panel-primary</xsl:attribute>
 	   		<div>
 	   			<xsl:attribute name="class">panel-heading</xsl:attribute>
-	    		<xsl:attribute name="data-target">#collapseArt32</xsl:attribute>
+	    		<xsl:attribute name="data-target">#collapseQmatrix</xsl:attribute>
 		       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
-		       	Qualification (ETSI TS 119 172-4)
+		       	Qualification (eIDAS 910/2014 Art. 26, 32, 36 & 40)
 		    </div>
 		    <div>
 				<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
-		        <xsl:attribute name="id">collapseArt32</xsl:attribute>
+		        <xsl:attribute name="id">collapseQmatrix</xsl:attribute>
 		        
 				<xsl:apply-templates select="dss:TLAnalysis" />
 				<xsl:apply-templates select="dss:SignatureAnalysis" />

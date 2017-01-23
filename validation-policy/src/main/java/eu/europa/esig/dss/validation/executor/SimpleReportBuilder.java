@@ -30,12 +30,12 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlArticle32Block;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlQMatrixBlock;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
@@ -190,15 +190,15 @@ public class SimpleReportBuilder {
 		Set<String> warnList = new HashSet<String>();
 		Set<String> infoList = new HashSet<String>();
 
-		XmlArticle32Block article32Block = detailedReport.getArticle32Block();
-		if (article32Block != null) {
-			List<XmlTLAnalysis> tlAnalysis = article32Block.getTLAnalysis();
+		XmlQMatrixBlock qmatrixBlock = detailedReport.getQMatrixBlock();
+		if (qmatrixBlock != null) {
+			List<XmlTLAnalysis> tlAnalysis = qmatrixBlock.getTLAnalysis();
 			for (XmlTLAnalysis xmlTLAnalysis : tlAnalysis) {
 				collectErrors(errorList, xmlTLAnalysis);
 				collectWarnings(warnList, xmlTLAnalysis);
 				collectInfos(infoList, xmlTLAnalysis);
 			}
-			List<XmlSignatureAnalysis> signatureAnalysis = article32Block.getSignatureAnalysis();
+			List<XmlSignatureAnalysis> signatureAnalysis = qmatrixBlock.getSignatureAnalysis();
 			for (XmlSignatureAnalysis analysis : signatureAnalysis) {
 				if (Utils.areStringsEqual(analysis.getId(), signatureId)) {
 					collectErrors(errorList, analysis);
@@ -453,10 +453,10 @@ public class SimpleReportBuilder {
 	}
 
 	private void addSignatureProfile(SignatureWrapper signature, final XmlSignature xmlSignature) {
-		XmlArticle32Block article32Block = detailedReport.getArticle32Block();
-		if (article32Block != null) {
+		XmlQMatrixBlock qmatrixBlock = detailedReport.getQMatrixBlock();
+		if (qmatrixBlock != null) {
 			SignatureQualification qualification = null;
-			List<XmlSignatureAnalysis> signatureAnalysis = article32Block.getSignatureAnalysis();
+			List<XmlSignatureAnalysis> signatureAnalysis = qmatrixBlock.getSignatureAnalysis();
 			for (XmlSignatureAnalysis xmlSignatureAnalysis : signatureAnalysis) {
 				if (Utils.areStringsEqual(xmlSignatureAnalysis.getId(), signature.getId())) {
 					qualification = xmlSignatureAnalysis.getSignatureQualification();

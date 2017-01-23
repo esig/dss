@@ -16,8 +16,8 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignature
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.process.art32.Article32Block;
 import eu.europa.esig.dss.validation.process.bbb.BasicBuildingBlocks;
+import eu.europa.esig.dss.validation.process.qmatrix.QMatrixBlock;
 import eu.europa.esig.dss.validation.process.vpfbs.ValidationProcessForBasicSignatures;
 import eu.europa.esig.dss.validation.process.vpfltvd.ValidationProcessForSignaturesWithLongTermValidationData;
 import eu.europa.esig.dss.validation.process.vpfswatsp.ValidationProcessForSignaturesWithArchivalData;
@@ -71,8 +71,8 @@ public class DetailedReportBuilder {
 			detailedReport.getSignatures().add(signatureAnalysis);
 
 			if (policy.isArticle32ConstraintPresent()) {
-				Article32Block article32 = new Article32Block(conlusion, diagnosticData, policy, currentTime);
-				detailedReport.setArticle32Block(article32.execute());
+				QMatrixBlock qmatrix = new QMatrixBlock(conlusion, diagnosticData, policy, currentTime);
+				detailedReport.setQMatrixBlock(qmatrix.execute());
 			}
 		}
 

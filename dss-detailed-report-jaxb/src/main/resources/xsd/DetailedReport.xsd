@@ -9,7 +9,7 @@
 			<xs:sequence>
 				<xs:element type="Signature" name="Signatures" minOccurs="0" maxOccurs="unbounded" />
 				<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
-				<xs:element type="Article32Block" name="Article32Block" minOccurs="0" />
+				<xs:element type="QMatrixBlock" name="QMatrixBlock" minOccurs="0" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -42,7 +42,7 @@
 		<xs:attribute name="Type" type="xs:string" use="required" />
 	</xs:complexType>
 	
-	<xs:complexType name="Article32Block">
+	<xs:complexType name="QMatrixBlock">
 		<xs:sequence>
 			<xs:element type="TLAnalysis" name="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element type="SignatureAnalysis" name="SignatureAnalysis" minOccurs="0" maxOccurs="unbounded" />

@@ -96,7 +96,7 @@
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='TIMESTAMP']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='REVOCATION']"/>
 				    
-   					<xsl:apply-templates select="dss:Article32Block"/>
+   					<xsl:apply-templates select="dss:QMatrixBlock"/>
 					
 					<fo:block>
 						<xsl:attribute name="id">theEnd</xsl:attribute>
@@ -106,7 +106,7 @@
 		</fo:root>
 	</xsl:template>
 	
-	<xsl:template match="dss:Article32Block">
+	<xsl:template match="dss:QMatrixBlock">
 		<xsl:apply-templates select="dss:TLAnalysis" />
 		<xsl:apply-templates select="dss:SignatureAnalysis" />
 	</xsl:template>
