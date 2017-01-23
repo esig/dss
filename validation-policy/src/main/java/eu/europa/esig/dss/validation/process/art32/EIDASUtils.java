@@ -20,6 +20,10 @@ public final class EIDASUtils {
 		return (date != null && date.compareTo(EIDAS_DATE) >= 0);
 	}
 
+	public static boolean isPreEIDAS(Date date) {
+		return (date != null && date.compareTo(EIDAS_DATE) < 0);
+	}
+
 	public static boolean isPostGracePeriod(Date date) {
 		return (date != null && date.compareTo(EIDAS_GRACE_DATE) >= 0);
 	}

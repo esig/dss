@@ -8,56 +8,51 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.Condition;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.qscd.QSCDFromCertAndTL;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.qscd.QSCDStatus;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.qscd.QSCDStrategy;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.type.Type;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.type.TypeFromCertAndTL;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.type.TypeStrategy;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class QSCDCertificateAtSigningTimeCheck extends ChainItem<XmlSignatureAnalysis> implements Condition {
+public class ForeSignatureAtSigningTimeCheck extends ChainItem<XmlSignatureAnalysis> implements TypeStrategy {
 
 	private final CertificateWrapper signingCertificate;
 	private final Date signingTime;
-	private final Condition qualified;
 	private final List<TrustedServiceWrapper> caqcServices;
 
-	private QSCDStatus status;
+	private Type type;
 
-	public QSCDCertificateAtSigningTimeCheck(XmlSignatureAnalysis result, CertificateWrapper signingCertificate, Date signingTime,
-			List<TrustedServiceWrapper> caqcServices, Condition qualified, LevelConstraint constraint) {
+	public ForeSignatureAtSigningTimeCheck(XmlSignatureAnalysis result, CertificateWrapper signingCertificate, Date signingTime,
+			List<TrustedServiceWrapper> caqcServices, LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.signingCertificate = signingCertificate;
 		this.signingTime = signingTime;
-		this.qualified = qualified;
 		this.caqcServices = new ArrayList<TrustedServiceWrapper>(caqcServices);
 	}
 
 	@Override
-	public boolean check() {
-		return QSCDStatus.QSCD == status;
+	protected boolean process() {
+		TypeFromCertAndTL typeStrategy = new TypeFromCertAndTL(signingCertificate, caqcServices, signingTime);
+		type = typeStrategy.getType();
+		return Type.ESIGN == type;
 	}
 
 	@Override
-	protected boolean process() {
-
-		QSCDStrategy strategy = new QSCDFromCertAndTL(signingCertificate, caqcServices, qualified, signingTime);
-		status = strategy.getQSCDStatus();
-
-		return check();
+	public Type getType() {
+		return type;
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.QUAL_QSCD_AT_ST;
+		return MessageTag.QUAL_FOR_SIGN_AT_ST;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.QUAL_QSCD_AT_ST_ANS;
+		return MessageTag.QUAL_FOR_SIGN_AT_ST_ANS;
 	}
 
 	@Override

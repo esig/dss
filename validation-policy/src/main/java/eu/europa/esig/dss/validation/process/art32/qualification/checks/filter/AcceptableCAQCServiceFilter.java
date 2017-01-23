@@ -1,16 +1,16 @@
 package eu.europa.esig.dss.validation.process.art32.qualification.checks.filter;
 
 import eu.europa.esig.dss.validation.process.art32.EIDASUtils;
-import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
-import eu.europa.esig.dss.validation.process.art32.TrustedServiceStatus;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.ServiceQualification;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.TrustedServiceStatus;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
-public class ServiceForESignFilter extends AbstractTrustedServiceFilter {
+public class AcceptableCAQCServiceFilter extends AbstractTrustedServiceFilter {
 
 	@Override
 	boolean isAcceptable(TrustedServiceWrapper service) {
 		if (EIDASUtils.isPostEIDAS(service.getStartDate())) {
-			return isCaQc(service) && hasAcceptableStatusAfterEIDAS(service) && hasAdditionnalServiceInfoForEsign(service);
+			return isCaQc(service) && hasAcceptableStatusAfterEIDAS(service);
 		} else {
 			return isCaQc(service) && hasAcceptableStatusBeforeEIDAS(service);
 		}
@@ -26,10 +26,6 @@ public class ServiceForESignFilter extends AbstractTrustedServiceFilter {
 
 	private boolean hasAcceptableStatusBeforeEIDAS(TrustedServiceWrapper service) {
 		return TrustedServiceStatus.isAcceptableStatusBeforeEIDAS(service.getStatus());
-	}
-
-	private boolean hasAdditionnalServiceInfoForEsign(TrustedServiceWrapper service) {
-		return AdditionalServiceInformation.isForeSignatures(service.getAdditionalServiceInfos());
 	}
 
 }

@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.process.art32;
+package eu.europa.esig.dss.validation.process.art32.qualification.checks;
 
 import java.util.List;
 

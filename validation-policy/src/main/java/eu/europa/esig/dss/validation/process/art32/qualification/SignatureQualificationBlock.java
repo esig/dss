@@ -16,14 +16,17 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.Condition;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.AcceptableTrustedListCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.AdESAcceptableCheck;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.CertificateAndServiceConsistencyCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.CertificatePathTrustedCheck;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.ForeSignatureAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.QSCDCertificateAtSigningTimeCheck;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.QualifiedCertificateForESignAtCertificateIssuanceCheck;
-import eu.europa.esig.dss.validation.process.art32.qualification.checks.QualifiedCertificateForESignAtSigningTimeCheck;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.QualifiedCertificateAtCertificateIssuanceCheck;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.QualifiedCertificateAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.ServiceConsistencyCheck;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.filter.TrustedServicesFilterFactory;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualifiedStatus;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.type.Type;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
@@ -37,7 +40,8 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 	private final DiagnosticData diagnosticData;
 	private final ValidationPolicy policy;
 
-	private QualifiedCertificateForESignAtSigningTimeCheck qualifiedAtSigningTime;
+	private QualifiedCertificateAtSigningTimeCheck qualifiedAtSigningTime;
+	private ForeSignatureAtSigningTimeCheck foreSignatureAtSigningTime;
 	private QSCDCertificateAtSigningTimeCheck qscdAtSigningTime;
 
 	public SignatureQualificationBlock(XmlConclusion etsi319102Conclusion, List<XmlTLAnalysis> tlAnalysis, SignatureWrapper signature,
@@ -80,23 +84,29 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 
 			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
 
-			// 1. filter by service for esign
-			TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterForEsign();
-			List<TrustedServiceWrapper> servicesForESign = filter.filter(originalTSPs);
+			// 1. filter by service for CAQC
+			TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterForAcceptableCAQC();
+			List<TrustedServiceWrapper> caqcServices = filter.filter(originalTSPs);
 
 			// 2. Consistency of trusted services ?
-			item = item.setNextItem(servicesConsistency(servicesForESign));
+			item = item.setNextItem(servicesConsistency(caqcServices));
+
+			item = item.setNextItem(serviceAndCertificateConsistency(caqcServices, signingCertificate));
 
 			// Article 32 :
 			// (a) the certificate that supports the signature was, at the time of signing, a qualified certificate for
 			// electronic signature complying with Annex I;
-			qualifiedAtSigningTime = (QualifiedCertificateForESignAtSigningTimeCheck) qualifiedCertificateAtSigningTime(signingCertificate, signature.getDateTime(),
-					servicesForESign);
+			qualifiedAtSigningTime = (QualifiedCertificateAtSigningTimeCheck) qualifiedCertificateAtSigningTime(signingCertificate, signature.getDateTime(),
+					caqcServices);
 			item = item.setNextItem(qualifiedAtSigningTime);
+
+			foreSignatureAtSigningTime = (ForeSignatureAtSigningTimeCheck) foreSignatureAtSigningTime(signingCertificate, signature.getDateTime(),
+					caqcServices);
+			item = item.setNextItem(foreSignatureAtSigningTime);
 
 			// (b) the qualified certificate
 			// 1. was issued by a qualified trust service provider
-			item = item.setNextItem(qualifiedCertificateAtIssuance(signingCertificate, servicesForESign));
+			item = item.setNextItem(qualifiedCertificateAtIssuance(signingCertificate, caqcServices));
 
 			// 2. was valid at the time of signing;
 			// covered in isAdES
@@ -113,7 +123,7 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 			// covered in isAdES
 
 			// (f) the electronic signature was created by a qualified electronic signature creation device;
-			qscdAtSigningTime = (QSCDCertificateAtSigningTimeCheck) qscdAtSigningTime(signingCertificate, signature.getDateTime(), servicesForESign,
+			qscdAtSigningTime = (QSCDCertificateAtSigningTimeCheck) qscdAtSigningTime(signingCertificate, signature.getDateTime(), caqcServices,
 					qualifiedAtSigningTime);
 			item = item.setNextItem(qscdAtSigningTime);
 
@@ -142,13 +152,13 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 	private void determineFinalQualification() {
 		SignatureQualification sigQualif = SignatureQualification.NA;
 
-		if (isAcceptableConclusion() && qualifiedAtSigningTime != null && qscdAtSigningTime != null) {
+		if (isAcceptableConclusion() && qualifiedAtSigningTime != null && foreSignatureAtSigningTime != null && qscdAtSigningTime != null) {
 			QualifiedStatus qualifiedStatus = qualifiedAtSigningTime.getQualifiedStatus();
 			boolean qc = QualifiedStatus.isQC(qualifiedStatus);
-			boolean esig = QualifiedStatus.isForEsign(qualifiedStatus);
+			Type type = foreSignatureAtSigningTime.getType();
 			boolean qscd = qscdAtSigningTime.check();
 
-			sigQualif = QualificationMatrix.getSignatureQualification(etsi319102Conclusion.getIndication(), qc, esig, qscd);
+			sigQualif = QualificationMatrix.getSignatureQualification(etsi319102Conclusion.getIndication(), qc, type, qscd);
 		}
 
 		result.setSignatureQualification(sigQualif);
@@ -180,8 +190,12 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 		return new AcceptableTrustedListCheck(result, xmlTLAnalysis, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlSignatureAnalysis> servicesConsistency(List<TrustedServiceWrapper> servicesForESign) {
-		return new ServiceConsistencyCheck(result, servicesForESign, policy.getTLConsistencyConstraint());
+	private ChainItem<XmlSignatureAnalysis> servicesConsistency(List<TrustedServiceWrapper> caqcServices) {
+		return new ServiceConsistencyCheck(result, caqcServices, policy.getTLConsistencyConstraint());
+	}
+
+	private ChainItem<XmlSignatureAnalysis> serviceAndCertificateConsistency(List<TrustedServiceWrapper> caqcServices, CertificateWrapper signingCertificate) {
+		return new CertificateAndServiceConsistencyCheck(result, signingCertificate, caqcServices, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlSignatureAnalysis> isAdES(XmlConclusion etsi319102Conclusion) {
@@ -189,18 +203,22 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 	}
 
 	private ChainItem<XmlSignatureAnalysis> qualifiedCertificateAtSigningTime(CertificateWrapper signingCertificate, Date signingTime,
-			List<TrustedServiceWrapper> servicesForESign) {
-		return new QualifiedCertificateForESignAtSigningTimeCheck(result, signingCertificate, signingTime, servicesForESign, getWarnLevelConstraint());
+			List<TrustedServiceWrapper> caqcServices) {
+		return new QualifiedCertificateAtSigningTimeCheck(result, signingCertificate, signingTime, caqcServices, getWarnLevelConstraint());
 	}
 
-	private ChainItem<XmlSignatureAnalysis> qualifiedCertificateAtIssuance(CertificateWrapper signingCertificate,
-			List<TrustedServiceWrapper> servicesForESign) {
-		return new QualifiedCertificateForESignAtCertificateIssuanceCheck(result, signingCertificate, servicesForESign, getWarnLevelConstraint());
+	private ChainItem<XmlSignatureAnalysis> foreSignatureAtSigningTime(CertificateWrapper signingCertificate, Date signingTime,
+			List<TrustedServiceWrapper> caqcServices) {
+		return new ForeSignatureAtSigningTimeCheck(result, signingCertificate, signingTime, caqcServices, getWarnLevelConstraint());
 	}
 
-	private ChainItem<XmlSignatureAnalysis> qscdAtSigningTime(CertificateWrapper signingCertificate, Date signingTime,
-			List<TrustedServiceWrapper> servicesForESign, Condition qualifiedStatusAtSigningTime) {
-		return new QSCDCertificateAtSigningTimeCheck(result, signingCertificate, signingTime, servicesForESign, qualifiedStatusAtSigningTime,
+	private ChainItem<XmlSignatureAnalysis> qualifiedCertificateAtIssuance(CertificateWrapper signingCertificate, List<TrustedServiceWrapper> caqcServices) {
+		return new QualifiedCertificateAtCertificateIssuanceCheck(result, signingCertificate, caqcServices, getWarnLevelConstraint());
+	}
+
+	private ChainItem<XmlSignatureAnalysis> qscdAtSigningTime(CertificateWrapper signingCertificate, Date signingTime, List<TrustedServiceWrapper> caqcServices,
+			Condition qualifiedStatusAtSigningTime) {
+		return new QSCDCertificateAtSigningTimeCheck(result, signingCertificate, signingTime, caqcServices, qualifiedStatusAtSigningTime,
 				getWarnLevelConstraint());
 	}
 

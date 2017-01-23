@@ -18,7 +18,7 @@ public class QualificationByCertificatePreEIDAS extends AbstractQualificationCon
 	public QualifiedStatus getQualifiedStatus() {
 		if (QCStatementPolicyIdentifiers.isQCCompliant(signingCertificate) || CertificatePolicyIdentifiers.isQCP(signingCertificate)
 				|| CertificatePolicyIdentifiers.isQCPPlus(signingCertificate)) {
-			return QualifiedStatus.QC_FOR_ESIGN;
+			return QualifiedStatus.QC;
 		} else {
 			return QualifiedStatus.NOT_QC;
 		}

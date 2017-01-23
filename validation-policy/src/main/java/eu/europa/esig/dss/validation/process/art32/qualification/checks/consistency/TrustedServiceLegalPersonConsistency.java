@@ -2,7 +2,7 @@ package eu.europa.esig.dss.validation.process.art32.qualification.checks.consist
 
 import java.util.List;
 
-import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.ServiceQualification;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 /**

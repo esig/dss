@@ -1,54 +1,64 @@
 package eu.europa.esig.dss.validation.process.art32.qualification.checks;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.Condition;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualificationFromCertAndTL;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualificationStrategy;
 import eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified.QualifiedStatus;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class QualifiedCertificateForESignAtCertificateIssuanceCheck extends ChainItem<XmlSignatureAnalysis> {
+public class QualifiedCertificateAtSigningTimeCheck extends ChainItem<XmlSignatureAnalysis> implements QualificationStrategy, Condition {
 
 	private final CertificateWrapper signingCertificate;
-	private final List<TrustedServiceWrapper> servicesForESign;
+	private final Date signingTime;
+	private final List<TrustedServiceWrapper> caqcServices;
 
 	private QualifiedStatus status;
 
-	public QualifiedCertificateForESignAtCertificateIssuanceCheck(XmlSignatureAnalysis result, CertificateWrapper signingCertificate,
-			List<TrustedServiceWrapper> servicesForESign, LevelConstraint constraint) {
+	public QualifiedCertificateAtSigningTimeCheck(XmlSignatureAnalysis result, CertificateWrapper signingCertificate, Date signingTime,
+			List<TrustedServiceWrapper> caqcServices, LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.signingCertificate = signingCertificate;
-		this.servicesForESign = new ArrayList<TrustedServiceWrapper>(servicesForESign);
+		this.signingTime = signingTime;
+		this.caqcServices = new ArrayList<TrustedServiceWrapper>(caqcServices);
 	}
 
 	@Override
 	protected boolean process() {
-		QualificationFromCertAndTL qualification = new QualificationFromCertAndTL(signingCertificate, servicesForESign, signingCertificate.getNotBefore());
+		QualificationFromCertAndTL qualification = new QualificationFromCertAndTL(signingCertificate, caqcServices, signingTime);
 		status = qualification.getQualifiedStatus();
-		return QualifiedStatus.QC_FOR_ESIGN == status;
+		return qualification.check();
 	}
 
 	@Override
-	protected String getAdditionalInfo() {
-		return status.getLabel();
+	public boolean check() {
+		return QualifiedStatus.isQC(status);
+	}
+
+	@Override
+	public QualifiedStatus getQualifiedStatus() {
+		return status;
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.QUAL_QC_AT_CC;
+		return MessageTag.QUAL_QC_AT_ST;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.QUAL_QC_AT_CC_ANS;
+		return MessageTag.QUAL_QC_AT_ST_ANS;
 	}
 
 	@Override

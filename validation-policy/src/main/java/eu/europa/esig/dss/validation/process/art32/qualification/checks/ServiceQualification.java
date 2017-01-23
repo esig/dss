@@ -18,8 +18,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process.art32;
+package eu.europa.esig.dss.validation.process.art32.qualification.checks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.europa.esig.dss.utils.Utils;
@@ -166,6 +167,22 @@ public final class ServiceQualification {
 
 	public static boolean isQcForWSA(List<String> qualifiers) {
 		return listContains(qualifiers, QC_FOR_WSA);
+	}
+
+	public static List<String> getUsageQualifiers(List<String> qualifiers) {
+		List<String> filteredQualifiers = new ArrayList<String>();
+		if (Utils.isCollectionNotEmpty(qualifiers)) {
+			if (qualifiers.contains(QC_FOR_ESIG)) {
+				filteredQualifiers.add(QC_FOR_ESIG);
+			}
+			if (qualifiers.contains(QC_FOR_ESEAL)) {
+				filteredQualifiers.add(QC_FOR_ESEAL);
+			}
+			if (qualifiers.contains(QC_FOR_WSA)) {
+				filteredQualifiers.add(QC_FOR_WSA);
+			}
+		}
+		return filteredQualifiers;
 	}
 
 	private static boolean listContains(List<String> qualifiers, String... expecteds) {

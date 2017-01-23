@@ -269,22 +269,35 @@ public enum MessageTag {
 	QUAL_TL_SERV_CONS_ANS2("Trusted service not consistent! (legal person vs esign)"),
 	QUAL_TL_SERV_CONS_ANS3("Trusted service not consistent! (QSCD vs NotQSCD)"),
 	QUAL_TL_SERV_CONS_ANS4("Trusted service not consistent! (multiple usages)"),
+	QUAL_TL_SERV_CONS_ANS5("Trusted service not consistent! (invalid additional service info / qualifier before eIDAS)"),
+	QUAL_TL_SERV_CONS_ANS6("Trusted service not consistent! (conflict between ASi / Qualifier)"),
 
 	QUAL_TRUSTED_CERT_PATH("Is the certificate path trusted?"),
 	QUAL_TRUSTED_CERT_PATH_ANS("The certificate path is not trusted!"),
 
 	QUAL_TRUSTED_LIST_ACCEPT("Is the trusted list acceptable?"),
 	QUAL_TRUSTED_LIST_ACCEPT_ANS("The trusted list is not acceptable!"),
-	QUAL_QC_AT_ST("Is qualifed certificate for eSign at signing time?"),
-	QUAL_QC_AT_ST_ANS("The certificate is not qualified for eSign at signing time!"),
-	QUAL_QC_AT_CC("Is qualifed certificate for eSign at issuance time?"),
-	QUAL_QC_AT_CC_ANS("The certificate is not qualified for eSign at issuance time!"),
+	QUAL_QC_AT_ST("Is qualifed certificate at signing time?"),
+	QUAL_QC_AT_ST_ANS("The certificate is not qualified at signing time!"),
+
+	QUAL_FOR_SIGN_AT_ST("Is certificate for electronic signature at signing time?"),
+	QUAL_FOR_SIGN_AT_ST_ANS("The certificate is not for electronic signature at signing time!"),
+	
+	QUAL_QC_AT_CC("Is qualifed certificate at issuance time?"),
+	QUAL_QC_AT_CC_ANS("The certificate is not qualified at issuance time!"),
+
 	QUAL_UNIQUE_CERT("Is the certificate unique ?"),
 	QUAL_UNIQUE_CERT_ANS("The certificate cannot be defined as unique!"),
 	QUAL_QSCD_AT_ST("Is created by a QSCD?"),
 	QUAL_QSCD_AT_ST_ANS("The electronic signature is not created by a QSCD!"),
 	QUAL_IS_ADES("Is acceptable AdES (ETSI EN 319 102-1) ?"),
-	QUAL_IS_ADES_ANS("The signature is not an acceptable AdES!"),
+	QUAL_IS_ADES_IND("The signature is an INDETERMINATE AdES!"),
+	QUAL_IS_ADES_INV("The signature is not a valid AdES!"),
+	
+	QUAL_TL_CERT_CONS("Is the certificate consistent with the trusted list ?"),
+	QUAL_TL_CERT_CONS_ANS1("Inconsistency in TL - Cert claimed as QC for eSeal while Q status not granted for electronic Seal"),
+	QUAL_TL_CERT_CONS_ANS2("Inconsistency in TL - Cert claimed as QC for WSA while Q status not granted for WSA, digital signature generated with cert. for WSA considered as special case of AdESeal"),
+	QUAL_TL_CERT_CONS_ANS3("Inconsistency in TL - Cert claimed as QC for eSig while Q status not granted for electronic Sig"),
 	
 	EMPTY("");
 

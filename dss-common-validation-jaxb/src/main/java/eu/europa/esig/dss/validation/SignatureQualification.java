@@ -11,9 +11,14 @@ public enum SignatureQualification {
 	QESIG("QESig", "Qualified Electronic Signature"),
 
 	/**
+	 * Qualified Electronic Seal
+	 */
+	QESEAL("QESeal", "Qualified Electronic Seal"),
+
+	/**
 	 * Qualified Electronic Signature or Seal
 	 */
-	QES_NOT_SIG("QES not Sign", "Qualified Electronic Signature or Seal"),
+	QES("QES?", "Qualified Electronic Signature or Seal"),
 
 	/**
 	 * Advanced Electronic Signature supported by a Qualified Certificate
@@ -21,14 +26,24 @@ public enum SignatureQualification {
 	ADESIG_QC("AdESig-QC", "Advanced Electronic Signature supported by a Qualified Certificate"),
 
 	/**
+	 * Advanced Electronic Seal supported by a Qualified Certificate
+	 */
+	ADESEAL_QC("AdESeal-QC", "Advanced Electronic Seal supported by a Qualified Certificate"),
+
+	/**
 	 * Advanced Electronic Signature or Seal supported by a Qualified Certificate
 	 */
-	ADES_QC_NOT_SIG("AdES-QC not Sig", "Advanced Electronic Signature or Seal supported by a Qualified Certificate"),
+	ADES_QC("AdES?-QC", "Advanced Electronic Signature or Seal supported by a Qualified Certificate"),
 
 	/**
 	 * Advanced Electronic Signature
 	 */
 	ADESIG("AdESig", "Advanced Electronic Signature"),
+
+	/**
+	 * Advanced Electronic Seal
+	 */
+	ADESEAL("AdESeal", "Advanced Electronic Seal"),
 
 	/**
 	 * Advanced Electronic Signature or Seal
@@ -41,9 +56,14 @@ public enum SignatureQualification {
 	INDETERMINATE_QESIG("Indeterminate QESig", "Indeterminate Qualified Electronic Signature"),
 
 	/**
+	 * Indeterminate Qualified Electronic Seal
+	 */
+	INDETERMINATE_QESEAL("Indeterminate QESeal", "Indeterminate Qualified Electronic Seal"),
+
+	/**
 	 * Indeterminate Qualified Electronic Signature or Seal
 	 */
-	INDETERMINATE_QES_NOT_SIG("Indeterminate QES not Sign", "Indeterminate Qualified Electronic Signature or Seal"),
+	INDETERMINATE_QES("Indeterminate QES?", "Indeterminate Qualified Electronic Signature or Seal"),
 
 	/**
 	 * Indeterminate Advanced Electronic Signature supported by a Qualified Certificate
@@ -51,14 +71,24 @@ public enum SignatureQualification {
 	INDETERMINATE_ADESIG_QC("Indeterminate AdESig-QC", "Indeterminate Advanced Electronic Signature supported by a Qualified Certificate"),
 
 	/**
+	 * Indeterminate Advanced Electronic Seal supported by a Qualified Certificate
+	 */
+	INDETERMINATE_ADESEAL_QC("Indeterminate AdESeal-QC", "Indeterminate Advanced Electronic Seal supported by a Qualified Certificate"),
+
+	/**
 	 * Indeterminate Advanced Electronic Signature or Seal supported by a Qualified Certificate
 	 */
-	INDETERMINATE_ADES_QC_NOT_SIG("Indeterminate AdES-QC not Sign", "Indeterminate Advanced Electronic Signature or Seal supported by a Qualified Certificate"),
+	INDETERMINATE_ADES_QC("Indeterminate AdES?-QC", "Indeterminate Advanced Electronic Signature or Seal supported by a Qualified Certificate"),
 
 	/**
 	 * Indeterminate Advanced Electronic Signature
 	 */
 	INDETERMINATE_ADESIG("Indeterminate AdESig", "Indeterminate Advanced Electronic Signature"),
+
+	/**
+	 * Indeterminate Advanced Electronic Seal
+	 */
+	INDETERMINATE_ADESEAL("Indeterminate AdESeal", "Indeterminate Advanced Electronic Seal"),
 
 	/**
 	 * Indeterminate Advanced Electronic Signature or Seal

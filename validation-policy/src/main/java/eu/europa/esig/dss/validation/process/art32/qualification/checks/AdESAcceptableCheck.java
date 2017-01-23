@@ -13,6 +13,8 @@ public class AdESAcceptableCheck extends ChainItem<XmlSignatureAnalysis> impleme
 
 	private final XmlConclusion etsi319102Conclusion;
 
+	private MessageTag error;
+
 	public AdESAcceptableCheck(XmlSignatureAnalysis result, XmlConclusion etsi319102Conclusion, LevelConstraint constraint) {
 		super(result, constraint);
 
@@ -26,7 +28,16 @@ public class AdESAcceptableCheck extends ChainItem<XmlSignatureAnalysis> impleme
 
 	@Override
 	protected boolean process() {
-		return isAcceptableConclusion(etsi319102Conclusion);
+		boolean valid = isValidConclusion(etsi319102Conclusion);
+		if (!valid) {
+			if (isIndeterminateConclusion(etsi319102Conclusion)) {
+				error = MessageTag.QUAL_IS_ADES_IND;
+			} else if (isInvalidConclusion(etsi319102Conclusion)) {
+				error = MessageTag.QUAL_IS_ADES_INV;
+			}
+			return false;
+		}
+		return true;
 	}
 
 	@Override
@@ -36,7 +47,7 @@ public class AdESAcceptableCheck extends ChainItem<XmlSignatureAnalysis> impleme
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.QUAL_IS_ADES_ANS;
+		return error;
 	}
 
 	@Override

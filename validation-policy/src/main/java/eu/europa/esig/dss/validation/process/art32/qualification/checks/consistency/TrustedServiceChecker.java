@@ -27,4 +27,14 @@ public final class TrustedServiceChecker {
 		return condition.isConsistent(service);
 	}
 
+	public static boolean isPreEIDASConsistent(TrustedServiceWrapper service) {
+		TrustedServiceCondition condition = new TrustedServicePreEIDASConsistency();
+		return condition.isConsistent(service);
+	}
+
+	public static boolean isQualifierAndAdditionalServiceInfoConsistent(TrustedServiceWrapper service) {
+		TrustedServiceCondition condition = new TrustedServiceQualifierAndAdditionalServiceInfoConsistency();
+		return condition.isConsistent(service);
+	}
+
 }

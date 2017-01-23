@@ -2,14 +2,11 @@ package eu.europa.esig.dss.validation.process.art32.qualification.checks.qualifi
 
 public enum QualifiedStatus {
 
+	/* Qualified */
+	QC("Qualified"),
+
 	/* Not qualifed */
-	NOT_QC("Not qualified"),
-
-	/* Qualified for electronic signature */
-	QC_FOR_ESIGN("Qualified for electronic signature"),
-
-	/* Qualified but not for electronic signature */
-	QC_NOT_FOR_ESIGN("Qualified but not for electronic signature");
+	NOT_QC("Not qualified");
 
 	private final String label;
 
@@ -22,11 +19,7 @@ public enum QualifiedStatus {
 	}
 
 	public static boolean isQC(QualifiedStatus status) {
-		return QC_FOR_ESIGN == status || QC_NOT_FOR_ESIGN == status;
-	}
-
-	public static boolean isForEsign(QualifiedStatus status) {
-		return QC_FOR_ESIGN == status;
+		return QC == status;
 	}
 
 }

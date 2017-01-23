@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.validation.process.art32.ServiceQualification;
+import eu.europa.esig.dss.validation.process.art32.qualification.checks.ServiceQualification;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public class TrustedServiceQCStatementConsistencyTest {

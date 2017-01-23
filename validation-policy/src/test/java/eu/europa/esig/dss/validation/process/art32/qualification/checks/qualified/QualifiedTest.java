@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.validation.process.art32.qualification.checks.qualified;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -106,7 +105,6 @@ public class QualifiedTest {
 		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatementOids.QC_COMPLIANT.getOid()),
 				Arrays.asList(CertificatePolicyOids.QCP_PUBLIC.getOid()));
 		qc(signingCertificate);
-		qcEsig(signingCertificate);
 	}
 
 	@Test
@@ -121,7 +119,6 @@ public class QualifiedTest {
 		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatementOids.QC_COMPLIANT.getOid()),
 				Arrays.asList(CertificatePolicyOids.QCP_PUBLIC_WITH_SSCD.getOid()));
 		qc(signingCertificate);
-		qcEsig(signingCertificate);
 	}
 
 	@Test
@@ -136,7 +133,6 @@ public class QualifiedTest {
 		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatementOids.QC_COMPLIANT.getOid()), Collections.<String> emptyList(),
 				Arrays.asList(QCStatementOids.QTC_ESIGN.getOid()));
 		qc(signingCertificate);
-		qcEsig(signingCertificate);
 	}
 
 	@Test
@@ -144,7 +140,6 @@ public class QualifiedTest {
 		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatementOids.QC_COMPLIANT.getOid()), Collections.<String> emptyList(),
 				Arrays.asList(QCStatementOids.QTC_ESEAL.getOid()));
 		qc(signingCertificate);
-		qcNotEsig(signingCertificate);
 	}
 
 	private CertificateWrapper createPreEIDAS(List<String> qcStatementIds, List<String> certificatePolicyIds) {
@@ -193,16 +188,6 @@ public class QualifiedTest {
 	private void qc(CertificateWrapper signingCertificate) {
 		QualificationStrategy strategy = QualificationStrategyFactory.createQualificationFromCert(signingCertificate);
 		assertTrue(QualifiedStatus.isQC(strategy.getQualifiedStatus()));
-	}
-
-	private void qcEsig(CertificateWrapper signingCertificate) {
-		QualificationStrategy strategy = QualificationStrategyFactory.createQualificationFromCert(signingCertificate);
-		assertEquals(QualifiedStatus.QC_FOR_ESIGN, strategy.getQualifiedStatus());
-	}
-
-	private void qcNotEsig(CertificateWrapper signingCertificate) {
-		QualificationStrategy strategy = QualificationStrategyFactory.createQualificationFromCert(signingCertificate);
-		assertEquals(QualifiedStatus.QC_NOT_FOR_ESIGN, strategy.getQualifiedStatus());
 	}
 
 }

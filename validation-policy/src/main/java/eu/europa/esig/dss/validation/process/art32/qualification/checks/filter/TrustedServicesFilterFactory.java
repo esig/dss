@@ -7,8 +7,8 @@ public final class TrustedServicesFilterFactory {
 	private TrustedServicesFilterFactory() {
 	}
 
-	public static TrustedServiceFilter createFilterForEsign() {
-		return new ServiceForESignFilter();
+	public static TrustedServiceFilter createFilterForAcceptableCAQC() {
+		return new AcceptableCAQCServiceFilter();
 	}
 
 	public static TrustedServiceFilter createFilterByDate(Date date) {
