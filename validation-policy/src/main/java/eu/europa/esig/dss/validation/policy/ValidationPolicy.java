@@ -384,7 +384,7 @@ public interface ValidationPolicy {
 
 	/* Article 32 */
 
-	boolean isArticle32ConstraintPresent();
+	boolean isEIDASConstraintPresent();
 
 	TimeConstraint getTLFreshnessConstraint();
 

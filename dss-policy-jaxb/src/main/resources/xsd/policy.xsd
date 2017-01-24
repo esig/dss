@@ -13,7 +13,7 @@
 				<xs:element name="Timestamp" type="tns:TimestampConstraints" minOccurs="0" />
 				<xs:element name="Revocation" type="tns:RevocationConstraints" minOccurs="0" />
 				<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0" />
-				<xs:element name="Article32" type="tns:Article32" minOccurs="0" />
+				<xs:element name="eIDAS" type="tns:eIDAS" minOccurs="0" />
 			</xs:sequence>
 			<xs:attribute type="xs:string" name="Name"/>
 		</xs:complexType>
@@ -162,7 +162,7 @@
 	</xs:complexType>
 	
 	<!-- eIDAS REGL 910/EU/2014 -->
-	<xs:complexType name="Article32">
+	<xs:complexType name="eIDAS">
 		<xs:sequence>
 			
 			<xs:element name="TLFreshness" type="tns:TimeConstraint" minOccurs="0" />

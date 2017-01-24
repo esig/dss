@@ -29,12 +29,12 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
-import eu.europa.esig.jaxb.policy.Article32;
 import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;
 import eu.europa.esig.jaxb.policy.CertificateConstraints;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 import eu.europa.esig.jaxb.policy.ContainerConstraints;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
+import eu.europa.esig.jaxb.policy.EIDAS;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 import eu.europa.esig.jaxb.policy.RevocationConstraints;
@@ -824,51 +824,51 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public boolean isArticle32ConstraintPresent() {
-		return policy.getArticle32() != null;
+	public boolean isEIDASConstraintPresent() {
+		return policy.getEIDAS() != null;
 	}
 
 	@Override
 	public TimeConstraint getTLFreshnessConstraint() {
-		Article32 article32 = policy.getArticle32();
-		if (article32 != null) {
-			return article32.getTLFreshness();
+		EIDAS eIDASConstraints = policy.getEIDAS();
+		if (eIDASConstraints != null) {
+			return eIDASConstraints.getTLFreshness();
 		}
 		return null;
 	}
 
 	@Override
 	public LevelConstraint getTLWellSignedConstraint() {
-		Article32 article32 = policy.getArticle32();
-		if (article32 != null) {
-			return article32.getTLWellSigned();
+		EIDAS eIDASConstraints = policy.getEIDAS();
+		if (eIDASConstraints != null) {
+			return eIDASConstraints.getTLWellSigned();
 		}
 		return null;
 	}
 
 	@Override
 	public LevelConstraint getTLNotExpiredConstraint() {
-		Article32 article32 = policy.getArticle32();
-		if (article32 != null) {
-			return article32.getTLNotExpired();
+		EIDAS eIDASConstraints = policy.getEIDAS();
+		if (eIDASConstraints != null) {
+			return eIDASConstraints.getTLNotExpired();
 		}
 		return null;
 	}
 
 	@Override
 	public ValueConstraint getTLVersionConstraint() {
-		Article32 article32 = policy.getArticle32();
-		if (article32 != null) {
-			return article32.getTLVersion();
+		EIDAS eIDASConstraints = policy.getEIDAS();
+		if (eIDASConstraints != null) {
+			return eIDASConstraints.getTLVersion();
 		}
 		return null;
 	}
 
 	@Override
 	public LevelConstraint getTLConsistencyConstraint() {
-		Article32 article32 = policy.getArticle32();
-		if (article32 != null) {
-			return article32.getTLConsistency();
+		EIDAS eIDASConstraints = policy.getEIDAS();
+		if (eIDASConstraints != null) {
+			return eIDASConstraints.getTLConsistency();
 		}
 		return null;
 	}

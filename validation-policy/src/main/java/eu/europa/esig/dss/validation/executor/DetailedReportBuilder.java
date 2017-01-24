@@ -70,7 +70,7 @@ public class DetailedReportBuilder {
 
 			detailedReport.getSignatures().add(signatureAnalysis);
 
-			if (policy.isArticle32ConstraintPresent()) {
+			if (policy.isEIDASConstraintPresent()) {
 				QMatrixBlock qmatrix = new QMatrixBlock(conlusion, diagnosticData, policy, currentTime);
 				detailedReport.setQMatrixBlock(qmatrix.execute());
 			}

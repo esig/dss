@@ -349,11 +349,11 @@
 		<Algo Date="2035-02-24">ECDSA256</Algo> </AlgoExpirationDate> </Cryptographic> -->
 	
 	<!-- eIDAS REGL 910/EU/2014 -->
-	<Article32>
+	<eIDAS>
 		<TLFreshness Level="WARN" Unit="HOURS" Value="6" />
 		<TLNotExpired Level="WARN" />
 		<TLWellSigned Level="WARN" />
 		<TLVersion Level="FAIL" value="5" />
 		<TLConsistency Level="WARN" />
-	</Article32>
+	</eIDAS>
 </ConstraintsParameters>
