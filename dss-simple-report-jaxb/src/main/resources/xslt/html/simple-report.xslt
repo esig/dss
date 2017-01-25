@@ -10,12 +10,12 @@
 	    <xsl:call-template name="documentInformation"/>
     </xsl:template>
 
-
     <xsl:template match="dss:DocumentName"/>
     <xsl:template match="dss:SignatureFormat"/>
     <xsl:template match="dss:SignaturesCount"/>
     <xsl:template match="dss:ValidSignaturesCount"/>
     <xsl:template match="dss:ValidationTime"/>
+    <xsl:template match="dss:ContainerType"/>
 
     <xsl:template match="dss:Policy">
 		<div>
@@ -27,7 +27,7 @@
     			Validation Policy : <xsl:value-of select="dss:PolicyName"/>
 	        </div>
     		<div>
-    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 	        	<xsl:attribute name="id">collapsePolicy</xsl:attribute>
 	        	<p>
 	        		<xsl:value-of select="dss:PolicyDescription"/>
@@ -56,8 +56,17 @@
     			Signature <xsl:value-of select="$idSig" />
 	        </div>
     		<div>
-    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 				<xsl:attribute name="id">collapseSig<xsl:value-of select="$idSig" /></xsl:attribute>
+				
+			    <xsl:apply-templates select="dss:Filename" />
+			    <xsl:apply-templates select="dss:SignatureLevel" />
+
+		        <dl>
+		    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+		            <dt>Signature format:</dt>
+		            <dd><xsl:value-of select="@SignatureFormat"/></dd>
+		        </dl>
 			
 				<dl>
 					<xsl:attribute name="class">dl-horizontal</xsl:attribute>
@@ -86,33 +95,14 @@
 						<xsl:value-of select="dss:Indication" />
 					</dd>
 				</dl>   
-				
-				<dl>
-		    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
-		            <dt>Signature Level:</dt>
-		            <dd>
-		                <xsl:value-of select="dss:SignatureLevel"/>
-		        	</dd>
-		        </dl>
 		        
 		        <xsl:apply-templates select="dss:SubIndication">
 		            <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
 		        </xsl:apply-templates>
-			    <xsl:apply-templates select="dss:Errors">
-				    <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
-			    </xsl:apply-templates>
-			    <xsl:apply-templates select="dss:Warnings">
-				    <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
-			    </xsl:apply-templates>
-		        <xsl:apply-templates select="dss:Infos">
-		            <xsl:with-param name="indicationClass" select="$indicationCssClass"/>
-		        </xsl:apply-templates>
-		        
-		        <dl>
-		    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
-		            <dt>Signature format:</dt>
-		            <dd><xsl:value-of select="@SignatureFormat"/></dd>
-		        </dl>
+
+			    <xsl:apply-templates select="dss:Errors" />
+			    <xsl:apply-templates select="dss:Warnings" />
+		        <xsl:apply-templates select="dss:Infos" />
 		        
 		        <dl>
 		    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
@@ -145,14 +135,73 @@
     		</div>
     	</div>
     </xsl:template>
+    
+	<xsl:template match="dss:SignatureLevel">
+		<dl>
+    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+            <dt>Qualification:</dt>
+            <dd>
+				<xsl:value-of select="." />
+				<span>
+	    			<xsl:attribute name="class">glyphicon glyphicon-info-sign text-info</xsl:attribute>
+					<xsl:attribute name="style">margin-left : 10px</xsl:attribute>
+					<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+					<xsl:attribute name="data-placement">right</xsl:attribute>
+					<xsl:attribute name="title"><xsl:value-of select="@description" /></xsl:attribute>
+	    		</span>					
+        	</dd>
+        </dl>
+	</xsl:template>
+	
+	<xsl:template match="dss:Filename">
+		<dl>
+    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+            <dt>Signature filename:</dt>
+            <dd>
+					<xsl:value-of select="." />
+        	</dd>
+        </dl>
+	</xsl:template>
 
-	<xsl:template match="dss:SubIndication|dss:Errors|dss:Warnings|dss:Infos">
+	<xsl:template match="dss:SubIndication">
 		<xsl:param name="indicationClass" />
+		<dl>
+    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			<dt>Sub indication:</dt>
+			<dd>
+				<xsl:attribute name="class">text-<xsl:value-of select="$indicationClass" /></xsl:attribute>
+				<xsl:value-of select="." />
+			</dd>
+		</dl>
+	</xsl:template>
+	
+	<xsl:template match="dss:Errors">
 		<dl>
     		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
 			<dt></dt>
 			<dd>
-				<xsl:attribute name="class">text-<xsl:value-of select="$indicationClass" /></xsl:attribute>
+				<xsl:attribute name="class">text-danger</xsl:attribute>
+				<xsl:value-of select="." />
+			</dd>
+		</dl>
+	</xsl:template>
+	
+	<xsl:template match="dss:Warnings">
+		<dl>
+    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			<dt></dt>
+			<dd>
+				<xsl:attribute name="class">text-warning</xsl:attribute>
+				<xsl:value-of select="." />
+			</dd>
+		</dl>
+	</xsl:template>
+	
+	<xsl:template match="dss:Infos">
+		<dl>
+    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			<dt></dt>
+			<dd>
 				<xsl:value-of select="." />
 			</dd>
 		</dl>
@@ -168,8 +217,16 @@
     			Document Information
 	        </div>
     		<div>
-    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
+    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 	        	<xsl:attribute name="id">collapseInfo</xsl:attribute>
+	        	
+				<xsl:if test="dss:ContainerType">
+			        <dl>
+			    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			            <dt>Container type:</dt>
+			            <dd><xsl:value-of select="dss:ContainerType"/></dd>
+			        </dl>
+		        </xsl:if>
 	        	<dl>
 		    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
 		            <dt>Signatures status:</dt>
@@ -190,6 +247,7 @@
 		            <dt>Document name:</dt>
 		            <dd><xsl:value-of select="dss:DocumentName"/></dd>
 		        </dl>
+		        
     		</div>
     	</div>
     </xsl:template>

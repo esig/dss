@@ -71,14 +71,9 @@
             <CertificatePolicyIds>
                 <oid>2.5.29.32.0</oid>
             </CertificatePolicyIds>
-            <TrustedServiceProvider>
-                <TSPName>Infocert S.p.A.</TSPName>
-                <TSPServiceName>CN=InfoCert Firma Qualificata 2,serialNumber=07945211006,OU=Certificatore Accreditato,O=INFOCERT SPA,C=IT</TSPServiceName>
-                <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                <StartDate>2013-04-19T18:26:15</StartDate>
-                <WellSigned>true</WellSigned>
-            </TrustedServiceProvider>
+            <QCStatementIds />
+            <QCTypes />
+            <TrustedServiceProviders />
         </Certificate>
         <Certificate Id="725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.42=#0c054c55494749,2.5.4.4=#0c0552495a5a4f,2.5.4.5=#131349543a525a5a4c475536334830364535303643,2.5.4.46=#130e3230313431343938353033393236,cn=L G,o=infocert spa/07945211006,c=it</SubjectDistinguishedName>
@@ -124,44 +119,40 @@
                 <oid>0.4.0.1862.1.4</oid>
                 <oid>0.4.0.1862.1.3</oid>
             </QCStatementIds>
-            <TrustedServiceProvider>
-                <TSPName>Infocert S.p.A.</TSPName>
-                <TSPServiceName>CN=InfoCert Firma Qualificata 2,serialNumber=07945211006,OU=Certificatore Accreditato,O=INFOCERT SPA,C=IT</TSPServiceName>
-                <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                <StartDate>2013-04-19T18:26:15</StartDate>
-                <WellSigned>true</WellSigned>
-            </TrustedServiceProvider>
-            <Revocation Id="0574F0CFD174789DDCB57C5F2EC6EC43DD341BF7789708E28E87AF9A2696CA56">
-                <Origin>EXTERNAL</Origin>
-                <Source>OCSPToken</Source>
-                <SourceAddress>http://ocsp.sc.infocert.it/</SourceAddress>
-                <Available>true</Available>
-                <Status>false</Status>
-                <Reason>cessationOfOperation</Reason>
-                <ProductionDate>2016-05-04T15:03:54</ProductionDate>
-                <ThisUpdate>2016-05-04T14:30:00</ThisUpdate>
-                <NextUpdate>2016-05-04T21:03:54</NextUpdate>
-                <RevocationDate>2014-10-15T15:12:23</RevocationDate>
-                <BasicSignature>
-                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                    <ReferenceDataFound>true</ReferenceDataFound>
-                    <ReferenceDataIntact>true</ReferenceDataIntact>
-                    <SignatureIntact>true</SignatureIntact>
-                    <SignatureValid>true</SignatureValid>
-                </BasicSignature>
-                <SigningCertificate Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
-                <CertificateChain>
-                    <ChainItem Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
-                        <Source>OCSP_RESPONSE</Source>
-                    </ChainItem>
-                    <ChainItem Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
-                        <Source>TRUSTED_LIST</Source>
-                    </ChainItem>
-                </CertificateChain>
-            </Revocation>
+            <QCTypes />
+            <TrustedServiceProviders />
+			<Revocations>
+	            <Revocation Id="0574F0CFD174789DDCB57C5F2EC6EC43DD341BF7789708E28E87AF9A2696CA56">
+	                <Origin>EXTERNAL</Origin>
+	                <Source>OCSPToken</Source>
+	                <SourceAddress>http://ocsp.sc.infocert.it/</SourceAddress>
+	                <Available>true</Available>
+	                <Status>false</Status>
+	                <Reason>cessationOfOperation</Reason>
+	                <ProductionDate>2016-05-04T15:03:54</ProductionDate>
+	                <ThisUpdate>2016-05-04T14:30:00</ThisUpdate>
+	                <NextUpdate>2016-05-04T21:03:54</NextUpdate>
+	                <RevocationDate>2014-10-15T15:12:23</RevocationDate>
+	                <BasicSignature>
+	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+	                    <ReferenceDataFound>true</ReferenceDataFound>
+	                    <ReferenceDataIntact>true</ReferenceDataIntact>
+	                    <SignatureIntact>true</SignatureIntact>
+	                    <SignatureValid>true</SignatureValid>
+	                </BasicSignature>
+	                <SigningCertificate Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
+	                <CertificateChain>
+	                    <ChainItem Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
+	                        <Source>OCSP_RESPONSE</Source>
+	                    </ChainItem>
+	                    <ChainItem Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
+	                        <Source>TRUSTED_LIST</Source>
+	                    </ChainItem>
+	                </CertificateChain>
+	            </Revocation>
+	        </Revocations>
             <Info>
                 <Message Id="0">No CRL info found !</Message>
             </Info>
@@ -202,14 +193,10 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <TrustedServiceProvider>
-                <TSPName>Infocert S.p.A.</TSPName>
-                <TSPServiceName>CN=InfoCert Firma Qualificata 2,serialNumber=07945211006,OU=Certificatore Accreditato,O=INFOCERT SPA,C=IT</TSPServiceName>
-                <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
-                <StartDate>2013-04-19T18:26:15</StartDate>
-                <WellSigned>true</WellSigned>
-            </TrustedServiceProvider>
+            <CertificatePolicyIds />
+            <QCStatementIds />
+            <QCTypes />
+            <TrustedServiceProviders />
             <Info>
                 <Message Id="0">OCSP check not needed: id-pkix-ocsp-nocheck extension present.</Message>
             </Info>

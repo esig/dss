@@ -74,14 +74,9 @@
             <CertificatePolicyIds>
                 <oid>1.3.6.1.4.1.10015.3.1.1</oid>
             </CertificatePolicyIds>
-            <TrustedServiceProvider>
-                <TSPName>AS Sertifitseerimiskeskus</TSPName>
-                <TSPServiceName>TEST of SK OCSP RESPONDER 2011</TSPServiceName>
-                <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP/QC</TSPServiceType>
-                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                <StartDate>2011-03-09T00:00:00</StartDate>
-                <WellSigned>false</WellSigned>
-            </TrustedServiceProvider>
+            <QCStatementIds />
+            <QCTypes />
+            <TrustedServiceProviders />
         </Certificate>
         <Certificate Id="F5F7727489506D7F7CBCB375028D19A433B296CFC28ADA46CDE6D2EE93BA74A4">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130b3437313031303130303333,2.5.4.42=#0c094d4152492d4c494953,2.5.4.4=#0c074dc3844e4e494b,cn=männik\,mari-liis\,47101010033,ou=digital signature,o=esteid,c=ee</SubjectDistinguishedName>
@@ -125,41 +120,33 @@
             <QCStatementIds>
                 <oid>0.4.0.1862.1.1</oid>
             </QCStatementIds>
-            <TrustedServiceProvider>
-                <TSPName>AS Sertifitseerimiskeskus</TSPName>
-                <TSPServiceName>TEST of ESTEID-SK 2011: Test certificates for Estonian ID-card, the residence permit card, digital personal identification document</TSPServiceName>
-                <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                <StartDate>2011-03-09T00:00:00</StartDate>
-                <Qualifiers>
-                    <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD</Qualifier>
-                    <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
-                </Qualifiers>
-                <WellSigned>false</WellSigned>
-            </TrustedServiceProvider>
-            <Revocation Id="DC0E71B7A59FAE435C3F3A8B10A7CB4BDC42973BD93D139B352D439B0F071ECD">
-                <Origin>SIGNATURE</Origin>
-                <Source>OCSPToken</Source>
-                <Status>false</Status>
-                <Reason>OCSP status: unknown</Reason>
-                <ProductionDate>2013-10-11T14:27:58</ProductionDate>
-                <ThisUpdate>2013-10-11T14:27:57</ThisUpdate>
-                <BasicSignature>
-                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                    <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-                    <ReferenceDataFound>true</ReferenceDataFound>
-                    <ReferenceDataIntact>true</ReferenceDataIntact>
-                    <SignatureIntact>true</SignatureIntact>
-                    <SignatureValid>true</SignatureValid>
-                </BasicSignature>
-                <SigningCertificate Id="E83A008AF341579A76367AF41CDD371F7F35E949220FC4621A3F2596A73D1D05"/>
-                <CertificateChain>
-                    <ChainItem Id="E83A008AF341579A76367AF41CDD371F7F35E949220FC4621A3F2596A73D1D05">
-                        <Source>TRUSTED_LIST</Source>
-                    </ChainItem>
-                </CertificateChain>
-            </Revocation>
+            <QCTypes />
+            <TrustedServiceProviders />
+			<Revocations>
+	            <Revocation Id="DC0E71B7A59FAE435C3F3A8B10A7CB4BDC42973BD93D139B352D439B0F071ECD">
+	                <Origin>SIGNATURE</Origin>
+	                <Source>OCSPToken</Source>
+	                <Status>false</Status>
+	                <Reason>OCSP status: unknown</Reason>
+	                <ProductionDate>2013-10-11T14:27:58</ProductionDate>
+	                <ThisUpdate>2013-10-11T14:27:57</ThisUpdate>
+	                <BasicSignature>
+	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+	                    <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+	                    <ReferenceDataFound>true</ReferenceDataFound>
+	                    <ReferenceDataIntact>true</ReferenceDataIntact>
+	                    <SignatureIntact>true</SignatureIntact>
+	                    <SignatureValid>true</SignatureValid>
+	                </BasicSignature>
+	                <SigningCertificate Id="E83A008AF341579A76367AF41CDD371F7F35E949220FC4621A3F2596A73D1D05"/>
+	                <CertificateChain>
+	                    <ChainItem Id="E83A008AF341579A76367AF41CDD371F7F35E949220FC4621A3F2596A73D1D05">
+	                        <Source>TRUSTED_LIST</Source>
+	                    </ChainItem>
+	                </CertificateChain>
+	            </Revocation>
+	        </Revocations>
             <Info>
                 <Message Id="0">No CRL info found !</Message>
             </Info>
@@ -195,14 +182,9 @@
             <CertificatePolicyIds>
                 <oid>1.3.6.1.4.1.10015.3.1.1</oid>
             </CertificatePolicyIds>
-            <TrustedServiceProvider>
-                <TSPName>AS Sertifitseerimiskeskus</TSPName>
-                <TSPServiceName>TEST of ESTEID-SK 2011: Test certificates for Estonian ID-card, the residence permit card, digital personal identification document</TSPServiceName>
-                <TSPServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</TSPServiceType>
-                <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
-                <StartDate>2011-03-09T00:00:00</StartDate>
-                <WellSigned>false</WellSigned>
-            </TrustedServiceProvider>
+            <QCStatementIds />
+            <QCTypes />
+            <TrustedServiceProviders />
         </Certificate>
     </UsedCertificates>
 </DiagnosticData>

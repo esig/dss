@@ -10,6 +10,7 @@ import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.AuthorityInfoAccessPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateCryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateExpirationCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToLegalPersonCheck;
@@ -20,7 +21,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQCSta
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQualifiedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateRevokedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSignatureValidCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSupportedBySSCDCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSupportedByQSCDCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CommonNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CountryCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.GivenNameCheck;
@@ -28,8 +29,11 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.IdPkixOcspNoChec
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.KeyUsageCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationUnitCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudoUsageCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudonymCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResult;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationInfoAccessPresentCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.SerialNumberCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.SurnameCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
@@ -67,7 +71,9 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 			return;
 		}
 
-		ChainItem<XmlSubXCV> item = firstItem = surname(currentCertificate, subContext);
+		ChainItem<XmlSubXCV> item = firstItem = serialNumber(currentCertificate, subContext);
+
+		item = item.setNextItem(surname(currentCertificate, subContext));
 
 		item = item.setNextItem(givenName(currentCertificate, subContext));
 
@@ -87,6 +93,10 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(keyUsage(currentCertificate, subContext));
 
+		item = item.setNextItem(aiaPresent(currentCertificate, subContext));
+
+		item = item.setNextItem(revocationInfoAccessPresent(currentCertificate, subContext));
+
 		item = item.setNextItem(certificateRevoked(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateOnHold(currentCertificate, subContext));
@@ -99,7 +109,9 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(certificateQualified(currentCertificate, subContext));
 
-		item = item.setNextItem(certificateSupportedBySSCD(currentCertificate, subContext));
+		item = item.setNextItem(certificateSupportedByQSCD(currentCertificate, subContext));
+
+		item = item.setNextItem(pseudoUsage(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateIssuedToLegalPerson(currentCertificate, subContext));
 
@@ -139,6 +151,16 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		return new KeyUsageCheck(result, certificate, constraint);
 	}
 
+	private ChainItem<XmlSubXCV> aiaPresent(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateAuthorityInfoAccessPresentConstraint(context, subContext);
+		return new AuthorityInfoAccessPresentCheck(result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> revocationInfoAccessPresent(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateRevocationInfoAccessPresentConstraint(context, subContext);
+		return new RevocationInfoAccessPresentCheck(result, certificate, constraint);
+	}
+
 	private ChainItem<XmlSubXCV> surname(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificateSurnameConstraint(context, subContext);
 		return new SurnameCheck(result, certificate, constraint);
@@ -172,6 +194,16 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> organizationUnit(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificateOrganizationUnitConstraint(context, subContext);
 		return new OrganizationUnitCheck(result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> serialNumber(CertificateWrapper signingCertificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateSerialNumberConstraint(context, subContext);
+		return new SerialNumberCheck(result, signingCertificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> pseudoUsage(CertificateWrapper signingCertificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificatePseudoUsageConstraint(context, subContext);
+		return new PseudoUsageCheck(result, signingCertificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateSignatureValid(CertificateWrapper certificate, SubContext subContext) {
@@ -209,9 +241,9 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		return new CertificateQualifiedCheck(result, certificate, constraint);
 	}
 
-	private ChainItem<XmlSubXCV> certificateSupportedBySSCD(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = validationPolicy.getCertificateSupportedBySSCDConstraint(context, subContext);
-		return new CertificateSupportedBySSCDCheck(result, certificate, constraint);
+	private ChainItem<XmlSubXCV> certificateSupportedByQSCD(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateSupportedByQSCDConstraint(context, subContext);
+		return new CertificateSupportedByQSCDCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateIssuedToLegalPerson(CertificateWrapper certificate, SubContext subContext) {

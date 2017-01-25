@@ -25,30 +25,23 @@
 		</tr>
 	</thead>
 	<tbody>
-		<c:forEach var="item" items="${summary}">
+		<c:forEach var="entry" items="${summary}">
+			<c:set var="item" value="${entry.value}" />
 			<c:set var="rowStyle" value="" />
 			<c:choose>
-				<c:when test="${item.indication == 'INDETERMINATE' || item.nextUpdateDate le now}">
+				<c:when test="${!item.wellSigned || item.nextUpdate le now}">
 					<c:set var="rowStyle" value="warning" />
-				</c:when>
-				<c:when test="${item.indication == 'TOTAL_FAILED' }">
-					<c:set var="rowStyle" value="danger" />
 				</c:when>
 			</c:choose>
 		
 			<tr class="${rowStyle}">
 				<c:choose>
-					<c:when test="${item.indication == 'TOTAL_PASSED' }">
+					<c:when test="${item.wellSigned}">
 						<td class="text-center">
 							<span class="glyphicon glyphicon-ok-sign text-success" title="valid"></span>
 						</td>
 					</c:when>
-					<c:when test="${item.indication == 'INDETERMINATE' }">
-						<td class="warning text-center"">
-							<span class="glyphicon glyphicon-question-sign text-warning" title="indeterminate"></span>
-						</td>
-					</c:when>
-					<c:when test="${item.indication == 'TOTAL_FAILED' }">
+					<c:when test="${!item.wellSigned}">
 						<td class="danger text-center">
 							<span class="glyphicon glyphicon-remove-sign text-danger" title="invalid"></span>
 						</td>
@@ -58,11 +51,11 @@
 						</td>
 					</c:otherwise>
 				</c:choose>
-				<td class="text-center"><a href="<spring:url value="/tsl-info/${fn:toLowerCase(item.country)}" />">${item.country}</a></td>	
+				<td class="text-center"><a href="<spring:url value="/tsl-info/${fn:toLowerCase(item.countryCode)}" />">${item.countryCode}</a></td>	
 				<td class="text-center">${item.sequenceNumber}</td>
 				<td>
-					<c:if test="${item.loadedDate != null}">
-						<fmt:formatDate pattern="HH:mm:ss" value="${item.loadedDate}" />
+					<c:if test="${item.lastLoading != null}">
+						<fmt:formatDate pattern="HH:mm:ss" value="${item.lastLoading}" />
 					</c:if>
 				</td>
 				<td>
@@ -71,20 +64,20 @@
 					</c:if>
 				</td>
 				<td>
-					<c:if test="${item.nextUpdateDate != null}">
+					<c:if test="${item.nextUpdate != null}">
 						<c:choose>
-							<c:when test="${item.nextUpdateDate le now}">
-								<span class="text-danger"><strong><fmt:formatDate pattern="dd/MM/yyyy HH:mm" value="${item.nextUpdateDate}" /></strong></span>
+							<c:when test="${item.nextUpdate le now}">
+								<span class="text-danger"><strong><fmt:formatDate pattern="dd/MM/yyyy HH:mm" value="${item.nextUpdate}" /></strong></span>
 							</c:when>
 							<c:otherwise>
-								<fmt:formatDate pattern="dd/MM/yyyy HH:mm" value="${item.nextUpdateDate}" />
+								<fmt:formatDate pattern="dd/MM/yyyy HH:mm" value="${item.nextUpdate}" />
 							</c:otherwise>
 						</c:choose>
 					</c:if>
 				</td>
 				<td class="text-center">${item.nbServiceProviders}</td>
 				<td class="text-center">${item.nbServices}</td>
-				<td class="text-center">${item.nbCertificatesAndX500Principals}</td>
+				<td class="text-center">${item.nbCertificates}</td>
 			</tr>		
 		</c:forEach>
 	</tbody>

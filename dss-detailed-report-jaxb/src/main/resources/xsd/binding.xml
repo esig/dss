@@ -27,6 +27,12 @@
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.SubIndicationParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.SubIndicationParser.print" />
 		</jaxb:bindings>
+		
+		<jaxb:bindings node="//xs:simpleType[@name='SignatureQualification']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.SignatureQualification" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.SignatureQualificationParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.SignatureQualificationParser.print" />
+		</jaxb:bindings>
 	</jaxb:bindings>
 
 </jaxb:bindings>

@@ -408,7 +408,7 @@ public final class DSSUtils {
 	 * @return
 	 */
 	public static CertificateToken loadIssuerCertificate(final CertificateToken cert, final DataLoader loader) {
-		List<String> urls = DSSASN1Utils.getAccessLocations(cert);
+		List<String> urls = DSSASN1Utils.getCAAccessLocations(cert);
 		if (Utils.isCollectionEmpty(urls)) {
 			logger.info("There is no AIA extension for certificate download.");
 			return null;

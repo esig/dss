@@ -5,15 +5,15 @@ import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdditionalInfo;
-import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.validation.process.AdditionalInfo;
+import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
@@ -40,19 +40,22 @@ public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlX
 			return true;
 		}
 
-		List<XmlTrustedServiceProvider> tspList = certificate.getCertificateTSPService();
-		for (XmlTrustedServiceProvider trustedServiceProvider : tspList) {
-			serviceStatusStr = Utils.trim(trustedServiceProvider.getStatus());
-			Date statusStartDate = trustedServiceProvider.getStartDate();
-			if (processValueCheck(serviceStatusStr) && statusStartDate != null) {
-				Date statusEndDate = trustedServiceProvider.getEndDate();
-				// The issuing time of the certificate should be into the validity period of the associated
-				// service
-				if ((usageTime.compareTo(statusStartDate) >= 0) && ((statusEndDate == null) || usageTime.before(statusEndDate))) {
-					return true;
+		List<TrustedServiceWrapper> trustedServices = certificate.getTrustedServices();
+		if (Utils.isCollectionNotEmpty(trustedServices)) {
+			for (TrustedServiceWrapper trustedService : trustedServices) {
+				serviceStatusStr = Utils.trim(trustedService.getStatus());
+				Date statusStartDate = trustedService.getStartDate();
+				if (processValueCheck(serviceStatusStr) && statusStartDate != null) {
+					Date statusEndDate = trustedService.getEndDate();
+					// The issuing time of the certificate should be into the validity period of the associated
+					// service
+					if ((usageTime.compareTo(statusStartDate) >= 0) && ((statusEndDate == null) || usageTime.before(statusEndDate))) {
+						return true;
+					}
 				}
 			}
 		}
+
 		return false;
 	}
 

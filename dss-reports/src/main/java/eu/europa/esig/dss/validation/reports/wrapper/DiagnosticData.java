@@ -32,7 +32,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.TimestampType;
 
@@ -395,40 +395,6 @@ public class DiagnosticData {
 	}
 
 	/**
-	 * This method returns the associated TSPServiceName.
-	 *
-	 * @param dssCertificateId
-	 *            DSS certificate identifier to be checked
-	 * @return TSPServiceName
-	 */
-	public String getCertificateTSPServiceName(final String dssCertificateId) {
-		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return certificate.getCertificateTSPServiceName();
-	}
-
-	public String getCertificateTSPServiceType(XmlCertificate xmlCertificate) {
-		List<XmlTrustedServiceProvider> trustedServiceProviders = xmlCertificate.getTrustedServiceProvider();
-		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProvider trustedServiceProvider : trustedServiceProviders) {
-				return trustedServiceProvider.getTSPServiceType(); // TODO correct ?? return first one
-			}
-		}
-		return Utils.EMPTY_STRING;
-	}
-
-	/**
-	 * This method indicates if the associated trusted list is well signed.
-	 *
-	 * @param dssCertificateId
-	 *            DSS certificate identifier to be checked
-	 * @return TSPServiceName
-	 */
-	public boolean isCertificateRelatedTSLWellSigned(final String dssCertificateId) {
-		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return certificate.isCertificateRelatedTSLWellSigned();
-	}
-
-	/**
 	 * This method returns the revocation source for the given certificate.
 	 *
 	 * @param dssCertificateId
@@ -702,6 +668,22 @@ public class DiagnosticData {
 
 	public XmlContainerInfo getContainerInfo() {
 		return diagnosticData.getContainerInfo();
+	}
+
+	public List<XmlTrustedList> getTrustedLists() {
+		return diagnosticData.getTrustedLists();
+	}
+
+	public XmlTrustedList getListOfTrustedLists() {
+		return diagnosticData.getListOfTrustedLists();
+	}
+
+	public String getLOTLCountryCode() {
+		XmlTrustedList listOfTrustedLists = diagnosticData.getListOfTrustedLists();
+		if (listOfTrustedLists != null) {
+			return listOfTrustedLists.getCountryCode();
+		}
+		return null;
 	}
 
 }

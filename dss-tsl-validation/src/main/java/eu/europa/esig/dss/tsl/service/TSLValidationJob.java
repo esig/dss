@@ -308,6 +308,7 @@ public class TSLValidationJob {
 	}
 
 	private TSLValidationResult validateLOTL(TSLValidationModel validationModel) throws Exception {
+		validationModel.setLotl(true);
 		List<CertificateToken> certsFromKeystore = Collections.emptyList();
 		if (dssKeyStore != null) {
 			certsFromKeystore = dssKeyStore.getCertificatesFromKeyStore();

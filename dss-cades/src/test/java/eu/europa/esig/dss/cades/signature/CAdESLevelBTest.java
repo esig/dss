@@ -50,13 +50,12 @@ import org.bouncycastle.asn1.cms.SignerInfo;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -74,6 +73,7 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.x509.CertificateToken;
 
 public class CAdESLevelBTest extends AbstractTestDocumentSignatureService<CAdESSignatureParameters> {
 
@@ -150,14 +150,13 @@ public class CAdESLevelBTest extends AbstractTestDocumentSignatureService<CAdESS
 				logger.info("SEQ cert " + i + " : " + seqCertif);
 
 				X509CertificateHolder certificateHolder = new X509CertificateHolder(seqCertif.getEncoded());
-				X509Certificate certificate = new JcaX509CertificateConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME)
-						.getCertificate(certificateHolder);
-
-				certificate.checkValidity();
+				CertificateToken certificate = DSSASN1Utils.getCertificate(certificateHolder);
+				X509Certificate x509Certificate = certificate.getCertificate();
+				x509Certificate.checkValidity();
 
 				logger.info("Cert " + i + " : " + certificate);
 
-				foundCertificates.add(certificate);
+				foundCertificates.add(x509Certificate);
 			}
 
 			ASN1Set crLs = signedData.getCRLs();

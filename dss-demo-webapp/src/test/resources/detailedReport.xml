@@ -180,7 +180,7 @@
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name NameId="BBB_XCV_CMDCISSCD">Certificate meta-data constraints: Is the SSCD?</Name>
+                <Name NameId="BBB_XCV_CMDCIQSCD">Certificate meta-data constraints: Is the QSCD?</Name>
                 <Status>WARNING</Status>
             </Constraint>
             <Constraint>

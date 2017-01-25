@@ -31,7 +31,6 @@ import eu.europa.esig.dss.x509.CertificateToken;
 public class TSLService {
 
 	private String name;
-	private String type;
 	private List<CertificateToken> certificates;
 	private TimeDependentValues<TSLServiceStatusAndInformationExtensions> status;
 
@@ -41,14 +40,6 @@ public class TSLService {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	public List<CertificateToken> getCertificates() {

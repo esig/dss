@@ -9,6 +9,7 @@
 			<xs:sequence>
 				<xs:element type="Signature" name="Signatures" minOccurs="0" maxOccurs="unbounded" />
 				<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element type="QMatrixBlock" name="QMatrixBlock" minOccurs="0" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -39,6 +40,30 @@
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 		<xs:attribute name="Type" type="xs:string" use="required" />
+	</xs:complexType>
+	
+	<xs:complexType name="QMatrixBlock">
+		<xs:sequence>
+			<xs:element type="TLAnalysis" name="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="SignatureAnalysis" name="SignatureAnalysis" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="TLAnalysis">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="CountryCode" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="SignatureAnalysis">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="Id" type="xs:string" use="required" />
+				<xs:attribute name="SignatureQualification" type="SignatureQualification" use="optional" />
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="ConstraintsConclusion">
@@ -229,5 +254,36 @@
 			<xs:enumeration value="UNEXPECTED_ERROR" />
 		</xs:restriction>
 	</xs:simpleType>
-
+	
+	<xs:simpleType name="SignatureQualification" final="restriction">
+		<xs:restriction base="xs:string">
+		
+			<xs:enumeration value="QESig" />
+			<xs:enumeration value="QESeal" />
+			<xs:enumeration value="QES?" />
+			<xs:enumeration value="AdESig-QC" />
+			<xs:enumeration value="AdESeal-QC" />
+			<xs:enumeration value="AdES?-QC" />
+			<xs:enumeration value="AdESig" />
+			<xs:enumeration value="AdESeal" />
+			<xs:enumeration value="AdES?" />
+			
+			<xs:enumeration value="Indeterminate QESig" />
+			<xs:enumeration value="Indeterminate QESeal" />
+			<xs:enumeration value="Indeterminate QES?" />
+			<xs:enumeration value="Indeterminate AdESig-QC" />
+			<xs:enumeration value="Indeterminate AdESeal-QC" />
+			<xs:enumeration value="Indeterminate AdES?-QC" />
+			<xs:enumeration value="Indeterminate AdESig" />
+			<xs:enumeration value="Indeterminate AdESeal" />
+			<xs:enumeration value="Indeterminate AdES?" />
+		
+			<xs:enumeration value="Not AdES but QC with QSCD" />
+			<xs:enumeration value="Not AdES but QC" />
+			<xs:enumeration value="Not AdES" />
+			
+			<xs:enumeration value="N/A" />
+		</xs:restriction>
+	</xs:simpleType>
+	
 </xs:schema>

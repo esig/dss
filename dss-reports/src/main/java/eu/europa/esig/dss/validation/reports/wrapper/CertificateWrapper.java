@@ -16,6 +16,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -60,12 +61,12 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isRevocationDataAvailable() {
-		return Utils.isCollectionNotEmpty(certificate.getRevocation());
+		return Utils.isCollectionNotEmpty(certificate.getRevocations());
 	}
 
 	public Set<RevocationWrapper> getRevocationData() {
 		if (isRevocationDataAvailable()) {
-			List<XmlRevocation> revocation = certificate.getRevocation();
+			List<XmlRevocation> revocation = certificate.getRevocations();
 			Set<RevocationWrapper> result = new HashSet<RevocationWrapper>();
 			for (XmlRevocation xmlRevocationType : revocation) {
 				result.add(new RevocationWrapper(xmlRevocationType));
@@ -102,45 +103,14 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return certificate.getNotAfter();
 	}
 
-	public List<String> getCertificateTSPServiceQualifiers() {
-		Set<String> result = new HashSet<String>();
-		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProvider();
-		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProvider xmlTrustedServiceProvider : trustedServiceProviders) {
-				List<String> qualifiers = xmlTrustedServiceProvider.getQualifiers();
-				if (Utils.isCollectionNotEmpty(qualifiers)) {
-					result.addAll(qualifiers);
-				}
-			}
-		}
-		return new ArrayList<String>(result);
-	}
-
-	public String getCertificateTSPServiceName() {
-		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProvider();
-		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProvider trustedServiceProvider : trustedServiceProviders) {
-				return trustedServiceProvider.getTSPServiceName(); // TODO correct ?? return first one
-			}
-		}
-		return Utils.EMPTY_STRING;
-	}
-
-	public String getCertificateTSPServiceType() {
-		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProvider();
-		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
-			for (XmlTrustedServiceProvider trustedServiceProvider : trustedServiceProviders) {
-				return trustedServiceProvider.getTSPServiceType(); // TODO correct ?? return first one
-			}
-		}
-		return Utils.EMPTY_STRING;
-	}
-
 	public Date getCertificateTSPServiceExpiredCertsRevocationInfo() {
-		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProvider();
+		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProviders();
 		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
 			for (XmlTrustedServiceProvider trustedServiceProvider : trustedServiceProviders) {
-				return trustedServiceProvider.getExpiredCertsRevocationInfo();
+				List<XmlTrustedService> trustedServices = trustedServiceProvider.getTrustedServices();
+				for (XmlTrustedService xmlTrustedService : trustedServices) {
+					return xmlTrustedService.getExpiredCertsRevocationInfo(); // TODO improve
+				}
 			}
 		}
 		return null;
@@ -201,29 +171,37 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return pseudo == null ? Utils.EMPTY_STRING : pseudo;
 	}
 
-	public boolean isCertificateRelatedTSLWellSigned() {
-		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProvider();
-		if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
-			boolean isWellSigned = true;
-			for (XmlTrustedServiceProvider xmlTrustedServiceProviderType : trustedServiceProviders) {
-				isWellSigned &= xmlTrustedServiceProviderType.isWellSigned();
-			}
-			return isWellSigned;
-		}
-		return false;
-		// TODO correct ???
-		// final boolean wellSigned =
-		// getBoolValue("/DiagnosticData/UsedCertificates/Certificate[@Id='%s']/TrustedServiceProvider/WellSigned/text()",
-		// dssCertificateId);
-		// return wellSigned;
-	}
-
 	public List<XmlDigestAlgoAndValue> getDigestAlgoAndValues() {
 		return certificate.getDigestAlgoAndValues();
 	}
 
-	public List<XmlTrustedServiceProvider> getCertificateTSPService() {
-		return certificate.getTrustedServiceProvider();
+	public boolean hasTrustedServices() {
+		List<XmlTrustedServiceProvider> tsps = certificate.getTrustedServiceProviders();
+		return Utils.isCollectionNotEmpty(tsps);
+	}
+
+	public List<TrustedServiceWrapper> getTrustedServices() {
+		List<TrustedServiceWrapper> result = new ArrayList<TrustedServiceWrapper>();
+		List<XmlTrustedServiceProvider> tsps = certificate.getTrustedServiceProviders();
+		if (Utils.isCollectionNotEmpty(tsps)) {
+			for (XmlTrustedServiceProvider tsp : tsps) {
+				List<XmlTrustedService> trustedServices = tsp.getTrustedServices();
+				if (Utils.isCollectionNotEmpty(trustedServices)) {
+					for (XmlTrustedService trustedService : trustedServices) {
+						TrustedServiceWrapper wrapper = new TrustedServiceWrapper();
+						wrapper.setCountryCode(tsp.getCountryCode());
+						wrapper.setStatus(trustedService.getStatus());
+						wrapper.setType(trustedService.getServiceType());
+						wrapper.setStartDate(trustedService.getStartDate());
+						wrapper.setEndDate(trustedService.getEndDate());
+						wrapper.setCapturedQualifiers(new ArrayList<String>(trustedService.getCapturedQualifiers()));
+						wrapper.setAdditionalServiceInfos(new ArrayList<String>(trustedService.getAdditionalServiceInfoUris()));
+						result.add(wrapper);
+					}
+				}
+			}
+		}
+		return result;
 	}
 
 	public String getCertificateDN() {
@@ -243,6 +221,18 @@ public class CertificateWrapper extends AbstractTokenProxy {
 			}
 		}
 		return Utils.EMPTY_STRING;
+	}
+
+	public List<String> getAuthorityInformationAccessUrls() {
+		return certificate.getAuthorityInformationAccessUrls();
+	}
+
+	public List<String> getCRLDistributionPoints() {
+		return certificate.getCRLDistributionPoints();
+	}
+
+	public List<String> getOCSPAccessUrls() {
+		return certificate.getOCSPAccessUrls();
 	}
 
 	public List<String> getPolicyIds() {
@@ -278,6 +268,15 @@ public class CertificateWrapper extends AbstractTokenProxy {
 			result.add(xmlOID.getValue());
 		}
 		return result;
+	}
+
+	public Set<String> getTrustedListCountryCodes() {
+		Set<String> countryCodes = new HashSet<String>();
+		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProviders();
+		for (XmlTrustedServiceProvider tsp : trustedServiceProviders) {
+			countryCodes.add(tsp.getCountryCode());
+		}
+		return countryCodes;
 	}
 
 }

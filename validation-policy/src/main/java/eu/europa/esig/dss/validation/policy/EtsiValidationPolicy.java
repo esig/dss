@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.DateUtils;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
 import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;
@@ -35,6 +34,7 @@ import eu.europa.esig.jaxb.policy.CertificateConstraints;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 import eu.europa.esig.jaxb.policy.ContainerConstraints;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
+import eu.europa.esig.jaxb.policy.EIDAS;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 import eu.europa.esig.jaxb.policy.RevocationConstraints;
@@ -348,6 +348,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getCertificatePseudoUsageConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getUsePseudonym();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateSerialNumberConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getSerialNumberPresent();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getCertificateNotExpiredConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
@@ -361,6 +379,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
 		if (basicSignatureConstraints != null) {
 			return basicSignatureConstraints.getProspectiveCertificateChain();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateAuthorityInfoAccessPresentConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getAuthorityInfoAccessPresent();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateRevocationInfoAccessPresentConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getRevocationInfoAccessPresent();
 		}
 		return null;
 	}
@@ -466,10 +502,10 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getCertificateSupportedBySSCDConstraint(Context context, SubContext subContext) {
+	public LevelConstraint getCertificateSupportedByQSCDConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getSupportedBySSCD();
+			return certificateConstraints.getSupportedByQSCD();
 		}
 		return null;
 	}
@@ -783,6 +819,56 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		ContainerConstraints containerConstraints = policy.getContainerConstraints();
 		if (containerConstraints != null) {
 			return containerConstraints.getManifestFilePresent();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean isEIDASConstraintPresent() {
+		return policy.getEIDAS() != null;
+	}
+
+	@Override
+	public TimeConstraint getTLFreshnessConstraint() {
+		EIDAS eIDASConstraints = policy.getEIDAS();
+		if (eIDASConstraints != null) {
+			return eIDASConstraints.getTLFreshness();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getTLWellSignedConstraint() {
+		EIDAS eIDASConstraints = policy.getEIDAS();
+		if (eIDASConstraints != null) {
+			return eIDASConstraints.getTLWellSigned();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getTLNotExpiredConstraint() {
+		EIDAS eIDASConstraints = policy.getEIDAS();
+		if (eIDASConstraints != null) {
+			return eIDASConstraints.getTLNotExpired();
+		}
+		return null;
+	}
+
+	@Override
+	public ValueConstraint getTLVersionConstraint() {
+		EIDAS eIDASConstraints = policy.getEIDAS();
+		if (eIDASConstraints != null) {
+			return eIDASConstraints.getTLVersion();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getTLConsistencyConstraint() {
+		EIDAS eIDASConstraints = policy.getEIDAS();
+		if (eIDASConstraints != null) {
+			return eIDASConstraints.getTLConsistency();
 		}
 		return null;
 	}

@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.validation.process.bbb;
 
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,11 +9,15 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -57,6 +62,7 @@ public class BasicBuildingBlocks {
 		XmlBasicBuildingBlocks result = new XmlBasicBuildingBlocks();
 		result.setId(token.getId());
 		result.setType(context.name());
+		result.setConclusion(new XmlConclusion());
 
 		/**
 		 * 5.2.2 Format Checking
@@ -64,21 +70,16 @@ public class BasicBuildingBlocks {
 		XmlFC fc = executeFormatChecking();
 		if (fc != null) {
 			result.setFC(fc);
-			XmlConclusion fcConclusion = fc.getConclusion();
-			if (!Indication.PASSED.equals(fcConclusion.getIndication())) {
-				result.setConclusion(fcConclusion);
-			}
+			updateFinalConclusion(result, fc);
 		}
 
 		/**
 		 * 5.2.3 Identification of the signing certificate
 		 */
 		XmlISC isc = executeIdentificationOfTheSigningCertificate();
-		result.setISC(isc);
-
-		XmlConclusion iscConclusion = isc.getConclusion();
-		if (!Indication.PASSED.equals(iscConclusion.getIndication())) {
-			result.setConclusion(iscConclusion);
+		if (isc != null) {
+			result.setISC(isc);
+			updateFinalConclusion(result, isc);
 		}
 
 		/**
@@ -87,10 +88,7 @@ public class BasicBuildingBlocks {
 		XmlVCI vci = executeValidationContextInitialization();
 		if (vci != null) {
 			result.setVCI(vci);
-			XmlConclusion vciConclusion = vci.getConclusion();
-			if (!Indication.PASSED.equals(vciConclusion.getIndication())) {
-				result.setConclusion(vciConclusion);
-			}
+			updateFinalConclusion(result, vci);
 		}
 
 		/**
@@ -99,40 +97,58 @@ public class BasicBuildingBlocks {
 		XmlXCV xcv = executeX509CertificateValidation();
 		if (xcv != null) {
 			result.setXCV(xcv);
-			XmlConclusion xcvConclusion = xcv.getConclusion();
-			if (!Indication.PASSED.equals(xcvConclusion.getIndication())) {
-				result.setConclusion(xcvConclusion);
-			}
+			updateFinalConclusion(result, xcv);
 		}
 
 		/**
 		 * 5.2.7 Cryptographic verification
 		 */
 		XmlCV cv = executeCryptographicVerification();
-		result.setCV(cv);
-
-		XmlConclusion cvConclusion = cv.getConclusion();
-		if (!Indication.PASSED.equals(cvConclusion.getIndication())) {
-			result.setConclusion(cvConclusion);
+		if (cv != null) {
+			result.setCV(cv);
+			updateFinalConclusion(result, cv);
 		}
 
 		/**
 		 * 5.2.8 Signature acceptance validation (SAV)
 		 */
 		XmlSAV sav = executeSignatureAcceptanceValidation();
-		result.setSAV(sav);
-		XmlConclusion savConclusion = sav.getConclusion();
-		if (!Indication.PASSED.equals(savConclusion.getIndication())) {
-			result.setConclusion(savConclusion);
+		if (sav != null) {
+			result.setSAV(sav);
+			updateFinalConclusion(result, sav);
 		}
 
-		if (result.getConclusion() == null) {
-			XmlConclusion conclusion = new XmlConclusion();
-			conclusion.setIndication(Indication.PASSED);
-			result.setConclusion(conclusion);
+		if (result.getConclusion().getIndication() == null) {
+			result.getConclusion().setIndication(Indication.PASSED);
 		}
 
 		return result;
+	}
+
+	private void updateFinalConclusion(XmlBasicBuildingBlocks result, XmlConstraintsConclusion constraintsAndConclusion) {
+		XmlConclusion finalConclusion = result.getConclusion();
+
+		XmlConclusion currentConclusion = constraintsAndConclusion.getConclusion();
+		List<XmlConstraint> constraints = constraintsAndConclusion.getConstraint();
+
+		if (!Indication.PASSED.equals(currentConclusion.getIndication())) {
+			finalConclusion.setIndication(currentConclusion.getIndication());
+			finalConclusion.setSubIndication(currentConclusion.getSubIndication());
+			finalConclusion.getErrors().addAll(currentConclusion.getErrors());
+		}
+
+		if (Utils.isCollectionNotEmpty(constraints)) {
+			for (XmlConstraint constraint : constraints) {
+				XmlName info = constraint.getInfo();
+				if (info != null) {
+					finalConclusion.getInfos().add(info);
+				}
+				XmlName warning = constraint.getWarning();
+				if (warning != null) {
+					finalConclusion.getWarnings().add(warning);
+				}
+			}
+		}
 	}
 
 	private XmlFC executeFormatChecking() {

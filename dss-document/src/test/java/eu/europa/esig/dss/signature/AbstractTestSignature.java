@@ -120,7 +120,7 @@ public abstract class AbstractTestSignature<SP extends AbstractSignatureParamete
 			if (indication != Indication.TOTAL_PASSED) {
 				assertNotNull(simpleReport.getSubIndication(sigId));
 			}
-			assertNotNull(simpleReport.getSignatureLevel(sigId));
+			assertNotNull(simpleReport.getSignatureQualification(sigId));
 		}
 		assertNotNull(simpleReport.getValidationTime());
 	}

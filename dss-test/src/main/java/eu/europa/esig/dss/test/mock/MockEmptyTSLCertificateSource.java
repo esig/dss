@@ -71,7 +71,6 @@ public class MockEmptyTSLCertificateSource extends CommonTrustedCertificateSourc
 
 		ServiceInfo serviceInfo = new ServiceInfo();
 		serviceInfo.setTspName("DSS, Mock Office DSS-CA");
-		serviceInfo.setType(CA_QC);
 		serviceInfo.setServiceName("MockTSPServiceName");
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.YEAR, -1);
@@ -79,9 +78,8 @@ public class MockEmptyTSLCertificateSource extends CommonTrustedCertificateSourc
 		MutableTimeDependentValues<ServiceInfoStatus> status = new MutableTimeDependentValues<ServiceInfoStatus>();
 		Map<String, List<Condition>> emptyMap = new HashMap<String, List<Condition>>();
 		List<String> emptyList = Collections.emptyList();
-		status.addOldest(new ServiceInfoStatus(SERVICE_STATUS_UNDERSUPERVISION, emptyMap, emptyList, null, calendar.getTime(), null));
+		status.addOldest(new ServiceInfoStatus(CA_QC, SERVICE_STATUS_UNDERSUPERVISION, emptyMap, emptyList, null, calendar.getTime(), null));
 		serviceInfo.setStatus(status);
-		serviceInfo.setTlWellSigned(true);
 
 		return serviceInfo;
 	}

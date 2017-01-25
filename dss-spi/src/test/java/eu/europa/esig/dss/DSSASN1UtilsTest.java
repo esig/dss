@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.util.List;
 
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
+import org.bouncycastle.cert.X509CertificateHolder;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -67,6 +68,39 @@ public class DSSASN1UtilsTest {
 
 		assertNull(DSSASN1Utils.getSki(certNoSKIextension, false));
 		assertNotNull(DSSASN1Utils.getSki(certNoSKIextension, true));
+	}
+
+	@Test
+	public void getAccessLocation() {
+		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
+		List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(certificate);
+		assertEquals(1, Utils.collectionSize(ocspAccessLocations));
+		assertEquals("http://ocsp.luxtrust.lu", ocspAccessLocations.get(0));
+	}
+
+	@Test
+	public void getCAAccessLocations() {
+		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
+		List<String> caLocations = DSSASN1Utils.getCAAccessLocations(certificate);
+		assertEquals(1, Utils.collectionSize(caLocations));
+		assertEquals("http://ca.luxtrust.lu/LTQCA.crt", caLocations.get(0));
+	}
+
+	@Test
+	public void getCrlUrls() {
+		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
+		List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificate);
+		assertEquals(1, Utils.collectionSize(crlUrls));
+		assertEquals("http://crl.luxtrust.lu/LTQCA.crl", crlUrls.get(0));
+	}
+
+	@Test
+	public void getCertificateHolder() {
+		CertificateToken token = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
+		X509CertificateHolder certificateHolder = DSSASN1Utils.getX509CertificateHolder(token);
+		assertNotNull(certificateHolder);
+		CertificateToken token2 = DSSASN1Utils.getCertificate(certificateHolder);
+		assertEquals(token, token2);
 	}
 
 }

@@ -253,13 +253,12 @@ public interface ValidationPolicy {
 
 	/**
 	 * Indicates if the end user certificate used in validating the signature is mandated to be supported by a secure
-	 * signature creation device (SSCD) as
-	 * defined in Directive 1999/93/EC [9].
+	 * signature creation device (QSCD).
 	 *
-	 * @return {@code LevelConstraint} if SupportedBySSCD for a given context element is present in the constraint file,
+	 * @return {@code LevelConstraint} if SupportedByQSCD for a given context element is present in the constraint file,
 	 *         null otherwise.
 	 */
-	LevelConstraint getCertificateSupportedBySSCDConstraint(Context context, SubContext subContext);
+	LevelConstraint getCertificateSupportedByQSCDConstraint(Context context, SubContext subContext);
 
 	/**
 	 * @return {@code LevelConstraint} if IssuedToLegalPerson for a given context element is present in the constraint
@@ -355,6 +354,14 @@ public interface ValidationPolicy {
 
 	MultiValuesConstraint getCertificatePseudonymConstraint(Context context, SubContext subContext);
 
+	LevelConstraint getCertificatePseudoUsageConstraint(Context context, SubContext subContext);
+
+	LevelConstraint getCertificateSerialNumberConstraint(Context context, SubContext subContext);
+
+	LevelConstraint getCertificateAuthorityInfoAccessPresentConstraint(Context context, SubContext subContext);
+
+	LevelConstraint getCertificateRevocationInfoAccessPresentConstraint(Context context, SubContext subContext);
+
 	MultiValuesConstraint getCertificatePolicyIdsConstraint(Context context, SubContext subContext);
 
 	MultiValuesConstraint getCertificateQCStatementIdsConstraint(Context context, SubContext subContext);
@@ -374,5 +381,19 @@ public interface ValidationPolicy {
 	LevelConstraint getAllFilesSignedConstraint();
 
 	LevelConstraint getManifestFilePresentConstraint();
+
+	/* Article 32 */
+
+	boolean isEIDASConstraintPresent();
+
+	TimeConstraint getTLFreshnessConstraint();
+
+	LevelConstraint getTLWellSignedConstraint();
+
+	LevelConstraint getTLNotExpiredConstraint();
+
+	ValueConstraint getTLVersionConstraint();
+
+	LevelConstraint getTLConsistencyConstraint();
 
 }

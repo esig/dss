@@ -1,7 +1,11 @@
 package eu.europa.esig.dss.validation.process;
 
+import java.util.List;
+
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
@@ -76,6 +80,37 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 		return constraint;
+	}
+
+	protected LevelConstraint getWarnLevelConstraint() {
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.WARN);
+		return constraint;
+	}
+
+	protected LevelConstraint getInfoLevelConstraint() {
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.INFORM);
+		return constraint;
+	}
+
+	protected void collectErrorsWarnsInfos() {
+		XmlConclusion conclusion = result.getConclusion();
+		List<XmlConstraint> constraints = result.getConstraint();
+		for (XmlConstraint xmlConstraint : constraints) {
+			XmlName error = xmlConstraint.getError();
+			if (error != null) {
+				conclusion.getErrors().add(error);
+			}
+			XmlName warning = xmlConstraint.getWarning();
+			if (warning != null) {
+				conclusion.getWarnings().add(warning);
+			}
+			XmlName info = xmlConstraint.getInfo();
+			if (info != null) {
+				conclusion.getInfos().add(info);
+			}
+		}
 	}
 
 }

@@ -3,11 +3,11 @@ package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 import java.util.Date;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.RuleUtils;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.jaxb.policy.TimeConstraint;
 

@@ -35,25 +35,23 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlQMatrixBlock;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.jaxb.simplereport.XmlPolicy;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
+import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureLevel;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureScope;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AttributeValue;
-import eu.europa.esig.dss.validation.policy.CertificatePolicyIdentifiers;
-import eu.europa.esig.dss.validation.policy.CertificateQualification;
-import eu.europa.esig.dss.validation.policy.QCStatementPolicyIdentifiers;
-import eu.europa.esig.dss.validation.policy.ServiceQualification;
-import eu.europa.esig.dss.validation.policy.SignatureQualification;
-import eu.europa.esig.dss.validation.policy.TLQualification;
+import eu.europa.esig.dss.validation.SignatureQualification;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
-import eu.europa.esig.dss.validation.reports.SignatureType;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
@@ -97,7 +95,12 @@ public class SimpleReportBuilder {
 		addPolicyNode(simpleReport);
 		addValidationTime(simpleReport);
 		addDocumentName(simpleReport);
-		addSignatures(simpleReport);
+
+		boolean containerInfoPresent = diagnosticData.isContainerInfoPresent();
+		if (containerInfoPresent) {
+			addContainerType(simpleReport);
+		}
+		addSignatures(simpleReport, containerInfoPresent);
 		addStatistics(simpleReport);
 
 		return simpleReport;
@@ -118,12 +121,16 @@ public class SimpleReportBuilder {
 		report.setDocumentName(diagnosticData.getDocumentName());
 	}
 
-	private void addSignatures(SimpleReport simpleReport) throws DSSException {
+	private void addContainerType(SimpleReport simpleReport) {
+		simpleReport.setContainerType(diagnosticData.getContainerType());
+	}
+
+	private void addSignatures(SimpleReport simpleReport, boolean container) throws DSSException {
 		validSignatureCount = 0;
 		totalSignatureCount = 0;
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		for (SignatureWrapper signature : signatures) {
-			addSignature(simpleReport, signature);
+			addSignature(simpleReport, signature, container);
 		}
 	}
 
@@ -136,9 +143,10 @@ public class SimpleReportBuilder {
 	 * @param simpleReport
 	 * @param signature
 	 *            the diagnosticSignature element in the diagnostic data
-	 * @throws DSSException
+	 * @param container
+	 *            true if the current file is a container
 	 */
-	private void addSignature(SimpleReport simpleReport, SignatureWrapper signature) throws DSSException {
+	private void addSignature(SimpleReport simpleReport, SignatureWrapper signature, boolean container) {
 
 		totalSignatureCount++;
 
@@ -150,7 +158,12 @@ public class SimpleReportBuilder {
 		addSignatureScope(signature, xmlSignature);
 		addSigningTime(signature, xmlSignature);
 		addSignatureFormat(signature, xmlSignature);
-		addSignedBy(signature, xmlSignature);
+
+		xmlSignature.setSignedBy(getSignedBy(signature));
+
+		if (container) {
+			xmlSignature.setFilename(signature.getSignatureFilename());
+		}
 
 		XmlConstraintsConclusion constraintsConclusion = null;
 		switch (validationLevel) {
@@ -169,12 +182,32 @@ public class SimpleReportBuilder {
 			break;
 		}
 
-		Indication indication = constraintsConclusion.getConclusion().getIndication();
-		SubIndication subIndication = constraintsConclusion.getConclusion().getSubIndication();
-
-		List<String> errorList = xmlSignature.getErrors();
-
 		XmlConclusion conclusion = constraintsConclusion.getConclusion();
+		Indication indication = conclusion.getIndication();
+		SubIndication subIndication = conclusion.getSubIndication();
+
+		Set<String> errorList = new HashSet<String>();
+		Set<String> warnList = new HashSet<String>();
+		Set<String> infoList = new HashSet<String>();
+
+		XmlQMatrixBlock qmatrixBlock = detailedReport.getQMatrixBlock();
+		if (qmatrixBlock != null) {
+			List<XmlTLAnalysis> tlAnalysis = qmatrixBlock.getTLAnalysis();
+			for (XmlTLAnalysis xmlTLAnalysis : tlAnalysis) {
+				collectErrors(errorList, xmlTLAnalysis);
+				collectWarnings(warnList, xmlTLAnalysis);
+				collectInfos(infoList, xmlTLAnalysis);
+			}
+			List<XmlSignatureAnalysis> signatureAnalysis = qmatrixBlock.getSignatureAnalysis();
+			for (XmlSignatureAnalysis analysis : signatureAnalysis) {
+				if (Utils.areStringsEqual(analysis.getId(), signatureId)) {
+					collectErrors(errorList, analysis);
+					collectWarnings(warnList, analysis);
+					collectInfos(infoList, analysis);
+				}
+			}
+		}
+
 		List<XmlName> errors = conclusion.getErrors();
 		if (Utils.isCollectionNotEmpty(errors)) {
 			for (XmlName error : errors) {
@@ -183,8 +216,12 @@ public class SimpleReportBuilder {
 		}
 
 		// TODO refactor
-		xmlSignature.getWarnings().addAll(getWarnings(signatureId));
-		xmlSignature.getInfos().addAll(getInfos(signatureId));
+		warnList.addAll(getWarnings(signatureId));
+		infoList.addAll(getInfos(signatureId));
+
+		xmlSignature.getErrors().addAll(errorList);
+		xmlSignature.getWarnings().addAll(warnList);
+		xmlSignature.getInfos().addAll(infoList);
 
 		if (Indication.PASSED.equals(indication)) {
 			validSignatureCount++;
@@ -217,7 +254,6 @@ public class SimpleReportBuilder {
 				collectWarnings(warns, xmlSignature.getValidationProcessArchivalData());
 			}
 		}
-		// Collections.sort(warns);
 		return warns;
 	}
 
@@ -238,6 +274,19 @@ public class SimpleReportBuilder {
 					XmlName warning = constraint.getWarning();
 					if (warning != null) {
 						result.add(warning.getValue());
+					}
+				}
+			}
+		}
+	}
+
+	private void collectErrors(Set<String> result, XmlConstraintsConclusion constraintConclusion) {
+		if (constraintConclusion != null) {
+			if (Utils.isCollectionNotEmpty(constraintConclusion.getConstraint())) {
+				for (XmlConstraint constraint : constraintConclusion.getConstraint()) {
+					XmlName error = constraint.getError();
+					if (error != null) {
+						result.add(error.getValue());
 					}
 				}
 			}
@@ -280,7 +329,6 @@ public class SimpleReportBuilder {
 				collectInfos(infos, xmlSignature.getValidationProcessArchivalData());
 			}
 		}
-		// Collections.sort(infos);
 		return infos;
 	}
 
@@ -364,8 +412,8 @@ public class SimpleReportBuilder {
 		}
 	}
 
-	private void addSignatureScope(final SignatureWrapper diagnosticSignature, final XmlSignature xmlSignature) {
-		List<eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope> signatureScopes = diagnosticSignature.getSignatureScopes();
+	private void addSignatureScope(final SignatureWrapper signature, final XmlSignature xmlSignature) {
+		List<eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		if (Utils.isCollectionNotEmpty(signatureScopes)) {
 			for (eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope scopeType : signatureScopes) {
 				XmlSignatureScope scope = new XmlSignatureScope();
@@ -377,78 +425,50 @@ public class SimpleReportBuilder {
 		}
 	}
 
-	private void addSigningTime(final SignatureWrapper diagnosticSignature, final XmlSignature xmlSignature) {
-		xmlSignature.setSigningTime(diagnosticSignature.getDateTime());
+	private void addSigningTime(final SignatureWrapper signature, final XmlSignature xmlSignature) {
+		xmlSignature.setSigningTime(signature.getDateTime());
 	}
 
-	private void addSignatureFormat(final SignatureWrapper diagnosticSignature, final XmlSignature xmlSignature) {
-		xmlSignature.setSignatureFormat(diagnosticSignature.getSignatureFormat());
+	private void addSignatureFormat(final SignatureWrapper signature, final XmlSignature xmlSignature) {
+		xmlSignature.setSignatureFormat(signature.getSignatureFormat());
 	}
 
-	private void addSignedBy(final SignatureWrapper diagnosticSignature, final XmlSignature xmlSignature) {
-		String unknown = "?";
-		String signedBy = unknown;
-		String certificateId = diagnosticSignature.getSigningCertificateId();
-		if (Utils.isStringNotEmpty(certificateId)) {
-			signedBy = diagnosticData.getUsedCertificateById(certificateId).getCommonName();
-			if (signedBy.equals(Utils.EMPTY_STRING)) {
-				signedBy = diagnosticData.getUsedCertificateById(certificateId).getGivenName();
-				if (signedBy.equals(Utils.EMPTY_STRING)) {
-					signedBy = diagnosticData.getUsedCertificateById(certificateId).getSurname();
-					if (signedBy.equals(Utils.EMPTY_STRING)) {
-						signedBy = diagnosticData.getUsedCertificateById(certificateId).getPseudo();
-						if (signedBy.equals(Utils.EMPTY_STRING)) {
-							signedBy = unknown;
-						}
-					}
-				}
+	private String getSignedBy(final SignatureWrapper signature) {
+		CertificateWrapper signingCert = diagnosticData.getUsedCertificateById(signature.getSigningCertificateId());
+		if (signingCert != null) {
+			if (Utils.isStringNotEmpty(signingCert.getCommonName())) {
+				return signingCert.getCommonName();
+			}
+			if (Utils.isStringNotEmpty(signingCert.getGivenName())) {
+				return signingCert.getGivenName();
+			}
+			if (Utils.isStringNotEmpty(signingCert.getSurname())) {
+				return signingCert.getSurname();
+			}
+			if (Utils.isStringNotEmpty(signingCert.getPseudo())) {
+				return signingCert.getPseudo();
 			}
 		}
-		xmlSignature.setSignedBy(signedBy);
+		return "?";
 	}
 
-	/**
-	 * Here we determine the type of the signature.
-	 */
-	private void addSignatureProfile(SignatureWrapper signature, XmlSignature xmlSignature) {
-		SignatureType signatureType = SignatureType.NA;
-		String certificateId = signature.getSigningCertificateId();
-		if (certificateId != null) {
-			signatureType = getSignatureType(certificateId);
+	private void addSignatureProfile(SignatureWrapper signature, final XmlSignature xmlSignature) {
+		XmlQMatrixBlock qmatrixBlock = detailedReport.getQMatrixBlock();
+		if (qmatrixBlock != null) {
+			SignatureQualification qualification = null;
+			List<XmlSignatureAnalysis> signatureAnalysis = qmatrixBlock.getSignatureAnalysis();
+			for (XmlSignatureAnalysis xmlSignatureAnalysis : signatureAnalysis) {
+				if (Utils.areStringsEqual(xmlSignatureAnalysis.getId(), signature.getId())) {
+					qualification = xmlSignatureAnalysis.getSignatureQualification();
+				}
+			}
+			if (qualification != null) {
+				XmlSignatureLevel sigLevel = new XmlSignatureLevel();
+				sigLevel.setValue(qualification);
+				sigLevel.setDescription(qualification.getLabel());
+				xmlSignature.setSignatureLevel(sigLevel);
+			}
 		}
-		xmlSignature.setSignatureLevel(signatureType.name());
-	}
-
-	/**
-	 * This method returns the type of the qualification of the signature (signing certificate).
-	 *
-	 * @param signCert
-	 * @return
-	 */
-	private SignatureType getSignatureType(final String certificateId) {
-
-		CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(certificateId);
-		final CertificateQualification certQualification = new CertificateQualification();
-		certQualification.setQcp(CertificatePolicyIdentifiers.isQCP(certificate));
-		certQualification.setQcpp(CertificatePolicyIdentifiers.isQCPPlus(certificate));
-		certQualification.setQcc(QCStatementPolicyIdentifiers.isQCCompliant(certificate));
-		certQualification.setQcsscd(QCStatementPolicyIdentifiers.isSupportedByQSCD(certificate));
-
-		final TLQualification trustedListQualification = new TLQualification();
-
-		final String serviceType = certificate.getCertificateTSPServiceType();
-
-		final List<String> qualifiers = certificate.getCertificateTSPServiceQualifiers();
-
-		trustedListQualification.setCaqc(ServiceQualification.isCaQc(serviceType));
-		trustedListQualification.setQcCNoSSCD(ServiceQualification.isQcNoSSCD(qualifiers));
-		trustedListQualification.setQcForLegalPerson(ServiceQualification.isQcForLegalPerson(qualifiers));
-		trustedListQualification.setQcSSCDAsInCert(ServiceQualification.isQcSscdStatusAsInCert(qualifiers));
-		trustedListQualification.setQcWithSSCD(ServiceQualification.isQcWithSSCD(qualifiers));
-		trustedListQualification.setQcStatement(ServiceQualification.isQcStatement(qualifiers));
-
-		final SignatureType signatureType = SignatureQualification.getSignatureType(certQualification, trustedListQualification);
-		return signatureType;
 	}
 
 }

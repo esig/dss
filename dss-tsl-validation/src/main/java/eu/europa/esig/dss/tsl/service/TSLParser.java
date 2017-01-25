@@ -137,6 +137,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 		TSLParserResult tslModel = new TSLParserResult();
 		tslModel.setTerritory(getTerritory(tsl));
 		tslModel.setSequenceNumber(getSequenceNumber(tsl));
+		tslModel.setVersion(getVersion(tsl));
 		tslModel.setIssueDate(getIssueDate(tsl));
 		tslModel.setNextUpdateDate(getNextUpdate(tsl));
 		tslModel.setDistributionPoints(getDistributionPoints(tsl));
@@ -144,6 +145,14 @@ public class TSLParser implements Callable<TSLParserResult> {
 		tslModel.setServiceProviders(getServiceProviders(tsl));
 		tslModel.setEnglishSchemeInformationURIs(getEnglishSchemeInformationURIs(tsl));
 		return tslModel;
+	}
+
+	private int getVersion(TrustStatusListType tsl) {
+		BigInteger tslVersionIdentifier = tsl.getSchemeInformation().getTSLVersionIdentifier();
+		if (tslVersionIdentifier != null) {
+			return tslVersionIdentifier.intValue();
+		}
+		return -1;
 	}
 
 	private int getSequenceNumber(TrustStatusListType tsl) {
@@ -319,7 +328,6 @@ public class TSLParser implements Callable<TSLParserResult> {
 		TSLService service = new TSLService();
 		TSPServiceInformationType serviceInfo = tslService.getServiceInformation();
 		service.setName(getEnglishOrFirst(serviceInfo.getServiceName()));
-		service.setType(serviceInfo.getServiceTypeIdentifier());
 		service.setCertificates(extractCertificates(serviceInfo.getServiceDigitalIdentity()));
 		service.setStatusAndInformationExtensions(getStatusHistory(tslService));
 		return service;
@@ -331,6 +339,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 		TSPServiceInformationType serviceInfo = tslService.getServiceInformation();
 
 		TSLServiceStatusAndInformationExtensions status = new TSLServiceStatusAndInformationExtensions();
+		status.setType(serviceInfo.getServiceTypeIdentifier());
 		status.setStatus(serviceInfo.getServiceStatus());
 		ExtensionsListType serviceInformationExtensions = serviceInfo.getServiceInformationExtensions();
 		if (serviceInformationExtensions != null) {
@@ -345,6 +354,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 		if (tslService.getServiceHistory() != null && Utils.isCollectionNotEmpty(tslService.getServiceHistory().getServiceHistoryInstance())) {
 			for (ServiceHistoryInstanceType serviceHistory : tslService.getServiceHistory().getServiceHistoryInstance()) {
 				TSLServiceStatusAndInformationExtensions statusHistory = new TSLServiceStatusAndInformationExtensions();
+				statusHistory.setType(serviceHistory.getServiceTypeIdentifier());
 				statusHistory.setStatus(serviceHistory.getServiceStatus());
 				ExtensionsListType serviceHistoryInformationExtensions = serviceHistory.getServiceInformationExtensions();
 				if (serviceHistoryInformationExtensions != null) {
