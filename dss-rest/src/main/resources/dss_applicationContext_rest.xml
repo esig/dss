@@ -20,9 +20,20 @@
     	<property name="service" ref="remoteMultipleDocumentsSignatureService" />
     </bean>
 
-	<jaxrs:server id="jaxrsSignatureService" address="/rest/signature">
+	<jaxrs:server id="jaxrsServiceOneDocumentSignature" address="/rest/signature/one-document">
 		<jaxrs:serviceBeans>
 			<ref bean="restSignatureService" />
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
+		</jaxrs:providers>
+		<jaxrs:features>
+			<cxf:logging />
+		</jaxrs:features>
+	</jaxrs:server>
+	
+	<jaxrs:server id="jaxrsServiceMultiDocumentsSignature" address="/rest/signature/multiple-documents">
+		<jaxrs:serviceBeans>
 			<ref bean="restMultipleDocumentsSignatureService" />
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>

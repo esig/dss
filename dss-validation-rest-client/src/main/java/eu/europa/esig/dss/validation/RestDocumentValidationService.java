@@ -14,7 +14,7 @@ import eu.europa.esig.dss.validation.reports.dto.ReportsDTO;
 /**
  * This REST interface provides operations for the validation of signature.
  */
-@Path("ValidationService")
+@Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public interface RestDocumentValidationService extends Serializable {

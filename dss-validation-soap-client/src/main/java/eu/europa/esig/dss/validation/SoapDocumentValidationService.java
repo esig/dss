@@ -12,8 +12,6 @@ import eu.europa.esig.dss.validation.reports.dto.DataToValidateDTO;
  * The validation web service allow to validate the signature inside a signed file. In addition, the original file and a
  * specific policy can be passed to perform the validation.
  * 
- * @author p.vandenbroucke
- *
  */
 @WebService(targetNamespace = "http://validation.dss.esig.europa.eu/")
 public interface SoapDocumentValidationService extends Serializable {
