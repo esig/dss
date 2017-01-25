@@ -10,6 +10,13 @@
 	</parent>
 
 	<artifactId>sscd-mocca-adapter</artifactId>
+	
+	<repositories>
+		<repository>
+            <id>joinup-dss-thirdparty</id>
+            <url>http://joinup.ec.europa.eu/site/sd-dss/maven2</url>
+        </repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>

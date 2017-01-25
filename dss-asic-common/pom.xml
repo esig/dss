@@ -8,8 +8,8 @@
 	</parent>
 
 	<artifactId>dss-asic-common</artifactId>
+	<name>DSS ASiC Common</name>
 	<description>DSS ASiC-common contains common classes between ASiC C/XAdES.</description>
-	
 
 	<dependencies>
 		<dependency>
