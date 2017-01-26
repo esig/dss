@@ -36,7 +36,7 @@
 	   			<xsl:attribute name="class">panel-heading</xsl:attribute>
 	    		<xsl:attribute name="data-target">#collapseQmatrix</xsl:attribute>
 		       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
-		       	Qualification (eIDAS 910/2014 Art. 26, 32, 36 and 40)
+		       	Qualification (ETSI TS 119 172-4)
 		    </div>
 		    <div>
 				<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
