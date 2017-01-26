@@ -4,12 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
@@ -260,4 +262,15 @@ public abstract class AbstractUtilsTest {
 		Utils.closeQuietly(new FileOutputStream("target/sample3.txt"));
 	}
 
+	@Test
+	public void listFiles() {
+		File folder = new File("src/main/java");
+		String[] extensions = new String[] { "java" };
+		Collection<File> listFiles = Utils.listFiles(folder, extensions, true);
+		assertTrue(Utils.isCollectionNotEmpty(listFiles));
+
+		extensions = new String[] { "doc", "pdf" };
+		listFiles = Utils.listFiles(folder, extensions, true);
+		assertTrue(Utils.isCollectionEmpty(listFiles));
+	}
 }
