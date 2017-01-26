@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>Signature-P-TU_NG-1.pdf</DocumentName>
+    <ValidationDate>2017-01-26T09:13:30</ValidationDate>
+    <Signatures>
+        <Signature Id="id-0a0becbe9213c626a1be4d98a9981596e2f922b90a2bb3c1ee938d9fc493a1bd">
+            <SignatureFilename>Signature-P-TU_NG-1.pdf</SignatureFilename>
+            <DateTime>2016-05-20T17:03:09</DateTime>
+            <SignatureFormat>PAdES-BASELINE-B</SignatureFormat>
+            <StructuralValidation>
+                <Valid>true</Valid>
+            </StructuralValidation>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="1BCF2B72C91C013C824AE6BD2C01358475118ED7E50D920EF78D7870F51513EE">
+                <AttributePresent>true</AttributePresent>
+                <DigestValuePresent>true</DigestValuePresent>
+                <DigestValueMatch>true</DigestValueMatch>
+                <IssuerSerialMatch>true</IssuerSerialMatch>
+            </SigningCertificate>
+            <CertificateChain>
+                <ChainItem Id="1BCF2B72C91C013C824AE6BD2C01358475118ED7E50D920EF78D7870F51513EE">
+                    <Source>SIGNATURE</Source>
+                </ChainItem>
+                <ChainItem Id="355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686">
+                    <Source>SIGNATURE</Source>
+                </ChainItem>
+                <ChainItem Id="D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
+                    <Source>AIA</Source>
+                </ChainItem>
+            </CertificateChain>
+            <ContentType>application/pdf</ContentType>
+            <CommitmentTypeIndication/>
+            <ClaimedRoles/>
+            <Timestamps/>
+            <SignatureScopes>
+                <SignatureScope name="Full PDF" scope="FullSignatureScope">Full document</SignatureScope>
+            </SignatureScopes>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ndca validation authority,o=agence nationale de certification electronique,c=tn</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=NDCA Validation Authority,O=Agence Nationale de Certification Electronique,C=TN</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">o=national digital certification agency,cn=tunisian root certificate authority - tunrootca2,c=tn</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">O=National Digital Certification Agency,CN=Tunisian Root Certificate Authority - TunRootCA2,C=TN</IssuerDistinguishedName>
+            <SerialNumber>306883786758652943182958202768244325331</SerialNumber>
+            <CommonName>NDCA Validation Authority</CommonName>
+            <CountryName>TN</CountryName>
+            <OrganizationName>Agence Nationale de Certification Electronique</OrganizationName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>3qfq1vB4L4Kfs3V5BDJX2z7lWHw=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <NotAfter>2017-02-10T15:38:09</NotAfter>
+            <NotBefore>2016-02-11T15:38:09</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <IdKpOCSPSigning>true</IdKpOCSPSigning>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>false</ReferenceDataFound>
+                <ReferenceDataIntact>false</ReferenceDataIntact>
+                <SignatureIntact>false</SignatureIntact>
+                <SignatureValid>false</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicyIds/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <Info>
+                <Message Id="0">The certificate used to sign this token is not found or not valid!</Message>
+            </Info>
+        </Certificate>
+        <Certificate Id="D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
+            <SubjectDistinguishedName Format="CANONICAL">o=national digital certification agency,cn=tunisian root certificate authority - tunrootca1,c=tn</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">O=National Digital Certification Agency,CN=Tunisian Root Certificate Authority - TunRootCA1,C=TN</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">o=national digital certification agency,cn=tunisian root certificate authority - tunrootca1,c=tn</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">O=National Digital Certification Agency,CN=Tunisian Root Certificate Authority - TunRootCA1,C=TN</IssuerDistinguishedName>
+            <SerialNumber>43065255275310772240291695980649437719</SerialNumber>
+            <CommonName>Tunisian Root Certificate Authority - TunRootCA1</CommonName>
+            <CountryName>TN</CountryName>
+            <OrganizationName>National Digital Certification Agency</OrganizationName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>HUTr0lFacYgYKy3idI+AGbEIzps=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <NotAfter>2030-12-31T10:11:42</NotAfter>
+            <NotBefore>2011-04-29T11:11:42</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <IdKpOCSPSigning>false</IdKpOCSPSigning>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicyIds/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <Info/>
+        </Certificate>
+        <Certificate Id="1BCF2B72C91C013C824AE6BD2C01358475118ED7E50D920EF78D7870F51513EE">
+            <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1614746172686f756e69406e672d7369676e2e636f6d,cn=MAT,ou=direction generale,o=MAT,c=tn</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1614746172686f756e69406e672d7369676e2e636f6d,CN=MAT,OU=DIRECTION GENERALE,O=MAT,C=TN</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=tunisian personal certificate authority - tunpersonalca1,o=national digital certification agency,c=tn</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Tunisian Personal Certificate Authority - TunPersonalCA1,O=National Digital Certification Agency,C=TN</IssuerDistinguishedName>
+            <SerialNumber>64068197469271111769371240288034624980</SerialNumber>
+            <CommonName>MAT</CommonName>
+            <CountryName>TN</CountryName>
+            <OrganizationName>MAT</OrganizationName>
+            <OrganizationalUnit>DIRECTION GENERALE</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <Url>http://www.certification.tn/pub/TunPersonalCA1.crt</Url>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <Url>http://crl.certification.tn/TunPersonalCA1.crl</Url>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <Url>http://ocsp.certification.tn</Url>
+            </OCSPAccessUrls>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>G0oA5AA+4KLhm8/6FLUETeazMbo=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <NotAfter>2018-04-06T01:59:59</NotAfter>
+            <NotBefore>2016-04-06T02:00:00</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <IdKpOCSPSigning>false</IdKpOCSPSigning>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686"/>
+            <CertificateChain>
+                <ChainItem Id="355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686">
+                    <Source>SIGNATURE</Source>
+                </ChainItem>
+                <ChainItem Id="D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
+                    <Source>AIA</Source>
+                </ChainItem>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicyIds>
+                <oid>2.16.788.1.2.6.1.1</oid>
+            </CertificatePolicyIds>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <Revocation Id="1bcf2b72c91c013c824ae6bd2c01358475118ed7e50d920ef78d7870f51513eeca921613208aaacbbbc6798e54b76546fca9d3437749f414ff57473b6d2f44ba">
+                    <Origin>EXTERNAL</Origin>
+                    <Source>CRLToken</Source>
+                    <SourceAddress>http://crl.certification.tn/TunPersonalCA1.crl</SourceAddress>
+                    <Available>true</Available>
+                    <Status>true</Status>
+                    <ProductionDate>2017-01-25T13:22:22</ProductionDate>
+                    <ThisUpdate>2017-01-25T13:22:22</ThisUpdate>
+                    <NextUpdate>2017-01-31T13:22:22</NextUpdate>
+                    <DigestAlgoAndValues>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>2VIMEqfgkhVR63qrt6q8CrT0020=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </DigestAlgoAndValues>
+                    <BasicSignature>
+                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                        <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                        <ReferenceDataFound>true</ReferenceDataFound>
+                        <ReferenceDataIntact>true</ReferenceDataIntact>
+                        <SignatureIntact>true</SignatureIntact>
+                        <SignatureValid>true</SignatureValid>
+                    </BasicSignature>
+                    <SigningCertificate Id="355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686"/>
+                    <CertificateChain>
+                        <ChainItem Id="355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686">
+                            <Source>SIGNATURE</Source>
+                        </ChainItem>
+                        <ChainItem Id="D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
+                            <Source>AIA</Source>
+                        </ChainItem>
+                    </CertificateChain>
+                    <Info/>
+                </Revocation>
+                <Revocation Id="1bcf2b72c91c013c824ae6bd2c01358475118ed7e50d920ef78d7870f51513eee4d28fb520311e9a6a81279b408300874eecd3ca35f4f7462d78f4bf0514aae8">
+                    <Origin>EXTERNAL</Origin>
+                    <Source>OCSPToken</Source>
+                    <SourceAddress>http://ocsp.certification.tn</SourceAddress>
+                    <Available>true</Available>
+                    <Status>false</Status>
+                    <Reason>unknow</Reason>
+                    <ProductionDate>2017-01-26T09:13:10</ProductionDate>
+                    <ThisUpdate>2017-01-26T09:13:10</ThisUpdate>
+                    <DigestAlgoAndValues>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>bljyPPyXtUuxxw68E5wuEGVu4YY=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </DigestAlgoAndValues>
+                    <BasicSignature>
+                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                        <ReferenceDataFound>true</ReferenceDataFound>
+                        <ReferenceDataIntact>true</ReferenceDataIntact>
+                        <SignatureIntact>true</SignatureIntact>
+                        <SignatureValid>true</SignatureValid>
+                    </BasicSignature>
+                    <SigningCertificate Id="903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168"/>
+                    <CertificateChain>
+                        <ChainItem Id="903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168">
+                            <Source>OCSP_RESPONSE</Source>
+                        </ChainItem>
+                    </CertificateChain>
+                    <Info/>
+                </Revocation>
+            </Revocations>
+            <Info>
+                <Message Id="0">No CRL info found !</Message>
+            </Info>
+        </Certificate>
+        <Certificate Id="355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686">
+            <SubjectDistinguishedName Format="CANONICAL">cn=tunisian personal certificate authority - tunpersonalca1,o=national digital certification agency,c=tn</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Tunisian Personal Certificate Authority - TunPersonalCA1,O=National Digital Certification Agency,C=TN</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">o=national digital certification agency,cn=tunisian root certificate authority - tunrootca1,c=tn</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">O=National Digital Certification Agency,CN=Tunisian Root Certificate Authority - TunRootCA1,C=TN</IssuerDistinguishedName>
+            <SerialNumber>42535641077134777404728442579545537133</SerialNumber>
+            <CommonName>Tunisian Personal Certificate Authority - TunPersonalCA1</CommonName>
+            <CountryName>TN</CountryName>
+            <OrganizationName>National Digital Certification Agency</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <Url>http://www.certification.tn/pub/TunRootCA1.crt</Url>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <Url>http://crl.certification.tn/TunRootCA1.crl</Url>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <Url>http://ocsp.certification.tn</Url>
+            </OCSPAccessUrls>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>QQUdgz7Zegy1reA28bYEt+qBTMA=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <NotAfter>2031-01-01T00:59:59</NotAfter>
+            <NotBefore>2011-05-30T02:00:00</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <IdKpOCSPSigning>false</IdKpOCSPSigning>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C"/>
+            <CertificateChain>
+                <ChainItem Id="D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
+                    <Source>AIA</Source>
+                </ChainItem>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicyIds>
+                <oid>2.16.788.1.2.6.1.1</oid>
+            </CertificatePolicyIds>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <Revocation Id="355e634464029b58fc89189da20cb1f3499373af91d8fa34b57b66775aa73686b671e62088b3f75a75ecee64dd3c5331cbf7045be28221c7fad8cbf2c4894f6d">
+                    <Origin>EXTERNAL</Origin>
+                    <Source>OCSPToken</Source>
+                    <SourceAddress>http://ocsp.certification.tn</SourceAddress>
+                    <Available>true</Available>
+                    <Status>true</Status>
+                    <ProductionDate>2017-01-26T09:13:12</ProductionDate>
+                    <ThisUpdate>2016-05-19T09:44:13</ThisUpdate>
+                    <NextUpdate>2017-08-17T09:44:13</NextUpdate>
+                    <DigestAlgoAndValues>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>Gs7Xaah55dHhy+dyrSvChj4yRNA=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </DigestAlgoAndValues>
+                    <BasicSignature>
+                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                        <ReferenceDataFound>true</ReferenceDataFound>
+                        <ReferenceDataIntact>true</ReferenceDataIntact>
+                        <SignatureIntact>true</SignatureIntact>
+                        <SignatureValid>true</SignatureValid>
+                    </BasicSignature>
+                    <SigningCertificate Id="903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168"/>
+                    <CertificateChain>
+                        <ChainItem Id="903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168">
+                            <Source>OCSP_RESPONSE</Source>
+                        </ChainItem>
+                    </CertificateChain>
+                    <Info/>
+                </Revocation>
+            </Revocations>
+            <Info>
+                <Message Id="0">No CRL info found !</Message>
+            </Info>
+        </Certificate>
+    </UsedCertificates>
+    <TrustedLists/>
+</DiagnosticData>

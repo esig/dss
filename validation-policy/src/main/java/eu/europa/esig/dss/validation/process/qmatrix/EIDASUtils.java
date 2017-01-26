@@ -6,6 +6,9 @@ import javax.xml.bind.DatatypeConverter;
 
 public final class EIDASUtils {
 
+	private EIDASUtils() {
+	}
+
 	/**
 	 * Start date of the eIDAS regularisation
 	 */
@@ -17,15 +20,15 @@ public final class EIDASUtils {
 	private final static Date EIDAS_GRACE_DATE = DatatypeConverter.parseDateTime("2017-07-01T00:00:00.000Z").getTime();
 
 	public static boolean isPostEIDAS(Date date) {
-		return (date != null && date.compareTo(EIDAS_DATE) >= 0);
+		return date != null && date.compareTo(EIDAS_DATE) >= 0;
 	}
 
 	public static boolean isPreEIDAS(Date date) {
-		return (date != null && date.compareTo(EIDAS_DATE) < 0);
+		return date != null && date.compareTo(EIDAS_DATE) < 0;
 	}
 
 	public static boolean isPostGracePeriod(Date date) {
-		return (date != null && date.compareTo(EIDAS_GRACE_DATE) >= 0);
+		return date != null && date.compareTo(EIDAS_GRACE_DATE) >= 0;
 	}
 
 }

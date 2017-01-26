@@ -281,13 +281,11 @@ public class SimpleReportBuilder {
 	}
 
 	private void collectErrors(Set<String> result, XmlConstraintsConclusion constraintConclusion) {
-		if (constraintConclusion != null) {
-			if (Utils.isCollectionNotEmpty(constraintConclusion.getConstraint())) {
-				for (XmlConstraint constraint : constraintConclusion.getConstraint()) {
-					XmlName error = constraint.getError();
-					if (error != null) {
-						result.add(error.getValue());
-					}
+		if (constraintConclusion != null && Utils.isCollectionNotEmpty(constraintConclusion.getConstraint())) {
+			for (XmlConstraint constraint : constraintConclusion.getConstraint()) {
+				XmlName error = constraint.getError();
+				if (error != null) {
+					result.add(error.getValue());
 				}
 			}
 		}

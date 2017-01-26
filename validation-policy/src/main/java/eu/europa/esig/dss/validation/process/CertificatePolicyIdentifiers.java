@@ -8,6 +8,9 @@ import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
 public final class CertificatePolicyIdentifiers {
 
+	private CertificatePolicyIdentifiers() {
+	}
+
 	public static boolean isSupportedByQSCD(CertificateWrapper certificate) {
 		return hasPolicyIdOIDs(certificate, CertificatePolicyOids.QCP_PUBLIC_WITH_SSCD, CertificatePolicyOids.QCP_LEGAL_QSCD,
 				CertificatePolicyOids.QCP_NATURAL_QSCD);

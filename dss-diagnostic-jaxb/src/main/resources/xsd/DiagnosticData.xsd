@@ -284,8 +284,8 @@
 	
 	<xs:complexType name="StructuralValidation">
 		<xs:sequence>
-			<xs:element name="Valid" type="xs:boolean" />
-			<xs:element name="Message" type="xs:string" />
+			<xs:element name="Valid" type="xs:boolean" minOccurs="0" />
+			<xs:element name="Message" type="xs:string" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -462,7 +462,7 @@
 			<xs:element name="StartDate" type="xs:dateTime" />
 			<xs:element name="EndDate" type="xs:dateTime" minOccurs="0" />
 			
-			<xs:element name="CapturedQualifiers">
+			<xs:element name="CapturedQualifiers" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="Qualifier" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
@@ -470,7 +470,7 @@
 				</xs:complexType>
 			</xs:element>
 			
-			<xs:element name="AdditionalServiceInfoUris">
+			<xs:element name="AdditionalServiceInfoUris" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="URI" type="xs:string" minOccurs="0" maxOccurs="unbounded" />

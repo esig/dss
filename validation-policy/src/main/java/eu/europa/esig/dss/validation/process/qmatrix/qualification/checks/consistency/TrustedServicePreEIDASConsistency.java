@@ -3,7 +3,6 @@ package eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.consi
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.qmatrix.AdditionalServiceInformation;
 import eu.europa.esig.dss.validation.process.qmatrix.EIDASUtils;
 import eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.ServiceQualification;
@@ -20,17 +19,13 @@ public class TrustedServicePreEIDASConsistency implements TrustedServiceConditio
 		Date startDate = trustedService.getStartDate();
 		if (EIDASUtils.isPreEIDAS(startDate)) {
 			List<String> asis = trustedService.getAdditionalServiceInfos();
-			if (Utils.isCollectionNotEmpty(asis)) {
-				if (AdditionalServiceInformation.isForeSealsOnly(asis) || AdditionalServiceInformation.isForWebAuthOnly(asis)) {
-					return false;
-				}
+			if (AdditionalServiceInformation.isForeSealsOnly(asis) || AdditionalServiceInformation.isForWebAuthOnly(asis)) {
+				return false;
 			}
 
 			List<String> qualifiers = trustedService.getCapturedQualifiers();
-			if (Utils.isCollectionNotEmpty(qualifiers)) {
-				if (ServiceQualification.isQcForEseal(qualifiers) || ServiceQualification.isQcForWSA(qualifiers)) {
-					return false;
-				}
+			if (ServiceQualification.isQcForEseal(qualifiers) || ServiceQualification.isQcForWSA(qualifiers)) {
+				return false;
 			}
 		}
 
