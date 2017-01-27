@@ -12,7 +12,7 @@ This document describes some examples of how to develop in Java using the DSS fr
 
 === Scope of the document
 
-This document provides examples of code which allow easy handling of digital signatures. The examples are consistent with the Release {dssVersion} of DSS framework which can be downloaded via https://joinup.ec.europa.eu/software/sd-dss/release/all
+This document provides examples of code which allow easy handling of digital signatures. The examples are consistent with the Release {dssVersion} of DSS framework which can be downloaded via https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/DSS+-+releases
 
 Three main features can be distinguished within the framework :
 
@@ -140,9 +140,9 @@ Please note that the DSS framework is still under maintenance and new features w
 === Useful links
 
  * https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eSignature[CEF Digital]
- * https://joinup.ec.europa.eu/asset/sd-dss/description[Joinup]
  * https://github.com/esig/dss[Source code (GitHub)]
  * https://ec.europa.eu/cefdigital/code/projects/ESIG/repos/dss/browse[Source code (EC Bitbucket)]
+ * https://ec.europa.eu/cefdigital/code/projects/ESIG/repos/dss-demos/browse[Source code demonstrations (EC Bitbucket)]
  * https://ec.europa.eu/cefdigital/tracker/projects/DSS/issues[Report an issue (EC Jira)]
  * https://esig-dss.atlassian.net/projects/DSS[Old Jira] 
 
@@ -830,7 +830,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfASiCSEW
 
 Please note that you need to pass only few parameters to the service. Other parameters, although are positioned, will be overwritten by the internal implementation of the service. Therefore, the obtained signature is always based on XAdES and of DETACHED packaging.
 
-It is also possible with the framework DSS to make an extension of an ASICS signature to the level XAdES-BASELINE-T or -LT.
+It is also possible with the framework DSS to make an extension of an ASiC container to the level XAdES-BASELINE-T or -LT.
 
 == Management of signature tokens
 
