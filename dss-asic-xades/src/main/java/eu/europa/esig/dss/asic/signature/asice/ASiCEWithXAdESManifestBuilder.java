@@ -17,7 +17,7 @@ import eu.europa.esig.dss.asic.ManifestNamespace;
  * 
  * <pre>
  * <code>
- * 		<manifest:manifest xmlns:manifest="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0">
+ * 		<manifest:manifest xmlns:manifest="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0" manifest:version="1.2">
  * 			<manifest:file-entry manifest:full-path="/" manifest:media-type="application/vnd.etsi.asic-e+zip"/>
  * 			<manifest:file-entry manifest:full-path="test.txt" manifest:media-type="text/plain"/>
  * 			<manifest:file-entry manifest:full-path="test-data-file.bin" manifest:media-type="application/octet-stream"/>
@@ -37,6 +37,7 @@ public class ASiCEWithXAdESManifestBuilder {
 	public Document build() {
 		final Document documentDom = DomUtils.buildDOM();
 		final Element manifestDom = documentDom.createElementNS(ManifestNamespace.NS, ManifestNamespace.MANIFEST);
+		manifestDom.setAttribute(ManifestNamespace.VERSION, "1.2");
 		documentDom.appendChild(manifestDom);
 
 		final Element rootDom = DomUtils.addElement(documentDom, manifestDom, ManifestNamespace.NS, ManifestNamespace.FILE_ENTRY);

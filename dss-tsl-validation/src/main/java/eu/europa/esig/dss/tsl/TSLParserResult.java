@@ -30,6 +30,7 @@ import java.util.List;
 public class TSLParserResult {
 
 	private int sequenceNumber;
+	private int version;
 	private String territory;
 	private Date issueDate;
 	private Date nextUpdateDate;
@@ -44,6 +45,14 @@ public class TSLParserResult {
 
 	public void setSequenceNumber(int sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
 	}
 
 	public String getTerritory() {

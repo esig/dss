@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.security.cert.X509CRL;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,7 +38,6 @@ import org.w3c.dom.Element;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.utils.Utils;
@@ -103,7 +101,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 			if (revocationToken instanceof CRLToken) {
 
-				final X509CRL crl = ((CRLToken) revocationToken).getX509crl();
+				final CRLToken crl = ((CRLToken) revocationToken);
 
 				final Element crlRefDom = DomUtils.addElement(documentDom, crlRefsDom, XAdESNamespaces.XAdES, "xades:CRLRef");
 
@@ -112,8 +110,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 				DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
 				incorporateDigestMethod(digestAlgAndValueDom, digestAlgorithm);
 
-				final InMemoryDocument inMemoryDocument = new InMemoryDocument(revocationToken.getEncoded());
-				incorporateDigestValue(digestAlgAndValueDom, digestAlgorithm, inMemoryDocument);
+				incorporateDigestValue(digestAlgAndValueDom, digestAlgorithm, revocationToken);
 
 				final Element crlIdentifierDom = DomUtils.addElement(documentDom, crlRefDom, XAdESNamespaces.XAdES, "xades:CRLIdentifier");
 				// crlIdentifierDom.setAttribute("URI",".crl");
@@ -207,8 +204,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 					DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
 					incorporateDigestMethod(digestAlgAndValueDom, digestAlgorithm);
 
-					final InMemoryDocument inMemoryDocument = new InMemoryDocument(revocationToken.getEncoded());
-					incorporateDigestValue(digestAlgAndValueDom, digestAlgorithm, inMemoryDocument);
+					incorporateDigestValue(digestAlgAndValueDom, digestAlgorithm, revocationToken);
 				}
 			}
 		}

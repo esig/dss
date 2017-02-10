@@ -46,13 +46,14 @@ public final class ASiCUtils {
 	}
 
 	public static boolean isASiCMimeType(final MimeType asicMimeType) {
-		return MimeType.ASICS.equals(asicMimeType) || MimeType.ASICE.equals(asicMimeType);
+		return MimeType.ASICS.equals(asicMimeType) || MimeType.ASICE.equals(asicMimeType) || MimeType.ODT.equals(asicMimeType)
+				|| MimeType.ODS.equals(asicMimeType);
 	}
 
 	public static ASiCContainerType getASiCContainerType(final MimeType asicMimeType) {
 		if (MimeType.ASICS == asicMimeType) {
 			return ASiCContainerType.ASiC_S;
-		} else if (MimeType.ASICE == asicMimeType) {
+		} else if (MimeType.ASICE == asicMimeType || MimeType.ODT == asicMimeType || MimeType.ODS.equals(asicMimeType)) {
 			return ASiCContainerType.ASiC_E;
 		} else {
 			throw new IllegalArgumentException("Not allowed mimetype " + asicMimeType);
@@ -141,25 +142,15 @@ public final class ASiCUtils {
 	}
 
 	public static ASiCContainerType getContainerType(DSSDocument archive, DSSDocument mimetype, String zipComment, List<DSSDocument> signedDocuments) {
-		ASiCContainerType containerType = null;
-		MimeType mimeTypeFromContainer = archive.getMimeType();
-		if (ASiCUtils.isASiCMimeType(mimeTypeFromContainer)) {
-			containerType = ASiCUtils.getASiCContainerType(mimeTypeFromContainer);
-		} else if (mimetype != null) {
-			MimeType mimeTypeFromEmbeddedFile = ASiCUtils.getMimeType(mimetype);
-			if (ASiCUtils.isASiCMimeType(mimeTypeFromEmbeddedFile)) {
-				containerType = ASiCUtils.getASiCContainerType(mimeTypeFromEmbeddedFile);
+		ASiCContainerType containerType = getContainerTypeFromMimeType(archive.getMimeType());
+		if (containerType == null) {
+			containerType = getContainerTypeFromMimeTypeDocument(mimetype);
+			if (containerType == null) {
+				containerType = getContainerTypeFromZipComment(zipComment);
 			}
-		} else if (Utils.isStringNotBlank(zipComment)) {
-			int indexOf = zipComment.indexOf(MIME_TYPE_COMMENT);
-			if (indexOf > -1) {
-				String asicCommentMimeTypeString = zipComment.substring(MIME_TYPE_COMMENT.length() + indexOf);
-				MimeType mimeTypeFromZipComment = MimeType.fromMimeTypeString(asicCommentMimeTypeString);
-				if (ASiCUtils.isASiCMimeType(mimeTypeFromZipComment)) {
-					containerType = ASiCUtils.getASiCContainerType(mimeTypeFromZipComment);
-				}
-			}
-		} else {
+		}
+
+		if (containerType == null) {
 			LOG.warn("Unable to define the ASiC Container type with its properties");
 			if (Utils.collectionSize(signedDocuments) <= 1) {
 				containerType = ASiCContainerType.ASiC_S;
@@ -167,7 +158,35 @@ public final class ASiCUtils {
 				containerType = ASiCContainerType.ASiC_E;
 			}
 		}
+
 		return containerType;
+	}
+
+	private static ASiCContainerType getContainerTypeFromZipComment(String zipComment) {
+		if (Utils.isStringNotBlank(zipComment)) {
+			int indexOf = zipComment.indexOf(MIME_TYPE_COMMENT);
+			if (indexOf > -1) {
+				String asicCommentMimeTypeString = zipComment.substring(MIME_TYPE_COMMENT.length() + indexOf);
+				MimeType mimeTypeFromZipComment = MimeType.fromMimeTypeString(asicCommentMimeTypeString);
+				return getContainerTypeFromMimeType(mimeTypeFromZipComment);
+			}
+		}
+		return null;
+	}
+
+	private static ASiCContainerType getContainerTypeFromMimeTypeDocument(DSSDocument mimetype) {
+		if (mimetype != null) {
+			MimeType mimeTypeFromEmbeddedFile = ASiCUtils.getMimeType(mimetype);
+			return getContainerTypeFromMimeType(mimeTypeFromEmbeddedFile);
+		}
+		return null;
+	}
+
+	private static ASiCContainerType getContainerTypeFromMimeType(MimeType mimeType) {
+		if (ASiCUtils.isASiCMimeType(mimeType)) {
+			return ASiCUtils.getASiCContainerType(mimeType);
+		}
+		return null;
 	}
 
 }

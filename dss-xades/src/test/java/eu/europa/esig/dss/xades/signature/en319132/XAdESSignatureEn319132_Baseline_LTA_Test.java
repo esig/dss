@@ -5,7 +5,6 @@ import java.util.Date;
 
 import org.junit.Before;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
@@ -23,7 +22,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class XAdESSignatureEn319132_Baseline_LTA_Test extends AbstractTestDocumentSignatureService {
+public class XAdESSignatureEn319132_Baseline_LTA_Test extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -75,7 +74,7 @@ public class XAdESSignatureEn319132_Baseline_LTA_Test extends AbstractTestDocume
 	}
 
 	@Override
-	protected AbstractSignatureParameters getSignatureParameters() {
+	protected XAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 

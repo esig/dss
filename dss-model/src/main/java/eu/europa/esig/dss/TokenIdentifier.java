@@ -21,7 +21,6 @@
 package eu.europa.esig.dss;
 
 import java.io.Serializable;
-import java.security.MessageDigest;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -32,24 +31,14 @@ import eu.europa.esig.dss.x509.Token;
  */
 public final class TokenIdentifier implements Serializable {
 
-	private Digest tokenDigest;
+	private final Digest tokenDigest;
 
-	TokenIdentifier(byte[] encodedToken) {
-		if (encodedToken == null) {
-			throw new DSSException("The encodedToken cannot be null!");
-		}
-		try {
-			DigestAlgorithm algo = DigestAlgorithm.SHA256;
-			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			byte[] digestValue = md.digest(encodedToken);
-			this.tokenDigest = new Digest(algo, digestValue);
-		} catch (Exception e) {
-			throw new DSSException(e);
-		}
+	TokenIdentifier(DigestAlgorithm digestAlgo, byte[] digest) {
+		this.tokenDigest = new Digest(DigestAlgorithm.SHA256, digest);
 	}
 
 	public TokenIdentifier(final Token token) {
-		this(token.getEncoded());
+		this(DigestAlgorithm.SHA256, token.getDigest(DigestAlgorithm.SHA256));
 	}
 
 	/**

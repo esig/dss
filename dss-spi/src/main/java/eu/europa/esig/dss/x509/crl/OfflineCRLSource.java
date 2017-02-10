@@ -47,7 +47,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 */
 	protected List<X509CRL> x509CRLList;
 
-	protected HashMap<CertificateToken, CRLToken> validCRLTokenList = new HashMap<CertificateToken, CRLToken>();
+	protected Map<CertificateToken, CRLToken> validCRLTokenList = new HashMap<CertificateToken, CRLToken>();
 
 	/**
 	 * This {@code HashMap} contains the {@code CRLValidity} object for each

@@ -17,15 +17,15 @@
       <ReferenceDataIntact Level="FAIL"/>
       <SignatureIntact Level="FAIL"/>
       <ProspectiveCertificateChain Level="FAIL"/>
-      <TrustedServiceTypeIdentifier Level="WARN">
-        <Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id>
-      </TrustedServiceTypeIdentifier>
-      <TrustedServiceStatus Level="FAIL">
-        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id>
-        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id>
-        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Id>
-        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id>
-      </TrustedServiceStatus>
+<!--       <TrustedServiceTypeIdentifier Level="WARN"> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id> -->
+<!--       </TrustedServiceTypeIdentifier> -->
+<!--       <TrustedServiceStatus Level="FAIL"> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Id> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id> -->
+<!--       </TrustedServiceStatus> -->
       <SigningCertificate>
         <Recognition Level="FAIL"/>
         <Signature Level="FAIL"/>
@@ -39,7 +39,7 @@
         <NotRevoked Level="FAIL"/>
         <NotOnHold Level="FAIL"/>
         <Qualification Level="WARN"/>
-        <SupportedBySSCD Level="WARN"/>
+        <SupportedByQSCD Level="WARN"/>
         <IssuedToLegalPerson Level="INFORM"/>
         <Cryptographic Level="FAIL">
           <AcceptableEncryptionAlgo>
@@ -148,18 +148,18 @@
       <ReferenceDataIntact Level="FAIL"/>
       <SignatureIntact Level="FAIL"/>
       <ProspectiveCertificateChain Level="FAIL"/>
-      <TrustedServiceTypeIdentifier Level="WARN">
-        <Id>http://uri.etsi.org/TrstSvc/Svctype/TSA</Id>
-        <Id>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</Id>
-        <Id>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-QC</Id>
-        <Id>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-AdESQCandQES</Id>
-      </TrustedServiceTypeIdentifier>
-      <TrustedServiceStatus Level="WARN">
-        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id>
-        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id>
-        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Id>
-        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id>
-      </TrustedServiceStatus>
+<!--       <TrustedServiceTypeIdentifier Level="WARN"> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/Svctype/TSA</Id> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</Id> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-QC</Id> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-AdESQCandQES</Id> -->
+<!--       </TrustedServiceTypeIdentifier> -->
+<!--       <TrustedServiceStatus Level="WARN"> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Id> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id> -->
+<!--       </TrustedServiceStatus> -->
       <SigningCertificate>
         <Recognition Level="FAIL"/>
         <Signature Level="FAIL"/>
@@ -248,17 +248,17 @@
       <ReferenceDataIntact Level="FAIL"/>
       <SignatureIntact Level="FAIL"/>
       <ProspectiveCertificateChain Level="FAIL"/>
-      <TrustedServiceTypeIdentifier Level="FAIL">
-        <Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id>
-        <Id>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP</Id>
-        <Id>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP/QC</Id>
-      </TrustedServiceTypeIdentifier>
-      <TrustedServiceStatus Level="FAIL">
-        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id>
-        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id>
-        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Id>
-        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id>
-      </TrustedServiceStatus>
+<!--       <TrustedServiceTypeIdentifier Level="FAIL"> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP</Id> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP/QC</Id> -->
+<!--       </TrustedServiceTypeIdentifier> -->
+<!--       <TrustedServiceStatus Level="FAIL"> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Id> -->
+<!--         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id> -->
+<!--       </TrustedServiceStatus> -->
       <SigningCertificate>
         <Recognition Level="FAIL"/>
         <Signature Level="FAIL"/>

@@ -41,7 +41,12 @@ public class MimeType implements Serializable {
 	public static final MimeType PKCS7 = new MimeType("application/pkcs7-signature");
 	public static final MimeType ASICS = new MimeType("application/vnd.etsi.asic-s+zip");
 	public static final MimeType ASICE = new MimeType("application/vnd.etsi.asic-e+zip");
+	public static final MimeType ODT = new MimeType("application/vnd.oasis.opendocument.text");
+	public static final MimeType ODS = new MimeType("application/vnd.oasis.opendocument.spreadsheet");
 	public static final MimeType TEXT = new MimeType("text/plain");
+
+	public static final MimeType PNG = new MimeType("image/png");
+	public static final MimeType JPEG = new MimeType("image/jpeg");
 
 	private String mimeTypeString;
 
@@ -62,7 +67,15 @@ public class MimeType implements Serializable {
 			// estonian bdoc file type is handled as asic-e document
 			put("bdoc", ASICE);
 
+			// ASiC-E + XML (not XAdES)
+			put("odt", ODT);
+			put("ods", ODS);
+
 			put("txt", TEXT);
+
+			put("png", PNG);
+			put("jpg", JPEG);
+			put("jpeg", JPEG);
 		}
 	};
 

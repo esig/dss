@@ -28,30 +28,35 @@ import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 
 /**
- * Connection through available API to the SSCD (SmartCard, MSCAPI, PKCS#12)
+ * Connection through available API to the QSCD (SmartCard, MSCAPI, PKCS#12)
  *
  */
 public interface SignatureTokenConnection {
 
 	/**
-	 * Closes the connection to the SSCD.
+	 * Closes the connection to the QSCD.
 	 */
 	void close();
 
 	/**
-	 * Retrieves all the available keys (private keys entries) from the SSCD.
+	 * Retrieves all the available keys (private keys entries) from the QSCD.
 	 *
 	 * @return List of encapsulated private keys
-	 * @throws DSSException If there is any problem during the retrieval process
+	 * @throws DSSException
+	 *             If there is any problem during the retrieval process
 	 */
 	List<DSSPrivateKeyEntry> getKeys() throws DSSException;
 
 	/**
-	 * @param toBeSigned      The data that need to be signed
-	 * @param digestAlgorithm The digest algorithm to be used before signing
-	 * @param keyEntry        The private key to be used
+	 * @param toBeSigned
+	 *            The data that need to be signed
+	 * @param digestAlgorithm
+	 *            The digest algorithm to be used before signing
+	 * @param keyEntry
+	 *            The private key to be used
 	 * @return The array of bytes representing the signature value
-	 * @throws DSSException If there is any problem during the signature process
+	 * @throws DSSException
+	 *             If there is any problem during the signature process
 	 */
 	SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException;
 

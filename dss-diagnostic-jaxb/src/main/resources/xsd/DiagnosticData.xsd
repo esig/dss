@@ -23,6 +23,16 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
+				
+				<xs:element name="TrustedLists" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="TrustedList" type="TrustedList" minOccurs="0" maxOccurs="unbounded" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ListOfTrustedLists" type="TrustedList" minOccurs="0" />
+				
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -157,6 +167,29 @@
 			<xs:element name="OrganizationalUnit" type="xs:string" minOccurs="0"/>
 			<xs:element name="Surname" type="xs:string" minOccurs="0"/>
 			<xs:element name="Pseudonym" type="xs:string" minOccurs="0"/>
+			
+			<xs:element name="AuthorityInformationAccessUrls" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Url" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="CRLDistributionPoints" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Url" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="OCSPAccessUrls" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Url" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
 			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValues" minOccurs="0" />
 			<xs:element name="NotAfter" type="xs:dateTime" />
 			<xs:element name="NotBefore" type="xs:dateTime" />
@@ -184,32 +217,53 @@
 			<xs:element name="CertificatePolicyIds" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="oid" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="oid" type="OID" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="QCStatementIds" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="oid" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="oid" type="OID" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="QCTypes" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="oid" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="oid" type="OID" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+						
+			<xs:element name="TrustedServiceProviders">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TrustedServiceProvider" type="TrustedServiceProvider" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
 			
-			<xs:element name="TrustedServiceProvider" type="TrustedServiceProvider" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="Revocation" type="Revocation" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Revocations" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Revocation" type="Revocation" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
 			<xs:element name="Info" type="InfoType" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 	</xs:complexType>
 	
+	<xs:complexType name="OID">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="Description" type="xs:string" use="optional" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
 	
 	<xs:complexType name="DistinguishedName">
 		<xs:simpleContent>
@@ -230,8 +284,8 @@
 	
 	<xs:complexType name="StructuralValidation">
 		<xs:sequence>
-			<xs:element name="Valid" type="xs:boolean" />
-			<xs:element name="Message" type="xs:string" />
+			<xs:element name="Valid" type="xs:boolean" minOccurs="0" />
+			<xs:element name="Message" type="xs:string" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -346,36 +400,6 @@
 		<xs:attribute name="Type" type="xs:string" use="required" />
 	</xs:complexType>
 	
-	<xs:complexType name="TrustedServiceProvider">
-		<xs:sequence>
-			<xs:element name="TSPName" type="xs:string" />
-			<xs:element name="TSPServiceName" type="xs:string" />
-			<xs:element name="TSPServiceType" type="xs:string" />
-			<xs:element name="Status" type="xs:string" />
-			<xs:element name="StartDate" type="xs:dateTime" />
-			<xs:element name="EndDate" type="xs:dateTime" minOccurs="0" />
-			
-			<xs:element name="Qualifiers" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Qualifier" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name="AdditionalServiceInfoUris" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="URI" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name="expiredCertsRevocationInfo" type="xs:dateTime" minOccurs="0" />
-			<xs:element name="WellSigned" type="xs:boolean" />
-		</xs:sequence>
-	</xs:complexType>
-	
 	<xs:complexType name="Revocation">
 		<xs:sequence>
 			<xs:element name="Origin" type="xs:string" />
@@ -400,6 +424,62 @@
 			<xs:element name="Info" type="InfoType" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
+	</xs:complexType>
+	
+	<xs:complexType name="TrustedList">
+		<xs:sequence>
+			<xs:element name="CountryCode" type="xs:string" />
+			<xs:element name="Url" type="xs:string" />	
+			<xs:element name="SequenceNumber" type="xs:int" minOccurs="0" />
+			<xs:element name="Version" type="xs:int" minOccurs="0" />
+			<xs:element name="LastLoading" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="IssueDate" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="NextUpdate" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="WellSigned" type="xs:boolean" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="TrustedServiceProvider">
+		<xs:sequence>
+			<xs:element name="TSPName" type="xs:string" />
+			<xs:element name="TSPServiceName" type="xs:string" />
+			<xs:element name="CountryCode" type="xs:string" />
+			
+			<xs:element name="TrustedServices">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="TrustedService" type="TrustedService" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="TrustedService">
+		<xs:sequence>
+			<xs:element name="ServiceType" type="xs:string" />
+			<xs:element name="Status" type="xs:string" />
+			<xs:element name="StartDate" type="xs:dateTime" />
+			<xs:element name="EndDate" type="xs:dateTime" minOccurs="0" />
+			
+			<xs:element name="CapturedQualifiers" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Qualifier" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="AdditionalServiceInfoUris" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="URI" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="expiredCertsRevocationInfo" type="xs:dateTime" minOccurs="0" />
+		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="DigestAlgoAndValues">

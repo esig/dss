@@ -1,9 +1,7 @@
 package eu.europa.esig.dss.client.ocsp;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -26,14 +24,6 @@ public class OnlineOCSPSourceTest {
 	public void init() {
 		certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
 		rootToken = DSSUtils.loadCertificate(new File("src/test/resources/CALT.crt"));
-	}
-
-	@Test
-	public void getAccessLocation() {
-		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
-		ocspSource.setDataLoader(new OCSPDataLoader());
-		assertNull(ocspSource.getAccessLocation(rootToken));
-		assertEquals("http://ocsp.luxtrust.lu", ocspSource.getAccessLocation(certificateToken));
 	}
 
 	@Test

@@ -26,21 +26,29 @@ import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.cert.CRLException;
 import java.security.cert.X509CRL;
+import java.util.Date;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1OctetString;
+import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.x509.DistributionPointName;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuingDistributionPoint;
 import org.bouncycastle.asn1.x509.ReasonFlags;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.OID;
+import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.tsl.KeyUsageBit;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -48,6 +56,8 @@ import eu.europa.esig.dss.x509.CertificateToken;
  * class for all real implementations.
  */
 public class CRLUtils {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CRLUtils.class);
 
 	/**
 	 * This method verifies: the signature of the CRL, the key usage of its
@@ -68,12 +78,24 @@ public class CRLUtils {
 		final CRLValidity crlValidity = new CRLValidity();
 		crlValidity.setX509CRL(x509CRL);
 
+		try {
+			crlValidity.setCrlEncoded(x509CRL.getEncoded());
+		} catch (CRLException e) {
+			LOG.error("Unable to read the CRL binaries", e);
+		}
+
+		final String sigAlgOID = x509CRL.getSigAlgOID();
+		crlValidity.setSignatureAlgorithm(SignatureAlgorithm.forOID(sigAlgOID));
+
 		final X500Principal x509CRLIssuerX500Principal = DSSUtils.getNormalizedX500Principal(x509CRL.getIssuerX500Principal());
 		final X500Principal issuerTokenSubjectX500Principal = DSSUtils.getNormalizedX500Principal(issuerToken.getSubjectX500Principal());
 		if (x509CRLIssuerX500Principal.equals(issuerTokenSubjectX500Principal)) {
 
 			crlValidity.setIssuerX509PrincipalMatches(true);
 		}
+		crlValidity.setThisUpdate(x509CRL.getThisUpdate());
+		crlValidity.setNextUpdate(x509CRL.getNextUpdate());
+		crlValidity.setExpiredCertsOnCRL(getExpiredCertsOnCRL(x509CRL));
 		checkCriticalExtensions(x509CRL, crlValidity);
 		checkSignatureValue(x509CRL, issuerToken, crlValidity);
 		if (crlValidity.isSignatureIntact()) {
@@ -90,9 +112,7 @@ public class CRLUtils {
 	}
 
 	private static void checkSignatureValue(final X509CRL x509CRL, final CertificateToken issuerToken, final CRLValidity crlValidity) {
-
 		try {
-
 			x509CRL.verify(issuerToken.getPublicKey());
 			crlValidity.setSignatureIntact(true);
 			crlValidity.setIssuerToken(issuerToken);
@@ -110,15 +130,13 @@ public class CRLUtils {
 	}
 
 	private static void checkCriticalExtensions(final X509CRL x509CRL, final CRLValidity crlValidity) {
-
 		final Set<String> criticalExtensionOIDs = x509CRL.getCriticalExtensionOIDs();
 		if ((criticalExtensionOIDs == null) || (criticalExtensionOIDs.size() == 0)) {
 			crlValidity.setUnknownCriticalExtension(false);
 		} else {
 
 			byte[] extensionValue = x509CRL.getExtensionValue(Extension.issuingDistributionPoint.getId());
-			IssuingDistributionPoint issuingDistributionPoint = IssuingDistributionPoint.getInstance(ASN1OctetString.getInstance(extensionValue)
-					.getOctets());
+			IssuingDistributionPoint issuingDistributionPoint = IssuingDistributionPoint.getInstance(ASN1OctetString.getInstance(extensionValue).getOctets());
 			final boolean onlyAttributeCerts = issuingDistributionPoint.onlyContainsAttributeCerts();
 			final boolean onlyCaCerts = issuingDistributionPoint.onlyContainsCACerts();
 			final boolean onlyUserCerts = issuingDistributionPoint.onlyContainsUserCerts();
@@ -141,5 +159,22 @@ public class CRLUtils {
 				crlValidity.setUnknownCriticalExtension(false);
 			}
 		}
+	}
+
+	public static Date getExpiredCertsOnCRL(X509CRL x509crl) {
+		Set<String> nonCriticalExtensionOIDs = x509crl.getNonCriticalExtensionOIDs();
+		if ((nonCriticalExtensionOIDs != null) && nonCriticalExtensionOIDs.contains(OID.id_ce_expiredCertsOnCRL.getId())) {
+			byte[] extensionValue = x509crl.getExtensionValue(OID.id_ce_expiredCertsOnCRL.getId());
+			if (Utils.isArrayNotEmpty(extensionValue)) {
+				try {
+					ASN1OctetString octetString = (ASN1OctetString) ASN1Primitive.fromByteArray(extensionValue);
+					ASN1GeneralizedTime generalTime = (ASN1GeneralizedTime) ASN1Primitive.fromByteArray(octetString.getOctets());
+					return generalTime.getDate();
+				} catch (Exception e) {
+					LOG.error("Unable to retrieve id_ce_expiredCertsOnCRL on CRL : " + e.getMessage(), e);
+				}
+			}
+		}
+		return null;
 	}
 }

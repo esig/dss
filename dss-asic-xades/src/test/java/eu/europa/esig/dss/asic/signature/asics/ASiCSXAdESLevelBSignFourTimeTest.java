@@ -101,7 +101,7 @@ public class ASiCSXAdESLevelBSignFourTimeTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
-		reports.print();
+		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<String> signatureIdList = diagnosticData.getSignatureIdList();

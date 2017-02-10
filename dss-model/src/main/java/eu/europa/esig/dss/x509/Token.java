@@ -21,10 +21,15 @@
 package eu.europa.esig.dss.x509;
 
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.security.auth.x500.X500Principal;
 
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.TokenIdentifier;
 
@@ -72,6 +77,8 @@ public abstract class Token implements Serializable {
 	 * The token identifier to avoid to compute more than one time the digest value
 	 */
 	private TokenIdentifier tokenIdentifier;
+
+	private Map<DigestAlgorithm, byte[]> digests = new HashMap<DigestAlgorithm, byte[]>();
 
 	@Override
 	public final boolean equals(Object obj) {
@@ -242,5 +249,26 @@ public abstract class Token implements Serializable {
 	 * @return the encoded form of the wrapped token
 	 */
 	public abstract byte[] getEncoded();
+
+	/**
+	 * Returns the digest value of the wrapped token
+	 * 
+	 * @param digestAlgorithm
+	 *            the requested digest algorithm
+	 * @return the digest value in binaries
+	 */
+	public byte[] getDigest(DigestAlgorithm digestAlgorithm) {
+		byte[] digestValue = digests.get(digestAlgorithm);
+		if (digestValue == null) {
+			try {
+				MessageDigest md = MessageDigest.getInstance(digestAlgorithm.getJavaName());
+				digestValue = md.digest(getEncoded());
+				digests.put(digestAlgorithm, digestValue);
+			} catch (Exception e) {
+				throw new DSSException("Unable to compute digest with algo " + digestAlgorithm, e);
+			}
+		}
+		return digestValue;
+	}
 
 }

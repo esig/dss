@@ -14,11 +14,18 @@ import eu.europa.esig.dss.validation.reports.dto.ReportsDTO;
 /**
  * This REST interface provides operations for the validation of signature.
  */
-@Path("ValidationService")
+@Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public interface RestDocumentValidationService extends Serializable {
 
+	/**
+	 * This method returns the result of the validation of the signed file. The results contains a Diagnostic Data, a
+	 * simple report and a detailed report
+	 * 
+	 * @param dataToValidate
+	 * @return
+	 */
 	@POST
 	@Path("validateSignature")
 	ReportsDTO validateSignature(DataToValidateDTO dataToValidate);

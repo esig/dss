@@ -35,7 +35,7 @@ import eu.europa.esig.dss.ToBeSigned;
 /**
  * This REST interface provides operations for the signature creation and for its extension.
  */
-@Path("SignatureOneDocumentService")
+@Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public interface RestDocumentSignatureService extends Serializable {

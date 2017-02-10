@@ -558,15 +558,33 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * </SigningCertificate>
 	 */
 	private void incorporateSigningCertificate() {
-		String signingCertificate = XAdESNamespaces.getXADES_SIGNING_CERTIFICATE();
-		if (params.isEn319132()) {
-			signingCertificate = XAdESNamespaces.getXADES_SIGNING_CERTIFICATE_V2();
-		}
-		final Element signingCertificateDom = DomUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, signingCertificate);
-
 		final Set<CertificateToken> certificates = new HashSet<CertificateToken>();
 		certificates.add(params.getSigningCertificate());
-		incorporateCertificateRef(signingCertificateDom, certificates);
+
+		if (params.isEn319132()) {
+			incorporateSigningCertificateV2(certificates);
+		} else {
+			incorporateSigningCertificateV1(certificates);
+		}
+	}
+
+	private void incorporateSigningCertificateV1(Set<CertificateToken> certificates) {
+		Element signingCertificateDom = DomUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES, XAdESNamespaces.getXADES_SIGNING_CERTIFICATE());
+
+		for (final CertificateToken certificate : certificates) {
+			final Element certDom = incorporateCert(signingCertificateDom, certificate);
+			incorporateIssuerV1(certDom, certificate);
+		}
+	}
+
+	private void incorporateSigningCertificateV2(Set<CertificateToken> certificates) {
+		Element signingCertificateDom = DomUtils.addElement(documentDom, signedSignaturePropertiesDom, XAdES,
+				XAdESNamespaces.getXADES_SIGNING_CERTIFICATE_V2());
+
+		for (final CertificateToken certificate : certificates) {
+			final Element certDom = incorporateCert(signingCertificateDom, certificate);
+			incorporateIssuerV2(certDom, certificate);
+		}
 	}
 
 	/**

@@ -68,7 +68,7 @@ public class ValidateSignedXmlXadesBWithCustomPolicy extends Cookbook {
 		verifier.setTrustedCertSource(trustedCertSource);
 		validator.setCertificateVerifier(verifier);
 
-		Reports reports = validator.validateDocument(getPathFromResource("/constraints.xml"));
+		Reports reports = validator.validateDocument(getPathFromResource("/constraint.xml"));
 
 		InputStream is = new ByteArrayInputStream(reports.getXmlSimpleReport().getBytes("UTF-8"));
 		DSSUtils.saveToFile(is, "target/validationXmlXadesBWithCustomPolicy_simpleReport.xml");

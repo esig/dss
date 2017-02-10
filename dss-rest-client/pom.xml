@@ -4,7 +4,7 @@
   <parent>
     <groupId>eu.europa.ec.joinup.sd-dss</groupId>
     <artifactId>sd-dss</artifactId>
-    <version>4.8-SNAPSHOT</version>
+    <version>5.0.RC1</version>
   </parent>
   
   <artifactId>dss-rest-client</artifactId>
@@ -17,29 +17,8 @@
     	<artifactId>dss-model</artifactId>
   	</dependency>
 	<dependency>
-		<groupId>org.apache.cxf</groupId>
-		<artifactId>cxf-rt-rs-client</artifactId>
+		<groupId>javax.ws.rs</groupId>
+		<artifactId>javax.ws.rs-api</artifactId>
 	</dependency>
-	<dependency>
-	    <groupId>com.fasterxml.jackson.jaxrs</groupId>
-        <artifactId>jackson-jaxrs-json-provider</artifactId>
-	</dependency>
-		  	
-  	<dependency>
-  		<groupId>org.springframework</groupId>
-  		<artifactId>spring-test</artifactId>
-  		<scope>test</scope>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.springframework</groupId>
-  		<artifactId>spring-context-support</artifactId>
-  		<scope>test</scope>
- 	</dependency>
-	<dependency>
-		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-		<artifactId>dss-test</artifactId>
-		<scope>test</scope>
-	</dependency>
-  	
   </dependencies>
 </project>

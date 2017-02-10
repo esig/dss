@@ -86,8 +86,7 @@ public class OCSPToken extends RevocationToken {
 		this.extraInfo = new TokenValidationExtraInfo();
 	}
 
-	public boolean extractInfo() {
-
+	public void extractInfo() {
 		if (basicOCSPResp != null) {
 			this.productionDate = basicOCSPResp.getProducedAt();
 			this.signatureAlgorithm = SignatureAlgorithm.forOID(basicOCSPResp.getSignatureAlgOID().getId());
@@ -100,14 +99,13 @@ public class OCSPToken extends RevocationToken {
 				extractStatusInfo(bestSingleResp);
 			}
 		}
-
-		return true;
 	}
 
 	private SingleResp getBestSingleResp(final BasicOCSPResp basicOCSPResp, final CertificateID certId) {
 		Date bestUpdate = null;
 		SingleResp bestSingleResp = null;
-		for (final SingleResp singleResp : basicOCSPResp.getResponses()) {
+		SingleResp[] responses = getResponses(basicOCSPResp);
+		for (final SingleResp singleResp : responses) {
 			if (DSSRevocationUtils.matches(certId, singleResp)) {
 				final Date thisUpdate = singleResp.getThisUpdate();
 				if ((bestUpdate == null) || thisUpdate.after(bestUpdate)) {
@@ -117,6 +115,17 @@ public class OCSPToken extends RevocationToken {
 			}
 		}
 		return bestSingleResp;
+	}
+
+	private SingleResp[] getResponses(final BasicOCSPResp basicOCSPResp) {
+		SingleResp[] responses = new SingleResp[] {};
+		try {
+			responses = basicOCSPResp.getResponses();
+		} catch (Exception e) {
+			logger.error("Unable to parse the responses object from OCSP", e);
+			extraInfo.infoOCSPException("Unable to parse the responses object from OCSP : " + e.getMessage());
+		}
+		return responses;
 	}
 
 	private void extractStatusInfo(SingleResp bestSingleResp) {
@@ -278,10 +287,9 @@ public class OCSPToken extends RevocationToken {
 		try {
 			if (basicOCSPResp != null) {
 				final OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(basicOCSPResp);
-				final byte[] bytes = ocspResp.getEncoded();
-				return bytes;
+				return ocspResp.getEncoded();
 			} else {
-				return sourceURL.getBytes("UTF-8");
+				throw new DSSException("Empty OCSP response");
 			}
 		} catch (IOException e) {
 			throw new DSSException("OCSP encoding error: " + e.getMessage(), e);

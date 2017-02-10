@@ -3,6 +3,7 @@ package eu.europa.esig.dss.x509.crl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -24,6 +25,9 @@ public class CRLUtilsTest {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrs2.crt"));
 		CRLValidity validCRL = CRLUtils.isValidCRL(x509CRL, certificate);
 		assertNotNull(validCRL);
+		assertNotNull(validCRL.getSignatureAlgorithm());
+		assertNotNull(validCRL.getThisUpdate());
+		assertNotNull(validCRL.getNextUpdate());
 		assertTrue(validCRL.isIssuerX509PrincipalMatches());
 		assertFalse(validCRL.isUnknownCriticalExtension());
 		assertTrue(validCRL.isSignatureIntact());
@@ -56,6 +60,15 @@ public class CRLUtilsTest {
 
 		certificate = DSSUtils.loadCertificate(new File("src/test/resources/TSP_Certificate_2014.crt"));
 		assertFalse(CRLUtils.hasCRLSignKeyUsage(certificate));
+	}
+
+	@Test
+	public void getExpiredCertsOnCRL() throws Exception {
+		X509CRL x509crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/crl_with_expiredCertsOnCRL_extension.crl"));
+		assertNotNull(CRLUtils.getExpiredCertsOnCRL(x509crl));
+
+		x509crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/LTRCA.crl"));
+		assertNull(CRLUtils.getExpiredCertsOnCRL(x509crl));
 	}
 
 }

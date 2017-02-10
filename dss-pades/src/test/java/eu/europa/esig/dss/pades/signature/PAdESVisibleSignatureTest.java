@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
 
@@ -33,6 +34,7 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
@@ -90,7 +92,7 @@ public class PAdESVisibleSignatureTest {
 	@Test
 	public void testGeneratedImageOnly() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(new File("src/test/resources/small-red.jpg"));
+		imageParameters.setImage(new FileDocument(new File("src/test/resources/small-red.jpg")));
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
 		signatureParameters.setImageParameters(imageParameters);
@@ -99,9 +101,32 @@ public class PAdESVisibleSignatureTest {
 	}
 
 	@Test
+	public void testGeneratedImageOnlyPNG() throws IOException {
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new FileDocument(new File("src/test/resources/signature-image.png")));
+		imageParameters.setxAxis(100);
+		imageParameters.setyAxis(100);
+		signatureParameters.setImageParameters(imageParameters);
+
+		signAndValidate();
+	}
+
+	@Test
+	public void testGeneratedImageOnlyPngUnZoom() throws IOException {
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new FileDocument(new File("src/test/resources/signature-image.png")));
+		imageParameters.setxAxis(100);
+		imageParameters.setyAxis(100);
+		imageParameters.setZoom(50); // reduces 50%
+		signatureParameters.setImageParameters(imageParameters);
+
+		signAndValidate();
+	}
+
+	@Test
 	public void testGeneratedImageAndTextOnTop() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(new File("src/test/resources/small-red.jpg"));
+		imageParameters.setImage(new InMemoryDocument(new FileInputStream("src/test/resources/small-red.jpg")));
 		imageParameters.setxAxis(200);
 		imageParameters.setyAxis(300);
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
@@ -118,7 +143,7 @@ public class PAdESVisibleSignatureTest {
 	@Test
 	public void testGeneratedImageAndTextOnLeft() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(new File("src/test/resources/small-red.jpg"));
+		imageParameters.setImage(new FileDocument(new File("src/test/resources/small-red.jpg")));
 		imageParameters.setxAxis(200);
 		imageParameters.setyAxis(300);
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();

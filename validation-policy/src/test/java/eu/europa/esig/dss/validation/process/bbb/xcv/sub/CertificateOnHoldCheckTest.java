@@ -27,7 +27,7 @@ public class CertificateOnHoldCheckTest {
 		xr.setStatus(true);
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.getRevocation().add(xr);
+		xc.getRevocations().add(xr);
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificateOnHoldCheck cohc = new CertificateOnHoldCheck(result, new CertificateWrapper(xc), constraint);
@@ -48,7 +48,7 @@ public class CertificateOnHoldCheckTest {
 		xr.setReason("certificateHold");
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.getRevocation().add(xr);
+		xc.getRevocations().add(xr);
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificateOnHoldCheck cohc = new CertificateOnHoldCheck(result, new CertificateWrapper(xc), constraint);

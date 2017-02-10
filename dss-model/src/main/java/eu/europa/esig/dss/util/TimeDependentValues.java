@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.util;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -54,6 +55,17 @@ public class TimeDependentValues<T extends TimeDependent> implements Iterable<T>
 			}
 		}
 		return null;
+	}
+
+	public List<T> getAfter(Date notBefore) {
+		List<T> result = new ArrayList<T>();
+		for (final T x : list) {
+			Date endDate = x.getEndDate();
+			if (endDate == null || (endDate.compareTo(notBefore) >= 0)) {
+				result.add(x);
+			}
+		}
+		return result;
 	}
 
 }

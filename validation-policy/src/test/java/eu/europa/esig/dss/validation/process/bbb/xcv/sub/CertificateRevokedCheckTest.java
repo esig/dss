@@ -29,11 +29,10 @@ public class CertificateRevokedCheckTest {
 		xr.setReason("certificateHold");
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.getRevocation().add(xr);
+		xc.getRevocations().add(xr);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateRevokedCheck cec = new CertificateRevokedCheck(result, new CertificateWrapper(xc), constraint,
-				SubContext.CA_CERTIFICATE);
+		CertificateRevokedCheck cec = new CertificateRevokedCheck(result, new CertificateWrapper(xc), constraint, SubContext.CA_CERTIFICATE);
 		cec.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -51,11 +50,10 @@ public class CertificateRevokedCheckTest {
 		xr.setReason("certificate");
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.getRevocation().add(xr);
+		xc.getRevocations().add(xr);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateRevokedCheck cec = new CertificateRevokedCheck(result, new CertificateWrapper(xc), constraint,
-				SubContext.CA_CERTIFICATE);
+		CertificateRevokedCheck cec = new CertificateRevokedCheck(result, new CertificateWrapper(xc), constraint, SubContext.CA_CERTIFICATE);
 		cec.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

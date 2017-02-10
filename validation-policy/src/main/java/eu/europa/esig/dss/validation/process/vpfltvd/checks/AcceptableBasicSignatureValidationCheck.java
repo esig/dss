@@ -6,19 +6,19 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.validation.MessageTag;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValidationProcessLongTermData> {
 
 	private final XmlConstraintsConclusion basicSignatureValidation;
 
-	private Indication indication;
-	private SubIndication subIndication;
-	private List<XmlName> bsErrors;
+	private Indication bbbIndication;
+	private SubIndication bbbSubIndication;
+	private List<XmlName> bbbErrors;
 
 	public AcceptableBasicSignatureValidationCheck(XmlValidationProcessLongTermData result, XmlConstraintsConclusion basicSignatureValidation,
 			LevelConstraint constraint) {
@@ -30,19 +30,15 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 	@Override
 	protected boolean process() {
 		if (basicSignatureValidation != null && basicSignatureValidation.getConclusion() != null) {
-			XmlConclusion basicSignatureValidationConclusion = basicSignatureValidation.getConclusion();
-			Indication bbbIndication = basicSignatureValidationConclusion.getIndication();
-			SubIndication bbbSubIndication = basicSignatureValidationConclusion.getSubIndication();
+			XmlConclusion basicSignatureConclusion = basicSignatureValidation.getConclusion();
+			bbbIndication = basicSignatureConclusion.getIndication();
+			bbbSubIndication = basicSignatureConclusion.getSubIndication();
+			bbbErrors = basicSignatureConclusion.getErrors();
 
 			boolean allowed = Indication.PASSED.equals(bbbIndication)
 					|| (Indication.INDETERMINATE.equals(bbbIndication) && (SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bbbSubIndication)
 							|| SubIndication.REVOKED_NO_POE.equals(bbbSubIndication) || SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bbbSubIndication)));
 
-			if (!allowed) {
-				indication = bbbIndication;
-				subIndication = bbbSubIndication;
-				bsErrors = basicSignatureValidationConclusion.getErrors();
-			}
 			return allowed;
 		}
 		return false;
@@ -60,17 +56,17 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return indication;
+		return bbbIndication;
 	}
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return subIndication;
+		return bbbSubIndication;
 	}
 
 	@Override
 	protected List<XmlName> getPreviousErrors() {
-		return bsErrors;
+		return bbbErrors;
 	}
 
 }

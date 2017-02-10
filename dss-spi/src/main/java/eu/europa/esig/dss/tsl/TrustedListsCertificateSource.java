@@ -20,15 +20,20 @@
  */
 package eu.europa.esig.dss.tsl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import eu.europa.esig.dss.DSSNotApplicableMethodException;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 
 /**
- * This class allows to inject trusted certificates from Trusted List
+ * This class allows to inject trusted certificates from Trusted Lists
  */
 public class TrustedListsCertificateSource extends CommonTrustedCertificateSource {
+
+	private Map<String, TLInfo> tlInfos = new HashMap<String, TLInfo>();
 
 	/**
 	 * The default constructor.
@@ -54,6 +59,27 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	@Override
 	public CertificateToken addCertificate(CertificateToken certificate) {
 		throw new DSSNotApplicableMethodException(getClass());
+	}
+
+	public void updateTlInfo(String countryCode, TLInfo info) {
+		tlInfos.put(countryCode, info);
+	}
+
+	public TLInfo getTlInfo(String countryCode) {
+		return tlInfos.get(countryCode);
+	}
+
+	public TLInfo getLotlInfo() {
+		for (TLInfo tlInfo : tlInfos.values()) {
+			if (tlInfo.isLotl()) {
+				return tlInfo;
+			}
+		}
+		return null;
+	}
+
+	public Map<String, TLInfo> getSummary() {
+		return tlInfos;
 	}
 
 }

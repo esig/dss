@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.pades;
 
-import java.io.File;
+import eu.europa.esig.dss.DSSDocument;
 
 /**
  * Parameters for a visible signature creation
@@ -30,10 +30,12 @@ public class SignatureImageParameters {
 
 	public static final int DEFAULT_PAGE = 1;
 
+	public static final int NO_SCALING = 100;
+
 	/**
 	 * This variable contains the image to use (company logo,...)
 	 */
-	private File image;
+	private DSSDocument image;
 
 	/**
 	 * This variable defines the page where the image will appear (1st page by
@@ -52,15 +54,20 @@ public class SignatureImageParameters {
 	private float yAxis;
 
 	/**
+	 * This variable defines a percent to zoom (100% means no scaling).
+	 */
+	private int zoom = NO_SCALING;
+
+	/**
 	 * This variable is use to defines the text to generate on the image
 	 */
 	private SignatureImageTextParameters textParameters;
 
-	public File getImage() {
+	public DSSDocument getImage() {
 		return image;
 	}
 
-	public void setImage(File image) {
+	public void setImage(DSSDocument image) {
 		this.image = image;
 	}
 
@@ -78,6 +85,14 @@ public class SignatureImageParameters {
 
 	public void setyAxis(float yAxis) {
 		this.yAxis = yAxis;
+	}
+
+	public int getZoom() {
+		return zoom;
+	}
+
+	public void setZoom(int zoom) {
+		this.zoom = zoom;
 	}
 
 	public int getPage() {

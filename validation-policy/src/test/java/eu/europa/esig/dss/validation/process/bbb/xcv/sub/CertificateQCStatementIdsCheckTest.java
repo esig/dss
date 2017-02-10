@@ -11,6 +11,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQCStatementIdsCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.Level;
@@ -20,19 +21,20 @@ public class CertificateQCStatementIdsCheckTest {
 
 	@Test
 	public void certificateQCStatementCheck() throws Exception {
-		List<String> qcStatementIds = new ArrayList<String>();
-		qcStatementIds.add("0.4.0.1862.1.1");
+		List<XmlOID> qcStatementIds = new ArrayList<XmlOID>();
+		XmlOID oid = new XmlOID();
+		oid.setValue("0.4.0.1862.1.1");
+		qcStatementIds.add(oid);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
-		constraint.getId().add(qcStatementIds.get(0));
+		constraint.getId().add("0.4.0.1862.1.1");
 
 		XmlCertificate xc = new XmlCertificate();
 		xc.setQCStatementIds(qcStatementIds);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateQCStatementIdsCheck cqcsic = new CertificateQCStatementIdsCheck(result, new CertificateWrapper(xc),
-				constraint);
+		CertificateQCStatementIdsCheck cqcsic = new CertificateQCStatementIdsCheck(result, new CertificateWrapper(xc), constraint);
 		cqcsic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -42,8 +44,10 @@ public class CertificateQCStatementIdsCheckTest {
 
 	@Test
 	public void failedCertificateQCStatementCheck() throws Exception {
-		List<String> qcStatementIds = new ArrayList<String>();
-		qcStatementIds.add("0.4.0.1862.1.1");
+		List<XmlOID> qcStatementIds = new ArrayList<XmlOID>();
+		XmlOID oid = new XmlOID();
+		oid.setValue("0.4.0.1862.1.1");
+		qcStatementIds.add(oid);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
@@ -53,8 +57,7 @@ public class CertificateQCStatementIdsCheckTest {
 		xc.setQCStatementIds(qcStatementIds);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateQCStatementIdsCheck cqcsic = new CertificateQCStatementIdsCheck(result, new CertificateWrapper(xc),
-				constraint);
+		CertificateQCStatementIdsCheck cqcsic = new CertificateQCStatementIdsCheck(result, new CertificateWrapper(xc), constraint);
 		cqcsic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

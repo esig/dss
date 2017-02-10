@@ -27,7 +27,7 @@
 			<OnHold Level="FAIL"/>
 			<TSLStatus Level="FAIL"/>
 			<Qualification Level="FAIL"/>
-			<SupportedBySSCD Level="FAIL"/>
+			<SupportedByQSCD Level="FAIL"/>
 			<IssuedToLegalPerson Level="FAIL"/>
 			<Cryptographic Level="FAIL">
 				<AcceptableEncryptionAlgo>
