@@ -112,6 +112,40 @@ public class PAdESVisibleSignatureTest {
 	}
 
 	@Test
+	public void testGeneratedImagePNGWithText() throws IOException {
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new FileDocument(new File("src/test/resources/signature-image.png")));
+		imageParameters.setxAxis(100);
+		imageParameters.setyAxis(100);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("My signature");
+		textParameters.setTextColor(Color.GREEN);
+		imageParameters.setTextParameters(textParameters);
+
+		imageParameters.setZoom(150); // augments 50%
+		signatureParameters.setImageParameters(imageParameters);
+		signAndValidate();
+	}
+
+	@Test
+	public void testGeneratedImagePNGWithTextOnTop() throws IOException {
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new FileDocument(new File("src/test/resources/signature-image.png")));
+		imageParameters.setxAxis(100);
+		imageParameters.setyAxis(100);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("My signature");
+		textParameters.setTextColor(Color.GREEN);
+		textParameters.setSignerNamePosition(SignerPosition.TOP);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+		signAndValidate();
+	}
+
+	@Test
 	public void testGeneratedImageOnlyPngUnZoom() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new FileDocument(new File("src/test/resources/signature-image.png")));
@@ -126,7 +160,7 @@ public class PAdESVisibleSignatureTest {
 	@Test
 	public void testGeneratedImageAndTextOnTop() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(new InMemoryDocument(new FileInputStream("src/test/resources/small-red.jpg")));
+		imageParameters.setImage(new InMemoryDocument(new FileInputStream("src/test/resources/small-red.jpg"), "small-red.jpg"));
 		imageParameters.setxAxis(200);
 		imageParameters.setyAxis(300);
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
