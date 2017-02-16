@@ -13,9 +13,11 @@ import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.metadata.IIOInvalidTreeException;
 import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
@@ -23,7 +25,6 @@ import javax.imageio.stream.ImageOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -79,7 +80,7 @@ public class ImageUtils {
 					Utils.closeQuietly(is);
 				}
 			}
-			return convertToInputStream(buffImg, DPI);
+			return convertToInputStream(image, buffImg, DPI);
 		}
 
 		// Image only
@@ -101,7 +102,7 @@ public class ImageUtils {
 		} else {
 			String contentType = null;
 			try {
-				contentType = Files.probeContentType(Paths.get(image.getAbsolutePath()));
+				contentType = Files.probeContentType(Paths.get(image.getName()));
 			} catch (IOException e) {
 				LOG.warn("Unable to retrieve the content-type : " + e.getMessage());
 			}
@@ -129,9 +130,15 @@ public class ImageUtils {
 			// read metadata of first image
 			IIOMetadata metadata = reader.getImageMetadata(0);
 
-			Node asTree = metadata.getAsTree("javax_imageio_jpeg_image_1.0");
-			ImageAndResolution res = readResolutionJPEG(asTree, image.openStream());
-			return res;
+			Element root = (Element) metadata.getAsTree("javax_imageio_jpeg_image_1.0");
+
+			NodeList elements = root.getElementsByTagName("app0JFIF");
+
+			Element e = (Element) elements.item(0);
+			int x = Integer.parseInt(e.getAttribute("Xdensity"));
+			int y = Integer.parseInt(e.getAttribute("Ydensity"));
+
+			return new ImageAndResolution(image.openStream(), x, y);
 		} finally {
 			Utils.closeQuietly(iis);
 		}
@@ -154,12 +161,14 @@ public class ImageUtils {
 			// attach source to the reader
 			reader.setInput(iis, true);
 
+			// read metadata of first image
+			IIOMetadata metadata = reader.getImageMetadata(0);
+
 			int hdpi = 96, vdpi = 96;
 			double mm2inch = 25.4;
 
-			NodeList lst;
-			Element node = (Element) reader.getImageMetadata(0).getAsTree("javax_imageio_1.0");
-			lst = node.getElementsByTagName("HorizontalPixelSize");
+			Element node = (Element) metadata.getAsTree("javax_imageio_1.0");
+			NodeList lst = node.getElementsByTagName("HorizontalPixelSize");
 			if (lst != null && lst.getLength() == 1) {
 				hdpi = (int) (mm2inch / Float.parseFloat(((Element) lst.item(0)).getAttribute("value")));
 			}
@@ -175,19 +184,16 @@ public class ImageUtils {
 		}
 	}
 
-	private static ImageAndResolution readResolutionJPEG(Node node, InputStream is) {
-
-		Element root = (Element) node;
-
-		NodeList elements = root.getElementsByTagName("app0JFIF");
-
-		Element e = (Element) elements.item(0);
-		int x = Integer.parseInt(e.getAttribute("Xdensity"));
-		int y = Integer.parseInt(e.getAttribute("Ydensity"));
-		return new ImageAndResolution(is, x, y);
+	private static ImageAndResolution convertToInputStream(DSSDocument imageParam, BufferedImage buffImage, int dpi) throws IOException {
+		if (imageParam == null || isImageWithContentType(imageParam, MimeType.JPEG)) {
+			return convertToInputStreamJPG(buffImage, dpi);
+		} else if (isImageWithContentType(imageParam, MimeType.PNG)) {
+			return convertToInputStreamPNG(buffImage, dpi);
+		}
+		throw new DSSException("Unsupported image type");
 	}
 
-	private static ImageAndResolution convertToInputStream(BufferedImage buffImage, int dpi) throws IOException {
+	private static ImageAndResolution convertToInputStreamJPG(BufferedImage buffImage, int dpi) throws IOException {
 		Iterator<ImageWriter> it = ImageIO.getImageWritersByFormatName("jpeg");
 		if (!it.hasNext()) {
 			throw new DSSException("No writer for JPEG found");
@@ -201,7 +207,7 @@ public class ImageUtils {
 		ImageTypeSpecifier typeSpecifier = ImageTypeSpecifier.createFromBufferedImageType(BufferedImage.TYPE_INT_RGB);
 		IIOMetadata metadata = writer.getDefaultImageMetadata(typeSpecifier, jpegParams);
 
-		initDpi(metadata, dpi);
+		initDpiJPG(metadata, dpi);
 
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		ImageOutputStream imageOs = ImageIO.createImageOutputStream(os);
@@ -212,13 +218,57 @@ public class ImageUtils {
 		return new ImageAndResolution(is, dpi, dpi);
 	}
 
-	private static void initDpi(IIOMetadata metadata, int dpi) throws IIOInvalidTreeException {
+	private static void initDpiJPG(IIOMetadata metadata, int dpi) throws IIOInvalidTreeException {
 		Element tree = (Element) metadata.getAsTree("javax_imageio_jpeg_image_1.0");
 		Element jfif = (Element) tree.getElementsByTagName("app0JFIF").item(0);
 		jfif.setAttribute("Xdensity", Integer.toString(dpi));
 		jfif.setAttribute("Ydensity", Integer.toString(dpi));
 		jfif.setAttribute("resUnits", "1"); // density is dots per inch
 		metadata.setFromTree("javax_imageio_jpeg_image_1.0", tree);
+	}
+
+	private static ImageAndResolution convertToInputStreamPNG(BufferedImage buffImage, int dpi) throws IOException {
+		Iterator<ImageWriter> it = ImageIO.getImageWritersByFormatName("png");
+		if (!it.hasNext()) {
+			throw new DSSException("No writer for PNG found");
+		}
+		ImageWriter writer = it.next();
+
+		ImageWriteParam imageWriterParams = writer.getDefaultWriteParam();
+
+		ImageTypeSpecifier typeSpecifier = ImageTypeSpecifier.createFromBufferedImageType(BufferedImage.TYPE_INT_ARGB);
+		IIOMetadata metadata = writer.getDefaultImageMetadata(typeSpecifier, imageWriterParams);
+
+		initDpiPNG(metadata, dpi);
+
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		ImageOutputStream imageOs = ImageIO.createImageOutputStream(os);
+		writer.setOutput(imageOs);
+		writer.write(metadata, new IIOImage(buffImage, null, metadata), imageWriterParams);
+
+		InputStream is = new ByteArrayInputStream(os.toByteArray());
+		return new ImageAndResolution(is, dpi, dpi);
+	}
+
+	private static void initDpiPNG(IIOMetadata metadata, int dpi) throws IIOInvalidTreeException {
+
+		// for PNG, it's dots per millimeter
+		double dotsPerMilli = 1.0 * dpi / 25.4;
+
+		IIOMetadataNode horiz = new IIOMetadataNode("HorizontalPixelSize");
+		horiz.setAttribute("value", Double.toString(dotsPerMilli));
+
+		IIOMetadataNode vert = new IIOMetadataNode("VerticalPixelSize");
+		vert.setAttribute("value", Double.toString(dotsPerMilli));
+
+		IIOMetadataNode dim = new IIOMetadataNode("Dimension");
+		dim.appendChild(horiz);
+		dim.appendChild(vert);
+
+		IIOMetadataNode root = new IIOMetadataNode("javax_imageio_1.0");
+		root.appendChild(dim);
+
+		metadata.mergeTree("javax_imageio_1.0", root);
 	}
 
 }
