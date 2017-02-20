@@ -27,6 +27,7 @@ public class ServiceConsistencyCheck extends ChainItem<XmlSignatureAnalysis> {
 	@Override
 	protected boolean process() {
 		if (Utils.isCollectionEmpty(trustedServices)) {
+			errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS0;
 			return false;
 		}
 

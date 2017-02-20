@@ -16,7 +16,12 @@ public class ServiceByDateFilter extends AbstractTrustedServiceFilter {
 	boolean isAcceptable(TrustedServiceWrapper service) {
 		Date startDate = service.getStartDate();
 		Date endDate = service.getEndDate();
-		return ((date.compareTo(startDate) >= 0) && (endDate == null || (date.compareTo(endDate) <= 0)));
+
+		boolean afterStartRange = (startDate != null && (date.compareTo(startDate) >= 0));
+		boolean beforeEndRange = (endDate == null || (date.compareTo(endDate) <= 0)); // end date can be null (in case
+																						// of current status)
+
+		return afterStartRange && beforeEndRange;
 	}
 
 }
