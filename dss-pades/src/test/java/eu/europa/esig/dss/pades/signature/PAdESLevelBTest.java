@@ -109,8 +109,6 @@ public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 		service = new PAdESService(certificateVerifier);
 	}
 
-	// Annotation for error_probe
-	@SuppressWarnings("InsecureCryptoUsage")
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 
@@ -245,26 +243,6 @@ public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 			logger.error(e.getMessage(), e);
 			fail(e.getMessage());
 		}
-	}
-
-	private boolean isSubset(byte[] encoded, byte[] arrayToFind) {
-
-		for (int i = 0; i < encoded.length; i++) {
-			boolean found = false;
-			int j;
-			for (j = 0; j < arrayToFind.length; j++) {
-				if (encoded[i] == arrayToFind[j]) {
-					found = true;
-				} else {
-					break;
-				}
-			}
-			if (found && j == arrayToFind.length - 1) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	private List<X509Certificate> extractCertificates(SignedData signedData) throws Exception {

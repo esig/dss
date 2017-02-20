@@ -22,7 +22,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 /**
  * Created by david.naramski on 9/22/2016.
  */
-public class EmbeddedXmlSignatureTest extends AbstractTestDocumentSignatureService {
+public class EmbeddedXmlSignatureTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;

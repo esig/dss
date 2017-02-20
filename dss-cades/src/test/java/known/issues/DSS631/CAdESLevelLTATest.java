@@ -40,7 +40,7 @@ import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
-public class CAdESLevelLTATest extends AbstractTestDocumentSignatureService {
+public class CAdESLevelLTATest extends AbstractTestDocumentSignatureService<CAdESSignatureParameters> {
 
 	private DocumentSignatureService<CAdESSignatureParameters> service;
 	private CAdESSignatureParameters signatureParameters;

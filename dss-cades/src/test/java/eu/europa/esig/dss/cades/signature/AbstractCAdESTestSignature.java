@@ -12,9 +12,11 @@ import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
 
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 
-public abstract class AbstractCAdESTestSignature extends AbstractTestDocumentSignatureService {
+public abstract class AbstractCAdESTestSignature extends AbstractTestDocumentSignatureService<CAdESSignatureParameters> {
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
@@ -22,8 +24,9 @@ public abstract class AbstractCAdESTestSignature extends AbstractTestDocumentSig
 	}
 
 	protected void checkSignedAttributesOrder(byte[] encoded) {
+		ASN1InputStream asn1sInput = null;
 		try {
-			ASN1InputStream asn1sInput = new ASN1InputStream(encoded);
+			asn1sInput = new ASN1InputStream(encoded);
 			ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
 			SignedData signedData = SignedData.getInstance(DERTaggedObject.getInstance(asn1Seq.getObjectAt(1)).getObject());
@@ -44,6 +47,8 @@ public abstract class AbstractCAdESTestSignature extends AbstractTestDocumentSig
 			}
 		} catch (Exception e) {
 			fail(e.getMessage());
+		} finally {
+			Utils.closeQuietly(asn1sInput);
 		}
 	}
 
