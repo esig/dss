@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.qscd;
 
+import java.util.List;
+
 import eu.europa.esig.dss.validation.process.Condition;
 import eu.europa.esig.dss.validation.process.qmatrix.EIDASUtils;
 import eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.qscd.cert.QSCDByCertificatePostEIDAS;
@@ -21,8 +23,8 @@ public final class QSCDConditionFactory {
 		}
 	}
 
-	public static Condition createQSCDFromTL(TrustedServiceWrapper trustedService, Condition qualified, Condition qscdFromCertificate) {
-		return new QSCDByTL(trustedService, qualified, qscdFromCertificate);
+	public static Condition createQSCDFromTL(List<TrustedServiceWrapper> trustedServices, Condition qualified, Condition qscdFromCertificate) {
+		return new QSCDByTL(trustedServices, qualified, qscdFromCertificate);
 	}
 
 }

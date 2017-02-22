@@ -10,31 +10,33 @@ import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public class TypeByTL implements TypeStrategy {
 
-	private final TrustedServiceWrapper trustedService;
+	private final List<TrustedServiceWrapper> trustedServices;
 	private final TypeStrategy typeInCert;
 
-	public TypeByTL(TrustedServiceWrapper trustedService, TypeStrategy typeInCert) {
-		this.trustedService = trustedService;
+	public TypeByTL(List<TrustedServiceWrapper> trustedServices, TypeStrategy typeInCert) {
+		this.trustedServices = trustedServices;
 		this.typeInCert = typeInCert;
 	}
 
 	@Override
 	public Type getType() {
-		if (trustedService != null) {
+		if (Utils.isCollectionNotEmpty(trustedServices)) {
 
-			List<String> usageQualifiers = ServiceQualification.getUsageQualifiers(trustedService.getCapturedQualifiers());
+			for (TrustedServiceWrapper trustedService : trustedServices) {
+				List<String> usageQualifiers = ServiceQualification.getUsageQualifiers(trustedService.getCapturedQualifiers());
 
-			// If overrules
-			if (Utils.isCollectionNotEmpty(usageQualifiers)) {
+				// If overrules
+				if (Utils.isCollectionNotEmpty(usageQualifiers)) {
 
-				if (ServiceQualification.isQcForEsig(usageQualifiers)) {
-					return Type.ESIGN;
+					if (ServiceQualification.isQcForEsig(usageQualifiers)) {
+						return Type.ESIGN;
+					}
+
+					if (ServiceQualification.isQcForEseal(usageQualifiers) || ServiceQualification.isQcForWSA(usageQualifiers)) {
+						return Type.ESEAL;
+					}
+
 				}
-
-				if (ServiceQualification.isQcForEseal(usageQualifiers) || ServiceQualification.isQcForWSA(usageQualifiers)) {
-					return Type.ESEAL;
-				}
-
 			}
 
 		}
