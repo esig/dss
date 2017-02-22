@@ -10,34 +10,36 @@ import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public class QSCDByTL extends AbstractQSCDCondition {
 
-	private final TrustedServiceWrapper trustedService;
+	private final List<TrustedServiceWrapper> trustedServices;
 	private final Condition qualified;
 	private final Condition qscdFromCertificate;
 
-	public QSCDByTL(TrustedServiceWrapper trustedService, Condition qualified, Condition qscdFromCertificate) {
-		this.trustedService = trustedService;
+	public QSCDByTL(List<TrustedServiceWrapper> trustedServices, Condition qualified, Condition qscdFromCertificate) {
+		this.trustedServices = trustedServices;
 		this.qualified = qualified;
 		this.qscdFromCertificate = qscdFromCertificate;
 	}
 
 	@Override
 	public boolean check() {
-		if (trustedService == null || !qualified.check()) {
+		if (Utils.isCollectionEmpty(trustedServices) || !qualified.check()) {
 			return false;
 		} else {
-			List<String> capturedQualifiers = trustedService.getCapturedQualifiers();
+			for (TrustedServiceWrapper trustedService : trustedServices) {
+				List<String> capturedQualifiers = trustedService.getCapturedQualifiers();
 
-			// If overrules
-			if (Utils.isCollectionNotEmpty(capturedQualifiers)) {
+				// If overrules
+				if (Utils.isCollectionNotEmpty(capturedQualifiers)) {
 
-				if (ServiceQualification.isQcNoQSCD(capturedQualifiers)) {
-					return false;
+					if (ServiceQualification.isQcNoQSCD(capturedQualifiers)) {
+						return false;
+					}
+
+					if (ServiceQualification.isQcWithQSCD(capturedQualifiers) || ServiceQualification.isQcQSCDManagedOnBehalf(capturedQualifiers)) {
+						return true;
+					}
+
 				}
-
-				if (ServiceQualification.isQcWithQSCD(capturedQualifiers) || ServiceQualification.isQcQSCDManagedOnBehalf(capturedQualifiers)) {
-					return true;
-				}
-
 			}
 
 			return qscdFromCertificate.check();

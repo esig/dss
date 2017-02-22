@@ -3,8 +3,6 @@ package eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.type;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.filter.TrustedServicesFilterFactory;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
@@ -32,23 +30,10 @@ public class TypeFromCertAndTL implements TypeStrategy {
 		// 2. retrieve certificate type from the certificate itself
 		TypeStrategy typeInCert = TypeStrategyFactory.createTypeFromCert(signingCertificate);
 
-		// 1 TSP and 1 TS // TODO improve
-		TrustedServiceWrapper trustedService = getUniqueTrustedService(servicesAtGivenDate);
-
 		// 3. Apply TL overruling(s)
-		TypeStrategy typeFromCertAndTL = TypeStrategyFactory.createTypeFromTL(trustedService, typeInCert);
+		TypeStrategy typeFromCertAndTL = TypeStrategyFactory.createTypeFromTL(servicesAtGivenDate, typeInCert);
 
 		return typeFromCertAndTL.getType();
-	}
-
-	private TrustedServiceWrapper getUniqueTrustedService(List<TrustedServiceWrapper> servicesAtGivenDate) {
-		int tspsSize = Utils.collectionSize(servicesAtGivenDate);
-		if (tspsSize > 1) {
-			throw new DSSException("More than one Trusted Service");
-		} else if (tspsSize == 1) {
-			return servicesAtGivenDate.get(0);
-		}
-		return null;
 	}
 
 }

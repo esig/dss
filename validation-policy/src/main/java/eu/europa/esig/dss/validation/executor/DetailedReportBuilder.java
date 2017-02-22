@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
@@ -28,6 +31,8 @@ import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 
 public class DetailedReportBuilder {
+
+	private static final Logger logger = LoggerFactory.getLogger(DetailedReportBuilder.class);
 
 	private final Date currentTime;
 	private final ValidationPolicy policy;
@@ -71,8 +76,12 @@ public class DetailedReportBuilder {
 			detailedReport.getSignatures().add(signatureAnalysis);
 
 			if (policy.isEIDASConstraintPresent()) {
-				QMatrixBlock qmatrix = new QMatrixBlock(conlusion, diagnosticData, policy, currentTime);
-				detailedReport.setQMatrixBlock(qmatrix.execute());
+				try {
+					QMatrixBlock qmatrix = new QMatrixBlock(conlusion, diagnosticData, policy, currentTime);
+					detailedReport.setQMatrixBlock(qmatrix.execute());
+				} catch (Exception e) {
+					logger.error("Unable to determine the signature qualification", e);
+				}
 			}
 		}
 
