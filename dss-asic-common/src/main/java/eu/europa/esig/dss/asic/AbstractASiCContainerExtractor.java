@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -100,8 +99,8 @@ public abstract class AbstractASiCContainerExtractor {
 					return new String(buffer, ii + 22, Math.min(commentLen, realLen));
 				}
 			}
-		} catch (IOException e) {
-			throw new DSSException("Unable to extract the ZIP comment", e);
+		} catch (Exception e) {
+			LOG.warn("Unable to extract the ZIP comment : " + e.getMessage());
 		} finally {
 			Utils.closeQuietly(is);
 		}
