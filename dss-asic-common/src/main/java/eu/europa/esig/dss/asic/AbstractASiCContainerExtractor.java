@@ -96,7 +96,8 @@ public abstract class AbstractASiCContainerExtractor {
 					if (commentLen != realLen) {
 						LOG.warn("WARNING! ZIP comment size mismatch: directory says len is " + commentLen + ", but file ends after " + realLen + " bytes!");
 					}
-					return new String(buffer, ii + 22, Math.min(commentLen, realLen));
+					return new String(buffer, ii + 22, realLen);
+
 				}
 			}
 		} catch (Exception e) {
