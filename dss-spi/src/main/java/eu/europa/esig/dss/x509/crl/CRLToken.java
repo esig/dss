@@ -75,8 +75,10 @@ public class CRLToken extends RevocationToken {
 		this.nextUpdate = crlValidity.getNextUpdate();
 		this.expiredCertsOnCRL = crlValidity.getExpiredCertsOnCRL();
 
-		this.issuerToken = crlValidity.getIssuerToken();
-		this.issuerX500Principal = crlValidity.getIssuerToken().getSubjectX500Principal();
+		if (crlValidity.getIssuerToken() != null) { // if the signature is invalid, the issuer is null
+			this.issuerToken = crlValidity.getIssuerToken();
+			this.issuerX500Principal = crlValidity.getIssuerToken().getSubjectX500Principal();
+		}
 
 		this.extraInfo = new TokenValidationExtraInfo();
 
