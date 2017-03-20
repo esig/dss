@@ -23,6 +23,12 @@ import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.jaxb.ecc.CriteriaListType;
+import eu.europa.esig.jaxb.ecc.KeyUsageBitType;
+import eu.europa.esig.jaxb.ecc.KeyUsageType;
+import eu.europa.esig.jaxb.ecc.PoliciesListType;
+import eu.europa.esig.jaxb.xades.IdentifierType;
+import eu.europa.esig.jaxb.xades.ObjectIdentifierType;
 
 public class TSLParserTest {
 
@@ -169,4 +175,65 @@ public class TSLParserTest {
 		return service;
 	}
 
+	@Test
+	public void testMultiPolicySet() {
+		PoliciesListType policiesA = new PoliciesListType();
+		policiesA.getPolicyIdentifier().add(oid("2.999.4"));
+		policiesA.getPolicyIdentifier().add(oid("2.999.5"));
+
+		PoliciesListType policiesB = new PoliciesListType();
+		policiesB.getPolicyIdentifier().add(oid("2.999.6"));
+		policiesB.getPolicyIdentifier().add(oid("2.999.7"));
+
+		CriteriaListType criteria = new CriteriaListType();
+		criteria.setAssert("atLeastOne");
+		criteria.getPolicySet().add(policiesA);
+		criteria.getPolicySet().add(policiesB);
+
+		KeyUsageType keyUsageA = new KeyUsageType();
+		keyUsageA.getKeyUsageBit().add(kub("dataEncipherment", false));
+		keyUsageA.getKeyUsageBit().add(kub("decipherOnly", true));
+		criteria.getKeyUsage().add(keyUsageA);
+
+		KeyUsageType keyUsageB = new KeyUsageType();
+		keyUsageB.getKeyUsageBit().add(kub("encipherOnly", false));
+		keyUsageB.getKeyUsageBit().add(kub("keyCertSign", true));
+		criteria.getKeyUsage().add(keyUsageB);
+
+		criteria.getCriteriaList().add(getSubCriteria());
+
+		Condition condition = new TSLParser(null).getCondition(criteria);
+		System.out.println(condition.toString(""));
+	}
+
+	private CriteriaListType getSubCriteria() {
+		PoliciesListType policiesA = new PoliciesListType();
+		policiesA.getPolicyIdentifier().add(oid("1.2.3"));
+		policiesA.getPolicyIdentifier().add(oid("4.5.6"));
+
+		PoliciesListType policiesB = new PoliciesListType();
+		policiesB.getPolicyIdentifier().add(oid("7.8.9"));
+		policiesB.getPolicyIdentifier().add(oid("22.33.44"));
+
+		CriteriaListType criteria = new CriteriaListType();
+		criteria.setAssert("all");
+		criteria.getPolicySet().add(policiesA);
+		criteria.getPolicySet().add(policiesB);
+		return criteria;
+	}
+
+	private KeyUsageBitType kub(String kub, boolean val) {
+		KeyUsageBitType keyUsageBitType = new KeyUsageBitType();
+		keyUsageBitType.setName(kub);
+		keyUsageBitType.setValue(val);
+		return keyUsageBitType;
+	}
+
+	private static ObjectIdentifierType oid(String value) {
+		IdentifierType identifier = new IdentifierType();
+		identifier.setValue(value);
+		ObjectIdentifierType objectIdentifier = new ObjectIdentifierType();
+		objectIdentifier.setIdentifier(identifier);
+		return objectIdentifier;
+	}
 }
