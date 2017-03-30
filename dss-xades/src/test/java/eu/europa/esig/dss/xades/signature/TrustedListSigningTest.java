@@ -51,7 +51,7 @@ import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class TrustedListSigningTest extends AbstractTestDocumentSignatureService {
+public class TrustedListSigningTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;

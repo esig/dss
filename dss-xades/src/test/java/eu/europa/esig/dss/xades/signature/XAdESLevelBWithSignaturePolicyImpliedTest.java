@@ -24,7 +24,7 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBWithSignaturePolicyImpliedTest extends AbstractTestDocumentSignatureService {
+public class XAdESLevelBWithSignaturePolicyImpliedTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
 
 	private static final Logger logger = LoggerFactory.getLogger(XAdESLevelBWithSignaturePolicyImpliedTest.class);
 

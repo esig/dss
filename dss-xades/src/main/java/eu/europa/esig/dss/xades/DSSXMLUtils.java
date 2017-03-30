@@ -328,4 +328,8 @@ public final class DSSXMLUtils {
 		return factory.newSchema(new StreamSource(xadesXsd));
 	}
 
+	public static boolean isOid(String policyId) {
+		return policyId != null && policyId.matches("^(?i)urn:oid:.*$");
+	}
+
 }

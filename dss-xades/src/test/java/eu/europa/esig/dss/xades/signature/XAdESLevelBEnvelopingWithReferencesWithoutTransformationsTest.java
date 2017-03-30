@@ -49,7 +49,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest extends AbstractTestDocumentSignatureService {
+public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;

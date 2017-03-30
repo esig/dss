@@ -16,13 +16,15 @@ import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
 
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public abstract class AbstractPAdESTestSignature extends AbstractTestDocumentSignatureService {
+public abstract class AbstractPAdESTestSignature extends AbstractTestDocumentSignatureService<PAdESSignatureParameters> {
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
@@ -36,11 +38,12 @@ public abstract class AbstractPAdESTestSignature extends AbstractTestDocumentSig
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());
 
+		ASN1InputStream asn1sInput = null;
 		try {
 			PAdESSignature padesSig = (PAdESSignature) signatures.get(0);
 			byte[] encodedCMS = padesSig.getCAdESSignature().getCmsSignedData().getEncoded();
 
-			ASN1InputStream asn1sInput = new ASN1InputStream(encodedCMS);
+			asn1sInput = new ASN1InputStream(encodedCMS);
 			ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
 			SignedData signedData = SignedData.getInstance(DERTaggedObject.getInstance(asn1Seq.getObjectAt(1)).getObject());
@@ -61,6 +64,8 @@ public abstract class AbstractPAdESTestSignature extends AbstractTestDocumentSig
 			}
 		} catch (Exception e) {
 			fail(e.getMessage());
+		} finally {
+			Utils.closeQuietly(asn1sInput);
 		}
 	}
 

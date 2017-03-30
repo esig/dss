@@ -105,8 +105,6 @@ public class CAdESLevelBTest extends AbstractTestDocumentSignatureService<CAdESS
 
 	}
 
-	// Annotation for error_probe
-	@SuppressWarnings("InsecureCryptoUsage")
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		try {

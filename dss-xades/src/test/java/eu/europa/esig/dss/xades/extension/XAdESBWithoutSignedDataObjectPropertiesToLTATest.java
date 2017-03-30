@@ -1,5 +1,8 @@
 package eu.europa.esig.dss.xades.extension;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,6 +16,7 @@ import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
@@ -42,7 +46,17 @@ public class XAdESBWithoutSignedDataObjectPropertiesToLTATest {
 		// extendDocument.save("target/result.xml");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(extendDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		// certificateVerifier.setDataLoader(new CommonsDataLoader());
+		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
+		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<String, DSSDocument>();
+		signaturePoliciesByUrl.put("http://www.facturae.es/politica_de_firma_formato_facturae/politica_de_firma_formato_facturae_v3_1.pdf",
+				new FileDocument("src/test/resources/validation/dss1135/politica_de_firma.pdf"));
+		signaturePolicyProvider.setSignaturePoliciesByUrl(signaturePoliciesByUrl);
+		validator.setSignaturePolicyProvider(signaturePolicyProvider);
+		validator.setCertificateVerifier(certificateVerifier);
+
 		Reports reports = validator.validateDocument();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();

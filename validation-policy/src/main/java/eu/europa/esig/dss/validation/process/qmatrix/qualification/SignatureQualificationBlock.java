@@ -88,20 +88,21 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 			TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterForAcceptableCAQC();
 			List<TrustedServiceWrapper> caqcServices = filter.filter(originalTSPs);
 
-			// 2. Consistency of trusted services ?
+			// 2. Consistency of trust services ?
 			item = item.setNextItem(servicesConsistency(caqcServices));
 
 			item = item.setNextItem(serviceAndCertificateConsistency(caqcServices, signingCertificate));
 
+			Date bestSigningTime = signature.getDateTime(); // TODO
+
 			// Article 32 :
 			// (a) the certificate that supports the signature was, at the time of signing, a qualified certificate for
 			// electronic signature complying with Annex I;
-			qualifiedAtSigningTime = (QualifiedCertificateAtSigningTimeCheck) qualifiedCertificateAtSigningTime(signingCertificate, signature.getDateTime(),
+			qualifiedAtSigningTime = (QualifiedCertificateAtSigningTimeCheck) qualifiedCertificateAtSigningTime(signingCertificate, bestSigningTime,
 					caqcServices);
 			item = item.setNextItem(qualifiedAtSigningTime);
 
-			foreSignatureAtSigningTime = (ForeSignatureAtSigningTimeCheck) foreSignatureAtSigningTime(signingCertificate, signature.getDateTime(),
-					caqcServices);
+			foreSignatureAtSigningTime = (ForeSignatureAtSigningTimeCheck) foreSignatureAtSigningTime(signingCertificate, bestSigningTime, caqcServices);
 			item = item.setNextItem(foreSignatureAtSigningTime);
 
 			// (b) the qualified certificate
@@ -123,7 +124,7 @@ public class SignatureQualificationBlock extends Chain<XmlSignatureAnalysis> {
 			// covered in isAdES
 
 			// (f) the electronic signature was created by a qualified electronic signature creation device;
-			qscdAtSigningTime = (QSCDCertificateAtSigningTimeCheck) qscdAtSigningTime(signingCertificate, signature.getDateTime(), caqcServices,
+			qscdAtSigningTime = (QSCDCertificateAtSigningTimeCheck) qscdAtSigningTime(signingCertificate, bestSigningTime, caqcServices,
 					qualifiedAtSigningTime);
 			item = item.setNextItem(qscdAtSigningTime);
 

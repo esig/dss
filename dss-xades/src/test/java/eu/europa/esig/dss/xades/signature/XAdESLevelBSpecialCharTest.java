@@ -38,7 +38,7 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBSpecialCharTest extends AbstractTestDocumentSignatureService {
+public class XAdESLevelBSpecialCharTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;

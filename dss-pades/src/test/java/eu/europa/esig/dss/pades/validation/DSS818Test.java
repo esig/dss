@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -66,7 +67,6 @@ public class DSS818Test {
 				.fromDocument(new FileDocument(new File("src/test/resources/validation/dss-818/Signature-P-SK-1 (HASH_FAILURE).pdf")));
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
-		int i = 0;
 		for (AdvancedSignature advancedSignature : signatures) {
 			PAdESSignature pades = (PAdESSignature) advancedSignature;
 			CAdESSignature cades = pades.getCAdESSignature();
@@ -105,6 +105,7 @@ public class DSS818Test {
 			previousSize = size;
 		}
 		assertFalse(correctOrder);
+		Utils.closeQuietly(asn1sInput);
 	}
 
 }

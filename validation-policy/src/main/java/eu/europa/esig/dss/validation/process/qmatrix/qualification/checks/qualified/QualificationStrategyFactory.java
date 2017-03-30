@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.qualified;
 
+import java.util.List;
+
 import eu.europa.esig.dss.validation.process.qmatrix.EIDASUtils;
 import eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.qualified.cert.QualificationByCertificatePostEIDAS;
 import eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.qualified.cert.QualificationByCertificatePreEIDAS;
@@ -20,8 +22,8 @@ public final class QualificationStrategyFactory {
 		}
 	}
 
-	public static QualificationStrategy createQualificationFromTL(TrustedServiceWrapper trustedService, QualificationStrategy qualifiedInCert) {
-		return new QualificationByTL(trustedService, qualifiedInCert);
+	public static QualificationStrategy createQualificationFromTL(List<TrustedServiceWrapper> trustedServices, QualificationStrategy qualifiedInCert) {
+		return new QualificationByTL(trustedServices, qualifiedInCert);
 	}
 
 }

@@ -51,7 +51,7 @@ public class SignaturePolicyProvider {
 
 	public DSSDocument getSignaturePolicyByUrl(String url) {
 		DSSDocument dssDocument = signaturePoliciesByUrl.get(url);
-		if (dssDocument == null && dataLoader != null) {
+		if (dssDocument == null && Utils.isStringNotBlank(url) && dataLoader != null) {
 			try {
 				byte[] bytes = dataLoader.get(url);
 				if (Utils.isArrayEmpty(bytes)) {
@@ -70,7 +70,10 @@ public class SignaturePolicyProvider {
 	public DSSDocument getSignaturePolicy(String policyId, String url) {
 		DSSDocument dssDocument = getSignaturePolicyById(policyId);
 		if (dssDocument == null) {
-			dssDocument = getSignaturePolicyById(policyId);
+			dssDocument = getSignaturePolicyByUrl(url);
+			if (dssDocument != null) {
+				signaturePoliciesById.put(policyId, dssDocument);
+			}
 		}
 		return dssDocument;
 	}
