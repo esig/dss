@@ -170,7 +170,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			signatureProperties.visualSignEnabled(true).setPdVisibleSignature(visibleSig).buildSignature();
 
 			options.setVisualSignature(signatureProperties);
-			options.setPage(imgParams.getPage());
+			options.setPage(imgParams.getPage() - 1); // DSS-1138
 		} finally {
 			Utils.closeQuietly(is);
 		}

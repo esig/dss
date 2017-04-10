@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.type;
 
+import java.util.List;
+
 import eu.europa.esig.dss.validation.process.qmatrix.EIDASUtils;
 import eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.type.cert.TypeByCertificatePostEIDAS;
 import eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.type.cert.TypeByCertificatePreEIDAS;
@@ -20,8 +22,8 @@ public final class TypeStrategyFactory {
 		}
 	}
 
-	public static TypeStrategy createTypeFromTL(TrustedServiceWrapper trustedService, TypeStrategy typeInCert) {
-		return new TypeByTL(trustedService, typeInCert);
+	public static TypeStrategy createTypeFromTL(List<TrustedServiceWrapper> trustedServices, TypeStrategy typeInCert) {
+		return new TypeByTL(trustedServices, typeInCert);
 	}
 
 }

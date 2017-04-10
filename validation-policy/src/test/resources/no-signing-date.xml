@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>submissionReport(Getekend)_v1_2.xml</DocumentName>
+    <ValidationDate>2017-03-02T09:11:50</ValidationDate>
+    <Signatures>
+        <Signature Id="id-1e71de2a815b8732fdcdc48064062d7b">
+            <SignatureFilename>submissionReport(Getekend)_v1_2.xml</SignatureFilename>
+            <SignatureFormat>XML-NOT-ETSI</SignatureFormat>
+            <StructuralValidation>
+                <Valid>true</Valid>
+            </StructuralValidation>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>false</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>false</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74">
+                <AttributePresent>false</AttributePresent>
+                <DigestValuePresent>false</DigestValuePresent>
+                <DigestValueMatch>false</DigestValueMatch>
+                <IssuerSerialMatch>false</IssuerSerialMatch>
+            </SigningCertificate>
+            <CertificateChain>
+                <ChainItem Id="EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74">
+                    <Source>SIGNATURE</Source>
+                </ChainItem>
+                <ChainItem Id="ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+            <ContentType>text/xml</ContentType>
+            <CommitmentTypeIndication/>
+            <ClaimedRoles/>
+            <Timestamps/>
+            <SignatureScopes>
+                <SignatureScope name="Full XML File" scope="XmlRootSignatureScope">The full XML file</SignatureScope>
+            </SignatureScopes>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
+            <SubjectDistinguishedName Format="CANONICAL">cn=quovadis eu issuing certification authority g3,o=quovadis trustlink b.v.,c=nl</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=QuoVadis EU Issuing Certification Authority G3,O=QuoVadis Trustlink B.V.,C=NL</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=quovadis root certification authority,ou=root certification authority,o=quovadis limited,c=bm</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=QuoVadis Root Certification Authority,OU=Root Certification Authority,O=QuoVadis Limited,C=BM</IssuerDistinguishedName>
+            <SerialNumber>316035956343133613704262031558001366974923341214</SerialNumber>
+            <CommonName>QuoVadis EU Issuing Certification Authority G3</CommonName>
+            <CountryName>NL</CountryName>
+            <OrganizationName>QuoVadis Trustlink B.V.</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <Url>http://trust.quovadisglobal.com/qvrca.crt</Url>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <Url>http://crl.quovadisglobal.com/qvrca.crl</Url>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <Url>http://ocsp.quovadisglobal.com</Url>
+            </OCSPAccessUrls>
+            <DigestAlgoAndValues/>
+            <NotAfter>2021-03-17T19:33:33</NotAfter>
+            <NotBefore>2014-05-30T20:15:49</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <IdKpOCSPSigning>false</IdKpOCSPSigning>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicyIds>
+                <oid>2.5.29.32.0</oid>
+            </CertificatePolicyIds>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>QuoVadis Trustlink B.V.</TSPName>
+                    <TSPServiceName>QuoVadis EU Issuing Certification Authority G3</TSPServiceName>
+                    <CountryCode>NL</CountryCode>
+                    <TrustedServices>
+                        <TrustedService>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-07-01T02:00:00</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                            <StartDate>2014-07-02T15:00:00</StartDate>
+                            <EndDate>2016-07-01T02:00:00</EndDate>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations/>
+            <Info/>
+        </Certificate>
+        <Certificate Id="A0DFB7938782C01EB6FE9BA9B3210CFCEDB8653B309B53654D427A02ABEFFE7D">
+            <SubjectDistinguishedName Format="CANONICAL">cn=quovadis ocsp authority signature,ou=ocsp responder,o=quovadis limited,c=bm</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=QuoVadis OCSP Authority Signature,OU=OCSP Responder,O=QuoVadis Limited,C=BM</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=quovadis eu issuing certification authority g3,o=quovadis trustlink b.v.,c=nl</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=QuoVadis EU Issuing Certification Authority G3,O=QuoVadis Trustlink B.V.,C=NL</IssuerDistinguishedName>
+            <SerialNumber>354049795807754803978602788960438149434648676331</SerialNumber>
+            <CommonName>QuoVadis OCSP Authority Signature</CommonName>
+            <CountryName>BM</CountryName>
+            <OrganizationName>QuoVadis Limited</OrganizationName>
+            <OrganizationalUnit>OCSP Responder</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <DigestAlgoAndValues/>
+            <NotAfter>2019-11-03T21:06:26</NotAfter>
+            <NotBefore>2016-11-03T21:06:26</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <IdKpOCSPSigning>true</IdKpOCSPSigning>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E"/>
+            <CertificateChain>
+                <ChainItem Id="ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicyIds>
+                <oid>1.3.6.1.4.1.8024.1.300</oid>
+            </CertificatePolicyIds>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>QuoVadis Trustlink B.V.</TSPName>
+                    <TSPServiceName>QuoVadis EU Issuing Certification Authority G3</TSPServiceName>
+                    <CountryCode>NL</CountryCode>
+                    <TrustedServices>
+                        <TrustedService>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-07-01T02:00:00</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations/>
+            <Info>
+                <Message Id="0">OCSP check not needed: id-pkix-ocsp-nocheck extension present.</Message>
+            </Info>
+        </Certificate>
+        <Certificate Id="EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74">
+            <SubjectDistinguishedName Format="CANONICAL">cn=hans v egmond,2.5.4.4=#0c0a76616e2045676d6f6e64,2.5.4.42=#0c0b4a6f68616e6e6573204e2e,ou=qualified certificate,c=nl</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=h v e,2.5.4.4=#0c0a76616e2045676d6f6e64,2.5.4.42=#0c0b4a6f68616e6e6573204e2e,OU=Qualified Certificate,C=NL</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=quovadis eu issuing certification authority g3,o=quovadis trustlink b.v.,c=nl</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=QuoVadis EU Issuing Certification Authority G3,O=QuoVadis Trustlink B.V.,C=NL</IssuerDistinguishedName>
+            <SerialNumber>213079583810666991238537790414025420025379483227</SerialNumber>
+            <CommonName>h v e</CommonName>
+            <CountryName>NL</CountryName>
+            <GivenName>j N.</GivenName>
+            <OrganizationalUnit>Qualified Certificate</OrganizationalUnit>
+            <Surname>v e</Surname>
+            <AuthorityInformationAccessUrls>
+                <Url>http://trust.quovadisglobal.com/qveucag3.crt</Url>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <Url>http://crl.quovadisglobal.com/qvrca.crl</Url>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <Url>http://ocsp.quovadisglobal.com</Url>
+            </OCSPAccessUrls>
+            <DigestAlgoAndValues/>
+            <NotAfter>2018-02-28T15:11:00</NotAfter>
+            <NotBefore>2017-02-28T15:01:01</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <IdKpOCSPSigning>false</IdKpOCSPSigning>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E"/>
+            <CertificateChain>
+                <ChainItem Id="ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicyIds>
+                <oid Description="qcp-public-with-sscd">0.4.0.1456.1.1</oid>
+                <oid>1.3.6.1.4.1.8024.1.400</oid>
+            </CertificatePolicyIds>
+            <QCStatementIds>
+                <oid>1.3.6.1.5.5.7.11.2</oid>
+                <oid Description="qc-compliant">0.4.0.1862.1.1</oid>
+                <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
+            </QCStatementIds>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>QuoVadis Trustlink B.V.</TSPName>
+                    <TSPServiceName>QuoVadis EU Issuing Certification Authority G3</TSPServiceName>
+                    <CountryCode>NL</CountryCode>
+                    <TrustedServices>
+                        <TrustedService>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-07-01T02:00:00</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations>
+                <Revocation Id="efdf173dd8b570a0587980070ef0efc8c79dd4f4ef1a206511967a7f7532fc74e36f8862bbd580f5dcc4d07819d43045738d9921b691a7a3562f498239ae8f5a">
+                    <Origin>EXTERNAL</Origin>
+                    <Source>OCSPToken</Source>
+                    <SourceAddress>http://ocsp.quovadisglobal.com</SourceAddress>
+                    <Available>true</Available>
+                    <Status>true</Status>
+                    <ProductionDate>2017-03-02T09:11:50</ProductionDate>
+                    <ThisUpdate>2017-03-02T09:11:50</ThisUpdate>
+                    <NextUpdate>2017-03-04T09:11:50</NextUpdate>
+                    <DigestAlgoAndValues/>
+                    <BasicSignature>
+                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                        <ReferenceDataFound>true</ReferenceDataFound>
+                        <ReferenceDataIntact>true</ReferenceDataIntact>
+                        <SignatureIntact>true</SignatureIntact>
+                        <SignatureValid>true</SignatureValid>
+                    </BasicSignature>
+                    <SigningCertificate Id="A0DFB7938782C01EB6FE9BA9B3210CFCEDB8653B309B53654D427A02ABEFFE7D"/>
+                    <CertificateChain>
+                        <ChainItem Id="A0DFB7938782C01EB6FE9BA9B3210CFCEDB8653B309B53654D427A02ABEFFE7D">
+                            <Source>OCSP_RESPONSE</Source>
+                        </ChainItem>
+                        <ChainItem Id="ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
+                            <Source>TRUSTED_LIST</Source>
+                        </ChainItem>
+                    </CertificateChain>
+                    <Info/>
+                </Revocation>
+            </Revocations>
+            <Info>
+                <Message Id="0">No CRL info found !</Message>
+            </Info>
+        </Certificate>
+    </UsedCertificates>
+    <TrustedLists>
+        <TrustedList>
+            <CountryCode>NL</CountryCode>
+            <Url>https://www.acm.nl/download/bestand/current-tsl.xml</Url>
+            <SequenceNumber>28</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2017-03-02T08:50:52</LastLoading>
+            <IssueDate>2016-12-12T10:00:00</IssueDate>
+            <NextUpdate>2017-06-12T08:00:00</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+    <ListOfTrustedLists>
+        <CountryCode>EU</CountryCode>
+        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
+        <SequenceNumber>164</SequenceNumber>
+        <Version>5</Version>
+        <LastLoading>2017-03-02T08:50:49</LastLoading>
+        <IssueDate>2017-02-28T16:00:00</IssueDate>
+        <NextUpdate>2017-08-28T16:00:00</NextUpdate>
+        <WellSigned>true</WellSigned>
+    </ListOfTrustedLists>
+</DiagnosticData>

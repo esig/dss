@@ -265,6 +265,7 @@ public enum MessageTag {
 	QUAL_TL_WS_ANS("The trusted list is not well signed!"),
 	
 	QUAL_TL_SERV_CONS("Are trust services consistent ?"),
+	QUAL_TL_SERV_CONS_ANS0("No CA/QC Trust service found"),
 	QUAL_TL_SERV_CONS_ANS1("Trust service not consistent! (QCStatement and NotQualified)"),
 	QUAL_TL_SERV_CONS_ANS2("Trust service not consistent! (QCForLegalPerson and QCForeSig)"),
 	QUAL_TL_SERV_CONS_ANS3("Trust service not consistent! (X_QSCD and NotQSCD)"),

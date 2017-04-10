@@ -3,12 +3,14 @@ package eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.filte
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.xml.bind.DatatypeConverter;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public class ServiceByDateFilterTest {
@@ -16,6 +18,12 @@ public class ServiceByDateFilterTest {
 	private final static Date DATE1 = DatatypeConverter.parseDateTime("2015-07-01T00:00:00-00:00").getTime();
 	private final static Date DATE2 = DatatypeConverter.parseDateTime("2016-07-01T00:00:00-00:00").getTime();
 	private final static Date DATE3 = DatatypeConverter.parseDateTime("2017-07-01T00:00:00-00:00").getTime();
+
+	@Test
+	public void noCAQC() {
+		ServiceByDateFilter filter = new ServiceByDateFilter(DATE2);
+		assertTrue(Utils.isCollectionEmpty(filter.filter(new ArrayList<TrustedServiceWrapper>())));
+	}
 
 	@Test
 	public void testInRange() {
@@ -36,6 +44,15 @@ public class ServiceByDateFilterTest {
 		service.setStartDate(DATE1);
 
 		assertTrue(filter.isAcceptable(service));
+	}
+
+	@Test
+	public void testNoDateRange() {
+		ServiceByDateFilter filter = new ServiceByDateFilter(DATE2);
+
+		TrustedServiceWrapper service = new TrustedServiceWrapper();
+
+		assertFalse(filter.isAcceptable(service));
 	}
 
 	@Test
