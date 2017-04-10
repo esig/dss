@@ -460,18 +460,21 @@ public class TSLParser implements Callable<TSLParserResult> {
 		return qualifiers;
 	}
 
-	private Condition getCondition(CriteriaListType criteriaList) {
+	protected Condition getCondition(CriteriaListType criteriaList) {
 		MatchingCriteriaIndicator matchingCriteriaIndicator = MatchingCriteriaIndicator.valueOf(criteriaList.getAssert());
 		CompositeCondition condition = new CriteriaListCondition(matchingCriteriaIndicator);
+
 		addKeyUsageConditionsIfPresent(criteriaList.getKeyUsage(), condition);
 		addPolicyIdConditionsIfPresent(criteriaList.getPolicySet(), condition);
 		addCriteriaListConditionsIfPresent(criteriaList.getCriteriaList(), condition);
+
 		return condition;
 	}
 
-	private void addPolicyIdConditionsIfPresent(List<PoliciesListType> policySet, CompositeCondition condition) {
+	private void addPolicyIdConditionsIfPresent(List<PoliciesListType> policySet, CompositeCondition criteriaCondition) {
 		if (Utils.isCollectionNotEmpty(policySet)) {
 			for (PoliciesListType policiesListType : policySet) {
+				CompositeCondition condition = new CompositeCondition();
 				for (ObjectIdentifierType oidType : policiesListType.getPolicyIdentifier()) {
 					IdentifierType identifier = oidType.getIdentifier();
 					String id = identifier.getValue();
@@ -483,27 +486,28 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 					condition.addChild(new PolicyIdCondition(id));
 				}
+				criteriaCondition.addChild(condition);
 			}
 		}
 	}
 
-	private void addKeyUsageConditionsIfPresent(List<KeyUsageType> keyUsages, CompositeCondition condition) {
+	private void addKeyUsageConditionsIfPresent(List<KeyUsageType> keyUsages, CompositeCondition criteriaCondition) {
 		if (Utils.isCollectionNotEmpty(keyUsages)) {
 			for (KeyUsageType keyUsageType : keyUsages) {
+				CompositeCondition condition = new CompositeCondition();
 				for (KeyUsageBitType keyUsageBit : keyUsageType.getKeyUsageBit()) {
 					condition.addChild(new KeyUsageCondition(keyUsageBit.getName(), keyUsageBit.isValue()));
 				}
+				criteriaCondition.addChild(condition);
 			}
 		}
 	}
 
 	private void addCriteriaListConditionsIfPresent(List<CriteriaListType> criteriaList, CompositeCondition condition) {
 		if (Utils.isCollectionNotEmpty(criteriaList)) {
-			CompositeCondition compositeConditions = new CompositeCondition();
 			for (CriteriaListType criteriaListType : criteriaList) {
-				compositeConditions.addChild(getCondition(criteriaListType));
+				condition.addChild(getCondition(criteriaListType));
 			}
-			condition.addChild(compositeConditions);
 		}
 	}
 
