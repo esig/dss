@@ -121,6 +121,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
@@ -1149,10 +1150,16 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	private SignerInformation recreateSignerInformation() throws CMSException, IOException {
 
 		final DSSDocument dssDocument = detachedContents.get(0); // only one element for CAdES Signature
-		final InputStream inputStream = dssDocument.openStream();
-		final CMSTypedStream signedContent = new CMSTypedStream(inputStream);
-		final CMSSignedDataParser cmsSignedDataParser = new CMSSignedDataParser(new BcDigestCalculatorProvider(), signedContent, cmsSignedData.getEncoded());
-		cmsSignedDataParser.getSignedContent().drain(); // Closes the stream
+		CMSSignedDataParser cmsSignedDataParser = null;
+		if (dssDocument instanceof DigestDocument) {
+			cmsSignedDataParser = new CMSSignedDataParser(new PrecomputedDigestCalculatorProvider((DigestDocument) dssDocument), cmsSignedData.getEncoded());
+		} else {
+			final InputStream inputStream = dssDocument.openStream();
+			final CMSTypedStream signedContent = new CMSTypedStream(inputStream);
+			cmsSignedDataParser = new CMSSignedDataParser(new BcDigestCalculatorProvider(), signedContent, cmsSignedData.getEncoded());
+			cmsSignedDataParser.getSignedContent().drain(); // Closes the stream
+		}
+
 		final SignerId signerId = signerInformation.getSID();
 		final SignerInformation signerInformationToCheck = cmsSignedDataParser.getSignerInfos().get(signerId);
 		return signerInformationToCheck;
