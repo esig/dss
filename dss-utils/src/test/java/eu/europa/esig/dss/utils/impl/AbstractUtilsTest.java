@@ -209,6 +209,8 @@ public abstract class AbstractUtilsTest {
 
 	@Test
 	public void collectionSize() {
+		assertEquals(0, Utils.collectionSize(null));
+
 		assertEquals(0, Utils.collectionSize(new ArrayList<String>()));
 
 		List<String> list = new ArrayList<String>();
