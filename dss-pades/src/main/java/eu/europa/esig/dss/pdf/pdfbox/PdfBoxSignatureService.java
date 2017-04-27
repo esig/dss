@@ -276,7 +276,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 					String subFilter = signature.getSubFilter();
 
 					COSDictionary dict = signature.getCOSObject();
-					COSString item = (COSString) dict.getItem(COSName.CONTENTS);
+					COSString item = (COSString) dict.getDictionaryObject(COSName.CONTENTS);
 					byte[] cms = item.getBytes();
 
 					byte[] cmsWithByteRange = signature.getContents(originalBytes);
