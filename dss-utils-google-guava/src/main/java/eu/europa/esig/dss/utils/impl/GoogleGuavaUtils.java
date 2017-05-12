@@ -175,6 +175,9 @@ public class GoogleGuavaUtils implements IUtils {
 	@Override
 	@SuppressWarnings("rawtypes")
 	public int collectionSize(Collection collection) {
+		if (collection == null) {
+			return 0;
+		}
 		return collection.size();
 	}
 

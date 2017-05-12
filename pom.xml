@@ -51,7 +51,7 @@
 		<bouncycastle.version>1.56</bouncycastle.version>
 		<xmlsec.version>2.0.8</xmlsec.version>
 		<xalan.version>2.7.2</xalan.version>
-		<pdfbox.version>2.0.4</pdfbox.version>
+		<pdfbox.version>2.0.5</pdfbox.version>
 		<httpclient.version>4.5.2</httpclient.version>
 		<rs-api.version>2.0.1</rs-api.version>
 
