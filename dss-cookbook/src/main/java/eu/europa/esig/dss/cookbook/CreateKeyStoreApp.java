@@ -28,10 +28,12 @@ public class CreateKeyStoreApp {
 
 		KeyStore store = createKeyStore();
 
-		addCertificate(store, "src/main/resources/keystore/ec.europa.eu.1.cer");
-		addCertificate(store, "src/main/resources/keystore/ec.europa.eu.2.cer");
+		// addCertificate(store, "src/main/resources/keystore/ec.europa.eu.1.cer.old");
+		// addCertificate(store, "src/main/resources/keystore/ec.europa.eu.2.cer.old");
 		addCertificate(store, "src/main/resources/keystore/ec.europa.eu.3.cer");
 		addCertificate(store, "src/main/resources/keystore/ec.europa.eu.4.cer");
+		addCertificate(store, "src/main/resources/keystore/ec.europa.eu.5.cer");
+		addCertificate(store, "src/main/resources/keystore/ec.europa.eu.6.cer");
 
 		OutputStream fos = new FileOutputStream(KEYSTORE_FILEPATH);
 		store.store(fos, KEYSTORE_PASSWORD.toCharArray());
