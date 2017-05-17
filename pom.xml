@@ -45,14 +45,14 @@
 		<project.source.version>1.7</project.source.version>
 		<project.encoding>UTF-8</project.encoding>
 
-		<slf4j.version>1.7.22</slf4j.version>
-		<logback-classic.version>1.1.9</logback-classic.version>
+		<slf4j.version>1.7.25</slf4j.version>
+		<logback-classic.version>1.2.3</logback-classic.version>
 
-		<bouncycastle.version>1.56</bouncycastle.version>
+		<bouncycastle.version>1.57</bouncycastle.version>
 		<xmlsec.version>2.0.8</xmlsec.version>
 		<xalan.version>2.7.2</xalan.version>
-		<pdfbox.version>2.0.5</pdfbox.version>
-		<httpclient.version>4.5.2</httpclient.version>
+		<pdfbox.version>2.0.6</pdfbox.version>
+		<httpclient.version>4.5.3</httpclient.version>
 		<rs-api.version>2.0.1</rs-api.version>
 
 		<junit.version>4.11</junit.version>
