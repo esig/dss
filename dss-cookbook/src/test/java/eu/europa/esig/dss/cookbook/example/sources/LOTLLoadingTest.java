@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.cookbook.example.sources;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.junit.Test;
 
@@ -13,7 +14,7 @@ import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 public class LOTLLoadingTest {
 
 	@Test
-	public void loadLOTL() {
+	public void loadLOTL() throws IOException {
 
 		// tag::demo[]
 

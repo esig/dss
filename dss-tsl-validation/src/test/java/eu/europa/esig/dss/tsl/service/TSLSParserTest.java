@@ -4,7 +4,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -54,7 +53,7 @@ public class TSLSParserTest {
 
 	@Test
 	public void parseTSL() throws Exception {
-		TSLParser parser = new TSLParser(new FileInputStream(fileToTest));
+		TSLParser parser = new TSLParser(fileToTest.getAbsolutePath());
 		TSLParserResult result = parser.call();
 		assertNotNull(result);
 		assertNotNull(result.getNextUpdateDate());
