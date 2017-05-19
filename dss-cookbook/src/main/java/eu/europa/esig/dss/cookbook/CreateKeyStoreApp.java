@@ -22,6 +22,7 @@ public class CreateKeyStoreApp {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CreateKeyStoreApp.class);
 
+	private static boolean allow_expired = false;
 	private static final String KEYSTORE_TYPE = "PKCS12";
 	private static final String KEYSTORE_FILEPATH = "target/keystore.p12";
 	private static final String KEYSTORE_PASSWORD = "dss-password";
@@ -55,7 +56,7 @@ public class CreateKeyStoreApp {
 	private static void addCertificate(KeyStoreCertificateSource kscs, String certPath) throws Exception {
 		try (InputStream is = new FileInputStream(certPath)) {
 			CertificateToken cert = DSSUtils.loadCertificate(is);
-			if (cert.isExpiredOn(new Date())) {
+			if (!allow_expired && cert.isExpiredOn(new Date())) {
 				throw new RuntimeException("Certificate " + DSSASN1Utils.getSubjectCommonName(cert) + " is expired");
 			}
 			displayCertificateDigests(cert);

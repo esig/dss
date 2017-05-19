@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -167,7 +166,7 @@ public class TSLValidationJob {
 			if (checkLOTLSignature && (europeanModel != null)) {
 				try {
 					// pivot is not handled in the cache loading
-					TSLValidationResult europeanValidationResult = validateLOTL(europeanModel, ojContentKeyStore);
+					TSLValidationResult europeanValidationResult = validateLOTL(europeanModel, ojContentKeyStore.getCertificates());
 					europeanModel.setValidationResult(europeanValidationResult);
 				} catch (Exception e) {
 					logger.error("Unable to validate the LOTL : " + e.getMessage(), e);
@@ -230,45 +229,21 @@ public class TSLValidationJob {
 			}
 		}
 
-		KeyStoreCertificateSource trustStoreLOTL = ojContentKeyStore;
 		if (!isLatestOjKeystore(parseResult)) {
 			logger.warn("OJ keystore is out-dated !");
 		}
 
+		// Copy certificates from the OJ keystore
+		List<CertificateToken> allowedLotlSigners = new ArrayList<CertificateToken>();
+		allowedLotlSigners.addAll(ojContentKeyStore.getCertificates());
+
 		if (isPivotLOTL(parseResult)) {
-
-			trustStoreLOTL = new KeyStoreCertificateSource("PKCS12", UUID.randomUUID().toString());
-			// Copy certificates from the OJ keystore
-			trustStoreLOTL.addAllCertificatesToKeyStore(ojContentKeyStore.getCertificates());
-
-			List<Future<TSLLoaderResult>> pivotLoaderResults = new ArrayList<Future<TSLLoaderResult>>();
-			List<String> pivotUris = getPivotUris(parseResult);
-			for (String pivotUrl : pivotUris) {
-				pivotLoaderResults.add(executorService.submit(new TSLLoader(dataLoader, lotlCode, pivotUrl)));
-			}
-
-			List<Future<TSLParserResult>> futureParseResults = new ArrayList<Future<TSLParserResult>>();
-			List<Future<TSLValidationResult>> futureValidationResults = new ArrayList<Future<TSLValidationResult>>();
-			for (Future<TSLLoaderResult> pivotLoaderResult : pivotLoaderResults) {
-				try {
-					TSLLoaderResult loaderResult = pivotLoaderResult.get();
-					if (loaderResult != null && loaderResult.getContent() != null) {
-						TSLValidationModel pivotModel = null;
-						if (!repository.isLastPivotVersion(loaderResult)) {
-							pivotModel = repository.storePivotInCache(loaderResult);
-						} else {
-							pivotModel = repository.getByCountry(loaderResult.getCountryCode());
-						}
-					}
-				} catch (Exception e) {
-				}
-
-			}
+			extractAllowedLotlSignersFromPivots(parseResult, allowedLotlSigners);
 		}
 
 		if (checkLOTLSignature && (europeanModel.getValidationResult() == null)) {
 			try {
-				TSLValidationResult validationResult = validateLOTL(europeanModel, trustStoreLOTL);
+				TSLValidationResult validationResult = validateLOTL(europeanModel, allowedLotlSigners);
 				europeanModel.setValidationResult(validationResult);
 			} catch (Exception e) {
 				logger.error("Unable to validate the LOTL : " + e.getMessage(), e);
@@ -280,6 +255,64 @@ public class TSLValidationJob {
 		repository.synchronize();
 
 		logger.debug("TSL Validation Job is finishing ...");
+	}
+
+	private void extractAllowedLotlSignersFromPivots(TSLParserResult parseResult, List<CertificateToken> allowedLotlSigners) {
+		List<Future<TSLLoaderResult>> pivotLoaderResults = new ArrayList<Future<TSLLoaderResult>>();
+		List<String> pivotUris = getPivotUris(parseResult);
+		for (String pivotUrl : pivotUris) {
+			pivotLoaderResults.add(executorService.submit(new TSLLoader(dataLoader, lotlCode, pivotUrl)));
+		}
+
+		for (Future<TSLLoaderResult> pivotLoaderResult : pivotLoaderResults) {
+			try {
+				TSLLoaderResult loaderResult = pivotLoaderResult.get();
+				if (loaderResult != null && loaderResult.getContent() != null) {
+					TSLValidationModel pivotModel = null;
+					if (!repository.isLastPivotVersion(loaderResult)) {
+						pivotModel = repository.storePivotInCache(loaderResult);
+					} else {
+						pivotModel = repository.getPivotByUrl(loaderResult.getUrl());
+					}
+
+					TSLParserResult pivotParseResult = pivotModel.getParseResult();
+					if (pivotParseResult == null) {
+						Future<TSLParserResult> parseResultFuture = executorService.submit(new TSLParser(pivotModel.getFilepath()));
+						pivotParseResult = parseResultFuture.get();
+					}
+
+					TSLValidationResult pivotValidationResult = pivotModel.getValidationResult();
+					if (checkLOTLSignature && (pivotValidationResult == null)) {
+						TSLValidator tslValidator = new TSLValidator(new File(pivotModel.getFilepath()), loaderResult.getCountryCode(), allowedLotlSigners);
+						Future<TSLValidationResult> pivotValidationFuture = executorService.submit(tslValidator);
+						pivotValidationResult = pivotValidationFuture.get();
+					}
+
+					if (pivotValidationResult.isValid()) {
+						List<CertificateToken> certs = getCertificatesForLOTLPointer(loaderResult, pivotParseResult);
+						allowedLotlSigners.clear();
+						allowedLotlSigners.addAll(certs);
+					} else {
+						logger.warn("Pivot '" + loaderResult.getUrl() + "' is not valid");
+					}
+
+				}
+			} catch (Exception e) {
+				logger.error("Unable to validate the pivot LOTL : " + e.getMessage(), e);
+			}
+
+		}
+	}
+
+	private List<CertificateToken> getCertificatesForLOTLPointer(TSLLoaderResult loaderResult, TSLParserResult pivotParseResult) {
+		List<TSLPointer> pointers = pivotParseResult.getPointers();
+		for (TSLPointer tslPointer : pointers) {
+			if (Utils.areStringsEqual(tslPointer.getTerritory(), lotlCode)) {
+				return tslPointer.getPotentialSigners();
+			}
+		}
+		logger.warn("No LOTL pointer in pivot '" + loaderResult.getUrl() + "'");
+		return new ArrayList<CertificateToken>();
 	}
 
 	/**
@@ -381,13 +414,9 @@ public class TSLValidationJob {
 		return Collections.emptyList();
 	}
 
-	private TSLValidationResult validateLOTL(TSLValidationModel validationModel, KeyStoreCertificateSource trustStoreLOTL) throws Exception {
+	private TSLValidationResult validateLOTL(TSLValidationModel validationModel, List<CertificateToken> allowedSigners) throws Exception {
 		validationModel.setLotl(true);
-		List<CertificateToken> certsFromKeystore = Collections.emptyList();
-		if (trustStoreLOTL != null) {
-			certsFromKeystore = trustStoreLOTL.getCertificates();
-		}
-		TSLValidator tslValidator = new TSLValidator(new File(validationModel.getFilepath()), lotlCode, certsFromKeystore);
+		TSLValidator tslValidator = new TSLValidator(new File(validationModel.getFilepath()), lotlCode, allowedSigners);
 		Future<TSLValidationResult> future = executorService.submit(tslValidator);
 		return future.get();
 	}

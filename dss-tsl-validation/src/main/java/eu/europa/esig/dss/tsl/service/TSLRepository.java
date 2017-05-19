@@ -148,7 +148,7 @@ public class TSLRepository {
 		validationModel.setUrl(resultLoader.getUrl());
 		validationModel.setSha256FileContent(getSHA256(resultLoader.getContent()));
 		validationModel.setLoadedDate(new Date());
-		validationModel.setFilepath(storeOnFileSystem(resultLoader));
+		validationModel.setFilepath(storeOnFileSystem(resultLoader.getCountryCode(), resultLoader));
 		validationModel.setCertificateSourceSynchronized(false);
 		tsls.put(resultLoader.getCountryCode(), validationModel);
 		logger.info("New version of " + resultLoader.getCountryCode() + " TSL is stored in cache");
@@ -156,7 +156,16 @@ public class TSLRepository {
 	}
 
 	TSLValidationModel storePivotInCache(TSLLoaderResult resultLoader) {
-
+		TSLValidationModel validationModel = new TSLValidationModel();
+		validationModel.setUrl(resultLoader.getUrl());
+		validationModel.setSha256FileContent(getSHA256(resultLoader.getContent()));
+		validationModel.setLoadedDate(new Date());
+		String filename = resultLoader.getUrl();
+		filename = filename.replaceAll("\\W", "_");
+		validationModel.setFilepath(storeOnFileSystem(filename, resultLoader));
+		pivots.put(resultLoader.getUrl(), validationModel);
+		logger.info("New version of the pivot LOTL '" + resultLoader.getUrl() + "' is stored in cache");
+		return validationModel;
 	}
 
 	void addParsedResultFromCacheToMap(TSLParserResult tslParserResult) {
@@ -175,9 +184,9 @@ public class TSLRepository {
 		tsls.put(countryCode, validationModel);
 	}
 
-	private String storeOnFileSystem(TSLLoaderResult resultLoader) {
+	private String storeOnFileSystem(String filename, TSLLoaderResult resultLoader) {
 		ensureCacheDirectoryExists();
-		String filePath = getFilePath(resultLoader.getCountryCode());
+		String filePath = getFilePath(filename);
 		File fileToCreate = new File(filePath);
 		try (FileOutputStream os = new FileOutputStream(fileToCreate)) {
 			Utils.write(resultLoader.getContent(), os);
