@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -12,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
+import java.util.Collection;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,20 +38,27 @@ public class DSSUtilsTest {
 
 	@Test
 	public void testLoadIssuer() {
-		CertificateToken issuer = DSSUtils.loadIssuerCertificate(certificateWithAIA, new NativeHTTPDataLoader());
-		assertNotNull(issuer);
-		assertTrue(certificateWithAIA.isSignedBy(issuer));
+		Collection<CertificateToken> issuers = DSSUtils.loadIssuerCertificates(certificateWithAIA, new NativeHTTPDataLoader());
+		assertNotNull(issuers);
+		assertFalse(issuers.isEmpty());
+		boolean foundIssuer = false;
+		for (CertificateToken issuer : issuers) {
+			if (certificateWithAIA.isSignedBy(issuer)) {
+				foundIssuer = true;
+			}
+		}
+		assertTrue(foundIssuer);
 	}
 
 	@Test
 	public void testLoadIssuerEmptyDataLoader() {
-		assertNull(DSSUtils.loadIssuerCertificate(certificateWithAIA, null));
+		assertNull(DSSUtils.loadIssuerCertificates(certificateWithAIA, null));
 	}
 
 	@Test
 	public void testLoadIssuerNoAIA() {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));
-		assertNull(DSSUtils.loadIssuerCertificate(certificate, new NativeHTTPDataLoader()));
+		assertNull(DSSUtils.loadIssuerCertificates(certificate, new NativeHTTPDataLoader()));
 	}
 
 	@Test
