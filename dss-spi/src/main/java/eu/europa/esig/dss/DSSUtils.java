@@ -372,32 +372,39 @@ public final class DSSUtils {
 
 	/**
 	 * This method loads a certificate from the given location. The certificate
-	 * must be a .p7c file. i.e., a "certs-only" CMS message as specified in RFC 
+	 * must be a .p7c file. i.e., a "certs-only" CMS message as specified in RFC
 	 * 2797. It throws an {@code DSSException}
 	 *
 	 * @param inputStream
 	 *            input stream containing the certificate collection
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public static Collection<CertificateToken> loadCertificateFromP7c(final InputStream inputStream) throws DSSException {
 		final Collection<CertificateToken> certificates = new ArrayList<>();
 		try {
-			// Note: The PEMReader is not closed to avoid affecting the received inputStream
-			@SuppressWarnings("resource")
-			PEMParser pemParser = new PEMParser(new InputStreamReader(inputStream));
-	    	Object pemObject = pemParser.readObject();
-	    	if (pemObject != null) {
-	    		ContentInfo ci = (ContentInfo) pemObject;
-    			CMSSignedData cms = new CMSSignedData(ci);
-    			@SuppressWarnings("unchecked")
+			byte[] byteArray = Utils.toByteArray(inputStream);
+			CMSSignedData cms = null;
+			if (isPEM(byteArray)) {
+				// Note: The PEMReader is not closed to avoid affecting the received inputStream
+				@SuppressWarnings("resource")
+				PEMParser pemParser = new PEMParser(new InputStreamReader(new ByteArrayInputStream(byteArray)));
+				Object pemObject = pemParser.readObject();
+				if (pemObject != null) {
+					ContentInfo ci = (ContentInfo) pemObject;
+					cms = new CMSSignedData(ci);
+				}
+			} else {
+				cms = new CMSSignedData(byteArray);
+			}
+
+			if (cms != null) {
 				CollectionStore<X509CertificateHolder> certificatesCollection = (CollectionStore<X509CertificateHolder>) cms.getCertificates();
-    			for (X509CertificateHolder certHolder : certificatesCollection){
-	    			ByteArrayInputStream bais = new ByteArrayInputStream(certHolder.getEncoded());
-	    			X509Certificate cert = (X509Certificate) certificateFactory.generateCertificate(bais);
-	    			certificates.add(new CertificateToken(cert));
-    			}
-	    	}
-			
+				for (X509CertificateHolder certHolder : certificatesCollection) {
+					certificates.add(DSSASN1Utils.getCertificate(certHolder));
+				}
+			}
+
 			if (certificates.isEmpty()) {
 				throw new DSSException("Could not parse certificates");
 			}
@@ -481,7 +488,7 @@ public final class DSSUtils {
 					} catch (DSSException dssEx) {
 						if (issuerCert == null) {
 							Collection<CertificateToken> certsCollection = loadCertificateFromP7c(new ByteArrayInputStream(bytes));
-							for(CertificateToken token : certsCollection) {
+							for (CertificateToken token : certsCollection) {
 								if (cert.isSignedBy(token)) {
 									issuerCert = token;
 									issuerCerts = certsCollection;
@@ -489,7 +496,7 @@ public final class DSSUtils {
 							}
 						}
 					}
-					
+
 					if (issuerCert != null) {
 						if (!cert.getIssuerX500Principal().equals(issuerCert.getSubjectX500Principal())) {
 							logger.info("There is AIA extension, but the issuer subject name and subject name does not match.");

@@ -5,11 +5,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
@@ -48,6 +48,18 @@ public class DSSUtilsTest {
 			}
 		}
 		assertTrue(foundIssuer);
+	}
+
+	@Test
+	public void testLoadP7cPEM() throws DSSException, IOException {
+		Collection<CertificateToken> certs = DSSUtils.loadCertificateFromP7c(new FileInputStream("src/test/resources/certchain.p7c"));
+		assertTrue(Utils.isCollectionNotEmpty(certs));
+	}
+
+	@Test
+	public void testLoadP7cNotPEM() throws DSSException, IOException {
+		Collection<CertificateToken> certs = DSSUtils.loadCertificateFromP7c(new FileInputStream("src/test/resources/AdobeCA.p7c"));
+		assertTrue(Utils.isCollectionNotEmpty(certs));
 	}
 
 	@Test
@@ -106,13 +118,13 @@ public class DSSUtilsTest {
 		assertTrue(DSSUtils.isPEM(new ByteArrayInputStream(convertToPEM.getBytes())));
 
 		CertificateToken certificate = DSSUtils.loadCertificate(convertToPEM.getBytes());
-		assertEquals(certificate,certificateWithAIA);
+		assertEquals(certificate, certificateWithAIA);
 
 		byte[] certDER = DSSUtils.convertToDER(convertToPEM);
 		assertFalse(DSSUtils.isPEM(new ByteArrayInputStream(certDER)));
 
 		CertificateToken certificate2 = DSSUtils.loadCertificate(certDER);
-		assertEquals(certificate2,certificateWithAIA);
+		assertEquals(certificate2, certificateWithAIA);
 	}
 
 	@Test
