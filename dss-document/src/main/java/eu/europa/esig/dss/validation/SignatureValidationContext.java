@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -218,22 +219,23 @@ public class SignatureValidationContext implements ValidationContext {
 	 * @return {@code CertificateToken} representing the issuer certificate or null.
 	 */
 	private CertificateToken getIssuerFromAIA(final CertificateToken token) {
-
-		final CertificateToken issuerCert;
 		try {
 
 			logger.info("Retrieving {} certificate's issuer using AIA.", token.getAbbreviation());
-			issuerCert = DSSUtils.loadIssuerCertificate(token, dataLoader);
-			if (issuerCert != null) {
-
-				final CertificateToken issuerCertToken = validationCertificatePool.getInstance(issuerCert, CertificateSourceType.AIA);
-				if (token.isSignedBy(issuerCertToken)) {
-
-					return issuerCertToken;
+			Collection<CertificateToken> issuerCerts = DSSUtils.loadIssuerCertificates(token, dataLoader);
+			if (issuerCerts != null) {
+				CertificateToken issuerCertToken = null;
+				for(CertificateToken issuerCert : issuerCerts) {
+					CertificateToken issuerCertFromAia = validationCertificatePool.getInstance(issuerCert, CertificateSourceType.AIA);
+					if (token.isSignedBy(issuerCertFromAia)) {
+						issuerCertToken = issuerCertFromAia;
+					} else {
+						addCertificateTokenForVerification(issuerCertFromAia);
+					}
+					logger.info("The retrieved certificate using AIA does not sign the certificate {}.", token.getAbbreviation());
 				}
-				logger.info("The retrieved certificate using AIA does not sign the certificate {}.", token.getAbbreviation());
+				return issuerCertToken;
 			} else {
-
 				logger.info("The issuer certificate cannot be loaded using AIA.");
 			}
 		} catch (DSSException e) {

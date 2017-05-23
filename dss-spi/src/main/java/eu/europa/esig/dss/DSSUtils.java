@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -45,7 +46,10 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -56,11 +60,16 @@ import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.bouncycastle.asn1.cms.ContentInfo;
 import org.bouncycastle.cert.X509CRLHolder;
+import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CRLConverter;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
+import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.util.CollectionStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -362,6 +371,50 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * This method loads a certificate from the given location. The certificate
+	 * must be a .p7c file. i.e., a "certs-only" CMS message as specified in RFC
+	 * 2797. It throws an {@code DSSException}
+	 *
+	 * @param inputStream
+	 *            input stream containing the certificate collection
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static Collection<CertificateToken> loadCertificateFromP7c(final InputStream inputStream) throws DSSException {
+		final Collection<CertificateToken> certificates = new ArrayList<>();
+		try {
+			byte[] byteArray = Utils.toByteArray(inputStream);
+			CMSSignedData cms = null;
+			if (isPEM(byteArray)) {
+				// Note: The PEMReader is not closed to avoid affecting the received inputStream
+				@SuppressWarnings("resource")
+				PEMParser pemParser = new PEMParser(new InputStreamReader(new ByteArrayInputStream(byteArray)));
+				Object pemObject = pemParser.readObject();
+				if (pemObject != null) {
+					ContentInfo ci = (ContentInfo) pemObject;
+					cms = new CMSSignedData(ci);
+				}
+			} else {
+				cms = new CMSSignedData(byteArray);
+			}
+
+			if (cms != null) {
+				CollectionStore<X509CertificateHolder> certificatesCollection = (CollectionStore<X509CertificateHolder>) cms.getCertificates();
+				for (X509CertificateHolder certHolder : certificatesCollection) {
+					certificates.add(DSSASN1Utils.getCertificate(certHolder));
+				}
+			}
+
+			if (certificates.isEmpty()) {
+				throw new DSSException("Could not parse certificates");
+			}
+			return certificates;
+		} catch (Exception e) {
+			throw new DSSException(e);
+		}
+	}
+
+	/**
 	 * This method loads a certificate from the byte array. The certificate must be DER-encoded and may be supplied in
 	 * binary or printable
 	 * (Base64) encoding. If the certificate is provided in Base64 encoding, it must be bounded at the beginning by
@@ -407,7 +460,7 @@ public final class DSSUtils {
 	 *            the loader to use
 	 * @return
 	 */
-	public static CertificateToken loadIssuerCertificate(final CertificateToken cert, final DataLoader loader) {
+	public static Collection<CertificateToken> loadIssuerCertificates(final CertificateToken cert, final DataLoader loader) {
 		List<String> urls = DSSASN1Utils.getCAAccessLocations(cert);
 		if (Utils.isCollectionEmpty(urls)) {
 			logger.info("There is no AIA extension for certificate download.");
@@ -427,14 +480,30 @@ public final class DSSUtils {
 				try {
 					logger.debug("Certificate : " + Utils.toBase64(bytes));
 
-					CertificateToken issuerCert = loadCertificate(bytes);
+					Collection<CertificateToken> issuerCerts = null;
+					CertificateToken issuerCert = null;
+					try {
+						issuerCert = loadCertificate(bytes);
+						issuerCerts = Collections.singletonList(issuerCert);
+					} catch (DSSException dssEx) {
+						if (issuerCert == null) {
+							Collection<CertificateToken> certsCollection = loadCertificateFromP7c(new ByteArrayInputStream(bytes));
+							for (CertificateToken token : certsCollection) {
+								if (cert.isSignedBy(token)) {
+									issuerCert = token;
+									issuerCerts = certsCollection;
+								}
+							}
+						}
+					}
+
 					if (issuerCert != null) {
 						if (!cert.getIssuerX500Principal().equals(issuerCert.getSubjectX500Principal())) {
 							logger.info("There is AIA extension, but the issuer subject name and subject name does not match.");
 							logger.info("CERT ISSUER    : " + cert.getIssuerX500Principal().toString());
 							logger.info("ISSUER SUBJECT : " + issuerCert.getSubjectX500Principal().toString());
 						}
-						return issuerCert;
+						return issuerCerts;
 					}
 				} catch (Exception e) {
 					logger.warn("Unable to parse certficate from AIA (url:" + url + ") : " + e.getMessage());
