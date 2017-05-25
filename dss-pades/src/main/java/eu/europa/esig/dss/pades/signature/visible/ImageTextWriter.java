@@ -37,7 +37,7 @@ import java.awt.image.BufferedImage;
 public final class ImageTextWriter {
 
     private static final int DEFAULT_MARGIN = 10;
-    private static final int PDF_DEFAULT_DPI = 72;
+    public static final int PDF_DEFAULT_DPI = 72;
 
     private ImageTextWriter() {
     }
