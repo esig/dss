@@ -1,13 +1,15 @@
 package eu.europa.esig.dss.pades.signature.visible;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Iterator;
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -21,18 +23,20 @@ import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pades.SignatureImageTextParameters;
-import eu.europa.esig.dss.utils.Utils;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * A static utilities that helps in creating ImageAndResolution
@@ -46,41 +50,62 @@ public class ImageUtils {
 
 	private static final int DPI = 300;
 
+	private static final int[] IMAGE_TRANSPARENT_TYPES;
+
+	static {
+		int[] imageAlphaTypes = new int[]{BufferedImage.TYPE_4BYTE_ABGR, BufferedImage.TYPE_4BYTE_ABGR_PRE, BufferedImage.TYPE_INT_ARGB, BufferedImage.TYPE_INT_ARGB_PRE};
+		Arrays.sort(imageAlphaTypes);
+		IMAGE_TRANSPARENT_TYPES = imageAlphaTypes;
+	}
+
 	public static ImageAndResolution create(final SignatureImageParameters imageParameters) throws IOException {
+//		int width = 0;
+//		int height = 0;
+
 
 		SignatureImageTextParameters textParamaters = imageParameters.getTextParameters();
 
 		DSSDocument image = imageParameters.getImage();
-		if ((textParamaters != null) && Utils.isStringNotEmpty(textParamaters.getText())) {
+//		if (image != null) {
+//			BufferedImage tmpImage = ImageIO.read(createImageInputStream(image));
+//			width = tmpImage.getWidth();
+//			height = tmpImage.getHeight();
+//		}
 
-			BufferedImage buffImg = ImageTextWriter.createTextImage(textParamaters.getText(), textParamaters.getFont(), textParamaters.getTextColor(),
-					textParamaters.getBackgroundColor(), DPI);
+
+		if ((textParamaters != null) && Utils.isStringNotEmpty(textParamaters.getText())) {
+			float fontSize = Math.round((textParamaters.getFont().getSize() * getDpi(imageParameters.getDpi())) / DPI);
+			Font largerFont = textParamaters.getFont().deriveFont(fontSize);
+			BufferedImage buffImg = ImageTextWriter.createTextImage(textParamaters.getText(), largerFont, textParamaters.getTextColor(),
+					textParamaters.getBackgroundColor(), getDpi(imageParameters.getDpi()), textParamaters.getSignerTextHorizontalAlignment());
 
 			if (image != null) {
 				InputStream is = null;
 				try {
-					is = image.openStream();
-					switch (textParamaters.getSignerNamePosition()) {
-					case LEFT:
-						buffImg = ImagesMerger.mergeOnRight(ImageIO.read(is), buffImg, textParamaters.getBackgroundColor());
-						break;
-					case RIGHT:
-						buffImg = ImagesMerger.mergeOnRight(buffImg, ImageIO.read(is), textParamaters.getBackgroundColor());
-						break;
-					case TOP:
-						buffImg = ImagesMerger.mergeOnTop(ImageIO.read(is), buffImg, textParamaters.getBackgroundColor());
-						break;
-					case BOTTOM:
-						buffImg = ImagesMerger.mergeOnTop(buffImg, ImageIO.read(is), textParamaters.getBackgroundColor());
-						break;
-					default:
-						break;
+					is = createImageInputStream(image);
+					if(is != null) {
+						switch (textParamaters.getSignerNamePosition()) {
+						case LEFT:
+							buffImg = ImagesMerger.mergeOnRight(ImageIO.read(is), buffImg, textParamaters.getBackgroundColor(), imageParameters.getSignerTextImageVerticalAlignment());
+							break;
+						case RIGHT:
+							buffImg = ImagesMerger.mergeOnRight(buffImg, ImageIO.read(is), textParamaters.getBackgroundColor(), imageParameters.getSignerTextImageVerticalAlignment());
+							break;
+						case TOP:
+							buffImg = ImagesMerger.mergeOnTop(ImageIO.read(is), buffImg, textParamaters.getBackgroundColor());
+							break;
+						case BOTTOM:
+							buffImg = ImagesMerger.mergeOnTop(buffImg, ImageIO.read(is), textParamaters.getBackgroundColor());
+							break;
+						default:
+							break;
+						}
 					}
 				} finally {
 					Utils.closeQuietly(is);
 				}
 			}
-			return convertToInputStream(image, buffImg, DPI);
+			return convertToInputStream(image, buffImg, getDpi(imageParameters.getDpi()));
 		}
 
 		// Image only
@@ -185,12 +210,11 @@ public class ImageUtils {
 	}
 
 	private static ImageAndResolution convertToInputStream(DSSDocument imageParam, BufferedImage buffImage, int dpi) throws IOException {
-		if (imageParam == null || isImageWithContentType(imageParam, MimeType.JPEG)) {
-			return convertToInputStreamJPG(buffImage, dpi);
-		} else if (isImageWithContentType(imageParam, MimeType.PNG)) {
+		if(isTransparent(buffImage)) {
 			return convertToInputStreamPNG(buffImage, dpi);
+		} else {
+			return convertToInputStreamJPG(buffImage, dpi);
 		}
-		throw new DSSException("Unsupported image type");
 	}
 
 	private static ImageAndResolution convertToInputStreamJPG(BufferedImage buffImage, int dpi) throws IOException {
@@ -271,4 +295,39 @@ public class ImageUtils {
 		metadata.mergeTree("javax_imageio_1.0", root);
 	}
 
+	private static int getDpi(Integer dpi) {
+		int result = DPI;
+		if(dpi != null && dpi.intValue() > 0) {
+			result = dpi.intValue();
+		}
+		return result;
+	}
+
+	private static InputStream createImageInputStream(DSSDocument dssDocument) throws FileNotFoundException {
+		InputStream inputStream = null;
+		if(dssDocument != null) {
+			if (dssDocument.getAbsolutePath() != null && !dssDocument.getAbsolutePath().trim().isEmpty()) {
+				inputStream = new FileInputStream(dssDocument.getAbsolutePath());
+			} else {
+				inputStream = dssDocument.openStream();
+			}
+		}
+		return inputStream;
+	}
+
+	public static boolean isTransparent(BufferedImage bufferedImage) {
+		int type = bufferedImage.getType();
+
+		return Arrays.binarySearch(IMAGE_TRANSPARENT_TYPES, type) > -1;
+	}
+
+	public static void initRendering(Graphics2D g) {
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+
+	}
 }

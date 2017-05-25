@@ -20,13 +20,14 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
+import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 /**
@@ -36,17 +37,18 @@ import java.awt.image.BufferedImage;
 public final class ImageTextWriter {
 
     private static final int DEFAULT_MARGIN = 10;
+    private static final int PDF_DEFAULT_DPI = 72;
 
     private ImageTextWriter() {
     }
 
-    public static BufferedImage createTextImage(final String text, final Font font, final Color textColor, final Color bgColor, final int dpi) {
+    public static BufferedImage createTextImage(final String text, final Font font, final Color textColor, final Color bgColor, final int dpi, SignatureImageTextParameters.SignerTextHorizontalAlignment horizontalAlignment) {
         // Computing image size depending of the font
-        float fontSize = Math.round((font.getSize() * dpi) / 72.0);
+        float fontSize = Math.round((font.getSize() * dpi) / PDF_DEFAULT_DPI);
         Font largerFont = font.deriveFont(fontSize);
         Dimension dimension = computeSize(largerFont, text);
         // gettters returns doubles ??
-        return createTextImage(text, largerFont, textColor, bgColor, dimension.width, dimension.height);
+        return createTextImage(text, largerFont, textColor, bgColor, dimension.width, dimension.height, horizontalAlignment);
     }
 
     public static Dimension computeSize(Font font, String text) {
@@ -58,43 +60,59 @@ public final class ImageTextWriter {
         String[] lines = text.split("\n");
 
         int width = 0;
-        for (String line : lines) {
+        for(String line : lines) {
             int lineWidth = fontMetrics.stringWidth(line);
-            if (lineWidth > width) {
+            if(lineWidth > width) {
                 width = lineWidth;
             }
         }
 
         width += DEFAULT_MARGIN;
-        int height = (fontMetrics.getHeight() + fontMetrics.getAscent()) * lines.length + DEFAULT_MARGIN;
+        int height = (fontMetrics.getHeight() * lines.length) + DEFAULT_MARGIN;
         return new Dimension(width, height);
     }
 
     private static BufferedImage createTextImage(final String text, final Font font, final Color textColor, final Color bgColor, final int width,
-                                                 final int height) {
+                                                 final int height, SignatureImageTextParameters.SignerTextHorizontalAlignment horizontalAlignment) {
         String[] lines = text.split("\n");
 
-        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = img.createGraphics();
         g.setFont(font);
         FontMetrics fm = g.getFontMetrics(font);
 
         // Improve text rendering
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        ImageUtils.initRendering(g);
 
-        g.setColor(bgColor);
+        if(bgColor == null) {
+            g.setColor(Color.WHITE);
+        } else {
+            g.setColor(bgColor);
+        }
         g.fillRect(0, 0, width, height);
 
-        g.setPaint(textColor);
+        if(textColor == null) {
+            g.setPaint(Color.BLACK);
+        } else {
+            g.setPaint(textColor);
+        }
 
-        int lineHeight = fm.getHeight() + fm.getAscent();
-        int y = fm.getHeight() + fm.getAscent() / 2;
+
+        int lineHeight = fm.getHeight();
+        int y = fm.getMaxAscent() + DEFAULT_MARGIN / 2;
 
         for (String line : lines) {
-            int x = img.getWidth() - fm.stringWidth(line) - (DEFAULT_MARGIN / 2);
+            int x = DEFAULT_MARGIN / 2; //left alignment
+            if(horizontalAlignment != null) {
+                switch (horizontalAlignment) {
+                    case RIGHT:
+                        x = (img.getWidth() - fm.stringWidth(line)) / 2;
+                        break;
+                    case CENTER:
+                        x = img.getWidth() / 2 - fm.stringWidth(line) / 2;
+                        break;
+                }
+            }
             g.drawString(line, x, y);
             y += lineHeight;
         }
