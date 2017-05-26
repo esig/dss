@@ -7,7 +7,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -28,17 +27,15 @@ public class ImageUtilsTest {
 
         Assert.assertEquals((int)optimalSizeDimension.getWidth(), Math.round((float) image.getWidth() / ration));
         Assert.assertEquals((int)optimalSizeDimension.getHeight(), Math.round((float) image.getHeight() / ration));
+        Assert.assertEquals((int)optimalSizeDimension.getWidth(), Math.round(imageAndResolution.toXPoint(image.getWidth())));
+        Assert.assertEquals((int)optimalSizeDimension.getHeight(), Math.round(imageAndResolution.toYPoint(image.getHeight())));
     }
 
     private SignatureImageParameters createSignatureImageParameters() {
         SignatureImageParameters imageParameters = new SignatureImageParameters();
-        imageParameters.setImage(new FileDocument(new File("src/test/resources/small-red.jpg")));
-        imageParameters.setxAxis(200);
-        imageParameters.setyAxis(300);
+        imageParameters.setImage(new FileDocument(new File("src/test/resources/signature-image.png")));
         SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
         textParameters.setText("My signature\nsecond line\nlong line is very long line with long text example this");
-        textParameters.setTextColor(Color.BLUE);
-        textParameters.setSignerNamePosition(SignatureImageTextParameters.SignerPosition.LEFT);
         imageParameters.setTextParameters(textParameters);
 
         return imageParameters;
