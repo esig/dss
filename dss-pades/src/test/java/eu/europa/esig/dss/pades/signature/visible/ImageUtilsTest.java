@@ -24,8 +24,10 @@ public class ImageUtilsTest {
 
         BufferedImage image = ImageIO.read(imageAndResolution.getInputStream());
 
-        Assert.assertEquals((long)optimalSizeDimension.getWidth(), (long) image.getWidth());
-        Assert.assertEquals((long)optimalSizeDimension.getHeight(), (long) image.getHeight());
+        float ration = ImageUtils.getDpi(imageParameters.getDpi())/(float) ImageTextWriter.PDF_DEFAULT_DPI;
+
+        Assert.assertEquals((int)optimalSizeDimension.getWidth(), Math.round((float) image.getWidth() / ration));
+        Assert.assertEquals((int)optimalSizeDimension.getHeight(), Math.round((float) image.getHeight() / ration));
     }
 
     private SignatureImageParameters createSignatureImageParameters() {

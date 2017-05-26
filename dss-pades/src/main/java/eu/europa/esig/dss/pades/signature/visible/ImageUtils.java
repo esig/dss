@@ -330,7 +330,7 @@ public class ImageUtils {
 		metadata.mergeTree("javax_imageio_1.0", root);
 	}
 
-	private static int getDpi(Integer dpi) {
+	static int getDpi(Integer dpi) {
 		int result = DPI;
 		if(dpi != null && dpi.intValue() > 0) {
 			result = dpi.intValue();
@@ -352,7 +352,7 @@ public class ImageUtils {
 
     private static float getRation(Integer dpi) {
         float flaotDpi = (float)getDpi(dpi);
-        return flaotDpi/(float) DPI;
+        return flaotDpi/(float) ImageTextWriter.PDF_DEFAULT_DPI;
     }
 
 	public static boolean isTransparent(BufferedImage bufferedImage) {
