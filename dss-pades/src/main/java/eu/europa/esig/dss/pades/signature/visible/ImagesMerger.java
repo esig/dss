@@ -20,10 +20,11 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
+import eu.europa.esig.dss.pades.SignatureImageParameters;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 /**
@@ -44,11 +45,12 @@ public final class ImagesMerger {
 
 		final int newImageWidth = Math.max(bottom.getWidth(), top.getWidth());
 		final int newImageHeigth = bottom.getHeight() + top.getHeight();
+		final int imageType = getImageType(bottom, top);
 
-		BufferedImage combined = new BufferedImage(newImageWidth, newImageHeigth, top.getType());
+		BufferedImage combined = new BufferedImage(newImageWidth, newImageHeigth, imageType);
 		Graphics2D g = combined.createGraphics();
 
-		initRendering(g);
+		ImageUtils.initRendering(g);
 		fillBackground(g, newImageWidth, newImageHeigth, bgColor);
 
 		g.drawImage(top, (newImageWidth - top.getWidth()) / 2, 0, top.getWidth(), top.getHeight(), null);
@@ -57,7 +59,8 @@ public final class ImagesMerger {
 		return combined;
 	}
 
-	public static BufferedImage mergeOnRight(final BufferedImage left, final BufferedImage right, final Color bgColor) {
+	public static BufferedImage mergeOnRight(final BufferedImage left, final BufferedImage right, final Color bgColor,
+											 final SignatureImageParameters.SignerTextImageVerticalAlignment imageVerticalAlignment) {
 		if (left == null) {
 			return right;
 		} else if (right == null) {
@@ -66,25 +69,35 @@ public final class ImagesMerger {
 
 		final int newImageWidth = left.getWidth() + right.getWidth();
 		final int newImageHeigth = Math.max(left.getHeight(), right.getHeight());
+		final int imageType = getImageType(left, right);
 
-		BufferedImage combined = new BufferedImage(newImageWidth, newImageHeigth, left.getType());
+		BufferedImage combined = new BufferedImage(newImageWidth, newImageHeigth, imageType);
 		Graphics2D g = combined.createGraphics();
 
-		initRendering(g);
+		ImageUtils.initRendering(g);
 		fillBackground(g, newImageWidth, newImageHeigth, bgColor);
 
-		g.drawImage(left, 0, (newImageHeigth - left.getHeight()) / 2, left.getWidth(), left.getHeight(), null);
-		g.drawImage(right, left.getWidth(), (newImageHeigth - right.getHeight()) / 2, right.getWidth(), right.getHeight(), null);
+		switch (imageVerticalAlignment) {
+			case TOP:
+				g.drawImage(left, 0, 0, left.getWidth(), left.getHeight(), null);
+				g.drawImage(right, left.getWidth(), 0, right.getWidth(), right.getHeight(), null);
+				break;
+			case MIDDLE:
+				g.drawImage(left, 0, (newImageHeigth - left.getHeight()) / 2, left.getWidth(), left.getHeight(), null);
+				g.drawImage(right, left.getWidth(), (newImageHeigth - right.getHeight()) / 2, right.getWidth(), right.getHeight(), null);
+				break;
+			case BOTTOM:
+				if(left.getHeight() > right.getHeight()) {
+					g.drawImage(left, 0, 0, left.getWidth(), left.getHeight(), null);
+					g.drawImage(right, left.getWidth(), newImageHeigth - right.getHeight(), right.getWidth(), right.getHeight(), null);
+				} else {
+					g.drawImage(left, 0, newImageHeigth - left.getHeight(), left.getWidth(), left.getHeight(), null);
+					g.drawImage(right, left.getWidth(), 0, right.getWidth(), right.getHeight(), null);
+				}
+				break;
+		}
 
 		return combined;
-	}
-
-	private static void initRendering(Graphics2D g) {
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-
 	}
 
 	private static void fillBackground(Graphics g, final int width, final int heigth, final Color bgColor) {
@@ -92,4 +105,13 @@ public final class ImagesMerger {
 		g.fillRect(0, 0, width, heigth);
 	}
 
+	private static int getImageType(final BufferedImage image1, final BufferedImage image2) {
+		int imageType = BufferedImage.TYPE_INT_RGB;
+
+		if(ImageUtils.isTransparent(image1) || ImageUtils.isTransparent(image2)) {
+			imageType = BufferedImage.TYPE_INT_ARGB;
+		}
+
+		return imageType;
+	}
 }

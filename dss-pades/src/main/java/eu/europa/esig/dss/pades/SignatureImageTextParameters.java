@@ -40,10 +40,22 @@ public class SignatureImageTextParameters {
 		TOP, BOTTOM, RIGHT, LEFT
 	}
 
+    /**
+     * Enum to define the more line text horizontal alignment
+     */
+    public enum SignerTextHorizontalAlignment {
+        LEFT, CENTER, RIGHT
+    }
+
 	/**
 	 * This variable allows to add signer name on the image (by default, LEFT)
 	 */
 	private SignerPosition signerNamePosition = SignerPosition.LEFT;
+
+    /**
+     * This variable set the more line text horizontal alignment
+     */
+    private SignerTextHorizontalAlignment signerTextHorizontalAlignment = SignerTextHorizontalAlignment.LEFT;
 
 	/**
 	 * This variable defines the text to sign
@@ -75,6 +87,14 @@ public class SignatureImageTextParameters {
 	public void setSignerNamePosition(SignerPosition signerNamePosition) {
 		this.signerNamePosition = signerNamePosition;
 	}
+
+    public SignerTextHorizontalAlignment getSignerTextHorizontalAlignment() {
+        return signerTextHorizontalAlignment;
+    }
+
+    public void setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment signerTextHorizontalAlignment) {
+        this.signerTextHorizontalAlignment = signerTextHorizontalAlignment;
+    }
 
 	public Font getFont() {
 		return font;
