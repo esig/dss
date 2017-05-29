@@ -225,7 +225,7 @@ public class SignatureValidationContext implements ValidationContext {
 			Collection<CertificateToken> issuerCerts = DSSUtils.loadIssuerCertificates(token, dataLoader);
 			if (issuerCerts != null) {
 				CertificateToken issuerCertToken = null;
-				for(CertificateToken issuerCert : issuerCerts) {
+				for (CertificateToken issuerCert : issuerCerts) {
 					CertificateToken issuerCertFromAia = validationCertificatePool.getInstance(issuerCert, CertificateSourceType.AIA);
 					if (token.isSignedBy(issuerCertFromAia)) {
 						issuerCertToken = issuerCertFromAia;
@@ -271,7 +271,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * Adds a new token to the list of tokes to verify only if it was not already verified.
+	 * Adds a new token to the list of tokens to verify only if it was not already verified.
 	 *
 	 * @param token
 	 *            token to verify
