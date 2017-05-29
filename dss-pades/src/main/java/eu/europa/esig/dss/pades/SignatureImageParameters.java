@@ -22,6 +22,8 @@ package eu.europa.esig.dss.pades;
 
 import eu.europa.esig.dss.DSSDocument;
 
+import java.awt.Color;
+
 /**
  * Parameters for a visible signature creation
  *
@@ -31,6 +33,13 @@ public class SignatureImageParameters {
 	public static final int DEFAULT_PAGE = 1;
 
 	public static final int NO_SCALING = 100;
+
+	/**
+	 * Enum to define image from text vertical alignment in connection with the image
+	 */
+	public enum SignerTextImageVerticalAlignment {
+		TOP, MIDDLE, BOTTOM
+	}
 
 	/**
 	 * This variable contains the image to use (company logo,...)
@@ -57,6 +66,24 @@ public class SignatureImageParameters {
 	 * This variable defines a percent to zoom (100% means no scaling).
 	 */
 	private int zoom = NO_SCALING;
+
+	/**
+	 * This variable defines the color of the image
+	 */
+	private Color backgroundColor;
+
+	/**
+	 * This variable defines the DPI of the image
+	 */
+	private Integer dpi;
+
+	/**
+	 * This variable is define the image from text vertical alignment in connection with the image<br>
+	 * <br>
+	 * It has effect when the {@link SignatureImageTextParameters.SignerPosition SignerPosition} is
+	 * {@link SignatureImageTextParameters.SignerPosition#LEFT LEFT} or {@link SignatureImageTextParameters.SignerPosition#RIGHT RIGHT}
+	 */
+	private SignerTextImageVerticalAlignment signerTextImageVerticalAlignment = SignerTextImageVerticalAlignment.MIDDLE;
 
 	/**
 	 * This variable is use to defines the text to generate on the image
@@ -101,6 +128,30 @@ public class SignatureImageParameters {
 
 	public void setPage(int page) {
 		this.page = page;
+	}
+
+    public Color getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public Integer getDpi() {
+        return dpi;
+    }
+
+    public void setDpi(Integer dpi) {
+        this.dpi = dpi;
+    }
+
+	public SignerTextImageVerticalAlignment getSignerTextImageVerticalAlignment() {
+		return signerTextImageVerticalAlignment;
+	}
+
+	public void setSignerTextImageVerticalAlignment(SignerTextImageVerticalAlignment signerTextImageVerticalAlignment) {
+		this.signerTextImageVerticalAlignment = signerTextImageVerticalAlignment;
 	}
 
 	public SignatureImageTextParameters getTextParameters() {
