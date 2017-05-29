@@ -159,26 +159,32 @@ public class DiagnosticDataBuilder {
 
 	public DiagnosticData build() {
 		DiagnosticData diagnosticData = new DiagnosticData();
-		diagnosticData.setDocumentName(removeSpecialCharsForXml(signedDocument.getName()));
+		if (signedDocument != null) {
+			diagnosticData.setDocumentName(removeSpecialCharsForXml(signedDocument.getName()));
+		}
 		diagnosticData.setValidationDate(validationDate);
 		diagnosticData.setContainerInfo(getXmlContainerInfo());
 
 		Set<DigestAlgorithm> allUsedCertificatesDigestAlgorithms = new HashSet<DigestAlgorithm>();
-		for (AdvancedSignature advancedSignature : signatures) {
-			allUsedCertificatesDigestAlgorithms.addAll(advancedSignature.getUsedCertificatesDigestAlgorithms());
+		if (Utils.isCollectionNotEmpty(signatures)) {
+			for (AdvancedSignature advancedSignature : signatures) {
+				allUsedCertificatesDigestAlgorithms.addAll(advancedSignature.getUsedCertificatesDigestAlgorithms());
 
-			diagnosticData.getSignatures().add(getXmlSignature(advancedSignature));
+				diagnosticData.getSignatures().add(getXmlSignature(advancedSignature));
+			}
 		}
 
 		List<XmlCertificate> xmlCertificates = new ArrayList<XmlCertificate>();
 		Set<String> countryCodes = new HashSet<String>();
-		for (CertificateToken certificateToken : usedCertificates) {
-			xmlCertificates.add(getXmlCertificate(allUsedCertificatesDigestAlgorithms, certificateToken));
+		if (Utils.isCollectionNotEmpty(usedCertificates)) {
+			for (CertificateToken certificateToken : usedCertificates) {
+				xmlCertificates.add(getXmlCertificate(allUsedCertificatesDigestAlgorithms, certificateToken));
 
-			Set<ServiceInfo> associatedTSPS = certificateToken.getAssociatedTSPS();
-			if (Utils.isCollectionNotEmpty(associatedTSPS)) {
-				for (ServiceInfo serviceInfo : associatedTSPS) {
-					countryCodes.add(serviceInfo.getTlCountryCode());
+				Set<ServiceInfo> associatedTSPS = certificateToken.getAssociatedTSPS();
+				if (Utils.isCollectionNotEmpty(associatedTSPS)) {
+					for (ServiceInfo serviceInfo : associatedTSPS) {
+						countryCodes.add(serviceInfo.getTlCountryCode());
+					}
 				}
 			}
 		}
@@ -799,6 +805,7 @@ public class DiagnosticDataBuilder {
 		final XmlCertificate xmlCert = new XmlCertificate();
 
 		xmlCert.setId(certToken.getDSSIdAsString());
+		xmlCert.setBase64Encoded(certToken.getEncoded());
 
 		xmlCert.getSubjectDistinguishedName().add(getXmlDistinguishedName(X500Principal.CANONICAL, certToken.getSubjectX500Principal()));
 		xmlCert.getSubjectDistinguishedName().add(getXmlDistinguishedName(X500Principal.RFC2253, certToken.getSubjectX500Principal()));
