@@ -46,6 +46,8 @@ import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSigProperties;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSignDesigner;
+import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,7 +88,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		PDDocument pdDocument = null;
 		try {
 			pdDocument = PDDocument.load(toSignDocument);
-			PDSignature pdSignature = createSignatureDictionary(parameters);
+			PDSignature pdSignature = createSignatureDictionary(parameters,pdDocument);
 
 			return signDocumentAndReturnDigest(parameters, signatureValue, outputStream, pdDocument, pdSignature, digestAlgorithm);
 		} catch (IOException e) {
@@ -104,7 +106,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		PDDocument pdDocument = null;
 		try {
 			pdDocument = PDDocument.load(pdfData);
-			final PDSignature pdSignature = createSignatureDictionary(parameters);
+			final PDSignature pdSignature = createSignatureDictionary(parameters,pdDocument);
 			signDocumentAndReturnDigest(parameters, signatureValue, signedStream, pdDocument, pdSignature, digestAlgorithm);
 		} catch (IOException e) {
 			throw new DSSException(e);
@@ -176,9 +178,16 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 	}
 
-	private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters) {
+	private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters, PDDocument pdDocument) {
 
-		final PDSignature signature = new PDSignature();
+		PDSignature signature;
+	    if ((parameters.getSignatureFieldId() != null) && (!parameters.getSignatureFieldId().isEmpty())) {
+	      signature = findExistingSignature(pdDocument, parameters.getSignatureFieldId(), parameters);
+	    } 
+	    else {
+	      signature = new PDSignature();
+	    }
+		
 		signature.setType(getType());
 		// signature.setName(String.format("SD-DSS Signature %s", parameters.getDeterministicId()));
 		Date date = parameters.bLevel().getSigningDate();
@@ -219,6 +228,27 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 	protected COSName getType() {
 		return COSName.SIG;
+	}
+	
+	private PDSignature findExistingSignature(PDDocument doc, String sigFieldName, PAdESSignatureParameters parameters){
+		PDSignature signature = null;
+	    
+	    PDAcroForm acroForm = doc.getDocumentCatalog().getAcroForm();
+	    
+	    if (acroForm != null){
+	    	PDSignatureField signatureField = (PDSignatureField)acroForm.getField(sigFieldName);
+	    	if (signatureField != null){
+	    		signature = signatureField.getSignature();
+	    		if (signature == null){
+	    			signature = new PDSignature();
+	    			signatureField.getCOSObject().setItem(COSName.V, signature);
+	    		}
+	    		else{
+	    			throw new DSSException("The signature field " + sigFieldName + " can not be signed since its already signed.");
+	    		}
+	    	}
+	    }
+	    return signature;
 	}
 
 	public void saveDocumentIncrementally(PAdESSignatureParameters parameters, OutputStream outputStream, PDDocument pdDocument) throws DSSException {
@@ -476,5 +506,4 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 		return stream;
 	}
-
 }
