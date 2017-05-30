@@ -20,12 +20,51 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSigProperties;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSignDesigner;
+import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.signature.visible.ImageAndResolution;
 import eu.europa.esig.dss.pades.signature.visible.ImageUtils;
@@ -43,34 +82,6 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.crl.CRLToken;
 import eu.europa.esig.dss.x509.ocsp.OCSPToken;
-import org.apache.pdfbox.cos.COSArray;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSStream;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSigProperties;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSignDesigner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 class PdfBoxSignatureService implements PDFSignatureService {
 
@@ -85,7 +96,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		PDDocument pdDocument = null;
 		try {
 			pdDocument = PDDocument.load(toSignDocument);
-			PDSignature pdSignature = createSignatureDictionary(parameters);
+			PDSignature pdSignature = createSignatureDictionary(parameters, pdDocument);
 
 			return signDocumentAndReturnDigest(parameters, signatureValue, outputStream, pdDocument, pdSignature, digestAlgorithm);
 		} catch (IOException e) {
@@ -103,7 +114,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		PDDocument pdDocument = null;
 		try {
 			pdDocument = PDDocument.load(pdfData);
-			final PDSignature pdSignature = createSignatureDictionary(parameters);
+			final PDSignature pdSignature = createSignatureDictionary(parameters, pdDocument);
 			signDocumentAndReturnDigest(parameters, signatureValue, signedStream, pdDocument, pdSignature, digestAlgorithm);
 		} catch (IOException e) {
 			throw new DSSException(e);
@@ -177,9 +188,15 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 	}
 
-	private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters) {
+	private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters, PDDocument pdDocument) {
 
-		final PDSignature signature = new PDSignature();
+		PDSignature signature;
+		if ((parameters.getSignatureFieldId() != null) && (!parameters.getSignatureFieldId().isEmpty())) {
+			signature = findExistingSignature(pdDocument, parameters.getSignatureFieldId());
+		} else {
+			signature = new PDSignature();
+		}
+
 		signature.setType(getType());
 		// signature.setName(String.format("SD-DSS Signature %s", parameters.getDeterministicId()));
 		Date date = parameters.bLevel().getSigningDate();
@@ -220,6 +237,24 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 	protected COSName getType() {
 		return COSName.SIG;
+	}
+
+	private PDSignature findExistingSignature(PDDocument doc, String sigFieldName) {
+		PDAcroForm acroForm = doc.getDocumentCatalog().getAcroForm();
+		if (acroForm != null) {
+			PDSignatureField signatureField = (PDSignatureField) acroForm.getField(sigFieldName);
+			if (signatureField != null) {
+				PDSignature signature = signatureField.getSignature();
+				if (signature == null) {
+					signature = new PDSignature();
+					signatureField.getCOSObject().setItem(COSName.V, signature);
+					return signature;
+				} else {
+					throw new DSSException("The signature field '" + sigFieldName + "' can not be signed since its already signed.");
+				}
+			}
+		}
+		throw new DSSException("The signature field '" + sigFieldName + "' does not exist.");
 	}
 
 	public void saveDocumentIncrementally(PAdESSignatureParameters parameters, OutputStream outputStream, PDDocument pdDocument) throws DSSException {
@@ -476,6 +511,62 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			streams.put(token.getDSSIdAsString(), stream);
 		}
 		return stream;
+	}
+
+	@Override
+	public List<String> getAvailableSignatureFields(DSSDocument document) throws DSSException {
+		List<String> result = new ArrayList<String>();
+		try (InputStream is = document.openStream()) {
+			PDDocument pdfDoc = PDDocument.load(is);
+			List<PDSignatureField> signatureFields = pdfDoc.getSignatureFields();
+			for (PDSignatureField pdSignatureField : signatureFields) {
+				PDSignature signature = pdSignatureField.getSignature();
+				if (signature == null) {
+					result.add(pdSignatureField.getPartialName());
+				}
+			}
+		} catch (Exception e) {
+			throw new DSSException("Unable to determine signature fields", e);
+		}
+		return result;
+	}
+
+	@Override
+	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
+		DSSDocument newPdfDoc = null;
+		try (InputStream is = document.openStream()) {
+			PDDocument pdfDoc = PDDocument.load(is);
+			PDPage page = pdfDoc.getPage(parameters.getPage());
+
+			PDAcroForm acroForm = new PDAcroForm(pdfDoc);
+			pdfDoc.getDocumentCatalog().setAcroForm(acroForm);
+
+			// Set default appearance
+			PDResources resources = new PDResources();
+			resources.put(COSName.getPDFName("Helv"), PDType1Font.HELVETICA);
+			acroForm.setDefaultResources(resources);
+			acroForm.setDefaultAppearance("/Helv 0 Tf 0 g");
+
+			PDSignatureField signatureField = new PDSignatureField(acroForm);
+			if (Utils.isStringNotBlank(parameters.getName())) {
+				signatureField.setPartialName(parameters.getName());
+			}
+			PDAnnotationWidget widget = signatureField.getWidgets().get(0);
+			PDRectangle rect = new PDRectangle(parameters.getOriginX(), parameters.getOriginY(), parameters.getWidth(), parameters.getHeight());
+			widget.setRectangle(rect);
+			widget.setPage(page);
+			page.getAnnotations().add(widget);
+			acroForm.getFields().add(signatureField);
+
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			pdfDoc.save(baos);
+			pdfDoc.close();
+			newPdfDoc = new InMemoryDocument(baos.toByteArray(), "new-document.pdf", MimeType.PDF);
+
+		} catch (Exception e) {
+			throw new DSSException("Unable to add a new signature fields", e);
+		}
+		return newPdfDoc;
 	}
 
 }

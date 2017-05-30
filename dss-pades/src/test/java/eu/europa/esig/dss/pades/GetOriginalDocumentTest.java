@@ -32,7 +32,7 @@ public class GetOriginalDocumentTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GetOriginalDocumentTest.class);
 
-	// TODO
+	//TODO. (Re-enable when fixed: https://esig-dss.atlassian.net/browse/DSS-969)
 	@Ignore
 	@Test
 	public final void getOriginalDocumentFromEnvelopedSignature() throws Exception {
@@ -57,6 +57,7 @@ public class GetOriginalDocumentTest {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
+		
 
 		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
 
