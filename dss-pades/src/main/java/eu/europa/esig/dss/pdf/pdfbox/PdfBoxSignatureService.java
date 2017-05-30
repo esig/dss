@@ -40,6 +40,7 @@ import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
@@ -309,7 +310,16 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 				for (PDSignature signature : pdSignatures) {
 					String subFilter = signature.getSubFilter();
-					byte[] cms = signature.getContents(originalBytes);
+
+					COSDictionary dict = signature.getCOSObject();
+					COSString item = (COSString) dict.getDictionaryObject(COSName.CONTENTS);
+					byte[] cms = item.getBytes();
+
+					byte[] cmsWithByteRange = signature.getContents(originalBytes);
+
+					if (!Arrays.equals(cmsWithByteRange, cms)) {
+						logger.warn("The byte range doesn't match found /Content value!");
+					}
 
 					if (Utils.isStringEmpty(subFilter) || Utils.isArrayEmpty(cms)) {
 						logger.warn("Wrong signature with empty subfilter or cms.");
