@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.service;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -106,7 +107,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 	private static final JAXBContext jaxbContext;
 
-	private InputStream inputStream;
+	private String filepath;
 
 	static {
 		try {
@@ -116,20 +117,20 @@ public class TSLParser implements Callable<TSLParserResult> {
 		}
 	}
 
-	public TSLParser(InputStream inputStream) {
-		this.inputStream = inputStream;
+	public TSLParser(String filepath) {
+		this.filepath = filepath;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public TSLParserResult call() throws Exception {
-		try {
+		try (InputStream is = new FileInputStream(filepath)) {
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			JAXBElement<TrustStatusListType> jaxbElement = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(inputStream);
+			JAXBElement<TrustStatusListType> jaxbElement = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(is);
 			TrustStatusListType trustStatusList = jaxbElement.getValue();
 			return getTslModel(trustStatusList);
 		} catch (Exception e) {
-			throw new DSSException("Unable to parse inputstream : " + e.getMessage(), e);
+			throw new DSSException("Unable to parse file '" + filepath + "' : " + e.getMessage(), e);
 		}
 	}
 

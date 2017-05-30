@@ -5,12 +5,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStore.PrivateKeyEntry;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableEntryException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -68,7 +66,7 @@ public class KeyStoreSignatureTokenConnection extends AbstractSignatureTokenConn
 					list.add(getKSPrivateKeyEntry(alias));
 				}
 			}
-		} catch (Exception e) {
+		} catch (GeneralSecurityException e) {
 			throw new DSSException(e);
 		}
 		return list;
@@ -86,13 +84,13 @@ public class KeyStoreSignatureTokenConnection extends AbstractSignatureTokenConn
 			if (keyStore.isKeyEntry(alias)) {
 				return getKSPrivateKeyEntry(alias);
 			}
-		} catch (Exception e) {
+		} catch (GeneralSecurityException e) {
 			throw new DSSException("Unable to retrieve the certificate", e);
 		}
 		return null;
 	}
 
-	private KSPrivateKeyEntry getKSPrivateKeyEntry(final String alias) throws NoSuchAlgorithmException, UnrecoverableEntryException, KeyStoreException {
+	private KSPrivateKeyEntry getKSPrivateKeyEntry(final String alias) throws GeneralSecurityException {
 		final PrivateKeyEntry entry = (PrivateKeyEntry) keyStore.getEntry(alias, passwordProtection);
 		return new KSPrivateKeyEntry(alias, entry);
 	}

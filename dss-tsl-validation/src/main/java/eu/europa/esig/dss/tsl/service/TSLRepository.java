@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -72,6 +71,7 @@ public class TSLRepository {
 	private String cacheDirectoryPath = System.getProperty("java.io.tmpdir") + File.separator + "dss-cache-tsl" + File.separator;
 
 	private Map<String, TSLValidationModel> tsls = new HashMap<String, TSLValidationModel>();
+	private Map<String, TSLValidationModel> pivots = new HashMap<String, TSLValidationModel>();
 
 	private TrustedListsCertificateSource trustedListsCertificateSource;
 
@@ -87,6 +87,10 @@ public class TSLRepository {
 		return tsls.get(countryIsoCode);
 	}
 
+	public TSLValidationModel getPivotByUrl(String pivotUrl) {
+		return pivots.get(pivotUrl);
+	}
+
 	public Map<String, TSLValidationModel> getAllMapTSLValidationModels() {
 		return Collections.unmodifiableMap(new TreeMap<String, TSLValidationModel>(tsls));
 	}
@@ -100,8 +104,17 @@ public class TSLRepository {
 		}
 	}
 
-	boolean isLastVersion(TSLLoaderResult resultLoader) {
+	boolean isLastCountryVersion(TSLLoaderResult resultLoader) {
 		TSLValidationModel validationModel = getByCountry(resultLoader.getCountryCode());
+		return isLastVersion(validationModel, resultLoader);
+	}
+
+	boolean isLastPivotVersion(TSLLoaderResult resultLoader) {
+		TSLValidationModel validationModel = getPivotByUrl(resultLoader.getUrl());
+		return isLastVersion(validationModel, resultLoader);
+	}
+
+	private boolean isLastVersion(TSLValidationModel validationModel, TSLLoaderResult resultLoader) {
 		if (validationModel == null) {
 			return false;
 		} else {
@@ -134,11 +147,24 @@ public class TSLRepository {
 		TSLValidationModel validationModel = new TSLValidationModel();
 		validationModel.setUrl(resultLoader.getUrl());
 		validationModel.setSha256FileContent(getSHA256(resultLoader.getContent()));
-		validationModel.setFilepath(storeOnFileSystem(resultLoader.getCountryCode(), resultLoader));
 		validationModel.setLoadedDate(new Date());
+		validationModel.setFilepath(storeOnFileSystem(resultLoader.getCountryCode(), resultLoader));
 		validationModel.setCertificateSourceSynchronized(false);
-		add(resultLoader.getCountryCode(), validationModel);
+		tsls.put(resultLoader.getCountryCode(), validationModel);
 		logger.info("New version of " + resultLoader.getCountryCode() + " TSL is stored in cache");
+		return validationModel;
+	}
+
+	TSLValidationModel storePivotInCache(TSLLoaderResult resultLoader) {
+		TSLValidationModel validationModel = new TSLValidationModel();
+		validationModel.setUrl(resultLoader.getUrl());
+		validationModel.setSha256FileContent(getSHA256(resultLoader.getContent()));
+		validationModel.setLoadedDate(new Date());
+		String filename = resultLoader.getUrl();
+		filename = filename.replaceAll("\\W", "_");
+		validationModel.setFilepath(storeOnFileSystem(filename, resultLoader));
+		pivots.put(resultLoader.getUrl(), validationModel);
+		logger.info("New version of the pivot LOTL '" + resultLoader.getUrl() + "' is stored in cache");
 		return validationModel;
 	}
 
@@ -147,37 +173,25 @@ public class TSLRepository {
 		String countryCode = tslParserResult.getTerritory();
 		String filePath = getFilePath(countryCode);
 		validationModel.setFilepath(filePath);
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(filePath);
+		try (FileInputStream fis = new FileInputStream(filePath)) {
 			byte[] data = Utils.toByteArray(fis);
 			validationModel.setSha256FileContent(getSHA256(data));
 		} catch (Exception e) {
 			logger.error("Unable to read '" + filePath + "' : " + e.getMessage());
-		} finally {
-			Utils.closeQuietly(fis);
 		}
 		validationModel.setParseResult(tslParserResult);
 		validationModel.setCertificateSourceSynchronized(false);
-		add(countryCode, validationModel);
+		tsls.put(countryCode, validationModel);
 	}
 
-	private void add(String countryCode, TSLValidationModel tsl) {
-		tsls.put(countryCode, tsl);
-	}
-
-	private String storeOnFileSystem(String countryCode, TSLLoaderResult resultLoader) {
+	private String storeOnFileSystem(String filename, TSLLoaderResult resultLoader) {
 		ensureCacheDirectoryExists();
-		String filePath = getFilePath(countryCode);
+		String filePath = getFilePath(filename);
 		File fileToCreate = new File(filePath);
-		OutputStream os = null;
-		try {
-			os = new FileOutputStream(fileToCreate);
+		try (FileOutputStream os = new FileOutputStream(fileToCreate)) {
 			Utils.write(resultLoader.getContent(), os);
 		} catch (Exception e) {
 			throw new DSSException("Cannot create file in cache : " + e.getMessage(), e);
-		} finally {
-			Utils.closeQuietly(os);
 		}
 		return filePath;
 	}
@@ -189,8 +203,8 @@ public class TSLRepository {
 		}
 	}
 
-	private String getFilePath(String countryCode) {
-		return cacheDirectoryPath + countryCode + ".xml";
+	private String getFilePath(String filename) {
+		return cacheDirectoryPath + filename + ".xml";
 	}
 
 	private String getSHA256(byte[] data) {
