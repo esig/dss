@@ -6,9 +6,11 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 
 public class PAdESSignatureParameters extends CAdESSignatureParameters {
 
+	private static final long serialVersionUID = -1632557456487796227L;
 	private String reason;
 	private String contactInfo;
 	private String location;
+	private String signatureFieldId;
 
 	private int signatureSize = 9472; // default value in pdfbox
 
@@ -29,12 +31,11 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	 * @return the reason
 	 */
 	public String getReason() {
-		return reason;
+		return this.reason;
 	}
 
 	/**
-	 * @param reason
-	 *            the reason to set
+	 * @param reason the reason to set
 	 */
 	public void setReason(final String reason) {
 		this.reason = reason;
@@ -44,19 +45,18 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	 * @return the contactInfo
 	 */
 	public String getContactInfo() {
-		return contactInfo;
+		return this.contactInfo;
 	}
 
 	/**
-	 * @param contactInfo
-	 *            the contactInfo to set
+	 * @param contactInfo the contactInfo to set
 	 */
 	public void setContactInfo(final String contactInfo) {
 		this.contactInfo = contactInfo;
 	}
 
 	public SignatureImageParameters getImageParameters() {
-		return imageParameters;
+		return this.imageParameters;
 	}
 
 	public void setImageParameters(SignatureImageParameters imageParameters) {
@@ -64,15 +64,27 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	}
 
 	public String getLocation() {
-		return location;
+		return this.location;
 	}
 
 	public void setLocation(String location) {
 		this.location = location;
 	}
+	
+	public String getSignatureFieldId(){
+	    return this.signatureFieldId;
+	}
+	
+	/**
+	 * The id/name of the signature field which should be signed
+	 * @param signatureFieldId
+	 */
+	public void setSignatureFieldId(String signatureFieldId){
+		this.signatureFieldId = signatureFieldId;
+	}
 
 	public int getSignatureSize() {
-		return signatureSize;
+		return this.signatureSize;
 	}
 
 	/**
@@ -81,5 +93,4 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	public void setSignatureSize(int signatureSize) {
 		this.signatureSize = signatureSize;
 	}
-
 }
