@@ -1,9 +1,8 @@
 package eu.europa.esig.dss.signature;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.AbstractSignatureParameters;
@@ -93,7 +92,7 @@ public class AbstractRemoteSignatureServiceImpl {
 
 		List<RemoteCertificate> remoteCertificateChain = remoteParameters.getCertificateChain();
 		if (Utils.isCollectionNotEmpty(remoteCertificateChain)) {
-			Set<CertificateToken> certificateChain = new HashSet<CertificateToken>();
+			List<CertificateToken> certificateChain = new LinkedList<CertificateToken>();
 			for (RemoteCertificate remoteCertificate : remoteCertificateChain) {
 				certificateChain.add(DSSUtils.loadCertificate(remoteCertificate.getEncodedCertificate()));
 			}

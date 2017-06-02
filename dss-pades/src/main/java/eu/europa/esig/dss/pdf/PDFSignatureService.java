@@ -29,6 +29,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.x509.CertificatePool;
 
 /**
@@ -78,5 +79,25 @@ public interface PDFSignatureService {
 			throws DSSException;
 
 	void addDssDictionary(InputStream inputStream, OutputStream outpuStream, List<DSSDictionaryCallback> callbacks) throws DSSException;
+
+	/**
+	 * This method returns not signed signature-fields
+	 * 
+	 * @param document
+	 *            the pdf document
+	 * @return the list of empty signature fields
+	 */
+	List<String> getAvailableSignatureFields(DSSDocument document);
+
+	/**
+	 * This method allows to add a new signature field to an existing pdf document
+	 * 
+	 * @param document
+	 *            the pdf document
+	 * @param parameters
+	 *            the parameters with the coordinates,... of the signature field
+	 * @return the pdf document with the new added signature field
+	 */
+	DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters);
 
 }

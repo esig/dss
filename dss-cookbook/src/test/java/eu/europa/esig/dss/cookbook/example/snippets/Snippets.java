@@ -1,8 +1,8 @@
 package eu.europa.esig.dss.cookbook.example.snippets;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -24,7 +24,7 @@ public class Snippets {
 
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		CertificateToken certificateToken = new CertificateToken(null);
-		Set<CertificateToken> certificateChain = new HashSet<CertificateToken>();
+		List<CertificateToken> certificateChain = new LinkedList<CertificateToken>();
 
 		// tag::demoCertificateChain[]
 

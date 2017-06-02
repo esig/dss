@@ -20,9 +20,8 @@
  */
 package eu.europa.esig.dss;
 
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -48,7 +47,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	/**
 	 * This field contains the {@code List} of chain of certificates. It includes the signing certificate.
 	 */
-	private Set<CertificateToken> certificateChain = new HashSet<CertificateToken>();
+	private List<CertificateToken> certificateChain = new LinkedList<CertificateToken>();
 
 	/*
 	 * This parameter is here because that's a signed attribute. It must be computed before getDataToSign/signDocument
@@ -132,7 +131,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	 *
 	 * @return the value
 	 */
-	public Set<CertificateToken> getCertificateChain() {
+	public List<CertificateToken> getCertificateChain() {
 		return certificateChain;
 	}
 
@@ -151,7 +150,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	 * @param certificateChain
 	 *            the {@code List} of {@code ChainCertificate}s
 	 */
-	public void setCertificateChain(final Set<CertificateToken> certificateChain) {
+	public void setCertificateChain(final List<CertificateToken> certificateChain) {
 		this.certificateChain = certificateChain;
 	}
 
@@ -164,7 +163,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	 */
 	public void setCertificateChain(final CertificateToken... certificateChainArray) {
 		for (final CertificateToken certificate : certificateChainArray) {
-			if (certificate != null) {
+			if (certificate != null && !certificateChain.contains(certificate)) {
 				certificateChain.add(certificate);
 			}
 		}
