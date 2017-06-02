@@ -501,7 +501,7 @@ public class CertificateToken extends Token {
 				out.append(indentStr).append("- ").append(info).append('\n');
 			}
 			indentStr = indentStr.substring(1);
-			out.append(indentStr).append("]");
+			out.append(indentStr).append(']');
 			return out.toString();
 		} catch (Exception e) {
 			return e.getMessage();

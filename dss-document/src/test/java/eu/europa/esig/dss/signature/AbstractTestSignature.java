@@ -34,7 +34,7 @@ import eu.europa.esig.dss.x509.TimestampType;
 
 public abstract class AbstractTestSignature<SP extends AbstractSignatureParameters> {
 
-	private static final Logger logger = LoggerFactory.getLogger(AbstractTestDocumentSignatureService.class);
+	private static final Logger logger = LoggerFactory.getLogger(AbstractTestSignature.class);
 
 	protected abstract MockPrivateKeyEntry getPrivateKeyEntry();
 

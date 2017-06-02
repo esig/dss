@@ -44,7 +44,7 @@ public final class ImageTextWriter {
 
     public static BufferedImage createTextImage(final String text, final Font font, final Color textColor, final Color bgColor, final int dpi, SignatureImageTextParameters.SignerTextHorizontalAlignment horizontalAlignment) {
         // Computing image size depending of the font
-        float fontSize = Math.round((font.getSize() * dpi) / PDF_DEFAULT_DPI);
+        float fontSize = Math.round((font.getSize() * dpi) / (float) PDF_DEFAULT_DPI);
         Font largerFont = font.deriveFont(fontSize);
         Dimension dimension = computeSize(largerFont, text);
         // gettters returns doubles ??
@@ -69,6 +69,8 @@ public final class ImageTextWriter {
 
         width += DEFAULT_MARGIN;
         int height = (fontMetrics.getHeight() * lines.length) + DEFAULT_MARGIN;
+        g.dispose();
+        
         return new Dimension(width, height);
     }
 

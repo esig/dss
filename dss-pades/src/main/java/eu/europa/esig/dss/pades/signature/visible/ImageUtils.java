@@ -239,7 +239,7 @@ public class ImageUtils {
 	}
 
 	public static Dimension getTextDimension(String text, Font font, Integer dpi) {
-        float fontSize = Math.round((font.getSize() * getDpi(dpi)) / ImageTextWriter.PDF_DEFAULT_DPI);
+        float fontSize = Math.round((font.getSize() * getDpi(dpi)) / (float) ImageTextWriter.PDF_DEFAULT_DPI);
         Font largerFont = font.deriveFont(fontSize);
         return ImageTextWriter.computeSize(largerFont, text);
     }

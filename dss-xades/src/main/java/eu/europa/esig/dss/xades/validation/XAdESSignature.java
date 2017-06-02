@@ -1000,7 +1000,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		if (!checkTimestampTokenIncludes(timestampToken)) {
 			throw new DSSException("The Included referencedData attribute is either not present or set to false!");
 		}
-		if (references.size() == 0) {
+		if (references.isEmpty()) {
 			throw new DSSException("The method 'checkSignatureIntegrity' must be invoked first!");
 		}
 		// get first include element
@@ -1064,7 +1064,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		if (!checkTimestampTokenIncludes(timestampToken)) {
 			throw new DSSException("The Included referencedData attribute is either not present or set to false!");
 		}
-		if (references.size() == 0) {
+		if (references.isEmpty()) {
 			throw new DSSException("The method 'checkSignatureIntegrity' must be invoked first!");
 		}
 		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -1460,7 +1460,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			// through all candidates extracted from the signature.
 			final CandidatesForSigningCertificate candidates = getCandidatesForSigningCertificate();
 			certificateValidityList = candidates.getCertificateValidityList();
-			if (certificateValidityList.size() == 0) {
+			if (certificateValidityList.isEmpty()) {
 
 				// The public key can also be extracted from the signature.
 				final KeyInfo extractedKeyInfo = santuarioSignature.getKeyInfo();

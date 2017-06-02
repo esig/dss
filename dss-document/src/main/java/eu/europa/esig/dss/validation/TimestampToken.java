@@ -150,7 +150,7 @@ public class TimestampToken extends Token {
 	}
 
 	@Override
-	public boolean isSignedBy(final CertificateToken issuerToken) {
+	public final boolean isSignedBy(final CertificateToken issuerToken) {
 
 		if (this.issuerToken != null) {
 
@@ -457,7 +457,7 @@ public class TimestampToken extends Token {
 				indentStr = indentStr.substring(1);
 				out.append(indentStr);
 			}
-			out.append("]");
+			out.append(']');
 			return out.toString();
 		} catch (Exception e) {
 			return getClass().getName();

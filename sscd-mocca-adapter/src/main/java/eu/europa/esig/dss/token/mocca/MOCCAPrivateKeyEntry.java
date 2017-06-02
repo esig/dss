@@ -58,9 +58,8 @@ public class MOCCAPrivateKeyEntry implements DSSPrivateKeyEntry {
 	 * @param keyboxName  identifies signature usage/algorithm
 	 * @param index       the position of this KeyEntry in the overall list
 	 * @param atr         the ATR associated with this key
-	 * @throws Exception
 	 */
-	public MOCCAPrivateKeyEntry(final byte[] signingCert, final KeyboxName keyboxName, final int index, final byte[] atr) throws Exception {
+	public MOCCAPrivateKeyEntry(final byte[] signingCert, final KeyboxName keyboxName, final int index, final byte[] atr) {
 
 		initialise(signingCert, keyboxName, atr);
 		this.index = index;

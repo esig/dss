@@ -40,7 +40,7 @@ public class PrecomputedDigestCalculatorProvider implements DigestCalculatorProv
 				try {
 					Utils.write(getDigest(), os);
 				} catch (IOException e) {
-					new DSSException("Unable to get outputstream", e);
+					throw new DSSException("Unable to get outputstream", e);
 				}
 				return os;
 			}

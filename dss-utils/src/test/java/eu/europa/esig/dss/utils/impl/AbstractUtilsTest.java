@@ -3,6 +3,7 @@ package eu.europa.esig.dss.utils.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -85,7 +86,7 @@ public abstract class AbstractUtilsTest {
 
 	@Test
 	public void trim() {
-		assertEquals(null, Utils.trim(null));
+		assertNull(Utils.trim(null));
 		assertEquals("", Utils.trim(""));
 		assertEquals("", Utils.trim("   "));
 		assertEquals("AAA", Utils.trim(" AAA  "));
@@ -94,7 +95,7 @@ public abstract class AbstractUtilsTest {
 
 	@Test
 	public void joinStrings() {
-		assertEquals(null, Utils.joinStrings(null, null));
+		assertNull(Utils.joinStrings(null, null));
 		assertEquals("", Utils.joinStrings(new ArrayList<String>(), null));
 		assertEquals("", Utils.joinStrings(new ArrayList<String>(), ","));
 
@@ -109,7 +110,7 @@ public abstract class AbstractUtilsTest {
 
 	@Test
 	public void substringAfter() {
-		assertEquals(null, Utils.substringAfter(null, null));
+		assertNull(Utils.substringAfter(null, null));
 		assertEquals("", Utils.substringAfter("", null));
 		assertEquals("bbb", Utils.substringAfter("aaaaa?bbb", "?"));
 	}
@@ -124,7 +125,7 @@ public abstract class AbstractUtilsTest {
 
 	@Test
 	public void lowerCase() {
-		assertEquals(null, Utils.lowerCase(null));
+		assertNull(Utils.lowerCase(null));
 		assertEquals("", Utils.lowerCase(""));
 		assertEquals(" ", Utils.lowerCase(" "));
 		assertEquals("aaaa", Utils.lowerCase("AaAa"));
@@ -133,7 +134,7 @@ public abstract class AbstractUtilsTest {
 
 	@Test
 	public void upperCase() {
-		assertEquals(null, Utils.upperCase(null));
+		assertNull(Utils.upperCase(null));
 		assertEquals("", Utils.upperCase(""));
 		assertEquals(" ", Utils.upperCase(" "));
 		assertEquals("AAAA", Utils.upperCase("AaAa"));

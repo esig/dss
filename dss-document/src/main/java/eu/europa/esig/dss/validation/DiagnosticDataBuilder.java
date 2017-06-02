@@ -473,6 +473,7 @@ public class DiagnosticDataBuilder {
 				xmlCertifiedRole.setNotAfter(certifiedRole.getNotAfter());
 				xmlCertRoles.add(xmlCertifiedRole);
 			}
+			return xmlCertRoles;
 		}
 		return Collections.emptyList();
 	}

@@ -117,7 +117,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 						byte[] content = Utils.toByteArray(is);
 						result.add(new InMemoryDocument(content));
 					} catch (IOException e) {
-						throw new DSSException("Unable to retrieve the original document for document '" + document.getName() + "'");
+						throw new DSSException("Unable to retrieve the original document for document '" + document.getName() + "'",e);
 					} finally {
 						Utils.closeQuietly(is);
 					}
