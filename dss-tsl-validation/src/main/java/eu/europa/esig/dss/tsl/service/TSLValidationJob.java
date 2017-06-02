@@ -72,6 +72,9 @@ public class TSLValidationJob {
 	private List<String> filterTerritories;
 
 	public void setExecutorService(ExecutorService executorService) {
+		if(this.executorService!=null && !this.executorService.isShutdown()){
+			this.executorService.shutdownNow();
+		}
 		this.executorService = executorService;
 	}
 
@@ -203,7 +206,7 @@ public class TSLValidationJob {
 			resultLoaderLOTL = result.get();
 		} catch (Exception e) {
 			logger.error("Unable to load the LOTL : " + e.getMessage(), e);
-			throw new DSSException("Unable to load the LOTL : " + e.getMessage());
+			throw new DSSException("Unable to load the LOTL : " + e.getMessage(),e);
 		}
 		if (resultLoaderLOTL.getContent() == null) {
 			logger.error("Unable to load the LOTL: content is empty");
