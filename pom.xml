@@ -43,7 +43,6 @@
 
 	<properties>
 		<project.source.version>1.7</project.source.version>
-		<project.target.version>1.8</project.target.version>
 		<project.encoding>UTF-8</project.encoding>
 
 		<slf4j.version>1.7.25</slf4j.version>
@@ -137,13 +136,13 @@
                 <configuration>
                     <encoding>${project.encoding}</encoding>
                     <source>${project.source.version}</source>
-                    <target>${project.target.version}</target>
+                    <target>${project.source.version}</target>
                 </configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.9</version>
+				<version>0.7.2.201409121644</version>
 				<executions>
 					<execution>
 						<id>prepare-unit-test-agent</id>
