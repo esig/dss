@@ -1922,7 +1922,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					for (int jj = 0; jj < length; jj++) {
 						final Node item = attributes.item(jj);
 						final String nodeName = item.getNodeName();
-						if ("ID".equals(nodeName.toUpperCase())) {
+						if (Utils.areStringsEqualIgnoreCase("ID", nodeName)) {
 							id = item.getNodeValue();
 							break;
 						}
