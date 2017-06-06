@@ -261,13 +261,11 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	public void saveDocumentIncrementally(PAdESSignatureParameters parameters, OutputStream outputStream, PDDocument pdDocument) throws DSSException {
 		try {
 			// the document needs to have an ID, if not a ID based on the current system time is used, and then the
-			// digest of the signed data is
-			// different
+			// digest of the signed data is different
 			if (pdDocument.getDocumentId() == null) {
 
-				final byte[] documentIdBytes = DSSUtils.digest(DigestAlgorithm.MD5, parameters.bLevel().getSigningDate().toString().getBytes());
+				final byte[] documentIdBytes = DSSUtils.digest(DigestAlgorithm.SHA256, parameters.bLevel().getSigningDate().toString().getBytes());
 				pdDocument.setDocumentId(DSSUtils.toLong(documentIdBytes));
-				pdDocument.setDocumentId(0L);
 			}
 			pdDocument.saveIncremental(outputStream);
 		} catch (IOException e) {
@@ -421,9 +419,6 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				cosDictionary.setNeedToBeUpdated(true);
 			}
 
-			if (pdDocument.getDocumentId() == null) {
-				pdDocument.setDocumentId(0L);
-			}
 			pdDocument.saveIncremental(outputStream);
 
 		} catch (Exception e) {
@@ -512,12 +507,14 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 	private COSStream getStream(Map<String, COSStream> streams, Token token) throws IOException {
 		COSStream stream = streams.get(token.getDSSIdAsString());
+		
 		if (stream == null) {
 			stream = new COSStream();
-			OutputStream unfilteredStream = stream.createOutputStream();
-			unfilteredStream.write(token.getEncoded());
-			unfilteredStream.flush();
-			unfilteredStream.close();
+			
+			try(OutputStream unfilteredStream = stream.createOutputStream()){
+				unfilteredStream.write(token.getEncoded());
+				unfilteredStream.flush();
+			}
 			streams.put(token.getDSSIdAsString(), stream);
 		}
 		return stream;

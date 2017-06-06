@@ -39,12 +39,12 @@ public enum SignatureLevel {
 	 * @return
 	 */
 	public static SignatureLevel valueByName(String name) {
-		return valueOf(name.replace("-", "_"));
+		return valueOf(name.replace('-', '_'));
 	}
 
 	@Override
 	public String toString() {
-		return super.toString().replace("_", "-");
+		return super.toString().replace('_', '-');
 	}
 
 	/**

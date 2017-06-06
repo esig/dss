@@ -107,7 +107,7 @@ public final class DSSSignatureUtils {
 		return buffer.toByteArray();
 	}
 
-	private static void leftPad(final ByteArrayOutputStream stream, final int size, final byte[] array) throws IOException {
+	private static void leftPad(final ByteArrayOutputStream stream, final int size, final byte[] array){
 		final int diff = size - array.length;
 		if (diff > 0) {
 			for (int i = 0; i < diff; i++) {

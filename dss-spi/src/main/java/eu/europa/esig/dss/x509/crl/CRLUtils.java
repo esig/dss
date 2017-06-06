@@ -131,7 +131,7 @@ public class CRLUtils {
 
 	private static void checkCriticalExtensions(final X509CRL x509CRL, final CRLValidity crlValidity) {
 		final Set<String> criticalExtensionOIDs = x509CRL.getCriticalExtensionOIDs();
-		if ((criticalExtensionOIDs == null) || (criticalExtensionOIDs.size() == 0)) {
+		if ((criticalExtensionOIDs == null) || (criticalExtensionOIDs.isEmpty())) {
 			crlValidity.setUnknownCriticalExtension(false);
 		} else {
 

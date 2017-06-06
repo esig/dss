@@ -438,9 +438,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 						Object objectValue = jaxbElement.getValue();
 						if (objectValue instanceof XMLGregorianCalendar) {
 							XMLGregorianCalendar calendar = (XMLGregorianCalendar) objectValue;
-							if (calendar != null) {
-								return calendar.toGregorianCalendar().getTime();
-							}
+							return calendar.toGregorianCalendar().getTime();
 						}
 
 					}
@@ -527,7 +525,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 			a = tspInformation.getTSPAddress().getPostalAddresses().getPostalAddress().get(0);
 		}
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (Utils.isStringNotEmpty(a.getStreetAddress())) {
 			sb.append(a.getStreetAddress());
 			sb.append(", ");
