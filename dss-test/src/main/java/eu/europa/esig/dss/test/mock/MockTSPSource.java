@@ -172,7 +172,7 @@ public class MockTSPSource implements TSPSource {
 			throw new DSSException(e);
 		}
 	}
-
+	
 	private String getSignatureAlgorithm(DigestAlgorithm algorithm, byte[] digest) {
 		String signatureAlgorithm;
 		if (DigestAlgorithm.SHA1.equals(algorithm)) {

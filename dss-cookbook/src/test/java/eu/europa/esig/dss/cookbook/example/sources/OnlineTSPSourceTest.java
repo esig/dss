@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
+import org.apache.commons.io.IOUtils;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Test;
 

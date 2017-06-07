@@ -36,6 +36,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.client.NonceSource;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
+import eu.europa.esig.dss.client.http.commons.TimestampDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
@@ -121,6 +122,7 @@ public class OnlineTSPSource implements TSPSource {
 		this.nonceSource = nonceSource;
 	}
 
+	
 	@Override
 	public TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException {
 		try {
@@ -129,27 +131,16 @@ public class OnlineTSPSource implements TSPSource {
 				logger.trace("Timestamp digest value    : " + Utils.toHex(digest));
 			}
 
-			// Setup the time stamp request
-			final TimeStampRequestGenerator tsqGenerator = new TimeStampRequestGenerator();
-			tsqGenerator.setCertReq(true);
-			if (policyOid != null) {
-				tsqGenerator.setReqPolicy(policyOid);
-			}
-
-			ASN1ObjectIdentifier asn1ObjectIdentifier = new ASN1ObjectIdentifier(digestAlgorithm.getOid());
-			TimeStampRequest timeStampRequest = null;
-			if (nonceSource == null) {
-				timeStampRequest = tsqGenerator.generate(asn1ObjectIdentifier, digest);
-			} else {
-				timeStampRequest = tsqGenerator.generate(asn1ObjectIdentifier, digest, nonceSource.getNonce());
-			}
+			 
+			TimeStampRequest timeStampRequest = getRequest(digestAlgorithm, digest);
 
 			final byte[] requestBytes = timeStampRequest.getEncoded();
-
+			
 			// Call the communications layer
 			if (dataLoader == null) {
 				dataLoader = new NativeHTTPDataLoader();
 			}
+			
 			byte[] respBytes = dataLoader.post(tspServer, requestBytes);
 
 			// Handle the TSA response
@@ -177,4 +168,63 @@ public class OnlineTSPSource implements TSPSource {
 		}
 	}
 
+	public TimeStampToken getTimeStampResponse(DigestAlgorithm digestAlgorithm, byte[] digest, byte[] p12, String p12Password) throws DSSException {
+		try {
+
+			if (logger.isTraceEnabled()) {
+				logger.trace("Timestamp digest algorithm: " + digestAlgorithm.getName());
+				logger.trace("Timestamp digest value    : " + Utils.toHex(digest));
+			}
+			TimeStampRequest timeStampRequest = getRequest(digestAlgorithm, digest);
+
+			final byte[] requestBytes = timeStampRequest.getEncoded();
+
+			TimestampDataLoader timeStampDataLoader = new TimestampDataLoader();
+
+			byte[] respBytes = timeStampDataLoader.post(tspServer, requestBytes, p12, p12Password);
+
+			// Handle the TSA response
+			final TimeStampResponse timeStampResponse = new TimeStampResponse(respBytes);
+
+			// Validates nonce, policy id, ... if present
+			timeStampResponse.validate(timeStampRequest);
+
+			String statusString = timeStampResponse.getStatusString();
+			if (statusString != null) {
+				logger.info("Status: " + statusString);
+			}
+
+			final TimeStampToken timeStampToken = timeStampResponse.getTimeStampToken();
+
+			if (timeStampToken != null) {
+				logger.info("TSP SID : SN " + timeStampToken.getSID().getSerialNumber() + ", Issuer "
+						+ timeStampToken.getSID().getIssuer());
+			}
+
+			return timeStampToken;
+		} catch (TSPException e) {
+			throw new DSSException("Invalid TSP response", e);
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
+	
+
+	private TimeStampRequest getRequest(DigestAlgorithm digestAlgorithm, byte[] digest)
+	{
+		final TimeStampRequestGenerator tsqGenerator = new TimeStampRequestGenerator();
+		tsqGenerator.setCertReq(true);
+		if (policyOid != null) {
+			tsqGenerator.setReqPolicy(policyOid);
+		}
+
+		ASN1ObjectIdentifier asn1ObjectIdentifier = new ASN1ObjectIdentifier(digestAlgorithm.getOid());
+		TimeStampRequest timeStampRequest = null;
+		if (nonceSource == null) {
+			timeStampRequest = tsqGenerator.generate(asn1ObjectIdentifier, digest);
+		} else {
+			timeStampRequest = tsqGenerator.generate(asn1ObjectIdentifier, digest, nonceSource.getNonce());
+		}
+		return timeStampRequest;
+	}
 }
