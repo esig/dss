@@ -78,7 +78,7 @@ public final class ImageTextWriter {
                                                  final int height, SignatureImageTextParameters.SignerTextHorizontalAlignment horizontalAlignment) {
         String[] lines = text.split("\n");
 
-        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = img.createGraphics();
         g.setFont(font);
         FontMetrics fm = g.getFontMetrics(font);
