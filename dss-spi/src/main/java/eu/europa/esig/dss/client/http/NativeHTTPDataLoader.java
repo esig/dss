@@ -23,6 +23,7 @@ package eu.europa.esig.dss.client.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
@@ -44,6 +45,8 @@ public class NativeHTTPDataLoader implements DataLoader {
 	private static Logger logger = LoggerFactory.getLogger(NativeHTTPDataLoader.class);
 
 	private static final long MAX_SIZE = 15000;
+
+	private String contentType = null;
 
 	/**
 	 * Used to limit the size of fetched data.
@@ -107,6 +110,11 @@ public class NativeHTTPDataLoader implements DataLoader {
 			connection.setDoOutput(true);
 			connection.setUseCaches(false);
 
+			if (contentType != null) {
+				HttpURLConnection http = (HttpURLConnection) connection;
+				http.setRequestProperty("Content-Type", contentType);
+			}
+
 			out = connection.getOutputStream();
 			Utils.write(content, out);
 			inputStream = connection.getInputStream();
@@ -155,7 +163,7 @@ public class NativeHTTPDataLoader implements DataLoader {
 
 	@Override
 	public void setContentType(String contentType) {
-		throw new DSSException("Not implemented");
+		this.contentType = contentType;
 	}
 
 }

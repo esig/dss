@@ -46,6 +46,7 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
 public class OnlineTSPSource implements TSPSource {
 
 	private static final Logger logger = LoggerFactory.getLogger(OnlineTSPSource.class);
+	public static final String TIMESTAMP_CONTENT_TYPE = "application/timestamp-query";
 
 	/**
 	 * The URL of the TSP server
@@ -150,6 +151,7 @@ public class OnlineTSPSource implements TSPSource {
 			if (dataLoader == null) {
 				dataLoader = new NativeHTTPDataLoader();
 			}
+			dataLoader.setContentType(TIMESTAMP_CONTENT_TYPE);
 			byte[] respBytes = dataLoader.post(tspServer, requestBytes);
 
 			// Handle the TSA response
