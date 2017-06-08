@@ -37,11 +37,12 @@ public class OnlineTSPSourceTest {
 
 	@Test
 	public void testWithTimestampDataLoader() {
-		OnlineTSPSource tspSource = new OnlineTSPSource("http://tsa.sk.ee");
+		OnlineTSPSource tspSource = new OnlineTSPSource("http://demo.sk.ee/tsa/");
+		tspSource.setPolicyOid("0.4.0.2023.1.1");
 		tspSource.setDataLoader(new TimestampDataLoader()); // content-type is different
 
-		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, "Hello world".getBytes());
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA512, "Hello world".getBytes());
+		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA512, digest);
 		assertNotNull(timeStampResponse);
 	}
 
