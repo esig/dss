@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
-import eu.europa.esig.dss.pades.SignatureImageTextParameters;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -30,97 +28,126 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+
 /**
  * This class allows to generate image with text
  *
  */
 public final class ImageTextWriter {
 
-    private static final int DEFAULT_MARGIN = 10;
-    public static final int PDF_DEFAULT_DPI = 72;
+	private static final Logger LOG = LoggerFactory.getLogger(ImageTextWriter.class);
 
-    private ImageTextWriter() {
-    }
+	private static final int DEFAULT_MARGIN = 10;
+	public static final int PDF_DEFAULT_DPI = 72;
 
-    public static BufferedImage createTextImage(final String text, final Font font, final Color textColor, final Color bgColor, final int dpi, SignatureImageTextParameters.SignerTextHorizontalAlignment horizontalAlignment) {
-        // Computing image size depending of the font
-        float fontSize = Math.round((font.getSize() * dpi) / (float) PDF_DEFAULT_DPI);
-        Font largerFont = font.deriveFont(fontSize);
-        Dimension dimension = computeSize(largerFont, text);
-        // gettters returns doubles ??
-        return createTextImage(text, largerFont, textColor, bgColor, dimension.width, dimension.height, horizontalAlignment);
-    }
+	private ImageTextWriter() {
+	}
 
-    public static Dimension computeSize(Font font, String text) {
-        BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
-        Graphics g = img.getGraphics();
-        g.setFont(font);
-        FontMetrics fontMetrics = g.getFontMetrics(font);
+	public static BufferedImage createTextImage(final String text, final Font font, final Color textColor, final Color bgColor, final int dpi,
+			SignatureImageTextParameters.SignerTextHorizontalAlignment horizontalAlignment) {
+		// Computing image size depending of the font
+		float fontSize = Math.round((font.getSize() * dpi) / (float) PDF_DEFAULT_DPI);
+		Font largerFont = font.deriveFont(fontSize);
+		Dimension dimension = computeSize(largerFont, text);
+		return createTextImage(text, largerFont, textColor, bgColor, dimension.width, dimension.height, horizontalAlignment);
+	}
 
-        String[] lines = text.split("\n");
+	public static Dimension computeSize(Font font, String text) {
+		BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+		Graphics g = img.getGraphics();
+		g.setFont(font);
+		FontMetrics fontMetrics = g.getFontMetrics(font);
 
-        int width = 0;
-        for(String line : lines) {
-            int lineWidth = fontMetrics.stringWidth(line);
-            if(lineWidth > width) {
-                width = lineWidth;
-            }
-        }
+		String[] lines = text.split("\n");
 
-        width += DEFAULT_MARGIN;
-        int height = (fontMetrics.getHeight() * lines.length) + DEFAULT_MARGIN;
-        g.dispose();
-        
-        return new Dimension(width, height);
-    }
+		int width = 0;
+		for (String line : lines) {
+			int lineWidth = fontMetrics.stringWidth(line);
+			if (lineWidth > width) {
+				width = lineWidth;
+			}
+		}
 
-    private static BufferedImage createTextImage(final String text, final Font font, final Color textColor, final Color bgColor, final int width,
-                                                 final int height, SignatureImageTextParameters.SignerTextHorizontalAlignment horizontalAlignment) {
-        String[] lines = text.split("\n");
+		width += DEFAULT_MARGIN;
+		int height = (fontMetrics.getHeight() * lines.length) + DEFAULT_MARGIN;
+		g.dispose();
 
-        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = img.createGraphics();
-        g.setFont(font);
-        FontMetrics fm = g.getFontMetrics(font);
+		return new Dimension(width, height);
+	}
 
-        // Improve text rendering
-        ImageUtils.initRendering(g);
+	private static BufferedImage createTextImage(final String text, final Font font, final Color textColor, final Color bgColor, final int width,
+			final int height, SignatureImageTextParameters.SignerTextHorizontalAlignment horizontalAlignment) {
+		String[] lines = text.split("\n");
 
-        if(bgColor == null) {
-            g.setColor(Color.WHITE);
-        } else {
-            g.setColor(bgColor);
-        }
-        g.fillRect(0, 0, width, height);
+		int imageType;
+		if (isTransparent(textColor, bgColor)) {
+			LOG.warn("Transparency detected and enabled (be careful not valid with PDF/A !)");
+			imageType = BufferedImage.TYPE_INT_ARGB;
+		} else {
+			imageType = BufferedImage.TYPE_INT_RGB;
+		}
 
-        if(textColor == null) {
-            g.setPaint(Color.BLACK);
-        } else {
-            g.setPaint(textColor);
-        }
+		BufferedImage img = new BufferedImage(width, height, imageType);
+		Graphics2D g = img.createGraphics();
+		g.setFont(font);
+		FontMetrics fm = g.getFontMetrics(font);
 
+		// Improve text rendering
+		ImageUtils.initRendering(g);
 
-        int lineHeight = fm.getHeight();
-        int y = fm.getMaxAscent() + DEFAULT_MARGIN / 2;
+		if (bgColor == null) {
+			g.setColor(Color.WHITE);
+		} else {
+			g.setColor(bgColor);
+		}
+		g.fillRect(0, 0, width, height);
 
-        for (String line : lines) {
-            int x = DEFAULT_MARGIN / 2; //left alignment
-            if(horizontalAlignment != null) {
-                switch (horizontalAlignment) {
-                    case RIGHT:
-                        x = (img.getWidth() - fm.stringWidth(line)) / 2;
-                        break;
-                    case CENTER:
-                        x = img.getWidth() / 2 - fm.stringWidth(line) / 2;
-                        break;
-                }
-            }
-            g.drawString(line, x, y);
-            y += lineHeight;
-        }
-        g.dispose();
+		if (textColor == null) {
+			g.setPaint(Color.BLACK);
+		} else {
+			g.setPaint(textColor);
+		}
 
-        return img;
-    }
+		int lineHeight = fm.getHeight();
+		int y = fm.getMaxAscent() + DEFAULT_MARGIN / 2;
+
+		for (String line : lines) {
+			int x = DEFAULT_MARGIN / 2; // left alignment
+			if (horizontalAlignment != null) {
+				switch (horizontalAlignment) {
+				case RIGHT:
+					x = (img.getWidth() - fm.stringWidth(line)) / 2;
+					break;
+				case CENTER:
+					x = img.getWidth() / 2 - fm.stringWidth(line) / 2;
+					break;
+				default:
+					// nothing
+					break;
+				}
+			}
+			g.drawString(line, x, y);
+			y += lineHeight;
+		}
+		g.dispose();
+
+		return img;
+	}
+
+	private static boolean isTransparent(Color... colors) {
+		if (colors != null) {
+			for (Color color : colors) {
+				int alpha = color.getAlpha();
+				if (alpha < 255) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 }

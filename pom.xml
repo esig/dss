@@ -533,6 +533,11 @@
 				<version>${pdfbox.version}</version>
 			</dependency>
 			<dependency>
+			    <groupId>org.apache.pdfbox</groupId>
+			    <artifactId>preflight</artifactId>
+				<version>${pdfbox.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.apache.santuario</groupId>
 				<artifactId>xmlsec</artifactId>
 				<version>${xmlsec.version}</version>

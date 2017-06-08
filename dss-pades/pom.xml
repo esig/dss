@@ -31,6 +31,13 @@
 			<groupId>org.apache.pdfbox</groupId>
 			<artifactId>pdfbox</artifactId>
 		</dependency>
+		
+		<!-- Allows to test PDF/A -->
+		<dependency>
+		    <groupId>org.apache.pdfbox</groupId>
+		    <artifactId>preflight</artifactId>
+		    <scope>test</scope>
+		</dependency>
         
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
