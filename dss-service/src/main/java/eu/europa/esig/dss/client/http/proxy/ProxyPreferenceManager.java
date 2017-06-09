@@ -163,7 +163,7 @@ public class ProxyPreferenceManager {
 		if ((preference == null) || Utils.isStringEmpty(preference.getValue())) {
 			return false;
 		} else {
-			return Boolean.valueOf(preference.getValue()).booleanValue();
+			return Boolean.parseBoolean(preference.getValue());
 		}
 	}
 
@@ -178,7 +178,7 @@ public class ProxyPreferenceManager {
 		if ((preference == null) || Utils.isStringEmpty(preference.getValue())) {
 			return false;
 		} else {
-			return Boolean.valueOf(preference.getValue()).booleanValue();
+			return Boolean.parseBoolean(preference.getValue());
 		}
 
 	}
@@ -342,7 +342,7 @@ public class ProxyPreferenceManager {
 
 		switch (proxyKey) {
 		case HTTP_ENABLED:
-			setHttpEnabled(Boolean.valueOf(value));
+			setHttpEnabled(Boolean.parseBoolean(value));
 			break;
 		case HTTP_HOST:
 			setHttpHost(value);
@@ -361,7 +361,7 @@ public class ProxyPreferenceManager {
 			setHttpExcludedHosts(value);
 			break;
 		case HTTPS_ENABLED:
-			setHttpsEnabled(Boolean.valueOf(value));
+			setHttpsEnabled(Boolean.parseBoolean(value));
 			break;
 		case HTTPS_HOST:
 			setHttpsHost(value);

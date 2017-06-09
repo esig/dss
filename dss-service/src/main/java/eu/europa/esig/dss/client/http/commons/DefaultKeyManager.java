@@ -134,10 +134,8 @@ public final class DefaultKeyManager implements X509KeyManager {
 	 *            keystore's password
 	 * @throws GeneralSecurityException
 	 *             Certificate/Keystore/Algorithm/... exception
-	 * @throws IOException
-	 *             I/O Error
 	 */
-	private void initKeyManager(KeyStore keystore, String ksPasswd) throws GeneralSecurityException, IOException {
+	private void initKeyManager(KeyStore keystore, String ksPasswd) throws GeneralSecurityException {
 		// initialize a new KMF with the ts we just loaded
 		KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 		kmf.init(keystore, ksPasswd.toCharArray());

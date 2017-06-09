@@ -26,11 +26,7 @@ public class SigningCertificateRecognitionCheck extends ChainItem<XmlISC> {
 	protected boolean process() {
 		String signingCertificateId = token.getSigningCertificateId();
 		CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(signingCertificateId);
-		if (Utils.areStringsEqual(signingCertificateId, certificate.getId())) {
-			return true;
-		} else {
-			return false;
-		}
+		return Utils.areStringsEqual(signingCertificateId, certificate.getId());
 	}
 
 	@Override

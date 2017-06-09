@@ -238,7 +238,7 @@ public final class DSSUtils {
 			final String pemCrl = CRL_BEGIN + NEW_LINE + pemCrlPre + NEW_LINE + CRL_END;
 			return pemCrl;
 		} catch (CRLException e) {
-			throw new DSSException("Unable to convert CRL to PEM encoding : " + e.getMessage());
+			throw new DSSException("Unable to convert CRL to PEM encoding : " + e.getMessage(),e);
 		}
 	}
 
@@ -258,7 +258,7 @@ public final class DSSUtils {
 			}
 			return false;
 		} catch (Exception e) {
-			throw new DSSException("Unable to read InputStream");
+			throw new DSSException("Unable to read InputStream",e);
 		}
 	}
 
@@ -268,16 +268,12 @@ public final class DSSUtils {
 	 * @return true if PEM encoded
 	 */
 	public static boolean isPEM(byte[] byteArray) {
-		try {
-			String startPEM = "-----BEGIN";
-			int headerLength = 100;
-			byte[] preamble = new byte[headerLength];
-			System.arraycopy(byteArray, 0, preamble, 0, headerLength);
-			String startArray = new String(preamble);
-			return startArray.startsWith(startPEM);
-		} catch (Exception e) {
-			throw new DSSException("Unable to read InputStream");
-		}
+		String startPEM = "-----BEGIN";
+		int headerLength = 100;
+		byte[] preamble = new byte[headerLength];
+		System.arraycopy(byteArray, 0, preamble, 0, headerLength);
+		String startArray = new String(preamble);
+		return startArray.startsWith(startPEM);
 	}
 
 	/**

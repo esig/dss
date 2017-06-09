@@ -32,7 +32,7 @@ public class KeyStoreCertificateSourceTest {
 		kscs.addCertificateToKeyStore(token);
 
 		int sizeAfterAdd = Utils.collectionSize(kscs.getCertificates());
-		assertTrue(sizeAfterAdd == startSize + 1);
+		assertEquals(sizeAfterAdd,startSize + 1);
 		String tokenId = token.getDSSIdAsString();
 
 		CertificateToken certificate = kscs.getCertificate(tokenId);
@@ -41,7 +41,7 @@ public class KeyStoreCertificateSourceTest {
 		kscs.deleteCertificateFromKeyStore(tokenId);
 
 		int sizeAfterDelete = Utils.collectionSize(kscs.getCertificates());
-		assertTrue(sizeAfterDelete == startSize);
+		assertEquals(sizeAfterDelete,startSize);
 	}
 
 	@Test

@@ -40,6 +40,7 @@ import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
@@ -260,13 +261,11 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	public void saveDocumentIncrementally(PAdESSignatureParameters parameters, OutputStream outputStream, PDDocument pdDocument) throws DSSException {
 		try {
 			// the document needs to have an ID, if not a ID based on the current system time is used, and then the
-			// digest of the signed data is
-			// different
+			// digest of the signed data is different
 			if (pdDocument.getDocumentId() == null) {
 
-				final byte[] documentIdBytes = DSSUtils.digest(DigestAlgorithm.MD5, parameters.bLevel().getSigningDate().toString().getBytes());
+				final byte[] documentIdBytes = DSSUtils.digest(DigestAlgorithm.SHA256, parameters.bLevel().getSigningDate().toString().getBytes());
 				pdDocument.setDocumentId(DSSUtils.toLong(documentIdBytes));
-				pdDocument.setDocumentId(0L);
 			}
 			pdDocument.saveIncremental(outputStream);
 		} catch (IOException e) {
@@ -309,7 +308,16 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 				for (PDSignature signature : pdSignatures) {
 					String subFilter = signature.getSubFilter();
-					byte[] cms = signature.getContents(originalBytes);
+
+					COSDictionary dict = signature.getCOSObject();
+					COSString item = (COSString) dict.getDictionaryObject(COSName.CONTENTS);
+					byte[] cms = item.getBytes();
+
+					byte[] cmsWithByteRange = signature.getContents(originalBytes);
+
+					if (!Arrays.equals(cmsWithByteRange, cms)) {
+						logger.warn("The byte range doesn't match found /Content value!");
+					}
 
 					if (Utils.isStringEmpty(subFilter) || Utils.isArrayEmpty(cms)) {
 						logger.warn("Wrong signature with empty subfilter or cms.");
@@ -411,9 +419,6 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				cosDictionary.setNeedToBeUpdated(true);
 			}
 
-			if (pdDocument.getDocumentId() == null) {
-				pdDocument.setDocumentId(0L);
-			}
 			pdDocument.saveIncremental(outputStream);
 
 		} catch (Exception e) {
@@ -502,12 +507,14 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 	private COSStream getStream(Map<String, COSStream> streams, Token token) throws IOException {
 		COSStream stream = streams.get(token.getDSSIdAsString());
+		
 		if (stream == null) {
 			stream = new COSStream();
-			OutputStream unfilteredStream = stream.createOutputStream();
-			unfilteredStream.write(token.getEncoded());
-			unfilteredStream.flush();
-			unfilteredStream.close();
+			
+			try(OutputStream unfilteredStream = stream.createOutputStream()){
+				unfilteredStream.write(token.getEncoded());
+				unfilteredStream.flush();
+			}
 			streams.put(token.getDSSIdAsString(), stream);
 		}
 		return stream;

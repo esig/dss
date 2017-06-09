@@ -85,7 +85,7 @@ public class OfflineResolver extends ResourceResolverSpi {
 					LOG.debug("I state that I can't resolve '" + uriNew.toString() + "'");
 				}
 			} catch (URI.MalformedURIException ex) {
-				if (documents == null || documents.size() == 0) {
+				if (documents == null || documents.isEmpty()) {
 					LOG.warn("OfflineResolver: WARNING: ", ex);
 				}
 			}

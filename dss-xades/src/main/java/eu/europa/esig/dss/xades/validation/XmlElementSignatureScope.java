@@ -54,7 +54,7 @@ public class XmlElementSignatureScope extends SignatureScope {
 		for (final String transformation : transformations) {
 			result.append(transformation).append("; ");
 		}
-		result.delete(result.length() - 2, result.length()).append(".");
+		result.delete(result.length() - 2, result.length()).append('.');
 		return result.toString();
 	}
 

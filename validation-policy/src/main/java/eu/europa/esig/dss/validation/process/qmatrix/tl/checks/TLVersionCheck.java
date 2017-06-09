@@ -41,7 +41,7 @@ public class TLVersionCheck extends ChainItem<XmlTLAnalysis> {
 		try {
 			version = Integer.parseInt(expectedVersionString);
 		} catch (NumberFormatException e) {
-			LOG.warn("Unable to parse TLVersion constraint : '{0}'", expectedVersionString);
+			LOG.warn("Unable to parse TLVersion constraint : '{}'", expectedVersionString);
 		}
 
 		Integer tlVersion = currentTL.getVersion();

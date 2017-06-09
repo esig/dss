@@ -27,11 +27,16 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class allows to merge two pictures together
  *
  */
 public final class ImagesMerger {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(ImagesMerger.class);
 
 	private ImagesMerger() {
 	}
@@ -109,6 +114,7 @@ public final class ImagesMerger {
 		int imageType = BufferedImage.TYPE_INT_RGB;
 
 		if(ImageUtils.isTransparent(image1) || ImageUtils.isTransparent(image2)) {
+			LOG.warn("Transparency detected and enabled (be careful not valid with PDF/A !)");
 			imageType = BufferedImage.TYPE_INT_ARGB;
 		}
 
