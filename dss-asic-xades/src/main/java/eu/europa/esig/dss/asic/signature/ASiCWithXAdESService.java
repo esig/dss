@@ -32,6 +32,7 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
+@SuppressWarnings("serial")
 public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithXAdESSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCWithXAdESService.class);

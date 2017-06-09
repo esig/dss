@@ -18,7 +18,7 @@ import eu.europa.esig.dss.asic.ASiCNamespace;
  * 
  * <pre>
  * <code>
- * 		<asic:ASiCArchiveManifest xmlns:asic="http://uri.etsi.org/02918/v1.2.1#">
+ * 		<asic:ASiCManifest xmlns:asic="http://uri.etsi.org/02918/v1.2.1#">
  *			<asic:SigReference URI="META-INF/archive_timestamp.tst" MimeType="application/vnd.etsi.timestamp-token"/>
  *			<asic:DataObjectReference URI="META-INF/signature.p7s" MimeType="application/x-pkcs7-signature">
  *				<DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
@@ -32,7 +32,7 @@ import eu.europa.esig.dss.asic.ASiCNamespace;
  *				<DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
  *				<DigestValue>g5dY...</DigestValue>
  *			</asic:DataObjectReference>
- * 		</asic:ASiCArchiveManifest>
+ * 		</asic:ASiCManifest>
  * </code>
  * </pre>
  */
@@ -55,7 +55,7 @@ public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilde
 
 	public Document build() {
 		final Document documentDom = DomUtils.buildDOM();
-		final Element asicManifestDom = documentDom.createElementNS(ASiCNamespace.NS, ASiCNamespace.ASIC_ARCHIVE_MANIFEST);
+		final Element asicManifestDom = documentDom.createElementNS(ASiCNamespace.NS, ASiCNamespace.ASIC_MANIFEST);
 		documentDom.appendChild(asicManifestDom);
 
 		addSigReference(documentDom, asicManifestDom, timestampUri, MimeType.TST);
