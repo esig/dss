@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificateChain;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
@@ -79,6 +80,7 @@ public class BasicBuildingBlocks {
 		XmlISC isc = executeIdentificationOfTheSigningCertificate();
 		if (isc != null) {
 			result.setISC(isc);
+			result.setCertificateChain(isc.getCertificateChain());
 			updateFinalConclusion(result, isc);
 		}
 
@@ -124,7 +126,7 @@ public class BasicBuildingBlocks {
 
 		return result;
 	}
-
+	
 	private void updateFinalConclusion(XmlBasicBuildingBlocks result, XmlConstraintsConclusion constraintsAndConclusion) {
 		XmlConclusion finalConclusion = result.getConclusion();
 

@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.validation.process.bbb.isc;
 
 import eu.europa.esig.dss.SignatureForm;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificateChain;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlChainItem;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -51,8 +53,18 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 		 */
 		ChainItem<XmlISC> item = firstItem = signingCertificateRecognition();
 
+		XmlCertificateChain certificateChain = new XmlCertificateChain();
+		if(token.getCertificateChain() != null) {
+			for(eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem diagnosticChainItem : token.getCertificateChain()) {
+				XmlChainItem chainItem = new XmlChainItem();
+				chainItem.setId(diagnosticChainItem.getId());
+				chainItem.setSource(diagnosticChainItem.getSource());
+				certificateChain.getChainItem().add(chainItem);
+			}
+			result.setCertificateChain(certificateChain);
+		}
+		
 		if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
-
 			/*
 			 * 1) If the signature format used contains a way to directly identify the reference to the signers'
 			 * certificate in the attribute, the building block shall check that the digest of the certificate

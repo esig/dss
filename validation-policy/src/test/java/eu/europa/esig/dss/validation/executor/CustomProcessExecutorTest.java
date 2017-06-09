@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -11,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.xml.XMLConstants;
+import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.Source;
@@ -21,6 +23,7 @@ import javax.xml.validation.SchemaFactory;
 import org.junit.Test;
 
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureQualification;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
@@ -387,7 +390,7 @@ public class CustomProcessExecutorTest {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(SignatureQualification.NA, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 	}
-
+	
 	@Test
 	public void noSigningTime() throws Exception {
 		FileInputStream fis = new FileInputStream("src/test/resources/no-signing-date.xml");
@@ -404,6 +407,48 @@ public class CustomProcessExecutorTest {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SignatureQualification.INDETERMINATE_ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+	}
+	
+	@Test
+	public void testCertChain() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/qualifNA.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(1, simpleReport.getJaxbModel().getSignaturesCount());
+		XmlSignature xmlSignature = simpleReport.getJaxbModel().getSignature().get(0);
+		assertTrue(!xmlSignature.getCertificateChain().getCertificate().isEmpty());
+		assertEquals(3, xmlSignature.getCertificateChain().getCertificate().size());
+		ByteArrayOutputStream s = new ByteArrayOutputStream();
+		JAXB.marshal(simpleReport.getJaxbModel(), s);
+		System.out.println(s.toString());
+	}
+	
+	@Test
+	public void testWithoutCertChain() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/qualifNAWithoutCertChain.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(1, simpleReport.getJaxbModel().getSignaturesCount());
+		XmlSignature xmlSignature = simpleReport.getJaxbModel().getSignature().get(0);
+		assertEquals(null, xmlSignature.getCertificateChain());
 	}
 
 	private void checkReports(Reports reports) {
