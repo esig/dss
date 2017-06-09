@@ -39,6 +39,7 @@ public class MimeType implements Serializable {
 	public static final MimeType XML = new MimeType("text/xml");
 	public static final MimeType PDF = new MimeType("application/pdf");
 	public static final MimeType PKCS7 = new MimeType("application/pkcs7-signature");
+	public static final MimeType TST = new MimeType("application/vnd.etsi.timestamp-token");
 	public static final MimeType ASICS = new MimeType("application/vnd.etsi.asic-s+zip");
 	public static final MimeType ASICE = new MimeType("application/vnd.etsi.asic-e+zip");
 	public static final MimeType ODT = new MimeType("application/vnd.oasis.opendocument.text");
@@ -76,6 +77,8 @@ public class MimeType implements Serializable {
 			put("png", PNG);
 			put("jpg", JPEG);
 			put("jpeg", JPEG);
+
+			put("tst", TST);
 		}
 	};
 
