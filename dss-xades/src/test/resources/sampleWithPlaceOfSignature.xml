@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<test:root xmlns:test="http://www.w3.org/2000/09/xmltest#">
+	<data id="data1">test</data>
+	<data id="data2">test2</data>
+	<otherData>test data</otherData>
+	<placeOfSignature></placeOfSignature>
+</test:root>
