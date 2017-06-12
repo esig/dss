@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -51,9 +52,20 @@ public class DSSUtilsTest {
 	}
 
 	@Test
+	public void testDontSkipCertificatesWhenMultipleAreFoundInP7c() throws IOException {
+		try {
+			DSSUtils.loadCertificate(new FileInputStream("src/test/resources/certchain.p7c"));
+			fail("Should not load single certificate (first?)");
+		} catch(DSSException dssEx){
+			assertEquals(dssEx.getMessage(), "Could not parse certificate");
+		}
+	}
+
+	@Test
 	public void testLoadP7cPEM() throws DSSException, IOException {
 		Collection<CertificateToken> certs = DSSUtils.loadCertificateFromP7c(new FileInputStream("src/test/resources/certchain.p7c"));
 		assertTrue(Utils.isCollectionNotEmpty(certs));
+		assertTrue(certs.size() > 1);
 	}
 
 	@Test
