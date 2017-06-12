@@ -147,9 +147,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			};
 
 			options.setPreferredSignatureSize(parameters.getSignatureSize());
-			if (parameters.getImageParameters() != null) {
-				fillImageParameters(pdDocument, parameters.getImageParameters(), options);
-			}
+			fillImageParameters(pdDocument, parameters, options);
 			pdDocument.addSignature(pdSignature, signatureInterface, options);
 
 			saveDocumentIncrementally(parameters, fileOutputStream, pdDocument);
@@ -165,27 +163,33 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 	}
 
-	private void fillImageParameters(final PDDocument doc, final SignatureImageParameters imgParams, SignatureOptions options) throws IOException {
-
-		// DSS-747. Using the DPI resolution to convert java size to dot
-		ImageAndResolution ires = ImageUtils.create(imgParams);
-
-		InputStream is = ires.getInputStream();
-		try {
-			PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(doc, is, imgParams.getPage());
-			visibleSig.xAxis(imgParams.getxAxis());
-			visibleSig.yAxis(imgParams.getyAxis());
-			visibleSig.width(ires.toXPoint(visibleSig.getWidth()));
-			visibleSig.height(ires.toYPoint(visibleSig.getHeight()));
-			visibleSig.zoom(imgParams.getZoom() - 100); // pdfbox is 0 based
-
-			PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
-			signatureProperties.visualSignEnabled(true).setPdVisibleSignature(visibleSig).buildSignature();
-
-			options.setVisualSignature(signatureProperties);
-			options.setPage(imgParams.getPage() - 1); // DSS-1138
-		} finally {
-			Utils.closeQuietly(is);
+	protected void fillImageParameters(final PDDocument doc, final PAdESSignatureParameters signatureParameters, SignatureOptions options) throws IOException {
+		SignatureImageParameters signatureImageParameters = signatureParameters.getSignatureImageParameters();
+		fillImageParameters(doc, signatureImageParameters, options);
+	}
+	
+	protected void fillImageParameters(final PDDocument doc, final SignatureImageParameters signatureImageParameters, SignatureOptions options) throws IOException {
+		if(signatureImageParameters != null) {
+			// DSS-747. Using the DPI resolution to convert java size to dot
+			ImageAndResolution ires = ImageUtils.create(signatureImageParameters);
+	
+			InputStream is = ires.getInputStream();
+			try {
+				PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(doc, is, signatureImageParameters.getPage());
+				visibleSig.xAxis(signatureImageParameters.getxAxis());
+				visibleSig.yAxis(signatureImageParameters.getyAxis());
+				visibleSig.width(ires.toXPoint(visibleSig.getWidth()));
+				visibleSig.height(ires.toYPoint(visibleSig.getHeight()));
+				visibleSig.zoom(signatureImageParameters.getZoom() - 100); // pdfbox is 0 based
+	
+				PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
+				signatureProperties.visualSignEnabled(true).setPdVisibleSignature(visibleSig).buildSignature();
+	
+				options.setVisualSignature(signatureProperties);
+				options.setPage(signatureImageParameters.getPage() - 1); // DSS-1138
+			} finally {
+				Utils.closeQuietly(is);
+			}
 		}
 	}
 
