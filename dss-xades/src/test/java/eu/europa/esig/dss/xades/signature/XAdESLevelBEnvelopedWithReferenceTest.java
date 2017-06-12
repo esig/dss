@@ -22,6 +22,7 @@ package eu.europa.esig.dss.xades.signature;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -128,44 +129,36 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractTestDocumentS
 
 	}
 	
-	@Test
-	public void signAndVerify() throws IOException {
-		final DSSDocument signedDocument = sign();
-
-		assertNotNull(signedDocument.getName());
-		assertNotNull(DSSUtils.toByteArray(signedDocument));
-		assertNotNull(signedDocument.getMimeType());
-
-		logger.info("=================== VALIDATION =================");
-
-		signedDocument.save("target/" + signedDocument.getName());
-
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
 		try {
-			byte[] byteArray = Utils.toByteArray(signedDocument.openStream());
-			onDocumentSigned(byteArray);
-			if (logger.isDebugEnabled()) {
-				logger.debug(new String(byteArray));
-			}
-		} catch (Exception e) {
-			logger.error("Cannot display file content", e);
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setNamespaceAware(true);
+	
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document doc = db.parse(new ByteArrayInputStream(byteArray));
+			
+			XPathFactory f = XPathFactory.newInstance();
+			XPath xPath = f.newXPath();
+			xPath.setNamespaceContext(new Name());
+			Node node = (Node) xPath.evaluate("root/data[@id='data1']", doc, XPathConstants.NODE);
+	
+			Init.init();
+			Canonicalizer c14n = Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#");
+			byte c14nBytes[] = c14n.canonicalizeSubtree(node);
+	
+			Assert.assertEquals("AdGdZ+/VQVVvC9yzL4Yj8iRK33cQBiRW2UpKGMswdZQ=", Base64.encode(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));
+			
+			node = (Node) xPath.evaluate("root/data[@id='data2']", doc, XPathConstants.NODE);
+	
+			Init.init();
+			c14n = Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#");
+			c14nBytes = c14n.canonicalizeSubtree(node);
+	
+			Assert.assertEquals("R69a3Im5463c09SuOrn9Sfly9h9LxVxSqg/0CVumJjA=", Base64.encode(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));
+		} catch(Exception e) {
+			throw new RuntimeException(e.getMessage());
 		}
-
-		checkMimeType(signedDocument);
-
-		Reports reports = getValidationReport(signedDocument);
-		// reports.setValidateXml(true);
-		// reports.print();
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		verifyDiagnosticData(diagnosticData);
-
-		SimpleReport simpleReport = reports.getSimpleReport();
-		verifySimpleReport(simpleReport);
-
-		DetailedReport detailedReport = reports.getDetailedReport();
-		verifyDetailedReport(detailedReport);
-		
-		checkSignedDocument();
 	}
 
 	@Override
@@ -201,37 +194,6 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractTestDocumentS
 	@Override
 	protected MockPrivateKeyEntry getPrivateKeyEntry() {
 		return privateKeyEntry;
-	}
-	
-	private void checkSignedDocument() {
-		try {
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			dbf.setNamespaceAware(true);
-	
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.parse(new File("target/sampleWithPlaceOfSignature-signed-xades-baseline-b.xml"));
-			
-			XPathFactory f = XPathFactory.newInstance();
-			XPath xPath = f.newXPath();
-			xPath.setNamespaceContext(new Name());
-			Node node = (Node) xPath.evaluate("test:root/data[@id='data1']", doc, XPathConstants.NODE);
-	
-			Init.init();
-			Canonicalizer c14n = Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#");
-			byte c14nBytes[] = c14n.canonicalizeSubtree(node);
-	
-			Assert.assertEquals("AdGdZ+/VQVVvC9yzL4Yj8iRK33cQBiRW2UpKGMswdZQ=", Base64.encode(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));
-			
-			node = (Node) xPath.evaluate("test:root/data[@id='data2']", doc, XPathConstants.NODE);
-	
-			Init.init();
-			c14n = Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#");
-			c14nBytes = c14n.canonicalizeSubtree(node);
-	
-			Assert.assertEquals("R69a3Im5463c09SuOrn9Sfly9h9LxVxSqg/0CVumJjA=", Base64.encode(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));
-		} catch(Exception e) {
-			throw new RuntimeException(e.getMessage());
-		}
 	}
 	
 	private static final class Name implements NamespaceContext {
