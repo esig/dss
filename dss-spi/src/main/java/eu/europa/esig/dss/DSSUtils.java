@@ -28,7 +28,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -60,16 +59,11 @@ import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.bouncycastle.asn1.cms.ContentInfo;
 import org.bouncycastle.cert.X509CRLHolder;
-import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CRLConverter;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
-import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.openssl.PEMParser;
-import org.bouncycastle.util.CollectionStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -356,11 +350,11 @@ public final class DSSUtils {
 			// Note: even though according to the javadoc the following method call throws CertificateException on
 			// parsing errors,
 			// it is not (always?) the case for the BouncyCastle provider.
-			final X509Certificate cert = (X509Certificate) certificateFactory.generateCertificate(inputStream);
-			if (cert == null) {
+			final Collection<X509Certificate> certs = (Collection<X509Certificate>) certificateFactory.generateCertificates(inputStream);
+			if (certs == null || certs.size() != 1) {
 				throw new DSSException("Could not parse certificate");
 			}
-			return new CertificateToken(cert);
+			return new CertificateToken(certs.iterator().next());
 		} catch (CertificateException e) {
 			throw new DSSException(e);
 		}
@@ -375,29 +369,15 @@ public final class DSSUtils {
 	 *            input stream containing the certificate collection
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static Collection<CertificateToken> loadCertificateFromP7c(final InputStream inputStream) throws DSSException {
 		final Collection<CertificateToken> certificates = new ArrayList<>();
 		try {
-			byte[] byteArray = Utils.toByteArray(inputStream);
-			CMSSignedData cms = null;
-			if (isPEM(byteArray)) {
-				// Note: The PEMReader is not closed to avoid affecting the received inputStream
-				@SuppressWarnings("resource")
-				PEMParser pemParser = new PEMParser(new InputStreamReader(new ByteArrayInputStream(byteArray)));
-				Object pemObject = pemParser.readObject();
-				if (pemObject != null) {
-					ContentInfo ci = (ContentInfo) pemObject;
-					cms = new CMSSignedData(ci);
-				}
-			} else {
-				cms = new CMSSignedData(byteArray);
-			}
+			@SuppressWarnings("unchecked")
+			final Collection<X509Certificate> certificatesCollection = (Collection<X509Certificate>) certificateFactory.generateCertificates(inputStream);
 
-			if (cms != null) {
-				CollectionStore<X509CertificateHolder> certificatesCollection = (CollectionStore<X509CertificateHolder>) cms.getCertificates();
-				for (X509CertificateHolder certHolder : certificatesCollection) {
-					certificates.add(DSSASN1Utils.getCertificate(certHolder));
+			if (certificatesCollection != null) {
+				for (X509Certificate cert : certificatesCollection) {
+					certificates.add(new CertificateToken(cert));
 				}
 			}
 
