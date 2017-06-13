@@ -23,6 +23,8 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	protected List<DocumentValidator> validators;
 
+	protected List<DocumentValidator> timestampValidators;
+
 	private ASiCExtractResult extractResult;
 
 	private ASiCContainerType containerType;
@@ -107,10 +109,20 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		for (DocumentValidator documentValidator : currentValidators) {
 			allSignatures.addAll(documentValidator.getSignatures());
 		}
+
+		List<DocumentValidator> currentTimestampValidators = getTimestampValidators();
+		if (!currentTimestampValidators.isEmpty()) {
+			for (DocumentValidator tspValidator : currentTimestampValidators) {
+
+			}
+		}
+
 		return allSignatures;
 	}
 
 	abstract List<DocumentValidator> getValidators();
+
+	abstract List<DocumentValidator> getTimestampValidators();
 
 	protected List<DSSDocument> getSignatureDocuments() {
 		return extractResult.getSignatureDocuments();
@@ -122,6 +134,14 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	protected List<DSSDocument> getManifestDocuments() {
 		return extractResult.getManifestDocuments();
+	}
+
+	protected List<DSSDocument> getTimestampDocuments() {
+		return extractResult.getTimestampDocuments();
+	}
+
+	protected List<DSSDocument> getArchiveManifestDocuments() {
+		return extractResult.getArchiveManifestDocuments();
 	}
 
 	@Override

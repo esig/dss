@@ -60,6 +60,26 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		return validators;
 	}
 
+	@Override
+	List<DocumentValidator> getTimestampValidators() {
+		if (timestampValidators == null) {
+			timestampValidators = new ArrayList<DocumentValidator>();
+			ASiCContainerType type = getContainerType();
+			if (ASiCContainerType.ASiC_E == type) {
+				for (final DSSDocument timestamp : getTimestampDocuments()) {
+					TimestampValidator timestampValidator = new TimestampValidator(timestamp);
+					timestampValidator.setCertificateVerifier(certificateVerifier);
+					timestampValidator.setProcessExecutor(processExecutor);
+					timestampValidator.setSignaturePolicyProvider(signaturePolicyProvider);
+					timestampValidator.setValidationCertPool(validationCertPool);
+					timestampValidator.setDetachedContents(getTimestampedArchiveManifest(timestamp));
+					timestampValidators.add(timestampValidator);
+				}
+			}
+		}
+		return timestampValidators;
+	}
+
 	private List<DSSDocument> getSignedDocuments(DSSDocument signature) {
 		ASiCContainerType type = getContainerType();
 		if (ASiCContainerType.ASiC_S == type) {
@@ -77,6 +97,21 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		} else {
 			LOG.warn("Unknown asic container type (returns all signed documents)");
 			return getSignedDocuments();
+		}
+	}
+
+	private List<DSSDocument> getTimestampedArchiveManifest(DSSDocument timestamp) {
+		List<DSSDocument> signedDocs = new ArrayList<DSSDocument>();
+		signedDocs.addAll(getSignedDocuments());
+		signedDocs.addAll(getManifestDocuments());
+		signedDocs.addAll(getSignatureDocuments());
+
+		ASiCEWithCAdESManifestValidator manifestValidator = new ASiCEWithCAdESManifestValidator(timestamp, getArchiveManifestDocuments(), signedDocs);
+		DSSDocument linkedManifest = manifestValidator.getLinkedManifest();
+		if (linkedManifest != null) {
+			return Arrays.asList(linkedManifest);
+		} else {
+			return Collections.emptyList();
 		}
 	}
 

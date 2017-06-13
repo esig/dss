@@ -99,6 +99,22 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		}
 		signatures.add(signature);
 
+		if (addASiCArchiveManifest) {
+			String timestampFilename = getArchiveTimestampFilename(timestamps);
+			ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(signatures, dataToSignHelper.getSignedDocuments(),
+					manifests, parameters.getArchiveTimestampParameters().getDigestAlgorithm(), timestampFilename);
+
+			DSSDocument archiveManfest = ASiCUtils.createDssDocumentFromDomDocument(builder.build(), getArchivManifestFilename(archiveManifests));
+			signatures.add(archiveManfest);
+
+			DigestAlgorithm digestAlgorithm = parameters.getArchiveTimestampParameters().getDigestAlgorithm();
+			TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, DSSUtils.digest(digestAlgorithm, archiveManfest));
+			DSSDocument timestamp = new InMemoryDocument(DSSASN1Utils.getEncoded(timeStampResponse), timestampFilename, MimeType.TST);
+			signatures.add(timestamp);
+
+			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+		}
+
 		final DSSDocument asicSignature = buildASiCContainer(dataToSignHelper.getSignedDocuments(), signatures, manifests, asicParameters);
 		asicSignature
 				.setName(DSSUtils.getFinalFileName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));

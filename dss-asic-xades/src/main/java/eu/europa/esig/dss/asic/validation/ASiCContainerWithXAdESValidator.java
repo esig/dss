@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.asic.validation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -50,6 +51,12 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 			}
 		}
 		return validators;
+	}
+
+	@Override
+	List<DocumentValidator> getTimestampValidators() {
+		// No external timestamp in ASiC with XAdES
+		return Collections.emptyList();
 	}
 
 	@Override
