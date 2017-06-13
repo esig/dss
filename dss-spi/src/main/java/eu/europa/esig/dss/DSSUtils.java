@@ -238,7 +238,7 @@ public final class DSSUtils {
 			final String pemCrl = CRL_BEGIN + NEW_LINE + pemCrlPre + NEW_LINE + CRL_END;
 			return pemCrl;
 		} catch (CRLException e) {
-			throw new DSSException("Unable to convert CRL to PEM encoding : " + e.getMessage(),e);
+			throw new DSSException("Unable to convert CRL to PEM encoding : " + e.getMessage(), e);
 		}
 	}
 
@@ -258,7 +258,7 @@ public final class DSSUtils {
 			}
 			return false;
 		} catch (Exception e) {
-			throw new DSSException("Unable to read InputStream",e);
+			throw new DSSException("Unable to read InputStream", e);
 		}
 	}
 
@@ -656,6 +656,14 @@ public final class DSSUtils {
 			}
 			final byte[] digestValue = messageDigest.digest();
 			return digestValue;
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	public static byte[] digest(DigestAlgorithm digestAlgorithm, DSSDocument document) {
+		try (InputStream is = document.openStream()) {
+			return digest(digestAlgorithm, is);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}

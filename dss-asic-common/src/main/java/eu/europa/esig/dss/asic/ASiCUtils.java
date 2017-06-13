@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.asic;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -8,10 +9,13 @@ import java.util.zip.ZipInputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -187,6 +191,25 @@ public final class ASiCUtils {
 			return ASiCUtils.getASiCContainerType(mimeType);
 		}
 		return null;
+	}
+
+	public static DSSDocument createDssDocumentFromDomDocument(Document document, String name) {
+		DSSDocument dssDoc = null;
+		ByteArrayOutputStream baos = null;
+		try {
+			baos = new ByteArrayOutputStream();
+			DomUtils.writeDocumentTo(document, baos);
+			dssDoc = new InMemoryDocument(baos.toByteArray(), name, MimeType.XML);
+		} finally {
+			Utils.closeQuietly(baos);
+		}
+		return dssDoc;
+	}
+
+	public static String getPadNumber(int num) {
+		String numStr = String.valueOf(num);
+		String zeroPad = "000";
+		return zeroPad.substring(numStr.length()) + numStr; // 2 -> 002
 	}
 
 }

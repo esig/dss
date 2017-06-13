@@ -1,12 +1,9 @@
 package eu.europa.esig.dss.asic.signature;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,16 +120,6 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		asicSignature.setName(
 				DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
 		return asicSignature;
-	}
-
-	@Override
-	void storeSignatures(List<DSSDocument> signatures, ZipOutputStream zos) throws IOException {
-		for (DSSDocument dssDocument : signatures) {
-			ZipEntry entrySignature = new ZipEntry(dssDocument.getName());
-			zos.putNextEntry(entrySignature);
-			Document xmlSignatureDoc = DomUtils.buildDOM(dssDocument);
-			DomUtils.writeDocumentTo(xmlSignatureDoc, zos);
-		}
 	}
 
 	@Override
