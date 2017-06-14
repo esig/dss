@@ -22,11 +22,13 @@ package eu.europa.esig.dss;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -79,6 +81,8 @@ import org.bouncycastle.asn1.x509.qualified.QCStatement;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.x509.extension.X509ExtensionUtil;
@@ -97,6 +101,12 @@ public final class DSSASN1Utils {
 	private static final Logger LOG = LoggerFactory.getLogger(DSSASN1Utils.class);
 
 	private static final String QC_TYPE_STATEMENT_OID = "0.4.0.1862.1.6";
+
+	private static final BouncyCastleProvider securityProvider = new BouncyCastleProvider();
+
+	static {
+		Security.addProvider(securityProvider);
+	}
 
 	/**
 	 * This class is an utility class and cannot be instantiated.
@@ -753,6 +763,21 @@ public final class DSSASN1Utils {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Returns the first {@code SignerInformation} extracted from {@code CMSSignedData}.
+	 *
+	 * @param cms
+	 *            CMSSignedData
+	 * @return returns {@code SignerInformation}
+	 */
+	public static SignerInformation getFirstSignerInformation(final CMSSignedData cms) {
+		final Collection<SignerInformation> signers = cms.getSignerInfos().getSigners();
+		if (signers.size() > 1) {
+			LOG.warn("!!! The framework handles only one signer (SignerInformation) !!!");
+		}
+		return signers.iterator().next();
 	}
 
 }

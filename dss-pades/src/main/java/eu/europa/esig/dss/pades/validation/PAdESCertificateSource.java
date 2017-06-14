@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.SignerInformation;
 
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.validation.CAdESCertificateSource;
@@ -43,12 +42,12 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 	 * The default constructor for PAdESCertificateSource.
 	 *
 	 * @param dssCatalog
-	 * @param cadesCertSource
-	 * @param certPool        The pool of certificates to be used. Can be null.
+	 * @param cmsSignedData
+	 * @param certPool
+	 *            The pool of certificates to be used. Can be null.
 	 */
-	public PAdESCertificateSource(final PdfDssDict dssCatalog, final CMSSignedData cmsSignedData, final SignerInformation signerInfo, final CertificatePool certPool) {
-
-		super(cmsSignedData, signerInfo, certPool);
+	public PAdESCertificateSource(final PdfDssDict dssCatalog, final CMSSignedData cmsSignedData, final CertificatePool certPool) {
+		super(cmsSignedData, certPool);
 
 		if (dssCatalog != null) {
 			final Set<CertificateToken> certList = dssCatalog.getCertList();
@@ -67,4 +66,5 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 	public List<CertificateToken> getKeyInfoCertificates() {
 		return super.getKeyInfoCertificates();
 	}
+
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<asic:ASiCArchiveManifest xmlns:asic="http://uri.etsi.org/02918/v1.2.1#">
+	<asic:SigReference URI="META-INF/archive_timestamp.tst" MimeType="application/vnd.etsi.timestamp-token"/>
+	<asic:DataObjectReference URI="META-INF/signature.p7s" MimeType="application/x-pkcs7-signature">
+		<ds:DigestMethod xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+		<ds:DigestValue xmlns:ds="http://www.w3.org/2000/09/xmldsig#">3Qeos8WMYXu5/q6G1Hv5g05gjkXKecK0UALMSe+eeIo=</ds:DigestValue>
+	</asic:DataObjectReference>
+	<asic:DataObjectReference URI="toBeSigned.txt" MimeType="text/plain">
+		<ds:DigestMethod xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+		<ds:DigestValue xmlns:ds="http://www.w3.org/2000/09/xmldsig#">JJZt41Nt8VsYahP+Xti4rR3vBDkUfRd6gquItl6R5Os=</ds:DigestValue>
+	</asic:DataObjectReference>
+	<asic:DataObjectReference URI="toBeSigned.pdf" MimeType="application/pdf">
+		<ds:DigestMethod xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+		<ds:DigestValue xmlns:ds="http://www.w3.org/2000/09/xmldsig#">IOIqCJaZ2WP1vWKzTVlstszz4E5hwLaUPDRtUTOXeNc=</ds:DigestValue>
+	</asic:DataObjectReference>
+	<asic:DataObjectReference URI="META-INF/ASiCManifest_1.xml" MimeType="text/xml">
+		<ds:DigestMethod xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+		<ds:DigestValue xmlns:ds="http://www.w3.org/2000/09/xmldsig#">g5dYh61EvHVtcBPs2DmXfhX7YnllZg012pbwydTTy7g=</ds:DigestValue>
+	</asic:DataObjectReference>
+</asic:ASiCArchiveManifest>

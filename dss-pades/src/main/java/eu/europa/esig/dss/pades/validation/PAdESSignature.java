@@ -109,7 +109,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public PAdESCertificateSource getCertificateSource() {
 		if (padesCertSources == null) {
-			padesCertSources = new PAdESCertificateSource(dssDictionary, super.getCmsSignedData(), super.getSignerInformation(), certPool);
+			padesCertSources = new PAdESCertificateSource(dssDictionary, super.getCmsSignedData(), certPool);
 		}
 		return padesCertSources;
 	}

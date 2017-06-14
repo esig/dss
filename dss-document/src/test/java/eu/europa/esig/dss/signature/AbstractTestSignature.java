@@ -9,6 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.security.auth.x500.X500Principal;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -213,8 +215,7 @@ public abstract class AbstractTestSignature<SP extends AbstractSignatureParamete
 		String certificateDN = diagnosticData.getCertificateDN(signingCertificateId);
 		String certificateSerialNumber = diagnosticData.getCertificateSerialNumber(signingCertificateId);
 		CertificateToken certificate = getPrivateKeyEntry().getCertificate();
-		// Remove space, normal ?
-		assertEquals(certificate.getSubjectDN().getName().replace(" ", ""), certificateDN.replace(" ", ""));
+		assertEquals(certificate.getSubjectX500Principal().getName(X500Principal.RFC2253), certificateDN);
 		assertEquals(certificate.getSerialNumber().toString(), certificateSerialNumber);
 	}
 
@@ -222,15 +223,12 @@ public abstract class AbstractTestSignature<SP extends AbstractSignatureParamete
 		String signingCertificateId = diagnosticData.getSigningCertificateId();
 		String issuerDN = diagnosticData.getCertificateIssuerDN(signingCertificateId);
 		CertificateToken certificate = getPrivateKeyEntry().getCertificate();
-		// Remove space, normal ?
-		assertEquals(certificate.getIssuerDN().getName().replace(" ", ""), issuerDN.replace(" ", ""));
+		assertEquals(certificate.getIssuerX500Principal().getName(X500Principal.RFC2253), issuerDN);
 	}
 
 	private void checkCertificateChain(DiagnosticData diagnosticData) {
 		DSSPrivateKeyEntry privateKeyEntry = getPrivateKeyEntry();
 		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
-		// TODO what is correct ? signing certificate is in the chain or only
-		// parents ?
 		assertEquals(privateKeyEntry.getCertificateChain().length, signatureCertificateChain.size() - 1);
 	}
 

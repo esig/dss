@@ -159,20 +159,6 @@ public abstract class Token implements Serializable {
 	}
 
 	/**
-	 * It returns the DSS issuer certificate token Id that was used to sign this token (CertificateToken, CRLToken,
-	 * OCSPRespToken, TimestampToken) or 0 if the issuer is not identified (have no associated certificate).
-	 *
-	 * @return
-	 */
-	public TokenIdentifier getIssuerTokenDSSId() {
-		if (issuerToken == null) {
-			return null;
-		} else {
-			return issuerToken.getDSSId();
-		}
-	}
-
-	/**
 	 * Checks if the token is signed by the token given in the parameter. Each check changes the associated with the
 	 * token signer's certificate. If
 	 * the issuerToken is already known, and the current check fail the issuerToken stays unchanged. It is up to the

@@ -195,7 +195,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * @throws org.bouncycastle.cms.CMSException
 	 */
 	public CAdESSignature(final byte[] data) throws CMSException {
-
 		this(new CMSSignedData(data), new CertificatePool());
 	}
 
@@ -219,7 +218,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 *            can be null
 	 */
 	public CAdESSignature(final CMSSignedData cms, final CertificatePool certPool) {
-		this(cms, getFirstSignerInformation(cms), certPool);
+		this(cms, DSSASN1Utils.getFirstSignerInformation(cms), certPool);
 	}
 
 	public CAdESSignature(final CMSSignedData cms, final CertificatePool certPool, List<DSSDocument> detachedContents) {
@@ -254,22 +253,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * Returns the first {@code SignerInformation} extracted from {@code CMSSignedData}.
-	 *
-	 * @param cms
-	 *            CMSSignedData
-	 * @return returns {@code SignerInformation}
-	 */
-	private static SignerInformation getFirstSignerInformation(final CMSSignedData cms) {
-		final Collection<SignerInformation> signers = cms.getSignerInfos().getSigners();
-		if (signers.size() > 1) {
-			LOG.warn("!!! The framework handles only one signer (SignerInformation) !!!");
-		}
-		final SignerInformation signerInformation = signers.iterator().next();
-		return signerInformation;
-	}
-
-	/**
 	 * This method returns the certificate pool used by this instance to handle
 	 * encapsulated certificates.
 	 *
@@ -288,7 +271,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public CAdESCertificateSource getCertificateSource() {
 		if (certSource == null) {
-			certSource = new CAdESCertificateSource(cmsSignedData, signerInformation, certPool);
+			certSource = new CAdESCertificateSource(cmsSignedData, certPool);
 		}
 		return certSource;
 	}

@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -33,13 +32,12 @@ import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.jce.provider.X509CertificateObject;
-import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
@@ -51,30 +49,25 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 
 	private static final Logger logger = LoggerFactory.getLogger(CAdESCertificateSource.class);
 
-	final private CMSSignedData cmsSignedData;
-	final SignerInformation signerInformation;
+	private final CMSSignedData cmsSignedData;
+	private final SignerInformation signerInformation;
 
 	private List<CertificateToken> keyInfoCerts;
 	private List<CertificateToken> encapsulatedCerts;
-
-	public CAdESCertificateSource(final TimeStampToken timeStamp, final CertificatePool certPool) {
-		this(timeStamp.toCMSSignedData(), (timeStamp.toCMSSignedData().getSignerInfos().getSigners().iterator().next()), certPool);
-	}
 
 	/**
 	 * The constructor with additional signer id parameter. All certificates are extracted during instantiation.
 	 *
 	 * @param cmsSignedData
-	 * @param signerInformation
 	 * @param certPool
 	 */
-	public CAdESCertificateSource(final CMSSignedData cmsSignedData, final SignerInformation signerInformation, final CertificatePool certPool) {
+	public CAdESCertificateSource(final CMSSignedData cmsSignedData, final CertificatePool certPool) {
 		super(certPool);
 		if (cmsSignedData == null) {
 			throw new DSSException("CMS SignedData is null, it must be provided!");
 		}
 		this.cmsSignedData = cmsSignedData;
-		this.signerInformation = signerInformation;
+		this.signerInformation = DSSASN1Utils.getFirstSignerInformation(cmsSignedData);
 		if (certificateTokens == null) {
 			certificateTokens = new ArrayList<CertificateToken>();
 			keyInfoCerts = extractIdSignedDataCertificates();
@@ -110,8 +103,7 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 			for (int ii = 0; ii < seq.size(); ii++) {
 				try {
 					final Certificate cs = Certificate.getInstance(seq.getObjectAt(ii));
-					final X509Certificate cert = new X509CertificateObject(cs);
-					final CertificateToken certToken = addCertificate(new CertificateToken(cert));
+					final CertificateToken certToken = addCertificate(DSSUtils.loadCertificate(cs.getEncoded()));
 					if (!encapsulatedCerts.contains(certToken)) {
 						encapsulatedCerts.add(certToken);
 					}
