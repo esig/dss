@@ -17,13 +17,14 @@ import eu.europa.esig.dss.validation.ContainerInfo;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.TimestampValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
 
 public abstract class AbstractASiCContainerValidator extends SignedDocumentValidator {
 
 	protected List<DocumentValidator> validators;
 
-	protected List<DocumentValidator> timestampValidators;
+	protected List<TimestampValidator> timestampValidators;
 
 	private ASiCExtractResult extractResult;
 
@@ -110,9 +111,9 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 			allSignatures.addAll(documentValidator.getSignatures());
 		}
 
-		List<DocumentValidator> currentTimestampValidators = getTimestampValidators();
+		List<TimestampValidator> currentTimestampValidators = getTimestampValidators();
 		if (!currentTimestampValidators.isEmpty()) {
-			for (DocumentValidator tspValidator : currentTimestampValidators) {
+			for (TimestampValidator tspValidator : currentTimestampValidators) {
 
 			}
 		}
@@ -122,7 +123,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	abstract List<DocumentValidator> getValidators();
 
-	abstract List<DocumentValidator> getTimestampValidators();
+	abstract List<TimestampValidator> getTimestampValidators();
 
 	protected List<DSSDocument> getSignatureDocuments() {
 		return extractResult.getSignatureDocuments();

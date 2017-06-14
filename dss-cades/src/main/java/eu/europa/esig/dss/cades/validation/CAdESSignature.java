@@ -954,9 +954,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					} else {
 						try {
 							byte[] encoded = value.toASN1Primitive().getEncoded();
-							final CMSSignedData signedData = new CMSSignedData(encoded);
-							final TimeStampToken token = new TimeStampToken(signedData);
-							final TimestampToken timestampToken = new TimestampToken(token, timestampType, certPool);
+							final TimestampToken timestampToken = new TimestampToken(encoded, timestampType, certPool);
 
 							timestampToken.setArchiveTimestampType(archiveTimestampType);
 							timestampTokenList.add(timestampToken);

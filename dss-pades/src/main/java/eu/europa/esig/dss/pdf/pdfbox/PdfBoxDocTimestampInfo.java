@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.pdf.pdfbox;
 
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,12 +59,11 @@ class PdfBoxDocTimestampInfo extends PdfBoxCMSInfo implements PdfDocTimestampInf
 			boolean isArchiveTimestamp) throws DSSException {
 		super(signature, dssDictionary, cms, signedContent);
 		try {
-			TimeStampToken timeStampToken = new TimeStampToken(new CMSSignedData(cms));
 			TimestampType timestampType = TimestampType.SIGNATURE_TIMESTAMP;
 			if (isArchiveTimestamp) {
 				timestampType = TimestampType.ARCHIVE_TIMESTAMP;
 			}
-			timestampToken = new TimestampToken(timeStampToken, timestampType, validationCertPool);
+			timestampToken = new TimestampToken(cms, timestampType, validationCertPool);
 			content = cms;
 			logger.debug("Created PdfBoxDocTimestampInfo {} : {}", timestampType, uniqueId());
 		} catch (Exception e) {

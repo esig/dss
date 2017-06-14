@@ -56,8 +56,6 @@ import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x509.GeneralName;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -788,11 +786,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			return null;
 
 		}
-		final String base64EncodedTimestamp = timestampTokenNode.getTextContent();
-		final TimeStampToken timeStampToken = createTimeStampToken(base64EncodedTimestamp);
-		final TimestampToken timestampToken = new TimestampToken(timeStampToken, timestampType, certPool);
+		TimestampToken timestampToken = null;
+		try {
+			timestampToken = new TimestampToken(Utils.fromBase64(timestampTokenNode.getTextContent()), timestampType, certPool);
+		} catch (Exception e) {
+			throw new DSSException("Unable to extract timestamp", e);
+		}
 		timestampToken.setHashCode(timestampElement.hashCode());
-		setTimestampCanonicalizationMethod(timestampElement, timestampToken);
+		timestampToken.setCanonicalizationMethod(getTimestampCanonicalizationMethod(timestampElement));
 
 		// TODO: timestampToken.setIncludes(element.getIncludes)...
 		// final NodeList includes =
@@ -803,23 +804,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		// includes.item(i).getAttributes()));
 		// }
 		return timestampToken;
-	}
-
-	/**
-	 * This method generates a bouncycastle {@code TimeStampToken} based on base 64 encoded {@code String}.
-	 *
-	 * @param base64EncodedTimestamp
-	 * @return bouncycastle {@code TimeStampToken}
-	 * @throws DSSException
-	 */
-	private TimeStampToken createTimeStampToken(final String base64EncodedTimestamp) throws DSSException {
-		try {
-			final byte[] tokenBytes = Utils.fromBase64(base64EncodedTimestamp);
-			final CMSSignedData signedData = new CMSSignedData(tokenBytes);
-			return new TimeStampToken(signedData);
-		} catch (Exception e) {
-			throw new DSSException(e);
-		}
 	}
 
 	public Element getSignatureValue() {
@@ -1298,19 +1282,17 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private TimestampReference getSignatureTimestampReference() {
-
 		final TimestampReference signatureReference = new TimestampReference(getId());
 		return signatureReference;
 	}
 
-	private void setTimestampCanonicalizationMethod(final Element timestampElement, final TimestampToken timestampToken) {
-
+	private String getTimestampCanonicalizationMethod(final Element timestampElement) {
 		final Element canonicalizationMethodElement = DomUtils.getElement(timestampElement, xPathQueryHolder.XPATH__CANONICALIZATION_METHOD);
 		String canonicalizationMethod = DEFAULT_TIMESTAMP_VALIDATION_CANONICALIZATION_METHOD;
 		if (canonicalizationMethodElement != null) {
 			canonicalizationMethod = canonicalizationMethodElement.getAttribute(XMLE_ALGORITHM);
 		}
-		timestampToken.setCanonicalizationMethod(canonicalizationMethod);
+		return canonicalizationMethod;
 	}
 
 	/*

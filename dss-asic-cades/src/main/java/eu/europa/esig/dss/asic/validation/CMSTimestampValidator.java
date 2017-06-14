@@ -9,6 +9,7 @@ import org.bouncycastle.tsp.TimeStampToken;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -21,6 +22,7 @@ public class CMSTimestampValidator extends CMSDocumentValidator implements Times
 
 	private final TimeStampToken bcToken;
 	private final TimestampType type;
+	private DSSDocument timestampedData;
 
 	public CMSTimestampValidator(DSSDocument document, TimestampType type, CertificatePool certificatePool) {
 		super(document);
@@ -39,19 +41,19 @@ public class CMSTimestampValidator extends CMSDocumentValidator implements Times
 
 	@Override
 	public TimestampToken getTimestamp() {
-		return new TimestampToken(bcToken, type, validationCertPool);
+		TimestampToken timestampToken = new TimestampToken(bcToken, type, validationCertPool);
+		timestampToken.matchData(DSSUtils.toByteArray(timestampedData));
+		return timestampToken;
 	}
 
 	@Override
 	public void setCertificateVerifier(CertificateVerifier certVerifier) {
-		// TODO Auto-generated method stub
-
+		this.certificateVerifier = certVerifier;
 	}
 
 	@Override
-	public void setDetachedDocument(DSSDocument timestampedDocument) {
-		// TODO Auto-generated method stub
-
+	public void setDetachedDocument(DSSDocument timestampedData) {
+		this.timestampedData = timestampedData;
 	}
 
 }

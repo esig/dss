@@ -62,6 +62,7 @@ import eu.europa.esig.dss.x509.TokenValidationExtraInfo;
  * SignedToken containing a TimeStamp.
  *
  */
+@SuppressWarnings("serial")
 public class TimestampToken extends Token {
 
 	private static final Logger logger = LoggerFactory.getLogger(TimestampToken.class);

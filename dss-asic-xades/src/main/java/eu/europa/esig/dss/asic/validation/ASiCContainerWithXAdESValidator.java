@@ -10,6 +10,7 @@ import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.validation.TimestampValidator;
 
 /**
  * This class is an implementation to validate ASiC containers with XAdES signature(s)
@@ -54,7 +55,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	}
 
 	@Override
-	List<DocumentValidator> getTimestampValidators() {
+	List<TimestampValidator> getTimestampValidators() {
 		// No external timestamp in ASiC with XAdES
 		return Collections.emptyList();
 	}

@@ -15,6 +15,8 @@ import eu.europa.esig.dss.asic.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.validation.TimestampValidator;
+import eu.europa.esig.dss.x509.TimestampType;
 
 /**
  * This class is an implementation to validate ASiC containers with CAdES signature(s)
@@ -60,19 +62,15 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		return validators;
 	}
 
-	@Override
-	List<DocumentValidator> getTimestampValidators() {
+	List<TimestampValidator> getTimestampValidators() {
 		if (timestampValidators == null) {
-			timestampValidators = new ArrayList<DocumentValidator>();
+			timestampValidators = new ArrayList<TimestampValidator>();
 			ASiCContainerType type = getContainerType();
 			if (ASiCContainerType.ASiC_E == type) {
 				for (final DSSDocument timestamp : getTimestampDocuments()) {
-					TimestampValidator timestampValidator = new TimestampValidator(timestamp);
+					TimestampValidator timestampValidator = new CMSTimestampValidator(timestamp, TimestampType.ARCHIVE_TIMESTAMP, validationCertPool);
 					timestampValidator.setCertificateVerifier(certificateVerifier);
-					timestampValidator.setProcessExecutor(processExecutor);
-					timestampValidator.setSignaturePolicyProvider(signaturePolicyProvider);
-					timestampValidator.setValidationCertPool(validationCertPool);
-					timestampValidator.setDetachedContents(getTimestampedArchiveManifest(timestamp));
+					timestampValidator.setDetachedDocument(getTimestampedArchiveManifest(timestamp));
 					timestampValidators.add(timestampValidator);
 				}
 			}
@@ -100,19 +98,14 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		}
 	}
 
-	private List<DSSDocument> getTimestampedArchiveManifest(DSSDocument timestamp) {
+	private DSSDocument getTimestampedArchiveManifest(DSSDocument timestamp) {
 		List<DSSDocument> signedDocs = new ArrayList<DSSDocument>();
 		signedDocs.addAll(getSignedDocuments());
 		signedDocs.addAll(getManifestDocuments());
 		signedDocs.addAll(getSignatureDocuments());
 
 		ASiCEWithCAdESManifestValidator manifestValidator = new ASiCEWithCAdESManifestValidator(timestamp, getArchiveManifestDocuments(), signedDocs);
-		DSSDocument linkedManifest = manifestValidator.getLinkedManifest();
-		if (linkedManifest != null) {
-			return Arrays.asList(linkedManifest);
-		} else {
-			return Collections.emptyList();
-		}
+		return manifestValidator.getLinkedManifest();
 	}
 
 	@Override
