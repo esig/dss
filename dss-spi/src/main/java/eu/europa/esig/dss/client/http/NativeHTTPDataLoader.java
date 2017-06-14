@@ -20,142 +20,92 @@
  */
 package eu.europa.esig.dss.client.http;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSCannotFetchDataException;
-import eu.europa.esig.dss.DSSCannotFetchDataException.MSG;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
- * Implementation of HTTPDataLoader that use the java.net.URL class.
+ * Implementation of native java DataLoader using the java.net.URL class.
  *
  */
 public class NativeHTTPDataLoader implements DataLoader {
 
-	private static Logger logger = LoggerFactory.getLogger(NativeHTTPDataLoader.class);
+	public enum HttpMethod { GET, POST };
 
-	private static final long MAX_SIZE = 15000;
-
+	private static Logger LOGGER = LoggerFactory.getLogger(NativeHTTPDataLoader.class);
+	
+	private long maxInputSize;
+	
 	/**
-	 * Used to limit the size of fetched data.
+	 * Timeout of the full request processing time (send and retrieve data).
 	 */
-	private class MaxSizeInputStream extends InputStream {
+	private long timeout = 0;
 
-		private long maxSize;
+	protected byte[] request(String url, HttpMethod method, byte[] content, boolean refresh) {
+		NativeDataLoaderCall task = new NativeDataLoaderCall(url, content, refresh, maxInputSize);
 
-		private InputStream wrappedStream;
-
-		private long count = 0;
-
-		private String url;
-
-		/**
-		 * The default constructor for NativeHTTPDataLoader.MaxSizeInputStream.
-		 */
-		public MaxSizeInputStream(InputStream wrappedStream, long maxSize, String url) {
-			this.maxSize = maxSize;
-			this.wrappedStream = wrappedStream;
-			this.url = url;
-		}
-
-		@Override
-		public int read() throws IOException {
-			if (maxSize != 0) {
-				count++;
-				if (count > maxSize) {
-					throw new DSSCannotFetchDataException(MSG.SIZE_LIMIT_EXCEPTION, url);
-				}
-			}
-			return wrappedStream.read();
-		}
-
-	}
-
-	@Override
-	public byte[] get(String url) {
-		InputStream inputStream = null;
-		byte[] result = null;
+		Future<byte[]> result = Executors.newSingleThreadExecutor().submit(task);
+		
 		try {
-			inputStream = new MaxSizeInputStream(new URL(url).openStream(), MAX_SIZE, url);
-			result = Utils.toByteArray(inputStream);
-		} catch (IOException e) {
-			throw new DSSException("An error occured while HTTP GET for url '" + url + "' : " + e.getMessage(), e);
-		} finally {
-			Utils.closeQuietly(inputStream);
+			return timeout > 0?
+					result.get(timeout, TimeUnit.MILLISECONDS):
+					result.get();
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			throw new DSSException(e);
 		}
-		return result;
 	}
 
-	@Override
-	public byte[] post(String url, byte[] content) {
-		OutputStream out = null;
-		InputStream inputStream = null;
-		byte[] result = null;
-		try {
-			URLConnection connection = new URL(url).openConnection();
-
-			connection.setDoInput(true);
-			connection.setDoOutput(true);
-			connection.setUseCaches(false);
-
-			out = connection.getOutputStream();
-			Utils.write(content, out);
-			inputStream = connection.getInputStream();
-			result = Utils.toByteArray(inputStream);
-		} catch (IOException e) {
-			throw new DSSException("An error occured while HTTP POST for url '" + url + "' : " + e.getMessage(), e);
-		} finally {
-			Utils.closeQuietly(out);
-			Utils.closeQuietly(inputStream);
-		}
-		return result;
-	}
-
-	@Override
 	public DataAndUrl get(List<String> urlStrings) {
-
-		final int numberOfUrls = urlStrings.size();
-		int ii = 0;
 		for (final String urlString : urlStrings) {
 			try {
-
-				ii++;
 				final byte[] bytes = get(urlString);
-				if (bytes == null) {
-					continue;
+				if (bytes != null) {
+					return new DataAndUrl(bytes, urlString);
 				}
-				return new DataAndUrl(bytes, urlString);
 			} catch (Exception e) {
-				if (ii == numberOfUrls) {
-					if (e instanceof DSSException) {
-						throw (DSSException) e;
-					}
-					throw new DSSException(e);
-				}
-				logger.warn("Impossible to obtain data using {}", urlString, e);
+				LOGGER.warn("Impossible to obtain data using {}", urlString, e);
 			}
 		}
-		return null;
+		throw new DSSException(String.format("Impossible to obtain data using with given urls %s", urlStrings));
 	}
-
-	@Override
+	
+	public byte[] get(String url) {
+		return get(url, false);
+	}
+	
 	public byte[] get(String url, boolean refresh) {
-		// set cache = false;
-		return get(url);
+		return request(url, HttpMethod.GET, null, !refresh);
 	}
-
-	@Override
+	
+	public byte[] post(String url, byte[] content) {
+		return request(url, HttpMethod.POST, content, false);
+	}
+	
 	public void setContentType(String contentType) {
 		throw new DSSException("Not implemented");
 	}
 
+	public long getMaxInputSize() {
+		return maxInputSize;
+	}
+
+	public void setMaxInputSize(long maxInputSize) {
+		this.maxInputSize = maxInputSize;
+	}
+
+	public long getTimeout() {
+		return timeout;
+	}
+
+	public void setTimeout(long timeout) {
+		this.timeout = timeout;
+	}
 }
