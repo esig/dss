@@ -13,8 +13,13 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.cades.validation.CMSTimestampValidator;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.validation.TimestampReference;
+import eu.europa.esig.dss.validation.TimestampReferenceCategory;
+import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.TimestampValidator;
 import eu.europa.esig.dss.x509.TimestampType;
 
@@ -62,18 +67,43 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		return validators;
 	}
 
-	List<TimestampValidator> getTimestampValidators() {
-		if (timestampValidators == null) {
-			timestampValidators = new ArrayList<TimestampValidator>();
-			ASiCContainerType type = getContainerType();
-			if (ASiCContainerType.ASiC_E == type) {
-				for (final DSSDocument timestamp : getTimestampDocuments()) {
-					TimestampValidator timestampValidator = new CMSTimestampValidator(timestamp, TimestampType.ARCHIVE_TIMESTAMP, validationCertPool);
-					timestampValidator.setCertificateVerifier(certificateVerifier);
-					timestampValidator.setDetachedDocument(getTimestampedArchiveManifest(timestamp));
-					timestampValidators.add(timestampValidator);
+	@Override
+	protected void attachExternalTimestamps(List<AdvancedSignature> allSignatures) {
+		ASiCContainerType type = getContainerType();
+		if (ASiCContainerType.ASiC_E == type) {
+			List<TimestampValidator> currentTimestampValidators = getTimestampValidators();
+			if (!currentTimestampValidators.isEmpty()) {
+				for (TimestampValidator tspValidator : currentTimestampValidators) {
+					TimestampToken timestamp = tspValidator.getTimestamp();
+					if (timestamp.isSignatureValid()) {
+						for (AdvancedSignature advancedSignature : allSignatures) {
+
+							List<TimestampReference> timestampedReferences = new ArrayList<TimestampReference>();
+							timestampedReferences.addAll(advancedSignature.getTimestampedReferences());
+
+							List<TimestampToken> coveredTsps = new ArrayList<TimestampToken>();
+							coveredTsps.addAll(advancedSignature.getContentTimestamps());
+							coveredTsps.addAll(advancedSignature.getSignatureTimestamps());
+							for (final TimestampToken coveredTsp : coveredTsps) {
+								timestampedReferences.add(new TimestampReference(coveredTsp.getDSSIdAsString(), TimestampReferenceCategory.TIMESTAMP));
+							}
+							timestamp.setTimestampedReferences(timestampedReferences);
+
+							advancedSignature.addExternalTimestamp(timestamp);
+						}
+					}
 				}
 			}
+		}
+	}
+
+	private List<TimestampValidator> getTimestampValidators() {
+		List<TimestampValidator> timestampValidators = new ArrayList<TimestampValidator>();
+		for (final DSSDocument timestamp : getTimestampDocuments()) {
+			TimestampValidator timestampValidator = new CMSTimestampValidator(timestamp, TimestampType.ARCHIVE_TIMESTAMP);
+			timestampValidator.setCertificateVerifier(certificateVerifier);
+			timestampValidator.setTimestampedData(getTimestampedArchiveManifest(timestamp));
+			timestampValidators.add(timestampValidator);
 		}
 		return timestampValidators;
 	}
@@ -113,6 +143,12 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		List<ManifestFile> descriptions = new ArrayList<ManifestFile>();
 		List<DSSDocument> manifestDocuments = getManifestDocuments();
 		for (DSSDocument manifestDocument : manifestDocuments) {
+			ASiCEWithCAdESManifestParser parser = new ASiCEWithCAdESManifestParser(manifestDocument);
+			descriptions.add(parser.getDescription());
+		}
+
+		List<DSSDocument> archiveManifestDocuments = getArchiveManifestDocuments();
+		for (DSSDocument manifestDocument : archiveManifestDocuments) {
 			ASiCEWithCAdESManifestParser parser = new ASiCEWithCAdESManifestParser(manifestDocument);
 			descriptions.add(parser.getDescription());
 		}

@@ -46,7 +46,22 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 		}
 	}
 
-	abstract boolean canBeSigned(List<DSSDocument> documents, ASiCParameters asicParameters);
+	private boolean canBeSigned(List<DSSDocument> documents, ASiCParameters asicParameters) {
+		boolean isMimetypeCorrect = true;
+		boolean isSignatureTypeCorrect = true;
+		if (ASiCUtils.isArchive(documents)) {
+			DSSDocument archive = documents.get(0);
+			String expectedMimeType = archive.getMimeType().getMimeTypeString();
+			String mimeTypeFromParameter = ASiCUtils.getMimeTypeString(asicParameters);
+			isMimetypeCorrect = Utils.areStringsEqualIgnoreCase(expectedMimeType, mimeTypeFromParameter);
+			if (isMimetypeCorrect) {
+				isSignatureTypeCorrect = ASiCUtils.isArchiveContainsCorrectSignatureExtension(archive, getExpectedSignatureExtension());
+			}
+		}
+		return isMimetypeCorrect && isSignatureTypeCorrect;
+	}
+
+	abstract String getExpectedSignatureExtension();
 
 	@Override
 	public ToBeSigned getDataToSign(DSSDocument toSignDocument, SP parameters) throws DSSException {

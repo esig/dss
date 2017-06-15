@@ -25,6 +25,6 @@ public interface TimestampValidator {
 	 * @param timestampedDocument
 	 *            the {@code DSSDocument} to set
 	 */
-	void setDetachedDocument(DSSDocument timestampedDocument);
+	void setTimestampedData(DSSDocument timestampedData);
 
 }

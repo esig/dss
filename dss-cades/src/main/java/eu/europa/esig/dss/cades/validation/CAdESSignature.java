@@ -873,14 +873,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return archiveTimestamps;
 	}
 
-	/* Used in ASiC-E with CAdES */
-	protected void addExternalArchiveTimestamp(TimestampToken timestamp) {
-		if (archiveTimestamps == null) {
-			throw new DSSException("CAdES Signature must be validated first !");
-		}
-		archiveTimestamps.add(timestamp);
-	}
-
 	private void makeTimestampTokens() {
 
 		contentTimestamps = createTimestamps(id_aa_ets_contentTimestamp, CONTENT_TIMESTAMP, null);

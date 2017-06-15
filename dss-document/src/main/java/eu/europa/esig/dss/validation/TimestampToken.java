@@ -67,6 +67,8 @@ public class TimestampToken extends Token {
 
 	private static final Logger logger = LoggerFactory.getLogger(TimestampToken.class);
 
+	private boolean processed = false;
+
 	private final TimeStampToken timeStamp;
 
 	private TimestampType timeStampType;
@@ -214,7 +216,7 @@ public class TimestampToken extends Token {
 	public boolean matchData(final byte[] data) {
 
 		try {
-
+			processed = true;
 			messageImprintData = data != null;
 			final TimeStampTokenInfo timeStampInfo = timeStamp.getTimeStampInfo();
 			final ASN1ObjectIdentifier hashAlgorithm = timeStampInfo.getHashAlgorithm().getAlgorithm();
@@ -232,6 +234,10 @@ public class TimestampToken extends Token {
 			messageImprintIntact = false;
 		}
 		return messageImprintIntact;
+	}
+
+	public boolean isProcessed() {
+		return processed;
 	}
 
 	/**

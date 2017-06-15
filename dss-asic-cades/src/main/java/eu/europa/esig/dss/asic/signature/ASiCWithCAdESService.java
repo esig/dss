@@ -143,7 +143,11 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		List<DSSDocument> extendedDocuments = new ArrayList<DSSDocument>();
 
+		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
 		boolean addASiCArchiveManifest = isAddASiCArchiveManifest(parameters);
+		if (addASiCArchiveManifest) {
+			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
+		}
 
 		for (DSSDocument signature : signatureDocuments) {
 
@@ -154,7 +158,6 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 				if (linkedManifest != null) {
 					String originalName = signature.getName();
-					CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
 					cadesParameters.setDetachedContents(Arrays.asList(linkedManifest));
 
 					DSSDocument extendDocument = getCAdESService().extendDocument(signature, cadesParameters);
@@ -166,7 +169,6 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 				}
 			} else {
 				String originalName = signature.getName();
-				CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
 				cadesParameters.setDetachedContents(signedDocuments);
 
 				DSSDocument extendDocument = getCAdESService().extendDocument(signature, cadesParameters);
@@ -187,6 +189,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, DSSUtils.digest(digestAlgorithm, archiveManfest));
 			DSSDocument timestamp = new InMemoryDocument(DSSASN1Utils.getEncoded(timeStampResponse), timestampFilename, MimeType.TST);
 			extendedDocuments.add(timestamp);
+
+			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		}
 
 		ByteArrayOutputStream baos = null;
@@ -241,19 +245,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	}
 
 	@Override
-	boolean canBeSigned(List<DSSDocument> toSignDocuments, ASiCParameters asicParameters) {
-		boolean isMimetypeCorrect = true;
-		boolean isSignatureTypeCorrect = true;
-		if (ASiCUtils.isArchive(toSignDocuments)) {
-			DSSDocument archiveDoc = toSignDocuments.get(0);
-			String expectedMimeType = archiveDoc.getMimeType().getMimeTypeString();
-			String mimeTypeFromParameter = ASiCUtils.getMimeTypeString(asicParameters);
-			isMimetypeCorrect = Utils.areStringsEqualIgnoreCase(expectedMimeType, mimeTypeFromParameter);
-			if (isMimetypeCorrect) {
-				isSignatureTypeCorrect = ASiCUtils.isArchiveContainsCorrectSignatureExtension(archiveDoc, ".p7s");
-			}
-		}
-		return isMimetypeCorrect && isSignatureTypeCorrect;
+	String getExpectedSignatureExtension() {
+		return ".p7s";
 	}
 
 }

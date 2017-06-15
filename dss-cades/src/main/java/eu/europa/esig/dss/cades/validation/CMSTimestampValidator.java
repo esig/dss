@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.asic.validation;
+package eu.europa.esig.dss.cades.validation;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -10,12 +10,9 @@ import org.bouncycastle.tsp.TimeStampToken;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.TimestampValidator;
-import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.TimestampType;
 
 public class CMSTimestampValidator extends CMSDocumentValidator implements TimestampValidator {
@@ -24,8 +21,12 @@ public class CMSTimestampValidator extends CMSDocumentValidator implements Times
 	private final TimestampType type;
 	private DSSDocument timestampedData;
 
-	public CMSTimestampValidator(DSSDocument document, TimestampType type, CertificatePool certificatePool) {
-		super(document);
+	public CMSTimestampValidator(DSSDocument timestamp) {
+		this(timestamp, null);
+	}
+
+	public CMSTimestampValidator(DSSDocument timestamp, TimestampType type) {
+		super(timestamp);
 		try {
 			this.bcToken = new TimeStampToken(cmsSignedData);
 			this.type = type;
@@ -47,12 +48,7 @@ public class CMSTimestampValidator extends CMSDocumentValidator implements Times
 	}
 
 	@Override
-	public void setCertificateVerifier(CertificateVerifier certVerifier) {
-		this.certificateVerifier = certVerifier;
-	}
-
-	@Override
-	public void setDetachedDocument(DSSDocument timestampedData) {
+	public void setTimestampedData(DSSDocument timestampedData) {
 		this.timestampedData = timestampedData;
 	}
 

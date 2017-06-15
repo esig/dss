@@ -31,6 +31,7 @@ import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
 
@@ -101,6 +102,7 @@ public abstract class AbstractTestSignature<SP extends AbstractSignatureParamete
 		checkCertificateChain(diagnosticData);
 		checkSignatureLevel(diagnosticData);
 		checkSigningDate(diagnosticData);
+		checkContentTimestampValid(diagnosticData);
 		checkTLevelAndValid(diagnosticData);
 		checkALevelAndValid(diagnosticData);
 		checkTimestamps(diagnosticData);
@@ -253,6 +255,7 @@ public abstract class AbstractTestSignature<SP extends AbstractSignatureParamete
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		List<String> timestampIdList = diagnosticData.getTimestampIdList(diagnosticData.getFirstSignatureId());
 
+		boolean foundContentTimeStamp = false;
 		boolean foundSignatureTimeStamp = false;
 		boolean foundArchiveTimeStamp = false;
 
@@ -261,6 +264,9 @@ public abstract class AbstractTestSignature<SP extends AbstractSignatureParamete
 				String timestampType = diagnosticData.getTimestampType(timestampId);
 				TimestampType type = TimestampType.valueOf(timestampType);
 				switch (type) {
+				case CONTENT_TIMESTAMP:
+					foundContentTimeStamp = true;
+					break;
 				case SIGNATURE_TIMESTAMP:
 					foundSignatureTimeStamp = true;
 					break;
@@ -274,6 +280,10 @@ public abstract class AbstractTestSignature<SP extends AbstractSignatureParamete
 			}
 		}
 
+		if (hasContentTimestamp()) {
+			assertTrue(foundContentTimeStamp);
+		}
+
 		if (isBaselineT()) {
 			assertTrue(foundSignatureTimeStamp);
 		}
@@ -281,7 +291,24 @@ public abstract class AbstractTestSignature<SP extends AbstractSignatureParamete
 		if (isBaselineLTA()) {
 			assertTrue(foundArchiveTimeStamp);
 		}
+	}
 
+	protected boolean hasContentTimestamp() {
+		return false;
+	}
+
+	protected void checkContentTimestampValid(DiagnosticData diagnosticData) {
+		if (hasContentTimestamp()) {
+			List<TimestampWrapper> timestampList = diagnosticData.getTimestampList(diagnosticData.getFirstSignatureId());
+			boolean foundAndValid = false;
+			for (TimestampWrapper timestampWrapper : timestampList) {
+				TimestampType type = TimestampType.valueOf(timestampWrapper.getType());
+				if (TimestampType.CONTENT_TIMESTAMP == type) {
+					foundAndValid = timestampWrapper.isMessageImprintDataFound() && timestampWrapper.isMessageImprintDataIntact();
+				}
+			}
+			assertTrue(foundAndValid);
+		}
 	}
 
 	protected void checkSigningDate(DiagnosticData diagnosticData) {
