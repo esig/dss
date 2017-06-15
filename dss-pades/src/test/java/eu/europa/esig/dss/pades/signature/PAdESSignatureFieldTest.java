@@ -74,7 +74,7 @@ public class PAdESSignatureFieldTest {
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.GREEN);
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setImageParameters(imageParameters);
+		signatureParameters.setSignatureImageParameters(imageParameters);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new PAdESService(certificateVerifier);

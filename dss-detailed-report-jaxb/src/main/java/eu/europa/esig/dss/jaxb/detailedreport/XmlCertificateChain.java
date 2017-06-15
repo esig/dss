@@ -17,18 +17,29 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for XCV complex type.
+ * <p>Java class for CertificateChain complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="XCV">
+ * &lt;complexType name="CertificateChain">
  *   &lt;complexContent>
- *     &lt;extension base="{http://dss.esig.europa.eu/validation/detailed-report}ConstraintsConclusion">
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="SubXCV" type="{http://dss.esig.europa.eu/validation/detailed-report}SubXCV" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="ChainItem" maxOccurs="unbounded" minOccurs="0">
+ *           &lt;complexType>
+ *             &lt;complexContent>
+ *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *                 &lt;sequence>
+ *                   &lt;element name="Source" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *                 &lt;/sequence>
+ *                 &lt;attribute name="Id" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *               &lt;/restriction>
+ *             &lt;/complexContent>
+ *           &lt;/complexType>
+ *         &lt;/element>
  *       &lt;/sequence>
- *     &lt;/extension>
+ *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
@@ -36,43 +47,41 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "XCV", propOrder = {
-    "subXCV"
+@XmlType(name = "CertificateChain", propOrder = {
+    "chainItem"
 })
-public class XmlXCV
-    extends XmlConstraintsConclusion
-{
+public class XmlCertificateChain {
 
-    @XmlElement(name = "SubXCV")
-    protected List<XmlSubXCV> subXCV;
+    @XmlElement(name = "ChainItem")
+    protected List<XmlChainItem> chainItem;
 
     /**
-     * Gets the value of the subXCV property.
+     * Gets the value of the chainItem property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the subXCV property.
+     * This is why there is not a <CODE>set</CODE> method for the chainItem property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getSubXCV().add(newItem);
+     *    getChainItem().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link XmlSubXCV }
+     * {@link XmlChainItem }
      * 
      * 
      */
-    public List<XmlSubXCV> getSubXCV() {
-        if (subXCV == null) {
-            subXCV = new ArrayList<XmlSubXCV>();
+    public List<XmlChainItem> getChainItem() {
+        if (chainItem == null) {
+            chainItem = new ArrayList<XmlChainItem>();
         }
-        return this.subXCV;
+        return this.chainItem;
     }
 
 }

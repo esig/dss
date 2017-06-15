@@ -17,7 +17,9 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	/**
 	 * This attribute is used to create visible signature in PAdES form
 	 */
-	private SignatureImageParameters imageParameters;
+	private SignatureImageParameters signatureImageParameters;
+	
+	private SignatureImageParameters timestampImageParameters;
 
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
@@ -55,12 +57,20 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 		this.contactInfo = contactInfo;
 	}
 
-	public SignatureImageParameters getImageParameters() {
-		return this.imageParameters;
+	public SignatureImageParameters getSignatureImageParameters() {
+		return this.signatureImageParameters;
 	}
 
-	public void setImageParameters(SignatureImageParameters imageParameters) {
-		this.imageParameters = imageParameters;
+	public void setSignatureImageParameters(SignatureImageParameters signatureImageParameters) {
+		this.signatureImageParameters = signatureImageParameters;
+	}
+	
+	public SignatureImageParameters getTimestampImageParameters() {
+		return this.timestampImageParameters;
+	}
+
+	public void setTimestampImageParameters(SignatureImageParameters timestampImageParameters) {
+		this.timestampImageParameters = timestampImageParameters;
 	}
 
 	public String getLocation() {

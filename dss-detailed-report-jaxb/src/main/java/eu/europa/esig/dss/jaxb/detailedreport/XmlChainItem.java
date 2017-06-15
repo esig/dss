@@ -11,23 +11,24 @@ package eu.europa.esig.dss.jaxb.detailedreport;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import eu.europa.esig.dss.validation.SignatureQualification;
 
 
 /**
- * <p>Java class for SignatureAnalysis complex type.
+ * <p>Java class for anonymous complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="SignatureAnalysis">
+ * &lt;complexType>
  *   &lt;complexContent>
- *     &lt;extension base="{http://dss.esig.europa.eu/validation/detailed-report}ConstraintsConclusion">
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="Source" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *       &lt;/sequence>
  *       &lt;attribute name="Id" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="SignatureQualification" type="{http://dss.esig.europa.eu/validation/detailed-report}SignatureQualification" />
- *     &lt;/extension>
+ *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
@@ -35,16 +36,39 @@ import eu.europa.esig.dss.validation.SignatureQualification;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SignatureAnalysis")
-public class XmlSignatureAnalysis
-    extends XmlConstraintsConclusion
-{
+@XmlType(name = "", propOrder = {
+    "source"
+})
+public class XmlChainItem {
 
+    @XmlElement(name = "Source", required = true)
+    protected String source;
     @XmlAttribute(name = "Id", required = true)
     protected String id;
-    @XmlAttribute(name = "SignatureQualification")
-    @XmlJavaTypeAdapter(Adapter4 .class)
-    protected SignatureQualification signatureQualification;
+
+    /**
+     * Gets the value of the source property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSource() {
+        return source;
+    }
+
+    /**
+     * Sets the value of the source property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSource(String value) {
+        this.source = value;
+    }
 
     /**
      * Gets the value of the id property.
@@ -68,30 +92,6 @@ public class XmlSignatureAnalysis
      */
     public void setId(String value) {
         this.id = value;
-    }
-
-    /**
-     * Gets the value of the signatureQualification property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public SignatureQualification getSignatureQualification() {
-        return signatureQualification;
-    }
-
-    /**
-     * Sets the value of the signatureQualification property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setSignatureQualification(SignatureQualification value) {
-        this.signatureQualification = value;
     }
 
 }

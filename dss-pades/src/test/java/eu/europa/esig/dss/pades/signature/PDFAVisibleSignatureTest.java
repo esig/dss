@@ -82,7 +82,7 @@ public class PDFAVisibleSignatureTest {
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.GREEN);
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setImageParameters(imageParameters);
+		signatureParameters.setSignatureImageParameters(imageParameters);
 
 		signAndValidate(true);
 	}
@@ -94,7 +94,7 @@ public class PDFAVisibleSignatureTest {
 		textParameters.setText("My signature");
 		textParameters.setTextColor(new Color(0, 255, 0, 100));
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setImageParameters(imageParameters);
+		signatureParameters.setSignatureImageParameters(imageParameters);
 
 		signAndValidate(false);
 	}
@@ -105,7 +105,7 @@ public class PDFAVisibleSignatureTest {
 		imageParameters.setImage(new FileDocument(new File("src/test/resources/small-red.jpg")));
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
-		signatureParameters.setImageParameters(imageParameters);
+		signatureParameters.setSignatureImageParameters(imageParameters);
 
 		signAndValidate(true);
 	}
@@ -117,7 +117,7 @@ public class PDFAVisibleSignatureTest {
 																										// ALPHA
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
-		signatureParameters.setImageParameters(imageParameters);
+		signatureParameters.setSignatureImageParameters(imageParameters);
 
 		signAndValidate(false);
 	}

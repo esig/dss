@@ -20,10 +20,13 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 import org.bouncycastle.tsp.TimeStampToken;
 
 import eu.europa.esig.dss.DSSASN1Utils;
@@ -31,6 +34,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.utils.Utils;
@@ -66,6 +70,12 @@ class PdfBoxDocTimeStampService extends PdfBoxSignatureService implements PDFSig
 		inputStream = document.openStream();
 		sign(inputStream, encoded, signedStream, parameters, timestampDigestAlgorithm);
 		Utils.closeQuietly(inputStream);
+	}
+	
+	@Override
+	protected void fillImageParameters(final PDDocument doc, final PAdESSignatureParameters signatureParameters, SignatureOptions options) throws IOException {
+		SignatureImageParameters signatureImageParameters = signatureParameters.getTimestampImageParameters();
+		fillImageParameters(doc, signatureImageParameters, options);
 	}
 
 }

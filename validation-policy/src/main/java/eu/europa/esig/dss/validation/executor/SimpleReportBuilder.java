@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlChainItem;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
@@ -42,6 +43,8 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
+import eu.europa.esig.dss.jaxb.simplereport.XmlCertificate;
+import eu.europa.esig.dss.jaxb.simplereport.XmlCertificateChain;
 import eu.europa.esig.dss.jaxb.simplereport.XmlPolicy;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureLevel;
@@ -234,6 +237,21 @@ public class SimpleReportBuilder {
 		xmlSignature.setSubIndication(subIndication);
 
 		addSignatureProfile(signature, xmlSignature);
+		
+		XmlCertificateChain xmlCertificateChain = new XmlCertificateChain();
+		for(XmlBasicBuildingBlocks bbb : detailedReport.getBasicBuildingBlocks()) {
+			if(bbb.getId().equals(signature.getId()) && bbb.getCertificateChain() != null) {
+				for(XmlChainItem chainItem : bbb.getCertificateChain().getChainItem()) {
+					XmlCertificate certificate = new XmlCertificate();
+					certificate.setId(chainItem.getId());
+					certificate.setQualifiedName(diagnosticData.getUsedCertificateById(chainItem.getId()).getCommonName());
+					xmlCertificateChain.getCertificate().add(certificate);
+				}
+			}
+		}
+		if(!xmlCertificateChain.getCertificate().isEmpty()) {
+			xmlSignature.setCertificateChain(xmlCertificateChain);
+		}
 
 		simpleReport.getSignature().add(xmlSignature);
 	}
