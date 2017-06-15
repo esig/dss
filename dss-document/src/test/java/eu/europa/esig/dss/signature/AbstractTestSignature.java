@@ -300,14 +300,16 @@ public abstract class AbstractTestSignature<SP extends AbstractSignatureParamete
 	protected void checkContentTimestampValid(DiagnosticData diagnosticData) {
 		if (hasContentTimestamp()) {
 			List<TimestampWrapper> timestampList = diagnosticData.getTimestampList(diagnosticData.getFirstSignatureId());
-			boolean foundAndValid = false;
+			int counter = 0;
 			for (TimestampWrapper timestampWrapper : timestampList) {
 				TimestampType type = TimestampType.valueOf(timestampWrapper.getType());
 				if (TimestampType.CONTENT_TIMESTAMP == type) {
-					foundAndValid = timestampWrapper.isMessageImprintDataFound() && timestampWrapper.isMessageImprintDataIntact();
+					assertTrue(timestampWrapper.isMessageImprintDataFound());
+					assertTrue(timestampWrapper.isMessageImprintDataIntact());
+					counter++;
 				}
 			}
-			assertTrue(foundAndValid);
+			assertEquals(Utils.collectionSize(getSignatureParameters().getContentTimestamps()), counter);
 		}
 	}
 
