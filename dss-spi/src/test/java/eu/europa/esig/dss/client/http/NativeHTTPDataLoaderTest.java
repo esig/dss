@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.client.http;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -32,27 +31,19 @@ public class NativeHTTPDataLoaderTest {
 		assertNotNull(certificate);
 	}
 
-	@Test
+	@Test(expected=DSSException.class)
 	public void testGetBiggerThanMaxSize() {
 		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
 		dataLoader.setMaxInputSize(1);
 		
-		try {
-			dataLoader.get(FILE_URL_TO_LOAD);
-			fail();
-		} catch (DSSException dssEx) {
-		}
+		dataLoader.get(FILE_URL_TO_LOAD);
 	}
 
-	@Test
+	@Test(expected=DSSException.class)
 	public void testGetTimeout() {
 		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
 		dataLoader.setTimeout(1);
 		
-		try {
-			dataLoader.get(HTTP_URL_TO_LOAD);
-			fail();
-		} catch (DSSException dssEx) {
-		}
+		dataLoader.get(HTTP_URL_TO_LOAD);
 	}
 }
