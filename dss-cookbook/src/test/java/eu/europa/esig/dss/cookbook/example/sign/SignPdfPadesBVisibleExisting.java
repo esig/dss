@@ -22,12 +22,15 @@ package eu.europa.esig.dss.cookbook.example.sign;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
+import org.bouncycastle.cms.CMSException;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
@@ -113,5 +116,70 @@ public class SignPdfPadesBVisibleExisting extends CookbookTools {
 		
 		// end::demo[]
 		testFinalDocument(signedDocument);
+		
+		signedDocument.writeTo(new FileOutputStream("target/hello-world-signed-existing.pdf"));
 	}
+	
+    @Test
+    public void signPAdESBaselineBWithExistingVisibleSignatureEfficient() throws IOException, DSSException, CMSException {
+
+        // GET document to be signed -
+        // Return DSSDocument toSignDocument
+        preparePdfDoc();
+
+        // Get a token connection based on a pkcs12 file commonly used to store private
+        // keys with accompanying public key certificates, protected with a password-based
+        // symmetric key -
+        // Return AbstractSignatureTokenConnection signingToken
+
+        // Return DSSPrivateKeyEntry privateKey from the PKCS12 store
+        preparePKCS12TokenAndKey();
+
+        // tag::demo[]
+
+        // Preparing parameters for the PAdES signature
+        PAdESSignatureParameters parameters = new PAdESSignatureParameters();
+        parameters.bLevel().setSigningDate(new Date());
+        // We choose the level of the signature (-B, -T, -LT, -LTA).
+        parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+        // We choose the type of the signature packaging (ENVELOPING, DETACHED).
+        parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+        // We set the digest algorithm to use with the signature algorithm. You must use the
+        // same parameter when you invoke the method sign on the token. The default value is
+        // SHA256
+        parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+
+        // We set the signing certificate
+        parameters.setSigningCertificate(privateKey.getCertificate());
+        // We set the certificate chain
+        parameters.setCertificateChain(privateKey.getCertificateChain());
+
+        // Initialize visual signature
+        SignatureImageParameters imageParameters = new SignatureImageParameters();
+        // the origin is the left and top corner of the page
+        imageParameters.setxAxis(200);
+        imageParameters.setyAxis(500);
+        // Initialize text to generate for visual signature
+        SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+        textParameters.setFont(new Font("serif", Font.PLAIN, 14));
+        textParameters.setTextColor(Color.BLUE);
+        textParameters.setText("My visual signature");
+        imageParameters.setTextParameters(textParameters);
+        parameters.setImageParameters(imageParameters);
+        
+        parameters.setSignatureFieldId("ExistingSignatureField");
+                
+        // Create common certificate verifier
+        CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
+        // Create PAdESService for signature
+        PAdESService service = new PAdESService(commonCertificateVerifier);
+
+         // We invoke the padesService to sign the document
+        DSSDocument signedDocument = service.signDocumentAtOnce(toSignDocument, parameters, signingToken);
+
+        // end::demo[]
+        testFinalDocument(signedDocument);
+        
+        signedDocument.writeTo(new FileOutputStream("target/hello-world-signed-existingIn-One-Step.pdf"));
+    }
 }
