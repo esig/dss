@@ -55,13 +55,12 @@ public class FileCacheDataLoader implements DataLoader {
 	private List<String> toIgnored;
 
 	private Long cacheExpirationTime;
-	
+
 	private DataLoader dataLoader;
-	
+
 	public FileCacheDataLoader() {
-		dataLoader = new CommonsDataLoader();
 	}
-	
+
 	public FileCacheDataLoader(DataLoader dataLoader) {
 		this.dataLoader = dataLoader;
 	}

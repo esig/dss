@@ -83,7 +83,7 @@ public final class DSSRevocationUtils {
 		try {
 			return (BasicOCSPResp) ocspResp.getResponseObject();
 		} catch (OCSPException e) {
-			throw new RuntimeException(e);
+			throw new DSSException(e);
 		}
 	}
 
