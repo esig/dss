@@ -32,28 +32,32 @@ public abstract class AbstractASiCContainerExtractor {
 	public ASiCExtractResult extract() {
 		ASiCExtractResult result = new ASiCExtractResult();
 
-		ZipInputStream asicsInputStream = null;
+		ZipInputStream asicInputStream = null;
 		try {
-			asicsInputStream = new ZipInputStream(asicContainer.openStream());
+			asicInputStream = new ZipInputStream(asicContainer.openStream());
 			ZipEntry entry;
-			while ((entry = asicsInputStream.getNextEntry()) != null) {
+			while ((entry = asicInputStream.getNextEntry()) != null) {
 				String entryName = entry.getName();
 				if (isMetaInfFolder(entryName)) {
 					if (isAllowedSignature(entryName)) {
-						result.getSignatureDocuments().add(getCurrentDocument(entryName, asicsInputStream));
+						result.getSignatureDocuments().add(getCurrentDocument(entryName, asicInputStream));
 					} else if (isAllowedManifest(entryName)) {
-						result.getManifestDocuments().add(getCurrentDocument(entryName, asicsInputStream));
+						result.getManifestDocuments().add(getCurrentDocument(entryName, asicInputStream));
+					} else if (isAllowedArchiveManifest(entryName)) {
+						result.getArchiveManifestDocuments().add(getCurrentDocument(entryName, asicInputStream));
+					} else if (isAllowedTimestamp(entryName)) {
+						result.getTimestampDocuments().add(getCurrentDocument(entryName, asicInputStream));
 					} else if (!isFolder(entryName)) {
-						result.getUnsupportedDocuments().add(getCurrentDocument(entryName, asicsInputStream));
+						result.getUnsupportedDocuments().add(getCurrentDocument(entryName, asicInputStream));
 					}
 				} else if (!isFolder(entryName)) {
 					if (isMimetype(entryName)) {
-						result.setMimeTypeDocument(getCurrentDocument(entryName, asicsInputStream));
+						result.setMimeTypeDocument(getCurrentDocument(entryName, asicInputStream));
 					} else {
-						result.getSignedDocuments().add(getCurrentDocument(entryName, asicsInputStream));
+						result.getSignedDocuments().add(getCurrentDocument(entryName, asicInputStream));
 					}
 				} else {
-					result.getUnsupportedDocuments().add(getCurrentDocument(entryName, asicsInputStream));
+					result.getUnsupportedDocuments().add(getCurrentDocument(entryName, asicInputStream));
 				}
 			}
 
@@ -64,7 +68,7 @@ public abstract class AbstractASiCContainerExtractor {
 		} catch (IOException e) {
 			LOG.warn("Unable to parse the container " + e.getMessage());
 		} finally {
-			Utils.closeQuietly(asicsInputStream);
+			Utils.closeQuietly(asicInputStream);
 		}
 
 		result.setZipComment(getZipComment());
@@ -121,6 +125,10 @@ public abstract class AbstractASiCContainerExtractor {
 	}
 
 	abstract boolean isAllowedManifest(String entryName);
+
+	abstract boolean isAllowedArchiveManifest(String entryName);
+
+	abstract boolean isAllowedTimestamp(String entryName);
 
 	abstract boolean isAllowedSignature(String entryName);
 

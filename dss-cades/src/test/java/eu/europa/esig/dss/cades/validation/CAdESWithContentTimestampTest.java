@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.cades.signature;
+package eu.europa.esig.dss.cades.validation;
 
 import static org.junit.Assert.assertTrue;
 

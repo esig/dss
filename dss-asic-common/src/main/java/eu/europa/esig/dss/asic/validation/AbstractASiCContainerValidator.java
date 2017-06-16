@@ -61,7 +61,13 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		for (DocumentValidator documentValidator : currentValidators) { // CAdES / XAdES
 			allSignatures.addAll(documentValidator.processSignaturesValidation(validationContext, structuralValidation));
 		}
+
+		attachExternalTimestamps(allSignatures);
+
 		return allSignatures;
+	}
+
+	protected void attachExternalTimestamps(List<AdvancedSignature> allSignatures) {
 	}
 
 	/**
@@ -107,6 +113,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		for (DocumentValidator documentValidator : currentValidators) {
 			allSignatures.addAll(documentValidator.getSignatures());
 		}
+
 		return allSignatures;
 	}
 
@@ -122,6 +129,14 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	protected List<DSSDocument> getManifestDocuments() {
 		return extractResult.getManifestDocuments();
+	}
+
+	protected List<DSSDocument> getTimestampDocuments() {
+		return extractResult.getTimestampDocuments();
+	}
+
+	protected List<DSSDocument> getArchiveManifestDocuments() {
+		return extractResult.getArchiveManifestDocuments();
 	}
 
 	@Override

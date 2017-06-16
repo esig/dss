@@ -1,12 +1,9 @@
 package eu.europa.esig.dss.asic.signature;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +29,7 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
+@SuppressWarnings("serial")
 public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithXAdESSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCWithXAdESService.class);
@@ -125,16 +123,6 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	}
 
 	@Override
-	void storeSignatures(List<DSSDocument> signatures, ZipOutputStream zos) throws IOException {
-		for (DSSDocument dssDocument : signatures) {
-			ZipEntry entrySignature = new ZipEntry(dssDocument.getName());
-			zos.putNextEntry(entrySignature);
-			Document xmlSignatureDoc = DomUtils.buildDOM(dssDocument);
-			DomUtils.writeDocumentTo(xmlSignatureDoc, zos);
-		}
-	}
-
-	@Override
 	boolean isSignatureFilename(String name) {
 		return ASiCUtils.isXAdES(name);
 	}
@@ -165,19 +153,8 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	}
 
 	@Override
-	boolean canBeSigned(List<DSSDocument> documents, ASiCParameters asicParameters) {
-		boolean isMimetypeCorrect = true;
-		boolean isSignatureTypeCorrect = true;
-		if (ASiCUtils.isArchive(documents)) {
-			DSSDocument archive = documents.get(0);
-			String expectedMimeType = archive.getMimeType().getMimeTypeString();
-			String mimeTypeFromParameter = ASiCUtils.getMimeTypeString(asicParameters);
-			isMimetypeCorrect = Utils.areStringsEqualIgnoreCase(expectedMimeType, mimeTypeFromParameter);
-			if (isMimetypeCorrect) {
-				isSignatureTypeCorrect = ASiCUtils.isArchiveContainsCorrectSignatureExtension(archive, ".xml");
-			}
-		}
-		return isMimetypeCorrect && isSignatureTypeCorrect;
+	String getExpectedSignatureExtension() {
+		return ".xml";
 	}
 
 }

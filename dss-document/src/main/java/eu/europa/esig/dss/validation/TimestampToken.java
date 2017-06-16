@@ -27,13 +27,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import javax.security.auth.x500.X500Principal;
-
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformationVerifier;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -44,6 +43,7 @@ import org.bouncycastle.tsp.TimeStampTokenInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -54,7 +54,6 @@ import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.x509.TimestampValidation;
 import eu.europa.esig.dss.x509.TimestampValidity;
 import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.TokenValidationExtraInfo;
@@ -63,17 +62,18 @@ import eu.europa.esig.dss.x509.TokenValidationExtraInfo;
  * SignedToken containing a TimeStamp.
  *
  */
+@SuppressWarnings("serial")
 public class TimestampToken extends Token {
 
 	private static final Logger logger = LoggerFactory.getLogger(TimestampToken.class);
+
+	private boolean processed = false;
 
 	private final TimeStampToken timeStamp;
 
 	private TimestampType timeStampType;
 
-	private CAdESCertificateSource wrappedSource;
-
-	private X500Principal issuerX500Principal;
+	private TimestampCertificateSource certificateSource;
 
 	private boolean messageImprintData;
 
@@ -101,6 +101,14 @@ public class TimestampToken extends Token {
 	 */
 	private int hashCode;
 
+	public TimestampToken(final byte[] binaries, final TimestampType type, final CertificatePool certPool) throws TSPException, IOException, CMSException {
+		this(new CMSSignedData(binaries), type, certPool);
+	}
+
+	public TimestampToken(final CMSSignedData cms, final TimestampType type, final CertificatePool certPool) throws TSPException, IOException {
+		this(new TimeStampToken(cms), type, certPool);
+	}
+
 	/**
 	 * Constructor with an indication of the timestamp type. The default constructor for {@code TimestampToken}.
 	 *
@@ -112,19 +120,16 @@ public class TimestampToken extends Token {
 	 *            {@code CertificatePool} which is used to identify the signing certificate of the timestamp
 	 */
 	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool) {
-
 		this.timeStamp = timeStamp;
 		this.timeStampType = type;
 		this.extraInfo = new TokenValidationExtraInfo();
-		wrappedSource = new CAdESCertificateSource(timeStamp, certPool);
-		final Collection<CertificateToken> certs = wrappedSource.getCertificates();
+
+		this.certificateSource = new TimestampCertificateSource(timeStamp, certPool);
+
+		final Collection<CertificateToken> certs = certificateSource.getCertificates();
 		for (final CertificateToken certificateToken : certs) {
-
-			final byte[] encoded = certificateToken.getEncoded();
-			final Certificate certificate = Certificate.getInstance(encoded);
-			final X509CertificateHolder x509CertificateHolder = new X509CertificateHolder(certificate);
+			final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(certificateToken);
 			if (timeStamp.getSID().match(x509CertificateHolder)) {
-
 				boolean valid = isSignedBy(certificateToken);
 				if (valid) {
 					break;
@@ -138,33 +143,19 @@ public class TimestampToken extends Token {
 		return timeStampType.name() + ": " + getDSSIdAsString() + ": " + DSSUtils.formatInternal(timeStamp.getTimeStampInfo().getGenTime());
 	}
 
-	/**
-	 * This method returns the issuing certificate's distinguished subject name.
-	 *
-	 * @return {@code X500Principal} representing the issuing certificate's distinguished subject name.
-	 */
-	@Override
-	public X500Principal getIssuerX500Principal() {
-
-		return issuerX500Principal;
-	}
-
 	@Override
 	public final boolean isSignedBy(final CertificateToken issuerToken) {
-
 		if (this.issuerToken != null) {
-
 			return this.issuerToken.equals(issuerToken);
 		}
-		final TimestampValidation timestampValidation = validateTimestampToken(timeStamp, issuerToken);
-		final TimestampValidity timestampValidity = timestampValidation.getValidity();
+		final TimestampValidity timestampValidity = validateTimestampToken(timeStamp, issuerToken);
 		signatureInvalidityReason = timestampValidity.name();
-		signatureValid = timestampValidation.isValid();
+		signatureValid = TimestampValidity.VALID == timestampValidity;
 		if (signatureValid) {
 
 			this.issuerToken = issuerToken;
+			this.issuerX500Principal = issuerToken.getSubjectX500Principal();
 
-			issuerX500Principal = issuerToken.getSubjectX500Principal();
 			final String algorithm = issuerToken.getPublicKey().getAlgorithm();
 			final EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.forName(algorithm);
 			final AlgorithmIdentifier hashAlgorithm = timeStamp.getTimeStampInfo().getHashAlgorithm();
@@ -174,8 +165,7 @@ public class TimestampToken extends Token {
 		return signatureValid;
 	}
 
-	private TimestampValidation validateTimestampToken(final TimeStampToken timeStampToken, final CertificateToken issuerToken) {
-
+	private TimestampValidity validateTimestampToken(final TimeStampToken timeStampToken, final CertificateToken issuerToken) {
 		TimestampValidity timestampValidity;
 		try {
 
@@ -213,8 +203,7 @@ public class TimestampToken extends Token {
 			}
 			timestampValidity = TimestampValidity.NOT_VALID_STRUCTURE;
 		}
-		final TimestampValidation timestampValidation = new TimestampValidation(timestampValidity);
-		return timestampValidation;
+		return timestampValidity;
 	}
 
 	/**
@@ -227,7 +216,7 @@ public class TimestampToken extends Token {
 	public boolean matchData(final byte[] data) {
 
 		try {
-
+			processed = true;
 			messageImprintData = data != null;
 			final TimeStampTokenInfo timeStampInfo = timeStamp.getTimeStampInfo();
 			final ASN1ObjectIdentifier hashAlgorithm = timeStampInfo.getHashAlgorithm().getAlgorithm();
@@ -247,13 +236,16 @@ public class TimestampToken extends Token {
 		return messageImprintIntact;
 	}
 
+	public boolean isProcessed() {
+		return processed;
+	}
+
 	/**
 	 * Retrieves the type of the timestamp token.
 	 *
 	 * @return {@code TimestampType}
 	 */
 	public TimestampType getTimeStampType() {
-
 		return timeStampType;
 	}
 
@@ -263,7 +255,6 @@ public class TimestampToken extends Token {
 	 * @return {@code Date}
 	 */
 	public Date getGenerationTime() {
-
 		return timeStamp.getTimeStampInfo().getGenTime();
 	}
 
@@ -273,7 +264,6 @@ public class TimestampToken extends Token {
 	 * @return {@code DigestAlgorithm}
 	 */
 	public DigestAlgorithm getSignedDataDigestAlgo() {
-
 		final ASN1ObjectIdentifier oid = timeStamp.getTimeStampInfo().getHashAlgorithm().getAlgorithm();
 		return DigestAlgorithm.forOID(oid.getId());
 	}
@@ -284,7 +274,6 @@ public class TimestampToken extends Token {
 	 * @return base 64 encoded {@code String}
 	 */
 	public String getEncodedSignedDataDigestValue() {
-
 		final byte[] messageImprintDigest = timeStamp.getTimeStampInfo().getMessageImprintDigest();
 		return Utils.toBase64(messageImprintDigest);
 	}
@@ -293,7 +282,6 @@ public class TimestampToken extends Token {
 	 * @return true if the message imprint data was found, false otherwise
 	 */
 	public Boolean isMessageImprintDataFound() {
-
 		return messageImprintData;
 	}
 
@@ -303,7 +291,6 @@ public class TimestampToken extends Token {
 	 * @return true if the message imprint data is intact, false otherwise
 	 */
 	public Boolean isMessageImprintDataIntact() {
-
 		if (messageImprintIntact == null) {
 			throw new DSSException("Invoke matchData(byte[] data) method before!");
 		}
@@ -314,7 +301,6 @@ public class TimestampToken extends Token {
 	 * @return {@code List} of {@code TimestampReference}s
 	 */
 	public List<TimestampReference> getTimestampedReferences() {
-
 		return timestampedReferences;
 	}
 
@@ -327,7 +313,6 @@ public class TimestampToken extends Token {
 	 *            {@code List} of {@code TimestampReference}
 	 */
 	public void setTimestampedReferences(final List<TimestampReference> timestampedReferences) {
-
 		this.timestampedReferences = timestampedReferences;
 	}
 
@@ -392,7 +377,7 @@ public class TimestampToken extends Token {
 	 * @return {@code List} of {@code CertificateToken}
 	 */
 	public List<CertificateToken> getCertificates() {
-		return wrappedSource.getCertificates();
+		return certificateSource.getCertificates();
 	}
 
 	public AttributeTable getUnsignedAttributes() {
