@@ -121,7 +121,7 @@ public class SignPdfPadesBVisibleExisting extends CookbookTools {
 	}
 	
     @Test
-    public void signPAdESBaselineBWithExistingVisibleSignatureEfficient() throws IOException, DSSException, CMSException {
+    public void signPAdESBaselineBWithExistingVisibleSignatureAtOnce() throws IOException, DSSException, CMSException {
 
         // GET document to be signed -
         // Return DSSDocument toSignDocument
@@ -180,6 +180,6 @@ public class SignPdfPadesBVisibleExisting extends CookbookTools {
         // end::demo[]
         testFinalDocument(signedDocument);
         
-        signedDocument.writeTo(new FileOutputStream("target/hello-world-signed-existingIn-One-Step.pdf"));
+        signedDocument.writeTo(new FileOutputStream("target/hello-world-signed-existing-at-once.pdf"));
     }
 }

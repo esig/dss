@@ -117,9 +117,6 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		return new ToBeSigned(dataToSign);
 	}
 
-	/**
-	 * Original signing method (step 3)
-	 */
 	@Override
 	public DSSDocument signDocument(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final SignatureValue signatureValue)
 			throws DSSException {
