@@ -477,12 +477,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public void checkSignaturePolicy(SignaturePolicyProvider signaturePolicyProvider) {
-		final AttributeTable attributes = signerInformation.getSignedAttributes();
-		if (attributes == null) {
-			return;
-		}
-
-		final Attribute attribute = attributes.get(PKCSObjectIdentifiers.id_aa_ets_sigPolicyId);
+		final Attribute attribute = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_sigPolicyId);
 		if (attribute == null) {
 			return;
 		}
@@ -539,15 +534,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public Date getSigningTime() {
-
-		final AttributeTable attributes = signerInformation.getSignedAttributes();
-		if (attributes == null) {
-			return null;
-		}
-
-		final Attribute attr = attributes.get(PKCSObjectIdentifiers.pkcs_9_at_signingTime);
+		final Attribute attr = getSignedAttribute(PKCSObjectIdentifiers.pkcs_9_at_signingTime);
 		if (attr == null) {
-
 			return null;
 		}
 		final ASN1Set attrValues = attr.getAttrValues();
@@ -596,15 +584,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignatureProductionPlace getSignatureProductionPlace() {
-
-		final AttributeTable attributes = signerInformation.getSignedAttributes();
-		if (attributes == null) {
-
-			return null;
-		}
-		Attribute signatureProductionPlaceAttr = attributes.get(PKCSObjectIdentifiers.id_aa_ets_signerLocation);
+		Attribute signatureProductionPlaceAttr = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_signerLocation);
 		if (signatureProductionPlaceAttr == null) {
-
 			return null;
 		}
 
@@ -659,49 +640,37 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public CommitmentType getCommitmentTypeIndication() {
-
-		final AttributeTable attributes = signerInformation.getSignedAttributes();
-		if (attributes == null) {
-
+		final Attribute commitmentTypeIndicationAttribute = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_commitmentType);
+		if (commitmentTypeIndicationAttribute == null) {
 			return null;
 		}
-		final Attribute commitmentTypeIndicationAttribute = attributes.get(PKCSObjectIdentifiers.id_aa_ets_commitmentType);
-		if (commitmentTypeIndicationAttribute != null) {
 
-			try {
-
-				final ASN1Set attrValues = commitmentTypeIndicationAttribute.getAttrValues();
-				final int size = attrValues.size();
-				if (size > 0) {
-
-					final CommitmentType commitmentType = new CommitmentType();
-					for (int ii = 0; ii < size; ii++) {
-						if (attrValues.getObjectAt(ii) instanceof DERSequence) {
-							final DERSequence derSequence = (DERSequence) attrValues.getObjectAt(ii);
-							final CommitmentTypeIndication commitmentTypeIndication = CommitmentTypeIndication.getInstance(derSequence);
-							final ASN1ObjectIdentifier commitmentTypeId = commitmentTypeIndication.getCommitmentTypeId();
-							commitmentType.addIdentifier(commitmentTypeId.getId());
-						} else {
-							LOG.warn("Unsupported type for CommitmentType : " + attrValues.getObjectAt(ii).getClass());
-						}
+		try {
+			CommitmentType commitmentType = null;
+			final ASN1Set attrValues = commitmentTypeIndicationAttribute.getAttrValues();
+			final int size = attrValues.size();
+			if (size > 0) {
+				commitmentType = new CommitmentType();
+				for (int ii = 0; ii < size; ii++) {
+					if (attrValues.getObjectAt(ii) instanceof DERSequence) {
+						final DERSequence derSequence = (DERSequence) attrValues.getObjectAt(ii);
+						final CommitmentTypeIndication commitmentTypeIndication = CommitmentTypeIndication.getInstance(derSequence);
+						final ASN1ObjectIdentifier commitmentTypeId = commitmentTypeIndication.getCommitmentTypeId();
+						commitmentType.addIdentifier(commitmentTypeId.getId());
+					} else {
+						LOG.warn("Unsupported type for CommitmentType : " + attrValues.getObjectAt(ii).getClass());
 					}
-					return commitmentType;
 				}
-			} catch (Exception e) {
-				throw new DSSException("Error when dealing with CommitmentTypeIndication!", e);
 			}
+			return commitmentType;
+		} catch (Exception e) {
+			throw new DSSException("Error when dealing with CommitmentTypeIndication!", e);
 		}
-		return null;
 	}
 
 	@Override
 	public String[] getClaimedSignerRoles() {
-
-		final AttributeTable attributes = signerInformation.getSignedAttributes();
-		if (attributes == null) {
-			return null;
-		}
-		final Attribute id_aa_ets_signerAttr = attributes.get(PKCSObjectIdentifiers.id_aa_ets_signerAttr);
+		final Attribute id_aa_ets_signerAttr = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_signerAttr);
 		if (id_aa_ets_signerAttr == null) {
 			return null;
 		}
@@ -744,13 +713,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<CertifiedRole> getCertifiedSignerRoles() {
-
-		final AttributeTable signedAttributes = signerInformation.getSignedAttributes();
-		if (signedAttributes == null) {
-			return null;
-		}
-
-		final Attribute id_aa_ets_signerAttr = signedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_signerAttr);
+		final Attribute id_aa_ets_signerAttr = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_signerAttr);
 		if (id_aa_ets_signerAttr == null) {
 			return null;
 		}
@@ -883,7 +846,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		archiveTimestamps.addAll(createTimestamps(id_aa_ets_archiveTimestampV3, ARCHIVE_TIMESTAMP, CAdES_v3));
 		final List<TimestampToken> timestampTokenList = getTimestampTokenList();
 
-		final List<String> timestampedTimestamps = new ArrayList<String>();
+		final List<TimestampToken> timestampedTimestamps = new ArrayList<TimestampToken>();
 		for (final TimestampToken timestampToken : timestampTokenList) {
 
 			final TimestampType timestampType = timestampToken.getTimeStampType();
@@ -903,18 +866,22 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				timestampToken.setTimestampedReferences(validationDataReferences);
 				break;
 			case ARCHIVE_TIMESTAMP:
-				final List<TimestampReference> archiveReferences = getSignatureTimestampedReferences();
-				for (final String timestampId : timestampedTimestamps) {
-					archiveReferences.add(new TimestampReference(timestampId, TimestampReferenceCategory.TIMESTAMP));
-				}
-				archiveReferences.addAll(getTimestampedReferences());
-				timestampToken.setTimestampedReferences(archiveReferences);
+				timestampToken.setTimestampedReferences(getTimestampReferencesForArchiveTimestamp(timestampedTimestamps));
 				break;
 			default:
 				throw new DSSException("TimeStampType not supported : " + timestampType);
 			}
-			timestampedTimestamps.add(timestampToken.getDSSIdAsString());
+			timestampedTimestamps.add(timestampToken);
 		}
+	}
+
+	public List<TimestampReference> getTimestampReferencesForArchiveTimestamp(final List<TimestampToken> timestampedTimestamps) {
+		final List<TimestampReference> archiveReferences = getSignatureTimestampedReferences();
+		for (final TimestampToken timestamp : timestampedTimestamps) {
+			archiveReferences.add(new TimestampReference(timestamp.getDSSIdAsString(), TimestampReferenceCategory.TIMESTAMP));
+		}
+		archiveReferences.addAll(getTimestampedReferences());
+		return archiveReferences;
 	}
 
 	private List<TimestampToken> getTimestampTokenList() {
@@ -1172,12 +1139,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getContentType() {
-
-		final AttributeTable signedAttributes = signerInformation.getSignedAttributes();
-		if (signedAttributes == null) {
-			return null;
-		}
-		final Attribute contentTypeAttribute = signedAttributes.get(PKCSObjectIdentifiers.pkcs_9_at_contentType);
+		final Attribute contentTypeAttribute = getSignedAttribute(PKCSObjectIdentifiers.pkcs_9_at_contentType);
 		if (contentTypeAttribute == null) {
 			return null;
 		}
@@ -1188,12 +1150,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getContentIdentifier() {
-
-		final AttributeTable signedAttributes = signerInformation.getSignedAttributes();
-		if (signedAttributes == null) {
-			return null;
-		}
-		final Attribute contentIdentifierAttribute = signedAttributes.get(PKCSObjectIdentifiers.id_aa_contentIdentifier);
+		final Attribute contentIdentifierAttribute = getSignedAttribute(PKCSObjectIdentifiers.id_aa_contentIdentifier);
 		if (contentIdentifierAttribute == null) {
 			return null;
 		}
@@ -1205,11 +1162,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getContentHints() {
-		final AttributeTable signedAttributes = signerInformation.getSignedAttributes();
-		if (signedAttributes == null) {
-			return null;
-		}
-		final Attribute contentHintAttribute = signedAttributes.get(PKCSObjectIdentifiers.id_aa_contentHint);
+		final Attribute contentHintAttribute = getSignedAttribute(PKCSObjectIdentifiers.id_aa_contentHint);
 		if (contentHintAttribute == null) {
 			return null;
 		}
@@ -1251,12 +1204,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 		final List<CertificateRef> list = new ArrayList<CertificateRef>();
 
-		final AttributeTable attributes = signerInformation.getUnsignedAttributes();
-		if (attributes == null) {
-			return list;
-		}
-
-		final Attribute attribute = attributes.get(id_aa_ets_certificateRefs);
+		final Attribute attribute = getUnsignedAttribute(id_aa_ets_certificateRefs);
 		if (attribute == null) {
 			return list;
 		}
@@ -1298,13 +1246,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final List<CRLRef> list = new ArrayList<CRLRef>();
 
 		try {
-			final AttributeTable attributes = signerInformation.getUnsignedAttributes();
-			if (attributes == null) {
-				return list;
-			}
-
-			final Attribute attribute = attributes.get(PKCSObjectIdentifiers.id_aa_ets_revocationRefs);
-
+			final Attribute attribute = getUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_revocationRefs);
 			if (attribute == null) {
 				return list;
 			}
@@ -1343,12 +1285,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 		final List<OCSPRef> list = new ArrayList<OCSPRef>();
 
-		final AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
-		if (unsignedAttributes == null) {
-			return list;
-		}
-
-		final Attribute attribute = unsignedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_revocationRefs);
+		final Attribute attribute = getUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_revocationRefs);
 		if (attribute == null) {
 			return list;
 		}
@@ -1382,22 +1319,17 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-
 		try {
 
 			final ByteArrayOutputStream data = new ByteArrayOutputStream();
 			data.write(signerInformation.getSignature());
 			// We don't include the outer SEQUENCE, only the attrType and
 			// attrValues as stated by the TS Â§6.3.5, NOTE 2
-			final AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
-			if (unsignedAttributes != null) {
 
-				final Attribute attribute = unsignedAttributes.get(id_aa_signatureTimeStampToken);
-				if (attribute != null) {
-
-					data.write(DSSASN1Utils.getDEREncoded(attribute.getAttrType()));
-					data.write(DSSASN1Utils.getDEREncoded(attribute.getAttrValues()));
-				}
+			final Attribute attribute = getUnsignedAttribute(id_aa_signatureTimeStampToken);
+			if (attribute != null) {
+				data.write(DSSASN1Utils.getDEREncoded(attribute.getAttrType()));
+				data.write(DSSASN1Utils.getDEREncoded(attribute.getAttrValues()));
 			}
 			// Those are common to Type 1 and Type 2
 			data.write(getTimestampX2Data(timestampToken, null));
@@ -1412,26 +1344,20 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 		final ByteArrayOutputStream data = new ByteArrayOutputStream();
 		// Those are common to Type 1 and Type 2
-		final AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
-		if (unsignedAttributes != null) {
 
-			final Attribute certAttribute = unsignedAttributes.get(id_aa_ets_certificateRefs);
-			try {
-
-				if (certAttribute != null) {
-
-					data.write(DSSASN1Utils.getDEREncoded(certAttribute.getAttrType()));
-					data.write(DSSASN1Utils.getDEREncoded(certAttribute.getAttrValues()));
-				}
-				final Attribute revAttribute = unsignedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_revocationRefs);
-				if (revAttribute != null) {
-
-					data.write(DSSASN1Utils.getDEREncoded(revAttribute.getAttrType()));
-					data.write(DSSASN1Utils.getDEREncoded(revAttribute.getAttrValues()));
-				}
-			} catch (IOException e) {
-				throw new DSSException(e);
+		final Attribute certAttribute = getUnsignedAttribute(id_aa_ets_certificateRefs);
+		final Attribute revAttribute = getUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_revocationRefs);
+		try {
+			if (certAttribute != null) {
+				data.write(DSSASN1Utils.getDEREncoded(certAttribute.getAttrType()));
+				data.write(DSSASN1Utils.getDEREncoded(certAttribute.getAttrValues()));
 			}
+			if (revAttribute != null) {
+				data.write(DSSASN1Utils.getDEREncoded(revAttribute.getAttrType()));
+				data.write(DSSASN1Utils.getDEREncoded(revAttribute.getAttrValues()));
+			}
+		} catch (IOException e) {
+			throw new DSSException(e);
 		}
 		return data.toByteArray();
 	}
@@ -1685,6 +1611,22 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return references;
 	}
 
+	private Attribute getSignedAttribute(ASN1ObjectIdentifier oid) {
+		final AttributeTable signedAttributes = signerInformation.getSignedAttributes();
+		if (signedAttributes == null) {
+			return null;
+		}
+		return signedAttributes.get(oid);
+	}
+
+	private Attribute getUnsignedAttribute(ASN1ObjectIdentifier oid) {
+		final AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
+		if (unsignedAttributes == null) {
+			return null;
+		}
+		return unsignedAttributes.get(oid);
+	}
+
 	@Override
 	public boolean isDataForSignatureLevelPresent(final SignatureLevel signatureLevel) {
 		final AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
@@ -1744,4 +1686,5 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				SignatureLevel.CAdES_101733_C, SignatureLevel.CAdES_101733_X, SignatureLevel.CAdES_BASELINE_LT, SignatureLevel.CAdES_101733_A,
 				SignatureLevel.CAdES_BASELINE_LTA };
 	}
+
 }

@@ -13,14 +13,11 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
-import eu.europa.esig.dss.cades.validation.CMSTimestampValidator;
+import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.TimestampReference;
-import eu.europa.esig.dss.validation.TimestampReferenceCategory;
 import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.validation.TimestampValidator;
 import eu.europa.esig.dss.x509.TimestampType;
 
 /**
@@ -71,23 +68,23 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	protected void attachExternalTimestamps(List<AdvancedSignature> allSignatures) {
 		ASiCContainerType type = getContainerType();
 		if (ASiCContainerType.ASiC_E == type) {
-			List<TimestampValidator> currentTimestampValidators = getTimestampValidators();
-			if (!currentTimestampValidators.isEmpty()) {
-				for (TimestampValidator tspValidator : currentTimestampValidators) {
-					TimestampToken timestamp = tspValidator.getTimestamp();
-					if (timestamp.isSignatureValid()) {
-						for (AdvancedSignature advancedSignature : allSignatures) {
+			List<ASiCEWithCAdESTimestampValidator> currentTimestampValidators = getTimestampValidators();
+			for (ASiCEWithCAdESTimestampValidator tspValidator : currentTimestampValidators) {
+				List<String> coveredFilenames = tspValidator.getCoveredFilenames();
 
-							List<TimestampReference> timestampedReferences = new ArrayList<TimestampReference>();
-							timestampedReferences.addAll(advancedSignature.getTimestampedReferences());
+				TimestampToken timestamp = tspValidator.getTimestamp();
+				if (timestamp.isSignatureValid()) {
+					for (AdvancedSignature advancedSignature : allSignatures) {
+						if (coveredFilenames.contains(advancedSignature.getSignatureFilename())) {
+							CAdESSignature cadesSig = (CAdESSignature) advancedSignature;
+							List<TimestampToken> cadesTimestamps = new ArrayList<TimestampToken>();
+							cadesTimestamps.addAll(cadesSig.getContentTimestamps());
+							cadesTimestamps.addAll(cadesSig.getSignatureTimestamps());
+							cadesTimestamps.addAll(cadesSig.getTimestampsX1());
+							cadesTimestamps.addAll(cadesSig.getTimestampsX2());
+							// Archive timestamp from CAdES is skipped
 
-							List<TimestampToken> coveredTsps = new ArrayList<TimestampToken>();
-							coveredTsps.addAll(advancedSignature.getContentTimestamps());
-							coveredTsps.addAll(advancedSignature.getSignatureTimestamps());
-							for (final TimestampToken coveredTsp : coveredTsps) {
-								timestampedReferences.add(new TimestampReference(coveredTsp.getDSSIdAsString(), TimestampReferenceCategory.TIMESTAMP));
-							}
-							timestamp.setTimestampedReferences(timestampedReferences);
+							timestamp.setTimestampedReferences(cadesSig.getTimestampReferencesForArchiveTimestamp(cadesTimestamps));
 
 							advancedSignature.addExternalTimestamp(timestamp);
 						}
@@ -97,13 +94,21 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		}
 	}
 
-	private List<TimestampValidator> getTimestampValidators() {
-		List<TimestampValidator> timestampValidators = new ArrayList<TimestampValidator>();
+	private List<ASiCEWithCAdESTimestampValidator> getTimestampValidators() {
+		List<ASiCEWithCAdESTimestampValidator> timestampValidators = new ArrayList<ASiCEWithCAdESTimestampValidator>();
 		for (final DSSDocument timestamp : getTimestampDocuments()) {
-			TimestampValidator timestampValidator = new CMSTimestampValidator(timestamp, TimestampType.ARCHIVE_TIMESTAMP);
-			timestampValidator.setCertificateVerifier(certificateVerifier);
-			timestampValidator.setTimestampedData(getTimestampedArchiveManifest(timestamp));
-			timestampValidators.add(timestampValidator);
+			DSSDocument archiveManifest = getTimestampedArchiveManifest(timestamp);
+			if (archiveManifest != null) {
+				ASiCEWithCAdESManifestParser parser = new ASiCEWithCAdESManifestParser(archiveManifest);
+				ManifestFile manifestContent = parser.getDescription();
+				ASiCEWithCAdESTimestampValidator timestampValidator = new ASiCEWithCAdESTimestampValidator(timestamp, TimestampType.ARCHIVE_TIMESTAMP,
+						manifestContent.getEntries());
+				timestampValidator.setCertificateVerifier(certificateVerifier);
+				timestampValidator.setTimestampedData(archiveManifest);
+				timestampValidators.add(timestampValidator);
+			} else {
+				LOG.warn("Timestamp " + timestamp.getName() + " is skipped (no linked archive manifest found)");
+			}
 		}
 		return timestampValidators;
 	}
