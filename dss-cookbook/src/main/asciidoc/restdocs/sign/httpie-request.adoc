@@ -1,0 +1,8 @@
+[source,bash]
+----
+$ echo '{
+  "bytes" : "wFNeS+K3n/2TKRMFQ2v4iTFOSj+uwF7P/Lt98xrZ5Ro="
+}' | http POST 'http://localhost:8080/services/rest/server-signing/sign/certificate/SHA256' \
+    'Accept:application/json' \
+    'Content-Type:application/json; charset=UTF-8'
+----

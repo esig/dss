@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  */
 public class DateAdapter extends XmlAdapter<String, Date> {
 
-	private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss.SSS";
+	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
 	@Override
 	public Date unmarshal(String v) throws Exception {

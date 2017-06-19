@@ -1,0 +1,9 @@
+[source,bash]
+----
+$ curl 'http://localhost:8080/services/rest/server-signing/sign/certificate/SHA256' -i -X POST \
+    -H 'Accept: application/json' \
+    -H 'Content-Type: application/json; charset=UTF-8' \
+    -d '{
+  "bytes" : "wFNeS+K3n/2TKRMFQ2v4iTFOSj+uwF7P/Lt98xrZ5Ro="
+}'
+----

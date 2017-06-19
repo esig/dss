@@ -177,6 +177,11 @@ dss-validation-rest-client:: Client for the REST webservices.
 dss-validation-soap:: SOAP webservices to validate a signature.
 dss-validation-soap-client:: Client for the SOAP webservices.
 dss-remote-services:: Common code between dss-rest and dss-soap.
+dss-server-signing-common:: Common code for server signing
+dss-server-signing-rest:: REST webservice for server signing
+dss-server-signing-rest-client:: REST client for server signing 
+dss-server-signing-soap:: SOAP webservice for server signing
+dss-server-signing-soap-client:: SOAP client for server signing
 sscd-mocca-adapter:: Implementation for MOCCA token.
 dss-policy-jaxb:: JAXB model of the validation policy.
 dss-diagnostic-jaxb:: JAXB model of the diagnostic data.
@@ -982,3 +987,105 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/OnlineTSPSo
 === Time-stamp policy:
 
 A time-stamp policy is a "named set of rules that indicates the applicability of a time-stamp token to a particular community and/or class of application with common security requirements". A TSA may define its own policy which enhances the policy defined in RFC 3628. Such a policy shall incorporate or further constrain the requirements identified in RFC 3628. A time-stamp policy may be defined by the user of times-stamp services.
+
+
+== REST Services
+
+DSS offers some REST and SOAP web services. The documentation will covers the REST calls. Additionally, we also provide a SOAP-UI project and Postman samples in the cookbook module.
+
+The different webservices are : 
+ * Signature webservices (dss-soap / dss-rest and their clients) : they expose methods to allow to sign or extend a signature from a client.
+ * Server-signing webservice (dss-server-signing-soap / dss-server-signing-rest and their clients) : they expose method to retrieve keys from a server (PKCS#11, PKCS#12, HSM,...) and to sign the digest on the server side.
+ * Validation webservices (dss-validation-soap / dss-validation-rest and their client) : they expose methods to allow validate a signature, with an optional detached file and an optional validation policy.
+ 
+The data structure in webservices is similar in REST and SOAP.
+
+=== REST signature service
+
+This service exposes 3 methods for one or more document(s) : 
+
+ * getDataToSign : computes the digest to be signed
+ * signDocument : adds the signature value in the document
+ * extendDocument : extends an existing signature
+ 
+==== Get data to sign
+
+The method allows to retrieve the data to be signed. The user sends the document to be signed, the parameters (signature level,...) and the certificate chain. 
+
+WARNING: The parameters in getDataToSign and signDocument MUST be the same (especially the signing date).
+
+.Request
+include::restdocs/get-data-to-sign-one-document/http-request.adoc[]
+
+.Response
+include::restdocs/get-data-to-sign-one-document/http-response.adoc[]
+
+==== Sign document
+
+The method allows to generate the signed document with the received signature value.
+
+WARNING: The parameters in getDataToSign and signDocument MUST be the same (especially the signing date).
+
+.Request
+include::restdocs/sign-document-one-document/http-request.adoc[]
+
+.Response
+include::restdocs/sign-document-one-document/http-response.adoc[]
+
+==== Extend document
+
+The method allows to extend an existing signature to a stronger level.
+
+.Request
+include::restdocs/extend-one-document/http-request.adoc[]
+
+.Response
+include::restdocs/extend-one-document/http-response.adoc[]
+
+=== REST server signature service
+
+This service also exposed 3 methods : 
+
+ * getKeys : retrieves available keys on server side
+ * getKey : retrieves a key on the server side by its alias
+ * sign : signs the digest value with the given key
+
+==== Get keys
+
+This method allows to retrieve all available keys on the server side (PKCS#11, PKCS#12, HSM,...). All keys will have an alias, a signing certificate and its chain. The alias will be used in following steps.
+
+.Request
+include::restdocs/get-keys/http-request.adoc[]
+
+.Response
+include::restdocs/get-keys/http-response.adoc[]
+
+==== Get key
+
+This method allows to retrieve key informations for a given alias.
+
+.Request
+include::restdocs/get-key/http-request.adoc[]
+
+.Response
+include::restdocs/get-key/http-response.adoc[]
+
+==== Sign
+
+This method allows to sign the given digest with a server side certificate.
+
+.Request
+include::restdocs/sign/http-request.adoc[]
+
+.Response
+include::restdocs/sign/http-response.adoc[]
+
+=== REST validation service
+
+This service allows to validate signature (all formats/types) against a validation policy.
+
+.Request
+include::restdocs/validate-doc/http-request.adoc[]
+
+.Response
+include::restdocs/validate-doc/http-response.adoc[]
