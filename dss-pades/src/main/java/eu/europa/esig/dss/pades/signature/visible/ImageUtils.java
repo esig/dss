@@ -174,9 +174,11 @@ public class ImageUtils {
 		// pick the first available ImageReader
 		ImageReader reader = readers.next();
 
+		InputStream is = null;
 		ImageInputStream iis = null;
 		try {
-			iis = ImageIO.createImageInputStream(image.openStream());
+			is = image.openStream();
+			iis = ImageIO.createImageInputStream(is);
 
 			// attach source to the reader
 			reader.setInput(iis, true);
@@ -195,6 +197,7 @@ public class ImageUtils {
 			return new ImageAndResolution(image.openStream(), x, y);
 		} finally {
 			Utils.closeQuietly(iis);
+			Utils.closeQuietly(is);
 		}
 	}
 
@@ -208,9 +211,11 @@ public class ImageUtils {
 		// pick the first available ImageReader
 		ImageReader reader = readers.next();
 
+		InputStream is = null;
 		ImageInputStream iis = null;
 		try {
-			iis = ImageIO.createImageInputStream(image.openStream());
+			is = image.openStream();
+			iis = ImageIO.createImageInputStream(is);
 
 			// attach source to the reader
 			reader.setInput(iis, true);
@@ -235,6 +240,7 @@ public class ImageUtils {
 			return new ImageAndResolution(image.openStream(), hdpi, vdpi);
 		} finally {
 			Utils.closeQuietly(iis);
+			Utils.closeQuietly(is);
 		}
 	}
 
