@@ -198,6 +198,7 @@ dss-cookbook:: Samples and documentation of DSS used to generate this documentat
 === DSS Utils
 
 The module dss-utils offers an interface with utility methods to operate on String, Collection, I/O,... DSS framework provides two different implementations with the same behavior : 
+
  * dss-utils-apache-commons : this module uses Apache Commons libraries (commons-lang3, commons-collection4, commons-io and commons-codec);
  * dss-utils-google-guava : this module only requires Google Guava (recommended on Android).
 
