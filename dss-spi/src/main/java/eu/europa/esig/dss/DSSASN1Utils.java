@@ -23,8 +23,10 @@ package eu.europa.esig.dss;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.Security;
+import java.security.cert.CRLException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
+import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -78,7 +80,9 @@ import org.bouncycastle.asn1.x509.PolicyInformation;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.asn1.x509.qualified.QCStatement;
+import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CRLConverter;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cms.CMSSignedData;
@@ -500,6 +504,16 @@ public final class DSSASN1Utils {
 			LOG.error("Unable to parse authorityInfoAccess", e);
 		}
 		return locationsUrls;
+	}
+
+	public static X509CRL toX509CRL(final X509CRLHolder x509CRLHolder) {
+		try {
+			final JcaX509CRLConverter jcaX509CRLConverter = new JcaX509CRLConverter();
+			final X509CRL x509CRL = jcaX509CRLConverter.getCRL(x509CRLHolder);
+			return x509CRL;
+		} catch (CRLException e) {
+			throw new DSSException(e);
+		}
 	}
 
 	/**

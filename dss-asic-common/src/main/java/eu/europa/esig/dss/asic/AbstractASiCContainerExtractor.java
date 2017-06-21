@@ -32,9 +32,7 @@ public abstract class AbstractASiCContainerExtractor {
 	public ASiCExtractResult extract() {
 		ASiCExtractResult result = new ASiCExtractResult();
 
-		ZipInputStream asicInputStream = null;
-		try {
-			asicInputStream = new ZipInputStream(asicContainer.openStream());
+		try (InputStream is = asicContainer.openStream(); ZipInputStream asicInputStream = new ZipInputStream(is)) {
 			ZipEntry entry;
 			while ((entry = asicInputStream.getNextEntry()) != null) {
 				String entryName = entry.getName();
@@ -67,8 +65,6 @@ public abstract class AbstractASiCContainerExtractor {
 
 		} catch (IOException e) {
 			LOG.warn("Unable to parse the container " + e.getMessage());
-		} finally {
-			Utils.closeQuietly(asicInputStream);
 		}
 
 		result.setZipComment(getZipComment());
@@ -77,9 +73,7 @@ public abstract class AbstractASiCContainerExtractor {
 	}
 
 	public String getZipComment() {
-		InputStream is = null;
-		try {
-			is = asicContainer.openStream();
+		try (InputStream is = asicContainer.openStream()) {
 			byte[] buffer = Utils.toByteArray(is);
 			final int len = buffer.length;
 			final byte[] magicDirEnd = { 0x50, 0x4b, 0x05, 0x06 };
@@ -106,8 +100,6 @@ public abstract class AbstractASiCContainerExtractor {
 			}
 		} catch (Exception e) {
 			LOG.warn("Unable to extract the ZIP comment : " + e.getMessage());
-		} finally {
-			Utils.closeQuietly(is);
 		}
 		return null;
 	}

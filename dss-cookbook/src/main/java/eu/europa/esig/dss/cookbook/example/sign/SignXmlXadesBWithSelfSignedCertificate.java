@@ -23,7 +23,6 @@ package eu.europa.esig.dss.cookbook.example.sign;
 import java.io.IOException;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
@@ -83,9 +82,7 @@ public class SignXmlXadesBWithSelfSignedCertificate extends Cookbook {
 		// We invoke the xadesService to sign the document with the signature value obtained in
 		// the previous step.
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
-		//DSSUtils.copy(signedDocument.openStream(), System.out);
-		//signedDocument.save("c:/xml_example-xades-enveloped-b-signed-with-self-signed-certificate.xml");
 
-		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedXmlXadesB_WithSelfSignedCertificate.xml");
+		signedDocument.save("target/signedXmlXadesB_WithSelfSignedCertificate.xml");
 	}
 }

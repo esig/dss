@@ -78,11 +78,7 @@ public final class ASiCUtils {
 
 	public static boolean isArchiveContainsCorrectSignatureExtension(DSSDocument toSignDocument, String extension) {
 		boolean isSignatureTypeCorrect = true;
-		InputStream is = null;
-		ZipInputStream zis = null;
-		try {
-			is = toSignDocument.openStream();
-			zis = new ZipInputStream(is);
+		try (InputStream is = toSignDocument.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			ZipEntry entry;
 			while ((entry = zis.getNextEntry()) != null) {
 				if (isSignature(entry.getName())) {
@@ -91,9 +87,6 @@ public final class ASiCUtils {
 			}
 		} catch (IOException e) {
 			throw new DSSException("Unable to analyze the archive content", e);
-		} finally {
-			Utils.closeQuietly(zis);
-			Utils.closeQuietly(is);
 		}
 		return isSignatureTypeCorrect;
 	}
@@ -107,17 +100,13 @@ public final class ASiCUtils {
 
 	public static boolean isASiCContainer(DSSDocument dssDocument) {
 		byte[] preamble = new byte[2];
-		InputStream is = null;
-		try {
-			is = dssDocument.openStream();
+		try (InputStream is = dssDocument.openStream()) {
 			int r = is.read(preamble, 0, 2);
 			if (r != 2) {
 				return false;
 			}
 		} catch (IOException e) {
 			throw new DSSException("Unable to read the 2 first bytes", e);
-		} finally {
-			Utils.closeQuietly(is);
 		}
 
 		return (preamble[0] == 'P') && (preamble[1] == 'K');
@@ -132,16 +121,12 @@ public final class ASiCUtils {
 	}
 
 	public static MimeType getMimeType(final DSSDocument mimeTypeDocument) throws DSSException {
-		InputStream is = null;
-		try {
-			is = mimeTypeDocument.openStream();
+		try (InputStream is = mimeTypeDocument.openStream()) {
 			byte[] byteArray = Utils.toByteArray(is);
 			final String mimeTypeString = new String(byteArray, "UTF-8");
 			return MimeType.fromMimeTypeString(mimeTypeString);
 		} catch (IOException e) {
 			throw new DSSException(e);
-		} finally {
-			Utils.closeQuietly(is);
 		}
 	}
 

@@ -22,7 +22,6 @@ package eu.europa.esig.dss.cades.signature;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -33,8 +32,6 @@ import org.bouncycastle.cms.CMSSignedData;
 import eu.europa.esig.dss.CommonDocument;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -85,26 +82,6 @@ public class CMSSignedDocument extends CommonDocument {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
-	}
-
-	@Override
-	public void save(final String filePath) {
-		FileOutputStream fos = null;
-		try {
-			fos = new FileOutputStream(filePath);
-			Utils.write(getBytes(), fos);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		} finally {
-			Utils.closeQuietly(fos);
-		}
-	}
-
-	@Override
-	public String getDigest(final DigestAlgorithm digestAlgorithm) {
-		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, getBytes());
-		final String base64Encode = Utils.toBase64(digestBytes);
-		return base64Encode;
 	}
 
 	public String getBase64Encoded() {

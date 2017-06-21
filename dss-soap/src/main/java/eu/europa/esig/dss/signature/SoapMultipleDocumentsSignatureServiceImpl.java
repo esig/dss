@@ -1,13 +1,11 @@
 package eu.europa.esig.dss.signature;
 
-import java.io.IOException;
-
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.utils.Utils;
 
 @SuppressWarnings("serial")
 public class SoapMultipleDocumentsSignatureServiceImpl implements SoapMultipleDocumentsSignatureService {
@@ -35,11 +33,7 @@ public class SoapMultipleDocumentsSignatureServiceImpl implements SoapMultipleDo
 	}
 
 	private RemoteDocument toRemoteDocument(DSSDocument doc) throws DSSException {
-		try {
-			return new RemoteDocument(Utils.toByteArray(doc.openStream()), doc.getMimeType(), doc.getName());
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
+		return new RemoteDocument(DSSUtils.toByteArray(doc), doc.getMimeType(), doc.getName());
 	}
 
 }

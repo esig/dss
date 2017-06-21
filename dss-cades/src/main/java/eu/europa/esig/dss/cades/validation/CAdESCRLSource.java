@@ -38,8 +38,8 @@ import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.jce.provider.X509CRLObject;
 import org.bouncycastle.util.Store;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
 
 /**
@@ -52,7 +52,6 @@ public class CAdESCRLSource extends OfflineCRLSource {
 
 	private final CMSSignedData cmsSignedData;
 	private final SignerInformation signerInformation;
-
 
 	/**
 	 * The default constructor for CAdESCRLSource.
@@ -74,7 +73,7 @@ public class CAdESCRLSource extends OfflineCRLSource {
 		final Collection<X509CRLHolder> collection = crLs.getMatches(null);
 		for (final X509CRLHolder x509CRLHolder : collection) {
 
-			final X509CRL x509CRL = DSSUtils.toX509CRL(x509CRLHolder);
+			final X509CRL x509CRL = DSSASN1Utils.toX509CRL(x509CRLHolder);
 			addCRLToken(x509CRL);
 		}
 

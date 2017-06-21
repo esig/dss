@@ -11,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
@@ -56,7 +57,7 @@ public class DSSUtilsTest {
 		try {
 			DSSUtils.loadCertificate(new FileInputStream("src/test/resources/certchain.p7c"));
 			fail("Should not load single certificate (first?)");
-		} catch(DSSException dssEx){
+		} catch (DSSException dssEx) {
 			assertEquals(dssEx.getMessage(), "Could not parse certificate");
 		}
 	}
@@ -161,7 +162,9 @@ public class DSSUtilsTest {
 	public void loadPEMCrl() throws Exception {
 		X509CRL crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/LTRCA.crl"));
 		assertNotNull(crl);
-		assertTrue(DSSUtils.isPEM(new FileInputStream("src/test/resources/crl/LTRCA.crl")));
+		try (InputStream is = new FileInputStream("src/test/resources/crl/LTRCA.crl")) {
+			assertTrue(DSSUtils.isPEM(is));
+		}
 	}
 
 	@Test

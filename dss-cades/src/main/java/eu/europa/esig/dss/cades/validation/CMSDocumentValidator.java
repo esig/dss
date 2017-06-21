@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,20 +77,12 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	 * @throws DSSException
 	 */
 	public CMSDocumentValidator(final DSSDocument document) throws DSSException {
-
 		this();
 		this.document = document;
-		InputStream inputStream = null;
-		try {
-
-			inputStream = document.openStream();
-			if (DSSUtils.available(inputStream) > 0) {
-				this.cmsSignedData = new CMSSignedData(inputStream);
-			}
-		} catch (CMSException e) {
+		try (InputStream inputStream = document.openStream()) {
+			this.cmsSignedData = new CMSSignedData(inputStream);
+		} catch (IOException | CMSException e) {
 			throw new DSSException("Not a valid CAdES file", e);
-		} finally {
-			Utils.closeQuietly(inputStream);
 		}
 	}
 

@@ -21,7 +21,6 @@
 package eu.europa.esig.dss;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -30,9 +29,7 @@ import eu.europa.esig.dss.utils.Utils;
 /**
  * In memory representation of a document
  *
- *
  */
-
 public class InMemoryDocument extends CommonDocument {
 
 	private byte[] bytes;
@@ -131,36 +128,6 @@ public class InMemoryDocument extends CommonDocument {
 
 	public void setBytes(byte[] bytes) {
 		this.bytes = bytes;
-	}
-
-	@Override
-	public String getAbsolutePath() {
-		return absolutePath;
-	}
-
-	@Override
-	public void setAbsolutePath(final String absolutePath) {
-		this.absolutePath = absolutePath;
-	}
-
-	@Override
-	public void save(final String filePath) {
-		FileOutputStream fos = null;
-		try {
-			fos = new FileOutputStream(filePath);
-			Utils.write(getBytes(), fos);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		} finally {
-			Utils.closeQuietly(fos);
-		}
-	}
-
-	@Override
-	public String getDigest(final DigestAlgorithm digestAlgorithm) {
-		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, bytes);
-		final String base64Encode = Utils.toBase64(digestBytes);
-		return base64Encode;
 	}
 
 	public String getBase64Encoded() {

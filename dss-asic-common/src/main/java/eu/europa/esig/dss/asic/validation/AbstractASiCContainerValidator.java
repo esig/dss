@@ -83,7 +83,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 		DSSDocument mimeTypeDocument = extractResult.getMimeTypeDocument();
 		if (mimeTypeDocument != null) {
-			String mimeTypeContent = DSSUtils.toString(DSSUtils.toByteArray(mimeTypeDocument));
+			String mimeTypeContent = new String(DSSUtils.toByteArray(mimeTypeDocument));
 			containerInfo.setMimeTypeFilePresent(true);
 			containerInfo.setMimeTypeContent(mimeTypeContent);
 		} else {

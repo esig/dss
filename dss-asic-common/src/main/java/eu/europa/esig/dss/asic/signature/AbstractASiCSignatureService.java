@@ -118,9 +118,7 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 	}
 
 	private void copyArchiveContentWithoutSignatures(DSSDocument archiveDocument, ZipOutputStream zos) throws IOException {
-		ZipInputStream zis = null;
-		try {
-			zis = new ZipInputStream(archiveDocument.openStream());
+		try (InputStream is = archiveDocument.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			ZipEntry entry;
 			while ((entry = zis.getNextEntry()) != null) {
 				final String name = entry.getName();
@@ -130,8 +128,6 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 					Utils.copy(zis, zos);
 				}
 			}
-		} finally {
-			Utils.closeQuietly(zis);
 		}
 	}
 
@@ -175,18 +171,14 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 
 	private void storeSignedFiles(final List<DSSDocument> detachedDocuments, final ZipOutputStream zos) throws IOException {
 		for (DSSDocument detachedDocument : detachedDocuments) {
-			InputStream is = null;
-			try {
+			try (InputStream is = detachedDocument.openStream()) {
 				final String detachedDocumentName = detachedDocument.getName();
 				final String name = detachedDocumentName != null ? detachedDocumentName : ZIP_ENTRY_DETACHED_FILE;
 				final ZipEntry entryDocument = new ZipEntry(name);
-				zos.setLevel(ZipEntry.DEFLATED);
 
+				zos.setLevel(ZipEntry.DEFLATED);
 				zos.putNextEntry(entryDocument);
-				is = detachedDocument.openStream();
 				Utils.copy(is, zos);
-			} finally {
-				Utils.closeQuietly(is);
 			}
 		}
 	}

@@ -20,10 +20,15 @@
  */
 package eu.europa.esig.dss;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
+
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This class implements the default methods.
@@ -32,6 +37,8 @@ import java.io.StringWriter;
 @SuppressWarnings("serial")
 public abstract class CommonDocument implements DSSDocument {
 
+	protected Map<DigestAlgorithm, String> base64EncodeDigestMap = new HashMap<DigestAlgorithm, String>();
+
 	protected MimeType mimeType;
 
 	protected String name;
@@ -39,14 +46,21 @@ public abstract class CommonDocument implements DSSDocument {
 	protected String absolutePath;
 
 	@Override
+	public void save(final String path) throws IOException {
+		try (FileOutputStream fos = new FileOutputStream(path)) {
+			writeTo(fos);
+		}
+	}
+
+	@Override
 	public void writeTo(OutputStream stream) throws IOException {
 		byte[] buffer = new byte[1024];
 		int count = -1;
-		InputStream inStream = openStream();
-		while ((count = inStream.read(buffer)) > 0) {
-			stream.write(buffer, 0, count);
+		try (InputStream inStream = openStream()) {
+			while ((count = inStream.read(buffer)) > 0) {
+				stream.write(buffer, 0, count);
+			}
 		}
-		inStream.close();
 	}
 
 	@Override
@@ -79,12 +93,27 @@ public abstract class CommonDocument implements DSSDocument {
 	}
 
 	@Override
-	public String toString() {
+	public String getDigest(final DigestAlgorithm digestAlgorithm) {
+		String base64EncodeDigest = base64EncodeDigestMap.get(digestAlgorithm);
+		if (base64EncodeDigest == null) {
+			try (InputStream inputStream = openStream()) {
+				final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, inputStream);
+				base64EncodeDigest = Utils.toBase64(digestBytes);
+				base64EncodeDigestMap.put(digestAlgorithm, base64EncodeDigest);
+			} catch (Exception e) {
+				throw new DSSException("Unable to compute digest", e);
+			}
+		}
+		return base64EncodeDigest;
+	}
 
+	@Override
+	public String toString() {
 		final StringWriter stringWriter = new StringWriter();
 		stringWriter.append("Name: " + getName()).append(" / ").append(mimeType == null ? "" : mimeType.getMimeTypeString()).append(" / ")
 				.append(getAbsolutePath());
 		final String string = stringWriter.toString();
 		return string;
 	}
+
 }

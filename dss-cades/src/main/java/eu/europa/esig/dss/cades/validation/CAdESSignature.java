@@ -1102,10 +1102,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (dssDocument instanceof DigestDocument) {
 			cmsSignedDataParser = new CMSSignedDataParser(new PrecomputedDigestCalculatorProvider((DigestDocument) dssDocument), cmsSignedData.getEncoded());
 		} else {
-			final InputStream inputStream = dssDocument.openStream();
-			final CMSTypedStream signedContent = new CMSTypedStream(inputStream);
-			cmsSignedDataParser = new CMSSignedDataParser(new BcDigestCalculatorProvider(), signedContent, cmsSignedData.getEncoded());
-			cmsSignedDataParser.getSignedContent().drain(); // Closes the stream
+			try (InputStream inputStream = dssDocument.openStream()) {
+				final CMSTypedStream signedContent = new CMSTypedStream(inputStream);
+				cmsSignedDataParser = new CMSSignedDataParser(new BcDigestCalculatorProvider(), signedContent, cmsSignedData.getEncoded());
+				cmsSignedDataParser.getSignedContent().drain(); // Closes the stream
+			}
 		}
 
 		final SignerId signerId = signerInformation.getSID();

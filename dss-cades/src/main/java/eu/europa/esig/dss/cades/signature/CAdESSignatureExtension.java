@@ -103,14 +103,12 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	public CMSSignedDocument extendSignatures(final DSSDocument signatureToExtend, final CAdESSignatureParameters parameters) throws DSSException {
 
 		LOG.info("EXTEND SIGNATURES.");
-		try {
-			final InputStream inputStream = signatureToExtend.openStream();
+		try (InputStream inputStream = signatureToExtend.openStream()) {
 			final CMSSignedData cmsSignedData = new CMSSignedData(inputStream);
-			Utils.closeQuietly(inputStream);
 			final CMSSignedData extendCMSSignedData = extendCMSSignatures(cmsSignedData, parameters);
 			final CMSSignedDocument cmsSignedDocument = new CMSSignedDocument(extendCMSSignedData);
 			return cmsSignedDocument;
-		} catch (CMSException e) {
+		} catch (IOException | CMSException e) {
 			throw new DSSException("Cannot parse CMS data", e);
 		}
 	}
