@@ -7,7 +7,7 @@
 	</parent>
 	<artifactId>dss-utils-apache-commons</artifactId>
 	<name>DSS Utils implementation with Apache Commons</name>
-	<description>DSS Utils with Apache Commons : util methods for String, Collection,...</description>
+	<description>DSS Utils with Apache Commons : utility methods for String, Collection,...</description>
 
 	<dependencies>
 		<dependency>

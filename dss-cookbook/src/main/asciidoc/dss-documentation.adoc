@@ -189,8 +189,19 @@ dss-simple-report-jaxb:: JAXB model of the simple report.
 dss-detailed-report-jaxb:: JAXB model of the detailed report.
 dss-reports:: Wrappers to easily manipulate the reports JAXB models (diagnostic-data, simple-report, detailed-report).
 dss-tsl-jaxb:: JAXB model of the TSL.
+dss-utils:: API with utility methods for String, Collection, I/O,...
+dss-utils-apache-commons:: Implementation of dss-utils with Apache Commons libraries
+dss-utils-google-guava:: Implementation of dss-utils with Google Guava
 dss-test:: Mocks and util classes for unit tests.
 dss-cookbook:: Samples and documentation of DSS used to generate this documentation.
+
+=== DSS Utils
+
+The module dss-utils offers an interface with utility methods to operate on String, Collection, I/O,... DSS framework provides two different implementations with the same behavior : 
+ * dss-utils-apache-commons : this module uses Apache Commons libraries (commons-lang3, commons-collection4, commons-io and commons-codec);
+ * dss-utils-google-guava : this module only requires Google Guava (recommended on Android).
+
+If your integration includes dss-utils, you will needs to select an implementation.
 
 == Signature's profile simplification
 

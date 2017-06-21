@@ -7,7 +7,7 @@
 	</parent>
 	<artifactId>dss-utils</artifactId>
 	<name>DSS Utils API</name>
-	<description>DSS Utils API : util methods for String, Collection,...</description>
+	<description>DSS Utils API : utility methods for String, Collection,...</description>
 
 	<dependencies>
 		<dependency>
