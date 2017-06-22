@@ -1006,6 +1006,7 @@ A time-stamp policy is a "named set of rules that indicates the applicability of
 DSS offers some REST and SOAP web services. The documentation will covers the REST calls. Additionally, we also provide a SOAP-UI project and Postman samples in the cookbook module.
 
 The different webservices are : 
+
  * Signature webservices (dss-soap / dss-rest and their clients) : they expose methods to allow to sign or extend a signature from a client.
  * Server-signing webservice (dss-server-signing-soap / dss-server-signing-rest and their clients) : they expose method to retrieve keys from a server (PKCS#11, PKCS#12, HSM,...) and to sign the digest on the server side.
  * Validation webservices (dss-validation-soap / dss-validation-rest and their client) : they expose methods to allow validate a signature, with an optional detached file and an optional validation policy.
