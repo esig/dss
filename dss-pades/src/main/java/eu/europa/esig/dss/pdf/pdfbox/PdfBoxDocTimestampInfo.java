@@ -38,7 +38,7 @@ import eu.europa.esig.dss.x509.TimestampType;
  */
 class PdfBoxDocTimestampInfo extends PdfBoxCMSInfo implements PdfDocTimestampInfo {
 
-	private static final Logger logger = LoggerFactory.getLogger(PdfBoxDocTimestampInfo.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxDocTimestampInfo.class);
 
 	private final TimestampToken timestampToken;
 
@@ -65,7 +65,7 @@ class PdfBoxDocTimestampInfo extends PdfBoxCMSInfo implements PdfDocTimestampInf
 			}
 			timestampToken = new TimestampToken(cms, timestampType, validationCertPool);
 			content = cms;
-			logger.debug("Created PdfBoxDocTimestampInfo {} : {}", timestampType, uniqueId());
+			LOG.debug("Created PdfBoxDocTimestampInfo {} : {}", timestampType, uniqueId());
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}

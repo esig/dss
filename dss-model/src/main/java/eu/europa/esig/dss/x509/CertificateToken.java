@@ -432,7 +432,7 @@ public class CertificateToken extends Token {
 	@Override
 	public String toString(String indentStr) {
 		try {
-			final StringBuffer out = new StringBuffer();
+			final StringBuilder out = new StringBuilder();
 			out.append(indentStr).append("CertificateToken[\n");
 			indentStr += "\t";
 

@@ -34,6 +34,7 @@ import java.util.Map.Entry;
 public class MimeType implements Serializable {
 
 	private static Map<String, MimeType> mimeTypes = new HashMap<String, MimeType>();
+	private static Map<String, MimeType> fileExtensions = new HashMap<String, MimeType>();
 
 	public static final MimeType BINARY = new MimeType("application/octet-stream");
 	public static final MimeType XML = new MimeType("text/xml");
@@ -51,36 +52,34 @@ public class MimeType implements Serializable {
 
 	private String mimeTypeString;
 
-	private static Map<String, MimeType> fileExtensions = new HashMap<String, MimeType>() {
-		{
-			put("xml", XML);
+	static {
+		fileExtensions.put("xml", XML);
 
-			put("pkcs7", PKCS7);
-			put("p7s", PKCS7);
+		fileExtensions.put("pkcs7", PKCS7);
+		fileExtensions.put("p7s", PKCS7);
 
-			put("pdf", PDF);
+		fileExtensions.put("pdf", PDF);
 
-			put("asics", ASICS);
-			put("scs", ASICS);
+		fileExtensions.put("asics", ASICS);
+		fileExtensions.put("scs", ASICS);
 
-			put("asice", ASICE);
-			put("sce", ASICE);
-			// estonian bdoc file type is handled as asic-e document
-			put("bdoc", ASICE);
+		fileExtensions.put("asice", ASICE);
+		fileExtensions.put("sce", ASICE);
+		// estonian bdoc file type is handled as asic-e document
+		fileExtensions.put("bdoc", ASICE);
 
-			// ASiC-E + XML (not XAdES)
-			put("odt", ODT);
-			put("ods", ODS);
+		// ASiC-E + XML (not XAdES)
+		fileExtensions.put("odt", ODT);
+		fileExtensions.put("ods", ODS);
 
-			put("txt", TEXT);
+		fileExtensions.put("txt", TEXT);
 
-			put("png", PNG);
-			put("jpg", JPEG);
-			put("jpeg", JPEG);
+		fileExtensions.put("png", PNG);
+		fileExtensions.put("jpg", JPEG);
+		fileExtensions.put("jpeg", JPEG);
 
-			put("tst", TST);
-		}
-	};
+		fileExtensions.put("tst", TST);
+	}
 
 	/**
 	 * This constructor is used only by the web-services.

@@ -67,7 +67,7 @@ import eu.europa.esig.dss.x509.CertificateToken;
 
 public final class DSSUtils {
 
-	private static final Logger logger = LoggerFactory.getLogger(DSSUtils.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DSSUtils.class);
 
 	public static final String CERT_BEGIN = "-----BEGIN CERTIFICATE-----";
 	public static final String CERT_END = "-----END CERTIFICATE-----";
@@ -95,10 +95,10 @@ public final class DSSUtils {
 			Security.addProvider(securityProvider);
 			certificateFactory = CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME);
 		} catch (CertificateException e) {
-			logger.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			throw new DSSException("Platform does not support X509 certificate", e);
 		} catch (NoSuchProviderException e) {
-			logger.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			throw new DSSException("Platform does not support BouncyCastle", e);
 		}
 	}
@@ -379,21 +379,21 @@ public final class DSSUtils {
 	public static Collection<CertificateToken> loadIssuerCertificates(final CertificateToken cert, final DataLoader loader) {
 		List<String> urls = DSSASN1Utils.getCAAccessLocations(cert);
 		if (Utils.isCollectionEmpty(urls)) {
-			logger.info("There is no AIA extension for certificate download.");
+			LOG.info("There is no AIA extension for certificate download.");
 			return null;
 		}
 
 		if (loader == null) {
-			logger.warn("There is no DataLoader defined to load Certificates from AIA extension (urls : " + urls + ")");
+			LOG.warn("There is no DataLoader defined to load Certificates from AIA extension (urls : " + urls + ")");
 			return null;
 		}
 
 		for (String url : urls) {
-			logger.debug("Loading certificate from {}", url);
+			LOG.debug("Loading certificate from {}", url);
 
 			byte[] bytes = loader.get(url);
 			if (Utils.isArrayNotEmpty(bytes)) {
-				logger.debug("Base64 content : " + Utils.toBase64(bytes));
+				LOG.debug("Base64 content : " + Utils.toBase64(bytes));
 				try (InputStream is = new ByteArrayInputStream(bytes)) {
 
 					Collection<CertificateToken> issuerCerts = null;
@@ -415,17 +415,17 @@ public final class DSSUtils {
 
 					if (issuerCert != null) {
 						if (!cert.getIssuerX500Principal().equals(issuerCert.getSubjectX500Principal())) {
-							logger.info("There is AIA extension, but the issuer subject name and subject name does not match.");
-							logger.info("CERT ISSUER    : " + cert.getIssuerX500Principal().toString());
-							logger.info("ISSUER SUBJECT : " + issuerCert.getSubjectX500Principal().toString());
+							LOG.info("There is AIA extension, but the issuer subject name and subject name does not match.");
+							LOG.info("CERT ISSUER    : " + cert.getIssuerX500Principal().toString());
+							LOG.info("ISSUER SUBJECT : " + issuerCert.getSubjectX500Principal().toString());
 						}
 						return issuerCerts;
 					}
 				} catch (Exception e) {
-					logger.warn("Unable to parse certficate from AIA (url:" + url + ") : " + e.getMessage());
+					LOG.warn("Unable to parse certficate from AIA (url:" + url + ") : " + e.getMessage());
 				}
 			} else {
-				logger.error("Unable to read data from {}.", url);
+				LOG.error("Unable to read data from {}.", url);
 			}
 		}
 
@@ -502,12 +502,12 @@ public final class DSSUtils {
 	 * @param newPattern
 	 * @return
 	 */
-	public static StringBuffer replaceStrStr(final StringBuffer string, final String oldPattern, final String newPattern) {
+	public static StringBuilder replaceStrStr(final StringBuilder string, final String oldPattern, final String newPattern) {
 		if ((string == null) || (oldPattern == null) || oldPattern.equals("") || (newPattern == null)) {
 			return string;
 		}
 
-		final StringBuffer replaced = new StringBuffer();
+		final StringBuilder replaced = new StringBuilder();
 		int startIdx = 0;
 		int idxOld;
 		while ((idxOld = string.indexOf(oldPattern, startIdx)) >= 0) {
@@ -520,8 +520,8 @@ public final class DSSUtils {
 	}
 
 	public static String replaceStrStr(final String string, final String oldPattern, final String newPattern) {
-		final StringBuffer stringBuffer = replaceStrStr(new StringBuffer(string), oldPattern, newPattern);
-		return stringBuffer.toString();
+		final StringBuilder stringBuilder = replaceStrStr(new StringBuilder(string), oldPattern, newPattern);
+		return stringBuilder.toString();
 	}
 
 	/**
@@ -706,7 +706,7 @@ public final class DSSUtils {
 			if (file.isDirectory()) {
 				throw new IOException("File '" + file + "' exists but is a directory");
 			}
-			if (file.canRead() == false) {
+			if (!file.canRead()) {
 				throw new IOException("File '" + file + "' cannot be read");
 			}
 		} else {
@@ -829,7 +829,7 @@ public final class DSSUtils {
 			final X500Principal x500Principal = new X500Principal(x500PrincipalString);
 			return x500Principal;
 		} catch (Exception e) {
-			logger.warn(e.getMessage());
+			LOG.warn(e.getMessage());
 		}
 		return null;
 	}
@@ -1098,7 +1098,7 @@ public final class DSSUtils {
 		try {
 			return URLDecoder.decode(uri, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			logger.error("Unable to decode '" + uri + "' : " + e.getMessage(), e);
+			LOG.error("Unable to decode '" + uri + "' : " + e.getMessage(), e);
 		}
 		return uri;
 	}

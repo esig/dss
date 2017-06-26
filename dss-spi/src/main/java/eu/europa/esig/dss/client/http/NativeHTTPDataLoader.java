@@ -38,12 +38,14 @@ import eu.europa.esig.dss.DSSException;
  */
 public class NativeHTTPDataLoader implements DataLoader {
 
-	public enum HttpMethod { GET, POST };
+	public enum HttpMethod {
+		GET, POST
+	}
 
-	private static Logger LOGGER = LoggerFactory.getLogger(NativeHTTPDataLoader.class);
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(NativeHTTPDataLoader.class);
+
 	private long maxInputSize;
-	
+
 	/**
 	 * Timeout of the full request processing time (send and retrieve data).
 	 */
@@ -53,16 +55,15 @@ public class NativeHTTPDataLoader implements DataLoader {
 		NativeDataLoaderCall task = new NativeDataLoaderCall(url, content, refresh, maxInputSize);
 
 		Future<byte[]> result = Executors.newSingleThreadExecutor().submit(task);
-		
+
 		try {
-			return timeout > 0?
-					result.get(timeout, TimeUnit.MILLISECONDS):
-					result.get();
+			return timeout > 0 ? result.get(timeout, TimeUnit.MILLISECONDS) : result.get();
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			throw new DSSException(e);
 		}
 	}
 
+	@Override
 	public DataAndUrl get(List<String> urlStrings) {
 		for (final String urlString : urlStrings) {
 			try {
@@ -76,19 +77,23 @@ public class NativeHTTPDataLoader implements DataLoader {
 		}
 		throw new DSSException(String.format("Impossible to obtain data using with given urls %s", urlStrings));
 	}
-	
+
+	@Override
 	public byte[] get(String url) {
 		return get(url, false);
 	}
-	
+
+	@Override
 	public byte[] get(String url, boolean refresh) {
 		return request(url, HttpMethod.GET, null, !refresh);
 	}
-	
+
+	@Override
 	public byte[] post(String url, byte[] content) {
 		return request(url, HttpMethod.POST, content, false);
 	}
-	
+
+	@Override
 	public void setContentType(String contentType) {
 		throw new DSSException("Not implemented");
 	}

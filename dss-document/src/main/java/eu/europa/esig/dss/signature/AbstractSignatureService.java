@@ -42,12 +42,14 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 
 	protected TSPSource tspSource;
 
-	final protected CertificateVerifier certificateVerifier;
+	protected final CertificateVerifier certificateVerifier;
 
 	/**
 	 * To construct a signature service the <code>CertificateVerifier</code> must be set and cannot be null.
 	 *
-	 * @param certificateVerifier {@code CertificateVerifier} provides information on the sources to be used in the validation process in the context of a signature.
+	 * @param certificateVerifier
+	 *            {@code CertificateVerifier} provides information on the sources to be used in the validation process
+	 *            in the context of a signature.
 	 */
 	protected AbstractSignatureService(final CertificateVerifier certificateVerifier) {
 		if (certificateVerifier == null) {
@@ -64,7 +66,8 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 	/**
 	 * This method raises an exception if the signing rules forbid the use on an expired certificate.
 	 *
-	 * @param parameters set of driving signing parameters
+	 * @param parameters
+	 *            set of driving signing parameters
 	 */
 	protected void assertSigningDateInCertificateValidityRange(final SP parameters) {
 		if (parameters.isSignWithExpiredCertificate()) {
@@ -75,7 +78,8 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 		final Date notBefore = signingCertificate.getNotBefore();
 		final Date signingDate = parameters.bLevel().getSigningDate();
 		if (signingDate.after(notAfter) || signingDate.before(notBefore)) {
-			throw new DSSException(String.format("Signing Date (%s) is not in certificate validity range (%s, %s).", signingDate.toString(), notBefore.toString(), notAfter.toString()));
+			throw new DSSException(String.format("Signing Date (%s) is not in certificate validity range (%s, %s).", signingDate.toString(),
+					notBefore.toString(), notAfter.toString()));
 		}
 	}
 }

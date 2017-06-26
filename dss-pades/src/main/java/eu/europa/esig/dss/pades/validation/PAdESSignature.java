@@ -67,7 +67,7 @@ import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
  */
 public class PAdESSignature extends CAdESSignature {
 
-	private static final Logger logger = LoggerFactory.getLogger(PAdESSignature.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PAdESSignature.class);
 
 	private final DSSDocument document;
 	private final PdfDssDict dssDictionary;
@@ -452,7 +452,7 @@ public class PAdESSignature extends CAdESSignature {
 		default:
 			throw new IllegalArgumentException("Unknown level " + signatureLevel);
 		}
-		logger.debug("Level {} found on document {} = {}", new Object[] { signatureLevel, document.getName(), dataForLevelPresent });
+		LOG.debug("Level {} found on document {} = {}", new Object[] { signatureLevel, document.getName(), dataForLevelPresent });
 		return dataForLevelPresent;
 	}
 

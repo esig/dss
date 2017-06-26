@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificateChain;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
@@ -43,7 +42,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
  */
 public class BasicBuildingBlocks {
 
-	private static final Logger logger = LoggerFactory.getLogger(BasicBuildingBlocks.class);
+	private static final Logger LOG = LoggerFactory.getLogger(BasicBuildingBlocks.class);
 
 	private final DiagnosticData diagnosticData;
 	private final TokenProxy token;
@@ -126,7 +125,7 @@ public class BasicBuildingBlocks {
 
 		return result;
 	}
-	
+
 	private void updateFinalConclusion(XmlBasicBuildingBlocks result, XmlConstraintsConclusion constraintsAndConclusion) {
 		XmlConclusion finalConclusion = result.getConclusion();
 
@@ -196,7 +195,7 @@ public class BasicBuildingBlocks {
 						((RevocationWrapper) token).getProductionDate(), context, policy);
 				return xcv.execute();
 			} else {
-				logger.info("Unsupported context " + context);
+				LOG.info("Unsupported context " + context);
 			}
 		}
 		return null;
@@ -211,7 +210,7 @@ public class BasicBuildingBlocks {
 		} else if (Context.REVOCATION.equals(context)) {
 			aav = new RevocationAcceptanceValidation(diagnosticData, currentTime, (RevocationWrapper) token, policy);
 		} else {
-			logger.info("Unsupported context " + context);
+			LOG.info("Unsupported context " + context);
 		}
 		return aav != null ? aav.execute() : null;
 	}

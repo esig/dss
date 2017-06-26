@@ -86,7 +86,7 @@ import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 class PdfBoxSignatureService implements PDFSignatureService {
 
-	private static final Logger logger = LoggerFactory.getLogger(PdfBoxSignatureService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxSignatureService.class);
 
 	@Override
 	public byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm)
@@ -152,8 +152,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 			saveDocumentIncrementally(parameters, fileOutputStream, pdDocument);
 			final byte[] digestValue = digest.digest();
-			if (logger.isDebugEnabled()) {
-				logger.debug("Digest to be signed: " + Utils.toHex(digestValue));
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Digest to be signed: " + Utils.toHex(digestValue));
 			}
 			return digestValue;
 		} catch (IOException e) {
@@ -291,7 +291,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				callback.validate(pdfSignatureOrDocTimestampInfo);
 			}
 		} catch (IOException e) {
-			logger.error("Cannot validate signatures : " + e.getMessage(), e);
+			LOG.error("Cannot validate signatures : " + e.getMessage(), e);
 		}
 
 		Utils.closeQuietly(inputStream);
@@ -305,7 +305,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 			List<PDSignature> pdSignatures = doc.getSignatureDictionaries();
 			if (Utils.isCollectionNotEmpty(pdSignatures)) {
-				logger.debug("{} signature(s) found", pdSignatures.size());
+				LOG.debug("{} signature(s) found", pdSignatures.size());
 
 				PdfDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSObject(), doc);
 				PdfDssDict dssDictionary = PdfDssDict.extract(catalog);
@@ -320,11 +320,11 @@ class PdfBoxSignatureService implements PDFSignatureService {
 					byte[] cmsWithByteRange = signature.getContents(originalBytes);
 
 					if (!Arrays.equals(cmsWithByteRange, cms)) {
-						logger.warn("The byte range doesn't match found /Content value!");
+						LOG.warn("The byte range doesn't match found /Content value!");
 					}
 
 					if (Utils.isStringEmpty(subFilter) || Utils.isArrayEmpty(cms)) {
-						logger.warn("Wrong signature with empty subfilter or cms.");
+						LOG.warn("Wrong signature with empty subfilter or cms.");
 						continue;
 					}
 
@@ -356,13 +356,13 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				linkSignatures(signatures);
 
 				for (PdfSignatureOrDocTimestampInfo sig : signatures) {
-					logger.debug("Signature " + sig.uniqueId() + " found with byteRange " + Arrays.toString(sig.getSignatureByteRange()) + " ("
+					LOG.debug("Signature " + sig.uniqueId() + " found with byteRange " + Arrays.toString(sig.getSignatureByteRange()) + " ("
 							+ sig.getSubFilter() + ")");
 				}
 			}
 
 		} catch (Exception e) {
-			logger.warn("Cannot analyze signatures : " + e.getMessage(), e);
+			LOG.warn("Cannot analyze signatures : " + e.getMessage(), e);
 		} finally {
 			Utils.closeQuietly(doc);
 		}
@@ -397,7 +397,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				dssDictionary = PdfDssDict.extract(catalog);
 			}
 		} catch (Exception e) {
-			logger.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
+			LOG.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
 		} finally {
 			Utils.closeQuietly(doc);
 		}

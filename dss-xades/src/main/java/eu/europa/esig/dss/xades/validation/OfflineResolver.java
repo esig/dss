@@ -125,7 +125,7 @@ public class OfflineResolver extends ResourceResolverSpi {
 			}
 			return result;
 		} else {
-			Object exArgs[] = { "The uriNodeValue " + documentUri + " is not configured for offline work" };
+			Object[] exArgs = { "The uriNodeValue " + documentUri + " is not configured for offline work" };
 			throw new ResourceResolverException("generic.EmptyMessage", exArgs, documentUri, context.baseUri);
 		}
 	}

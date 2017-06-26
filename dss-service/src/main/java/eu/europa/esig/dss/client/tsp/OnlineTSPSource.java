@@ -45,7 +45,7 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
  */
 public class OnlineTSPSource implements TSPSource {
 
-	private static final Logger logger = LoggerFactory.getLogger(OnlineTSPSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(OnlineTSPSource.class);
 
 	/**
 	 * The URL of the TSP server
@@ -124,9 +124,9 @@ public class OnlineTSPSource implements TSPSource {
 	@Override
 	public TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException {
 		try {
-			if (logger.isTraceEnabled()) {
-				logger.trace("Timestamp digest algorithm: " + digestAlgorithm.getName());
-				logger.trace("Timestamp digest value    : " + Utils.toHex(digest));
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("Timestamp digest algorithm: " + digestAlgorithm.getName());
+				LOG.trace("Timestamp digest value    : " + Utils.toHex(digest));
 			}
 
 			// Setup the time stamp request
@@ -160,13 +160,13 @@ public class OnlineTSPSource implements TSPSource {
 
 			String statusString = timeStampResponse.getStatusString();
 			if (statusString != null) {
-				logger.info("Status: " + statusString);
+				LOG.info("Status: " + statusString);
 			}
 
 			final TimeStampToken timeStampToken = timeStampResponse.getTimeStampToken();
 
 			if (timeStampToken != null) {
-				logger.info("TSP SID : SN " + timeStampToken.getSID().getSerialNumber() + ", Issuer " + timeStampToken.getSID().getIssuer());
+				LOG.info("TSP SID : SN " + timeStampToken.getSID().getSerialNumber() + ", Issuer " + timeStampToken.getSID().getIssuer());
 			}
 
 			return timeStampToken;

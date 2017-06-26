@@ -51,7 +51,7 @@ public class KeyStoreSignatureTokenConnection extends AbstractKeyStoreTokenConne
 				try {
 					ksStream.close();
 				} catch (IOException e) {
-					logger.error(e.getMessage(), e);
+					LOG.error(e.getMessage(), e);
 				}
 			}
 		}

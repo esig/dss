@@ -64,7 +64,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
  */
 public class SimpleReportBuilder {
 
-	private static final Logger logger = LoggerFactory.getLogger(SimpleReportBuilder.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SimpleReportBuilder.class);
 
 	private final Date currentTime;
 	private final ValidationPolicy policy;
@@ -181,7 +181,7 @@ public class SimpleReportBuilder {
 			constraintsConclusion = getArchivalValidationConclusion(signatureId);
 			break;
 		default:
-			logger.error("Unsupported validation level : " + validationLevel);
+			LOG.error("Unsupported validation level : " + validationLevel);
 			break;
 		}
 

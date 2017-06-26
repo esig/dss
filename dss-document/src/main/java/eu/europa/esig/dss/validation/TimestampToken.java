@@ -65,7 +65,7 @@ import eu.europa.esig.dss.x509.TokenValidationExtraInfo;
 @SuppressWarnings("serial")
 public class TimestampToken extends Token {
 
-	private static final Logger logger = LoggerFactory.getLogger(TimestampToken.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TimestampToken.class);
 
 	private boolean processed = false;
 
@@ -175,31 +175,31 @@ public class TimestampToken extends Token {
 			timeStampToken.validate(verifier);
 			timestampValidity = TimestampValidity.VALID;
 		} catch (IllegalArgumentException e) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("No signing certificate for timestamp token: ", e);
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("No signing certificate for timestamp token: ", e);
 			} else {
-				logger.info("No signing certificate for timestamp token: {}", e.getMessage());
+				LOG.info("No signing certificate for timestamp token: {}", e.getMessage());
 			}
 			timestampValidity = TimestampValidity.NO_SIGNING_CERTIFICATE;
 		} catch (TSPValidationException e) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("No valid signature for timestamp token: ", e);
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("No valid signature for timestamp token: ", e);
 			} else {
-				logger.info("No valid signature for timestamp token: {}", e.getMessage());
+				LOG.info("No valid signature for timestamp token: {}", e.getMessage());
 			}
 			timestampValidity = TimestampValidity.NOT_VALID_SIGNATURE;
 		} catch (TSPException e) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("No valid structure for timestamp token: ", e);
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("No valid structure for timestamp token: ", e);
 			} else {
-				logger.info("No valid structure for timestamp token: {}", e.getMessage());
+				LOG.info("No valid structure for timestamp token: {}", e.getMessage());
 			}
 			timestampValidity = TimestampValidity.NOT_VALID_STRUCTURE;
 		} catch (OperatorCreationException e) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("No valid structure for timestamp token: ", e);
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("No valid structure for timestamp token: ", e);
 			} else {
-				logger.info("No valid structure for timestamp token: {}", e.getMessage());
+				LOG.info("No valid structure for timestamp token: {}", e.getMessage());
 			}
 			timestampValidity = TimestampValidity.NOT_VALID_STRUCTURE;
 		}
@@ -226,9 +226,9 @@ public class TimestampToken extends Token {
 			final byte[] timestampDigest = timeStampInfo.getMessageImprintDigest();
 			messageImprintIntact = Arrays.equals(computedDigest, timestampDigest);
 			if (!messageImprintIntact) {
-				logger.error("Computed digest ({}) on the extracted data from the document : {}", digestAlgorithm, Utils.toHex(computedDigest));
-				logger.error("Digest present in TimestampToken: {}", Utils.toHex(timestampDigest));
-				logger.error("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
+				LOG.error("Computed digest ({}) on the extracted data from the document : {}", digestAlgorithm, Utils.toHex(computedDigest));
+				LOG.error("Digest present in TimestampToken: {}", Utils.toHex(timestampDigest));
+				LOG.error("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
 			}
 		} catch (DSSException e) {
 			messageImprintIntact = false;
@@ -408,7 +408,7 @@ public class TimestampToken extends Token {
 
 		try {
 
-			final StringBuffer out = new StringBuffer();
+			final StringBuilder out = new StringBuilder();
 			out.append(indentStr).append("TimestampToken[signedBy=").append(issuerToken == null ? "?" : issuerToken.getDSSIdAsString());
 			out.append(", generated: ").append(DSSUtils.formatInternal(timeStamp.getTimeStampInfo().getGenTime()));
 			out.append(" / ").append(timeStampType).append('\n');

@@ -63,7 +63,7 @@ import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 
 public final class DSSRevocationUtils {
 
-	private static final Logger logger = LoggerFactory.getLogger(DSSRevocationUtils.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DSSRevocationUtils.class);
 
 	private static JcaDigestCalculatorProviderBuilder jcaDigestCalculatorProviderBuilder;
 
@@ -138,7 +138,7 @@ public final class DSSRevocationUtils {
 		final byte[] extensionBytes = crlEntry.getExtensionValue(reasonId);
 
 		if (Utils.isArrayEmpty(extensionBytes)) {
-			logger.warn("Empty reasonCode extension for crl entry");
+			LOG.warn("Empty reasonCode extension for crl entry");
 			return null;
 		}
 
@@ -149,7 +149,7 @@ public final class DSSRevocationUtils {
 			int intValue = crlReason.getValue().intValue();
 			reason = CRLReasonEnum.fromInt(intValue).name();
 		} catch (IOException e) {
-			logger.error("Unable to retrieve the crl reason : " + e.getMessage(), e);
+			LOG.error("Unable to retrieve the crl reason : " + e.getMessage(), e);
 		}
 		return reason;
 	}

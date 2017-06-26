@@ -33,7 +33,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
  */
 public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlValidationProcessArchivalData> {
 
-	private static final Logger logger = LoggerFactory.getLogger(ValidationProcessForSignaturesWithArchivalData.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ValidationProcessForSignaturesWithArchivalData.class);
 
 	private final XmlConstraintsConclusion validationProcessLongTermData;
 	private final List<XmlValidationProcessTimestamps> validationProcessTimestamps;
@@ -161,7 +161,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 					 */
 
 				} else { // timestampValidation is null
-					logger.error("No timestamp validation found for timestamp " + newestTimestamp.getId());
+					LOG.error("No timestamp validation found for timestamp " + newestTimestamp.getId());
 				}
 			}
 		}

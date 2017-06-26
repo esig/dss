@@ -56,7 +56,7 @@ import eu.europa.esig.dss.x509.ocsp.OCSPSource;
  */
 public class SignatureValidationContext implements ValidationContext {
 
-	private static final Logger logger = LoggerFactory.getLogger(SignatureValidationContext.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SignatureValidationContext.class);
 
 	private final Set<CertificateToken> processedCertificates = new HashSet<CertificateToken>();
 	private final Set<RevocationToken> processedRevocations = new HashSet<RevocationToken>();
@@ -221,7 +221,7 @@ public class SignatureValidationContext implements ValidationContext {
 	private CertificateToken getIssuerFromAIA(final CertificateToken token) {
 		try {
 
-			logger.info("Retrieving {} certificate's issuer using AIA.", token.getAbbreviation());
+			LOG.info("Retrieving {} certificate's issuer using AIA.", token.getAbbreviation());
 			Collection<CertificateToken> issuerCerts = DSSUtils.loadIssuerCertificates(token, dataLoader);
 			if (issuerCerts != null) {
 				CertificateToken issuerCertToken = null;
@@ -232,15 +232,15 @@ public class SignatureValidationContext implements ValidationContext {
 					} else {
 						addCertificateTokenForVerification(issuerCertFromAia);
 					}
-					logger.info("The retrieved certificate using AIA does not sign the certificate {}.", token.getAbbreviation());
+					LOG.info("The retrieved certificate using AIA does not sign the certificate {}.", token.getAbbreviation());
 				}
 				return issuerCertToken;
 			} else {
-				logger.info("The issuer certificate cannot be loaded using AIA.");
+				LOG.info("The issuer certificate cannot be loaded using AIA.");
 			}
 		} catch (DSSException e) {
 
-			logger.error(e.getMessage());
+			LOG.error(e.getMessage());
 		}
 		return null;
 	}
@@ -282,28 +282,28 @@ public class SignatureValidationContext implements ValidationContext {
 			return false;
 		}
 
-		final boolean traceEnabled = logger.isTraceEnabled();
+		final boolean traceEnabled = LOG.isTraceEnabled();
 		if (traceEnabled) {
-			logger.trace("addTokenForVerification: trying to acquire synchronized block");
+			LOG.trace("addTokenForVerification: trying to acquire synchronized block");
 		}
 
 		synchronized (tokensToProcess) {
 			try {
 				if (tokensToProcess.containsKey(token)) {
 					if (traceEnabled) {
-						logger.trace("Token was already in the list {}:{}", new Object[] { token.getClass().getSimpleName(), token.getAbbreviation() });
+						LOG.trace("Token was already in the list {}:{}", new Object[] { token.getClass().getSimpleName(), token.getAbbreviation() });
 					}
 					return false;
 				}
 
 				tokensToProcess.put(token, null);
 				if (traceEnabled) {
-					logger.trace("+ New {} to check: {}", new Object[] { token.getClass().getSimpleName(), token.getAbbreviation() });
+					LOG.trace("+ New {} to check: {}", new Object[] { token.getClass().getSimpleName(), token.getAbbreviation() });
 				}
 				return true;
 			} finally {
 				if (traceEnabled) {
-					logger.trace("addTokenForVerification: almost left synchronized block");
+					LOG.trace("addTokenForVerification: almost left synchronized block");
 				}
 			}
 		}
@@ -316,11 +316,11 @@ public class SignatureValidationContext implements ValidationContext {
 			if (addTokenForVerification(revocationToken)) {
 
 				final boolean added = processedRevocations.add(revocationToken);
-				if (logger.isTraceEnabled()) {
+				if (LOG.isTraceEnabled()) {
 					if (added) {
-						logger.trace("RevocationToken added to processedRevocations: {} ", revocationToken);
+						LOG.trace("RevocationToken added to processedRevocations: {} ", revocationToken);
 					} else {
-						logger.trace("RevocationToken already present processedRevocations: {} ", revocationToken);
+						LOG.trace("RevocationToken already present processedRevocations: {} ", revocationToken);
 					}
 				}
 			}
@@ -334,11 +334,11 @@ public class SignatureValidationContext implements ValidationContext {
 		if (addTokenForVerification(certificateToken)) {
 
 			final boolean added = processedCertificates.add(certificateToken);
-			if (logger.isTraceEnabled()) {
+			if (LOG.isTraceEnabled()) {
 				if (added) {
-					logger.trace("CertificateToken added to processedRevocations: {} ", certificateToken);
+					LOG.trace("CertificateToken added to processedRevocations: {} ", certificateToken);
 				} else {
-					logger.trace("CertificateToken already present processedRevocations: {} ", certificateToken);
+					LOG.trace("CertificateToken already present processedRevocations: {} ", certificateToken);
 				}
 			}
 		}
@@ -350,11 +350,11 @@ public class SignatureValidationContext implements ValidationContext {
 		if (addTokenForVerification(timestampToken)) {
 
 			final boolean added = processedTimestamps.add(timestampToken);
-			if (logger.isTraceEnabled()) {
+			if (LOG.isTraceEnabled()) {
 				if (added) {
-					logger.trace("TimestampToken added to processedRevocations: {} ", processedTimestamps);
+					LOG.trace("TimestampToken added to processedRevocations: {} ", processedTimestamps);
 				} else {
-					logger.trace("TimestampToken already present processedRevocations: {} ", processedTimestamps);
+					LOG.trace("TimestampToken already present processedRevocations: {} ", processedTimestamps);
 				}
 			}
 		}
@@ -394,8 +394,8 @@ public class SignatureValidationContext implements ValidationContext {
 	 */
 	private List<RevocationToken> getRevocationData(final CertificateToken certToken) {
 
-		if (logger.isTraceEnabled()) {
-			logger.trace("Checking revocation data for: " + certToken.getDSSIdAsString());
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Checking revocation data for: " + certToken.getDSSIdAsString());
 		}
 		if (certToken.isSelfSigned() || certToken.isTrusted() || (certToken.getIssuerToken() == null)) {
 

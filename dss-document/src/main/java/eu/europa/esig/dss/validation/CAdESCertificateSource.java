@@ -47,7 +47,7 @@ import eu.europa.esig.dss.x509.SignatureCertificateSource;
  */
 public class CAdESCertificateSource extends SignatureCertificateSource {
 
-	private static final Logger logger = LoggerFactory.getLogger(CAdESCertificateSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CAdESCertificateSource.class);
 
 	private final CMSSignedData cmsSignedData;
 	private final SignerInformation signerInformation;
@@ -108,7 +108,7 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 						encapsulatedCerts.add(certToken);
 					}
 				} catch (Exception e) {
-					logger.warn("Unable to parse encapsulated certificate : " + e.getMessage());
+					LOG.warn("Unable to parse encapsulated certificate : " + e.getMessage());
 				}
 			}
 		}
@@ -148,7 +148,7 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 				}
 			}
 		} catch (Exception e) {
-			logger.warn("Cannot extract certificates from CMS Signed Data : " + e.getMessage());
+			LOG.warn("Cannot extract certificates from CMS Signed Data : " + e.getMessage());
 		}
 		return essCertIDCerts;
 	}
