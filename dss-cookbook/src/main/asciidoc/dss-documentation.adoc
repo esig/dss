@@ -385,10 +385,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBP
 
 This code adds the following elements into the signature :
 
-[source,xml]
-----
-include::samples/xades-b-properties.xml[]
-----
+include::samples/xades-b-properties.adoc[]
 
 ===== Handling signature policy
 
@@ -417,10 +414,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBI
 
 An XML segment will be added to the signature's qualified and signed properties:
 
-[source,xml]
-----
-include::samples/xades-implicit-policy.xml[]
-----
+include::samples/xades-implicit-policy.adoc[]
 
 The next example demonstrates an explicit policy identifier. This is obtained by setting -B profile signature policy and assigning values to the policy parameters. The Signature Policy Identifier is a URI or OID  that uniquely identifies the version of the policy document. The signature will contain the identifier of the hash algorithm and the hash value of the policy document. The DSS framework does not automatically calculate the hash value; it is to the developer to proceed with the calculation using for example java.security.MessageDigest class (rt.jar). It is important to keep the policy file intact in order to keep the hash constant. It would be wise to make the policy file read-only. See also chapter 7 for further information.
 
@@ -433,10 +427,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBE
 
 The following XML segment will be added to the signature qualified & signed properties (<QualifyingProperties><SignedProperties>):
 
-[source,xml]
-----
-include::samples/xades-explicit-policy.xml[]
-----
+include::samples/xades-explicit-policy.adoc[]
 
 ==== XAdES-BASELINE-T
 
@@ -453,10 +444,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesTT
 
 The SignatureTimeStamp mandated by the XAdES-T form appears as an unsigned property within the QualifyingProperties:
 
-[source,xml]
-----
-include::samples/xades-signature-timestamp.xml[]
-----
+include::samples/xades-signature-timestamp.adoc[]
 
 ===== Use of online TSP source
 
@@ -484,10 +472,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesLT
 
 The following XML segment will be added to the signature qualified and unsigned properties:
 
-[source,xml]
-----
-include::samples/xades-revocation-data.xml[]
-----
+include::samples/xades-revocation-data.adoc[]
 
 NOTE: The use of online sources can significantly increase the execution time of the signing process. For testing purpose you can create your own source of data.
 
@@ -508,10 +493,7 @@ parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 
 The following XML segment will be added to the signature qualified and unsigned properties:
 
-[source,xml]
-----
-include::samples/xades-archive-timestamp.xml[]
-----
+include::samples/xades-archive-timestamp.adoc[]
 
 === Various settings
 
@@ -548,10 +530,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/ExtendSignXmlX
 
 Here is the result of adding a new extension of type-T to an already existing -T level signature:
 
-[source,xml]
-----
-include::samples/xades-extend-t-to-t.xml[]
-----
+include::samples/xades-extend-t-to-t.adoc[]
 
 === XAdES-BASELINE-LT and -LTA
 
@@ -663,11 +642,8 @@ All these reports are encoded using XML, which allows the implementer to easily 
 
 This is a sample of the simple validation report.
 
-[source,xml]
 .Simple Report 
-----
-include::samples/simple-report-example.xml[]
-----
+include::samples/simple-report-example.adoc[]
 
 The result of the validation process is based on very complex rules. The purpose of this report is to make as simple as possible the information while keeping the most important elements. Thus the end user can, at a glance, have a synthetic view of the validation. To build this report the framework uses some simple rules and the detailed report as input.
 
@@ -675,11 +651,8 @@ The result of the validation process is based on very complex rules. The purpose
 
 This is a sample of the detailed validation report. Its structure is based on the ETSI standard <<R08>> and is built around Basic Building Blocks, Basic Validation Data, Timestamp Validation Data, AdES-T Validation Data and Long Term Validation Data. Some segments were deleted to make reading easier. They are marked by three dots:
 
-[source,xml]
 .Detailed Report 
-----
-include::samples/detailed-report-example.xml[]
-----
+include::samples/detailed-report-example.adoc[]
 
 For example the Basic Building Blocks are divided into seven elements:
 
@@ -706,21 +679,15 @@ This is a data set constructed from the information contained in the signature i
 
 This is an example of the diagnostic data for a XAdES signature. Certain fields and certain values were trimmed or deleted to make reading easier:
 
-[source,xml]
 .Diagnostic Data
-----
-include::samples/diagnostic-data-example.xml[]
-----
+include::samples/diagnostic-data-example.adoc[]
 
 === Customised Validation Policy
 
 The validation process may be driven by a set of constraints that are contained in the XML file constraint.xml.
 
-[source,xml]
-.constraint.xml
-----
-include::../../../../validation-policy/src/main/resources/policy/constraint.xml[]
-----
+.constraint.xml (default policy is provided in validation-policy module)
+include::samples/constraint.adoc[]
 
 == CAdES signature and validation
 

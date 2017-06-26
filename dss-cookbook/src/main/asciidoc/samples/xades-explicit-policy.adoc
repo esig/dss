@@ -1,3 +1,5 @@
+[source,xml]
+----
 <xades:SignaturePolicyIdentifier>
 	<xades:SignaturePolicyId>
 		<xades:SigPolicyId>
@@ -9,3 +11,4 @@
 		</xades:SigPolicyHash>
 	</xades:SignaturePolicyId>
 </xades:SignaturePolicyIdentifier>
+----

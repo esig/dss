@@ -1,3 +1,5 @@
+[source,xml]
+----
 	<xades:SignerRole>
 		<xades:ClaimedRoles>
 			<xades:ClaimedRole>My Claimed Role</xades:ClaimedRole>
@@ -21,3 +23,4 @@
 		</xades:CommitmentTypeId>
 		<xades:AllSignedDataObjects/>
 	</xades:CommitmentTypeIndication>
+----

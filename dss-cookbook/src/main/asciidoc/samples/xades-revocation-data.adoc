@@ -1,3 +1,5 @@
+[source,xml]
+----
 <CertificateValues>
 	<EncapsulatedX509Certificate>
 		MIIFNTCCBB2gAwIBAgIBATANB...
@@ -16,3 +18,4 @@
 		</EncapsulatedOCSPValue>
 	</OCSPValues>
 </RevocationValues>
+----

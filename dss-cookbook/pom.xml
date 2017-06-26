@@ -114,8 +114,9 @@
 			    </executions>
 			    <configuration>
 			        <sourceDirectory>src/main/asciidoc</sourceDirectory>
-			        <imagesDir>images</imagesDir>
+			        <imagesDir>./images</imagesDir>
 			        <headerFooter>true</headerFooter>
+			    	<preserveDirectories>true</preserveDirectories>
 			    </configuration>
 			</plugin>
 		</plugins>

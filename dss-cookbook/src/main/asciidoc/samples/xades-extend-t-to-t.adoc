@@ -1,3 +1,5 @@
+[source,xml]
+----
 <UnsignedSignatureProperties>
 	<SignatureTimeStamp Id="time-stamp-b16a2552-b218-4231-8982-40057525fbb5">
 		<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
@@ -10,3 +12,4 @@
 		</EncapsulatedTimeStamp>
 	</SignatureTimeStamp>
 </UnsignedSignatureProperties>
+----
