@@ -114,6 +114,11 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		}
 
 		@Override
+		public String getFilter() {
+			return null;
+		}
+
+		@Override
 		public String getSubFilter() {
 			return null;
 		}

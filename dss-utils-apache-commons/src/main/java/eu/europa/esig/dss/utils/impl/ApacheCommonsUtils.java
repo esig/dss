@@ -6,10 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -77,6 +79,11 @@ public class ApacheCommonsUtils implements IUtils {
 	}
 
 	@Override
+	public boolean startsWithIgnoreCase(String text, String expected) {
+		return StringUtils.startsWithIgnoreCase(text, expected);
+	}
+
+	@Override
 	public String lowerCase(String text) {
 		return StringUtils.lowerCase(text);
 	}
@@ -114,6 +121,12 @@ public class ApacheCommonsUtils implements IUtils {
 	@Override
 	public boolean isTrue(Boolean bool) {
 		return BooleanUtils.isTrue(bool);
+	}
+
+	@Override
+	@SuppressWarnings("rawtypes")
+	public boolean isMapEmpty(Map array) {
+		return MapUtils.isEmpty(array);
 	}
 
 	@Override

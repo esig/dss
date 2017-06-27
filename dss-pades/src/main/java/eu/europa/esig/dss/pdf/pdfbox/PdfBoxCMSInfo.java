@@ -44,6 +44,7 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	private final String location;
 	private final String contactInfo;
 	private final String reason;
+	private final String filter;
 	private final String subFilter;
 	private final int[] signatureByteRange;
 
@@ -75,6 +76,7 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 		this.location = signature.getLocation();
 		this.reason = signature.getReason();
 		this.contactInfo = signature.getContactInfo();
+		this.filter = signature.getFilter();
 		this.subFilter = signature.getSubFilter();
 		this.signingDate = signature.getSignDate() != null ? signature.getSignDate().getTime() : null;
 		this.signatureByteRange = signature.getByteRange();
@@ -161,6 +163,11 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	@Override
 	public String getSubFilter() {
 		return subFilter;
+	}
+
+	@Override
+	public String getFilter() {
+		return filter;
 	}
 
 	@Override
