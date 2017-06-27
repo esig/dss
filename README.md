@@ -16,9 +16,13 @@ https://ec.europa.eu/cefdigital/artifact/#welcome
 &lt;repository&gt;
   &lt;id&gt;cefdigital&lt;/id&gt;
   &lt;name&gt;cefdigital&lt;/name&gt;
-  &lt;url&gt;https://ec.europa.eu/cefdigital/artifact/content/groups/public/&lt;/url&gt;
+  &lt;url&gt;https://ec.europa.eu/cefdigital/artifact/content/repositories/esignaturedss/&lt;/url&gt;
 &lt;/repository&gt;
 </pre>
+
+# Documentation
+
+The documentation and samples are available in the dss-cookbook module.
 
 # Demonstration
 
