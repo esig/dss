@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="TrustedServiceTypeIdentifier" type="{http://dss.esig.europa.eu/validation/policy}MultiValuesConstraint" minOccurs="0"/>
  *         &lt;element name="TrustedServiceStatus" type="{http://dss.esig.europa.eu/validation/policy}MultiValuesConstraint" minOccurs="0"/>
  *         &lt;element name="SigningCertificate" type="{http://dss.esig.europa.eu/validation/policy}CertificateConstraints" minOccurs="0"/>
- *         &lt;element name="CACertificate" type="{http://dss.esig.europa.eu/validation/policy}CertificateConstraints" minOccurs="0"/>
+ *         &lt;element name="CACertificate" type="{http://dss.esig.europa.eu/validation/policy}CACertificateConstraints" minOccurs="0"/>
  *         &lt;element name="Cryptographic" type="{http://dss.esig.europa.eu/validation/policy}CryptographicConstraint" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -74,7 +74,7 @@ public class BasicSignatureConstraints {
     @XmlElement(name = "SigningCertificate")
     protected CertificateConstraints signingCertificate;
     @XmlElement(name = "CACertificate")
-    protected CertificateConstraints caCertificate;
+    protected CACertificateConstraints caCertificate;
     @XmlElement(name = "Cryptographic")
     protected CryptographicConstraint cryptographic;
 
@@ -290,7 +290,7 @@ public class BasicSignatureConstraints {
      *     {@link CertificateConstraints }
      *     
      */
-    public void setCACertificate(CertificateConstraints value) {
+    public void setCACertificate(CACertificateConstraints value) {
         this.caCertificate = value;
     }
 

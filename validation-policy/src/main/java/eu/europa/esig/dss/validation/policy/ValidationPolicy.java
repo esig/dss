@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.policy;
 
 import java.util.Date;
+import java.util.List;
 
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
@@ -367,6 +368,8 @@ public interface ValidationPolicy {
 	MultiValuesConstraint getCertificateQCStatementIdsConstraint(Context context, SubContext subContext);
 
 	LevelConstraint getCertificateIssuedToNaturalPersonConstraint(Context context, SubContext subContext);
+
+	List<byte[]> getCertificateTrustPoints(Context context);
 
 	MultiValuesConstraint getAcceptedContainerTypesConstraint();
 

@@ -279,4 +279,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return countryCodes;
 	}
 
+	public byte[] getEncoded() {
+		return certificate.getBase64Encoded();
+	}
 }

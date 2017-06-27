@@ -1,9 +1,11 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
 import java.util.Date;
+import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -54,7 +56,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		super(new XmlSubXCV());
 
 		result.setId(currentCertificate.getId());
-		result.setTrustAnchor(currentCertificate.isTrusted());
 
 		this.currentCertificate = currentCertificate;
 		this.currentTime = currentTime;
@@ -62,6 +63,15 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		this.context = context;
 		this.subContext = subContext;
 		this.validationPolicy = validationPolicy;
+		result.setTrustAnchor(isTrustedAnchor());
+	}
+
+	private boolean isTrustedAnchor() {
+		List<byte[]> trustPoints = validationPolicy.getCertificateTrustPoints(context);
+		if (Utils.isCollectionNotEmpty(trustPoints) && trustPoints.contains(currentCertificate.getEncoded())) {
+			return true;
+		}
+		return currentCertificate.isTrusted();
 	}
 
 	@Override

@@ -104,7 +104,7 @@
 			<xs:element name="TrustedServiceTypeIdentifier" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="TrustedServiceStatus" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="SigningCertificate" type="tns:CertificateConstraints" minOccurs="0" />
-			<xs:element name="CACertificate" type="tns:CertificateConstraints" minOccurs="0" />
+			<xs:element name="CACertificate" type="tns:CACertificateConstraints" minOccurs="0" />
 			<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
@@ -139,6 +139,16 @@
 			<xs:element name="UsePseudonym" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0" />
 		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="CACertificateConstraints">
+		<xs:complexContent>
+			<xs:extension base="tns:CertificateConstraints">
+				<xs:sequence>
+					<xs:element type="xs:base64Binary" name="TrustPoints" maxOccurs="unbounded" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	
 	<xs:complexType name="CryptographicConstraint">
