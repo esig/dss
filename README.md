@@ -22,7 +22,7 @@ https://ec.europa.eu/cefdigital/artifact/#welcome
 
 # Documentation
 
-The documentation and samples are available in the dss-cookbook module.
+The [documentation](dss-cookbook/src/main/asciidoc/dss-documentation.adoc) and samples are available in the dss-cookbook module. [SoapUI project](dss-cookbook/src/main/soapui) and [Postman project](dss-cookbook/src/main/postman) are also provided to illustrate SOAP/REST calls.
 
 # Demonstration
 
