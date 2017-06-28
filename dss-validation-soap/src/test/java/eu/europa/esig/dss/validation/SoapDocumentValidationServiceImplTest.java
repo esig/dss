@@ -90,8 +90,6 @@ public class SoapDocumentValidationServiceImplTest {
 			marshaller.setSchema(schema);
 			marshaller.marshal(wsReportsDTO.getDiagnosticData(), baos);
 			
-			System.out.println(new String(baos.toByteArray()));
-			
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 			unmarshaller.setSchema(schema);
 			diagnosticData = (DiagnosticData) unmarshaller.unmarshal(new ByteArrayInputStream(baos.toByteArray()));
