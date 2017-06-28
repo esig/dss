@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.tsl;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -27,93 +28,95 @@ import eu.europa.esig.dss.x509.CertificateToken;
  */
 public class CriteriaListCondition extends CompositeCondition {
 
-    private MatchingCriteriaIndicator matchingCriteriaIndicator;
+	private MatchingCriteriaIndicator matchingCriteriaIndicator;
 
-    /**
-     * The default constructor for CriteriaListCondition.
-     *
-     * @param matchingCriteriaIndicator matching criteria indicator: atLeastOne, all, none
-     */
-    public CriteriaListCondition(final MatchingCriteriaIndicator matchingCriteriaIndicator) {
+	/**
+	 * The default constructor for CriteriaListCondition.
+	 *
+	 * @param matchingCriteriaIndicator
+	 *            matching criteria indicator: atLeastOne, all, none
+	 */
+	public CriteriaListCondition(final MatchingCriteriaIndicator matchingCriteriaIndicator) {
 
-        if (matchingCriteriaIndicator == null) {
+		if (matchingCriteriaIndicator == null) {
 
-            throw new NullPointerException();
-        }
-        this.matchingCriteriaIndicator = matchingCriteriaIndicator;
-    }
+			throw new NullPointerException();
+		}
+		this.matchingCriteriaIndicator = matchingCriteriaIndicator;
+	}
 
-    /**
-     * Returns the matching criteria indicator
-     *
-     * @return matching criteria indicator: atLeastOne, all, none
-     */
-    public MatchingCriteriaIndicator getMatchingCriteriaIndicator() {
+	/**
+	 * Returns the matching criteria indicator
+	 *
+	 * @return matching criteria indicator: atLeastOne, all, none
+	 */
+	public MatchingCriteriaIndicator getMatchingCriteriaIndicator() {
 
-        return matchingCriteriaIndicator;
-    }
+		return matchingCriteriaIndicator;
+	}
 
-    /**
-     * @param certificateToken certificate to be checked
-     * @return
-     */
-    @Override
-    public boolean check(final CertificateToken certificateToken) {
+	/**
+	 * @param certificateToken
+	 *            certificate to be checked
+	 * @return
+	 */
+	@Override
+	public boolean check(final CertificateToken certificateToken) {
+		switch (matchingCriteriaIndicator) {
+		case all:
+			for (final Condition condition : children) {
+				if (!condition.check(certificateToken)) {
+					return false;
+				}
+			}
+			return true;
+		case atLeastOne:
+			for (final Condition condition : children) {
+				if (condition.check(certificateToken)) {
+					return true;
+				}
+			}
+			return false;
+		case none:
+			for (final Condition condition : children) {
+				if (condition.check(certificateToken)) {
+					return false;
+				}
+			}
+			return true;
+		default:
+			throw new DSSException("Unsupported MatchingCriteriaIndicator : " + matchingCriteriaIndicator);
+		}
+	}
 
-        switch (matchingCriteriaIndicator) {
-            case all:
-                for (final Condition condition : children) {
-                    if (!condition.check(certificateToken)) {
-                        return false;
-                    }
-                }
-                return true;
-            case atLeastOne:
-                for (final Condition condition : children) {
-                    if (condition.check(certificateToken)) {
-                        return true;
-                    }
-                }
-                return false;
-            case none:
-                for (final Condition condition : children) {
-                    if (condition.check(certificateToken)) {
-                        return false;
-                    }
-                }
-                return true;
-        }
-        throw new IllegalStateException("Unsupported MatchingCriteriaIndicator " + matchingCriteriaIndicator);
-    }
+	@Override
+	public String toString(String indent) {
 
-    @Override
-    public String toString(String indent) {
+		if (indent == null) {
+			indent = "";
+		}
+		try {
 
-        if (indent == null) {
-            indent = "";
-        }
-        try {
+			final StringBuilder builder = new StringBuilder();
+			builder.append(indent).append("CriteriaListCondition: ").append(matchingCriteriaIndicator.name()).append('\n');
+			if (children != null) {
 
-            final StringBuilder builder = new StringBuilder();
-            builder.append(indent).append("CriteriaListCondition: ").append(matchingCriteriaIndicator.name()).append('\n');
-            if (children != null) {
+				indent += "\t";
+				for (final Condition condition : children) {
 
-                indent += "\t";
-                for (final Condition condition : children) {
+					builder.append(condition.toString(indent));
+				}
+			}
+			return builder.toString();
+		} catch (Exception e) {
 
-                    builder.append(condition.toString(indent));
-                }
-            }
-            return builder.toString();
-        } catch (Exception e) {
+			return e.toString();
+		}
+	}
 
-            return e.toString();
-        }
-    }
+	@Override
+	public String toString() {
 
-    @Override
-    public String toString() {
-
-        return toString("");
-    }
+		return toString("");
+	}
 }

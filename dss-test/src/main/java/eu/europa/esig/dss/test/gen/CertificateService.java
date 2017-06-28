@@ -44,7 +44,6 @@ import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
-import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
@@ -72,8 +71,6 @@ public class CertificateService {
 		Security.addProvider(SECURITY_PROVIDER);
 	}
 
-	// Annotation for error_probe
-	@SuppressWarnings("InsecureCryptoUsage")
 	public KeyPair generateKeyPair(final EncryptionAlgorithm algorithm) throws GeneralSecurityException {
 		if (algorithm == EncryptionAlgorithm.ECDSA) {
 			return generateECDSAKeyPair();
@@ -178,13 +175,12 @@ public class CertificateService {
 	 * @param notBefore
 	 * @param notAfter
 	 * @return
-	 * @throws CertIOException
 	 * @throws OperatorCreationException
 	 * @throws CertificateException
 	 * @throws IOException
 	 */
 	public CertificateToken generateTspCertificate(final SignatureAlgorithm algorithm, KeyPair keyPair, X500Name issuer, X500Name subject, final Date notBefore,
-			final Date notAfter) throws CertIOException, OperatorCreationException, CertificateException, IOException {
+			final Date notAfter) throws OperatorCreationException, CertificateException, IOException {
 		final SubjectPublicKeyInfo keyInfo = SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded());
 
 		final X509v3CertificateBuilder certBuilder = new X509v3CertificateBuilder(issuer,

@@ -5,13 +5,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
+import java.util.Collection;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,20 +40,50 @@ public class DSSUtilsTest {
 
 	@Test
 	public void testLoadIssuer() {
-		CertificateToken issuer = DSSUtils.loadIssuerCertificate(certificateWithAIA, new NativeHTTPDataLoader());
-		assertNotNull(issuer);
-		assertTrue(certificateWithAIA.isSignedBy(issuer));
+		Collection<CertificateToken> issuers = DSSUtils.loadIssuerCertificates(certificateWithAIA, new NativeHTTPDataLoader());
+		assertNotNull(issuers);
+		assertFalse(issuers.isEmpty());
+		boolean foundIssuer = false;
+		for (CertificateToken issuer : issuers) {
+			if (certificateWithAIA.isSignedBy(issuer)) {
+				foundIssuer = true;
+			}
+		}
+		assertTrue(foundIssuer);
+	}
+
+	@Test
+	public void testDontSkipCertificatesWhenMultipleAreFoundInP7c() throws IOException {
+		try {
+			DSSUtils.loadCertificate(new FileInputStream("src/test/resources/certchain.p7c"));
+			fail("Should not load single certificate (first?)");
+		} catch (DSSException dssEx) {
+			assertEquals(dssEx.getMessage(), "Could not parse certificate");
+		}
+	}
+
+	@Test
+	public void testLoadP7cPEM() throws DSSException, IOException {
+		Collection<CertificateToken> certs = DSSUtils.loadCertificateFromP7c(new FileInputStream("src/test/resources/certchain.p7c"));
+		assertTrue(Utils.isCollectionNotEmpty(certs));
+		assertTrue(certs.size() > 1);
+	}
+
+	@Test
+	public void testLoadP7cNotPEM() throws DSSException, IOException {
+		Collection<CertificateToken> certs = DSSUtils.loadCertificateFromP7c(new FileInputStream("src/test/resources/AdobeCA.p7c"));
+		assertTrue(Utils.isCollectionNotEmpty(certs));
 	}
 
 	@Test
 	public void testLoadIssuerEmptyDataLoader() {
-		assertNull(DSSUtils.loadIssuerCertificate(certificateWithAIA, null));
+		assertNull(DSSUtils.loadIssuerCertificates(certificateWithAIA, null));
 	}
 
 	@Test
 	public void testLoadIssuerNoAIA() {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));
-		assertNull(DSSUtils.loadIssuerCertificate(certificate, new NativeHTTPDataLoader()));
+		assertNull(DSSUtils.loadIssuerCertificates(certificate, new NativeHTTPDataLoader()));
 	}
 
 	@Test
@@ -97,13 +131,13 @@ public class DSSUtilsTest {
 		assertTrue(DSSUtils.isPEM(new ByteArrayInputStream(convertToPEM.getBytes())));
 
 		CertificateToken certificate = DSSUtils.loadCertificate(convertToPEM.getBytes());
-		assertEquals(certificate,certificateWithAIA);
+		assertEquals(certificate, certificateWithAIA);
 
 		byte[] certDER = DSSUtils.convertToDER(convertToPEM);
 		assertFalse(DSSUtils.isPEM(new ByteArrayInputStream(certDER)));
 
 		CertificateToken certificate2 = DSSUtils.loadCertificate(certDER);
-		assertEquals(certificate2,certificateWithAIA);
+		assertEquals(certificate2, certificateWithAIA);
 	}
 
 	@Test
@@ -128,7 +162,9 @@ public class DSSUtilsTest {
 	public void loadPEMCrl() throws Exception {
 		X509CRL crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/LTRCA.crl"));
 		assertNotNull(crl);
-		assertTrue(DSSUtils.isPEM(new FileInputStream("src/test/resources/crl/LTRCA.crl")));
+		try (InputStream is = new FileInputStream("src/test/resources/crl/LTRCA.crl")) {
+			assertTrue(DSSUtils.isPEM(is));
+		}
 	}
 
 	@Test

@@ -37,6 +37,8 @@ public class CertificateValidity implements Serializable {
 	 */
 	private PublicKey publicKey;
 	private CertificateToken certificateToken;
+	/* CMS Signer id */
+	private boolean signerIdMatch;
 	private boolean digestPresent;
 	private boolean digestEqual;
 	private boolean attributePresent;
@@ -58,7 +60,6 @@ public class CertificateValidity implements Serializable {
 	 *            the candidate for the signing certificate
 	 */
 	public CertificateValidity(final CertificateToken certificateToken) {
-
 		this.certificateToken = certificateToken;
 	}
 
@@ -71,7 +72,6 @@ public class CertificateValidity implements Serializable {
 	 *            the {@code PublicKey} associated to the signing certificate.
 	 */
 	public CertificateValidity(final PublicKey publicKey) {
-
 		this.publicKey = publicKey;
 	}
 
@@ -82,12 +82,19 @@ public class CertificateValidity implements Serializable {
 	 * @return the public key associated with this instance.
 	 */
 	public PublicKey getPublicKey() {
-
-		return certificateToken == null ? publicKey : certificateToken.getCertificate().getPublicKey();
+		return certificateToken == null ? publicKey : certificateToken.getPublicKey();
 	}
 
 	public CertificateToken getCertificateToken() {
 		return certificateToken;
+	}
+
+	public boolean isSignerIdMatch() {
+		return signerIdMatch;
+	}
+
+	public void setSignerIdMatch(boolean signerIdMatch) {
+		this.signerIdMatch = signerIdMatch;
 	}
 
 	public boolean isDigestPresent() {

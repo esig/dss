@@ -175,7 +175,7 @@ public class CRLToken extends RevocationToken {
 				out.append('\n');
 			}
 			indentStr = indentStr.substring(1);
-			out.append(indentStr).append("]");
+			out.append(indentStr).append(']');
 			return out.toString();
 		} catch (Exception e) {
 			return ((Object) this).toString();

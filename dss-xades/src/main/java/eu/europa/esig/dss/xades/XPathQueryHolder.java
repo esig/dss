@@ -82,7 +82,7 @@ public class XPathQueryHolder implements Serializable {
 
 	public final String XPATH_KEY_INFO_X509_CERTIFICATE = XPATH_X509_DATA + "/ds:X509Certificate";
 
-	public final static String XPATH_OBJECT = "./ds:Object";
+	public static final String XPATH_OBJECT = "./ds:Object";
 	public String XPATH_QUALIFYING_PROPERTIES = XPATH_OBJECT + "/xades:QualifyingProperties";
 	public String XPATH__QUALIFYING_PROPERTIES = "./xades:QualifyingProperties";
 	/**

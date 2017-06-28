@@ -37,7 +37,7 @@ import eu.europa.esig.dss.ToBeSigned;
  */
 public abstract class AbstractSignatureTokenConnection implements SignatureTokenConnection {
 
-	protected static final Logger logger = LoggerFactory.getLogger(AbstractSignatureTokenConnection.class);
+	protected static final Logger LOG = LoggerFactory.getLogger(AbstractSignatureTokenConnection.class);
 
 	@Override
 	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException {
@@ -47,7 +47,7 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 		}
 
 		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		logger.info("Signature algorithm: " + encryptionAlgorithm + "/" + digestAlgorithm);
+		LOG.info("Signature algorithm: " + encryptionAlgorithm + "/" + digestAlgorithm);
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
 		final String javaSignatureAlgorithm = signatureAlgorithm.getJCEId();
 

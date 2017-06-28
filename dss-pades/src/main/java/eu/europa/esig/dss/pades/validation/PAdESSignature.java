@@ -67,7 +67,7 @@ import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
  */
 public class PAdESSignature extends CAdESSignature {
 
-	private static final Logger logger = LoggerFactory.getLogger(PAdESSignature.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PAdESSignature.class);
 
 	private final DSSDocument document;
 	private final PdfDssDict dssDictionary;
@@ -109,7 +109,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public PAdESCertificateSource getCertificateSource() {
 		if (padesCertSources == null) {
-			padesCertSources = new PAdESCertificateSource(dssDictionary, super.getCmsSignedData(), super.getSignerInformation(), certPool);
+			padesCertSources = new PAdESCertificateSource(dssDictionary, super.getCmsSignedData(), certPool);
 		}
 		return padesCertSources;
 	}
@@ -423,29 +423,44 @@ public class PAdESSignature extends CAdESSignature {
 			// c &= fct() will process fct() all time ; c = c && fct() will process fct() only if c is true
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_LT);
 			break;
+		case PKCS7_LTA:
+			dataForLevelPresent = Utils.isCollectionNotEmpty(getArchiveTimestamps());
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_LT);
+			break;
 		case PAdES_BASELINE_LT:
 			dataForLevelPresent = hasDSSDictionary();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_T);
+			break;
+		case PKCS7_LT:
+			dataForLevelPresent = hasDSSDictionary();
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_T);
 			break;
 		case PAdES_BASELINE_T:
 			dataForLevelPresent = Utils.isCollectionNotEmpty(getSignatureTimestamps());
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_B);
 			break;
+		case PKCS7_T:
+			dataForLevelPresent = Utils.isCollectionNotEmpty(getSignatureTimestamps());
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_B);
+			break;
 		case PAdES_BASELINE_B:
-			dataForLevelPresent = (pdfSignatureInfo != null);
-			// && "ETSI.CAdES.detached".equals(pdfSignatureInfo.getSubFilter());
+			dataForLevelPresent = (pdfSignatureInfo != null) && "ETSI.CAdES.detached".equals(pdfSignatureInfo.getSubFilter());
+			break;
+		case PKCS7_B:
+			dataForLevelPresent = (pdfSignatureInfo != null) && "adbe.pkcs7.detached".equals(pdfSignatureInfo.getSubFilter());
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown level " + signatureLevel);
 		}
-		logger.debug("Level {} found on document {} = {}", new Object[] { signatureLevel, document.getName(), dataForLevelPresent });
+		LOG.debug("Level {} found on document {} = {}", new Object[] { signatureLevel, document.getName(), dataForLevelPresent });
 		return dataForLevelPresent;
 	}
 
 	@Override
 	public SignatureLevel[] getSignatureLevels() {
-		return new SignatureLevel[] { SignatureLevel.PDF_NOT_ETSI, SignatureLevel.PAdES_BASELINE_B, SignatureLevel.PAdES_BASELINE_T,
-				SignatureLevel.PAdES_BASELINE_LT, SignatureLevel.PAdES_BASELINE_LTA };
+		return new SignatureLevel[] { SignatureLevel.PDF_NOT_ETSI, SignatureLevel.PAdES_BASELINE_B, SignatureLevel.PKCS7_B, SignatureLevel.PAdES_BASELINE_T,
+				SignatureLevel.PKCS7_T, SignatureLevel.PAdES_BASELINE_LT, SignatureLevel.PKCS7_LT, SignatureLevel.PAdES_BASELINE_LTA,
+				SignatureLevel.PKCS7_LTA };
 	}
 
 	private boolean hasDSSDictionary() {

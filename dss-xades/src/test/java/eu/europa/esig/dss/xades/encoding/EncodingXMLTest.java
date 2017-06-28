@@ -40,8 +40,6 @@ public class EncodingXMLTest {
 		assertTrue(Arrays.equals(convertToXmlDSig, xmlsec));
 	}
 
-	// Annotation for error_probe
-	@SuppressWarnings("InsecureCryptoUsage")
 	@Test
 	public void testDSA() throws Exception {
 		KeyPairGenerator gen = KeyPairGenerator.getInstance("DSA", BouncyCastleProvider.PROVIDER_NAME);
@@ -68,8 +66,6 @@ public class EncodingXMLTest {
 		assertTrue(Arrays.equals(binary, DSSSignatureUtils.convertToXmlDSig(EncryptionAlgorithm.RSA, binary)));
 	}
 
-	// Annotation for error_probe
-	@SuppressWarnings("InsecureCryptoUsage")
 	@Test
 	public void testDSA2048() throws Exception {
 		KeyPairGenerator gen = KeyPairGenerator.getInstance("DSA", BouncyCastleProvider.PROVIDER_NAME);

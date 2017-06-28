@@ -5,7 +5,7 @@
 
 	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>sd-dss</artifactId>
-	<version>5.0</version>
+	<version>5.1.RC1</version>
 	<packaging>pom</packaging>
 	<name>Digital Signature Services</name>
 
@@ -43,16 +43,17 @@
 
 	<properties>
 		<project.source.version>1.7</project.source.version>
+		<project.target.version>1.7</project.target.version>
 		<project.encoding>UTF-8</project.encoding>
 
-		<slf4j.version>1.7.22</slf4j.version>
-		<logback-classic.version>1.1.9</logback-classic.version>
+		<slf4j.version>1.7.25</slf4j.version>
+		<logback-classic.version>1.2.3</logback-classic.version>
 
-		<bouncycastle.version>1.56</bouncycastle.version>
+		<bouncycastle.version>1.57</bouncycastle.version>
 		<xmlsec.version>2.0.8</xmlsec.version>
 		<xalan.version>2.7.2</xalan.version>
-		<pdfbox.version>2.0.4</pdfbox.version>
-		<httpclient.version>4.5.2</httpclient.version>
+		<pdfbox.version>2.0.6</pdfbox.version>
+		<httpclient.version>4.5.3</httpclient.version>
 		<rs-api.version>2.0.1</rs-api.version>
 
 		<junit.version>4.11</junit.version>
@@ -64,25 +65,6 @@
 			<url>https://www.gnu.org/licenses/lgpl-2.1.html</url>
 		</license>
 	</licenses>
-	
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.5.1</version>
-				<configuration>
-					<outputEncoding>${project.encoding}</outputEncoding>
-					<reportPlugins>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-project-info-reports-plugin</artifactId>
-						</plugin>
-					</reportPlugins>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
 	
 	<modules>
 		<module>dss-model</module>
@@ -119,6 +101,11 @@
 		<module>dss-validation-rest</module>
 		<module>dss-validation-soap</module>
 		<module>dss-validation-soap-client</module>
+		<module>dss-server-signing-common</module>
+		<module>dss-server-signing-rest-client</module>
+		<module>dss-server-signing-rest</module>
+		<module>dss-server-signing-soap-client</module>
+		<module>dss-server-signing-soap</module>
 		<module>dss-cookbook</module>
 	</modules>
 
@@ -131,7 +118,7 @@
                 <configuration>
                     <encoding>${project.encoding}</encoding>
                     <source>${project.source.version}</source>
-                    <target>${project.source.version}</target>
+                    <target>${project.target.version}</target>
                 </configuration>
 			</plugin>
 			<plugin>
@@ -216,6 +203,21 @@
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.0.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.10.4</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.8.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
 					<version>3.0.2</version>
 					<configuration>
@@ -238,24 +240,12 @@
 						</execution>
 					</executions>
 				</plugin>
-					<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-source-plugin</artifactId>
-					<version>3.0.1</version>
-					<executions>
-						<execution>
-							<id>attach-sources</id>
-							<goals>
-								<goal>jar</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
 				<plugin>
 	                <groupId>org.apache.maven.plugins</groupId>
 	                <artifactId>maven-release-plugin</artifactId>
 	                <version>2.5.3</version>
 	                <configuration>
+	                	<releaseProfiles>src,javadoc</releaseProfiles>
 						<autoVersionSubmodules>true</autoVersionSubmodules>
 						<tagNameFormat>@{project.version}</tagNameFormat>
 					</configuration>
@@ -270,16 +260,6 @@
 					<artifactId>maven-install-plugin</artifactId>
 					<version>2.5.2</version>
 				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-deploy-plugin</artifactId>
-					<version>2.8.2</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-project-info-reports-plugin</artifactId>
-					<version>2.9</version> 
-				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -288,7 +268,7 @@
 		<url>https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</url>
 		<connection>scm:git:https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</connection>
 		<developerConnection>scm:git:https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</developerConnection>
-		<tag>5.0</tag>
+		<tag>5.1.RC1</tag>
 	</scm>
 
 	<dependencyManagement>
@@ -410,6 +390,32 @@
 				<artifactId>dss-token</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-server-signing-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-server-signing-rest-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-server-signing-rest</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-server-signing-soap-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-server-signing-soap</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-tsl-jaxb</artifactId>
@@ -501,6 +507,11 @@
 				<version>${pdfbox.version}</version>
 			</dependency>
 			<dependency>
+			    <groupId>org.apache.pdfbox</groupId>
+			    <artifactId>preflight</artifactId>
+				<version>${pdfbox.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.apache.santuario</groupId>
 				<artifactId>xmlsec</artifactId>
 				<version>${xmlsec.version}</version>
@@ -564,35 +575,6 @@
 	</issueManagement>
 
 	<profiles>
-		
-		<profile>
-			<id>delivery</id>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<configuration>
-							<skip>true</skip>
-						</configuration>
-					</plugin>
-					<plugin>
-						<artifactId>maven-compiler-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>default-testCompile</id>
-								<phase>test-compile</phase>
-								<goals>
-									<goal>testCompile</goal>
-								</goals>
-								<configuration>
-									<skip>true</skip>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 		<profile>
 			<id>owasp</id>
 			<build>
@@ -600,10 +582,10 @@
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
-						<version>1.4.3</version>
-						<configuration>
-							<failBuildOnCVSS>4</failBuildOnCVSS>
-						</configuration>
+						<version>1.4.5</version>
+<!-- 						<configuration> -->
+<!-- 							<failBuildOnCVSS>8</failBuildOnCVSS> -->
+<!-- 						</configuration> -->
 						<executions>
 							<execution>
 								<goals>
@@ -615,5 +597,45 @@
 				</plugins>
 			</build>
 		</profile>
+	    <profile>
+	        <id>src</id>
+	        <build>
+	            <plugins>
+	                <plugin>
+	                    <groupId>org.apache.maven.plugins</groupId>
+	                    <artifactId>maven-source-plugin</artifactId>
+	                    <executions>
+	                        <execution>
+	                            <id>attach-sources</id>
+	                            <phase>verify</phase>
+	                            <goals>
+	                                <goal>jar-no-fork</goal>
+	                            </goals>
+	                        </execution>
+	                    </executions>
+	                </plugin>
+	            </plugins>
+	        </build>
+	    </profile>
+	    <profile>
+	        <id>javadoc</id>
+	        <build>
+	            <plugins>
+	                <plugin>
+	                    <groupId>org.apache.maven.plugins</groupId>
+	                    <artifactId>maven-javadoc-plugin</artifactId>
+	                    <executions>
+	                        <execution>
+	                            <id>attach-javadocs</id>
+	                            <phase>verify</phase>
+	                            <goals>
+	                                <goal>jar</goal>
+	                            </goals>
+	                        </execution>
+	                    </executions>
+	                </plugin>
+	            </plugins>
+	        </build>
+	    </profile>
 	</profiles>
 </project>

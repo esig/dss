@@ -1,0 +1,12 @@
+[source,xml]
+----
+<SignatureTimeStamp Id="time-stamp-28a441da-4030-46ef-80e1-041b66c0cb96">
+	<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+	<EncapsulatedTimeStamp
+		Id="time-stamp-token-76234ed8-cc15-46fc-aa95-9460dd601cad">
+			MIAGCSqGSIb3DQEHAqCAMIACAQMxCzAJBgUrDgMCGg
+			UAMIAGCyqGSIb3DQEJEAEEoIAkgARMMEoCAQEGBoIS
+			...
+	</EncapsulatedTimeStamp>
+</SignatureTimeStamp>
+----

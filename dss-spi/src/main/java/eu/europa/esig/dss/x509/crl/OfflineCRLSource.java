@@ -56,7 +56,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	protected Map<X509CRL, CRLValidity> crlValidityMap = new HashMap<X509CRL, CRLValidity>();
 
 	@Override
-	final public CRLToken findCrl(final CertificateToken certificateToken) {
+	public final CRLToken findCrl(final CertificateToken certificateToken) {
 
 		if (certificateToken == null) {
 

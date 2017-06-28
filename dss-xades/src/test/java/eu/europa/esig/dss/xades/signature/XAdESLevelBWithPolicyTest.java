@@ -45,7 +45,7 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBWithPolicyTest extends AbstractTestDocumentSignatureService {
+public class XAdESLevelBWithPolicyTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
 
 	private static final Logger logger = LoggerFactory.getLogger(XAdESLevelBWithPolicyTest.class);
 
@@ -67,9 +67,7 @@ public class XAdESLevelBWithPolicyTest extends AbstractTestDocumentSignatureServ
 		signaturePolicy.setId("1.2.3.4.5.6");
 		signaturePolicy.setDescription("Test description");
 		signaturePolicy.setDigestAlgorithm(DigestAlgorithm.SHA1);
-		signaturePolicy.setDigestValue(new byte[] {
-				'd', 'i', 'g', 'e', 's', 't', 'v', 'a', 'l', 'u', 'e'
-		});
+		signaturePolicy.setDigestValue(new byte[] { 'd', 'i', 'g', 'e', 's', 't', 'v', 'a', 'l', 'u', 'e' });
 		signaturePolicy.setSpuri(HTTP_SPURI_TEST);
 
 		signatureParameters = new XAdESSignatureParameters();

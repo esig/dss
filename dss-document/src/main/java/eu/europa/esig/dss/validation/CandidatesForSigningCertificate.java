@@ -30,10 +30,11 @@ import eu.europa.esig.dss.x509.CertificateToken;
 /**
  * This class holds the list of the candidates for the signing certificate of the main signature.
  */
-public class CandidatesForSigningCertificate implements Serializable{
+public class CandidatesForSigningCertificate implements Serializable {
 
 	/**
-	 * This field contains the reference to the signing certificate with its validity. This reference is set after the signature verification.
+	 * This field contains the reference to the signing certificate with its validity. This reference is set after the
+	 * signature verification.
 	 */
 	private CertificateValidity theCertificateValidity = null;
 
@@ -53,10 +54,8 @@ public class CandidatesForSigningCertificate implements Serializable{
 	 * @return the list of candidates for the signing certificate.
 	 */
 	public List<CertificateToken> getSigningCertificateTokenList() {
-
 		final List<CertificateToken> signCertificateTokenList = new ArrayList<CertificateToken>();
 		for (final CertificateValidity certificateValidity : certificateValidityList) {
-
 			final CertificateToken certificateToken = certificateValidity.getCertificateToken();
 			if (certificateToken != null) {
 				signCertificateTokenList.add(certificateToken);
@@ -68,21 +67,25 @@ public class CandidatesForSigningCertificate implements Serializable{
 	/**
 	 * This method allows to add a candidate for the signing certificate.
 	 *
-	 * @param certificateValidity A new candidate with its validity.
+	 * @param certificateValidity
+	 *            A new candidate with its validity.
 	 */
 	public void add(final CertificateValidity certificateValidity) {
 		certificateValidityList.add(certificateValidity);
 	}
 
 	/**
-	 * This method allows to set the {@code SigningCertificateValidity} object after the verification of its signature. {@code theSigningCertificateValidity} object must be in the
+	 * This method allows to set the {@code SigningCertificateValidity} object after the verification of its signature.
+	 * {@code theSigningCertificateValidity} object must be in the
 	 * list of the candidates.
 	 *
-	 * @param theCertificateValidity the certain signing certificate validity object
-	 * @throws DSSException if the {@code SigningCertificateValidity} is not present in the list of candidates then the {@code DSSException} is frown.
+	 * @param theCertificateValidity
+	 *            the certain signing certificate validity object
+	 * @throws DSSException
+	 *             if the {@code SigningCertificateValidity} is not present in the list of candidates then the
+	 *             {@code DSSException} is frown.
 	 */
 	public void setTheCertificateValidity(final CertificateValidity theCertificateValidity) throws DSSException {
-
 		if (theCertificateValidity == null) {
 			throw new NullPointerException();
 		}
@@ -95,30 +98,46 @@ public class CandidatesForSigningCertificate implements Serializable{
 	/**
 	 * The {@code theSigningCertificateValidity} object must be set before.
 	 *
-	 * @return the signing certificate validity {@code SigningCertificateValidity} or {@code null} if such a certificate was not identified.
+	 * @return the signing certificate validity {@code SigningCertificateValidity} or {@code null} if such a certificate
+	 *         was not identified.
 	 */
 	public CertificateValidity getTheCertificateValidity() {
 		return theCertificateValidity;
 	}
 
 	/**
-	 * This method returns the best candidate for the signing certificate. The only way to be sure that it is the right one is to validate the signature.
+	 * This method returns the best candidate for the signing certificate. The only way to be sure that it is the right
+	 * one is to validate the signature.
 	 *
 	 * @return The valid signing certificate, if there is no valid certificate then the first one is returned.
 	 */
 	public CertificateValidity getTheBestCandidate() {
-
 		CertificateValidity firstCandidate = null;
 		for (final CertificateValidity certificateValidity : certificateValidityList) {
-
 			if (firstCandidate == null) {
 				firstCandidate = certificateValidity;
 			}
 			if (certificateValidity.isValid()) {
-
 				return certificateValidity;
 			}
 		}
+
+		CertificateValidity signerIdMatchCandidate = getBySignerIdMatch();
+		if (signerIdMatchCandidate != null) {
+			return signerIdMatchCandidate;
+		}
 		return firstCandidate;
+	}
+
+	/**
+	 * This method returns the signing certificate which was identified with the CMS SID
+	 */
+	private CertificateValidity getBySignerIdMatch() {
+		for (final CertificateValidity certificateValidity : certificateValidityList) {
+			if (certificateValidity.isSignerIdMatch()) {
+				return certificateValidity;
+			}
+		}
+		return null;
 	}
 }

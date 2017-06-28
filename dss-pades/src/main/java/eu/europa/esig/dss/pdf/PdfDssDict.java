@@ -42,7 +42,7 @@ import eu.europa.esig.dss.x509.CertificateToken;
  */
 public class PdfDssDict {
 
-	private static final Logger logger = LoggerFactory.getLogger(PdfDssDict.class);
+	private static final Logger LOG = LoggerFactory.getLogger(PdfDssDict.class);
 
 	private static final String DSS_DICTIONARY_NAME = "DSS";
 	private static final String CERT_ARRAY_NAME_DSS = "Certs";
@@ -67,7 +67,7 @@ public class PdfDssDict {
 				return new PdfDssDict(dssCatalog);
 			}
 		}
-		logger.debug("No DSS dictionary found");
+		LOG.debug("No DSS dictionary found");
 		return null;
 	}
 
@@ -81,7 +81,7 @@ public class PdfDssDict {
 	private void readVRI(PdfDict dssDictionary) {
 		PdfDict vriDict = dssDictionary.getAsDict(VRI_DICTIONARY_NAME);
 		if (vriDict != null) {
-			logger.debug("There is a VRI dictionary in DSS dictionary");
+			LOG.debug("There is a VRI dictionary in DSS dictionary");
 			try {
 				String[] names = vriDict.list();
 				if (Utils.isArrayNotEmpty(names)) {
@@ -92,10 +92,10 @@ public class PdfDssDict {
 					}
 				}
 			} catch (Exception e) {
-				logger.debug("Unable to analyse VRI dictionary : " + e.getMessage());
+				LOG.debug("Unable to analyse VRI dictionary : " + e.getMessage());
 			}
 		} else {
-			logger.debug("No VRI dictionary found in DSS dictionary");
+			LOG.debug("No VRI dictionary found in DSS dictionary");
 		}
 	}
 
@@ -114,43 +114,43 @@ public class PdfDssDict {
 	private void extractCRLsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
 		final PdfArray crlArray = dict.getAsArray(arrayName);
 		if (crlArray != null) {
-			logger.debug("There are {} CRLs in {} dictionary", crlArray.size(), dictionaryName);
+			LOG.debug("There are {} CRLs in {} dictionary", crlArray.size(), dictionaryName);
 			for (int ii = 0; ii < crlArray.size(); ii++) {
 				try {
 					final byte[] bytes = crlArray.getBytes(ii);
 					final X509CRL x509CRL = DSSUtils.loadCRL(bytes);
 					crlList.add(x509CRL);
 				} catch (Exception e) {
-					logger.debug("Unable to read CRL " + ii + " from " + dictionaryName + " dictionary : " + e.getMessage(), e);
+					LOG.debug("Unable to read CRL " + ii + " from " + dictionaryName + " dictionary : " + e.getMessage(), e);
 				}
 			}
 		} else {
-			logger.debug("No CRLs found in {} dictionary", dictionaryName);
+			LOG.debug("No CRLs found in {} dictionary", dictionaryName);
 		}
 	}
 
 	private void extractCertsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
 		final PdfArray certsArray = dict.getAsArray(arrayName);
 		if (certsArray != null) {
-			logger.debug("There are {} certificates in {} dictionary", certsArray.size(), dictionaryName);
+			LOG.debug("There are {} certificates in {} dictionary", certsArray.size(), dictionaryName);
 			for (int ii = 0; ii < certsArray.size(); ii++) {
 				try {
 					final byte[] stream = certsArray.getBytes(ii);
 					final CertificateToken cert = DSSUtils.loadCertificate(stream);
 					certList.add(cert);
 				} catch (Exception e) {
-					logger.debug("Unable to read Cert " + ii + " from " + dictionaryName + " dictionary : " + e.getMessage(), e);
+					LOG.debug("Unable to read Cert " + ii + " from " + dictionaryName + " dictionary : " + e.getMessage(), e);
 				}
 			}
 		} else {
-			logger.debug("No Certs found in {} dictionary", dictionaryName);
+			LOG.debug("No Certs found in {} dictionary", dictionaryName);
 		}
 	}
 
 	private void extractOCSPsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
 		PdfArray ocspArray = dict.getAsArray(arrayName);
 		if (ocspArray != null) {
-			logger.debug("There are {} OCSPs in {} dictionary", ocspArray.size(), dictionaryName);
+			LOG.debug("There are {} OCSPs in {} dictionary", ocspArray.size(), dictionaryName);
 			for (int ii = 0; ii < ocspArray.size(); ii++) {
 				try {
 					final byte[] stream = ocspArray.getBytes(ii);
@@ -158,11 +158,11 @@ public class PdfDssDict {
 					final BasicOCSPResp responseObject = (BasicOCSPResp) ocspResp.getResponseObject();
 					ocspList.add(responseObject);
 				} catch (Exception e) {
-					logger.debug("Unable to read OCSP " + ii + " from " + dictionaryName + " dictionary : " + e.getMessage(), e);
+					LOG.debug("Unable to read OCSP " + ii + " from " + dictionaryName + " dictionary : " + e.getMessage(), e);
 				}
 			}
 		} else {
-			logger.debug("No OCSPs found in {} dictionary", dictionaryName);
+			LOG.debug("No OCSPs found in {} dictionary", dictionaryName);
 		}
 	}
 

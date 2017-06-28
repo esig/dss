@@ -3,11 +3,11 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.0</version>
+		<version>5.1.RC1</version>
 	</parent>
 	<artifactId>dss-utils-apache-commons</artifactId>
 	<name>DSS Utils implementation with Apache Commons</name>
-	<description>DSS Utils with Apache Commons : util methods for String, Collection,...</description>
+	<description>DSS Utils with Apache Commons : utility methods for String, Collection,...</description>
 
 	<dependencies>
 		<dependency>

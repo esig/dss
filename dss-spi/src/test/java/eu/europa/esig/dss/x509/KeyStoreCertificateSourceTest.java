@@ -1,14 +1,13 @@
 package eu.europa.esig.dss.x509;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSException;
@@ -19,27 +18,21 @@ public class KeyStoreCertificateSourceTest {
 
 	private static final String KEYSTORE_PASSWORD = "dss-password";
 	private static final String KEYSTORE_TYPE = "JKS";
-	private static final String ORIGINAL_KEYSTORE_FILEPATH = "src/test/resources/keystore.jks";
-	private static final String KEYSTORE_FILEPATH = "target/keystore.jks";
-
-	@Before
-	public void init() throws IOException {
-		Utils.copy(new FileInputStream(ORIGINAL_KEYSTORE_FILEPATH), new FileOutputStream(KEYSTORE_FILEPATH));
-	}
+	private static final String KEYSTORE_FILEPATH = "src/test/resources/keystore.jks";
 
 	@Test
-	public void testLoadAddAndDelete() {
+	public void testLoadAddAndDelete() throws IOException {
 		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File(KEYSTORE_FILEPATH), KEYSTORE_TYPE, KEYSTORE_PASSWORD);
 		assertNotNull(kscs);
 
-		int startSize = Utils.collectionSize(kscs.getCertificatesFromKeyStore());
+		int startSize = Utils.collectionSize(kscs.getCertificates());
 		assertTrue(startSize > 0);
 
 		CertificateToken token = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));
 		kscs.addCertificateToKeyStore(token);
 
-		int sizeAfterAdd = Utils.collectionSize(kscs.getCertificatesFromKeyStore());
-		assertTrue(sizeAfterAdd == startSize + 1);
+		int sizeAfterAdd = Utils.collectionSize(kscs.getCertificates());
+		assertEquals(sizeAfterAdd,startSize + 1);
 		String tokenId = token.getDSSIdAsString();
 
 		CertificateToken certificate = kscs.getCertificate(tokenId);
@@ -47,24 +40,32 @@ public class KeyStoreCertificateSourceTest {
 
 		kscs.deleteCertificateFromKeyStore(tokenId);
 
-		int sizeAfterDelete = Utils.collectionSize(kscs.getCertificatesFromKeyStore());
-		assertTrue(sizeAfterDelete == startSize);
+		int sizeAfterDelete = Utils.collectionSize(kscs.getCertificates());
+		assertEquals(sizeAfterDelete,startSize);
+	}
+
+	@Test
+	public void testCreateNewKeystore() throws IOException {
+		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(KEYSTORE_TYPE, KEYSTORE_PASSWORD);
+		CertificateToken token = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));
+		kscs.addCertificateToKeyStore(token);
+
+		kscs.store(new FileOutputStream("target/new_keystore.jks"));
+
+		KeyStoreCertificateSource kscs2 = new KeyStoreCertificateSource("target/new_keystore.jks", KEYSTORE_TYPE, KEYSTORE_PASSWORD);
+		assertEquals(1, Utils.collectionSize(kscs2.getCertificates()));
 	}
 
 	@Test(expected = DSSException.class)
-	public void wrongPassword() {
+	public void wrongPassword() throws IOException {
 		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File(KEYSTORE_FILEPATH), KEYSTORE_TYPE, "wrong password");
 		assertNotNull(kscs);
-
-		kscs.getCertificatesFromKeyStore();
 	}
 
-	@Test(expected = DSSException.class)
-	public void wrongFile() {
+	@Test(expected = IOException.class)
+	public void wrongFile() throws IOException {
 		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File("src/test/resources/keystore.p13"), KEYSTORE_TYPE, KEYSTORE_PASSWORD);
 		assertNotNull(kscs);
-
-		kscs.deleteCertificateFromKeyStore("1231456");
 	}
 
 }

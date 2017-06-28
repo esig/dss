@@ -35,7 +35,7 @@ import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractTestDocumentSignatureService {
+public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -48,12 +48,12 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractTestDo
 
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
-		
+
 		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
 		DSSTransform dssTransform = new DSSTransform();
 		dssTransform.setAlgorithm(Transforms.TRANSFORM_BASE64_DECODE);
 		transforms.add(dssTransform);
-		
+
 		List<DSSReference> references = new ArrayList<DSSReference>();
 		DSSReference dssReference = new DSSReference();
 		dssReference.setContents(documentToSign);
@@ -73,22 +73,22 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractTestDo
 		signatureParameters.setSignedInfoCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
 		signatureParameters.setSignedPropertiesCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
 		signatureParameters.setReferences(references);
-		
+
 		TimestampParameters contentTimestampParameters = new TimestampParameters();
 		contentTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		contentTimestampParameters.setCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
 		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
 
-		try{
-			MockTSPSource mockTsp= new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256));
+		try {
+			MockTSPSource mockTsp = new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256));
 			TimestampService timestampService = new TimestampService(mockTsp, new CertificatePool());
 			TimestampToken timestampToken = timestampService.generateXAdESContentTimestampAsTimestampToken(documentToSign, signatureParameters,
 					TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 			List<TimestampToken> contentTimestamps = new ArrayList<TimestampToken>();
 			contentTimestamps.add(timestampToken);
 			signatureParameters.setContentTimestamps(contentTimestamps);
-		}catch (Exception e) {
-			throw new DSSException("Error during MockTspSource",e);
+		} catch (Exception e) {
+			throw new DSSException("Error during MockTspSource", e);
 		}
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();

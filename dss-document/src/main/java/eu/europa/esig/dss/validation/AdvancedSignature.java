@@ -331,6 +331,14 @@ public interface AdvancedSignature extends Serializable {
 	byte[] getArchiveTimestampData(final TimestampToken timestampToken, String canonicalizationMethod);
 
 	/**
+	 * This method allows to add an external timestamp. The given timestamp must be checked before.
+	 * 
+	 * @param timestamp
+	 *            the timestamp token
+	 */
+	void addExternalTimestamp(TimestampToken timestamp);
+
+	/**
 	 * Returns a list of counter signatures applied to this signature
 	 *
 	 * @return a {@code List} of {@code AdvancedSignatures} representing the counter signatures

@@ -1,5 +1,8 @@
 package eu.europa.esig.dss.validation.process.bbb.isc;
 
+import eu.europa.esig.dss.SignatureForm;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificateChain;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlChainItem;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -12,6 +15,7 @@ import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateAt
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateRecognitionCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateSignedCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
@@ -46,15 +50,35 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 		 * signature or it can be obtained using external sources. The signing certificate can also be provided by the
 		 * DA. If no certificate can be retrieved, the building block shall return the indication INDETERMINATE and the
 		 * sub-indication NO_SIGNING_CERTIFICATE_FOUND.
-		 * 
-		 * 1) If the signature format used contains a way to directly identify the reference to the signers' certificate
-		 * in theattribute, the building block shall check that the digest of the certificate referenced matches the
-		 * result of digesting the signing certificate with the algorithm indicated; if they match, the building block
-		 * shall return the signing certificate. Otherwise, the building block shall go to step 2.
 		 */
 		ChainItem<XmlISC> item = firstItem = signingCertificateRecognition();
 
+		XmlCertificateChain certificateChain = new XmlCertificateChain();
+		if(token.getCertificateChain() != null) {
+			for(eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem diagnosticChainItem : token.getCertificateChain()) {
+				XmlChainItem chainItem = new XmlChainItem();
+				chainItem.setId(diagnosticChainItem.getId());
+				chainItem.setSource(diagnosticChainItem.getSource());
+				certificateChain.getChainItem().add(chainItem);
+			}
+			result.setCertificateChain(certificateChain);
+		}
+		
 		if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
+			/*
+			 * 1) If the signature format used contains a way to directly identify the reference to the signers'
+			 * certificate in the attribute, the building block shall check that the digest of the certificate
+			 * referenced matches the result of digesting the signing certificate with the algorithm indicated; if they
+			 * match, the building block shall return the signing certificate. Otherwise, the building block shall go to
+			 * step 2.
+			 */
+
+			// PKCS7 signatures have not these information
+			SignatureWrapper signature = (SignatureWrapper) token;
+			if (signature.getFormat() != null && signature.getFormat().contains(SignatureForm.PKCS7.name())) {
+				return;
+			}
+
 			item = item.setNextItem(signingCertificateSigned());
 			item = item.setNextItem(signingCertificateAttributePresent());
 
@@ -73,8 +97,7 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 			/*
 			 * 3) If the issuer and the serial number are additionally present in that reference, the details of the
 			 * issuer's name and the serial number of the IssuerSerial element may be compared with those indicated in
-			 * the
-			 * signing certificate: if they do not match, an additional warning shall be returned with the output.
+			 * the signing certificate: if they do not match, an additional warning shall be returned with the output.
 			 */
 			item = item.setNextItem(issuerSerialMatch());
 		}

@@ -101,7 +101,7 @@ public class XPointerResourceResolver extends ResourceResolverSpi {
 			LOG.warn("utf-8 not a valid encoding", e);
 			return false;
 		}
-		final String parts[] = decodedUri.substring(1).split("\\s");
+		final String[] parts = decodedUri.substring(1).split("\\s");
 		// plain ID reference.
 		if (parts.length == 1 && !parts[0].startsWith(XNS_OPEN)) {
 			return strict ? false : true;

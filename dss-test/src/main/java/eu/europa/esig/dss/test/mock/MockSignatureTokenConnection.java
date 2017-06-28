@@ -51,7 +51,7 @@ public class MockSignatureTokenConnection extends AbstractSignatureTokenConnecti
 	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException {
 
 		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		logger.info("Signature algorithm: " + encryptionAlgorithm + "/" + digestAlgorithm);
+		LOG.info("Signature algorithm: " + encryptionAlgorithm + "/" + digestAlgorithm);
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
 		final String javaSignatureAlgorithm = signatureAlgorithm.getJCEId();
 

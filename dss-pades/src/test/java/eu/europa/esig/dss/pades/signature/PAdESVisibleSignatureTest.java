@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import static org.junit.Assert.assertTrue;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Date;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.InMemoryDocument;
@@ -52,6 +40,17 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Date;
+
+import static org.junit.Assert.assertTrue;
 
 public class PAdESVisibleSignatureTest {
 
@@ -84,7 +83,7 @@ public class PAdESVisibleSignatureTest {
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.GREEN);
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setImageParameters(imageParameters);
+		signatureParameters.setSignatureImageParameters(imageParameters);
 
 		signAndValidate();
 	}
@@ -95,7 +94,7 @@ public class PAdESVisibleSignatureTest {
 		imageParameters.setImage(new FileDocument(new File("src/test/resources/small-red.jpg")));
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
-		signatureParameters.setImageParameters(imageParameters);
+		signatureParameters.setSignatureImageParameters(imageParameters);
 
 		signAndValidate();
 	}
@@ -106,7 +105,7 @@ public class PAdESVisibleSignatureTest {
 		imageParameters.setImage(new FileDocument(new File("src/test/resources/signature-image.png")));
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
-		signatureParameters.setImageParameters(imageParameters);
+		signatureParameters.setSignatureImageParameters(imageParameters);
 
 		signAndValidate();
 	}
@@ -124,7 +123,7 @@ public class PAdESVisibleSignatureTest {
 		imageParameters.setTextParameters(textParameters);
 
 		imageParameters.setZoom(150); // augments 50%
-		signatureParameters.setImageParameters(imageParameters);
+		signatureParameters.setSignatureImageParameters(imageParameters);
 		signAndValidate();
 	}
 
@@ -141,7 +140,7 @@ public class PAdESVisibleSignatureTest {
 		textParameters.setSignerNamePosition(SignerPosition.TOP);
 		imageParameters.setTextParameters(textParameters);
 
-		signatureParameters.setImageParameters(imageParameters);
+		signatureParameters.setSignatureImageParameters(imageParameters);
 		signAndValidate();
 	}
 
@@ -152,7 +151,7 @@ public class PAdESVisibleSignatureTest {
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
 		imageParameters.setZoom(50); // reduces 50%
-		signatureParameters.setImageParameters(imageParameters);
+		signatureParameters.setSignatureImageParameters(imageParameters);
 
 		signAndValidate();
 	}
@@ -169,25 +168,72 @@ public class PAdESVisibleSignatureTest {
 		textParameters.setFont(new Font("Arial", Font.BOLD, 15));
 		textParameters.setSignerNamePosition(SignerPosition.TOP);
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setImageParameters(imageParameters);
+		signatureParameters.setSignatureImageParameters(imageParameters);
 
 		signAndValidate();
 	}
 
 	@Test
-	public void testGeneratedImageAndTextOnLeft() throws IOException {
+	public void testGeneratedImageWithText() throws IOException {
+		SignatureImageParameters imageParameters = createSignatureImageParameters();
+		signatureParameters.setSignatureImageParameters(imageParameters);
+		//image and text on left
+		signAndValidate();
+
+		//image and text on right
+		imageParameters.getTextParameters().setSignerNamePosition(SignerPosition.RIGHT);
+		signAndValidate();
+
+		//image and text on right and horizontal align is right
+		imageParameters.getTextParameters().setSignerTextHorizontalAlignment(SignatureImageTextParameters.SignerTextHorizontalAlignment.RIGHT);
+		signAndValidate();
+
+		//image and text on right and horizontal align is center
+		imageParameters.getTextParameters().setSignerTextHorizontalAlignment(SignatureImageTextParameters.SignerTextHorizontalAlignment.CENTER);
+		signAndValidate();
+
+		//image and text on right and horizontal align is center with transparent colors
+		Color transparent = new Color(0, 0, 0, 0.25f);
+		imageParameters.getTextParameters().setBackgroundColor(transparent);
+        imageParameters.getTextParameters().setTextColor(new Color(0.5f, 0.2f, 0.8f, 0.5f));
+		imageParameters.setBackgroundColor(transparent);
+		imageParameters.setxAxis(10);
+        imageParameters.setyAxis(10);
+		signAndValidate();
+
+        //image and text on right and horizontal align is center with transparent colors with big image
+        imageParameters.setImage(new FileDocument(new File("src/test/resources/signature-image.png")));
+        signAndValidate();
+
+        //image and text on right and horizontal align is center with transparent colors with big image and vertical align top
+        imageParameters.setSignerTextImageVerticalAlignment(SignatureImageParameters.SignerTextImageVerticalAlignment.TOP);
+        signAndValidate();
+
+        //image and text on right and horizontal align is center with transparent colors with big image and vertical align bottom
+        imageParameters.setSignerTextImageVerticalAlignment(SignatureImageParameters.SignerTextImageVerticalAlignment.BOTTOM);
+        signAndValidate();
+
+        //image and text on left and horizontal align is center with transparent colors with big image and vertical align bottom
+        imageParameters.getTextParameters().setSignerNamePosition(SignerPosition.LEFT);
+        signAndValidate();
+
+        //image and text on left and horizontal align is center with transparent colors and vertical align bottom
+        imageParameters.setImage(new FileDocument(new File("src/test/resources/small-red.jpg")));
+        signAndValidate();
+	}
+
+	private SignatureImageParameters createSignatureImageParameters() {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new FileDocument(new File("src/test/resources/small-red.jpg")));
 		imageParameters.setxAxis(200);
 		imageParameters.setyAxis(300);
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-		textParameters.setText("My signature");
+		textParameters.setText("My signature\nsecond line\nlong line is very long line with long text example this");
 		textParameters.setTextColor(Color.BLUE);
 		textParameters.setSignerNamePosition(SignerPosition.LEFT);
 		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setImageParameters(imageParameters);
 
-		signAndValidate();
+		return imageParameters;
 	}
 
 	private void signAndValidate() throws IOException {

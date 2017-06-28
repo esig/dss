@@ -59,7 +59,7 @@ import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 @SuppressWarnings("serial")
 public class OnlineOCSPSource implements OCSPSource {
 
-	private static final Logger logger = LoggerFactory.getLogger(OnlineOCSPSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(OnlineOCSPSource.class);
 
 	static {
 		Security.addProvider(new BouncyCastleProvider());
@@ -112,10 +112,10 @@ public class OnlineOCSPSource implements OCSPSource {
 
 		try {
 			final String dssIdAsString = certificateToken.getDSSIdAsString();
-			logger.trace("--> OnlineOCSPSource queried for " + dssIdAsString);
+			LOG.trace("--> OnlineOCSPSource queried for " + dssIdAsString);
 			final List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
 			if (Utils.isCollectionEmpty(ocspAccessLocations)) {
-				logger.debug("No OCSP location found for " + dssIdAsString);
+				LOG.debug("No OCSP location found for " + dssIdAsString);
 				certificateToken.extraInfo().infoNoOcspUriFoundInCertificate();
 				return null;
 			}
@@ -195,14 +195,14 @@ public class OnlineOCSPSource implements OCSPSource {
 		try {
 			value = ASN1Primitive.fromByteArray(extnValue.getOctets());
 		} catch (IOException ex) {
-			logger.warn("Invalid encoding of nonce extension value in OCSP response", ex);
+			LOG.warn("Invalid encoding of nonce extension value in OCSP response", ex);
 			return false;
 		}
 		if (value instanceof DEROctetString) {
 			BigInteger receivedNonce = new BigInteger(((DEROctetString) value).getOctets());
 			return expectedNonceValue.equals(receivedNonce);
 		} else {
-			logger.warn("Nonce extension value in OCSP response is not an OCTET STRING");
+			LOG.warn("Nonce extension value in OCSP response is not an OCTET STRING");
 			return false;
 		}
 	}

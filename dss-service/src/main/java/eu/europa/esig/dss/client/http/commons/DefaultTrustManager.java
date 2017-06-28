@@ -27,10 +27,8 @@ public final class DefaultTrustManager implements X509TrustManager {
 	 * 
 	 * @throws GeneralSecurityException
 	 *             Certificate/Keystore/Algorithm/... exception
-	 * @throws IOException
-	 *             I/O Error
 	 */
-	public DefaultTrustManager(final KeyStore keystore) throws GeneralSecurityException, IOException {
+	public DefaultTrustManager(final KeyStore keystore) throws GeneralSecurityException {
 		// initialize a new TMF with the ts we just loaded
 		TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
 		tmf.init(keystore);
@@ -77,10 +75,8 @@ public final class DefaultTrustManager implements X509TrustManager {
 	 * 
 	 * @throws GeneralSecurityException
 	 *             Certificate/Keystore/Algorithm/... exception
-	 * @throws IOException
-	 *             I/O Error
 	 */
-	private void initTrustManager(final KeyStore keystore) throws GeneralSecurityException, IOException {
+	private void initTrustManager(final KeyStore keystore) throws GeneralSecurityException{
 
 		// initialize a new TMF with the ts we just loaded
 		TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());

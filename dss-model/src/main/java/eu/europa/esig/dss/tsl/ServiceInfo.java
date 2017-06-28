@@ -153,7 +153,7 @@ public class ServiceInfo implements Serializable {
 	 */
 	public String toString(String indent) {
 		try {
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder buffer = new StringBuilder();
 			buffer.append(indent).append("TSPName                   \t= ").append(tspName).append('\n');
 			buffer.append(indent).append("ServiceName               \t= ").append(serviceName).append('\n');
 			buffer.append(indent).append("StatusAndExtensions       \t= ").append(status).append('\n');

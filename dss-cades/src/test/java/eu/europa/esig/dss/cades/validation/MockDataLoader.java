@@ -10,6 +10,8 @@ import eu.europa.esig.dss.utils.Utils;
 
 public class MockDataLoader extends CommonsDataLoader {
 
+	private static final long serialVersionUID = -8743201861357700742L;
+
 	public MockDataLoader() {
 	}
 

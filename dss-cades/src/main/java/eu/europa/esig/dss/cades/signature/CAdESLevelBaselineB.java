@@ -80,7 +80,8 @@ import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
- * This class holds the CAdES-B signature profile; it supports the inclusion of the mandatory signed id_aa_ets_sigPolicyId attribute as specified in ETSI TS 101
+ * This class holds the CAdES-B signature profile; it supports the inclusion of the mandatory signed
+ * id_aa_ets_sigPolicyId attribute as specified in ETSI TS 101
  * 733 V1.8.1, clause 5.8.1.
  *
  *
@@ -382,7 +383,6 @@ public class CAdESLevelBaselineB {
 		/* this attribute is prohibited in PAdES B */
 		if (!padesUsage) {
 
-			final BLevelParameters bLevelParameters = parameters.bLevel();
 			final String contentIdentifierPrefix = parameters.getContentIdentifierPrefix();
 			if (Utils.isStringNotBlank(contentIdentifierPrefix)) {
 

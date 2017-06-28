@@ -32,7 +32,7 @@ import eu.europa.esig.dss.pdf.pdfbox.PdfBoxObjectFactory;
  */
 public abstract class PdfObjFactory {
 
-	private static final Logger logger = LoggerFactory.getLogger(PdfObjFactory.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(PdfObjFactory.class.getName());
 
 	private static PdfObjFactory INSTANCE;
 
@@ -40,17 +40,17 @@ public abstract class PdfObjFactory {
 		if (INSTANCE == null) {
 			String factoryClassName = System.getProperty("dss.pdf_obj_factory");
 			if (factoryClassName != null) {
-				logger.info("Using '" + factoryClassName + "' as the PDF Object Factory Implementation");
+				LOG.info("Using '" + factoryClassName + "' as the PDF Object Factory Implementation");
 				try {
 					@SuppressWarnings("unchecked")
 					Class<PdfObjFactory> factoryClass = (Class<PdfObjFactory>) Class.forName(factoryClassName);
 					INSTANCE = factoryClass.newInstance();
 				} catch (Exception ex) {
-					logger.error("dss.pdf_obj_factory is '" + factoryClassName + "' but factory cannot be instantiated (fallback will be used)");
+					LOG.error("dss.pdf_obj_factory is '" + factoryClassName + "' but factory cannot be instantiated (fallback will be used)");
 				}
 			}
 			if (INSTANCE == null) {
-				logger.info("Fallback to '" + PdfBoxObjectFactory.class.getName() + "' as the PDF Object Factory Implementation");
+				LOG.info("Fallback to '" + PdfBoxObjectFactory.class.getName() + "' as the PDF Object Factory Implementation");
 				INSTANCE = new PdfBoxObjectFactory();
 			}
 		}

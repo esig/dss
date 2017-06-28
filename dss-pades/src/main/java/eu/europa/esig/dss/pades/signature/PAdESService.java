@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pades.signature;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.List;
 
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
@@ -44,6 +45,7 @@ import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineT;
 import eu.europa.esig.dss.cades.signature.CustomContentSigner;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
@@ -172,6 +174,32 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 			return extended;
 		}
 		return original;
+	}
+
+	/**
+	 * This method returns not signed signature-fields
+	 * 
+	 * @param document
+	 *            the pdf document
+	 * @return the list of empty signature fields
+	 */
+	public List<String> getAvailableSignatureFields(DSSDocument document) {
+		PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
+		return pdfSignatureService.getAvailableSignatureFields(document);
+	}
+
+	/**
+	 * This method allows to add a new signature field to an existing pdf document
+	 * 
+	 * @param document
+	 *            the pdf document
+	 * @param parameters
+	 *            the parameters with the coordinates,... of the signature field
+	 * @return the pdf document with the new added signature field
+	 */
+	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
+		PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
+		return pdfSignatureService.addNewSignatureField(document, parameters);
 	}
 
 }

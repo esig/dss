@@ -281,6 +281,11 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 				}
 			}
 
+			indication = Indication.INDETERMINATE;
+			subIndication = SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE;
+			errors.addAll(savConclusion.getErrors());
+			return false;
+
 		} else if (!Indication.PASSED.equals(savConclusion.getIndication())) {
 			indication = savConclusion.getIndication();
 			subIndication = savConclusion.getSubIndication();

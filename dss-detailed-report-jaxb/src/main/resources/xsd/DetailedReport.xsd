@@ -36,6 +36,7 @@
 			<xs:element type="PSV" name="PSV" minOccurs="0" />
 			<xs:element type="PCV" name="PCV" minOccurs="0" />
 			<xs:element type="VTS" name="VTS" minOccurs="0" />
+			<xs:element name="CertificateChain" type="CertificateChain" />
 			<xs:element type="Conclusion" name="Conclusion" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
@@ -107,7 +108,11 @@
 	</xs:complexType>
 	<xs:complexType name="ISC">
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion" />
+			<xs:extension base="ConstraintsConclusion" >
+				<xs:sequence>
+					<xs:element name="CertificateChain" type="CertificateChain" />
+				</xs:sequence>
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="VCI">
@@ -285,5 +290,18 @@
 			<xs:enumeration value="N/A" />
 		</xs:restriction>
 	</xs:simpleType>
+	
+	<xs:complexType name="CertificateChain">
+		<xs:sequence>
+			<xs:element name="ChainItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Source" type="xs:string" />
+					</xs:sequence>
+					<xs:attribute name="Id" type="xs:string" use="required" />
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
 	
 </xs:schema>

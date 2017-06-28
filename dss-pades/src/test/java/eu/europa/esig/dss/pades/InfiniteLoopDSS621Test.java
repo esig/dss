@@ -114,8 +114,6 @@ public class InfiniteLoopDSS621Test {
 	/**
 	 * These signatures are invalid because of non ordered signed attributes
 	 */
-	// Annotation for error_probe
-	@SuppressWarnings("InsecureCryptoUsage")
 	@Test
 	public void manualTest() throws Exception {
 

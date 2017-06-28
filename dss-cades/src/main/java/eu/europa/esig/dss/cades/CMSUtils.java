@@ -29,10 +29,10 @@ import eu.europa.esig.dss.DSSException;
 
 public final class CMSUtils {
 
-	private static final Logger logger = LoggerFactory.getLogger(CMSUtils.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CMSUtils.class);
 
-	private CMSUtils() {}
-
+	private CMSUtils() {
+	}
 
 	/**
 	 * Returns the ASN.1 encoded representation of {@code CMSSignedData}.
@@ -50,7 +50,8 @@ public final class CMSUtils {
 	}
 
 	/**
-	 * This method generate {@code CMSSignedData} using the provided #{@code CMSSignedDataGenerator}, the content and the indication if the content should be encapsulated.
+	 * This method generate {@code CMSSignedData} using the provided #{@code CMSSignedDataGenerator}, the content and
+	 * the indication if the content should be encapsulated.
 	 *
 	 * @param generator
 	 * @param content
@@ -58,8 +59,8 @@ public final class CMSUtils {
 	 * @return
 	 * @throws DSSException
 	 */
-	public static CMSSignedData generateCMSSignedData(final CMSSignedDataGenerator generator, final CMSProcessableByteArray content,
-			final boolean encapsulate) throws DSSException {
+	public static CMSSignedData generateCMSSignedData(final CMSSignedDataGenerator generator, final CMSProcessableByteArray content, final boolean encapsulate)
+			throws DSSException {
 		try {
 			final CMSSignedData cmsSignedData = generator.generate(content, encapsulate);
 			return cmsSignedData;
@@ -68,14 +69,17 @@ public final class CMSUtils {
 		}
 	}
 
-	public static CMSSignedData generateDetachedCMSSignedData(final CMSSignedDataGenerator generator, final CMSProcessableByteArray content) throws DSSException {
+	public static CMSSignedData generateDetachedCMSSignedData(final CMSSignedDataGenerator generator, final CMSProcessableByteArray content)
+			throws DSSException {
 		return generateCMSSignedData(generator, content, false);
 	}
 
 	/**
-	 * @param signerInformation {@code SignerInformation}
+	 * @param signerInformation
+	 *            {@code SignerInformation}
 	 * @return {@code DERTaggedObject} representing the signed attributes
-	 * @throws DSSException in case of a decoding problem
+	 * @throws DSSException
+	 *             in case of a decoding problem
 	 */
 	public static DERTaggedObject getDERSignedAttributes(final SignerInformation signerInformation) throws DSSException {
 		try {
@@ -92,6 +96,7 @@ public final class CMSUtils {
 
 	/**
 	 * This method returns the signed content extracted from a CMSTypedData
+	 * 
 	 * @param cmsTypedData
 	 *            {@code CMSTypedData} cannot be null
 	 * @return the signed content extracted from {@code CMSTypedData}
@@ -152,7 +157,7 @@ public final class CMSUtils {
 			final BasicOCSPResponse basicOcspResponse = BasicOCSPResponse.getInstance(derSequence);
 			basicOCSPResp = new BasicOCSPResp(basicOcspResponse);
 		} catch (Exception e) {
-			logger.error("Impossible to create BasicOCSPResp from DERSequence!", e);
+			LOG.error("Impossible to create BasicOCSPResp from DERSequence!", e);
 		}
 		return basicOCSPResp;
 	}
@@ -170,7 +175,7 @@ public final class CMSUtils {
 			final OCSPResponse ocspResponse = OCSPResponse.getInstance(derSequence);
 			ocspResp = new OCSPResp(ocspResponse);
 		} catch (Exception e) {
-			logger.error("Impossible to create OCSPResp from DERSequence!", e);
+			LOG.error("Impossible to create OCSPResp from DERSequence!", e);
 		}
 		return ocspResp;
 	}
@@ -189,10 +194,10 @@ public final class CMSUtils {
 			if (responseObject instanceof BasicOCSPResp) {
 				basicOCSPResp = (BasicOCSPResp) responseObject;
 			} else {
-				logger.warn("Unknown OCSP response type: {}", responseObject.getClass());
+				LOG.warn("Unknown OCSP response type: {}", responseObject.getClass());
 			}
 		} catch (OCSPException e) {
-			logger.error("Impossible to process OCSPResp!", e);
+			LOG.error("Impossible to process OCSPResp!", e);
 		}
 		return basicOCSPResp;
 	}

@@ -34,7 +34,7 @@ public final class TokenIdentifier implements Serializable {
 	private final Digest tokenDigest;
 
 	TokenIdentifier(DigestAlgorithm digestAlgo, byte[] digest) {
-		this.tokenDigest = new Digest(DigestAlgorithm.SHA256, digest);
+		this.tokenDigest = new Digest(digestAlgo, digest);
 	}
 
 	public TokenIdentifier(final Token token) {

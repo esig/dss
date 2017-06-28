@@ -30,7 +30,7 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
  */
 public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 
-	private static final Logger logger = LoggerFactory.getLogger(ChainItem.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ChainItem.class);
 
 	private ChainItem<T> nextItem;
 
@@ -89,7 +89,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	 */
 	public void execute() {
 		if ((constraint == null) || (constraint.getLevel() == null)) {
-			logger.trace("Check skipped : constraint not defined");
+			LOG.trace("Check skipped : constraint not defined");
 			callNext();
 		} else {
 			switch (constraint.getLevel()) {
@@ -104,7 +104,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 				informOrWarn(constraint.getLevel());
 				break;
 			default:
-				logger.warn("Unknown level : " + constraint.getLevel());
+				LOG.warn("Unknown level : " + constraint.getLevel());
 				break;
 			}
 		}
@@ -198,7 +198,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 			xmlName.setNameId(messageTag.name());
 			xmlName.setValue(messageTag.getMessage());
 		} else {
-			logger.error("MessageTag is null");
+			LOG.error("MessageTag is null");
 		}
 		return xmlName;
 	}

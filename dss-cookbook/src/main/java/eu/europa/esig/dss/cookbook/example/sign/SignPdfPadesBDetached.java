@@ -23,7 +23,6 @@ package eu.europa.esig.dss.cookbook.example.sign;
 import java.io.IOException;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
@@ -86,8 +85,7 @@ public class SignPdfPadesBDetached extends Cookbook {
 		// the previous step.
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
-		//We use the DSSUtils to Save to file
-		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedPdfPadesBDetached.pdf");
-
+		// We use the DSSUtils to Save to file
+		signedDocument.save("target/signedPdfPadesBDetached.pdf");
 	}
 }
