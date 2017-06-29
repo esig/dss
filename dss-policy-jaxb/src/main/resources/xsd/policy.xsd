@@ -145,7 +145,13 @@
 		<xs:complexContent>
 			<xs:extension base="tns:CertificateConstraints">
 				<xs:sequence>
-					<xs:element type="xs:base64Binary" name="TrustPoints" maxOccurs="unbounded" minOccurs="0" />
+					<xs:element name="TrustPoints" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element type="xs:base64Binary" name="X509Certificate" maxOccurs="unbounded" minOccurs="0" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

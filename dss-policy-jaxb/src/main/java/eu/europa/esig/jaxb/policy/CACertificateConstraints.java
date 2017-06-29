@@ -1,8 +1,5 @@
 package eu.europa.esig.jaxb.policy;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -10,7 +7,7 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for MultiValuesConstraint complex type.
+ * <p>Java class for CACertificateConstraints complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
@@ -19,7 +16,13 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;extension base="{http://dss.esig.europa.eu/validation/policy}CertificateConstraints">
  *       &lt;sequence>
- *         &lt;element name="TrustPoints" type="{http://www.w3.org/2001/XMLSchema}base64Binary" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="TrustPoints" minOccurs="0">
+ *			 &lt;complexType>
+ *             &lt;sequence>
+ *               &lt;element name="X509Certificate" type="{http://www.w3.org/2001/XMLSchema}base64Binary" maxOccurs="unbounded" minOccurs="0"/>
+ *             &lt;/sequence>
+ *           &lt;/complexType>
+ *         &lt;/element>
  *       &lt;/sequence>
  *     &lt;/extension>
  *   &lt;/complexContent>
@@ -35,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
 public class CACertificateConstraints extends CertificateConstraints {
 	
     @XmlElement(name = "TrustPoints")
-    protected List<byte[]> trustPoints;
+    protected TrustPoints trustPoints;
 
     /**
      * Gets the value of the X509Certificate bytes from the trust anchor CAs (according to ETSI TS 102 853, item 5.3.4).
@@ -45,10 +48,7 @@ public class CACertificateConstraints extends CertificateConstraints {
      *     {@link LevelConstraint }
      *     
      */
-	public List<byte[]> getTrustPoints() {
-        if (trustPoints == null) {
-        	trustPoints = new ArrayList<byte[]>();
-        }
+	public TrustPoints getTrustPoints() {
 		return trustPoints;
 	}
 
@@ -60,7 +60,7 @@ public class CACertificateConstraints extends CertificateConstraints {
      *     {@link LevelConstraint }
      *     
      */
-	public void setTrustPoints(List<byte[]> trustPoints) {
+	public void setTrustPoints(TrustPoints trustPoints) {
 		this.trustPoints = trustPoints;
 	}
 }

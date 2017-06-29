@@ -524,7 +524,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	public List<byte[]> getCertificateTrustPoints(Context context) {
 		CACertificateConstraints certificateConstraints = getCACertificateByContext(context);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getTrustPoints();
+			return certificateConstraints.getTrustPoints().getX509Certificate();
 		}
 		return null;
 	}
