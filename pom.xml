@@ -75,6 +75,7 @@
 		<module>dss-document</module>
 		<module>dss-service</module>
 		<module>dss-spi</module>
+		<module>dss-crl-parser</module>
 		<module>dss-test</module>
 		<module>sscd-mocca-adapter</module>
 		<module>dss-policy-jaxb</module>
@@ -282,6 +283,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-spi</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-crl-parser</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
