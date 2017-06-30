@@ -20,7 +20,8 @@ public final class Utils {
 		ServiceLoader<IUtils> loader = ServiceLoader.load(IUtils.class);
 		Iterator<IUtils> iterator = loader.iterator();
 		if (!iterator.hasNext()) {
-			throw new ExceptionInInitializerError("No implementation found for IUtils in classpath, please choose between dss-utils-apache-commons or dss-utils-google-guava");
+			throw new ExceptionInInitializerError(
+					"No implementation found for IUtils in classpath, please choose between dss-utils-apache-commons or dss-utils-google-guava");
 		}
 		impl = iterator.next();
 	}
@@ -121,6 +122,10 @@ public final class Utils {
 
 	public static String toHex(byte[] bytes) {
 		return impl.toHex(bytes);
+	}
+
+	public static byte[] fromHex(String hex) {
+		return impl.fromHex(hex);
 	}
 
 	public static String toBase64(byte[] bytes) {
