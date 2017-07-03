@@ -29,6 +29,7 @@ public final class DERUtil {
 		} catch (NoSuchMethodException | SecurityException e) {
 			throw new RuntimeException("Unable to access to ASN1InputStream.readTagNumber method", e);
 		}
+
 	}
 
 	private DERUtil() {
@@ -54,6 +55,15 @@ public final class DERUtil {
 		}
 	}
 
+	/**
+	 * Adaptation from org.bouncycastle.asn1.ASN1OutputStream.writeLength(int)
+	 * 
+	 * @param os
+	 *            the output stream
+	 * @param length
+	 *            the length to add
+	 * @throws IOException
+	 */
 	public static void writeLength(OutputStream os, int length) throws IOException {
 		if (length > 127) {
 			int size = 1;

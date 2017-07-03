@@ -11,7 +11,10 @@
 	<artifactId>dss-crl-parser</artifactId>
 
 	<dependencies>
-		
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-model</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
