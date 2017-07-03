@@ -4,6 +4,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,28 +21,30 @@ public class CRLParserTest {
 
 	@Test
 	public void testBelgium2() throws IOException {
-		try (FileInputStream fis = new FileInputStream("src/test/resources/belgium2.crl")) {
+		try (FileInputStream fis = new FileInputStream("src/test/resources/belgium2.crl"); BufferedInputStream is = new BufferedInputStream(fis)) {
 			CRLInfo handler = new CRLInfo();
-			parser.retrieveInfo(fis, handler);
+			parser.retrieveInfo(is, handler);
 
 			assertEquals(SignatureAlgorithm.RSA_SHA1, handler.getCertificateListSignatureAlgorithm());
 			assertNotNull(handler.getIssuer());
 			assertNotNull(handler.getThisUpdate());
 			assertNotNull(handler.getNextUpdate());
 
-			// assertEquals(SignatureAlgorithm.RSA_SHA1, handler.getTbsSignatureAlgorithm());
+			assertEquals(SignatureAlgorithm.RSA_SHA1, handler.getTbsSignatureAlgorithm());
 
 			String expectedSignValueHex = "2559D78E12A24217507A4ADF992070839DC0526D3BAB446B0A337BD1297C8D90007B9990A01E5B5ED1683A9805F6CC419D1067E3F7D0DE6BF795CDE31E1140407D55EF0C42F71D006A2EA228B00750AF2D036792E1D261AFC096024953C6BD2773866F38FE2B054F9D963E7D603D2418359CDC616B135192FDCC695378DFB5E19104E26A507AD073DF1611098613806703CDB06F9CF6658BF42AC8628AC9CBB9216375E2BEE2327D034DA56601611AC118AEEFDFB6B916927805B81007203F515D5297A635DDF9904419E15FCE75539C2539EEC94DF63DECBBA2B083B2366106942183AA9F7A16FEA055DC5B0FD538E72CC835C6E194A37F73C8E04E6BDC36CE";
 			byte[] signatureValue = handler.getSignatureValue();
 			assertArrayEquals(Utils.fromHex(expectedSignValueHex), signatureValue);
+
 		}
 	}
 
 	@Test
 	public void testPtCRL() throws IOException {
-		try (FileInputStream fis = new FileInputStream("src/test/resources/pt_crl_with_critical_extension.crl")) {
+		try (FileInputStream fis = new FileInputStream("src/test/resources/pt_crl_with_critical_extension.crl");
+				BufferedInputStream is = new BufferedInputStream(fis)) {
 			CRLInfo handler = new CRLInfo();
-			parser.retrieveInfo(fis, handler);
+			parser.retrieveInfo(is, handler);
 
 			assertEquals(SignatureAlgorithm.RSA_SHA1, handler.getCertificateListSignatureAlgorithm());
 			assertNotNull(handler.getIssuer());
@@ -69,7 +72,7 @@ public class CRLParserTest {
 			assertNotNull(handler.getThisUpdate());
 			assertNotNull(handler.getNextUpdate());
 
-			// assertEquals(SignatureAlgorithm.RSA_SHA1, handler.getTbsSignatureAlgorithm());
+			assertEquals(SignatureAlgorithm.RSA_SHA1, handler.getTbsSignatureAlgorithm());
 
 			String expectedSignValueHex = "2899EC527E9D7BB84DAE1AFFD9AABBFB669E0645CC9C50843888472376BD12FAA1FA11DBD409CCE03CC8B2E82C7599F81799B39FDFD6E171B728B00CF38C50F37882924E8A05800D2712C6F0340052F774D95D9DFBEF557A69121E89CE51B810B9E7C9481E2F35E635E8BFA097CA59F26F1F34E26F7C684A5A90553EFA3D1D08C01D97F22CFB961903D47654C887FC0B51BA6A6FBF29360D18F6F13EEA9677C3F1BB8B7EBE8F69795E6B7BC4538AB8EE76744B6FA39FC1E345B2A98A4454A5AEE677000C764806693F28AF0C64AD93FC0CCEC7D35C2235D966EC9FD6014B5EE756C211C3157B4ECF6F262F5F12787F05FE37F8FECA5BBAD058C609F0C8F559B5";
 			byte[] signatureValue = handler.getSignatureValue();
@@ -79,9 +82,9 @@ public class CRLParserTest {
 
 	@Test
 	public void testLTGRCA() throws IOException {
-		try (FileInputStream fis = new FileInputStream("src/test/resources/LTGRCA.crl")) {
+		try (FileInputStream fis = new FileInputStream("src/test/resources/LTGRCA.crl"); BufferedInputStream is = new BufferedInputStream(fis)) {
 			CRLInfo handler = new CRLInfo();
-			parser.retrieveInfo(fis, handler);
+			parser.retrieveInfo(is, handler);
 
 			assertEquals(SignatureAlgorithm.RSA_SHA1, handler.getCertificateListSignatureAlgorithm());
 			assertNotNull(handler.getIssuer());

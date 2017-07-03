@@ -1,10 +1,10 @@
 package eu.europa.esig.dss.crl;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.security.auth.x500.X500Principal;
-
-import org.bouncycastle.asn1.x509.Extensions;
 
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.crl.handler.CRLInfoEventHandler;
@@ -16,9 +16,10 @@ public class CRLInfo implements CRLInfoEventHandler {
 	private X500Principal issuer;
 	private Date thisUpdate;
 	private Date nextUpdate;
-	private Extensions crlExtensions;
 	private SignatureAlgorithm tbsSignatureAlgorithm;
 	private byte[] signatureValue;
+	private Map<String, byte[]> criticalExtensions = new HashMap<String, byte[]>();
+	private Map<String, byte[]> nonCriticalExtensions = new HashMap<String, byte[]>();
 
 	public Integer getVersion() {
 		return version;
@@ -65,13 +66,22 @@ public class CRLInfo implements CRLInfoEventHandler {
 		this.nextUpdate = nextUpdate;
 	}
 
-	public Extensions getCrlExtensions() {
-		return crlExtensions;
+	@Override
+	public void onCriticalExtension(String oid, byte[] content) {
+		this.criticalExtensions.put(oid, content);
+	}
+
+	public byte[] getCriticalExtension(String oid) {
+		return criticalExtensions.get(oid);
 	}
 
 	@Override
-	public void onCrlExtensions(Extensions extensions) {
-		this.crlExtensions = extensions;
+	public void onNonCriticalExtension(String oid, byte[] content) {
+		this.nonCriticalExtensions.put(oid, content);
+	}
+
+	public byte[] getNonCriticalExtension(String oid) {
+		return nonCriticalExtensions.get(oid);
 	}
 
 	public SignatureAlgorithm getTbsSignatureAlgorithm() {

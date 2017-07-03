@@ -3,10 +3,12 @@ package eu.europa.esig.dss.crl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
 
 import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.asn1.ASN1BitString;
+import org.bouncycastle.asn1.ASN1Boolean;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -155,31 +157,34 @@ public class CRLParser {
 
 		// revokedCertificates (optional)
 		if (tagNo == BERTags.SEQUENCE) {
-			// Don't parse revokedCertificates
-			s.skip(length);
 
-			tag = DERUtil.readTag(s);
-			tagNo = DERUtil.readTagNumber(s, tag);
-			length = DERUtil.readLength(s);
+			s.mark(10);
+			int intraTag = DERUtil.readTag(s);
+			int intraTagNo = DERUtil.readTagNumber(s, intraTag);
+			s.reset();
+
+			if (intraTagNo == BERTags.SEQUENCE) {
+
+				// Don't parse revokedCertificates
+				s.skip(length);
+
+				tag = DERUtil.readTag(s);
+				tagNo = DERUtil.readTagNumber(s, tag);
+				length = DERUtil.readLength(s);
+			}
 		}
 
-		boolean isConstructed = (tag & BERTags.CONSTRUCTED) != 0;
+		boolean isTagged = (tag & BERTags.TAGGED) != 0;
 
 		// crlExtensions
-		/*
-		 * if (tagNo == BERTags.NULL) {
-		 * s.skip(length);
-		 * 
-		 * tag = DERUtil.readTag(s);
-		 * tagNo = DERUtil.readTagNumber(s, tag);
-		 * length = DERUtil.readLength(s);
-		 * 
-		 * } else
-		 */
-		if (isConstructed) {
+		if (isTagged) {
 
-			// Don't parse extensionsLenght
-			s.skip(length);
+			byte[] array = new byte[length];
+			if (Streams.readFully(s, array) != length) {
+				LOG.warn("crlExtensions is not fully read !");
+			}
+
+			extractExtensions(rebuildASN1Sequence(array), handler);
 
 			tag = DERUtil.readTag(s);
 			tagNo = DERUtil.readTagNumber(s, tag);
@@ -211,24 +216,36 @@ public class CRLParser {
 		}
 	}
 
-	/*
-	 * public void retrieveSignature(InputStream s, SignatureEventHandler handler) throws IOException {
-	 * // Skip CertificateList Sequence info
-	 * skipTagIntro(s);
-	 * 
-	 * int tag = DERUtil.readTag(s);
-	 * DERUtil.readTagNumber(s, tag);
-	 * int tbsLength = DERUtil.readLength(s);
-	 * 
-	 * s.skip(tbsLength);
-	 * 
-	 * ASN1ObjectIdentifier oid = readSignatureAlgorithm(s);
-	 * handler.onSignatureAlgorithm(SignatureAlgorithm.forOID(oid.getId()));
-	 * 
-	 * byte[] signatureValue = readSignatureValue(s);
-	 * handler.onSignatureValue(signatureValue);
-	 * }
-	 */
+	private void extractExtensions(ASN1Sequence seq, CRLInfoEventHandler handler) throws IOException {
+		@SuppressWarnings("rawtypes")
+		Enumeration enumSeq = seq.getObjects();
+		while (enumSeq.hasMoreElements()) {
+			ASN1Sequence extension = null;
+			try {
+				extension = (ASN1Sequence) enumSeq.nextElement();
+				int seqSize = extension.size();
+				if (seqSize == 2) {
+					ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) extension.getObjectAt(0);
+					byte[] content = extension.getObjectAt(1).toASN1Primitive().getEncoded();
+					handler.onNonCriticalExtension(oid.getId(), content);
+				} else if (seqSize == 3) {
+					ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) extension.getObjectAt(0);
+					ASN1Boolean isCritical = (ASN1Boolean) extension.getObjectAt(1);
+					byte[] content = extension.getObjectAt(2).toASN1Primitive().getEncoded();
+					if (isCritical.isTrue()) {
+						handler.onCriticalExtension(oid.getId(), content);
+					} else {
+						handler.onNonCriticalExtension(oid.getId(), content);
+					}
+				} else {
+					LOG.warn("Not supported format : {}", extension);
+				}
+			} catch (Exception e) {
+				LOG.error("Cannot parser extension : {}", extension, e.getMessage());
+			}
+		}
+	}
+
 	private void readTBSCertList(InputStream s) throws IOException {
 		// Strip the tag and length of the TBSCertList sequence
 		int tag = DERUtil.readTag(s);

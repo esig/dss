@@ -4,8 +4,6 @@ import java.util.Date;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.bouncycastle.asn1.x509.Extensions;
-
 import eu.europa.esig.dss.SignatureAlgorithm;
 
 public interface CRLInfoEventHandler {
@@ -20,7 +18,9 @@ public interface CRLInfoEventHandler {
 
 	void onNextUpdate(Date nextUpdate);
 
-	void onCrlExtensions(Extensions extensions);
+	void onCriticalExtension(String oid, byte[] content);
+
+	void onNonCriticalExtension(String oid, byte[] content);
 
 	void onTbsSignatureAlgorithm(SignatureAlgorithm signatureAlgorithm);
 
