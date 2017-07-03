@@ -31,7 +31,6 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.x509.DistributionPointName;
@@ -40,12 +39,12 @@ import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuingDistributionPoint;
 import org.bouncycastle.asn1.x509.ReasonFlags;
+import org.bouncycastle.asn1.x509.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.utils.Utils;
@@ -163,15 +162,15 @@ public class CRLUtils {
 
 	public static Date getExpiredCertsOnCRL(X509CRL x509crl) {
 		Set<String> nonCriticalExtensionOIDs = x509crl.getNonCriticalExtensionOIDs();
-		if ((nonCriticalExtensionOIDs != null) && nonCriticalExtensionOIDs.contains(OID.id_ce_expiredCertsOnCRL.getId())) {
-			byte[] extensionValue = x509crl.getExtensionValue(OID.id_ce_expiredCertsOnCRL.getId());
+		if ((nonCriticalExtensionOIDs != null) && nonCriticalExtensionOIDs.contains(Extension.expiredCertsOnCRL.getId())) {
+			byte[] extensionValue = x509crl.getExtensionValue(Extension.expiredCertsOnCRL.getId());
 			if (Utils.isArrayNotEmpty(extensionValue)) {
 				try {
 					ASN1OctetString octetString = (ASN1OctetString) ASN1Primitive.fromByteArray(extensionValue);
-					ASN1GeneralizedTime generalTime = (ASN1GeneralizedTime) ASN1Primitive.fromByteArray(octetString.getOctets());
-					return generalTime.getDate();
+					ASN1Primitive asn1Primitive = ASN1Primitive.fromByteArray(octetString.getOctets());
+					return Time.getInstance(asn1Primitive).getDate();
 				} catch (Exception e) {
-					LOG.error("Unable to retrieve id_ce_expiredCertsOnCRL on CRL : " + e.getMessage(), e);
+					LOG.error("Unable to retrieve expiredCertsOnCRL on CRL : " + e.getMessage(), e);
 				}
 			}
 		}

@@ -69,6 +69,9 @@ public class CRLUtilsTest {
 
 		x509crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/LTRCA.crl"));
 		assertNull(CRLUtils.getExpiredCertsOnCRL(x509crl));
+
+		x509crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/crl-2.crl"));
+		assertNotNull(CRLUtils.getExpiredCertsOnCRL(x509crl));
 	}
 
 }
