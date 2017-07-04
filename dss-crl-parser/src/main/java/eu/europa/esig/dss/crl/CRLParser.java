@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.crl.handler.CRLInfoEventHandler;
 import eu.europa.esig.dss.crl.handler.ToBeSignedEventHandler;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * http://luca.ntop.org/Teaching/Appunti/asn1.html
@@ -92,7 +93,8 @@ public class CRLParser {
 			if (Streams.readFully(s, array) != length) {
 				LOG.warn("Version is not fully read !");
 			}
-			handler.onVersion(rebuildASN1Integer(array).getValue().intValue());
+			LOG.debug("Version : {}", Utils.toHex(array));
+			handler.onVersion(rebuildASN1Integer(array).getValue().intValue() + 1);
 
 			tag = DERUtil.readTag(s);
 			tagNo = DERUtil.readTagNumber(s, tag);
@@ -105,6 +107,7 @@ public class CRLParser {
 			if (Streams.readFully(s, array) != length) {
 				LOG.warn("signature is not fully read !");
 			}
+			LOG.debug("signature algo : {}", Utils.toHex(array));
 			ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) rebuildASN1Sequence(array).getObjectAt(0);
 			handler.onCertificateListSignatureAlgorithm(SignatureAlgorithm.forOID(oid.getId()));
 
@@ -119,6 +122,7 @@ public class CRLParser {
 			if (Streams.readFully(s, array) != length) {
 				LOG.warn("issuer is not fully read !");
 			}
+			LOG.debug("issuer : {}", Utils.toHex(array));
 			ASN1Sequence sequence = rebuildASN1Sequence(array);
 			handler.onIssuer(new X500Principal(sequence.getEncoded()));
 
@@ -133,6 +137,7 @@ public class CRLParser {
 			if (Streams.readFully(s, array) != length) {
 				LOG.warn("thisUpdate is not fully read !");
 			}
+			LOG.debug("thisUpdate : {}", Utils.toHex(array));
 			Time time = rebuildASN1Time(tagNo, array);
 			handler.onThisUpdate(time.getDate());
 
@@ -147,6 +152,7 @@ public class CRLParser {
 			if (Streams.readFully(s, array) != length) {
 				LOG.warn("nextUpdate is not fully read !");
 			}
+			LOG.debug("nextUpdate : {}", Utils.toHex(array));
 			Time time = rebuildASN1Time(tagNo, array);
 			handler.onNextUpdate(time.getDate());
 
@@ -166,7 +172,11 @@ public class CRLParser {
 			if (intraTagNo == BERTags.SEQUENCE) {
 
 				// Don't parse revokedCertificates
-				s.skip(length);
+				int skipped = 0;
+				// Loops because BufferedInputStream.skip only skips in its buffer
+				while (skipped < length) {
+					skipped += s.skip(length - skipped);
+				}
 
 				tag = DERUtil.readTag(s);
 				tagNo = DERUtil.readTagNumber(s, tag);
@@ -183,6 +193,7 @@ public class CRLParser {
 			if (Streams.readFully(s, array) != length) {
 				LOG.warn("crlExtensions is not fully read !");
 			}
+			LOG.debug("crlExtensions : {}", Utils.toHex(array));
 
 			extractExtensions(rebuildASN1Sequence(array), handler);
 
@@ -197,6 +208,7 @@ public class CRLParser {
 			if (Streams.readFully(s, array) != length) {
 				LOG.warn("SignatureAlgorithm is not fully read !");
 			}
+			LOG.debug("CertificateList -> SignatureAlgorithm : {}", Utils.toHex(array));
 
 			ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) rebuildASN1Sequence(array).getObjectAt(0);
 			handler.onTbsSignatureAlgorithm(SignatureAlgorithm.forOID(oid.getId()));
@@ -212,6 +224,7 @@ public class CRLParser {
 			if (Streams.readFully(s, array) != length) {
 				LOG.warn("SignatureValue is not fully read !");
 			}
+			LOG.debug("CertificateList -> signatureValue : {}", Utils.toHex(array));
 			handler.onSignatureValue(rebuildASN1BitString(array).getOctets());
 		}
 	}
