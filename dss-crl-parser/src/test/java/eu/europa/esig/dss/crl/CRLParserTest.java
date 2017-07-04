@@ -3,11 +3,14 @@ package eu.europa.esig.dss.crl;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.cert.X509CRLEntry;
 
 import org.junit.Test;
 
@@ -99,4 +102,83 @@ public class CRLParserTest {
 		}
 	}
 
+	// @Ignore
+	@Test
+	public void testHuge() throws IOException {
+		try (FileInputStream fis = new FileInputStream("src/test/resources/esteid2011.crl"); BufferedInputStream is = new BufferedInputStream(fis)) {
+			CRLInfo handler = new CRLInfo();
+			parser.retrieveInfo(is, handler);
+
+			if (handler.getVersion() != null) {
+				assertEquals(2, handler.getVersion().intValue());
+			}
+			assertEquals(SignatureAlgorithm.RSA_SHA256, handler.getCertificateListSignatureAlgorithm());
+			assertNotNull(handler.getIssuer());
+			assertNotNull(handler.getThisUpdate());
+			assertNotNull(handler.getNextUpdate());
+
+			assertEquals(SignatureAlgorithm.RSA_SHA256, handler.getTbsSignatureAlgorithm());
+
+			String expectedSignValueHex = "A64722EC3685353F7202971960E280F6B808A9F6AA2B253680D12EBCCEFCED7D65439FD5F62B2422062F7F1250ED11729A64291F7EACBEEA8E1F56EE2440555E5A36F8589F9FF27519B0CE6B446F4A6A42C5E0FED469577286ED3FA00DA72B066F246727BF2A114A3FA9EA5436ABC59A66FB896FB07D8A7085B7063DA510A708BA265EC724B758AE25339197895B45836C3C3E735748280DACF5E1CC55B97B491FD34A3E366F85753A36F087A15F5675A766A0BFD77ECFBDD580D9D76BAC82C303C6D6DBBA5117428FBE4702BA7D7277403D4C345E714D26F546EA0B4C91DBBA8A682D28F9506F3B55689FACFF6E87A613320CCC195883CC587E0B16B1D39776";
+			byte[] signatureValue = handler.getSignatureValue();
+			assertArrayEquals(Utils.fromHex(expectedSignValueHex), signatureValue);
+		}
+	}
+
+	@Test
+	public void retrieveRevocationInfo() throws IOException {
+		try (FileInputStream fis = new FileInputStream("src/test/resources/LTGRCA.crl"); BufferedInputStream is = new BufferedInputStream(fis)) {
+			BigInteger serialNumber = new BigInteger("5203");
+			X509CRLEntry entry = parser.retrieveRevocationInfo(fis, serialNumber);
+			assertNotNull(entry);
+			assertNotNull(entry.getRevocationDate());
+			assertNotNull(entry.getRevocationReason());
+			assertNotNull(entry.getSerialNumber());
+			assertEquals(serialNumber, entry.getSerialNumber());
+		}
+	}
+
+	@Test
+	public void retrieveRevocationInfoNull() throws IOException {
+		try (FileInputStream fis = new FileInputStream("src/test/resources/LTGRCA.crl")) {
+			BigInteger serialNumber = new BigInteger("52030000000");
+			assertNull(parser.retrieveRevocationInfo(fis, serialNumber));
+		}
+	}
+
+	@Test
+	public void retrieveRevocationInfoMedium() throws IOException {
+		try (FileInputStream fis = new FileInputStream("src/test/resources/http___crl.globalsign.com_gs_gspersonalsign2sha2g2.crl")) {
+
+			BigInteger serialNumber = new BigInteger("288350169419475868349393253038503091234");
+			X509CRLEntry entry = parser.retrieveRevocationInfo(fis, serialNumber);
+			assertNotNull(entry);
+			assertNotNull(entry.getRevocationDate());
+			assertNull(entry.getRevocationReason());
+			assertNotNull(entry.getSerialNumber());
+			assertEquals(serialNumber, entry.getSerialNumber());
+		}
+	}
+
+	@Test
+	public void retrieveRevocationInfoMediumLastEntry() throws IOException {
+		try (FileInputStream fis = new FileInputStream("src/test/resources/http___crl.globalsign.com_gs_gspersonalsign2sha2g2.crl")) {
+
+			BigInteger serialNumber = new BigInteger("288350169419475868349393264025423631520");
+			X509CRLEntry entry = parser.retrieveRevocationInfo(fis, serialNumber);
+			assertNotNull(entry);
+			assertNotNull(entry.getRevocationDate());
+			assertNull(entry.getRevocationReason());
+			assertNotNull(entry.getSerialNumber());
+			assertEquals(serialNumber, entry.getSerialNumber());
+		}
+	}
+
+	@Test
+	public void retrieveRevocationInfoHuge() throws IOException {
+		try (FileInputStream fis = new FileInputStream("src/test/resources/esteid2011.crl")) {
+			BigInteger serialNumber = new BigInteger("1111111111111111111");
+			assertNull(parser.retrieveRevocationInfo(fis, serialNumber));
+		}
+	}
 }

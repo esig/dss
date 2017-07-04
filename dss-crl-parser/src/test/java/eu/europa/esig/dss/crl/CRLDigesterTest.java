@@ -10,7 +10,6 @@ import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +55,7 @@ public class CRLDigesterTest {
 		}
 	}
 
-	@Ignore
+	@Test
 	public void getDigestHuge() throws IOException, GeneralSecurityException {
 		DigestInputStream dis = new DigestInputStream(new FileInputStream("src/test/resources/esteid2011.crl"), getSHA1Digest());
 		CRLDigester digester = new CRLDigester(dis);

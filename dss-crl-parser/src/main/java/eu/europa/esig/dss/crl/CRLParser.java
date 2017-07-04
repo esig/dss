@@ -1,8 +1,11 @@
 package eu.europa.esig.dss.crl;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.cert.X509CRLEntry;
 import java.util.Enumeration;
 
 import javax.security.auth.x500.X500Principal;
@@ -14,7 +17,9 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.BERTags;
+import org.bouncycastle.asn1.x509.TBSCertList.CRLEntry;
 import org.bouncycastle.asn1.x509.Time;
+import org.bouncycastle.jce.provider.X509CRLEntryObject;
 import org.bouncycastle.util.io.Streams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,34 +70,107 @@ public class CRLParser {
 	public void processDigest(InputStream s, ToBeSignedEventHandler handler) throws IOException {
 
 		// Skip CertificateList Sequence info
-		skipTagIntro(s);
+		consumeTagIntro(s);
 
 		handler.beforeTbs();
 
-		readTBSCertList(s);
+		// Strip the tag and length of the TBSCertList sequence
+		int tag = DERUtil.readTag(s);
+		DERUtil.readTagNumber(s, tag);
+		int tbsLength = DERUtil.readLength(s);
+
+		// Read TBSCertList Content
+		readNbBytes(s, tbsLength);
 
 		handler.afterTbs();
 	}
 
-	public void retrieveInfo(InputStream s, CRLInfoEventHandler handler) throws IOException {
+	public X509CRLEntry retrieveRevocationInfo(InputStream s, BigInteger serialNumber) throws IOException {
 		// Skip CertificateList Sequence info
-		skipTagIntro(s);
+		consumeTagIntro(s);
 
 		// Read TBSCertList Sequence
-		int tag = DERUtil.readTag(s);
-		int tagNo = DERUtil.readTagNumber(s, tag);
-		int length = DERUtil.readLength(s);
+		consumeTagIntro(s);
+
+		// Skip all before mandatory thisUpdate
+		int tag = -1;
+		int tagNo = BERTags.NULL;
+		int length = -1;
+		do {
+			tag = DERUtil.readTag(s);
+			tagNo = DERUtil.readTagNumber(s, tag);
+			length = DERUtil.readLength(s);
+			skip(s, length);
+		} while (!isDate(tagNo));
 
 		tag = DERUtil.readTag(s);
 		tagNo = DERUtil.readTagNumber(s, tag);
 		length = DERUtil.readLength(s);
 
-		// version (optional)
-		if (tagNo == BERTags.INTEGER) {
-			byte[] array = new byte[length];
-			if (Streams.readFully(s, array) != length) {
-				LOG.warn("Version is not fully read !");
+		// TBSCertList -> nextUpdate (optional)
+		if (isDate(tagNo)) {
+			skip(s, length);
+
+			tag = DERUtil.readTag(s);
+			tagNo = DERUtil.readTagNumber(s, tag);
+			length = DERUtil.readLength(s);
+		}
+
+		if (tagNo == BERTags.SEQUENCE) {
+
+			while (true) {
+				tag = DERUtil.readTag(s);
+
+				if (tag < 0) {
+					// EOF
+					return null;
+				}
+
+				tagNo = DERUtil.readTagNumber(s, tag);
+				length = DERUtil.readLength(s);
+
+				if (tagNo == BERTags.SEQUENCE) {
+
+					byte[] entryArray = readNbBytes(s, length);
+
+					try (InputStream is = new ByteArrayInputStream(entryArray)) {
+						int entryTag = DERUtil.readTag(is);
+						int entryTagNo = DERUtil.readTagNumber(is, entryTag);
+						int entryLength = DERUtil.readLength(is);
+
+						// SerialNumber
+						if (BERTags.INTEGER == entryTagNo) {
+							ASN1Integer asn1SerialNumber = rebuildASN1Integer(readNbBytes(is, entryLength));
+							if (serialNumber.equals(asn1SerialNumber.getValue())) {
+								ASN1Sequence asn1Sequence = rebuildASN1Sequence(entryArray);
+								CRLEntry crlEntry = CRLEntry.getInstance(asn1Sequence);
+								return new X509CRLEntryObject(crlEntry);
+							}
+						}
+					}
+				} else {
+					LOG.warn("Should only contains SEQUENCEs : tagNo = {}", tagNo);
+					skip(s, length);
+				}
 			}
+		}
+		return null;
+	}
+
+	public void retrieveInfo(InputStream s, CRLInfoEventHandler handler) throws IOException {
+		// Skip CertificateList Sequence info
+		consumeTagIntro(s);
+
+		// Read TBSCertList Sequence
+		consumeTagIntro(s);
+
+		int tag = DERUtil.readTag(s);
+		int tagNo = DERUtil.readTagNumber(s, tag);
+		int length = DERUtil.readLength(s);
+
+		// TBSCertList -> version (optional)
+		if (tagNo == BERTags.INTEGER) {
+			byte[] array = readNbBytes(s, length);
 			LOG.debug("Version : {}", Utils.toHex(array));
 			handler.onVersion(rebuildASN1Integer(array).getValue().intValue() + 1);
 
@@ -101,12 +179,9 @@ public class CRLParser {
 			length = DERUtil.readLength(s);
 		}
 
-		// signature
+		// TBSCertList -> signature
 		if (tagNo == BERTags.SEQUENCE) {
-			byte[] array = new byte[length];
-			if (Streams.readFully(s, array) != length) {
-				LOG.warn("signature is not fully read !");
-			}
+			byte[] array = readNbBytes(s, length);
 			LOG.debug("signature algo : {}", Utils.toHex(array));
 			ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) rebuildASN1Sequence(array).getObjectAt(0);
 			handler.onCertificateListSignatureAlgorithm(SignatureAlgorithm.forOID(oid.getId()));
@@ -116,12 +191,9 @@ public class CRLParser {
 			length = DERUtil.readLength(s);
 		}
 
-		// issuer
+		// TBSCertList -> issuer
 		if (tagNo == BERTags.SEQUENCE) {
-			byte[] array = new byte[length];
-			if (Streams.readFully(s, array) != length) {
-				LOG.warn("issuer is not fully read !");
-			}
+			byte[] array = readNbBytes(s, length);
 			LOG.debug("issuer : {}", Utils.toHex(array));
 			ASN1Sequence sequence = rebuildASN1Sequence(array);
 			handler.onIssuer(new X500Principal(sequence.getEncoded()));
@@ -131,12 +203,9 @@ public class CRLParser {
 			length = DERUtil.readLength(s);
 		}
 
-		// thisUpdate
-		if (tagNo == BERTags.UTC_TIME || tagNo == BERTags.GENERALIZED_TIME) {
-			byte[] array = new byte[length];
-			if (Streams.readFully(s, array) != length) {
-				LOG.warn("thisUpdate is not fully read !");
-			}
+		// TBSCertList -> thisUpdate
+		if (isDate(tagNo)) {
+			byte[] array = readNbBytes(s, length);
 			LOG.debug("thisUpdate : {}", Utils.toHex(array));
 			Time time = rebuildASN1Time(tagNo, array);
 			handler.onThisUpdate(time.getDate());
@@ -146,12 +215,9 @@ public class CRLParser {
 			length = DERUtil.readLength(s);
 		}
 
-		// nextUpdate (optional)
-		if (tagNo == BERTags.UTC_TIME || tagNo == BERTags.GENERALIZED_TIME) {
-			byte[] array = new byte[length];
-			if (Streams.readFully(s, array) != length) {
-				LOG.warn("nextUpdate is not fully read !");
-			}
+		// TBSCertList -> nextUpdate (optional)
+		if (isDate(tagNo)) {
+			byte[] array = readNbBytes(s, length);
 			LOG.debug("nextUpdate : {}", Utils.toHex(array));
 			Time time = rebuildASN1Time(tagNo, array);
 			handler.onNextUpdate(time.getDate());
@@ -161,22 +227,20 @@ public class CRLParser {
 			length = DERUtil.readLength(s);
 		}
 
-		// revokedCertificates (optional)
+		// TBSCertList -> revokedCertificates (optional)
 		if (tagNo == BERTags.SEQUENCE) {
 
+			// TODO find a way to avoid mark/reset
 			s.mark(10);
 			int intraTag = DERUtil.readTag(s);
 			int intraTagNo = DERUtil.readTagNumber(s, intraTag);
 			s.reset();
 
+			// If sequence of sequence -> revokedCertificates else CertificateList -> signatureAlgorithm
 			if (intraTagNo == BERTags.SEQUENCE) {
 
 				// Don't parse revokedCertificates
-				int skipped = 0;
-				// Loops because BufferedInputStream.skip only skips in its buffer
-				while (skipped < length) {
-					skipped += s.skip(length - skipped);
-				}
+				skip(s, length);
 
 				tag = DERUtil.readTag(s);
 				tagNo = DERUtil.readTagNumber(s, tag);
@@ -186,13 +250,9 @@ public class CRLParser {
 
 		boolean isTagged = (tag & BERTags.TAGGED) != 0;
 
-		// crlExtensions
+		// TBSCertList -> crlExtensions
 		if (isTagged) {
-
-			byte[] array = new byte[length];
-			if (Streams.readFully(s, array) != length) {
-				LOG.warn("crlExtensions is not fully read !");
-			}
+			byte[] array = readNbBytes(s, length);
 			LOG.debug("crlExtensions : {}", Utils.toHex(array));
 
 			extractExtensions(rebuildASN1Sequence(array), handler);
@@ -204,10 +264,7 @@ public class CRLParser {
 
 		// CertificateList -> signatureAlgorithm
 		if (BERTags.SEQUENCE == tagNo) {
-			byte[] array = new byte[length];
-			if (Streams.readFully(s, array) != length) {
-				LOG.warn("SignatureAlgorithm is not fully read !");
-			}
+			byte[] array = readNbBytes(s, length);
 			LOG.debug("CertificateList -> SignatureAlgorithm : {}", Utils.toHex(array));
 
 			ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) rebuildASN1Sequence(array).getObjectAt(0);
@@ -220,12 +277,38 @@ public class CRLParser {
 
 		// CertificateList -> signatureValue
 		if (BERTags.BIT_STRING == tagNo) {
-			byte[] array = new byte[length];
-			if (Streams.readFully(s, array) != length) {
-				LOG.warn("SignatureValue is not fully read !");
-			}
+			byte[] array = readNbBytes(s, length);
 			LOG.debug("CertificateList -> signatureValue : {}", Utils.toHex(array));
 			handler.onSignatureValue(rebuildASN1BitString(array).getOctets());
+		}
+	}
+
+	private boolean isDate(int tagNo) {
+		return (tagNo == BERTags.UTC_TIME) || (tagNo == BERTags.GENERALIZED_TIME);
+	}
+
+	private byte[] readNbBytes(InputStream s, int length) throws IOException {
+		byte[] array = new byte[length];
+		if (Streams.readFully(s, array) != length) {
+			LOG.warn("Cannot read expected length!");
+		}
+		return array;
+	}
+
+	/**
+	 * This method skips n bytes in the InputStream
+	 * 
+	 * @param s
+	 *            the InputStream
+	 * @param n
+	 *            number of bytes to be skipped
+	 * @throws IOException
+	 */
+	private void skip(InputStream s, int length) throws IOException {
+		int skipped = 0;
+		// Loops because BufferedInputStream.skip only skips in its buffer
+		while (skipped < length) {
+			skipped += s.skip(length - skipped);
 		}
 	}
 
@@ -259,20 +342,14 @@ public class CRLParser {
 		}
 	}
 
-	private void readTBSCertList(InputStream s) throws IOException {
-		// Strip the tag and length of the TBSCertList sequence
-		int tag = DERUtil.readTag(s);
-		DERUtil.readTagNumber(s, tag);
-		int tbsLength = DERUtil.readLength(s);
-
-		// Read TBSCertList Content
-		byte[] array = new byte[tbsLength];
-		if (Streams.readFully(s, array) != tbsLength) {
-			LOG.warn("TBS is not fully read !");
-		}
-	}
-
-	private void skipTagIntro(InputStream s) throws IOException {
+	/**
+	 * This method reads the tag and content length
+	 * 
+	 * @param s
+	 *            the InputStream
+	 * @throws IOException
+	 */
+	private void consumeTagIntro(InputStream s) throws IOException {
 		int tag = DERUtil.readTag(s);
 		DERUtil.readTagNumber(s, tag);
 		DERUtil.readLength(s);
