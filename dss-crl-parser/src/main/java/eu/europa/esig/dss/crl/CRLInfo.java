@@ -6,17 +6,16 @@ import java.util.Map;
 
 import javax.security.auth.x500.X500Principal;
 
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.crl.handler.CRLInfoEventHandler;
 
 public class CRLInfo implements CRLInfoEventHandler {
 
 	private Integer version;
-	private SignatureAlgorithm certificateListSignatureAlgorithm;
+	private String certificateListSignatureAlgorithmOid;
 	private X500Principal issuer;
 	private Date thisUpdate;
 	private Date nextUpdate;
-	private SignatureAlgorithm tbsSignatureAlgorithm;
+	private String tbsSignatureAlgorithmOid;
 	private byte[] signatureValue;
 	private Map<String, byte[]> criticalExtensions = new HashMap<String, byte[]>();
 	private Map<String, byte[]> nonCriticalExtensions = new HashMap<String, byte[]>();
@@ -30,13 +29,13 @@ public class CRLInfo implements CRLInfoEventHandler {
 		this.version = version;
 	}
 
-	public SignatureAlgorithm getCertificateListSignatureAlgorithm() {
-		return certificateListSignatureAlgorithm;
+	public String getCertificateListSignatureAlgorithmOid() {
+		return certificateListSignatureAlgorithmOid;
 	}
 
 	@Override
-	public void onCertificateListSignatureAlgorithm(SignatureAlgorithm signatureAlgorithm) {
-		this.certificateListSignatureAlgorithm = signatureAlgorithm;
+	public void onCertificateListSignatureAlgorithm(String oid) {
+		this.certificateListSignatureAlgorithmOid = oid;
 	}
 
 	public X500Principal getIssuer() {
@@ -84,13 +83,13 @@ public class CRLInfo implements CRLInfoEventHandler {
 		return nonCriticalExtensions.get(oid);
 	}
 
-	public SignatureAlgorithm getTbsSignatureAlgorithm() {
-		return tbsSignatureAlgorithm;
+	public String getTbsSignatureAlgorithmOid() {
+		return tbsSignatureAlgorithmOid;
 	}
 
 	@Override
-	public void onTbsSignatureAlgorithm(SignatureAlgorithm signatureAlgorithm) {
-		this.tbsSignatureAlgorithm = signatureAlgorithm;
+	public void onTbsSignatureAlgorithm(String signatureAlgorithmOid) {
+		this.tbsSignatureAlgorithmOid = signatureAlgorithmOid;
 	}
 
 	public byte[] getSignatureValue() {

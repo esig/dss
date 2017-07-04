@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.security.DigestInputStream;
 import java.security.cert.X509CRLEntry;
 import java.util.Enumeration;
 
@@ -20,14 +21,12 @@ import org.bouncycastle.asn1.BERTags;
 import org.bouncycastle.asn1.x509.TBSCertList.CRLEntry;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.jce.provider.X509CRLEntryObject;
+import org.bouncycastle.util.encoders.Hex;
 import org.bouncycastle.util.io.Streams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.crl.handler.CRLInfoEventHandler;
-import eu.europa.esig.dss.crl.handler.ToBeSignedEventHandler;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * http://luca.ntop.org/Teaching/Appunti/asn1.html
@@ -67,12 +66,23 @@ public class CRLParser {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CRLParser.class);
 
-	public void processDigest(InputStream s, ToBeSignedEventHandler handler) throws IOException {
+	/**
+	 * This method allows to compute the digest of the TBSCertList
+	 * 
+	 * @param s
+	 *            an initialized DigestInputStream
+	 * @throws IOException
+	 */
+	public void processDigest(DigestInputStream s) throws IOException {
+
+		// We don't digest the beginning (not part of TBS)
+		s.on(false);
 
 		// Skip CertificateList Sequence info
 		consumeTagIntro(s);
 
-		handler.beforeTbs();
+		// Start to digest TBS
+		s.on(true);
 
 		// Strip the tag and length of the TBSCertList sequence
 		int tag = DERUtil.readTag(s);
@@ -82,9 +92,21 @@ public class CRLParser {
 		// Read TBSCertList Content
 		readNbBytes(s, tbsLength);
 
-		handler.afterTbs();
+		// End digest TBS
+		s.on(false);
 	}
 
+	/**
+	 * This method allows to parse the CRL and return the revocation data for a given serial number
+	 * 
+	 * @param s
+	 *            an InputStream with the CRL
+	 * @param serialNumber
+	 *            the certificate's serial number
+	 * @return the X509CRLEntry with the revocation date, the reason,... or null if the serial number is not present in
+	 *         the CRL
+	 * @throws IOException
+	 */
 	public X509CRLEntry retrieveRevocationInfo(InputStream s, BigInteger serialNumber) throws IOException {
 		// Skip CertificateList Sequence info
 		consumeTagIntro(s);
@@ -157,7 +179,22 @@ public class CRLParser {
 		return null;
 	}
 
+	/**
+	 * This method allows to retrieve common CRL informations (thisUpdate, nextUpdate, signatureAlgorithm,
+	 * signatureValue, extensions,...). It voluntary doesn't parse the revokedCertificates sequence.
+	 * 
+	 * @param s
+	 *            an instance of InputStream with the CRL. The InputStream MUST support mark()/reset() methods.
+	 * @param handler
+	 *            an object which collects the data
+	 * @throws IOException
+	 */
 	public void retrieveInfo(InputStream s, CRLInfoEventHandler handler) throws IOException {
+
+		if (!s.markSupported()) {
+			throw new IllegalArgumentException("The InputStream MUST support mark/reset methods !");
+		}
+
 		// Skip CertificateList Sequence info
 		consumeTagIntro(s);
 
@@ -171,7 +208,7 @@ public class CRLParser {
 		// TBSCertList -> version (optional)
 		if (tagNo == BERTags.INTEGER) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("Version : {}", Utils.toHex(array));
+			LOG.debug("Version : {}", Hex.toHexString(array));
 			handler.onVersion(rebuildASN1Integer(array).getValue().intValue() + 1);
 
 			tag = DERUtil.readTag(s);
@@ -182,9 +219,9 @@ public class CRLParser {
 		// TBSCertList -> signature
 		if (tagNo == BERTags.SEQUENCE) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("signature algo : {}", Utils.toHex(array));
+			LOG.debug("signature algo : {}", Hex.toHexString(array));
 			ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) rebuildASN1Sequence(array).getObjectAt(0);
-			handler.onCertificateListSignatureAlgorithm(SignatureAlgorithm.forOID(oid.getId()));
+			handler.onCertificateListSignatureAlgorithm(oid.getId());
 
 			tag = DERUtil.readTag(s);
 			tagNo = DERUtil.readTagNumber(s, tag);
@@ -194,7 +231,7 @@ public class CRLParser {
 		// TBSCertList -> issuer
 		if (tagNo == BERTags.SEQUENCE) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("issuer : {}", Utils.toHex(array));
+			LOG.debug("issuer : {}", Hex.toHexString(array));
 			ASN1Sequence sequence = rebuildASN1Sequence(array);
 			handler.onIssuer(new X500Principal(sequence.getEncoded()));
 
@@ -206,7 +243,7 @@ public class CRLParser {
 		// TBSCertList -> thisUpdate
 		if (isDate(tagNo)) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("thisUpdate : {}", Utils.toHex(array));
+			LOG.debug("thisUpdate : {}", Hex.toHexString(array));
 			Time time = rebuildASN1Time(tagNo, array);
 			handler.onThisUpdate(time.getDate());
 
@@ -218,7 +255,7 @@ public class CRLParser {
 		// TBSCertList -> nextUpdate (optional)
 		if (isDate(tagNo)) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("nextUpdate : {}", Utils.toHex(array));
+			LOG.debug("nextUpdate : {}", Hex.toHexString(array));
 			Time time = rebuildASN1Time(tagNo, array);
 			handler.onNextUpdate(time.getDate());
 
@@ -253,7 +290,7 @@ public class CRLParser {
 		// TBSCertList -> crlExtensions
 		if (isTagged) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("crlExtensions : {}", Utils.toHex(array));
+			LOG.debug("crlExtensions : {}", Hex.toHexString(array));
 
 			extractExtensions(rebuildASN1Sequence(array), handler);
 
@@ -265,10 +302,10 @@ public class CRLParser {
 		// CertificateList -> signatureAlgorithm
 		if (BERTags.SEQUENCE == tagNo) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("CertificateList -> SignatureAlgorithm : {}", Utils.toHex(array));
+			LOG.debug("CertificateList -> SignatureAlgorithm : {}", Hex.toHexString(array));
 
 			ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) rebuildASN1Sequence(array).getObjectAt(0);
-			handler.onTbsSignatureAlgorithm(SignatureAlgorithm.forOID(oid.getId()));
+			handler.onTbsSignatureAlgorithm(oid.getId());
 
 			tag = DERUtil.readTag(s);
 			tagNo = DERUtil.readTagNumber(s, tag);
@@ -278,7 +315,7 @@ public class CRLParser {
 		// CertificateList -> signatureValue
 		if (BERTags.BIT_STRING == tagNo) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("CertificateList -> signatureValue : {}", Utils.toHex(array));
+			LOG.debug("CertificateList -> signatureValue : {}", Hex.toHexString(array));
 			handler.onSignatureValue(rebuildASN1BitString(array).getOctets());
 		}
 	}
@@ -337,7 +374,7 @@ public class CRLParser {
 					LOG.warn("Not supported format : {}", extension);
 				}
 			} catch (Exception e) {
-				LOG.error("Cannot parser extension : {}", extension, e.getMessage());
+				LOG.warn("Cannot parse extension : {}", extension, e.getMessage());
 			}
 		}
 	}

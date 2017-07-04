@@ -4,13 +4,11 @@ import java.util.Date;
 
 import javax.security.auth.x500.X500Principal;
 
-import eu.europa.esig.dss.SignatureAlgorithm;
-
 public interface CRLInfoEventHandler {
 
 	void onVersion(int version);
 
-	void onCertificateListSignatureAlgorithm(SignatureAlgorithm signatureAlgorithm);
+	void onCertificateListSignatureAlgorithm(String certificateListSignatureAlgorithmOid);
 
 	void onIssuer(X500Principal issuer);
 
@@ -22,7 +20,7 @@ public interface CRLInfoEventHandler {
 
 	void onNonCriticalExtension(String oid, byte[] content);
 
-	void onTbsSignatureAlgorithm(SignatureAlgorithm signatureAlgorithm);
+	void onTbsSignatureAlgorithm(String tbsSignatureAlgorithmOid);
 
 	void onSignatureValue(byte[] signatureValue);
 

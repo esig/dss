@@ -52,11 +52,11 @@ public class CRLParserInFolder {
 			CRLInfo handler = new CRLInfo();
 			parser.retrieveInfo(is, handler);
 
-			assertNotNull(handler.getCertificateListSignatureAlgorithm());
+			assertNotNull(handler.getCertificateListSignatureAlgorithmOid());
 			assertNotNull(handler.getIssuer());
 			assertNotNull(handler.getThisUpdate());
 			assertNotNull(handler.getNextUpdate()); // (optional)
-			assertNotNull(handler.getTbsSignatureAlgorithm());
+			assertNotNull(handler.getTbsSignatureAlgorithmOid());
 			assertNotNull(handler.getSignatureValue());
 		}
 	}

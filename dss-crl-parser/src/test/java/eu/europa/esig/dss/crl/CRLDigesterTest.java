@@ -44,11 +44,9 @@ public class CRLDigesterTest {
 		try (FileInputStream fis = new FileInputStream("src/test/resources/belgium2.crl");
 				DigestInputStream dis = new DigestInputStream(fis, getSHA1Digest())) {
 
-			CRLDigester digester = new CRLDigester(dis);
+			parser.processDigest(dis);
 
-			parser.processDigest(dis, digester);
-
-			byte[] digest = digester.getDigest();
+			byte[] digest = dis.getMessageDigest().digest();
 			String computedBase64 = Utils.toBase64(digest);
 			String expectedBase64Digest = "9G6GVRFhXI2bEXfhM98aXOsamXk=";
 			assertEquals(computedBase64, expectedBase64Digest);
@@ -58,11 +56,10 @@ public class CRLDigesterTest {
 	@Test
 	public void getDigestHuge() throws IOException, GeneralSecurityException {
 		DigestInputStream dis = new DigestInputStream(new FileInputStream("src/test/resources/esteid2011.crl"), getSHA1Digest());
-		CRLDigester digester = new CRLDigester(dis);
 
-		parser.processDigest(dis, digester);
+		parser.processDigest(dis);
 
-		byte[] digest = digester.getDigest();
+		byte[] digest = dis.getMessageDigest().digest();
 		String computedBase64 = Utils.toBase64(digest);
 		String expectedBase64Digest = "KzNkUHZHZ4sbnN44RAJLBlCVMZE=";
 		assertEquals(computedBase64, expectedBase64Digest);

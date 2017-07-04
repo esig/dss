@@ -9,19 +9,17 @@
 	</parent>
 
 	<artifactId>dss-crl-parser</artifactId>
+	<name>DSS CRL Parser</name>
+	<description>DSS CRL Parser contains methods which parse, digest, validate CRLs without fully load them</description>
 
 	<dependencies>
 		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-model</artifactId>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15on</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcpkix-jdk15on</artifactId>
 		</dependency>
 	
 		<dependency>
