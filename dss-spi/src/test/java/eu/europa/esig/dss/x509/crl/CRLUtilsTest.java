@@ -40,6 +40,26 @@ public class CRLUtilsTest {
 	}
 
 	@Test
+	public void isValidCRLNew() throws Exception {
+		try (FileInputStream fis = new FileInputStream(new File("src/test/resources/crl/belgium2.crl"))) {
+			CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrs2.crt"));
+			CRLValidity validCRL = CRLUtils.isValidCRL(fis, certificate);
+			assertNotNull(validCRL);
+			assertNotNull(validCRL.getSignatureAlgorithm());
+			assertNotNull(validCRL.getThisUpdate());
+			assertNotNull(validCRL.getNextUpdate());
+			assertTrue(validCRL.isIssuerX509PrincipalMatches());
+			assertTrue(validCRL.isSignatureIntact());
+			assertEquals(certificate, validCRL.getIssuerToken());
+			assertTrue(validCRL.isValid());
+			assertTrue(validCRL.isCrlSignKeyUsage());
+			assertFalse(validCRL.isUnknownCriticalExtension());
+			// assertEquals(x509CRL, validCRL.getX509CRL());
+			assertTrue(Utils.isStringEmpty(validCRL.getSignatureInvalidityReason()));
+		}
+	}
+
+	@Test
 	public void isValidCRLWrongCertificate() throws Exception {
 		FileInputStream fis = new FileInputStream(new File("src/test/resources/crl/belgium2.crl"));
 		X509CRL x509CRL = DSSUtils.loadCRL(fis);

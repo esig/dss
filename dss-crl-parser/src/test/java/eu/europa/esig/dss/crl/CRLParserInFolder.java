@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 @RunWith(Parameterized.class)
@@ -68,7 +67,7 @@ public class CRLParserInFolder {
 
 	private InputStream getInputStream() throws IOException {
 		InputStream fis = new FileInputStream(crl);
-		boolean pem = DSSUtils.isPEM(new FileInputStream(crl));
+		boolean pem = isPEM(new FileInputStream(crl));
 		if (pem) {
 			PemReader pemReader = new PemReader(new InputStreamReader(fis));
 			PemObject readPemObject = pemReader.readPemObject();
@@ -76,6 +75,23 @@ public class CRLParserInFolder {
 			pemReader.close();
 		}
 		return fis;
+	}
+
+	/**
+	 * This method returns true if the inputStream contains a PEM encoded item
+	 * 
+	 * @return true if PEM encoded
+	 * @throws IOException
+	 */
+	public static boolean isPEM(InputStream is) throws IOException {
+		String startPEM = "-----BEGIN";
+		int headerLength = 100;
+		byte[] preamble = new byte[headerLength];
+		if (is.read(preamble, 0, headerLength) > 0) {
+			String startArray = new String(preamble);
+			return startArray.startsWith(startPEM);
+		}
+		return false;
 	}
 
 }
