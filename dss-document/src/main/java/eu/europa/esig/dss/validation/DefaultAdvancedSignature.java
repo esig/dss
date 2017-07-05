@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.security.cert.X509CRL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -467,11 +467,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	protected void addReferencesFromOfflineCRLSource(List<TimestampReference> references) {
 		OfflineCRLSource crlSource = getCRLSource();
 		if (crlSource != null) {
-			List<X509CRL> containedX509CRLs = crlSource.getContainedX509CRLs();
+			Collection<byte[]> containedX509CRLs = crlSource.getContainedX509CRLs();
 			if (Utils.isCollectionNotEmpty(containedX509CRLs)) {
 				usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
-				for (X509CRL x509crl : containedX509CRLs) {
-					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSRevocationUtils.getEncoded(x509crl));
+				for (byte[] x509crl : containedX509CRLs) {
+					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, x509crl);
 					references.add(new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), TimestampReferenceCategory.REVOCATION));
 				}
 			}

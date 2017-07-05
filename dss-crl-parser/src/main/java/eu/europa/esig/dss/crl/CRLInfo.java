@@ -6,26 +6,26 @@ import java.util.Map;
 
 import javax.security.auth.x500.X500Principal;
 
-import eu.europa.esig.dss.crl.handler.CRLInfoEventHandler;
-
-public class CRLInfo implements CRLInfoEventHandler {
+public class CRLInfo {
 
 	private Integer version;
 	private String certificateListSignatureAlgorithmOid;
 	private X500Principal issuer;
 	private Date thisUpdate;
 	private Date nextUpdate;
+	private Date expiredCertsOnCRL;
 	private String tbsSignatureAlgorithmOid;
 	private byte[] signatureValue;
 	private Map<String, byte[]> criticalExtensions = new HashMap<String, byte[]>();
 	private Map<String, byte[]> nonCriticalExtensions = new HashMap<String, byte[]>();
+	private boolean unknownCriticalExtension;
+	private String url;
 
 	public Integer getVersion() {
 		return version;
 	}
 
-	@Override
-	public void onVersion(int version) {
+	void setVersion(Integer version) {
 		this.version = version;
 	}
 
@@ -33,17 +33,15 @@ public class CRLInfo implements CRLInfoEventHandler {
 		return certificateListSignatureAlgorithmOid;
 	}
 
-	@Override
-	public void onCertificateListSignatureAlgorithm(String oid) {
-		this.certificateListSignatureAlgorithmOid = oid;
+	void setCertificateListSignatureAlgorithmOid(String certificateListSignatureAlgorithmOid) {
+		this.certificateListSignatureAlgorithmOid = certificateListSignatureAlgorithmOid;
 	}
 
 	public X500Principal getIssuer() {
 		return issuer;
 	}
 
-	@Override
-	public void onIssuer(X500Principal issuer) {
+	void setIssuer(X500Principal issuer) {
 		this.issuer = issuer;
 	}
 
@@ -51,8 +49,7 @@ public class CRLInfo implements CRLInfoEventHandler {
 		return thisUpdate;
 	}
 
-	@Override
-	public void onThisUpdate(Date thisUpdate) {
+	void setThisUpdate(Date thisUpdate) {
 		this.thisUpdate = thisUpdate;
 	}
 
@@ -60,53 +57,72 @@ public class CRLInfo implements CRLInfoEventHandler {
 		return nextUpdate;
 	}
 
-	@Override
-	public void onNextUpdate(Date nextUpdate) {
+	void setNextUpdate(Date nextUpdate) {
 		this.nextUpdate = nextUpdate;
 	}
 
-	@Override
-	public void onCriticalExtension(String oid, byte[] content) {
-		this.criticalExtensions.put(oid, content);
+	public Date getExpiredCertsOnCRL() {
+		return expiredCertsOnCRL;
 	}
 
-	public Map<String, byte[]> getCriticalExtensions() {
-		return criticalExtensions;
-	}
-
-	public byte[] getCriticalExtension(String oid) {
-		return criticalExtensions.get(oid);
-	}
-
-	@Override
-	public void onNonCriticalExtension(String oid, byte[] content) {
-		this.nonCriticalExtensions.put(oid, content);
-	}
-
-	public Map<String, byte[]> getNonCriticalExtensions() {
-		return nonCriticalExtensions;
-	}
-
-	public byte[] getNonCriticalExtension(String oid) {
-		return nonCriticalExtensions.get(oid);
+	void setExpiredCertsOnCRL(Date expiredCertsOnCRL) {
+		this.expiredCertsOnCRL = expiredCertsOnCRL;
 	}
 
 	public String getTbsSignatureAlgorithmOid() {
 		return tbsSignatureAlgorithmOid;
 	}
 
-	@Override
-	public void onTbsSignatureAlgorithm(String signatureAlgorithmOid) {
-		this.tbsSignatureAlgorithmOid = signatureAlgorithmOid;
+	void setTbsSignatureAlgorithmOid(String tbsSignatureAlgorithmOid) {
+		this.tbsSignatureAlgorithmOid = tbsSignatureAlgorithmOid;
 	}
 
 	public byte[] getSignatureValue() {
 		return signatureValue;
 	}
 
-	@Override
-	public void onSignatureValue(byte[] signatureValue) {
+	void setSignatureValue(byte[] signatureValue) {
 		this.signatureValue = signatureValue;
+	}
+
+	void addCriticalExtension(String oid, byte[] content) {
+		this.criticalExtensions.put(oid, content);
+	}
+
+	public byte[] getCriticalExtension(String oid) {
+		return criticalExtensions.get(oid);
+	}
+
+	public Map<String, byte[]> getCriticalExtensions() {
+		return criticalExtensions;
+	}
+
+	void addNonCriticalExtension(String oid, byte[] content) {
+		this.nonCriticalExtensions.put(oid, content);
+	}
+
+	public byte[] getNonCriticalExtension(String oid) {
+		return nonCriticalExtensions.get(oid);
+	}
+
+	public Map<String, byte[]> getNonCriticalExtensions() {
+		return nonCriticalExtensions;
+	}
+
+	public boolean isUnknownCriticalExtension() {
+		return unknownCriticalExtension;
+	}
+
+	void setUnknownCriticalExtension(boolean unknownCriticalExtension) {
+		this.unknownCriticalExtension = unknownCriticalExtension;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	void setUrl(String url) {
+		this.url = url;
 	}
 
 }

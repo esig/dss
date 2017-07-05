@@ -23,16 +23,14 @@ public class CRLParserTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void illegalArgumenException() throws IOException {
 		try (FileInputStream fis = new FileInputStream("src/test/resources/belgium2.crl")) {
-			CRLInfo handler = new CRLInfo();
-			parser.retrieveInfo(fis, handler);
+			parser.retrieveInfo(fis);
 		}
 	}
 
 	@Test
 	public void testBelgium2() throws IOException {
 		try (FileInputStream fis = new FileInputStream("src/test/resources/belgium2.crl"); BufferedInputStream is = new BufferedInputStream(fis)) {
-			CRLInfo handler = new CRLInfo();
-			parser.retrieveInfo(is, handler);
+			CRLInfo handler = parser.retrieveInfo(is);
 
 			assertEquals("1.2.840.113549.1.1.5", handler.getCertificateListSignatureAlgorithmOid());
 			assertNotNull(handler.getIssuer());
@@ -49,11 +47,44 @@ public class CRLParserTest {
 	}
 
 	@Test
+	public void testBelgium4() throws IOException {
+		try (FileInputStream fis = new FileInputStream("src/test/resources/belgium4.crl"); BufferedInputStream is = new BufferedInputStream(fis)) {
+			CRLInfo handler = parser.retrieveInfo(is);
+
+			assertEquals("1.2.840.113549.1.1.5", handler.getCertificateListSignatureAlgorithmOid());
+			assertNotNull(handler.getIssuer());
+			assertNotNull(handler.getThisUpdate());
+			assertNotNull(handler.getNextUpdate());
+
+			assertEquals("1.2.840.113549.1.1.5", handler.getTbsSignatureAlgorithmOid());
+
+			byte[] signatureValue = handler.getSignatureValue();
+			assertTrue(Utils.isArrayNotEmpty(signatureValue));
+		}
+	}
+
+	@Test
+	public void testEidc201631() throws IOException {
+		try (FileInputStream fis = new FileInputStream("src/test/resources/eidc201631.crl"); BufferedInputStream is = new BufferedInputStream(fis)) {
+			CRLInfo handler = parser.retrieveInfo(is);
+
+			assertEquals("1.2.840.113549.1.1.11", handler.getCertificateListSignatureAlgorithmOid());
+			assertNotNull(handler.getIssuer());
+			assertNotNull(handler.getThisUpdate());
+			assertNotNull(handler.getNextUpdate());
+
+			assertEquals("1.2.840.113549.1.1.11", handler.getTbsSignatureAlgorithmOid());
+
+			byte[] signatureValue = handler.getSignatureValue();
+			assertTrue(Utils.isArrayNotEmpty(signatureValue));
+		}
+	}
+
+	@Test
 	public void testPtCRL() throws IOException {
 		try (FileInputStream fis = new FileInputStream("src/test/resources/pt_crl_with_critical_extension.crl");
 				BufferedInputStream is = new BufferedInputStream(fis)) {
-			CRLInfo handler = new CRLInfo();
-			parser.retrieveInfo(is, handler);
+			CRLInfo handler = parser.retrieveInfo(is);
 
 			assertEquals("1.2.840.113549.1.1.5", handler.getCertificateListSignatureAlgorithmOid());
 			assertNotNull(handler.getIssuer());
@@ -93,13 +124,13 @@ public class CRLParserTest {
 	@Test
 	public void testLTGRCA() throws IOException {
 		try (FileInputStream fis = new FileInputStream("src/test/resources/LTGRCA.crl"); BufferedInputStream is = new BufferedInputStream(fis)) {
-			CRLInfo handler = new CRLInfo();
-			parser.retrieveInfo(is, handler);
+			CRLInfo handler = parser.retrieveInfo(is);
 
 			assertEquals("1.2.840.113549.1.1.5", handler.getCertificateListSignatureAlgorithmOid());
 			assertNotNull(handler.getIssuer());
 			assertNotNull(handler.getThisUpdate());
 			assertNotNull(handler.getNextUpdate());
+			assertNull(handler.getExpiredCertsOnCRL());
 
 			assertEquals("1.2.840.113549.1.1.5", handler.getTbsSignatureAlgorithmOid());
 
@@ -113,13 +144,13 @@ public class CRLParserTest {
 	public void testExtension() throws IOException {
 		try (FileInputStream fis = new FileInputStream("src/test/resources/crl_with_expiredCertsOnCRL_extension.crl");
 				BufferedInputStream is = new BufferedInputStream(fis)) {
-			CRLInfo handler = new CRLInfo();
-			parser.retrieveInfo(is, handler);
+			CRLInfo handler = parser.retrieveInfo(is);
 
 			assertEquals("1.2.840.113549.1.1.11", handler.getCertificateListSignatureAlgorithmOid());
 			assertNotNull(handler.getIssuer());
 			assertNotNull(handler.getThisUpdate());
 			assertNotNull(handler.getNextUpdate());
+			assertNotNull(handler.getExpiredCertsOnCRL());
 
 			assertTrue(!handler.getCriticalExtensions().isEmpty());
 			assertTrue(Utils.isArrayNotEmpty(handler.getCriticalExtension("2.5.29.28")));
@@ -139,8 +170,7 @@ public class CRLParserTest {
 	@Test
 	public void testHuge() throws IOException {
 		try (FileInputStream fis = new FileInputStream("src/test/resources/esteid2011.crl"); BufferedInputStream is = new BufferedInputStream(fis)) {
-			CRLInfo handler = new CRLInfo();
-			parser.retrieveInfo(is, handler);
+			CRLInfo handler = parser.retrieveInfo(is);
 
 			if (handler.getVersion() != null) {
 				assertEquals(2, handler.getVersion().intValue());

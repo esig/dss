@@ -8,16 +8,27 @@ import java.math.BigInteger;
 import java.security.DigestInputStream;
 import java.security.cert.X509CRLEntry;
 import java.util.Enumeration;
+import java.util.Map;
 
 import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.asn1.ASN1BitString;
 import org.bouncycastle.asn1.ASN1Boolean;
+import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.BERTags;
+import org.bouncycastle.asn1.DERTaggedObject;
+import org.bouncycastle.asn1.x509.DistributionPointName;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.GeneralNames;
+import org.bouncycastle.asn1.x509.IssuingDistributionPoint;
+import org.bouncycastle.asn1.x509.ReasonFlags;
 import org.bouncycastle.asn1.x509.TBSCertList.CRLEntry;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.jce.provider.X509CRLEntryObject;
@@ -25,8 +36,6 @@ import org.bouncycastle.util.encoders.Hex;
 import org.bouncycastle.util.io.Streams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.crl.handler.CRLInfoEventHandler;
 
 /**
  * http://luca.ntop.org/Teaching/Appunti/asn1.html
@@ -185,15 +194,17 @@ public class CRLParser {
 	 * 
 	 * @param s
 	 *            an instance of InputStream with the CRL. The InputStream MUST support mark()/reset() methods.
-	 * @param handler
-	 *            an object which collects the data
+	 * 
+	 * @return a DTO with extracted infos
 	 * @throws IOException
 	 */
-	public void retrieveInfo(InputStream s, CRLInfoEventHandler handler) throws IOException {
+	public CRLInfo retrieveInfo(InputStream s) throws IOException {
 
 		if (!s.markSupported()) {
 			throw new IllegalArgumentException("The InputStream MUST support mark/reset methods !");
 		}
+
+		CRLInfo infos = new CRLInfo();
 
 		// Skip CertificateList Sequence info
 		consumeTagIntro(s);
@@ -209,7 +220,7 @@ public class CRLParser {
 		if (tagNo == BERTags.INTEGER) {
 			byte[] array = readNbBytes(s, length);
 			LOG.debug("TBSCertList -> version : {}", Hex.toHexString(array));
-			handler.onVersion(rebuildASN1Integer(array).getValue().intValue() + 1);
+			infos.setVersion(rebuildASN1Integer(array).getValue().intValue() + 1);
 
 			tag = DERUtil.readTag(s);
 			tagNo = DERUtil.readTagNumber(s, tag);
@@ -221,7 +232,7 @@ public class CRLParser {
 			byte[] array = readNbBytes(s, length);
 			LOG.debug("TBSCertList -> signatureAlgorithm : {}", Hex.toHexString(array));
 			ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) rebuildASN1Sequence(array).getObjectAt(0);
-			handler.onCertificateListSignatureAlgorithm(oid.getId());
+			infos.setCertificateListSignatureAlgorithmOid(oid.getId());
 
 			tag = DERUtil.readTag(s);
 			tagNo = DERUtil.readTagNumber(s, tag);
@@ -233,7 +244,7 @@ public class CRLParser {
 			byte[] array = readNbBytes(s, length);
 			LOG.debug("TBSCertList -> issuer : {}", Hex.toHexString(array));
 			ASN1Sequence sequence = rebuildASN1Sequence(array);
-			handler.onIssuer(new X500Principal(sequence.getEncoded()));
+			infos.setIssuer(new X500Principal(sequence.getEncoded()));
 
 			tag = DERUtil.readTag(s);
 			tagNo = DERUtil.readTagNumber(s, tag);
@@ -245,7 +256,7 @@ public class CRLParser {
 			byte[] array = readNbBytes(s, length);
 			LOG.debug("TBSCertList -> thisUpdate : {}", Hex.toHexString(array));
 			Time time = rebuildASN1Time(tagNo, array);
-			handler.onThisUpdate(time.getDate());
+			infos.setThisUpdate(time.getDate());
 
 			tag = DERUtil.readTag(s);
 			tagNo = DERUtil.readTagNumber(s, tag);
@@ -257,7 +268,7 @@ public class CRLParser {
 			byte[] array = readNbBytes(s, length);
 			LOG.debug("TBSCertList -> nextUpdate : {}", Hex.toHexString(array));
 			Time time = rebuildASN1Time(tagNo, array);
-			handler.onNextUpdate(time.getDate());
+			infos.setNextUpdate(time.getDate());
 
 			tag = DERUtil.readTag(s);
 			tagNo = DERUtil.readTagNumber(s, tag);
@@ -294,7 +305,7 @@ public class CRLParser {
 			LOG.debug("TBSCertList -> crlExtensions : {}", Hex.toHexString(array));
 
 			ASN1Sequence sequenceExtensions = (ASN1Sequence) ASN1Sequence.fromByteArray(array);
-			extractExtensions(sequenceExtensions, handler);
+			extractExtensions(sequenceExtensions, infos);
 
 			tag = DERUtil.readTag(s);
 			tagNo = DERUtil.readTagNumber(s, tag);
@@ -307,7 +318,7 @@ public class CRLParser {
 			LOG.debug("CertificateList -> signatureAlgorithm : {}", Hex.toHexString(array));
 
 			ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) rebuildASN1Sequence(array).getObjectAt(0);
-			handler.onTbsSignatureAlgorithm(oid.getId());
+			infos.setTbsSignatureAlgorithmOid(oid.getId());
 
 			tag = DERUtil.readTag(s);
 			tagNo = DERUtil.readTagNumber(s, tag);
@@ -318,8 +329,10 @@ public class CRLParser {
 		if (BERTags.BIT_STRING == tagNo) {
 			byte[] array = readNbBytes(s, length);
 			LOG.debug("CertificateList -> signatureValue : {}", Hex.toHexString(array));
-			handler.onSignatureValue(rebuildASN1BitString(array).getOctets());
+			infos.setSignatureValue(rebuildASN1BitString(array).getOctets());
 		}
+
+		return infos;
 	}
 
 	private boolean isDate(int tagNo) {
@@ -351,7 +364,7 @@ public class CRLParser {
 		}
 	}
 
-	private void extractExtensions(ASN1Sequence seq, CRLInfoEventHandler handler) throws IOException {
+	private void extractExtensions(ASN1Sequence seq, CRLInfo infos) throws IOException {
 		@SuppressWarnings("rawtypes")
 		Enumeration enumSeq = seq.getObjects();
 		while (enumSeq.hasMoreElements()) {
@@ -362,21 +375,70 @@ public class CRLParser {
 				if (seqSize == 2) {
 					ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) extension.getObjectAt(0);
 					byte[] content = extension.getObjectAt(1).toASN1Primitive().getEncoded();
-					handler.onNonCriticalExtension(oid.getId(), content);
+					infos.addNonCriticalExtension(oid.getId(), content);
 				} else if (seqSize == 3) {
 					ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) extension.getObjectAt(0);
 					ASN1Boolean isCritical = (ASN1Boolean) extension.getObjectAt(1);
 					byte[] content = extension.getObjectAt(2).toASN1Primitive().getEncoded();
 					if (isCritical.isTrue()) {
-						handler.onCriticalExtension(oid.getId(), content);
+						infos.addCriticalExtension(oid.getId(), content);
 					} else {
-						handler.onNonCriticalExtension(oid.getId(), content);
+						infos.addNonCriticalExtension(oid.getId(), content);
 					}
 				} else {
 					LOG.warn("Not supported format : {}", extension);
 				}
 			} catch (Exception e) {
 				LOG.warn("Cannot parse extension : {}", extension, e.getMessage());
+			}
+		}
+
+		extractExpiredCertsOnCRL(infos);
+		checkCriticalExtensions(infos);
+	}
+
+	private void extractExpiredCertsOnCRL(CRLInfo crlInfos) {
+		byte[] extensionValue = crlInfos.getNonCriticalExtension(Extension.expiredCertsOnCRL.getId());
+		if (extensionValue != null) {
+			try {
+				ASN1OctetString octetString = (ASN1OctetString) ASN1Primitive.fromByteArray(extensionValue);
+				ASN1GeneralizedTime generalTime = (ASN1GeneralizedTime) ASN1Primitive.fromByteArray(octetString.getOctets());
+				crlInfos.setExpiredCertsOnCRL(generalTime.getDate());
+			} catch (Exception e) {
+				LOG.error("Unable to retrieve expiredCertsOnCRL on CRL : " + e.getMessage(), e);
+			}
+		}
+	}
+
+	private void checkCriticalExtensions(CRLInfo crlInfos) {
+		Map<String, byte[]> criticalExtensions = crlInfos.getCriticalExtensions();
+		if (criticalExtensions.isEmpty()) {
+			crlInfos.setUnknownCriticalExtension(false);
+		} else {
+			byte[] extensionValue = criticalExtensions.get(Extension.issuingDistributionPoint.getId());
+			IssuingDistributionPoint issuingDistributionPoint = IssuingDistributionPoint.getInstance(ASN1OctetString.getInstance(extensionValue).getOctets());
+			final boolean onlyAttributeCerts = issuingDistributionPoint.onlyContainsAttributeCerts();
+			final boolean onlyCaCerts = issuingDistributionPoint.onlyContainsCACerts();
+			final boolean onlyUserCerts = issuingDistributionPoint.onlyContainsUserCerts();
+			final boolean indirectCrl = issuingDistributionPoint.isIndirectCRL();
+			ReasonFlags onlySomeReasons = issuingDistributionPoint.getOnlySomeReasons();
+			DistributionPointName distributionPoint = issuingDistributionPoint.getDistributionPoint();
+			boolean urlFound = false;
+			if (DistributionPointName.FULL_NAME == distributionPoint.getType()) {
+				final GeneralNames generalNames = (GeneralNames) distributionPoint.getName();
+				if ((generalNames != null) && (generalNames.getNames() != null && generalNames.getNames().length > 0)) {
+					for (GeneralName generalName : generalNames.getNames()) {
+						if (GeneralName.uniformResourceIdentifier == generalName.getTagNo()) {
+							ASN1String str = (ASN1String) ((DERTaggedObject) generalName.toASN1Primitive()).getObject();
+							crlInfos.setUrl(str.getString());
+							urlFound = true;
+						}
+					}
+				}
+			}
+
+			if (!(onlyAttributeCerts && onlyCaCerts && onlyUserCerts && indirectCrl) && (onlySomeReasons == null) && urlFound) {
+				crlInfos.setUnknownCriticalExtension(false);
 			}
 		}
 	}

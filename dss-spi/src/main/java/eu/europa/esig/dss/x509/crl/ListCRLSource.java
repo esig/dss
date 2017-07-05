@@ -20,8 +20,7 @@
  */
 package eu.europa.esig.dss.x509.crl;
 
-import java.security.cert.X509CRL;
-import java.util.ArrayList;
+import java.util.Map.Entry;
 
 /**
  * This class allows to handle a list CRL source.
@@ -33,7 +32,6 @@ public class ListCRLSource extends OfflineCRLSource {
 	 * This is the constructor for this class, it allows to instantiate the list which will contain all {@code X509CRL}.
 	 */
 	public ListCRLSource() {
-		x509CRLList = new ArrayList<X509CRL>();
 	}
 
 	/**
@@ -41,21 +39,22 @@ public class ListCRLSource extends OfflineCRLSource {
 	 *
 	 * @param crlSource
 	 */
-	public ListCRLSource(final OfflineCRLSource crlSource) {
-		x509CRLList = new ArrayList<X509CRL>(crlSource.getContainedX509CRLs());
+	public ListCRLSource(OfflineCRLSource crlSource) {
+		addAll(crlSource);
 	}
 
 	/**
-	 * This method allows to add all {@code X509CRL} from one {@code OfflineCRLSource} to this one. If the {@code X509CRL} exists already within the current source then it is
+	 * This method allows to add all {@code X509CRL} from one {@code OfflineCRLSource} to this one. If the
+	 * {@code X509CRL} exists already within the current source then it is
 	 * ignored.
 	 *
-	 * @param offlineCRLSource the source to be added
+	 * @param offlineCRLSource
+	 *            the source to be added
 	 */
 	public void addAll(final OfflineCRLSource offlineCRLSource) {
-		for (X509CRL x509CRL : offlineCRLSource.x509CRLList) {
-			if (!x509CRLList.contains(x509CRL)) {
-				x509CRLList.add(x509CRL);
-			}
+		for (Entry<String, byte[]> entry : offlineCRLSource.crlsMap.entrySet()) {
+			super.addCRLBinary(entry.getKey(), entry.getValue());
 		}
 	}
+
 }

@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.x509.crl;
 
-import java.security.cert.X509CRL;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Date;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -46,25 +46,16 @@ public class CRLValidity {
 	private CertificateToken issuerToken = null;
 	private String signatureInvalidityReason = "";
 
-	private X509CRL x509Crl;
-
-	public X509CRL getX509CRL() {
-		if (x509Crl == null) {
-			x509Crl = DSSUtils.loadCRL(crlEncoded);
-		}
-		return x509Crl;
-	}
-
-	public void setX509CRL(X509CRL x509Crl) {
-		this.x509Crl = x509Crl;
-	}
-
 	public String getKey() {
 		return key;
 	}
 
 	public void setKey(String key) {
 		this.key = key;
+	}
+
+	public InputStream getCrlInputStream() {
+		return new ByteArrayInputStream(crlEncoded);
 	}
 
 	public byte[] getCrlEncoded() {

@@ -34,6 +34,7 @@ import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.cert.CRLException;
 import java.security.cert.X509CRL;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Set;
@@ -55,7 +56,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.crl.CRLInfo;
 import eu.europa.esig.dss.crl.CRLParser;
@@ -70,7 +70,20 @@ public class CRLUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CRLUtils.class);
 
-	public static CRLValidity isValidCRL(final InputStream crlStream, final CertificateToken issuerToken) {
+	/**
+	 * This method verifies: the signature of the CRL, the key usage of its signing certificate and the coherence
+	 * between the subject names of the CRL signing certificate and the issuer name of the certificate for which the
+	 * verification of the revocation data is carried out. A dedicated object based on {@code CRLValidity} is created
+	 * and accordingly updated.
+	 *
+	 * @param crlStream
+	 *            {@code InputStream} with the CRL to be verified (cannot be null)
+	 * @param issuerToken
+	 *            {@code CertificateToken} used to sign the {@code X509CRL} (cannot be null)
+	 * @return {@code CRLValidity}
+	 * @throws IOException
+	 */
+	public static CRLValidity isValidCRL(final InputStream crlStream, final CertificateToken issuerToken) throws IOException {
 
 		final CRLValidity crlValidity = new CRLValidity();
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -84,9 +97,12 @@ public class CRLUtils {
 
 			byte[] digest = recomputeDigest(baos, messageDigest);
 
+			crlValidity.setCrlEncoded(baos.toByteArray());
 			crlValidity.setSignatureAlgorithm(signatureAlgorithm);
 			crlValidity.setThisUpdate(crlInfos.getThisUpdate());
 			crlValidity.setNextUpdate(crlInfos.getNextUpdate());
+			crlValidity.setExpiredCertsOnCRL(crlInfos.getExpiredCertsOnCRL());
+			crlValidity.setUnknownCriticalExtension(crlInfos.isUnknownCriticalExtension());
 
 			final X500Principal x509CRLIssuerX500Principal = DSSUtils.getNormalizedX500Principal(crlInfos.getIssuer());
 			final X500Principal issuerTokenSubjectX500Principal = DSSUtils.getNormalizedX500Principal(issuerToken.getSubjectX500Principal());
@@ -94,22 +110,19 @@ public class CRLUtils {
 				crlValidity.setIssuerX509PrincipalMatches(true);
 			}
 
-			checkSignatureValue(crlValidity, crlInfos.getSignatureValue(), signatureAlgorithm, digest, issuerToken);
-
-		} catch (Exception e) {
-			LOG.error("Unable to analyze the CRL", e);
+			checkSignatureValue(crlValidity, crlInfos.getSignatureValue(), digest, issuerToken);
 		}
 		return crlValidity;
 	}
 
-	private static void checkSignatureValue(CRLValidity crlValidity, byte[] signatureValue, SignatureAlgorithm signatureAlgo, byte[] expectedDigest,
-			CertificateToken signer) {
+	private static void checkSignatureValue(CRLValidity crlValidity, byte[] signatureValue, byte[] expectedDigest, CertificateToken signer) {
 
 		byte[] extractedDigest = null;
 		try {
 			extractedDigest = DSSASN1Utils.getSignedDigest(signatureValue, signer);
 		} catch (GeneralSecurityException | IOException e) {
 			crlValidity.setSignatureInvalidityReason(e.getClass().getSimpleName() + " - " + e.getMessage());
+			return;
 		}
 
 		if (Arrays.equals(expectedDigest, extractedDigest)) {
@@ -117,7 +130,10 @@ public class CRLUtils {
 			crlValidity.setIssuerToken(signer);
 			crlValidity.setCrlSignKeyUsage(hasCRLSignKeyUsage(signer));
 		} else {
-			LOG.warn("Signed digest {} and computed digest {} don't match", Utils.toHex(extractedDigest), Utils.toHex(expectedDigest));
+			String message = MessageFormat.format("Signed digest '{0}' and computed digest '{1} 'don't match",
+					extractedDigest == null ? "" : Utils.toHex(extractedDigest), expectedDigest == null ? "" : Utils.toHex(expectedDigest));
+			crlValidity.setSignatureInvalidityReason(message);
+			LOG.warn(message);
 		}
 	}
 
@@ -130,17 +146,17 @@ public class CRLUtils {
 	}
 
 	private static CRLInfo getCrlInfos(ByteArrayOutputStream baos) throws IOException {
-		CRLInfo crlInfos = new CRLInfo();
 		try (InputStream is = new ByteArrayInputStream(baos.toByteArray()); BufferedInputStream bis = new BufferedInputStream(is)) {
 			CRLParser parser = new CRLParser();
-			parser.retrieveInfo(bis, crlInfos);
+			return parser.retrieveInfo(bis);
 		}
-		return crlInfos;
 	}
 
 	/**
-	 * This method verifies: the signature of the CRL, the key usage of its signing certificate and the coherence between the subject names of the CRL signing
-	 * certificate and the issuer name of the certificate for which the verification of the revocation data is carried out. A dedicated object based on
+	 * This method verifies: the signature of the CRL, the key usage of its signing certificate and the coherence
+	 * between the subject names of the CRL signing
+	 * certificate and the issuer name of the certificate for which the verification of the revocation data is carried
+	 * out. A dedicated object based on
 	 * {@code CRLValidity} is created and accordingly updated.
 	 *
 	 * @param x509CRL
@@ -153,7 +169,7 @@ public class CRLUtils {
 	public static CRLValidity isValidCRL(final X509CRL x509CRL, final CertificateToken issuerToken) {
 
 		final CRLValidity crlValidity = new CRLValidity();
-		crlValidity.setX509CRL(x509CRL);
+		// crlValidity.setX509CRL(x509CRL);
 
 		try {
 			crlValidity.setCrlEncoded(x509CRL.getEncoded());
@@ -188,6 +204,7 @@ public class CRLUtils {
 		return token.checkKeyUsage(KeyUsageBit.crlSign);
 	}
 
+	@Deprecated
 	private static void checkSignatureValue(final X509CRL x509CRL, final CertificateToken issuerToken, final CRLValidity crlValidity) {
 		try {
 			x509CRL.verify(issuerToken.getPublicKey());
@@ -206,6 +223,7 @@ public class CRLUtils {
 		}
 	}
 
+	@Deprecated
 	private static void checkCriticalExtensions(final X509CRL x509CRL, final CRLValidity crlValidity) {
 		final Set<String> criticalExtensionOIDs = x509CRL.getCriticalExtensionOIDs();
 		if ((criticalExtensionOIDs == null) || (criticalExtensionOIDs.isEmpty())) {
@@ -238,10 +256,11 @@ public class CRLUtils {
 		}
 	}
 
+	@Deprecated
 	public static Date getExpiredCertsOnCRL(X509CRL x509crl) {
 		Set<String> nonCriticalExtensionOIDs = x509crl.getNonCriticalExtensionOIDs();
-		if ((nonCriticalExtensionOIDs != null) && nonCriticalExtensionOIDs.contains(OID.id_ce_expiredCertsOnCRL.getId())) {
-			byte[] extensionValue = x509crl.getExtensionValue(OID.id_ce_expiredCertsOnCRL.getId());
+		if ((nonCriticalExtensionOIDs != null) && nonCriticalExtensionOIDs.contains(Extension.expiredCertsOnCRL.getId())) {
+			byte[] extensionValue = x509crl.getExtensionValue(Extension.expiredCertsOnCRL.getId());
 			if (Utils.isArrayNotEmpty(extensionValue)) {
 				try {
 					ASN1OctetString octetString = (ASN1OctetString) ASN1Primitive.fromByteArray(extensionValue);

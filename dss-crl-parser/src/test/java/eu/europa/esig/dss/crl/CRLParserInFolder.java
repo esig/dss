@@ -48,8 +48,7 @@ public class CRLParserInFolder {
 	public void test() throws IOException {
 
 		try (BufferedInputStream is = new BufferedInputStream(getInputStream())) {
-			CRLInfo handler = new CRLInfo();
-			parser.retrieveInfo(is, handler);
+			CRLInfo handler = parser.retrieveInfo(is);
 
 			assertNotNull(handler.getCertificateListSignatureAlgorithmOid());
 			assertNotNull(handler.getIssuer());
