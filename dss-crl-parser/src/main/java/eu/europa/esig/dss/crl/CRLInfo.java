@@ -70,6 +70,10 @@ public class CRLInfo implements CRLInfoEventHandler {
 		this.criticalExtensions.put(oid, content);
 	}
 
+	public Map<String, byte[]> getCriticalExtensions() {
+		return criticalExtensions;
+	}
+
 	public byte[] getCriticalExtension(String oid) {
 		return criticalExtensions.get(oid);
 	}
@@ -77,6 +81,10 @@ public class CRLInfo implements CRLInfoEventHandler {
 	@Override
 	public void onNonCriticalExtension(String oid, byte[] content) {
 		this.nonCriticalExtensions.put(oid, content);
+	}
+
+	public Map<String, byte[]> getNonCriticalExtensions() {
+		return nonCriticalExtensions;
 	}
 
 	public byte[] getNonCriticalExtension(String oid) {

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -70,18 +71,22 @@ public class CRLParserTest {
 	@Test
 	public void testLTRCA() throws IOException {
 		/*
-		 * byte[] der = DSSUtils.convertCRLToDER(new String(Utils.toByteArray(new FileInputStream("src/test/resources/LTRCA.crl"))));
+		 * byte[] der = DSSUtils.convertCRLToDER(new String(Utils.toByteArray(new
+		 * FileInputStream("src/test/resources/LTRCA.crl"))));
 		 * 
-		 * try (ByteArrayInputStream bais = new ByteArrayInputStream(der)) { CRLInfo handler = new CRLInfo(); parser.retrieveInfo(bais, handler);
+		 * try (ByteArrayInputStream bais = new ByteArrayInputStream(der)) { CRLInfo handler = new CRLInfo();
+		 * parser.retrieveInfo(bais, handler);
 		 * 
-		 * assertEquals("1.2.840.113549.1.1.5", handler.getCertificateListSignatureAlgorithmOid()); assertNotNull(handler.getIssuer());
+		 * assertEquals("1.2.840.113549.1.1.5", handler.getCertificateListSignatureAlgorithmOid());
+		 * assertNotNull(handler.getIssuer());
 		 * assertNotNull(handler.getThisUpdate()); assertNotNull(handler.getNextUpdate());
 		 * 
 		 * assertEquals("1.2.840.113549.1.1.5", handler.getTbsSignatureAlgorithmOid());
 		 * 
 		 * String expectedSignValueHex =
 		 * "2899EC527E9D7BB84DAE1AFFD9AABBFB669E0645CC9C50843888472376BD12FAA1FA11DBD409CCE03CC8B2E82C7599F81799B39FDFD6E171B728B00CF38C50F37882924E8A05800D2712C6F0340052F774D95D9DFBEF557A69121E89CE51B810B9E7C9481E2F35E635E8BFA097CA59F26F1F34E26F7C684A5A90553EFA3D1D08C01D97F22CFB961903D47654C887FC0B51BA6A6FBF29360D18F6F13EEA9677C3F1BB8B7EBE8F69795E6B7BC4538AB8EE76744B6FA39FC1E345B2A98A4454A5AEE677000C764806693F28AF0C64AD93FC0CCEC7D35C2235D966EC9FD6014B5EE756C211C3157B4ECF6F262F5F12787F05FE37F8FECA5BBAD058C609F0C8F559B5";
-		 * byte[] signatureValue = handler.getSignatureValue(); assertArrayEquals(Utils.fromHex(expectedSignValueHex), signatureValue); }
+		 * byte[] signatureValue = handler.getSignatureValue(); assertArrayEquals(Utils.fromHex(expectedSignValueHex),
+		 * signatureValue); }
 		 */
 	}
 
@@ -104,7 +109,33 @@ public class CRLParserTest {
 		}
 	}
 
-	// @Ignore
+	@Test
+	public void testExtension() throws IOException {
+		try (FileInputStream fis = new FileInputStream("src/test/resources/crl_with_expiredCertsOnCRL_extension.crl");
+				BufferedInputStream is = new BufferedInputStream(fis)) {
+			CRLInfo handler = new CRLInfo();
+			parser.retrieveInfo(is, handler);
+
+			assertEquals("1.2.840.113549.1.1.11", handler.getCertificateListSignatureAlgorithmOid());
+			assertNotNull(handler.getIssuer());
+			assertNotNull(handler.getThisUpdate());
+			assertNotNull(handler.getNextUpdate());
+
+			assertTrue(!handler.getCriticalExtensions().isEmpty());
+			assertTrue(Utils.isArrayNotEmpty(handler.getCriticalExtension("2.5.29.28")));
+			assertTrue(Utils.isArrayEmpty(handler.getNonCriticalExtension("2.5.29.28")));
+
+			assertTrue(!handler.getNonCriticalExtensions().isEmpty());
+			assertTrue(Utils.isArrayNotEmpty(handler.getNonCriticalExtension("2.5.29.60")));
+			assertTrue(Utils.isArrayEmpty(handler.getCriticalExtension("2.5.29.60")));
+
+			assertEquals("1.2.840.113549.1.1.11", handler.getTbsSignatureAlgorithmOid());
+
+			byte[] signatureValue = handler.getSignatureValue();
+			assertTrue(Utils.isArrayNotEmpty(signatureValue));
+		}
+	}
+
 	@Test
 	public void testHuge() throws IOException {
 		try (FileInputStream fis = new FileInputStream("src/test/resources/esteid2011.crl"); BufferedInputStream is = new BufferedInputStream(fis)) {

@@ -171,7 +171,7 @@ public class CRLParser {
 						}
 					}
 				} else {
-					LOG.warn("Should only contains SEQUENCEs : tagNo = {}", tagNo);
+					LOG.warn("Should only contain SEQUENCEs : tagNo = {}", tagNo);
 					skip(s, length);
 				}
 			}
@@ -208,7 +208,7 @@ public class CRLParser {
 		// TBSCertList -> version (optional)
 		if (tagNo == BERTags.INTEGER) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("Version : {}", Hex.toHexString(array));
+			LOG.debug("TBSCertList -> version : {}", Hex.toHexString(array));
 			handler.onVersion(rebuildASN1Integer(array).getValue().intValue() + 1);
 
 			tag = DERUtil.readTag(s);
@@ -219,7 +219,7 @@ public class CRLParser {
 		// TBSCertList -> signature
 		if (tagNo == BERTags.SEQUENCE) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("signature algo : {}", Hex.toHexString(array));
+			LOG.debug("TBSCertList -> signatureAlgorithm : {}", Hex.toHexString(array));
 			ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) rebuildASN1Sequence(array).getObjectAt(0);
 			handler.onCertificateListSignatureAlgorithm(oid.getId());
 
@@ -231,7 +231,7 @@ public class CRLParser {
 		// TBSCertList -> issuer
 		if (tagNo == BERTags.SEQUENCE) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("issuer : {}", Hex.toHexString(array));
+			LOG.debug("TBSCertList -> issuer : {}", Hex.toHexString(array));
 			ASN1Sequence sequence = rebuildASN1Sequence(array);
 			handler.onIssuer(new X500Principal(sequence.getEncoded()));
 
@@ -243,7 +243,7 @@ public class CRLParser {
 		// TBSCertList -> thisUpdate
 		if (isDate(tagNo)) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("thisUpdate : {}", Hex.toHexString(array));
+			LOG.debug("TBSCertList -> thisUpdate : {}", Hex.toHexString(array));
 			Time time = rebuildASN1Time(tagNo, array);
 			handler.onThisUpdate(time.getDate());
 
@@ -255,7 +255,7 @@ public class CRLParser {
 		// TBSCertList -> nextUpdate (optional)
 		if (isDate(tagNo)) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("nextUpdate : {}", Hex.toHexString(array));
+			LOG.debug("TBSCertList -> nextUpdate : {}", Hex.toHexString(array));
 			Time time = rebuildASN1Time(tagNo, array);
 			handler.onNextUpdate(time.getDate());
 
@@ -278,6 +278,7 @@ public class CRLParser {
 
 				// Don't parse revokedCertificates
 				skip(s, length);
+				LOG.debug("TBSCertList -> revokedCertificates : skipped (length={})", length);
 
 				tag = DERUtil.readTag(s);
 				tagNo = DERUtil.readTagNumber(s, tag);
@@ -290,9 +291,10 @@ public class CRLParser {
 		// TBSCertList -> crlExtensions
 		if (isTagged) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("crlExtensions : {}", Hex.toHexString(array));
+			LOG.debug("TBSCertList -> crlExtensions : {}", Hex.toHexString(array));
 
-			extractExtensions(rebuildASN1Sequence(array), handler);
+			ASN1Sequence sequenceExtensions = (ASN1Sequence) ASN1Sequence.fromByteArray(array);
+			extractExtensions(sequenceExtensions, handler);
 
 			tag = DERUtil.readTag(s);
 			tagNo = DERUtil.readTagNumber(s, tag);
@@ -302,7 +304,7 @@ public class CRLParser {
 		// CertificateList -> signatureAlgorithm
 		if (BERTags.SEQUENCE == tagNo) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("CertificateList -> SignatureAlgorithm : {}", Hex.toHexString(array));
+			LOG.debug("CertificateList -> signatureAlgorithm : {}", Hex.toHexString(array));
 
 			ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) rebuildASN1Sequence(array).getObjectAt(0);
 			handler.onTbsSignatureAlgorithm(oid.getId());
