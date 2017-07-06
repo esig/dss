@@ -46,6 +46,15 @@
 			<artifactId>dss-utils-google-guava</artifactId>
 		</dependency>
 		
+		<!-- Choose your implementation -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
+<!-- 			<artifactId>dss-crl-parser-x509crl</artifactId> -->
+<!-- 		</dependency> -->
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-crl-parser-stream</artifactId>
+		</dependency>
 	</dependencies>
 	
 </project>

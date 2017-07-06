@@ -22,8 +22,6 @@ package eu.europa.esig.dss;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.GeneralSecurityException;
-import java.security.PublicKey;
 import java.security.Security;
 import java.security.cert.CRLException;
 import java.security.cert.CertificateException;
@@ -40,7 +38,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import javax.crypto.Cipher;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
@@ -74,7 +71,6 @@ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
 import org.bouncycastle.asn1.x509.CRLDistPoint;
 import org.bouncycastle.asn1.x509.CertificateList;
-import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.asn1.x509.DistributionPoint;
 import org.bouncycastle.asn1.x509.DistributionPointName;
 import org.bouncycastle.asn1.x509.Extension;
@@ -815,20 +811,6 @@ public final class DSSASN1Utils {
 			LOG.warn("!!! The framework handles only one signer (SignerInformation) !!!");
 		}
 		return signers.iterator().next();
-	}
-
-	public static byte[] getSignedDigest(byte[] signatureValue, CertificateToken signer) throws GeneralSecurityException, IOException {
-
-		PublicKey publicKey = signer.getPublicKey();
-		Cipher cipher = Cipher.getInstance(publicKey.getAlgorithm());
-		cipher.init(Cipher.DECRYPT_MODE, publicKey);
-		byte[] decrypted = cipher.doFinal(signatureValue);
-
-		try (ASN1InputStream inputDecrypted = new ASN1InputStream(decrypted)) {
-			ASN1Sequence seqDecrypt = (ASN1Sequence) inputDecrypted.readObject();
-			DigestInfo digestInfo = new DigestInfo(seqDecrypt);
-			return digestInfo.getDigest();
-		}
 	}
 
 }

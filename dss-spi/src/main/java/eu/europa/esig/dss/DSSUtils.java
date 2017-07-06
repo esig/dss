@@ -438,6 +438,7 @@ public final class DSSUtils {
 	 * @param base64Encoded
 	 * @return
 	 */
+	@Deprecated
 	public static X509CRL loadCRLBase64Encoded(final String base64Encoded) {
 		final byte[] derEncoded = Utils.fromBase64(base64Encoded);
 		return loadCRL(derEncoded);
@@ -449,6 +450,7 @@ public final class DSSUtils {
 	 * @param byteArray
 	 * @return
 	 */
+	@Deprecated
 	public static X509CRL loadCRL(final byte[] byteArray) {
 		try (ByteArrayInputStream inputStream = new ByteArrayInputStream(byteArray)) {
 			return loadCRL(inputStream);
@@ -463,6 +465,7 @@ public final class DSSUtils {
 	 * @param inputStream
 	 * @return
 	 */
+	@Deprecated
 	public static X509CRL loadCRL(final InputStream inputStream) {
 		try {
 			return (X509CRL) certificateFactory.generateCRL(inputStream);

@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.x509.crl;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.cert.CRLReason;
 import java.security.cert.X509CRLEntry;
@@ -33,7 +31,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSNotApplicableMethodException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.crl.CRLParser;
+import eu.europa.esig.dss.crl.CRLUtils;
+import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.TokenValidationExtraInfo;
@@ -102,13 +101,7 @@ public class CRLToken extends RevocationToken {
 		}
 
 		final BigInteger serialNumber = certificateToken.getSerialNumber();
-		CRLParser parser = new CRLParser();
-		X509CRLEntry crlEntry = null;
-		try (InputStream is = crlValidity.getCrlInputStream()) {
-			crlEntry = parser.retrieveRevocationInfo(is, serialNumber);
-		} catch (IOException e) {
-			LOG.error("Unable to retrieve the revocation status", e);
-		}
+		X509CRLEntry crlEntry = CRLUtils.getRevocationInfo(crlValidity, serialNumber);
 
 		status = null == crlEntry;
 		if (!status) {

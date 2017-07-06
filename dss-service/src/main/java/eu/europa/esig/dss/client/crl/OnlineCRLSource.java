@@ -32,12 +32,12 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.Protocol;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.crl.CRLUtils;
+import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.crl.CRLSource;
 import eu.europa.esig.dss.x509.crl.CRLToken;
-import eu.europa.esig.dss.x509.crl.CRLUtils;
-import eu.europa.esig.dss.x509.crl.CRLValidity;
 
 /**
  * Online CRL repository. This CRL repository implementation will download the CRLs from the given CRL URIs.
