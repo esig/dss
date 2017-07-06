@@ -1,0 +1,66 @@
+package eu.europa.esig.dss.crl;
+
+import java.util.Collection;
+
+import org.bouncycastle.asn1.ASN1GeneralizedTime;
+import org.bouncycastle.asn1.ASN1OctetString;
+import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.ASN1String;
+import org.bouncycastle.asn1.DERTaggedObject;
+import org.bouncycastle.asn1.x509.DistributionPointName;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.GeneralNames;
+import org.bouncycastle.asn1.x509.IssuingDistributionPoint;
+import org.bouncycastle.asn1.x509.ReasonFlags;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public abstract class AbstractCRLUtils {
+
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractCRLUtils.class);
+
+	protected void extractExpiredCertsOnCRL(CRLValidity validity, byte[] expiredCertsOnCRLBinaries) {
+		if (expiredCertsOnCRLBinaries != null) {
+			try {
+				ASN1OctetString octetString = (ASN1OctetString) ASN1Primitive.fromByteArray(expiredCertsOnCRLBinaries);
+				ASN1GeneralizedTime generalTime = (ASN1GeneralizedTime) ASN1Primitive.fromByteArray(octetString.getOctets());
+				validity.setExpiredCertsOnCRL(generalTime.getDate());
+			} catch (Exception e) {
+				LOG.error("Unable to parse expiredCertsOnCRL on CRL : " + e.getMessage(), e);
+			}
+		}
+	}
+
+	protected void checkCriticalExtensions(CRLValidity validity, Collection<String> criticalExtensionsOid, byte[] issuingDistributionPointBinary) {
+		if (criticalExtensionsOid == null || criticalExtensionsOid.isEmpty()) {
+			validity.setUnknownCriticalExtension(false);
+		} else {
+			IssuingDistributionPoint issuingDistributionPoint = IssuingDistributionPoint
+					.getInstance(ASN1OctetString.getInstance(issuingDistributionPointBinary).getOctets());
+			final boolean onlyAttributeCerts = issuingDistributionPoint.onlyContainsAttributeCerts();
+			final boolean onlyCaCerts = issuingDistributionPoint.onlyContainsCACerts();
+			final boolean onlyUserCerts = issuingDistributionPoint.onlyContainsUserCerts();
+			final boolean indirectCrl = issuingDistributionPoint.isIndirectCRL();
+			ReasonFlags onlySomeReasons = issuingDistributionPoint.getOnlySomeReasons();
+			DistributionPointName distributionPoint = issuingDistributionPoint.getDistributionPoint();
+			boolean urlFound = false;
+			if (DistributionPointName.FULL_NAME == distributionPoint.getType()) {
+				final GeneralNames generalNames = (GeneralNames) distributionPoint.getName();
+				if ((generalNames != null) && (generalNames.getNames() != null && generalNames.getNames().length > 0)) {
+					for (GeneralName generalName : generalNames.getNames()) {
+						if (GeneralName.uniformResourceIdentifier == generalName.getTagNo()) {
+							ASN1String str = (ASN1String) ((DERTaggedObject) generalName.toASN1Primitive()).getObject();
+							validity.setUrl(str.getString());
+							urlFound = true;
+						}
+					}
+				}
+			}
+
+			if (!(onlyAttributeCerts && onlyCaCerts && onlyUserCerts && indirectCrl) && (onlySomeReasons == null) && urlFound) {
+				validity.setUnknownCriticalExtension(false);
+			}
+		}
+	}
+
+}

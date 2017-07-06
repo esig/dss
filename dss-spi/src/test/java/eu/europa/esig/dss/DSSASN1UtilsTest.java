@@ -103,4 +103,23 @@ public class DSSASN1UtilsTest {
 		assertEquals(token, token2);
 	}
 
+	// @Test
+	// public void testCRLconversion() throws IOException, Exception {
+	// X509CRL x509CRL = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/belgium2.crl"));
+	// byte[] encoded = x509CRL.getEncoded();
+	//
+	// System.out.println(Utils.toHex(encoded));
+	//
+	// X509CRLHolder holder = DSSASN1Utils.getX509CrlHolder(x509CRL);
+	// byte[] encoded2 = holder.getEncoded();
+	// System.out.println(Utils.toHex(encoded2));
+	//
+	// assertArrayEquals(encoded, encoded2);
+	// X509CRL x509crl2 = DSSASN1Utils.toX509CRL(holder);
+	// byte[] encoded3 = x509crl2.getEncoded();
+	//
+	// assertArrayEquals(encoded2, encoded3);
+	//
+	// }
+
 }

@@ -6,10 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.cert.X509CRL;
-import java.security.cert.X509CRLEntry;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateID;
@@ -18,7 +15,6 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cert.ocsp.SingleResp;
 import org.junit.Test;
 
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class DSSRevocationUtilsTest {
@@ -58,21 +54,6 @@ public class DSSRevocationUtilsTest {
 	@Test(expected = IOException.class)
 	public void testWrongOCSP() throws IOException, OCSPException {
 		DSSRevocationUtils.loadOCSPBase64Encoded("MIIHOgoBAK");
-	}
-
-	@Test
-	public void testRevocationReasonFromCRL() throws Exception {
-		X509CRL crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/LTGRCA.crl"));
-		assertNotNull(crl);
-		assertTrue(Utils.isCollectionNotEmpty(crl.getRevokedCertificates()));
-		for (X509CRLEntry entry : crl.getRevokedCertificates()) {
-			String revocationReason = DSSRevocationUtils.getRevocationReason(entry);
-			assertTrue(Utils.isStringNotEmpty(revocationReason));
-		}
-
-		crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/belgium2.crl"));
-		assertNotNull(crl);
-		assertTrue(Utils.isCollectionEmpty(crl.getRevokedCertificates()));
 	}
 
 }

@@ -70,6 +70,7 @@ import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
 import org.bouncycastle.asn1.x509.CRLDistPoint;
+import org.bouncycastle.asn1.x509.CertificateList;
 import org.bouncycastle.asn1.x509.DistributionPoint;
 import org.bouncycastle.asn1.x509.DistributionPointName;
 import org.bouncycastle.asn1.x509.Extension;
@@ -78,6 +79,7 @@ import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.PolicyInformation;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
+import org.bouncycastle.asn1.x509.TBSCertList;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.asn1.x509.qualified.QCStatement;
 import org.bouncycastle.cert.X509CRLHolder;
@@ -511,6 +513,23 @@ public final class DSSASN1Utils {
 			final JcaX509CRLConverter jcaX509CRLConverter = new JcaX509CRLConverter();
 			final X509CRL x509CRL = jcaX509CRLConverter.getCRL(x509CRLHolder);
 			return x509CRL;
+		} catch (CRLException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	/**
+	 * @return the a copy of x509crl as a X509CRLHolder
+	 */
+	public static X509CRLHolder getX509CrlHolder(X509CRL x509crl) {
+		try {
+			final TBSCertList tbsCertList = TBSCertList.getInstance(x509crl.getTBSCertList());
+			final AlgorithmIdentifier sigAlgOID = new AlgorithmIdentifier(new ASN1ObjectIdentifier(x509crl.getSigAlgOID()));
+			final byte[] signature = x509crl.getSignature();
+			final DERSequence seq = new DERSequence(new ASN1Encodable[] { tbsCertList, sigAlgOID, new DERBitString(signature) });
+			final CertificateList x509CRL = CertificateList.getInstance(seq);
+			final X509CRLHolder x509crlHolder = new X509CRLHolder(x509CRL);
+			return x509crlHolder;
 		} catch (CRLException e) {
 			throw new DSSException(e);
 		}

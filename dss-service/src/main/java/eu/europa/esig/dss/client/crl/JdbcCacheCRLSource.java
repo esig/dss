@@ -39,11 +39,11 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.crl.CRLSource;
 import eu.europa.esig.dss.x509.crl.CRLToken;
-import eu.europa.esig.dss.x509.crl.CRLValidity;
 
 /**
  * CRLSource that retrieve information from a JDBC datasource
