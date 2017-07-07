@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.x509.crl;
 
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.cert.CRLReason;
 import java.security.cert.X509CRLEntry;
@@ -137,6 +138,10 @@ public class CRLToken extends RevocationToken {
 	@Override
 	public byte[] getEncoded() {
 		return crlValidity.getCrlEncoded();
+	}
+
+	public InputStream getCRLStream() {
+		return crlValidity.getCrlInputStream();
 	}
 
 	/**

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import java.security.cert.CRLException;
+import java.io.IOException;
 import java.util.Collection;
 
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -35,7 +35,6 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.util.Store;
 
-import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
 
@@ -132,8 +131,8 @@ public class CAdESCRLSource extends OfflineCRLSource {
 
 	private void addX509CRLHolder(X509CRLHolder crlHolder) {
 		try {
-			addCRLBinary(DSSASN1Utils.toX509CRL(crlHolder).getEncoded());
-		} catch (CRLException e) {
+			addCRLBinary(crlHolder.getEncoded());
+		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}

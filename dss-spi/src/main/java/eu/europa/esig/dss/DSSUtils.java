@@ -433,37 +433,11 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method loads a CRL from the given base 64 encoded string.
-	 *
-	 * @param base64Encoded
-	 * @return
-	 */
-	@Deprecated
-	public static X509CRL loadCRLBase64Encoded(final String base64Encoded) {
-		final byte[] derEncoded = Utils.fromBase64(base64Encoded);
-		return loadCRL(derEncoded);
-	}
-
-	/**
-	 * This method loads a CRL from the given location.
-	 *
-	 * @param byteArray
-	 * @return
-	 */
-	@Deprecated
-	public static X509CRL loadCRL(final byte[] byteArray) {
-		try (ByteArrayInputStream inputStream = new ByteArrayInputStream(byteArray)) {
-			return loadCRL(inputStream);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
 	 * This method loads a CRL from the given location.
 	 *
 	 * @param inputStream
 	 * @return
+	 * @deprecated for performance reasons, the X509CRL object needs to be avoided
 	 */
 	@Deprecated
 	public static X509CRL loadCRL(final InputStream inputStream) {

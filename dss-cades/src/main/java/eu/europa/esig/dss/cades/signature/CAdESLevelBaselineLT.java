@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,7 +39,6 @@ import org.bouncycastle.util.Store;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
@@ -127,7 +128,11 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 	 * @return the a copy of x509crl as a X509CRLHolder
 	 */
 	private X509CRLHolder getX509CrlHolder(CRLToken crlToken) {
-		return DSSASN1Utils.getX509CrlHolder(DSSUtils.loadCRL(crlToken.getEncoded()));
+		try (InputStream is = crlToken.getCRLStream()) {
+			return new X509CRLHolder(is);
+		} catch (IOException e) {
+			throw new DSSException("Unable to convert X509CRL to X509CRLHolder", e);
+		}
 	}
 
 }
