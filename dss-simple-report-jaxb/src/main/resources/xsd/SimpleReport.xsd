@@ -27,6 +27,7 @@
 							<xs:element type="xs:string" name="Filename" minOccurs="0" />
 							<xs:element type="xs:dateTime" name="SigningTime" minOccurs="0" />
 							<xs:element type="xs:string" name="SignedBy" />
+							<xs:element name="CertificateChain" type="CertificateChain" />
 							<xs:element type="SignatureLevel" name="SignatureLevel" minOccurs="0" />
 							<xs:element type="Indication" name="Indication" />
 							<xs:element type="SubIndication" name="SubIndication" minOccurs="0" />
@@ -128,5 +129,18 @@
 			<xs:enumeration value="N/A" />
 		</xs:restriction>
 	</xs:simpleType>
+	
+	<xs:complexType name="CertificateChain">
+		<xs:sequence>
+			<xs:element name="Certificate" type="Certificate" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Certificate">
+		<xs:sequence>
+			<xs:element type="xs:string" name="id" />
+			<xs:element type="xs:string" name="qualifiedName" />
+		</xs:sequence>
+	</xs:complexType>
 	
 </xs:schema>

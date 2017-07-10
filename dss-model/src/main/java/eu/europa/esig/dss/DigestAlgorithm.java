@@ -62,9 +62,9 @@ public enum DigestAlgorithm {
 
 	private static class Registry {
 
-		private final static Map<String, DigestAlgorithm> OID_ALGORITHMS = registerOIDAlgorithms();
-		private final static Map<String, DigestAlgorithm> XML_ALGORITHMS = registerXMLAlgorithms();
-		private final static Map<String, DigestAlgorithm> ALGORITHMS = registerAlgorithms();
+		private static final Map<String, DigestAlgorithm> OID_ALGORITHMS = registerOIDAlgorithms();
+		private static final Map<String, DigestAlgorithm> XML_ALGORITHMS = registerXMLAlgorithms();
+		private static final Map<String, DigestAlgorithm> ALGORITHMS = registerAlgorithms();
 
 		private static Map<String, DigestAlgorithm> registerOIDAlgorithms() {
 			final Map<String, DigestAlgorithm> map = new HashMap<String, DigestAlgorithm>();

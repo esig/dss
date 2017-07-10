@@ -52,7 +52,7 @@ import eu.europa.esig.jaxb.policy.ValueConstraint;
  */
 public class EtsiValidationPolicy implements ValidationPolicy {
 
-	private static final Logger logger = LoggerFactory.getLogger(EtsiValidationPolicy.class);
+	private static final Logger LOG = LoggerFactory.getLogger(EtsiValidationPolicy.class);
 
 	private ConstraintsParameters policy;
 
@@ -741,7 +741,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 				return revocationConstraints.getBasicSignatureConstraints();
 			}
 		default:
-			logger.warn("Unsupported context " + context);
+			LOG.warn("Unsupported context " + context);
 			break;
 		}
 		return null;
@@ -754,7 +754,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		case COUNTER_SIGNATURE:
 			return policy.getCounterSignatureConstraints();
 		default:
-			logger.warn("Unsupported context " + context);
+			LOG.warn("Unsupported context " + context);
 			break;
 		}
 		return null;

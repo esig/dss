@@ -1,0 +1,14 @@
+[source,http,options="nowrap"]
+----
+HTTP/1.1 200 OK
+Server: Apache-Coyote/1.1
+Date: Mon, 19 Jun 2017 13:20:47 GMT
+Content-Type: application/json
+Transfer-Encoding: chunked
+Content-Length: 395
+
+{
+  "algorithm" : "RSA_SHA256",
+  "value" : "CbMjTmDXOOYju1szaY3iqO5+XWgx2KVOUvpvQUi4gYBAQNiRpnyWDBn2KuNEByZ5Iqe5qms0IT71dnxukvzeBSR9gktEjhX9UjBKYrM1Z/lVoTb6/FuXX3uc9BFFkNtSmu0PIWgTWr3sBbtswXlDHX8b86PeCXSsDpLv2A8LK1WwJf078stErMy9wtk9d5Vts5UuDKHk7plTbyhrBcL8XW+K/hR5NUwG3dP/nR5Y8U0bYa2NSUyBbgzK1+2JcOVnAwSic074iUyY/c756W3XWjhrHnoBfs9hRERVFvEeroAyicYsAHTb7mB/HCou32hmQ0Hye4PpNhywx76zXVw56Q=="
+}
+----

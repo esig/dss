@@ -22,17 +22,14 @@ package eu.europa.esig.dss;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.cert.X509CRLEntry;
+import java.util.Arrays;
 
-import org.bouncycastle.asn1.ASN1Enumerated;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPResponseStatus;
 import org.bouncycastle.asn1.ocsp.ResponseBytes;
-import org.bouncycastle.asn1.x509.CRLReason;
-import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateID;
@@ -44,14 +41,9 @@ import org.bouncycastle.operator.DigestCalculator;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
-import org.bouncycastle.util.Arrays;
-import org.bouncycastle.x509.extension.X509ExtensionUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 
 /**
  * Utility class used to convert OCSPResp to BasicOCSPResp
@@ -60,8 +52,6 @@ import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
  */
 
 public final class DSSRevocationUtils {
-
-	private static final Logger logger = LoggerFactory.getLogger(DSSRevocationUtils.class);
 
 	private static JcaDigestCalculatorProviderBuilder jcaDigestCalculatorProviderBuilder;
 
@@ -83,7 +73,7 @@ public final class DSSRevocationUtils {
 		try {
 			return (BasicOCSPResp) ocspResp.getResponseObject();
 		} catch (OCSPException e) {
-			throw new RuntimeException(e);
+			throw new DSSException(e);
 		}
 	}
 
@@ -123,36 +113,6 @@ public final class DSSRevocationUtils {
 	}
 
 	/**
-	 * This method returns the reason of the revocation of the certificate
-	 * extracted from the given CRL.
-	 *
-	 * @param crlEntry
-	 *            An object for a revoked certificate in a CRL (Certificate
-	 *            Revocation List).
-	 * @return reason or null
-	 */
-	public static String getRevocationReason(final X509CRLEntry crlEntry) {
-		final String reasonId = Extension.reasonCode.getId();
-		final byte[] extensionBytes = crlEntry.getExtensionValue(reasonId);
-
-		if (Utils.isArrayEmpty(extensionBytes)) {
-			logger.warn("Empty reasonCode extension for crl entry");
-			return null;
-		}
-
-		String reason = null;
-		try {
-			final ASN1Enumerated reasonCodeExtension = ASN1Enumerated.getInstance(X509ExtensionUtil.fromExtensionValue(extensionBytes));
-			final CRLReason crlReason = CRLReason.getInstance(reasonCodeExtension);
-			int intValue = crlReason.getValue().intValue();
-			reason = CRLReasonEnum.fromInt(intValue).name();
-		} catch (IOException e) {
-			logger.error("Unable to retrieve the crl reason : " + e.getMessage(), e);
-		}
-		return reason;
-	}
-
-	/**
 	 * fix for certId.equals methods that doesn't work very well.
 	 *
 	 * @param certId
@@ -177,8 +137,8 @@ public final class DSSRevocationUtils {
 
 		// certId.equals fails in comparing the algoIdentifier because
 		// AlgoIdentifier params in null in one case and DERNull in another case
-		return singleRespCertIDHashAlgOID.equals(certIdHashAlgOID) && Arrays.areEqual(singleRespCertIDIssuerKeyHash, certIdIssuerKeyHash)
-				&& Arrays.areEqual(singleRespCertIDIssuerNameHash, certIdIssuerNameHash) && singleRespCertIDSerialNumber.equals(certIdSerialNumber);
+		return singleRespCertIDHashAlgOID.equals(certIdHashAlgOID) && Arrays.equals(singleRespCertIDIssuerKeyHash, certIdIssuerKeyHash)
+				&& Arrays.equals(singleRespCertIDIssuerNameHash, certIdIssuerNameHash) && singleRespCertIDSerialNumber.equals(certIdSerialNumber);
 	}
 
 	/**
@@ -229,4 +189,14 @@ public final class DSSRevocationUtils {
 		final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
 		return basicOCSPResp;
 	}
+
+	public static byte[] getEncoded(OCSPResp ocspResp) {
+		try {
+			final byte[] encoded = ocspResp.getEncoded();
+			return encoded;
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
+
 }

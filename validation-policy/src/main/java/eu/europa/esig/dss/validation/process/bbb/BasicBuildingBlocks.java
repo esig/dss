@@ -42,7 +42,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
  */
 public class BasicBuildingBlocks {
 
-	private static final Logger logger = LoggerFactory.getLogger(BasicBuildingBlocks.class);
+	private static final Logger LOG = LoggerFactory.getLogger(BasicBuildingBlocks.class);
 
 	private final DiagnosticData diagnosticData;
 	private final TokenProxy token;
@@ -79,6 +79,7 @@ public class BasicBuildingBlocks {
 		XmlISC isc = executeIdentificationOfTheSigningCertificate();
 		if (isc != null) {
 			result.setISC(isc);
+			result.setCertificateChain(isc.getCertificateChain());
 			updateFinalConclusion(result, isc);
 		}
 
@@ -194,7 +195,7 @@ public class BasicBuildingBlocks {
 						((RevocationWrapper) token).getProductionDate(), context, policy);
 				return xcv.execute();
 			} else {
-				logger.info("Unsupported context " + context);
+				LOG.info("Unsupported context " + context);
 			}
 		}
 		return null;
@@ -209,7 +210,7 @@ public class BasicBuildingBlocks {
 		} else if (Context.REVOCATION.equals(context)) {
 			aav = new RevocationAcceptanceValidation(diagnosticData, currentTime, (RevocationWrapper) token, policy);
 		} else {
-			logger.info("Unsupported context " + context);
+			LOG.info("Unsupported context " + context);
 		}
 		return aav != null ? aav.execute() : null;
 	}

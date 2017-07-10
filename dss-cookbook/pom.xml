@@ -5,20 +5,13 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.1-SNAPSHOT</version>
+		<version>5.2-SNAPSHOT</version>
 	</parent>
 
 	<name>CookBook</name>
 	<description>Module CookBook in the project SD-DSS</description>
 	<artifactId>dss-cookbook</artifactId>
 
-	<repositories>
-		<repository>
-			<id>e-contract</id>
-			<url>https://www.e-contract.be/maven2</url>
-		</repository>
-	</repositories>
-	
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
@@ -61,27 +54,6 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-token</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>be.fedict.eid-applet</groupId>
-			<artifactId>eid-applet-service</artifactId>
-			<version>1.1.3</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>commons-io</artifactId>
-					<groupId>commons-io</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>be.fedict.eid-applet</groupId>
-			<artifactId>eid-applet-shared</artifactId>
-			<version>1.1.3</version>
-		</dependency>
-		<dependency>
-			<groupId>be.fedict.eid-applet</groupId>
-			<artifactId>eid-applet-package</artifactId>
-			<version>1.1.3</version>
-		</dependency>
 		
 	</dependencies>
 	
@@ -95,7 +67,7 @@
                     <dependency>
                         <groupId>org.asciidoctor</groupId>
                         <artifactId>asciidoctorj-pdf</artifactId>
-                        <version>1.5.0-alpha.14</version>
+                        <version>1.5.0-alpha.15</version>
                     </dependency>
                     <dependency>
 					    <groupId>org.jruby</groupId>
@@ -142,8 +114,9 @@
 			    </executions>
 			    <configuration>
 			        <sourceDirectory>src/main/asciidoc</sourceDirectory>
-			        <imagesDir>images</imagesDir>
+			        <imagesDir>./images</imagesDir>
 			        <headerFooter>true</headerFooter>
+			    	<preserveDirectories>true</preserveDirectories>
 			    </configuration>
 			</plugin>
 		</plugins>

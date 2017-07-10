@@ -314,7 +314,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		}
 	}
 
-	private boolean handleCrlEncoded(ArrayList<DEROctetString> crlHashesList, byte[] crlHolderEncoded) {
+	private boolean handleCrlEncoded(List<DEROctetString> crlHashesList, byte[] crlHolderEncoded) {
 		final byte[] digest = DSSUtils.digest(hashIndexDigestAlgorithm, crlHolderEncoded);
 		final DEROctetString derOctetStringDigest = new DEROctetString(digest);
 

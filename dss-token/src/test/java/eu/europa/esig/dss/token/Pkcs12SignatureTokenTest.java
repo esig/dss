@@ -27,7 +27,7 @@ public class Pkcs12SignatureTokenTest {
 		assertNotNull(dssPrivateKeyEntry);
 		assertNotNull(dssPrivateKeyEntry.getAlias());
 
-		DSSPrivateKeyEntry entry = signatureToken.getKey(dssPrivateKeyEntry.getAlias());
+		DSSPrivateKeyEntry entry = signatureToken.getKey(dssPrivateKeyEntry.getAlias(), "password");
 		assertNotNull(entry);
 		assertNotNull(entry.getCertificate());
 		assertNotNull(entry.getCertificateChain());

@@ -24,7 +24,6 @@ import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.Principal;
 import java.security.PublicKey;
 import java.security.SignatureException;
 import java.security.cert.CertificateEncodingException;
@@ -433,7 +432,7 @@ public class CertificateToken extends Token {
 	@Override
 	public String toString(String indentStr) {
 		try {
-			final StringBuffer out = new StringBuffer();
+			final StringBuilder out = new StringBuilder();
 			out.append(indentStr).append("CertificateToken[\n");
 			indentStr += "\t";
 
@@ -501,7 +500,7 @@ public class CertificateToken extends Token {
 				out.append(indentStr).append("- ").append(info).append('\n');
 			}
 			indentStr = indentStr.substring(1);
-			out.append(indentStr).append("]");
+			out.append(indentStr).append(']');
 			return out.toString();
 		} catch (Exception e) {
 			return e.getMessage();
@@ -547,14 +546,6 @@ public class CertificateToken extends Token {
 
 	public byte[] getSignature() {
 		return x509Certificate.getSignature();
-	}
-
-	public Principal getIssuerDN() {
-		return x509Certificate.getIssuerDN();
-	}
-
-	public Principal getSubjectDN() {
-		return x509Certificate.getSubjectDN();
 	}
 
 }

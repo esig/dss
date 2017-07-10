@@ -49,7 +49,7 @@ import eu.europa.esig.dss.x509.ocsp.OCSPToken;
  */
 public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 
-	private static final Logger logger = LoggerFactory.getLogger(OCSPCertificateVerifier.class);
+	private static final Logger LOG = LoggerFactory.getLogger(OCSPCertificateVerifier.class);
 
 	private final OCSPSource ocspSource;
 
@@ -70,7 +70,7 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 	@Override
 	public RevocationToken check(final CertificateToken toCheckToken) {
 		if (ocspSource == null) {
-			logger.warn("OCSPSource null");
+			LOG.warn("OCSPSource null");
 			toCheckToken.extraInfo().infoOCSPSourceIsNull();
 			return null;
 		}
@@ -78,7 +78,7 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 		try {
 			final OCSPToken ocspToken = ocspSource.getOCSPToken(toCheckToken, toCheckToken.getIssuerToken());
 			if (ocspToken == null) {
-				logger.debug("No matching OCSP response found for " + toCheckToken.getDSSIdAsString());
+				LOG.debug("No matching OCSP response found for " + toCheckToken.getDSSIdAsString());
 			} else {
 				ocspToken.extractInfo();
 				final boolean found = extractSigningCertificateFromResponse(ocspToken);
@@ -89,7 +89,7 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 			}
 			return ocspToken;
 		} catch (DSSException e) {
-			logger.error("OCSP DSS Exception: " + e.getMessage(), e);
+			LOG.error("OCSP DSS Exception: " + e.getMessage(), e);
 			toCheckToken.extraInfo().infoOCSPException(e.getMessage());
 			return null;
 		}

@@ -5,20 +5,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.security.KeyStore.ProtectionParameter;
 
 import eu.europa.esig.dss.DSSException;
 
-public class KeyStoreSignatureTokenConnection extends AbstractSignatureTokenConnection {
+public class KeyStoreSignatureTokenConnection extends AbstractKeyStoreTokenConnection {
 
 	private final KeyStore keyStore;
-	private final PasswordProtection passwordProtection;
+	private final ProtectionParameter password;
 
 	public KeyStoreSignatureTokenConnection(byte[] ksBytes, String ksType, String ksPassword) {
 		this(new ByteArrayInputStream(ksBytes), ksType, ksPassword);
@@ -32,12 +28,22 @@ public class KeyStoreSignatureTokenConnection extends AbstractSignatureTokenConn
 		this(new FileInputStream(ksFile), ksType, ksPassword);
 	}
 
+	/**
+	 * Construct a KeyStoreSignatureTokenConnection object.
+	 * Please note that the keystore password will also be used to retrieve the private key.
+	 * For each keystore entry (identifiable by alias) the same private key password will be used.
+	 * 
+	 * If you want to specify a separate private key password use the {@link #getKey(String, String)} method.
+	 * 
+	 * @param ksStream
+	 * @param ksType
+	 * @param ksPassword
+	 */
 	public KeyStoreSignatureTokenConnection(InputStream ksStream, String ksType, String ksPassword) {
 		try {
-			keyStore = KeyStore.getInstance(ksType);
-			final char[] password = (ksPassword == null) ? null : ksPassword.toCharArray();
-			keyStore.load(ksStream, password);
-			passwordProtection = new PasswordProtection(password);
+			this.keyStore = KeyStore.getInstance(ksType);
+			this.password = createProtectionParameter(ksPassword);
+			this.keyStore.load(ksStream, ((PasswordProtection) password).getPassword());
 		} catch (Exception e) {
 			throw new DSSException(e);
 		} finally {
@@ -45,7 +51,7 @@ public class KeyStoreSignatureTokenConnection extends AbstractSignatureTokenConn
 				try {
 					ksStream.close();
 				} catch (IOException e) {
-					logger.error(e.getMessage(), e);
+					LOG.error(e.getMessage(), e);
 				}
 			}
 		}
@@ -56,43 +62,13 @@ public class KeyStoreSignatureTokenConnection extends AbstractSignatureTokenConn
 	}
 
 	@Override
-	public List<DSSPrivateKeyEntry> getKeys() throws DSSException {
-		final List<DSSPrivateKeyEntry> list = new ArrayList<DSSPrivateKeyEntry>();
-		try {
-			final Enumeration<String> aliases = keyStore.aliases();
-			while (aliases.hasMoreElements()) {
-				final String alias = aliases.nextElement();
-				if (keyStore.isKeyEntry(alias)) {
-					list.add(getKSPrivateKeyEntry(alias));
-				}
-			}
-		} catch (GeneralSecurityException e) {
-			throw new DSSException(e);
-		}
-		return list;
+	KeyStore getKeyStore() {
+		return keyStore;
 	}
 
-	/**
-	 * This method allows to retrieve a DSSPrivateKeyEntry by alias
-	 * 
-	 * @param alias
-	 *            the expected entry alias
-	 * @return
-	 */
-	public DSSPrivateKeyEntry getKey(String alias) {
-		try {
-			if (keyStore.isKeyEntry(alias)) {
-				return getKSPrivateKeyEntry(alias);
-			}
-		} catch (GeneralSecurityException e) {
-			throw new DSSException("Unable to retrieve the certificate", e);
-		}
-		return null;
-	}
-
-	private KSPrivateKeyEntry getKSPrivateKeyEntry(final String alias) throws GeneralSecurityException {
-		final PrivateKeyEntry entry = (PrivateKeyEntry) keyStore.getEntry(alias, passwordProtection);
-		return new KSPrivateKeyEntry(alias, entry);
+	@Override
+	ProtectionParameter getKeyProtectionParameter() {
+		return password;
 	}
 
 }

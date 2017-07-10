@@ -23,15 +23,10 @@ package eu.europa.esig.dss.token;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.KeyStore;
-import java.security.KeyStore.PrivateKeyEntry;
 import java.security.KeyStore.ProtectionParameter;
-import java.security.KeyStoreException;
 import java.security.Provider;
 import java.security.ProviderException;
 import java.security.Security;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
 import java.util.UUID;
 
 import javax.security.auth.callback.Callback;
@@ -44,7 +39,7 @@ import eu.europa.esig.dss.DSSException;
 /**
  * PKCS11 token with callback
  */
-public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
+public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 
 	private Provider _pkcs11Provider;
 
@@ -170,12 +165,13 @@ public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
 		}
 	}
 
+	@Override
 	@SuppressWarnings("restriction")
-	private KeyStore getKeyStore() throws KeyStoreException {
+	KeyStore getKeyStore() throws DSSException {
 
 		if (_keyStore == null) {
-			_keyStore = KeyStore.getInstance("PKCS11", getProvider());
 			try {
+				_keyStore = KeyStore.getInstance("PKCS11", getProvider());
 				_keyStore.load(new KeyStore.LoadStoreParameter() {
 
 					@Override
@@ -201,10 +197,15 @@ public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
 						throw new DSSException("Bad password for PKCS11", e);
 					}
 				}
-				throw new KeyStoreException("Can't initialize Sun PKCS#11 security provider. Reason: " + e.getMessage(), e);
+				throw new DSSException("Can't initialize Sun PKCS#11 security provider. Reason: " + e.getMessage(), e);
 			}
 		}
 		return _keyStore;
+	}
+
+	@Override
+	ProtectionParameter getKeyProtectionParameter() {
+		return null;
 	}
 
 	protected String getPkcs11Path() {
@@ -217,33 +218,11 @@ public class Pkcs11SignatureToken extends AbstractSignatureTokenConnection {
 			try {
 				Security.removeProvider(_pkcs11Provider.getName());
 			} catch (Exception ex) {
-				logger.error(ex.getMessage(), ex);
+				LOG.error(ex.getMessage(), ex);
 			}
 		}
 		this._pkcs11Provider = null;
 		this._keyStore = null;
-	}
-
-	@Override
-	public List<DSSPrivateKeyEntry> getKeys() throws DSSException {
-
-		final List<DSSPrivateKeyEntry> list = new ArrayList<DSSPrivateKeyEntry>();
-
-		try {
-			final KeyStore keyStore = getKeyStore();
-			final Enumeration<String> aliases = keyStore.aliases();
-			while (aliases.hasMoreElements()) {
-				final String alias = aliases.nextElement();
-				if (keyStore.isKeyEntry(alias)) {
-					final PrivateKeyEntry entry = (PrivateKeyEntry) keyStore.getEntry(alias, null);
-					list.add(new KSPrivateKeyEntry(alias, entry));
-				}
-			}
-
-		} catch (Exception e) {
-			throw new DSSException("Can't initialize Sun PKCS#11 security " + "provider. Reason: " + e.getMessage(), e);
-		}
-		return list;
 	}
 
 }

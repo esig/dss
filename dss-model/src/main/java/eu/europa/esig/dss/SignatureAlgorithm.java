@@ -34,7 +34,7 @@ public enum SignatureAlgorithm {
 
 	RSA_SHA224(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA224),
 
-	RSA_SHA256(EncryptionAlgorithm.RSA,	DigestAlgorithm.SHA256),
+	RSA_SHA256(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA256),
 
 	RSA_SHA384(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA384),
 
@@ -52,11 +52,11 @@ public enum SignatureAlgorithm {
 
 	ECDSA_SHA224(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA224),
 
-	ECDSA_SHA256(EncryptionAlgorithm.ECDSA,	DigestAlgorithm.SHA256),
+	ECDSA_SHA256(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA256),
 
 	ECDSA_SHA384(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA384),
 
-	ECDSA_SHA512(EncryptionAlgorithm.ECDSA,	DigestAlgorithm.SHA512),
+	ECDSA_SHA512(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA512),
 
 	ECDSA_RIPEMD160(EncryptionAlgorithm.ECDSA, DigestAlgorithm.RIPEMD160),
 
@@ -81,9 +81,9 @@ public enum SignatureAlgorithm {
 	private final DigestAlgorithm digestAlgo;
 
 	// http://www.w3.org/TR/2013/NOTE-xmlsec-algorithms-20130411/
-	private final static Map<String, SignatureAlgorithm> XML_ALGORITHMS = registerXmlAlgorithms();
+	private static final Map<String, SignatureAlgorithm> XML_ALGORITHMS = registerXmlAlgorithms();
 
-	private final static Map<SignatureAlgorithm, String> XML_ALGORITHMS_FOR_KEY = registerXmlAlgorithmsForKey();
+	private static final Map<SignatureAlgorithm, String> XML_ALGORITHMS_FOR_KEY = registerXmlAlgorithmsForKey();
 
 	private static Map<String, SignatureAlgorithm> registerXmlAlgorithms() {
 
@@ -132,7 +132,7 @@ public enum SignatureAlgorithm {
 		return xmlAlgorithms;
 	}
 
-	private final static Map<String, SignatureAlgorithm> OID_ALGORITHMS = registerOIDAlgorithms();
+	private static final Map<String, SignatureAlgorithm> OID_ALGORITHMS = registerOIDAlgorithms();
 
 	private static Map<String, SignatureAlgorithm> registerOIDAlgorithms() {
 

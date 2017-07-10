@@ -3,12 +3,12 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.1-SNAPSHOT</version>
+		<version>5.2-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>dss-utils-google-guava</artifactId>
 	<name>DSS Utils implementation with Google Guava</name>
-	<description>DSS Utils with Google Guava : util methods for String, Collection,...</description>
+	<description>DSS Utils with Google Guava : utility methods for String, Collection,...</description>
 
 	<dependencies>
 		<dependency>

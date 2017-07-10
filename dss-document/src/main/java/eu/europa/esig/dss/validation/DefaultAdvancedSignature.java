@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.security.cert.X509CRL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,6 +41,7 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
+import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.crl.CRLToken;
 import eu.europa.esig.dss.x509.crl.ListCRLSource;
 import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
@@ -388,7 +389,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		 * This validates the content-timestamp tokensToProcess present in the signature.
 		 */
 		for (final TimestampToken timestampToken : getContentTimestamps()) {
-
 			final byte[] timestampBytes = getContentTimestampData(timestampToken);
 			timestampToken.matchData(timestampBytes);
 		}
@@ -397,7 +397,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		 * This validates the signature timestamp tokensToProcess present in the signature.
 		 */
 		for (final TimestampToken timestampToken : getSignatureTimestamps()) {
-
 			final byte[] timestampBytes = getSignatureTimestampData(timestampToken, null);
 			timestampToken.matchData(timestampBytes);
 		}
@@ -406,7 +405,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		 * This validates the SigAndRefs timestamp tokensToProcess present in the signature.
 		 */
 		for (final TimestampToken timestampToken : getTimestampsX1()) {
-
 			final byte[] timestampBytes = getTimestampX1Data(timestampToken, null);
 			timestampToken.matchData(timestampBytes);
 		}
@@ -415,7 +413,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		 * This validates the RefsOnly timestamp tokensToProcess present in the signature.
 		 */
 		for (final TimestampToken timestampToken : getTimestampsX2()) {
-
 			final byte[] timestampBytes = getTimestampX2Data(timestampToken, null);
 			timestampToken.matchData(timestampBytes);
 		}
@@ -424,9 +421,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		 * This validates the archive timestamp tokensToProcess present in the signature.
 		 */
 		for (final TimestampToken timestampToken : getArchiveTimestamps()) {
-
-			final byte[] timestampData = getArchiveTimestampData(timestampToken, null);
-			timestampToken.matchData(timestampData);
+			if (!timestampToken.isProcessed()) {
+				final byte[] timestampData = getArchiveTimestampData(timestampToken, null);
+				timestampToken.matchData(timestampData);
+			}
 		}
 	}
 
@@ -453,7 +451,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 				usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
 				for (BasicOCSPResp basicOCSPResp : containedOCSPResponses) {
 					OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(basicOCSPResp);
-					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSUtils.getEncoded(ocspResp));
+					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSRevocationUtils.getEncoded(ocspResp));
 					references.add(new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), TimestampReferenceCategory.REVOCATION));
 				}
 			}
@@ -469,11 +467,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	protected void addReferencesFromOfflineCRLSource(List<TimestampReference> references) {
 		OfflineCRLSource crlSource = getCRLSource();
 		if (crlSource != null) {
-			List<X509CRL> containedX509CRLs = crlSource.getContainedX509CRLs();
+			Collection<byte[]> containedX509CRLs = crlSource.getContainedX509CRLs();
 			if (Utils.isCollectionNotEmpty(containedX509CRLs)) {
 				usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
-				for (X509CRL x509crl : containedX509CRLs) {
-					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSUtils.getEncoded(x509crl));
+				for (byte[] x509crl : containedX509CRLs) {
+					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, x509crl);
 					references.add(new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), TimestampReferenceCategory.REVOCATION));
 				}
 			}
@@ -502,6 +500,22 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public List<SignatureScope> getSignatureScopes() {
 		return signatureScopes;
+	}
+
+	@Override
+	public void addExternalTimestamp(TimestampToken timestamp) {
+		if (!timestamp.isProcessed()) {
+			throw new DSSException("Timestamp token must be validated first !");
+		}
+
+		if (TimestampType.ARCHIVE_TIMESTAMP != timestamp.getTimeStampType()) {
+			throw new DSSException("Only archival timestamp is allowed !");
+		}
+
+		if (archiveTimestamps == null) {
+			archiveTimestamps = new ArrayList<TimestampToken>();
+		}
+		archiveTimestamps.add(timestamp);
 	}
 
 }

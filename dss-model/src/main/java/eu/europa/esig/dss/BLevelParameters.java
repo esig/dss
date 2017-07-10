@@ -38,10 +38,13 @@ public class BLevelParameters implements Serializable {
 	 * ETSI TS 103 171 V2.1.1 (2012-03)
 	 * 6.2.1 Placement of the signing certificate
 	 * ../..
-	 * it is advised to include at least the unavailable intermediary certificates up to but not including the CAs present in the TSLs,
+	 * it is advised to include at least the unavailable intermediary certificates up to but not including the CAs
+	 * present in the TSLs,
 	 * ../..
-	 * This rule applies as follows: when -B level is constructed the trust anchor is not included, when -LT level is constructed the trust anchor is included.
-	 * NOTE: when trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are included when -B level is constructed.
+	 * This rule applies as follows: when -B level is constructed the trust anchor is not included, when -LT level is
+	 * constructed the trust anchor is included.
+	 * NOTE: when trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are
+	 * included when -B level is constructed.
 	 */
 	private boolean trustAnchorBPPolicy = true;
 
@@ -53,7 +56,7 @@ public class BLevelParameters implements Serializable {
 
 	private Policy signaturePolicy;
 
-	private List<String> commitmentTypeIndication;
+	private List<String> commitmentTypeIndications;
 	private SignerLocation signerLocation;
 
 	public BLevelParameters() {
@@ -68,7 +71,8 @@ public class BLevelParameters implements Serializable {
 
 	/**
 	 * Allows to set the trust anchor policy to use when creating -B and -LT levels.
-	 * NOTE: when trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are included when building -B level.
+	 * NOTE: when trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are
+	 * included when building -B level.
 	 *
 	 * @param trustAnchorBPPolicy
 	 *            {@code boolean}
@@ -113,6 +117,10 @@ public class BLevelParameters implements Serializable {
 		this.signingDate = signingDate;
 	}
 
+	public void setClaimedSignerRoles(List<String> claimedSignerRoles) {
+		this.claimedSignerRoles = claimedSignerRoles;
+	}
+
 	/**
 	 * Get claimed role
 	 *
@@ -138,6 +146,10 @@ public class BLevelParameters implements Serializable {
 		claimedSignerRoles.add(claimedSignerRole);
 	}
 
+	public void setCertifiedSignerRoles(List<String> certifiedSignerRoles) {
+		this.certifiedSignerRoles = certifiedSignerRoles;
+	}
+
 	public List<String> getCertifiedSignerRoles() {
 		return certifiedSignerRoles;
 	}
@@ -155,23 +167,25 @@ public class BLevelParameters implements Serializable {
 	/**
 	 * ETSI TS 101 733 V2.2.1 (2013-04)
 	 * 5.11.1 commitment-type-indication Attribute
-	 * There may be situations where a signer wants to explicitly indicate to a verifier that by signing the data, it illustrates a
+	 * There may be situations where a signer wants to explicitly indicate to a verifier that by signing the data, it
+	 * illustrates a
 	 * type of commitment on behalf of the signer. The commitment-type-indication attribute conveys such
 	 * information.
 	 */
 	public List<String> getCommitmentTypeIndications() {
-		return commitmentTypeIndication;
+		return commitmentTypeIndications;
 	}
 
-	public void setCommitmentTypeIndications(List<String> commitmentTypeIndication) {
-		this.commitmentTypeIndication = commitmentTypeIndication;
+	public void setCommitmentTypeIndications(List<String> commitmentTypeIndications) {
+		this.commitmentTypeIndications = commitmentTypeIndications;
 	}
 
 	/**
 	 * ETSI TS 101 733 V2.2.1 (2013-04)
 	 * 5.11.2 signer-location Attribute
 	 * The signer-location attribute specifies a mnemonic for an address associated with the signer at a particular
-	 * geographical (e.g. city) location. The mnemonic is registered in the country in which the signer is located and is used in
+	 * geographical (e.g. city) location. The mnemonic is registered in the country in which the signer is located and
+	 * is used in
 	 * the provision of the Public Telegram Service (according to Recommendation ITU-T F.1 [11]).
 	 * The signer-location attribute shall be a signed attribute.
 	 * The following object identifier identifies the signer-location attribute:
@@ -206,7 +220,7 @@ public class BLevelParameters implements Serializable {
 		int result = 1;
 		result = (prime * result) + ((certifiedSignerRoles == null) ? 0 : certifiedSignerRoles.hashCode());
 		result = (prime * result) + ((claimedSignerRoles == null) ? 0 : claimedSignerRoles.hashCode());
-		result = (prime * result) + ((commitmentTypeIndication == null) ? 0 : commitmentTypeIndication.hashCode());
+		result = (prime * result) + ((commitmentTypeIndications == null) ? 0 : commitmentTypeIndications.hashCode());
 		result = (prime * result) + ((signaturePolicy == null) ? 0 : signaturePolicy.hashCode());
 		result = (prime * result) + ((signerLocation == null) ? 0 : signerLocation.hashCode());
 		result = (prime * result) + ((signingDate == null) ? 0 : signingDate.hashCode());
@@ -240,11 +254,11 @@ public class BLevelParameters implements Serializable {
 		} else if (!claimedSignerRoles.equals(other.claimedSignerRoles)) {
 			return false;
 		}
-		if (commitmentTypeIndication == null) {
-			if (other.commitmentTypeIndication != null) {
+		if (commitmentTypeIndications == null) {
+			if (other.commitmentTypeIndications != null) {
 				return false;
 			}
-		} else if (!commitmentTypeIndication.equals(other.commitmentTypeIndication)) {
+		} else if (!commitmentTypeIndications.equals(other.commitmentTypeIndications)) {
 			return false;
 		}
 		if (signaturePolicy == null) {
@@ -276,8 +290,9 @@ public class BLevelParameters implements Serializable {
 
 	@Override
 	public String toString() {
-		return "BLevelParameters [trustAnchorBPPolicy=" + trustAnchorBPPolicy + ", signingDate=" + signingDate + ", claimedSignerRoles=" + claimedSignerRoles + ", certifiedSignerRoles=" + certifiedSignerRoles + ", signaturePolicy="
-				+ signaturePolicy + ", commitmentTypeIndication=" + commitmentTypeIndication + ", signerLocation=" + signerLocation + "]";
+		return "BLevelParameters [trustAnchorBPPolicy=" + trustAnchorBPPolicy + ", signingDate=" + signingDate + ", claimedSignerRoles=" + claimedSignerRoles
+				+ ", certifiedSignerRoles=" + certifiedSignerRoles + ", signaturePolicy=" + signaturePolicy + ", commitmentTypeIndication="
+				+ commitmentTypeIndications + ", signerLocation=" + signerLocation + "]";
 	}
 
 }

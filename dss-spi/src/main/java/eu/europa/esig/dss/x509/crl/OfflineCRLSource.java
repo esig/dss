@@ -20,16 +20,24 @@
  */
 package eu.europa.esig.dss.x509.crl;
 
-import java.security.cert.X509CRL;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.crl.CRLUtils;
+import eu.europa.esig.dss.crl.CRLValidity;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 
@@ -42,40 +50,41 @@ public abstract class OfflineCRLSource implements CRLSource {
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineCRLSource.class);
 
 	/**
-	 * List of contained {@code X509CRL}s. One CRL list contains many
-	 * CRLToken(s).
+	 * This {@code HashMap} contains not validated CRL binaries. When the validation passes, the entry will be removed.
+	 * The key is the SHA256 digest of the CRL binaries.
 	 */
-	protected List<X509CRL> x509CRLList;
-
-	protected Map<CertificateToken, CRLToken> validCRLTokenList = new HashMap<CertificateToken, CRLToken>();
+	protected Map<String, byte[]> crlsMap = new HashMap<String, byte[]>();
 
 	/**
 	 * This {@code HashMap} contains the {@code CRLValidity} object for each
 	 * {@code X509CRL}. It is used for performance reasons.
 	 */
-	protected Map<X509CRL, CRLValidity> crlValidityMap = new HashMap<X509CRL, CRLValidity>();
+	private Map<String, CRLValidity> crlValidityMap = new HashMap<String, CRLValidity>();
+
+	private Map<CertificateToken, CRLToken> validCRLTokenList = new HashMap<CertificateToken, CRLToken>();
 
 	@Override
-	final public CRLToken findCrl(final CertificateToken certificateToken) {
-
+	public final CRLToken findCrl(final CertificateToken certificateToken) {
 		if (certificateToken == null) {
-
 			throw new NullPointerException();
 		}
+
 		final CRLToken validCRLToken = validCRLTokenList.get(certificateToken);
 		if (validCRLToken != null) {
 			validCRLToken.setOrigin(RevocationOrigin.SIGNATURE);
 			return validCRLToken;
 		}
+
 		final CertificateToken issuerToken = certificateToken.getIssuerToken();
 		if (issuerToken == null) {
-
 			throw new NullPointerException();
 		}
+
 		final CRLValidity bestCRLValidity = getBestCrlValidity(certificateToken, issuerToken);
 		if (bestCRLValidity == null) {
 			return null;
 		}
+
 		final CRLToken crlToken = new CRLToken(certificateToken, bestCRLValidity);
 		crlToken.setOrigin(RevocationOrigin.SIGNATURE);
 		validCRLTokenList.put(certificateToken, crlToken);
@@ -98,16 +107,16 @@ public abstract class OfflineCRLSource implements CRLSource {
 		CRLValidity bestCRLValidity = null;
 		Date bestX509UpdateDate = null;
 
-		for (final X509CRL x509CRL : x509CRLList) {
-			final CRLValidity crlValidity = getCrlValidity(issuerToken, x509CRL);
+		for (final Entry<String, byte[]> crlEntry : crlsMap.entrySet()) {
+			final CRLValidity crlValidity = getCrlValidity(crlEntry.getKey(), crlEntry.getValue(), issuerToken);
 			if (crlValidity == null) {
 				continue;
 			}
 			if (issuerToken.equals(crlValidity.getIssuerToken()) && crlValidity.isValid()) {
 				// check the overlapping of the [thisUpdate, nextUpdate] from the CRL and [notBefore, notAfter] from
 				// the X509Certificate
-				final Date thisUpdate = x509CRL.getThisUpdate();
-				final Date nextUpdate = x509CRL.getNextUpdate();
+				final Date thisUpdate = crlValidity.getThisUpdate();
+				final Date nextUpdate = crlValidity.getNextUpdate();
 				final Date notAfter = certificateToken.getNotAfter();
 				final Date notBefore = certificateToken.getNotBefore();
 				boolean periodAreIntersecting = thisUpdate.before(notAfter) && (nextUpdate != null && nextUpdate.after(notBefore));
@@ -128,33 +137,47 @@ public abstract class OfflineCRLSource implements CRLSource {
 	/**
 	 * This method returns {@code CRLValidity} object based on the given
 	 * {@code X509CRL}. The check of the validity of the CRL is performed.
-	 *
+	 * 
+	 * @param key
+	 *            the key to use in maps
+	 * @param crlBinaries
+	 *            the CRL binaries to be checked
 	 * @param issuerToken
 	 *            {@code CertificateToken} issuer of the CRL
-	 * @param x509CRL
-	 *            {@code X509CRL} the validity to be checked
 	 * @return returns updated {@code CRLValidity} object
 	 */
-	private synchronized CRLValidity getCrlValidity(final CertificateToken issuerToken, final X509CRL x509CRL) {
-
-		CRLValidity crlValidity = crlValidityMap.get(x509CRL);
+	private synchronized CRLValidity getCrlValidity(final String key, final byte[] crlBinaries, final CertificateToken issuerToken) {
+		CRLValidity crlValidity = crlValidityMap.get(key);
 		if (crlValidity == null) {
-
-			crlValidity = CRLUtils.isValidCRL(x509CRL, issuerToken);
-			if (crlValidity.isValid()) {
-
-				crlValidityMap.put(x509CRL, crlValidity);
+			try (InputStream is = new ByteArrayInputStream(crlBinaries)) {
+				crlValidity = CRLUtils.isValidCRL(is, issuerToken);
+				if (crlValidity.isValid()) {
+					crlValidityMap.put(key, crlValidity);
+					// crlsMap.remove(key);
+				}
+			} catch (IOException e) {
+				LOG.error("Unable to parse CRL", e);
 			}
 		}
 		return crlValidity;
 	}
 
 	/**
-	 * @return unmodifiable {@code List} of {@code X509CRL}s
+	 * @return unmodifiable {@code Collection}
 	 */
-	public List<X509CRL> getContainedX509CRLs() {
-
-		final List<X509CRL> x509CRLs = Collections.unmodifiableList(x509CRLList);
-		return x509CRLs;
+	public Collection<byte[]> getContainedX509CRLs() {
+		return Collections.unmodifiableCollection(crlsMap.values());
 	}
+
+	protected void addCRLBinary(byte[] binaries) {
+		String base64Digest = Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, binaries));
+		addCRLBinary(base64Digest, binaries);
+	}
+
+	protected void addCRLBinary(String base64Digest, byte[] binaries) {
+		if (!crlsMap.containsKey(base64Digest) && !crlValidityMap.containsKey(base64Digest)) {
+			crlsMap.put(base64Digest, binaries);
+		}
+	}
+
 }

@@ -20,16 +20,14 @@
  */
 package eu.europa.esig.dss.token;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-import java.security.KeyStore.PrivateKeyEntry;
 import java.security.KeyStore.ProtectionParameter;
 import java.security.KeyStoreSpi;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -41,7 +39,7 @@ import eu.europa.esig.dss.DSSException;
  * Class holding all MS CAPI API access logic.
  *
  */
-public class MSCAPISignatureToken extends AbstractSignatureTokenConnection {
+public class MSCAPISignatureToken extends AbstractKeyStoreTokenConnection {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MSCAPISignatureToken.class);
 
@@ -127,29 +125,21 @@ public class MSCAPISignatureToken extends AbstractSignatureTokenConnection {
 	}
 
 	@Override
-	public List<DSSPrivateKeyEntry> getKeys() throws DSSException {
-
-		List<DSSPrivateKeyEntry> list = new ArrayList<DSSPrivateKeyEntry>();
-
+	KeyStore getKeyStore() throws DSSException {
+		KeyStore keyStore = null;
 		try {
-			ProtectionParameter protectionParameter = new CallbackPasswordProtection(new PrefilledPasswordCallback("nimp".toCharArray()));
-
-			KeyStore keyStore = KeyStore.getInstance("Windows-MY");
+			keyStore = KeyStore.getInstance("Windows-MY");
 			keyStore.load(null, null);
 			_fixAliases(keyStore);
-
-			Enumeration<String> aliases = keyStore.aliases();
-			while (aliases.hasMoreElements()) {
-				String alias = aliases.nextElement();
-				if (keyStore.isKeyEntry(alias)) {
-					PrivateKeyEntry entry = (PrivateKeyEntry) keyStore.getEntry(alias, protectionParameter);
-					list.add(new KSPrivateKeyEntry(alias, entry));
-				}
-			}
-
-		} catch (Exception e) {
-			throw new DSSException(e);
+		} catch (IOException | GeneralSecurityException e) {
+			throw new DSSException("Unable to load MS CAPI keystore", e);
 		}
-		return list;
+		return keyStore;
 	}
+
+	@Override
+	ProtectionParameter getKeyProtectionParameter() {
+		return new CallbackPasswordProtection(new PrefilledPasswordCallback("nimp".toCharArray()));
+	}
+
 }

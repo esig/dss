@@ -103,14 +103,12 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	public CMSSignedDocument extendSignatures(final DSSDocument signatureToExtend, final CAdESSignatureParameters parameters) throws DSSException {
 
 		LOG.info("EXTEND SIGNATURES.");
-		try {
-			final InputStream inputStream = signatureToExtend.openStream();
+		try (InputStream inputStream = signatureToExtend.openStream()) {
 			final CMSSignedData cmsSignedData = new CMSSignedData(inputStream);
-			Utils.closeQuietly(inputStream);
 			final CMSSignedData extendCMSSignedData = extendCMSSignatures(cmsSignedData, parameters);
 			final CMSSignedDocument cmsSignedDocument = new CMSSignedDocument(extendCMSSignedData);
 			return cmsSignedDocument;
-		} catch (CMSException e) {
+		} catch (IOException | CMSException e) {
 			throw new DSSException("Cannot parse CMS data", e);
 		}
 	}
@@ -225,7 +223,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	 * @return
 	 * @throws java.io.IOException
 	 */
-	abstract protected SignerInformation extendCMSSignature(CMSSignedData signedData, SignerInformation signerInformation, CAdESSignatureParameters parameters)
+	protected abstract SignerInformation extendCMSSignature(CMSSignedData signedData, SignerInformation signerInformation, CAdESSignatureParameters parameters)
 			throws DSSException;
 
 	/**
@@ -281,7 +279,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 				LOG.debug("Digested ({}) message in timestamp is {}", new Object[] { timestampDigestAlgorithm, Utils.toHex(messageImprintDigest) });
 			}
 
-			CMSSignedData cmsSignedDataTimeStampToken = new CMSSignedData(timeStampToken.getEncoded());
+			CMSSignedData cmsSignedDataTimeStampToken = timeStampToken.toCMSSignedData();
 
 			// TODO (27/08/2014): attributesForTimestampToken cannot be null: to be modified
 			if (attributesForTimestampToken != null) {
@@ -306,8 +304,6 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 			final byte[] newTimeStampTokenBytes = cmsSignedDataTimeStampToken.getEncoded();
 			return DSSASN1Utils.toASN1Primitive(newTimeStampTokenBytes);
 		} catch (IOException e) {
-			throw new DSSException(e);
-		} catch (CMSException e) {
 			throw new DSSException(e);
 		}
 

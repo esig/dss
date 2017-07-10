@@ -105,10 +105,30 @@
 		        <xsl:apply-templates select="dss:Infos" />
 		        
 		        <dl>
-		    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
-		            <dt>Signed by:</dt>
-		            <dd><xsl:value-of select="dss:SignedBy"/></dd>
-		        </dl>
+	        		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+		            <dt>Certificate Chain:</dt>
+		            <xsl:choose>
+			            <xsl:when test="dss:CertificateChain">
+				            <xsl:for-each select="dss:CertificateChain/dss:Certificate">
+				            	<xsl:variable name="index" select="position()"/>
+				        		<dd>
+			        				<span><xsl:attribute name="class"> glyphicon glyphicon-link</xsl:attribute></span>
+				        			<xsl:choose>
+				        				<xsl:when test="$index = 1">
+				        					<b> <xsl:value-of select="dss:qualifiedName" /></b>
+				        				</xsl:when>
+				        				<xsl:otherwise>
+											<xsl:value-of select="dss:qualifiedName" />				        				
+				        				</xsl:otherwise>
+				        			</xsl:choose>
+			        			</dd>
+				        	</xsl:for-each>
+			        	</xsl:when>
+			        	<xsl:otherwise>
+			        		<dd>/</dd>
+			        	</xsl:otherwise>
+		        	</xsl:choose>
+	        	</dl>
 		        
 		        <dl>
 		    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
@@ -131,7 +151,7 @@
 			            <dd><xsl:value-of select="."/></dd>
 			        </dl>
 		        </xsl:for-each>
-				
+		        
     		</div>
     	</div>
     </xsl:template>

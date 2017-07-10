@@ -99,7 +99,7 @@ import eu.europa.esig.jaxb.xades.ObjectIdentifierType;
  */
 public class TSLParser implements Callable<TSLParserResult> {
 
-	private static final Logger logger = LoggerFactory.getLogger(TSLParser.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TSLParser.class);
 
 	private static final String ENGLISH_LANGUAGE = "en";
 
@@ -282,7 +282,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 					CertificateToken certificate = DSSUtils.loadCertificate(digitalId.getX509Certificate());
 					certificates.add(certificate);
 				} catch (Exception e) {
-					logger.warn("Unable to load certificate : " + e.getMessage(), e);
+					LOG.warn("Unable to load certificate : " + e.getMessage(), e);
 				}
 			}
 		}
@@ -438,9 +438,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 						Object objectValue = jaxbElement.getValue();
 						if (objectValue instanceof XMLGregorianCalendar) {
 							XMLGregorianCalendar calendar = (XMLGregorianCalendar) objectValue;
-							if (calendar != null) {
-								return calendar.toGregorianCalendar().getTime();
-							}
+							return calendar.toGregorianCalendar().getTime();
 						}
 
 					}
@@ -527,7 +525,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 			a = tspInformation.getTSPAddress().getPostalAddresses().getPostalAddress().get(0);
 		}
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (Utils.isStringNotEmpty(a.getStreetAddress())) {
 			sb.append(a.getStreetAddress());
 			sb.append(", ");

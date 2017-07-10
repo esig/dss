@@ -74,9 +74,4 @@ public class OID {
 	 */
 	public static final ASN1ObjectIdentifier id_aa_ATSHashIndex = id_etsi_electronicSignatureStandard_attributes.branch("5");
 
-	/**
-	 * The CRL extension expiredCertOnCRL.
-	 */
-	public static final ASN1ObjectIdentifier id_ce_expiredCertsOnCRL = new ASN1ObjectIdentifier("2.5.29.60");
-
 }

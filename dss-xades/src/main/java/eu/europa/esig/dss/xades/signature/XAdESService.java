@@ -37,6 +37,7 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.ProfileParameters;
@@ -117,7 +118,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		final DSSDocument signedDoc = profile.signDocument(toSignDocument, parameters, signatureValue.getValue());
 		final SignatureExtension<XAdESSignatureParameters> extension = getExtensionProfile(parameters);
 		if (extension != null) {
-			if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
+			if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
 				List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 				detachedContents.add(toSignDocument);
 				parameters.setDetachedContents(detachedContents);
@@ -143,6 +144,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		XAdESSignatureBuilder xadesSignatureBuilder = XAdESSignatureBuilder.getSignatureBuilder(parameters, firstDoc, certificateVerifier);
 		List<DSSReference> references = xadesSignatureBuilder.createReferencesForDocuments(toSignDocuments);
 		parameters.setReferences(references);
+		parameters.setDetachedContents(toSignDocuments);
 		return signDocument(firstDoc, parameters, signatureValue);
 	}
 

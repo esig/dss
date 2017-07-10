@@ -66,7 +66,7 @@ import eu.europa.esig.dss.x509.CertificateToken;
  */
 public class TSLRepository {
 
-	private static final Logger logger = LoggerFactory.getLogger(TSLRepository.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TSLRepository.class);
 
 	private String cacheDirectoryPath = System.getProperty("java.io.tmpdir") + File.separator + "dss-cache-tsl" + File.separator;
 
@@ -100,7 +100,7 @@ public class TSLRepository {
 			Utils.cleanDirectory(new File(cacheDirectoryPath));
 			tsls.clear();
 		} catch (IOException e) {
-			logger.error("Unable to clean cache directory : " + e.getMessage(), e);
+			LOG.error("Unable to clean cache directory : " + e.getMessage(), e);
 		}
 	}
 
@@ -151,7 +151,7 @@ public class TSLRepository {
 		validationModel.setFilepath(storeOnFileSystem(resultLoader.getCountryCode(), resultLoader));
 		validationModel.setCertificateSourceSynchronized(false);
 		tsls.put(resultLoader.getCountryCode(), validationModel);
-		logger.info("New version of " + resultLoader.getCountryCode() + " TSL is stored in cache");
+		LOG.info("New version of " + resultLoader.getCountryCode() + " TSL is stored in cache");
 		return validationModel;
 	}
 
@@ -164,7 +164,7 @@ public class TSLRepository {
 		filename = filename.replaceAll("\\W", "_");
 		validationModel.setFilepath(storeOnFileSystem(filename, resultLoader));
 		pivots.put(resultLoader.getUrl(), validationModel);
-		logger.info("New version of the pivot LOTL '" + resultLoader.getUrl() + "' is stored in cache");
+		LOG.info("New version of the pivot LOTL '" + resultLoader.getUrl() + "' is stored in cache");
 		return validationModel;
 	}
 
@@ -177,7 +177,7 @@ public class TSLRepository {
 			byte[] data = Utils.toByteArray(fis);
 			validationModel.setSha256FileContent(getSHA256(data));
 		} catch (Exception e) {
-			logger.error("Unable to read '" + filePath + "' : " + e.getMessage());
+			LOG.error("Unable to read '" + filePath + "' : " + e.getMessage());
 		}
 		validationModel.setParseResult(tslParserResult);
 		validationModel.setCertificateSourceSynchronized(false);
@@ -246,8 +246,8 @@ public class TSLRepository {
 				trustedListsCertificateSource.updateTlInfo(countryCode, getTlInfo(countryCode, model));
 
 			}
-			logger.info("Nb of loaded trusted lists : " + allMapTSLValidationModels.size());
-			logger.info("Nb of trusted certificates : " + trustedListsCertificateSource.getNumberOfTrustedCertificates());
+			LOG.info("Nb of loaded trusted lists : " + allMapTSLValidationModels.size());
+			LOG.info("Nb of trusted certificates : " + trustedListsCertificateSource.getNumberOfTrustedCertificates());
 		}
 	}
 

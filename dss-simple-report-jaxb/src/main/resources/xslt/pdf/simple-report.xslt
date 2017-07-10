@@ -221,15 +221,23 @@
 					<fo:table-cell>
 						<fo:block>
 							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-							Signed by : 
+  							<xsl:attribute name="font-weight">bold</xsl:attribute>
+							Certificate chain:
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
-						<fo:block>
-							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
-							<xsl:value-of select="dss:SignedBy" />
-						</fo:block>
+						<xsl:choose>
+				            <xsl:when test="dss:CertificateChain">
+					            <xsl:for-each select="dss:CertificateChain/dss:Certificate">
+					        		<fo:block>
+					        			<xsl:value-of select="dss:qualifiedName" />
+					        		</fo:block>	
+					        	</xsl:for-each>
+				        	</xsl:when>
+				        	<xsl:otherwise>
+				        		<fo:block>/</fo:block>
+				        	</xsl:otherwise>
+			        	</xsl:choose>
 					</fo:table-cell>
 				</fo:table-row>
 				
@@ -290,6 +298,7 @@
 						</fo:table-cell>
 					</fo:table-row>
 				</xsl:for-each>
+				
 			</fo:table-body>	
 		</fo:table>
 

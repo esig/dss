@@ -20,21 +20,11 @@
  */
 package eu.europa.esig.dss.client.http.commons;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.BufferedHttpEntity;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +33,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.ResourceLoader;
+import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.Protocol;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -51,7 +42,7 @@ import eu.europa.esig.dss.utils.Utils;
  * {@code java.io.tmpdir}. The urls of the resources is transformed to the
  * file name by replacing the special characters by {@code _}
  */
-public class FileCacheDataLoader extends CommonsDataLoader {
+public class FileCacheDataLoader implements DataLoader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FileCacheDataLoader.class);
 
@@ -64,6 +55,23 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 	private List<String> toIgnored;
 
 	private Long cacheExpirationTime;
+
+	private DataLoader dataLoader;
+
+	public FileCacheDataLoader() {
+	}
+
+	public FileCacheDataLoader(DataLoader dataLoader) {
+		this.dataLoader = dataLoader;
+	}
+
+	public DataLoader getDataLoader() {
+		return dataLoader;
+	}
+
+	public void setDataLoader(DataLoader dataLoader) {
+		this.dataLoader = dataLoader;
+	}
 
 	/**
 	 * This method allows to set the file cache directory. If the cache folder does not exists then it's created.
@@ -164,7 +172,7 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 			bytes = DSSUtils.toByteArray(fileResource);
 		} else {
 
-			bytes = super.get(url);
+			bytes = dataLoader.get(url);
 		}
 		if ((bytes != null) && (bytes.length != 0)) {
 
@@ -264,47 +272,12 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 			return returnedBytes;
 		}
 
-		HttpPost httpRequest = null;
-		HttpResponse httpResponse = null;
-		CloseableHttpClient client = null;
-		try {
+		returnedBytes = dataLoader.post(urlString, content);
 
-			final URI uri = URI.create(urlString.trim());
-			httpRequest = new HttpPost(uri);
+		if (returnedBytes.length != 0) {
 
-			final ByteArrayInputStream bis = new ByteArrayInputStream(content);
-
-			final HttpEntity httpEntity = new InputStreamEntity(bis, content.length);
-			final HttpEntity requestEntity = new BufferedHttpEntity(httpEntity);
-			httpRequest.setEntity(requestEntity);
-			if (contentType != null) {
-				httpRequest.setHeader(CONTENT_TYPE, contentType);
-			}
-
-			client = getHttpClient(urlString);
-			httpResponse = super.getHttpResponse(client, httpRequest, urlString);
-
-			returnedBytes = readHttpResponse(urlString, httpResponse);
-			if (returnedBytes.length != 0) {
-
-				final File cacheFile = getCacheFile(cacheFileName);
-				DSSUtils.saveToFile(returnedBytes, cacheFile);
-			}
-		} catch (IOException e) {
-			throw new DSSException(e);
-		} finally {
-			try {
-				if (httpRequest != null) {
-					httpRequest.releaseConnection();
-				}
-				if (httpResponse != null) {
-					EntityUtils.consumeQuietly(httpResponse.getEntity());
-				}
-			}
-
-			finally {
-				closeClient(client);
-			}
+			final File cacheFile = getCacheFile(cacheFileName);
+			DSSUtils.saveToFile(returnedBytes, cacheFile);
 		}
 		return returnedBytes;
 	}
@@ -322,5 +295,37 @@ public class FileCacheDataLoader extends CommonsDataLoader {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public DataAndUrl get(final List<String> urlStrings) {
+
+		final int numberOfUrls = urlStrings.size();
+		int ii = 0;
+		for (final String urlString : urlStrings) {
+			try {
+
+				ii++;
+				final byte[] bytes = get(urlString);
+				if (bytes == null) {
+					continue;
+				}
+				return new DataAndUrl(bytes, urlString);
+			} catch (Exception e) {
+				if (ii == numberOfUrls) {
+					if (e instanceof DSSException) {
+						throw (DSSException) e;
+					}
+					throw new DSSException(e);
+				}
+				LOG.warn("Impossible to obtain data using {}", urlString, e);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public void setContentType(String contentType) {
+		dataLoader.setContentType(contentType);
 	}
 }

@@ -76,7 +76,7 @@ public class KeyUsageCondition extends Condition {
 			indent = "";
 		}
 		StringBuilder builder = new StringBuilder();
-		builder.append(indent).append("KeyUsageCondition: ").append(bit.name()).append("=").append(value).append('\n');
+		builder.append(indent).append("KeyUsageCondition: ").append(bit.name()).append('=').append(value).append('\n');
 		return builder.toString();
 	}
 

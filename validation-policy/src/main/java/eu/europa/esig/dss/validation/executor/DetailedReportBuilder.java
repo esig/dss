@@ -32,7 +32,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 
 public class DetailedReportBuilder {
 
-	private static final Logger logger = LoggerFactory.getLogger(DetailedReportBuilder.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DetailedReportBuilder.class);
 
 	private final Date currentTime;
 	private final ValidationPolicy policy;
@@ -80,7 +80,7 @@ public class DetailedReportBuilder {
 					QMatrixBlock qmatrix = new QMatrixBlock(conlusion, diagnosticData, policy, currentTime);
 					detailedReport.setQMatrixBlock(qmatrix.execute());
 				} catch (Exception e) {
-					logger.error("Unable to determine the signature qualification", e);
+					LOG.error("Unable to determine the signature qualification", e);
 				}
 			}
 		}

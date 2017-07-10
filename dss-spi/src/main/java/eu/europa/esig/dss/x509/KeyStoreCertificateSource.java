@@ -46,7 +46,7 @@ import eu.europa.esig.dss.utils.Utils;
  */
 public class KeyStoreCertificateSource extends CommonCertificateSource {
 
-	private static final Logger logger = LoggerFactory.getLogger(KeyStoreCertificateSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(KeyStoreCertificateSource.class);
 
 	private KeyStore keyStore;
 	private PasswordProtection passwordProtection;
@@ -207,7 +207,7 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 				Certificate certificate = keyStore.getCertificate(alias);
 				return DSSUtils.loadCertificate(certificate.getEncoded());
 			} else {
-				logger.warn("Certificate '" + alias + "' not found in the keystore");
+				LOG.warn("Certificate '" + alias + "' not found in the keystore");
 				return null;
 			}
 		} catch (GeneralSecurityException e) {
@@ -272,9 +272,9 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 		try {
 			if (keyStore.containsAlias(alias)) {
 				keyStore.deleteEntry(alias);
-				logger.info("Certificate '" + alias + "' successfuly removed from the keystore");
+				LOG.info("Certificate '" + alias + "' successfuly removed from the keystore");
 			} else {
-				logger.warn("Certificate '" + alias + "' not found in the keystore");
+				LOG.warn("Certificate '" + alias + "' not found in the keystore");
 			}
 		} catch (GeneralSecurityException e) {
 			throw new DSSException("Unable to delete certificate from the keystore", e);

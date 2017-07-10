@@ -118,7 +118,7 @@ public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
 	public List<DSSPrivateKeyEntry> getKeys() throws DSSException {
 
 		List<DSSPrivateKeyEntry> list = getKeysSeveralCards();
-		if (list.size() == 0) {
+		if (list.isEmpty()) {
 
 			throw new DSSException("Cannot retrieve keys from the card!");
 		}

@@ -5,11 +5,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
@@ -51,9 +53,20 @@ public class DSSUtilsTest {
 	}
 
 	@Test
+	public void testDontSkipCertificatesWhenMultipleAreFoundInP7c() throws IOException {
+		try {
+			DSSUtils.loadCertificate(new FileInputStream("src/test/resources/certchain.p7c"));
+			fail("Should not load single certificate (first?)");
+		} catch (DSSException dssEx) {
+			assertEquals(dssEx.getMessage(), "Could not parse certificate");
+		}
+	}
+
+	@Test
 	public void testLoadP7cPEM() throws DSSException, IOException {
 		Collection<CertificateToken> certs = DSSUtils.loadCertificateFromP7c(new FileInputStream("src/test/resources/certchain.p7c"));
 		assertTrue(Utils.isCollectionNotEmpty(certs));
+		assertTrue(certs.size() > 1);
 	}
 
 	@Test
@@ -137,19 +150,25 @@ public class DSSUtilsTest {
 		assertTrue(DSSUtils.isPEM(new ByteArrayInputStream(convertCRLToPEM.getBytes())));
 		assertTrue(DSSUtils.isPEM(convertCRLToPEM.getBytes()));
 
-		X509CRL crl2 = DSSUtils.loadCRL(convertCRLToPEM.getBytes());
-		assertEquals(crl, crl2);
+		try (InputStream is = new ByteArrayInputStream(convertCRLToPEM.getBytes())) {
+			X509CRL crl2 = DSSUtils.loadCRL(is);
+			assertEquals(crl, crl2);
+		}
 
 		byte[] convertCRLToDER = DSSUtils.convertCRLToDER(convertCRLToPEM);
-		X509CRL crl3 = DSSUtils.loadCRL(convertCRLToDER);
-		assertEquals(crl, crl3);
+		try (InputStream is = new ByteArrayInputStream(convertCRLToDER)) {
+			X509CRL crl3 = DSSUtils.loadCRL(is);
+			assertEquals(crl, crl3);
+		}
 	}
 
 	@Test
 	public void loadPEMCrl() throws Exception {
 		X509CRL crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/LTRCA.crl"));
 		assertNotNull(crl);
-		assertTrue(DSSUtils.isPEM(new FileInputStream("src/test/resources/crl/LTRCA.crl")));
+		try (InputStream is = new FileInputStream("src/test/resources/crl/LTRCA.crl")) {
+			assertTrue(DSSUtils.isPEM(is));
+		}
 	}
 
 	@Test
