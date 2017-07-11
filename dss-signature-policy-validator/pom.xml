@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+    <artifactId>sd-dss</artifactId>
+    <version>5.2-SNAPSHOT</version>
+  </parent>
+  <artifactId>dss-signature-policy-validator</artifactId>
+  <name>dss-signature-policy-validator</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.bouncycastle</groupId>
+  		<artifactId>bcpkix-jdk15on</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>junit</groupId>
+  		<artifactId>junit</artifactId>
+  		<scope>test</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+  		<artifactId>dss-cades</artifactId>
+  	</dependency>
+  	<dependency>
+  		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+  		<artifactId>dss-utils-google-guava</artifactId>
+  		<scope>test</scope>
+  	</dependency>
+  </dependencies>
+</project>
