@@ -42,6 +42,33 @@ public class SignatureImageParameters {
 	}
 
 	/**
+	 * Rotation support
+	 *
+	 */
+	public enum VisualSignatureRotation {
+		/**
+		 * default, no rotate
+		 */
+		NONE,
+		/**
+		 * automatically rotate
+		 */
+		AUTOMATIC,
+		/**
+		 * rotate by 90
+		 */
+		ROTATE_90,
+		/**
+		 * rotate by 180
+		 */
+		ROTATE_180,
+		/**
+		 * rotate by 270
+		 */
+		ROTATE_270;
+	}
+
+	/**
 	 * This variable contains the image to use (company logo,...)
 	 */
 	private DSSDocument image;
@@ -84,6 +111,11 @@ public class SignatureImageParameters {
 	 * {@link SignatureImageTextParameters.SignerPosition#LEFT LEFT} or {@link SignatureImageTextParameters.SignerPosition#RIGHT RIGHT}
 	 */
 	private SignerTextImageVerticalAlignment signerTextImageVerticalAlignment = SignerTextImageVerticalAlignment.MIDDLE;
+
+    /**
+     * Use rotation on the PDF page, where the visual signature will be
+     */
+	private VisualSignatureRotation rotation;
 
 	/**
 	 * This variable is use to defines the text to generate on the image
@@ -162,4 +194,11 @@ public class SignatureImageParameters {
 		this.textParameters = textParameters;
 	}
 
+    public VisualSignatureRotation getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(VisualSignatureRotation rotation) {
+        this.rotation = rotation;
+    }
 }
