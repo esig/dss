@@ -190,24 +190,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
             if(!SignatureImageParameters.VisualSignatureRotation.NONE.equals(visualSignatureRotation)) {
                 PDPage pdPage = doc.getPages().get(signatureImageParameters.getPage() - 1);
 
-                int rotate = NO_ROTATED;
-
-                switch (visualSignatureRotation) {
-                    case AUTOMATIC:
-                        rotate = NO_ROTATED - pdPage.getRotation();
-                        break;
-                    case ROTATE_90:
-                        rotate = 90;
-                        break;
-                    case ROTATE_180:
-                        rotate = 180;
-                        break;
-                    case ROTATE_270:
-                        rotate = 270;
-                        break;
-                    default:
-                        break;
-                }
+                int rotate = getRotation(visualSignatureRotation, pdPage);
 
                 if(rotate != NO_ROTATED) {
                     visualImageSignature = rotate(visualImageSignature, rotate);
@@ -215,15 +198,12 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
                 switch (rotate) {
                     case 90:
-                        x = pdPage.getMediaBox().getWidth() - ires.toXPoint(visualImageSignature.getWidth())
-                                - signatureImageParameters.getyAxis();
+                        x = pdPage.getMediaBox().getWidth() - ires.toXPoint(visualImageSignature.getWidth()) - signatureImageParameters.getyAxis();
                         y = signatureImageParameters.getxAxis();
                         break;
                     case 180:
-                        x = pdPage.getMediaBox().getWidth() - ires.toXPoint(visualImageSignature.getWidth())
-                                - signatureImageParameters.getxAxis();
-                        y = pdPage.getMediaBox().getHeight() - ires.toYPoint(visualImageSignature.getHeight())
-                                - signatureImageParameters.getyAxis();
+                        x = pdPage.getMediaBox().getWidth() - ires.toXPoint(visualImageSignature.getWidth()) - signatureImageParameters.getxAxis();
+                        y = pdPage.getMediaBox().getHeight() - ires.toYPoint(visualImageSignature.getHeight()) - signatureImageParameters.getyAxis();
                         break;
                     case 270:
                         x = signatureImageParameters.getyAxis();
@@ -257,6 +237,29 @@ class PdfBoxSignatureService implements PDFSignatureService {
             options.setPage(signatureImageParameters.getPage() - 1); // DSS-1138
 		}
 	}
+
+	private int getRotation(SignatureImageParameters.VisualSignatureRotation visualSignatureRotation, PDPage pdPage) {
+        int rotate = NO_ROTATED;
+
+        switch (visualSignatureRotation) {
+            case AUTOMATIC:
+                rotate = NO_ROTATED - pdPage.getRotation();
+                break;
+            case ROTATE_90:
+                rotate = 90;
+                break;
+            case ROTATE_180:
+                rotate = 180;
+                break;
+            case ROTATE_270:
+                rotate = 270;
+                break;
+            default:
+                break;
+        }
+
+        return rotate;
+    }
 
     private static BufferedImage rotate(BufferedImage image, double angle) {
         double sin = Math.abs(Math.sin(Math.toRadians(angle))), cos = Math.abs(Math.cos(Math.toRadians(angle)));
