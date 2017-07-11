@@ -10,8 +10,8 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
@@ -44,7 +44,7 @@ import eu.europa.dss.signature.policy.PolicyConstraints;
 public class ASN1CertificateTrustPoint extends ASN1Object implements CertificateTrustPoint {
 	private X509Certificate trustpoint;
 	private Integer pathLenConstraint;
-	private List<String> acceptablePolicySet;
+	private Set<String> acceptablePolicySet;
 	private NameConstraints nameConstraints;
 	private ASN1PolicyConstraints policyConstraints;
 	
@@ -80,7 +80,7 @@ public class ASN1CertificateTrustPoint extends ASN1Object implements Certificate
 		}
 		
 		if (to.getTagNo() == 1) {
-			acceptablePolicySet = new ArrayList<String>();
+			acceptablePolicySet = new LinkedHashSet<String>();
 			ASN1Sequence seqPol  = ASN1Sequence.getInstance(to.getObject());
 			for (ASN1Encodable asn1Encodable : seqPol) {
 				acceptablePolicySet.add(ASN1ObjectIdentifier.getInstance(asn1Encodable).getId());
@@ -143,7 +143,7 @@ public class ASN1CertificateTrustPoint extends ASN1Object implements Certificate
 	 * @see docusign.signature.policy.asn1.CertificateTrustPoint#getPathLenConstraint()
 	 */
 	@Override
-	public int getPathLenConstraint() {
+	public Integer getPathLenConstraint() {
 		return pathLenConstraint;
 	}
 
@@ -151,7 +151,7 @@ public class ASN1CertificateTrustPoint extends ASN1Object implements Certificate
 	 * @see docusign.signature.policy.asn1.CertificateTrustPoint#getAcceptablePolicySet()
 	 */
 	@Override
-	public List<String> getAcceptablePolicySet() {
+	public Set<String> getAcceptablePolicySet() {
 		return acceptablePolicySet;
 	}
 

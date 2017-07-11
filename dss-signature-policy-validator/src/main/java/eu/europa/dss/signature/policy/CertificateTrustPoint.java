@@ -1,7 +1,7 @@
 package eu.europa.dss.signature.policy;
 
 import java.security.cert.X509Certificate;
-import java.util.List;
+import java.util.Set;
 
 import org.bouncycastle.asn1.x509.NameConstraints;
 
@@ -9,9 +9,9 @@ public interface CertificateTrustPoint {
 
 	X509Certificate getTrustpoint();
 
-	int getPathLenConstraint();
+	Integer getPathLenConstraint();
 
-	List<String> getAcceptablePolicySet();
+	Set<String> getAcceptablePolicySet();
 
 	NameConstraints getNameConstraints();
 

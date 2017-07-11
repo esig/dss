@@ -23,7 +23,7 @@ package eu.europa.dss.signature.policy;
  *
  */
 public enum EnuRevReq {
-	clrCheck,
+	crlCheck,
 	ocspCheck,
 	bothCheck,
 	eitherCheck,
