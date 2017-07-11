@@ -1,27 +1,39 @@
 package eu.europa.dss.signature.policy.validation;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.cert.CertificateFactory;
-import java.security.cert.TrustAnchor;
-import java.security.cert.X509Certificate;
-import java.util.Collections;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.util.Collection;
+import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.util.encoders.Base64;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import eu.europa.dss.signature.policy.CommitmentRule;
+import eu.europa.dss.signature.policy.SigningCertTrustCondition;
 import eu.europa.dss.signature.policy.asn1.ASN1SignaturePolicy;
+import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
+import eu.europa.esig.dss.x509.CertificatePool;
+import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.SignaturePolicy;
 
 public class SignaturePolicyTest {
 	
@@ -30,7 +42,7 @@ public class SignaturePolicyTest {
 
 	
 	@Test
-	public void testReadFullPolicy() throws IOException {
+	public void shouldReadFullPolicy() throws IOException {
 		Path path = Paths.get(new File("src/test/resources/PA_PAdES_AD_RB_v1_0.der").toURI());
 		byte[] policyContents = Files.readAllBytes(path);
 		try (ASN1InputStream is = new ASN1InputStream(policyContents)) {
@@ -40,7 +52,7 @@ public class SignaturePolicyTest {
 	}
 	
 	@Test
-	public void testWriteFullPolicyMatchesReadValue() throws IOException {
+	public void shouldReadValueFullPolicyAndMatchWrittenValue() throws IOException {
 		Path path = Paths.get(new File("src/test/resources/PA_PAdES_AD_RB_v1_0.der").toURI());
 		byte[] policyContents = Files.readAllBytes(path);
 		try (ASN1InputStream is = new ASN1InputStream(policyContents)) {
@@ -56,24 +68,63 @@ public class SignaturePolicyTest {
 	}
 	
 	@Test
-	public void testBuildCertPath() throws Exception {
-		CAdESSignature sig = new CAdESSignature(CMS_SIGNATURE);
+	public void shouldBuildCertPathOfSigningCertWithValidTrustPoint() throws IOException, CMSException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+		Path path = Paths.get(new File("src/test/resources/PA_PAdES_AD_RB_v1_0.der").toURI());
+		byte[] policyContents = Files.readAllBytes(path);
+		SignaturePolicy signaturePolicy;
+		try (ASN1InputStream is = new ASN1InputStream(policyContents)) {
+			ASN1Primitive asn1SP = is.readObject();
+			ASN1SignaturePolicy sigPolicy = ASN1SignaturePolicy.getInstance(asn1SP);
+			signaturePolicy = createSignaturePolicy(policyContents, sigPolicy);
+		}
 		
-		// Emulate DSS cert path building
-		loadIssuers(sig.getSigningCertificateToken(), sig.getCertPool());
-		boolean foundAnchor = false;
-		for(CertificateToken tk = sig.getSigningCertificateToken(); tk != null; tk = tk.getIssuerToken()) {
-			if (tk.isSelfSigned()) {
-				foundAnchor = true;
-				break;
+		CAdESSignature sig = new CAdESSignature(CMS_SIGNATURE);
+		emulateDSSCertPathLoading(sig);
+		FullCAdESSignaturePolicyValidator validator = Mockito.spy(new FullCAdESSignaturePolicyValidator(null, sig));
+		Mockito.doReturn(signaturePolicy).when(validator).getSignaturePolicy();
+		CommitmentRule commitmentRule = validator.findCommitmentRule(sig.getCommitmentTypeIndication() == null? null: sig.getCommitmentTypeIndication().getIdentifiers());
+		SigningCertTrustCondition signingCertTrustCondition = commitmentRule.getSigningCertTrustCondition();
+		List<? extends Certificate> trustedChain = validator.validateCertTrustContition("signingCertTrustCondition", sig.getSigningCertificateToken(), signingCertTrustCondition.getSignerTrustTrees(), signingCertTrustCondition.getSignerRevReq());
+		Assert.assertFalse("CertPath is empty", trustedChain.isEmpty());
+	}
+
+	private SignaturePolicy createSignaturePolicy(byte[] policyContents, ASN1SignaturePolicy sigPolicy) {
+		SignaturePolicy signaturePolicy;
+		signaturePolicy = new SignaturePolicy(sigPolicy.getSignPolicyInfo().getSignPolicyIdentifier());
+		signaturePolicy.setDigestValue(DatatypeConverter.printBase64Binary(sigPolicy.getSignPolicyHash()));
+		signaturePolicy.setDigestAlgorithm(DigestAlgorithm.forOID(sigPolicy.getSignPolicyHashAlg().getAlgorithm().getId()));
+		signaturePolicy.setPolicyContent(new InMemoryDocument(policyContents));
+		return signaturePolicy;
+	}
+
+	private void emulateDSSCertPathLoading(CAdESSignature sig) {
+		loadIssuers(null, sig.getSigningCertificateToken(), sig.getCertPool());
+	}
+
+	private void loadIssuers(DataLoader loader, CertificateToken signingCertificateToken, CertificatePool certPool) {
+		loader = loader == null? new NativeHTTPDataLoader(): loader;
+		Collection<CertificateToken> issuerCertificates = DSSUtils.loadIssuerCertificates(signingCertificateToken, loader);
+		for (CertificateToken certificateToken : issuerCertificates) {
+			certPool.getInstance(certificateToken, CertificateSourceType.AIA);
+		}
+
+		for (CertificateToken certificateToken : issuerCertificates) {
+			if (certificateToken.isSelfSigned() || certificateToken.getIssuerToken() != null) {
+				continue;
+			}
+
+			// Checks if the issuer's issuer cert
+			boolean foundIssuer = false;
+			List<CertificateToken> list = certPool.get(certificateToken.getIssuerX500Principal());
+			for (CertificateToken possibleIssuer : list) {
+				foundIssuer = certificateToken.isSignedBy(possibleIssuer);
+				if (foundIssuer) {
+					break;
+				}
+			}
+			if (!foundIssuer) {
+				loadIssuers(loader, certificateToken, certPool);
 			}
 		}
-		Assert.assertTrue(foundAnchor);
-
-		sig = new CAdESSignature(CMS_SIGNATURE, sig.getCertPool());
-		X509Certificate trustedCert = (X509Certificate) CertificateFactory.getInstance("X509").generateCertificate(new ByteArrayInputStream(CMS_SIGNATURE_ROOT));
-		FullCAdESSignaturePolicyValidator.getCertificateFullPath(
-				sig.getSigningCertificateToken(), 
-				Collections.singleton(new TrustAnchor(trustedCert, null)));
 	}
 }
