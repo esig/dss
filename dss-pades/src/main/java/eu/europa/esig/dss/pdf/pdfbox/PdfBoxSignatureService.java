@@ -68,7 +68,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -193,7 +192,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
                 int rotate = getRotation(visualSignatureRotation, pdPage);
 
                 if(rotate != NO_ROTATED) {
-                    visualImageSignature = rotate(visualImageSignature, rotate);
+                    visualImageSignature = ImageUtils.rotate(visualImageSignature, rotate);
                 }
 
                 switch (rotate) {
@@ -261,25 +260,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
         return rotate;
     }
 
-    private static BufferedImage rotate(BufferedImage image, double angle) {
-        double sin = Math.abs(Math.sin(Math.toRadians(angle))), cos = Math.abs(Math.cos(Math.toRadians(angle)));
-
-        int w = image.getWidth(null), h = image.getHeight(null);
-
-        int neww = (int) Math.floor(w * cos + h * sin), newh = (int) Math.floor(h * cos + w * sin);
-
-        BufferedImage result = new BufferedImage(neww, newh, image.getType());
-        Graphics2D g = result.createGraphics();
-
-        g.translate((neww - w) / 2, (newh - h) / 2);
-        g.rotate(Math.toRadians(angle), w / 2, h / 2);
-        g.drawRenderedImage(image, null);
-        g.dispose();
-
-        return result;
-    }
-
-	private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters, PDDocument pdDocument) {
+    private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters, PDDocument pdDocument) {
 
 		PDSignature signature;
 		if ((parameters.getSignatureFieldId() != null) && (!parameters.getSignatureFieldId().isEmpty())) {
