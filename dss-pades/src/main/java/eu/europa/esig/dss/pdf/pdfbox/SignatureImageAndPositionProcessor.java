@@ -14,7 +14,10 @@ import java.io.IOException;
 
 public class SignatureImageAndPositionProcessor {
 
-    private static final int NO_ROTATED = 360;
+    private static final int ANGLE_360 = 360;
+    private static final int ANGLE_90 = 90;
+    private static final int ANGLE_180 = 180;
+    private static final int ANGLE_270 = 270;
 
     public static final SignatureImageAndPosition process(final SignatureImageParameters signatureImageParameters, final PDDocument doc, final ImageAndResolution ires) throws IOException {
         SignatureImageParameters.VisualSignatureRotation visualSignatureRotation = signatureImageParameters.getRotation();
@@ -31,25 +34,28 @@ public class SignatureImageAndPositionProcessor {
 
             int rotate = getRotation(visualSignatureRotation, pdPage);
 
-            if(rotate != NO_ROTATED) {
+            if(rotate != ANGLE_360) {
                 visualImageSignature = ImageUtils.rotate(visualImageSignature, rotate);
             }
 
             switch (rotate) {
-                case 90:
+                case ANGLE_90:
                     x = pdPage.getMediaBox().getWidth() - ires.toXPoint(visualImageSignature.getWidth()) - signatureImageParameters.getyAxis();
                     y = signatureImageParameters.getxAxis();
                     break;
-                case 180:
+                case ANGLE_180:
                     x = pdPage.getMediaBox().getWidth() - ires.toXPoint(visualImageSignature.getWidth()) - signatureImageParameters.getxAxis();
                     y = pdPage.getMediaBox().getHeight() - ires.toYPoint(visualImageSignature.getHeight()) - signatureImageParameters.getyAxis();
                     break;
-                case 270:
+                case ANGLE_270:
                     x = signatureImageParameters.getyAxis();
                     y = pdPage.getMediaBox().getHeight() - ires.toYPoint(visualImageSignature.getHeight()) - signatureImageParameters.getxAxis();
                     break;
-                default:
+                case ANGLE_360:
+                    //do nothing
                     break;
+                default:
+                    throw new IllegalStateException("rotation angle must be 90, 180, 270 or 360 (0)");
             }
         }
 
@@ -64,20 +70,20 @@ public class SignatureImageAndPositionProcessor {
     }
 
     private static int getRotation(SignatureImageParameters.VisualSignatureRotation visualSignatureRotation, PDPage pdPage) {
-        int rotate = NO_ROTATED;
+        int rotate = ANGLE_360;
 
         switch (visualSignatureRotation) {
             case AUTOMATIC:
-                rotate = NO_ROTATED - pdPage.getRotation();
+                rotate = ANGLE_360 - pdPage.getRotation();
                 break;
             case ROTATE_90:
-                rotate = 90;
+                rotate = ANGLE_90;
                 break;
             case ROTATE_180:
-                rotate = 180;
+                rotate = ANGLE_180;
                 break;
             case ROTATE_270:
-                rotate = 270;
+                rotate = ANGLE_270;
                 break;
             default:
                 break;
