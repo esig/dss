@@ -186,7 +186,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
             float x = signatureImageParameters.getxAxis();
             float y = signatureImageParameters.getyAxis();
 
-            if(!SignatureImageParameters.VisualSignatureRotation.NONE.equals(visualSignatureRotation)) {
+            if(visualSignatureRotation != null && !SignatureImageParameters.VisualSignatureRotation.NONE.equals(visualSignatureRotation)) {
                 PDPage pdPage = doc.getPages().get(signatureImageParameters.getPage() - 1);
 
                 int rotate = getRotation(visualSignatureRotation, pdPage);
