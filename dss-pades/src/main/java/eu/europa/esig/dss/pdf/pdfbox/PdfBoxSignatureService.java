@@ -29,6 +29,7 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
+import eu.europa.esig.dss.pades.SignatureImageAndPosition;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.signature.visible.ImageAndResolution;
 import eu.europa.esig.dss.pades.signature.visible.ImageUtils;
@@ -67,8 +68,6 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -89,8 +88,6 @@ import java.util.Set;
 class PdfBoxSignatureService implements PDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxSignatureService.class);
-
-	private static final int NO_ROTATED = 360;
 
 	@Override
 	public byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm)
@@ -177,53 +174,12 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			// DSS-747. Using the DPI resolution to convert java size to dot
 			ImageAndResolution ires = ImageUtils.create(signatureImageParameters);
 
-            SignatureImageParameters.VisualSignatureRotation visualSignatureRotation = signatureImageParameters.getRotation();
-            if(visualSignatureRotation == null) {
-                visualSignatureRotation = SignatureImageParameters.VisualSignatureRotation.NONE;
-            }
+			SignatureImageAndPosition signatureImageAndPosition = SignatureImageAndPositionProcessor.process(signatureImageParameters, doc, ires);
 
-            BufferedImage visualImageSignature = ImageIO.read(ires.getInputStream());
-            float x = signatureImageParameters.getxAxis();
-            float y = signatureImageParameters.getyAxis();
+            PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(doc, new ByteArrayInputStream(signatureImageAndPosition.getSignatureImage()), signatureImageParameters.getPage());
 
-            if(visualSignatureRotation != null && !SignatureImageParameters.VisualSignatureRotation.NONE.equals(visualSignatureRotation)) {
-                PDPage pdPage = doc.getPages().get(signatureImageParameters.getPage() - 1);
-
-                int rotate = getRotation(visualSignatureRotation, pdPage);
-
-                if(rotate != NO_ROTATED) {
-                    visualImageSignature = ImageUtils.rotate(visualImageSignature, rotate);
-                }
-
-                switch (rotate) {
-                    case 90:
-                        x = pdPage.getMediaBox().getWidth() - ires.toXPoint(visualImageSignature.getWidth()) - signatureImageParameters.getyAxis();
-                        y = signatureImageParameters.getxAxis();
-                        break;
-                    case 180:
-                        x = pdPage.getMediaBox().getWidth() - ires.toXPoint(visualImageSignature.getWidth()) - signatureImageParameters.getxAxis();
-                        y = pdPage.getMediaBox().getHeight() - ires.toYPoint(visualImageSignature.getHeight()) - signatureImageParameters.getyAxis();
-                        break;
-                    case 270:
-                        x = signatureImageParameters.getyAxis();
-                        y = pdPage.getMediaBox().getHeight() - ires.toYPoint(visualImageSignature.getHeight()) - signatureImageParameters.getxAxis();
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            ByteArrayOutputStream visualImageSignatureOutputStream = new ByteArrayOutputStream();
-            String imageType = "jpg";
-            if(visualImageSignature.getColorModel().hasAlpha()) {
-                imageType = "png";
-            }
-            ImageIO.write(visualImageSignature, imageType, visualImageSignatureOutputStream);
-
-            PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(doc, new ByteArrayInputStream(visualImageSignatureOutputStream.toByteArray()), signatureImageParameters.getPage());
-
-            visibleSig.xAxis(x);
-            visibleSig.yAxis(y);
+            visibleSig.xAxis(signatureImageAndPosition.getX());
+            visibleSig.yAxis(signatureImageAndPosition.getY());
 
             visibleSig.width(ires.toXPoint(visibleSig.getWidth()));
             visibleSig.height(ires.toYPoint(visibleSig.getHeight()));
@@ -236,29 +192,6 @@ class PdfBoxSignatureService implements PDFSignatureService {
             options.setPage(signatureImageParameters.getPage() - 1); // DSS-1138
 		}
 	}
-
-	private int getRotation(SignatureImageParameters.VisualSignatureRotation visualSignatureRotation, PDPage pdPage) {
-        int rotate = NO_ROTATED;
-
-        switch (visualSignatureRotation) {
-            case AUTOMATIC:
-                rotate = NO_ROTATED - pdPage.getRotation();
-                break;
-            case ROTATE_90:
-                rotate = 90;
-                break;
-            case ROTATE_180:
-                rotate = 180;
-                break;
-            case ROTATE_270:
-                rotate = 270;
-                break;
-            default:
-                break;
-        }
-
-        return rotate;
-    }
 
     private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters, PDDocument pdDocument) {
 
