@@ -42,6 +42,51 @@ public class SignatureImageParameters {
 	}
 
 	/**
+	 * Visual signature horizontal position on the pdf page
+	 */
+	public enum VisualSignatureAlignmentHorizontal {
+		/**
+		 * default, x axis is the x coordinate
+		 */
+		NONE,
+		/**
+		 * x axis is left padding
+		 */
+		LEFT,
+		/**
+		 * x axis automatically calculated
+		 */
+		CENTER,
+		/**
+		 * x axis is right padding
+		 */
+		RIGHT;
+	}
+
+	/**
+	 * Aláírás képi megjelenítésének pozícióit tartalmazó enum
+	 *
+	 */
+	public enum VisualSignatureAlignmentVertical {
+		/**
+		 * default, y axis is the y coordinate
+		 */
+		NONE,
+		/**
+		 * y axis is the top padding
+		 */
+		TOP,
+		/**
+		 * y axis automatically calculated
+		 */
+		MIDDLE,
+		/**
+		 * y axis is the botton padding
+		 */
+		BOTTON;
+	}
+
+	/**
 	 * Rotation support
 	 *
 	 */
@@ -112,10 +157,20 @@ public class SignatureImageParameters {
 	 */
 	private SignerTextImageVerticalAlignment signerTextImageVerticalAlignment = SignerTextImageVerticalAlignment.MIDDLE;
 
-    /**
-     * Use rotation on the PDF page, where the visual signature will be
-     */
+	/**
+	 * Use rotation on the PDF page, where the visual signature will be
+	 */
 	private VisualSignatureRotation rotation;
+
+	/**
+	 * Horizontal alignment of the visual signature on the pdf page
+	 */
+	private VisualSignatureAlignmentHorizontal alignmentHorizontal;
+
+	/**
+	 * Vertical alignment of the visual signature on the pdf page
+	 */
+	private VisualSignatureAlignmentVertical alignmentVertical;
 
 	/**
 	 * This variable is use to defines the text to generate on the image
@@ -162,21 +217,21 @@ public class SignatureImageParameters {
 		this.page = page;
 	}
 
-    public Color getBackgroundColor() {
-        return backgroundColor;
-    }
+	public Color getBackgroundColor() {
+		return backgroundColor;
+	}
 
-    public void setBackgroundColor(Color backgroundColor) {
-        this.backgroundColor = backgroundColor;
-    }
+	public void setBackgroundColor(Color backgroundColor) {
+		this.backgroundColor = backgroundColor;
+	}
 
-    public Integer getDpi() {
-        return dpi;
-    }
+	public Integer getDpi() {
+		return dpi;
+	}
 
-    public void setDpi(Integer dpi) {
-        this.dpi = dpi;
-    }
+	public void setDpi(Integer dpi) {
+		this.dpi = dpi;
+	}
 
 	public SignerTextImageVerticalAlignment getSignerTextImageVerticalAlignment() {
 		return signerTextImageVerticalAlignment;
@@ -194,11 +249,27 @@ public class SignatureImageParameters {
 		this.textParameters = textParameters;
 	}
 
-    public VisualSignatureRotation getRotation() {
-        return rotation;
-    }
+	public VisualSignatureRotation getRotation() {
+		return rotation;
+	}
 
-    public void setRotation(VisualSignatureRotation rotation) {
-        this.rotation = rotation;
-    }
+	public void setRotation(VisualSignatureRotation rotation) {
+		this.rotation = rotation;
+	}
+
+	public VisualSignatureAlignmentHorizontal getAlignmentHorizontal() {
+		return alignmentHorizontal;
+	}
+
+	public void setAlignmentHorizontal(VisualSignatureAlignmentHorizontal alignmentHorizontal) {
+		this.alignmentHorizontal = alignmentHorizontal;
+	}
+
+	public VisualSignatureAlignmentVertical getAlignmentVertical() {
+		return alignmentVertical;
+	}
+
+	public void setAlignmentVertical(VisualSignatureAlignmentVertical alignmentVertical) {
+		this.alignmentVertical = alignmentVertical;
+	}
 }
