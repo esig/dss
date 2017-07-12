@@ -67,6 +67,7 @@ public class SignaturePolicyTest {
 		}
 	}
 	
+	/*
 	@Test
 	public void shouldBuildCertPathOfSigningCertWithValidTrustPoint() throws IOException, CMSException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
 		Path path = Paths.get(new File("src/test/resources/PA_PAdES_AD_RB_v1_0.der").toURI());
@@ -126,5 +127,5 @@ public class SignaturePolicyTest {
 				loadIssuers(loader, certificateToken, certPool);
 			}
 		}
-	}
+	}*/
 }

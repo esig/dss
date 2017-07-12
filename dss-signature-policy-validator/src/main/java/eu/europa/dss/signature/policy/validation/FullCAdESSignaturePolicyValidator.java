@@ -4,22 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.cert.CertPath;
-import java.security.cert.CertPathBuilder;
-import java.security.cert.CertPathBuilderException;
-import java.security.cert.CertPathBuilderResult;
 import java.security.cert.CertStore;
-import java.security.cert.Certificate;
-import java.security.cert.CollectionCertStoreParameters;
-import java.security.cert.PKIXBuilderParameters;
-import java.security.cert.TrustAnchor;
-import java.security.cert.X509CertSelector;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,19 +29,15 @@ import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.dss.signature.policy.CertInfoReq;
 import eu.europa.dss.signature.policy.CertRefReq;
-import eu.europa.dss.signature.policy.CertRevReq;
 import eu.europa.dss.signature.policy.CertificateTrustPoint;
 import eu.europa.dss.signature.policy.CertificateTrustTrees;
 import eu.europa.dss.signature.policy.CommitmentRule;
-import eu.europa.dss.signature.policy.EnuRevReq;
-import eu.europa.dss.signature.policy.RevReq;
 import eu.europa.dss.signature.policy.SignaturePolicy;
 import eu.europa.dss.signature.policy.SignatureValidationPolicy;
 import eu.europa.dss.signature.policy.SignerAndVerifierRules;
@@ -64,13 +51,18 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.x509.CertificateToken;
 
+/**
+ * SignaturePolicy validation consists in matching the commitment rules with the given CMS blob
+ * @author davyd.santos
+ *
+ */
 public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicyValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FullCAdESSignaturePolicyValidator.class);
 
 	private Map<String, String> errors = new HashMap<String, String>();
 	
-	private List<? extends Certificate> signerCertPath = null;
+	private List<CertificateToken> signerCertPath = null;
 
 	public FullCAdESSignaturePolicyValidator(SignaturePolicyProvider signaturePolicyProvider, CAdESSignature sig) {
 		super(signaturePolicyProvider, sig);
@@ -82,6 +74,8 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 		// the declared attribute and the value in the policy itself
 		errors.putAll(super.validate());
 		
+		// TODO IMPLICIT POLICY
+		// TODO Skip non processable ASN1
 		if (getSignaturePolicy() != null && getSignaturePolicy().getPolicyContent() != null) {
 			validateSignaturePolicyCommitmentRules();
 		}
@@ -116,136 +110,52 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 	 * No explicit signature police was declared upon signing.
 	 */
 	private void validateSignaturePolicyCommitmentRules() {
-		CommitmentRule cmmtRule = findCommitmentRule(cadesSignature.getCommitmentTypeIndication() == null? null: cadesSignature.getCommitmentTypeIndication().getIdentifiers());
+		Set<CommitmentRule> cmmtRules = findCommitmentRule(cadesSignature.getCommitmentTypeIndication() == null? null: cadesSignature.getCommitmentTypeIndication().getIdentifiers());
 		
-		validateSigningCertTrustContition(cmmtRule.getSigningCertTrustCondition());
-		validateSignerAndVeriferRules(cmmtRule.getSignerAndVeriferRules());
+		//TODO do I have to validate all or if one matches is enough?
+		for (CommitmentRule cmmtRule : cmmtRules) {
+			validateSigningCertTrustContition(cmmtRule.getSigningCertTrustCondition());
+			// TimestampTrustCondition 
+			// AttributeTrustCondition
+			// AlgorithmConstraintSet
+			validateSignerAndVeriferRules(cmmtRule.getSignerAndVeriferRules());
+		}
 	}
 
 	private void validateSigningCertTrustContition(SigningCertTrustCondition signingCertTrustCondition) {
+		RevReqValidator revReqValidator = new RevReqValidator(signingCertTrustCondition.getSignerRevReq().getEndCertRevReq(), cadesSignature.getSigningCertificateToken());
+		if (!revReqValidator.validate()) {
+			errors.put("signingCertTrustCondition.signerRevReq.endCertRevReq", "End certificate is revoked");
+		}
 		try {
-			signerCertPath = validateCertTrustContition("signingCertTrustCondition", cadesSignature.getSigningCertificateToken(), signingCertTrustCondition.getSignerTrustTrees(), signingCertTrustCondition.getSignerRevReq());
+			signerCertPath = validateCertTrustContition("signingCertTrustCondition", cadesSignature.getSigningCertificateToken(), signingCertTrustCondition.getSignerTrustTrees());
+
+			for (CertificateToken certificate : signerCertPath) {
+				revReqValidator = new RevReqValidator(signingCertTrustCondition.getSignerRevReq().getCaCerts(), certificate);
+				if (!revReqValidator.validate()) {
+					errors.put("signingCertTrustCondition.signerRevReq.endCertRevReq", "One of the CA certificates is revoked");
+					break;
+				}
+			}
 		} catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | IOException e) {
 			errors.put("signingCertTrustCondition", "unexpected error");
 			LOG.warn("Error on validating signingCertTrustCondition", e);
 		}
 	}
-	
-	protected List<? extends Certificate> validateCertTrustContition(String label, CertificateToken certificate, CertificateTrustTrees certificateTrustTrees, CertRevReq certRevReq) throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
-		List<X509Certificate> interCerts = new ArrayList<X509Certificate>();
-		if(isRevoked(certificate.getCertificate(), certRevReq.getEndCertRevReq())) {
-			errors.put(label + ".certRevReq.endCertRevReq", "the endCert is revoked");
-		}
-		interCerts.add(certificate.getCertificate());
-		for(CertificateToken issuerToken = certificate.getIssuerToken(); issuerToken != null; issuerToken = issuerToken.getIssuerToken()) {
-			if (!issuerToken.isSelfSigned())
-				interCerts.add(issuerToken.getCertificate());
-		}
-		if (certificateTrustTrees == null || certificateTrustTrees.getCertificateTrustPoints() == null) {
-			return interCerts;
+
+	protected List<CertificateToken> validateCertTrustContition(String label, CertificateToken certificate, CertificateTrustTrees certificateTrustTrees) throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+		if (certificateTrustTrees == null || certificateTrustTrees.getCertificateTrustPoints().isEmpty()) {
+			return CertificateTrustPointValidator.buildKnownChain(certificate);
 		}
 		
-		CertStore store = CertStore.getInstance("Collection", new CollectionCertStoreParameters(interCerts));
+		CertStore certStore = CertificateTrustPointValidator.buildCertStore(certificate);
 		for (CertificateTrustPoint trustPoint : certificateTrustTrees.getCertificateTrustPoints()) {
-			try {
-				CertPathBuilderResult build = buildCertPath(store, trustPoint);
-				CertPath certPath = build.getCertPath();
-				List<? extends Certificate> chainCertificates = certPath.getCertificates();
-				if (!chainCertificates.isEmpty()) {
-					for (Certificate chainCertificate : chainCertificates) {
-						if (chainCertificate.equals(certificate.getCertificate())) {
-							// ignoring end cert
-							continue;
-						}
-						
-						if (isRevoked((X509Certificate) chainCertificate, certRevReq.getCaCerts())) {
-							errors.put(label + ".certRevReq.cacerts", "At least one of the CA certificates is revoked");
-							break;
-						}
-					}
-					
-					return chainCertificates;
-				}
-			} catch (Exception e) {
-				LOG.debug("Error on validating certTrustCondition", e);
+			CertificateTrustPointValidator trustPointValidator = new CertificateTrustPointValidator(cadesSignature.getCertPool(), certStore, trustPoint);
+			if (trustPointValidator.validate()) {
+				return trustPointValidator.getChainCertificates();
 			}
 		}
 		return Collections.emptyList();
-	}
-
-	private CertPathBuilderResult buildCertPath(CertStore store, CertificateTrustPoint trustPoint)
-			throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException,
-			CertPathBuilderException {
-		X509CertSelector certSelector = new X509CertSelector();
-		Set<TrustAnchor> trustPoints = Collections.singleton(new TrustAnchor(trustPoint.getTrustpoint(), trustPoint.getNameConstraints() == null? null: trustPoint.getNameConstraints().getEncoded()));
-		certSelector.setPolicy(trustPoint.getAcceptablePolicySet());
-		PKIXBuilderParameters buildParams = new PKIXBuilderParameters(trustPoints, certSelector);
-		buildParams.setRevocationEnabled(false);
-		buildParams.addCertStore(store);
-		buildParams.setMaxPathLength(trustPoint.getPathLenConstraint() == null? 0: trustPoint.getPathLenConstraint());
-		if (trustPoint.getPolicyConstraints() != null) {
-			// TODO Add processing for other values
-			if (trustPoint.getPolicyConstraints().getRequireExplicitPolicy() != null && trustPoint.getPolicyConstraints().getRequireExplicitPolicy() == 0) {
-				buildParams.setExplicitPolicyRequired(true);
-			}
-			// TODO Improve processing for other values
-			if (trustPoint.getPolicyConstraints().getInhibitPolicyMapping() != null && trustPoint.getPolicyConstraints().getInhibitPolicyMapping() == 0) {
-				buildParams.setPolicyMappingInhibited(true);
-			}
-		}
-
-		CertPathBuilder pathBuilder = CertPathBuilder.getInstance("PKIX", BouncyCastleProvider.PROVIDER_NAME);
-		CertPathBuilderResult build = pathBuilder.build(buildParams);
-		return build;
-	}
-
-	private boolean isRevoked(X509Certificate certificate, RevReq revReq) {
-		if (revReq.getEnuRevReq() == EnuRevReq.noCheck) {
-			return true;
-		}
-		if (revReq.getEnuRevReq() == EnuRevReq.other) {
-			// Only CRL/OCSP are supported
-			return false;
-		}
-		
-		if (revReq.getEnuRevReq() != EnuRevReq.ocspCheck) {
-			try {
-				if (isRevokedOcsp(certificate)) {
-					return true;
-				}
-				
-				if (revReq.getEnuRevReq() == EnuRevReq.eitherCheck) {
-					return false;
-				}
-			} catch (Exception e) {
-				LOG.debug("Unexpected error while checking OCSP", e);
-				if (revReq.getEnuRevReq() != EnuRevReq.bothCheck) {
-					return true;
-				}
-			}
-		}
-
-		if (revReq.getEnuRevReq() != EnuRevReq.crlCheck) {
-			try {
-				if (isRevokedCrl(certificate)) {
-					return true;
-				}
-			} catch (Exception e) {
-				LOG.debug("Unexpected error while checking CRL", e);
-			}
-		}
-		
-		return false;
-	}
-
-	private boolean isRevokedOcsp(X509Certificate certificate) {
-		// TODO Check existing revoked information before downloading
-		return false;
-	}
-
-	private boolean isRevokedCrl(X509Certificate certificate) {
-		// TODO Check existing revoked information before downloading
-		return false;
 	}
 
 	private void validateSignerAndVeriferRules(SignerAndVerifierRules signerAndVeriferRules) {
@@ -435,8 +345,8 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 			return false;
 		}
 		
-		for (Certificate cert : signerCertPath) {
-			if (!certificates.contains(new CertificateToken((X509Certificate) cert))) {
+		for (CertificateToken cert : signerCertPath) {
+			if (!certificates.contains(cert)) {
 				return false;
 			}
 		}
@@ -444,27 +354,31 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 		return true;
 	}
 
-	public CommitmentRule findCommitmentRule(List<String> identifiers) {
+	public Set<CommitmentRule> findCommitmentRule(List<String> identifiers) {
+		Set<CommitmentRule> commtRules = new LinkedHashSet<CommitmentRule>();
 		SignatureValidationPolicy signatureValidationPolicy = getSignatureValidationPolicy();
 		for (CommitmentRule cmmtRule : signatureValidationPolicy.getCommitmentRules()) {
 			if (identifiers == null || identifiers.isEmpty()) {
 				if (cmmtRule.getSelCommitmentTypes().contains(null)) {
-					return new CommitmentRuleWrapper(cmmtRule, signatureValidationPolicy.getCommonRules()) ;
+					commtRules.add(new CommitmentRuleWrapper(cmmtRule, signatureValidationPolicy.getCommonRules()));
 				}
 			} else {
 				for (String oid : identifiers) {
 					if (cmmtRule.getSelCommitmentTypes().contains(oid)) {
-						return new CommitmentRuleWrapper(cmmtRule, signatureValidationPolicy.getCommonRules()); 
+						commtRules.add(new CommitmentRuleWrapper(cmmtRule, signatureValidationPolicy.getCommonRules())); 
 					}
 				}
 			}
 		}
 		
-		// RFC 3125
-		// "... the electronic signature must contain a commitment type indication
-		// that must fit one of the commitments types that are mentioned in
-		// CommitmentType."
-		throw new DSSException("The commitment type used was not found");
+		if (commtRules.isEmpty()) {
+			// RFC 3125
+			// "... the electronic signature must contain a commitment type indication
+			// that must fit one of the commitments types that are mentioned in
+			// CommitmentType."
+			throw new DSSException("The commitment type used was not found");
+		}
+		return commtRules;
 	}
 
 	public SignatureValidationPolicy getSignatureValidationPolicy() {
