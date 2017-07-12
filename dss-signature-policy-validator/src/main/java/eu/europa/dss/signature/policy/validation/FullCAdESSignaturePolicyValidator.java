@@ -5,9 +5,6 @@ import java.io.InputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertStore;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -15,21 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.cms.Attribute;
-import org.bouncycastle.asn1.cms.AttributeTable;
-import org.bouncycastle.asn1.ess.ESSCertID;
-import org.bouncycastle.asn1.ess.ESSCertIDv2;
-import org.bouncycastle.asn1.ess.SigningCertificate;
-import org.bouncycastle.asn1.ess.SigningCertificateV2;
-import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
-import org.bouncycastle.asn1.x509.GeneralNames;
-import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,9 +28,9 @@ import eu.europa.dss.signature.policy.SignatureValidationPolicy;
 import eu.europa.dss.signature.policy.SignerAndVerifierRules;
 import eu.europa.dss.signature.policy.SignerRules;
 import eu.europa.dss.signature.policy.SigningCertTrustCondition;
+import eu.europa.dss.signature.policy.VerifierRules;
 import eu.europa.dss.signature.policy.asn1.ASN1SignaturePolicy;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
@@ -128,7 +113,10 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 			errors.put("signingCertTrustCondition.signerRevReq.endCertRevReq", "End certificate is revoked");
 		}
 		try {
-			signerCertPath = validateCertTrustContition("signingCertTrustCondition", cadesSignature.getSigningCertificateToken(), signingCertTrustCondition.getSignerTrustTrees());
+			signerCertPath = buildTrustedCertificationPath(cadesSignature.getSigningCertificateToken(), signingCertTrustCondition.getSignerTrustTrees());
+			if (signerCertPath.isEmpty()) {
+				errors.put("signingCertTrustCondition.signerTrustTrees", "Could not build certification path to a trust point");
+			}
 
 			for (CertificateToken certificate : signerCertPath) {
 				revReqValidator = new RevReqValidator(signingCertTrustCondition.getSignerRevReq().getCaCerts(), certificate);
@@ -143,7 +131,7 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 		}
 	}
 
-	protected List<CertificateToken> validateCertTrustContition(String label, CertificateToken certificate, CertificateTrustTrees certificateTrustTrees) throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+	private List<CertificateToken> buildTrustedCertificationPath(CertificateToken certificate, CertificateTrustTrees certificateTrustTrees) throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
 		if (certificateTrustTrees == null || certificateTrustTrees.getCertificateTrustPoints().isEmpty()) {
 			return CertificateTrustPointValidator.buildKnownChain(certificate);
 		}
@@ -160,198 +148,66 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 
 	private void validateSignerAndVeriferRules(SignerAndVerifierRules signerAndVeriferRules) {
 		SignerRules signerRules = signerAndVeriferRules.getSignerRules();
-		
 		validateSignerRules(signerRules);
+		
+		VerifierRules verifierRules = signerAndVeriferRules.getVerifierRules();
+		validateVerifierRules(verifierRules);
 	}
 
 	private void validateSignerRules(SignerRules signerRules) {
 		CMSSignedData cmsSignedData = cadesSignature.getCmsSignedData();
-		
-		validateSignerRuleExternalData(signerRules.getExternalSignedData(), cmsSignedData);
-		validateSignerRuleMandatedSignedAttr(signerRules.getMandatedSignedAttr(), cmsSignedData);
-		validateSignerRuleMandatedUnsignedAttr(signerRules.getMandatedUnsignedAttr(), cmsSignedData);
-		validateSignerRuleMandatedCertificateRef(signerRules.getMandatedCertificateRef(), cmsSignedData);
-		validateSignerRuleMandatedCertificateInfo(signerRules.getMandatedCertificateInfo(), cmsSignedData);
-	}
 
-	private void validateSignerRuleExternalData(Boolean externalSignedData, CMSSignedData cmsSignedData) {
-		if (externalSignedData != null) {
-			if (!(cmsSignedData.getSignedContent().getContent() == null ^ externalSignedData)) {
-				errors.put("signerRules.externalSignedData", "Expected to be: " + externalSignedData);
-			}
-		}
-	}
-
-	private void validateSignerRuleMandatedSignedAttr(List<String> mandatedSignedAttr, CMSSignedData cmsSignedData) {
-		if (mandatedSignedAttr == null || !mandatedSignedAttr.isEmpty()) {
-			return;
-		}
-		List<String> attributesMissing = new ArrayList<>();
-		for (String oid : mandatedSignedAttr) {
-			if (CMSUtils.getSignedAttributes(cadesSignature.getSignerInformation()).get(new ASN1ObjectIdentifier(oid)) == null) {
-				attributesMissing.add(oid);
+		if (signerRules.getExternalSignedData() != null) {
+			if (!(cmsSignedData.getSignedContent().getContent() == null ^ signerRules.getExternalSignedData())) {
+				errors.put("signerRules.externalSignedData", "Expected to be: " + signerRules.getExternalSignedData());
 			}
 		}
 		
-		if (!attributesMissing.isEmpty()) {
-			errors.put("signerRules.mandatedSignedAttr", "Signed attributes missing: "+attributesMissing);
+		CmsSignatureAttributesValidator attributesValidator = new CmsSignatureAttributesValidator(signerRules.getMandatedSignedAttr(), CMSUtils.getSignedAttributes(cadesSignature.getSignerInformation()));
+		if (!attributesValidator.validate()) {
+			errors.put("signerRules.mandatedSignedAttr", "Signed attributes missing: " + attributesValidator.getMissingAttributes());
 		}
-	}
-
-	private void validateSignerRuleMandatedUnsignedAttr(List<String> mandatedUnsignedAttr,
-			CMSSignedData cmsSignedData) {
-		if (mandatedUnsignedAttr == null || !mandatedUnsignedAttr.isEmpty()) {
-			return;
+		attributesValidator = new CmsSignatureAttributesValidator(signerRules.getMandatedUnsignedAttr(), CMSUtils.getUnsignedAttributes(cadesSignature.getSignerInformation()));
+		if (!attributesValidator.validate()) {
+			errors.put("signerRules.mandatedUnsignedAttr", "Unsigned attributes missing: " + attributesValidator.getMissingAttributes());
 		}
-		List<String> attributesMissing = new ArrayList<>();
-		for (String oid : mandatedUnsignedAttr) {
-			if (CMSUtils.getSignedAttributes(cadesSignature.getSignerInformation()).get(new ASN1ObjectIdentifier(oid)) == null) {
-				attributesMissing.add(oid);
+		CAdESCertRefReqValidator certRefReqValidator = new CAdESCertRefReqValidator(cadesSignature, signerRules.getMandatedCertificateRef(), signerCertPath);
+		if (!certRefReqValidator.validate()) {
+			if (signerRules.getMandatedCertificateRef() == CertRefReq.signerOnly) {
+				if (certRefReqValidator.containsAdditionalCertRef()) {
+					errors.put("signerRules.mandatedCertificateRef", "Found more certificate references than expected");
+				} else {
+					errors.put("signerRules.mandatedCertificateRef", "No signing certificate reference found");
+				}
+			} else {
+				errors.put("signerRules.mandatedCertificateRef", "Found less references than expected");
 			}
 		}
 		
-		if (!attributesMissing.isEmpty()) {
-			errors.put("signerRules.mandatedUnsignedAttr", "Unsigned attributes missing: "+attributesMissing);
-		}
-	}
-
-	/**
-	 *    The mandatedCertificateRef identifies:
-	 *       *  whether a signer's certificate, or all certificates in the
-	 *          certification path to the trust point must be by the signer in
-	 *          the *  certificates field of SignedData.
-	 * @param mandatedCertificateRef
-	 * @param cmsSignedData
-	 */
-	private void validateSignerRuleMandatedCertificateRef(CertRefReq mandatedCertificateRef,
-			CMSSignedData cmsSignedData) {
-		if (mandatedCertificateRef == null) {
-			mandatedCertificateRef = CertRefReq.signerOnly;
-		}
-		
- 		boolean foundSignerCert = false;
- 		boolean foundIssuingCert = false;
- 		X509Certificate signingCert = cadesSignature.getSigningCertificateToken().getCertificate();
- 		X509Certificate issuingCert = cadesSignature.getSigningCertificateToken().getIssuerToken() == null? null: cadesSignature.getSigningCertificateToken().getIssuerToken().getCertificate();
- 
- 		IssuerSerial signerCertIssuerSerial = new IssuerSerial(GeneralNames.getInstance(signingCert.getIssuerX500Principal().getEncoded()), signingCert.getSerialNumber());
- 		IssuerSerial issuingCertIssuerSerial = issuingCert ==null? null: new IssuerSerial(GeneralNames.getInstance(issuingCert.getIssuerX500Principal().getEncoded()), issuingCert.getSerialNumber());
-
- 		AttributeTable signedAttributes = CMSUtils.getSignedAttributes(cadesSignature.getSignerInformation());
-		Attribute attribute = signedAttributes.get(PKCSObjectIdentifiers.id_aa_signingCertificate);
- 		if (attribute != null) {
- 			final byte[] signerCertHash = cadesSignature.getSigningCertificateToken().getDigest(DigestAlgorithm.SHA1);
- 			final byte[] issuingCertHash = cadesSignature.getSigningCertificateToken().getDigest(DigestAlgorithm.SHA1);
- 			for(ASN1Encodable enc : attribute.getAttrValues()) {
- 				SigningCertificate signingCertificate = SigningCertificate.getInstance(enc);
- 				for (ESSCertID certId : signingCertificate.getCerts()) {
- 					if (equalsCertificateReference(certId, signerCertIssuerSerial, signerCertHash)) {
- 						foundSignerCert = true;
- 					} else {
- 						if (mandatedCertificateRef == CertRefReq.signerOnly) {
- 							errors.put("signerRules.mandatedCertificateRef", "Found more certificate references than expected");
- 							return;
- 						}
- 						if (equalsCertificateReference(certId, issuingCertIssuerSerial, issuingCertHash)) {
- 							foundIssuingCert = true;
- 						}
- 					}
- 				}
- 			}
- 		}
- 		
- 		attribute = signedAttributes.get(PKCSObjectIdentifiers.id_aa_signingCertificateV2);
- 		if (attribute != null) {
- 			for(ASN1Encodable enc : attribute.getAttrValues()) {
- 				SigningCertificateV2 signingCertificateV2 = SigningCertificateV2.getInstance(enc);
- 				for (ESSCertIDv2 certId : signingCertificateV2.getCerts()) {
- 					if (equalsCertificateReference(certId, signerCertIssuerSerial, cadesSignature.getSigningCertificateToken())) {
- 						foundSignerCert = true;
- 					} else {
- 						if (mandatedCertificateRef == CertRefReq.signerOnly) {
- 							errors.put("signerRules.mandatedCertificateRef", "Found more certificate references than expected");
- 							return;
- 						}
- 						if (equalsCertificateReference(certId, issuingCertIssuerSerial, cadesSignature.getSigningCertificateToken().getIssuerToken())) {
- 							foundIssuingCert = true;
- 						}
- 					}
- 				}
- 			}
- 		}
-		
-		if (!foundSignerCert) {
-			errors.put("signerRules.mandatedCertificateRef", "No signing certificate reference found");
-			return;
-		}
-		
-		if (mandatedCertificateRef == CertRefReq.fullPath && !foundIssuingCert) {
-			errors.put("signerRules.mandatedCertificateRef", "Found less references than expected");
-		}
-			
-	}
-	
-	private boolean equalsCertificateReference(ESSCertID certId, IssuerSerial certIssuerSerial, byte[] certHash) {
-		if (certId.getIssuerSerial().equals(certIssuerSerial)) {
-			if (!Arrays.areEqual(certHash, certId.getCertHash())) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private boolean equalsCertificateReference(ESSCertIDv2 certId, IssuerSerial certIssuerSerial, CertificateToken tk) {
-		if (tk == null) {
-			return false;
-		}
-		
-		final byte[] certHash = tk.getDigest(DigestAlgorithm.forOID(certId.getHashAlgorithm().getAlgorithm().getId()));
-		if (certId.getIssuerSerial().equals(certIssuerSerial)) {
-			if (!Arrays.areEqual(certHash, certId.getCertHash())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private void validateSignerRuleMandatedCertificateInfo(CertInfoReq mandatedCertificateInfo, CMSSignedData cmsSignedData) {
-		if (mandatedCertificateInfo == null) {
-			mandatedCertificateInfo = CertInfoReq.none;
-		}
-		
-		Collection<CertificateToken> certificates = cadesSignature.getCertificateSource().getKeyInfoCertificates();
-		if (mandatedCertificateInfo == CertInfoReq.none) {
-			if (certificates.isEmpty()) {
+		if (!new CertInfoReqValidator(signerRules.getMandatedCertificateInfo(), cadesSignature, signerCertPath).validate()) {
+			if (signerRules.getMandatedCertificateInfo() == CertInfoReq.none) {
 				errors.put("signerRules.mandatedCertificateInfo", "Should not have any certificates in the signature");
-			}
-		} else {
-			if (cadesSignature.getSigningCertificateToken() == null || certificates.contains(cadesSignature.getSigningCertificateToken())) {
-				errors.put("signerRules.mandatedCertificateInfo", "Missing certificates in the signature");
-			} else if (mandatedCertificateInfo == CertInfoReq.signerOnly && certificates.size() != 1) {
+			} else if (signerRules.getMandatedCertificateInfo() == CertInfoReq.signerOnly) {
 				errors.put("signerRules.mandatedCertificateInfo", "Should have only the signer certificate in the signature");
-			} else if (mandatedCertificateInfo == CertInfoReq.fullPath && !containsSignerFullChain(cadesSignature.getCertificateSource().getKeyInfoCertificates())) {
+			} else if (signerRules.getMandatedCertificateInfo() == CertInfoReq.fullPath) {
 				errors.put("signerRules.mandatedCertificateInfo", "Should have the signer certificate full path in the signature");
 			}
 		}
+		
+		if (!SignPolExtensionValidatorFactory.createValidator(cadesSignature).validate()) {
+			errors.put("signerRules.signPolExtensions", "Error validating signature policy extension");
+		}
 	}
 
-	private boolean containsSignerFullChain(List<CertificateToken> certificates) {
-		if (signerCertPath.isEmpty() || (signerCertPath.size() == 1 && signerCertPath.contains(cadesSignature.getSigningCertificateToken()))) {
-			// If it was not possible to build the certification path, any check should fail
-			return false;
+	private void validateVerifierRules(VerifierRules verifierRules) {
+		CmsSignatureAttributesValidator attributesValidator = new CmsSignatureAttributesValidator(verifierRules.getMandatedUnsignedAttr(), CMSUtils.getUnsignedAttributes(cadesSignature.getSignerInformation()));
+		if (!attributesValidator.validate()) {
+			errors.put("verifierRules.mandatedUnsignedAttr", "Unsigned attributes missing: " + attributesValidator.getMissingAttributes());
 		}
 		
-		if (certificates == null || certificates.size() <= signerCertPath.size()) {
-			return false;
+		if (!SignPolExtensionValidatorFactory.createValidator(cadesSignature).validate()) {
+			errors.put("verifierRules.signPolExtensions", "Error validating signature policy extension");
 		}
-		
-		for (CertificateToken cert : signerCertPath) {
-			if (!certificates.contains(cert)) {
-				return false;
-			}
-		}
-		
-		return true;
 	}
 
 	public Set<CommitmentRule> findCommitmentRule(List<String> identifiers) {
