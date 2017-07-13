@@ -173,10 +173,35 @@ public class PAdESVisibleSignaturePositionTest {
         SignatureImageParameters signatureImageParameters = createSignatureImageParameters();
 
         signatureImageParameters.setRotation(SignatureImageParameters.VisualSignatureRotation.AUTOMATIC);
-        DSSDocument document = sign(signablePdfs.get("minoltaScan90"));
+        signatureImageParameters.setAlignmentHorizontal(SignatureImageParameters.VisualSignatureAlignmentHorizontal.LEFT);
+        signatureImageParameters.setAlignmentVertical(SignatureImageParameters.VisualSignatureAlignmentVertical.MIDDLE);
+        DSSDocument document = sign(signablePdfs.get("270"));
         File checkPdfFile = new File("target/pdf/check.pdf");
         checkPdfFile.getParentFile().mkdirs();
         IOUtils.copy(document.openStream(), new FileOutputStream(checkPdfFile));
+    }
+
+    @Test
+    @Ignore("for generation and manual testing")
+    public void bigGeneratorTest() throws Exception {
+        SignatureImageParameters signatureImageParameters = createSignatureImageParameters();
+
+        for(SignatureImageParameters.VisualSignatureRotation rotation : SignatureImageParameters.VisualSignatureRotation.values()) {
+            for (SignatureImageParameters.VisualSignatureAlignmentHorizontal horizontal : SignatureImageParameters.VisualSignatureAlignmentHorizontal.values()) {
+                for (SignatureImageParameters.VisualSignatureAlignmentVertical vertical : SignatureImageParameters.VisualSignatureAlignmentVertical.values()) {
+                    signatureImageParameters.setRotation(rotation);
+                    signatureImageParameters.setAlignmentHorizontal(horizontal);
+                    signatureImageParameters.setAlignmentVertical(vertical);
+                    String[] pdfs = new String[]{"normal", "90", "180", "270"};
+                    for (String pdf : pdfs) {
+                        DSSDocument document = sign(signablePdfs.get(pdf));
+                        File checkPdfFile = new File("target/pdf/check_" + rotation.name() + "_" + pdf + "_" + horizontal.name() + "_" + vertical.name() + ".pdf");
+                        checkPdfFile.getParentFile().mkdirs();
+                        IOUtils.copy(document.openStream(), new FileOutputStream(checkPdfFile));
+                    }
+                }
+            }
+        }
     }
 
     private DSSDocument sign(DSSDocument document) {
