@@ -19,8 +19,28 @@ import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 
+/**
+ * This class main goal is to try checking the trustpoint for a given certificate. The build path is generally built/retrieved in DSS so we always emulate 
+ * it here by calling {@link CertificateTestUtils#loadIssuers(File, CertificatePool)} for the signer certificate.
+ * @author davyd.santos
+ *
+ */
 public class CertificateTrustPointValidatorTest {
 	private static final String TEST_RESOURCES = "src/test/resources";
+
+	@Test
+	public void shouldNotBuildCertPathForDifferentTrustPoint() throws IOException, CertificateException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+		CertificatePool certPool = new CertificatePool();
+		CertificateToken rootCertificateToken = DSSUtils.loadCertificate(new File(TEST_RESOURCES, "US_PIV_ROOT.cer"));
+		rootCertificateToken = certPool.getInstance(rootCertificateToken, CertificateSourceType.TRUSTED_STORE);
+		CertificateToken certificateToken = CertificateTestUtils.loadIssuers(new File(TEST_RESOURCES, "BR_1.cer"), certPool);
+
+		CertificateTrustPoint trustPoint = Mockito.mock(CertificateTrustPoint.class);
+		Mockito.doReturn(rootCertificateToken.getCertificate()).when(trustPoint).getTrustpoint();
+		Mockito.doReturn(null).when(trustPoint).getPathLenConstraint();
+		CertificateTrustPointValidator validator = new CertificateTrustPointValidator(certPool, certificateToken, trustPoint);
+		Assert.assertFalse("TrustPoint invalid (simple cert path))", validator.validate());
+	}
 
 	@Test
 	public void shouldBuildCertPathSuccessfullyForBR() throws IOException, CertificateException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
