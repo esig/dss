@@ -1,13 +1,8 @@
 package eu.europa.dss.signature.policy.validation;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,15 +20,9 @@ import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class CertificateTestUtils {
-	public static X509Certificate load(File certFile) throws IOException, CertificateException {
-		byte[] certContents = Files.readAllBytes(Paths.get(certFile.toURI()));
-		CertificateFactory certificateFactory = CertificateFactory.getInstance("X509");
-		return (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(certContents));
-	}
 	
 	public static CertificateToken loadIssuers(File certFile, CertificatePool certPool) throws CertificateException, IOException {
-		X509Certificate certificate = load(certFile);
-		return loadIssuers(new CertificateToken(certificate), certPool);
+		return loadIssuers(DSSUtils.loadCertificate(certFile), certPool);
 	}
 	
 	public static CertificateToken loadIssuers(CertificateToken certificate, CertificatePool certPool) {
