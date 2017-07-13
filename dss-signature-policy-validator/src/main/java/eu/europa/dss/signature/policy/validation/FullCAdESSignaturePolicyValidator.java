@@ -59,9 +59,9 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 		// the declared attribute and the value in the policy itself
 		errors.putAll(super.validate());
 		
-		// TODO IMPLICIT POLICY
 		// TODO Skip non processable ASN1
-		if (getSignaturePolicy() != null && getSignaturePolicy().getPolicyContent() != null) {
+		if (getSignaturePolicy() != null && 
+			getSignaturePolicy().getPolicyContent() != null) {
 			validateSignaturePolicyCommitmentRules();
 		}
 		
@@ -136,7 +136,7 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 			return CertificateTrustPointValidator.buildKnownChain(certificate);
 		}
 		
-		CertStore certStore = CertificateTrustPointValidator.buildCertStore(certificate);
+		CertStore certStore = CertificateTrustPointValidator.buildCertStore(certificate, cadesSignature.getCertPool());
 		for (CertificateTrustPoint trustPoint : certificateTrustTrees.getCertificateTrustPoints()) {
 			CertificateTrustPointValidator trustPointValidator = new CertificateTrustPointValidator(cadesSignature.getCertPool(), certStore, trustPoint);
 			if (trustPointValidator.validate()) {

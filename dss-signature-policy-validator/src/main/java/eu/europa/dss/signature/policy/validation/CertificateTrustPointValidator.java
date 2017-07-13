@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.dss.signature.policy.CertificateTrustPoint;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -50,10 +51,10 @@ public class CertificateTrustPointValidator {
 		return knownTrustStore;
 	}
 
-	public static CertStore buildCertStore(CertificateToken target) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+	public static CertStore buildCertStore(CertificateToken target, CertificatePool certPool) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
 		List<X509Certificate> knownTrustStore = new ArrayList<X509Certificate>();
 		knownTrustStore.add(target.getCertificate());
-		for(CertificateToken issuerToken = target.getIssuerToken(); issuerToken != null; issuerToken = issuerToken.getIssuerToken()) {
+		for(CertificateToken issuerToken : certPool.getCertificateTokens()) {
 			if (!issuerToken.isSelfSigned())
 				knownTrustStore.add(issuerToken.getCertificate());
 		}
@@ -70,7 +71,7 @@ public class CertificateTrustPointValidator {
 	public CertificateTrustPointValidator(CertificatePool certPool, CertificateToken target, CertificateTrustPoint trustPoint) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
 		this.trustPoint = trustPoint;
 		this.certPool = certPool;
-		this.knownTrustStore = buildCertStore(target);
+		this.knownTrustStore = buildCertStore(target, certPool);
 	}
 	
 	public boolean validate() {
@@ -80,7 +81,12 @@ public class CertificateTrustPointValidator {
 			List<? extends Certificate> certificates = certPath.getCertificates();
 			chainCertificates = new ArrayList<CertificateToken>();
 			for (Certificate certificate : certificates) {
-				certPool.getInstance(new CertificateToken((X509Certificate) certificate), CertificateSourceType.TRUSTED_STORE);
+				CertificateToken certToken = new CertificateToken((X509Certificate) certificate);
+				if (certToken.isSelfSigned()) {
+					// Only the root (trust point) comes from a trusted store, a.k.a., SignaturePolicy
+					certToken = certPool.getInstance(certToken, CertificateSourceType.TRUSTED_STORE);
+				}
+				chainCertificates.add(certToken);
 			}
 			return !chainCertificates.isEmpty();
 		} catch (Exception e) {
@@ -98,7 +104,6 @@ public class CertificateTrustPointValidator {
 		PKIXBuilderParameters buildParams = new PKIXBuilderParameters(trustPoints, certSelector);
 		buildParams.setRevocationEnabled(false);
 		buildParams.addCertStore(store);
-		buildParams.setMaxPathLength(trustPoint.getPathLenConstraint() == null? 0: trustPoint.getPathLenConstraint());
 		if (trustPoint.getPolicyConstraints() != null) {
 			// TODO Add processing for other values
 			if (trustPoint.getPolicyConstraints().getRequireExplicitPolicy() != null && trustPoint.getPolicyConstraints().getRequireExplicitPolicy() == 0) {
@@ -111,8 +116,14 @@ public class CertificateTrustPointValidator {
 		}
 
 		CertPathBuilder pathBuilder = CertPathBuilder.getInstance("PKIX", BouncyCastleProvider.PROVIDER_NAME);
-		CertPathBuilderResult build = pathBuilder.build(buildParams);
-		return build;
+		CertPathBuilderResult result = pathBuilder.build(buildParams);
+		
+		// Since the value of MaxPathLength can be overriden by the value in the CA BasicConstraints
+		int maxPathLength = trustPoint.getPathLenConstraint() == null? -1: trustPoint.getPathLenConstraint();
+		if (maxPathLength >= 0 && result.getCertPath().getCertificates().size() > maxPathLength) {
+			throw new DSSException("PathLenConstraint excedded");
+		}
+		return result;
 	}
 
 	public List<CertificateToken> getChainCertificates() {
