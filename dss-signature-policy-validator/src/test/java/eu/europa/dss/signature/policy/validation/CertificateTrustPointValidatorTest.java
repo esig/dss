@@ -16,7 +16,6 @@ import org.mockito.Mockito;
 import eu.europa.dss.signature.policy.CertificateTrustPoint;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -32,7 +31,6 @@ public class CertificateTrustPointValidatorTest {
 	public void shouldNotBuildCertPathForDifferentTrustPoint() throws IOException, CertificateException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
 		CertificatePool certPool = new CertificatePool();
 		CertificateToken rootCertificateToken = DSSUtils.loadCertificate(new File(TEST_RESOURCES, "US_PIV_ROOT.cer"));
-		rootCertificateToken = certPool.getInstance(rootCertificateToken, CertificateSourceType.TRUSTED_STORE);
 		CertificateToken certificateToken = CertificateTestUtils.loadIssuers(new File(TEST_RESOURCES, "BR_1.cer"), certPool);
 
 		CertificateTrustPoint trustPoint = Mockito.mock(CertificateTrustPoint.class);
@@ -46,7 +44,6 @@ public class CertificateTrustPointValidatorTest {
 	public void shouldBuildCertPathSuccessfullyForBR() throws IOException, CertificateException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
 		CertificatePool certPool = new CertificatePool();
 		CertificateToken rootCertificateToken = DSSUtils.loadCertificate(new File(TEST_RESOURCES, "BR_ROOT.cer"));
-		rootCertificateToken = certPool.getInstance(rootCertificateToken, CertificateSourceType.TRUSTED_STORE);
 		CertificateToken certificateToken = CertificateTestUtils.loadIssuers(new File(TEST_RESOURCES, "BR_1.cer"), certPool);
 
 		CertificateTrustPoint trustPoint = Mockito.mock(CertificateTrustPoint.class);
@@ -60,7 +57,6 @@ public class CertificateTrustPointValidatorTest {
 	public void shouldBuildCertPathSuccessfullyForBRWithPolicyRestriction() throws IOException, CertificateException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
 		CertificatePool certPool = new CertificatePool();
 		CertificateToken rootCertificateToken = DSSUtils.loadCertificate(new File(TEST_RESOURCES, "BR_ROOT.cer"));
-		rootCertificateToken = certPool.getInstance(rootCertificateToken, CertificateSourceType.TRUSTED_STORE);
 		CertificateToken certificateToken = CertificateTestUtils.loadIssuers(new File(TEST_RESOURCES, "BR_1.cer"), certPool);
 
 		CertificateTrustPoint trustPoint = Mockito.mock(CertificateTrustPoint.class);
@@ -75,7 +71,6 @@ public class CertificateTrustPointValidatorTest {
 	public void shouldBuildCertPathSuccessfullyForPIV() throws IOException, CertificateException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
 		CertificatePool certPool = new CertificatePool();
 		CertificateToken rootCertificateToken = DSSUtils.loadCertificate(new File(TEST_RESOURCES, "US_PIV_ROOT.cer"));
-		rootCertificateToken = certPool.getInstance(rootCertificateToken, CertificateSourceType.TRUSTED_STORE);
 		CertificateToken certificateToken = CertificateTestUtils.loadIssuers(new File(TEST_RESOURCES, "US_PIV_1.cer"), certPool);
 
 		CertificateTrustPoint trustPoint = Mockito.mock(CertificateTrustPoint.class);
@@ -89,7 +84,6 @@ public class CertificateTrustPointValidatorTest {
 	public void shouldNotBuildCertPathSuccessfullyForPIVAndMaxLengthLowerThanNecessary() throws IOException, CertificateException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
 		CertificatePool certPool = new CertificatePool();
 		CertificateToken rootCertificateToken = DSSUtils.loadCertificate(new File(TEST_RESOURCES, "US_PIV_ROOT.cer"));
-		rootCertificateToken = certPool.getInstance(rootCertificateToken, CertificateSourceType.TRUSTED_STORE);
 		CertificateToken certificateToken = CertificateTestUtils.loadIssuers(new File(TEST_RESOURCES, "US_PIV_1.cer"), certPool);
 
 		CertificateTrustPoint trustPoint = Mockito.mock(CertificateTrustPoint.class);
@@ -103,7 +97,6 @@ public class CertificateTrustPointValidatorTest {
 	public void shouldNotBuildCertPathSuccessfullyForPIVAndDifferentPolicy() throws IOException, CertificateException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
 		CertificatePool certPool = new CertificatePool();
 		CertificateToken rootCertificateToken = DSSUtils.loadCertificate(new File(TEST_RESOURCES, "US_PIV_ROOT.cer"));
-		rootCertificateToken = certPool.getInstance(rootCertificateToken, CertificateSourceType.TRUSTED_STORE);
 		CertificateToken certificateToken = CertificateTestUtils.loadIssuers(new File(TEST_RESOURCES, "US_PIV_1.cer"), certPool);
 
 		CertificateTrustPoint trustPoint = Mockito.mock(CertificateTrustPoint.class);
