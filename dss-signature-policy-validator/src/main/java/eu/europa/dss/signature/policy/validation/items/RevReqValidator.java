@@ -1,4 +1,4 @@
-package eu.europa.dss.signature.policy.validation;
+package eu.europa.dss.signature.policy.validation.items;
 
 import java.util.Set;
 
@@ -19,7 +19,7 @@ public class RevReqValidator {
 	private RevReq revReq;
 	private CertificateToken target;
 
-	RevReqValidator(RevReq revReq, CertificateToken target) {
+	public RevReqValidator(RevReq revReq, CertificateToken target) {
 		this.revReq = revReq;
 		this.target = target;
 	}
@@ -52,7 +52,7 @@ public class RevReqValidator {
 
 	private boolean isRevokedOcsp() {
 		Set<RevocationToken> revocationTokens = target.getRevocationTokens();
-		if (!revocationTokens.isEmpty()) {
+		if (revocationTokens != null) {
 			for (RevocationToken revocationToken : revocationTokens) {
 				if (revocationToken.getStatus() != null && revocationToken instanceof OCSPToken) {
 					return !revocationToken.getStatus();
@@ -66,7 +66,7 @@ public class RevReqValidator {
 
 	private boolean isRevokedCrl() {
 		Set<RevocationToken> revocationTokens = target.getRevocationTokens();
-		if (!revocationTokens.isEmpty()) {
+		if (revocationTokens != null) {
 			for (RevocationToken revocationToken : revocationTokens) {
 				if (revocationToken.getStatus() != null && revocationToken instanceof CRLToken) {
 					return !revocationToken.getStatus();

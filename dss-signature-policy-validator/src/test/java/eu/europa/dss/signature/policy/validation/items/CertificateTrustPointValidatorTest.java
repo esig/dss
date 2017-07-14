@@ -1,4 +1,4 @@
-package eu.europa.dss.signature.policy.validation;
+package eu.europa.dss.signature.policy.validation.items;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +14,8 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import eu.europa.dss.signature.policy.CertificateTrustPoint;
+import eu.europa.dss.signature.policy.validation.CertificateTestUtils;
+import eu.europa.dss.signature.policy.validation.items.CertificateTrustPointValidator;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;

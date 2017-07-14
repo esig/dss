@@ -1,4 +1,4 @@
-package eu.europa.dss.signature.policy.validation;
+package eu.europa.dss.signature.policy.validation.items;
 
 public class SignPolExtensionValidatorFactory {
 

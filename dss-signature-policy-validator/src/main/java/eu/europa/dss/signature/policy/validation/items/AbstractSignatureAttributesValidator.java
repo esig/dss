@@ -1,4 +1,4 @@
-package eu.europa.dss.signature.policy.validation;
+package eu.europa.dss.signature.policy.validation.items;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,7 +11,9 @@ public abstract class AbstractSignatureAttributesValidator {
 	
 	public AbstractSignatureAttributesValidator(List<String> mandatedAttributes) {
 		super();
-		this.mandatedAttributes = mandatedAttributes;
+		if (mandatedAttributes != null) {
+			this.mandatedAttributes.addAll(mandatedAttributes);
+		}
 	}
 
 	public boolean validate() {

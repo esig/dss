@@ -1,4 +1,4 @@
-package eu.europa.dss.signature.policy.validation;
+package eu.europa.dss.signature.policy.validation.items;
 
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
