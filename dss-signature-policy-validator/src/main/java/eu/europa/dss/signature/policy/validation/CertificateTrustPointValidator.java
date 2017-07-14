@@ -17,6 +17,7 @@ import java.security.cert.X509CertSelector;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -38,11 +39,11 @@ public class CertificateTrustPointValidator {
 	private CertificateTrustPoint trustPoint;
 	private CertificatePool certPool;
 
-	private List<CertificateToken> chainCertificates = Collections.emptyList();
+	private Set<CertificateToken> chainCertificates = Collections.emptySet();
 
 
-	public static List<CertificateToken> buildKnownChain(CertificateToken target) {
-		List<CertificateToken> knownTrustStore = new ArrayList<CertificateToken>();
+	public static Set<CertificateToken> buildKnownChain(CertificateToken target) {
+		Set<CertificateToken> knownTrustStore = new LinkedHashSet<CertificateToken>();
 		knownTrustStore.add(target);
 		for(CertificateToken issuerToken = target.getIssuerToken(); issuerToken != null; issuerToken = issuerToken.getIssuerToken()) {
 			if (!issuerToken.isSelfSigned())
@@ -79,7 +80,8 @@ public class CertificateTrustPointValidator {
 			CertPathBuilderResult build = buildCertPath(knownTrustStore, trustPoint);
 			CertPath certPath = build.getCertPath();
 			List<? extends Certificate> certificates = certPath.getCertificates();
-			chainCertificates = new ArrayList<CertificateToken>();
+			chainCertificates = new LinkedHashSet<CertificateToken>();
+			boolean rootAdded = false;
 			for (Certificate certificate : certificates) {
 				CertificateToken certToken = new CertificateToken((X509Certificate) certificate);
 				if (certToken.isSelfSigned()) {
@@ -87,6 +89,10 @@ public class CertificateTrustPointValidator {
 					certToken = certPool.getInstance(certToken, CertificateSourceType.TRUSTED_STORE);
 				}
 				chainCertificates.add(certToken);
+			}
+			if (!rootAdded) {
+				CertificateToken tk = new CertificateToken(trustPoint.getTrustpoint());
+				chainCertificates.add(certPool.getInstance(tk, CertificateSourceType.TRUSTED_STORE));
 			}
 			return !chainCertificates.isEmpty();
 		} catch (Exception e) {
@@ -99,11 +105,13 @@ public class CertificateTrustPointValidator {
 			throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException,
 			CertPathBuilderException {
 		X509CertSelector certSelector = new X509CertSelector();
-		Set<TrustAnchor> trustPoints = Collections.singleton(new TrustAnchor(trustPoint.getTrustpoint(), trustPoint.getNameConstraints() == null? null: trustPoint.getNameConstraints().getEncoded()));
+		Set<TrustAnchor> trustPoints = Collections.singleton(new TrustAnchor(trustPoint.getTrustpoint(), null));
 		certSelector.setPolicy(trustPoint.getAcceptablePolicySet());
+		//certSelector.setNameConstraints(trustPoint.getNameConstraints() == null? null: trustPoint.getNameConstraints().getEncoded());
 		PKIXBuilderParameters buildParams = new PKIXBuilderParameters(trustPoints, certSelector);
 		buildParams.setRevocationEnabled(false);
 		buildParams.addCertStore(store);
+
 		if (trustPoint.getPolicyConstraints() != null) {
 			// TODO Add processing for other values
 			if (trustPoint.getPolicyConstraints().getRequireExplicitPolicy() != null && trustPoint.getPolicyConstraints().getRequireExplicitPolicy() == 0) {
@@ -123,11 +131,14 @@ public class CertificateTrustPointValidator {
 		if (maxPathLength >= 0 && result.getCertPath().getCertificates().size() > maxPathLength) {
 			throw new DSSException("PathLenConstraint excedded");
 		}
+		
+		// TODO check NameConstraints
+
 		return result;
 	}
 
-	public List<CertificateToken> getChainCertificates() {
-		return Collections.unmodifiableList(chainCertificates);
+	public Set<CertificateToken> getChainCertificates() {
+		return Collections.unmodifiableSet(chainCertificates);
 	}
 
 }

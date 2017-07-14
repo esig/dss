@@ -2,6 +2,7 @@ package eu.europa.dss.signature.policy.validation;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import eu.europa.dss.signature.policy.CertInfoReq;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -11,10 +12,10 @@ public class CertInfoReqValidator {
 
 	private CertInfoReq mandatedCertificateInfo;
 	private AdvancedSignature adesSignature;
-	private List<CertificateToken> fullPath;
+	private Set<CertificateToken> fullPath;
 
 	public CertInfoReqValidator(CertInfoReq mandatedCertificateInfo, AdvancedSignature adesSignature,
-			List<CertificateToken> fullPath) {
+			Set<CertificateToken> fullPath) {
 		super();
 		this.mandatedCertificateInfo = mandatedCertificateInfo;
 		this.adesSignature = adesSignature;

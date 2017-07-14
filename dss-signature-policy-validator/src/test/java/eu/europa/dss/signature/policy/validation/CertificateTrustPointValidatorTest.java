@@ -40,6 +40,25 @@ public class CertificateTrustPointValidatorTest {
 		Assert.assertFalse("TrustPoint invalid (simple cert path))", validator.validate());
 	}
 
+	/*
+	@Test
+	public void shouldNotBuildCertPathSuccessfullyForBRWithUnmatchedNamingConstraint() throws IOException, CertificateException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+		CertificatePool certPool = new CertificatePool();
+		CertificateToken rootCertificateToken = DSSUtils.loadCertificate(new File(TEST_RESOURCES, "BR_ROOT.cer"));
+		CertificateToken certificateToken = CertificateTestUtils.loadIssuers(new File(TEST_RESOURCES, "BR_1.cer"), certPool);
+
+		ASN1Encodable forbiddenName = new X500Name("CN = DAVYD PEREIRA DO NASCIMENTO SANTOS:30773760830, OU = AR COMPROVA, OU = (EM BRANCO), OU = RFB e-CPF A3, OU = Secretaria da Receita Federal do Brasil - RFB, O = ICP-Brasil, C = BR");
+		//ASN1Encodable forbiddenName = new X500Name("CN = AC SERASA RFB v2, OU = Secretaria da Receita Federal do Brasil - RFB, O = ICP-Brasil, C = BR");
+		NameConstraints nameConstraints = new NameConstraints(null, new GeneralSubtree[]{new GeneralSubtree(new GeneralName(GeneralName.directoryName, forbiddenName))});
+		
+		CertificateTrustPoint trustPoint = Mockito.mock(CertificateTrustPoint.class);
+		Mockito.doReturn(rootCertificateToken.getCertificate()).when(trustPoint).getTrustpoint();
+		Mockito.doReturn(null).when(trustPoint).getPathLenConstraint();
+		Mockito.doReturn(nameConstraints).when(trustPoint).getNameConstraints();
+		CertificateTrustPointValidator validator = new CertificateTrustPointValidator(certPool, certificateToken, trustPoint);
+		Assert.assertFalse("TrustPoint valid with invalid nameConstraints (simple cert path))", validator.validate());
+	}*/
+
 	@Test
 	public void shouldBuildCertPathSuccessfullyForBR() throws IOException, CertificateException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
 		CertificatePool certPool = new CertificatePool();

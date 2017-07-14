@@ -3,6 +3,7 @@ package eu.europa.dss.signature.policy.validation;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Object;
@@ -26,11 +27,11 @@ import eu.europa.esig.dss.x509.CertificateToken;
 public class CAdESCertRefReqValidator {
 	
 	private CAdESSignature cadesSignature;
-	private List<CertificateToken> fullPath;
+	private Set<CertificateToken> fullPath;
 	private CertRefReq certificateRefReq;
 	private List<ASN1Object> essCertIdIssuers;
 
-	public CAdESCertRefReqValidator(CAdESSignature cadesSignature, CertRefReq certificateRefReq, List<CertificateToken> fullPath) {
+	public CAdESCertRefReqValidator(CAdESSignature cadesSignature, CertRefReq certificateRefReq, Set<CertificateToken> fullPath) {
 		this.cadesSignature = cadesSignature;
 		this.fullPath = fullPath;
 		this.certificateRefReq = certificateRefReq;

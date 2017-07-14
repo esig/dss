@@ -47,7 +47,7 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 
 	private Map<String, String> errors = new HashMap<String, String>();
 	
-	private List<CertificateToken> signerCertPath = null;
+	private Set<CertificateToken> signerCertPath = null;
 
 	public FullCAdESSignaturePolicyValidator(SignaturePolicyProvider signaturePolicyProvider, CAdESSignature sig) {
 		super(signaturePolicyProvider, sig);
@@ -131,7 +131,7 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 		}
 	}
 
-	private List<CertificateToken> buildTrustedCertificationPath(CertificateToken certificate, CertificateTrustTrees certificateTrustTrees) throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+	private Set<CertificateToken> buildTrustedCertificationPath(CertificateToken certificate, CertificateTrustTrees certificateTrustTrees) throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
 		if (certificateTrustTrees == null || certificateTrustTrees.getCertificateTrustPoints().isEmpty()) {
 			return CertificateTrustPointValidator.buildKnownChain(certificate);
 		}
@@ -143,7 +143,7 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 				return trustPointValidator.getChainCertificates();
 			}
 		}
-		return Collections.emptyList();
+		return Collections.emptySet();
 	}
 
 	private void validateSignerAndVeriferRules(SignerAndVerifierRules signerAndVeriferRules) {
