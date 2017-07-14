@@ -153,11 +153,8 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 	}
 
 	private void validateSignerAndVeriferRules(SignerAndVerifierRules signerAndVeriferRules) {
-		SignerRules signerRules = signerAndVeriferRules.getSignerRules();
-		validateSignerRules(signerRules);
-		
-		VerifierRules verifierRules = signerAndVeriferRules.getVerifierRules();
-		validateVerifierRules(verifierRules);
+		validateSignerRules(signerAndVeriferRules.getSignerRules());
+		validateVerifierRules(signerAndVeriferRules.getVerifierRules());
 	}
 
 	private void validateSignerRules(SignerRules signerRules) {
