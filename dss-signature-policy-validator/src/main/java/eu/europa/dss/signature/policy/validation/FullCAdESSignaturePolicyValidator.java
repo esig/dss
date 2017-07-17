@@ -14,7 +14,6 @@ import java.util.Set;
 
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.cms.CMSSignedData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +29,13 @@ import eu.europa.dss.signature.policy.SignerRules;
 import eu.europa.dss.signature.policy.SigningCertTrustCondition;
 import eu.europa.dss.signature.policy.VerifierRules;
 import eu.europa.dss.signature.policy.asn1.ASN1SignaturePolicy;
+import eu.europa.dss.signature.policy.validation.items.CAdESCertRefReqValidator;
+import eu.europa.dss.signature.policy.validation.items.CAdESSignerRulesExternalDataValidator;
+import eu.europa.dss.signature.policy.validation.items.CertInfoReqValidator;
+import eu.europa.dss.signature.policy.validation.items.CertificateTrustPointValidator;
+import eu.europa.dss.signature.policy.validation.items.CmsSignatureAttributesValidator;
+import eu.europa.dss.signature.policy.validation.items.RevReqValidator;
+import eu.europa.dss.signature.policy.validation.items.SignPolExtensionValidatorFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
@@ -47,7 +53,7 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 
 	private Map<String, String> errors = new HashMap<String, String>();
 	
-	private List<CertificateToken> signerCertPath = null;
+	private Set<CertificateToken> signerCertPath = null;
 
 	public FullCAdESSignaturePolicyValidator(SignaturePolicyProvider signaturePolicyProvider, CAdESSignature sig) {
 		super(signaturePolicyProvider, sig);
@@ -97,7 +103,7 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 	private void validateSignaturePolicyCommitmentRules() {
 		Set<CommitmentRule> cmmtRules = findCommitmentRule(cadesSignature.getCommitmentTypeIndication() == null? null: cadesSignature.getCommitmentTypeIndication().getIdentifiers());
 		
-		//TODO do I have to validate all or if one matches is enough?
+		//TODO do I have to validate all or is it enough if one matching is found?
 		for (CommitmentRule cmmtRule : cmmtRules) {
 			validateSigningCertTrustContition(cmmtRule.getSigningCertTrustCondition());
 			// TimestampTrustCondition 
@@ -131,7 +137,7 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 		}
 	}
 
-	private List<CertificateToken> buildTrustedCertificationPath(CertificateToken certificate, CertificateTrustTrees certificateTrustTrees) throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+	private Set<CertificateToken> buildTrustedCertificationPath(CertificateToken certificate, CertificateTrustTrees certificateTrustTrees) throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
 		if (certificateTrustTrees == null || certificateTrustTrees.getCertificateTrustPoints().isEmpty()) {
 			return CertificateTrustPointValidator.buildKnownChain(certificate);
 		}
@@ -143,24 +149,18 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 				return trustPointValidator.getChainCertificates();
 			}
 		}
-		return Collections.emptyList();
+		return Collections.emptySet();
 	}
 
 	private void validateSignerAndVeriferRules(SignerAndVerifierRules signerAndVeriferRules) {
-		SignerRules signerRules = signerAndVeriferRules.getSignerRules();
-		validateSignerRules(signerRules);
-		
-		VerifierRules verifierRules = signerAndVeriferRules.getVerifierRules();
-		validateVerifierRules(verifierRules);
+		validateSignerRules(signerAndVeriferRules.getSignerRules());
+		validateVerifierRules(signerAndVeriferRules.getVerifierRules());
 	}
 
 	private void validateSignerRules(SignerRules signerRules) {
-		CMSSignedData cmsSignedData = cadesSignature.getCmsSignedData();
-
-		if (signerRules.getExternalSignedData() != null) {
-			if (!(cmsSignedData.getSignedContent().getContent() == null ^ signerRules.getExternalSignedData())) {
-				errors.put("signerRules.externalSignedData", "Expected to be: " + signerRules.getExternalSignedData());
-			}
+		CAdESSignerRulesExternalDataValidator externalDataValidator = new CAdESSignerRulesExternalDataValidator(cadesSignature, signerRules.getExternalSignedData());
+		if (!externalDataValidator.validate()) {
+			errors.put("signerRules.externalSignedData", "Expected to be: " + signerRules.getExternalSignedData());
 		}
 		
 		CmsSignatureAttributesValidator attributesValidator = new CmsSignatureAttributesValidator(signerRules.getMandatedSignedAttr(), CMSUtils.getSignedAttributes(cadesSignature.getSignerInformation()));
