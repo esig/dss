@@ -38,6 +38,7 @@ import eu.europa.dss.signature.policy.validation.items.RevReqValidator;
 import eu.europa.dss.signature.policy.validation.items.SignPolExtensionValidatorFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.validation.BasicCAdESSignaturePolicyValidator;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.x509.CertificateToken;
