@@ -24,7 +24,7 @@ import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.x509.CertificateToken;
 
-public class CAdESCertRefReqValidator {
+public class CAdESCertRefReqValidator implements ItemValidator {
 	
 	private CAdESSignature cadesSignature;
 	private Set<CertificateToken> fullPath;

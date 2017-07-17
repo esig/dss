@@ -40,31 +40,22 @@ public class CertificateTestUtils {
 	}
 	
 	public static CertificateToken loadIssuers(DataLoader loader, CertificateToken certificate, CertificatePool certPool) {
+		System.out.println(certificate.getSubjectX500Principal());
 		if (certificate.getIssuerToken() == null) {
-			Collection<CertificateToken> issuerCertificates = DSSUtils.loadIssuerCertificates(certificate, loader);
-			if (issuerCertificates == null) {
-				return certificate;
+			Collection<CertificateToken> issuerCertificates = certPool.get(certificate.getIssuerX500Principal());
+			if (issuerCertificates == null || issuerCertificates.isEmpty()) {
+				issuerCertificates = DSSUtils.loadIssuerCertificates(certificate, loader);
+
+				if (issuerCertificates != null) {
+					for (CertificateToken certificateToken : issuerCertificates) {
+						certPool.getInstance(certificateToken, CertificateSourceType.AIA);
+					}
+				}
 			}
 			
-			for (CertificateToken certificateToken : issuerCertificates) {
-				certPool.getInstance(certificateToken, CertificateSourceType.AIA);
-			}
-	
-			for (CertificateToken issuerCertificateToken : issuerCertificates) {
-				if (issuerCertificateToken.isSelfSigned()) {
-					continue;
-				}
-				
-				if (isIssuer(certificate, issuerCertificateToken)) {
-					// Checks if the issuer's issuer cert is known
-					boolean foundCAIssuer = false;
-					List<CertificateToken> list = certPool.get(issuerCertificateToken.getIssuerX500Principal());
-					for (CertificateToken possibleIssuer : list) {
-						if (issuerCertificateToken.isSignedBy(possibleIssuer)) {
-							foundCAIssuer = true;
-						}
-					}
-					if (!foundCAIssuer) {
+			if (issuerCertificates != null) {
+				for (CertificateToken issuerCertificateToken : issuerCertificates) {
+					if (isIssuer(certificate, issuerCertificateToken) && !issuerCertificateToken.isSelfSigned()) {
 						loadIssuers(loader, issuerCertificateToken, certPool);
 					}
 				}
