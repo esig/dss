@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.util.Collection;
-import java.util.List;
 
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
@@ -40,7 +39,6 @@ public class CertificateTestUtils {
 	}
 	
 	public static CertificateToken loadIssuers(DataLoader loader, CertificateToken certificate, CertificatePool certPool) {
-		System.out.println(certificate.getSubjectX500Principal());
 		if (certificate.getIssuerToken() == null) {
 			Collection<CertificateToken> issuerCertificates = certPool.get(certificate.getIssuerX500Principal());
 			if (issuerCertificates == null || issuerCertificates.isEmpty()) {

@@ -13,7 +13,6 @@ import org.junit.Test;
 import eu.europa.dss.signature.policy.CertInfoReq;
 import eu.europa.dss.signature.policy.validation.CertificateTestUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class CertInfoReqValidatorTest {

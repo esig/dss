@@ -171,7 +171,7 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 		if (!attributesValidator.validate()) {
 			errors.put("signerRules.mandatedUnsignedAttr", "Unsigned attributes missing: " + attributesValidator.getMissingAttributes());
 		}
-		CAdESCertRefReqValidator certRefReqValidator = new CAdESCertRefReqValidator(cadesSignature, signerRules.getMandatedCertificateRef(), signerCertPath);
+		CAdESCertRefReqValidator certRefReqValidator = new CAdESCertRefReqValidator(signerRules.getMandatedCertificateRef(), cadesSignature, signerCertPath);
 		if (!certRefReqValidator.validate()) {
 			if (signerRules.getMandatedCertificateRef() == CertRefReq.signerOnly) {
 				if (certRefReqValidator.containsAdditionalCertRef()) {
