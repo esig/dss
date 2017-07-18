@@ -5,35 +5,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.Certificate;
-import java.util.Collection;
-import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.util.encoders.Base64;
 import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.Mockito;
 
-import eu.europa.dss.signature.policy.CommitmentRule;
-import eu.europa.dss.signature.policy.SigningCertTrustCondition;
 import eu.europa.dss.signature.policy.asn1.ASN1SignaturePolicy;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.client.http.DataLoader;
-import eu.europa.esig.dss.client.http.NativeHTTPDataLoader;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateSourceType;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.SignaturePolicy;
 
 public class SignaturePolicyTest {
 	

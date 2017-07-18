@@ -54,4 +54,35 @@ public class CommitmentRuleWrapper extends ASN1CommitmentRule {
 		return cmmtRule.getSignPolExtensions();
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((cmmtRule == null) ? 0 : cmmtRule.hashCode());
+		result = prime * result + ((commonRules == null) ? 0 : commonRules.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CommitmentRuleWrapper other = (CommitmentRuleWrapper) obj;
+		if (cmmtRule == null) {
+			if (other.cmmtRule != null)
+				return false;
+		} else if (!cmmtRule.equals(other.cmmtRule))
+			return false;
+		if (commonRules == null) {
+			if (other.commonRules != null)
+				return false;
+		} else if (!commonRules.equals(other.commonRules))
+			return false;
+		return true;
+	}
+
 }

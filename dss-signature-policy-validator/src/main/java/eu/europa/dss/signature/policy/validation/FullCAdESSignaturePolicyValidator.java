@@ -218,6 +218,12 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 			if (identifiers == null || identifiers.isEmpty()) {
 				if (cmmtRule.getSelCommitmentTypes().contains(null)) {
 					commtRules.add(new CommitmentRuleWrapper(cmmtRule, signatureValidationPolicy.getCommonRules()));
+				} else {
+					// RFC 3125
+					// "... the electronic signature must contain a commitment type indication
+					// that must fit one of the commitments types that are mentioned in
+					// CommitmentType."
+					throw new DSSException("The commitment type used was not found");
 				}
 			} else {
 				for (String oid : identifiers) {

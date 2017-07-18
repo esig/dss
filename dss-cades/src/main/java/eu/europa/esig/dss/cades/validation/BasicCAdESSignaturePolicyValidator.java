@@ -96,6 +96,10 @@ public class BasicCAdESSignaturePolicyValidator implements SignaturePolicyValida
 					LOG.error("Unable to read SigPolicyQualifierInfo " + ii, e.getMessage());
 				}
 			}
+			if (signaturePolicy.getPolicyContent() != null) {
+				// Updates the OID based cached values 
+				signaturePolicyProvider.getSignaturePoliciesById().put(policyId, signaturePolicy.getPolicyContent());
+			}
 		}
 		
 		return Collections.emptyMap();
