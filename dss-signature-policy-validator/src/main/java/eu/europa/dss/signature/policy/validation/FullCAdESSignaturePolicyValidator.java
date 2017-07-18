@@ -38,6 +38,7 @@ import eu.europa.dss.signature.policy.validation.items.RevReqValidator;
 import eu.europa.dss.signature.policy.validation.items.SignPolExtensionValidatorFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.validation.BasicCAdESSignaturePolicyValidator;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -171,7 +172,7 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 		if (!attributesValidator.validate()) {
 			errors.put("signerRules.mandatedUnsignedAttr", "Unsigned attributes missing: " + attributesValidator.getMissingAttributes());
 		}
-		CAdESCertRefReqValidator certRefReqValidator = new CAdESCertRefReqValidator(cadesSignature, signerRules.getMandatedCertificateRef(), signerCertPath);
+		CAdESCertRefReqValidator certRefReqValidator = new CAdESCertRefReqValidator(signerRules.getMandatedCertificateRef(), cadesSignature, signerCertPath);
 		if (!certRefReqValidator.validate()) {
 			if (signerRules.getMandatedCertificateRef() == CertRefReq.signerOnly) {
 				if (certRefReqValidator.containsAdditionalCertRef()) {

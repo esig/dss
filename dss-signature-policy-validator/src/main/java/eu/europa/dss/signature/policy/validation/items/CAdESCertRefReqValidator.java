@@ -1,6 +1,5 @@
 package eu.europa.dss.signature.policy.validation.items;
 
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -14,24 +13,24 @@ import org.bouncycastle.asn1.ess.ESSCertIDv2;
 import org.bouncycastle.asn1.ess.SigningCertificate;
 import org.bouncycastle.asn1.ess.SigningCertificateV2;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
-import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.util.Arrays;
 
 import eu.europa.dss.signature.policy.CertRefReq;
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.x509.CertificateToken;
 
-public class CAdESCertRefReqValidator {
+public class CAdESCertRefReqValidator implements ItemValidator {
 	
 	private CAdESSignature cadesSignature;
 	private Set<CertificateToken> fullPath;
 	private CertRefReq certificateRefReq;
 	private List<ASN1Object> essCertIdIssuers;
 
-	public CAdESCertRefReqValidator(CAdESSignature cadesSignature, CertRefReq certificateRefReq, Set<CertificateToken> fullPath) {
+	public CAdESCertRefReqValidator(CertRefReq certificateRefReq, CAdESSignature cadesSignature, Set<CertificateToken> fullPath) {
 		this.cadesSignature = cadesSignature;
 		this.fullPath = fullPath;
 		this.certificateRefReq = certificateRefReq;
@@ -50,9 +49,7 @@ public class CAdESCertRefReqValidator {
 			certificateRefReq = CertRefReq.signerOnly;
 		}
 		
- 		boolean foundSignerCert = false;
- 		X509Certificate signingCert = cadesSignature.getSigningCertificateToken().getCertificate();
- 		IssuerSerial signerCertIssuerSerial = new IssuerSerial(GeneralNames.getInstance(signingCert.getIssuerX500Principal().getEncoded()), signingCert.getSerialNumber());
+ 		IssuerSerial signerCertIssuerSerial = DSSASN1Utils.getIssuerSerial(cadesSignature.getSigningCertificateToken());
  		essCertIdIssuers = new ArrayList<ASN1Object>();
 
  		AttributeTable signedAttributes = CMSUtils.getSignedAttributes(cadesSignature.getSignerInformation());
@@ -63,13 +60,11 @@ public class CAdESCertRefReqValidator {
  				SigningCertificate signingCertificate = SigningCertificate.getInstance(enc);
  				for (ESSCertID certId : signingCertificate.getCerts()) {
  					if (equalsCertificateReference(certId, signerCertIssuerSerial, signerCertHash)) {
- 						foundSignerCert = true;
- 					} else {
  						if (certificateRefReq == CertRefReq.signerOnly) {
- 							return false;
+ 							return true;
  						}
- 						essCertIdIssuers.add(certId);
  					}
+ 					essCertIdIssuers.add(certId);
  				}
  			}
  		}
@@ -80,25 +75,16 @@ public class CAdESCertRefReqValidator {
  				SigningCertificateV2 signingCertificateV2 = SigningCertificateV2.getInstance(enc);
  				for (ESSCertIDv2 certId : signingCertificateV2.getCerts()) {
  					if (equalsCertificateReference(certId, signerCertIssuerSerial, cadesSignature.getSigningCertificateToken())) {
- 						foundSignerCert = true;
- 					} else {
  						if (certificateRefReq == CertRefReq.signerOnly) {
- 							return false;
+ 							return true;
  						}
- 						essCertIdIssuers.add(certId);
  					}
+ 					essCertIdIssuers.add(certId);
  				}
  			}
  		}
 		
-		if (!foundSignerCert) {
-			return false;
-		}
-		
-		if (certificateRefReq == CertRefReq.signerOnly && containsAdditionalCertRef()) {
-			return false;
-		}
-		
+
 		if (certificateRefReq == CertRefReq.fullPath && !isFullPathPresent(essCertIdIssuers)) {
 			return false;
 		}
@@ -110,28 +96,30 @@ public class CAdESCertRefReqValidator {
 	}
 	
 	private boolean isFullPathPresent(List<ASN1Object> essCertId) {
-		if (essCertId.isEmpty()) {
+		if (fullPath == null || fullPath.isEmpty()) {
 			return false;
 		}
 		
-		for (ASN1Object asn1Object : essCertId) {
-			if (!containsReference(asn1Object)) {
+		for (CertificateToken certificateToken : fullPath) {
+			if (!containsReference(essCertId, certificateToken)) {
 				return false;
 			}
 		}
 		return true;
 	}
 	
-	private boolean containsReference(ASN1Object essCertId) {
-		for (CertificateToken certificateToken : fullPath) {
-			IssuerSerial issuerSerial = new IssuerSerial(
-					GeneralNames.getInstance(certificateToken.getIssuerX500Principal().getEncoded()), 
-					certificateToken.getSerialNumber());
+	private boolean containsReference(List<ASN1Object> essCertIds, CertificateToken certificateToken) {
+		for (ASN1Object essCertId : essCertIds) {
+			IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(certificateToken);
 			if (essCertId instanceof ESSCertID) {
 				byte[] hash = certificateToken.getDigest(DigestAlgorithm.SHA1);
-				return equalsCertificateReference((ESSCertID) essCertId, issuerSerial, hash);
+				if (equalsCertificateReference((ESSCertID) essCertId, issuerSerial, hash)) {
+					return true;
+				}
 			} else {
-				return equalsCertificateReference((ESSCertIDv2) essCertId, issuerSerial, certificateToken);
+				if (equalsCertificateReference((ESSCertIDv2) essCertId, issuerSerial, certificateToken)) {
+					return true;
+				}
 			}
 		}
 		return false;

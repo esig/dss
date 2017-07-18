@@ -77,7 +77,7 @@ public class CertificateTrustPointValidator {
 	
 	public boolean validate() {
 		try {
-			CertPathBuilderResult build = buildCertPath(knownTrustStore, trustPoint);
+			CertPathBuilderResult build = buildCertPath();
 			CertPath certPath = build.getCertPath();
 			List<? extends Certificate> certificates = certPath.getCertificates();
 			chainCertificates = new LinkedHashSet<CertificateToken>();
@@ -101,7 +101,7 @@ public class CertificateTrustPointValidator {
 		return false;
 	}
 
-	private CertPathBuilderResult buildCertPath(CertStore store, CertificateTrustPoint trustPoint)
+	private CertPathBuilderResult buildCertPath()
 			throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException,
 			CertPathBuilderException {
 		X509CertSelector certSelector = new X509CertSelector();
@@ -110,7 +110,7 @@ public class CertificateTrustPointValidator {
 		//certSelector.setNameConstraints(trustPoint.getNameConstraints() == null? null: trustPoint.getNameConstraints().getEncoded());
 		PKIXBuilderParameters buildParams = new PKIXBuilderParameters(trustPoints, certSelector);
 		buildParams.setRevocationEnabled(false);
-		buildParams.addCertStore(store);
+		buildParams.addCertStore(knownTrustStore);
 
 		if (trustPoint.getPolicyConstraints() != null) {
 			// TODO Add processing for other values

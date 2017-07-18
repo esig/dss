@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class AbstractSignatureAttributesValidator {
+public abstract class AbstractSignatureAttributesValidator implements ItemValidator {
 	
 	private List<String> mandatedAttributes = new ArrayList<String>();
 	private List<String> missingAttributes = new ArrayList<String>();

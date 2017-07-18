@@ -23,29 +23,21 @@ public class CertInfoReqValidator {
 	}
 
 	public boolean validate() {
-		if (mandatedCertificateInfo == null) {
-			mandatedCertificateInfo = CertInfoReq.none;
+		if (mandatedCertificateInfo == null || mandatedCertificateInfo == CertInfoReq.none) {
+			return true;
 		}
 		
 		Collection<CertificateToken> certificates = adesSignature.getCertificateSource().getKeyInfoCertificates();
-		if (mandatedCertificateInfo == CertInfoReq.none) {
-			if (certificates.isEmpty()) {
-				return false;
-			}
-		} else {
-			if (adesSignature.getSigningCertificateToken() == null || certificates.contains(adesSignature.getSigningCertificateToken())) {
-				return false;
-			} else if (mandatedCertificateInfo == CertInfoReq.signerOnly && certificates.size() != 1) {
-				return false;
-			} else if (mandatedCertificateInfo == CertInfoReq.fullPath && !containsSignerFullChain(adesSignature.getCertificateSource().getKeyInfoCertificates())) {
-				return false;
-			}
+		if (adesSignature.getSigningCertificateToken() == null || !certificates.contains(adesSignature.getSigningCertificateToken())) {
+			return false;
+		} else if (mandatedCertificateInfo == CertInfoReq.fullPath && !containsSignerFullChain(adesSignature.getCertificateSource().getKeyInfoCertificates())) {
+			return false;
 		}
 		return true;
 	}
 
 	private boolean containsSignerFullChain(List<CertificateToken> certificates) {
-		if (fullPath.isEmpty() || (fullPath.size() == 1 && fullPath.contains(adesSignature.getSigningCertificateToken()))) {
+		if (fullPath == null || fullPath.isEmpty() || (fullPath.size() == 1 && fullPath.contains(adesSignature.getSigningCertificateToken()))) {
 			// If it was not possible to build the certification path, any check should fail
 			return false;
 		}

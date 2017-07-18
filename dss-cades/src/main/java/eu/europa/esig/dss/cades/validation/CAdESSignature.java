@@ -49,7 +49,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ServiceLoader;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
@@ -61,7 +63,6 @@ import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.ASN1UTCTime;
-import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERTaggedObject;
@@ -78,10 +79,6 @@ import org.bouncycastle.asn1.esf.CrlValidatedID;
 import org.bouncycastle.asn1.esf.OcspListID;
 import org.bouncycastle.asn1.esf.OcspResponsesID;
 import org.bouncycastle.asn1.esf.OtherHash;
-import org.bouncycastle.asn1.esf.OtherHashAlgAndValue;
-import org.bouncycastle.asn1.esf.SigPolicyQualifierInfo;
-import org.bouncycastle.asn1.esf.SigPolicyQualifiers;
-import org.bouncycastle.asn1.esf.SignaturePolicyId;
 import org.bouncycastle.asn1.esf.SignerAttribute;
 import org.bouncycastle.asn1.esf.SignerLocation;
 import org.bouncycastle.asn1.ess.ContentHints;
@@ -92,7 +89,6 @@ import org.bouncycastle.asn1.ess.OtherCertID;
 import org.bouncycastle.asn1.ess.SigningCertificate;
 import org.bouncycastle.asn1.ess.SigningCertificateV2;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.AttCertValidityPeriod;
 import org.bouncycastle.asn1.x509.AttributeCertificate;
 import org.bouncycastle.asn1.x509.AttributeCertificateInfo;
@@ -149,7 +145,6 @@ import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
 import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
@@ -477,59 +472,16 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public void checkSignaturePolicy(SignaturePolicyProvider signaturePolicyProvider) {
-		final Attribute attribute = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_sigPolicyId);
-		if (attribute == null) {
-			return;
-		}
-
-		final ASN1Encodable attrValue = attribute.getAttrValues().getObjectAt(0);
-		if (attrValue instanceof DERNull) {
-			return;
-		}
-
-		final SignaturePolicyId sigPolicy = SignaturePolicyId.getInstance(attrValue);
-		if (sigPolicy == null) {
-			return;
-		}
-
-		final String policyId = sigPolicy.getSigPolicyId().getId();
-
-		signaturePolicy = new SignaturePolicy(policyId);
-
-		final OtherHashAlgAndValue hashAlgAndValue = sigPolicy.getSigPolicyHash();
-
-		final AlgorithmIdentifier digestAlgorithmIdentifier = hashAlgAndValue.getHashAlgorithm();
-		final String digestAlgorithmOID = digestAlgorithmIdentifier.getAlgorithm().getId();
-		final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(digestAlgorithmOID);
-		signaturePolicy.setDigestAlgorithm(digestAlgorithm);
-
-		final ASN1OctetString digestValue = hashAlgAndValue.getHashValue();
-		final byte[] digestValueBytes = digestValue.getOctets();
-		signaturePolicy.setDigestValue(Utils.toBase64(digestValueBytes));
-
-		final SigPolicyQualifiers sigPolicyQualifiers = sigPolicy.getSigPolicyQualifiers();
-		if (sigPolicyQualifiers == null) {
-			signaturePolicy.setPolicyContent(signaturePolicyProvider.getSignaturePolicyById(policyId));
+		ServiceLoader<SignaturePolicyValidator> loader = ServiceLoader.load(SignaturePolicyValidator.class);
+		Iterator<SignaturePolicyValidator> iterator = loader.iterator();
+		SignaturePolicyValidator impl = iterator.next();
+		if (iterator.hasNext()) {
+			impl = iterator.next();
 		} else {
-			for (int ii = 0; ii < sigPolicyQualifiers.size(); ii++) {
-				try {
-					final SigPolicyQualifierInfo policyQualifierInfo = sigPolicyQualifiers.getInfoAt(ii);
-					final ASN1ObjectIdentifier policyQualifierInfoId = policyQualifierInfo.getSigPolicyQualifierId();
-					final String policyQualifierInfoValue = policyQualifierInfo.getSigQualifier().toString();
-
-					if (PKCSObjectIdentifiers.id_spq_ets_unotice.equals(policyQualifierInfoId)) {
-						signaturePolicy.setNotice(policyQualifierInfoValue);
-					} else if (PKCSObjectIdentifiers.id_spq_ets_uri.equals(policyQualifierInfoId)) {
-						signaturePolicy.setUrl(policyQualifierInfoValue);
-						signaturePolicy.setPolicyContent(signaturePolicyProvider.getSignaturePolicyByUrl(policyQualifierInfoValue));
-					} else {
-						LOG.error("Unknown signature policy qualifier id: " + policyQualifierInfoId + " with value: " + policyQualifierInfoValue);
-					}
-				} catch (Exception e) {
-					LOG.error("Unable to read SigPolicyQualifierInfo " + ii, e.getMessage());
-				}
-			}
+			impl = new BasicCAdESSignaturePolicyValidator(signaturePolicyProvider, this);
 		}
+		impl.validate();
+		signaturePolicy = impl.getSignaturePolicy();
 	}
 
 	@Override
