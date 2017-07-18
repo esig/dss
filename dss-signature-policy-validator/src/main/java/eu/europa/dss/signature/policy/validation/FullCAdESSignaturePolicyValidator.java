@@ -56,6 +56,8 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 	
 	private Set<CertificateToken> signerCertPath = null;
 
+	private SignaturePolicy policy;
+
 	public FullCAdESSignaturePolicyValidator(SignaturePolicyProvider signaturePolicyProvider, CAdESSignature sig) {
 		super(signaturePolicyProvider, sig);
 	}
@@ -102,6 +104,10 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 	 * No explicit signature police was declared upon signing.
 	 */
 	private void validateSignaturePolicyCommitmentRules() {
+		if (!SignPolExtensionValidatorFactory.createValidator(cadesSignature, getSignatureValidationPolicy()).validate()) {
+			errors.put("signatureValidationPolicy.signPolExtensions", "Error validating signature policy extension");
+		}
+		
 		Set<CommitmentRule> cmmtRules = findCommitmentRule(cadesSignature.getCommitmentTypeIndication() == null? null: cadesSignature.getCommitmentTypeIndication().getIdentifiers());
 		
 		//TODO do I have to validate all or is it enough if one matching is found?
@@ -111,6 +117,9 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 			// AttributeTrustCondition
 			// AlgorithmConstraintSet
 			validateSignerAndVeriferRules(cmmtRule.getSignerAndVeriferRules());
+			if (!SignPolExtensionValidatorFactory.createValidator(cadesSignature, cmmtRule).validate()) {
+				errors.put("commitmentRule.signPolExtensions", "Error validating signature policy extension");
+			}
 		}
 	}
 
@@ -195,7 +204,7 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 			}
 		}
 		
-		if (!SignPolExtensionValidatorFactory.createValidator(cadesSignature).validate()) {
+		if (!SignPolExtensionValidatorFactory.createValidator(cadesSignature, signerRules).validate()) {
 			errors.put("signerRules.signPolExtensions", "Error validating signature policy extension");
 		}
 	}
@@ -206,7 +215,7 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 			errors.put("verifierRules.mandatedUnsignedAttr", "Unsigned attributes missing: " + attributesValidator.getMissingAttributes());
 		}
 		
-		if (!SignPolExtensionValidatorFactory.createValidator(cadesSignature).validate()) {
+		if (!SignPolExtensionValidatorFactory.createValidator(cadesSignature, verifierRules).validate()) {
 			errors.put("verifierRules.signPolExtensions", "Error validating signature policy extension");
 		}
 	}
@@ -245,7 +254,9 @@ public class FullCAdESSignaturePolicyValidator extends BasicCAdESSignaturePolicy
 	}
 
 	public SignatureValidationPolicy getSignatureValidationPolicy() {
-		SignaturePolicy policy = parse();
+		if (policy == null) {
+			policy = parse();
+		}
 		SignatureValidationPolicy signatureValidationPolicy = policy.getSignPolicyInfo().getSignatureValidationPolicy();
 		return signatureValidationPolicy;
 	}

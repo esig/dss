@@ -13,10 +13,15 @@ public class CAdESSignerRulesExternalDataValidator implements ItemValidator {
 		this.externalSignedData = externalData;
 	}
 
+	/**
+	 * True if signed data is external to CMS structure
+     * False if signed data part of CMS structure
+     * Not present if either allowed
+	 */
 	@Override
 	public boolean validate() {
 		if (externalSignedData != null) {
-			if (!(cadesSignature.getCmsSignedData().getSignedContent() == null ^ externalSignedData)) {
+			if (!(cadesSignature.getCmsSignedData().getSignedContent() != null ^ externalSignedData)) {
 				return false;
 			}
 		}
