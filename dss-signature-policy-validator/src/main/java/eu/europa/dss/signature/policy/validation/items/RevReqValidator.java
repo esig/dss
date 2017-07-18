@@ -12,7 +12,7 @@ import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.crl.CRLToken;
 import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
-public class RevReqValidator {
+public class RevReqValidator implements ItemValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RevReqValidator.class);
 	
@@ -25,37 +25,37 @@ public class RevReqValidator {
 	}
 
 	public boolean validate() {
-		return !isRevoked();
+		return checkRevocation();
 	}
 
-	private boolean isRevoked() {
+	private boolean checkRevocation() {
 		try {
 			switch (revReq.getEnuRevReq()) {
-			case noCheck: return false;
-			case other: return true;
-			case crlCheck: return isRevokedCrl();
-			case ocspCheck: return isRevokedOcsp();
-			case bothCheck: return isRevokedCrl() && isRevokedOcsp();
+			case noCheck: return true;
+			case other: return false;
+			case crlCheck: return checkCrlRevocation();
+			case ocspCheck: return checkOcspRevocation();
+			case bothCheck: return checkOcspRevocation() && checkCrlRevocation();
 			case eitherCheck:
 				try {
-					return isRevokedOcsp();
+					return checkOcspRevocation();
 				} catch (Exception e) {
 					LOG.debug("Unexpected error while checking OCSP, trying CRL", e);
-					return isRevokedCrl();
+					return checkCrlRevocation();
 				}
 			}
 		} catch (Exception e) {
 			LOG.debug("Unexpected error while checking Revocation", e);
 		}
-		return true;
+		return false;
 	}
 
-	private boolean isRevokedOcsp() {
+	private boolean checkOcspRevocation() {
 		Set<RevocationToken> revocationTokens = target.getRevocationTokens();
 		if (revocationTokens != null) {
 			for (RevocationToken revocationToken : revocationTokens) {
-				if (revocationToken.getStatus() != null && revocationToken instanceof OCSPToken) {
-					return !revocationToken.getStatus();
+				if (revocationToken instanceof OCSPToken && revocationToken.isValid() && revocationToken.getStatus() != null) {
+					return revocationToken.getStatus();
 				}
 			}
 		}
@@ -64,12 +64,12 @@ public class RevReqValidator {
 		throw new DSSException("No OCSP response found");
 	}
 
-	private boolean isRevokedCrl() {
+	private boolean checkCrlRevocation() {
 		Set<RevocationToken> revocationTokens = target.getRevocationTokens();
 		if (revocationTokens != null) {
 			for (RevocationToken revocationToken : revocationTokens) {
-				if (revocationToken.getStatus() != null && revocationToken instanceof CRLToken) {
-					return !revocationToken.getStatus();
+				if (revocationToken instanceof CRLToken && revocationToken.isValid() && revocationToken.getStatus() != null) {
+					return revocationToken.getStatus();
 				}
 			}
 		}
