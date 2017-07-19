@@ -3,8 +3,8 @@ package eu.europa.dss.signature.policy.validation;
 import java.io.File;
 import java.io.IOException;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
@@ -38,27 +38,28 @@ public class CertificateTestUtils {
 		CertificateToken cert = certPool.getInstance(certificate, CertificateSourceType.SIGNATURE);
 		return loadIssuers(loader, cert, certPool);
 	}
+
 	
 	public static CertificateToken loadIssuers(DataLoader loader, CertificateToken certificate, CertificatePool certPool) {
-		if (certificate.getIssuerToken() == null) {
+		return loadIssuers(loader,  certificate, certPool, 0);
+	}
+	
+	private static CertificateToken loadIssuers(DataLoader loader, CertificateToken certificate, CertificatePool certPool, int max) {
+		if (certificate.getIssuerToken() == null && !certificate.isSelfSigned()) {
 			Collection<CertificateToken> issuerCertificates = certPool.get(certificate.getIssuerX500Principal());
 			if (issuerCertificates == null || issuerCertificates.isEmpty()) {
-				issuerCertificates = DSSUtils.loadIssuerCertificates(certificate, loader);
-
-				if (issuerCertificates != null) {
-					for (CertificateToken certificateToken : issuerCertificates) {
-						certPool.getInstance(certificateToken, CertificateSourceType.AIA);
-					}
-				}
+				loadIssuerFromAiaExtension(loader, certificate, certPool);
+				issuerCertificates = new ArrayList<>(certPool.get(certificate.getIssuerX500Principal()));
 			}
-			
+//			StringBuilder prefix = new StringBuilder();
+//			for(int i=0;i<max;i++)
+//				prefix.append(" ");
+//			prefix.append("|->");
+//			System.out.println(prefix.toString() + certificate.getSubjectX500Principal()+"/"+certificate.getIssuerX500Principal() + " - Size: "+issuerCertificates.size());
 			if (issuerCertificates != null) {
 				for (CertificateToken issuerCertificateToken : issuerCertificates) {
-					if (isIssuer(certificate, issuerCertificateToken) && !issuerCertificateToken.isSelfSigned()) {
-						List<CertificateToken> list = certPool.get(issuerCertificateToken.getIssuerX500Principal());
-						if (list == null || list.size() == 0) {
-							loadIssuers(loader, issuerCertificateToken, certPool);
-						}
+					if (isIssuer(certificate, issuerCertificateToken)) {
+						loadIssuers(loader, issuerCertificateToken, certPool, max+1);
 					}
 				}
 			}
@@ -66,15 +67,37 @@ public class CertificateTestUtils {
 		return certificate;
 	}
 
+	private static void loadIssuerFromAiaExtension(DataLoader loader, CertificateToken certificate, CertificatePool certPool) {
+		Collection<CertificateToken> issuerCertificates = DSSUtils.loadIssuerCertificates(certificate, loader);
+
+		if (issuerCertificates != null) {
+			for (CertificateToken certificateToken : issuerCertificates) {
+				certPool.getInstance(certificateToken, CertificateSourceType.AIA);
+//				
+//				try {
+//					java.nio.file.Files.write(java.nio.file.Paths.get(new File("c:/temp", certificateToken.getSubjectX500Principal().toString().replaceAll( "[\u0001-\u001f<>:\"/\\\\|?*\u007f]+", "" ).trim()+".cer").toURI()), certificateToken.getEncoded());
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+			}
+		}
+	}
+
 	private static boolean isIssuer(CertificateToken certificateToken, CertificateToken issuerCertificateToken){
 		if (!certificateToken.isSignedBy(issuerCertificateToken)) {
 			return false;
 		}
 		
+		if (issuerCertificateToken.isSignedBy(certificateToken)) {
+			// if certificates are inter signed, consider the bridge issuerCertificateToken the end of its tree
+			return false;
+		}
+		
 		String ski = GetSubjectKeyIdentifier(issuerCertificateToken);
 		String aki = GetAuthorityKeyIdentifier(certificateToken);
-		if (ski != null && aki != null) {
-			return ski.equals(aki);
+		if (ski != null && aki != null && !ski.equals(aki)) {
+			return false;
 		}
 		
 		return certificateToken.getIssuerX500Principal().equals(issuerCertificateToken.getSubjectX500Principal());

@@ -54,11 +54,9 @@ public class CertInfoReqValidatorTest {
 		Set<CertificateToken> fullPath = new LinkedHashSet<>();
 		sig.getCertificates();
 		CertificateToken cert = CertificateTestUtils.loadIssuers(sig.getSigningCertificateToken(), sig.getCertPool());
-		while (!cert.isSelfSigned()) {
+		while (cert != null) {
 			fullPath.add(cert);
-			if (!cert.isSelfSigned()) {
-				cert = cert.getIssuerToken();
-			}
+			cert = cert.getIssuerToken();
 		}
 		
 		CertInfoReqValidator validator = new CertInfoReqValidator(CertInfoReq.fullPath, sig, fullPath);

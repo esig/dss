@@ -83,9 +83,7 @@ public class CertificateTrustPointValidator {
 			chainCertificates = new LinkedHashSet<CertificateToken>();
 			boolean rootAdded = false;
 			for (Certificate certificate : certificates) {
-				X509Certificate x509Cert = (X509Certificate) certificate;
-				List<CertificateToken> listCertificates = certPool.get(x509Cert.getSubjectX500Principal());
-				CertificateToken certToken = listCertificates.size() > 0? listCertificates.get(0): new CertificateToken(x509Cert);
+				CertificateToken certToken = getToken(certificate);
 				if (certToken.isSelfSigned()) {
 					// Only the root (trust point) comes from a trusted store, a.k.a., SignaturePolicy
 					certToken = certPool.getInstance(certToken, CertificateSourceType.TRUSTED_STORE);
@@ -93,7 +91,7 @@ public class CertificateTrustPointValidator {
 				chainCertificates.add(certToken);
 			}
 			if (!rootAdded) {
-				CertificateToken tk = new CertificateToken(trustPoint.getTrustpoint());
+				CertificateToken tk = getToken(trustPoint.getTrustpoint());
 				chainCertificates.add(certPool.getInstance(tk, CertificateSourceType.TRUSTED_STORE));
 			}
 			return !chainCertificates.isEmpty();
@@ -101,6 +99,13 @@ public class CertificateTrustPointValidator {
 			LOG.debug("Error on validating certTrustCondition", e);
 		}
 		return false;
+	}
+
+	private CertificateToken getToken(Certificate certificate) {
+		X509Certificate x509Cert = (X509Certificate) certificate;
+		List<CertificateToken> listCertificates = certPool.get(x509Cert.getSubjectX500Principal());
+		CertificateToken certToken = listCertificates.size() > 0? listCertificates.get(0): new CertificateToken(x509Cert);
+		return certToken;
 	}
 
 	private CertPathBuilderResult buildCertPath()

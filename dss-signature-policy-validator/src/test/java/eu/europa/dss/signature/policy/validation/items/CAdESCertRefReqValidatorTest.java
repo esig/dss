@@ -126,11 +126,9 @@ public class CAdESCertRefReqValidatorTest {
 		Set<CertificateToken> fullPath = new LinkedHashSet<>();
 
 		CertificateToken cert = certificateToken;
-		while (!cert.isSelfSigned()) {
+		while (cert != null) {
 			fullPath.add(cert);
-			if (!cert.isSelfSigned()) {
-				cert = cert.getIssuerToken();
-			}
+			cert = cert.getIssuerToken();
 		}
 
 		SignerInformation si = Mockito.mock(SignerInformation.class);
