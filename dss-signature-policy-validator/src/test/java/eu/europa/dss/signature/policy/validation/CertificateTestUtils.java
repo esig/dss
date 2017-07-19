@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
@@ -27,6 +29,8 @@ public class CertificateTestUtils {
 	
 	public static CertificateToken loadIssuers(CertificateToken certificate, CertificatePool certPool) {
 		DataLoader loader = new NativeHTTPDataLoader() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public byte[] get(String url) {
 				if (url.startsWith("ldap")) {
@@ -41,30 +45,54 @@ public class CertificateTestUtils {
 
 	
 	public static CertificateToken loadIssuers(DataLoader loader, CertificateToken certificate, CertificatePool certPool) {
-		return loadIssuers(loader,  certificate, certPool, 0);
+		return loadIssuers(loader,  certificate, certPool, 0, Collections.<CertificateToken>emptyList());
 	}
 	
-	private static CertificateToken loadIssuers(DataLoader loader, CertificateToken certificate, CertificatePool certPool, int max) {
+	private static CertificateToken loadIssuers(DataLoader loader, CertificateToken certificate, CertificatePool certPool, int currentPathLength, List<CertificateToken> ignore) {
 		if (certificate.getIssuerToken() == null && !certificate.isSelfSigned()) {
 			Collection<CertificateToken> issuerCertificates = certPool.get(certificate.getIssuerX500Principal());
 			if (issuerCertificates == null || issuerCertificates.isEmpty()) {
 				loadIssuerFromAiaExtension(loader, certificate, certPool);
-				issuerCertificates = new ArrayList<>(certPool.get(certificate.getIssuerX500Principal()));
+				issuerCertificates = certPool.get(certificate.getIssuerX500Principal());
 			}
-//			StringBuilder prefix = new StringBuilder();
-//			for(int i=0;i<max;i++)
-//				prefix.append(" ");
-//			prefix.append("|->");
-//			System.out.println(prefix.toString() + certificate.getSubjectX500Principal()+"/"+certificate.getIssuerX500Principal() + " - Size: "+issuerCertificates.size());
-			if (issuerCertificates != null) {
-				for (CertificateToken issuerCertificateToken : issuerCertificates) {
-					if (isIssuer(certificate, issuerCertificateToken)) {
-						loadIssuers(loader, issuerCertificateToken, certPool, max+1);
-					}
+			// Avoid concurrent modifications
+			issuerCertificates = new ArrayList<>(issuerCertificates);
+			issuerCertificates.removeAll(ignore);
+//			printCertHierarchy(certificate, currentPathLength, issuerCertificates);
+			
+			boolean sameKey = false;
+			Object pk = null;
+			for (CertificateToken issuerCertificateToken : issuerCertificates) {
+				if (pk == null) {
+					pk = issuerCertificateToken.getPublicKey();
+				} else if (pk.equals(issuerCertificateToken.getPublicKey())) {
+					sameKey = true;
+				} else {
+					sameKey = false;
+					break;
+				}
+			}
+			
+			ignore = new ArrayList<>(ignore);
+			if (sameKey) {
+				ignore.addAll(issuerCertificates);
+			}
+			for (CertificateToken issuerCertificateToken : issuerCertificates) {
+				if (isIssuer(certificate, issuerCertificateToken)) {
+					loadIssuers(loader, issuerCertificateToken, certPool, currentPathLength+1, ignore);
 				}
 			}
 		}
 		return certificate;
+	}
+
+	@SuppressWarnings("unused")
+	private static void printCertHierarchy(CertificateToken certificate, int max, Collection<CertificateToken> issuerCertificates) {
+		StringBuilder prefix = new StringBuilder();
+		for(int i=0;i<max;i++)
+			prefix.append(" ");
+		prefix.append("|->");
+		System.out.println(prefix.toString() + certificate.getSubjectX500Principal()+"/"+certificate.getIssuerX500Principal() + " - Size: "+issuerCertificates.size());
 	}
 
 	private static void loadIssuerFromAiaExtension(DataLoader loader, CertificateToken certificate, CertificatePool certPool) {
@@ -73,11 +101,10 @@ public class CertificateTestUtils {
 		if (issuerCertificates != null) {
 			for (CertificateToken certificateToken : issuerCertificates) {
 				certPool.getInstance(certificateToken, CertificateSourceType.AIA);
-//				
+				
 //				try {
 //					java.nio.file.Files.write(java.nio.file.Paths.get(new File("c:/temp", certificateToken.getSubjectX500Principal().toString().replaceAll( "[\u0001-\u001f<>:\"/\\\\|?*\u007f]+", "" ).trim()+".cer").toURI()), certificateToken.getEncoded());
 //				} catch (IOException e) {
-//					// TODO Auto-generated catch block
 //					e.printStackTrace();
 //				}
 			}
@@ -86,11 +113,6 @@ public class CertificateTestUtils {
 
 	private static boolean isIssuer(CertificateToken certificateToken, CertificateToken issuerCertificateToken){
 		if (!certificateToken.isSignedBy(issuerCertificateToken)) {
-			return false;
-		}
-		
-		if (issuerCertificateToken.isSignedBy(certificateToken)) {
-			// if certificates are inter signed, consider the bridge issuerCertificateToken the end of its tree
 			return false;
 		}
 		
