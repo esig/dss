@@ -38,6 +38,8 @@ public interface PdfSignatureOrDocTimestampInfo {
 
 	String getReason();
 
+	String getFilter();
+
 	String getSubFilter();
 
 	Date getSigningDate();
