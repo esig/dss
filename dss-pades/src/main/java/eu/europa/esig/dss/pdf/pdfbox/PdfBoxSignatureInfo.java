@@ -29,6 +29,7 @@ import org.bouncycastle.cms.CMSException;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -49,9 +50,9 @@ class PdfBoxSignatureInfo extends PdfBoxCMSInfo implements PdfSignatureInfo {
 	 *            the original bytes of the whole signed document
 	 * @throws IOException
 	 */
-	PdfBoxSignatureInfo(CertificatePool validationCertPool, PDSignature signature, PdfDssDict dssDictionary, byte[] cms, byte[] originalBytes)
+	PdfBoxSignatureInfo(CertificatePool validationCertPool, PDSignature signature, PdfDict signatureDictionary, PdfDssDict dssDictionary, byte[] cms, byte[] originalBytes)
 			throws IOException {
-		super(signature, dssDictionary, cms, originalBytes);
+		super(signature, signatureDictionary, dssDictionary, cms, originalBytes);
 		try {
 			cades = new CAdESSignature(cms, validationCertPool);
 			content = cms;

@@ -60,6 +60,8 @@ public interface PdfSignatureOrDocTimestampInfo {
 
 	PdfDssDict getDssDictionary();
 
+	PdfDict getSignatureDictionary();
+
 	String uniqueId();
 
 	void addOuterSignature(PdfSignatureOrDocTimestampInfo signatureInfo);

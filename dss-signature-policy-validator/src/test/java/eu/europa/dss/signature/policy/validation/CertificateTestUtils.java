@@ -60,21 +60,11 @@ public class CertificateTestUtils {
 			issuerCertificates.removeAll(ignore);
 //			printCertHierarchy(certificate, currentPathLength, issuerCertificates);
 			
-			boolean sameKey = false;
-			Object pk = null;
-			for (CertificateToken issuerCertificateToken : issuerCertificates) {
-				if (pk == null) {
-					pk = issuerCertificateToken.getPublicKey();
-				} else if (pk.equals(issuerCertificateToken.getPublicKey())) {
-					sameKey = true;
-				} else {
-					sameKey = false;
-					break;
-				}
-			}
-			
 			ignore = new ArrayList<>(ignore);
-			if (sameKey) {
+			if (containsOnlyBridgeCertificates(issuerCertificates)) {
+				// If all the certificates retrieved contain the same key (shared private key), they are connecting 2
+				// certification paths. So they will appear again up in the path processing so the best option is to 
+				// ignore them if they show up in the future and process them here only.
 				ignore.addAll(issuerCertificates);
 			}
 			for (CertificateToken issuerCertificateToken : issuerCertificates) {
@@ -84,6 +74,18 @@ public class CertificateTestUtils {
 			}
 		}
 		return certificate;
+	}
+
+	private static boolean containsOnlyBridgeCertificates(Collection<CertificateToken> issuerCertificates) {
+		Object pk = null;
+		for (CertificateToken issuerCertificateToken : issuerCertificates) {
+			if (pk == null) {
+				pk = issuerCertificateToken.getPublicKey();
+			} else if (!pk.equals(issuerCertificateToken.getPublicKey())) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@SuppressWarnings("unused")

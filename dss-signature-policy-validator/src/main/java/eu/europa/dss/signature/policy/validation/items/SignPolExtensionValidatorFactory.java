@@ -1,17 +1,25 @@
 package eu.europa.dss.signature.policy.validation.items;
 
+import eu.europa.dss.signature.policy.SignPolExtn;
+import eu.europa.dss.signature.policy.SignerRules;
+import eu.europa.dss.signature.policy.asn1.ASN1PBADMandatedPdfSigDicEntries;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
 public class SignPolExtensionValidatorFactory {
 
 	public static ItemValidator createValidator(AdvancedSignature signature, Object currentObj) {
-		
-		// If there is nothing to validate or the validation is unknown, return an empty ItemValidator
-		return new ItemValidator() {
-			public boolean validate() {
-				return true;
+		CollectionItemValidator itemValidator = new CollectionItemValidator();
+		if (currentObj instanceof SignerRules) {
+			SignerRules signerRules = (SignerRules) currentObj;
+			for(SignPolExtn extn: signerRules.getSignPolExtensions()) {
+				if (extn.getExtnID().equals(ASN1PBADMandatedPdfSigDicEntries.OID)) {
+					ASN1PBADMandatedPdfSigDicEntries restriction = ASN1PBADMandatedPdfSigDicEntries.getInstance(extn.getExtnValue());
+					itemValidator.add(new PBADPdfEntryValidator(signature, restriction));
+				}
 			}
-		};
+		}
+		// If there is nothing to validate or the validation is unknown, return an empty ItemValidator
+		return itemValidator;
 	}
 
 }

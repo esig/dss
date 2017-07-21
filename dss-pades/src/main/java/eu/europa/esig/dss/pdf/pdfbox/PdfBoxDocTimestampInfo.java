@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
@@ -55,9 +56,9 @@ class PdfBoxDocTimestampInfo extends PdfBoxCMSInfo implements PdfDocTimestampInf
 	 *            the stream of the whole signed document
 	 * @throws DSSException
 	 */
-	PdfBoxDocTimestampInfo(CertificatePool validationCertPool, PDSignature signature, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent,
+	PdfBoxDocTimestampInfo(CertificatePool validationCertPool, PDSignature signature, PdfDict signatureDictionary, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent,
 			boolean isArchiveTimestamp) throws DSSException {
-		super(signature, dssDictionary, cms, signedContent);
+		super(signature, signatureDictionary, dssDictionary, cms, signedContent);
 		try {
 			TimestampType timestampType = TimestampType.SIGNATURE_TIMESTAMP;
 			if (isArchiveTimestamp) {

@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.utils.Utils;
@@ -47,6 +48,7 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	private final String filter;
 	private final String subFilter;
 	private final int[] signatureByteRange;
+	private final PdfDict signatureDictionary;
 
 	private final byte[] cms;
 
@@ -71,7 +73,7 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	 * @param signedContent
 	 *            the signed content
 	 */
-	PdfBoxCMSInfo(PDSignature signature, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent) {
+	PdfBoxCMSInfo(PDSignature signature, PdfDict signatureDictionary, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent) {
 		this.cms = cms;
 		this.location = signature.getLocation();
 		this.reason = signature.getReason();
@@ -81,6 +83,7 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 		this.signingDate = signature.getSignDate() != null ? signature.getSignDate().getTime() : null;
 		this.signatureByteRange = signature.getByteRange();
 		this.dssDictionary = dssDictionary;
+		this.signatureDictionary = signatureDictionary;
 		this.signedBytes = signedContent;
 	}
 
@@ -168,6 +171,11 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	@Override
 	public String getFilter() {
 		return filter;
+	}
+
+	@Override
+	public PdfDict getSignatureDictionary() {
+		return signatureDictionary;
 	}
 
 	@Override

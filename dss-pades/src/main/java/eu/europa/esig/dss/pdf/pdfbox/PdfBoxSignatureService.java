@@ -332,6 +332,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 					int[] byteRange = signature.getByteRange();
 
 					PdfSignatureOrDocTimestampInfo signatureInfo = null;
+					PdfDict signatureDictionary = new PdfBoxDict(signature.getCOSObject(), doc);
 					if (PdfBoxDocTimeStampService.SUB_FILTER_ETSI_RFC3161.getName().equals(subFilter)) {
 						boolean isArchiveTimestamp = false;
 
@@ -343,9 +344,9 @@ class PdfBoxSignatureService implements PDFSignatureService {
 							}
 						}
 
-						signatureInfo = new PdfBoxDocTimestampInfo(validationCertPool, signature, dssDictionary, cms, signedContent, isArchiveTimestamp);
+						signatureInfo = new PdfBoxDocTimestampInfo(validationCertPool, signature, signatureDictionary, dssDictionary, cms, signedContent, isArchiveTimestamp);
 					} else {
-						signatureInfo = new PdfBoxSignatureInfo(validationCertPool, signature, dssDictionary, cms, signedContent);
+						signatureInfo = new PdfBoxSignatureInfo(validationCertPool, signature, signatureDictionary, dssDictionary, cms, signedContent);
 					}
 
 					if (signatureInfo != null) {
