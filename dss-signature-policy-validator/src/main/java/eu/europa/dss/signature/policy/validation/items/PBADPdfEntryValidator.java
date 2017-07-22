@@ -34,7 +34,7 @@ public class PBADPdfEntryValidator implements ItemValidator {
 				signatureDictionary.hasANameWithValue(pdfEntry.getName(), new String(pdfEntry.getValue()));
 				
 			if (!isValid) {
-				invalidEntries.add(pdfEntry.getName());
+				invalidEntries.add(pdfEntry.getName() + "=" + new String(pdfEntry.getValue()));
 			}
 		}
 		return invalidEntries.isEmpty();

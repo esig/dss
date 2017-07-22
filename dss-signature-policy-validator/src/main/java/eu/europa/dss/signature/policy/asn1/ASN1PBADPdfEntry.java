@@ -1,11 +1,15 @@
 package eu.europa.dss.signature.policy.asn1;
 
+import java.io.IOException;
+
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERUTF8String;
+
+import eu.europa.esig.dss.DSSException;
 
 public class ASN1PBADPdfEntry extends ASN1Object {
 	private String name;
@@ -14,7 +18,8 @@ public class ASN1PBADPdfEntry extends ASN1Object {
 	public ASN1PBADPdfEntry(ASN1Sequence as) {
 		name = DERUTF8String.getInstance(as.getObjectAt(0)).getString();
 		if (as.size() > 1) {
-			value = ASN1OctetString.getInstance(as.getObjectAt(1)).getOctets();
+			byte[] octets = ASN1OctetString.getInstance(as.getObjectAt(1)).getOctets();
+			value = DERUTF8String.getInstance(octets).getString().getBytes();
 		}
 	}
 	
@@ -44,8 +49,12 @@ public class ASN1PBADPdfEntry extends ASN1Object {
 	
 	@Override
 	public ASN1Primitive toASN1Primitive() {
-		return ASN1Utils.createASN1Sequence(
-				new DERUTF8String(name), 
-				value == null? null: new DEROctetString(value));
+		try {
+			return ASN1Utils.createASN1Sequence(
+					new DERUTF8String(name), 
+					value == null? null: new DEROctetString(DERUTF8String.getInstance(value)));
+		} catch (IOException e) {
+			throw new DSSException("Error parsing PBADPdfEntry");
+		}
 	}
 }
