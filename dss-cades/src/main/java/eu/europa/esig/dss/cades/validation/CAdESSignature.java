@@ -474,7 +474,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public void checkSignaturePolicy(SignaturePolicyProvider signaturePolicyProvider) {
 		ServiceLoader<SignaturePolicyValidator> loader = ServiceLoader.load(SignaturePolicyValidator.class);
 		Iterator<SignaturePolicyValidator> iterator = loader.iterator();
-		SignaturePolicyValidator impl = iterator.next();
+		SignaturePolicyValidator impl;
 		if (iterator.hasNext()) {
 			impl = iterator.next();
 		} else {
