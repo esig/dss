@@ -26,8 +26,8 @@ public class PBADPdfEntryValidatorTest {
 		PBADPdfEntryValidator pbadPdfEntryValidator = new PBADPdfEntryValidator(signatures.get(0), mandatedEntries);
 		Assert.assertFalse("Not valid entries", pbadPdfEntryValidator.validate());
 		Assert.assertEquals(2, pbadPdfEntryValidator.getInvalidEntries().size());
-		Assert.assertTrue(pbadPdfEntryValidator.getInvalidEntries().contains("Filter"));
-		Assert.assertTrue(pbadPdfEntryValidator.getInvalidEntries().contains("SubFilter"));
+		Assert.assertTrue(pbadPdfEntryValidator.getInvalidEntries().contains("Filter=Adobe.PPKLite"));
+		Assert.assertTrue(pbadPdfEntryValidator.getInvalidEntries().contains("SubFilter=ETSI.CAdES.detached"));
 	}
 
 	@Test

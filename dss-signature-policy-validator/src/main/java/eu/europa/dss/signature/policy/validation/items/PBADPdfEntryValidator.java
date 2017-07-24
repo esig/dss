@@ -1,5 +1,6 @@
 package eu.europa.dss.signature.policy.validation.items;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +35,11 @@ public class PBADPdfEntryValidator implements ItemValidator {
 				signatureDictionary.hasANameWithValue(pdfEntry.getName(), new String(pdfEntry.getValue()));
 				
 			if (!isValid) {
-				invalidEntries.add(pdfEntry.getName() + "=" + new String(pdfEntry.getValue()));
+				try {
+					invalidEntries.add(pdfEntry.getName() + "=" + new String(signatureDictionary.get(pdfEntry.getName())));
+				} catch (IOException e) {
+					invalidEntries.add(pdfEntry.getName() + "= <error parsing value>");
+				}
 			}
 		}
 		return invalidEntries.isEmpty();
