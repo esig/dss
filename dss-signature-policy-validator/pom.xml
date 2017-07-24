@@ -38,5 +38,9 @@
   		<version>2.8.47</version>
   		<scope>test</scope>
   	</dependency>
+  	<dependency>
+  		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+  		<artifactId>dss-pades</artifactId>
+  	</dependency>
   </dependencies>
 </project>
