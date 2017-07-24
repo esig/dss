@@ -477,6 +477,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		SignaturePolicyValidator impl;
 		if (iterator.hasNext()) {
 			impl = iterator.next();
+			impl.setSignature(this);
+			impl.setSignaturePolicyProvider(signaturePolicyProvider);
 		} else {
 			impl = new BasicCAdESSignaturePolicyValidator(signaturePolicyProvider, this);
 		}
