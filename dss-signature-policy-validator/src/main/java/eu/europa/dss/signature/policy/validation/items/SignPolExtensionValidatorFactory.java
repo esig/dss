@@ -1,5 +1,6 @@
 package eu.europa.dss.signature.policy.validation.items;
 
+import eu.europa.dss.signature.policy.PBADMandatedPdfSigDicEntries;
 import eu.europa.dss.signature.policy.SignPolExtn;
 import eu.europa.dss.signature.policy.SignerRules;
 import eu.europa.dss.signature.policy.asn1.ASN1PBADMandatedPdfSigDicEntries;
@@ -13,7 +14,7 @@ public class SignPolExtensionValidatorFactory {
 			SignerRules signerRules = (SignerRules) currentObj;
 			for(SignPolExtn extn: signerRules.getSignPolExtensions()) {
 				if (extn.getExtnID().equals(ASN1PBADMandatedPdfSigDicEntries.OID)) {
-					ASN1PBADMandatedPdfSigDicEntries restriction = ASN1PBADMandatedPdfSigDicEntries.getInstance(extn.getExtnValue());
+					PBADMandatedPdfSigDicEntries restriction = ASN1PBADMandatedPdfSigDicEntries.getInstance(extn.getExtnValue());
 					itemValidator.add(new PBADPdfEntryValidator(signature, restriction));
 				}
 			}

@@ -10,6 +10,9 @@ import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 
+import eu.europa.dss.signature.policy.PBADMandatedPdfSigDicEntries;
+import eu.europa.dss.signature.policy.PBADPdfEntry;
+
 /**
  * 
  * MandatedPdfSigDicEntries ::= SEQUENCE OF PdfEntry
@@ -21,17 +24,17 @@ import org.bouncycastle.asn1.ASN1Sequence;
  * @author davyd.santos
  *
  */
-public class ASN1PBADMandatedPdfSigDicEntries extends ASN1Object {
+public class ASN1PBADMandatedPdfSigDicEntries extends ASN1Object implements PBADMandatedPdfSigDicEntries {
 
 	public static final String OID = "2.16.76.1.8.1";
 	
-	private List<ASN1PBADPdfEntry> requiredPdfEntries = new ArrayList<>();
+	private List<PBADPdfEntry> requiredPdfEntries = new ArrayList<>();
 	
-	public static ASN1PBADMandatedPdfSigDicEntries getInstance(byte[] contents) {
+	public static PBADMandatedPdfSigDicEntries getInstance(byte[] contents) {
 		return getInstance(ASN1Sequence.getInstance(contents));
 	}
 	
-	public static ASN1PBADMandatedPdfSigDicEntries getInstance(ASN1Object obj) {
+	public static PBADMandatedPdfSigDicEntries getInstance(ASN1Object obj) {
 		if (obj != null) {
 			return new ASN1PBADMandatedPdfSigDicEntries(ASN1Sequence.getInstance(obj));
 		}
@@ -57,7 +60,11 @@ public class ASN1PBADMandatedPdfSigDicEntries extends ASN1Object {
 		return ASN1Utils.createASN1Sequence(requiredPdfEntries);
 	}
 	
-	public List<ASN1PBADPdfEntry> getPdfEntries() {
+	/* (non-Javadoc)
+	 * @see eu.europa.dss.signature.policy.asn1.PBADMandatedPdfSigDicEntries#getPdfEntries()
+	 */
+	@Override
+	public List<PBADPdfEntry> getPdfEntries() {
 		return Collections.unmodifiableList(requiredPdfEntries);
 	}
 }

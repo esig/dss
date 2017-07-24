@@ -9,9 +9,10 @@ import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERUTF8String;
 
+import eu.europa.dss.signature.policy.PBADPdfEntry;
 import eu.europa.esig.dss.DSSException;
 
-public class ASN1PBADPdfEntry extends ASN1Object {
+public class ASN1PBADPdfEntry extends ASN1Object implements PBADPdfEntry {
 	private String name;
 	private byte[] value;
 	
@@ -39,10 +40,18 @@ public class ASN1PBADPdfEntry extends ASN1Object {
 		this(name, value == null? null: value.getBytes());
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.europa.dss.signature.policy.asn1.PBADPdfEntry#getName()
+	 */
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.europa.dss.signature.policy.asn1.PBADPdfEntry#getValue()
+	 */
+	@Override
 	public byte[] getValue() {
 		return value;
 	}
