@@ -28,19 +28,27 @@ import eu.europa.esig.dss.x509.SignaturePolicy;
  * @author davyd.santos
  *
  */
-public class BasicCAdESSignaturePolicyValidator implements SignaturePolicyValidator {
+public class BasicCAdESSignaturePolicyValidator implements SignaturePolicyValidator<CAdESSignature> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BasicCAdESSignaturePolicyValidator.class);
 	
-	private SignaturePolicyProvider signaturePolicyProvider;
+	protected SignaturePolicyProvider signaturePolicyProvider;
 
 	private SignaturePolicy signaturePolicy;
-	
+
 	protected CAdESSignature cadesSignature;
 
 	public BasicCAdESSignaturePolicyValidator(SignaturePolicyProvider signaturePolicyProvider, CAdESSignature sig) {
 		this.signaturePolicyProvider = signaturePolicyProvider;
 		this.cadesSignature = sig;
+	}
+	
+	public void setSignaturePolicyProvider(SignaturePolicyProvider signaturePolicyProvider) {
+		this.signaturePolicyProvider = signaturePolicyProvider;
+	}
+
+	public void setSignature(CAdESSignature cadesSignature) {
+		this.cadesSignature = cadesSignature;
 	}
 
 	public Map<String, String> validate() {
