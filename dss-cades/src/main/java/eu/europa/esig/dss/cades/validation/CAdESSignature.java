@@ -477,7 +477,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public void checkSignaturePolicy(SignaturePolicyProvider signaturePolicyProvider) {
-		final Attribute attribute = CMSUtils.getSignedAttributes(getSignerInformation()).get(PKCSObjectIdentifiers.id_aa_ets_sigPolicyId);
+		final Attribute attribute = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_sigPolicyId);
 		if (attribute == null) {
 			return;
 		}
