@@ -7,17 +7,16 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.bouncycastle.asn1.ASN1OctetString;
-import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -297,7 +296,7 @@ public class DiagnosticDataBuilder {
 
 		xmlSignature.setBasicSignature(getXmlBasicSignature(signature, signingCertificateToken));
 
-		xmlSignature.setPolicy(getXmlPolicy(signature.getPolicyId()));
+		xmlSignature.setPolicy(getXmlPolicy(signature));
 
 		xmlSignature.setTimestamps(getXmlTimestamps(signature));
 
@@ -526,7 +525,8 @@ public class DiagnosticDataBuilder {
 	 *            The Signature Policy
 	 * 
 	 */
-	private XmlPolicy getXmlPolicy(SignaturePolicy signaturePolicy) {
+	private XmlPolicy getXmlPolicy(AdvancedSignature signature) {
+		SignaturePolicy signaturePolicy = signature.getPolicyId();
 		if (signaturePolicy == null) {
 			return null;
 		}
@@ -575,85 +575,31 @@ public class DiagnosticDataBuilder {
 			return xmlPolicy;
 		}
 
-		ASN1Sequence asn1Sequence = null;
 		try {
-			asn1Sequence = DSSASN1Utils.toASN1Primitive(policyBytes);
-		} catch (Exception e) {
-			LOG.info("Policy bytes are not asn1 processable : " + e.getMessage());
-		}
-
-		try {
-			if (asn1Sequence != null) {
-				xmlPolicy.setAsn1Processable(true);
-
-				/**
-				 * a) If the resulting document is based on TR 102 272 [i.2] (ESI: ASN.1 format for signature policies),
-				 * use the digest value present in the
-				 * SignPolicyDigest element from the resulting document. Check that the digest algorithm indicated in
-				 * the SignPolicyDigestAlg from the resulting
-				 * document is equal to the digest algorithm indicated in the property.
-				 */
-
-				final ASN1Sequence signPolicyHashAlgObject = (ASN1Sequence) asn1Sequence.getObjectAt(0);
-				final AlgorithmIdentifier signPolicyHashAlgIdentifier = AlgorithmIdentifier.getInstance(signPolicyHashAlgObject);
-				DigestAlgorithm signPolicyHashAlgFromPolicy = DigestAlgorithm.forOID(signPolicyHashAlgIdentifier.getAlgorithm().getId());
-
-				/**
-				 * b) If the resulting document is based on TR 102 038 [i.3] ((ESI) XML format for signature policies),
-				 * use the digest value present in
-				 * signPolicyHash element from the resulting document. Check that the digest algorithm indicated in the
-				 * signPolicyHashAlg from the resulting
-				 * document is equal to the digest algorithm indicated in the attribute.
-				 */
-
-				/**
-				 * The use of a zero-sigPolicyHash value is to ensure backwards compatibility with earlier versions of
-				 * the current document. If sigPolicyHash is
-				 * zero, then the hash value should not be checked against the calculated hash value of the signature
-				 * policy.
-				 */
-				if (!signPolicyHashAlgFromPolicy.equals(signPolicyHashAlgFromSignature)) {
-					xmlPolicy.setProcessingError("The digest algorithm indicated in the SignPolicyHashAlg from the resulting document ("
-							+ signPolicyHashAlgFromPolicy + ") is not equal to the digest " + "algorithm (" + signPolicyHashAlgFromSignature + ").");
-					xmlPolicy.setDigestAlgorithmsEqual(false);
-					xmlPolicy.setStatus(false);
-					return xmlPolicy;
-				} else {
-					xmlPolicy.setDigestAlgorithmsEqual(true);
-				}
-
-				String recalculatedDigestValue = Utils.toBase64(DSSASN1Utils.getAsn1SignaturePolicyDigest(signPolicyHashAlgFromPolicy, policyBytes));
-
-				boolean equal = Utils.areStringsEqual(digestValue, recalculatedDigestValue);
-				xmlPolicy.setStatus(equal);
-				if (!equal) {
-					xmlPolicy.setProcessingError(
-							"The policy digest value (" + digestValue + ") does not match the re-calculated digest value (" + recalculatedDigestValue + ").");
-					return xmlPolicy;
-				}
-
-				final ASN1OctetString signPolicyHash = (ASN1OctetString) asn1Sequence.getObjectAt(2);
-				final String policyDigestValueFromPolicy = Utils.toBase64(signPolicyHash.getOctets());
-				equal = Utils.areStringsEqual(digestValue, policyDigestValueFromPolicy);
-				xmlPolicy.setStatus(equal);
-				if (!equal) {
-					xmlPolicy.setProcessingError("The policy digest value (" + digestValue + ") does not match the digest value from the policy file ("
-							+ policyDigestValueFromPolicy + ").");
-				}
-			} else {
-				/**
-				 * c) In all other cases, compute the digest using the digesting algorithm indicated in the children of
-				 * the property/attribute.
-				 */
-				String recalculatedDigestValue = Utils.toBase64(DSSUtils.digest(signPolicyHashAlgFromSignature, policyBytes));
-				boolean equal = Utils.areStringsEqual(digestValue, recalculatedDigestValue);
-				xmlPolicy.setStatus(equal);
-				if (!equal) {
-					xmlPolicy.setProcessingError(
-							"The policy digest value (" + digestValue + ") does not match the re-calculated digest value (" + recalculatedDigestValue + ").");
+			SignaturePolicyValidator validator = null;
+			ServiceLoader<SignaturePolicyValidator> loader = ServiceLoader.load(SignaturePolicyValidator.class);
+			Iterator<SignaturePolicyValidator> validatorOptions = loader.iterator();
+			
+			if (validatorOptions.hasNext()) {
+				for (SignaturePolicyValidator signaturePolicyValidator : loader) {
+					signaturePolicyValidator.setSignature(signature);
+					if (signaturePolicyValidator.canValidate()) {
+						validator = signaturePolicyValidator;
+						break;
+					}
 				}
 			}
-
+			
+			if (validator == null) {
+				validator = new BasicASNSignaturePolicyValidator(signature);
+			}
+			
+			validator.validate();
+			xmlPolicy.setAsn1Processable(validator.isAsn1Processable());
+			xmlPolicy.setDigestAlgorithmsEqual(validator.isDigestAlgorithmsEqual());
+			xmlPolicy.setIdentified(validator.isIdentified());
+			xmlPolicy.setStatus(validator.isStatus());
+			xmlPolicy.setProcessingError(validator.getProcessingErrors());
 		} catch (Exception e) {
 			// When any error (communication) we just set the status to false
 			xmlPolicy.setStatus(false);
