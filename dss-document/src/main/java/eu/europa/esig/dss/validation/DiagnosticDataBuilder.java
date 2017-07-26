@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSPKUtils;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -549,37 +548,11 @@ public class DiagnosticDataBuilder {
 			xmlPolicy.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(signPolicyHashAlgFromSignature, digestValue));
 		}
 
-		/**
-		 * ETSI 102 853: 3) Obtain the digest of the resulting document against which the digest value present in the
-		 * property/attribute will be checked:
-		 */
-		final DSSDocument policyContent = signaturePolicy.getPolicyContent();
-		byte[] policyBytes = null;
-		if (policyContent == null) {
-			xmlPolicy.setIdentified(false);
-			if (policyId.isEmpty()) {
-				xmlPolicy.setStatus(true);
-			} else {
-				xmlPolicy.setStatus(false);
-			}
-			return xmlPolicy;
-		} else {
-			policyBytes = DSSUtils.toByteArray(policyContent);
-			xmlPolicy.setStatus(true);
-		}
-		xmlPolicy.setIdentified(true);
-
-		if (Utils.isArrayEmpty(policyBytes)) {
-			xmlPolicy.setIdentified(false);
-			xmlPolicy.setProcessingError("Empty content for policy");
-			return xmlPolicy;
-		}
-
 		try {
 			SignaturePolicyValidator validator = null;
 			ServiceLoader<SignaturePolicyValidator> loader = ServiceLoader.load(SignaturePolicyValidator.class);
 			Iterator<SignaturePolicyValidator> validatorOptions = loader.iterator();
-			
+
 			if (validatorOptions.hasNext()) {
 				for (SignaturePolicyValidator signaturePolicyValidator : loader) {
 					signaturePolicyValidator.setSignature(signature);
@@ -589,11 +562,13 @@ public class DiagnosticDataBuilder {
 					}
 				}
 			}
-			
+
 			if (validator == null) {
-				validator = new BasicASNSignaturePolicyValidator(signature);
+				// if not empty and no other implementation is found for ASN1 signature policies
+				validator = new BasicASNSignaturePolicyValidator();
+				validator.setSignature(signature);
 			}
-			
+
 			validator.validate();
 			xmlPolicy.setAsn1Processable(validator.isAsn1Processable());
 			xmlPolicy.setDigestAlgorithmsEqual(validator.isDigestAlgorithmsEqual());
@@ -752,7 +727,7 @@ public class DiagnosticDataBuilder {
 		final XmlCertificate xmlCert = new XmlCertificate();
 
 		xmlCert.setId(certToken.getDSSIdAsString());
-                xmlCert.setBase64Encoded(Utils.toBase64(certToken.getEncoded()).getBytes());
+		xmlCert.setBase64Encoded(Utils.toBase64(certToken.getEncoded()).getBytes());
 
 		xmlCert.getSubjectDistinguishedName().add(getXmlDistinguishedName(X500Principal.CANONICAL, certToken.getSubjectX500Principal()));
 		xmlCert.getSubjectDistinguishedName().add(getXmlDistinguishedName(X500Principal.RFC2253, certToken.getSubjectX500Principal()));
