@@ -59,11 +59,10 @@ public class FullCAdESSignaturePolicyValidator extends BasicASNSignaturePolicyVa
 	private SignaturePolicy policy;
 
 	public FullCAdESSignaturePolicyValidator() {
-		super(null);
 	}
 
 	public FullCAdESSignaturePolicyValidator(CAdESSignature sig) {
-		super(sig);
+		setSignature(sig);
 	}
 	
 	@Override
