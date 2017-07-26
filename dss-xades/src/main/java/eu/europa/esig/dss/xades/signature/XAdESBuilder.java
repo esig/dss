@@ -77,6 +77,7 @@ public abstract class XAdESBuilder {
 	public static final String DS_X509_ISSUER_NAME = "ds:X509IssuerName";
 	public static final String DS_X509_SERIAL_NUMBER = "ds:X509SerialNumber";
 	public static final String DS_XPATH = "ds:XPath";
+	public static final String DS_MANIFEST = "ds:Manifest";
 
 	public static final String XADES_ALL_DATA_OBJECTS_TIME_STAMP = "xades:AllDataObjectsTimeStamp";
 	public static final String XADES_ALL_SIGNED_DATA_OBJECTS = "xades:AllSignedDataObjects";
