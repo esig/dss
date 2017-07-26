@@ -51,6 +51,7 @@ import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.ASN1UTCTime;
+import org.bouncycastle.asn1.BERTags;
 import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
@@ -778,6 +779,11 @@ public final class DSSASN1Utils {
 			LOG.warn("!!! The framework handles only one signer (SignerInformation) !!!");
 		}
 		return signers.iterator().next();
+	}
+
+	public static boolean isASN1SequenceTag(byte tagByte) {
+		// BERTags.SEQUENCE | BERTags.CONSTRUCTED = 0x30
+		return (BERTags.SEQUENCE | BERTags.CONSTRUCTED) == tagByte;
 	}
 
 }

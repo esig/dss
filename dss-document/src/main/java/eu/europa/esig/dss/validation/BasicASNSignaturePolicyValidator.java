@@ -1,8 +1,5 @@
 package eu.europa.esig.dss.validation;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -18,63 +15,33 @@ import eu.europa.esig.dss.x509.SignaturePolicy;
 
 /**
  * Default implementation, checks only the hash of the policy
+ * 
+ * Note : this implementation is not registered as a service to allow overriding
+ * 
  * @author davyd.santos
  *
  */
-public class BasicASNSignaturePolicyValidator implements SignaturePolicyValidator {
+public class BasicASNSignaturePolicyValidator extends AbstractSignaturePolicyValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BasicASNSignaturePolicyValidator.class);
-	
-	private AdvancedSignature signature;
-	private boolean identified;
-	private boolean status;
-	private boolean asn1Processable;
-	private boolean digestAlgorithmsEqual;
-	private Map<String, String> errors = new HashMap<>();
 
-	public BasicASNSignaturePolicyValidator(AdvancedSignature sig) {
-		this.signature = sig;
-	}
-
+	@Override
 	public void validate() {
-		SignaturePolicy signaturePolicy = signature.getPolicyId();
-		
+		SignaturePolicy signaturePolicy = getSignaturePolicy();
+
 		final DSSDocument policyContent = signaturePolicy.getPolicyContent();
-		byte[] policyBytes = null;
-		if (policyContent == null) {
-			setIdentified(false);
-			if (signaturePolicy.getIdentifier().isEmpty()) {
-				setStatus(true);
-			} else {
-				setStatus(false);
-			}
-			return;
-		} else {
-			policyBytes = DSSUtils.toByteArray(policyContent);
-			setStatus(true);
-		}
+		byte[] policyBytes = DSSUtils.toByteArray(policyContent);
+		final String digestValue = signaturePolicy.getDigestValue();
+		final DigestAlgorithm signPolicyHashAlgFromSignature = signaturePolicy.getDigestAlgorithm();
+
+		setStatus(true);
 		setIdentified(true);
 
-		if (Utils.isArrayEmpty(policyBytes)) {
-			setIdentified(false);
-			errors.put("general", "Empty content for policy");
-			return;
-		}
-
-		ASN1Sequence asn1Sequence = null;
 		try {
-			asn1Sequence = DSSASN1Utils.toASN1Primitive(policyBytes);
-		} catch (Exception e) {
-			LOG.info("Policy bytes are not asn1 processable : " + e.getMessage());
-		}
+			ASN1Sequence asn1Sequence = DSSASN1Utils.toASN1Primitive(policyBytes);
 
-		try {
-			final String digestValue = signaturePolicy.getDigestValue();
-			final DigestAlgorithm signPolicyHashAlgFromSignature = signaturePolicy.getDigestAlgorithm();
-			
 			if (asn1Sequence != null) {
 				setAsn1Processable(true);
-
 
 				/**
 				 * a) If the resulting document is based on TR 102 272 [i.2] (ESI: ASN.1 format for signature policies),
@@ -103,8 +70,8 @@ public class BasicASNSignaturePolicyValidator implements SignaturePolicyValidato
 				 * policy.
 				 */
 				if (!signPolicyHashAlgFromPolicy.equals(signPolicyHashAlgFromSignature)) {
-					addError("general", "The digest algorithm indicated in the SignPolicyHashAlg from the resulting document ("
-							+ signPolicyHashAlgFromPolicy + ") is not equal to the digest " + "algorithm (" + signPolicyHashAlgFromSignature + ").");
+					addError("general", "The digest algorithm indicated in the SignPolicyHashAlg from the resulting document (" + signPolicyHashAlgFromPolicy
+							+ ") is not equal to the digest " + "algorithm (" + signPolicyHashAlgFromSignature + ").");
 					setDigestAlgorithmsEqual(false);
 					setStatus(false);
 					return;
@@ -117,7 +84,8 @@ public class BasicASNSignaturePolicyValidator implements SignaturePolicyValidato
 				boolean equal = Utils.areStringsEqual(digestValue, recalculatedDigestValue);
 				setStatus(equal);
 				if (!equal) {
-					addError("general", "The policy digest value (" + digestValue + ") does not match the re-calculated digest value (" + recalculatedDigestValue + ").");
+					addError("general",
+							"The policy digest value (" + digestValue + ") does not match the re-calculated digest value (" + recalculatedDigestValue + ").");
 					return;
 				}
 
@@ -129,17 +97,6 @@ public class BasicASNSignaturePolicyValidator implements SignaturePolicyValidato
 					addError("general", "The policy digest value (" + digestValue + ") does not match the digest value from the policy file ("
 							+ policyDigestValueFromPolicy + ").");
 				}
-			} else {
-				/**
-				 * c) In all other cases, compute the digest using the digesting algorithm indicated in the children of
-				 * the property/attribute.
-				 */
-				String recalculatedDigestValue = Utils.toBase64(DSSUtils.digest(signPolicyHashAlgFromSignature, policyBytes));
-				boolean equal = Utils.areStringsEqual(digestValue, recalculatedDigestValue);
-				setStatus(equal);
-				if (!equal) {
-					addError("general", "The policy digest value (" + digestValue + ") does not match the re-calculated digest value (" + recalculatedDigestValue + ").");
-				}
 			}
 
 		} catch (Exception e) {
@@ -150,64 +107,15 @@ public class BasicASNSignaturePolicyValidator implements SignaturePolicyValidato
 			LOG.warn(e.getMessage(), e);
 		}
 	}
-	
+
+	@Override
 	public boolean canValidate() {
-		return getSignature() != null;
-	}
-
-	public AdvancedSignature getSignature() {
-		return signature;
-	}
-
-	public boolean isIdentified() {
-		return identified;
-	}
-
-	public boolean isStatus() {
-		return status;
-	}
-
-	public boolean isAsn1Processable() {
-		return asn1Processable;
-	}
-
-	public boolean isDigestAlgorithmsEqual() {
-		return digestAlgorithmsEqual;
-	}
-
-	public String getProcessingErrors() {
-		StringBuilder stringBuilder = new StringBuilder();
-		if (!errors.isEmpty()) {
-			stringBuilder.append("The errors found on signature policy validation are:");
-			for (String key : errors.keySet()) {
-				stringBuilder.append(" at ").append(key).append(": ").append(errors.get(key)).append(",");
-			}
-			stringBuilder.setLength(stringBuilder.length()-2);
+		SignaturePolicy policy = getSignaturePolicy();
+		if (policy.getPolicyContent() != null) {
+			byte firstByte = DSSUtils.readFirstByte(policy.getPolicyContent());
+			return DSSASN1Utils.isASN1SequenceTag(firstByte);
 		}
-		return stringBuilder.toString();
+		return false;
 	}
 
-	public void setSignature(AdvancedSignature signature) {
-		this.signature = signature;
-	}
-
-	private void setIdentified(boolean identified) {
-		this.identified = identified;
-	}
-
-	private void setStatus(boolean status) {
-		this.status = status;
-	}
-
-	private void setAsn1Processable(boolean asn1Processable) {
-		this.asn1Processable = asn1Processable;
-	}
-
-	private void setDigestAlgorithmsEqual(boolean digestAlgorithmsEqual) {
-		this.digestAlgorithmsEqual = digestAlgorithmsEqual;
-	}
-
-	protected void addError(String key, String description) {
-		this.errors.put(key, description);
-	}
 }

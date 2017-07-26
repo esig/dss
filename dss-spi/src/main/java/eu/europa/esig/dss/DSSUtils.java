@@ -972,6 +972,24 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * Reads the first byte from the DSSDocument
+	 * 
+	 * @param dssDocument
+	 *            the document
+	 * @return the first byte
+	 * @throws DSSException
+	 */
+	public static byte readFirstByte(final DSSDocument dssDocument) throws DSSException {
+		byte[] result = new byte[1];
+		try (InputStream inputStream = dssDocument.openStream()) {
+			inputStream.read(result, 0, 1);
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+		return result[0];
+	}
+
+	/**
 	 * Concatenates all the arrays into a new array. The new array contains all of the element of each array followed by
 	 * all of the elements of the next array. When an array is
 	 * returned, it is always a new array.
