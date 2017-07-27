@@ -32,6 +32,11 @@ public abstract class AbstractSignatureAttributesValidator implements ItemValida
 	public List<String> getMissingAttributes() {
 		return Collections.unmodifiableList(missingAttributes);
 	}
+	
+	@Override
+	public String getErrorDetail() {
+		return null;
+	}
 
 	protected abstract boolean containsAttribute(String oid);
 }

@@ -21,4 +21,13 @@ public class CollectionItemValidator implements ItemValidator {
 	public void add(ItemValidator validator) {
 		items.add(validator);
 	}
+
+	@Override
+	public String getErrorDetail() {
+		StringBuilder sb = new StringBuilder();
+		for (ItemValidator itemValidator : items) {
+			sb.append(itemValidator.getErrorDetail()).append("; ");
+		}
+		return sb.toString();
+	}
 }

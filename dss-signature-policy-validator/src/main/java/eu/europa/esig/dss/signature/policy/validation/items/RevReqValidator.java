@@ -77,4 +77,9 @@ public class RevReqValidator implements ItemValidator {
 		// TODO in case both are required, DSS needs to fetch whatever is missing
 		throw new DSSException("No CRL response found");
 	}
+	
+	@Override
+	public String getErrorDetail() {
+		return null;
+	}
 }

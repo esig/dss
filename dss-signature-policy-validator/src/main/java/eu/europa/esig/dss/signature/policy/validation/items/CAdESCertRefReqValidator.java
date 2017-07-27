@@ -147,4 +147,9 @@ public class CAdESCertRefReqValidator implements ItemValidator {
 		}
 		return false;
 	}
+	
+	@Override
+	public String getErrorDetail() {
+		return null;
+	}
 }

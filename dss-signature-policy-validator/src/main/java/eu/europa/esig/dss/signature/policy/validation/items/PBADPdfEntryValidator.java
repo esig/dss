@@ -44,6 +44,20 @@ public class PBADPdfEntryValidator implements ItemValidator {
 		}
 		return invalidEntries.isEmpty();
 	}
+	
+	public String getErrorDetail() {
+		if (invalidEntries.isEmpty()) { 
+			return "";
+		}
+		
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("Invalid PDF entries:");
+		for (String key : invalidEntries) {
+			stringBuilder.append(" ").append(key).append(": ").append(invalidEntries).append(",");
+		}
+		stringBuilder.setLength(stringBuilder.length() - 2);
+		return stringBuilder.toString();
+	}
 
 	public List<String> getInvalidEntries() {
 		return Collections.unmodifiableList(invalidEntries);

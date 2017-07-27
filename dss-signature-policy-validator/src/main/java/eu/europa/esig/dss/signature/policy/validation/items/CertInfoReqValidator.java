@@ -8,7 +8,7 @@ import eu.europa.esig.dss.signature.policy.CertInfoReq;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.x509.CertificateToken;
 
-public class CertInfoReqValidator {
+public class CertInfoReqValidator implements ItemValidator {
 
 	private CertInfoReq mandatedCertificateInfo;
 	private AdvancedSignature adesSignature;
@@ -53,5 +53,10 @@ public class CertInfoReqValidator {
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public String getErrorDetail() {
+		return null;
 	}
 }

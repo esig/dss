@@ -27,5 +27,9 @@ public class CAdESSignerRulesExternalDataValidator implements ItemValidator {
 		}
 		return true;
 	}
-
+	
+	@Override
+	public String getErrorDetail() {
+		return null;
+	}
 }

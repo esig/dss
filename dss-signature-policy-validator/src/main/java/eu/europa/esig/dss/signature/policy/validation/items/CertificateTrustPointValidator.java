@@ -31,7 +31,7 @@ import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 
-public class CertificateTrustPointValidator {
+public class CertificateTrustPointValidator implements ItemValidator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificateTrustPointValidator.class);
 	
@@ -146,6 +146,11 @@ public class CertificateTrustPointValidator {
 
 	public Set<CertificateToken> getChainCertificates() {
 		return Collections.unmodifiableSet(chainCertificates);
+	}
+	
+	@Override
+	public String getErrorDetail() {
+		return null;
 	}
 
 }
