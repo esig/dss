@@ -40,6 +40,10 @@ public class ManifestBuilder {
 	private final DigestAlgorithm digestAlgorithm;
 	private final List<DSSDocument> documents;
 
+	public ManifestBuilder(DigestAlgorithm digestAlgorithm, List<DSSDocument> documents) {
+		this("manifest", digestAlgorithm, documents);
+	}
+
 	public ManifestBuilder(String manifestId, DigestAlgorithm digestAlgorithm, List<DSSDocument> documents) {
 		this.manifestId = manifestId;
 		this.digestAlgorithm = digestAlgorithm;
