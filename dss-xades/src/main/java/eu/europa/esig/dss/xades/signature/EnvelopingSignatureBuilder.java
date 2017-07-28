@@ -30,6 +30,7 @@ import org.apache.xml.security.c14n.Canonicalizer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -126,13 +127,23 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 			// <ds:Object>
 			DSSDocument tbsDoc = reference.getContents();
 			if (tbsDoc.getMimeType() == MimeType.XML && params.isManifestSignature()) {
+
 				Document doc = DomUtils.buildDOM(reference.getContents());
 				Element root = doc.getDocumentElement();
-				Node adopted = documentDom.adoptNode(root);
+				NodeList referencesNodes = root.getChildNodes();
+				String idAttribute = root.getAttribute(ID);
+
+				// rebuild manifest element to avoid namespace duplication
+				final Element manifestDom = documentDom.createElementNS(XMLSignature.XMLNS, DS_MANIFEST);
+				manifestDom.setAttribute(ID, idAttribute);
+				for (int i = 0; i < referencesNodes.getLength(); i++) {
+					Node copyNode = documentDom.importNode(referencesNodes.item(i), true);
+					manifestDom.appendChild(copyNode);
+				}
 
 				final Element dom = documentDom.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
 				dom.setAttribute(MIMETYPE, HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST);
-				dom.appendChild(adopted);
+				dom.appendChild(manifestDom);
 				signatureDom.appendChild(dom);
 			} else {
 				final String base64EncodedOriginalDocument = Utils.toBase64(DSSUtils.toByteArray(reference.getContents()));
