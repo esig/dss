@@ -355,7 +355,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	private void incorporateReference(final DSSReference dssReference) {
 
 		final Element referenceDom = DomUtils.addElement(documentDom, signedInfoDom, XMLNS, DS_REFERENCE);
-		referenceDom.setAttribute(ID, dssReference.getId());
+		if (dssReference.getId() != null) {
+			referenceDom.setAttribute(ID, dssReference.getId());
+		}
 		final String uri = dssReference.getUri();
 		referenceDom.setAttribute(URI, uri);
 		referenceDom.setAttribute(TYPE, dssReference.getType());
