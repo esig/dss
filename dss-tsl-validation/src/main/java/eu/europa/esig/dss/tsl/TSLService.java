@@ -64,7 +64,5 @@ public class TSLService {
 	
 	public void setServiceSupplyPoints(List<String> serviceSupplyPoints) {
 		this.serviceSupplyPoints= serviceSupplyPoints;
-		
 	}
-
 }
