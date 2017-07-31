@@ -479,6 +479,14 @@
 				</xs:complexType>
 			</xs:element>
 			
+			<xs:element name="ServiceSupplyPoints" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="URI" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
 			<xs:element name="expiredCertsRevocationInfo" type="xs:dateTime" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>

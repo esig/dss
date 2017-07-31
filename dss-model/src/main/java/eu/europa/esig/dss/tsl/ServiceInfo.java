@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.tsl;
 
 import java.io.Serializable;
+import java.util.List;
 
 import eu.europa.esig.dss.util.TimeDependentValues;
 
@@ -53,6 +54,11 @@ public class ServiceInfo implements Serializable {
 	 * <tsl:TrustServiceProvider><tsl:TSPInformation><tsl:TSPAddress><tsl:ElectronicAddress>
 	 */
 	private String tspElectronicAddress;
+
+	/**
+	 * <tsl:TrustServiceProvider><tsl:TSPServices><tsl:TSPService><tsl:ServiceInformation><tsl:ServiceSupplyPoints>
+	 */
+	private List<String> tspServiceSupplyPoints;
 
 	/**
 	 * <tsl:TrustServiceProvider><tsl:TSPServices><tsl:TSPService><tsl:ServiceInformation><tsl:ServiceName>
@@ -145,6 +151,14 @@ public class ServiceInfo implements Serializable {
 
 	public void setStatus(TimeDependentValues<ServiceInfoStatus> status) {
 		this.status = new TimeDependentValues<ServiceInfoStatus>(status);
+	}
+
+	public List<String> getTspServiceSupplyPoints() {
+		return tspServiceSupplyPoints;
+	}
+
+	public void setTspServiceSupplyPoints(List<String> tspServiceSupplyPoints) {
+		this.tspServiceSupplyPoints = tspServiceSupplyPoints;
 	}
 
 	/**
