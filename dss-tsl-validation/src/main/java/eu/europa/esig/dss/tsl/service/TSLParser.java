@@ -84,6 +84,7 @@ import eu.europa.esig.jaxb.tsl.ObjectFactory;
 import eu.europa.esig.jaxb.tsl.OtherTSLPointerType;
 import eu.europa.esig.jaxb.tsl.PostalAddressType;
 import eu.europa.esig.jaxb.tsl.ServiceHistoryInstanceType;
+import eu.europa.esig.jaxb.tsl.ServiceSupplyPointsType;
 import eu.europa.esig.jaxb.tsl.TSPInformationType;
 import eu.europa.esig.jaxb.tsl.TSPServiceInformationType;
 import eu.europa.esig.jaxb.tsl.TSPServiceType;
@@ -331,8 +332,16 @@ public class TSLParser implements Callable<TSLParserResult> {
 		service.setName(getEnglishOrFirst(serviceInfo.getServiceName()));
 		service.setCertificates(extractCertificates(serviceInfo.getServiceDigitalIdentity()));
 		service.setStatusAndInformationExtensions(getStatusHistory(tslService));
+		service.setServiceSupplyPoints(getServiceSupplyPoints(serviceInfo.getServiceSupplyPoints()));
 		return service;
 	}
+
+	private List<String> getServiceSupplyPoints(ServiceSupplyPointsType serviceSupplyPoints) {
+		if(serviceSupplyPoints == null)
+			return new ArrayList<String>();
+		return serviceSupplyPoints.getServiceSupplyPoint();
+	}
+
 
 	private TimeDependentValues<TSLServiceStatusAndInformationExtensions> getStatusHistory(TSPServiceType tslService) {
 		MutableTimeDependentValues<TSLServiceStatusAndInformationExtensions> statusHistoryList = new MutableTimeDependentValues<TSLServiceStatusAndInformationExtensions>();
