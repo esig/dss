@@ -27,14 +27,11 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.crypto.dsig.XMLSignature;
-
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.DSSASN1Utils;
@@ -77,6 +74,7 @@ public abstract class XAdESBuilder {
 	public static final String DS_X509_ISSUER_NAME = "ds:X509IssuerName";
 	public static final String DS_X509_SERIAL_NUMBER = "ds:X509SerialNumber";
 	public static final String DS_XPATH = "ds:XPath";
+	public static final String DS_MANIFEST = "ds:Manifest";
 
 	public static final String XADES_ALL_DATA_OBJECTS_TIME_STAMP = "xades:AllDataObjectsTimeStamp";
 	public static final String XADES_ALL_SIGNED_DATA_OBJECTS = "xades:AllSignedDataObjects";
@@ -139,6 +137,7 @@ public abstract class XAdESBuilder {
 	public static final String TARGET = "Target";
 	public static final String TYPE = "Type";
 	public static final String URI = "URI";
+	public static final String MIMETYPE = "MimeType";
 
 	public static final String QUALIFIER = "Qualifier";
 
@@ -146,6 +145,9 @@ public abstract class XAdESBuilder {
 	public static final String XMLNS_XADES = "xmlns:xades";
 
 	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT = "http://www.w3.org/2000/09/xmldsig#Object";
+
+	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST = "http://www.w3.org/2000/09/xmldsig#Manifest";
+
 	/**
 	 * This XPath filter allows to remove all ds:Signature elements from the XML
 	 */
@@ -227,51 +229,35 @@ public abstract class XAdESBuilder {
 		// <ds:DigestValue>b/JEDQH2S1Nfe4Z3GSVtObN34aVB1kMrEbVQZswThfQ=</ds:DigestValue>
 		final Element digestValueDom = documentDom.createElementNS(XMLNS, DS_DIGEST_VALUE);
 
-		if (originalDocument.getMimeType() == MimeType.XML && params.isEmbedXML()) {
+		String base64EncodedDigestBytes = null;
+		if (originalDocument.getMimeType() == MimeType.XML && params.isManifestSignature()) {
 
-			try {
-				List<DSSReference> references = params.getReferences();
-				if (Utils.collectionSize(references) != 1) {
-					throw new DSSException("Unsupported operation");
-				}
-				DSSReference dssReference = references.get(0);
-
-				Document doc = DomUtils.buildDOM(originalDocument.openStream());
-				Element root = doc.getDocumentElement();
-
-				Document doc2 = DomUtils.buildDOM();
-				final Element dom = doc2.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
-				final Element dom2 = doc2.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
-				doc2.appendChild(dom2);
-				dom2.appendChild(dom);
-				dom.setAttribute(ID, dssReference.getUri().substring(1));
-
-				Node adopted = doc2.adoptNode(root);
-				dom.appendChild(adopted);
-
-				List<DSSTransform> transforms = dssReference.getTransforms();
-				if (Utils.collectionSize(transforms) != 1) {
-					throw new DSSException("Unsupported operation");
-				}
-				DSSTransform dssTransform = transforms.get(0);
-
-				byte[] bytes = DSSXMLUtils.canonicalizeSubtree(dssTransform.getAlgorithm(), dom);
-
-				final String c14nDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
-				LOG.trace("C14n Digest value {} --> {}", parentDom.getNodeName(), c14nDigestBytes);
-				final Text textNode = documentDom.createTextNode(c14nDigestBytes);
-				digestValueDom.appendChild(textNode);
-			} catch (Exception e) {
-				throw new DSSException(e);
+			List<DSSReference> references = params.getReferences();
+			if (Utils.collectionSize(references) != 1) {
+				throw new DSSException("Unsupported operation");
 			}
+			DSSReference dssReference = references.get(0);
+
+			List<DSSTransform> transforms = dssReference.getTransforms();
+			if (Utils.collectionSize(transforms) != 1) {
+				throw new DSSException("Unsupported operation");
+			}
+
+			Document doc = DomUtils.buildDOM(originalDocument.openStream());
+			DSSTransform dssTransform = transforms.get(0);
+			byte[] bytes = DSSXMLUtils.canonicalizeSubtree(dssTransform.getAlgorithm(), doc);
+			base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
+
+			LOG.trace("C14n Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
 		} else {
-			final String base64EncodedDigestBytes = originalDocument.getDigest(digestAlgorithm);
+			base64EncodedDigestBytes = originalDocument.getDigest(digestAlgorithm);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
 			}
-			final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
-			digestValueDom.appendChild(textNode);
 		}
+
+		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
+		digestValueDom.appendChild(textNode);
 
 		parentDom.appendChild(digestValueDom);
 	}

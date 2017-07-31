@@ -1,11 +1,13 @@
 package eu.europa.esig.dss.xades.signature;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -19,10 +21,7 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-/**
- * Created by david.naramski on 9/22/2016.
- */
-public class EmbeddedXmlSignatureTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
+public class XAdESManifestLevelBTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -31,7 +30,14 @@ public class EmbeddedXmlSignatureTest extends AbstractTestDocumentSignatureServi
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+
+		List<DSSDocument> documents = new ArrayList<DSSDocument>();
+		documents.add(new FileDocument("src/test/resources/sample.png"));
+		documents.add(new FileDocument("src/test/resources/sample.txt"));
+		documents.add(new FileDocument("src/test/resources/sample.xml"));
+		ManifestBuilder builder = new ManifestBuilder(DigestAlgorithm.SHA512, documents);
+
+		documentToSign = builder.build();
 
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
@@ -42,7 +48,7 @@ public class EmbeddedXmlSignatureTest extends AbstractTestDocumentSignatureServi
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		signatureParameters.setEmbedXML(true);
+		signatureParameters.setManifestSignature(true);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new XAdESService(certificateVerifier);
