@@ -16,6 +16,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
@@ -104,7 +105,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(signatures, dataToSignHelper.getSignedDocuments(),
 					manifests, parameters.getArchiveTimestampParameters().getDigestAlgorithm(), timestampFilename);
 
-			DSSDocument archiveManfest = ASiCUtils.createDssDocumentFromDomDocument(builder.build(), getArchivManifestFilename(archiveManifests));
+			DSSDocument archiveManfest = DomUtils.createDssDocumentFromDomDocument(builder.build(), getArchivManifestFilename(archiveManifests));
 			signatures.add(archiveManfest);
 
 			DigestAlgorithm digestAlgorithm = parameters.getArchiveTimestampParameters().getDigestAlgorithm();
@@ -182,7 +183,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(extendedDocuments, signedDocuments, manifests,
 					parameters.getArchiveTimestampParameters().getDigestAlgorithm(), timestampFilename);
 
-			DSSDocument archiveManfest = ASiCUtils.createDssDocumentFromDomDocument(builder.build(), getArchivManifestFilename(archiveManifests));
+			DSSDocument archiveManfest = DomUtils.createDssDocumentFromDomDocument(builder.build(), getArchivManifestFilename(archiveManifests));
 			extendedDocuments.add(archiveManfest);
 
 			DigestAlgorithm digestAlgorithm = parameters.getArchiveTimestampParameters().getDigestAlgorithm();
