@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.naming.InvalidNameException;
@@ -90,6 +91,7 @@ import org.bouncycastle.x509.extension.X509ExtensionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -474,7 +476,11 @@ public final class DSSASN1Utils {
 	 * @return a list of OCSP URIs, or empty list if the extension is not present.
 	 */
 	public static List<String> getOCSPAccessLocations(final CertificateToken certificate) {
-		return getAccessLocations(certificate, X509ObjectIdentifiers.id_ad_ocsp);
+		List<String> ocspUrls = getAccessLocations(certificate, X509ObjectIdentifiers.id_ad_ocsp);
+		if (Utils.isCollectionEmpty(ocspUrls)) {
+			return getServiceSupplyPoints(certificate, "ocsp");
+		}
+		return ocspUrls;
 	}
 
 	private static List<String> getAccessLocations(final CertificateToken certificate, ASN1ObjectIdentifier aiaType) {
@@ -514,30 +520,58 @@ public final class DSSASN1Utils {
 		final List<String> urls = new ArrayList<String>();
 
 		final byte[] crlDistributionPointsBytes = certificateToken.getCertificate().getExtensionValue(Extension.cRLDistributionPoints.getId());
-		if (null == crlDistributionPointsBytes) {
-			return urls;
-		}
-		try {
-			final ASN1Sequence asn1Sequence = DSSASN1Utils.getAsn1SequenceFromDerOctetString(crlDistributionPointsBytes);
-			final CRLDistPoint distPoint = CRLDistPoint.getInstance(asn1Sequence);
-			final DistributionPoint[] distributionPoints = distPoint.getDistributionPoints();
-			for (final DistributionPoint distributionPoint : distributionPoints) {
+		if (crlDistributionPointsBytes != null) {
+			try {
+				final ASN1Sequence asn1Sequence = DSSASN1Utils.getAsn1SequenceFromDerOctetString(crlDistributionPointsBytes);
+				final CRLDistPoint distPoint = CRLDistPoint.getInstance(asn1Sequence);
+				final DistributionPoint[] distributionPoints = distPoint.getDistributionPoints();
+				for (final DistributionPoint distributionPoint : distributionPoints) {
 
-				final DistributionPointName distributionPointName = distributionPoint.getDistributionPoint();
-				if (DistributionPointName.FULL_NAME != distributionPointName.getType()) {
-					continue;
+					final DistributionPointName distributionPointName = distributionPoint.getDistributionPoint();
+					if (DistributionPointName.FULL_NAME != distributionPointName.getType()) {
+						continue;
+					}
+					final GeneralNames generalNames = (GeneralNames) distributionPointName.getName();
+					final GeneralName[] names = generalNames.getNames();
+					for (final GeneralName name : names) {
+						String location = parseGn(name);
+						if (location != null) {
+							urls.add(location);
+						}
+					}
 				}
-				final GeneralNames generalNames = (GeneralNames) distributionPointName.getName();
-				final GeneralName[] names = generalNames.getNames();
-				for (final GeneralName name : names) {
-					String location = parseGn(name);
-					if (location != null) {
-						urls.add(location);
+			} catch (Exception e) {
+				LOG.error("Unable to parse cRLDistributionPoints", e);
+			}
+		}
+
+		if (Utils.isCollectionEmpty(urls)) {
+			return getServiceSupplyPoints(certificateToken, "crl", "certificateRevocationList");
+		}
+		return urls;
+	}
+
+	private static List<String> getServiceSupplyPoints(CertificateToken certificateToken, String... keywords) {
+		List<String> urls = new ArrayList<String>();
+		CertificateToken issuerToken = certificateToken.getIssuerToken();
+		while (issuerToken != null) {
+			if (issuerToken.isTrusted() && Utils.isCollectionNotEmpty(issuerToken.getAssociatedTSPS())) {
+				Set<ServiceInfo> services = issuerToken.getAssociatedTSPS();
+				for (ServiceInfo serviceInfo : services) {
+					List<String> serviceSupplyPoints = serviceInfo.getTspServiceSupplyPoints();
+					if (Utils.isCollectionNotEmpty(serviceSupplyPoints)) {
+						for (String serviceSupplyPoint : serviceSupplyPoints) {
+							for (String keyword : keywords) {
+								if (serviceSupplyPoint.contains(keyword)) {
+									LOG.debug("ServiceSupplyPoints (TL) found for keyword '{}'", keyword);
+									urls.add(serviceSupplyPoint);
+								}
+							}
+						}
 					}
 				}
 			}
-		} catch (Exception e) {
-			LOG.error("Unable to parse cRLDistributionPoints", e);
+			issuerToken = issuerToken.getIssuerToken();
 		}
 		return urls;
 	}
