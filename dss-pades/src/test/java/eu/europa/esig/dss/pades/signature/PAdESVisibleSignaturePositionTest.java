@@ -43,6 +43,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -173,9 +175,7 @@ public class PAdESVisibleSignaturePositionTest {
         SignatureImageParameters signatureImageParameters = createSignatureImageParameters();
 
         signatureImageParameters.setRotation(SignatureImageParameters.VisualSignatureRotation.AUTOMATIC);
-        signatureImageParameters.setAlignmentHorizontal(SignatureImageParameters.VisualSignatureAlignmentHorizontal.LEFT);
-        signatureImageParameters.setAlignmentVertical(SignatureImageParameters.VisualSignatureAlignmentVertical.MIDDLE);
-        DSSDocument document = sign(signablePdfs.get("270"));
+        DSSDocument document = sign(signablePdfs.get("minoltaScan90"));
         File checkPdfFile = new File("target/pdf/check.pdf");
         checkPdfFile.getParentFile().mkdirs();
         IOUtils.copy(document.openStream(), new FileOutputStream(checkPdfFile));
@@ -202,6 +202,82 @@ public class PAdESVisibleSignaturePositionTest {
                 }
             }
         }
+    }
+
+    @Test
+    @Ignore("for pull request #71")
+    public void rotatePullRequest71Test() throws Exception {
+        Logger logger = LoggerFactory.getLogger(getClass());
+        /**
+         * minolta scanner normal(not rotated) pdf and rotation none.
+         *
+         * You can check the pdf rotation by this code:
+         * PDDocument inputPDF = PDDocument.load(getClass().getResourceAsStream("/visualSignature/sun.pdf"));
+         * System.out.println("rotation: " + inputPDF.getPage(0).getRotation());
+         *
+         * result in pdf viewer: signature is top left corner and the sign image line is parallel with the sun eyes line
+         *
+         * comment: this is the original working
+         */
+        PDDocument inputPDF = PDDocument.load(getClass().getResourceAsStream("/visualSignature/sun.pdf"));
+        logger.info("rotation sun.pdf: " + inputPDF.getPage(0).getRotation());
+
+        SignatureImageParameters signatureImageParameters = createSignatureImageParameters();
+
+        signatureImageParameters.setRotation(SignatureImageParameters.VisualSignatureRotation.NONE);
+        DSSDocument document = sign(signablePdfs.get("minoltaScan"));
+        File checkPdfFile = new File("target/pdf/check_normal_none.pdf");
+        checkPdfFile.getParentFile().mkdirs();
+        IOUtils.copy(document.openStream(), new FileOutputStream(checkPdfFile));
+
+        /**
+         * minolta scanner rotated pdf and rotation none (in pdf view the rotated and normal pdf seem equal)
+         * you can check the pdf rotation by this code:
+         * PDDocument inputPDF = PDDocument.load(getClass().getResourceAsStream("/visualSignature/sun_90.pdf"));
+         * System.out.println("rotation: " + inputPDF.getPage(0).getRotation());
+         *
+         * result in pdf viewer: signature is top right corner and the sign image line is perpendicular with the sun eyes line
+         *
+         * comment: this is the original working
+         */
+        inputPDF = PDDocument.load(getClass().getResourceAsStream("/visualSignature/sun_90.pdf"));
+        logger.info("rotation sun_90.pdf: " + inputPDF.getPage(0).getRotation());
+
+        signatureImageParameters = createSignatureImageParameters();
+
+        signatureImageParameters.setRotation(SignatureImageParameters.VisualSignatureRotation.NONE);
+        document = sign(signablePdfs.get("minoltaScan90"));
+        checkPdfFile = new File("target/pdf/check_90_none.pdf");
+        checkPdfFile.getParentFile().mkdirs();
+        IOUtils.copy(document.openStream(), new FileOutputStream(checkPdfFile));
+
+        /**
+         * minolta scanner rotated pdf and rotation automatic (in pdf view the rotated and normal pdf seem equal)
+         *
+         * result in pdf viewer: signature is top left corner and the sign image line is parallel with the sun eyes line,
+         * it will be same as with sun.pdf (not rotated) and rotation none
+         */
+        signatureImageParameters = createSignatureImageParameters();
+
+        signatureImageParameters.setRotation(SignatureImageParameters.VisualSignatureRotation.AUTOMATIC);
+        document = sign(signablePdfs.get("minoltaScan90"));
+        checkPdfFile = new File("target/pdf/check_90_automatic.pdf");
+        checkPdfFile.getParentFile().mkdirs();
+        IOUtils.copy(document.openStream(), new FileOutputStream(checkPdfFile));
+
+        /**
+         * minolta scanner normal(not rotated) pdf and rotation none.
+         *
+         * result in pdf viewer: signature is top left corner and the sign image line is parallel with the sun eyes line,
+         * it will be same as with sun.pdf (not rotated) and rotation none
+         */
+        signatureImageParameters = createSignatureImageParameters();
+
+        signatureImageParameters.setRotation(SignatureImageParameters.VisualSignatureRotation.AUTOMATIC);
+        document = sign(signablePdfs.get("minoltaScan"));
+        checkPdfFile = new File("target/pdf/check_normal_automatic.pdf");
+        checkPdfFile.getParentFile().mkdirs();
+        IOUtils.copy(document.openStream(), new FileOutputStream(checkPdfFile));
     }
 
     private DSSDocument sign(DSSDocument document) {
