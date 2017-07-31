@@ -1,3 +1,4 @@
+package eu.europa.esig.dss.tsl;
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
@@ -18,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.tsl;
+
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class TSLService {
 	private String name;
 	private List<CertificateToken> certificates;
 	private TimeDependentValues<TSLServiceStatusAndInformationExtensions> status;
+	private List<String> serviceSupplyPoints;
 
 	public String getName() {
 		return name;
@@ -56,6 +58,14 @@ public class TSLService {
 
 	public void setStatusAndInformationExtensions(TimeDependentValues<TSLServiceStatusAndInformationExtensions> status) {
 		this.status = status;
+	}
+	public List<String> getServiceSupplyPoints() {
+		return serviceSupplyPoints;
+	}
+	
+	public void setServiceSupplyPoints(List<String> serviceSupplyPoints) {
+		this.serviceSupplyPoints= serviceSupplyPoints;
+		
 	}
 
 }
