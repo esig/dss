@@ -23,6 +23,7 @@ package eu.europa.esig.dss.client.tsp;
 import java.io.IOException;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.cmp.PKIFailureInfo;
 import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampRequest;
 import org.bouncycastle.tsp.TimeStampRequestGenerator;
@@ -155,12 +156,17 @@ public class OnlineTSPSource implements TSPSource {
 			// Handle the TSA response
 			final TimeStampResponse timeStampResponse = new TimeStampResponse(respBytes);
 
-			// Validates nonce, policy id, ... if present
+			// Validates token, nonce, policy id, message digest ...
 			timeStampResponse.validate(timeStampRequest);
 
 			String statusString = timeStampResponse.getStatusString();
 			if (statusString != null) {
 				LOG.info("Status: " + statusString);
+			}
+
+			PKIFailureInfo failInfo = timeStampResponse.getFailInfo();
+			if (failInfo != null) {
+				LOG.warn("TSP Failure info: " + failInfo.toString());
 			}
 
 			final TimeStampToken timeStampToken = timeStampResponse.getTimeStampToken();
