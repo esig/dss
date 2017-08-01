@@ -269,16 +269,6 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 			}
 
 			final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, timestampDigest);
-
-			if (timeStampToken == null) {
-				throw new NullPointerException();
-			}
-
-			if (LOG.isDebugEnabled()) {
-				final byte[] messageImprintDigest = timeStampToken.getTimeStampInfo().getMessageImprintDigest();
-				LOG.debug("Digested ({}) message in timestamp is {}", new Object[] { timestampDigestAlgorithm, Utils.toHex(messageImprintDigest) });
-			}
-
 			CMSSignedData cmsSignedDataTimeStampToken = timeStampToken.toCMSSignedData();
 
 			// TODO (27/08/2014): attributesForTimestampToken cannot be null: to be modified
