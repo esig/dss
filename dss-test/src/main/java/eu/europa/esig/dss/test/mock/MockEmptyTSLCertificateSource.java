@@ -78,7 +78,7 @@ public class MockEmptyTSLCertificateSource extends CommonTrustedCertificateSourc
 		MutableTimeDependentValues<ServiceInfoStatus> status = new MutableTimeDependentValues<ServiceInfoStatus>();
 		Map<String, List<Condition>> emptyMap = new HashMap<String, List<Condition>>();
 		List<String> emptyList = Collections.emptyList();
-		status.addOldest(new ServiceInfoStatus(CA_QC, SERVICE_STATUS_UNDERSUPERVISION, emptyMap, emptyList, null, calendar.getTime(), null));
+		status.addOldest(new ServiceInfoStatus(CA_QC, SERVICE_STATUS_UNDERSUPERVISION, emptyMap, emptyList, emptyList, null, calendar.getTime(), null));
 		serviceInfo.setStatus(status);
 
 		return serviceInfo;
