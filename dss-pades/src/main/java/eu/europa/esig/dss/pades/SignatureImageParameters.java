@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.pades;
 
-import eu.europa.esig.dss.DSSDocument;
-
 import java.awt.Color;
+
+import eu.europa.esig.dss.DSSDocument;
 
 /**
  * Parameters for a visible signature creation
@@ -64,8 +64,7 @@ public class SignatureImageParameters {
 	}
 
 	/**
-	 * Aláírás képi megjelenítésének pozícióit tartalmazó enum
-	 *
+	 * Visual signature vertical position on the pdf page
 	 */
 	public enum VisualSignatureAlignmentVertical {
 		/**
@@ -153,7 +152,8 @@ public class SignatureImageParameters {
 	 * This variable is define the image from text vertical alignment in connection with the image<br>
 	 * <br>
 	 * It has effect when the {@link SignatureImageTextParameters.SignerPosition SignerPosition} is
-	 * {@link SignatureImageTextParameters.SignerPosition#LEFT LEFT} or {@link SignatureImageTextParameters.SignerPosition#RIGHT RIGHT}
+	 * {@link SignatureImageTextParameters.SignerPosition#LEFT LEFT} or
+	 * {@link SignatureImageTextParameters.SignerPosition#RIGHT RIGHT}
 	 */
 	private SignerTextImageVerticalAlignment signerTextImageVerticalAlignment = SignerTextImageVerticalAlignment.MIDDLE;
 

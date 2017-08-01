@@ -727,7 +727,7 @@ public class DiagnosticDataBuilder {
 		final XmlCertificate xmlCert = new XmlCertificate();
 
 		xmlCert.setId(certToken.getDSSIdAsString());
-		xmlCert.setBase64Encoded(Utils.toBase64(certToken.getEncoded()).getBytes());
+		xmlCert.setBase64Encoded(certToken.getEncoded());
 
 		xmlCert.getSubjectDistinguishedName().add(getXmlDistinguishedName(X500Principal.CANONICAL, certToken.getSubjectX500Principal()));
 		xmlCert.getSubjectDistinguishedName().add(getXmlDistinguishedName(X500Principal.RFC2253, certToken.getSubjectX500Principal()));
@@ -747,8 +747,8 @@ public class DiagnosticDataBuilder {
 		xmlCert.setPseudonym(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.PSEUDONYM, x500Principal));
 
 		xmlCert.setAuthorityInformationAccessUrls(DSSASN1Utils.getCAAccessLocations(certToken));
-		xmlCert.setOCSPAccessUrls(DSSASN1Utils.getOCSPAccessLocations(certToken));
-		xmlCert.setCRLDistributionPoints(DSSASN1Utils.getCrlUrls(certToken));
+		xmlCert.setOCSPAccessUrls(DSSASN1Utils.getOCSPAccessLocations(certToken, false));
+		xmlCert.setCRLDistributionPoints(DSSASN1Utils.getCrlUrls(certToken, false));
 
 		xmlCert.setDigestAlgoAndValues(getXmlDigestAlgoAndValues(usedDigestAlgorithms, certToken));
 
@@ -839,6 +839,11 @@ public class DiagnosticDataBuilder {
 					List<String> additionalServiceInfoUris = serviceInfoStatus.getAdditionalServiceInfoUris();
 					if (Utils.isCollectionNotEmpty(additionalServiceInfoUris)) {
 						trustedService.setAdditionalServiceInfoUris(additionalServiceInfoUris);
+					}
+
+					List<String> serviceSupplyPoints = serviceInfoStatus.getServiceSupplyPoints();
+					if (Utils.isCollectionNotEmpty(serviceSupplyPoints)) {
+						trustedService.setServiceSupplyPoints(serviceSupplyPoints);
 					}
 
 					trustedService.setExpiredCertsRevocationInfo(serviceInfoStatus.getExpiredCertsRevocationInfo());
