@@ -332,16 +332,15 @@ public class TSLParser implements Callable<TSLParserResult> {
 		service.setName(getEnglishOrFirst(serviceInfo.getServiceName()));
 		service.setCertificates(extractCertificates(serviceInfo.getServiceDigitalIdentity()));
 		service.setStatusAndInformationExtensions(getStatusHistory(tslService));
-		service.setServiceSupplyPoints(getServiceSupplyPoints(serviceInfo.getServiceSupplyPoints()));
 		return service;
 	}
 
 	private List<String> getServiceSupplyPoints(ServiceSupplyPointsType serviceSupplyPoints) {
-		if(serviceSupplyPoints == null)
+		if (serviceSupplyPoints == null) {
 			return new ArrayList<String>();
+		}
 		return serviceSupplyPoints.getServiceSupplyPoint();
 	}
-
 
 	private TimeDependentValues<TSLServiceStatusAndInformationExtensions> getStatusHistory(TSPServiceType tslService) {
 		MutableTimeDependentValues<TSLServiceStatusAndInformationExtensions> statusHistoryList = new MutableTimeDependentValues<TSLServiceStatusAndInformationExtensions>();
@@ -351,6 +350,8 @@ public class TSLParser implements Callable<TSLParserResult> {
 		TSLServiceStatusAndInformationExtensions status = new TSLServiceStatusAndInformationExtensions();
 		status.setType(serviceInfo.getServiceTypeIdentifier());
 		status.setStatus(serviceInfo.getServiceStatus());
+		status.setServiceSupplyPoints(getServiceSupplyPoints(serviceInfo.getServiceSupplyPoints()));
+
 		ExtensionsListType serviceInformationExtensions = serviceInfo.getServiceInformationExtensions();
 		if (serviceInformationExtensions != null) {
 			status.setConditionsForQualifiers(extractConditionsForQualifiers(serviceInformationExtensions.getExtension()));

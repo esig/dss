@@ -92,6 +92,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.tsl.ServiceInfo;
+import eu.europa.esig.dss.tsl.ServiceInfoStatus;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -570,13 +571,15 @@ public final class DSSASN1Utils {
 			if (issuerToken.isTrusted() && Utils.isCollectionNotEmpty(issuerToken.getAssociatedTSPS())) {
 				Set<ServiceInfo> services = issuerToken.getAssociatedTSPS();
 				for (ServiceInfo serviceInfo : services) {
-					List<String> serviceSupplyPoints = serviceInfo.getTspServiceSupplyPoints();
-					if (Utils.isCollectionNotEmpty(serviceSupplyPoints)) {
-						for (String serviceSupplyPoint : serviceSupplyPoints) {
-							for (String keyword : keywords) {
-								if (serviceSupplyPoint.contains(keyword)) {
-									LOG.debug("ServiceSupplyPoints (TL) found for keyword '{}'", keyword);
-									urls.add(serviceSupplyPoint);
+					for (ServiceInfoStatus serviceInfoStatus : serviceInfo.getStatus()) {
+						List<String> serviceSupplyPoints = serviceInfoStatus.getServiceSupplyPoints();
+						if (Utils.isCollectionNotEmpty(serviceSupplyPoints)) {
+							for (String serviceSupplyPoint : serviceSupplyPoints) {
+								for (String keyword : keywords) {
+									if (serviceSupplyPoint.contains(keyword)) {
+										LOG.debug("ServiceSupplyPoints (TL) found for keyword '{}'", keyword);
+										urls.add(serviceSupplyPoint);
+									}
 								}
 							}
 						}

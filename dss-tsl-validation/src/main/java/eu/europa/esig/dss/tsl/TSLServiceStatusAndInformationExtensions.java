@@ -11,6 +11,7 @@ public class TSLServiceStatusAndInformationExtensions extends BaseTimeDependent 
 	private String status;
 	private List<TSLConditionsForQualifiers> conditionsForQualifiers;
 	private List<String> additionalServiceInfoUris;
+	private List<String> serviceSupplyPoints;
 	private Date expiredCertsRevocationInfo;
 
 	public String getType() {
@@ -43,6 +44,14 @@ public class TSLServiceStatusAndInformationExtensions extends BaseTimeDependent 
 
 	public void setAdditionalServiceInfoUris(List<String> additionalServiceInfoUris) {
 		this.additionalServiceInfoUris = additionalServiceInfoUris;
+	}
+
+	public List<String> getServiceSupplyPoints() {
+		return serviceSupplyPoints;
+	}
+
+	public void setServiceSupplyPoints(List<String> serviceSupplyPoints) {
+		this.serviceSupplyPoints = serviceSupplyPoints;
 	}
 
 	public void setExpiredCertsRevocationInfo(Date expiredCertsRevocationInfo) {
