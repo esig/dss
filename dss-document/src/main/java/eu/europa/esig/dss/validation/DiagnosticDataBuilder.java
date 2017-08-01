@@ -747,8 +747,8 @@ public class DiagnosticDataBuilder {
 		xmlCert.setPseudonym(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.PSEUDONYM, x500Principal));
 
 		xmlCert.setAuthorityInformationAccessUrls(DSSASN1Utils.getCAAccessLocations(certToken));
-		xmlCert.setOCSPAccessUrls(DSSASN1Utils.getOCSPAccessLocations(certToken));
-		xmlCert.setCRLDistributionPoints(DSSASN1Utils.getCrlUrls(certToken));
+		xmlCert.setOCSPAccessUrls(DSSASN1Utils.getOCSPAccessLocations(certToken, false));
+		xmlCert.setCRLDistributionPoints(DSSASN1Utils.getCrlUrls(certToken, false));
 
 		xmlCert.setDigestAlgoAndValues(getXmlDigestAlgoAndValues(usedDigestAlgorithms, certToken));
 
