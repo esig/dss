@@ -468,16 +468,22 @@ public final class DSSASN1Utils {
 		return getAccessLocations(certificate, X509ObjectIdentifiers.id_ad_caIssuers);
 	}
 
+	public static List<String> getOCSPAccessLocations(final CertificateToken certificate) {
+		return getOCSPAccessLocations(certificate, true);
+	}
+
 	/**
 	 * Gives back the OCSP URIs meta-data found within the given X509 cert.
 	 *
 	 * @param certificate
 	 *            the cert token.
+	 * @param checkInTrustAnchors
+	 *            if true, the method will search in the ServiceSupplyPoint urls
 	 * @return a list of OCSP URIs, or empty list if the extension is not present.
 	 */
-	public static List<String> getOCSPAccessLocations(final CertificateToken certificate) {
+	public static List<String> getOCSPAccessLocations(final CertificateToken certificate, boolean checkInTrustAnchors) {
 		List<String> ocspUrls = getAccessLocations(certificate, X509ObjectIdentifiers.id_ad_ocsp);
-		if (Utils.isCollectionEmpty(ocspUrls)) {
+		if (Utils.isCollectionEmpty(ocspUrls) && checkInTrustAnchors) {
 			return getServiceSupplyPoints(certificate, "ocsp");
 		}
 		return ocspUrls;
@@ -509,14 +515,20 @@ public final class DSSASN1Utils {
 		return locationsUrls;
 	}
 
+	public static List<String> getCrlUrls(final CertificateToken certificateToken) {
+		return getCrlUrls(certificateToken, true);
+	}
+
 	/**
 	 * Gives back the {@code List} of CRL URI meta-data found within the given X509 certificate.
 	 *
 	 * @param certificateToken
 	 *            the cert token certificate
+	 * @param checkInTrustAnchors
+	 *            if true, the method will search in the ServiceSupplyPoint urls
 	 * @return the {@code List} of CRL URI, or empty list if the extension is not present
 	 */
-	public static List<String> getCrlUrls(final CertificateToken certificateToken) {
+	public static List<String> getCrlUrls(final CertificateToken certificateToken, boolean checkInTrustAnchors) {
 		final List<String> urls = new ArrayList<String>();
 
 		final byte[] crlDistributionPointsBytes = certificateToken.getCertificate().getExtensionValue(Extension.cRLDistributionPoints.getId());
@@ -545,7 +557,7 @@ public final class DSSASN1Utils {
 			}
 		}
 
-		if (Utils.isCollectionEmpty(urls)) {
+		if (Utils.isCollectionEmpty(urls) && checkInTrustAnchors) {
 			return getServiceSupplyPoints(certificateToken, "crl", "certificateRevocationList");
 		}
 		return urls;
