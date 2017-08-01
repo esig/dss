@@ -34,7 +34,6 @@ public class TSLService {
 	private String name;
 	private List<CertificateToken> certificates;
 	private TimeDependentValues<TSLServiceStatusAndInformationExtensions> status;
-	private List<String> serviceSupplyPoints;
 
 	public String getName() {
 		return name;
@@ -59,11 +58,5 @@ public class TSLService {
 	public void setStatusAndInformationExtensions(TimeDependentValues<TSLServiceStatusAndInformationExtensions> status) {
 		this.status = status;
 	}
-	public List<String> getServiceSupplyPoints() {
-		return serviceSupplyPoints;
-	}
-	
-	public void setServiceSupplyPoints(List<String> serviceSupplyPoints) {
-		this.serviceSupplyPoints= serviceSupplyPoints;
-	}
+
 }

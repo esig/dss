@@ -302,7 +302,6 @@ public class TSLRepository {
 		serviceInfo.setTspTradeName(serviceProvider.getTradeName());
 		serviceInfo.setTspPostalAddress(serviceProvider.getPostalAddress());
 		serviceInfo.setTspElectronicAddress(serviceProvider.getElectronicAddress());
-		serviceInfo.setTspServiceSupplyPoints(service.getServiceSupplyPoints());
 
 		serviceInfo.setServiceName(service.getName());
 
@@ -312,8 +311,8 @@ public class TSLRepository {
 			for (TSLServiceStatusAndInformationExtensions tslServiceStatus : serviceStatus) {
 				final Map<String, List<Condition>> qualifiersAndConditions = getMapConditionsByQualifier(tslServiceStatus);
 				final ServiceInfoStatus s = new ServiceInfoStatus(tslServiceStatus.getType(), tslServiceStatus.getStatus(), qualifiersAndConditions,
-						tslServiceStatus.getAdditionalServiceInfoUris(), tslServiceStatus.getExpiredCertsRevocationInfo(), tslServiceStatus.getStartDate(),
-						tslServiceStatus.getEndDate());
+						tslServiceStatus.getAdditionalServiceInfoUris(), tslServiceStatus.getServiceSupplyPoints(),
+						tslServiceStatus.getExpiredCertsRevocationInfo(), tslServiceStatus.getStartDate(), tslServiceStatus.getEndDate());
 
 				status.addOldest(s);
 			}

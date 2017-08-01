@@ -841,7 +841,11 @@ public class DiagnosticDataBuilder {
 						trustedService.setAdditionalServiceInfoUris(additionalServiceInfoUris);
 					}
 
-					trustedService.setServiceSupplyPoints(serviceInfo.getTspServiceSupplyPoints());
+					List<String> serviceSupplyPoints = serviceInfoStatus.getServiceSupplyPoints();
+					if (Utils.isCollectionNotEmpty(serviceSupplyPoints)) {
+						trustedService.setServiceSupplyPoints(serviceSupplyPoints);
+					}
+
 					trustedService.setExpiredCertsRevocationInfo(serviceInfoStatus.getExpiredCertsRevocationInfo());
 
 					result.add(trustedService);

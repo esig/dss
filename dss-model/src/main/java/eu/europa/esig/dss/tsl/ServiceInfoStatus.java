@@ -23,15 +23,17 @@ public class ServiceInfoStatus extends BaseTimeDependent implements Serializable
 
 	private final Map<String, List<Condition>> qualifiersAndConditions;
 	private final List<String> additionalServiceInfoUris;
+	private final List<String> serviceSupplyPoints;
 	private final Date expiredCertsRevocationInfo;
 
 	public ServiceInfoStatus(String type, String status, Map<String, List<Condition>> qualifiersAndConditions, List<String> additionalServiceInfoUris,
-			Date expiredCertsRevocationInfo, Date startDate, Date endDate) {
+			List<String> serviceSupplyPoints, Date expiredCertsRevocationInfo, Date startDate, Date endDate) {
 		super(startDate, endDate);
 		this.type = type;
 		this.status = status;
 		this.qualifiersAndConditions = qualifiersAndConditions;
 		this.additionalServiceInfoUris = additionalServiceInfoUris;
+		this.serviceSupplyPoints = serviceSupplyPoints;
 		this.expiredCertsRevocationInfo = expiredCertsRevocationInfo;
 	}
 
@@ -49,6 +51,10 @@ public class ServiceInfoStatus extends BaseTimeDependent implements Serializable
 
 	public List<String> getAdditionalServiceInfoUris() {
 		return additionalServiceInfoUris;
+	}
+
+	public List<String> getServiceSupplyPoints() {
+		return serviceSupplyPoints;
 	}
 
 	public Date getExpiredCertsRevocationInfo() {
