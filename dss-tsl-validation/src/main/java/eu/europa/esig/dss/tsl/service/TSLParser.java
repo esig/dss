@@ -45,9 +45,11 @@ import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.tsl.CertSubjectDNAttributeCondition;
 import eu.europa.esig.dss.tsl.CompositeCondition;
 import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.CriteriaListCondition;
+import eu.europa.esig.dss.tsl.ExtendedKeyUsageCondition;
 import eu.europa.esig.dss.tsl.KeyUsageCondition;
 import eu.europa.esig.dss.tsl.MatchingCriteriaIndicator;
 import eu.europa.esig.dss.tsl.PolicyIdCondition;
@@ -93,6 +95,8 @@ import eu.europa.esig.jaxb.tsl.TSPServicesListType;
 import eu.europa.esig.jaxb.tsl.TSPType;
 import eu.europa.esig.jaxb.tsl.TrustServiceProviderListType;
 import eu.europa.esig.jaxb.tsl.TrustStatusListType;
+import eu.europa.esig.jaxb.tslx.CertSubjectDNAttributeType;
+import eu.europa.esig.jaxb.tslx.ExtendedKeyUsageType;
 import eu.europa.esig.jaxb.xades.IdentifierType;
 import eu.europa.esig.jaxb.xades.ObjectIdentifierType;
 
@@ -113,7 +117,8 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 	static {
 		try {
-			jaxbContext = JAXBContext.newInstance(ObjectFactory.class, eu.europa.esig.jaxb.ecc.ObjectFactory.class);
+			jaxbContext = JAXBContext.newInstance(ObjectFactory.class, eu.europa.esig.jaxb.ecc.ObjectFactory.class,
+					eu.europa.esig.jaxb.tslx.ObjectFactory.class);
 		} catch (JAXBException e) {
 			throw new DSSException("Unable to initialize JaxB : " + e.getMessage(), e);
 		}
@@ -476,9 +481,46 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 		addKeyUsageConditionsIfPresent(criteriaList.getKeyUsage(), condition);
 		addPolicyIdConditionsIfPresent(criteriaList.getPolicySet(), condition);
+		addOtherCriteriaListConditionsIfPresent(criteriaList.getOtherCriteriaList(), condition);
 		addCriteriaListConditionsIfPresent(criteriaList.getCriteriaList(), condition);
 
 		return condition;
+	}
+
+	/**
+	 * ETSI TS 119 612 V1.1.1 / 5.5.9.2.2.3
+	 * 
+	 * @param otherCriteriaList
+	 * @param condition
+	 */
+	private void addOtherCriteriaListConditionsIfPresent(eu.europa.esig.jaxb.xades.AnyType otherCriteriaList, CompositeCondition condition) {
+		if (otherCriteriaList != null && Utils.isCollectionNotEmpty(otherCriteriaList.getContent())) {
+			for (Object content : otherCriteriaList.getContent()) {
+				if (content instanceof JAXBElement) {
+					JAXBElement jaxbElement = (JAXBElement) content;
+					Object objectValue = jaxbElement.getValue();
+					if (objectValue instanceof CertSubjectDNAttributeType) {
+						CertSubjectDNAttributeType certSubDNAttr = (CertSubjectDNAttributeType) objectValue;
+						condition.addChild(new CertSubjectDNAttributeCondition(extractOids(certSubDNAttr.getAttributeOID())));
+					} else if (objectValue instanceof ExtendedKeyUsageType) {
+						ExtendedKeyUsageType extendedKeyUsage = (ExtendedKeyUsageType) objectValue;
+						condition.addChild(new ExtendedKeyUsageCondition(extractOids(extendedKeyUsage.getKeyPurposeId())));
+					} else {
+						throw new DSSException("Unsupported OtherCriteriaList");
+					}
+				}
+			}
+		}
+	}
+
+	private List<String> extractOids(List<ObjectIdentifierType> oits) {
+		List<String> oids = new ArrayList<String>();
+		if (Utils.isCollectionNotEmpty(oits)) {
+			for (ObjectIdentifierType objectIdentifierType : oits) {
+				oids.add(objectIdentifierType.getIdentifier().getValue());
+			}
+		}
+		return oids;
 	}
 
 	private void addPolicyIdConditionsIfPresent(List<PoliciesListType> policySet, CompositeCondition criteriaCondition) {

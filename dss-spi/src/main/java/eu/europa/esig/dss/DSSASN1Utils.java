@@ -615,15 +615,18 @@ public final class DSSASN1Utils {
 	 * @return
 	 */
 	public static boolean isOCSPSigning(CertificateToken certToken) {
+		return isExtendedKeyUsagePresent(certToken, KeyPurposeId.id_kp_OCSPSigning.toOID());
+	}
+
+	public static boolean isExtendedKeyUsagePresent(CertificateToken certToken, ASN1ObjectIdentifier oid) {
 		try {
 			List<String> keyPurposes = certToken.getCertificate().getExtendedKeyUsage();
-			if ((keyPurposes != null) && keyPurposes.contains(KeyPurposeId.id_kp_OCSPSigning.getId())) {
+			if ((keyPurposes != null) && keyPurposes.contains(oid.getId())) {
 				return true;
 			}
 		} catch (CertificateParsingException e) {
 			LOG.warn(e.getMessage());
 		}
-		// Responder's certificate not valid for signing OCSP responses.
 		return false;
 	}
 
