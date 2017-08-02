@@ -104,16 +104,16 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 		return archiveContent.getMimeTypeDocument();
 	}
 
-	protected void copyExistingArchiveWithSignatureList(DSSDocument archiveDocument, List<DSSDocument> signaturesToAdd, ByteArrayOutputStream baos) {
-		ZipOutputStream zos = null;
-		try {
-			zos = new ZipOutputStream(baos);
+	protected DSSDocument mergeArchiveAndExtendedSignatures(DSSDocument archiveDocument, List<DSSDocument> signaturesToAdd) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(baos)) {
 			copyArchiveContentWithoutSignatures(archiveDocument, zos);
 			storeDocuments(signaturesToAdd, zos);
+
+			zos.finish();
+
+			return new InMemoryDocument(baos.toByteArray(), null, archiveDocument.getMimeType());
 		} catch (IOException e) {
 			throw new DSSException("Unable to extend the ASiC container", e);
-		} finally {
-			Utils.closeQuietly(zos);
 		}
 	}
 
@@ -136,12 +136,7 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 	protected DSSDocument buildASiCContainer(List<DSSDocument> documentsToBeSigned, List<DSSDocument> signatures, List<DSSDocument> manifestDocuments,
 			ASiCParameters asicParameters) {
 
-		ByteArrayOutputStream baos = null;
-		ZipOutputStream zos = null;
-		try {
-			baos = new ByteArrayOutputStream();
-			zos = new ZipOutputStream(baos);
-
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(baos)) {
 			if (ASiCUtils.isASiCE(asicParameters)) {
 				storeDocuments(manifestDocuments, zos);
 			}
@@ -151,14 +146,12 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 			storeMimetype(asicParameters, zos);
 			storeZipComment(asicParameters, zos);
 
+			zos.finish();
+
+			return new InMemoryDocument(baos.toByteArray(), null, ASiCUtils.getMimeType(asicParameters));
 		} catch (IOException e) {
 			throw new DSSException("Unable to build the ASiC Container", e);
-		} finally {
-			Utils.closeQuietly(zos);
-			Utils.closeQuietly(baos);
 		}
-
-		return new InMemoryDocument(baos.toByteArray(), null, ASiCUtils.getMimeType(asicParameters));
 	}
 
 	private void storeDocuments(List<DSSDocument> documents, ZipOutputStream zos) throws IOException {

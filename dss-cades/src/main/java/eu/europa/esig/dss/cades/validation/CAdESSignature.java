@@ -530,7 +530,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				}
 			}
 			if (signaturePolicy.getPolicyContent() != null) {
-				// Updates the OID based cached values 
+				// Updates the OID based cached values
 				signaturePolicyProvider.getSignaturePoliciesById().put(policyId, signaturePolicy.getPolicyContent());
 			}
 		}
@@ -1324,9 +1324,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-		try {
-
-			final ByteArrayOutputStream data = new ByteArrayOutputStream();
+		try (ByteArrayOutputStream data = new ByteArrayOutputStream()) {
 			data.write(signerInformation.getSignature());
 			// We don't include the outer SEQUENCE, only the attrType and
 			// attrValues as stated by the TS Â§6.3.5, NOTE 2
@@ -1346,13 +1344,10 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public byte[] getTimestampX2Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-
-		final ByteArrayOutputStream data = new ByteArrayOutputStream();
-		// Those are common to Type 1 and Type 2
-
-		final Attribute certAttribute = getUnsignedAttribute(id_aa_ets_certificateRefs);
-		final Attribute revAttribute = getUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_revocationRefs);
-		try {
+		try (ByteArrayOutputStream data = new ByteArrayOutputStream()) {
+			// Those are common to Type 1 and Type 2
+			final Attribute certAttribute = getUnsignedAttribute(id_aa_ets_certificateRefs);
+			final Attribute revAttribute = getUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_revocationRefs);
 			if (certAttribute != null) {
 				data.write(DSSASN1Utils.getDEREncoded(certAttribute.getAttrType()));
 				data.write(DSSASN1Utils.getDEREncoded(certAttribute.getAttrValues()));
@@ -1361,10 +1356,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				data.write(DSSASN1Utils.getDEREncoded(revAttribute.getAttrType()));
 				data.write(DSSASN1Utils.getDEREncoded(revAttribute.getAttrValues()));
 			}
+
+			return data.toByteArray();
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
-		return data.toByteArray();
 	}
 
 	@Override
@@ -1446,9 +1442,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 */
 	private byte[] getArchiveTimestampDataV2(TimestampToken timestampToken) throws DSSException {
 
-		try {
-
-			final ByteArrayOutputStream data = new ByteArrayOutputStream();
+		try (ByteArrayOutputStream data = new ByteArrayOutputStream(); ByteArrayOutputStream signerByteArrayOutputStream = new ByteArrayOutputStream()) {
 
 			final ContentInfo contentInfo = cmsSignedData.toASN1Structure();
 			final SignedData signedData = SignedData.getInstance(contentInfo.getContent());
@@ -1493,13 +1487,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				}
 				data.write(crlBytes);
 			}
+
 			final SignerInfo signerInfo = signerInformation.toASN1Structure();
-			final ByteArrayOutputStream signerByteArrayOutputStream = new ByteArrayOutputStream();
 			final ASN1Set unauthenticatedAttributes = signerInfo.getUnauthenticatedAttributes();
 			final ASN1Sequence filteredUnauthenticatedAttributes = filterUnauthenticatedAttributes(unauthenticatedAttributes, timestampToken);
 			final ASN1Sequence asn1Object = getSignerInfoEncoded(signerInfo, filteredUnauthenticatedAttributes);
 			for (int ii = 0; ii < asn1Object.size(); ii++) {
-
 				final byte[] signerInfoBytes = DSSASN1Utils.getDEREncoded(asn1Object.getObjectAt(ii).toASN1Primitive());
 				signerByteArrayOutputStream.write(signerInfoBytes);
 			}

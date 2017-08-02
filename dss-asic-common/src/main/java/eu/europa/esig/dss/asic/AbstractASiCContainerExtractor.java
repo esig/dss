@@ -125,13 +125,10 @@ public abstract class AbstractASiCContainerExtractor {
 	abstract boolean isAllowedSignature(String entryName);
 
 	private DSSDocument getCurrentDocument(String filepath, ZipInputStream zis) throws IOException {
-		ByteArrayOutputStream baos = null;
-		try {
-			baos = new ByteArrayOutputStream();
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			Utils.copy(zis, baos);
+			baos.flush();
 			return new InMemoryDocument(baos.toByteArray(), filepath);
-		} finally {
-			Utils.closeQuietly(baos);
 		}
 	}
 
