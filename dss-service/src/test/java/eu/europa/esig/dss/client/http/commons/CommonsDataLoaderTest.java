@@ -44,7 +44,7 @@ public class CommonsDataLoaderTest {
 		ProxyProperties proxyProperties = new ProxyProperties();
 		proxyProperties.setHost("localhost");
 		proxyProperties.setPort(3128);
-		proxyProperties.setUser("valami\\Teszt");
+		proxyProperties.setUser("someDomain\\Teszt");
 		proxyProperties.setPassword("Teszt123");
 		proxyConfig.setHttpProperties(proxyProperties);
 		proxyConfig.setHttpsProperties(proxyProperties);

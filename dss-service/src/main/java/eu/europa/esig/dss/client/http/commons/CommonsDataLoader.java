@@ -574,39 +574,17 @@ public class CommonsDataLoader implements DataLoader {
 	protected byte[] httpGet(final String url) {
 
 		HttpGet httpRequest = null;
-		HttpResponse httpResponse = null;
-		CloseableHttpClient client = null;
 		try {
 
 			final URI uri = new URI(url.trim());
 			httpRequest = new HttpGet(uri);
-			if (contentType != null) {
-				httpRequest.setHeader(CONTENT_TYPE, contentType);
-			}
-
-			client = getHttpClient(url, false);
-			httpResponse = getHttpResponse(client, httpRequest, url);
-
-			if(HttpStatus.SC_PROXY_AUTHENTICATION_REQUIRED == httpResponse.getStatusLine().getStatusCode()) {
-				for(Header header : httpResponse.getAllHeaders()) {
-					if("proxy-authenticate".equals(header.getName().toLowerCase())){
-						if("ntlm".equals(header.getValue().toLowerCase())) {
-							client = getHttpClient(url, true);
-							EntityUtils.consumeQuietly(httpResponse.getEntity());
-							httpResponse = getHttpResponse(client, httpRequest, url);
-							break;
-						}
-					}
-				}
-			}
-
-			final byte[] returnedBytes = readHttpResponse(url, httpResponse);
+            final byte[] returnedBytes = doHttpRequest(httpRequest, url);
 			return returnedBytes;
 
 		} catch (URISyntaxException e) {
 			throw new DSSException(e);
 		} finally {
-			finallyHttp(httpRequest, httpResponse, client);
+			finallyHttp(httpRequest, null, null);
 		}
 	}
 
@@ -616,8 +594,6 @@ public class CommonsDataLoader implements DataLoader {
 		LOG.debug("Fetching data via POST from url " + url);
 
 		HttpPost httpRequest = null;
-		HttpResponse httpResponse = null;
-		CloseableHttpClient client = null;
 		try {
 			final URI uri = URI.create(url.trim());
 			httpRequest = new HttpPost(uri);
@@ -633,32 +609,12 @@ public class CommonsDataLoader implements DataLoader {
 			final HttpEntity httpEntity = new InputStreamEntity(bis, content.length);
 			final HttpEntity requestEntity = new BufferedHttpEntity(httpEntity);
 			httpRequest.setEntity(requestEntity);
-			if (contentType != null) {
-				httpRequest.setHeader(CONTENT_TYPE, contentType);
-			}
-
-			client = getHttpClient(url, false);
-			httpResponse = getHttpResponse(client, httpRequest, url);
-
-			if(HttpStatus.SC_PROXY_AUTHENTICATION_REQUIRED == httpResponse.getStatusLine().getStatusCode()) {
-				for(Header header : httpResponse.getAllHeaders()) {
-					if("proxy-authenticate".equals(header.getName().toLowerCase())){
-						if("ntlm".equals(header.getValue().toLowerCase())) {
-							client = getHttpClient(url, true);
-							EntityUtils.consumeQuietly(httpResponse.getEntity());
-							httpResponse = getHttpResponse(client, httpRequest, url);
-							break;
-						}
-					}
-				}
-			}
-
-			final byte[] returnedBytes = readHttpResponse(url, httpResponse);
+            final byte[] returnedBytes = doHttpRequest(httpRequest, url);
 			return returnedBytes;
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			finallyHttp(httpRequest, httpResponse, client);
+			finallyHttp(httpRequest, null, null);
 		}
 	}
 
@@ -709,7 +665,7 @@ public class CommonsDataLoader implements DataLoader {
 		}
 
 		if (statusCode != HttpStatus.SC_OK) {
-			LOG.warn("No content available via url: " + url);
+			LOG.warn("No content available via url. " + url);
 			return null;
 		}
 
@@ -941,7 +897,43 @@ public class CommonsDataLoader implements DataLoader {
 				EntityUtils.consumeQuietly(httpResponse.getEntity());
 			}
 		} finally {
-			closeClient(client);
+			if(client != null) {
+				closeClient(client);
+			}
+		}
+	}
+
+	private byte[] doHttpRequest(HttpRequestBase httpRequest, String url) {
+		HttpResponse httpResponse = null;
+		CloseableHttpClient client = null;
+
+		try {
+			if (contentType != null) {
+                httpRequest.setHeader(CONTENT_TYPE, contentType);
+            }
+
+			client = getHttpClient(url, false);
+			httpResponse = getHttpResponse(client, httpRequest, url);
+
+			if(HttpStatus.SC_PROXY_AUTHENTICATION_REQUIRED == httpResponse.getStatusLine().getStatusCode()) {
+                for(Header header : httpResponse.getAllHeaders()) {
+                    if("proxy-authenticate".equals(header.getName().toLowerCase())){
+                        if("ntlm".equals(header.getValue().toLowerCase())) {
+                            client = getHttpClient(url, true);
+                            EntityUtils.consumeQuietly(httpResponse.getEntity());
+                            httpRequest.releaseConnection();
+                            httpResponse = getHttpResponse(client, httpRequest, url);
+                            break;
+                        }
+                    }
+                }
+            }
+
+			return readHttpResponse(url, httpResponse);
+		} catch (DSSException e) {
+			throw new DSSException(e);
+		} finally {
+			finallyHttp(httpRequest, httpResponse, client);
 		}
 	}
 }
