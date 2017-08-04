@@ -918,7 +918,7 @@ public class CommonsDataLoader implements DataLoader {
 			if(HttpStatus.SC_PROXY_AUTHENTICATION_REQUIRED == httpResponse.getStatusLine().getStatusCode()) {
                 for(Header header : httpResponse.getAllHeaders()) {
                     if("proxy-authenticate".equals(header.getName().toLowerCase())){
-                        if("ntlm".equals(header.getValue().toLowerCase())) {
+                        if("ntlm".equals(header.getValue().toLowerCase())) { // TODO kerberos, etc...
                             client = getHttpClient(url, true);
                             EntityUtils.consumeQuietly(httpResponse.getEntity());
                             httpRequest.releaseConnection();
