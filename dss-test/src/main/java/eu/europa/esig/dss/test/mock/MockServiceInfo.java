@@ -46,7 +46,8 @@ public class MockServiceInfo extends ServiceInfo {
 		MutableTimeDependentValues<ServiceInfoStatus> statusList = new MutableTimeDependentValues<ServiceInfoStatus>();
 		Map<String, List<Condition>> emptyMap = new HashMap<String, List<Condition>>();
 		List<String> emptyList = Collections.emptyList();
-		statusList.addOldest(new ServiceInfoStatus(CA_QC, SERVICE_STATUS_UNDERSUPERVISION_119612, emptyMap, emptyList, null, calendar.getTime(), null));
+		statusList.addOldest(
+				new ServiceInfoStatus(CA_QC, SERVICE_STATUS_UNDERSUPERVISION_119612, emptyMap, emptyList, emptyList, null, calendar.getTime(), null));
 		setStatus(statusList);
 	}
 }

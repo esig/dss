@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pades;
+package eu.europa.esig.dss.pdf.pdfbox;
 
 public class SignatureImageAndPosition {
     private float x;

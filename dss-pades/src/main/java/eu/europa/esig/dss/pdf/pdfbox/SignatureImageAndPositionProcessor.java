@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import eu.europa.esig.dss.pades.SignatureImageAndPosition;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.signature.visible.ImageAndResolution;
 import eu.europa.esig.dss.pades.signature.visible.ImageUtils;
