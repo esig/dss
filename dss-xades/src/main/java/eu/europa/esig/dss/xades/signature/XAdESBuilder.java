@@ -43,8 +43,6 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.xades.DSSReference;
@@ -183,20 +181,6 @@ public abstract class XAdESBuilder {
 	 */
 	public XAdESBuilder(final CertificateVerifier certificateVerifier) {
 		this.certificateVerifier = certificateVerifier;
-	}
-
-	/**
-	 * This method allows to retrieve the {@code CertificatePool} containing trust anchors.
-	 *
-	 * @return {@code CertificatePool} or null
-	 */
-	protected CertificatePool getCertificatePool() {
-
-		final CertificateSource trustedCertSource = certificateVerifier.getTrustedCertSource();
-		if (trustedCertSource != null) {
-			return trustedCertSource.getCertificatePool();
-		}
-		return null;
 	}
 
 	/**

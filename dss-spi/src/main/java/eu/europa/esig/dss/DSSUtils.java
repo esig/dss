@@ -749,8 +749,7 @@ public final class DSSUtils {
 	 * @return
 	 */
 	public static String getDeterministicId(final Date signingTime, TokenIdentifier id) {
-		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			if (signingTime != null) {
 				baos.write(Long.toString(signingTime.getTime()).getBytes());
 			}

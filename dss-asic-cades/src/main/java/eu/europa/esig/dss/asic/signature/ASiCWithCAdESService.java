@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.asic.signature;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -194,18 +193,10 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		}
 
-		ByteArrayOutputStream baos = null;
-		try {
-			baos = new ByteArrayOutputStream();
-			copyExistingArchiveWithSignatureList(toExtendDocument, extendedDocuments, baos);
-		} finally {
-			Utils.closeQuietly(baos);
-		}
-
-		DSSDocument asicSignature = new InMemoryDocument(baos.toByteArray(), null, toExtendDocument.getMimeType());
-		asicSignature.setName(
+		DSSDocument extensionResult = mergeArchiveAndExtendedSignatures(toExtendDocument, extendedDocuments);
+		extensionResult.setName(
 				DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
-		return asicSignature;
+		return extensionResult;
 	}
 
 	private String getArchivManifestFilename(List<DSSDocument> archiveManifests) {

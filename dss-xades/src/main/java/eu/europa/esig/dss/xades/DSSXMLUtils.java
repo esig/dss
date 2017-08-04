@@ -147,7 +147,7 @@ public final class DSSXMLUtils {
 	 * @return
 	 */
 	public static byte[] serializeNode(final Node xmlNode) {
-		try {
+		try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
 			Transformer transformer = DomUtils.getSecureTransformer();
 			Document document = null;
 			if (Node.DOCUMENT_NODE == xmlNode.getNodeType()) {
@@ -163,7 +163,6 @@ public final class DSSXMLUtils {
 				}
 			}
 
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			StreamResult result = new StreamResult(bos);
 			Source source = new DOMSource(xmlNode);
 			transformer.transform(source, result);
