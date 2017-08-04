@@ -44,6 +44,7 @@ import org.apache.http.client.config.AuthSchemes;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.Registry;
@@ -604,19 +605,8 @@ public class CommonsDataLoader implements DataLoader {
 
 		} catch (URISyntaxException e) {
 			throw new DSSException(e);
-
 		} finally {
-
-			try {
-				if (httpRequest != null) {
-					httpRequest.releaseConnection();
-				}
-				if (httpResponse != null) {
-					EntityUtils.consumeQuietly(httpResponse.getEntity());
-				}
-			} finally {
-				closeClient(client);
-			}
+			finallyHttp(httpRequest, httpResponse, client);
 		}
 	}
 
@@ -668,16 +658,7 @@ public class CommonsDataLoader implements DataLoader {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			try {
-				if (httpRequest != null) {
-					httpRequest.releaseConnection();
-				}
-				if (httpResponse != null) {
-					EntityUtils.consumeQuietly(httpResponse.getEntity());
-				}
-			} finally {
-				closeClient(client);
-			}
+			finallyHttp(httpRequest, httpResponse, client);
 		}
 	}
 
@@ -951,4 +932,16 @@ public class CommonsDataLoader implements DataLoader {
 		}
 	}
 
+	private void finallyHttp(HttpRequestBase httpRequest, HttpResponse httpResponse, CloseableHttpClient client) {
+		try {
+			if (httpRequest != null) {
+				httpRequest.releaseConnection();
+			}
+			if (httpResponse != null) {
+				EntityUtils.consumeQuietly(httpResponse.getEntity());
+			}
+		} finally {
+			closeClient(client);
+		}
+	}
 }
