@@ -42,5 +42,10 @@
   		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
   		<artifactId>dss-pades</artifactId>
   	</dependency>
+	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>jcl-over-slf4j</artifactId> <!-- replaces commons-logging -->
+		<version>${slf4j.version}</version>
+	</dependency>
   </dependencies>
 </project>
