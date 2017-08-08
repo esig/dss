@@ -145,6 +145,10 @@ public class FullCAdESSignaturePolicyValidator extends BasicASNSignaturePolicyVa
 			}
 
 			for (CertificateToken certificate : signerCertPath) {
+				if (certificate.isSelfSigned() && certificate.isTrusted()) {
+					// We don't need to validate trusted root CA
+					continue;
+				}
 				revReqValidator = new RevReqValidator(signingCertTrustCondition.getSignerRevReq().getCaCerts(), certificate);
 				if (!revReqValidator.validate()) {
 					addError("signingCertTrustCondition.signerRevReq.endCertRevReq", "One of the CA certificates is revoked");
