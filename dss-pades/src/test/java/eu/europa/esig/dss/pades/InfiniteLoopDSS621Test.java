@@ -69,6 +69,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -91,6 +92,7 @@ public class InfiniteLoopDSS621Test {
 	public void testReadTimestamp1() throws Exception {
 		DSSDocument signDocument = new FileDocument(new File(FILE_PATH));
 		final CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader()); // Error 404 on DER policy
 
 		final SignedDocumentValidator signedDocumentValidator = SignedDocumentValidator.fromDocument(signDocument);
 		signedDocumentValidator.setCertificateVerifier(certificateVerifier);
