@@ -31,6 +31,7 @@ import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -214,20 +215,16 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	 * @return the {@code CMSSignedData} if the dssDocument is an CMS signed message. Null otherwise.
 	 */
 	private CMSSignedData getCmsSignedData(final DSSDocument dssDocument, final CAdESSignatureParameters parameters) {
-
 		CMSSignedData cmsSignedData = null;
-		try {
-			// check if input dssDocument is already signed
-			cmsSignedData = new CMSSignedData(DSSUtils.toByteArray(dssDocument));
-			final SignaturePackaging signaturePackaging = parameters.getSignaturePackaging();
-			if (signaturePackaging == SignaturePackaging.ENVELOPING) {
-
+		if (SignaturePackaging.ENVELOPING == parameters.getSignaturePackaging() && DSSASN1Utils.isASN1SequenceTag(DSSUtils.readFirstByte(dssDocument))) {
+			try {
+				cmsSignedData = new CMSSignedData(DSSUtils.toByteArray(dssDocument));
 				if (cmsSignedData.getSignedContent().getContent() == null) {
 					cmsSignedData = null;
 				}
+			} catch (Exception e) {
+				// not a parallel signature
 			}
-		} catch (Exception e) {
-			// not a parallel signature
 		}
 		return cmsSignedData;
 	}
