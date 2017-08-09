@@ -50,11 +50,11 @@ import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.XAdESNamespaces;
+import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampInclude;
 import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.xades.DSSReference;
@@ -274,19 +274,11 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final Element keyInfoDom = DomUtils.addElement(documentDom, signatureDom, XMLNS, DS_KEY_INFO);
 		// <ds:X509Data>
 		final Element x509DataDom = DomUtils.addElement(documentDom, keyInfoDom, XMLNS, DS_X509_DATA);
-		final boolean trustAnchorBPPolicy = params.bLevel().isTrustAnchorBPPolicy();
-		CertificateSource trustedCertSource = certificateVerifier.getTrustedCertSource();
-		List<CertificateToken> certificateChains = new ArrayList<CertificateToken>();
-		certificateChains.add(params.getSigningCertificate());
-		certificateChains.addAll(params.getCertificateChain());
-		for (final CertificateToken x509Certificate : certificateChains) {
-			// do not include trusted cert
-			if (trustAnchorBPPolicy && trustedCertSource != null) {
-				if (!trustedCertSource.get(x509Certificate.getSubjectX500Principal()).isEmpty()) {
-					continue;
-				}
-			}
-			addCertificate(x509DataDom, x509Certificate);
+
+		BaselineBCertificateSelector certSelector = new BaselineBCertificateSelector(certificateVerifier, params);
+		List<CertificateToken> certificates = certSelector.getCertificates();
+		for (CertificateToken token : certificates) {
+			addCertificate(x509DataDom, token);
 		}
 	}
 
