@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.security.cert.X509CRL;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -54,7 +53,7 @@ public class PdfDssDict {
 	private static final String OCSP_ARRAY_NAME_VRI = "OCSP";
 	private static final String CRL_ARRAY_NAME_VRI = "CRL";
 
-	private Set<X509CRL> crlList = new HashSet<X509CRL>();
+	private Set<byte[]> crlList = new HashSet<byte[]>();
 
 	private Set<BasicOCSPResp> ocspList = new HashSet<BasicOCSPResp>();
 
@@ -117,9 +116,7 @@ public class PdfDssDict {
 			LOG.debug("There are {} CRLs in {} dictionary", crlArray.size(), dictionaryName);
 			for (int ii = 0; ii < crlArray.size(); ii++) {
 				try {
-					final byte[] bytes = crlArray.getBytes(ii);
-					final X509CRL x509CRL = DSSUtils.loadCRL(bytes);
-					crlList.add(x509CRL);
+					crlList.add(crlArray.getBytes(ii));
 				} catch (Exception e) {
 					LOG.debug("Unable to read CRL " + ii + " from " + dictionaryName + " dictionary : " + e.getMessage(), e);
 				}
@@ -166,7 +163,7 @@ public class PdfDssDict {
 		}
 	}
 
-	public Set<X509CRL> getCrlList() {
+	public Set<byte[]> getCrlList() {
 		return Collections.unmodifiableSet(crlList);
 	}
 

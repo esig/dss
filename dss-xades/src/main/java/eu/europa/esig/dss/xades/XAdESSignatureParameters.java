@@ -39,7 +39,12 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	 */
 	private Document rootDocument;
 
-	private boolean embedXML;
+	/**
+	 * This parameter allows to produce Manifest signature (https://www.w3.org/TR/xmldsig-core/#sec-o-Manifest)
+	 */
+	private boolean manifestSignature;
+
+	private String manifestId;
 
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
@@ -149,12 +154,20 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 		this.en319132 = en319132;
 	}
 
-	public boolean isEmbedXML() {
-		return embedXML;
+	public boolean isManifestSignature() {
+		return manifestSignature;
 	}
 
-	public void setEmbedXML(boolean embedXML) {
-		this.embedXML = embedXML;
+	public void setManifestSignature(boolean manifestSignature) {
+		this.manifestSignature = manifestSignature;
+	}
+
+	public String getManifestId() {
+		return manifestId;
+	}
+
+	public void setManifestId(String manifestId) {
+		this.manifestId = manifestId;
 	}
 
 }

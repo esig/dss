@@ -20,11 +20,13 @@
  */
 package eu.europa.esig.dss.test.mock;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.security.cert.CRLException;
 import java.security.cert.X509CRL;
-import java.util.ArrayList;
 
-import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
 
 /**
@@ -43,7 +45,6 @@ public class MockCRLSource extends OfflineCRLSource {
 	 * @param paths
 	 */
 	public MockCRLSource(final String... paths) {
-		x509CRLList = new ArrayList<X509CRL>();
 		for (final String pathItem : paths) {
 			final InputStream inputStream = getClass().getResourceAsStream(pathItem);
 			addCRLToken(inputStream);
@@ -58,7 +59,6 @@ public class MockCRLSource extends OfflineCRLSource {
 	 *            the list of <code>InputStream</code>
 	 */
 	public MockCRLSource(final InputStream... inputStreams) {
-		x509CRLList = new ArrayList<X509CRL>();
 		for (final InputStream inputStream : inputStreams) {
 			addCRLToken(inputStream);
 		}
@@ -72,16 +72,20 @@ public class MockCRLSource extends OfflineCRLSource {
 	 *            the list of <code>X509CRL</code>
 	 */
 	public MockCRLSource(final X509CRL... crls) {
-		x509CRLList = new ArrayList<X509CRL>();
 		for (X509CRL x509crl : crls) {
-			x509CRLList.add(x509crl);
+			try {
+				addCRLBinary(x509crl.getEncoded());
+			} catch (CRLException e) {
+				throw new DSSException(e);
+			}
 		}
 	}
 
 	private void addCRLToken(final InputStream inputStream) {
-		final X509CRL x509CRL = DSSUtils.loadCRL(inputStream);
-		if (!x509CRLList.contains(x509CRL)) {
-			x509CRLList.add(x509CRL);
+		try {
+			addCRLBinary(Utils.toByteArray(inputStream));
+		} catch (IOException e) {
+			throw new DSSException(e);
 		}
 	}
 }

@@ -1,6 +1,8 @@
 package eu.europa.esig.dss;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -462,6 +464,17 @@ public final class DomUtils {
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
+	}
+
+	public static DSSDocument createDssDocumentFromDomDocument(Document document, String name) {
+		DSSDocument dssDoc = null;
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			DomUtils.writeDocumentTo(document, baos);
+			dssDoc = new InMemoryDocument(baos.toByteArray(), name, MimeType.XML);
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+		return dssDoc;
 	}
 
 	/**

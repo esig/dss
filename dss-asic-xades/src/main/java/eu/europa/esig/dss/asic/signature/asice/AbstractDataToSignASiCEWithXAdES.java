@@ -3,8 +3,8 @@ package eu.europa.esig.dss.asic.signature.asice;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.ASiCParameters;
-import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractDataToSignASiCEWithXAdES {
@@ -14,7 +14,7 @@ public abstract class AbstractDataToSignASiCEWithXAdES {
 
 	protected DSSDocument getASiCManifest(List<DSSDocument> documents) {
 		ASiCEWithXAdESManifestBuilder manifestBuilder = new ASiCEWithXAdESManifestBuilder(documents);
-		return ASiCUtils.createDssDocumentFromDomDocument(manifestBuilder.build(), META_INF + "manifest.xml");
+		return DomUtils.createDssDocumentFromDomDocument(manifestBuilder.build(), META_INF + "manifest.xml");
 	}
 
 	protected String getSignatureFileName(final ASiCParameters asicParameters, List<DSSDocument> existingSignatures) {

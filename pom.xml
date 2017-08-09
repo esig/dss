@@ -5,7 +5,7 @@
 
 	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>sd-dss</artifactId>
-	<version>5.1-SNAPSHOT</version>
+	<version>5.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Digital Signature Services</name>
 
@@ -52,11 +52,11 @@
 		<bouncycastle.version>1.57</bouncycastle.version>
 		<xmlsec.version>2.0.8</xmlsec.version>
 		<xalan.version>2.7.2</xalan.version>
-		<pdfbox.version>2.0.6</pdfbox.version>
+		<pdfbox.version>2.0.7</pdfbox.version>
 		<httpclient.version>4.5.3</httpclient.version>
 		<rs-api.version>2.0.1</rs-api.version>
 
-		<junit.version>4.11</junit.version>
+		<junit.version>4.12</junit.version>
 	</properties>
 	
 	<licenses>
@@ -72,9 +72,12 @@
 		<module>dss-utils</module>
 		<module>dss-utils-apache-commons</module>
 		<module>dss-utils-google-guava</module>
+		<module>dss-crl-parser</module>
+		<module>dss-crl-parser-x509crl</module>
+		<module>dss-crl-parser-stream</module>
+		<module>dss-spi</module>
 		<module>dss-document</module>
 		<module>dss-service</module>
-		<module>dss-spi</module>
 		<module>dss-test</module>
 		<module>sscd-mocca-adapter</module>
 		<module>dss-policy-jaxb</module>
@@ -268,7 +271,7 @@
 		<url>https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</url>
 		<connection>scm:git:https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</connection>
 		<developerConnection>scm:git:https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</developerConnection>
-		<tag>5.0.RC1</tag>
+		<tag>5.1.RC1</tag>
 	</scm>
 
 	<dependencyManagement>
@@ -282,6 +285,27 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-spi</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-crl-parser</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-crl-parser</artifactId>
+				<type>test-jar</type>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-crl-parser-x509crl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-crl-parser-stream</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

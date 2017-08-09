@@ -102,11 +102,13 @@ public final class CMSUtils {
 	 * @return the signed content extracted from {@code CMSTypedData}
 	 */
 	public static byte[] getSignedContent(final CMSTypedData cmsTypedData) {
-		try {
-			final ByteArrayOutputStream originalDocumentData = new ByteArrayOutputStream();
+		if (cmsTypedData == null) {
+			throw new DSSException("CMSTypedData is null (should be a detached signature)");
+		}
+		try (ByteArrayOutputStream originalDocumentData = new ByteArrayOutputStream()) {
 			cmsTypedData.write(originalDocumentData);
 			return originalDocumentData.toByteArray();
-		} catch (Exception e) {
+		} catch (CMSException | IOException e) {
 			throw new DSSException(e);
 		}
 	}

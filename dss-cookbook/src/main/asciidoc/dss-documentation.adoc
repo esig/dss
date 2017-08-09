@@ -150,6 +150,17 @@ Please note that the DSS framework is still under maintenance and new features w
 
 DSS framework is a multi-modules project which can be builded with Maven.
 
+You can easily download them with the following Maven repository : 
+
+[source,xml]
+----
+<repository>
+  <id>cefdigital</id>
+  <name>cefdigital</name>
+  <url>https://ec.europa.eu/cefdigital/artifact/content/repositories/esignaturedss/</url>
+</repository>
+----
+
 [horizontal]
 dss-model:: Data model used in almost every modules.
 dss-token:: Token definitions and implementations for MS CAPI, PKCS#11, PKCS#12.
@@ -163,10 +174,6 @@ dss-xades:: Implementation of the XAdES signature, extension and validation.
 dss-spi:: Interfaces, util classes to manipulate ASN1, compute digests,... 
 dss-service:: Implementations to communicate with online resources (TSP, CRL, OCSP). 
 dss-tsl-validation:: Module which allows to load / parse / validate LOTL and TSLs.
-dss-standalone-app:: Standalone application which allows to sign a document with different formats and tokens (JavaFX).
-dss-standalone-app-package:: Packaging module for dss-standalone-app.
-dss-demo-webapp:: Demonstration web application which presents a part of the DSS possibilities.
-dss-demo-bundle:: Packaging module for dss-demo-webapp.
 validation-policy:: Business of the signature's validation (ETSI EN 319 102).
 dss-rest:: REST webservices to sign (getDataToSign, signDocument methods) and extend a signature.
 dss-rest-client:: Client for the REST webservices.
@@ -203,6 +210,16 @@ The module dss-utils offers an interface with utility methods to operate on Stri
  * dss-utils-google-guava : this module only requires Google Guava (recommended on Android).
 
 If your integration includes dss-utils, you will needs to select an implementation.
+
+== Available demonstrations
+
+With the framework, some demonstrations are provided.
+
+[horizontal]
+dss-standalone-app:: Standalone application which allows to sign a document with different formats and tokens (JavaFX).
+dss-standalone-app-package:: Packaging module for dss-standalone-app.
+dss-demo-webapp:: Demonstration web application which presents a part of the DSS possibilities.
+dss-demo-bundle:: Packaging module for dss-demo-webapp.
 
 == Signature's profile simplification
 

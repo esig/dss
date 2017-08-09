@@ -3,6 +3,7 @@ package eu.europa.esig.dss.asic.signature.asice;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.ASiCParameters;
 import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
@@ -18,7 +19,7 @@ public abstract class AbstractDataToSignASiCEWithCAdES {
 		ASiCEWithCAdESManifestBuilder manifestBuilder = new ASiCEWithCAdESManifestBuilder(documents, parameters.getDigestAlgorithm(),
 				getSignatureFileName(parameters.aSiC(), signatures));
 
-		return ASiCUtils.createDssDocumentFromDomDocument(manifestBuilder.build(), getASiCManifestFilename(manifests));
+		return DomUtils.createDssDocumentFromDomDocument(manifestBuilder.build(), getASiCManifestFilename(manifests));
 	}
 
 	protected String getSignatureFileName(final ASiCParameters asicParameters, List<DSSDocument> existingSignatures) {

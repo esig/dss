@@ -48,7 +48,6 @@ import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.signature.Reference;
-import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.signature.SignedInfo;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
@@ -1006,31 +1005,26 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		// get include elements from signature
 		List<TimestampInclude> includes = timestampToken.getTimestampIncludes();
 
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-		for (TimestampInclude include : includes) {
-			// retrieve reference element
-			// -> go through references and check for one whose URI matches the
-			// URI of include
-			for (final Reference reference : references) {
-				String id = include.getURI();
-
-				if (reference.getId().equals(id)) {
-					try {
-						final byte[] referencedBytes = reference.getReferencedBytes();
-						outputStream.write(referencedBytes);
-					} catch (IOException e) {
-						throw new DSSException(e);
-					} catch (ReferenceNotInitializedException e) {
-						throw new DSSException(e);
-					} catch (XMLSignatureException e) {
-						throw new DSSException(e);
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			for (TimestampInclude include : includes) {
+				// retrieve reference element
+				// -> go through references and check for one whose URI matches the
+				// URI of include
+				for (final Reference reference : references) {
+					String id = include.getURI();
+					if (reference.getId().equals(id)) {
+						outputStream.write(reference.getReferencedBytes());
 					}
 				}
 			}
+			byte[] byteArray = outputStream.toByteArray();
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("IndividualDataObjectsTimestampData bytes: {}", new String(byteArray));
+			}
+			return byteArray;
+		} catch (IOException | XMLSignatureException e) {
+			throw new DSSException("Unable to extract IndividualDataObjectsTimestampData", e);
 		}
-		byte[] octetStream = outputStream.toByteArray();
-		return octetStream;
 	}
 
 	/**
@@ -1051,36 +1045,28 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		if (references.isEmpty()) {
 			throw new DSSException("The method 'checkSignatureIntegrity' must be invoked first!");
 		}
-		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		for (final Reference reference : references) {
 
-			// Take, the first ds:Reference element within ds:SignedInfo if and
-			// only if the Type attribute does not
-			// have the value "http://uri.etsi.org/01903#SignedProperties".
-			if (!xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType())) {
-
-				try {
-
-					final byte[] referencedBytes = reference.getReferencedBytes();
-					outputStream.write(referencedBytes);
-				} catch (IOException e) {
-					throw new DSSException(e);
-				} catch (ReferenceNotInitializedException e) {
-					throw new DSSException(e);
-				} catch (XMLSignatureException e) {
-					throw new DSSException(e);
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			for (final Reference reference : references) {
+				// Take, the first ds:Reference element within ds:SignedInfo if and
+				// only if the Type attribute does not
+				// have the value "http://uri.etsi.org/01903#SignedProperties".
+				if (!xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType())) {
+					outputStream.write(reference.getReferencedBytes());
 				}
 			}
+			// compute digest of resulting octet stream using algorithm indicated in
+			// the time-stamp token
+			// -> digest is computed in TimestampToken verification/match
+			// return the computed digest
+			byte[] toTimestampBytes = outputStream.toByteArray();
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("AllDataObjectsTimestampData bytes: " + new String(toTimestampBytes));
+			}
+			return toTimestampBytes;
+		} catch (IOException | XMLSignatureException e) {
+			throw new DSSException("Unable to extract AllDataObjectsTimestampData", e);
 		}
-		// compute digest of resulting octet stream using algorithm indicated in
-		// the time-stamp token
-		// -> digest is computed in TimestampToken verification/match
-		// return the computed digest
-		byte[] toTimestampBytes = outputStream.toByteArray();
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("AllDataObjectsTimestampData bytes: " + new String(toTimestampBytes));
-		}
-		return toTimestampBytes;
 	}
 
 	private List<TimestampReference> getSignatureTimestampedReferences() {
@@ -1644,27 +1630,24 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public byte[] getSignatureTimestampData(final TimestampToken timestampToken, String canonicalizationMethod) {
 		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		try {
 
+		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
 			writeCanonicalizedValue(xPathQueryHolder.XPATH_SIGNATURE_VALUE, canonicalizationMethod, buffer);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("Signature timestamp: canonicalization method  --> {}", canonicalizationMethod);
 				LOG.trace("                   : canonicalized string     --> {}", buffer.toString());
 			}
+			return buffer.toByteArray();
 		} catch (IOException e) {
 			throw new DSSException("Error when computing the SignatureTimestamp", e);
 		}
-		return buffer.toByteArray();
 	}
 
 	@Override
 	public byte[] getTimestampX1Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-
 		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		try {
 
+		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
 			writeCanonicalizedValue(xPathQueryHolder.XPATH_SIGNATURE_VALUE, canonicalizationMethod, buffer);
 
 			final NodeList signatureTimeStampNode = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_TIMESTAMP);
@@ -1689,11 +1672,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public byte[] getTimestampX2Data(final TimestampToken timestampToken, String canonicalizationMethod) {
-
 		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		try {
 
+		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
 			writeCanonicalizedValue(xPathQueryHolder.XPATH_COMPLETE_CERTIFICATE_REFS, canonicalizationMethod, buffer);
 			writeCanonicalizedValue(xPathQueryHolder.XPATH_COMPLETE_REVOCATION_REFS, canonicalizationMethod, buffer);
 			if (LOG.isTraceEnabled()) {
@@ -1701,7 +1682,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 			return buffer.toByteArray();
 		} catch (IOException e) {
-
 			throw new DSSException("Error when computing the RefsOnlyTimeStamp (TimestampX2D)", e);
 		}
 	}
@@ -1728,13 +1708,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		 * have the same parent, this property uses
 		 * the Implicit mechanism for all the time-stamped data objects. The input to the computation of the digest
 		 * value MUST be built as follows:
+		 * 
+		 * 1) Initialize the final octet stream as an empty octet stream.
 		 */
-		try {
-
-			/**
-			 * 1) Initialize the final octet stream as an empty octet stream.
-			 */
-			final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
 
 			/**
 			 * 2) Take all the ds:Reference elements in their order of appearance within ds:SignedInfo referencing
@@ -1752,19 +1729,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			 */
 			final Set<String> referenceURIs = new HashSet<String>();
 			for (final Reference reference : references) {
-
-				try {
-
-					String uri = reference.getURI();
-					if (uri.startsWith("#")) {
-						uri = uri.substring(1);
-					}
-					referenceURIs.add(uri);
-					final byte[] bytes = reference.getReferencedBytes();
-					Utils.write(bytes, buffer);
-				} catch (XMLSignatureException e) {
-					throw new DSSException(e);
+				String uri = reference.getURI();
+				if (uri.startsWith("#")) {
+					uri = uri.substring(1);
 				}
+				referenceURIs.add(uri);
+				buffer.write(reference.getReferencedBytes());
 			}
 			/**
 			 * 3) Take the following XMLDSIG elements in the order they are listed below, canonicalize each one and
@@ -1917,9 +1887,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				byte[] canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, node);
 				buffer.write(canonicalizedValue);
 			}
-			final byte[] bytes = buffer.toByteArray();
-			return bytes;
-		} catch (IOException e) {
+			return buffer.toByteArray();
+		} catch (IOException | XMLSignatureException e) {
 			throw new DSSException("Error when computing the archive data", e);
 		}
 	}

@@ -58,6 +58,8 @@ public interface IUtils {
 
 	String toHex(byte[] bytes);
 
+	byte[] fromHex(String hex);
+
 	String toBase64(byte[] bytes);
 
 	byte[] fromBase64(String base64);

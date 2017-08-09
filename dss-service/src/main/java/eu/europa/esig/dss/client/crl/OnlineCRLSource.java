@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.client.crl;
 
-import java.security.cert.X509CRL;
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,16 +29,15 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.Protocol;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.crl.CRLUtils;
+import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.crl.CRLSource;
 import eu.europa.esig.dss.x509.crl.CRLToken;
-import eu.europa.esig.dss.x509.crl.CRLUtils;
-import eu.europa.esig.dss.x509.crl.CRLValidity;
 
 /**
  * Online CRL repository. This CRL repository implementation will download the CRLs from the given CRL URIs.
@@ -131,18 +130,17 @@ public class OnlineCRLSource implements CRLSource {
 		if (dataAndUrl == null) {
 			return null;
 		}
-		final X509CRL crl;
-		try {
-			crl = DSSUtils.loadCRL(dataAndUrl.data);
+
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(dataAndUrl.data)) {
+			final CRLValidity crlValidity = CRLUtils.isValidCRL(bais, issuerToken);
+			final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
+			crlToken.setSourceURL(dataAndUrl.urlString);
+			crlToken.setAvailable(true);
+			return crlToken;
 		} catch (Exception e) {
-			LOG.warn("Unable to load the CRL (url:" + dataAndUrl.urlString + ") : " + e.getMessage(), e);
+			LOG.warn("Unable to parse/validate the CRL (url:" + dataAndUrl.urlString + ") : " + e.getMessage(), e);
 			return null;
 		}
-		final CRLValidity crlValidity = CRLUtils.isValidCRL(crl, issuerToken);
-		final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
-		crlToken.setSourceURL(dataAndUrl.urlString);
-		crlToken.setAvailable(true);
-		return crlToken;
 	}
 
 	/**
@@ -153,18 +151,12 @@ public class OnlineCRLSource implements CRLSource {
 	 * @return {@code X509CRL} or null if it was not possible to download the CRL
 	 */
 	private DataLoader.DataAndUrl downloadCrl(final List<String> downloadUrls) {
-
-		if (Utils.isCollectionEmpty(downloadUrls)) {
+		try {
+			return dataLoader.get(downloadUrls);
+		} catch (DSSException e) {
+			LOG.warn("Unable to download CRL from URLs {}", downloadUrls, e);
 			return null;
 		}
-		try {
-
-			final DataLoader.DataAndUrl dataAndUrl = dataLoader.get(downloadUrls);
-			return dataAndUrl;
-		} catch (DSSException e) {
-			LOG.warn("", e);
-		}
-		return null;
 	}
 
 	/**

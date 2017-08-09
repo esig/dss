@@ -88,7 +88,8 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.Protocol;
-import eu.europa.esig.dss.client.http.proxy.ProxyPreferenceManager;
+import eu.europa.esig.dss.client.http.proxy.ProxyConfig;
+import eu.europa.esig.dss.client.http.proxy.ProxyProperties;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -99,7 +100,7 @@ import eu.europa.esig.dss.utils.Utils;
  * proxy management through {@code ProxyPreferenceManager}. The authentication
  * is also supported.
  */
-public class CommonsDataLoader implements DataLoader, DSSNotifier {
+public class CommonsDataLoader implements DataLoader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommonsDataLoader.class);
 
@@ -120,7 +121,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	// TODO: (Bob: 2014 Jan 28) It is extracted from:
 	// https://joinup.ec.europa.eu/software/sd-dss/issue/dss-41-tsa-service-basic-auth
 	// tsaConnection.setRequestProperty("Content-Transfer-Encoding", "binary");
-	private ProxyPreferenceManager proxyPreferenceManager;
+	private ProxyConfig proxyConfig;
 
 	private int timeoutConnection = TIMEOUT_CONNECTION;
 	private int timeoutSocket = TIMEOUT_SOCKET;
@@ -129,8 +130,6 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	private boolean redirectsEnabled = true;
 
 	private final Map<HttpHost, UsernamePasswordCredentials> authenticationMap = new HashMap<HttpHost, UsernamePasswordCredentials>();
-
-	private boolean updated;
 
 	/**
 	 * Path to the keystore.
@@ -235,10 +234,6 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	}
 
 	protected synchronized CloseableHttpClient getHttpClient(final String url) throws DSSException {
-
-		if (LOG.isTraceEnabled() && updated) {
-			LOG.trace(">>> Proxy preferences updated");
-		}
 		HttpClientBuilder httpClientBuilder = HttpClients.custom();
 
 		httpClientBuilder = configCredentials(httpClientBuilder, url);
@@ -287,47 +282,35 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	 * @return
 	 */
 	private HttpClientBuilder configureProxy(HttpClientBuilder httpClientBuilder, CredentialsProvider credentialsProvider, String url) throws DSSException {
-
-		if (proxyPreferenceManager == null) {
+		if (proxyConfig == null) {
 			return httpClientBuilder;
 		}
 		try {
 
 			final String protocol = new URL(url).getProtocol();
-			final boolean proxyHTTPS = Protocol.isHttps(protocol) && proxyPreferenceManager.isHttpsEnabled();
-			final boolean proxyHTTP = Protocol.isHttp(protocol) && proxyPreferenceManager.isHttpEnabled();
+			final boolean proxyHTTPS = Protocol.isHttps(protocol) && proxyConfig.getHttpsProperties() != null;
+			final boolean proxyHTTP = Protocol.isHttp(protocol) && proxyConfig.getHttpProperties() != null;
 
 			if (!proxyHTTPS && !proxyHTTP) {
 				return httpClientBuilder;
 			}
 
-			String proxyHost = null;
-			int proxyPort = 0;
-			String proxyUser = null;
-			String proxyPassword = null;
-			String proxyExcludedHosts = null;
-
+			ProxyProperties proxyProps = null;
 			if (proxyHTTPS) {
-
 				LOG.debug("Use proxy https parameters");
-				final Long port = proxyPreferenceManager.getHttpsPort();
-				proxyPort = port != null ? port.intValue() : 0;
-				proxyHost = proxyPreferenceManager.getHttpsHost();
-				proxyUser = proxyPreferenceManager.getHttpsUser();
-				proxyPassword = proxyPreferenceManager.getHttpsPassword();
-				proxyExcludedHosts = proxyPreferenceManager.getHttpsExcludedHosts();
-			} else if (proxyHTTP) { // noinspection ConstantConditions
-
+				proxyProps = proxyConfig.getHttpsProperties();
+			} else if (proxyHTTP) {
 				LOG.debug("Use proxy http parameters");
-				final Long port = proxyPreferenceManager.getHttpPort();
-				proxyPort = port != null ? port.intValue() : 0;
-				proxyHost = proxyPreferenceManager.getHttpHost();
-				proxyUser = proxyPreferenceManager.getHttpUser();
-				proxyPassword = proxyPreferenceManager.getHttpPassword();
-				proxyExcludedHosts = proxyPreferenceManager.getHttpExcludedHosts();
+				proxyProps = proxyConfig.getHttpProperties();
 			}
-			if (Utils.isStringNotEmpty(proxyUser) && Utils.isStringNotEmpty(proxyPassword)) {
 
+			String proxyHost = proxyProps.getHost();
+			int proxyPort = proxyProps.getPort();
+			String proxyUser = proxyProps.getUser();
+			String proxyPassword = proxyProps.getPassword();
+			String proxyExcludedHosts = proxyProps.getExcludedHosts();
+
+			if (Utils.isStringNotEmpty(proxyUser) && Utils.isStringNotEmpty(proxyPassword)) {
 				AuthScope proxyAuth = new AuthScope(proxyHost, proxyPort);
 				UsernamePasswordCredentials proxyCredentials = new UsernamePasswordCredentials(proxyUser, proxyPassword);
 				credentialsProvider.setCredentials(proxyAuth, proxyCredentials);
@@ -362,7 +345,6 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 			}
 
 			final HttpClientBuilder httpClientBuilder1 = httpClientBuilder.setProxy(proxy);
-			updated = false;
 			return httpClientBuilder1;
 		} catch (MalformedURLException e) {
 			throw new DSSException(e);
@@ -786,25 +768,18 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	}
 
 	/**
-	 * @return associated {@code ProxyPreferenceManager}
+	 * @return associated {@code ProxyConfig}
 	 */
-	public ProxyPreferenceManager getProxyPreferenceManager() {
-		return proxyPreferenceManager;
+	public ProxyConfig getProxyConfig() {
+		return proxyConfig;
 	}
 
 	/**
-	 * @param proxyPreferenceManager
-	 *            the proxyPreferenceManager to set
+	 * @param proxyConfig
+	 *            the proxyConfig to set
 	 */
-	public void setProxyPreferenceManager(final ProxyPreferenceManager proxyPreferenceManager) {
-
-		this.proxyPreferenceManager = proxyPreferenceManager;
-		if (proxyPreferenceManager != null) {
-			proxyPreferenceManager.addNotifier(this);
-			if (LOG.isTraceEnabled()) {
-				LOG.trace(">>> SET: " + proxyPreferenceManager);
-			}
-		}
+	public void setProxyConfig(final ProxyConfig proxyConfig) {
+		this.proxyConfig = proxyConfig;
 	}
 
 	public void setSslKeystorePath(String sslKeystorePath) {
@@ -870,11 +845,6 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 			commonsDataLoader.addAuthentication(httpHost.getHostName(), httpHost.getPort(), httpHost.getSchemeName(), credentials.getUserName(),
 					credentials.getPassword());
 		}
-	}
-
-	@Override
-	public void update() {
-		updated = true;
 	}
 
 }
