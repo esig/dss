@@ -11,6 +11,8 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	private String contactInfo;
 	private String location;
 	private String signatureFieldId;
+	private String filter = "Adobe.PPKLite";
+	private String subFilter = "ETSI.CAdES.detached";
 
 	private int signatureSize = 9472; // default value in pdfbox
 
@@ -102,5 +104,21 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	 */
 	public void setSignatureSize(int signatureSize) {
 		this.signatureSize = signatureSize;
+	}
+
+	public String getFilter() {
+		return filter;
+	}
+
+	public void setFilter(String filter) {
+		this.filter = filter;
+	}
+
+	public String getSubFilter() {
+		return subFilter;
+	}
+
+	public void setSubFilter(String subFilter) {
+		this.subFilter = subFilter;
 	}
 }
