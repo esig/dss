@@ -216,10 +216,10 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	 */
 	private CMSSignedData getCmsSignedData(final DSSDocument dssDocument, final CAdESSignatureParameters parameters) {
 		CMSSignedData cmsSignedData = null;
-		if (SignaturePackaging.ENVELOPING == parameters.getSignaturePackaging() && DSSASN1Utils.isASN1SequenceTag(DSSUtils.readFirstByte(dssDocument))) {
+		if (DSSASN1Utils.isASN1SequenceTag(DSSUtils.readFirstByte(dssDocument))) {
 			try {
 				cmsSignedData = new CMSSignedData(DSSUtils.toByteArray(dssDocument));
-				if (cmsSignedData.getSignedContent().getContent() == null) {
+				if (SignaturePackaging.ENVELOPING == parameters.getSignaturePackaging() && cmsSignedData.getSignedContent().getContent() == null) {
 					cmsSignedData = null;
 				}
 			} catch (Exception e) {
