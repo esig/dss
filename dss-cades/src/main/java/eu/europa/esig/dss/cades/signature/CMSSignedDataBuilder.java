@@ -28,11 +28,8 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-
-import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -56,9 +53,9 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -119,8 +116,7 @@ public class CMSSignedDataBuilder {
 
 			generator.addSignerInfoGenerator(signerInfoGenerator);
 
-			final Set<CertificateToken> certificateChain = new HashSet<CertificateToken>();
-
+			final List<CertificateToken> certificateChain = new LinkedList<CertificateToken>();
 			if (originalSignedData != null) {
 
 				generator.addSigners(originalSignedData.getSignerInfos());
@@ -129,24 +125,20 @@ public class CMSSignedDataBuilder {
 				generator.addOtherRevocationInfo(id_pkix_ocsp_basic, originalSignedData.getOtherRevocationInfo(id_pkix_ocsp_basic));
 				generator.addOtherRevocationInfo(id_ri_ocsp_response, originalSignedData.getOtherRevocationInfo(id_ri_ocsp_response));
 
-				final Store certificates = originalSignedData.getCertificates();
+				final Store<X509CertificateHolder> certificates = originalSignedData.getCertificates();
 				final Collection<X509CertificateHolder> certificatesMatches = certificates.getMatches(null);
 				for (final X509CertificateHolder certificatesMatch : certificatesMatches) {
-
-					final CertificateToken x509Certificate = DSSASN1Utils.getCertificate(certificatesMatch);
-					certificateChain.add(x509Certificate);
+					final CertificateToken token = DSSASN1Utils.getCertificate(certificatesMatch);
+					if (!certificateChain.contains(token)) {
+						certificateChain.add(token);
+					}
 				}
 			}
-			certificateChain.add(parameters.getSigningCertificate());
-			certificateChain.addAll(parameters.getCertificateChain());
 
-			final boolean trustAnchorBPPolicy = parameters.bLevel().isTrustAnchorBPPolicy();
-			final Store jcaCertStore = getJcaCertStore(certificateChain, trustAnchorBPPolicy);
+			final JcaCertStore jcaCertStore = getJcaCertStore(certificateChain, parameters);
 			generator.addCertificates(jcaCertStore);
 			return generator;
-		} catch (CMSException e) {
-			throw new DSSException(e);
-		} catch (OperatorCreationException e) {
+		} catch (CMSException | OperatorCreationException e) {
 			throw new DSSException(e);
 		}
 	}
@@ -215,24 +207,19 @@ public class CMSSignedDataBuilder {
 	 * @return a store with the certificate chain of the signing certificate. The {@code Collection} is unique.
 	 * @throws CertificateEncodingException
 	 */
-	private JcaCertStore getJcaCertStore(final Collection<CertificateToken> certificateChain, boolean trustAnchorBPPolicy) {
+	private JcaCertStore getJcaCertStore(final Collection<CertificateToken> certificateChain, CAdESSignatureParameters parameters) {
+
+		BaselineBCertificateSelector certificateSelectors = new BaselineBCertificateSelector(certificateVerifier, parameters);
+		List<CertificateToken> certificatesToAdd = certificateSelectors.getCertificates();
+		for (CertificateToken certificateToken : certificatesToAdd) {
+			if (!certificateChain.contains(certificateToken)) {
+				certificateChain.add(certificateToken);
+			}
+		}
 
 		try {
-
 			final Collection<X509Certificate> certs = new ArrayList<X509Certificate>();
 			for (final CertificateToken certificateInChain : certificateChain) {
-
-				// CAdES-Baseline-B: do not include certificates found in the trusted list
-				if (trustAnchorBPPolicy) {
-
-					final X500Principal subjectX500Principal = certificateInChain.getSubjectX500Principal();
-					final CertificateSource trustedCertSource = certificateVerifier.getTrustedCertSource();
-					if (trustedCertSource != null) {
-						if (!trustedCertSource.get(subjectX500Principal).isEmpty()) {
-							continue;
-						}
-					}
-				}
 				certs.add(certificateInChain.getCertificate());
 			}
 			return new JcaCertStore(certs);
