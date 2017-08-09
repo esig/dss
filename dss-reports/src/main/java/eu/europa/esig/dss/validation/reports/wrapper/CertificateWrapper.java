@@ -282,5 +282,5 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	public byte[] getBinaries() {
 		return certificate.getBase64Encoded();
 	}
-	
+
 }
