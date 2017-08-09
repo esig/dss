@@ -149,6 +149,26 @@ public class BaselineBCertificateSelectorTest {
 	}
 
 	@Test
+	public void testNormalIncludeTrustFixChainOrder() {
+		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
+		trustCertSource.addCertificate(c3);
+		certificateVerifier.setTrustedCertSource(trustCertSource);
+
+		AbstractSignatureParameters parameters = new CommonSignatureParamaters();
+		parameters.setSigningCertificate(c1);
+		parameters.setCertificateChain(c3, c2);
+		parameters.bLevel().setTrustAnchorBPPolicy(false);
+
+		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(certificateVerifier, parameters);
+		List<CertificateToken> certificates = selector.getCertificates();
+		assertEquals(3, certificates.size());
+		assertEquals(c1, certificates.get(0));
+		assertEquals(c2, certificates.get(1));
+		assertEquals(c3, certificates.get(2));
+	}
+
+	@Test
 	public void testDuplicateSigningCert() {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 
