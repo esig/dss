@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.pades;
 
-import eu.europa.esig.dss.DSSDocument;
-
 import java.awt.Color;
+
+import eu.europa.esig.dss.DSSDocument;
 
 /**
  * Parameters for a visible signature creation
@@ -39,6 +39,77 @@ public class SignatureImageParameters {
 	 */
 	public enum SignerTextImageVerticalAlignment {
 		TOP, MIDDLE, BOTTOM
+	}
+
+	/**
+	 * Visual signature horizontal position on the pdf page
+	 */
+	public enum VisualSignatureAlignmentHorizontal {
+		/**
+		 * default, x axis is the x coordinate
+		 */
+		NONE,
+		/**
+		 * x axis is left padding
+		 */
+		LEFT,
+		/**
+		 * x axis automatically calculated
+		 */
+		CENTER,
+		/**
+		 * x axis is right padding
+		 */
+		RIGHT;
+	}
+
+	/**
+	 * Visual signature vertical position on the pdf page
+	 */
+	public enum VisualSignatureAlignmentVertical {
+		/**
+		 * default, y axis is the y coordinate
+		 */
+		NONE,
+		/**
+		 * y axis is the top padding
+		 */
+		TOP,
+		/**
+		 * y axis automatically calculated
+		 */
+		MIDDLE,
+		/**
+		 * y axis is the botton padding
+		 */
+		BOTTON;
+	}
+
+	/**
+	 * Rotation support
+	 *
+	 */
+	public enum VisualSignatureRotation {
+		/**
+		 * default, no rotate
+		 */
+		NONE,
+		/**
+		 * automatically rotate
+		 */
+		AUTOMATIC,
+		/**
+		 * rotate by 90
+		 */
+		ROTATE_90,
+		/**
+		 * rotate by 180
+		 */
+		ROTATE_180,
+		/**
+		 * rotate by 270
+		 */
+		ROTATE_270;
 	}
 
 	/**
@@ -81,9 +152,25 @@ public class SignatureImageParameters {
 	 * This variable is define the image from text vertical alignment in connection with the image<br>
 	 * <br>
 	 * It has effect when the {@link SignatureImageTextParameters.SignerPosition SignerPosition} is
-	 * {@link SignatureImageTextParameters.SignerPosition#LEFT LEFT} or {@link SignatureImageTextParameters.SignerPosition#RIGHT RIGHT}
+	 * {@link SignatureImageTextParameters.SignerPosition#LEFT LEFT} or
+	 * {@link SignatureImageTextParameters.SignerPosition#RIGHT RIGHT}
 	 */
 	private SignerTextImageVerticalAlignment signerTextImageVerticalAlignment = SignerTextImageVerticalAlignment.MIDDLE;
+
+	/**
+	 * Use rotation on the PDF page, where the visual signature will be
+	 */
+	private VisualSignatureRotation rotation;
+
+	/**
+	 * Horizontal alignment of the visual signature on the pdf page
+	 */
+	private VisualSignatureAlignmentHorizontal alignmentHorizontal;
+
+	/**
+	 * Vertical alignment of the visual signature on the pdf page
+	 */
+	private VisualSignatureAlignmentVertical alignmentVertical;
 
 	/**
 	 * This variable is use to defines the text to generate on the image
@@ -130,21 +217,21 @@ public class SignatureImageParameters {
 		this.page = page;
 	}
 
-    public Color getBackgroundColor() {
-        return backgroundColor;
-    }
+	public Color getBackgroundColor() {
+		return backgroundColor;
+	}
 
-    public void setBackgroundColor(Color backgroundColor) {
-        this.backgroundColor = backgroundColor;
-    }
+	public void setBackgroundColor(Color backgroundColor) {
+		this.backgroundColor = backgroundColor;
+	}
 
-    public Integer getDpi() {
-        return dpi;
-    }
+	public Integer getDpi() {
+		return dpi;
+	}
 
-    public void setDpi(Integer dpi) {
-        this.dpi = dpi;
-    }
+	public void setDpi(Integer dpi) {
+		this.dpi = dpi;
+	}
 
 	public SignerTextImageVerticalAlignment getSignerTextImageVerticalAlignment() {
 		return signerTextImageVerticalAlignment;
@@ -162,4 +249,27 @@ public class SignatureImageParameters {
 		this.textParameters = textParameters;
 	}
 
+	public VisualSignatureRotation getRotation() {
+		return rotation;
+	}
+
+	public void setRotation(VisualSignatureRotation rotation) {
+		this.rotation = rotation;
+	}
+
+	public VisualSignatureAlignmentHorizontal getAlignmentHorizontal() {
+		return alignmentHorizontal;
+	}
+
+	public void setAlignmentHorizontal(VisualSignatureAlignmentHorizontal alignmentHorizontal) {
+		this.alignmentHorizontal = alignmentHorizontal;
+	}
+
+	public VisualSignatureAlignmentVertical getAlignmentVertical() {
+		return alignmentVertical;
+	}
+
+	public void setAlignmentVertical(VisualSignatureAlignmentVertical alignmentVertical) {
+		this.alignmentVertical = alignmentVertical;
+	}
 }

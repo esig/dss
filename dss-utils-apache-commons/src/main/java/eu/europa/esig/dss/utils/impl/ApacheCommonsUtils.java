@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections4.CollectionUtils;
@@ -150,6 +151,15 @@ public class ApacheCommonsUtils implements IUtils {
 	@Override
 	public String toHex(byte[] bytes) {
 		return Hex.encodeHexString(bytes);
+	}
+
+	@Override
+	public byte[] fromHex(String hex) {
+		try {
+			return Hex.decodeHex(hex.toCharArray());
+		} catch (DecoderException e) {
+			throw new IllegalArgumentException("Unable to extract binary from Hex", e);
+		}
 	}
 
 	@Override

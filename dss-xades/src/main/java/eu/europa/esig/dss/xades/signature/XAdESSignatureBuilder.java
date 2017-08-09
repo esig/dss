@@ -50,11 +50,11 @@ import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.XAdESNamespaces;
+import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampInclude;
 import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.xades.DSSReference;
@@ -274,29 +274,17 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final Element keyInfoDom = DomUtils.addElement(documentDom, signatureDom, XMLNS, DS_KEY_INFO);
 		// <ds:X509Data>
 		final Element x509DataDom = DomUtils.addElement(documentDom, keyInfoDom, XMLNS, DS_X509_DATA);
-		final boolean trustAnchorBPPolicy = params.bLevel().isTrustAnchorBPPolicy();
-		final CertificatePool certificatePool = getCertificatePool();
-		Set<CertificateToken> certificateChains = new HashSet<CertificateToken>();
-		certificateChains.add(params.getSigningCertificate());
-		certificateChains.addAll(params.getCertificateChain());
-		for (final CertificateToken x509Certificate : certificateChains) {
-			// do not include trusted cert
-			if (trustAnchorBPPolicy && certificatePool != null) {
-				if (!certificatePool.get(x509Certificate.getSubjectX500Principal()).isEmpty()) {
-					continue;
-				}
-			}
-			addCertificate(x509DataDom, x509Certificate);
+
+		BaselineBCertificateSelector certSelector = new BaselineBCertificateSelector(certificateVerifier, params);
+		List<CertificateToken> certificates = certSelector.getCertificates();
+		for (CertificateToken token : certificates) {
+			addCertificate(x509DataDom, token);
 		}
 	}
 
-	private void addCertificate(final Element x509DataDom, final CertificateToken x509Certificate) {
-
-		final byte[] encoded = x509Certificate.getEncoded();
-		final String base64Encoded = Utils.toBase64(encoded);
-
+	private void addCertificate(final Element x509DataDom, final CertificateToken token) {
 		// <ds:X509Certificate>...</ds:X509Certificate>
-		DomUtils.addTextElement(documentDom, x509DataDom, XMLNS, DS_X509_CERTIFICATE, base64Encoded);
+		DomUtils.addTextElement(documentDom, x509DataDom, XMLNS, DS_X509_CERTIFICATE, Utils.toBase64(token.getEncoded()));
 	}
 
 	/**
@@ -355,7 +343,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	private void incorporateReference(final DSSReference dssReference) {
 
 		final Element referenceDom = DomUtils.addElement(documentDom, signedInfoDom, XMLNS, DS_REFERENCE);
-		referenceDom.setAttribute(ID, dssReference.getId());
+		if (dssReference.getId() != null) {
+			referenceDom.setAttribute(ID, dssReference.getId());
+		}
 		final String uri = dssReference.getUri();
 		referenceDom.setAttribute(URI, uri);
 		referenceDom.setAttribute(TYPE, dssReference.getType());

@@ -433,36 +433,13 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method loads a CRL from the given base 64 encoded string.
-	 *
-	 * @param base64Encoded
-	 * @return
-	 */
-	public static X509CRL loadCRLBase64Encoded(final String base64Encoded) {
-		final byte[] derEncoded = Utils.fromBase64(base64Encoded);
-		return loadCRL(derEncoded);
-	}
-
-	/**
-	 * This method loads a CRL from the given location.
-	 *
-	 * @param byteArray
-	 * @return
-	 */
-	public static X509CRL loadCRL(final byte[] byteArray) {
-		try (ByteArrayInputStream inputStream = new ByteArrayInputStream(byteArray)) {
-			return loadCRL(inputStream);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
 	 * This method loads a CRL from the given location.
 	 *
 	 * @param inputStream
 	 * @return
+	 * @deprecated for performance reasons, the X509CRL object needs to be avoided
 	 */
+	@Deprecated
 	public static X509CRL loadCRL(final InputStream inputStream) {
 		try {
 			return (X509CRL) certificateFactory.generateCRL(inputStream);
@@ -772,8 +749,7 @@ public final class DSSUtils {
 	 * @return
 	 */
 	public static String getDeterministicId(final Date signingTime, TokenIdentifier id) {
-		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			if (signingTime != null) {
 				baos.write(Long.toString(signingTime.getTime()).getBytes());
 			}
@@ -992,6 +968,24 @@ public final class DSSUtils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
+	}
+
+	/**
+	 * Reads the first byte from the DSSDocument
+	 * 
+	 * @param dssDocument
+	 *            the document
+	 * @return the first byte
+	 * @throws DSSException
+	 */
+	public static byte readFirstByte(final DSSDocument dssDocument) throws DSSException {
+		byte[] result = new byte[1];
+		try (InputStream inputStream = dssDocument.openStream()) {
+			inputStream.read(result, 0, 1);
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+		return result[0];
 	}
 
 	/**

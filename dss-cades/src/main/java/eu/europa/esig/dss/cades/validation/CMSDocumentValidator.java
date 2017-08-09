@@ -32,6 +32,7 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.util.encoders.Base64;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -88,14 +89,8 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
-		int headerLength = 500;
-		byte[] preamble = new byte[headerLength];
-		DSSUtils.readToArray(dssDocument, headerLength, preamble);
-		final String preambleString = new String(preamble);
-		if (preambleString.getBytes()[0] == 0x30) {
-			return true;
-		}
-		return false;
+		byte firstByte = DSSUtils.readFirstByte(dssDocument);
+		return DSSASN1Utils.isASN1SequenceTag(firstByte);
 	}
 
 	@Override

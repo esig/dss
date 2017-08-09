@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.asic.signature;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -16,6 +15,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
@@ -104,7 +104,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(signatures, dataToSignHelper.getSignedDocuments(),
 					manifests, parameters.getArchiveTimestampParameters().getDigestAlgorithm(), timestampFilename);
 
-			DSSDocument archiveManfest = ASiCUtils.createDssDocumentFromDomDocument(builder.build(), getArchivManifestFilename(archiveManifests));
+			DSSDocument archiveManfest = DomUtils.createDssDocumentFromDomDocument(builder.build(), getArchivManifestFilename(archiveManifests));
 			signatures.add(archiveManfest);
 
 			DigestAlgorithm digestAlgorithm = parameters.getArchiveTimestampParameters().getDigestAlgorithm();
@@ -182,7 +182,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(extendedDocuments, signedDocuments, manifests,
 					parameters.getArchiveTimestampParameters().getDigestAlgorithm(), timestampFilename);
 
-			DSSDocument archiveManfest = ASiCUtils.createDssDocumentFromDomDocument(builder.build(), getArchivManifestFilename(archiveManifests));
+			DSSDocument archiveManfest = DomUtils.createDssDocumentFromDomDocument(builder.build(), getArchivManifestFilename(archiveManifests));
 			extendedDocuments.add(archiveManfest);
 
 			DigestAlgorithm digestAlgorithm = parameters.getArchiveTimestampParameters().getDigestAlgorithm();
@@ -193,18 +193,10 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		}
 
-		ByteArrayOutputStream baos = null;
-		try {
-			baos = new ByteArrayOutputStream();
-			copyExistingArchiveWithSignatureList(toExtendDocument, extendedDocuments, baos);
-		} finally {
-			Utils.closeQuietly(baos);
-		}
-
-		DSSDocument asicSignature = new InMemoryDocument(baos.toByteArray(), null, toExtendDocument.getMimeType());
-		asicSignature.setName(
+		DSSDocument extensionResult = mergeArchiveAndExtendedSignatures(toExtendDocument, extendedDocuments);
+		extensionResult.setName(
 				DSSUtils.getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel(), parameters.aSiC().getContainerType()));
-		return asicSignature;
+		return extensionResult;
 	}
 
 	private String getArchivManifestFilename(List<DSSDocument> archiveManifests) {

@@ -150,12 +150,16 @@ public class DSSUtilsTest {
 		assertTrue(DSSUtils.isPEM(new ByteArrayInputStream(convertCRLToPEM.getBytes())));
 		assertTrue(DSSUtils.isPEM(convertCRLToPEM.getBytes()));
 
-		X509CRL crl2 = DSSUtils.loadCRL(convertCRLToPEM.getBytes());
-		assertEquals(crl, crl2);
+		try (InputStream is = new ByteArrayInputStream(convertCRLToPEM.getBytes())) {
+			X509CRL crl2 = DSSUtils.loadCRL(is);
+			assertEquals(crl, crl2);
+		}
 
 		byte[] convertCRLToDER = DSSUtils.convertCRLToDER(convertCRLToPEM);
-		X509CRL crl3 = DSSUtils.loadCRL(convertCRLToDER);
-		assertEquals(crl, crl3);
+		try (InputStream is = new ByteArrayInputStream(convertCRLToDER)) {
+			X509CRL crl3 = DSSUtils.loadCRL(is);
+			assertEquals(crl, crl3);
+		}
 	}
 
 	@Test

@@ -71,8 +71,7 @@ public class CMSSignedDocument extends CommonDocument {
 	}
 
 	public byte[] getBytes() throws DSSException {
-		try {
-			final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
 			final DEROutputStream derOutputStream = new DEROutputStream(output);
 			final byte[] encoded = signedData.getEncoded();
 			final ASN1Primitive asn1Primitive = DSSASN1Utils.toASN1Primitive(encoded);

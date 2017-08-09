@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
+import com.google.common.base.Ascii;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -199,6 +200,11 @@ public class GoogleGuavaUtils implements IUtils {
 	@Override
 	public String toHex(byte[] bytes) {
 		return BaseEncoding.base16().encode(bytes).toLowerCase();
+	}
+
+	@Override
+	public byte[] fromHex(String hex) {
+		return BaseEncoding.base16().lowerCase().decode(Ascii.toLowerCase(hex));
 	}
 
 	@Override

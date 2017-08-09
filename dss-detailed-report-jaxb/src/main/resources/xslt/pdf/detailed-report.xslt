@@ -165,7 +165,7 @@
 				</xsl:choose>
 	        </xsl:variable>
 		
-    		<xsl:attribute name="id">basicValidationData</xsl:attribute>
+    		<xsl:attribute name="id"><xsl:value-of select="@Id" /></xsl:attribute>
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
 			<xsl:attribute name="font-weight">bold</xsl:attribute>
        		<xsl:attribute name="background-color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
