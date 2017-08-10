@@ -40,18 +40,15 @@ public class CommitmentRuleWrapper extends ASN1CommitmentRule {
 	}
 
 	public AttributeTrustCondition getAttributeTrustCondition() {
-		// Should I return both?
-		return cmmtRule.getAttributeTrustCondition();
+		return commonRules.getAttributeTrustCondition() != null? commonRules.getAttributeTrustCondition(): cmmtRule.getAttributeTrustCondition();
 	}
 
 	public AlgorithmConstraintSet getAlgorithmConstraintSet() {
-		// Should I return both?
-		return cmmtRule.getAlgorithmConstraintSet();
+		return commonRules.getAlgorithmConstraintSet() != null? commonRules.getAlgorithmConstraintSet(): cmmtRule.getAlgorithmConstraintSet();
 	}
 
 	public List<SignPolExtn> getSignPolExtensions() {
-		// Should I return both?
-		return cmmtRule.getSignPolExtensions();
+		return commonRules.getSignPolExtensions() != null? commonRules.getSignPolExtensions(): cmmtRule.getSignPolExtensions();
 	}
 
 	@Override

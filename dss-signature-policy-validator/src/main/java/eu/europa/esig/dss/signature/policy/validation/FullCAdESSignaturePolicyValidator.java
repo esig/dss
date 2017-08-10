@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.signature.policy.AlgorithmConstraintSet;
 import eu.europa.esig.dss.signature.policy.CertInfoReq;
 import eu.europa.esig.dss.signature.policy.CertRefReq;
 import eu.europa.esig.dss.signature.policy.CertificateTrustPoint;
@@ -31,6 +32,7 @@ import eu.europa.esig.dss.signature.policy.SignerRules;
 import eu.europa.esig.dss.signature.policy.SigningCertTrustCondition;
 import eu.europa.esig.dss.signature.policy.VerifierRules;
 import eu.europa.esig.dss.signature.policy.asn1.ASN1SignaturePolicy;
+import eu.europa.esig.dss.signature.policy.validation.items.AlgorithmConstraintSetValidator;
 import eu.europa.esig.dss.signature.policy.validation.items.CAdESCertRefReqValidator;
 import eu.europa.esig.dss.signature.policy.validation.items.CAdESSignerRulesExternalDataValidator;
 import eu.europa.esig.dss.signature.policy.validation.items.CertInfoReqValidator;
@@ -108,9 +110,7 @@ public class FullCAdESSignaturePolicyValidator extends BasicASNSignaturePolicyVa
 	 * Validates signature based on a signature policy. It should not be called if
 	 * No explicit signature police was declared upon signing.
 	 */
-	private void validateSignaturePolicyCommitmentRules() {
-		//TODO validate signingPeriod
-		
+	private void validateSignaturePolicyCommitmentRules() {		
 		ItemValidator itemValidator = SignPolExtensionValidatorFactory.createValidator(getSignature(), getSignatureValidationPolicy());
 		if (!itemValidator.validate()) {
 			addError("signatureValidationPolicy.signPolExtensions", "Error validating signature policy extension: "+itemValidator.getErrorDetail());
@@ -123,8 +123,8 @@ public class FullCAdESSignaturePolicyValidator extends BasicASNSignaturePolicyVa
 			validateSigningCertTrustContition(cmmtRule.getSigningCertTrustCondition());
 			// TODO TimestampTrustCondition 
 			// TODO AttributeTrustCondition
-			// TODO AlgorithmConstraintSet
 			validateSignerAndVeriferRules(cmmtRule.getSignerAndVeriferRules());
+			validateAlgorithmConstraintSet(cmmtRule.getAlgorithmConstraintSet());
 			
 			itemValidator = SignPolExtensionValidatorFactory.createValidator(getSignature(), cmmtRule);
 			if (!itemValidator.validate()) {
@@ -247,6 +247,18 @@ public class FullCAdESSignaturePolicyValidator extends BasicASNSignaturePolicyVa
 		}
 
 		return commtRules;
+	}
+
+	private void validateAlgorithmConstraintSet(AlgorithmConstraintSet algorithmConstraintSet) {
+		ItemValidator validator = new AlgorithmConstraintSetValidator(algorithmConstraintSet.getSignerAlgorithmConstraints(), getCadesSignature());
+		if (!validator.validate()) {
+			addError("algorithmConstraintSet.signerAlgorithmConstraints", "Couldn't find mininum requirements for signer constraints");
+		}
+		
+		// TODO eeCertAlgorithmConstraints
+		// TODO caCertAlgorithmConstraints
+		// TODO tsaCertAlgorithmConstraints
+		// TODO aaCertAlgorithmConstraints
 	}
 
 	private CommitmentRule findCommitmentRule(SignatureValidationPolicy signatureValidationPolicy, String oid) {
