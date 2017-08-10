@@ -41,6 +41,7 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxCMSInfo.class);
 	private final PdfDssDict dssDictionary;
+	private final PdfDict signaturedictionary;
 	private final Date signingDate;
 	private final String location;
 	private final String contactInfo;
@@ -73,7 +74,7 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	 * @param signedContent
 	 *            the signed content
 	 */
-	PdfBoxCMSInfo(PDSignature signature, PdfDict signatureDictionary, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent) {
+	PdfBoxCMSInfo(PDSignature signature, PdfDict dict, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent) {
 		this.cms = cms;
 		this.location = signature.getLocation();
 		this.reason = signature.getReason();
@@ -82,8 +83,8 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 		this.subFilter = signature.getSubFilter();
 		this.signingDate = signature.getSignDate() != null ? signature.getSignDate().getTime() : null;
 		this.signatureByteRange = signature.getByteRange();
+		this.signaturedictionary = dict;
 		this.dssDictionary = dssDictionary;
-		this.signatureDictionary = signatureDictionary;
 		this.signedBytes = signedContent;
 	}
 
@@ -117,6 +118,11 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	@Override
 	public PdfDssDict getDssDictionary() {
 		return dssDictionary;
+	}
+
+	@Override
+	public PdfDict getSignatureDictionary() {
+		return signaturedictionary;
 	}
 
 	@Override
@@ -164,18 +170,13 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	}
 
 	@Override
-	public String getSubFilter() {
-		return subFilter;
-	}
-
-	@Override
 	public String getFilter() {
 		return filter;
 	}
 
 	@Override
-	public PdfDict getSignatureDictionary() {
-		return signatureDictionary;
+	public String getSubFilter() {
+		return subFilter;
 	}
 
 	@Override

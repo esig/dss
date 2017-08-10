@@ -56,9 +56,9 @@ class PdfBoxDocTimestampInfo extends PdfBoxCMSInfo implements PdfDocTimestampInf
 	 *            the stream of the whole signed document
 	 * @throws DSSException
 	 */
-	PdfBoxDocTimestampInfo(CertificatePool validationCertPool, PDSignature signature, PdfDict signatureDictionary, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent,
+	PdfBoxDocTimestampInfo(CertificatePool validationCertPool, PDSignature signature, PdfDict dictionary, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent,
 			boolean isArchiveTimestamp) throws DSSException {
-		super(signature, signatureDictionary, dssDictionary, cms, signedContent);
+		super(signature, dictionary, dssDictionary, cms, signedContent);
 		try {
 			TimestampType timestampType = TimestampType.SIGNATURE_TIMESTAMP;
 			if (isArchiveTimestamp) {

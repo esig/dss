@@ -330,6 +330,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 					byte[] signedContent = signature.getSignedContent(originalBytes);
 					int[] byteRange = signature.getByteRange();
 
+					PdfDict signatureDictionary  = new PdfBoxDict(signature.getCOSObject(), doc);
 					PdfSignatureOrDocTimestampInfo signatureInfo = null;
 					PdfDict signatureDictionary = new PdfBoxDict(signature.getCOSObject(), doc);
 					if (PdfBoxDocTimeStampService.SUB_FILTER_ETSI_RFC3161.getName().equals(subFilter)) {
