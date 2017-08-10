@@ -38,6 +38,8 @@ public interface PdfSignatureOrDocTimestampInfo {
 
 	String getReason();
 
+	String getFilter();
+
 	String getSubFilter();
 
 	Date getSigningDate();
@@ -55,6 +57,8 @@ public interface PdfSignatureOrDocTimestampInfo {
 	 * @return the byte of the originally signed document (without this signature)
 	 */
 	byte[] getOriginalBytes();
+
+	PdfDict getSignatureDictionary();
 
 	PdfDssDict getDssDictionary();
 
