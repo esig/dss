@@ -44,20 +44,24 @@ public class CertificateTrustPointValidator implements ItemValidator {
 
 	public static Set<CertificateToken> buildKnownChain(CertificateToken target) {
 		Set<CertificateToken> knownTrustStore = new LinkedHashSet<CertificateToken>();
-		knownTrustStore.add(target);
-		for(CertificateToken issuerToken = target.getIssuerToken(); issuerToken != null; issuerToken = issuerToken.getIssuerToken()) {
-			if (!issuerToken.isSelfSigned())
-				knownTrustStore.add(issuerToken);
+		if (target != null) {
+			knownTrustStore.add(target);
+			for(CertificateToken issuerToken = target.getIssuerToken(); issuerToken != null; issuerToken = issuerToken.getIssuerToken()) {
+				if (!issuerToken.isSelfSigned())
+					knownTrustStore.add(issuerToken);
+			}
 		}
 		return knownTrustStore;
 	}
 
 	public static CertStore buildCertStore(CertificateToken target, CertificatePool certPool) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
 		List<X509Certificate> knownTrustStore = new ArrayList<X509Certificate>();
-		knownTrustStore.add(target.getCertificate());
-		for(CertificateToken issuerToken : certPool.getCertificateTokens()) {
-			if (!issuerToken.isSelfSigned())
-				knownTrustStore.add(issuerToken.getCertificate());
+		if (target != null) {
+			knownTrustStore.add(target.getCertificate());
+			for(CertificateToken issuerToken : certPool.getCertificateTokens()) {
+				if (!issuerToken.isSelfSigned())
+					knownTrustStore.add(issuerToken.getCertificate());
+			}
 		}
 		CertStore store = CertStore.getInstance("Collection", new CollectionCertStoreParameters(knownTrustStore));
 		return store;

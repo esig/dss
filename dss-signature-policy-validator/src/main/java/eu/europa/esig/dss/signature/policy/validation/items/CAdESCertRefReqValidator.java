@@ -45,17 +45,22 @@ public class CAdESCertRefReqValidator implements ItemValidator {
 	 * @param cmsSignedData
 	 */
 	public boolean validate() {
-		if (certificateRefReq == null) {
-			certificateRefReq = CertRefReq.signerOnly;
-		}
-		
- 		IssuerSerial signerCertIssuerSerial = DSSASN1Utils.getIssuerSerial(cadesSignature.getSigningCertificateToken());
+ 		CertificateToken signingCertificateToken = cadesSignature.getSigningCertificateToken();
+ 		if (signingCertificateToken == null) {
+ 			return false;
+ 		}
+
+ 		if (certificateRefReq == null) {
+ 			certificateRefReq = CertRefReq.signerOnly;
+ 		}
+ 		
+		IssuerSerial signerCertIssuerSerial = DSSASN1Utils.getIssuerSerial(signingCertificateToken);
  		essCertIdIssuers = new ArrayList<ASN1Object>();
 
  		AttributeTable signedAttributes = CMSUtils.getSignedAttributes(cadesSignature.getSignerInformation());
 		Attribute attribute = signedAttributes.get(PKCSObjectIdentifiers.id_aa_signingCertificate);
  		if (attribute != null) {
- 			final byte[] signerCertHash = cadesSignature.getSigningCertificateToken().getDigest(DigestAlgorithm.SHA1);
+ 			final byte[] signerCertHash = signingCertificateToken.getDigest(DigestAlgorithm.SHA1);
  			for(ASN1Encodable enc : attribute.getAttrValues()) {
  				SigningCertificate signingCertificate = SigningCertificate.getInstance(enc);
  				for (ESSCertID certId : signingCertificate.getCerts()) {
@@ -74,7 +79,7 @@ public class CAdESCertRefReqValidator implements ItemValidator {
  			for(ASN1Encodable enc : attribute.getAttrValues()) {
  				SigningCertificateV2 signingCertificateV2 = SigningCertificateV2.getInstance(enc);
  				for (ESSCertIDv2 certId : signingCertificateV2.getCerts()) {
- 					if (equalsCertificateReference(certId, signerCertIssuerSerial, cadesSignature.getSigningCertificateToken())) {
+ 					if (equalsCertificateReference(certId, signerCertIssuerSerial, signingCertificateToken)) {
  						if (certificateRefReq == CertRefReq.signerOnly) {
  							return true;
  						}

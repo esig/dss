@@ -25,7 +25,7 @@ public class AlgorithmConstraintSetValidator implements ItemValidator {
 		CertificateToken signingCertificateToken = signature.getSigningCertificateToken();
 		
 		encryptionAlgOID = signerInformation.getEncryptionAlgOID();
-		keySize = DSSPKUtils.getPublicKeySize(signingCertificateToken.getPublicKey());
+		keySize = signingCertificateToken == null? 0: DSSPKUtils.getPublicKeySize(signingCertificateToken.getPublicKey());
 	}
 
 	@Override
