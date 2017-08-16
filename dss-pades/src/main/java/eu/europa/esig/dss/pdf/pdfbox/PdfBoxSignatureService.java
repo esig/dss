@@ -221,9 +221,9 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			signature.setName(shortName);
 		}
 
-		signature.setFilter(PDSignature.FILTER_ADOBE_PPKLITE); // default filter
+		signature.setFilter(getFilter(parameters));
 		// sub-filter for basic and PAdES Part 2 signatures
-		signature.setSubFilter(getSubFilter());
+		signature.setSubFilter(getSubFilter(parameters));
 
 		if (COSName.SIG.equals(getType())) {
 			if (Utils.isStringNotEmpty(parameters.getContactInfo())) {
@@ -245,10 +245,6 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		cal.setTime(signingDate);
 		signature.setSignDate(cal);
 		return signature;
-	}
-
-	protected COSName getType() {
-		return COSName.SIG;
 	}
 
 	private PDSignature findExistingSignature(PDDocument doc, String sigFieldName) {
@@ -284,7 +280,21 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 	}
 
-	protected COSName getSubFilter() {
+	protected COSName getType() {
+		return COSName.SIG;
+	}
+
+	protected COSName getFilter(PAdESSignatureParameters parameters) {
+		if (Utils.isStringNotEmpty(parameters.getSignatureFilter())) {
+			return COSName.getPDFName(parameters.getSignatureFilter());
+		}
+		return PDSignature.FILTER_ADOBE_PPKLITE;
+	}
+
+	protected COSName getSubFilter(PAdESSignatureParameters parameters) {
+		if (Utils.isStringNotEmpty(parameters.getSignatureSubFilter())) {
+			return COSName.getPDFName(parameters.getSignatureSubFilter());
+		}
 		return PDSignature.SUBFILTER_ETSI_CADES_DETACHED;
 	}
 
@@ -338,7 +348,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 					byte[] signedContent = signature.getSignedContent(originalBytes);
 					int[] byteRange = signature.getByteRange();
 
-					PdfDict signatureDictionary  = new PdfBoxDict(signature.getCOSObject(), doc);
+					PdfDict signatureDictionary = new PdfBoxDict(signature.getCOSObject(), doc);
 					PdfSignatureOrDocTimestampInfo signatureInfo = null;
 					PdfDict signatureDictionary = new PdfBoxDict(signature.getCOSObject(), doc);
 					if (PdfBoxDocTimeStampService.SUB_FILTER_ETSI_RFC3161.getName().equals(subFilter)) {
@@ -352,7 +362,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 							}
 						}
 
-						signatureInfo = new PdfBoxDocTimestampInfo(validationCertPool, signature, signatureDictionary, dssDictionary, cms, signedContent, isArchiveTimestamp);
+						signatureInfo = new PdfBoxDocTimestampInfo(validationCertPool, signature, signatureDictionary, dssDictionary, cms, signedContent,
+								isArchiveTimestamp);
 					} else {
 						signatureInfo = new PdfBoxSignatureInfo(validationCertPool, signature, signatureDictionary, dssDictionary, cms, signedContent);
 					}
