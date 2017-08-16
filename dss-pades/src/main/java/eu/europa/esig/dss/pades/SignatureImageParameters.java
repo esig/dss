@@ -61,6 +61,19 @@ public class SignatureImageParameters {
 	 * This variable defines the position of the image in the PDF page (Y axis)
 	 */
 	private float yAxis;
+        
+        /**
+	 * This variable defines the width (in pixel) of the image in the PDF page
+	 */
+	private int width;
+
+
+	/**
+	  * This variable defines the height (in pixel) of the image in the PDF page
+	 */
+	private int height;
+        
+        
 
 	/**
 	 * This variable defines a percent to zoom (100% means no scaling).
@@ -129,6 +142,23 @@ public class SignatureImageParameters {
 	public void setPage(int page) {
 		this.page = page;
 	}
+        
+            public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
 
     public Color getBackgroundColor() {
         return backgroundColor;
