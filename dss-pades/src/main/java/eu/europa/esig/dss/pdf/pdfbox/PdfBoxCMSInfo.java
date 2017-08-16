@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.utils.Utils;
@@ -40,10 +41,12 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxCMSInfo.class);
 	private final PdfDssDict dssDictionary;
+	private final PdfDict signaturedictionary;
 	private final Date signingDate;
 	private final String location;
 	private final String contactInfo;
 	private final String reason;
+	private final String filter;
 	private final String subFilter;
 	private final int[] signatureByteRange;
 
@@ -70,14 +73,16 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	 * @param signedContent
 	 *            the signed content
 	 */
-	PdfBoxCMSInfo(PDSignature signature, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent) {
+	PdfBoxCMSInfo(PDSignature signature, PdfDict dict, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent) {
 		this.cms = cms;
 		this.location = signature.getLocation();
 		this.reason = signature.getReason();
 		this.contactInfo = signature.getContactInfo();
+		this.filter = signature.getFilter();
 		this.subFilter = signature.getSubFilter();
 		this.signingDate = signature.getSignDate() != null ? signature.getSignDate().getTime() : null;
 		this.signatureByteRange = signature.getByteRange();
+		this.signaturedictionary = dict;
 		this.dssDictionary = dssDictionary;
 		this.signedBytes = signedContent;
 	}
@@ -112,6 +117,11 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	@Override
 	public PdfDssDict getDssDictionary() {
 		return dssDictionary;
+	}
+
+	@Override
+	public PdfDict getSignatureDictionary() {
+		return signaturedictionary;
 	}
 
 	@Override
@@ -156,6 +166,11 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	@Override
 	public String getReason() {
 		return reason;
+	}
+
+	@Override
+	public String getFilter() {
+		return filter;
 	}
 
 	@Override
