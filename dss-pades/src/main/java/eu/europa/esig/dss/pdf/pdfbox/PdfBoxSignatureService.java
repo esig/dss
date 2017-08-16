@@ -88,7 +88,7 @@ import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 class PdfBoxSignatureService implements PDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxSignatureService.class);
-
+	
 	@Override
 	public byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm)
 			throws DSSException {
@@ -221,9 +221,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			signature.setName(shortName);
 		}
 
-		signature.setFilter(PDSignature.FILTER_ADOBE_PPKLITE); // default filter
-		// sub-filter for basic and PAdES Part 2 signatures
-		signature.setSubFilter(getSubFilter());
+		signature.setFilter(COSName.getPDFName(parameters.getFilter()));
+		signature.setSubFilter(getSubFilter() == null? COSName.getPDFName(parameters.getSubFilter()): getSubFilter());
 
 		if (COSName.SIG.equals(getType())) {
 			if (Utils.isStringNotEmpty(parameters.getContactInfo())) {
@@ -285,7 +284,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	}
 
 	protected COSName getSubFilter() {
-		return PDSignature.SUBFILTER_ETSI_CADES_DETACHED;
+		return null;
 	}
 
 	@Override

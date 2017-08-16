@@ -26,10 +26,12 @@ import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -99,8 +101,8 @@ public class CertificateService {
 		KeyPair childKeyPair = generateKeyPair(algorithm.getEncryptionAlgorithm());
 
 		X500Name childSubject = new X500Name("CN=SignerFake,O=DSS-test");
-		CertificateToken child = generateRootCertificateWithCrl(algorithm, childSubject, rootName, rootEntry.getPrivateKey(), childKeyPair.getPublic(),
-				notBefore, notAfter);
+		CertificateToken child = generateCertificate(algorithm, childSubject, rootName, rootEntry.getPrivateKey(), childKeyPair.getPublic(),
+				notBefore, notAfter, new KeyUsage(KeyUsage.keyCertSign | KeyUsage.cRLSign | KeyUsage.digitalSignature));
 		CertificateToken[] chain = createChildCertificateChain(rootEntry);
 
 		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), child, chain, childKeyPair.getPrivate());
@@ -144,9 +146,9 @@ public class CertificateService {
 
 		CertificateToken certificate = null;
 		if (rootCrl) {
-			certificate = generateRootCertificateWithCrl(algorithm, issuer, issuer, keyPair.getPrivate(), keyPair.getPublic(), notBefore, notAfter);
+			certificate = generateCertificate(algorithm, issuer, issuer, keyPair.getPrivate(), keyPair.getPublic(), notBefore, notAfter, new KeyUsage(KeyUsage.keyCertSign | KeyUsage.cRLSign));
 		} else {
-			certificate = generateRootCertificateWithoutCrl(algorithm, issuer, issuer, keyPair.getPrivate(), keyPair.getPublic(), notBefore, notAfter);
+			certificate = generateCertificate(algorithm, issuer, issuer, keyPair.getPrivate(), keyPair.getPublic(), notBefore, notAfter, new KeyUsage(KeyUsage.keyCertSign));
 		}
 
 		return new MockPrivateKeyEntry(algorithm.getEncryptionAlgorithm(), certificate, keyPair.getPrivate());
@@ -198,8 +200,8 @@ public class CertificateService {
 		return new CertificateToken(cert);
 	}
 
-	public CertificateToken generateRootCertificateWithCrl(SignatureAlgorithm algorithm, X500Name subject, X500Name issuer, PrivateKey issuerPrivateKey,
-			PublicKey publicKey, Date notBefore, Date notAfter) throws Exception {
+	public CertificateToken generateCertificate(SignatureAlgorithm algorithm, X500Name subject, X500Name issuer, PrivateKey issuerPrivateKey,
+			PublicKey publicKey, Date notBefore, Date notAfter, KeyUsage keyUsage) throws Exception {
 
 		// generate certificate
 		final SubjectPublicKeyInfo keyInfo = SubjectPublicKeyInfo.getInstance(publicKey.getEncoded());
@@ -207,28 +209,7 @@ public class CertificateService {
 		final X509v3CertificateBuilder certBuilder = new X509v3CertificateBuilder(issuer,
 				new BigInteger("" + new Random().nextInt(10) + System.currentTimeMillis()), notBefore, notAfter, subject, keyInfo);
 
-		certBuilder.addExtension(Extension.keyUsage, true, new KeyUsage(KeyUsage.keyCertSign | KeyUsage.cRLSign));
-
-		// Sign the new certificate with the private key of the trusted third
-		final ContentSigner signer = new JcaContentSignerBuilder(algorithm.getJCEId()).setProvider(BouncyCastleProvider.PROVIDER_NAME).build(issuerPrivateKey);
-		final X509CertificateHolder holder = certBuilder.build(signer);
-
-		final X509Certificate cert = (X509Certificate) CertificateFactory.getInstance("X509")
-				.generateCertificate(new ByteArrayInputStream(holder.getEncoded()));
-
-		return new CertificateToken(cert);
-	}
-
-	public CertificateToken generateRootCertificateWithoutCrl(SignatureAlgorithm algorithm, X500Name subject, X500Name issuer, PrivateKey issuerPrivateKey,
-			PublicKey publicKey, Date notBefore, Date notAfter) throws Exception {
-
-		// generate certificate
-		final SubjectPublicKeyInfo keyInfo = SubjectPublicKeyInfo.getInstance(publicKey.getEncoded());
-
-		final X509v3CertificateBuilder certBuilder = new X509v3CertificateBuilder(issuer,
-				new BigInteger("" + new Random().nextInt(10) + System.currentTimeMillis()), notBefore, notAfter, subject, keyInfo);
-
-		certBuilder.addExtension(Extension.keyUsage, true, new KeyUsage(KeyUsage.keyCertSign));
+		certBuilder.addExtension(Extension.keyUsage, true, keyUsage);
 
 		// Sign the new certificate with the private key of the trusted third
 		final ContentSigner signer = new JcaContentSignerBuilder(algorithm.getJCEId()).setProvider(BouncyCastleProvider.PROVIDER_NAME).build(issuerPrivateKey);
@@ -252,6 +233,32 @@ public class CertificateService {
 
 		CertificateToken[] chain = chainList.toArray(new CertificateToken[chainList.size()]);
 		return chain;
+	}
+	
+	public MockPrivateKeyEntry readMscapiCertificate(String alias) {
+		try {
+			KeyStore ks = KeyStore.getInstance("Windows-MY");
+			ks.load(null, null);
+			PrivateKey privateKey = (PrivateKey) ks.getKey(alias, null);
+			CertificateToken certificate = new CertificateToken((X509Certificate) ks.getCertificate(alias));
+			Certificate[] certificateChain = ks.getCertificateChain(alias);
+			CertificateToken[] certificateChainTk = new CertificateToken[certificateChain.length];
+			for (int i = 0; i < certificateChain.length; i++) {
+				certificateChainTk[i] = new CertificateToken((X509Certificate) certificateChain[i]);
+			}
+			
+			
+			EncryptionAlgorithm encAlg = null;
+			switch (privateKey.getAlgorithm()) {
+			case "RSA": encAlg = EncryptionAlgorithm.RSA; break;
+			case "DSA": encAlg = EncryptionAlgorithm.DSA; break;
+			case "ECDSA": encAlg = EncryptionAlgorithm.ECDSA; break;
+			default: throw new IllegalStateException("Unkown encryption algorithm");
+			}
+			return new MockPrivateKeyEntry(encAlg, certificate, certificateChainTk, privateKey);
+		} catch (Exception e) {
+			throw new DSSException("Error reading certificate", e);
+		}
 	}
 
 }
