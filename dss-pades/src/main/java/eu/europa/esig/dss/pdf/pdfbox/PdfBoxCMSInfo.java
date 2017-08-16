@@ -49,7 +49,6 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	private final String filter;
 	private final String subFilter;
 	private final int[] signatureByteRange;
-	private final PdfDict signatureDictionary;
 
 	private final byte[] cms;
 
