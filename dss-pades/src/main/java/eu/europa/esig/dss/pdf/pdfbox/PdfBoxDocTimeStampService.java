@@ -26,6 +26,7 @@ import java.io.OutputStream;
 
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 import org.bouncycastle.tsp.TimeStampToken;
 
@@ -48,13 +49,24 @@ class PdfBoxDocTimeStampService extends PdfBoxSignatureService implements PDFSig
 	public static final COSName SUB_FILTER_ETSI_RFC3161 = COSName.getPDFName("ETSI.RFC3161");
 
 	@Override
-	protected COSName getSubFilter() {
-		return SUB_FILTER_ETSI_RFC3161;
+	protected COSName getType() {
+		return COSName.DOC_TIME_STAMP;
 	}
 
 	@Override
-	protected COSName getType() {
-		return COSName.DOC_TIME_STAMP;
+	protected COSName getFilter(PAdESSignatureParameters parameters) {
+		if (Utils.isStringNotEmpty(parameters.getTimestampFilter())) {
+			return COSName.getPDFName(parameters.getTimestampFilter());
+		}
+		return PDSignature.FILTER_ADOBE_PPKLITE;
+	}
+
+	@Override
+	protected COSName getSubFilter(PAdESSignatureParameters parameters) {
+		if (Utils.isStringNotEmpty(parameters.getTimestampSubFilter())) {
+			return COSName.getPDFName(parameters.getTimestampSubFilter());
+		}
+		return SUB_FILTER_ETSI_RFC3161;
 	}
 
 	@Override
@@ -71,7 +83,7 @@ class PdfBoxDocTimeStampService extends PdfBoxSignatureService implements PDFSig
 		sign(inputStream, encoded, signedStream, parameters, timestampDigestAlgorithm);
 		Utils.closeQuietly(inputStream);
 	}
-	
+
 	@Override
 	protected void fillImageParameters(final PDDocument doc, final PAdESSignatureParameters signatureParameters, SignatureOptions options) throws IOException {
 		SignatureImageParameters signatureImageParameters = signatureParameters.getTimestampImageParameters();
