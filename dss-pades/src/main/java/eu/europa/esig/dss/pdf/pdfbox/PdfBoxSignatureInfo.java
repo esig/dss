@@ -50,9 +50,9 @@ class PdfBoxSignatureInfo extends PdfBoxCMSInfo implements PdfSignatureInfo {
 	 *            the original bytes of the whole signed document
 	 * @throws IOException
 	 */
-	PdfBoxSignatureInfo(CertificatePool validationCertPool, PDSignature signature, PdfDict signatureDictionary, PdfDssDict dssDictionary, byte[] cms, byte[] originalBytes)
+	PdfBoxSignatureInfo(CertificatePool validationCertPool, PDSignature signature, PdfDict dictionary, PdfDssDict dssDictionary, byte[] cms, byte[] originalBytes)
 			throws IOException {
-		super(signature, signatureDictionary, dssDictionary, cms, originalBytes);
+		super(signature, dictionary, dssDictionary, cms, originalBytes);
 		try {
 			cades = new CAdESSignature(cms, validationCertPool);
 			content = cms;
