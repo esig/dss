@@ -179,9 +179,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				visibleSig.xAxis(signatureImageParameters.getxAxis());
 				visibleSig.yAxis(signatureImageParameters.getyAxis());
                                 
-                                
-                                
-                                if(signatureImageParameters.getWidth()== 0 && signatureImageParameters.getHeight()== 0){
+                                if(signatureImageParameters.getWidth()!= 0 && signatureImageParameters.getHeight()!= 0){
                                     visibleSig.width(signatureImageParameters.getWidth());
                                     visibleSig.height(signatureImageParameters.getHeight());
                                     
