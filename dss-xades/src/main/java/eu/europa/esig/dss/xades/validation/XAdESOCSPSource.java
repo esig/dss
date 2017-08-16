@@ -62,23 +62,31 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 	@Override
 	public List<BasicOCSPResp> getContainedOCSPResponses() {
 		final List<BasicOCSPResp> list = new ArrayList<BasicOCSPResp>();
-		addOCSP(list, xPathQueryHolder.XPATH_OCSP_VALUES_ENCAPSULATED_OCSP);
-		addOCSP(list, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUE);
+		list.addAll(getEncapsulatedOCSPValues());
+		list.addAll(getTimestampEncapsulatedOCSPValues());
 		return list;
 	}
 
-	private void addOCSP(final List<BasicOCSPResp> list, final String xPathQuery) {
+	public List<BasicOCSPResp> getEncapsulatedOCSPValues() {
+		return getOCSPValues(xPathQueryHolder.XPATH_OCSP_VALUES_ENCAPSULATED_OCSP);
+	}
 
+	public List<BasicOCSPResp> getTimestampEncapsulatedOCSPValues() {
+		return getOCSPValues(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUE);
+	}
+
+	private List<BasicOCSPResp> getOCSPValues(final String xPathQuery) {
+		List<BasicOCSPResp> list = new ArrayList<BasicOCSPResp>();
 		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQuery);
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
-
 			final Element certEl = (Element) nodeList.item(ii);
 			try {
-				final BasicOCSPResp basicOCSPResp = DSSRevocationUtils.loadOCSPBase64Encoded(certEl.getTextContent());
-				list.add(basicOCSPResp);
+				list.add(DSSRevocationUtils.loadOCSPBase64Encoded(certEl.getTextContent()));
 			} catch (Exception e) {
 				LOG.warn("Cannot retrieve OCSP response from '" + certEl.getTextContent() + "' : " + e.getMessage(), e);
 			}
 		}
+		return list;
 	}
+
 }
