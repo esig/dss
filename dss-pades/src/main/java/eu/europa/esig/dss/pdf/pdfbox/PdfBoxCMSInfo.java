@@ -179,6 +179,11 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	}
 
 	@Override
+	public String getFilter() {
+		return filter;
+	}
+
+	@Override
 	public String toString() {
 		return "PdfBoxCMSInfo [subFilter=" + subFilter + ", uniqueId=" + uniqueId() + ", signatureByteRange=" + Arrays.toString(signatureByteRange)
 				+ ", outerSignatures=" + outerSignatures + "]";
