@@ -87,9 +87,6 @@ public class SignatureValidationContext implements ValidationContext {
 	// OCSP from the signature.
 	private OCSPSource signatureOCSPSource;
 
-	// The digest value of the certification path references and the revocation status references.
-	private List<TimestampReference> timestampedReferences;
-
 	/**
 	 * This is the time at what the validation is carried out. It is used only for test purpose.
 	 */
@@ -447,15 +444,6 @@ public class SignatureValidationContext implements ValidationContext {
 	@Override
 	public Set<TimestampToken> getProcessedTimestamps() {
 		return Collections.unmodifiableSet(processedTimestamps);
-	}
-
-	/**
-	 * Returns certificate and revocation references.
-	 *
-	 * @return
-	 */
-	public List<TimestampReference> getTimestampedReferences() {
-		return timestampedReferences;
 	}
 
 	/**
