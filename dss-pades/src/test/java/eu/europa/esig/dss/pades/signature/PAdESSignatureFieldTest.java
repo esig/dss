@@ -92,11 +92,8 @@ public class PAdESSignatureFieldTest {
 	@Test
 	public void testSignTwice() throws IOException {
 
-		signatureParameters.setSignatureFieldId("Signature1");
-
+		// Add second field first
 		DSSDocument documentToSign = new FileDocument(new File("src/test/resources/doc.pdf"));
-		DSSDocument doc = signAndValidate(documentToSign);
-		assertNotNull(doc);
 
 		SignatureFieldParameters parameters = new SignatureFieldParameters();
 		parameters.setName("test");
@@ -104,7 +101,14 @@ public class PAdESSignatureFieldTest {
 		parameters.setOriginY(10);
 		parameters.setHeight(50);
 		parameters.setWidth(50);
-		DSSDocument doc2 = service.addNewSignatureField(doc, parameters);
+		DSSDocument doc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(doc);
+
+		// Sign twice
+
+		signatureParameters.setSignatureFieldId("Signature1");
+
+		DSSDocument doc2 = signAndValidate(doc);
 		assertNotNull(doc2);
 
 		signatureParameters.setSignatureFieldId("test");
