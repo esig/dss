@@ -142,7 +142,6 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH_COUNTER_SIGNATURE = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:CounterSignature";
 	public String XPATH_ARCHIVE_TIMESTAMP = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:" + XMLE_ARCHIVE_TIME_STAMP;
 	public String XPATH_ARCHIVE_TIMESTAMP_141 = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades141:" + XMLE_ARCHIVE_TIME_STAMP;
-	public String XPATH_ARCHIVE_TIMESTAMP_V2 = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades141:" + XMLE_ARCHIVE_TIME_STAMP_V2;
 	public String XPATH_REVOCATION_CRL_REFS = XPATH_COMPLETE_REVOCATION_REFS + "/xades:CRLRefs";
 
 	public final String XPATH__DIGEST_METHOD_ALGORITHM = "./ds:DigestMethod/@Algorithm";
@@ -184,7 +183,6 @@ public class XPathQueryHolder implements Serializable {
 	// Level -A -LTA
 	public final String XPATH_COUNT_ARCHIVE_TIMESTAMP = "count(" + XPATH_ARCHIVE_TIMESTAMP + ")";
 	public final String XPATH_COUNT_ARCHIVE_TIMESTAMP_141 = "count(" + XPATH_ARCHIVE_TIMESTAMP_141 + ")";
-	public final String XPATH_COUNT_ARCHIVE_TIMESTAMP_V2 = "count(" + XPATH_ARCHIVE_TIMESTAMP_V2 + ")";
 
 	/**
 	 * This method returns true if this implementation is able to deal with a specific namespace.

@@ -27,9 +27,13 @@ package eu.europa.esig.dss.x509;
 public enum ArchiveTimestampType {
 
 	XAdES,
-	XAdES_141_V2,
+
 	XAdES_141,
+
 	CAdES,
+
 	CAdES_V2,
+
 	CAdES_v3;
+
 }

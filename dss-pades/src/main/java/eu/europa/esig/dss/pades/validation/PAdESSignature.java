@@ -419,12 +419,12 @@ public class PAdESSignature extends CAdESSignature {
 		case PDF_NOT_ETSI:
 			break;
 		case PAdES_BASELINE_LTA:
-			dataForLevelPresent = Utils.isCollectionNotEmpty(getArchiveTimestamps());
+			dataForLevelPresent = hasLTAProfile();
 			// c &= fct() will process fct() all time ; c = c && fct() will process fct() only if c is true
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_LT);
 			break;
 		case PKCS7_LTA:
-			dataForLevelPresent = Utils.isCollectionNotEmpty(getArchiveTimestamps());
+			dataForLevelPresent = hasLTAProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_LT);
 			break;
 		case PAdES_BASELINE_LT:
@@ -436,11 +436,11 @@ public class PAdESSignature extends CAdESSignature {
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_T);
 			break;
 		case PAdES_BASELINE_T:
-			dataForLevelPresent = Utils.isCollectionNotEmpty(getSignatureTimestamps());
+			dataForLevelPresent = hasTProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_B);
 			break;
 		case PKCS7_T:
-			dataForLevelPresent = Utils.isCollectionNotEmpty(getSignatureTimestamps());
+			dataForLevelPresent = hasTProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_B);
 			break;
 		case PAdES_BASELINE_B:

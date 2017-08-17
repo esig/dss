@@ -135,7 +135,6 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 		return keyInfoCerts;
 	}
 
-	@SuppressWarnings("unchecked")
 	private List<CertificateToken> extractIdSignedDataCertificates() {
 		final List<CertificateToken> essCertIDCerts = new ArrayList<CertificateToken>();
 		try {

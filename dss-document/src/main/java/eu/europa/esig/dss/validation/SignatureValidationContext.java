@@ -40,6 +40,7 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -216,28 +217,24 @@ public class SignatureValidationContext implements ValidationContext {
 	 * @return {@code CertificateToken} representing the issuer certificate or null.
 	 */
 	private CertificateToken getIssuerFromAIA(final CertificateToken token) {
-		try {
-
-			LOG.info("Retrieving {} certificate's issuer using AIA.", token.getAbbreviation());
-			Collection<CertificateToken> issuerCerts = DSSUtils.loadIssuerCertificates(token, dataLoader);
-			if (issuerCerts != null) {
-				CertificateToken issuerCertToken = null;
-				for (CertificateToken issuerCert : issuerCerts) {
-					CertificateToken issuerCertFromAia = validationCertificatePool.getInstance(issuerCert, CertificateSourceType.AIA);
-					if (token.isSignedBy(issuerCertFromAia)) {
-						issuerCertToken = issuerCertFromAia;
-					} else {
-						addCertificateTokenForVerification(issuerCertFromAia);
-					}
-					LOG.info("The retrieved certificate using AIA does not sign the certificate {}.", token.getAbbreviation());
+		LOG.info("Retrieving {} certificate's issuer using AIA.", token.getAbbreviation());
+		Collection<CertificateToken> issuerCerts = DSSUtils.loadIssuerCertificates(token, dataLoader);
+		if (Utils.isCollectionNotEmpty(issuerCerts)) {
+			CertificateToken issuerCertToken = null;
+			for (CertificateToken issuerCert : issuerCerts) {
+				CertificateToken issuerCertFromAia = validationCertificatePool.getInstance(issuerCert, CertificateSourceType.AIA);
+				if (token.isSignedBy(issuerCertFromAia)) {
+					issuerCertToken = issuerCertFromAia;
+				} else {
+					addCertificateTokenForVerification(issuerCertFromAia);
 				}
-				return issuerCertToken;
-			} else {
-				LOG.info("The issuer certificate cannot be loaded using AIA.");
 			}
-		} catch (DSSException e) {
-
-			LOG.error(e.getMessage());
+			if (issuerCertToken == null) {
+				LOG.info("The retrieved certificate(s) using AIA does not sign the certificate {}.", token.getAbbreviation());
+			}
+			return issuerCertToken;
+		} else {
+			LOG.info("The issuer certificate cannot be loaded using AIA.");
 		}
 		return null;
 	}
@@ -426,6 +423,10 @@ public class SignatureValidationContext implements ValidationContext {
 		// CRL can already exist in the signature
 		if (onlineRevocationToken != null && !revocations.contains(onlineRevocationToken)) {
 			revocations.add(onlineRevocationToken);
+		}
+
+		if (revocations.isEmpty()) {
+			LOG.warn("No revocation found for certificate {}", certToken.getDSSIdAsString());
 		}
 
 		return revocations;

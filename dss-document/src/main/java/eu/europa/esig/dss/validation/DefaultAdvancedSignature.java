@@ -518,4 +518,19 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		archiveTimestamps.add(timestamp);
 	}
 
+	/* Defines the level T */
+	public boolean hasTProfile() {
+		return Utils.isCollectionNotEmpty(getSignatureTimestamps());
+	}
+
+	/* Defines the level LT */
+	public boolean hasLTProfile() {
+		return false;
+	}
+
+	/* Defines the level LTA */
+	public boolean hasLTAProfile() {
+		return Utils.isCollectionNotEmpty(getArchiveTimestamps());
+	}
+
 }

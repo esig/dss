@@ -1663,7 +1663,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_T);
 			break;
 		case CAdES_BASELINE_T:
-			dataForProfilePresent = unsignedAttributes.get(id_aa_signatureTimeStampToken) != null;
+			dataForProfilePresent = hasTProfile();
 			dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_B);
 			break;
 		case CAdES_BASELINE_B:

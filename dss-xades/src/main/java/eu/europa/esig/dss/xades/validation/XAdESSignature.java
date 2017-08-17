@@ -856,15 +856,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * Checks the presence of SignatureTimeStamp segment in the signature, what is the proof -T profile existence
-	 *
-	 * @return
-	 */
-	public boolean hasTProfile() {
-		return DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_TIMESTAMP);
-	}
-
-	/**
 	 * Checks the presence of CompleteCertificateRefs & CompleteRevocationRefs segments in the signature, what is the
 	 * proof -C profile existence
 	 *
@@ -891,6 +882,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 *
 	 * @return true if -LT (or -XL) extension is present
 	 */
+	@Override
 	public boolean hasLTProfile() {
 		final boolean certValues = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_CERTIFICATE_VALUES);
 
@@ -905,19 +897,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		return isLTProfile;
 		// return certValues || (revocationValues && (notEmptyCRL || notEmptyOCSP));
-	}
-
-	/**
-	 * Checks the presence of CertificateValues and RevocationValues segments in the signature, what is the proof -LTA
-	 * (or -A) profile existence
-	 *
-	 * @return true if -LTA (or -A) extension is present
-	 */
-	public boolean hasLTAProfile() {
-		final boolean archiveTimestamp = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ARCHIVE_TIMESTAMP);
-		final boolean archiveTimestamp141 = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ARCHIVE_TIMESTAMP_141);
-		final boolean archiveTimestampV2 = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ARCHIVE_TIMESTAMP_V2);
-		return archiveTimestamp || archiveTimestamp141 || archiveTimestampV2;
 	}
 
 	/**
@@ -1218,7 +1197,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				references.addAll(getTimestampedReferences());
 				timestampToken.setTimestampedReferences(references);
 				sigAndRefsTimestamps.add(timestampToken);
-			} else if (isArchiveTimestamp(localName)) {
+			} else if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
 
 				timestampToken = makeTimestampToken((Element) node, TimestampType.ARCHIVE_TIMESTAMP);
 				if (timestampToken == null) {
@@ -1254,11 +1233,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private ArchiveTimestampType getArchiveTimestampType(final Node node, final String localName) {
-
-		if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP_V2.equals(localName)) {
-			return ArchiveTimestampType.XAdES_141_V2;
-		} else if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
-
+		if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
 			final String namespaceURI = node.getNamespaceURI();
 			if (XAdESNamespaces.XAdES141.equals(namespaceURI)) {
 				return ArchiveTimestampType.XAdES_141;
@@ -1802,7 +1777,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				 * satisfy with the rules specified in clause 7.6.4.
 				 */
 				// } else
-				if (isArchiveTimestamp(localName)) {
+				if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
 
 					if ((timestampToken != null) && (timestampToken.getHashCode() == node.hashCode())) {
 						break;
@@ -1901,10 +1876,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final byte[] canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, element);
 			buffer.write(canonicalizedValue);
 		}
-	}
-
-	private boolean isArchiveTimestamp(final String localName) {
-		return XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName) || XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP_V2.equals(localName);
 	}
 
 	@Override
