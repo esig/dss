@@ -51,11 +51,11 @@ public class PBADPdfEntryValidator implements ItemValidator {
 		}
 		
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("Invalid PDF entries:");
+		stringBuilder.append("Invalid PDF entries ");
 		for (String key : invalidEntries) {
-			stringBuilder.append(" ").append(key).append(": ").append(invalidEntries).append(",");
+			stringBuilder.append(" ").append(key).append(",");
 		}
-		stringBuilder.setLength(stringBuilder.length() - 2);
+		stringBuilder.setLength(stringBuilder.length() - 1);
 		return stringBuilder.toString();
 	}
 

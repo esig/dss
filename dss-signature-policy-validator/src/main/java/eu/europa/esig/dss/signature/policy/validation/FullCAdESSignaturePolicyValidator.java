@@ -84,6 +84,8 @@ public class FullCAdESSignaturePolicyValidator extends BasicASNSignaturePolicyVa
 			LOG.error("Unexpected error", e);
 			addError("general", "Unexpected error: " + e.getMessage());
 		}
+		
+		setStatus(getProcessingErrors().isEmpty());
 	}
 
 	private SignaturePolicy parse() {
