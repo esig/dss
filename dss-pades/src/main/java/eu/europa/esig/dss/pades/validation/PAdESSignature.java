@@ -428,11 +428,11 @@ public class PAdESSignature extends CAdESSignature {
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_LT);
 			break;
 		case PAdES_BASELINE_LT:
-			dataForLevelPresent = hasDSSDictionary();
+			dataForLevelPresent = hasLTProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_T);
 			break;
 		case PKCS7_LT:
-			dataForLevelPresent = hasDSSDictionary();
+			dataForLevelPresent = hasLTProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_T);
 			break;
 		case PAdES_BASELINE_T:
@@ -461,10 +461,6 @@ public class PAdESSignature extends CAdESSignature {
 		return new SignatureLevel[] { SignatureLevel.PDF_NOT_ETSI, SignatureLevel.PAdES_BASELINE_B, SignatureLevel.PKCS7_B, SignatureLevel.PAdES_BASELINE_T,
 				SignatureLevel.PKCS7_T, SignatureLevel.PAdES_BASELINE_LT, SignatureLevel.PKCS7_LT, SignatureLevel.PAdES_BASELINE_LTA,
 				SignatureLevel.PKCS7_LTA };
-	}
-
-	private boolean hasDSSDictionary() {
-		return pdfSignatureInfo.getDssDictionary() != null;
 	}
 
 	@Override

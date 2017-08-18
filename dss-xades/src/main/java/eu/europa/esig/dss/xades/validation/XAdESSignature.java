@@ -877,29 +877,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * Checks the presence of CertificateValues and RevocationValues segments in the signature, what is the proof -LT
-	 * (or -XL) profile existence
-	 *
-	 * @return true if -LT (or -XL) extension is present
-	 */
-	@Override
-	public boolean hasLTProfile() {
-		final boolean certValues = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_CERTIFICATE_VALUES);
-
-		final boolean revocationValues = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_REVOCATION_VALUES);
-		boolean notEmptyCRL = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ENCAPSULATED_CRL_VALUES);
-		boolean notEmptyOCSP = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_OCSP_VALUES_ENCAPSULATED_OCSP);
-
-		boolean isLTProfile = revocationValues && (notEmptyCRL || notEmptyOCSP);
-		if (!isLTProfile && certValues) {
-			isLTProfile = hasTProfile();
-		}
-
-		return isLTProfile;
-		// return certValues || (revocationValues && (notEmptyCRL || notEmptyOCSP));
-	}
-
-	/**
 	 * Utility method to add content timestamps.
 	 *
 	 * @param timestampTokens
@@ -2005,21 +1982,26 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			break;
 		case XAdES_BASELINE_LTA:
 			dataForLevelPresent = hasLTAProfile();
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_LT);
 			break;
 		case XAdES_BASELINE_LT:
 			dataForLevelPresent &= hasLTProfile();
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_T);
 			break;
 		case XAdES_BASELINE_T:
 			dataForLevelPresent &= hasTProfile();
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_B);
 			break;
 		case XAdES_BASELINE_B:
 			dataForLevelPresent &= hasBProfile();
 			break;
 		case XAdES_X:
 			dataForLevelPresent &= hasXProfile();
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_C);
 			break;
 		case XAdES_C:
 			dataForLevelPresent &= hasCProfile();
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_T);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown level " + signatureLevel);

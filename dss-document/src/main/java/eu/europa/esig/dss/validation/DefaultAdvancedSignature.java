@@ -525,7 +525,35 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	/* Defines the level LT */
 	public boolean hasLTProfile() {
-		return false;
+		List<CertificateToken> certificates = getCertificateSource().getCertificates();
+		boolean emptyOCSPs = Utils.isCollectionEmpty(getOCSPSource().getContainedOCSPResponses());
+		boolean emptyCRLs = Utils.isCollectionEmpty(getCRLSource().getContainedX509CRLs());
+
+		if (Utils.isCollectionEmpty(certificates) && (emptyOCSPs || emptyCRLs)) {
+			return false;
+		}
+
+		for (CertificateToken certificateToken : certificates) {
+			if (certificateToken.isTrusted()) {
+				continue;
+			}
+			Set<RevocationToken> revocationData = certificateToken.getRevocationTokens();
+			if (Utils.isCollectionEmpty(revocationData)) {
+				return false;
+			} else {
+				boolean foundInSignature = false;
+				for (RevocationToken revocationToken : revocationData) {
+					if (RevocationOrigin.SIGNATURE == revocationToken.getOrigin()) {
+						foundInSignature = true;
+					}
+				}
+				if (!foundInSignature) {
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 
 	/* Defines the level LTA */
