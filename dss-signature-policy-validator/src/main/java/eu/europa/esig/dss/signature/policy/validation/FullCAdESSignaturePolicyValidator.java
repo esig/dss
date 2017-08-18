@@ -21,6 +21,7 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.signature.policy.AlgorithmConstraintSet;
 import eu.europa.esig.dss.signature.policy.CertInfoReq;
 import eu.europa.esig.dss.signature.policy.CertRefReq;
+import eu.europa.esig.dss.signature.policy.CertRevReq;
 import eu.europa.esig.dss.signature.policy.CertificateTrustPoint;
 import eu.europa.esig.dss.signature.policy.CertificateTrustTrees;
 import eu.europa.esig.dss.signature.policy.CommitmentRule;
@@ -30,6 +31,7 @@ import eu.europa.esig.dss.signature.policy.SignatureValidationPolicy;
 import eu.europa.esig.dss.signature.policy.SignerAndVerifierRules;
 import eu.europa.esig.dss.signature.policy.SignerRules;
 import eu.europa.esig.dss.signature.policy.SigningCertTrustCondition;
+import eu.europa.esig.dss.signature.policy.TimestampTrustCondition;
 import eu.europa.esig.dss.signature.policy.VerifierRules;
 import eu.europa.esig.dss.signature.policy.asn1.ASN1SignaturePolicy;
 import eu.europa.esig.dss.signature.policy.validation.items.AlgorithmConstraintSetValidator;
@@ -42,6 +44,7 @@ import eu.europa.esig.dss.signature.policy.validation.items.ItemValidator;
 import eu.europa.esig.dss.signature.policy.validation.items.RevReqValidator;
 import eu.europa.esig.dss.signature.policy.validation.items.SignPolExtensionValidatorFactory;
 import eu.europa.esig.dss.validation.BasicASNSignaturePolicyValidator;
+import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -122,10 +125,11 @@ public class FullCAdESSignaturePolicyValidator extends BasicASNSignaturePolicyVa
 		
 		//TODO do I have to validate all or is it enough if one matching is found?
 		for (CommitmentRule cmmtRule : cmmtRules) {
+			validateSignerAndVeriferRules(cmmtRule.getSignerAndVeriferRules());
 			validateSigningCertTrustContition(cmmtRule.getSigningCertTrustCondition());
+			validateTimeStampTrustContition(cmmtRule.getTimeStampTrustCondition());
 			// TODO TimestampTrustCondition 
 			// TODO AttributeTrustCondition
-			validateSignerAndVeriferRules(cmmtRule.getSignerAndVeriferRules());
 			validateAlgorithmConstraintSet(cmmtRule.getAlgorithmConstraintSet());
 			
 			itemValidator = SignPolExtensionValidatorFactory.createValidator(getSignature(), cmmtRule);
@@ -146,21 +150,28 @@ public class FullCAdESSignaturePolicyValidator extends BasicASNSignaturePolicyVa
 				addError("signingCertTrustCondition.signerTrustTrees", "Could not build certification path to a trust point");
 			}
 
-			for (CertificateToken certificate : signerCertPath) {
-				if (certificate.isSelfSigned() && certificate.isTrusted()) {
-					// We don't need to validate trusted root CA
-					continue;
-				}
-				revReqValidator = new RevReqValidator(signingCertTrustCondition.getSignerRevReq().getCaCerts(), certificate);
-				if (!revReqValidator.validate()) {
-					addError("signingCertTrustCondition.signerRevReq.endCertRevReq", "One of the CA certificates is revoked");
-					break;
-				}
+			if (!validateRevReq(signerCertPath, signingCertTrustCondition.getSignerRevReq())) {
+				addError("signingCertTrustCondition.signerRevReq.endCertRevReq", "One of the CA certificates is revoked");
 			}
 		} catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | IOException e) {
 			addError("signingCertTrustCondition", "unexpected error");
 			LOG.warn("Error on validating signingCertTrustCondition", e);
 		}
+	}
+
+	private boolean validateRevReq(Set<CertificateToken> certPath, CertRevReq revReqConstraints) {
+		for (CertificateToken certificate : certPath) {
+			if (certificate.isSelfSigned() && certificate.isTrusted()) {
+				// We don't need to validate trusted root CA
+				continue;
+			}
+			RevReqValidator revReqValidator = new RevReqValidator(revReqConstraints.getCaCerts(), certificate);
+			if (!revReqValidator.validate()) {
+				LOG.debug("Certificate revocation check failled with constraints {} for {}", revReqConstraints.getCaCerts(), certificate);
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private Set<CertificateToken> buildTrustedCertificationPath(CertificateToken certificate, CertificateTrustTrees certificateTrustTrees) throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
@@ -177,6 +188,33 @@ public class FullCAdESSignaturePolicyValidator extends BasicASNSignaturePolicyVa
 		}
 		return Collections.emptySet();
 	}
+
+	private void validateTimeStampTrustContition(TimestampTrustCondition timeStampTrustCondition) {
+		for(TimestampToken signatureTimestamp : getSignature().getSignatureTimestamps()) {
+			RevReqValidator revReqValidator = new RevReqValidator(timeStampTrustCondition.getTtsRevReq().getEndCertRevReq(), signatureTimestamp.getIssuerToken());
+			if (!revReqValidator.validate()) {
+				addError("timeStampTrustCondition.ttsRevReq.endCertRevReq", "End certificate is revoked");
+			}
+			try {
+				Set<CertificateToken> ttsCertPath = buildTrustedCertificationPath(getSignature().getSigningCertificateToken(), timeStampTrustCondition.getTtsCertificateTrustTrees());
+				if (ttsCertPath.isEmpty()) {
+					addError("timeStampTrustCondition.ttsCertificateTrustTrees", "Could not build certification path to a trust point");
+				}
+	
+				if (!validateRevReq(ttsCertPath, timeStampTrustCondition.getTtsRevReq())) {
+					addError("timeStampTrustCondition.ttsRevReq.endCertRevReq", "One of the CA certificates is revoked");
+				}
+			} catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | IOException e) {
+				addError("timeStampTrustCondition", "unexpected error");
+				LOG.warn("Error on validating timeStampTrustCondition", e);
+			}
+			
+			// TODO Check NameConstraints
+			// TODO Check SignatureTimestampDelay
+			// TODO Check CautionPeriod
+		}
+	}
+	
 	private void validateSignerAndVeriferRules(SignerAndVerifierRules signerAndVeriferRules) {
 		validateSignerRules(signerAndVeriferRules.getSignerRules());
 		validateVerifierRules(signerAndVeriferRules.getVerifierRules());

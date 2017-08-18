@@ -25,8 +25,6 @@ import eu.europa.esig.dss.signature.policy.PBADPdfEntry;
  *
  */
 public class ASN1PBADMandatedPdfSigDicEntries extends ASN1Object implements PBADMandatedPdfSigDicEntries {
-
-	public static final String OID = "2.16.76.1.8.1";
 	
 	private List<PBADPdfEntry> requiredPdfEntries = new ArrayList<>();
 	

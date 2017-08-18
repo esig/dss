@@ -13,7 +13,7 @@ public class SignPolExtensionValidatorFactory {
 		if (currentObj instanceof SignerRules) {
 			SignerRules signerRules = (SignerRules) currentObj;
 			for(SignPolExtn extn: signerRules.getSignPolExtensions()) {
-				if (extn.getExtnID().equals(ASN1PBADMandatedPdfSigDicEntries.OID)) {
+				if (extn.getExtnID().equals(PBADMandatedPdfSigDicEntries.OID)) {
 					PBADMandatedPdfSigDicEntries restriction = ASN1PBADMandatedPdfSigDicEntries.getInstance(extn.getExtnValue());
 					itemValidator.add(new PBADPdfEntryValidator(signature, restriction));
 				}

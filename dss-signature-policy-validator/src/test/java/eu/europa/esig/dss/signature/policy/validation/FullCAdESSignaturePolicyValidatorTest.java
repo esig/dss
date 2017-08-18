@@ -21,11 +21,16 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.crl.CRLToken;
 
+/**
+ * @author davyd.santos
+ *
+ */
 public class FullCAdESSignaturePolicyValidatorTest {
 	
 	@Test
@@ -56,6 +61,34 @@ public class FullCAdESSignaturePolicyValidatorTest {
 		
 		CertificateTestUtils.loadIssuers(sig.getSigningCertificateToken(), sig.getCertPool());
 		mockRevocation(sig.getSigningCertificateToken());
+		for (TimestampToken ttk : sig.getSignatureTimestamps()) {
+			CertificateTestUtils.loadIssuers(ttk.getIssuerToken(), sig.getCertPool());
+			mockRevocation(ttk.getIssuerToken());
+		}
+		FullCAdESSignaturePolicyValidator cadesValidator = new FullCAdESSignaturePolicyValidator(sig);
+		cadesValidator.validate();
+		Assert.assertTrue("FullCAdESSignaturePolicyValidator errors: " + cadesValidator.getProcessingErrors(), cadesValidator.getProcessingErrors().isEmpty());
+	}
+	
+	@Test
+	public void shouldValidateWhenPadesPbadAdrt() throws IOException, CMSException, InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+		SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
+		signaturePolicyProvider.setDataLoader(new NativeHTTPDataLoader());
+		
+		SignedDocumentValidator validator = SignedDocumentValidator
+				.fromDocument(new FileDocument(new File("src/test/resources/AD-RT-bry-ts-oid-uri.pdf")));
+
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		PAdESSignature sig = (PAdESSignature) signatures.get(0);
+		sig.checkSignaturePolicy(signaturePolicyProvider);
+		
+		CertificateTestUtils.loadIssuers(sig.getSigningCertificateToken(), sig.getCertPool());
+		mockRevocation(sig.getSigningCertificateToken());
+		for (TimestampToken ttk : sig.getSignatureTimestamps()) {
+			CertificateTestUtils.loadIssuers(ttk.getIssuerToken(), sig.getCertPool());
+			mockRevocation(ttk.getIssuerToken());
+		}
 		FullCAdESSignaturePolicyValidator cadesValidator = new FullCAdESSignaturePolicyValidator(sig);
 		cadesValidator.validate();
 		Assert.assertTrue("FullCAdESSignaturePolicyValidator errors: " + cadesValidator.getProcessingErrors(), cadesValidator.getProcessingErrors().isEmpty());
