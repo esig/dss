@@ -468,11 +468,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public List<CertificateToken> getCertificates() {
-		return getCertificateSource().getCertificates();
-	}
-
-	@Override
 	public void checkSignaturePolicy(SignaturePolicyProvider signaturePolicyProvider) {
 		final Attribute attribute = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_sigPolicyId);
 		if (attribute == null) {

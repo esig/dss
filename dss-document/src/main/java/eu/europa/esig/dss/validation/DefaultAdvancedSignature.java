@@ -29,6 +29,7 @@ import java.util.Set;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
@@ -196,6 +197,16 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		validationContext.initialize(certificateVerifier);
 		validationContext.validate();
 		return validationContext;
+	}
+
+	/**
+	 * Returns an unmodifiable list of all certificate tokens encapsulated in the signature
+	 * 
+	 * @see eu.europa.esig.dss.validation.AdvancedSignature#getCertificates()
+	 */
+	@Override
+	public List<CertificateToken> getCertificates() {
+		return getCertificateSource().getCertificates();
 	}
 
 	/**
@@ -534,7 +545,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		}
 
 		for (CertificateToken certificateToken : certificates) {
-			if (certificateToken.isTrusted()) {
+			if (certificateToken.isTrusted() || DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certificateToken)) {
 				continue;
 			}
 			Set<RevocationToken> revocationData = certificateToken.getRevocationTokens();

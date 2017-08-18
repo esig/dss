@@ -1234,17 +1234,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/*
-	 * Returns an unmodifiable list of all certificate tokens encapsulated in the signature
-	 * 
-	 * @see eu.europa.esig.dss.validation.AdvancedSignature#getCertificates()
-	 */
-	@Override
-	public List<CertificateToken> getCertificates() {
-
-		return getCertificateSource().getCertificates();
-	}
-
-	/*
 	 * Returns the list of certificates encapsulated in the KeyInfo segment
 	 */
 	public List<CertificateToken> getKeyInfoCertificates() {
@@ -1985,22 +1974,22 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_LT);
 			break;
 		case XAdES_BASELINE_LT:
-			dataForLevelPresent &= hasLTProfile();
+			dataForLevelPresent = hasLTProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_T);
 			break;
 		case XAdES_BASELINE_T:
-			dataForLevelPresent &= hasTProfile();
+			dataForLevelPresent = hasTProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_B);
 			break;
 		case XAdES_BASELINE_B:
-			dataForLevelPresent &= hasBProfile();
+			dataForLevelPresent = hasBProfile();
 			break;
 		case XAdES_X:
-			dataForLevelPresent &= hasXProfile();
+			dataForLevelPresent = hasXProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_C);
 			break;
 		case XAdES_C:
-			dataForLevelPresent &= hasCProfile();
+			dataForLevelPresent = hasCProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_T);
 			break;
 		default:

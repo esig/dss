@@ -330,9 +330,9 @@ public class SignatureValidationContext implements ValidationContext {
 			final boolean added = processedCertificates.add(certificateToken);
 			if (LOG.isTraceEnabled()) {
 				if (added) {
-					LOG.trace("CertificateToken added to processedRevocations: {} ", certificateToken);
+					LOG.trace("CertificateToken added to processedCertificates: {} ", certificateToken);
 				} else {
-					LOG.trace("CertificateToken already present processedRevocations: {} ", certificateToken);
+					LOG.trace("CertificateToken already present processedCertificates: {} ", certificateToken);
 				}
 			}
 		}
@@ -346,9 +346,9 @@ public class SignatureValidationContext implements ValidationContext {
 			final boolean added = processedTimestamps.add(timestampToken);
 			if (LOG.isTraceEnabled()) {
 				if (added) {
-					LOG.trace("TimestampToken added to processedRevocations: {} ", processedTimestamps);
+					LOG.trace("TimestampToken added to processedTimestamps: {} ", processedTimestamps);
 				} else {
-					LOG.trace("TimestampToken already present processedRevocations: {} ", processedTimestamps);
+					LOG.trace("TimestampToken already present processedTimestamps: {} ", processedTimestamps);
 				}
 			}
 		}
@@ -361,6 +361,10 @@ public class SignatureValidationContext implements ValidationContext {
 			token = getNotYetVerifiedToken();
 			if (token != null) {
 
+				// TODO improve
+				if (token instanceof CertificateToken) {
+					validationCertificatePool.getInstance((CertificateToken) token, CertificateSourceType.UNKNOWN);
+				}
 				/**
 				 * Gets the issuer certificate of the Token and checks its signature
 				 */

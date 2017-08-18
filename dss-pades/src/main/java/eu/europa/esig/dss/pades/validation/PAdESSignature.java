@@ -290,11 +290,6 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public List<CertificateToken> getCertificates() {
-		return getCertificateSource().getCertificates();
-	}
-
-	@Override
 	public void checkSignatureIntegrity() {
 		super.checkSignatureIntegrity();
 	}
