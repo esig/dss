@@ -52,7 +52,7 @@ public class FullCAdESSignaturePolicyValidatorTest {
 		signaturePolicyProvider.setDataLoader(new NativeHTTPDataLoader());
 		
 		SignedDocumentValidator validator = SignedDocumentValidator
-				.fromDocument(new FileDocument(new File("src/test/resources/AD-RT-bry-ts-oid-uri.pdf")));
+				.fromDocument(new FileDocument(new File("src/test/resources/AD-RB.pdf")));
 
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = validator.getSignatures();
@@ -61,10 +61,6 @@ public class FullCAdESSignaturePolicyValidatorTest {
 		
 		CertificateTestUtils.loadIssuers(sig.getSigningCertificateToken(), sig.getCertPool());
 		mockRevocation(sig.getSigningCertificateToken());
-		for (TimestampToken ttk : sig.getSignatureTimestamps()) {
-			CertificateTestUtils.loadIssuers(ttk.getIssuerToken(), sig.getCertPool());
-			mockRevocation(ttk.getIssuerToken());
-		}
 		FullCAdESSignaturePolicyValidator cadesValidator = new FullCAdESSignaturePolicyValidator(sig);
 		cadesValidator.validate();
 		Assert.assertTrue("FullCAdESSignaturePolicyValidator errors: " + cadesValidator.getProcessingErrors(), cadesValidator.getProcessingErrors().isEmpty());

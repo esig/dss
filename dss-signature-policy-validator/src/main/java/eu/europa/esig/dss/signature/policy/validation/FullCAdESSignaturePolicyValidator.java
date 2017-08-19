@@ -190,23 +190,30 @@ public class FullCAdESSignaturePolicyValidator extends BasicASNSignaturePolicyVa
 	}
 
 	private void validateTimeStampTrustContition(TimestampTrustCondition timeStampTrustCondition) {
+		if (timeStampTrustCondition == null) {
+			return;
+		}
 		for(TimestampToken signatureTimestamp : getSignature().getSignatureTimestamps()) {
-			RevReqValidator revReqValidator = new RevReqValidator(timeStampTrustCondition.getTtsRevReq().getEndCertRevReq(), signatureTimestamp.getIssuerToken());
-			if (!revReqValidator.validate()) {
-				addError("timeStampTrustCondition.ttsRevReq.endCertRevReq", "End certificate is revoked");
+			if (timeStampTrustCondition.getTtsRevReq() != null && timeStampTrustCondition.getTtsRevReq() != null ) {
+				RevReqValidator revReqValidator = new RevReqValidator(timeStampTrustCondition.getTtsRevReq().getEndCertRevReq(), signatureTimestamp.getIssuerToken());
+				if (!revReqValidator.validate()) {
+					addError("timeStampTrustCondition.ttsRevReq.endCertRevReq", "End certificate is revoked");
+				}
 			}
-			try {
-				Set<CertificateToken> ttsCertPath = buildTrustedCertificationPath(getSignature().getSigningCertificateToken(), timeStampTrustCondition.getTtsCertificateTrustTrees());
-				if (ttsCertPath.isEmpty()) {
-					addError("timeStampTrustCondition.ttsCertificateTrustTrees", "Could not build certification path to a trust point");
+			if (timeStampTrustCondition.getTtsCertificateTrustTrees() != null || timeStampTrustCondition.getTtsRevReq() != null) {
+				try {
+					Set<CertificateToken> ttsCertPath = buildTrustedCertificationPath(signatureTimestamp.getIssuerToken(), timeStampTrustCondition.getTtsCertificateTrustTrees());
+					if (ttsCertPath.isEmpty()) {
+						addError("timeStampTrustCondition.ttsCertificateTrustTrees", "Could not build certification path to a trust point");
+					}
+		
+					if (!validateRevReq(ttsCertPath, timeStampTrustCondition.getTtsRevReq())) {
+						addError("timeStampTrustCondition.ttsRevReq.endCertRevReq", "One of the CA certificates is revoked");
+					}
+				} catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | IOException e) {
+					addError("timeStampTrustCondition", "unexpected error");
+					LOG.warn("Error on validating timeStampTrustCondition", e);
 				}
-	
-				if (!validateRevReq(ttsCertPath, timeStampTrustCondition.getTtsRevReq())) {
-					addError("timeStampTrustCondition.ttsRevReq.endCertRevReq", "One of the CA certificates is revoked");
-				}
-			} catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | IOException e) {
-				addError("timeStampTrustCondition", "unexpected error");
-				LOG.warn("Error on validating timeStampTrustCondition", e);
 			}
 			
 			// TODO Check NameConstraints
