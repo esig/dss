@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.signature;
+package known.issues;
 
 import static org.junit.Assert.assertEquals;
 
@@ -42,8 +42,9 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class XAdESLevelXLTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
+public class XAdESLevelATest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -62,7 +63,7 @@ public class XAdESLevelXLTest extends AbstractTestDocumentSignatureService<XAdES
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_XL);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_A);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new XAdESService(certificateVerifier);
@@ -72,7 +73,7 @@ public class XAdESLevelXLTest extends AbstractTestDocumentSignatureService<XAdES
 
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertEquals(SignatureLevel.XAdES_BASELINE_LT.toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(SignatureLevel.XAdES_BASELINE_LTA.toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Override
@@ -97,7 +98,7 @@ public class XAdESLevelXLTest extends AbstractTestDocumentSignatureService<XAdES
 
 	@Override
 	protected boolean isBaselineLTA() {
-		return false;
+		return true;
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.xades.signature.en319132;
+package known.issues;
 
 import java.io.File;
 import java.util.Date;

@@ -18,11 +18,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.extension;
+package known.issues;
 
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.pades.extension.AbstractTestPAdESExtension;
 
-public class PAdESExtensionToLTTest extends AbstractTestPAdESExtension {
+public class PAdESExtensionTToLTATest extends AbstractTestPAdESExtension {
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {
@@ -31,7 +32,7 @@ public class PAdESExtensionToLTTest extends AbstractTestPAdESExtension {
 
 	@Override
 	protected SignatureLevel getFinalSignatureLevel() {
-		return SignatureLevel.PAdES_BASELINE_LT;
+		return SignatureLevel.PAdES_BASELINE_LTA;
 	}
 
 }

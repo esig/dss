@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.xades.extension;
+package known.issues;
 
 import java.util.HashMap;
 import java.util.Map;

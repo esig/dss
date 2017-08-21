@@ -18,7 +18,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.signature;
+package known.issues;
+
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.util.Date;
@@ -38,9 +40,11 @@ import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class XAdESLevelLTTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
+public class XAdESLevelXLTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -59,12 +63,17 @@ public class XAdESLevelLTTest extends AbstractTestDocumentSignatureService<XAdES
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_XL);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new XAdESService(certificateVerifier);
 		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256)));
 
+	}
+
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		assertEquals(SignatureLevel.XAdES_BASELINE_LT.toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Override

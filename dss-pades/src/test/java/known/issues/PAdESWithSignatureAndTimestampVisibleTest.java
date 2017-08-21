@@ -1,9 +1,8 @@
-package eu.europa.esig.dss.pades.signature;
+package known.issues;
 
 import java.awt.Color;
 import java.io.File;
 import java.util.Date;
-
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -15,6 +14,8 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerPosition;
+import eu.europa.esig.dss.pades.signature.AbstractPAdESTestSignature;
+import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
@@ -22,7 +23,7 @@ import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
-public class PAdESWithSignatureVisibleAndTimestampInvisibleTest extends AbstractPAdESTestSignature {
+public class PAdESWithSignatureAndTimestampVisibleTest extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters> service;
 	private PAdESSignatureParameters signatureParameters;
@@ -43,12 +44,18 @@ public class PAdESWithSignatureVisibleAndTimestampInvisibleTest extends Abstract
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		
 		SignatureImageParameters signatureImageParameters = new SignatureImageParameters();
+		signatureImageParameters.setImage(new FileDocument(new File("src/test/resources/small-red.jpg")));
+		signatureImageParameters.setxAxis(25);
+		signatureImageParameters.setyAxis(25);
+		signatureParameters.setSignatureImageParameters(signatureImageParameters);
+		
+		SignatureImageParameters timestampImageParameters = new SignatureImageParameters();
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.GREEN);
 		textParameters.setSignerNamePosition(SignerPosition.BOTTOM);
-		signatureImageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(signatureImageParameters);
+		timestampImageParameters.setTextParameters(textParameters);
+		signatureParameters.setTimestampImageParameters(timestampImageParameters);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new PAdESService(certificateVerifier);

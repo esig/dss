@@ -1,24 +1,4 @@
-/**
- * DSS - Digital Signature Services
- * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
- * This file is part of the "DSS - Digital Signature Services" project.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
-package eu.europa.esig.dss.xades.signature;
+package known.issues;
 
 import java.io.File;
 import java.util.Date;
@@ -31,6 +11,7 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
@@ -39,8 +20,9 @@ import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class XAdESLevelLTATest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
+public class XAdESSignatureEn319132_Baseline_LTA_Test extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -54,22 +36,41 @@ public class XAdESLevelLTATest extends AbstractTestDocumentSignatureService<XAdE
 		CertificateService certificateService = new CertificateService();
 		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
+		SignerLocation location = new SignerLocation();
+		location.setCountry("Luxembourg");
+		location.setLocality("Kehlen");
+		location.setStreet("Zone industrielle, 15");
+		location.setPostalCode("L-8287");
+
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+		signatureParameters.setEn319132(true);
+		signatureParameters.bLevel().addClaimedSignerRole("Test role");
+		signatureParameters.bLevel().setSignerLocation(location);
 
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		service = new XAdESService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256)));
+		MockTSPSource tspSource = new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256));
+		service.setTspSource(tspSource);
+	}
 
+	@Override
+	protected DSSDocument getDocumentToSign() {
+		return documentToSign;
 	}
 
 	@Override
 	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
 		return service;
+	}
+
+	@Override
+	protected MockPrivateKeyEntry getPrivateKeyEntry() {
+		return privateKeyEntry;
 	}
 
 	@Override
@@ -91,15 +92,4 @@ public class XAdESLevelLTATest extends AbstractTestDocumentSignatureService<XAdE
 	protected boolean isBaselineLTA() {
 		return true;
 	}
-
-	@Override
-	protected DSSDocument getDocumentToSign() {
-		return documentToSign;
-	}
-
-	@Override
-	protected MockPrivateKeyEntry getPrivateKeyEntry() {
-		return privateKeyEntry;
-	}
-
 }

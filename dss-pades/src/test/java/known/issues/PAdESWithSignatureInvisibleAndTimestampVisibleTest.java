@@ -1,8 +1,9 @@
-package eu.europa.esig.dss.pades.signature;
+package known.issues;
 
 import java.awt.Color;
 import java.io.File;
 import java.util.Date;
+
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -14,6 +15,8 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerPosition;
+import eu.europa.esig.dss.pades.signature.AbstractPAdESTestSignature;
+import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
@@ -21,7 +24,7 @@ import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
-public class PAdESWithSignatureAndTimestampVisibleTest extends AbstractPAdESTestSignature {
+public class PAdESWithSignatureInvisibleAndTimestampVisibleTest extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters> service;
 	private PAdESSignatureParameters signatureParameters;
@@ -40,12 +43,6 @@ public class PAdESWithSignatureAndTimestampVisibleTest extends AbstractPAdESTest
 		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
 		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
-		
-		SignatureImageParameters signatureImageParameters = new SignatureImageParameters();
-		signatureImageParameters.setImage(new FileDocument(new File("src/test/resources/small-red.jpg")));
-		signatureImageParameters.setxAxis(25);
-		signatureImageParameters.setyAxis(25);
-		signatureParameters.setSignatureImageParameters(signatureImageParameters);
 		
 		SignatureImageParameters timestampImageParameters = new SignatureImageParameters();
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
