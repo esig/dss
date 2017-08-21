@@ -38,7 +38,7 @@ public class ASN1SignPolExtensions extends ASN1Object implements SignPolExtensio
 	 * @see docusign.signature.policy.asn1.SignPolExtensions#getSignPolExtn()
 	 */
 	@Override
-	public List<SignPolExtn> getSignPolExtn() {
+	public List<SignPolExtn> getSignPolExtensions() {
 		return signPolExtn;
 	}
 

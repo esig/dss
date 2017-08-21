@@ -101,7 +101,7 @@ public class ASN1SignatureValidationPolicy extends ASN1Object implements Signatu
 	 */
 	@Override
 	public List<SignPolExtn> getSignPolExtensions() {
-		return signPolExtensions.getSignPolExtn();
+		return signPolExtensions == null? null: signPolExtensions.getSignPolExtensions();
 	}
 
 }

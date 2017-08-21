@@ -136,7 +136,7 @@ public class ASN1SignerRules extends ASN1Object implements SignerRules {
 	 */
 	@Override
 	public List<SignPolExtn> getSignPolExtensions() {
-		return signPolExtensions.getSignPolExtn();
+		return signPolExtensions == null? null: signPolExtensions.getSignPolExtensions();
 	}
 
 }

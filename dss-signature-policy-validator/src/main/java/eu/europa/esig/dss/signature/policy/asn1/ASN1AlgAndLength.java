@@ -80,7 +80,7 @@ public class ASN1AlgAndLength extends ASN1Object implements AlgAndLength {
 	 */
 	@Override
 	public List<SignPolExtn> getSignPolExtensions() {
-		return signPolExtensions.getSignPolExtn();
+		return signPolExtensions == null? null: signPolExtensions.getSignPolExtensions();
 	}
 
 }

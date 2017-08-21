@@ -1,25 +1,28 @@
 package eu.europa.esig.dss.signature.policy.validation.items;
 
+import java.util.List;
+
 import eu.europa.esig.dss.signature.policy.PBADMandatedPdfSigDicEntries;
+import eu.europa.esig.dss.signature.policy.SignPolExtensions;
 import eu.europa.esig.dss.signature.policy.SignPolExtn;
-import eu.europa.esig.dss.signature.policy.SignerRules;
 import eu.europa.esig.dss.signature.policy.asn1.ASN1PBADMandatedPdfSigDicEntries;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
 public class SignPolExtensionValidatorFactory {
 
-	public static ItemValidator createValidator(AdvancedSignature signature, Object currentObj) {
+	public static ItemValidator createValidator(AdvancedSignature signature, SignPolExtensions extensionsContainer) {
 		CollectionItemValidator itemValidator = new CollectionItemValidator();
-		if (currentObj instanceof SignerRules) {
-			SignerRules signerRules = (SignerRules) currentObj;
-			for(SignPolExtn extn: signerRules.getSignPolExtensions()) {
+		List<SignPolExtn> signPolExtensions = extensionsContainer.getSignPolExtensions();
+		if (signPolExtensions != null) {
+			for(SignPolExtn extn: signPolExtensions) {
 				if (extn.getExtnID().equals(PBADMandatedPdfSigDicEntries.OID)) {
 					PBADMandatedPdfSigDicEntries restriction = ASN1PBADMandatedPdfSigDicEntries.getInstance(extn.getExtnValue());
 					itemValidator.add(new PBADPdfEntryValidator(signature, restriction));
+				} else {
+					itemValidator.add(new UnkownSignaturePolicyExtension(extn.getExtnID()));
 				}
 			}
 		}
-		// If there is nothing to validate or the validation is unknown, return an empty ItemValidator
 		return itemValidator;
 	}
 

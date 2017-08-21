@@ -2,7 +2,7 @@ package eu.europa.esig.dss.signature.policy;
 
 import java.util.List;
 
-public interface SignerRules {
+public interface SignerRules extends SignPolExtensions {
 
 	Boolean getExternalSignedData();
 

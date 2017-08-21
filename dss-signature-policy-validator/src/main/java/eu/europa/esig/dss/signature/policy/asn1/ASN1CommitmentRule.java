@@ -167,7 +167,7 @@ public class ASN1CommitmentRule extends ASN1Object implements CommitmentRule {
 	 */
 	@Override
 	public List<SignPolExtn> getSignPolExtensions() {
-		return signPolExtensions.getSignPolExtn();
+		return signPolExtensions == null? null: signPolExtensions.getSignPolExtensions();
 	}
 
 }

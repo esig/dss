@@ -61,8 +61,8 @@ public class ASN1RevReq extends ASN1Object implements RevReq {
 	 * @see docusign.signature.policy.asn1.RevReq#getExRevReq()
 	 */
 	@Override
-	public List<SignPolExtn> getExRevReq() {
-		return exRevReq.getSignPolExtn();
+	public List<SignPolExtn> getSignPolExtensions() {
+		return exRevReq == null? null: exRevReq.getSignPolExtensions();
 	}
 
 }

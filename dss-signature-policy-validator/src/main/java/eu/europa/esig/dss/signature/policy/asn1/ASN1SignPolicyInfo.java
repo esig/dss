@@ -130,7 +130,7 @@ public class ASN1SignPolicyInfo extends ASN1Object implements SignPolicyInfo {
 	 */
 	@Override
 	public List<SignPolExtn> getSignPolExtensions() {
-		return signPolExtensions.getSignPolExtn();
+		return signPolExtensions == null? null: signPolExtensions.getSignPolExtensions();
 	}
 
 }

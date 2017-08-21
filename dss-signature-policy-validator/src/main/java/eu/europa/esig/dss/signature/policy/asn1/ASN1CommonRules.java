@@ -141,7 +141,7 @@ public class ASN1CommonRules extends ASN1Object implements CommonRules {
 	 */
 	@Override
 	public List<SignPolExtn> getSignPolExtensions() {
-		return signPolExtensions.getSignPolExtn();
+		return signPolExtensions == null? null: signPolExtensions.getSignPolExtensions();
 	}
 
 }

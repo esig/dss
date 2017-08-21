@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface SignPolExtensions {
 
-	List<SignPolExtn> getSignPolExtn();
+	List<SignPolExtn> getSignPolExtensions();
 
 }

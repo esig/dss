@@ -36,7 +36,8 @@ public class PBADPdfEntryValidator implements ItemValidator {
 				
 			if (!isValid) {
 				try {
-					invalidEntries.add(pdfEntry.getName() + "=" + new String(signatureDictionary.get(pdfEntry.getName())));
+					byte[] value = signatureDictionary.get(pdfEntry.getName());
+					invalidEntries.add(pdfEntry.getName() + "=" + (value == null? null: new String(value)));
 				} catch (IOException e) {
 					invalidEntries.add(pdfEntry.getName() + "= <error parsing value>");
 				}

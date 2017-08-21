@@ -63,7 +63,7 @@ public class ASN1VerifierRules extends ASN1Object implements VerifierRules {
 	 */
 	@Override
 	public List<SignPolExtn> getSignPolExtensions() {
-		return signPolExtensions.getSignPolExtn();
+		return signPolExtensions == null? null: signPolExtensions.getSignPolExtensions();
 	}
 
 }

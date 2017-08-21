@@ -2,7 +2,7 @@ package eu.europa.esig.dss.signature.policy;
 
 import java.util.List;
 
-public interface AlgAndLength {
+public interface AlgAndLength extends SignPolExtensions {
 
 	String getAlgID();
 

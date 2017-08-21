@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.signature.policy.validation.items;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.Assert;
@@ -17,7 +18,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 public class PBADPdfEntryValidatorTest {
 
 	@Test
-	public void shouldNotValidateWhenDictionaryEntriesDifferentValue() {
+	public void shouldNotValidateWhenDictionaryEntriesDifferentValue() throws IOException {
 		SignedDocumentValidator validator = SignedDocumentValidator
 				.fromDocument(new FileDocument(new File("../dss-pades/src/test/resources/validation/dss-818/Signature-P-IT_ADO-1 (HASH_FAILURE) (ECDSA).pdf")));
 
@@ -33,7 +34,7 @@ public class PBADPdfEntryValidatorTest {
 	}
 
 	@Test
-	public void shouldValidateWhenDictionaryEntriesFound() {
+	public void shouldValidateWhenDictionaryEntriesFound() throws IOException {
 		SignedDocumentValidator validator = SignedDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/AD-RT-bry-ts-oid-uri.pdf")));
 
