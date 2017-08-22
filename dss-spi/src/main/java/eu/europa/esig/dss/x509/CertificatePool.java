@@ -135,9 +135,12 @@ public class CertificatePool implements Serializable {
 				final String subjectName = certificateToAdd.getSubjectX500Principal().getName(X500Principal.CANONICAL);
 				List<CertificateToken> list = certBySubject.get(subjectName);
 				if (list == null) {
-
 					list = new ArrayList<CertificateToken>();
 					certBySubject.put(subjectName, list);
+				} else {
+					for (CertificateToken foundCert : list) {
+						sources.addAll(foundCert.getSources());
+					}
 				}
 				list.add(certToken);
 			} else {

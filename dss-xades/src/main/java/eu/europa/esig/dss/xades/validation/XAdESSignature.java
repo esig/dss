@@ -366,6 +366,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		offlineOCSPSource = null;
 	}
 
+	public void resetTimestamps() {
+		signatureTimestamps = null;
+		contentTimestamps = null;
+		archiveTimestamps = null;
+		sigAndRefsTimestamps = null;
+		refsOnlyTimestamps = null;
+	}
+
 	@Override
 	public CandidatesForSigningCertificate getCandidatesForSigningCertificate() {
 		if (candidatesForSigningCertificate != null) {

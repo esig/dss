@@ -126,6 +126,11 @@ public class SignatureValidationContext implements ValidationContext {
 		if (validationCertificatePool == null) {
 			validationCertificatePool = certificateVerifier.createValidationPool();
 		}
+
+		for (CertificateToken certificateToken : processedCertificates) {
+			validationCertificatePool.getInstance(certificateToken, CertificateSourceType.UNKNOWN);
+		}
+
 		this.crlSource = certificateVerifier.getCrlSource();
 		this.ocspSource = certificateVerifier.getOcspSource();
 		this.dataLoader = certificateVerifier.getDataLoader();
@@ -361,10 +366,6 @@ public class SignatureValidationContext implements ValidationContext {
 			token = getNotYetVerifiedToken();
 			if (token != null) {
 
-				// TODO improve
-				if (token instanceof CertificateToken) {
-					validationCertificatePool.getInstance((CertificateToken) token, CertificateSourceType.UNKNOWN);
-				}
 				/**
 				 * Gets the issuer certificate of the Token and checks its signature
 				 */

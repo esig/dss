@@ -46,6 +46,8 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 
 	private final XPathQueryHolder xPathQueryHolder;
 
+	private List<BasicOCSPResp> containedOCSPResponses;
+
 	/**
 	 * The default constructor for XAdESOCSPSource.
 	 *
@@ -61,10 +63,12 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 
 	@Override
 	public List<BasicOCSPResp> getContainedOCSPResponses() {
-		final List<BasicOCSPResp> list = new ArrayList<BasicOCSPResp>();
-		list.addAll(getEncapsulatedOCSPValues());
-		list.addAll(getTimestampEncapsulatedOCSPValues());
-		return list;
+		if (containedOCSPResponses == null) {
+			containedOCSPResponses = new ArrayList<BasicOCSPResp>();
+			containedOCSPResponses.addAll(getEncapsulatedOCSPValues());
+			containedOCSPResponses.addAll(getTimestampEncapsulatedOCSPValues());
+		}
+		return containedOCSPResponses;
 	}
 
 	public List<BasicOCSPResp> getEncapsulatedOCSPValues() {

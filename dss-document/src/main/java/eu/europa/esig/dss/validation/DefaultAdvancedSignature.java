@@ -544,8 +544,16 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			return false;
 		}
 
+		if (!isAllCertsHaveRevocationData(certificates)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean isAllCertsHaveRevocationData(List<CertificateToken> certificates) {
 		for (CertificateToken certificateToken : certificates) {
-			if (certificateToken.isTrusted() || DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certificateToken)) {
+			if (certificateToken.isTrusted() || certificateToken.isSelfSigned() || DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certificateToken)) {
 				continue;
 			}
 			Set<RevocationToken> revocationData = certificateToken.getRevocationTokens();
@@ -563,7 +571,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 				}
 			}
 		}
-
 		return true;
 	}
 
