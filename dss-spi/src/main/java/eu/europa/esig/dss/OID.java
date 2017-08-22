@@ -51,9 +51,4 @@ public class OID {
 	 */
 	public static final ASN1ObjectIdentifier id_aa_ATSHashIndex = id_etsi_electronicSignatureStandard_attributes.branch("5");
 
-	public static final ASN1ObjectIdentifier icpBrasil_pa_iti = new ASN1ObjectIdentifier("2.16.76.1.7.1");
-
-	public static final ASN1ObjectIdentifier icpBrasil_pa_iti_adrb_pdf = icpBrasil_pa_iti.branch("11");
-
-	public static final ASN1ObjectIdentifier icpBrasil_pa_iti_adrb_pdf_v1 = icpBrasil_pa_iti_adrb_pdf.branch("1");
 }

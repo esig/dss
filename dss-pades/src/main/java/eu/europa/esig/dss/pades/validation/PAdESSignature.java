@@ -450,11 +450,11 @@ public class PAdESSignature extends CAdESSignature {
 		case PKCS7_B:
 			dataForLevelPresent = (pdfSignatureInfo != null) && "adbe.pkcs7.detached".equals(pdfSignatureInfo.getSubFilter());
 			break;
-		case PBAD_PADES_ADRB:
-			dataForLevelPresent = (pdfSignatureInfo != null) &&
-				"PBAD.PAdES".equals(pdfSignatureInfo.getSubFilter()) && "PBAD_PAdES".equals(pdfSignatureInfo.getFilter()) &&
-				getPolicyId() != null && getPolicyId().getIdentifier().startsWith(OID.icpBrasil_pa_iti_adrb_pdf.getId());
-			break;
+//		case PBAD_PADES_ADRB:
+//			dataForLevelPresent = (pdfSignatureInfo != null) &&
+//				"PBAD.PAdES".equals(pdfSignatureInfo.getSubFilter()) && "PBAD_PAdES".equals(pdfSignatureInfo.getFilter()) &&
+//				getPolicyId() != null && getPolicyId().getIdentifier().startsWith(OID.icpBrasil_pa_iti_adrb_pdf.getId());
+//			break;
 		default:
 			throw new IllegalArgumentException("Unknown level " + signatureLevel);
 		}
@@ -464,7 +464,9 @@ public class PAdESSignature extends CAdESSignature {
 
 	@Override
 	public SignatureLevel[] getSignatureLevels() {
-		return new SignatureLevel[] { SignatureLevel.PDF_NOT_ETSI, SignatureLevel.PAdES_BASELINE_B, SignatureLevel.PKCS7_B, SignatureLevel.PBAD_PADES_ADRB, SignatureLevel.PAdES_BASELINE_T,
+		return new SignatureLevel[] { SignatureLevel.PDF_NOT_ETSI, SignatureLevel.PAdES_BASELINE_B, SignatureLevel.PKCS7_B, 
+//				SignatureLevel.PBAD_PADES_ADRB, 
+				SignatureLevel.PAdES_BASELINE_T,
 				SignatureLevel.PKCS7_T, SignatureLevel.PAdES_BASELINE_LT, SignatureLevel.PKCS7_LT, SignatureLevel.PAdES_BASELINE_LTA,
 				SignatureLevel.PKCS7_LTA };
 	}
