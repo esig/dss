@@ -458,8 +458,7 @@ public class PAdESSignature extends CAdESSignature {
 
 	@Override
 	public SignatureLevel[] getSignatureLevels() {
-		return new SignatureLevel[] { SignatureLevel.PDF_NOT_ETSI, SignatureLevel.PAdES_BASELINE_B, SignatureLevel.PKCS7_B, 
-				SignatureLevel.PAdES_BASELINE_T,
+		return new SignatureLevel[] { SignatureLevel.PDF_NOT_ETSI, SignatureLevel.PAdES_BASELINE_B, SignatureLevel.PKCS7_B, SignatureLevel.PAdES_BASELINE_T,
 				SignatureLevel.PKCS7_T, SignatureLevel.PAdES_BASELINE_LT, SignatureLevel.PKCS7_LT, SignatureLevel.PAdES_BASELINE_LTA,
 				SignatureLevel.PKCS7_LTA };
 	}
