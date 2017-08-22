@@ -30,9 +30,7 @@ public enum SignatureLevel {
 
 	CMS_NOT_ETSI, CAdES_BASELINE_LTA, CAdES_BASELINE_LT, CAdES_BASELINE_T, CAdES_BASELINE_B, CAdES_101733_C, CAdES_101733_X, CAdES_101733_A,
 
-	PDF_NOT_ETSI, PAdES_BASELINE_LTA, PAdES_BASELINE_LT, PAdES_BASELINE_T, PAdES_BASELINE_B, PKCS7_B, PKCS7_T, PKCS7_LT, PKCS7_LTA,
-	
-	PBAD_PADES_ADRB;
+	PDF_NOT_ETSI, PAdES_BASELINE_LTA, PAdES_BASELINE_LT, PAdES_BASELINE_T, PAdES_BASELINE_B, PKCS7_B, PKCS7_T, PKCS7_LT, PKCS7_LTA;
 
 	/**
 	 * Returns the SignatureLevel based on the name (String)
@@ -80,8 +78,6 @@ public enum SignatureLevel {
 		case PAdES_BASELINE_LT:
 		case PAdES_BASELINE_LTA:
 			return SignatureForm.PAdES;
-		case PBAD_PADES_ADRB:
-			return SignatureForm.PBAD;
 		case PKCS7_B:
 		case PKCS7_T:
 		case PKCS7_LT:
