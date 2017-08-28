@@ -34,26 +34,20 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
+import eu.europa.esig.dss.signature.AbstractPkiFactoryTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBDetachedDigestDocumentTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
+public class XAdESLevelBDetachedDigestDocumentTest extends AbstractPkiFactoryTestSignature<XAdESSignatureParameters> {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-	private MockPrivateKeyEntry privateKeyEntry;
 
 	@Before
 	public void init() throws Exception {
@@ -69,24 +63,25 @@ public class XAdESLevelBDetachedDigestDocumentTest extends AbstractTestDocumentS
 
 		documentToSign = digestDocument;
 
-		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
-
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
-		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		service = new XAdESService(certificateVerifier);
+		service = new XAdESService(getCompleteCertificateVerifier());
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 	@Override
 	protected Reports getValidationReport(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 		detachedContents.add(new FileDocument(new File("src/test/resources/sample.xml")));
 		validator.setDetachedContents(detachedContents);
@@ -122,11 +117,6 @@ public class XAdESLevelBDetachedDigestDocumentTest extends AbstractTestDocumentS
 	@Override
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
-	}
-
-	@Override
-	protected MockPrivateKeyEntry getPrivateKeyEntry() {
-		return privateKeyEntry;
 	}
 
 }

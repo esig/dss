@@ -34,10 +34,16 @@
 			<artifactId>jcl-over-slf4j</artifactId> <!-- replaces commons-logging -->
 		</dependency>
 		
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-test</artifactId>
-            <scope>test</scope>
-        </dependency>
+ 		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-utils-google-guava</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
     </dependencies>
 </project>

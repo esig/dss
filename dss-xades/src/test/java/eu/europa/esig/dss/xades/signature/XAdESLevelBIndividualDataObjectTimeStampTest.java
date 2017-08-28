@@ -19,10 +19,9 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.TimestampParameters;
-import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
+import eu.europa.esig.dss.signature.AbstractPkiFactoryTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.test.mock.MockTSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -35,19 +34,15 @@ import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
+public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractPkiFactoryTestSignature<XAdESSignatureParameters> {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-	private MockPrivateKeyEntry privateKeyEntry;
 
 	@Before
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
-
-		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
 		DSSTransform dssTransform = new DSSTransform();
@@ -66,8 +61,8 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractTestDo
 
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
-		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setSignedInfoCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
@@ -80,6 +75,7 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractTestDo
 		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
 
 		try {
+			CertificateService certificateService = new CertificateService();
 			MockTSPSource mockTsp = new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256));
 			TimestampService timestampService = new TimestampService(mockTsp, new CertificatePool());
 			TimestampToken timestampToken = timestampService.generateXAdESContentTimestampAsTimestampToken(documentToSign, signatureParameters,
@@ -137,7 +133,8 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractTestDo
 	}
 
 	@Override
-	protected MockPrivateKeyEntry getPrivateKeyEntry() {
-		return privateKeyEntry;
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
+
 }

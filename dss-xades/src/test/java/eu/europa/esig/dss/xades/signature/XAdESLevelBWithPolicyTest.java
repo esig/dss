@@ -34,18 +34,13 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
+import eu.europa.esig.dss.signature.AbstractPkiFactoryTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBWithPolicyTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
+public class XAdESLevelBWithPolicyTest extends AbstractPkiFactoryTestSignature<XAdESSignatureParameters> {
 
 	private static final Logger logger = LoggerFactory.getLogger(XAdESLevelBWithPolicyTest.class);
 
@@ -54,14 +49,10 @@ public class XAdESLevelBWithPolicyTest extends AbstractTestDocumentSignatureServ
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-	private MockPrivateKeyEntry privateKeyEntry;
 
 	@Before
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
-
-		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		Policy signaturePolicy = new Policy();
 		signaturePolicy.setId("1.2.3.4.5.6");
@@ -73,13 +64,12 @@ public class XAdESLevelBWithPolicyTest extends AbstractTestDocumentSignatureServ
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.bLevel().setSignaturePolicy(signaturePolicy);
-		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
-		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		service = new XAdESService(certificateVerifier);
+		service = new XAdESService(getCompleteCertificateVerifier());
 
 	}
 
@@ -124,8 +114,8 @@ public class XAdESLevelBWithPolicyTest extends AbstractTestDocumentSignatureServ
 	}
 
 	@Override
-	protected MockPrivateKeyEntry getPrivateKeyEntry() {
-		return privateKeyEntry;
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 }

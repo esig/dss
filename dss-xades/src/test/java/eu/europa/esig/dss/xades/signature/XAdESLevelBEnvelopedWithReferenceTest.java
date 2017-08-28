@@ -41,8 +41,6 @@ import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Base64;
 import org.junit.Assert;
 import org.junit.Before;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -50,43 +48,32 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
+import eu.europa.esig.dss.signature.AbstractPkiFactoryTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
+public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractPkiFactoryTestSignature<XAdESSignatureParameters> {
 
-	private static final Logger logger = LoggerFactory.getLogger(XAdESLevelBEnvelopedWithReferenceTest.class);
-	
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-	private MockPrivateKeyEntry privateKeyEntry;
 
 	@Before
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sampleWithPlaceOfSignature.xml"));
 
-		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
-
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
-		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setXPathLocationString("//placeOfSignature");
-		
+
 		List<DSSReference> dssReferences = new ArrayList<DSSReference>();
 		DSSReference reference1 = new DSSReference();
 		reference1.setContents(documentToSign);
@@ -99,7 +86,7 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractTestDocumentS
 		transforms1.add(transform1);
 		reference1.setTransforms(transforms1);
 		dssReferences.add(reference1);
-		
+
 		DSSReference reference2 = new DSSReference();
 		reference2.setContents(documentToSign);
 		reference2.setId("REF-ID2");
@@ -111,42 +98,40 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractTestDocumentS
 		transforms2.add(transform2);
 		reference2.setTransforms(transforms2);
 		dssReferences.add(reference2);
-		
-		signatureParameters.setReferences(dssReferences);
-		
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		service = new XAdESService(certificateVerifier);
 
+		signatureParameters.setReferences(dssReferences);
+
+		service = new XAdESService(getCompleteCertificateVerifier());
 	}
-	
+
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			dbf.setNamespaceAware(true);
-	
+
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document doc = db.parse(new ByteArrayInputStream(byteArray));
-			
+
 			XPathFactory f = XPathFactory.newInstance();
 			XPath xPath = f.newXPath();
 			xPath.setNamespaceContext(new Name());
 			Node node = (Node) xPath.evaluate("root/data[@id='data1']", doc, XPathConstants.NODE);
-	
+
 			Init.init();
 			Canonicalizer c14n = Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#");
 			byte c14nBytes[] = c14n.canonicalizeSubtree(node);
-	
+
 			Assert.assertEquals("AdGdZ+/VQVVvC9yzL4Yj8iRK33cQBiRW2UpKGMswdZQ=", Base64.encode(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));
-			
+
 			node = (Node) xPath.evaluate("root/data[@id='data2']", doc, XPathConstants.NODE);
-	
+
 			Init.init();
 			c14n = Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#");
 			c14nBytes = c14n.canonicalizeSubtree(node);
-	
+
 			Assert.assertEquals("R69a3Im5463c09SuOrn9Sfly9h9LxVxSqg/0CVumJjA=", Base64.encode(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
@@ -182,21 +167,24 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractTestDocumentS
 	}
 
 	@Override
-	protected MockPrivateKeyEntry getPrivateKeyEntry() {
-		return privateKeyEntry;
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
-	
+
 	private static final class Name implements NamespaceContext {
+		@Override
 		public Iterator getPrefixes(String namespaceURI) {
 			// TODO Auto-generated method stub
 			return null;
 		}
-	
+
+		@Override
 		public String getPrefix(String namespaceURI) {
 			// TODO Auto-generated method stub
 			return null;
 		}
-	
+
+		@Override
 		public String getNamespaceURI(String prefix) {
 			if ("xades".equals(prefix)) {
 				return "http://uri.etsi.org/01903/v1.3.2#";
@@ -206,7 +194,7 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractTestDocumentS
 				return "http://www.w3.org/2000/09/xmltest#";
 			}
 			// "http://uri.etsi.org/19132/v1.1.1#"
-		return null;
+			return null;
 		}
 	}
 }

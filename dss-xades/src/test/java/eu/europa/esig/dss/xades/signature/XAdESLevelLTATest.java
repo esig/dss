@@ -21,90 +21,43 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest extends AbstractPkiFactoryTestSignature<XAdESSignatureParameters> {
+public class XAdESLevelLTATest extends AbstractPkiFactoryTestSignature<XAdESSignatureParameters> {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-	private DSSDocument attachment1;
-	private DSSDocument attachment2;
 
 	@Before
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
-
-		// Load any two files (rather not XML) to sign them
-		attachment1 = createDocument("src/test/resources/sample.txt");
-		attachment2 = createDocument("src/test/resources/sample.png");
 
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-
-		List<DSSReference> references = new ArrayList<DSSReference>();
-		references.add(createReference(attachment1));
-		references.add(createReference(attachment2));
-
-		signatureParameters.setReferences(references);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 
 		service = new XAdESService(getCompleteCertificateVerifier());
-
-	}
-
-	private DSSDocument createDocument(String filePath) throws IOException {
-		File file = new File(filePath);
-		byte[] content = Utils.toByteArray(new FileInputStream(file));
-		return new InMemoryDocument(content, filePath);
-	}
-
-	private DSSReference createReference(DSSDocument fileDocument) {
-		DSSReference reference = new DSSReference();
-		reference.setId(fileDocument.getName());
-		reference.setUri(fileDocument.getName());
-		reference.setContents(fileDocument);
-		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA1);
-		return reference;
+		service.setTspSource(getGoodTsa());
 	}
 
 	@Override
-	protected Reports getValidationReport(DSSDocument signedDocument) {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
-
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
-		detachedContents.add(attachment1);
-		detachedContents.add(attachment2);
-		validator.setDetachedContents(detachedContents);
-
-		Reports reports = validator.validateDocument();
-		return reports;
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 	@Override
@@ -124,22 +77,17 @@ public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest exten
 
 	@Override
 	protected boolean isBaselineT() {
-		return false;
+		return true;
 	}
 
 	@Override
 	protected boolean isBaselineLTA() {
-		return false;
+		return true;
 	}
 
 	@Override
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
 	}
 
 }
