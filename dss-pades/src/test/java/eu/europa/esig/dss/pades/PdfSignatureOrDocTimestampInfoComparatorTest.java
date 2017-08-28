@@ -11,6 +11,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
@@ -159,6 +160,16 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 
 		@Override
 		public byte[] getContent() {
+			return null;
+		}
+
+		@Override
+		public String getFilter() {
+			return null;
+		}
+
+		@Override
+		public PdfDict getSignatureDictionary() {
 			return null;
 		}
 

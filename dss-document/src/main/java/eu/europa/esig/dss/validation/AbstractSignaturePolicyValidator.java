@@ -75,7 +75,7 @@ public abstract class AbstractSignaturePolicyValidator implements SignaturePolic
 			for (String key : errors.keySet()) {
 				stringBuilder.append(" at ").append(key).append(": ").append(errors.get(key)).append(",");
 			}
-			stringBuilder.setLength(stringBuilder.length() - 2);
+			stringBuilder.setLength(stringBuilder.length() - 1);
 		}
 		return stringBuilder.toString();
 	}
