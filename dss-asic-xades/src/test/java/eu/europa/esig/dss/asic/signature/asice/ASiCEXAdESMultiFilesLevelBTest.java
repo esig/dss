@@ -46,7 +46,7 @@ import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.asic.validation.ASiCEWithXAdESManifestParser;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
-import eu.europa.esig.dss.signature.AbstractTestMultipleDocumentsSignatureService;
+import eu.europa.esig.dss.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
@@ -57,7 +57,7 @@ import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
-public class ASiCEXAdESMultiFilesLevelBTest extends AbstractTestMultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters> {
+public class ASiCEXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters> {
 
 	private MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
@@ -151,11 +151,6 @@ public class ASiCEXAdESMultiFilesLevelBTest extends AbstractTestMultipleDocument
 	}
 
 	@Override
-	protected MockPrivateKeyEntry getPrivateKeyEntry() {
-		return privateKeyEntry;
-	}
-
-	@Override
 	protected List<DSSDocument> getDocumentsToSign() {
 		return documentToSigns;
 	}
@@ -163,6 +158,11 @@ public class ASiCEXAdESMultiFilesLevelBTest extends AbstractTestMultipleDocument
 	@Override
 	protected MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters> getService() {
 		return service;
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 }

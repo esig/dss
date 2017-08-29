@@ -19,10 +19,7 @@ import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
-import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
@@ -47,10 +44,6 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	protected abstract boolean isBaselineT();
 
 	protected abstract boolean isBaselineLTA();
-
-	protected abstract DSSDocument getDocumentToSign();
-
-	protected abstract DocumentSignatureService<SP> getService();
 
 	@Test
 	public void signAndVerify() throws IOException {
@@ -90,20 +83,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		verifyDetailedReport(detailedReport);
 	}
 
-	protected DSSDocument sign() {
-		DSSDocument toBeSigned = getDocumentToSign();
-		SP params = getSignatureParameters();
-		DocumentSignatureService<SP> service = getService();
-
-		SignatureTokenConnection token = getToken();
-
-		KSPrivateKeyEntry privateKeyEntry = getPrivateKeyEntry();
-
-		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
-		SignatureValue signatureValue = token.sign(dataToSign, getSignatureParameters().getDigestAlgorithm(), privateKeyEntry);
-		final DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
-		return signedDocument;
-	}
+	protected abstract DSSDocument sign();
 
 	protected void onDocumentSigned(byte[] byteArray) {
 	}

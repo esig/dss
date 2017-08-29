@@ -24,22 +24,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.security.GeneralSecurityException;
-import java.security.Signature;
 import java.util.List;
 
 import org.junit.Test;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
+import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
@@ -47,7 +41,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-public abstract class AbstractTestExtension<SP extends AbstractSignatureParameters> {
+public abstract class AbstractTestExtension<SP extends AbstractSignatureParameters> extends PKIFactoryAccess {
 
 	protected abstract DSSDocument getSignedDocument() throws Exception;
 
@@ -57,19 +51,11 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 
 	protected abstract DocumentSignatureService<SP> getSignatureServiceToExtend() throws Exception;
 
-	protected SignatureValue sign(SignatureAlgorithm algo, MockPrivateKeyEntry privateKey, ToBeSigned bytesToSign) throws GeneralSecurityException {
-		final Signature signature = Signature.getInstance(algo.getJCEId());
-		signature.initSign(privateKey.getPrivateKey());
-		signature.update(bytesToSign.getBytes());
-		final byte[] signatureValue = signature.sign();
-		return new SignatureValue(algo, signatureValue);
-	}
-
 	@Test
 	public void test() throws Exception {
 		DSSDocument signedDocument = getSignedDocument();
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
 		// reports.print();
@@ -83,7 +69,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 
 		DSSDocument extendedDocument = extendSignature(signedDocument);
 
-		// extendedDocument.save("target/xades.xml");
+		// extendedDocument.save("target/" + extendedDocument.getName());
 
 		assertNotNull(extendedDocument);
 		assertNotNull(extendedDocument.getMimeType());
@@ -91,7 +77,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		assertNotNull(extendedDocument.getName());
 
 		validator = SignedDocumentValidator.fromDocument(extendedDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		reports = validator.validateDocument();
 
 		// reports.print();
@@ -126,7 +112,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		for (String sigId : signatureIdList) {
 			Indication indication = simpleReport.getIndication(sigId);
 			assertNotNull(indication);
-			if (indication != Indication.PASSED) {
+			if (indication != Indication.TOTAL_PASSED) {
 				assertNotNull(simpleReport.getSubIndication(sigId));
 			}
 			assertNotNull(simpleReport.getSignatureQualification(sigId));

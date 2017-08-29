@@ -49,6 +49,8 @@ public abstract class PKIFactoryAccess {
 	private static final String TRUSTSTORE_TYPE = "JKS";
 
 	protected static final String GOOD_USER = "good-user";
+	protected static final String REVOKED_USER = "revoked-user";
+	protected static final String EXPIRED_USER = "expired-user";
 
 	protected abstract String getSigningAlias();
 

@@ -36,11 +36,11 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestSignature;
+import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBWithPolicyTest extends AbstractPkiFactoryTestSignature<XAdESSignatureParameters> {
+public class XAdESLevelBWithPolicyTest extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
 
 	private static final Logger logger = LoggerFactory.getLogger(XAdESLevelBWithPolicyTest.class);
 
