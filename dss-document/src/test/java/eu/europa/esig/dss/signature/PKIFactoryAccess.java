@@ -51,6 +51,8 @@ public abstract class PKIFactoryAccess {
 	protected static final String GOOD_USER = "good-user";
 	protected static final String REVOKED_USER = "revoked-user";
 	protected static final String EXPIRED_USER = "expired-user";
+	protected static final String DSA_USER = "good-dsa-user";
+	protected static final String ECDSA_USER = "good-ecdsa-user";
 
 	protected abstract String getSigningAlias();
 
