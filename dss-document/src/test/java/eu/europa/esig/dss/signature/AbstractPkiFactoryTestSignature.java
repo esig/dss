@@ -71,7 +71,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 		Reports reports = getValidationReport(signedDocument);
 		// reports.setValidateXml(true);
-		reports.print();
+		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		verifyDiagnosticData(diagnosticData);

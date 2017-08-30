@@ -18,78 +18,70 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package known.issues;
+package eu.europa.esig.dss.xades.signature;
+
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Date;
 
-import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.signature.AbstractPAdESTestSignature;
-import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.TimestampType;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class PAdESLevelBWithContentTimestampTest extends AbstractPAdESTestSignature {
+public class XAdESLevelXLTest extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
 
-	private DocumentSignatureService<PAdESSignatureParameters> service;
-	private PAdESSignatureParameters signatureParameters;
+	private DocumentSignatureService<XAdESSignatureParameters> service;
+	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new FileDocument(new File("src/test/resources/sample.pdf"));
+		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
-		OnlineTSPSource tspSource = getGoodTsa();
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256,
-				DSSUtils.digest(DigestAlgorithm.SHA256, DSSUtils.toByteArray(documentToSign)));
-		TimestampToken token = new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP, new CertificatePool());
-
-		signatureParameters = new PAdESSignatureParameters();
+		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-		signatureParameters.setContentTimestamps(Arrays.asList(token));
+		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_XL);
 
-		service = new PAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 	}
 
 	@Override
-	protected DocumentSignatureService<PAdESSignatureParameters> getService() {
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		assertEquals(SignatureLevel.XAdES_BASELINE_LT.toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+	}
+
+	@Override
+	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
 		return service;
 	}
 
 	@Override
-	protected PAdESSignatureParameters getSignatureParameters() {
+	protected XAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.PDF;
-	}
-
-	@Override
-	protected boolean hasContentTimestamp() {
-		return true;
+		return MimeType.XML;
 	}
 
 	@Override
 	protected boolean isBaselineT() {
-		return false;
+		return true;
 	}
 
 	@Override

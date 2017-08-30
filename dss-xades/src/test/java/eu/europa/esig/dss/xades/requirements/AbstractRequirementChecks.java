@@ -21,10 +21,11 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
-public abstract class AbstractRequirementChecks {
+public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 
 	private static DocumentBuilderFactory dbf;
 	private static XPath xpath;

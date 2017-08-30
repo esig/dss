@@ -11,7 +11,6 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.test.TestUtils;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -38,8 +37,8 @@ public class XAdESBaselineBTest extends AbstractRequirementChecks {
 		XAdESService service = new XAdESService(certificateVerifier);
 
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signature = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
-		return service.signDocument(documentToSign, signatureParameters, signature);
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
+		return service.signDocument(documentToSign, signatureParameters, signatureValue);
 	}
 
 	@Override
@@ -50,6 +49,11 @@ public class XAdESBaselineBTest extends AbstractRequirementChecks {
 	@Override
 	public void checkArchiveTimeStampPresent() throws XPathExpressionException {
 		// No ArchiveTimestamp in Baseline Profile B
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 }
