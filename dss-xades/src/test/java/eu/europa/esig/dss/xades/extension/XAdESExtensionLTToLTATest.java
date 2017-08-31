@@ -18,10 +18,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package known.issues;
+package eu.europa.esig.dss.xades.extension;
 
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.xades.extension.AbstractTestXAdESExtension;
 
 public class XAdESExtensionLTToLTATest extends AbstractTestXAdESExtension {
 

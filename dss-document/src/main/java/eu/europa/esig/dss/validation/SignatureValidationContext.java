@@ -424,12 +424,14 @@ public class SignatureValidationContext implements ValidationContext {
 			revocations.add(crlToken);
 		}
 
-		// Online resources (OCSP and CRL if OCSP doesn't reply)
-		final OCSPAndCRLCertificateVerifier onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
-		final RevocationToken onlineRevocationToken = onlineVerifier.check(certToken);
-		// CRL can already exist in the signature
-		if (onlineRevocationToken != null && !revocations.contains(onlineRevocationToken)) {
-			revocations.add(onlineRevocationToken);
+		if (revocations.isEmpty()) {
+			// Online resources (OCSP and CRL if OCSP doesn't reply)
+			final OCSPAndCRLCertificateVerifier onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
+			final RevocationToken onlineRevocationToken = onlineVerifier.check(certToken);
+			// CRL can already exist in the signature
+			if (onlineRevocationToken != null && !revocations.contains(onlineRevocationToken)) {
+				revocations.add(onlineRevocationToken);
+			}
 		}
 
 		if (revocations.isEmpty()) {

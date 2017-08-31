@@ -266,16 +266,14 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		final List<CRLToken> crlTokens = new ArrayList<CRLToken>();
 		final List<OCSPToken> ocspTokens = new ArrayList<OCSPToken>();
 		for (final RevocationToken revocationToken : revocationTokens) {
-			if (!RevocationOrigin.SIGNATURE.equals(revocationToken.getOrigin())) {
-				if (revocationToken instanceof CRLToken) {
-					final CRLToken crlToken = (CRLToken) revocationToken;
-					crlTokens.add(crlToken);
-				} else if (revocationToken instanceof OCSPToken) {
-					final OCSPToken ocspToken = (OCSPToken) revocationToken;
-					ocspTokens.add(ocspToken);
-				} else {
-					throw new DSSException("Unknown type for revocationToken: " + revocationToken.getClass().getName());
-				}
+			if (revocationToken instanceof CRLToken) {
+				final CRLToken crlToken = (CRLToken) revocationToken;
+				crlTokens.add(crlToken);
+			} else if (revocationToken instanceof OCSPToken) {
+				final OCSPToken ocspToken = (OCSPToken) revocationToken;
+				ocspTokens.add(ocspToken);
+			} else {
+				throw new DSSException("Unknown type for revocationToken: " + revocationToken.getClass().getName());
 			}
 		}
 		return new RevocationDataForInclusion(crlTokens, ocspTokens);

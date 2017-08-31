@@ -57,7 +57,7 @@ public abstract class AbstractTestXAdESExtension extends AbstractTestExtension<X
 	@Override
 	protected DocumentSignatureService<XAdESSignatureParameters> getSignatureServiceToExtend() throws Exception {
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getGoodTsa());
+		service.setTspSource(getAlternateGoodTsa());
 		return service;
 	}
 

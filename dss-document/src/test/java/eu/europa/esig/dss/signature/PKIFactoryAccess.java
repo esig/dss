@@ -44,11 +44,13 @@ public abstract class PKIFactoryAccess {
 
 	private static final String TSA_ROOT_PATH = "/tsa/";
 	private static final String GOOD_TSA = "good-tsa";
+	private static final String EE_GOOD_TSA = "ee-good-tsa";
 
 	private static final String KEYSTORE_TYPE = "PKCS12";
 	private static final String TRUSTSTORE_TYPE = "JKS";
 
 	protected static final String GOOD_USER = "good-user";
+	protected static final String GOOD_USER_WRONG_AIA = "good-user-wrong-aia";
 	protected static final String REVOKED_USER = "revoked-user";
 	protected static final String EXPIRED_USER = "expired-user";
 	protected static final String DSA_USER = "good-dsa-user";
@@ -127,6 +129,14 @@ public abstract class PKIFactoryAccess {
 
 	protected OnlineTSPSource getGoodTsa() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(getTsaUrl(GOOD_TSA));
+		TimestampDataLoader dataLoader = new TimestampDataLoader();
+		dataLoader.setProxyConfig(getProxyConfig());
+		tspSource.setDataLoader(dataLoader);
+		return tspSource;
+	}
+
+	protected OnlineTSPSource getAlternateGoodTsa() {
+		OnlineTSPSource tspSource = new OnlineTSPSource(getTsaUrl(EE_GOOD_TSA));
 		TimestampDataLoader dataLoader = new TimestampDataLoader();
 		dataLoader.setProxyConfig(getProxyConfig());
 		tspSource.setDataLoader(dataLoader);
