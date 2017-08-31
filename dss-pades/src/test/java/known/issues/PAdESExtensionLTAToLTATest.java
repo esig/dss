@@ -1,6 +1,7 @@
-package eu.europa.esig.dss.pades.extension;
+package known.issues;
 
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.pades.extension.AbstractTestPAdESExtension;
 
 public class PAdESExtensionLTAToLTATest extends AbstractTestPAdESExtension {
 

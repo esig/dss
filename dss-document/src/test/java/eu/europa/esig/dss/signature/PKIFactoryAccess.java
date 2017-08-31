@@ -71,9 +71,7 @@ public abstract class PKIFactoryAccess {
 
 	private OnlineCRLSource onlineCrlSource() {
 		OnlineCRLSource onlineCRLSource = new OnlineCRLSource();
-		CommonsDataLoader dataLoader = new CommonsDataLoader();
-		dataLoader.setProxyConfig(getProxyConfig());
-		onlineCRLSource.setDataLoader(dataLoader);
+		onlineCRLSource.setDataLoader(getFileCacheDataLoader());
 		return onlineCRLSource;
 	}
 
