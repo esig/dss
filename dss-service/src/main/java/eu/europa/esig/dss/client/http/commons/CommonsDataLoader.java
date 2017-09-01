@@ -659,24 +659,25 @@ public class CommonsDataLoader implements DataLoader {
 
 	protected byte[] readHttpResponse(final String url, final HttpResponse httpResponse) throws DSSException {
 
-		final int statusCode = httpResponse.getStatusLine().getStatusCode();
+		int statusCode = httpResponse.getStatusLine().getStatusCode();
 		if (LOG.isDebugEnabled()) {
-			LOG.debug(url + " status code is " + statusCode + " - " + (statusCode == HttpStatus.SC_OK ? "OK" : "NOK"));
+			LOG.debug(url + " status code is " + statusCode + " - " + (statusCode == 200 ? "OK" : "NOK"));
 		}
 
-		if (statusCode != HttpStatus.SC_OK) {
-			LOG.warn("No content available via url. " + url);
-			return null;
-		}
+		byte[] content = null;
 
-		final HttpEntity responseEntity = httpResponse.getEntity();
+		HttpEntity responseEntity = httpResponse.getEntity();
 		if (responseEntity == null) {
 			LOG.warn("No message entity for this response - will use nothing: " + url);
-			return null;
+		} else {
+			content = getContent(responseEntity);
 		}
 
-		final byte[] content = getContent(responseEntity);
-		return content;
+		if (statusCode != 200) {
+			throw new CommonsDataLoaderException("Error reading content. Url: " + url, httpResponse.getStatusLine().getStatusCode(), content);
+		} else {
+			return content;
+		}
 	}
 
 	protected byte[] getContent(final HttpEntity responseEntity) throws DSSException {
@@ -888,7 +889,7 @@ public class CommonsDataLoader implements DataLoader {
 		}
 	}
 
-	private void finallyHttp(HttpRequestBase httpRequest, HttpResponse httpResponse, CloseableHttpClient client) {
+    protected void finallyHttp(HttpRequestBase httpRequest, HttpResponse httpResponse, CloseableHttpClient client) {
 		try {
 			if (httpRequest != null) {
 				httpRequest.releaseConnection();
@@ -903,7 +904,7 @@ public class CommonsDataLoader implements DataLoader {
 		}
 	}
 
-	private byte[] doHttpRequest(HttpRequestBase httpRequest, String url) {
+    protected byte[] doHttpRequest(HttpRequestBase httpRequest, String url) {
 		HttpResponse httpResponse = null;
 		CloseableHttpClient client = null;
 
@@ -931,6 +932,8 @@ public class CommonsDataLoader implements DataLoader {
 
 			return readHttpResponse(url, httpResponse);
 		} catch (DSSException e) {
+            throw e;
+        } catch (Exception e) {
 			throw new DSSException(e);
 		} finally {
 			finallyHttp(httpRequest, httpResponse, client);
