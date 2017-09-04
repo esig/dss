@@ -223,7 +223,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		assertEquals(certificate.getIssuerX500Principal().getName(X500Principal.RFC2253), issuerDN);
 	}
 
-	private void checkCertificateChain(DiagnosticData diagnosticData) {
+	protected void checkCertificateChain(DiagnosticData diagnosticData) {
 		KSPrivateKeyEntry entry = getToken().getKey(getSigningAlias());
 		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
 		assertEquals(entry.getCertificateChain().length, signatureCertificateChain.size());

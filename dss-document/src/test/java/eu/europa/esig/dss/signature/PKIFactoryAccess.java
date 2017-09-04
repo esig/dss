@@ -51,6 +51,7 @@ public abstract class PKIFactoryAccess {
 
 	protected static final String GOOD_USER = "good-user";
 	protected static final String GOOD_USER_WRONG_AIA = "good-user-wrong-aia";
+	protected static final String GOOD_USER_CROSS_CERTIF = "cc-good-user-crossed";
 	protected static final String REVOKED_USER = "revoked-user";
 	protected static final String EXPIRED_USER = "expired-user";
 	protected static final String DSA_USER = "good-dsa-user";
