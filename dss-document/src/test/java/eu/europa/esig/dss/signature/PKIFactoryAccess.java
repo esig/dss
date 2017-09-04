@@ -45,6 +45,7 @@ public abstract class PKIFactoryAccess {
 	private static final String TSA_ROOT_PATH = "/tsa/";
 	private static final String GOOD_TSA = "good-tsa";
 	private static final String EE_GOOD_TSA = "ee-good-tsa";
+	private static final String GOOD_TSA_CROSS_CERTIF = "cc-good-tsa-crossed";
 
 	private static final String KEYSTORE_TYPE = "PKCS12";
 	private static final String TRUSTSTORE_TYPE = "JKS";
@@ -137,6 +138,14 @@ public abstract class PKIFactoryAccess {
 	}
 
 	protected OnlineTSPSource getAlternateGoodTsa() {
+		OnlineTSPSource tspSource = new OnlineTSPSource(getTsaUrl(EE_GOOD_TSA));
+		TimestampDataLoader dataLoader = new TimestampDataLoader();
+		dataLoader.setProxyConfig(getProxyConfig());
+		tspSource.setDataLoader(dataLoader);
+		return tspSource;
+	}
+
+	protected OnlineTSPSource getGoodTsaCrossCertification() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(getTsaUrl(EE_GOOD_TSA));
 		TimestampDataLoader dataLoader = new TimestampDataLoader();
 		dataLoader.setProxyConfig(getProxyConfig());
