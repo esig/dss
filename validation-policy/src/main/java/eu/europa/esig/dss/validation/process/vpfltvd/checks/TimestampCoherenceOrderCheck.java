@@ -52,21 +52,21 @@ public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcess
 
 		// Check content-timestamp against-signature timestamp
 		if ((latestContent != null) && (earliestSignature != null)) {
-			ok = ok && latestContent.before(earliestSignature);
+			ok = ok && !latestContent.after(earliestSignature); // before or equals
 		}
 
 		// Check signature-timestamp against validation-data and validation-data-refs-only timestamp
 		if ((latestSignature != null) && (earliestValidationData != null)) {
-			ok = ok && latestSignature.before(earliestValidationData);
+			ok = ok && !latestSignature.after(earliestValidationData);
 		}
 
 		// Check archive-timestamp
 		if ((latestSignature != null) && (earliestArchive != null)) {
-			ok = ok && earliestArchive.after(latestSignature);
+			ok = ok && !earliestArchive.before(latestSignature); // after or equals
 		}
 
 		if ((latestValidationData != null) && (earliestArchive != null)) {
-			ok = ok && earliestArchive.after(latestValidationData);
+			ok = ok && !earliestArchive.before(latestValidationData);
 		}
 
 		return ok;
