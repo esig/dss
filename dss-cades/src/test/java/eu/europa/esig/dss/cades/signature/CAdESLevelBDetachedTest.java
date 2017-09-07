@@ -33,7 +33,6 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
@@ -61,7 +60,7 @@ public class CAdESLevelBDetachedTest extends AbstractCAdESTestSignature {
 	@Override
 	protected Reports getValidationReport(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 		detachedContents.add(documentToSign);
 		validator.setDetachedContents(detachedContents);

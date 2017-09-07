@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package eu.europa.esig.dss.test.mock;
+package eu.europa.esig.dss.cookbook.mock;
 
 import java.io.InputStream;
 import java.util.ArrayList;

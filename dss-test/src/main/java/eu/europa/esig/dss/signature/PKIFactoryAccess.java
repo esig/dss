@@ -36,7 +36,7 @@ public abstract class PKIFactoryAccess {
 			PKI_FACTORY_HOST = props.getProperty("pki.factory.host");
 			PKI_FACTORY_KEYSTORE_PASSWORD = props.getProperty("pki.factory.keystore.password");
 		} catch (Exception e) {
-			throw new RuntimeException("Unable to initialize", e);
+			throw new RuntimeException("Unable to initialize from pki-factory.properties", e);
 		}
 	}
 
@@ -48,6 +48,7 @@ public abstract class PKIFactoryAccess {
 	private static final String GOOD_TSA_CROSS_CERTIF = "cc-good-tsa-crossed";
 
 	private static final String KEYSTORE_TYPE = "PKCS12";
+	// JDK-7 + PKCS12 is not allowed for trust-store
 	private static final String TRUSTSTORE_TYPE = "JKS";
 
 	protected static final String GOOD_USER = "good-user";
@@ -146,7 +147,7 @@ public abstract class PKIFactoryAccess {
 	}
 
 	protected OnlineTSPSource getGoodTsaCrossCertification() {
-		OnlineTSPSource tspSource = new OnlineTSPSource(getTsaUrl(EE_GOOD_TSA));
+		OnlineTSPSource tspSource = new OnlineTSPSource(getTsaUrl(GOOD_TSA_CROSS_CERTIF));
 		TimestampDataLoader dataLoader = new TimestampDataLoader();
 		dataLoader.setProxyConfig(getProxyConfig());
 		tspSource.setDataLoader(dataLoader);

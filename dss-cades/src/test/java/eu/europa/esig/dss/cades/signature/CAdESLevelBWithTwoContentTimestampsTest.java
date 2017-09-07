@@ -36,8 +36,6 @@ import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.TimestampType;
@@ -70,8 +68,7 @@ public class CAdESLevelBWithTwoContentTimestampsTest extends AbstractCAdESTestSi
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp1, contentTimestamp2));
 
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		service = new CAdESService(certificateVerifier);
+		service = new CAdESService(getCompleteCertificateVerifier());
 	}
 
 	@Override

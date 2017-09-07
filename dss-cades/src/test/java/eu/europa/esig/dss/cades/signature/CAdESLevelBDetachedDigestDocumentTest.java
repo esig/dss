@@ -39,7 +39,6 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
@@ -66,7 +65,7 @@ public class CAdESLevelBDetachedDigestDocumentTest extends AbstractPkiFactoryTes
 	@Override
 	protected Reports getValidationReport(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		InMemoryDocument inMemoryDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 		byte[] bytes;

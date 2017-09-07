@@ -21,7 +21,6 @@ import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<PAdESSignatureParameters> {
@@ -34,7 +33,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 	protected void checkSignedAttributesOrder(byte[] encoded) {
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new InMemoryDocument(encoded));
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());
 

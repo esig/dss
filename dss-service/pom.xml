@@ -34,6 +34,11 @@
 			<artifactId>jcl-over-slf4j</artifactId> <!-- replaces commons-logging -->
 		</dependency>
 		
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
+		</dependency>
  		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

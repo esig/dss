@@ -39,7 +39,6 @@ import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.DSSReference;
@@ -96,7 +95,7 @@ public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest exten
 	@Override
 	protected Reports getValidationReport(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 		detachedContents.add(attachment1);

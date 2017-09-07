@@ -15,16 +15,11 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockTSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -75,9 +70,7 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractPkiFac
 		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
 
 		try {
-			CertificateService certificateService = new CertificateService();
-			MockTSPSource mockTsp = new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256));
-			TimestampService timestampService = new TimestampService(mockTsp, new CertificatePool());
+			TimestampService timestampService = new TimestampService(getGoodTsa(), new CertificatePool());
 			TimestampToken timestampToken = timestampService.generateXAdESContentTimestampAsTimestampToken(documentToSign, signatureParameters,
 					TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 			List<TimestampToken> contentTimestamps = new ArrayList<TimestampToken>();
@@ -87,14 +80,13 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractPkiFac
 			throw new DSSException("Error during MockTspSource", e);
 		}
 
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		service = new XAdESService(certificateVerifier);
+		service = new XAdESService(getCompleteCertificateVerifier());
 	}
 
 	@Override
 	protected Reports getValidationReport(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 		detachedContents.add(documentToSign);
 		validator.setDetachedContents(detachedContents);

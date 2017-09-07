@@ -13,15 +13,11 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.test.TestUtils;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
@@ -29,34 +25,28 @@ import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class DSS920ValidationWithDigest {
+public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 
 	@Test
 	public void testValidationWithDigest() throws Exception {
 
-		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA_SHA256;
-
 		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.xml"));
 
-		CertificateService certificateService = new CertificateService();
-		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(signatureAlgorithm);
-
-		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
-		XAdESService service = new XAdESService(verifier);
+		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 
 		XAdESSignatureParameters params = new XAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		params.setSignaturePackaging(SignaturePackaging.DETACHED);
-		params.setSigningCertificate(privateKeyEntry.getCertificate());
+		params.setSigningCertificate(getSigningCert());
 
 		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
-		SignatureValue signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry, dataToSign);
+		SignatureValue signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
 		// PROVIDE WRONG DIGEST WITH WRONG ALGO
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		// Provide only the digest value
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
@@ -75,7 +65,7 @@ public class DSS920ValidationWithDigest {
 		// PROVIDE CORRECT DIGEST WITH CORRECT ALGO
 
 		validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		// Provide only the digest value
 		detachedContents = new ArrayList<DSSDocument>();
@@ -90,6 +80,11 @@ public class DSS920ValidationWithDigest {
 		diagnosticData = reports.getDiagnosticData();
 		signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertTrue(signatureById.isBLevelTechnicallyValid());
-
 	}
+
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
+	}
+
 }

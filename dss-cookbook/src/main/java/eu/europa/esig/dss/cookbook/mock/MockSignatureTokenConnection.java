@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.test.mock;
+package eu.europa.esig.dss.cookbook.mock;
 
 import java.security.Signature;
 import java.util.List;
@@ -29,6 +29,7 @@ import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.token.AbstractSignatureTokenConnection;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 

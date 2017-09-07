@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.test.mock;
+package eu.europa.esig.dss.cookbook.mock;
 
 import java.math.BigInteger;
 import java.security.PrivateKey;
@@ -62,6 +62,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 

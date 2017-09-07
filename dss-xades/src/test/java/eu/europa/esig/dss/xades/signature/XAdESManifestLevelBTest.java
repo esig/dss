@@ -14,8 +14,6 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESManifestLevelBTest extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
@@ -43,8 +41,7 @@ public class XAdESManifestLevelBTest extends AbstractPkiFactoryTestDocumentSigna
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setManifestSignature(true);
 
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		service = new XAdESService(certificateVerifier);
+		service = new XAdESService(getCompleteCertificateVerifier());
 	}
 
 	@Override

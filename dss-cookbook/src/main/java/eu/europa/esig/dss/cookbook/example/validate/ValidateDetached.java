@@ -27,7 +27,7 @@ import java.util.List;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.cookbook.example.Cookbook;
-import eu.europa.esig.dss.test.mock.MockServiceInfo;
+import eu.europa.esig.dss.cookbook.mock.MockServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
