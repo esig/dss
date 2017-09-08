@@ -50,8 +50,7 @@ public class ResourceLoader {
 	}
 
 	public static String getNormalizedFileName(final String fileName) {
-
-		final String normalizedFileName = fileName.replace('/', '_').replace(':', '_').replace('?', '_');
+		final String normalizedFileName = fileName.replaceAll("\\W", "_");
 		return normalizedFileName;
 	}
 
