@@ -257,20 +257,59 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		return policy.getDescription();
 	}
 
+	/**
+	 * Method for asking first signature constraint in case there are many constraints are provided.
+	 * @param context
+	 *            The context of the signature cryptographic constraints: MainSignature, Timestamp, Revocation
+	 * @return First constraint or null
+	 */
 	@Override
 	public CryptographicConstraint getSignatureCryptographicConstraint(Context context) {
+		return getSignatureCryptographicConstraint(context, 0);
+	}
+
+	/**
+	 * Method for asking specific signature constraint from the list of constraints.
+	 * @param context
+	 *            The context of the signature cryptographic constraints: MainSignature, Timestamp, Revocation
+	 * @param index The number of constraint to retrieve
+	 * @return Asked constraint or null
+	 */	public CryptographicConstraint getSignatureCryptographicConstraint(Context context, int index) {
 		BasicSignatureConstraints basicSignature = getBasicSignatureConstraintsByContext(context);
 		if (basicSignature != null) {
-			return basicSignature.getCryptographic();
+			if (basicSignature.getCryptographic().size() > index)
+				return basicSignature.getCryptographic().get(index);
 		}
 		return null;
 	}
 
+	/**
+	 * Method for asking first certificate constraint in case there are many constraints are provided.
+	 * @param context
+	 *            The context of the signature cryptographic constraints: MainSignature, Timestamp, Revocation
+	 * @param subContext
+	 *            The sub context of the signature cryptographic constraints: EMPTY (signature itself),
+	 *            SigningCertificate, CACertificate
+	 * @return Asked constraint or null
+	 */
 	@Override
 	public CryptographicConstraint getCertificateCryptographicConstraint(Context context, SubContext subContext) {
+		return getCertificateCryptographicConstraint(context, subContext, 0);
+	}
+
+	/**
+	 * Method for asking specific certificate constraint from the list of constraints.
+	 * @param context The context of the signature cryptographic constraints: MainSignature, Timestamp, Revocation
+	 * @param subContext The sub context of the signature cryptographic constraints: EMPTY (signature itself),
+	 *            SigningCertificate, CACertificate
+	 * @param index The number of constraint to retrieve
+	 * @return Asked constraint or null
+	 */
+	public CryptographicConstraint getCertificateCryptographicConstraint(Context context, SubContext subContext, int index) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getCryptographic();
+			if (certificateConstraints.getCryptographic().size() > index)
+				return certificateConstraints.getCryptographic().get(index);
 		}
 		return null;
 	}

@@ -3,7 +3,9 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.rfc;
 import java.util.Date;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.validation.policy.Context;
+import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
@@ -79,7 +81,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 			 */
 			item = item.setNextItem(revocationDataFreshCheck(revocationData));
 
-			item = item.setNextItem(revocationCryptographic(revocationData));
+			item = addChecksForRevocationCryptographic(item, revocationData);
 		}
 	}
 
@@ -124,4 +126,22 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 		return new CryptographicCheck<XmlRFC>(result, revocationData, validationDate, cryptographicConstraint);
 	}
 
+	/**
+	 * Method created in order to support multiple constraints.
+	 * @return At least one chainitem
+	 */
+	private ChainItem<XmlRFC> addChecksForRevocationCryptographic(ChainItem<XmlRFC> item, RevocationWrapper revocationData) {
+		int index = 0;
+		ChainItem<XmlRFC> newItem = item;
+		EtsiValidationPolicy epolicy = (EtsiValidationPolicy) policy;
+		CryptographicConstraint constraint;
+		do {
+			constraint = epolicy.getCertificateCryptographicConstraint(context, subContext, index);
+			if (index == 0 || constraint != null) {
+				newItem = newItem.setNextItem(new CryptographicCheck<XmlRFC>(result, revocationData, validationDate, constraint));
+				index++;
+			}
+		} while (constraint != null);
+		return newItem;
+	}
 }

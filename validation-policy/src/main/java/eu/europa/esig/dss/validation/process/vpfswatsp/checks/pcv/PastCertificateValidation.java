@@ -5,15 +5,18 @@ import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPCV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.Context;
+import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateCryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSignatureValidCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks.ProspectiveCertificateChainCheck;
@@ -156,7 +159,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 					subContext = SubContext.SIGNING_CERT;
 				}
 
-				item = item.setNextItem(cryptographicCheck(result, certificate, controlTime, subContext));
+				item = addChecksForCryptographic(item, result, certificate, controlTime, subContext);
 			}
 
 		}
@@ -188,9 +191,23 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		return new ValidationTimeSlidingCheck(result, vts, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlPCV> cryptographicCheck(XmlPCV result, CertificateWrapper certificate, Date validationTime, SubContext subContext) {
-		CryptographicConstraint constraint = policy.getCertificateCryptographicConstraint(context, subContext);
-		return new CryptographicCheck<XmlPCV>(result, certificate, validationTime, constraint);
+	/**
+	 * Method created in order to support multiple constraints.
+	 * @return At least one chainitem
+	 */
+	private ChainItem<XmlPCV> addChecksForCryptographic(ChainItem<XmlPCV> item, XmlPCV result, CertificateWrapper certificate, Date validationTime, SubContext subContext) {
+		int index = 0;
+		ChainItem<XmlPCV> newItem = item;
+		EtsiValidationPolicy epolicy = (EtsiValidationPolicy) policy;
+		CryptographicConstraint constraint;
+		do {
+			constraint = epolicy.getCertificateCryptographicConstraint(context, subContext, index);
+			if (index == 0 || constraint != null) {
+				newItem = newItem.setNextItem(new CryptographicCheck<XmlPCV>(result, certificate, validationTime, constraint));
+				index++;
+			}
+		} while (constraint != null);
+		return newItem;
 	}
 
 	@Override

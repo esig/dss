@@ -12,7 +12,7 @@
 				<xs:element name="CounterSignatureConstraints" type="tns:SignatureConstraints" minOccurs="0" />
 				<xs:element name="Timestamp" type="tns:TimestampConstraints" minOccurs="0" />
 				<xs:element name="Revocation" type="tns:RevocationConstraints" minOccurs="0" />
-				<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0" />
+				<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0"  maxOccurs="unbounded" />
 				<xs:element name="eIDAS" type="tns:eIDAS" minOccurs="0" />
 			</xs:sequence>
 			<xs:attribute type="xs:string" name="Name"/>
@@ -105,7 +105,7 @@
 			<xs:element name="TrustedServiceStatus" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="SigningCertificate" type="tns:CertificateConstraints" minOccurs="0" />
 			<xs:element name="CACertificate" type="tns:CertificateConstraints" minOccurs="0" />
-			<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0" />
+			<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0"  maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -137,7 +137,7 @@
 			<xs:element name="IssuedToNaturalPerson" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="IssuedToLegalPerson" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="UsePseudonym" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0" />
+			<xs:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0"  maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 	

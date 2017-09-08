@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
+import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -162,7 +164,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 */
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication())
 				&& SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bsConclusion.getSubIndication())) {
-			item = item.setNextItem(algorithmReliableAtBestSignatureTime(bestSignatureTime));
+			item = addChecksIfAlgorithmReliableAtBestSignatureTime(item, bestSignatureTime);
 		}
 
 		if (Utils.isCollectionNotEmpty(allowedTimestamps)) {
@@ -270,9 +272,24 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		return new TimestampDelayCheck(result, currentSignature, bestSignatureTime, policy.getTimestampDelaySigningTimePropertyConstraint());
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> algorithmReliableAtBestSignatureTime(Date bestSignatureTime) {
-		return new CryptographicCheck<XmlValidationProcessLongTermData>(result, currentSignature, bestSignatureTime,
-				policy.getSignatureCryptographicConstraint(Context.SIGNATURE));
+	/**
+	 * Method created in order to support multiple constraints.
+	 * @return At least one chainitem
+	 */
+	private ChainItem<XmlValidationProcessLongTermData> addChecksIfAlgorithmReliableAtBestSignatureTime(
+			ChainItem<XmlValidationProcessLongTermData> item, Date bestSignatureTime) {
+		int index = 0;
+		ChainItem<XmlValidationProcessLongTermData> newItem = item;
+		EtsiValidationPolicy epolicy = (EtsiValidationPolicy) policy;
+		CryptographicConstraint constraint;
+		do {
+			constraint = epolicy.getSignatureCryptographicConstraint(Context.SIGNATURE, index);
+			if (index == 0 || constraint != null) {
+				newItem = newItem.setNextItem(new CryptographicCheck<XmlValidationProcessLongTermData>(result,
+						currentSignature, bestSignatureTime, constraint));
+				index++;
+			}
+		} while (constraint != null);
+		return newItem;
 	}
-
 }

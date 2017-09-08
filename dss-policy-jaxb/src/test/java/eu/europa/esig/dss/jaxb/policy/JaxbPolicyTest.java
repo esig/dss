@@ -28,7 +28,7 @@ public class JaxbPolicyTest {
 	public void testUnmarshalling() throws Exception {
 		ConstraintsParameters constraintsParameters = unmarshal(new File("src/test/resources/constraint.xml"));
 
-		Algo algo = constraintsParameters.getSignatureConstraints().getBasicSignatureConstraints().getCryptographic().getMiniPublicKeySize().getAlgo().get(0);
+		Algo algo = constraintsParameters.getSignatureConstraints().getBasicSignatureConstraints().getCryptographic().get(0).getMiniPublicKeySize().getAlgo().get(0);
 		assertNotNull(algo);
 		String algoName = algo.getValue();
 		assertEquals("DSA", algoName);
