@@ -55,65 +55,13 @@ public class ResourceLoader {
 	}
 
 	/**
-	 * This method converts the resource path to the absolute root resource path in source folder.
-	 *
-	 * @param resourcePath resource path
-	 * @return converted absolute resource source folder
-	 */
-	public String getAbsoluteSourceResourceFolder(final String resourcePath) throws DSSException {
-
-		final URL uri = anyClass.getResource(resourcePath);
-		if (uri == null) {
-			return null;
-		}
-		final String absolutePath = uri.getPath();
-		try {
-			final String decodedAbsoluteFolder = URLDecoder.decode(absolutePath, "UTF-8");
-			String finalFolder = DSSUtils.replaceStrStr(decodedAbsoluteFolder, "target/test-classes", "src/test/resources");
-			finalFolder = DSSUtils.replaceStrStr(finalFolder, "target/classes", "src/main/resources");
-			if (finalFolder.endsWith("/")) {
-				finalFolder = finalFolder.substring(0, finalFolder.length() - 1);
-			}
-			return finalFolder;
-		} catch (UnsupportedEncodingException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
-	 * This method converts the resource path to the absolute root resource path in main source folder.
-	 *
-	 * @param resourcePath resource path
-	 * @return converted absolute resource main source folder
-	 */
-	public String getAbsoluteSourceMainResourceFolder(final String resourcePath) throws DSSException {
-
-		final URL uri = anyClass.getResource(resourcePath);
-		if (uri == null) {
-			return null;
-		}
-		final String absolutePath = uri.getPath();
-		try {
-			final String decodedAbsoluteFolder = URLDecoder.decode(absolutePath, "UTF-8");
-			String finalFolder = DSSUtils.replaceStrStr(decodedAbsoluteFolder, "target/test-classes", "src/main/resources");
-			finalFolder = DSSUtils.replaceStrStr(finalFolder, "target/classes", "src/main/resources");
-			if (finalFolder.endsWith("/")) {
-				finalFolder = finalFolder.substring(0, finalFolder.length() - 1);
-			}
-			return finalFolder;
-		} catch (UnsupportedEncodingException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
 	 * This method converts the resource path to the absolute path in target folder.
 	 *
-	 * @param resourcePath resource path
+	 * @param resourcePath
+	 *            resource path
 	 * @return
 	 */
 	public String getAbsoluteResourceFolder(final String resourcePath) throws DSSException {
-
 		final URL uri = anyClass.getResource(resourcePath);
 		if (uri == null) {
 			return null;
@@ -134,21 +82,8 @@ public class ResourceLoader {
 	 * @return
 	 */
 	public InputStream getResource(final String resourcePath) {
-
 		final InputStream resourceAsStream = anyClass.getResourceAsStream(resourcePath);
 		return resourceAsStream;
 	}
 
-	/**
-	 * This method returns the DSSDocument (FileDocument) created from the resource path.
-	 *
-	 * @param resourcePath
-	 * @return
-	 */
-	public DSSDocument getDSSDocumentFromResource(final String resourcePath) {
-
-		final String absolutePath = getAbsoluteResourceFolder(resourcePath);
-		final DSSDocument dssDocument = new FileDocument(absolutePath);
-		return dssDocument;
-	}
 }
