@@ -1,9 +1,12 @@
 package eu.europa.esig.dss;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -16,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
+import java.util.Date;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -228,5 +232,18 @@ public class DSSUtilsTest {
 	@Test
 	public void getMD5Digest() throws UnsupportedEncodingException {
 		assertEquals("3e25960a79dbc69b674cd4ec67a72c62", DSSUtils.getMD5Digest("Hello world".getBytes("UTF-8")));
+	}
+
+	@Test
+	public void getDeterministicId() {
+		Date d1 = new Date();
+		String deterministicId = DSSUtils.getDeterministicId(d1, certificateWithAIA.getDSSId());
+		assertNotNull(deterministicId);
+		String deterministicId2 = DSSUtils.getDeterministicId(d1, certificateWithAIA.getDSSId());
+		assertEquals(deterministicId, deterministicId2);
+		assertNotNull(DSSUtils.getDeterministicId(null, certificateWithAIA.getDSSId()));
+		String deterministicId3 = DSSUtils.getDeterministicId(new Date(), certificateWithAIA.getDSSId());
+
+		assertThat(deterministicId2, not(equalTo(deterministicId3)));
 	}
 }

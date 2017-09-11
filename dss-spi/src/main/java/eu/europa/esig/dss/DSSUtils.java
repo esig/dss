@@ -834,19 +834,6 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * @param x509SubjectName
-	 * @return
-	 */
-	public static X500Principal getX500Principal(String x509SubjectName) throws DSSException {
-		try {
-			final X500Principal x500Principal = new X500Principal(x509SubjectName);
-			return getNormalizedX500Principal(x500Principal);
-		} catch (IllegalArgumentException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
 	 * @param x500Principal
 	 *            to be normalized
 	 * @return {@code X500Principal} normalized
