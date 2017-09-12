@@ -27,7 +27,7 @@ import java.util.Set;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -89,19 +89,10 @@ public interface AdvancedSignature extends Serializable {
 
 	/**
 	 * Retrieves the signature algorithm (or cipher) used for generating the signature.
-	 * XAdES: http://www.w3.org/TR/2013/NOTE-xmlsec-algorithms-20130411/
 	 *
-	 * @return {@code EncryptionAlgorithm}
+	 * @return {@code SignatureAlgorithm}
 	 */
-	EncryptionAlgorithm getEncryptionAlgorithm();
-
-	/**
-	 * Retrieves the signature algorithm (or cipher) used for generating the signature.
-	 * XAdES: http://www.w3.org/TR/2013/NOTE-xmlsec-algorithms-20130411/
-	 *
-	 * @return {@code DigestAlgorithm}
-	 */
-	DigestAlgorithm getDigestAlgorithm();
+	SignatureAlgorithm getSignatureAlgorithm();
 
 	/**
 	 * Returns the signing time included within the signature.

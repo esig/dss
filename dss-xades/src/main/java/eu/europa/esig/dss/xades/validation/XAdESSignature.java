@@ -68,7 +68,6 @@ import eu.europa.esig.dss.DSSNotETSICompliantException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
@@ -306,24 +305,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public EncryptionAlgorithm getEncryptionAlgorithm() {
-
+	public SignatureAlgorithm getSignatureAlgorithm() {
 		final String xmlName = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_METHOD).getAttribute(XMLE_ALGORITHM);
-		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forXML(xmlName, null);
-		if (signatureAlgorithm == null) {
-			return null;
-		}
-		return signatureAlgorithm.getEncryptionAlgorithm();
-	}
-
-	@Override
-	public DigestAlgorithm getDigestAlgorithm() {
-		final String xmlName = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_METHOD).getAttribute(XMLE_ALGORITHM);
-		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forXML(xmlName, null);
-		if (signatureAlgorithm == null) {
-			return null;
-		}
-		return signatureAlgorithm.getDigestAlgorithm();
+		return SignatureAlgorithm.forXML(xmlName, null);
 	}
 
 	@Override
@@ -1272,7 +1256,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 			final XMLSignature santuarioSignature = new XMLSignature(signatureElement, "");
 			santuarioSignature.addResourceResolver(new XPointerResourceResolver(signatureElement));
-			santuarioSignature.addResourceResolver(new OfflineResolver(detachedContents, getDigestAlgorithm()));
+			santuarioSignature.addResourceResolver(new OfflineResolver(detachedContents, getSignatureAlgorithm().getDigestAlgorithm()));
 
 			boolean coreValidity = false;
 			final List<CertificateValidity> certificateValidityList = getSigningCertificateValidityList(santuarioSignature, signatureCryptographicVerification,

@@ -295,6 +295,7 @@
 			<xs:element name="EncryptionAlgoUsedToSignThisToken" type="xs:string" minOccurs="0" />
 			<xs:element name="KeyLengthUsedToSignThisToken" type="xs:string" minOccurs="0" />
 			<xs:element name="DigestAlgoUsedToSignThisToken" type="xs:string" minOccurs="0"  />
+			<xs:element name="MaskGenerationFunctionUsedToSignThisToken" type="xs:string" minOccurs="0"  />
 			<xs:element name="ReferenceDataFound" type="xs:boolean" />
 			<xs:element name="ReferenceDataIntact" type="xs:boolean" />
 			<xs:element name="SignatureIntact" type="xs:boolean" />

@@ -59,6 +59,11 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	private DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
 
 	/**
+	 * The mask generation function
+	 */
+	private MaskGenerationFunction maskGenerationFunction = signatureAlgorithm.getMaskGenerationFunction();
+
+	/**
 	 * The object representing the parameters related to B- level.
 	 */
 	private BLevelParameters bLevelParams = new BLevelParameters();
@@ -156,7 +161,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
 		this.digestAlgorithm = digestAlgorithm;
 		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
-			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm);
+			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
 		}
 	}
 
@@ -170,7 +175,14 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	public void setEncryptionAlgorithm(final EncryptionAlgorithm encryptionAlgorithm) {
 		this.encryptionAlgorithm = encryptionAlgorithm;
 		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
-			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm);
+			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
+		}
+	}
+
+	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
+		this.maskGenerationFunction = maskGenerationFunction;
+		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
+			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
 		}
 	}
 
@@ -190,6 +202,10 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 */
 	public SignatureAlgorithm getSignatureAlgorithm() {
 		return signatureAlgorithm;
+	}
+
+	public MaskGenerationFunction getMaskGenerationFunction() {
+		return maskGenerationFunction;
 	}
 
 	/**

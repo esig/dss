@@ -90,6 +90,7 @@ import org.bouncycastle.asn1.ess.OtherCertID;
 import org.bouncycastle.asn1.ess.SigningCertificate;
 import org.bouncycastle.asn1.ess.SigningCertificateV2;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
+import org.bouncycastle.asn1.pkcs.RSASSAPSSparams;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.AttCertValidityPeriod;
 import org.bouncycastle.asn1.x509.AttributeCertificate;
@@ -120,6 +121,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
@@ -995,14 +997,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return reference;
 	}
 
-	@Override
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
 
 		String oid = signerInformation.getEncryptionAlgOID();
-
 		try {
 			return EncryptionAlgorithm.forOID(oid);
-		} catch (RuntimeException e) {
+		} catch (DSSException e) {
 			// purposely empty
 		}
 
@@ -1011,11 +1011,23 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return signatureAlgorithm.getEncryptionAlgorithm();
 	}
 
-	@Override
 	public DigestAlgorithm getDigestAlgorithm() {
-
 		final String digestAlgOID = signerInformation.getDigestAlgOID();
 		return DigestAlgorithm.forOID(digestAlgOID);
+	}
+
+	@Override
+	public SignatureAlgorithm getSignatureAlgorithm() {
+		return SignatureAlgorithm.getAlgorithm(getEncryptionAlgorithm(), getDigestAlgorithm(), getMaskGenerationFunction());
+	}
+
+	private MaskGenerationFunction getMaskGenerationFunction() {
+		byte[] encryptionAlgParams = signerInformation.getEncryptionAlgParams();
+		if (Utils.isArrayNotEmpty(encryptionAlgParams)) {
+			RSASSAPSSparams param = RSASSAPSSparams.getInstance(encryptionAlgParams);
+			AlgorithmIdentifier maskGenAlgorithm = param.getMaskGenAlgorithm();
+		}
+		return null;
 	}
 
 	@Override

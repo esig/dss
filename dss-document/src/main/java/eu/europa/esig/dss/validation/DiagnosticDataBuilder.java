@@ -25,6 +25,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSPKUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
@@ -677,15 +678,21 @@ public class DiagnosticDataBuilder {
 	private XmlBasicSignature getXmlBasicSignature(AdvancedSignature signature, CertificateToken signingCertificateToken) {
 		XmlBasicSignature xmlBasicSignature = new XmlBasicSignature();
 
-		final EncryptionAlgorithm encryptionAlgorithm = signature.getEncryptionAlgorithm();
+		SignatureAlgorithm signatureAlgorithm = signature.getSignatureAlgorithm();
+
+		final EncryptionAlgorithm encryptionAlgorithm = signatureAlgorithm.getEncryptionAlgorithm();
 		final String encryptionAlgorithmString = encryptionAlgorithm == null ? "?" : encryptionAlgorithm.getName();
 		xmlBasicSignature.setEncryptionAlgoUsedToSignThisToken(encryptionAlgorithmString);
 
 		final int keyLength = signingCertificateToken == null ? 0 : DSSPKUtils.getPublicKeySize(signingCertificateToken.getPublicKey());
 		xmlBasicSignature.setKeyLengthUsedToSignThisToken(String.valueOf(keyLength));
-		final DigestAlgorithm digestAlgorithm = getDigestAlgorithm(signature);
+		final DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
 		final String digestAlgorithmString = digestAlgorithm == null ? "?" : digestAlgorithm.getName();
 		xmlBasicSignature.setDigestAlgoUsedToSignThisToken(digestAlgorithmString);
+		MaskGenerationFunction maskGenerationFunction = signatureAlgorithm.getMaskGenerationFunction();
+		if (maskGenerationFunction != null) {
+			xmlBasicSignature.setMaskGenerationFunctionUsedToSignThisToken(maskGenerationFunction.name());
+		}
 
 		SignatureCryptographicVerification scv = signature.getSignatureCryptographicVerification();
 		xmlBasicSignature.setReferenceDataFound(scv.isReferenceDataFound());
@@ -693,16 +700,6 @@ public class DiagnosticDataBuilder {
 		xmlBasicSignature.setSignatureIntact(scv.isSignatureIntact());
 		xmlBasicSignature.setSignatureValid(scv.isSignatureValid());
 		return xmlBasicSignature;
-	}
-
-	private DigestAlgorithm getDigestAlgorithm(final AdvancedSignature signature) {
-		DigestAlgorithm digestAlgorithm = null;
-		try {
-			digestAlgorithm = signature.getDigestAlgorithm();
-		} catch (Exception e) {
-			LOG.error("Unable to retrieve digest algorithm : " + e.getMessage());
-		}
-		return digestAlgorithm;
 	}
 
 	private List<XmlSignatureScope> getXmlSignatureScopes(List<SignatureScope> scopes) {

@@ -40,13 +40,21 @@ public enum SignatureAlgorithm {
 
 	RSA_SHA512(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA512),
 
+	RSA_SSA_PSS_SHA1_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA1, MaskGenerationFunction.MGF1_SHA1),
+
+	RSA_SSA_PSS_SHA224_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA224, MaskGenerationFunction.MGF1_SHA224),
+
+	RSA_SSA_PSS_SHA256_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA256, MaskGenerationFunction.MGF1_SHA256),
+
+	RSA_SSA_PSS_SHA384_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA384, MaskGenerationFunction.MGF1_SHA384),
+
+	RSA_SSA_PSS_SHA512_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA512, MaskGenerationFunction.MGF1_SHA512),
+
 	RSA_RIPEMD160(EncryptionAlgorithm.RSA, DigestAlgorithm.RIPEMD160),
 
 	RSA_MD5(EncryptionAlgorithm.RSA, DigestAlgorithm.MD5),
 
 	RSA_MD2(EncryptionAlgorithm.RSA, DigestAlgorithm.MD2),
-
-	RSA_SSA_PSS(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1),
 
 	ECDSA_SHA1(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA1),
 
@@ -80,6 +88,8 @@ public enum SignatureAlgorithm {
 
 	private final DigestAlgorithm digestAlgo;
 
+	private final MaskGenerationFunction maskGenerationFunction;
+
 	// http://www.w3.org/TR/2013/NOTE-xmlsec-algorithms-20130411/
 	private static final Map<String, SignatureAlgorithm> XML_ALGORITHMS = registerXmlAlgorithms();
 
@@ -93,6 +103,14 @@ public enum SignatureAlgorithm {
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256", RSA_SHA256);
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-sha384", RSA_SHA384);
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-sha512", RSA_SHA512);
+
+		// https://tools.ietf.org/html/rfc6931#section-2.3.10
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha1-rsa-MGF1", RSA_SSA_PSS_SHA1_MGF1);
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha224-rsa-MGF1", RSA_SSA_PSS_SHA224_MGF1);
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha256-rsa-MGF1", RSA_SSA_PSS_SHA256_MGF1);
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha384-rsa-MGF1", RSA_SSA_PSS_SHA384_MGF1);
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha512-rsa-MGF1", RSA_SSA_PSS_SHA512_MGF1);
+
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-ripemd160", RSA_RIPEMD160);
 		// Support of not standard AT algorithm name
 		// http://www.rfc-editor.org/rfc/rfc4051.txt --> http://www.rfc-editor.org/errata_search.php?rfc=4051
@@ -173,7 +191,7 @@ public enum SignatureAlgorithm {
 		oidAlgorithms.put("1.2.840.113549.2.11", HMAC_SHA512);
 		oidAlgorithms.put("1.3.6.1.5.5.8.1.4", HMAC_RIPEMD160);
 
-		oidAlgorithms.put("1.2.840.113549.1.1.10", RSA_SSA_PSS);
+		oidAlgorithms.put("1.2.840.113549.1.1.10", RSA_SSA_PSS_SHA1_MGF1);
 
 		return oidAlgorithms;
 	}
@@ -191,6 +209,13 @@ public enum SignatureAlgorithm {
 		javaAlgorithms.put("SHA256withRSA", RSA_SHA256);
 		javaAlgorithms.put("SHA384withRSA", RSA_SHA384);
 		javaAlgorithms.put("SHA512withRSA", RSA_SHA512);
+
+		javaAlgorithms.put("SHA1withRSAandMGF1", RSA_SSA_PSS_SHA1_MGF1);
+		javaAlgorithms.put("SHA224withRSAandMGF1", RSA_SSA_PSS_SHA224_MGF1);
+		javaAlgorithms.put("SHA256withRSAandMGF1", RSA_SSA_PSS_SHA256_MGF1);
+		javaAlgorithms.put("SHA384withRSAandMGF1", RSA_SSA_PSS_SHA384_MGF1);
+		javaAlgorithms.put("SHA512withRSAandMGF1", RSA_SSA_PSS_SHA512_MGF1);
+
 		javaAlgorithms.put("RIPEMD160withRSA", RSA_RIPEMD160);
 
 		javaAlgorithms.put("MD5withRSA", RSA_MD5);
@@ -234,10 +259,10 @@ public enum SignatureAlgorithm {
 	/**
 	 * This method return the {@code SignatureAlgorithm} or the default value if the algorithm is unknown.
 	 *
-	 * TODO: (Bob: 2014 Feb 13) this method can return UNKNOWN ALGORITHM...
-	 *
-	 * @param xmlName      XML URI of the given algorithm
-	 * @param defaultValue the default value to be returned if not found
+	 * @param xmlName
+	 *            XML URI of the given algorithm
+	 * @param defaultValue
+	 *            the default value to be returned if not found
 	 * @return {@code SignatureAlgorithm} or default value
 	 */
 	public static SignatureAlgorithm forXML(final String xmlName, final SignatureAlgorithm defaultValue) {
@@ -257,30 +282,41 @@ public enum SignatureAlgorithm {
 	}
 
 	/**
-	 * For given signature algorithm & digest algorithm this function returns the Java form of the signature algorithm Signature Algorithms
+	 * For given signature algorithm & digest algorithm this function returns the Java form of the signature algorithm
+	 * Signature Algorithms
 	 *
 	 * The algorithm names in this section can be specified when generating an instance of Signature.
 	 *
-	 * NONEwithRSA - The RSA signature algorithm which does not use a digesting algorithm (e.g. MD5/SHA1) before performing the RSA operation. For more information about the RSA
+	 * NONEwithRSA - The RSA signature algorithm which does not use a digesting algorithm (e.g. MD5/SHA1) before
+	 * performing the RSA operation. For more information about the RSA
 	 * Signature algorithms, please see PKCS1.
 	 *
-	 * MD2withRSA MD5withRSA - The MD2/MD5 with RSA Encryption signature algorithm which uses the MD2/MD5 digest algorithm and RSA to create and verify RSA digital signatures as
+	 * MD2withRSA MD5withRSA - The MD2/MD5 with RSA Encryption signature algorithm which uses the MD2/MD5 digest
+	 * algorithm and RSA to create and verify RSA digital signatures as
 	 * defined in PKCS1.
 	 *
-	 * SHA1withRSA SHA256withRSA SHA384withRSA SHA512withRSA - The signature algorithm with SHA-* and the RSA encryption algorithm as defined in the OSI Interoperability Workshop,
+	 * SHA1withRSA SHA256withRSA SHA384withRSA SHA512withRSA - The signature algorithm with SHA-* and the RSA encryption
+	 * algorithm as defined in the OSI Interoperability Workshop,
 	 * using the padding conventions described in PKCS1.
 	 *
-	 * NONEwithDSA - The Digital Signature Algorithm as defined in FIPS PUB 186-2. The data must be exactly 20 bytes in length. This algorithms is also known under the alias name
+	 * NONEwithDSA - The Digital Signature Algorithm as defined in FIPS PUB 186-2. The data must be exactly 20 bytes in
+	 * length. This algorithms is also known under the alias name
 	 * of rawDSA.
 	 *
-	 * SHA1withDSA - The DSA with SHA-1 signature algorithm which uses the SHA-1 digest algorithm and DSA to create and verify DSA digital signatures as defined in FIPS PUB 186.
+	 * SHA1withDSA - The DSA with SHA-1 signature algorithm which uses the SHA-1 digest algorithm and DSA to create and
+	 * verify DSA digital signatures as defined in FIPS PUB 186.
 	 *
-	 * NONEwithECDSA SHA1withECDSA SHA256withECDSA SHA384withECDSA SHA512withECDSA (ECDSA) - The ECDSA signature algorithms as defined in ANSI X9.62. Note:"ECDSA" is an ambiguous
-	 * name for the "SHA1withECDSA" algorithm and should not be used. The formal name "SHA1withECDSA" should be used instead.
+	 * NONEwithECDSA SHA1withECDSA SHA256withECDSA SHA384withECDSA SHA512withECDSA (ECDSA) - The ECDSA signature
+	 * algorithms as defined in ANSI X9.62. Note:"ECDSA" is an ambiguous
+	 * name for the "SHA1withECDSA" algorithm and should not be used. The formal name "SHA1withECDSA" should be used
+	 * instead.
 	 *
-	 * <digest>with<encryption> - Use this to form a name for a signature algorithm with a particular message digest (such as MD2 or MD5) and algorithm (such as RSA or DSA), just
-	 * as was done for the explicitly-defined standard names in this section (MD2withRSA, etc.). For the new signature schemes defined in PKCS1 v 2.0, for which the
-	 * <digest>with<encryption> form is insufficient, <digest>with<encryption>and<mgf> can be used to form a name. Here, <mgf> should be replaced by a mask generation function
+	 * <digest>with<encryption> - Use this to form a name for a signature algorithm with a particular message digest
+	 * (such as MD2 or MD5) and algorithm (such as RSA or DSA), just
+	 * as was done for the explicitly-defined standard names in this section (MD2withRSA, etc.). For the new signature
+	 * schemes defined in PKCS1 v 2.0, for which the
+	 * <digest>with<encryption> form is insufficient, <digest>with<encryption>and<mgf> can be used to form a name. Here,
+	 * <mgf> should be replaced by a mask generation function
 	 * such
 	 * as MGF1. Example: MD5withRSAandMGF1.
 	 *
@@ -303,10 +339,26 @@ public enum SignatureAlgorithm {
 	 * @return
 	 */
 	public static SignatureAlgorithm getAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm) {
-		String digestAlgorithm_ = digestAlgorithm.getName();
-		digestAlgorithm_ = digestAlgorithm_.replace("-", "");
-		final String javaName = digestAlgorithm_ + "with" + encryptionAlgorithm.getName();
-		return JAVA_ALGORITHMS.get(javaName);
+		return getAlgorithm(encryptionAlgorithm, digestAlgorithm, null);
+	}
+
+	/**
+	 * For given encryption algorithm & digest algorithm this function returns the signature algorithm.
+	 *
+	 * @param encryptionAlgorithm
+	 * @param digestAlgorithm
+	 * @return
+	 */
+	public static SignatureAlgorithm getAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,
+			final MaskGenerationFunction mgf) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(digestAlgorithm.getName().replace("-", ""));
+		sb.append("with");
+		sb.append(encryptionAlgorithm.getName());
+		if (mgf != null) {
+			sb.append("andMGF1");
+		}
+		return JAVA_ALGORITHMS.get(sb.toString());
 	}
 
 	/**
@@ -318,12 +370,28 @@ public enum SignatureAlgorithm {
 	private SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm) {
 		this.encryptionAlgo = encryptionAlgorithm;
 		this.digestAlgo = digestAlgorithm;
+		this.maskGenerationFunction = null;
+	}
+
+	/**
+	 * The default constructor.
+	 *
+	 * @param encryptionAlgorithm
+	 * @param digestAlgorithm
+	 * @param maskGenerationFunction
+	 *            the mask generation function
+	 */
+	private SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,
+			final MaskGenerationFunction maskGenerationFunction) {
+		this.encryptionAlgo = encryptionAlgorithm;
+		this.digestAlgo = digestAlgorithm;
+		this.maskGenerationFunction = maskGenerationFunction;
 	}
 
 	/**
 	 * This method returns the encryption algorithm.
 	 *
-	 * @return
+	 * @return the encryption algorithm
 	 */
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
 		return encryptionAlgo;
@@ -332,10 +400,19 @@ public enum SignatureAlgorithm {
 	/**
 	 * This method returns the digest algorithm.
 	 *
-	 * @return
+	 * @return the digest algorithm
 	 */
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgo;
+	}
+
+	/**
+	 * This method returns the mask generation function.
+	 *
+	 * @return the mask generation function
+	 */
+	public MaskGenerationFunction getMaskGenerationFunction() {
+		return maskGenerationFunction;
 	}
 
 	/**
