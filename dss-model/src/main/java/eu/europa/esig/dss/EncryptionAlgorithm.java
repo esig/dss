@@ -25,7 +25,6 @@ import java.util.Map;
 
 /**
  * Supported signature encryption algorithms.
- *
  */
 public enum EncryptionAlgorithm {
 
@@ -58,12 +57,15 @@ public enum EncryptionAlgorithm {
 	 * Returns the encryption algorithm associated to the given OID.
 	 *
 	 * @param oid
-	 * @return
+	 *            the ASN1 algorithm OID
+	 * @return the linked encryption algorithm
+	 * @throws DSSException
+	 *             if the oid doesn't match any algorithm
 	 */
-	public static EncryptionAlgorithm forOID(String oid) {
+	public static EncryptionAlgorithm forOID(String oid) throws DSSException {
 		EncryptionAlgorithm algorithm = Registry.OID_ALGORITHMS.get(oid);
 		if (algorithm == null) {
-			throw new RuntimeException("Unsupported algorithm: " + oid);
+			throw new DSSException("Unsupported algorithm: " + oid);
 		}
 		return algorithm;
 	}
@@ -72,9 +74,12 @@ public enum EncryptionAlgorithm {
 	 * Returns the encryption algorithm associated to the given JCE name.
 	 *
 	 * @param name
-	 * @return
+	 *            the encryption algorithm name
+	 * @return the linked encryption algorithm
+	 * @throws DSSException
+	 *             if the name doesn't match any algorithm
 	 */
-	public static EncryptionAlgorithm forName(final String name) {
+	public static EncryptionAlgorithm forName(final String name) throws DSSException {
 		// To be checked if ECC exists also .
 		if ("EC".equals(name) || "ECC".equals(name)) {
 			return ECDSA;
@@ -91,8 +96,10 @@ public enum EncryptionAlgorithm {
 	 * Returns the encryption algorithm associated to the given JCE name.
 	 *
 	 * @param name
+	 *            the encryption algorithm name
 	 * @param defaultValue
-	 * @return
+	 *            The default value for the {@code EncryptionAlgorithm}
+	 * @return the corresponding {@code EncryptionAlgorithm} or the default value
 	 */
 	public static EncryptionAlgorithm forName(final String name, final EncryptionAlgorithm defaultValue) {
 		// To be checked if ECC exists also .
@@ -115,6 +122,8 @@ public enum EncryptionAlgorithm {
 	}
 
 	/**
+	 * Get the algorithm name
+	 * 
 	 * @return the name
 	 */
 	public String getName() {
@@ -122,6 +131,8 @@ public enum EncryptionAlgorithm {
 	}
 
 	/**
+	 * Get the ASN1 algorithm OID
+	 * 
 	 * @return the OID
 	 */
 	public String getOid() {
@@ -129,6 +140,8 @@ public enum EncryptionAlgorithm {
 	}
 
 	/**
+	 * Get the algorithm padding
+	 * 
 	 * @return the padding
 	 */
 	public String getPadding() {

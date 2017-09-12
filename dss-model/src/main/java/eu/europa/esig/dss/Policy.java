@@ -48,7 +48,7 @@ public class Policy implements Serializable {
 	/**
 	 * Get the signature policy (EPES)
 	 *
-	 * @return
+	 * @return the policy id
 	 */
 	public String getId() {
 		return id;
@@ -58,6 +58,7 @@ public class Policy implements Serializable {
 	 * Set the signature policy (EPES)
 	 *
 	 * @param id
+	 *            the policy id
 	 */
 	public void setId(final String id) {
 		this.id = id;
@@ -66,7 +67,7 @@ public class Policy implements Serializable {
 	/**
 	 * Get the identifier qualifier
 	 *
-	 * @return
+	 * @return the qualifier
 	 */
 	public String getQualifier() {
 		return qualifier;
@@ -76,6 +77,7 @@ public class Policy implements Serializable {
 	 * Set the identifier qualifier
 	 *
 	 * @param qualifier
+	 *            the qualifier
 	 */
 	public void setQualifier(String qualifier) {
 		this.qualifier = qualifier;
@@ -94,6 +96,7 @@ public class Policy implements Serializable {
 	 * Set the signature policy description
 	 *
 	 * @param description
+	 *            the policy description
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -102,7 +105,7 @@ public class Policy implements Serializable {
 	/**
 	 * Return the hash algorithm for the signature policy
 	 *
-	 * @return
+	 * @return the used digest algorithm for the policy
 	 */
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgorithm;
@@ -112,6 +115,7 @@ public class Policy implements Serializable {
 	 * Set the hash algorithm for the explicit signature policy
 	 *
 	 * @param digestAlgorithm
+	 *            the used digest algorithm for the policy
 	 */
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
 		this.digestAlgorithm = digestAlgorithm;
@@ -120,7 +124,7 @@ public class Policy implements Serializable {
 	/**
 	 * Get the hash value of the explicit signature policy
 	 *
-	 * @return
+	 * @return the digest value for the policy
 	 */
 	public byte[] getDigestValue() {
 		return digestValue;
@@ -130,6 +134,7 @@ public class Policy implements Serializable {
 	 * Set the hash value of implicit signature policy
 	 *
 	 * @param digestValue
+	 *            the digest of the policy
 	 */
 	public void setDigestValue(final byte[] digestValue) {
 		this.digestValue = digestValue;
@@ -148,6 +153,7 @@ public class Policy implements Serializable {
 	 * Set the SP URI (signature policy URI)
 	 *
 	 * @param spuri
+	 *            the signature policy URI
 	 */
 	public void setSpuri(String spuri) {
 		this.spuri = spuri;
