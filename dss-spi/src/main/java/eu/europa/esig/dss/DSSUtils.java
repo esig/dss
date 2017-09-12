@@ -22,6 +22,7 @@ package eu.europa.esig.dss;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -749,13 +750,14 @@ public final class DSSUtils {
 	 * @return
 	 */
 	public static String getDeterministicId(final Date signingTime, TokenIdentifier id) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); DataOutputStream dos = new DataOutputStream(baos);) {
 			if (signingTime != null) {
-				baos.write(Long.toString(signingTime.getTime()).getBytes());
+				dos.writeLong(signingTime.getTime());
 			}
 			if (id != null) {
-				baos.write(id.asXmlId().getBytes());
+				dos.writeChars(id.asXmlId());
 			}
+			dos.close();
 			final String deterministicId = "id-" + getMD5Digest(baos.toByteArray());
 			return deterministicId;
 		} catch (IOException e) {

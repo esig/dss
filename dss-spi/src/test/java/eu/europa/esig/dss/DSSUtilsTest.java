@@ -235,13 +235,15 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void getDeterministicId() {
+	public void getDeterministicId() throws InterruptedException {
 		Date d1 = new Date();
 		String deterministicId = DSSUtils.getDeterministicId(d1, certificateWithAIA.getDSSId());
 		assertNotNull(deterministicId);
 		String deterministicId2 = DSSUtils.getDeterministicId(d1, certificateWithAIA.getDSSId());
 		assertEquals(deterministicId, deterministicId2);
 		assertNotNull(DSSUtils.getDeterministicId(null, certificateWithAIA.getDSSId()));
+
+		Thread.sleep(1);
 		String deterministicId3 = DSSUtils.getDeterministicId(new Date(), certificateWithAIA.getDSSId());
 
 		assertThat(deterministicId2, not(equalTo(deterministicId3)));
