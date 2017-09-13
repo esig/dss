@@ -45,6 +45,12 @@ public class XAdESValidationTest {
 		assertEquals(POLICY_URL, xadesSignature.getPolicyUrl());
 	}
 
+	@Test
+	public void validatedPolicyIdWithNewlinesAndWhitespace () throws Exception {
+		SignatureWrapper xadesSignature = openXadesSignature("src/test/resources/validation/valid-xades-policyId-newlines.xml");
+		assertEquals(POLICY_ID, xadesSignature.getPolicyId());
+		assertEquals(POLICY_URL, xadesSignature.getPolicyUrl());
+	}
 	private SignatureWrapper openXadesSignature(String documentPath) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(new File(documentPath)));
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
