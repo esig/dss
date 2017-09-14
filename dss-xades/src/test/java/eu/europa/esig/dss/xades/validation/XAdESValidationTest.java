@@ -27,6 +27,7 @@ import java.io.File;
 import org.junit.Test;
 
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -46,14 +47,17 @@ public class XAdESValidationTest {
 	}
 
 	@Test
-	public void validatedPolicyIdWithNewlinesAndWhitespace () throws Exception {
+	public void validatedPolicyIdWithNewlinesAndWhitespace() throws Exception {
 		SignatureWrapper xadesSignature = openXadesSignature("src/test/resources/validation/valid-xades-policyId-newlines.xml");
 		assertEquals(POLICY_ID, xadesSignature.getPolicyId());
 		assertEquals(POLICY_URL, xadesSignature.getPolicyUrl());
 	}
+
 	private SignatureWrapper openXadesSignature(String documentPath) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(new File(documentPath)));
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
 		Reports reports = validator.validateDocument();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
