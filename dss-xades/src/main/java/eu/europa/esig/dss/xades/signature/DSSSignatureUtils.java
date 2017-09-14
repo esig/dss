@@ -25,7 +25,6 @@ import java.io.IOException;
 
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
-import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.util.BigIntegers;
 
@@ -123,9 +122,9 @@ public final class DSSSignatureUtils {
 		ASN1InputStream is = null;
 		try {
 			is = new ASN1InputStream(signatureValue);
-			ASN1Primitive obj = is.readObject();
-			return obj != null;
-		} catch (IOException e) {
+			ASN1Sequence seq = (ASN1Sequence) is.readObject();
+			return seq != null && seq.size() == 2;
+		} catch (Exception e) {
 			return false;
 		} finally {
 			Utils.closeQuietly(is);
