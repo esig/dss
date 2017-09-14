@@ -40,15 +40,15 @@ public enum SignatureAlgorithm {
 
 	RSA_SHA512(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA512),
 
-	RSA_SSA_PSS_SHA1_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA1, MaskGenerationFunction.MGF1_SHA1),
+	RSA_SSA_PSS_SHA1_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1, MaskGenerationFunction.MGF1_SHA1),
 
-	RSA_SSA_PSS_SHA224_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA224, MaskGenerationFunction.MGF1_SHA224),
+	RSA_SSA_PSS_SHA224_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA224, MaskGenerationFunction.MGF1_SHA224),
 
-	RSA_SSA_PSS_SHA256_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA256, MaskGenerationFunction.MGF1_SHA256),
+	RSA_SSA_PSS_SHA256_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA256, MaskGenerationFunction.MGF1_SHA256),
 
-	RSA_SSA_PSS_SHA384_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA384, MaskGenerationFunction.MGF1_SHA384),
+	RSA_SSA_PSS_SHA384_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA384, MaskGenerationFunction.MGF1_SHA384),
 
-	RSA_SSA_PSS_SHA512_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA512, MaskGenerationFunction.MGF1_SHA512),
+	RSA_SSA_PSS_SHA512_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA512, MaskGenerationFunction.MGF1_SHA512),
 
 	RSA_RIPEMD160(EncryptionAlgorithm.RSA, DigestAlgorithm.RIPEMD160),
 

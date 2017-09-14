@@ -28,4 +28,22 @@ public enum MaskGenerationFunction {
 		return saltLength;
 	}
 
+	public static MaskGenerationFunction fromDigestAlgo(String id) {
+		for (MaskGenerationFunction mgf : values()) {
+			if (id.equals(mgf.getDigestAlgorithm().getOid())) {
+				return mgf;
+			}
+		}
+		return null;
+	}
+
+	public static MaskGenerationFunction forName(String mgfName, MaskGenerationFunction defaultMGF) {
+		for (MaskGenerationFunction mgf : values()) {
+			if (mgfName.equals(mgf.name())) {
+				return mgf;
+			}
+		}
+		return defaultMGF;
+	}
+
 }

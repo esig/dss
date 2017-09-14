@@ -1026,6 +1026,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (Utils.isArrayNotEmpty(encryptionAlgParams)) {
 			RSASSAPSSparams param = RSASSAPSSparams.getInstance(encryptionAlgParams);
 			AlgorithmIdentifier maskGenAlgorithm = param.getMaskGenAlgorithm();
+			if (PKCSObjectIdentifiers.id_mgf1.equals(maskGenAlgorithm.getAlgorithm())) {
+				AlgorithmIdentifier hashAlgo = param.getHashAlgorithm();
+				return MaskGenerationFunction.fromDigestAlgo(hashAlgo.getAlgorithm().getId());
+			} else {
+				LOG.warn("Unsupported mask algorithm : {}", maskGenAlgorithm.getAlgorithm());
+			}
 		}
 		return null;
 	}
