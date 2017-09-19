@@ -128,16 +128,14 @@ public class DSSUtilsTest {
 	@Test
 	public void convertToPEM() {
 		String convertToPEM = DSSUtils.convertToPEM(certificateWithAIA);
-		assertTrue(convertToPEM.contains(DSSUtils.CERT_BEGIN));
-		assertTrue(convertToPEM.contains(DSSUtils.CERT_END));
 
-		assertTrue(DSSUtils.isPEM(new ByteArrayInputStream(convertToPEM.getBytes())));
+		assertFalse(DSSUtils.isDER(new ByteArrayInputStream(convertToPEM.getBytes())));
 
 		CertificateToken certificate = DSSUtils.loadCertificate(convertToPEM.getBytes());
 		assertEquals(certificate, certificateWithAIA);
 
 		byte[] certDER = DSSUtils.convertToDER(convertToPEM);
-		assertFalse(DSSUtils.isPEM(new ByteArrayInputStream(certDER)));
+		assertTrue(DSSUtils.isDER(new ByteArrayInputStream(certDER)));
 
 		CertificateToken certificate2 = DSSUtils.loadCertificate(certDER);
 		assertEquals(certificate2, certificateWithAIA);
@@ -147,18 +145,18 @@ public class DSSUtilsTest {
 	public void loadCrl() throws Exception {
 		X509CRL crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/belgium2.crl"));
 		assertNotNull(crl);
-		assertFalse(DSSUtils.isPEM(new FileInputStream("src/test/resources/crl/belgium2.crl")));
+		assertTrue(DSSUtils.isDER(new FileInputStream("src/test/resources/crl/belgium2.crl")));
 
 		String convertCRLToPEM = DSSUtils.convertCrlToPEM(crl);
-		assertTrue(DSSUtils.isPEM(new ByteArrayInputStream(convertCRLToPEM.getBytes())));
-		assertTrue(DSSUtils.isPEM(convertCRLToPEM.getBytes()));
+		assertFalse(DSSUtils.isDER(new ByteArrayInputStream(convertCRLToPEM.getBytes())));
+		assertFalse(DSSUtils.isDER(new ByteArrayInputStream(convertCRLToPEM.getBytes())));
 
 		try (InputStream is = new ByteArrayInputStream(convertCRLToPEM.getBytes())) {
 			X509CRL crl2 = DSSUtils.loadCRL(is);
 			assertEquals(crl, crl2);
 		}
 
-		byte[] convertCRLToDER = DSSUtils.convertCRLToDER(convertCRLToPEM);
+		byte[] convertCRLToDER = DSSUtils.convertToDER(convertCRLToPEM);
 		try (InputStream is = new ByteArrayInputStream(convertCRLToDER)) {
 			X509CRL crl3 = DSSUtils.loadCRL(is);
 			assertEquals(crl, crl3);
@@ -170,7 +168,7 @@ public class DSSUtilsTest {
 		X509CRL crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/LTRCA.crl"));
 		assertNotNull(crl);
 		try (InputStream is = new FileInputStream("src/test/resources/crl/LTRCA.crl")) {
-			assertTrue(DSSUtils.isPEM(is));
+			assertFalse(DSSUtils.isDER(is));
 		}
 	}
 

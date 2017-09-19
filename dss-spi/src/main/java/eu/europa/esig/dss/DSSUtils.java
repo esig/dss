@@ -30,6 +30,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.ByteBuffer;
@@ -53,12 +56,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.TimeZone;
 
 import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemReader;
+import org.bouncycastle.util.io.pem.PemWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,12 +75,6 @@ import eu.europa.esig.dss.x509.CertificateToken;
 public final class DSSUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSUtils.class);
-
-	public static final String CERT_BEGIN = "-----BEGIN CERTIFICATE-----";
-	public static final String CERT_END = "-----END CERTIFICATE-----";
-
-	public static final String CRL_BEGIN = "-----BEGIN X509 CRL-----";
-	public static final String CRL_END = "-----END X509 CRL-----";
 
 	private static final BouncyCastleProvider securityProvider = new BouncyCastleProvider();
 
@@ -88,8 +88,6 @@ public final class DSSUtils {
 	 * The default date pattern: "yyyy-MM-dd"
 	 */
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
-
-	private static final String NEW_LINE = "\n";
 
 	static {
 		try {
@@ -135,119 +133,63 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method replaces all \ to /.
-	 *
-	 * @param path
-	 * @return
-	 */
-	private static String normalisePath(String path) {
-		return path.replace('\\', '/');
-	}
-
-	/**
-	 * This method returns a file reference. The file path is normalised (OS independent)
-	 *
-	 * @param filePath
-	 *            The path to the file.
-	 * @return
-	 */
-	public static File getFile(final String filePath) {
-		final String normalisedFolderFileName = normalisePath(filePath);
-		final File file = new File(normalisedFolderFileName);
-		return file;
-	}
-
-	/**
 	 * This method converts the given certificate into its PEM string.
 	 *
 	 * @param cert
-	 * @return
+	 *            the token to be converted to PEM
+	 * @return PEM encoded certificate
 	 * @throws DSSException
 	 */
 	public static String convertToPEM(final CertificateToken cert) throws DSSException {
-		final byte[] derCert = cert.getEncoded();
-		String pemCertPre = Utils.toBase64(derCert);
-		final String pemCert = CERT_BEGIN + NEW_LINE + pemCertPre + NEW_LINE + CERT_END;
-		return pemCert;
+		return convertToPEM(cert.getCertificate());
 	}
 
 	/**
 	 * This method converts the given CRL into its PEM string.
 	 *
 	 * @param crl
-	 * @return
+	 *            the DER encoded CRL to be converted
+	 * 
+	 * @return the PEM encoded CRL
 	 */
 	public static String convertCrlToPEM(final X509CRL crl) throws DSSException {
-		try {
-			final byte[] derCrl = crl.getEncoded();
-			String pemCrlPre = Utils.toBase64(derCrl);
-			final String pemCrl = CRL_BEGIN + NEW_LINE + pemCrlPre + NEW_LINE + CRL_END;
-			return pemCrl;
-		} catch (CRLException e) {
-			throw new DSSException("Unable to convert CRL to PEM encoding : " + e.getMessage(), e);
-		}
+		return convertToPEM(crl);
 	}
 
-	/**
-	 * This method returns true if the inputStream contains a PEM encoded item
-	 * 
-	 * @return true if PEM encoded
-	 */
-	public static boolean isPEM(InputStream is) {
-		try {
-			String startPEM = "-----BEGIN";
-			int headerLength = 100;
-			byte[] preamble = new byte[headerLength];
-			if (is.read(preamble, 0, headerLength) > 0) {
-				String startArray = new String(preamble);
-				return startArray.startsWith(startPEM);
-			}
-			return false;
+	private static String convertToPEM(Object obj) throws DSSException {
+		try (StringWriter out = new StringWriter(); PemWriter pemWriter = new PemWriter(out)) {
+			pemWriter.writeObject(new JcaMiscPEMGenerator(obj));
+			pemWriter.flush();
+			return out.toString();
 		} catch (Exception e) {
-			throw new DSSException("Unable to read InputStream", e);
+			throw new DSSException("Unable to convert DER to PEM", e);
 		}
 	}
 
 	/**
-	 * This method returns true if the byteArray contains a PEM encoded item
+	 * This method returns true if the inputStream contains a DER encoded item
 	 * 
-	 * @return true if PEM encoded
+	 * @return true if DER encoded
 	 */
-	public static boolean isPEM(byte[] byteArray) {
-		String startPEM = "-----BEGIN";
-		int headerLength = 100;
-		byte[] preamble = new byte[headerLength];
-		System.arraycopy(byteArray, 0, preamble, 0, headerLength);
-		String startArray = new String(preamble);
-		return startArray.startsWith(startPEM);
+	public static boolean isDER(InputStream is) {
+		byte firstByte = readFirstByte(new InMemoryDocument(is));
+		return DSSASN1Utils.isASN1SequenceTag(firstByte);
 	}
 
 	/**
-	 * This method converts a PEM encoded certificate to DER encoded
+	 * This method converts a PEM encoded certificate/crl/... to DER encoded
 	 * 
-	 * @param pemCert
-	 *            the String which contains the PEM encoded certificate
-	 * @return the binaries of the DER encoded certificate
+	 * @param pemContent
+	 *            the String which contains the PEM encoded object
+	 * @return the binaries of the DER encoded object
 	 */
-	public static byte[] convertToDER(String pemCert) {
-		String base64 = pemCert.replace(CERT_BEGIN, "");
-		base64 = base64.replace(CERT_END, "");
-		base64 = base64.replaceAll("\\s", "");
-		return Utils.fromBase64(base64);
-	}
-
-	/**
-	 * This method converts a PEM encoded crl to DER encoded
-	 * 
-	 * @param pemCert
-	 *            the String which contains the PEM encoded CRL
-	 * @return the binaries of the DER encoded crl
-	 */
-	public static byte[] convertCRLToDER(String pemCRL) {
-		String base64 = pemCRL.replace(CRL_BEGIN, "");
-		base64 = base64.replace(CRL_END, "");
-		base64 = base64.replaceAll("\\s", "");
-		return Utils.fromBase64(base64);
+	public static byte[] convertToDER(String pemContent) {
+		try (Reader reader = new StringReader(pemContent); PemReader pemReader = new PemReader(reader)) {
+			PemObject readPemObject = pemReader.readPemObject();
+			return readPemObject.getContent();
+		} catch (IOException e) {
+			throw new DSSException("Unable to convert PEM to DER", e);
+		}
 	}
 
 	/**
@@ -428,47 +370,6 @@ public final class DSSUtils {
 	public static String getSHA1Digest(final String stringToDigest) {
 		final byte[] digest = getMessageDigest(DigestAlgorithm.SHA1).digest(stringToDigest.getBytes());
 		return Utils.toHex(digest);
-	}
-
-	/**
-	 * This method digests the given {@code InputStream} with SHA1 algorithm and encode returned array of bytes as hex
-	 * string.
-	 *
-	 * @param inputStream
-	 * @return
-	 */
-	public static String getSHA1Digest(final InputStream inputStream) throws IOException {
-		return Utils.toHex(digest(DigestAlgorithm.SHA1, inputStream));
-	}
-
-	/**
-	 * This method replaces in a string one pattern by another one without using regexp.
-	 *
-	 * @param string
-	 * @param oldPattern
-	 * @param newPattern
-	 * @return
-	 */
-	public static StringBuilder replaceStrStr(final StringBuilder string, final String oldPattern, final String newPattern) {
-		if ((string == null) || (oldPattern == null) || oldPattern.equals("") || (newPattern == null)) {
-			return string;
-		}
-
-		final StringBuilder replaced = new StringBuilder();
-		int startIdx = 0;
-		int idxOld;
-		while ((idxOld = string.indexOf(oldPattern, startIdx)) >= 0) {
-			replaced.append(string.substring(startIdx, idxOld));
-			replaced.append(newPattern);
-			startIdx = idxOld + oldPattern.length();
-		}
-		replaced.append(string.substring(startIdx));
-		return replaced;
-	}
-
-	public static String replaceStrStr(final String string, final String oldPattern, final String newPattern) {
-		final StringBuilder stringBuilder = replaceStrStr(new StringBuilder(string), oldPattern, newPattern);
-		return stringBuilder.toString();
 	}
 
 	/**
@@ -749,11 +650,6 @@ public final class DSSUtils {
 		}
 	}
 
-	public static Date getLocalDate(final Date gtmDate, final Date localDate) {
-		final Date newLocalDate = new Date(gtmDate.getTime() + TimeZone.getDefault().getOffset(localDate.getTime()));
-		return newLocalDate;
-	}
-
 	public static long toLong(final byte[] bytes) {
 		// Long.valueOf(new String(bytes)).longValue();
 		ByteBuffer buffer = ByteBuffer.allocate(8);
@@ -815,11 +711,6 @@ public final class DSSUtils {
 		return x500PrincipalNormalized;
 	}
 
-	public static InputStream getResource(final String resourcePath) {
-		final InputStream resourceAsStream = DSSUtils.class.getClassLoader().getResourceAsStream(resourcePath);
-		return resourceAsStream;
-	}
-
 	/**
 	 * This method returns an UTC date base on the year, the month and the day. The year must be encoded as 1978... and
 	 * not 78
@@ -868,27 +759,6 @@ public final class DSSUtils {
 		} catch (UnsupportedEncodingException e) {
 			throw new DSSException(e);
 		}
-	}
-
-	/**
-	 * This method return the unique message id which can be used for translation purpose.
-	 *
-	 * @param message
-	 *            the {@code String} message on which the unique id is calculated.
-	 * @return the unique id
-	 */
-	public static String getMessageId(final String message) {
-
-		final String message_ = message./* replace('\'', '_'). */toLowerCase().replaceAll("[^a-z_]", " ");
-		StringBuilder nameId = new StringBuilder();
-		final StringTokenizer stringTokenizer = new StringTokenizer(message_);
-		while (stringTokenizer.hasMoreElements()) {
-
-			final String word = (String) stringTokenizer.nextElement();
-			nameId.append(word.charAt(0));
-		}
-		final String nameIdString = nameId.toString();
-		return nameIdString.toUpperCase();
 	}
 
 	/**
