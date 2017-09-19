@@ -230,6 +230,11 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 			for (CertificateToken candidate : candidates) {
 				if (token.isSignedBy(candidate)) {
+					if (!token.getIssuerX500Principal().equals(candidate.getSubjectX500Principal())) {
+						LOG.info("There is AIA extension, but the issuer subject name and subject name does not match.");
+						LOG.info("CERT ISSUER    : " + token.getIssuerX500Principal().toString());
+						LOG.info("ISSUER SUBJECT : " + candidate.getSubjectX500Principal().toString());
+					}
 					return candidate;
 				}
 			}
