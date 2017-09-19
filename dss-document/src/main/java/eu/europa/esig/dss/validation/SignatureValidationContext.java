@@ -223,23 +223,17 @@ public class SignatureValidationContext implements ValidationContext {
 	 */
 	private CertificateToken getIssuerFromAIA(final CertificateToken token) {
 		LOG.info("Retrieving {} certificate's issuer using AIA.", token.getAbbreviation());
-		Collection<CertificateToken> issuerCerts = DSSUtils.loadIssuerCertificates(token, dataLoader);
-		if (Utils.isCollectionNotEmpty(issuerCerts)) {
-			CertificateToken issuerCertToken = null;
-			for (CertificateToken issuerCert : issuerCerts) {
-				CertificateToken issuerCertFromAia = validationCertificatePool.getInstance(issuerCert, CertificateSourceType.AIA);
-				if (token.isSignedBy(issuerCertFromAia)) {
-					issuerCertToken = issuerCertFromAia;
-				} else {
-					addCertificateTokenForVerification(issuerCertFromAia);
+		Collection<CertificateToken> candidates = DSSUtils.loadPotentialIssuerCertificates(token, dataLoader);
+		if (Utils.isCollectionNotEmpty(candidates)) {
+			for (CertificateToken candidate : candidates) {
+				addCertificateTokenForVerification(validationCertificatePool.getInstance(candidate, CertificateSourceType.AIA));
+			}
+			for (CertificateToken candidate : candidates) {
+				if (token.isSignedBy(candidate)) {
+					return candidate;
 				}
 			}
-			if (issuerCertToken == null) {
-				LOG.info("The retrieved certificate(s) using AIA does not sign the certificate {}.", token.getAbbreviation());
-			}
-			return issuerCertToken;
-		} else {
-			LOG.info("The issuer certificate cannot be loaded using AIA.");
+			LOG.info("The retrieved certificate(s) using AIA does not sign the certificate {}.", token.getAbbreviation());
 		}
 		return null;
 	}

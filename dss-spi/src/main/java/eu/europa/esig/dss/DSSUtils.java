@@ -364,73 +364,42 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method loads the issuer certificate from the given location (AIA). The certificate must be DER-encoded and
-	 * may be supplied in binary or
-	 * printable (Base64) encoding. If the certificate is provided in Base64 encoding, it must be bounded at the
-	 * beginning by -----BEGIN
-	 * CERTIFICATE-----, and must be bounded at the end by -----END CERTIFICATE-----. It throws an {@code DSSException}
-	 * or return {@code null} when the certificate cannot be loaded.
-	 *
+	 * This method loads the potential issuer certificate(s) from the given locations (AIA).
+	 * 
 	 * @param cert
-	 *            certificate for which the issuer should be loaded
+	 *            certificate for which the issuer(s) should be loaded
 	 * @param loader
-	 *            the loader to use
-	 * @return
+	 *            the data loader to use
+	 * @return a list of potential issuers
 	 */
-	public static Collection<CertificateToken> loadIssuerCertificates(final CertificateToken cert, final DataLoader loader) {
+	public static Collection<CertificateToken> loadPotentialIssuerCertificates(final CertificateToken cert, final DataLoader loader) {
 		List<String> urls = DSSASN1Utils.getCAAccessLocations(cert);
+
 		if (Utils.isCollectionEmpty(urls)) {
 			LOG.info("There is no AIA extension for certificate download.");
-			return null;
+			return Collections.emptyList();
 		}
-
 		if (loader == null) {
-			LOG.warn("There is no DataLoader defined to load Certificates from AIA extension (urls : " + urls + ")");
-			return null;
+			LOG.warn("There is no DataLoader defined to load Certificates from AIA extension (urls : {})", urls);
+			return Collections.emptyList();
 		}
 
 		for (String url : urls) {
-			LOG.debug("Loading certificate from {}", url);
-
+			LOG.debug("Loading certificate(s) from {}", url);
 			byte[] bytes = loader.get(url);
 			if (Utils.isArrayNotEmpty(bytes)) {
-				LOG.debug("Base64 content : " + Utils.toBase64(bytes));
+				LOG.debug("Base64 content : {}", Utils.toBase64(bytes));
 				try (InputStream is = new ByteArrayInputStream(bytes)) {
-
-					Collection<CertificateToken> issuerCerts = null;
-					CertificateToken issuerCert = null;
-					try {
-						issuerCert = loadCertificate(bytes);
-						issuerCerts = Collections.singletonList(issuerCert);
-					} catch (DSSException dssEx) {
-						if (issuerCert == null) {
-							Collection<CertificateToken> certsCollection = loadCertificateFromP7c(is);
-							for (CertificateToken token : certsCollection) {
-								if (cert.isSignedBy(token)) {
-									issuerCert = token;
-									issuerCerts = certsCollection;
-								}
-							}
-						}
-					}
-
-					if (issuerCert != null) {
-						if (!cert.getIssuerX500Principal().equals(issuerCert.getSubjectX500Principal())) {
-							LOG.info("There is AIA extension, but the issuer subject name and subject name does not match.");
-							LOG.info("CERT ISSUER    : " + cert.getIssuerX500Principal().toString());
-							LOG.info("ISSUER SUBJECT : " + issuerCert.getSubjectX500Principal().toString());
-						}
-						return issuerCerts;
-					}
+					return loadCertificates(is);
 				} catch (Exception e) {
-					LOG.warn("Unable to parse certficate from AIA (url:" + url + ") : " + e.getMessage());
+					LOG.warn("Unable to parse certificate(s) from AIA (url: {}) : {}", url, e.getMessage());
 				}
 			} else {
-				LOG.error("Unable to read data from {}.", url);
+				LOG.warn("Empty content from {}.", url);
 			}
 		}
 
-		return null;
+		return Collections.emptyList();
 	}
 
 	/**

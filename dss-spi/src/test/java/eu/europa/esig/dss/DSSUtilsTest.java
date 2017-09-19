@@ -5,7 +5,6 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -44,7 +43,7 @@ public class DSSUtilsTest {
 
 	@Test
 	public void testLoadIssuer() {
-		Collection<CertificateToken> issuers = DSSUtils.loadIssuerCertificates(certificateWithAIA, new NativeHTTPDataLoader());
+		Collection<CertificateToken> issuers = DSSUtils.loadPotentialIssuerCertificates(certificateWithAIA, new NativeHTTPDataLoader());
 		assertNotNull(issuers);
 		assertFalse(issuers.isEmpty());
 		boolean foundIssuer = false;
@@ -81,13 +80,13 @@ public class DSSUtilsTest {
 
 	@Test
 	public void testLoadIssuerEmptyDataLoader() {
-		assertNull(DSSUtils.loadIssuerCertificates(certificateWithAIA, null));
+		assertTrue(DSSUtils.loadPotentialIssuerCertificates(certificateWithAIA, null).isEmpty());
 	}
 
 	@Test
 	public void testLoadIssuerNoAIA() {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));
-		assertNull(DSSUtils.loadIssuerCertificates(certificate, new NativeHTTPDataLoader()));
+		assertTrue(DSSUtils.loadPotentialIssuerCertificates(certificate, new NativeHTTPDataLoader()).isEmpty());
 	}
 
 	@Test
