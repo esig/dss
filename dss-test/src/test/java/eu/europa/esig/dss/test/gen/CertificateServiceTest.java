@@ -37,14 +37,6 @@ public class CertificateServiceTest {
 
 	private CertificateService service = new CertificateService();
 
-	@Test
-	public void isSelfSigned() throws Exception {
-		DSSPrivateKeyEntry entry = service.generateSelfSignedCertificate(SignatureAlgorithm.RSA_SHA256, true);
-
-		CertificateToken certificate = entry.getCertificate();
-		certificate.isSignedBy(certificate);
-	}
-
 	@Test(expected = SignatureException.class)
 	public void isChildCertificateNotSelfSigned() throws Exception {
 		DSSPrivateKeyEntry entryChain = service.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);

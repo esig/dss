@@ -142,7 +142,6 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH_COUNTER_SIGNATURE = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:CounterSignature";
 	public String XPATH_ARCHIVE_TIMESTAMP = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:" + XMLE_ARCHIVE_TIME_STAMP;
 	public String XPATH_ARCHIVE_TIMESTAMP_141 = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades141:" + XMLE_ARCHIVE_TIME_STAMP;
-	public String XPATH_ARCHIVE_TIMESTAMP_V2 = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades141:" + XMLE_ARCHIVE_TIME_STAMP_V2;
 	public String XPATH_REVOCATION_CRL_REFS = XPATH_COMPLETE_REVOCATION_REFS + "/xades:CRLRefs";
 
 	public final String XPATH__DIGEST_METHOD_ALGORITHM = "./ds:DigestMethod/@Algorithm";
@@ -168,24 +167,6 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH_CRL_VALUES_ENCAPSULATED_CRL = XPATH_ENCAPSULATED_CRL_VALUES + XPATH_ECRLV;
 	public String XPATH_OCSP_VALUES_ENCAPSULATED_OCSP = XPATH_ENCAPSULATED_OCSP_VALUES + XPATH_EOCSPV;
 
-	// Level -B
-	public String XPATH_COUNT_SIGNED_SIGNATURE_PROPERTIES = "count(" + XPATH_SIGNED_SIGNATURE_PROPERTIES + ")";
-	// Level -T
-	public final String XPATH_COUNT_SIGNATURE_TIMESTAMP = "count(" + XPATH_SIGNATURE_TIMESTAMP + ")";
-	// Level -C
-	public final String XPATH_COUNT_COMPLETE_CERTIFICATE_REFS = "count(" + XPATH_COMPLETE_CERTIFICATE_REFS + ")";
-	public final String XPATH_COUNT_COMPLETE_REVOCATION_REFS = "count(" + XPATH_COMPLETE_REVOCATION_REFS + ")";
-	// Level -X
-	public final String XPATH_COUNT_SIG_AND_REFS_TIMESTAMP = "count(" + XPATH_SIG_AND_REFS_TIMESTAMP + ")";
-	public final String XPATH_COUNT_SIG_AND_REFS_TIMESTAMP_V2 = "count(" + XPATH_SIG_AND_REFS_TIMESTAMP_V2 + ")";
-	// Level -XL -LT
-	public final String XPATH_COUNT_CERTIFICATE_VALUES = "count(" + XPATH_CERTIFICATE_VALUES + ")";
-	public final String XPATH_COUNT_REVOCATION_VALUES = "count(" + XPATH_REVOCATION_VALUES + ")";
-	// Level -A -LTA
-	public final String XPATH_COUNT_ARCHIVE_TIMESTAMP = "count(" + XPATH_ARCHIVE_TIMESTAMP + ")";
-	public final String XPATH_COUNT_ARCHIVE_TIMESTAMP_141 = "count(" + XPATH_ARCHIVE_TIMESTAMP_141 + ")";
-	public final String XPATH_COUNT_ARCHIVE_TIMESTAMP_V2 = "count(" + XPATH_ARCHIVE_TIMESTAMP_V2 + ")";
-
 	/**
 	 * This method returns true if this implementation is able to deal with a specific namespace.
 	 *
@@ -193,8 +174,6 @@ public class XPathQueryHolder implements Serializable {
 	 * @return
 	 */
 	public boolean canUseThisXPathQueryHolder(final String namespace) {
-
-		boolean canUse = XAdESNamespaces.XAdES.equals(namespace);
-		return canUse;
+		return XAdESNamespaces.XAdES.equals(namespace);
 	}
 }

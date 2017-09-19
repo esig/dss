@@ -22,6 +22,7 @@ package eu.europa.esig.dss.client.http;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -54,13 +55,16 @@ public class NativeHTTPDataLoader implements DataLoader {
 	protected byte[] request(String url, HttpMethod method, byte[] content, boolean refresh) {
 		NativeDataLoaderCall task = new NativeDataLoaderCall(url, content, refresh, maxInputSize);
 
-		Future<byte[]> result = Executors.newSingleThreadExecutor().submit(task);
-
+		ExecutorService executorService = Executors.newSingleThreadExecutor();
 		try {
+			Future<byte[]> result = executorService.submit(task);
 			return timeout > 0 ? result.get(timeout, TimeUnit.MILLISECONDS) : result.get();
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			throw new DSSException(e);
+		} finally {
+			executorService.shutdown();
 		}
+
 	}
 
 	@Override

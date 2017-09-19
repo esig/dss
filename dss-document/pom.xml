@@ -11,7 +11,7 @@
 
 	<artifactId>dss-document</artifactId>
 	<name>DSS Document</name>
-	<description>DSS Document contains the code for the creation and validation of XAdES, CAdES, PAdES and ASiC signatures._</description>
+	<description>DSS Document contains the code for the creation and validation of XAdES, CAdES, PAdES and ASiC signatures.</description>
 
 	<dependencies>
 		<dependency>
@@ -20,16 +20,29 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-reports</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>validation-policy</artifactId>
 		</dependency> 
-        		
+		
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
+		</dependency>
+ 		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- Choose your implementation -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
+<!-- 			<artifactId>dss-utils-apache-commons</artifactId> -->
+<!-- 			<scope>test</scope> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-test</artifactId>
+			<artifactId>dss-utils-google-guava</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

@@ -366,6 +366,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		offlineOCSPSource = null;
 	}
 
+	public void resetTimestamps() {
+		signatureTimestamps = null;
+		contentTimestamps = null;
+		archiveTimestamps = null;
+		sigAndRefsTimestamps = null;
+		refsOnlyTimestamps = null;
+	}
+
 	@Override
 	public CandidatesForSigningCertificate getCandidatesForSigningCertificate() {
 		if (candidatesForSigningCertificate != null) {
@@ -625,6 +633,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			if (policyId != null) {
 				// Explicit policy
 				String policyIdString = policyId.getTextContent();
+				if(policyIdString != null && !policyIdString.isEmpty()) {
+					policyIdString = policyIdString.replaceAll("\n", "");
+					policyIdString = policyIdString.trim();
+				}
 				String policyUrlString = null;
 				if (DSSXMLUtils.isOid(policyIdString)) {
 					// urn:oid:1.2.3 --> 1.2.3
@@ -856,15 +868,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * Checks the presence of SignatureTimeStamp segment in the signature, what is the proof -T profile existence
-	 *
-	 * @return
-	 */
-	public boolean hasTProfile() {
-		return DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_TIMESTAMP);
-	}
-
-	/**
 	 * Checks the presence of CompleteCertificateRefs & CompleteRevocationRefs segments in the signature, what is the
 	 * proof -C profile existence
 	 *
@@ -883,41 +886,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public boolean hasXProfile() {
 		return DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_SIG_AND_REFS_TIMESTAMP);
-	}
-
-	/**
-	 * Checks the presence of CertificateValues and RevocationValues segments in the signature, what is the proof -LT
-	 * (or -XL) profile existence
-	 *
-	 * @return true if -LT (or -XL) extension is present
-	 */
-	public boolean hasLTProfile() {
-		final boolean certValues = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_CERTIFICATE_VALUES);
-
-		final boolean revocationValues = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_REVOCATION_VALUES);
-		boolean notEmptyCRL = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ENCAPSULATED_CRL_VALUES);
-		boolean notEmptyOCSP = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_OCSP_VALUES_ENCAPSULATED_OCSP);
-
-		boolean isLTProfile = revocationValues && (notEmptyCRL || notEmptyOCSP);
-		if (!isLTProfile && certValues) {
-			isLTProfile = hasTProfile();
-		}
-
-		return isLTProfile;
-		// return certValues || (revocationValues && (notEmptyCRL || notEmptyOCSP));
-	}
-
-	/**
-	 * Checks the presence of CertificateValues and RevocationValues segments in the signature, what is the proof -LTA
-	 * (or -A) profile existence
-	 *
-	 * @return true if -LTA (or -A) extension is present
-	 */
-	public boolean hasLTAProfile() {
-		final boolean archiveTimestamp = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ARCHIVE_TIMESTAMP);
-		final boolean archiveTimestamp141 = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ARCHIVE_TIMESTAMP_141);
-		final boolean archiveTimestampV2 = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_ARCHIVE_TIMESTAMP_V2);
-		return archiveTimestamp || archiveTimestamp141 || archiveTimestampV2;
 	}
 
 	/**
@@ -1218,7 +1186,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				references.addAll(getTimestampedReferences());
 				timestampToken.setTimestampedReferences(references);
 				sigAndRefsTimestamps.add(timestampToken);
-			} else if (isArchiveTimestamp(localName)) {
+			} else if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
 
 				timestampToken = makeTimestampToken((Element) node, TimestampType.ARCHIVE_TIMESTAMP);
 				if (timestampToken == null) {
@@ -1254,11 +1222,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private ArchiveTimestampType getArchiveTimestampType(final Node node, final String localName) {
-
-		if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP_V2.equals(localName)) {
-			return ArchiveTimestampType.XAdES_141_V2;
-		} else if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
-
+		if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
 			final String namespaceURI = node.getNamespaceURI();
 			if (XAdESNamespaces.XAdES141.equals(namespaceURI)) {
 				return ArchiveTimestampType.XAdES_141;
@@ -1279,17 +1243,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			canonicalizationMethod = canonicalizationMethodElement.getAttribute(XMLE_ALGORITHM);
 		}
 		return canonicalizationMethod;
-	}
-
-	/*
-	 * Returns an unmodifiable list of all certificate tokens encapsulated in the signature
-	 * 
-	 * @see eu.europa.esig.dss.validation.AdvancedSignature#getCertificates()
-	 */
-	@Override
-	public List<CertificateToken> getCertificates() {
-
-		return getCertificateSource().getCertificates();
 	}
 
 	/*
@@ -1802,7 +1755,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				 * satisfy with the rules specified in clause 7.6.4.
 				 */
 				// } else
-				if (isArchiveTimestamp(localName)) {
+				if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
 
 					if ((timestampToken != null) && (timestampToken.getHashCode() == node.hashCode())) {
 						break;
@@ -1901,10 +1854,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final byte[] canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, element);
 			buffer.write(canonicalizedValue);
 		}
-	}
-
-	private boolean isArchiveTimestamp(final String localName) {
-		return XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName) || XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP_V2.equals(localName);
 	}
 
 	@Override
@@ -2034,21 +1983,26 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			break;
 		case XAdES_BASELINE_LTA:
 			dataForLevelPresent = hasLTAProfile();
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_LT);
 			break;
 		case XAdES_BASELINE_LT:
-			dataForLevelPresent &= hasLTProfile();
+			dataForLevelPresent = hasLTProfile();
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_T);
 			break;
 		case XAdES_BASELINE_T:
-			dataForLevelPresent &= hasTProfile();
+			dataForLevelPresent = hasTProfile();
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_B);
 			break;
 		case XAdES_BASELINE_B:
-			dataForLevelPresent &= hasBProfile();
+			dataForLevelPresent = hasBProfile();
 			break;
 		case XAdES_X:
-			dataForLevelPresent &= hasXProfile();
+			dataForLevelPresent = hasXProfile();
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_C);
 			break;
 		case XAdES_C:
-			dataForLevelPresent &= hasCProfile();
+			dataForLevelPresent = hasCProfile();
+			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.XAdES_BASELINE_T);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown level " + signatureLevel);

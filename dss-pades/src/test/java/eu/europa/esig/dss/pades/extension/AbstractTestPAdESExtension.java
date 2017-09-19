@@ -24,50 +24,38 @@ import java.io.File;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.extension.AbstractTestExtension;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.test.mock.MockTSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
 public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<PAdESSignatureParameters> {
 
 	@Override
 	protected DSSDocument getSignedDocument() throws Exception {
-		CertificateService certificateService = new CertificateService();
-		MockPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		DSSDocument document = new FileDocument(new File("src/test/resources/sample.pdf"));
 
 		// Sign
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
-		signatureParameters.setSigningCertificate(entryUserA.getCertificate());
-		signatureParameters.setCertificateChain(entryUserA.getCertificateChain());
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
 
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		PAdESService service = new PAdESService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
+		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 
 		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
-		;
-		SignatureValue signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
-		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
-		return signedDocument;
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
+		return service.signDocument(document, signatureParameters, signatureValue);
 	}
 
 	@Override
 	protected DocumentSignatureService<PAdESSignatureParameters> getSignatureServiceToExtend() throws Exception {
-		PAdESService service = new PAdESService(new CommonCertificateVerifier());
-		CertificateService certificateService = new CertificateService();
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
+		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 		return service;
 	}
 
@@ -76,6 +64,11 @@ public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<P
 		PAdESSignatureParameters extensionParameters = new PAdESSignatureParameters();
 		extensionParameters.setSignatureLevel(getFinalSignatureLevel());
 		return extensionParameters;
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 }

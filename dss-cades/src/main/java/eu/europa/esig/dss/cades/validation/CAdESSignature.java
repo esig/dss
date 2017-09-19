@@ -29,8 +29,6 @@ import static eu.europa.esig.dss.x509.TimestampType.CONTENT_TIMESTAMP;
 import static eu.europa.esig.dss.x509.TimestampType.SIGNATURE_TIMESTAMP;
 import static eu.europa.esig.dss.x509.TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP;
 import static eu.europa.esig.dss.x509.TimestampType.VALIDATION_DATA_TIMESTAMP;
-import static org.bouncycastle.asn1.cms.CMSObjectIdentifiers.id_ri_ocsp_response;
-import static org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers.id_pkix_ocsp_basic;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certificateRefs;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_contentTimestamp;
@@ -112,7 +110,6 @@ import org.bouncycastle.cms.SignerInformationVerifier;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.tsp.TimeStampToken;
-import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -468,11 +465,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		// Validation of the hash is sufficient
 		return hashEqual;
-	}
-
-	@Override
-	public List<CertificateToken> getCertificates() {
-		return getCertificateSource().getCertificates();
 	}
 
 	@Override
@@ -1632,7 +1624,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		boolean dataForProfilePresent = true;
 		switch (signatureLevel) {
 		case CAdES_BASELINE_LTA:
-			dataForProfilePresent = unsignedAttributes.get(id_aa_ets_archiveTimestampV3) != null;
+			dataForProfilePresent = hasLTAProfile();
 			// c &= fct() will process fct() all time ; c = c && fct() will process fct() only if c is true
 			dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_LT);
 			break;
@@ -1642,16 +1634,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_101733_X);
 			break;
 		case CAdES_BASELINE_LT:
-			List<CertificateToken> encapsulatedCertificates = getCertificateSource().getEncapsulatedCertificates();
-			int certificateStoreSize = encapsulatedCertificates.size();
-			Store crlStore = cmsSignedData.getCRLs();
-			int crlStoreSize = crlStore.getMatches(null).size();
-			Store ocspStore = cmsSignedData.getOtherRevocationInfo(id_ri_ocsp_response);
-			int ocspStoreSize = ocspStore.getMatches(null).size();
-			Store ocspBasicStore = cmsSignedData.getOtherRevocationInfo(id_pkix_ocsp_basic);
-			int basicOcspStoreSize = ocspBasicStore.getMatches(null).size();
-			int ltInfoSize = certificateStoreSize + crlStoreSize + ocspStoreSize + basicOcspStoreSize;
-			dataForProfilePresent = (ltInfoSize > 0);
+			dataForProfilePresent = hasLTProfile();
 			dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_T);
 			break;
 		case CAdES_101733_X:
@@ -1663,7 +1646,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_T);
 			break;
 		case CAdES_BASELINE_T:
-			dataForProfilePresent = unsignedAttributes.get(id_aa_signatureTimeStampToken) != null;
+			dataForProfilePresent = hasTProfile();
 			dataForProfilePresent = dataForProfilePresent && isDataForSignatureLevelPresent(SignatureLevel.CAdES_BASELINE_B);
 			break;
 		case CAdES_BASELINE_B:
