@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 
@@ -45,6 +46,10 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	@Override
 	public final OCSPToken getOCSPToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		final List<BasicOCSPResp> containedOCSPResponses = getContainedOCSPResponses();
+		if (Utils.isCollectionEmpty(containedOCSPResponses)) {
+			return null;
+		}
+
 		if (LOG.isTraceEnabled()) {
 			final String dssIdAsString = certificateToken.getDSSIdAsString();
 			LOG.trace("--> OfflineOCSPSource queried for " + dssIdAsString + " contains: " + containedOCSPResponses.size() + " element(s).");

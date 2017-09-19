@@ -65,14 +65,10 @@ public class XAdES122XPathQueryHolder extends XPathQueryHolder {
 		XPATH__CERT_DIGEST_DIGEST_METHOD = "./xades122:CertDigest/ds:DigestMethod";
 		XPATH__CERT_DIGEST_DIGEST_VALUE = "./xades122:CertDigest/ds:DigestValue";
 
-		// Level -B
-		XPATH_COUNT_SIGNED_SIGNATURE_PROPERTIES = "count(" + XPATH_SIGNED_SIGNATURE_PROPERTIES + ")";
 	}
 
 	@Override
 	public boolean canUseThisXPathQueryHolder(final String namespace) {
-
-		boolean canUse = XAdESNamespaces.XAdES122.equals(namespace);
-		return canUse;
+		return XAdESNamespaces.XAdES122.equals(namespace);
 	}
 }

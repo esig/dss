@@ -28,9 +28,6 @@ import static eu.europa.esig.dss.x509.TimestampType.SIGNATURE_TIMESTAMP;
 import static eu.europa.esig.dss.xades.ProfileParameters.Operation.SIGNING;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -207,7 +204,9 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * @param parentDom
 	 * @param toIncludeCertificates
 	 */
-	protected void incorporateCertificateValues(final Element parentDom, final List<CertificateToken> toIncludeCertificates) {
+	protected void incorporateCertificateValues(final Element parentDom, final ValidationContext validationContext) {
+
+		final Set<CertificateToken> toIncludeCertificates = xadesSignature.getCertificatesForInclusion(validationContext);
 
 		// <xades:CertificateValues>
 		// ...<xades:EncapsulatedX509Certificate>MIIC9TC...
@@ -233,19 +232,6 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 				LOG.warn("The trust anchor is missing but its inclusion is required by the signature policy!");
 			}
 		}
-	}
-
-	public Set<CertificateToken> getCertificatesForInclusion(final ValidationContext validationContext) {
-
-		final Set<CertificateToken> certificates = new HashSet<CertificateToken>();
-		final List<CertificateToken> certWithinSignatures = xadesSignature.getCertificates();
-		for (final CertificateToken certificateToken : validationContext.getProcessedCertificates()) {
-			if (certWithinSignatures.contains(certificateToken)) {
-				continue;
-			}
-			certificates.add(certificateToken);
-		}
-		return certificates;
 	}
 
 	/**
@@ -317,21 +303,6 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		final Element encapsulatedTimeStampDom = DomUtils.addElement(documentDom, timeStampDom, XAdES, XADES_ENCAPSULATED_TIME_STAMP);
 		encapsulatedTimeStampDom.setAttribute(ID, "ETS-" + timestampId);
 		DomUtils.setTextNode(documentDom, encapsulatedTimeStampDom, base64EncodedTimeStampToken);
-	}
-
-	protected List<CertificateToken> getToIncludeCertificateTokens(final ValidationContext valContext) {
-
-		// if the certificate is already present within the KeyInfo then it is ignored.
-		final Set<CertificateToken> processedCertificates = valContext.getProcessedCertificates();
-		final List<CertificateToken> keyInfoCertificates = xadesSignature.getKeyInfoCertificates();
-		final List<CertificateToken> toIncludeCertificates = new ArrayList<CertificateToken>();
-		for (final CertificateToken processedCertificate : processedCertificates) {
-
-			if (!keyInfoCertificates.contains(processedCertificate)) {
-				toIncludeCertificates.add(processedCertificate);
-			}
-		}
-		return toIncludeCertificates;
 	}
 
 }

@@ -289,18 +289,6 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * Gets the ASN.1 algorithm identifier structure corresponding to a signature algorithm
-	 *
-	 * @return the AlgorithmIdentifier
-	 */
-	public static AlgorithmIdentifier getAlgorithmIdentifier(SignatureAlgorithm signatureAlgorithm) {
-		final String jceId = signatureAlgorithm.getJCEId();
-		final ASN1ObjectIdentifier asn1ObjectIdentifier = new ASN1ObjectIdentifier(jceId);
-		final AlgorithmIdentifier algorithmIdentifier = new AlgorithmIdentifier(asn1ObjectIdentifier, DERNull.INSTANCE);
-		return algorithmIdentifier;
-	}
-
-	/**
 	 * Gets the ASN.1 algorithm identifier structure corresponding to a digest algorithm
 	 *
 	 * @return the AlgorithmIdentifier
@@ -625,7 +613,7 @@ public final class DSSASN1Utils {
 				return true;
 			}
 		} catch (CertificateParsingException e) {
-			LOG.warn(e.getMessage());
+			LOG.error(e.getMessage(), e);
 		}
 		return false;
 	}
@@ -744,25 +732,14 @@ public final class DSSASN1Utils {
 				 * U+003C, U+003D, U+003E, U+005C, respectively)
 				 *
 				 * it can be prefixed by a backslash ('\' U+005C).
-				 * ...
 				 */
-				string = string.replace("\"", "\\\"");
-				string = string.replace("#", "\\#");
-				string = string.replace("+", "\\+");
-				string = string.replace(",", "\\,");
-				string = string.replace(";", "\\;");
-				string = string.replace("<", "\\<");
-				string = string.replace("=", "\\=");
-				string = string.replace(">", "\\>");
-				// System.out.println(">>> " + attributeType.toString() + "=" +
-				// attributeValue.getClass().getSimpleName() + "[" + string + "]");
+				string = Rdn.escapeValue(string);
 				if (stringBuilder.length() != 0) {
 					stringBuilder.append(',');
 				}
 				stringBuilder.append(attributeType).append('=').append(string);
 			}
 		}
-		// final X500Name x500Name = X500Name.getInstance(encoded);
 		return stringBuilder.toString();
 	}
 

@@ -21,7 +21,6 @@
 package eu.europa.esig.dss;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -82,6 +81,8 @@ public class BLevelParameters implements Serializable {
 	}
 
 	/**
+	 * Get the signature policy
+	 * 
 	 * @return the signature policy to use during the signature creation process
 	 */
 	public Policy getSignaturePolicy() {
@@ -101,7 +102,7 @@ public class BLevelParameters implements Serializable {
 	/**
 	 * Get the signing date
 	 *
-	 * @return the value
+	 * @return the signing date
 	 */
 	public Date getSigningDate() {
 		return signingDate;
@@ -111,94 +112,71 @@ public class BLevelParameters implements Serializable {
 	 * Set the signing date
 	 *
 	 * @param signingDate
-	 *            the value
+	 *            the signing date
 	 */
 	public void setSigningDate(final Date signingDate) {
 		this.signingDate = signingDate;
 	}
 
+	/**
+	 * Set a list of claimed signer roles
+	 * 
+	 * @param claimedSignerRoles
+	 *            a list of claimed signer roles
+	 */
 	public void setClaimedSignerRoles(List<String> claimedSignerRoles) {
 		this.claimedSignerRoles = claimedSignerRoles;
 	}
 
 	/**
-	 * Get claimed role
+	 * Get claimed roles
 	 *
-	 * @return the value
+	 * @return the list of claimed roles
 	 */
 	public List<String> getClaimedSignerRoles() {
 		return claimedSignerRoles;
 	}
 
 	/**
-	 * Adds a claimed signer role
-	 *
-	 * @param claimedSignerRole
-	 *            the value
+	 * Set a list of certified signer roles
+	 * 
+	 * @param certifiedSignerRoles
+	 *            a list of certified signer roles
 	 */
-	public void addClaimedSignerRole(final String claimedSignerRole) {
-		if ((claimedSignerRole == null) || (claimedSignerRole.length() == 0)) {
-			throw new NullPointerException("claimedSignerRole");
-		}
-		if (claimedSignerRoles == null) {
-			claimedSignerRoles = new ArrayList<String>();
-		}
-		claimedSignerRoles.add(claimedSignerRole);
-	}
-
 	public void setCertifiedSignerRoles(List<String> certifiedSignerRoles) {
 		this.certifiedSignerRoles = certifiedSignerRoles;
 	}
 
+	/**
+	 * Get certified roles
+	 *
+	 * @return the list of certified roles
+	 */
 	public List<String> getCertifiedSignerRoles() {
 		return certifiedSignerRoles;
 	}
 
 	/**
-	 * Adds a certified signer role
-	 *
-	 * @param certifiedSignerRole
-	 *            the value
-	 */
-	public void addCertifiedSignerRole(final String certifiedSignerRole) {
-		throw new DSSException("eu.europa.esig.dss.BLevelParameters.addCertifiedSignerRole");
-	}
-
-	/**
-	 * ETSI TS 101 733 V2.2.1 (2013-04)
-	 * 5.11.1 commitment-type-indication Attribute
-	 * There may be situations where a signer wants to explicitly indicate to a verifier that by signing the data, it
-	 * illustrates a
-	 * type of commitment on behalf of the signer. The commitment-type-indication attribute conveys such
-	 * information.
+	 * Get the commitment type indications
+	 * 
+	 * @return the list of commitment type indications
 	 */
 	public List<String> getCommitmentTypeIndications() {
 		return commitmentTypeIndications;
 	}
 
+	/**
+	 * Set the commitment type indications
+	 * 
+	 * @param commitmentTypeIndications
+	 *            a list of commitment type indications
+	 */
 	public void setCommitmentTypeIndications(List<String> commitmentTypeIndications) {
 		this.commitmentTypeIndications = commitmentTypeIndications;
 	}
 
 	/**
-	 * ETSI TS 101 733 V2.2.1 (2013-04)
-	 * 5.11.2 signer-location Attribute
-	 * The signer-location attribute specifies a mnemonic for an address associated with the signer at a particular
-	 * geographical (e.g. city) location. The mnemonic is registered in the country in which the signer is located and
-	 * is used in
-	 * the provision of the Public Telegram Service (according to Recommendation ITU-T F.1 [11]).
-	 * The signer-location attribute shall be a signed attribute.
-	 * The following object identifier identifies the signer-location attribute:
-	 * id-aa-ets-signerLocation OBJECT IDENTIFIER ::= { iso(1) member-body(2)
-	 * us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) id-aa(2) 17}
-	 * Signer-location attribute values have ASN.1 type SignerLocation:
-	 * SignerLocation ::= SEQUENCE { -- at least one of the following shall be present:
-	 * countryName [0] DirectoryString OPTIONAL,
-	 * -- As used to name a Country in X.500
-	 * localityName [1] DirectoryString OPTIONAL,
-	 * -- As used to name a locality in X.500
-	 * postalAdddress [2] PostalAddress OPTIONAL }
-	 * PostalAddress ::= SEQUENCE SIZE(1..6) OF DirectoryString
+	 * Get the signer location
 	 *
 	 * @return the location
 	 */
@@ -207,6 +185,8 @@ public class BLevelParameters implements Serializable {
 	}
 
 	/**
+	 * Set the signer location
+	 * 
 	 * @param signerLocation
 	 *            the location to set
 	 */

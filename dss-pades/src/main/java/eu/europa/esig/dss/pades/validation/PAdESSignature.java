@@ -290,11 +290,6 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public List<CertificateToken> getCertificates() {
-		return getCertificateSource().getCertificates();
-	}
-
-	@Override
 	public void checkSignatureIntegrity() {
 		super.checkSignatureIntegrity();
 	}
@@ -419,28 +414,28 @@ public class PAdESSignature extends CAdESSignature {
 		case PDF_NOT_ETSI:
 			break;
 		case PAdES_BASELINE_LTA:
-			dataForLevelPresent = Utils.isCollectionNotEmpty(getArchiveTimestamps());
+			dataForLevelPresent = hasLTAProfile();
 			// c &= fct() will process fct() all time ; c = c && fct() will process fct() only if c is true
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_LT);
 			break;
 		case PKCS7_LTA:
-			dataForLevelPresent = Utils.isCollectionNotEmpty(getArchiveTimestamps());
+			dataForLevelPresent = hasLTAProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_LT);
 			break;
 		case PAdES_BASELINE_LT:
-			dataForLevelPresent = hasDSSDictionary();
+			dataForLevelPresent = hasLTProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_T);
 			break;
 		case PKCS7_LT:
-			dataForLevelPresent = hasDSSDictionary();
+			dataForLevelPresent = hasLTProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_T);
 			break;
 		case PAdES_BASELINE_T:
-			dataForLevelPresent = Utils.isCollectionNotEmpty(getSignatureTimestamps());
+			dataForLevelPresent = hasTProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_B);
 			break;
 		case PKCS7_T:
-			dataForLevelPresent = Utils.isCollectionNotEmpty(getSignatureTimestamps());
+			dataForLevelPresent = hasTProfile();
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_B);
 			break;
 		case PAdES_BASELINE_B:
@@ -461,10 +456,6 @@ public class PAdESSignature extends CAdESSignature {
 		return new SignatureLevel[] { SignatureLevel.PDF_NOT_ETSI, SignatureLevel.PAdES_BASELINE_B, SignatureLevel.PKCS7_B, SignatureLevel.PAdES_BASELINE_T,
 				SignatureLevel.PKCS7_T, SignatureLevel.PAdES_BASELINE_LT, SignatureLevel.PKCS7_LT, SignatureLevel.PAdES_BASELINE_LTA,
 				SignatureLevel.PKCS7_LTA };
-	}
-
-	private boolean hasDSSDictionary() {
-		return pdfSignatureInfo.getDssDictionary() != null;
 	}
 
 	@Override

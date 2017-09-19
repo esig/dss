@@ -32,7 +32,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.crl.CRLToken;
 import eu.europa.esig.dss.x509.ocsp.OCSPToken;
@@ -66,13 +65,15 @@ public class XAdESLevelXL extends XAdESLevelX {
 
 		if (!xadesSignature.hasLTProfile() || SignatureLevel.XAdES_XL.equals(params.getSignatureLevel())) {
 
+			// Timestamps can already be loaded in memory (force reload)
+			xadesSignature.resetTimestamps();
+
 			final ValidationContext valContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
 
 			removeOldCertificateValues();
 			removeOldRevocationValues();
 
-			final List<CertificateToken> toIncludeCertificateTokens = getToIncludeCertificateTokens(valContext);
-			incorporateCertificateValues(unsignedSignaturePropertiesDom, toIncludeCertificateTokens);
+			incorporateCertificateValues(unsignedSignaturePropertiesDom, valContext);
 			incorporateRevocationValues(unsignedSignaturePropertiesDom, valContext);
 
 			/**

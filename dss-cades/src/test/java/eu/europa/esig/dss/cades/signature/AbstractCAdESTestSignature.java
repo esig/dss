@@ -13,10 +13,10 @@ import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
+import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 
-public abstract class AbstractCAdESTestSignature extends AbstractTestDocumentSignatureService<CAdESSignatureParameters> {
+public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters> {
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {

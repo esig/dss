@@ -8,47 +8,37 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.test.TestUtils;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.test.mock.MockTSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 
-public class PAdESLTACheckTimeStampIDTest {
+public class PAdESLTACheckTimeStampIDTest extends PKIFactoryAccess {
 
 	@Test
 	public void test() throws Exception {
 		DSSDocument documentToSign = new FileDocument(new File("src/test/resources/sample.pdf"));
 
-		CertificateService certificateService = new CertificateService();
-		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
-
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
-		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		PAdESService service = new PAdESService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
+		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 
 		ToBeSigned toBeSigned = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = TestUtils.sign(signatureParameters.getSignatureAlgorithm(), privateKeyEntry, toBeSigned);
+		SignatureValue signatureValue = getToken().sign(toBeSigned, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		final DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		Reports report = validator.validateDocument();
 		// report.print();
@@ -57,5 +47,10 @@ public class PAdESLTACheckTimeStampIDTest {
 		for (TimestampWrapper wrapper : diagnostic.getTimestampList(signatureId)) {
 			Assert.assertEquals(signatureId, wrapper.getSignedObjects().getSignedSignature().get(0).getId());
 		}
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 }
