@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
@@ -78,9 +79,10 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
 		Assert.assertEquals(1, results.size());
 
-		String firstDocument = new String(HELLO_WORLD.getBytes());
-		String secondDocument = new String(Utils.toByteArray(results.get(0).openStream()));
-		Assert.assertEquals(firstDocument, secondDocument);
+		String digest = document.getDigest(DigestAlgorithm.SHA256);
+		String digest2 = results.get(0).getDigest(DigestAlgorithm.SHA256);
+
+		Assert.assertEquals(digest, digest2);
 	}
 
 	@Test(expected = DSSException.class)

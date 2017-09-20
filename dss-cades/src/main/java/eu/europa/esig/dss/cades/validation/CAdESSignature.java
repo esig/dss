@@ -1385,15 +1385,14 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return archiveTimestampData;
 	}
 
-	private InputStream getOriginalDocumentStream() throws DSSException {
+	public InputStream getOriginalDocumentStream() throws DSSException {
 		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
 		if (signedContent != null) {
 			return new ByteArrayInputStream(CMSUtils.getSignedContent(signedContent));
+		} else if (Utils.collectionSize(detachedContents) == 1) {
+			return detachedContents.get(0).openStream();
 		} else {
-			if (Utils.isCollectionNotEmpty(detachedContents)) {
-				return detachedContents.get(0).openStream();
-			}
-			return new ByteArrayInputStream(DSSUtils.EMPTY_BYTE_ARRAY);
+			throw new DSSException("Only enveloping and detached signatures are supported");
 		}
 	}
 

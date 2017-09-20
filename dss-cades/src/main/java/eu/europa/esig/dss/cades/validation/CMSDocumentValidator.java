@@ -24,20 +24,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.util.encoders.Base64;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -49,7 +45,6 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 public class CMSDocumentValidator extends SignedDocumentValidator {
 
 	protected CMSSignedData cmsSignedData;
-	private static final String BASE64_REGEX = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$";
 
 	/**
 	 * This constructor is used with {@code TimeStampToken}.
@@ -126,26 +121,11 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 			cadesSignature.setSignatureFilename(document.getName());
 			cadesSignature.setDetachedContents(detachedContents);
 			cadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
-			if (cadesSignature.getId().equals(signatureId)) {
-				if (!cadesSignature.getDetachedContents().isEmpty()) {
-					throw new DSSException("The signature must be an enveloping signature");
-				}
-				byte[] content = CMSUtils.getSignedContent(cmsSignedData.getSignedContent());
-				content = isBase64Encoded(content) ? Base64.decode(content) : content;
-				results.add(new InMemoryDocument(content));
+			if (Utils.areStringsEqual(cadesSignature.getId(), signatureId)) {
+				results.add(new InMemoryDocument(cadesSignature.getOriginalDocumentStream()));
 			}
 		}
 		return results;
-	}
-
-	private boolean isBase64Encoded(byte[] array) {
-		return isBase64Encoded(new String(array));
-	}
-
-	private boolean isBase64Encoded(String text) {
-		Pattern pattern = Pattern.compile(BASE64_REGEX);
-		Matcher matcher = pattern.matcher(text);
-		return matcher.matches();
 	}
 
 }
