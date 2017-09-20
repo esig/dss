@@ -119,6 +119,26 @@ public abstract class AbstractTestCRLUtils {
 	}
 
 	@Test
+	public void testGetExpiredCertsOnCRLUTCTime() throws Exception {
+		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/crl-expiredCertsOnCRL-UTCTime.crl");
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
+
+			CertificateToken certificateToken = loadCert(isCer);
+			CRLValidity validCRL = CRLUtils.isValidCRL(is, certificateToken);
+
+			assertEquals(SignatureAlgorithm.RSA_SHA256, validCRL.getSignatureAlgorithm());
+			assertNotNull(validCRL.getThisUpdate());
+			assertNotNull(validCRL.getNextUpdate());
+			assertNotNull(validCRL.getExpiredCertsOnCRL());
+			assertNull(validCRL.getUrl());
+
+			assertFalse(validCRL.isIssuerX509PrincipalMatches());
+			assertFalse(validCRL.isSignatureIntact());
+			assertFalse(validCRL.isValid());
+		}
+	}
+
+	@Test
 	public void retrieveRevocation() throws Exception {
 		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/http___crl.globalsign.com_gs_gspersonalsign2sha2g2.crl");
 				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {

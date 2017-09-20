@@ -2,16 +2,17 @@ package eu.europa.esig.dss.crl;
 
 import java.util.Collection;
 
-import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1String;
+import org.bouncycastle.asn1.ASN1UTCTime;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.x509.DistributionPointName;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuingDistributionPoint;
 import org.bouncycastle.asn1.x509.ReasonFlags;
+import org.bouncycastle.asn1.x509.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,8 +24,11 @@ public abstract class AbstractCRLUtils {
 		if (expiredCertsOnCRLBinaries != null) {
 			try {
 				ASN1OctetString octetString = (ASN1OctetString) ASN1Primitive.fromByteArray(expiredCertsOnCRLBinaries);
-				ASN1GeneralizedTime generalTime = (ASN1GeneralizedTime) ASN1Primitive.fromByteArray(octetString.getOctets());
-				validity.setExpiredCertsOnCRL(generalTime.getDate());
+				Time time = Time.getInstance(ASN1Primitive.fromByteArray(octetString.getOctets()));
+				if (time != null && (time.toASN1Primitive() instanceof ASN1UTCTime)) {
+					LOG.warn("expiredCertsOnCRL should be ASN.1 GeneralizedTime");
+				}
+				validity.setExpiredCertsOnCRL(time.getDate());
 			} catch (Exception e) {
 				LOG.error("Unable to parse expiredCertsOnCRL on CRL : " + e.getMessage(), e);
 			}
