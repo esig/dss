@@ -129,7 +129,7 @@ public abstract class AbstractTestCRLUtils {
 			assertEquals(SignatureAlgorithm.RSA_SHA256, validCRL.getSignatureAlgorithm());
 			assertNotNull(validCRL.getThisUpdate());
 			assertNotNull(validCRL.getNextUpdate());
-			assertNotNull(validCRL.getExpiredCertsOnCRL());
+			assertNull(validCRL.getExpiredCertsOnCRL()); // Ignored
 			assertNull(validCRL.getUrl());
 
 			assertFalse(validCRL.isIssuerX509PrincipalMatches());

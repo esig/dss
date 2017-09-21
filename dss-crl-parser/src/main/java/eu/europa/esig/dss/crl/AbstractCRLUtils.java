@@ -2,10 +2,10 @@ package eu.europa.esig.dss.crl;
 
 import java.util.Collection;
 
+import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1String;
-import org.bouncycastle.asn1.ASN1UTCTime;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.x509.DistributionPointName;
 import org.bouncycastle.asn1.x509.GeneralName;
@@ -25,10 +25,11 @@ public abstract class AbstractCRLUtils {
 			try {
 				ASN1OctetString octetString = (ASN1OctetString) ASN1Primitive.fromByteArray(expiredCertsOnCRLBinaries);
 				Time time = Time.getInstance(ASN1Primitive.fromByteArray(octetString.getOctets()));
-				if (time != null && (time.toASN1Primitive() instanceof ASN1UTCTime)) {
-					LOG.warn("expiredCertsOnCRL should be ASN.1 GeneralizedTime");
+				if (time != null && time.toASN1Primitive() instanceof ASN1GeneralizedTime) {
+					validity.setExpiredCertsOnCRL(time.getDate());
+				} else {
+					LOG.warn("Attribute 'expiredCertsOnCRL' found but ignored (should be encoded as ASN.1 GeneralizedTime)");
 				}
-				validity.setExpiredCertsOnCRL(time.getDate());
 			} catch (Exception e) {
 				LOG.error("Unable to parse expiredCertsOnCRL on CRL : " + e.getMessage(), e);
 			}
