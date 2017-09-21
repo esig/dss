@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.xades.signature;
+package known.issues;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,6 +28,8 @@ import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.signature.TimestampService;
+import eu.europa.esig.dss.xades.signature.XAdESService;
 
 public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
 

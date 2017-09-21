@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -271,7 +272,6 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 				default:
 					break;
 				}
-
 			}
 		}
 
@@ -285,6 +285,15 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 		if (isBaselineLTA()) {
 			assertTrue(foundArchiveTimeStamp);
+		}
+
+		Set<TimestampWrapper> allTimestamps = diagnosticData.getAllTimestamps();
+		for (TimestampWrapper timestampWrapper : allTimestamps) {
+			assertNotNull(timestampWrapper.getProductionTime());
+			assertTrue(timestampWrapper.isMessageImprintDataFound());
+			assertTrue(timestampWrapper.isMessageImprintDataIntact());
+			assertTrue(timestampWrapper.isSignatureValid());
+			assertTrue(timestampWrapper.isSignatureIntact());
 		}
 	}
 

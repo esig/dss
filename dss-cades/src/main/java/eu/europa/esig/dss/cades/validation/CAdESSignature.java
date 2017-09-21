@@ -759,32 +759,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public byte[] getContentTimestampData(final TimestampToken timestampToken) {
-
-		final ContentInfo contentInfo = cmsSignedData.toASN1Structure();
-		final SignedData signedData = SignedData.getInstance(contentInfo.getContent());
-
-		ContentInfo content = signedData.getEncapContentInfo();
-		if ((content == null) || (content.getContent() == null)) {
-
-			// Detached signatures have either no encapContentInfo in
-			// signedData, or it exists but has no eContent
-			byte[] originalDocumentBytes;
-			try {
-				originalDocumentBytes = Utils.toByteArray(getOriginalDocumentStream());
-			} catch (IOException e) {
-				throw new DSSException(e);
-			}
-			if (originalDocumentBytes != null) {
-
-				return originalDocumentBytes;
-			} else {
-				LOG.error("No original data provided for content timestamp!");
-				return DSSUtils.EMPTY_BYTE_ARRAY;
-			}
-		} // else {
-
-		ASN1OctetString octet = (ASN1OctetString) content.getContent();
-		return octet.getOctets();
+		return getOriginalDocumentBinaries();
 	}
 
 	@Override
@@ -1378,11 +1353,20 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final CadesLevelBaselineLTATimestampExtractor timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(this);
 		final Attribute atsHashIndexAttribute = timestampExtractor.getVerifiedAtsHashIndex(signerInformation, timestampToken);
 
-		InputStream originalDocumentBytes = getOriginalDocumentStream();
+		byte[] originalDocumentBytes = getOriginalDocumentBinaries();
 		final DigestAlgorithm signedDataDigestAlgorithm = timestampToken.getSignedDataDigestAlgo();
-		byte[] archiveTimestampData = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentBytes,
-				signedDataDigestAlgorithm);
+		byte[] originalDocumentDigest = DSSUtils.digest(signedDataDigestAlgorithm, originalDocumentBytes);
+		byte[] archiveTimestampData = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentDigest);
 		return archiveTimestampData;
+	}
+
+	public byte[] getOriginalDocumentBinaries() {
+		try (InputStream is = getOriginalDocumentStream()) {
+			return Utils.toByteArray(is);
+		} catch (Exception e) {
+			LOG.warn("Unable to retrieve original document binaries", e);
+			return DSSUtils.EMPTY_BYTE_ARRAY;
+		}
 	}
 
 	public InputStream getOriginalDocumentStream() throws DSSException {
@@ -1444,9 +1428,10 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				 * Detached signatures have either no encapContentInfo in
 				 * signedData, or it exists but has no eContent
 				 */
-				if (getOriginalDocumentStream() != null) {
+				byte[] originalDocumentBinaries = getOriginalDocumentBinaries();
+				if (Utils.isArrayNotEmpty(originalDocumentBinaries)) {
 					data.write(content.toASN1Primitive().getEncoded());
-					Utils.copy(getOriginalDocumentStream(), data);
+					data.write(originalDocumentBinaries);
 				} else {
 					throw new DSSException("Signature is detached and no original data provided.");
 				}

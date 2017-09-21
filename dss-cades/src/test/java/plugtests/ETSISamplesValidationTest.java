@@ -14,6 +14,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -32,7 +33,7 @@ public class ETSISamplesValidationTest {
 	@Parameters(name = "Validation {index} : {0}")
 	public static Collection<Object[]> data() {
 		File folder = new File("src/test/resources/plugtest");
-		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "p7", "p7b", "p7m", "p7s", "pkcs7", "csig", }, true);
+		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "p7", "p7b", "p7m", "p7s", "pkcs7", "csig" }, true);
 		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
 		for (File file : listFiles) {
 			dataToRun.add(new Object[] { file });
@@ -49,7 +50,9 @@ public class ETSISamplesValidationTest {
 	@Test
 	public void testValidate() {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(fileToTest));
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
 
 		Reports validateDocument = validator.validateDocument();
 		assertNotNull(validateDocument);
