@@ -23,31 +23,13 @@
 				<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='COUNTER_SIGNATURE']"/>
 				<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='TIMESTAMP']"/>
 				<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='REVOCATION']"/>
+				
+				<xsl:apply-templates select="dss:TLAnalysis" />
 			</div>
 	    </div>
 	    		
-   		<xsl:apply-templates select="dss:QMatrixBlock"/>
     </xsl:template>
 
-    <xsl:template match="dss:QMatrixBlock">
-	    <div>
-    		<xsl:attribute name="class">panel panel-primary</xsl:attribute>
-	   		<div>
-	   			<xsl:attribute name="class">panel-heading</xsl:attribute>
-	    		<xsl:attribute name="data-target">#collapseQmatrix</xsl:attribute>
-		       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
-		       	Qualification (ETSI TS 119 172-4)
-		    </div>
-		    <div>
-				<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
-		        <xsl:attribute name="id">collapseQmatrix</xsl:attribute>
-		        
-				<xsl:apply-templates select="dss:TLAnalysis" />
-				<xsl:apply-templates select="dss:SignatureAnalysis" />
-			</div>
-		</div>
-	</xsl:template>
-	
 	<xsl:template match="dss:Signatures">
 		<div>
 			<xsl:attribute name="class">panel panel-primary</xsl:attribute>
@@ -65,6 +47,8 @@
 					<xsl:call-template name="TimestampValidation" />
 					<xsl:apply-templates select="dss:ValidationProcessLongTermData" />
 					<xsl:apply-templates select="dss:ValidationProcessArchivalData" />
+   					
+   					<xsl:apply-templates select="dss:ValidationSignatureQualification"/>
 				</div>
 			</xsl:if>
 		</div>
@@ -329,7 +313,7 @@
     	</div>
     </xsl:template>
     
-    <xsl:template match="dss:SignatureAnalysis">
+    <xsl:template match="dss:ValidationSignatureQualification">
     	<div>
 	    	<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
 	        <xsl:variable name="indicationCssClass">
@@ -364,7 +348,7 @@
 						<xsl:value-of select="@SignatureQualification"/>	       			
 	       			</span>
 			        
-	    			Signature <xsl:value-of select="@Id"/>
+		       		Qualification (ETSI TS 119 172-4)
 		        </div>
 	    		<div>
 	    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>

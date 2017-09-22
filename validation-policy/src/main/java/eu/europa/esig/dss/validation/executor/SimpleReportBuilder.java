@@ -36,11 +36,10 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlQMatrixBlock;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.jaxb.simplereport.XmlCertificate;
@@ -192,22 +191,19 @@ public class SimpleReportBuilder {
 		Set<String> warnList = new HashSet<String>();
 		Set<String> infoList = new HashSet<String>();
 
-		XmlQMatrixBlock qmatrixBlock = detailedReport.getQMatrixBlock();
-		if (qmatrixBlock != null) {
-			List<XmlTLAnalysis> tlAnalysis = qmatrixBlock.getTLAnalysis();
+		XmlValidationSignatureQualification signQualBlock = xmlSig.getValidationSignatureQualification();
+		if (signQualBlock != null) {
+			List<XmlTLAnalysis> tlAnalysis = detailedReport.getTLAnalysis();
 			for (XmlTLAnalysis xmlTLAnalysis : tlAnalysis) {
 				collectErrors(errorList, xmlTLAnalysis);
 				collectWarnings(warnList, xmlTLAnalysis);
 				collectInfos(infoList, xmlTLAnalysis);
 			}
-			List<XmlSignatureAnalysis> signatureAnalysis = qmatrixBlock.getSignatureAnalysis();
-			for (XmlSignatureAnalysis analysis : signatureAnalysis) {
-				if (Utils.areStringsEqual(analysis.getId(), signatureId)) {
-					collectErrors(errorList, analysis);
-					collectWarnings(warnList, analysis);
-					collectInfos(infoList, analysis);
-				}
-			}
+
+			collectErrors(errorList, signQualBlock);
+			collectWarnings(warnList, signQualBlock);
+			collectInfos(infoList, signQualBlock);
+
 		}
 
 		List<XmlName> errors = conclusion.getErrors();
@@ -236,7 +232,7 @@ public class SimpleReportBuilder {
 		}
 		xmlSignature.setSubIndication(conclusion.getSubIndication());
 
-		addSignatureProfile(signature, xmlSignature);
+		addSignatureProfile(signQualBlock, xmlSignature);
 
 		XmlBasicBuildingBlocks signatureBasicBuildingBlock = getBasicBuildingBlockById(signatureId);
 		List<XmlChainItem> chainItems = signatureBasicBuildingBlock.getCertificateChain().getChainItem();
@@ -447,16 +443,9 @@ public class SimpleReportBuilder {
 		return "?";
 	}
 
-	private void addSignatureProfile(SignatureWrapper signature, final XmlSignature xmlSignature) {
-		XmlQMatrixBlock qmatrixBlock = detailedReport.getQMatrixBlock();
-		if (qmatrixBlock != null) {
-			SignatureQualification qualification = null;
-			List<XmlSignatureAnalysis> signatureAnalysis = qmatrixBlock.getSignatureAnalysis();
-			for (XmlSignatureAnalysis xmlSignatureAnalysis : signatureAnalysis) {
-				if (Utils.areStringsEqual(xmlSignatureAnalysis.getId(), signature.getId())) {
-					qualification = xmlSignatureAnalysis.getSignatureQualification();
-				}
-			}
+	private void addSignatureProfile(XmlValidationSignatureQualification signQualificationBlock, final XmlSignature xmlSignature) {
+		if (signQualificationBlock != null) {
+			SignatureQualification qualification = signQualificationBlock.getSignatureQualification();
 			if (qualification != null) {
 				XmlSignatureLevel sigLevel = new XmlSignatureLevel();
 				sigLevel.setValue(qualification);
