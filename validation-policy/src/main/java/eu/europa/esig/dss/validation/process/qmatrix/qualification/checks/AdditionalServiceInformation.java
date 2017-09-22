@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.process.qmatrix;
+package eu.europa.esig.dss.validation.process.qmatrix.qualification.checks;
 
 import java.util.List;
 
