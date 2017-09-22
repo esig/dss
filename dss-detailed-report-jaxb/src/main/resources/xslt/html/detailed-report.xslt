@@ -304,7 +304,7 @@
 		        </div>
 				<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 		    		<div>
-		    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
+		    			<xsl:attribute name="class">panel-body collapse</xsl:attribute>
 			        	<xsl:attribute name="id">collapseTL<xsl:value-of select="@CountryCode"/></xsl:attribute>
 			        	<xsl:apply-templates/>
 		    		</div>
