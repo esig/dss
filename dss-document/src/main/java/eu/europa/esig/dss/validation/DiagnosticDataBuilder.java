@@ -43,12 +43,10 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedObjects;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
@@ -614,35 +612,30 @@ public class DiagnosticDataBuilder {
 
 		xmlTimestampToken.setSigningCertificate(getXmlSigningCertificate(issuerToken));
 		xmlTimestampToken.setCertificateChain(getXmlForCertificateChain(issuerToken));
-		xmlTimestampToken.setSignedObjects(getXmlSignedObjects(timestampToken.getTimestampedReferences()));
+		xmlTimestampToken.setTimestampedObjects(getXmlTimestampedObjects(timestampToken.getTimestampedReferences()));
 
 		return xmlTimestampToken;
 	}
 
-	private XmlSignedObjects getXmlSignedObjects(List<TimestampReference> timestampReferences) {
+	private List<XmlTimestampedObject> getXmlTimestampedObjects(List<TimestampReference> timestampReferences) {
 		if (Utils.isCollectionNotEmpty(timestampReferences)) {
-			final XmlSignedObjects xmlSignedObjectsType = new XmlSignedObjects();
-			final List<XmlDigestAlgoAndValue> xmlDigestAlgAndValueList = xmlSignedObjectsType.getDigestAlgoAndValues();
+			List<XmlTimestampedObject> objects = new ArrayList<XmlTimestampedObject>();
 			for (final TimestampReference timestampReference : timestampReferences) {
-				final TimestampReferenceCategory timestampedCategory = timestampReference.getCategory();
-				if (TimestampReferenceCategory.SIGNATURE.equals(timestampedCategory)) {
+				XmlTimestampedObject timestampedObject = new XmlTimestampedObject();
 
-					final XmlSignedSignature xmlSignedSignature = new XmlSignedSignature();
-					xmlSignedSignature.setId(timestampReference.getSignatureId());
-					xmlSignedObjectsType.getSignedSignature().add(xmlSignedSignature);
-				} else if (TimestampReferenceCategory.TIMESTAMP.equals(timestampedCategory)) {
-					final XmlTimestampedTimestamp xmlTimestampedTimestamp = new XmlTimestampedTimestamp();
-					xmlTimestampedTimestamp.setId(timestampReference.getSignatureId());
-					xmlSignedObjectsType.getTimestampedTimestamp().add(xmlTimestampedTimestamp);
+				final TimestampedObjectType timestampedCategory = timestampReference.getCategory();
+				timestampedObject.setCategory(timestampReference.getCategory());
+				if (TimestampedObjectType.SIGNATURE == timestampedCategory || TimestampedObjectType.TIMESTAMP == timestampedCategory) {
+					timestampedObject.setId(timestampReference.getSignatureId());
 				} else {
-
-					final XmlDigestAlgoAndValue xmlDigestAlgAndValue = getXmlDigestAlgoAndValue(timestampReference.getDigestAlgorithm(),
-							timestampReference.getDigestValue());
-					xmlDigestAlgAndValue.setCategory(timestampedCategory.name());
-					xmlDigestAlgAndValueList.add(xmlDigestAlgAndValue);
+					// CERTIFICATE || REVOCATION
+					timestampedObject
+							.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(timestampReference.getDigestAlgorithm(), timestampReference.getDigestValue()));
 				}
+
+				objects.add(timestampedObject);
 			}
-			return xmlSignedObjectsType;
+			return objects;
 		}
 		return null;
 	}

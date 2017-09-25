@@ -140,7 +140,7 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampReference;
-import eu.europa.esig.dss.validation.TimestampReferenceCategory;
+import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -837,7 +837,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public List<TimestampReference> getTimestampReferencesForArchiveTimestamp(final List<TimestampToken> timestampedTimestamps) {
 		final List<TimestampReference> archiveReferences = getSignatureTimestampedReferences();
 		for (final TimestampToken timestamp : timestampedTimestamps) {
-			archiveReferences.add(new TimestampReference(timestamp.getDSSIdAsString(), TimestampReferenceCategory.TIMESTAMP));
+			archiveReferences.add(new TimestampReference(timestamp.getDSSIdAsString(), TimestampedObjectType.TIMESTAMP));
 		}
 		archiveReferences.addAll(getTimestampedReferences());
 		return archiveReferences;

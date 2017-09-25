@@ -53,7 +53,7 @@ import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.OCSPRef;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampReference;
-import eu.europa.esig.dss.validation.TimestampReferenceCategory;
+import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -250,7 +250,7 @@ public class PAdESSignature extends CAdESSignature {
 				if (timestampToken.getTimeStampType() == TimestampType.ARCHIVE_TIMESTAMP) {
 					final List<TimestampReference> references = getSignatureTimestampedReferences();
 					for (final String timestampId : timestampedTimestamps) {
-						references.add(new TimestampReference(timestampId, TimestampReferenceCategory.TIMESTAMP));
+						references.add(new TimestampReference(timestampId, TimestampedObjectType.TIMESTAMP));
 					}
 					final List<CertificateRef> certRefs = getCertificateRefs();
 					for (final CertificateRef certRef : certRefs) {
@@ -286,7 +286,7 @@ public class PAdESSignature extends CAdESSignature {
 
 	private TimestampReference createCertificateTimestampReference(CertificateRef ref) {
 		usedCertificatesDigestAlgorithms.add(ref.getDigestAlgorithm());
-		return new TimestampReference(ref.getDigestAlgorithm(), Utils.toBase64(ref.getDigestValue()), TimestampReferenceCategory.CERTIFICATE);
+		return new TimestampReference(ref.getDigestAlgorithm(), Utils.toBase64(ref.getDigestValue()), TimestampedObjectType.CERTIFICATE);
 	}
 
 	@Override

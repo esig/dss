@@ -8,20 +8,20 @@
 
 package eu.europa.esig.dss.jaxb.diagnostic;
 
-import java.util.Date;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import eu.europa.esig.dss.validation.TimestampedObjectType;
 
-public class Adapter1
-    extends XmlAdapter<String, Date>
+public class Adapter2
+    extends XmlAdapter<String, TimestampedObjectType>
 {
 
 
-    public Date unmarshal(String value) {
-        return (eu.europa.esig.dss.jaxb.parsers.DateParser.parse(value));
+    public TimestampedObjectType unmarshal(String value) {
+        return (eu.europa.esig.dss.jaxb.parsers.TimestampedObjectTypeParser.parse(value));
     }
 
-    public String marshal(Date value) {
-        return (eu.europa.esig.dss.jaxb.parsers.DateParser.print(value));
+    public String marshal(TimestampedObjectType value) {
+        return (eu.europa.esig.dss.jaxb.parsers.TimestampedObjectTypeParser.print(value));
     }
 
 }

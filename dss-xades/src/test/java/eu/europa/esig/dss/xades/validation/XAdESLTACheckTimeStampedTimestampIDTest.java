@@ -1,9 +1,11 @@
 package eu.europa.esig.dss.xades.validation;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -12,8 +14,10 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
@@ -50,7 +54,14 @@ public class XAdESLTACheckTimeStampedTimestampIDTest extends PKIFactoryAccess {
 		String timestampId = diagnostic.getSignatures().get(0).getTimestampList().get(0).getId();
 		for (TimestampWrapper wrapper : diagnostic.getTimestampList(diagnostic.getFirstSignatureId())) {
 			if (wrapper.getType().equals(TimestampType.ARCHIVE_TIMESTAMP.toString())) {
-				Assert.assertEquals(timestampId, wrapper.getSignedObjects().getTimestampedTimestamp().get(0).getId());
+				boolean coverPreviousTsp = false;
+				List<XmlTimestampedObject> timestampedObjects = wrapper.getTimestampedObjects();
+				for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
+					if (TimestampedObjectType.TIMESTAMP == xmlTimestampedObject.getCategory() && timestampId.equals(xmlTimestampedObject.getId())) {
+						coverPreviousTsp = true;
+					}
+				}
+				assertTrue(coverPreviousTsp);
 			}
 		}
 	}

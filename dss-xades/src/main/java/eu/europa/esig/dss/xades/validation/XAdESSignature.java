@@ -89,7 +89,7 @@ import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampInclude;
 import eu.europa.esig.dss.validation.TimestampReference;
-import eu.europa.esig.dss.validation.TimestampReferenceCategory;
+import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -1197,7 +1197,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 				final List<TimestampReference> references = getSignatureTimestampedReferences();
 				for (final String timestampId : timestampedTimestamps) {
-					references.add(new TimestampReference(timestampId, TimestampReferenceCategory.TIMESTAMP));
+					references.add(new TimestampReference(timestampId, TimestampedObjectType.TIMESTAMP));
 				}
 				references.addAll(getTimestampedReferences());
 				final List<CertificateToken> encapsulatedCertificates = getCertificateSource().getEncapsulatedCertificates();
