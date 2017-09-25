@@ -8,7 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import eu.europa.esig.dss.validation.reports.dto.DataToValidateDTO;
+import eu.europa.esig.dss.DataToValidateDTO;
 import eu.europa.esig.dss.validation.reports.dto.ReportsDTO;
 
 /**
