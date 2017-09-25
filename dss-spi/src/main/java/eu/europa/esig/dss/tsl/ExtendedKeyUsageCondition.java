@@ -25,6 +25,8 @@ import eu.europa.esig.dss.x509.CertificateToken;
  */
 public class ExtendedKeyUsageCondition extends Condition {
 
+	private static final long serialVersionUID = -5969735320082024885L;
+
 	private final List<String> extendedKeyUsageOids;
 
 	public ExtendedKeyUsageCondition(List<String> oids) {
@@ -45,7 +47,12 @@ public class ExtendedKeyUsageCondition extends Condition {
 
 	@Override
 	public String toString(String indent) {
-		return "ExtendedKeyUsageCondition : " + extendedKeyUsageOids;
+		if (indent == null) {
+			indent = "";
+		}
+		StringBuilder builder = new StringBuilder();
+		builder.append(indent).append("ExtendedKeyUsageCondition: ").append(extendedKeyUsageOids).append('\n');
+		return builder.toString();
 	}
 
 	@Override

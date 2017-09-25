@@ -164,35 +164,17 @@ public class DetailedReport {
 	}
 
 	public Indication getTimestampValidationIndication(String timestampId) {
-		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
-		if (Utils.isCollectionNotEmpty(signatures)) {
-			for (XmlSignature xmlSignature : signatures) {
-				List<XmlValidationProcessTimestamps> validationTimestamps = xmlSignature.getValidationProcessTimestamps();
-				if (Utils.isCollectionNotEmpty(validationTimestamps)) {
-					for (XmlValidationProcessTimestamps tspValidation : validationTimestamps) {
-						if (Utils.areStringsEqual(tspValidation.getId(), timestampId) && tspValidation.getConclusion() != null) {
-							return tspValidation.getConclusion().getIndication();
-						}
-					}
-				}
-			}
+		XmlValidationProcessTimestamps timestampValidationById = getTimestampValidationById(timestampId);
+		if (timestampValidationById != null && timestampValidationById.getConclusion() != null) {
+			return timestampValidationById.getConclusion().getIndication();
 		}
 		return null;
 	}
 
 	public SubIndication getTimestampValidationSubIndication(String timestampId) {
-		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
-		if (Utils.isCollectionNotEmpty(signatures)) {
-			for (XmlSignature xmlSignature : signatures) {
-				List<XmlValidationProcessTimestamps> validationTimestamps = xmlSignature.getValidationProcessTimestamps();
-				if (Utils.isCollectionNotEmpty(validationTimestamps)) {
-					for (XmlValidationProcessTimestamps tspValidation : validationTimestamps) {
-						if (Utils.areStringsEqual(tspValidation.getId(), timestampId) && tspValidation.getConclusion() != null) {
-							return tspValidation.getConclusion().getSubIndication();
-						}
-					}
-				}
-			}
+		XmlValidationProcessTimestamps timestampValidationById = getTimestampValidationById(timestampId);
+		if (timestampValidationById != null && timestampValidationById.getConclusion() != null) {
+			return timestampValidationById.getConclusion().getSubIndication();
 		}
 		return null;
 	}
@@ -235,6 +217,23 @@ public class DetailedReport {
 			for (XmlSignature xmlSignature : signatures) {
 				if (Utils.areStringsEqual(signatureId, xmlSignature.getId())) {
 					return xmlSignature;
+				}
+			}
+		}
+		return null;
+	}
+
+	private XmlValidationProcessTimestamps getTimestampValidationById(String timestampId) {
+		List<XmlSignature> signatures = jaxbDetailedReport.getSignatures();
+		if (Utils.isCollectionNotEmpty(signatures)) {
+			for (XmlSignature xmlSignature : signatures) {
+				List<XmlValidationProcessTimestamps> validationTimestamps = xmlSignature.getValidationProcessTimestamps();
+				if (Utils.isCollectionNotEmpty(validationTimestamps)) {
+					for (XmlValidationProcessTimestamps tspValidation : validationTimestamps) {
+						if (Utils.areStringsEqual(tspValidation.getId(), timestampId)) {
+							return tspValidation;
+						}
+					}
 				}
 			}
 		}

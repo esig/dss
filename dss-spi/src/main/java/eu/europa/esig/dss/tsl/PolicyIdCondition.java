@@ -60,7 +60,8 @@ public class PolicyIdCondition extends Condition {
 	/**
 	 * Checks the condition for the given certificate.
 	 *
-	 * @param certificateToken certificate to be checked
+	 * @param certificateToken
+	 *            certificate to be checked
 	 * @return
 	 */
 	@Override
@@ -78,19 +79,12 @@ public class PolicyIdCondition extends Condition {
 
 	@Override
 	public String toString(String indent) {
-
-		try {
-
-			if (indent == null) {
-				indent = "";
-			}
-			StringBuilder builder = new StringBuilder();
-			builder.append(indent).append("PolicyIdCondition: ").append(policyOid).append('\n');
-			return builder.toString();
-		} catch (Exception e) {
-
-			return e.toString();
+		if (indent == null) {
+			indent = "";
 		}
+		StringBuilder builder = new StringBuilder();
+		builder.append(indent).append("PolicyIdCondition: ").append(policyOid).append('\n');
+		return builder.toString();
 	}
 
 	@Override
