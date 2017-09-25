@@ -49,7 +49,6 @@ import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureLevel;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureScope;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AttributeValue;
 import eu.europa.esig.dss.validation.SignatureQualification;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -393,8 +392,8 @@ public class SimpleReportBuilder {
 	}
 
 	private void addCounterSignature(SignatureWrapper signature, XmlSignature xmlSignature) {
-		if (AttributeValue.COUNTERSIGNATURE.equals(signature.getType())) {
-			xmlSignature.setType(AttributeValue.COUNTERSIGNATURE);
+		if (signature.isCounterSignature()) {
+			xmlSignature.setCounterSignature(true);
 			xmlSignature.setParentId(signature.getParentId());
 		}
 	}

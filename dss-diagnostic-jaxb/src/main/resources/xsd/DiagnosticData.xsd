@@ -128,7 +128,7 @@
 			
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
-		<xs:attribute name="Type" type="xs:string" use="optional" />
+		<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
 	</xs:complexType>
 	
 	<xs:complexType name="SignatureProductionPlace">

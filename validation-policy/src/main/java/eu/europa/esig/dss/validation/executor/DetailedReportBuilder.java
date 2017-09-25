@@ -67,7 +67,9 @@ public class DetailedReportBuilder {
 			XmlSignature signatureAnalysis = new XmlSignature();
 
 			signatureAnalysis.setId(signature.getId());
-			signatureAnalysis.setType(signature.getType());
+			if (signature.isCounterSignature()) {
+				signatureAnalysis.setCounterSignature(true);
+			}
 
 			XmlConclusion conlusion = executeBasicValidation(signatureAnalysis, signature, bbbs);
 

@@ -263,8 +263,9 @@ public class DiagnosticDataBuilder {
 
 		final AdvancedSignature masterSignature = signature.getMasterSignature();
 		if (masterSignature != null) {
-			xmlSignature.setType(AttributeValue.COUNTERSIGNATURE);
+			xmlSignature.setCounterSignature(true);
 			xmlSignature.setParentId(masterSignature.getId());
+			xmlSignature.setSignatureFilename(removeSpecialCharsForXml(masterSignature.getSignatureFilename()));
 		}
 		xmlSignature.setId(signature.getId());
 		xmlSignature.setDateTime(signature.getSigningTime());

@@ -550,6 +550,30 @@ public class CustomProcessExecutorTest {
 		LOG.info(reports.getXmlDetailedReport());
 	}
 
+	@Test
+	public void testCounterSignature() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/counter-signature-diag-data.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(2, simpleReport.getJaxbModel().getSignaturesCount());
+
+		LOG.info(reports.getXmlSimpleReport());
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(2, detailedReport.getSignatureIds().size());
+
+		LOG.info(reports.getXmlDetailedReport());
+	}
+
 	private void checkReports(Reports reports) {
 		// reports.print();
 		assertNotNull(reports);
