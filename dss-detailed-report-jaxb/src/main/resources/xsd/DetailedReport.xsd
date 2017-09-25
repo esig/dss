@@ -41,7 +41,7 @@
 			<xs:element type="Conclusion" name="Conclusion" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
-		<xs:attribute name="Type" type="xs:string" use="required" />
+		<xs:attribute name="Type" type="Context" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="TLAnalysis">
@@ -225,7 +225,7 @@
 			<xs:enumeration value="FAILED" />
 		</xs:restriction>
 	</xs:simpleType>
-
+	
 	<xs:simpleType name="SubIndication" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="NO_SIGNING_CERTIFICATE_FOUND" />
@@ -282,6 +282,15 @@
 			<xs:enumeration value="Not AdES" />
 			
 			<xs:enumeration value="N/A" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="Context" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SIGNATURE" />
+			<xs:enumeration value="COUNTER_SIGNATURE" />
+			<xs:enumeration value="TIMESTAMP" />
+			<xs:enumeration value="REVOCATION" />
 		</xs:restriction>
 	</xs:simpleType>
 	

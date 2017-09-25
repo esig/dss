@@ -8,20 +8,20 @@
 
 package eu.europa.esig.dss.jaxb.detailedreport;
 
-import java.util.Date;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import eu.europa.esig.dss.validation.SignatureQualification;
 
-public class Adapter1
-    extends XmlAdapter<String, Date>
+public class Adapter5
+    extends XmlAdapter<String, SignatureQualification>
 {
 
 
-    public Date unmarshal(String value) {
-        return (eu.europa.esig.dss.jaxb.parsers.DateParser.parse(value));
+    public SignatureQualification unmarshal(String value) {
+        return (eu.europa.esig.dss.jaxb.parsers.SignatureQualificationParser.parse(value));
     }
 
-    public String marshal(Date value) {
-        return (eu.europa.esig.dss.jaxb.parsers.DateParser.print(value));
+    public String marshal(SignatureQualification value) {
+        return (eu.europa.esig.dss.jaxb.parsers.SignatureQualificationParser.print(value));
     }
 
 }

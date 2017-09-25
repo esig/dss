@@ -116,7 +116,7 @@ public class DetailedReport {
 		List<String> result = new ArrayList<String>();
 		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
 		for (XmlBasicBuildingBlocks bbb : bbbs) {
-			if (Utils.areStringsEqual(Context.SIGNATURE.name(), bbb.getType()) || Utils.areStringsEqual(Context.COUNTER_SIGNATURE.name(), bbb.getType())) {
+			if (Context.SIGNATURE == bbb.getType() || Context.COUNTER_SIGNATURE == bbb.getType()) {
 				result.add(bbb.getId());
 			}
 		}
@@ -127,7 +127,7 @@ public class DetailedReport {
 		List<String> result = new ArrayList<String>();
 		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
 		for (XmlBasicBuildingBlocks bbb : bbbs) {
-			if (Utils.areStringsEqual(Context.TIMESTAMP.name(), bbb.getType())) {
+			if (Context.TIMESTAMP == bbb.getType()) {
 				result.add(bbb.getId());
 			}
 		}
@@ -138,7 +138,7 @@ public class DetailedReport {
 		List<String> result = new ArrayList<String>();
 		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
 		for (XmlBasicBuildingBlocks bbb : bbbs) {
-			if (Utils.areStringsEqual(Context.REVOCATION.name(), bbb.getType())) {
+			if (Context.REVOCATION == bbb.getType()) {
 				result.add(bbb.getId());
 			}
 		}
