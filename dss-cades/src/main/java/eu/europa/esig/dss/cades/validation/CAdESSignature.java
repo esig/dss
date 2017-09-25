@@ -51,7 +51,6 @@ import java.util.List;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
@@ -90,6 +89,7 @@ import org.bouncycastle.asn1.ess.OtherCertID;
 import org.bouncycastle.asn1.ess.SigningCertificate;
 import org.bouncycastle.asn1.ess.SigningCertificateV2;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
+import org.bouncycastle.asn1.x500.DirectoryString;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.AttCertValidityPeriod;
 import org.bouncycastle.asn1.x509.AttributeCertificate;
@@ -97,7 +97,6 @@ import org.bouncycastle.asn1.x509.AttributeCertificateInfo;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.RoleSyntax;
-import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
@@ -536,16 +535,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		final ASN1Set attrValues = attr.getAttrValues();
 		final ASN1Encodable attrValue = attrValues.getObjectAt(0);
-		final Date signingDate;
-		if (attrValue instanceof ASN1UTCTime) {
-			signingDate = DSSASN1Utils.toDate((ASN1UTCTime) attrValue);
-		} else if (attrValue instanceof Time) {
-			signingDate = ((Time) attrValue).getDate();
-		} else if (attrValue instanceof ASN1GeneralizedTime) {
-			signingDate = DSSASN1Utils.toDate((ASN1GeneralizedTime) attrValue);
-		} else {
-			signingDate = null;
-		}
+		final Date signingDate = DSSASN1Utils.getDate(attrValue);
 		if (signingDate != null) {
 			/*
 			 * RFC 3852 [4] states that "dates between January 1, 1950 and
@@ -596,14 +586,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			return null;
 		}
 		final SignatureProductionPlace signatureProductionPlace = new SignatureProductionPlace();
-		final DERUTF8String countryName = signerLocation.getCountryName();
+		final DirectoryString countryName = signerLocation.getCountry();
 		if (countryName != null) {
-
 			signatureProductionPlace.setCountryName(countryName.getString());
 		}
-		final DERUTF8String localityName = signerLocation.getLocalityName();
+		final DirectoryString localityName = signerLocation.getLocality();
 		if (localityName != null) {
-
 			signatureProductionPlace.setCity(localityName.getString());
 		}
 		final StringBuilder address = new StringBuilder();
