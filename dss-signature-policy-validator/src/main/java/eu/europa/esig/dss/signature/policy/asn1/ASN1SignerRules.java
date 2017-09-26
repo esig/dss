@@ -120,7 +120,7 @@ public class ASN1SignerRules extends ASN1Object implements SignerRules {
 	 */
 	@Override
 	public CertRefReq getMandatedCertificateRef() {
-		return mandatedCertificateRef == null? null: CertRefReq.signerOnly;
+		return mandatedCertificateRef == null? CertRefReq.signerOnly: mandatedCertificateRef;
 	}
 
 	/* (non-Javadoc)
@@ -128,7 +128,7 @@ public class ASN1SignerRules extends ASN1Object implements SignerRules {
 	 */
 	@Override
 	public CertInfoReq getMandatedCertificateInfo() {
-		return mandatedCertificateInfo == null? null: CertInfoReq.none;
+		return mandatedCertificateInfo == null? CertInfoReq.none: mandatedCertificateInfo;
 	}
 
 	/* (non-Javadoc)
