@@ -63,6 +63,28 @@ public abstract class AbstractTestCRLUtils {
 	}
 
 	@Test
+	public void isValidPEMCRL() throws Exception {
+		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/belgium2.pem.crl");
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/belgiumrs2.crt")) {
+			CertificateToken certificateToken = loadCert(isCer);
+			CRLValidity validCRL = CRLUtils.isValidCRL(is, certificateToken);
+			assertNotNull(validCRL);
+			assertNotNull(validCRL.getIssuerToken());
+			assertNotNull(validCRL.getSignatureAlgorithm());
+			assertNotNull(validCRL.getThisUpdate());
+			assertNotNull(validCRL.getNextUpdate());
+			assertTrue(validCRL.isIssuerX509PrincipalMatches());
+			assertTrue(validCRL.isSignatureIntact());
+			assertTrue(validCRL.isValid());
+			assertTrue(validCRL.isCrlSignKeyUsage());
+			assertFalse(validCRL.isUnknownCriticalExtension());
+			assertEquals(certificateToken, validCRL.getIssuerToken());
+			assertNull(validCRL.getSignatureInvalidityReason());
+			assertNull(validCRL.getUrl());
+		}
+	}
+
+	@Test
 	public void isValidCRLWrongCertificate() throws Exception {
 		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/belgium2.crl");
 				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
