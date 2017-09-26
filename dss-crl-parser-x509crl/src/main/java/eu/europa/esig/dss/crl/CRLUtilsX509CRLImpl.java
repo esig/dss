@@ -29,14 +29,14 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CRLUtilsX509CRLImpl.class);
 
-	private static final BouncyCastleProvider securityProvider = new BouncyCastleProvider();
+	private static final BouncyCastleProvider BC_PROVIDER = new BouncyCastleProvider();
 
-	private static final CertificateFactory certificateFactory;
+	private static final CertificateFactory CERT_FACTORY;
 
 	static {
 		try {
-			Security.addProvider(securityProvider);
-			certificateFactory = CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME);
+			Security.addProvider(BC_PROVIDER);
+			CERT_FACTORY = CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME);
 		} catch (CertificateException e) {
 			LOG.error(e.getMessage(), e);
 			throw new DSSException("Platform does not support X509 certificate", e);
@@ -132,7 +132,7 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 	 */
 	private X509CRL loadCRL(final InputStream inputStream) {
 		try {
-			X509CRL crl = (X509CRL) certificateFactory.generateCRL(inputStream);
+			X509CRL crl = (X509CRL) CERT_FACTORY.generateCRL(inputStream);
 			if (crl == null) {
 				throw new DSSException("Unable to parse the CRL");
 			}
