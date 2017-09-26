@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.NoSuchProviderException;
@@ -166,6 +167,17 @@ public abstract class AbstractTestCRLUtils {
 			serialNumber = new BigInteger("111111111111111111111111111");
 			entry = CRLUtils.getRevocationInfo(validity, serialNumber);
 			assertNull(entry);
+		}
+	}
+
+	@Test(expected = Exception.class)
+	public void notACRL() throws Exception {
+		try (InputStream is = new ByteArrayInputStream(new byte[] { 1, 2, 3 });
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
+
+			CertificateToken certificateToken = loadCert(isCer);
+
+			CRLUtils.isValidCRL(is, certificateToken);
 		}
 	}
 
