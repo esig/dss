@@ -36,7 +36,7 @@ import eu.europa.esig.dss.x509.TimestampType;
 
 public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatureParameters> extends PKIFactoryAccess {
 
-	private static final Logger logger = LoggerFactory.getLogger(AbstractPkiFactoryTestSignature.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractPkiFactoryTestSignature.class);
 
 	protected abstract SP getSignatureParameters();
 
@@ -54,18 +54,18 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		assertNotNull(DSSUtils.toByteArray(signedDocument));
 		assertNotNull(signedDocument.getMimeType());
 
-		logger.info("=================== VALIDATION =================");
+		LOG.info("=================== VALIDATION =================");
 
 		// signedDocument.save("target/" + signedDocument.getName());
 
 		try {
 			byte[] byteArray = Utils.toByteArray(signedDocument.openStream());
 			onDocumentSigned(byteArray);
-			if (logger.isDebugEnabled()) {
-				logger.debug(new String(byteArray));
+			if (LOG.isDebugEnabled()) {
+				LOG.debug(new String(byteArray));
 			}
 		} catch (Exception e) {
-			logger.error("Cannot display file content", e);
+			LOG.error("Cannot display file content", e);
 		}
 
 		checkMimeType(signedDocument);
@@ -99,7 +99,6 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		checkCertificateChain(diagnosticData);
 		checkSignatureLevel(diagnosticData);
 		checkSigningDate(diagnosticData);
-		checkContentTimestampValid(diagnosticData);
 		checkTLevelAndValid(diagnosticData);
 		checkALevelAndValid(diagnosticData);
 		checkTimestamps(diagnosticData);
@@ -299,22 +298,6 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 	protected boolean hasContentTimestamp() {
 		return false;
-	}
-
-	protected void checkContentTimestampValid(DiagnosticData diagnosticData) {
-		if (hasContentTimestamp()) {
-			List<TimestampWrapper> timestampList = diagnosticData.getTimestampList(diagnosticData.getFirstSignatureId());
-			int counter = 0;
-			for (TimestampWrapper timestampWrapper : timestampList) {
-				TimestampType type = TimestampType.valueOf(timestampWrapper.getType());
-				if (TimestampType.CONTENT_TIMESTAMP == type) {
-					assertTrue(timestampWrapper.isMessageImprintDataFound());
-					assertTrue(timestampWrapper.isMessageImprintDataIntact());
-					counter++;
-				}
-			}
-			assertEquals(Utils.collectionSize(getSignatureParameters().getContentTimestamps()), counter);
-		}
 	}
 
 	protected void checkSigningDate(DiagnosticData diagnosticData) {

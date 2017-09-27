@@ -192,6 +192,21 @@ public abstract class AbstractTestCRLUtils {
 		}
 	}
 
+	@Test
+	public void testARLFile() throws Exception {
+		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/notaires2020.arl");
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
+
+			CertificateToken certificateToken = loadCert(isCer);
+
+			CRLValidity validity = CRLUtils.isValidCRL(is, certificateToken);
+			assertNotNull(validity);
+			assertNotNull(validity.getThisUpdate());
+			assertNotNull(validity.getNextUpdate());
+			assertNotNull(validity.getSignatureAlgorithm());
+		}
+	}
+
 	@Test(expected = Exception.class)
 	public void notACRL() throws Exception {
 		try (InputStream is = new ByteArrayInputStream(new byte[] { 1, 2, 3 });

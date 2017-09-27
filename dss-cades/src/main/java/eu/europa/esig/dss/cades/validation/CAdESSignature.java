@@ -140,8 +140,8 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampReference;
-import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -1074,7 +1074,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private boolean isDetachedSignature() {
-		return (cmsSignedData.getSignedContent() == null) || (cmsSignedData.getSignedContent().getContent() == null) ? true : false;
+		return cmsSignedData.isDetachedSignature();
 	}
 
 	private CertificateValidity getTheBestCandidate() {

@@ -29,6 +29,7 @@ import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.apache.xml.utils.URI;
+import org.apache.xml.utils.URI.MalformedURIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
@@ -71,20 +72,20 @@ public class OfflineResolver extends ResourceResolverSpi {
 			}
 			try {
 				if (isKnown(documentUri) != null) {
-					LOG.debug("I state that I can resolve '" + documentUri + "' (external document)");
+					LOG.debug("I state that I can resolve '{}' (external document)", documentUri);
 					return true;
 				}
 				final String baseUriString = context.baseUri;
 				if (Utils.isStringNotEmpty(baseUriString)) {
 					final URI baseUri = new URI(baseUriString);
 					URI uriNew = new URI(baseUri, documentUri);
-					if (uriNew.getScheme().equals("http")) {
-						LOG.debug("I state that I can resolve '" + uriNew.toString() + "'");
+					if ("http".equals(uriNew.getScheme())) {
+						LOG.debug("I state that I can resolve '{}'", uriNew.toString());
 						return true;
 					}
-					LOG.debug("I state that I can't resolve '" + uriNew.toString() + "'");
+					LOG.debug("I state that I can't resolve '{}'", uriNew.toString());
 				}
-			} catch (URI.MalformedURIException ex) {
+			} catch (MalformedURIException ex) {
 				if (documents == null || documents.isEmpty()) {
 					LOG.warn("OfflineResolver: WARNING: ", ex);
 				}

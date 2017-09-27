@@ -438,6 +438,12 @@ public class SimpleReportBuilder {
 			if (Utils.isStringNotEmpty(signingCert.getPseudo())) {
 				return signingCert.getPseudo();
 			}
+			if (Utils.isStringNotEmpty(signingCert.getOrganizationName())) {
+				return signingCert.getOrganizationName();
+			}
+			if (Utils.isStringNotEmpty(signingCert.getOrganizationalUnit())) {
+				return signingCert.getOrganizationalUnit();
+			}
 		}
 		return "?";
 	}

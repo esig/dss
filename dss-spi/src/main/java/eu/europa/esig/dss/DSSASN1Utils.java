@@ -775,7 +775,7 @@ public final class DSSASN1Utils {
 	}
 
 	public static String getHumanReadableName(CertificateToken cert) {
-		return firstNotNull(cert, BCStyle.CN, BCStyle.GIVENNAME, BCStyle.SURNAME, BCStyle.NAME, BCStyle.PSEUDONYM);
+		return firstNotNull(cert, BCStyle.CN, BCStyle.GIVENNAME, BCStyle.SURNAME, BCStyle.NAME, BCStyle.PSEUDONYM, BCStyle.O, BCStyle.OU);
 	}
 
 	private static String firstNotNull(CertificateToken cert, ASN1ObjectIdentifier... oids) {

@@ -89,8 +89,8 @@ import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampInclude;
 import eu.europa.esig.dss.validation.TimestampReference;
-import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -191,11 +191,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 *            can be null
 	 */
 	public XAdESSignature(final Element signatureElement, final CertificatePool certPool) {
-		this(signatureElement, new ArrayList<XPathQueryHolder>() {
-			{
-				add(new XPathQueryHolder());
-			}
-		}, certPool);
+		this(signatureElement, Arrays.asList(new XPathQueryHolder()), certPool);
 	}
 
 	/**
@@ -633,7 +629,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			if (policyId != null) {
 				// Explicit policy
 				String policyIdString = policyId.getTextContent();
-				if(policyIdString != null && !policyIdString.isEmpty()) {
+				if (policyIdString != null && !policyIdString.isEmpty()) {
 					policyIdString = policyIdString.replaceAll("\n", "");
 					policyIdString = policyIdString.trim();
 				}

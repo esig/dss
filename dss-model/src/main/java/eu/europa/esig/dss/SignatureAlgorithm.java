@@ -178,9 +178,9 @@ public enum SignatureAlgorithm {
 		return oidAlgorithms;
 	}
 
-	private final static Map<String, SignatureAlgorithm> JAVA_ALGORITHMS = registerJavaAlgorithms();
+	private static final Map<String, SignatureAlgorithm> JAVA_ALGORITHMS = registerJavaAlgorithms();
 
-	private final static Map<SignatureAlgorithm, String> JAVA_ALGORITHMS_FOR_KEY = registerJavaAlgorithmsForKey();
+	private static final Map<SignatureAlgorithm, String> JAVA_ALGORITHMS_FOR_KEY = registerJavaAlgorithmsForKey();
 
 	private static Map<String, SignatureAlgorithm> registerJavaAlgorithms() {
 
