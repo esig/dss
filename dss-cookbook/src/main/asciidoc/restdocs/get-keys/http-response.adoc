@@ -1,8 +1,13 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Server: Apache-Coyote/1.1
-Date: Mon, 19 Jun 2017 13:20:47 GMT
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Date: Thu, 28 Sep 2017 11:13:48 GMT
 Content-Type: application/json
 Transfer-Encoding: chunked
 Content-Length: 2189

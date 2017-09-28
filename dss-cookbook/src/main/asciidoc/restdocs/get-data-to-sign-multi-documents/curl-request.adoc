@@ -1,7 +1,7 @@
 [source,bash]
 ----
 $ curl 'http://localhost:8080/services/rest/signature/multiple-documents/getDataToSignMultiple' -i -X POST \
-    -H 'Accept: application/json' \
+    -H 'Accept: application/json, application/javascript, text/javascript' \
     -H 'Content-Type: application/json; charset=UTF-8' \
     -d '{
   "parameters" : {
@@ -11,15 +11,15 @@ $ curl 'http://localhost:8080/services/rest/signature/multiple-documents/getData
     "signatureAlgorithm" : "RSA_SHA256",
     "encryptionAlgorithm" : "RSA",
     "digestAlgorithm" : "SHA256",
+    "contentTimestampParameters" : {
+      "digestAlgorithm" : "SHA256",
+      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#"
+    },
     "signatureTimestampParameters" : {
       "digestAlgorithm" : "SHA256",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#"
     },
     "archiveTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
-      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#"
-    },
-    "contentTimestampParameters" : {
       "digestAlgorithm" : "SHA256",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#"
     },
@@ -31,7 +31,7 @@ $ curl 'http://localhost:8080/services/rest/signature/multiple-documents/getData
     "asicContainerType" : "ASiC_E",
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : "2017-06-19T15:20:47.757Z",
+      "signingDate" : 1506597228545,
       "claimedSignerRoles" : null,
       "certifiedSignerRoles" : null,
       "signaturePolicy" : null,
