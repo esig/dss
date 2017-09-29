@@ -45,6 +45,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -237,7 +238,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final Element signatureMethod = DomUtils.addElement(documentDom, signedInfoDom, XMLNS, DS_SIGNATURE_METHOD);
 		final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
 		final DigestAlgorithm digestAlgorithm = params.getDigestAlgorithm();
-		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
+		final MaskGenerationFunction mgf = params.getMaskGenerationFunction();
+		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, mgf);
 		final String signatureAlgorithmXMLId = signatureAlgorithm.getXMLId();
 		signatureMethod.setAttribute(ALGORITHM, signatureAlgorithmXMLId);
 	}

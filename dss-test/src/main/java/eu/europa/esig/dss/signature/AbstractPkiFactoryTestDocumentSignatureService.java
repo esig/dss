@@ -38,7 +38,8 @@ public abstract class AbstractPkiFactoryTestDocumentSignatureService<SP extends 
 		DocumentSignatureService<SP> service = getService();
 
 		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
-		SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(),
+				getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
 		return service.signDocument(toBeSigned, params, signatureValue);
 	}
 

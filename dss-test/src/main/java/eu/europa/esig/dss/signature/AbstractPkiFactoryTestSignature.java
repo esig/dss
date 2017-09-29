@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
@@ -93,6 +94,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		checkBLevelValid(diagnosticData);
 		checkNumberOfSignatures(diagnosticData);
 		checkDigestAlgorithm(diagnosticData);
+		checkMaskGenerationFunction(diagnosticData);
 		checkEncryptionAlgorithm(diagnosticData);
 		checkSigningCertificateValue(diagnosticData);
 		checkIssuerSigningCertificateValue(diagnosticData);
@@ -200,6 +202,13 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 	protected void checkDigestAlgorithm(DiagnosticData diagnosticData) {
 		assertEquals(getSignatureParameters().getDigestAlgorithm(), diagnosticData.getSignatureDigestAlgorithm(diagnosticData.getFirstSignatureId()));
+	}
+
+	private void checkMaskGenerationFunction(DiagnosticData diagnosticData) {
+		MaskGenerationFunction maskGenerationFunction = getSignatureParameters().getMaskGenerationFunction();
+		if (maskGenerationFunction != null) {
+			assertEquals(maskGenerationFunction, diagnosticData.getSignatureMaskGenerationFunction(diagnosticData.getFirstSignatureId()));
+		}
 	}
 
 	private void checkEncryptionAlgorithm(DiagnosticData diagnosticData) {

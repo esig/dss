@@ -89,6 +89,7 @@ import org.bouncycastle.asn1.ess.OtherCertID;
 import org.bouncycastle.asn1.ess.SigningCertificate;
 import org.bouncycastle.asn1.ess.SigningCertificateV2;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
+import org.bouncycastle.asn1.pkcs.RSASSAPSSparams;
 import org.bouncycastle.asn1.x500.DirectoryString;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.AttCertValidityPeriod;
@@ -119,6 +120,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
@@ -962,10 +964,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
 
 		String oid = signerInformation.getEncryptionAlgOID();
-
 		try {
 			return EncryptionAlgorithm.forOID(oid);
-		} catch (RuntimeException e) {
+		} catch (DSSException e) {
 			// purposely empty
 		}
 
@@ -976,9 +977,38 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public DigestAlgorithm getDigestAlgorithm() {
-
 		final String digestAlgOID = signerInformation.getDigestAlgOID();
-		return DigestAlgorithm.forOID(digestAlgOID);
+		try {
+			return DigestAlgorithm.forOID(digestAlgOID);
+		} catch (Exception e) {
+			LOG.error("Unable to retrieve digest algorithm : " + e.getMessage());
+		}
+		return null;
+	}
+
+	@Override
+	public SignatureAlgorithm getSignatureAlgorithm() {
+		return SignatureAlgorithm.getAlgorithm(getEncryptionAlgorithm(), getDigestAlgorithm(), getMaskGenerationFunction());
+	}
+
+	@Override
+	public MaskGenerationFunction getMaskGenerationFunction() {
+		try {
+			byte[] encryptionAlgParams = signerInformation.getEncryptionAlgParams();
+			if (Utils.isArrayNotEmpty(encryptionAlgParams) && !Arrays.equals(DERNull.INSTANCE.getEncoded(), encryptionAlgParams)) {
+				RSASSAPSSparams param = RSASSAPSSparams.getInstance(encryptionAlgParams);
+				AlgorithmIdentifier maskGenAlgorithm = param.getMaskGenAlgorithm();
+				if (PKCSObjectIdentifiers.id_mgf1.equals(maskGenAlgorithm.getAlgorithm())) {
+					AlgorithmIdentifier hashAlgo = param.getHashAlgorithm();
+					return MaskGenerationFunction.fromDigestAlgo(hashAlgo.getAlgorithm().getId());
+				} else {
+					LOG.warn("Unsupported mask algorithm : {}", maskGenAlgorithm.getAlgorithm());
+				}
+			}
+		} catch (IOException e) {
+			LOG.warn("Unable to analyze EncryptionAlgParams", e);
+		}
+		return null;
 	}
 
 	@Override

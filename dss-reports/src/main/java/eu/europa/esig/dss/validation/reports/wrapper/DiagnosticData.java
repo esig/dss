@@ -28,6 +28,7 @@ import java.util.Set;
 
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
@@ -684,6 +685,11 @@ public class DiagnosticData {
 			return listOfTrustedLists.getCountryCode();
 		}
 		return null;
+	}
+
+	public MaskGenerationFunction getSignatureMaskGenerationFunction(String signatureId) {
+		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
+		return signature.getMaskGenerationFunction();
 	}
 
 }
