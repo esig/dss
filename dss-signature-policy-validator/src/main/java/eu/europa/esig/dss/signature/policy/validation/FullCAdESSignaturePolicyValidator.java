@@ -299,7 +299,7 @@ public class FullCAdESSignaturePolicyValidator extends BasicASNSignaturePolicyVa
 	private void validateAlgorithmConstraintSet(AlgorithmConstraintSet algorithmConstraintSet) {
 		ItemValidator validator = new AlgorithmConstraintSetValidator(algorithmConstraintSet.getSignerAlgorithmConstraints(), getCadesSignature());
 		if (!validator.validate()) {
-			addError("algorithmConstraintSet.signerAlgorithmConstraints", "Couldn't find mininum requirements for signer constraints");
+			addError("algorithmConstraintSet.signerAlgorithmConstraints", "Couldn't find minimum requirements for signer constraints");
 		}
 		
 		// TODO eeCertAlgorithmConstraints
