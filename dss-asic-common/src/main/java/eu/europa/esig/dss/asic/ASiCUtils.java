@@ -1,19 +1,19 @@
 package eu.europa.esig.dss.asic;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipInputStream;
 
 public final class ASiCUtils {
 
@@ -83,6 +83,25 @@ public final class ASiCUtils {
 			}
 		} catch (IOException e) {
 			throw new DSSException("Unable to analyze the archive content", e);
+		}
+		return isSignatureTypeCorrect;
+	}
+
+	public static boolean hasArchiveCorrectSignature(DSSDocument toSignDocument, String extension) {
+		boolean isSignatureTypeCorrect = false;
+		try (InputStream is = toSignDocument.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
+			ZipEntry entry;
+			while ((entry = zis.getNextEntry()) != null) {
+				if (isSignature(entry.getName())) {
+					return entry.getName().endsWith(extension);
+				}
+			}
+		} catch (IOException e) {
+			if(e instanceof ZipException) {
+				LOG.warn("Can not read zip file", e);
+			} else {
+				throw new DSSException("Unable to analyze the archive content", e);
+			}
 		}
 		return isSignatureTypeCorrect;
 	}
@@ -180,4 +199,14 @@ public final class ASiCUtils {
 		return zeroPad.substring(numStr.length()) + numStr; // 2 -> 002
 	}
 
+	public static boolean isAsic(List<DSSDocument> documents, final ASiCParameters asicParameters) {
+		if (ASiCUtils.isArchive(documents)) {
+			DSSDocument archive = documents.get(0);
+			boolean cades = ASiCUtils.hasArchiveCorrectSignature(archive, "p7s");
+			boolean xades = ASiCUtils.hasArchiveCorrectSignature(archive, "xml");
+			return cades | xades;
+		}
+
+		return false;
+	}
 }
