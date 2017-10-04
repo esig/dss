@@ -102,7 +102,6 @@ public class NativeCommonsDataLoader implements DataLoader {
     private String sslTruststorePath;
     private String sslTruststoreType;
     private String sslTruststorePassword;
-    private boolean sslTruststoreTrustEverything = false;
 
     /**
      * The default constructor for CommonsDataLoader.
@@ -742,14 +741,6 @@ public class NativeCommonsDataLoader implements DataLoader {
         this.sslTruststorePassword = sslTruststorePassword;
     }
 
-    public boolean isSslTruststoreTrustEverything() {
-        return sslTruststoreTrustEverything;
-    }
-
-    public void setSslTruststoreTrustEverything(boolean sslTruststoreTrustEverything) {
-        this.sslTruststoreTrustEverything = sslTruststoreTrustEverything;
-    }
-
     private TrustManager[] createTrustManagers() {
         try {
             if (StringUtils.isNotBlank(sslTruststorePath) && StringUtils.isNotBlank(sslTruststoreType) && StringUtils.isNotBlank(sslTruststorePassword)) {
@@ -758,10 +749,8 @@ public class NativeCommonsDataLoader implements DataLoader {
                 TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
                 trustManagerFactory.init(trustKeyStore);
                 return trustManagerFactory.getTrustManagers();
-            } else if(sslTruststoreTrustEverything) {
-                return new TrustManager[]{new AcceptAllTrustManager()};
             } else {
-                return null;
+                return new TrustManager[]{new AcceptAllTrustManager()};
             }
         } catch (Exception e) {
             throw new DSSException(e);
