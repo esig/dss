@@ -1,14 +1,5 @@
 package eu.europa.esig.dss.asic.signature;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-import org.bouncycastle.tsp.TimeStampToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
@@ -34,6 +25,14 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import org.bouncycastle.tsp.TimeStampToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithCAdESSignatureParameters> {
@@ -50,7 +49,6 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	@Override
 	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, ASiCWithCAdESSignatureParameters parameters) throws DSSException {
 		final ASiCParameters asicParameters = parameters.aSiC();
-		assertCanBeSign(toSignDocuments, asicParameters);
 
 		GetDataToSignASiCWithCAdESHelper dataToSignHelper = ASiCWithCAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
 
@@ -64,7 +62,6 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			throws DSSException {
 
 		final ASiCParameters asicParameters = parameters.aSiC();
-		assertCanBeSign(toSignDocuments, asicParameters);
 		assertSigningDateInCertificateValidityRange(parameters);
 
 		GetDataToSignASiCWithCAdESHelper dataToSignHelper = ASiCWithCAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
