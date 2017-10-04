@@ -188,14 +188,7 @@ public class TimestampToken extends Token {
 				LOG.info("No valid signature for timestamp token: {}", e.getMessage());
 			}
 			timestampValidity = TimestampValidity.NOT_VALID_SIGNATURE;
-		} catch (TSPException e) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("No valid structure for timestamp token: ", e);
-			} else {
-				LOG.info("No valid structure for timestamp token: {}", e.getMessage());
-			}
-			timestampValidity = TimestampValidity.NOT_VALID_STRUCTURE;
-		} catch (OperatorCreationException e) {
+		} catch (TSPException | OperatorCreationException e) {
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("No valid structure for timestamp token: ", e);
 			} else {

@@ -20,17 +20,14 @@
  */
 package eu.europa.esig.dss.validation;
 
-public enum TimestampReferenceCategory {
+public enum TimestampedObjectType {
 
-   // Constant to indicate that the reference is for a signature.
-   SIGNATURE,
-   
-   // Constant to indicate that the reference is for a certificate.
-   CERTIFICATE,
+	SIGNATURE,
 
-   // Constant to indicate that the reference is for a revocation data.
-   REVOCATION,
-   
-   TIMESTAMP;
+	CERTIFICATE,
+
+	REVOCATION,
+
+	TIMESTAMP;
 
 }

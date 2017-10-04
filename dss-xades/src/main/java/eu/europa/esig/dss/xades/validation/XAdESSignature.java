@@ -69,6 +69,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
@@ -89,8 +90,8 @@ import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampInclude;
 import eu.europa.esig.dss.validation.TimestampReference;
-import eu.europa.esig.dss.validation.TimestampReferenceCategory;
 import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -191,11 +192,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 *            can be null
 	 */
 	public XAdESSignature(final Element signatureElement, final CertificatePool certPool) {
-		this(signatureElement, new ArrayList<XPathQueryHolder>() {
-			{
-				add(new XPathQueryHolder());
-			}
-		}, certPool);
+		this(signatureElement, Arrays.asList(new XPathQueryHolder()), certPool);
 	}
 
 	/**
@@ -307,9 +304,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
-
-		final String xmlName = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_METHOD).getAttribute(XMLE_ALGORITHM);
-		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forXML(xmlName, null);
+		final SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
 		if (signatureAlgorithm == null) {
 			return null;
 		}
@@ -318,12 +313,26 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public DigestAlgorithm getDigestAlgorithm() {
-		final String xmlName = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_METHOD).getAttribute(XMLE_ALGORITHM);
-		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forXML(xmlName, null);
+		final SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
 		if (signatureAlgorithm == null) {
 			return null;
 		}
 		return signatureAlgorithm.getDigestAlgorithm();
+	}
+
+	@Override
+	public MaskGenerationFunction getMaskGenerationFunction() {
+		final SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
+		if (signatureAlgorithm == null) {
+			return null;
+		}
+		return signatureAlgorithm.getMaskGenerationFunction();
+	}
+
+	@Override
+	public SignatureAlgorithm getSignatureAlgorithm() {
+		final String xmlName = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_METHOD).getAttribute(XMLE_ALGORITHM);
+		return SignatureAlgorithm.forXML(xmlName, null);
 	}
 
 	@Override
@@ -633,7 +642,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			if (policyId != null) {
 				// Explicit policy
 				String policyIdString = policyId.getTextContent();
-				if(policyIdString != null && !policyIdString.isEmpty()) {
+				if (policyIdString != null && !policyIdString.isEmpty()) {
 					policyIdString = policyIdString.replaceAll("\n", "");
 					policyIdString = policyIdString.trim();
 				}
@@ -1197,7 +1206,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 				final List<TimestampReference> references = getSignatureTimestampedReferences();
 				for (final String timestampId : timestampedTimestamps) {
-					references.add(new TimestampReference(timestampId, TimestampReferenceCategory.TIMESTAMP));
+					references.add(new TimestampReference(timestampId, TimestampedObjectType.TIMESTAMP));
 				}
 				references.addAll(getTimestampedReferences());
 				final List<CertificateToken> encapsulatedCertificates = getCertificateSource().getEncapsulatedCertificates();
@@ -1276,7 +1285,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 			final XMLSignature santuarioSignature = new XMLSignature(signatureElement, "");
 			santuarioSignature.addResourceResolver(new XPointerResourceResolver(signatureElement));
-			santuarioSignature.addResourceResolver(new OfflineResolver(detachedContents, getDigestAlgorithm()));
+			santuarioSignature.addResourceResolver(new OfflineResolver(detachedContents, getSignatureAlgorithm().getDigestAlgorithm()));
 
 			boolean coreValidity = false;
 			final List<CertificateValidity> certificateValidityList = getSigningCertificateValidityList(santuarioSignature, signatureCryptographicVerification,
@@ -2136,4 +2145,5 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public Element getQualifyingPropertiesDom() {
 		return DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_QUALIFYING_PROPERTIES);
 	}
+
 }

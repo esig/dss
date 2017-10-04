@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
@@ -35,7 +37,7 @@ import eu.europa.esig.dss.x509.TimestampType;
 
 public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatureParameters> extends PKIFactoryAccess {
 
-	private static final Logger logger = LoggerFactory.getLogger(AbstractPkiFactoryTestSignature.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractPkiFactoryTestSignature.class);
 
 	protected abstract SP getSignatureParameters();
 
@@ -53,18 +55,18 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		assertNotNull(DSSUtils.toByteArray(signedDocument));
 		assertNotNull(signedDocument.getMimeType());
 
-		logger.info("=================== VALIDATION =================");
+		LOG.info("=================== VALIDATION =================");
 
 		// signedDocument.save("target/" + signedDocument.getName());
 
 		try {
 			byte[] byteArray = Utils.toByteArray(signedDocument.openStream());
 			onDocumentSigned(byteArray);
-			if (logger.isDebugEnabled()) {
-				logger.debug(new String(byteArray));
+			if (LOG.isDebugEnabled()) {
+				LOG.debug(new String(byteArray));
 			}
 		} catch (Exception e) {
-			logger.error("Cannot display file content", e);
+			LOG.error("Cannot display file content", e);
 		}
 
 		checkMimeType(signedDocument);
@@ -92,13 +94,13 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		checkBLevelValid(diagnosticData);
 		checkNumberOfSignatures(diagnosticData);
 		checkDigestAlgorithm(diagnosticData);
+		checkMaskGenerationFunction(diagnosticData);
 		checkEncryptionAlgorithm(diagnosticData);
 		checkSigningCertificateValue(diagnosticData);
 		checkIssuerSigningCertificateValue(diagnosticData);
 		checkCertificateChain(diagnosticData);
 		checkSignatureLevel(diagnosticData);
 		checkSigningDate(diagnosticData);
-		checkContentTimestampValid(diagnosticData);
 		checkTLevelAndValid(diagnosticData);
 		checkALevelAndValid(diagnosticData);
 		checkTimestamps(diagnosticData);
@@ -202,6 +204,13 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		assertEquals(getSignatureParameters().getDigestAlgorithm(), diagnosticData.getSignatureDigestAlgorithm(diagnosticData.getFirstSignatureId()));
 	}
 
+	private void checkMaskGenerationFunction(DiagnosticData diagnosticData) {
+		MaskGenerationFunction maskGenerationFunction = getSignatureParameters().getMaskGenerationFunction();
+		if (maskGenerationFunction != null) {
+			assertEquals(maskGenerationFunction, diagnosticData.getSignatureMaskGenerationFunction(diagnosticData.getFirstSignatureId()));
+		}
+	}
+
 	private void checkEncryptionAlgorithm(DiagnosticData diagnosticData) {
 		assertEquals(getSignatureParameters().getSignatureAlgorithm().getEncryptionAlgorithm(),
 				diagnosticData.getSignatureEncryptionAlgorithm(diagnosticData.getFirstSignatureId()));
@@ -271,7 +280,6 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 				default:
 					break;
 				}
-
 			}
 		}
 
@@ -286,26 +294,19 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		if (isBaselineLTA()) {
 			assertTrue(foundArchiveTimeStamp);
 		}
+
+		Set<TimestampWrapper> allTimestamps = diagnosticData.getAllTimestamps();
+		for (TimestampWrapper timestampWrapper : allTimestamps) {
+			assertNotNull(timestampWrapper.getProductionTime());
+			assertTrue(timestampWrapper.isMessageImprintDataFound());
+			assertTrue(timestampWrapper.isMessageImprintDataIntact());
+			assertTrue(timestampWrapper.isSignatureValid());
+			assertTrue(timestampWrapper.isSignatureIntact());
+		}
 	}
 
 	protected boolean hasContentTimestamp() {
 		return false;
-	}
-
-	protected void checkContentTimestampValid(DiagnosticData diagnosticData) {
-		if (hasContentTimestamp()) {
-			List<TimestampWrapper> timestampList = diagnosticData.getTimestampList(diagnosticData.getFirstSignatureId());
-			int counter = 0;
-			for (TimestampWrapper timestampWrapper : timestampList) {
-				TimestampType type = TimestampType.valueOf(timestampWrapper.getType());
-				if (TimestampType.CONTENT_TIMESTAMP == type) {
-					assertTrue(timestampWrapper.isMessageImprintDataFound());
-					assertTrue(timestampWrapper.isMessageImprintDataIntact());
-					counter++;
-				}
-			}
-			assertEquals(Utils.collectionSize(getSignatureParameters().getContentTimestamps()), counter);
-		}
 	}
 
 	protected void checkSigningDate(DiagnosticData diagnosticData) {

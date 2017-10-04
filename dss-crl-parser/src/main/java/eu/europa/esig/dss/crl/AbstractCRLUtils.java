@@ -12,6 +12,7 @@ import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuingDistributionPoint;
 import org.bouncycastle.asn1.x509.ReasonFlags;
+import org.bouncycastle.asn1.x509.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,8 +24,12 @@ public abstract class AbstractCRLUtils {
 		if (expiredCertsOnCRLBinaries != null) {
 			try {
 				ASN1OctetString octetString = (ASN1OctetString) ASN1Primitive.fromByteArray(expiredCertsOnCRLBinaries);
-				ASN1GeneralizedTime generalTime = (ASN1GeneralizedTime) ASN1Primitive.fromByteArray(octetString.getOctets());
-				validity.setExpiredCertsOnCRL(generalTime.getDate());
+				Time time = Time.getInstance(ASN1Primitive.fromByteArray(octetString.getOctets()));
+				if (time != null && time.toASN1Primitive() instanceof ASN1GeneralizedTime) {
+					validity.setExpiredCertsOnCRL(time.getDate());
+				} else {
+					LOG.warn("Attribute 'expiredCertsOnCRL' found but ignored (should be encoded as ASN.1 GeneralizedTime)");
+				}
 			} catch (Exception e) {
 				LOG.error("Unable to parse expiredCertsOnCRL on CRL : " + e.getMessage(), e);
 			}

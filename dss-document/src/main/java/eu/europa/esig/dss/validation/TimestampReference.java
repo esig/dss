@@ -39,7 +39,7 @@ public class TimestampReference implements Serializable {
 
 	private DigestAlgorithm digestAlgorithm;
 	private String digestValue;
-	private TimestampReferenceCategory category;
+	private TimestampedObjectType category;
 
 	public TimestampReference(final String signatureId) {
 
@@ -49,10 +49,10 @@ public class TimestampReference implements Serializable {
 		this.signatureId = signatureId;
 		this.digestAlgorithm = DigestAlgorithm.SHA1;
 		this.digestValue = Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA1, signatureId.getBytes()));
-		this.category = TimestampReferenceCategory.SIGNATURE;
+		this.category = TimestampedObjectType.SIGNATURE;
 	}
 
-	public TimestampReference(final String signatureId, final TimestampReferenceCategory category) {
+	public TimestampReference(final String signatureId, final TimestampedObjectType category) {
 		this(signatureId);
 		this.category = category;
 	}
@@ -67,10 +67,10 @@ public class TimestampReference implements Serializable {
 			throw new NullPointerException("digestValue");
 		}
 		this.digestValue = digestValue;
-		this.category = TimestampReferenceCategory.CERTIFICATE;
+		this.category = TimestampedObjectType.CERTIFICATE;
 	}
 
-	public TimestampReference(final DigestAlgorithm digestAlgorithm, final String digestValue, final TimestampReferenceCategory category) {
+	public TimestampReference(final DigestAlgorithm digestAlgorithm, final String digestValue, final TimestampedObjectType category) {
 
 		this(digestAlgorithm, digestValue);
 		this.category = category;
@@ -84,7 +84,7 @@ public class TimestampReference implements Serializable {
 		return digestValue;
 	}
 
-	public TimestampReferenceCategory getCategory() {
+	public TimestampedObjectType getCategory() {
 		return category;
 	}
 

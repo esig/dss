@@ -1,8 +1,9 @@
 package eu.europa.esig.dss.asic.validation;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import eu.europa.esig.dss.ASiCContainerType;
@@ -13,8 +14,10 @@ import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCWithCAdESService;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
@@ -47,7 +50,13 @@ public class ASiCS_CAdESLTACheckTimeStampIDTest extends PKIFactoryAccess {
 		DiagnosticData diagnostic = report.getDiagnosticData();
 		String signatureId = diagnostic.getFirstSignatureId();
 		for (TimestampWrapper wrapper : diagnostic.getTimestampList(signatureId)) {
-			Assert.assertEquals(signatureId, wrapper.getSignedObjects().getSignedSignature().get(0).getId());
+			boolean found = false;
+			for (XmlTimestampedObject xmlTimestampedObject : wrapper.getTimestampedObjects()) {
+				if (TimestampedObjectType.SIGNATURE == xmlTimestampedObject.getCategory() && signatureId.equals(xmlTimestampedObject.getId())) {
+					found = true;
+				}
+			}
+			assertTrue(found);
 		}
 	}
 

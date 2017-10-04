@@ -45,9 +45,8 @@ import org.w3c.dom.Element;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.tsl.CertSubjectDNAttributeCondition;
-import eu.europa.esig.dss.tsl.CompositeCondition;
 import eu.europa.esig.dss.tsl.Condition;
-import eu.europa.esig.dss.tsl.CriteriaListCondition;
+import eu.europa.esig.dss.tsl.CompositeCondition;
 import eu.europa.esig.dss.tsl.ExtendedKeyUsageCondition;
 import eu.europa.esig.dss.tsl.KeyUsageCondition;
 import eu.europa.esig.dss.tsl.MatchingCriteriaIndicator;
@@ -476,7 +475,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 	protected Condition getCondition(CriteriaListType criteriaList) {
 		MatchingCriteriaIndicator matchingCriteriaIndicator = MatchingCriteriaIndicator.valueOf(criteriaList.getAssert());
-		CompositeCondition condition = new CriteriaListCondition(matchingCriteriaIndicator);
+		CompositeCondition condition = new CompositeCondition(matchingCriteriaIndicator);
 
 		addKeyUsageConditionsIfPresent(criteriaList.getKeyUsage(), condition);
 		addPolicyIdConditionsIfPresent(criteriaList.getPolicySet(), condition);

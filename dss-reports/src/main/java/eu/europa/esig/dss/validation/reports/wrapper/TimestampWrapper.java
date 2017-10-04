@@ -5,9 +5,9 @@ import java.util.List;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedObjects;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 
 public class TimestampWrapper extends AbstractTokenProxy {
 
@@ -57,8 +57,8 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return timestamp.getSignedDataDigestAlgo();
 	}
 
-	public XmlSignedObjects getSignedObjects() {
-		return timestamp.getSignedObjects();
+	public List<XmlTimestampedObject> getTimestampedObjects() {
+		return timestamp.getTimestampedObjects();
 	}
 
 }

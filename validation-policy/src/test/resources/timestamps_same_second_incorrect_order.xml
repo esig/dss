@@ -56,15 +56,15 @@
 	                        <Source>TRUSTED_LIST</Source>
 	                    </ChainItem>
 	                </CertificateChain>
-	                <SignedObjects>
-	                    <SignedSignature Id="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93"/>
-	                    <DigestAlgoAndValues>
-		                    <DigestAlgoAndValue Category="CERTIFICATE">
+	                <TimestampedObjects>
+	                    <TimestampedObject Category="SIGNATURE" Id="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93"/>
+	                    <TimestampedObject Category="CERTIFICATE">
+		                    <DigestAlgoAndValue>
 		                        <DigestMethod>SHA256</DigestMethod>
 		                        <DigestValue>3wmjf13SiCB7D/TpbVUd5lzEAzNs5qJby/bA2Ee9LnQ=</DigestValue>
 		                    </DigestAlgoAndValue>
-	                    </DigestAlgoAndValues>
-	                </SignedObjects>
+	                    </TimestampedObject>
+	                </TimestampedObjects>
 	            </Timestamp>
 	            <Timestamp Id="C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC" Type="SIGNATURE_TIMESTAMP">
 	                <ProductionTime>2014-04-29T07:34:19</ProductionTime>
@@ -90,15 +90,15 @@
 	                        <Source>TRUSTED_LIST</Source>
 	                    </ChainItem>
 	                </CertificateChain>
-	                <SignedObjects>
-	                    <SignedSignature Id="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93"/>
-	                    <DigestAlgoAndValues>
-		                    <DigestAlgoAndValue Category="CERTIFICATE">
+	                <TimestampedObjects>
+	                    <TimestampedObject Category="SIGNATURE" Id="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93"/>
+						<TimestampedObject Category="CERTIFICATE">
+		                    <DigestAlgoAndValue>
 		                        <DigestMethod>SHA256</DigestMethod>
 		                        <DigestValue>3wmjf13SiCB7D/TpbVUd5lzEAzNs5qJby/bA2Ee9LnQ=</DigestValue>
 		                    </DigestAlgoAndValue>
-	                    </DigestAlgoAndValues>
-	                </SignedObjects>
+	                    </TimestampedObject>
+	                </TimestampedObjects>
 	            </Timestamp>
 	            <Timestamp Id="1230C6EDF0088D1818AA37CB058F9EC4D978005C7C3372FB6874D2480507F76D" Type="ARCHIVE_TIMESTAMP">
 	                <ProductionTime>2014-04-29T07:33:19</ProductionTime>
@@ -124,32 +124,40 @@
 	                        <Source>TRUSTED_LIST</Source>
 	                    </ChainItem>
 	                </CertificateChain>
-	                <SignedObjects>
-	                    <SignedSignature Id="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93"/>
-	                    <TimestampedTimestamp Id="B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC"/>
-	                    <DigestAlgoAndValues>
-		                    <DigestAlgoAndValue Category="CERTIFICATE">
+	                <TimestampedObjects>
+	                    <TimestampedObject Category="SIGNATURE" Id="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93"/>
+	                    <TimestampedObject Category="TIMESTAMP"  Id="B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC"/>
+						<TimestampedObject Category="CERTIFICATE">
+		                    <DigestAlgoAndValue>
 		                        <DigestMethod>SHA256</DigestMethod>
 		                        <DigestValue>3wmjf13SiCB7D/TpbVUd5lzEAzNs5qJby/bA2Ee9LnQ=</DigestValue>
 		                    </DigestAlgoAndValue>
-		                    <DigestAlgoAndValue Category="CERTIFICATE">
+						</TimestampedObject>
+						<TimestampedObject Category="CERTIFICATE">
+		                    <DigestAlgoAndValue>
 		                        <DigestMethod>SHA1</DigestMethod>
 		                        <DigestValue>UcygcQr3cz00rNwZRQmfQ1x/xZ8=</DigestValue>
 		                    </DigestAlgoAndValue>
-		                    <DigestAlgoAndValue Category="CERTIFICATE">
+						</TimestampedObject>
+						<TimestampedObject Category="CERTIFICATE">
+		                    <DigestAlgoAndValue>
 		                        <DigestMethod>SHA1</DigestMethod>
 		                        <DigestValue>FcPZ/ByKno7Us/dn83JGxZKfmCk=</DigestValue>
 		                    </DigestAlgoAndValue>
-		                    <DigestAlgoAndValue Category="REVOCATION">
+						</TimestampedObject>
+						<TimestampedObject Category="REVOCATION">
+		                    <DigestAlgoAndValue>
 		                        <DigestMethod>SHA1</DigestMethod>
 		                        <DigestValue>kJ2giWhV+3NlxxRhrf2SPS9KsCA=</DigestValue>
 		                    </DigestAlgoAndValue>
-		                    <DigestAlgoAndValue Category="REVOCATION">
+						</TimestampedObject>
+						<TimestampedObject Category="REVOCATION">
+		                    <DigestAlgoAndValue>
 		                        <DigestMethod>SHA1</DigestMethod>
 		                        <DigestValue>ERWJOU4nqlSGYxy2k4d3mNeptU4=</DigestValue>
 		                    </DigestAlgoAndValue>
-	                    </DigestAlgoAndValues>
-	                </SignedObjects>
+	                    </TimestampedObject>
+	                </TimestampedObjects>
 	            </Timestamp>
 	            <Timestamp Id="A2C72B871E035E4EFB564B562B1A3D97E85FD59374B1FF7E6E963C259E2786AF" Type="ARCHIVE_TIMESTAMP">
 	                <ProductionTime>2014-04-29T07:35:49</ProductionTime>
@@ -175,34 +183,42 @@
 	                        <Source>TRUSTED_LIST</Source>
 	                    </ChainItem>
 	                </CertificateChain>
-	                <SignedObjects>
-	                    <SignedSignature Id="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93"/>
-	                    <TimestampedTimestamp Id="B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC"/>
-	                    <TimestampedTimestamp Id="1230C6EDF0088D1818AA37CB058F9EC4D978005C7C3372FB6874D2480507F76D"/>
-	                    <TimestampedTimestamp Id="C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC"/>
-	                    <DigestAlgoAndValues>
-		                    <DigestAlgoAndValue Category="CERTIFICATE">
+	                <TimestampedObjects>
+	                    <TimestampedObject Category="SIGNATURE" Id="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93"/>
+	                    <TimestampedObject Category="TIMESTAMP"  Id="B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC"/>
+	                    <TimestampedObject Category="TIMESTAMP"  Id="1230C6EDF0088D1818AA37CB058F9EC4D978005C7C3372FB6874D2480507F76D"/>
+	                    <TimestampedObject Category="TIMESTAMP"  Id="C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC"/>
+						<TimestampedObject Category="CERTIFICATE">
+		                    <DigestAlgoAndValue>
 		                        <DigestMethod>SHA256</DigestMethod>
 		                        <DigestValue>3wmjf13SiCB7D/TpbVUd5lzEAzNs5qJby/bA2Ee9LnQ=</DigestValue>
 		                    </DigestAlgoAndValue>
-		                    <DigestAlgoAndValue Category="CERTIFICATE">
+						</TimestampedObject>
+						<TimestampedObject Category="CERTIFICATE">
+		                    <DigestAlgoAndValue>
 		                        <DigestMethod>SHA1</DigestMethod>
 		                        <DigestValue>UcygcQr3cz00rNwZRQmfQ1x/xZ8=</DigestValue>
 		                    </DigestAlgoAndValue>
-		                    <DigestAlgoAndValue Category="CERTIFICATE">
+						</TimestampedObject>
+						<TimestampedObject Category="CERTIFICATE">
+		                    <DigestAlgoAndValue>
 		                        <DigestMethod>SHA1</DigestMethod>
 		                        <DigestValue>FcPZ/ByKno7Us/dn83JGxZKfmCk=</DigestValue>
 		                    </DigestAlgoAndValue>
-		                    <DigestAlgoAndValue Category="REVOCATION">
+						</TimestampedObject>
+						<TimestampedObject Category="REVOCATION">
+		                    <DigestAlgoAndValue>
 		                        <DigestMethod>SHA1</DigestMethod>
 		                        <DigestValue>kJ2giWhV+3NlxxRhrf2SPS9KsCA=</DigestValue>
 		                    </DigestAlgoAndValue>
-		                    <DigestAlgoAndValue Category="REVOCATION">
+						</TimestampedObject>
+						<TimestampedObject Category="REVOCATION">
+		                    <DigestAlgoAndValue>
 		                        <DigestMethod>SHA1</DigestMethod>
 		                        <DigestValue>ERWJOU4nqlSGYxy2k4d3mNeptU4=</DigestValue>
 		                    </DigestAlgoAndValue>
-	                    </DigestAlgoAndValues>
-	                </SignedObjects>
+	                    </TimestampedObject>
+	                </TimestampedObjects>
 	            </Timestamp>
 	            <Timestamp Id="7453A148A73E91DDCD689D466D32A6C652D397853E52C1EC2EAC5F0CF4881168" Type="ARCHIVE_TIMESTAMP">
 	                <ProductionTime>2014-04-29T07:36:30</ProductionTime>
@@ -228,35 +244,43 @@
 	                        <Source>TRUSTED_LIST</Source>
 	                    </ChainItem>
 	                </CertificateChain>
-	                <SignedObjects>
-	                    <SignedSignature Id="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93"/>
-	                    <TimestampedTimestamp Id="B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC"/>
-	                    <TimestampedTimestamp Id="1230C6EDF0088D1818AA37CB058F9EC4D978005C7C3372FB6874D2480507F76D"/>
-	                    <TimestampedTimestamp Id="C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC"/>
-	                    <TimestampedTimestamp Id="A2C72B871E035E4EFB564B562B1A3D97E85FD59374B1FF7E6E963C259E2786AF"/>
-	                    <DigestAlgoAndValues>
-		                    <DigestAlgoAndValue Category="CERTIFICATE">
+	                <TimestampedObjects>
+	                    <TimestampedObject Category="SIGNATURE" Id="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93"/>
+	                    <TimestampedObject Category="TIMESTAMP"  Id="B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC"/>
+	                    <TimestampedObject Category="TIMESTAMP"  Id="1230C6EDF0088D1818AA37CB058F9EC4D978005C7C3372FB6874D2480507F76D"/>
+	                    <TimestampedObject Category="TIMESTAMP"  Id="C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC"/>
+	                    <TimestampedObject Category="TIMESTAMP"  Id="A2C72B871E035E4EFB564B562B1A3D97E85FD59374B1FF7E6E963C259E2786AF"/>
+	                    <TimestampedObject Category="CERTIFICATE">
+		                    <DigestAlgoAndValue>
 		                        <DigestMethod>SHA256</DigestMethod>
 		                        <DigestValue>3wmjf13SiCB7D/TpbVUd5lzEAzNs5qJby/bA2Ee9LnQ=</DigestValue>
 		                    </DigestAlgoAndValue>
-		                    <DigestAlgoAndValue Category="CERTIFICATE">
+						</TimestampedObject>
+						<TimestampedObject Category="CERTIFICATE">
+		                    <DigestAlgoAndValue>
 		                        <DigestMethod>SHA1</DigestMethod>
 		                        <DigestValue>UcygcQr3cz00rNwZRQmfQ1x/xZ8=</DigestValue>
 		                    </DigestAlgoAndValue>
-		                    <DigestAlgoAndValue Category="CERTIFICATE">
+						</TimestampedObject>
+						<TimestampedObject Category="CERTIFICATE">
+		                    <DigestAlgoAndValue>
 		                        <DigestMethod>SHA1</DigestMethod>
 		                        <DigestValue>FcPZ/ByKno7Us/dn83JGxZKfmCk=</DigestValue>
 		                    </DigestAlgoAndValue>
-		                    <DigestAlgoAndValue Category="REVOCATION">
+						</TimestampedObject>
+						<TimestampedObject Category="REVOCATION">
+		                    <DigestAlgoAndValue>
 		                        <DigestMethod>SHA1</DigestMethod>
 		                        <DigestValue>kJ2giWhV+3NlxxRhrf2SPS9KsCA=</DigestValue>
 		                    </DigestAlgoAndValue>
-		                    <DigestAlgoAndValue Category="REVOCATION">
+						</TimestampedObject>
+						<TimestampedObject Category="REVOCATION">
+		                    <DigestAlgoAndValue>
 		                        <DigestMethod>SHA1</DigestMethod>
 		                        <DigestValue>ERWJOU4nqlSGYxy2k4d3mNeptU4=</DigestValue>
 		                    </DigestAlgoAndValue>
-						</DigestAlgoAndValues>
-	                </SignedObjects>
+						</TimestampedObject>
+	                </TimestampedObjects>
 	            </Timestamp>
 	        </Timestamps>
 	        <SignatureScopes>

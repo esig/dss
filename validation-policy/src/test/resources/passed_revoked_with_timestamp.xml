@@ -57,15 +57,15 @@
 	                        <Source>TRUSTED_LIST</Source>
 	                    </ChainItem>
 	                </CertificateChain>
-	                <SignedObjects>
-	                    <SignedSignature Id="xmldsig-0a9a9d45-c8f6-44c5-9e74-462fa3441a26"/>
-	                    <DigestAlgoAndValues>
-		                    <DigestAlgoAndValue Category="CERTIFICATE">
+	                <TimestampedObjects>
+	                    <TimestampedObject Category="SIGNATURE" Id="xmldsig-0a9a9d45-c8f6-44c5-9e74-462fa3441a26"/>
+	                    <TimestampedObject Category="CERTIFICATE">
+		                    <DigestAlgoAndValue >
 		                        <DigestMethod>SHA256</DigestMethod>
 		                        <DigestValue>clp2MnNYXdjfoCbrIGb1Zn//btRfcgUrP5wtNWXfa14=</DigestValue>
 		                    </DigestAlgoAndValue>
-	                    </DigestAlgoAndValues>
-	                </SignedObjects>
+	                    </TimestampedObject>
+	                </TimestampedObjects>
 	            </Timestamp>
 	        </Timestamps>
 	        <SignatureScopes>

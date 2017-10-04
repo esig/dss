@@ -461,7 +461,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 				for (BasicOCSPResp basicOCSPResp : containedOCSPResponses) {
 					OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(basicOCSPResp);
 					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSRevocationUtils.getEncoded(ocspResp));
-					references.add(new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), TimestampReferenceCategory.REVOCATION));
+					references.add(new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), TimestampedObjectType.REVOCATION));
 				}
 			}
 		}
@@ -481,7 +481,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 				usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
 				for (byte[] x509crl : containedX509CRLs) {
 					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, x509crl);
-					references.add(new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), TimestampReferenceCategory.REVOCATION));
+					references.add(new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), TimestampedObjectType.REVOCATION));
 				}
 			}
 		}

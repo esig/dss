@@ -21,6 +21,9 @@
 package eu.europa.esig.dss.token;
 
 import java.security.Signature;
+import java.security.spec.AlgorithmParameterSpec;
+import java.security.spec.MGF1ParameterSpec;
+import java.security.spec.PSSParameterSpec;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
@@ -41,29 +45,43 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 
 	@Override
 	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException {
+		return sign(toBeSigned, digestAlgorithm, null, keyEntry);
+	}
 
-		if(!(keyEntry instanceof KSPrivateKeyEntry)) {
+	@Override
+	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry)
+			throws DSSException {
+		if (!(keyEntry instanceof KSPrivateKeyEntry)) {
 			throw new IllegalArgumentException("Only KSPrivateKeyEntry are supported");
 		}
 
 		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		LOG.info("Signature algorithm: " + encryptionAlgorithm + "/" + digestAlgorithm);
-		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
+		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, mgf);
 		final String javaSignatureAlgorithm = signatureAlgorithm.getJCEId();
+		LOG.info("Signature algorithm : {}", javaSignatureAlgorithm);
 
 		try {
 			final Signature signature = Signature.getInstance(javaSignatureAlgorithm);
-			signature.initSign(((KSPrivateKeyEntry)keyEntry).getPrivateKey());
+			signature.initSign(((KSPrivateKeyEntry) keyEntry).getPrivateKey());
+
+			if (mgf != null) {
+				signature.setParameter(createPSSParam(mgf));
+			}
+
 			signature.update(toBeSigned.getBytes());
 			final byte[] signatureValue = signature.sign();
 			SignatureValue value = new SignatureValue();
 			value.setAlgorithm(signatureAlgorithm);
 			value.setValue(signatureValue);
 			return value;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 
 	}
 
+	private AlgorithmParameterSpec createPSSParam(MaskGenerationFunction mgf) {
+		String digestJavaName = mgf.getDigestAlgorithm().getJavaName();
+		return new PSSParameterSpec(digestJavaName, "MGF1", new MGF1ParameterSpec(digestJavaName), mgf.getSaltLength(), 1);
+	}
 }

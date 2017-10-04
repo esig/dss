@@ -53,6 +53,14 @@
     			<xsl:attribute name="class">panel-heading</xsl:attribute>
 	    		<xsl:attribute name="data-target">#collapseSig<xsl:value-of select="$idSig" /></xsl:attribute>
 		       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
+		       	
+		       	<xsl:if test="@CounterSignature = 'true'">
+					<span>
+			        	<xsl:attribute name="class">label label-info pull-right</xsl:attribute>
+						Counter-signature
+		        	</span>
+				</xsl:if>
+		       	
     			Signature <xsl:value-of select="$idSig" />
 	        </div>
     		<div>

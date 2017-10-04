@@ -15,7 +15,6 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AttributeValue;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -62,7 +61,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	protected void initChain() {
 
 		Context currentContext = Context.SIGNATURE;
-		if (AttributeValue.COUNTERSIGNATURE.equals(signature.getType())) {
+		if (signature.isCounterSignature()) {
 			currentContext = Context.COUNTER_SIGNATURE;
 		}
 

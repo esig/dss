@@ -51,7 +51,6 @@ import java.util.List;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
@@ -90,6 +89,8 @@ import org.bouncycastle.asn1.ess.OtherCertID;
 import org.bouncycastle.asn1.ess.SigningCertificate;
 import org.bouncycastle.asn1.ess.SigningCertificateV2;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
+import org.bouncycastle.asn1.pkcs.RSASSAPSSparams;
+import org.bouncycastle.asn1.x500.DirectoryString;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.AttCertValidityPeriod;
 import org.bouncycastle.asn1.x509.AttributeCertificate;
@@ -97,7 +98,6 @@ import org.bouncycastle.asn1.x509.AttributeCertificateInfo;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.RoleSyntax;
-import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
@@ -120,6 +120,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
@@ -141,8 +142,8 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampReference;
-import eu.europa.esig.dss.validation.TimestampReferenceCategory;
 import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -536,16 +537,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		final ASN1Set attrValues = attr.getAttrValues();
 		final ASN1Encodable attrValue = attrValues.getObjectAt(0);
-		final Date signingDate;
-		if (attrValue instanceof ASN1UTCTime) {
-			signingDate = DSSASN1Utils.toDate((ASN1UTCTime) attrValue);
-		} else if (attrValue instanceof Time) {
-			signingDate = ((Time) attrValue).getDate();
-		} else if (attrValue instanceof ASN1GeneralizedTime) {
-			signingDate = DSSASN1Utils.toDate((ASN1GeneralizedTime) attrValue);
-		} else {
-			signingDate = null;
-		}
+		final Date signingDate = DSSASN1Utils.getDate(attrValue);
 		if (signingDate != null) {
 			/*
 			 * RFC 3852 [4] states that "dates between January 1, 1950 and
@@ -596,14 +588,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			return null;
 		}
 		final SignatureProductionPlace signatureProductionPlace = new SignatureProductionPlace();
-		final DERUTF8String countryName = signerLocation.getCountryName();
+		final DirectoryString countryName = signerLocation.getCountry();
 		if (countryName != null) {
-
 			signatureProductionPlace.setCountryName(countryName.getString());
 		}
-		final DERUTF8String localityName = signerLocation.getLocalityName();
+		final DirectoryString localityName = signerLocation.getLocality();
 		if (localityName != null) {
-
 			signatureProductionPlace.setCity(localityName.getString());
 		}
 		final StringBuilder address = new StringBuilder();
@@ -759,32 +749,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public byte[] getContentTimestampData(final TimestampToken timestampToken) {
-
-		final ContentInfo contentInfo = cmsSignedData.toASN1Structure();
-		final SignedData signedData = SignedData.getInstance(contentInfo.getContent());
-
-		ContentInfo content = signedData.getEncapContentInfo();
-		if ((content == null) || (content.getContent() == null)) {
-
-			// Detached signatures have either no encapContentInfo in
-			// signedData, or it exists but has no eContent
-			byte[] originalDocumentBytes;
-			try {
-				originalDocumentBytes = Utils.toByteArray(getOriginalDocumentStream());
-			} catch (IOException e) {
-				throw new DSSException(e);
-			}
-			if (originalDocumentBytes != null) {
-
-				return originalDocumentBytes;
-			} else {
-				LOG.error("No original data provided for content timestamp!");
-				return DSSUtils.EMPTY_BYTE_ARRAY;
-			}
-		} // else {
-
-		ASN1OctetString octet = (ASN1OctetString) content.getContent();
-		return octet.getOctets();
+		return getOriginalDocumentBinaries();
 	}
 
 	@Override
@@ -874,7 +839,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public List<TimestampReference> getTimestampReferencesForArchiveTimestamp(final List<TimestampToken> timestampedTimestamps) {
 		final List<TimestampReference> archiveReferences = getSignatureTimestampedReferences();
 		for (final TimestampToken timestamp : timestampedTimestamps) {
-			archiveReferences.add(new TimestampReference(timestamp.getDSSIdAsString(), TimestampReferenceCategory.TIMESTAMP));
+			archiveReferences.add(new TimestampReference(timestamp.getDSSIdAsString(), TimestampedObjectType.TIMESTAMP));
 		}
 		archiveReferences.addAll(getTimestampedReferences());
 		return archiveReferences;
@@ -999,10 +964,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
 
 		String oid = signerInformation.getEncryptionAlgOID();
-
 		try {
 			return EncryptionAlgorithm.forOID(oid);
-		} catch (RuntimeException e) {
+		} catch (DSSException e) {
 			// purposely empty
 		}
 
@@ -1013,9 +977,38 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public DigestAlgorithm getDigestAlgorithm() {
-
 		final String digestAlgOID = signerInformation.getDigestAlgOID();
-		return DigestAlgorithm.forOID(digestAlgOID);
+		try {
+			return DigestAlgorithm.forOID(digestAlgOID);
+		} catch (Exception e) {
+			LOG.error("Unable to retrieve digest algorithm : " + e.getMessage());
+		}
+		return null;
+	}
+
+	@Override
+	public SignatureAlgorithm getSignatureAlgorithm() {
+		return SignatureAlgorithm.getAlgorithm(getEncryptionAlgorithm(), getDigestAlgorithm(), getMaskGenerationFunction());
+	}
+
+	@Override
+	public MaskGenerationFunction getMaskGenerationFunction() {
+		try {
+			byte[] encryptionAlgParams = signerInformation.getEncryptionAlgParams();
+			if (Utils.isArrayNotEmpty(encryptionAlgParams) && !Arrays.equals(DERNull.INSTANCE.getEncoded(), encryptionAlgParams)) {
+				RSASSAPSSparams param = RSASSAPSSparams.getInstance(encryptionAlgParams);
+				AlgorithmIdentifier maskGenAlgorithm = param.getMaskGenAlgorithm();
+				if (PKCSObjectIdentifiers.id_mgf1.equals(maskGenAlgorithm.getAlgorithm())) {
+					AlgorithmIdentifier hashAlgo = param.getHashAlgorithm();
+					return MaskGenerationFunction.fromDigestAlgo(hashAlgo.getAlgorithm().getId());
+				} else {
+					LOG.warn("Unsupported mask algorithm : {}", maskGenAlgorithm.getAlgorithm());
+				}
+			}
+		} catch (IOException e) {
+			LOG.warn("Unable to analyze EncryptionAlgParams", e);
+		}
+		return null;
 	}
 
 	@Override
@@ -1111,7 +1104,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private boolean isDetachedSignature() {
-		return (cmsSignedData.getSignedContent() == null) || (cmsSignedData.getSignedContent().getContent() == null) ? true : false;
+		return cmsSignedData.isDetachedSignature();
 	}
 
 	private CertificateValidity getTheBestCandidate() {
@@ -1378,22 +1371,30 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final CadesLevelBaselineLTATimestampExtractor timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(this);
 		final Attribute atsHashIndexAttribute = timestampExtractor.getVerifiedAtsHashIndex(signerInformation, timestampToken);
 
-		InputStream originalDocumentBytes = getOriginalDocumentStream();
+		byte[] originalDocumentBytes = getOriginalDocumentBinaries();
 		final DigestAlgorithm signedDataDigestAlgorithm = timestampToken.getSignedDataDigestAlgo();
-		byte[] archiveTimestampData = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentBytes,
-				signedDataDigestAlgorithm);
+		byte[] originalDocumentDigest = DSSUtils.digest(signedDataDigestAlgorithm, originalDocumentBytes);
+		byte[] archiveTimestampData = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentDigest);
 		return archiveTimestampData;
 	}
 
-	private InputStream getOriginalDocumentStream() throws DSSException {
+	public byte[] getOriginalDocumentBinaries() {
+		try (InputStream is = getOriginalDocumentStream()) {
+			return Utils.toByteArray(is);
+		} catch (Exception e) {
+			LOG.warn("Unable to retrieve original document binaries", e);
+			return DSSUtils.EMPTY_BYTE_ARRAY;
+		}
+	}
+
+	public InputStream getOriginalDocumentStream() throws DSSException {
 		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
 		if (signedContent != null) {
 			return new ByteArrayInputStream(CMSUtils.getSignedContent(signedContent));
+		} else if (Utils.collectionSize(detachedContents) == 1) {
+			return detachedContents.get(0).openStream();
 		} else {
-			if (Utils.isCollectionNotEmpty(detachedContents)) {
-				return detachedContents.get(0).openStream();
-			}
-			return new ByteArrayInputStream(DSSUtils.EMPTY_BYTE_ARRAY);
+			throw new DSSException("Only enveloping and detached signatures are supported");
 		}
 	}
 
@@ -1445,9 +1446,10 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				 * Detached signatures have either no encapContentInfo in
 				 * signedData, or it exists but has no eContent
 				 */
-				if (getOriginalDocumentStream() != null) {
+				byte[] originalDocumentBinaries = getOriginalDocumentBinaries();
+				if (Utils.isArrayNotEmpty(originalDocumentBinaries)) {
 					data.write(content.toASN1Primitive().getEncoded());
-					Utils.copy(getOriginalDocumentStream(), data);
+					data.write(originalDocumentBinaries);
 				} else {
 					throw new DSSException("Signature is detached and no original data provided.");
 				}
