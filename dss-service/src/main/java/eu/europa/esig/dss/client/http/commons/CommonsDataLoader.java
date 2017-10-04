@@ -20,6 +20,71 @@
  */
 package eu.europa.esig.dss.client.http.commons;
 
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.client.http.Protocol;
+import eu.europa.esig.dss.client.http.proxy.ProxyConfig;
+import eu.europa.esig.dss.client.http.proxy.ProxyProperties;
+import eu.europa.esig.dss.utils.Utils;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpException;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.auth.AuthSchemeProvider;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.NTCredentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.AuthCache;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.config.AuthSchemes;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.conn.routing.HttpRoute;
+import org.apache.http.conn.routing.HttpRoutePlanner;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.entity.BufferedHttpEntity;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.auth.NTLMSchemeFactory;
+import org.apache.http.impl.client.BasicAuthCache;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.ProxyAuthenticationStrategy;
+import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.naming.Context;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,61 +101,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-
-import javax.naming.Context;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpException;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.AuthCache;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.HttpClientConnectionManager;
-import org.apache.http.conn.routing.HttpRoute;
-import org.apache.http.conn.routing.HttpRoutePlanner;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.entity.BufferedHttpEntity;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.impl.client.BasicAuthCache;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.client.http.DataLoader;
-import eu.europa.esig.dss.client.http.Protocol;
-import eu.europa.esig.dss.client.http.proxy.ProxyConfig;
-import eu.europa.esig.dss.client.http.proxy.ProxyProperties;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Implementation of DataLoader for any protocol.
@@ -233,22 +243,90 @@ public class CommonsDataLoader implements DataLoader {
 		}
 	}
 
-	protected synchronized CloseableHttpClient getHttpClient(final String url) throws DSSException {
-		HttpClientBuilder httpClientBuilder = HttpClients.custom();
+	protected synchronized CloseableHttpClient getHttpClient(final String url, boolean useNtlm) throws DSSException {
+		if(useNtlm) {
+			try {
+				URI uri = new URI(url);
+				ProxyProperties proxyProperties;
+				switch (uri.getScheme()) {
+					case "http":
+						proxyProperties = proxyConfig.getHttpProperties();
+						break;
+					case "https":
+						proxyProperties = proxyConfig.getHttpsProperties();
+						break;
+					default:
+						throw new IllegalStateException("unknown url scheme: " + uri.getScheme());
+				}
 
-		httpClientBuilder = configCredentials(httpClientBuilder, url);
+				if(proxyProperties == null) {
+					throw new IllegalStateException("not found proxy properties for scheme: " + uri.getScheme());
+				}
 
-		final RequestConfig.Builder custom = RequestConfig.custom();
-		custom.setSocketTimeout(timeoutSocket);
-		custom.setConnectTimeout(timeoutConnection);
-		custom.setRedirectsEnabled(redirectsEnabled);
+				HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
 
-		final RequestConfig requestConfig = custom.build();
-		httpClientBuilder = httpClientBuilder.setDefaultRequestConfig(requestConfig);
-		httpClientBuilder.setConnectionManager(getConnectionManager());
+				BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
+				if(proxyProperties.getUser() == null || proxyProperties.getPassword() == null) {
+					throw new IllegalStateException("Proxy user name and password is need for authentication for scheme: " + uri.getScheme());
+				}
+				if (proxyProperties.getUser().indexOf("\\") == -1) {
+					throw new IllegalStateException("Proxy user name is not contain domain for scheme: " + uri.getScheme() + ". User name example: ACME\\Wile");
+				}
+				String domain = proxyProperties.getUser().substring(0, proxyProperties.getUser().indexOf("\\"));
+				String user = proxyProperties.getUser().substring(proxyProperties.getUser().indexOf("\\") + 1, proxyProperties.getUser().length());
+				credsProvider.setCredentials(AuthScope.ANY, new NTCredentials(user, proxyProperties.getPassword(), null, domain));
 
-		CloseableHttpClient httpClient = httpClientBuilder.build();
-		return httpClient;
+
+				Registry<AuthSchemeProvider> authSchemeProviderRegistry = RegistryBuilder.<AuthSchemeProvider>create()
+						.register(AuthSchemes.NTLM, new NTLMSchemeFactory())
+						.build();
+
+				httpClientBuilder.setDefaultAuthSchemeRegistry(authSchemeProviderRegistry)
+						.setDefaultCredentialsProvider(credsProvider);
+
+				SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() { //FIXME depricated
+					@Override
+					public boolean isTrusted(java.security.cert.X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {
+						return true;
+					}
+				}).build();
+				httpClientBuilder.setSSLContext(sslContext);
+
+				HostnameVerifier hostnameVerifier = AllowAllHostnameVerifier.INSTANCE;
+
+				SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext, hostnameVerifier);
+				Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+						.register("http", PlainConnectionSocketFactory.getSocketFactory())
+						.register("https", sslSocketFactory)
+						.build();
+
+				PoolingHttpClientConnectionManager connMgr = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+				httpClientBuilder.setConnectionManager(connMgr);
+
+				CloseableHttpClient client = httpClientBuilder.setProxy(new HttpHost(proxyConfig.getHttpProperties().getHost(), proxyConfig.getHttpProperties().getPort()))
+						.setProxyAuthenticationStrategy(ProxyAuthenticationStrategy.INSTANCE)
+						.build();
+				return client;
+			} catch (Exception e) {
+				throw new DSSException(e);
+			}
+		} else {
+			HttpClientBuilder httpClientBuilder = HttpClients.custom();
+
+			httpClientBuilder = configCredentials(httpClientBuilder, url);
+
+			final RequestConfig.Builder custom = RequestConfig.custom();
+			custom.setSocketTimeout(timeoutSocket);
+			custom.setConnectTimeout(timeoutConnection);
+			custom.setRedirectsEnabled(redirectsEnabled);
+
+			final RequestConfig requestConfig = custom.build();
+			httpClientBuilder = httpClientBuilder.setDefaultRequestConfig(requestConfig);
+			httpClientBuilder.setConnectionManager(getConnectionManager());
+
+			CloseableHttpClient httpClient = httpClientBuilder.build();
+			return httpClient;
+		}
 	}
 
 	/**
@@ -264,6 +342,7 @@ public class CommonsDataLoader implements DataLoader {
 		for (final Map.Entry<HttpHost, UsernamePasswordCredentials> entry : authenticationMap.entrySet()) {
 
 			final HttpHost httpHost = entry.getKey();
+
 			final UsernamePasswordCredentials usernamePasswordCredentials = entry.getValue();
 			final AuthScope authscope = new AuthScope(httpHost.getHostName(), httpHost.getPort());
 			credentialsProvider.setCredentials(authscope, usernamePasswordCredentials);
@@ -495,37 +574,17 @@ public class CommonsDataLoader implements DataLoader {
 	protected byte[] httpGet(final String url) {
 
 		HttpGet httpRequest = null;
-		HttpResponse httpResponse = null;
-		CloseableHttpClient client = null;
 		try {
 
 			final URI uri = new URI(url.trim());
 			httpRequest = new HttpGet(uri);
-			if (contentType != null) {
-				httpRequest.setHeader(CONTENT_TYPE, contentType);
-			}
-
-			client = getHttpClient(url);
-			httpResponse = getHttpResponse(client, httpRequest, url);
-
-			final byte[] returnedBytes = readHttpResponse(url, httpResponse);
+            final byte[] returnedBytes = doHttpRequest(httpRequest, url);
 			return returnedBytes;
 
 		} catch (URISyntaxException e) {
 			throw new DSSException(e);
-
 		} finally {
-
-			try {
-				if (httpRequest != null) {
-					httpRequest.releaseConnection();
-				}
-				if (httpResponse != null) {
-					EntityUtils.consumeQuietly(httpResponse.getEntity());
-				}
-			} finally {
-				closeClient(client);
-			}
+			finallyHttp(httpRequest, null, null);
 		}
 	}
 
@@ -535,8 +594,6 @@ public class CommonsDataLoader implements DataLoader {
 		LOG.debug("Fetching data via POST from url " + url);
 
 		HttpPost httpRequest = null;
-		HttpResponse httpResponse = null;
-		CloseableHttpClient client = null;
 		try {
 			final URI uri = URI.create(url.trim());
 			httpRequest = new HttpPost(uri);
@@ -552,28 +609,12 @@ public class CommonsDataLoader implements DataLoader {
 			final HttpEntity httpEntity = new InputStreamEntity(bis, content.length);
 			final HttpEntity requestEntity = new BufferedHttpEntity(httpEntity);
 			httpRequest.setEntity(requestEntity);
-			if (contentType != null) {
-				httpRequest.setHeader(CONTENT_TYPE, contentType);
-			}
-
-			client = getHttpClient(url);
-			httpResponse = getHttpResponse(client, httpRequest, url);
-
-			final byte[] returnedBytes = readHttpResponse(url, httpResponse);
+            final byte[] returnedBytes = doHttpRequest(httpRequest, url);
 			return returnedBytes;
 		} catch (IOException e) {
 			throw new DSSException(e);
 		} finally {
-			try {
-				if (httpRequest != null) {
-					httpRequest.releaseConnection();
-				}
-				if (httpResponse != null) {
-					EntityUtils.consumeQuietly(httpResponse.getEntity());
-				}
-			} finally {
-				closeClient(client);
-			}
+			finallyHttp(httpRequest, null, null);
 		}
 	}
 
@@ -624,7 +665,7 @@ public class CommonsDataLoader implements DataLoader {
 		}
 
 		if (statusCode != HttpStatus.SC_OK) {
-			LOG.warn("No content available via url: " + url);
+			LOG.warn("No content available via url. " + url);
 			return null;
 		}
 
@@ -847,4 +888,52 @@ public class CommonsDataLoader implements DataLoader {
 		}
 	}
 
+	private void finallyHttp(HttpRequestBase httpRequest, HttpResponse httpResponse, CloseableHttpClient client) {
+		try {
+			if (httpRequest != null) {
+				httpRequest.releaseConnection();
+			}
+			if (httpResponse != null) {
+				EntityUtils.consumeQuietly(httpResponse.getEntity());
+			}
+		} finally {
+			if(client != null) {
+				closeClient(client);
+			}
+		}
+	}
+
+	private byte[] doHttpRequest(HttpRequestBase httpRequest, String url) {
+		HttpResponse httpResponse = null;
+		CloseableHttpClient client = null;
+
+		try {
+			if (contentType != null) {
+                httpRequest.setHeader(CONTENT_TYPE, contentType);
+            }
+
+			client = getHttpClient(url, false);
+			httpResponse = getHttpResponse(client, httpRequest, url);
+
+			if(HttpStatus.SC_PROXY_AUTHENTICATION_REQUIRED == httpResponse.getStatusLine().getStatusCode()) {
+                for(Header header : httpResponse.getAllHeaders()) {
+                    if("proxy-authenticate".equals(header.getName().toLowerCase())){
+                        if("ntlm".equals(header.getValue().toLowerCase())) { // TODO kerberos, etc...
+                            client = getHttpClient(url, true);
+                            EntityUtils.consumeQuietly(httpResponse.getEntity());
+                            httpRequest.releaseConnection();
+                            httpResponse = getHttpResponse(client, httpRequest, url);
+                            break;
+                        }
+                    }
+                }
+            }
+
+			return readHttpResponse(url, httpResponse);
+		} catch (DSSException e) {
+			throw new DSSException(e);
+		} finally {
+			finallyHttp(httpRequest, httpResponse, client);
+		}
+	}
 }
