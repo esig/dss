@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.NoSuchProviderException;
@@ -42,6 +43,28 @@ public abstract class AbstractTestCRLUtils {
 	@Test
 	public void isValidCRL() throws Exception {
 		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/belgium2.crl");
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/belgiumrs2.crt")) {
+			CertificateToken certificateToken = loadCert(isCer);
+			CRLValidity validCRL = CRLUtils.isValidCRL(is, certificateToken);
+			assertNotNull(validCRL);
+			assertNotNull(validCRL.getIssuerToken());
+			assertNotNull(validCRL.getSignatureAlgorithm());
+			assertNotNull(validCRL.getThisUpdate());
+			assertNotNull(validCRL.getNextUpdate());
+			assertTrue(validCRL.isIssuerX509PrincipalMatches());
+			assertTrue(validCRL.isSignatureIntact());
+			assertTrue(validCRL.isValid());
+			assertTrue(validCRL.isCrlSignKeyUsage());
+			assertFalse(validCRL.isUnknownCriticalExtension());
+			assertEquals(certificateToken, validCRL.getIssuerToken());
+			assertNull(validCRL.getSignatureInvalidityReason());
+			assertNull(validCRL.getUrl());
+		}
+	}
+
+	@Test
+	public void isValidPEMCRL() throws Exception {
+		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/belgium2.pem.crl");
 				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/belgiumrs2.crt")) {
 			CertificateToken certificateToken = loadCert(isCer);
 			CRLValidity validCRL = CRLUtils.isValidCRL(is, certificateToken);
@@ -119,6 +142,26 @@ public abstract class AbstractTestCRLUtils {
 	}
 
 	@Test
+	public void testGetExpiredCertsOnCRLUTCTime() throws Exception {
+		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/crl-expiredCertsOnCRL-UTCTime.crl");
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
+
+			CertificateToken certificateToken = loadCert(isCer);
+			CRLValidity validCRL = CRLUtils.isValidCRL(is, certificateToken);
+
+			assertEquals(SignatureAlgorithm.RSA_SHA256, validCRL.getSignatureAlgorithm());
+			assertNotNull(validCRL.getThisUpdate());
+			assertNotNull(validCRL.getNextUpdate());
+			assertNull(validCRL.getExpiredCertsOnCRL()); // Ignored
+			assertNull(validCRL.getUrl());
+
+			assertFalse(validCRL.isIssuerX509PrincipalMatches());
+			assertFalse(validCRL.isSignatureIntact());
+			assertFalse(validCRL.isValid());
+		}
+	}
+
+	@Test
 	public void retrieveRevocation() throws Exception {
 		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/http___crl.globalsign.com_gs_gspersonalsign2sha2g2.crl");
 				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
@@ -146,6 +189,32 @@ public abstract class AbstractTestCRLUtils {
 			serialNumber = new BigInteger("111111111111111111111111111");
 			entry = CRLUtils.getRevocationInfo(validity, serialNumber);
 			assertNull(entry);
+		}
+	}
+
+	@Test
+	public void testARLFile() throws Exception {
+		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/notaires2020.arl");
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
+
+			CertificateToken certificateToken = loadCert(isCer);
+
+			CRLValidity validity = CRLUtils.isValidCRL(is, certificateToken);
+			assertNotNull(validity);
+			assertNotNull(validity.getThisUpdate());
+			assertNotNull(validity.getNextUpdate());
+			assertNotNull(validity.getSignatureAlgorithm());
+		}
+	}
+
+	@Test(expected = Exception.class)
+	public void notACRL() throws Exception {
+		try (InputStream is = new ByteArrayInputStream(new byte[] { 1, 2, 3 });
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/citizen_ca.cer")) {
+
+			CertificateToken certificateToken = loadCert(isCer);
+
+			CRLUtils.isValidCRL(is, certificateToken);
 		}
 	}
 

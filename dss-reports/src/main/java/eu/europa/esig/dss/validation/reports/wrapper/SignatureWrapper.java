@@ -79,8 +79,8 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getContentIdentifier();
 	}
 
-	public String getType() {
-		return signature.getType();
+	public boolean isCounterSignature() {
+		return Utils.isTrue(signature.isCounterSignature());
 	}
 
 	public List<TimestampWrapper> getTimestampList() {

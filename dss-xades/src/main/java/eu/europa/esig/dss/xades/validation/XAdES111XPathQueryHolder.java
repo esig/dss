@@ -53,7 +53,6 @@ public class XAdES111XPathQueryHolder extends XPathQueryHolder {
 		XPATH_UNSIGNED_PROPERTIES = XPATH_QUALIFYING_PROPERTIES + "/xades111:UnsignedProperties";
 		XPATH_UNSIGNED_SIGNATURE_PROPERTIES = XPATH_UNSIGNED_PROPERTIES + "/xades111:UnsignedSignatureProperties";
 
-
 		XPATH_ALL_DATA_OBJECTS_TIMESTAMP = XPATH_SIGNED_PROPERTIES + "/xades111:SignedDataObjectProperties/xades111:AllDataObjectsTimeStamp";
 
 		XPATH__X509_ISSUER_NAME = "./xades111:IssuerSerial/ds:X509IssuerName";
@@ -64,14 +63,10 @@ public class XAdES111XPathQueryHolder extends XPathQueryHolder {
 		XPATH__DIGEST_VALUE = "./xades111:DigestValue";
 		XPATH__CERT_DIGEST_DIGEST_VALUE = XPATH__CERT_DIGEST + "/xades111:DigestValue";
 
-		// Level -B
-		XPATH_COUNT_SIGNED_SIGNATURE_PROPERTIES = "count(" + XPATH_SIGNED_SIGNATURE_PROPERTIES + ")";
 	}
 
 	@Override
 	public boolean canUseThisXPathQueryHolder(final String namespace) {
-
-		boolean canUse = XAdESNamespaces.XAdES111.equals(namespace);
-		return canUse;
+		return XAdESNamespaces.XAdES111.equals(namespace);
 	}
 }

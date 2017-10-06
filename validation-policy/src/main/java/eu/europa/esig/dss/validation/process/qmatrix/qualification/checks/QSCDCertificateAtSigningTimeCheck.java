@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -17,7 +17,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class QSCDCertificateAtSigningTimeCheck extends ChainItem<XmlSignatureAnalysis> implements Condition {
+public class QSCDCertificateAtSigningTimeCheck extends ChainItem<XmlValidationSignatureQualification> implements Condition {
 
 	private final CertificateWrapper signingCertificate;
 	private final Date signingTime;
@@ -26,7 +26,7 @@ public class QSCDCertificateAtSigningTimeCheck extends ChainItem<XmlSignatureAna
 
 	private QSCDStatus status;
 
-	public QSCDCertificateAtSigningTimeCheck(XmlSignatureAnalysis result, CertificateWrapper signingCertificate, Date signingTime,
+	public QSCDCertificateAtSigningTimeCheck(XmlValidationSignatureQualification result, CertificateWrapper signingCertificate, Date signingTime,
 			List<TrustedServiceWrapper> caqcServices, Condition qualified, LevelConstraint constraint) {
 		super(result, constraint);
 

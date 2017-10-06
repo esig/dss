@@ -31,16 +31,11 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.test.mock.MockTSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.TimestampType;
@@ -50,14 +45,12 @@ public class CAdESLevelBWithTwoContentTimestampsTest extends AbstractCAdESTestSi
 	private DocumentSignatureService<CAdESSignatureParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-	private MockPrivateKeyEntry privateKeyEntry;
 
 	@Before
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
-		CertificateService certificateService = new CertificateService();
-		MockTSPSource tspSource = new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256));
+		OnlineTSPSource tspSource = getGoodTsa();
 
 		TimeStampToken timeStampResponse1 = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256,
 				DSSUtils.digest(DigestAlgorithm.SHA256, DSSUtils.toByteArray(documentToSign)));
@@ -67,18 +60,15 @@ public class CAdESLevelBWithTwoContentTimestampsTest extends AbstractCAdESTestSi
 				DSSUtils.digest(DigestAlgorithm.SHA1, DSSUtils.toByteArray(documentToSign)));
 		TimestampToken contentTimestamp2 = new TimestampToken(timeStampResponse2, TimestampType.CONTENT_TIMESTAMP, new CertificatePool());
 
-		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
-
 		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
-		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getSigningCert());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp1, contentTimestamp2));
 
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		service = new CAdESService(certificateVerifier);
+		service = new CAdESService(getCompleteCertificateVerifier());
 	}
 
 	@Override
@@ -117,8 +107,8 @@ public class CAdESLevelBWithTwoContentTimestampsTest extends AbstractCAdESTestSi
 	}
 
 	@Override
-	protected MockPrivateKeyEntry getPrivateKeyEntry() {
-		return privateKeyEntry;
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 }

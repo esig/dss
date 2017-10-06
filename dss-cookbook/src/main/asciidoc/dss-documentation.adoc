@@ -173,6 +173,9 @@ dss-pades:: Implementation of the PAdES signature, extension and validation.
 dss-xades:: Implementation of the XAdES signature, extension and validation.
 dss-spi:: Interfaces, util classes to manipulate ASN1, compute digests,... 
 dss-service:: Implementations to communicate with online resources (TSP, CRL, OCSP). 
+dss-crl-parser:: API to validate CRLs and retrieve revocation data
+dss-crl-parser-stream:: Implementation of dss-crl-parser which streams the CRL (experimental).
+dss-crl-parser-x509crl:: Implementation of dss-crl-parser which uses the java object X509CRL.
 dss-tsl-validation:: Module which allows to load / parse / validate LOTL and TSLs.
 validation-policy:: Business of the signature's validation (ETSI EN 319 102).
 dss-rest:: REST webservices to sign (getDataToSign, signDocument methods) and extend a signature.
@@ -209,7 +212,16 @@ The module dss-utils offers an interface with utility methods to operate on Stri
  * dss-utils-apache-commons : this module uses Apache Commons libraries (commons-lang3, commons-collection4, commons-io and commons-codec);
  * dss-utils-google-guava : this module only requires Google Guava (recommended on Android).
 
-If your integration includes dss-utils, you will needs to select an implementation.
+If your integration include dss-utils, you will need to select an implementation.
+
+=== DSS CRL Parser
+
+DSS contains two ways to parse/validate a CRL and to retrieve revocation data. An alternative to the X509CRL java object was developed to face memory issues in case of large CRLs. The X509CRL object fully loads the CRL in memory and can cause OutOfMemoryError.
+
+ * dss-crl-parser-x509crl : this module uses the X509CRL java object.
+ * dss-crl-parser-streams : this module offers an alternative with a CRL streaming (experimental).
+ 
+If your integration require dss-crl-parser, you will need to choose your implementation.
 
 == Available demonstrations
 

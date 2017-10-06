@@ -1,86 +1,43 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ *
+ * This file is part of the "DSS - Digital Signature Services" project.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.asic.extension.asice;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.tsp.TimeStampToken;
-import org.junit.Test;
-
 import eu.europa.esig.dss.ASiCContainerType;
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignatureValue;
-import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.asic.ASiCExtractResult;
-import eu.europa.esig.dss.asic.ASiCWithCAdESContainerExtractor;
-import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
-import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
-import eu.europa.esig.dss.asic.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.test.TestUtils;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.test.mock.MockTSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.TimestampType;
+import eu.europa.esig.dss.asic.extension.AbstractTestASiCwithCAdESExtension;
 
-public class ASiCeExtensionWithCAdESBToLTATest {
+public class ASiCeExtensionWithCAdESBToLTATest extends AbstractTestASiCwithCAdESExtension {
 
-	@Test
-	public void test() throws Exception {
-		List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
-		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
-		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
+	@Override
+	protected SignatureLevel getOriginalSignatureLevel() {
+		return SignatureLevel.CAdES_BASELINE_B;
+	}
 
-		CertificateService certificateService = new CertificateService();
-		MockPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+	@Override
+	protected SignatureLevel getFinalSignatureLevel() {
+		return SignatureLevel.CAdES_BASELINE_LTA;
+	}
 
-		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
-		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
-
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		ASiCWithCAdESService service = new ASiCWithCAdESService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
-
-		ToBeSigned dataToSign = service.getDataToSign(documentToSigns, signatureParameters);
-		SignatureValue signatureValue = TestUtils.sign(SignatureAlgorithm.RSA_SHA256, privateKeyEntry, dataToSign);
-		DSSDocument signedDocument = service.signDocument(documentToSigns, signatureParameters, signatureValue);
-
-		ASiCWithCAdESSignatureParameters extendParameters = new ASiCWithCAdESSignatureParameters();
-		extendParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
-		extendParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-		DSSDocument extendDocument = service.extendDocument(signedDocument, extendParameters);
-
-		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(extendDocument);
-		ASiCExtractResult result = extractor.extract();
-
-		assertEquals(0, result.getUnsupportedDocuments().size());
-		assertEquals(1, result.getArchiveManifestDocuments().size());
-		assertEquals(1, result.getTimestampDocuments().size());
-		assertEquals(1, result.getManifestDocuments().size());
-		assertEquals(1, result.getSignatureDocuments().size());
-
-		DSSDocument archiveManifest = result.getArchiveManifestDocuments().get(0);
-		byte[] expectedTimestampedBinaries = DSSUtils.toByteArray(archiveManifest);
-
-		DSSDocument timestampDoc = result.getTimestampDocuments().get(0);
-		TimeStampToken timeStamp = new TimeStampToken(new CMSSignedData(timestampDoc.openStream()));
-		TimestampToken token = new TimestampToken(timeStamp, TimestampType.ARCHIVE_TIMESTAMP, new CertificatePool());
-		assertTrue(token.matchData(expectedTimestampedBinaries));
+	@Override
+	protected ASiCContainerType getContainerType() {
+		return ASiCContainerType.ASiC_E;
 	}
 }

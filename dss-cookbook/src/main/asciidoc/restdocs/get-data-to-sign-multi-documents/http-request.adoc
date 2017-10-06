@@ -1,10 +1,10 @@
 [source,http,options="nowrap"]
 ----
 POST /services/rest/signature/multiple-documents/getDataToSignMultiple HTTP/1.1
-Accept: application/json
+Accept: application/json, application/javascript, text/javascript
 Content-Type: application/json; charset=UTF-8
 Host: localhost:8080
-Content-Length: 2496
+Content-Length: 2483
 
 {
   "parameters" : {
@@ -14,15 +14,15 @@ Content-Length: 2496
     "signatureAlgorithm" : "RSA_SHA256",
     "encryptionAlgorithm" : "RSA",
     "digestAlgorithm" : "SHA256",
+    "contentTimestampParameters" : {
+      "digestAlgorithm" : "SHA256",
+      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#"
+    },
     "signatureTimestampParameters" : {
       "digestAlgorithm" : "SHA256",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#"
     },
     "archiveTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
-      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#"
-    },
-    "contentTimestampParameters" : {
       "digestAlgorithm" : "SHA256",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#"
     },
@@ -34,7 +34,7 @@ Content-Length: 2496
     "asicContainerType" : "ASiC_E",
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : "2017-06-19T15:20:47.757Z",
+      "signingDate" : 1506597228545,
       "claimedSignerRoles" : null,
       "certifiedSignerRoles" : null,
       "signaturePolicy" : null,

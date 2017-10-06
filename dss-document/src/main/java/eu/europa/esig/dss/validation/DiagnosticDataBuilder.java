@@ -25,6 +25,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSPKUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
@@ -43,12 +44,10 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedObjects;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
@@ -263,8 +262,9 @@ public class DiagnosticDataBuilder {
 
 		final AdvancedSignature masterSignature = signature.getMasterSignature();
 		if (masterSignature != null) {
-			xmlSignature.setType(AttributeValue.COUNTERSIGNATURE);
+			xmlSignature.setCounterSignature(true);
 			xmlSignature.setParentId(masterSignature.getId());
+			xmlSignature.setSignatureFilename(removeSpecialCharsForXml(masterSignature.getSignatureFilename()));
 		}
 		xmlSignature.setId(signature.getId());
 		xmlSignature.setDateTime(signature.getSigningTime());
@@ -613,35 +613,30 @@ public class DiagnosticDataBuilder {
 
 		xmlTimestampToken.setSigningCertificate(getXmlSigningCertificate(issuerToken));
 		xmlTimestampToken.setCertificateChain(getXmlForCertificateChain(issuerToken));
-		xmlTimestampToken.setSignedObjects(getXmlSignedObjects(timestampToken.getTimestampedReferences()));
+		xmlTimestampToken.setTimestampedObjects(getXmlTimestampedObjects(timestampToken.getTimestampedReferences()));
 
 		return xmlTimestampToken;
 	}
 
-	private XmlSignedObjects getXmlSignedObjects(List<TimestampReference> timestampReferences) {
+	private List<XmlTimestampedObject> getXmlTimestampedObjects(List<TimestampReference> timestampReferences) {
 		if (Utils.isCollectionNotEmpty(timestampReferences)) {
-			final XmlSignedObjects xmlSignedObjectsType = new XmlSignedObjects();
-			final List<XmlDigestAlgoAndValue> xmlDigestAlgAndValueList = xmlSignedObjectsType.getDigestAlgoAndValues();
+			List<XmlTimestampedObject> objects = new ArrayList<XmlTimestampedObject>();
 			for (final TimestampReference timestampReference : timestampReferences) {
-				final TimestampReferenceCategory timestampedCategory = timestampReference.getCategory();
-				if (TimestampReferenceCategory.SIGNATURE.equals(timestampedCategory)) {
+				XmlTimestampedObject timestampedObject = new XmlTimestampedObject();
 
-					final XmlSignedSignature xmlSignedSignature = new XmlSignedSignature();
-					xmlSignedSignature.setId(timestampReference.getSignatureId());
-					xmlSignedObjectsType.getSignedSignature().add(xmlSignedSignature);
-				} else if (TimestampReferenceCategory.TIMESTAMP.equals(timestampedCategory)) {
-					final XmlTimestampedTimestamp xmlTimestampedTimestamp = new XmlTimestampedTimestamp();
-					xmlTimestampedTimestamp.setId(timestampReference.getSignatureId());
-					xmlSignedObjectsType.getTimestampedTimestamp().add(xmlTimestampedTimestamp);
+				final TimestampedObjectType timestampedCategory = timestampReference.getCategory();
+				timestampedObject.setCategory(timestampReference.getCategory());
+				if (TimestampedObjectType.SIGNATURE == timestampedCategory || TimestampedObjectType.TIMESTAMP == timestampedCategory) {
+					timestampedObject.setId(timestampReference.getSignatureId());
 				} else {
-
-					final XmlDigestAlgoAndValue xmlDigestAlgAndValue = getXmlDigestAlgoAndValue(timestampReference.getDigestAlgorithm(),
-							timestampReference.getDigestValue());
-					xmlDigestAlgAndValue.setCategory(timestampedCategory.name());
-					xmlDigestAlgAndValueList.add(xmlDigestAlgAndValue);
+					// CERTIFICATE || REVOCATION
+					timestampedObject
+							.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(timestampReference.getDigestAlgorithm(), timestampReference.getDigestValue()));
 				}
+
+				objects.add(timestampedObject);
 			}
-			return xmlSignedObjectsType;
+			return objects;
 		}
 		return null;
 	}
@@ -683,9 +678,13 @@ public class DiagnosticDataBuilder {
 
 		final int keyLength = signingCertificateToken == null ? 0 : DSSPKUtils.getPublicKeySize(signingCertificateToken.getPublicKey());
 		xmlBasicSignature.setKeyLengthUsedToSignThisToken(String.valueOf(keyLength));
-		final DigestAlgorithm digestAlgorithm = getDigestAlgorithm(signature);
+		final DigestAlgorithm digestAlgorithm = signature.getDigestAlgorithm();
 		final String digestAlgorithmString = digestAlgorithm == null ? "?" : digestAlgorithm.getName();
 		xmlBasicSignature.setDigestAlgoUsedToSignThisToken(digestAlgorithmString);
+		MaskGenerationFunction maskGenerationFunction = signature.getMaskGenerationFunction();
+		if (maskGenerationFunction != null) {
+			xmlBasicSignature.setMaskGenerationFunctionUsedToSignThisToken(maskGenerationFunction.name());
+		}
 
 		SignatureCryptographicVerification scv = signature.getSignatureCryptographicVerification();
 		xmlBasicSignature.setReferenceDataFound(scv.isReferenceDataFound());
@@ -693,16 +692,6 @@ public class DiagnosticDataBuilder {
 		xmlBasicSignature.setSignatureIntact(scv.isSignatureIntact());
 		xmlBasicSignature.setSignatureValid(scv.isSignatureValid());
 		return xmlBasicSignature;
-	}
-
-	private DigestAlgorithm getDigestAlgorithm(final AdvancedSignature signature) {
-		DigestAlgorithm digestAlgorithm = null;
-		try {
-			digestAlgorithm = signature.getDigestAlgorithm();
-		} catch (Exception e) {
-			LOG.error("Unable to retrieve digest algorithm : " + e.getMessage());
-		}
-		return digestAlgorithm;
 	}
 
 	private List<XmlSignatureScope> getXmlSignatureScopes(List<SignatureScope> scopes) {

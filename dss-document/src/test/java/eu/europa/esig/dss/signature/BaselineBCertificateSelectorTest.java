@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.signature;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -98,6 +99,10 @@ public class BaselineBCertificateSelectorTest {
 		List<CertificateToken> certificates = selector.getCertificates();
 		assertEquals(1, certificates.size());
 		assertEquals(c1, certificates.get(0));
+
+		for (CertificateToken certificateToken : certificates) {
+			assertTrue(certificateToken.isSignatureValid());
+		}
 	}
 
 	@Test
