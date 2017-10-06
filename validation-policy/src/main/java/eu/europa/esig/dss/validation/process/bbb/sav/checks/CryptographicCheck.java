@@ -31,6 +31,7 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 	private final TokenProxy token;
 	private final CryptographicConstraint constraint;
 	private MessageTag errorMessage = MessageTag.EMPTY;
+	private String algoName = "";
 
 	public CryptographicCheck(T result, TokenProxy token, Date currentTime, CryptographicConstraint constraint) {
 		super(result, constraint);
@@ -45,8 +46,10 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 		// Check encryption algorithm
 		ListAlgo acceptableEncryptionAlgo = constraint.getAcceptableEncryptionAlgo();
 		if ((acceptableEncryptionAlgo != null) && Utils.isCollectionNotEmpty(acceptableEncryptionAlgo.getAlgo())) {
-			if (!isIn(token.getEncryptionAlgoUsedToSignThisToken(), acceptableEncryptionAlgo.getAlgo())) {
+			String lAlgoName = token.getEncryptionAlgoUsedToSignThisToken();
+			if (!isIn(lAlgoName, acceptableEncryptionAlgo.getAlgo())) {
 				errorMessage = MessageTag.ASCCM_ANS_1;
+				algoName = lAlgoName;
 				return false;
 			}
 		}
@@ -54,8 +57,10 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 		// Check digest algorithm
 		ListAlgo acceptableDigestAlgo = constraint.getAcceptableDigestAlgo();
 		if ((acceptableDigestAlgo != null) && Utils.isCollectionNotEmpty(acceptableDigestAlgo.getAlgo())) {
-			if (!isIn(token.getDigestAlgoUsedToSignThisToken(), acceptableDigestAlgo.getAlgo())) {
+			String lAlgoName = token.getDigestAlgoUsedToSignThisToken();
+			if (!isIn(lAlgoName, acceptableDigestAlgo.getAlgo())) {
 				errorMessage = MessageTag.ASCCM_ANS_2;
+				algoName = lAlgoName;
 				return false;
 			}
 		}
@@ -68,9 +73,11 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 			if (Utils.isStringDigits(keySize)) {
 				tokenKeySize = Integer.parseInt(keySize);
 			}
-			int expectedMinimumKeySize = getExpectedKeySize(token.getEncryptionAlgoUsedToSignThisToken(), miniPublicKeySize.getAlgo());
+			String lAlgoName = token.getEncryptionAlgoUsedToSignThisToken();
+			int expectedMinimumKeySize = getExpectedKeySize(lAlgoName, miniPublicKeySize.getAlgo());
 			if (tokenKeySize < expectedMinimumKeySize) {
 				errorMessage = MessageTag.ASCCM_ANS_3;
+				algoName = lAlgoName;
 				return false;
 			}
 		}
@@ -80,13 +87,16 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 		if ((algoExpirationDate != null) && Utils.isCollectionNotEmpty(algoExpirationDate.getAlgo())) {
 
 			// Digest algorithm
-			Date expirationDate = getExpirationDate(token.getDigestAlgoUsedToSignThisToken(), algoExpirationDate.getAlgo(), algoExpirationDate.getFormat());
+			String lAlgoName = token.getDigestAlgoUsedToSignThisToken();
+			Date expirationDate = getExpirationDate(lAlgoName, algoExpirationDate.getAlgo(), algoExpirationDate.getFormat());
 			if (expirationDate == null) {
 				errorMessage = MessageTag.ASCCM_ANS_4;
+				algoName = lAlgoName;
 				return false;
 			}
 			if (expirationDate.before(validationDate)) {
 				errorMessage = MessageTag.ASCCM_ANS_5;
+				algoName = lAlgoName;
 				return false;
 			}
 
@@ -95,10 +105,12 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 			expirationDate = getExpirationDate(algoToFind, algoExpirationDate.getAlgo(), algoExpirationDate.getFormat());
 			if (expirationDate == null) {
 				errorMessage = MessageTag.ASCCM_ANS_4;
+				algoName = algoToFind;
 				return false;
 			}
 			if (expirationDate.before(validationDate)) {
 				errorMessage = MessageTag.ASCCM_ANS_5;
+				algoName = algoToFind;
 				return false;
 			}
 		}
@@ -170,4 +182,8 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 		return MessageFormat.format(AdditionalInfo.VALIDATION_TIME, params);
 	}
 
+	@Override
+	protected String getAdditionalParameter() {
+		return algoName;
+	}
 }

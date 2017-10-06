@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>META-INF/signatures1.xml</DocumentName>
+    <ValidationDate>2017-10-05T11:04:34</ValidationDate>
+    <Signatures>
+        <Signature Id="S0">
+            <SignatureFilename>META-INF/signatures1.xml</SignatureFilename>
+            <DateTime>2013-11-13T10:09:52</DateTime>
+            <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
+            <StructuralValidation>
+                <Valid>true</Valid>
+            </StructuralValidation>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="559D2533588FF197F1999E93BB9CBE3628B51BEF46AFDA937A74F37BCFA323B3">
+                <AttributePresent>true</AttributePresent>
+                <DigestValuePresent>true</DigestValuePresent>
+                <DigestValueMatch>true</DigestValueMatch>
+                <IssuerSerialMatch>true</IssuerSerialMatch>
+            </SigningCertificate>
+            <CertificateChain>
+                <ChainItem Id="559D2533588FF197F1999E93BB9CBE3628B51BEF46AFDA937A74F37BCFA323B3">
+                    <Source>SIGNATURE</Source>
+                </ChainItem>
+                <ChainItem Id="41EC808E33CCA8659EAEA81670D6C7DC01446636E1F227561B6307B80BA63862">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+            <ContentType>text/xml</ContentType>
+            <CommitmentTypeIndication/>
+            <ClaimedRoles/>
+            <Policy>
+                <Id>1.3.6.1.4.1.10015.1000.3.2.1</Id>
+                <Url>https://www.sk.ee/repository/bdoc-spec21.pdf</Url>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>3Tl1oILSvOAWomdI9VeWV6IA/32eSXRUri9kPEz1IVs=</DigestValue>
+                </DigestAlgoAndValue>
+                <Identified>true</Identified>
+                <Status>false</Status>
+                <ProcessingError>The policy digest value (3Tl1oILSvOAWomdI9VeWV6IA/32eSXRUri9kPEz1IVs=) does not match the re-calculated digest value (OsR66rs25GljG5ljZgLlBSnbG6RVbk/Ln7zUt3YggfY=).</ProcessingError>
+            </Policy>
+            <Timestamps/>
+            <SignatureScopes>
+                <SignatureScope name="jdigidoc.cfg" scope="FullSignatureScope">Full document</SignatureScope>
+            </SignatureScopes>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="50D62F373742287B5F18319E513C7BCA89BD78788B23DA356124CB90F9A636AF">
+            <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=sk ocsp responder 2011,ou=ocsp,o=as sertifitseerimiskeskus,l=tallinn,st=harju,c=ee</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,CN=SK OCSP RESPONDER 2011,OU=OCSP,O=AS Sertifitseerimiskeskus,L=Tallinn,ST=Harju,C=EE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=ee certification centre root ca,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,CN=EE Certification Centre Root CA,O=AS Sertifitseerimiskeskus,C=EE</IssuerDistinguishedName>
+            <SerialNumber>152345024098107435434516224939977300289</SerialNumber>
+            <CommonName>SK OCSP RESPONDER 2011</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationName>AS Sertifitseerimiskeskus</OrganizationName>
+            <OrganizationalUnit>OCSP</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <Url>http://www.sk.ee/repository/crls/eeccrca.crl</Url>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <DigestAlgoAndValues/>
+            <NotAfter>2024-03-18T10:21:43</NotAfter>
+            <NotBefore>2011-03-18T10:21:43</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits/>
+            <IdKpOCSPSigning>true</IdKpOCSPSigning>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicyIds>
+                <oid>1.3.6.1.4.1.10015.4.1.2</oid>
+            </CertificatePolicyIds>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>SK ID Solutions AS</TSPName>
+                    <TSPServiceName>SK OCSP RESPONDER 2011</TSPServiceName>
+                    <CountryCode>EE</CountryCode>
+                    <TrustedServices>
+                        <TrustedService>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-07-01T00:00:00</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                            <StartDate>2011-03-18T11:21:43</StartDate>
+                            <EndDate>2016-07-01T00:00:00</EndDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations/>
+            <Info/>
+        </Certificate>
+        <Certificate Id="41EC808E33CCA8659EAEA81670D6C7DC01446636E1F227561B6307B80BA63862">
+            <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=esteid-sk 2011,o=as sertifitseerimiskeskus,c=ee</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,CN=ESTEID-SK 2011,O=AS Sertifitseerimiskeskus,C=EE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=ee certification centre root ca,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,CN=EE Certification Centre Root CA,O=AS Sertifitseerimiskeskus,C=EE</IssuerDistinguishedName>
+            <SerialNumber>54927111231050666919490365049675206925</SerialNumber>
+            <CommonName>ESTEID-SK 2011</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationName>AS Sertifitseerimiskeskus</OrganizationName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <Url>http://www.sk.ee/repository/crls/eeccrca.crl</Url>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <DigestAlgoAndValues/>
+            <NotAfter>2024-03-18T10:14:59</NotAfter>
+            <NotBefore>2011-03-18T10:14:59</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>crlSign</KeyUsage>
+                <KeyUsage>keyCertSign</KeyUsage>
+            </KeyUsageBits>
+            <IdKpOCSPSigning>false</IdKpOCSPSigning>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicyIds>
+                <oid>1.3.6.1.4.1.10015.100.1.1.1</oid>
+            </CertificatePolicyIds>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>SK ID Solutions AS</TSPName>
+                    <TSPServiceName>ESTEID-SK 2011 qualified certificates for electronic signatures</TSPServiceName>
+                    <CountryCode>EE</CountryCode>
+                    <TrustedServices>
+                        <TrustedService>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-07-01T00:00:00</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                            <StartDate>2011-03-18T11:14:59</StartDate>
+                            <EndDate>2016-07-01T00:00:00</EndDate>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations/>
+            <Info/>
+        </Certificate>
+        <Certificate Id="559D2533588FF197F1999E93BB9CBE3628B51BEF46AFDA937A74F37BCFA323B3">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130b3337363032303430333334,2.5.4.42=#0c044d415254,2.5.4.4=#0c04544f4f4d,cn=toom\,mart\,37602040334,ou=digital signature,o=esteid,c=ee</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#130b3337363032303430333334,2.5.4.42=#0c044d415254,2.5.4.4=#0c04544f4f4d,CN=TOOM\,MART\,37602040334,OU=digital signature,O=ESTEID,C=EE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=esteid-sk 2011,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,CN=ESTEID-SK 2011,O=AS Sertifitseerimiskeskus,C=EE</IssuerDistinguishedName>
+            <SerialNumber>22396525560582866938155111433503072654</SerialNumber>
+            <CommonName>TOOM,MART,37602040334</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationName>ESTEID</OrganizationName>
+            <GivenName>MART</GivenName>
+            <OrganizationalUnit>digital signature</OrganizationalUnit>
+            <Surname>TOOM</Surname>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <Url>http://www.sk.ee/repository/crls/esteid2011.crl</Url>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <DigestAlgoAndValues/>
+            <NotAfter>2018-04-08T20:59:59</NotAfter>
+            <NotBefore>2013-04-10T08:52:42</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <IdKpOCSPSigning>false</IdKpOCSPSigning>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="41EC808E33CCA8659EAEA81670D6C7DC01446636E1F227561B6307B80BA63862"/>
+            <CertificateChain>
+                <ChainItem Id="41EC808E33CCA8659EAEA81670D6C7DC01446636E1F227561B6307B80BA63862">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicyIds>
+                <oid>1.3.6.1.4.1.10015.1.1.3.3</oid>
+            </CertificatePolicyIds>
+            <QCStatementIds>
+                <oid Description="qc-compliant">0.4.0.1862.1.1</oid>
+                <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
+            </QCStatementIds>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>SK ID Solutions AS</TSPName>
+                    <TSPServiceName>ESTEID-SK 2011 qualified certificates for electronic signatures</TSPServiceName>
+                    <CountryCode>EE</CountryCode>
+                    <TrustedServices>
+                        <TrustedService>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-07-01T00:00:00</StartDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig</Qualifier>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                            <StartDate>2011-03-18T11:14:59</StartDate>
+                            <EndDate>2016-07-01T00:00:00</EndDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD</Qualifier>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris/>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations>
+                <Revocation Id="559d2533588ff197f1999e93bb9cbe3628b51bef46afda937a74f37bcfa323b3b16d2636874948cc5276aac857abf577c3e32eb201c13b4bc6bb11cf0face3cc">
+                    <Origin>SIGNATURE</Origin>
+                    <Source>OCSPToken</Source>
+                    <Status>true</Status>
+                    <ProductionDate>2013-11-13T10:09:49</ProductionDate>
+                    <ThisUpdate>2013-11-13T10:09:49</ThisUpdate>
+                    <DigestAlgoAndValues/>
+                    <BasicSignature>
+                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                        <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                        <ReferenceDataFound>true</ReferenceDataFound>
+                        <ReferenceDataIntact>true</ReferenceDataIntact>
+                        <SignatureIntact>true</SignatureIntact>
+                        <SignatureValid>true</SignatureValid>
+                    </BasicSignature>
+                    <SigningCertificate Id="50D62F373742287B5F18319E513C7BCA89BD78788B23DA356124CB90F9A636AF"/>
+                    <CertificateChain>
+                        <ChainItem Id="50D62F373742287B5F18319E513C7BCA89BD78788B23DA356124CB90F9A636AF">
+                            <Source>TRUSTED_LIST</Source>
+                        </ChainItem>
+                    </CertificateChain>
+                    <Info/>
+                </Revocation>
+            </Revocations>
+            <Info>
+                <Message Id="0">No CRL info found !</Message>
+            </Info>
+        </Certificate>
+        <Certificate Id="3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76">
+            <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=ee certification centre root ca,o=as sertifitseerimiskeskus,c=ee</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,CN=EE Certification Centre Root CA,O=AS Sertifitseerimiskeskus,C=EE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=ee certification centre root ca,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,CN=EE Certification Centre Root CA,O=AS Sertifitseerimiskeskus,C=EE</IssuerDistinguishedName>
+            <SerialNumber>112324828676200291871926431888494945866</SerialNumber>
+            <CommonName>EE Certification Centre Root CA</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationName>AS Sertifitseerimiskeskus</OrganizationName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <DigestAlgoAndValues/>
+            <NotAfter>2030-12-17T23:59:59</NotAfter>
+            <NotBefore>2010-10-30T10:10:30</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>crlSign</KeyUsage>
+                <KeyUsage>keyCertSign</KeyUsage>
+            </KeyUsageBits>
+            <IdKpOCSPSigning>true</IdKpOCSPSigning>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicyIds/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <Info/>
+        </Certificate>
+    </UsedCertificates>
+</DiagnosticData>
