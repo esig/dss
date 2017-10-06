@@ -2,7 +2,7 @@ package eu.europa.esig.dss.crl;
 
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.security.InvalidKeyException;
+import java.security.KeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Security;
@@ -29,14 +29,14 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CRLUtilsX509CRLImpl.class);
 
-	private static final BouncyCastleProvider securityProvider = new BouncyCastleProvider();
+	private static final BouncyCastleProvider BC_PROVIDER = new BouncyCastleProvider();
 
-	private static final CertificateFactory certificateFactory;
+	private static final CertificateFactory CERT_FACTORY;
 
 	static {
 		try {
-			Security.addProvider(securityProvider);
-			certificateFactory = CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME);
+			Security.addProvider(BC_PROVIDER);
+			CERT_FACTORY = CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME);
 		} catch (CertificateException e) {
 			LOG.error(e.getMessage(), e);
 			throw new DSSException("Platform does not support X509 certificate", e);
@@ -99,13 +99,7 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 			x509CRL.verify(issuerToken.getPublicKey());
 			crlValidity.setSignatureIntact(true);
 			crlValidity.setIssuerToken(issuerToken);
-		} catch (InvalidKeyException e) {
-			crlValidity.setSignatureInvalidityReason(e.getClass().getSimpleName() + " - " + e.getMessage());
-		} catch (CRLException e) {
-			crlValidity.setSignatureInvalidityReason(e.getClass().getSimpleName() + " - " + e.getMessage());
-		} catch (NoSuchAlgorithmException e) {
-			crlValidity.setSignatureInvalidityReason(e.getClass().getSimpleName() + " - " + e.getMessage());
-		} catch (SignatureException e) {
+		} catch (KeyException | CRLException | NoSuchAlgorithmException | SignatureException e) {
 			crlValidity.setSignatureInvalidityReason(e.getClass().getSimpleName() + " - " + e.getMessage());
 		} catch (NoSuchProviderException e) {
 			throw new DSSException(e);
@@ -138,7 +132,11 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 	 */
 	private X509CRL loadCRL(final InputStream inputStream) {
 		try {
-			return (X509CRL) certificateFactory.generateCRL(inputStream);
+			X509CRL crl = (X509CRL) CERT_FACTORY.generateCRL(inputStream);
+			if (crl == null) {
+				throw new DSSException("Unable to parse the CRL");
+			}
+			return crl;
 		} catch (CRLException e) {
 			throw new DSSException(e);
 		}

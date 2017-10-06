@@ -29,6 +29,7 @@ import java.util.Set;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
@@ -199,6 +200,16 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	/**
+	 * Returns an unmodifiable list of all certificate tokens encapsulated in the signature
+	 * 
+	 * @see eu.europa.esig.dss.validation.AdvancedSignature#getCertificates()
+	 */
+	@Override
+	public List<CertificateToken> getCertificates() {
+		return getCertificateSource().getCertificates();
+	}
+
+	/**
 	 * This method returns all certificates used during the validation process. If a certificate is already present
 	 * within the signature then it is ignored.
 	 *
@@ -255,16 +266,14 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		final List<CRLToken> crlTokens = new ArrayList<CRLToken>();
 		final List<OCSPToken> ocspTokens = new ArrayList<OCSPToken>();
 		for (final RevocationToken revocationToken : revocationTokens) {
-			if (!RevocationOrigin.SIGNATURE.equals(revocationToken.getOrigin())) {
-				if (revocationToken instanceof CRLToken) {
-					final CRLToken crlToken = (CRLToken) revocationToken;
-					crlTokens.add(crlToken);
-				} else if (revocationToken instanceof OCSPToken) {
-					final OCSPToken ocspToken = (OCSPToken) revocationToken;
-					ocspTokens.add(ocspToken);
-				} else {
-					throw new DSSException("Unknown type for revocationToken: " + revocationToken.getClass().getName());
-				}
+			if (revocationToken instanceof CRLToken) {
+				final CRLToken crlToken = (CRLToken) revocationToken;
+				crlTokens.add(crlToken);
+			} else if (revocationToken instanceof OCSPToken) {
+				final OCSPToken ocspToken = (OCSPToken) revocationToken;
+				ocspTokens.add(ocspToken);
+			} else {
+				throw new DSSException("Unknown type for revocationToken: " + revocationToken.getClass().getName());
 			}
 		}
 		return new RevocationDataForInclusion(crlTokens, ocspTokens);
@@ -452,7 +461,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 				for (BasicOCSPResp basicOCSPResp : containedOCSPResponses) {
 					OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(basicOCSPResp);
 					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSRevocationUtils.getEncoded(ocspResp));
-					references.add(new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), TimestampReferenceCategory.REVOCATION));
+					references.add(new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), TimestampedObjectType.REVOCATION));
 				}
 			}
 		}
@@ -472,7 +481,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 				usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
 				for (byte[] x509crl : containedX509CRLs) {
 					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, x509crl);
-					references.add(new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), TimestampReferenceCategory.REVOCATION));
+					references.add(new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), TimestampedObjectType.REVOCATION));
 				}
 			}
 		}
@@ -516,6 +525,56 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			archiveTimestamps = new ArrayList<TimestampToken>();
 		}
 		archiveTimestamps.add(timestamp);
+	}
+
+	/* Defines the level T */
+	public boolean hasTProfile() {
+		return Utils.isCollectionNotEmpty(getSignatureTimestamps());
+	}
+
+	/* Defines the level LT */
+	public boolean hasLTProfile() {
+		List<CertificateToken> certificates = getCertificateSource().getCertificates();
+		boolean emptyOCSPs = Utils.isCollectionEmpty(getOCSPSource().getContainedOCSPResponses());
+		boolean emptyCRLs = Utils.isCollectionEmpty(getCRLSource().getContainedX509CRLs());
+
+		if (Utils.isCollectionEmpty(certificates) && (emptyOCSPs || emptyCRLs)) {
+			return false;
+		}
+
+		if (!isAllCertsHaveRevocationData(certificates)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean isAllCertsHaveRevocationData(List<CertificateToken> certificates) {
+		for (CertificateToken certificateToken : certificates) {
+			if (certificateToken.isTrusted() || certificateToken.isSelfSigned() || DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certificateToken)) {
+				continue;
+			}
+			Set<RevocationToken> revocationData = certificateToken.getRevocationTokens();
+			if (Utils.isCollectionEmpty(revocationData)) {
+				return false;
+			} else {
+				boolean foundInSignature = false;
+				for (RevocationToken revocationToken : revocationData) {
+					if (RevocationOrigin.SIGNATURE == revocationToken.getOrigin()) {
+						foundInSignature = true;
+					}
+				}
+				if (!foundInSignature) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	/* Defines the level LTA */
+	public boolean hasLTAProfile() {
+		return Utils.isCollectionNotEmpty(getArchiveTimestamps());
 	}
 
 }

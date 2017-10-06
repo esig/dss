@@ -7,14 +7,16 @@ import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 
 public class ReportsDTO implements Serializable {
-	
+
+	private static final long serialVersionUID = -6854645201561656069L;
+
 	private DiagnosticData diagnosticData;
 	private SimpleReport simpleReport;
 	private DetailedReport detailedReport;
-	
+
 	public ReportsDTO() {
 	}
-	
+
 	public ReportsDTO(DiagnosticData diagnosticData, SimpleReport simpleReport, DetailedReport detailedReport) {
 		this.diagnosticData = diagnosticData;
 		this.detailedReport = detailedReport;

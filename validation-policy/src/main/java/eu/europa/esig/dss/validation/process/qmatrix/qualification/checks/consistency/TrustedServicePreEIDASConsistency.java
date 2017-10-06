@@ -3,8 +3,8 @@ package eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.consi
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.validation.process.qmatrix.AdditionalServiceInformation;
 import eu.europa.esig.dss.validation.process.qmatrix.EIDASUtils;
+import eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.AdditionalServiceInformation;
 import eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.ServiceQualification;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 

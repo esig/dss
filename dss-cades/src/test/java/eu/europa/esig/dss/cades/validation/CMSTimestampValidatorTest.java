@@ -9,26 +9,24 @@ import org.junit.Test;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureAlgorithm;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockTSPSource;
+import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.x509.tsp.TSPSource;
 
-public class CMSTimestampValidatorTest {
+public class CMSTimestampValidatorTest extends PKIFactoryAccess {
 
 	@Test
 	public void testValidator() throws Exception {
-		CertificateService certificateService = new CertificateService();
-		MockTSPSource mockTSPSource = new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256));
+
+		TSPSource tspSource = getGoodTsa();
 
 		byte[] data = new byte[] { 1, 2, 3 };
-		TimeStampToken timeStampResponse = mockTSPSource.getTimeStampResponse(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, data));
+		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, data));
 
 		CMSTimestampValidator validator = new CMSTimestampValidator(new InMemoryDocument(timeStampResponse.getEncoded()));
 		validator.setTimestampedData(new InMemoryDocument(data));
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		assertTrue(Utils.isCollectionEmpty(validator.getSignatures()));
 
@@ -36,6 +34,12 @@ public class CMSTimestampValidatorTest {
 		assertNotNull(timestamp);
 		assertTrue(timestamp.isMessageImprintDataFound());
 		assertTrue(timestamp.isMessageImprintDataIntact());
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		// not for signing
+		return null;
 	}
 
 }

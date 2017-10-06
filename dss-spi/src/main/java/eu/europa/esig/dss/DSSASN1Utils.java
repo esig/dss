@@ -51,7 +51,6 @@ import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1String;
-import org.bouncycastle.asn1.ASN1UTCTime;
 import org.bouncycastle.asn1.BERTags;
 import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.DERNull;
@@ -79,6 +78,7 @@ import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.PolicyInformation;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
+import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.asn1.x509.qualified.QCStatement;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -169,14 +169,6 @@ public final class DSSASN1Utils {
 			BasicOCSPResponse basicOCSPResponse = BasicOCSPResponse.getInstance(basicOCSPResp.getEncoded());
 			return getDEREncoded(basicOCSPResponse);
 		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	public static Date toDate(final ASN1UTCTime asn1Date) throws DSSException {
-		try {
-			return asn1Date.getDate();
-		} catch (ParseException e) {
 			throw new DSSException(e);
 		}
 	}
@@ -286,18 +278,6 @@ public final class DSSASN1Utils {
 		final String canonicalizedName = stringBuilder.toString();
 		LOG.debug("canonicalizedName: {} ", canonicalizedName);
 		return canonicalizedName;
-	}
-
-	/**
-	 * Gets the ASN.1 algorithm identifier structure corresponding to a signature algorithm
-	 *
-	 * @return the AlgorithmIdentifier
-	 */
-	public static AlgorithmIdentifier getAlgorithmIdentifier(SignatureAlgorithm signatureAlgorithm) {
-		final String jceId = signatureAlgorithm.getJCEId();
-		final ASN1ObjectIdentifier asn1ObjectIdentifier = new ASN1ObjectIdentifier(jceId);
-		final AlgorithmIdentifier algorithmIdentifier = new AlgorithmIdentifier(asn1ObjectIdentifier, DERNull.INSTANCE);
-		return algorithmIdentifier;
 	}
 
 	/**
@@ -625,7 +605,7 @@ public final class DSSASN1Utils {
 				return true;
 			}
 		} catch (CertificateParsingException e) {
-			LOG.warn(e.getMessage());
+			LOG.error(e.getMessage(), e);
 		}
 		return false;
 	}
@@ -744,25 +724,14 @@ public final class DSSASN1Utils {
 				 * U+003C, U+003D, U+003E, U+005C, respectively)
 				 *
 				 * it can be prefixed by a backslash ('\' U+005C).
-				 * ...
 				 */
-				string = string.replace("\"", "\\\"");
-				string = string.replace("#", "\\#");
-				string = string.replace("+", "\\+");
-				string = string.replace(",", "\\,");
-				string = string.replace(";", "\\;");
-				string = string.replace("<", "\\<");
-				string = string.replace("=", "\\=");
-				string = string.replace(">", "\\>");
-				// System.out.println(">>> " + attributeType.toString() + "=" +
-				// attributeValue.getClass().getSimpleName() + "[" + string + "]");
+				string = Rdn.escapeValue(string);
 				if (stringBuilder.length() != 0) {
 					stringBuilder.append(',');
 				}
 				stringBuilder.append(attributeType).append('=').append(string);
 			}
 		}
-		// final X500Name x500Name = X500Name.getInstance(encoded);
 		return stringBuilder.toString();
 	}
 
@@ -806,7 +775,7 @@ public final class DSSASN1Utils {
 	}
 
 	public static String getHumanReadableName(CertificateToken cert) {
-		return firstNotNull(cert, BCStyle.CN, BCStyle.GIVENNAME, BCStyle.SURNAME, BCStyle.NAME, BCStyle.PSEUDONYM);
+		return firstNotNull(cert, BCStyle.CN, BCStyle.GIVENNAME, BCStyle.SURNAME, BCStyle.NAME, BCStyle.PSEUDONYM, BCStyle.O, BCStyle.OU);
 	}
 
 	private static String firstNotNull(CertificateToken cert, ASN1ObjectIdentifier... oids) {
@@ -837,6 +806,15 @@ public final class DSSASN1Utils {
 	public static boolean isASN1SequenceTag(byte tagByte) {
 		// BERTags.SEQUENCE | BERTags.CONSTRUCTED = 0x30
 		return (BERTags.SEQUENCE | BERTags.CONSTRUCTED) == tagByte;
+	}
+
+	public static Date getDate(ASN1Encodable encodable) {
+		try {
+			return Time.getInstance(encodable).getDate();
+		} catch (Exception e) {
+			LOG.warn("Unable to retrieve the date : " + encodable, e);
+			return null;
+		}
 	}
 
 }

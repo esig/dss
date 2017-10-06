@@ -19,6 +19,7 @@ import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.BERTags;
 import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -40,13 +41,7 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 	public CRLValidity isValidCRL(InputStream crlStream, CertificateToken issuerToken) throws IOException {
 
 		final CRLValidity crlValidity = new CRLValidity();
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-
-			byte[] buffer = new byte[4096];
-			int n;
-			while (-1 != (n = crlStream.read(buffer))) {
-				baos.write(buffer, 0, n);
-			}
+		try (ByteArrayOutputStream baos = getDERContent(crlStream)) {
 
 			CRLInfo crlInfos = getCrlInfos(baos);
 
@@ -96,7 +91,6 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 	}
 
 	private void checkSignatureValue(CRLValidity crlValidity, byte[] signatureValue, byte[] expectedDigest, CertificateToken signer) {
-
 		byte[] extractedDigest = null;
 		try {
 			extractedDigest = getSignedDigest(signatureValue, signer);
@@ -143,6 +137,34 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 			DigestInfo digestInfo = new DigestInfo(seqDecrypt);
 			return digestInfo.getDigest();
 		}
+	}
+
+	@SuppressWarnings("resource")
+	private ByteArrayOutputStream getDERContent(InputStream crlStream) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		int first = crlStream.read();
+		baos.write(first);
+
+		byte[] buffer = new byte[4096];
+		int n;
+		while (-1 != (n = crlStream.read(buffer))) {
+			baos.write(buffer, 0, n);
+		}
+
+		if (isPemEncoded(first)) {
+			baos = PemToDerConverter.convert(baos);
+		} else if (!isDerEncoded(first)) {
+			throw new DSSException("Unsupported CRL");
+		}
+		return baos;
+	}
+
+	private boolean isPemEncoded(int first) {
+		return '-' == (byte) first;
+	}
+
+	private boolean isDerEncoded(int first) {
+		return (BERTags.SEQUENCE | BERTags.CONSTRUCTED) == first;
 	}
 
 }

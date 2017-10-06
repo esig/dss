@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.2-SNAPSHOT</version>
+		<version>5.3-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>dss-xades</artifactId>
@@ -31,12 +31,6 @@
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-document</artifactId>
-			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

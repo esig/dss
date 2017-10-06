@@ -40,6 +40,7 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -87,9 +88,6 @@ public class SignatureValidationContext implements ValidationContext {
 	// OCSP from the signature.
 	private OCSPSource signatureOCSPSource;
 
-	// The digest value of the certification path references and the revocation status references.
-	private List<TimestampReference> timestampedReferences;
-
 	/**
 	 * This is the time at what the validation is carried out. It is used only for test purpose.
 	 */
@@ -128,6 +126,11 @@ public class SignatureValidationContext implements ValidationContext {
 		if (validationCertificatePool == null) {
 			validationCertificatePool = certificateVerifier.createValidationPool();
 		}
+
+		for (CertificateToken certificateToken : processedCertificates) {
+			validationCertificatePool.getInstance(certificateToken, CertificateSourceType.UNKNOWN);
+		}
+
 		this.crlSource = certificateVerifier.getCrlSource();
 		this.ocspSource = certificateVerifier.getOcspSource();
 		this.dataLoader = certificateVerifier.getDataLoader();
@@ -219,28 +222,23 @@ public class SignatureValidationContext implements ValidationContext {
 	 * @return {@code CertificateToken} representing the issuer certificate or null.
 	 */
 	private CertificateToken getIssuerFromAIA(final CertificateToken token) {
-		try {
-
-			LOG.info("Retrieving {} certificate's issuer using AIA.", token.getAbbreviation());
-			Collection<CertificateToken> issuerCerts = DSSUtils.loadIssuerCertificates(token, dataLoader);
-			if (issuerCerts != null) {
-				CertificateToken issuerCertToken = null;
-				for (CertificateToken issuerCert : issuerCerts) {
-					CertificateToken issuerCertFromAia = validationCertificatePool.getInstance(issuerCert, CertificateSourceType.AIA);
-					if (token.isSignedBy(issuerCertFromAia)) {
-						issuerCertToken = issuerCertFromAia;
-					} else {
-						addCertificateTokenForVerification(issuerCertFromAia);
-					}
-					LOG.info("The retrieved certificate using AIA does not sign the certificate {}.", token.getAbbreviation());
-				}
-				return issuerCertToken;
-			} else {
-				LOG.info("The issuer certificate cannot be loaded using AIA.");
+		LOG.info("Retrieving {} certificate's issuer using AIA.", token.getAbbreviation());
+		Collection<CertificateToken> candidates = DSSUtils.loadPotentialIssuerCertificates(token, dataLoader);
+		if (Utils.isCollectionNotEmpty(candidates)) {
+			for (CertificateToken candidate : candidates) {
+				addCertificateTokenForVerification(validationCertificatePool.getInstance(candidate, CertificateSourceType.AIA));
 			}
-		} catch (DSSException e) {
-
-			LOG.error(e.getMessage());
+			for (CertificateToken candidate : candidates) {
+				if (token.isSignedBy(candidate)) {
+					if (!token.getIssuerX500Principal().equals(candidate.getSubjectX500Principal())) {
+						LOG.info("There is AIA extension, but the issuer subject name and subject name does not match.");
+						LOG.info("CERT ISSUER    : " + token.getIssuerX500Principal().toString());
+						LOG.info("ISSUER SUBJECT : " + candidate.getSubjectX500Principal().toString());
+					}
+					return candidate;
+				}
+			}
+			LOG.info("The retrieved certificate(s) using AIA does not sign the certificate {}.", token.getAbbreviation());
 		}
 		return null;
 	}
@@ -336,9 +334,9 @@ public class SignatureValidationContext implements ValidationContext {
 			final boolean added = processedCertificates.add(certificateToken);
 			if (LOG.isTraceEnabled()) {
 				if (added) {
-					LOG.trace("CertificateToken added to processedRevocations: {} ", certificateToken);
+					LOG.trace("CertificateToken added to processedCertificates: {} ", certificateToken);
 				} else {
-					LOG.trace("CertificateToken already present processedRevocations: {} ", certificateToken);
+					LOG.trace("CertificateToken already present processedCertificates: {} ", certificateToken);
 				}
 			}
 		}
@@ -352,9 +350,9 @@ public class SignatureValidationContext implements ValidationContext {
 			final boolean added = processedTimestamps.add(timestampToken);
 			if (LOG.isTraceEnabled()) {
 				if (added) {
-					LOG.trace("TimestampToken added to processedRevocations: {} ", processedTimestamps);
+					LOG.trace("TimestampToken added to processedTimestamps: {} ", processedTimestamps);
 				} else {
-					LOG.trace("TimestampToken already present processedRevocations: {} ", processedTimestamps);
+					LOG.trace("TimestampToken already present processedTimestamps: {} ", processedTimestamps);
 				}
 			}
 		}
@@ -397,10 +395,12 @@ public class SignatureValidationContext implements ValidationContext {
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Checking revocation data for: " + certToken.getDSSIdAsString());
 		}
-		if (certToken.isSelfSigned() || certToken.isTrusted() || (certToken.getIssuerToken() == null)) {
-
-			// It is not possible to check the revocation data without its signing certificate;
+		if (certToken.isSelfSigned() || certToken.isTrusted()) {
 			// This check is not needed for the trust anchor.
+			return Collections.emptyList();
+		} else if (certToken.getIssuerToken() == null) {
+			// It is not possible to check the revocation data without its signing certificate;
+			LOG.warn("Cannot retrieve revocation data (issuer is unknown)");
 			return Collections.emptyList();
 		}
 
@@ -412,23 +412,32 @@ public class SignatureValidationContext implements ValidationContext {
 		List<RevocationToken> revocations = new ArrayList<RevocationToken>();
 
 		// ALL Embedded revocation data
-		OCSPAndCRLCertificateVerifier offlineVerifier = new OCSPAndCRLCertificateVerifier(signatureCRLSource, signatureOCSPSource, validationCertificatePool);
-		RevocationToken ocspToken = offlineVerifier.checkOCSP(certToken);
-		if (ocspToken != null) {
-			revocations.add(ocspToken);
+		if (signatureCRLSource != null || signatureOCSPSource != null) {
+			OCSPAndCRLCertificateVerifier offlineVerifier = new OCSPAndCRLCertificateVerifier(signatureCRLSource, signatureOCSPSource,
+					validationCertificatePool);
+			RevocationToken ocspToken = offlineVerifier.checkOCSP(certToken);
+			if (ocspToken != null) {
+				revocations.add(ocspToken);
+			}
+
+			RevocationToken crlToken = offlineVerifier.checkCRL(certToken);
+			if (crlToken != null) {
+				revocations.add(crlToken);
+			}
 		}
 
-		RevocationToken crlToken = offlineVerifier.checkCRL(certToken);
-		if (crlToken != null) {
-			revocations.add(crlToken);
+		if (revocations.isEmpty()) {
+			// Online resources (OCSP and CRL if OCSP doesn't reply)
+			final OCSPAndCRLCertificateVerifier onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
+			final RevocationToken onlineRevocationToken = onlineVerifier.check(certToken);
+			// CRL can already exist in the signature
+			if (onlineRevocationToken != null && !revocations.contains(onlineRevocationToken)) {
+				revocations.add(onlineRevocationToken);
+			}
 		}
 
-		// Online resources (OCSP and CRL if OCSP doesn't reply)
-		final OCSPAndCRLCertificateVerifier onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
-		final RevocationToken onlineRevocationToken = onlineVerifier.check(certToken);
-		// CRL can already exist in the signature
-		if (onlineRevocationToken != null && !revocations.contains(onlineRevocationToken)) {
-			revocations.add(onlineRevocationToken);
+		if (revocations.isEmpty()) {
+			LOG.warn("No revocation found for certificate {}", certToken.getDSSIdAsString());
 		}
 
 		return revocations;
@@ -447,15 +456,6 @@ public class SignatureValidationContext implements ValidationContext {
 	@Override
 	public Set<TimestampToken> getProcessedTimestamps() {
 		return Collections.unmodifiableSet(processedTimestamps);
-	}
-
-	/**
-	 * Returns certificate and revocation references.
-	 *
-	 * @return
-	 */
-	public List<TimestampReference> getTimestampedReferences() {
-		return timestampedReferences;
 	}
 
 	/**

@@ -90,11 +90,15 @@ public class BaselineBCertificateSelector {
 	private List<CertificateToken> order(List<CertificateToken> certificates) {
 		// Build the chain cert -> issuer
 		for (CertificateToken token : certificates) {
-			for (CertificateToken signer : certificates) {
-				if (token.getIssuerToken() == null) {
+			if (!token.isSelfSigned() && token.getIssuerToken() == null) {
+				for (CertificateToken signer : certificates) {
 					if (token.isSignedBy(signer)) {
 						LOG.debug("{} is signed by {}", token.getDSSIdAsString(), signer.getDSSIdAsString());
+						break;
 					}
+				}
+				if (!token.isSelfSigned() && token.getIssuerToken() == null) {
+					LOG.warn("Issuer not found for certificate {}", token.getDSSIdAsString());
 				}
 			}
 		}

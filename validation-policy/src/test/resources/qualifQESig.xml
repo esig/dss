@@ -67,15 +67,15 @@
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
-                    <SignedObjects>
-                        <SignedSignature Id="id-1bc73e8a06e7678358dcff35f830d9438c0b985dfb6103cb6a8d44bc11811a66"/>
-                        <DigestAlgoAndValues>
-                            <DigestAlgoAndValue Category="CERTIFICATE">
+                    <TimestampedObjects>
+                        <TimestampedObject Category="SIGNATURE" Id="id-1bc73e8a06e7678358dcff35f830d9438c0b985dfb6103cb6a8d44bc11811a66"/>
+                        <TimestampedObject Category="CERTIFICATE">
+                            <DigestAlgoAndValue>
                                 <DigestMethod>SHA256</DigestMethod>
                                 <DigestValue>dfUhbBNcp9MEc3IyR+itYQT4Q6WYrOv4J2T1VuN41i0=</DigestValue>
                             </DigestAlgoAndValue>
-                        </DigestAlgoAndValues>
-                    </SignedObjects>
+                        </TimestampedObject>
+                    </TimestampedObjects>
                 </Timestamp>
             </Timestamps>
             <SignatureScopes>

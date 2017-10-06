@@ -24,7 +24,6 @@ import java.io.Serializable;
 
 /**
  * Parameters for a Signature creation/extension
- *
  */
 @SuppressWarnings("serial")
 public abstract class AbstractSerializableSignatureParameters implements Serializable {
@@ -34,7 +33,14 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 */
 	private boolean signWithExpiredCertificate = false;
 
+	/**
+	 * This variable indicates the expected signature level
+	 */
 	private SignatureLevel signatureLevel;
+
+	/**
+	 * This variable indicates the expected signature packaging
+	 */
 	private SignaturePackaging signaturePackaging;
 
 	/**
@@ -53,36 +59,53 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	private DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
 
 	/**
+	 * The mask generation function
+	 */
+	private MaskGenerationFunction maskGenerationFunction = signatureAlgorithm.getMaskGenerationFunction();
+
+	/**
 	 * The object representing the parameters related to B- level.
 	 */
 	private BLevelParameters bLevelParams = new BLevelParameters();
 
-	private TimestampParameters signatureTimestampParameters;
-	private TimestampParameters archiveTimestampParameters;
+	/**
+	 * The object representing the parameters related to the content timestamp (Baseline-B)
+	 */
 	private TimestampParameters contentTimestampParameters;
+
+	/**
+	 * The object representing the parameters related to the signature timestamp (Baseline-T)
+	 */
+	private TimestampParameters signatureTimestampParameters;
+
+	/**
+	 * The object representing the parameters related to the archive timestamp (Baseline-LTA)
+	 */
+	private TimestampParameters archiveTimestampParameters;
 
 	/**
 	 * Indicates if it is possible to sign with an expired certificate. The default value is false.
 	 *
-	 * @return
+	 * @return true if signature with an expired certificate is allowed
 	 */
 	public boolean isSignWithExpiredCertificate() {
 		return signWithExpiredCertificate;
 	}
 
 	/**
-	 * Allows to change the default behaviour regarding the use of an expired certificate.
+	 * Allows to change the default behavior regarding the use of an expired certificate.
 	 *
 	 * @param signWithExpiredCertificate
+	 *            true if signature with an expired certificate is allowed
 	 */
 	public void setSignWithExpiredCertificate(final boolean signWithExpiredCertificate) {
 		this.signWithExpiredCertificate = signWithExpiredCertificate;
 	}
 
 	/**
-	 * Get signature format: XAdES_BES, XAdES_EPES, XAdES_BASELINE_T ../.. CAdES_BES...
+	 * Get signature level: XAdES_BASELINE_T, CAdES_BASELINE_LTA...
 	 *
-	 * @return the value
+	 * @return the expected signature level
 	 */
 	public SignatureLevel getSignatureLevel() {
 		return signatureLevel;
@@ -92,7 +115,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 * Set signature level. This field cannot be null.
 	 *
 	 * @param signatureLevel
-	 *            the value
+	 *            the expected signature level
 	 */
 	public void setSignatureLevel(final SignatureLevel signatureLevel) {
 		if (signatureLevel == null) {
@@ -104,7 +127,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	/**
 	 * Get Signature packaging
 	 *
-	 * @return the value
+	 * @return the expected signature packaging
 	 */
 	public SignaturePackaging getSignaturePackaging() {
 		return signaturePackaging;
@@ -114,13 +137,15 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 * Set Signature packaging
 	 *
 	 * @param signaturePackaging
-	 *            the value
+	 *            the expected signature packaging
 	 */
 	public void setSignaturePackaging(final SignaturePackaging signaturePackaging) {
 		this.signaturePackaging = signaturePackaging;
 	}
 
 	/**
+	 * Get the digest algorithm
+	 * 
 	 * @return the digest algorithm
 	 */
 	public DigestAlgorithm getDigestAlgorithm() {
@@ -128,35 +153,43 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	}
 
 	/**
+	 * Set the digest algorithm
+	 * 
 	 * @param digestAlgorithm
 	 *            the digest algorithm to set
 	 */
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
 		this.digestAlgorithm = digestAlgorithm;
 		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
-			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm);
+			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
 		}
 	}
 
 	/**
 	 * This setter should be used only when dealing with web services (or when signing in three steps). Usually the
-	 * encryption algorithm is automatically extrapolated from the
-	 * private key.
+	 * encryption algorithm is automatically extrapolated from the private key.
 	 *
 	 * @param encryptionAlgorithm
+	 *            the encryption algorithm to use
 	 */
 	public void setEncryptionAlgorithm(final EncryptionAlgorithm encryptionAlgorithm) {
-
 		this.encryptionAlgorithm = encryptionAlgorithm;
 		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
+			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
+		}
+	}
 
-			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm);
+	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
+		this.maskGenerationFunction = maskGenerationFunction;
+		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
+			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
 		}
 	}
 
 	/**
-	 * @return the encryption algorithm. It's determined by the privateKeyEntry and is null until the privateKeyEntry is
-	 *         set.
+	 * Get the encryption algorithm
+	 * 
+	 * @return the encryption algorithm.
 	 */
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
 		return encryptionAlgorithm;
@@ -165,46 +198,49 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	/**
 	 * Gets the signature algorithm.
 	 *
-	 * @return the value
+	 * @return the signature algorithm
 	 */
 	public SignatureAlgorithm getSignatureAlgorithm() {
 		return signatureAlgorithm;
 	}
 
+	public MaskGenerationFunction getMaskGenerationFunction() {
+		return maskGenerationFunction;
+	}
+
+	/**
+	 * Get Baseline B parameters (signed properties)
+	 * 
+	 * @return the Baseline B parameters
+	 */
 	public BLevelParameters bLevel() {
 		return bLevelParams;
 	}
 
+	/**
+	 * Get Baseline B parameters (signed properties)
+	 * 
+	 * @return the Baseline B parameters
+	 */
 	public BLevelParameters getBLevelParams() {
 		return bLevelParams;
 	}
 
+	/**
+	 * Set the Baseline B parameters (signed properties)
+	 * 
+	 * @param bLevelParams
+	 *            the baseline B properties
+	 */
 	public void setBLevelParams(BLevelParameters bLevelParams) {
 		this.bLevelParams = bLevelParams;
 	}
 
-	public TimestampParameters getSignatureTimestampParameters() {
-		if (signatureTimestampParameters == null) {
-			signatureTimestampParameters = new TimestampParameters();
-		}
-		return signatureTimestampParameters;
-	}
-
-	public void setSignatureTimestampParameters(TimestampParameters signatureTimestampParameters) {
-		this.signatureTimestampParameters = signatureTimestampParameters;
-	}
-
-	public TimestampParameters getArchiveTimestampParameters() {
-		if (archiveTimestampParameters == null) {
-			archiveTimestampParameters = new TimestampParameters();
-		}
-		return archiveTimestampParameters;
-	}
-
-	public void setArchiveTimestampParameters(TimestampParameters archiveTimestampParameters) {
-		this.archiveTimestampParameters = archiveTimestampParameters;
-	}
-
+	/**
+	 * Get the parameters for content timestamp (Baseline-B)
+	 * 
+	 * @return the parameters to produce a content timestamp
+	 */
 	public TimestampParameters getContentTimestampParameters() {
 		if (contentTimestampParameters == null) {
 			contentTimestampParameters = new TimestampParameters();
@@ -212,17 +248,67 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		return contentTimestampParameters;
 	}
 
+	/**
+	 * Set the parameters to produce the content timestamp (Baseline-B)
+	 * 
+	 * @param contentTimestampParameters
+	 *            the parameters to produce the content timestamp
+	 */
 	public void setContentTimestampParameters(TimestampParameters contentTimestampParameters) {
 		this.contentTimestampParameters = contentTimestampParameters;
+	}
+
+	/**
+	 * Get the parameters for signature timestamp (Baseline-T)
+	 * 
+	 * @return the parameters to produce a signature timestamp
+	 */
+	public TimestampParameters getSignatureTimestampParameters() {
+		if (signatureTimestampParameters == null) {
+			signatureTimestampParameters = new TimestampParameters();
+		}
+		return signatureTimestampParameters;
+	}
+
+	/**
+	 * Set the parameters to produce the signature timestamp (Baseline-T)
+	 * 
+	 * @param signatureTimestampParameters
+	 *            the parameters to produce the signature timestamp
+	 */
+	public void setSignatureTimestampParameters(TimestampParameters signatureTimestampParameters) {
+		this.signatureTimestampParameters = signatureTimestampParameters;
+	}
+
+	/**
+	 * Get the parameters for achive timestamp (Baseline-LTA)
+	 * 
+	 * @return the parameters to produce an archive timestamp
+	 */
+	public TimestampParameters getArchiveTimestampParameters() {
+		if (archiveTimestampParameters == null) {
+			archiveTimestampParameters = new TimestampParameters();
+		}
+		return archiveTimestampParameters;
+	}
+
+	/**
+	 * Set the parameters to produce the archive timestamp (Baseline-LTA)
+	 * 
+	 * @param archiveTimestampParameters
+	 *            the parameters to produce the archive timestamp
+	 */
+	public void setArchiveTimestampParameters(TimestampParameters archiveTimestampParameters) {
+		this.archiveTimestampParameters = archiveTimestampParameters;
 	}
 
 	@Override
 	public String toString() {
 		return "SignatureParameters{" + "signWithExpiredCertificate=" + signWithExpiredCertificate + ", signatureLevel=" + signatureLevel
 				+ ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm=" + signatureAlgorithm + ", encryptionAlgorithm=" + encryptionAlgorithm
-				+ ", digestAlgorithm=" + digestAlgorithm + ", bLevelParams=" + bLevelParams
-				+ ", signatureTimestampParameters=" + ((signatureTimestampParameters == null) ? null : signatureTimestampParameters.toString())
-				+ ", archiveTimestampParameters=" + ((archiveTimestampParameters == null) ? null : archiveTimestampParameters.toString()) + '}';
+				+ ", digestAlgorithm=" + digestAlgorithm + ", bLevelParams=" + bLevelParams + ", signatureTimestampParameters="
+				+ ((signatureTimestampParameters == null) ? null : signatureTimestampParameters.toString()) + ", archiveTimestampParameters="
+				+ ((archiveTimestampParameters == null) ? null : archiveTimestampParameters.toString()) + '}';
 	}
 
 	@Override
