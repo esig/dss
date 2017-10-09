@@ -1,6 +1,6 @@
 [source,options="nowrap"]
 ----
 {
-  "bytes" : "wFNeS+K3n/2TKRMFQ2v4iTFOSj+uwF7P/Lt98xrZ5Ro="
+  "bytes" : "AQID"
 }
 ----

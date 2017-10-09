@@ -29,35 +29,26 @@ import org.junit.Before;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
 public class PAdESFieldLevelBTest extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-	private MockPrivateKeyEntry privateKeyEntry;
 
 	@Before
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/doc.pdf"));
 
-		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
-
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
-		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 		signatureParameters.setLocation("Luxembourg");
 		signatureParameters.setReason("DSS testing");
@@ -73,8 +64,7 @@ public class PAdESFieldLevelBTest extends AbstractPAdESTestSignature {
 		imageParameters.setTextParameters(textParameters);
 		signatureParameters.setSignatureImageParameters(imageParameters);
 
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		service = new PAdESService(certificateVerifier);
+		service = new PAdESService(getCompleteCertificateVerifier());
 	}
 
 	@Override
@@ -108,8 +98,8 @@ public class PAdESFieldLevelBTest extends AbstractPAdESTestSignature {
 	}
 
 	@Override
-	protected MockPrivateKeyEntry getPrivateKeyEntry() {
-		return privateKeyEntry;
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 }

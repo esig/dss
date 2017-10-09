@@ -27,34 +27,37 @@ import java.io.File;
 import java.security.MessageDigest;
 import java.util.Date;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.gen.CertificateService;
+import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
 /**
  * This class checks if the getDataToSign result is equals when passing the same
  * parameters
  *
  */
-public class DigestStabilityTest {
+public class DigestStabilityTest extends PKIFactoryAccess {
+
+	private DSSPrivateKeyEntry privateKeyEntry;
+
+	@Before
+	public void init() {
+		privateKeyEntry = getPrivateKeyEntry();
+	}
 
 	@Test
 	public void testTwiceGetDataToSignReturnsSameDigest() throws Exception {
 		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.pdf"));
-
-		CertificateService certificateService = new CertificateService();
-		DSSPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
 
 		Date signingDate = new Date();
 
@@ -73,9 +76,6 @@ public class DigestStabilityTest {
 		DSSDocument toBeSigned1 = new FileDocument(new File("src/test/resources/sample.pdf"));
 		DSSDocument toBeSigned2 = new FileDocument(new File("src/test/resources/validation/pades-5-signatures-and-1-document-timestamp.pdf"));
 
-		CertificateService certificateService = new CertificateService();
-		DSSPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
-
 		Date signingDate = new Date();
 
 		ToBeSigned dataToSign1 = getDataToSign(toBeSigned1, privateKeyEntry, signingDate);
@@ -92,9 +92,6 @@ public class DigestStabilityTest {
 	public void differentSigningDateGetDifferentDigest() throws Exception {
 		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.pdf"));
 
-		CertificateService certificateService = new CertificateService();
-		DSSPrivateKeyEntry privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
-
 		Date signingDate = new Date();
 		ToBeSigned dataToSign1 = getDataToSign(toBeSigned, privateKeyEntry, signingDate);
 
@@ -110,7 +107,7 @@ public class DigestStabilityTest {
 
 	private ToBeSigned getDataToSign(DSSDocument toBeSigned, DSSPrivateKeyEntry privateKeyEntry, Date signingDate) {
 
-		DocumentSignatureService<PAdESSignatureParameters> service = new PAdESService(new CommonCertificateVerifier());
+		DocumentSignatureService<PAdESSignatureParameters> service = new PAdESService(getCompleteCertificateVerifier());
 
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(signingDate);
@@ -119,6 +116,11 @@ public class DigestStabilityTest {
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
 		return service.getDataToSign(toBeSigned, signatureParameters);
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 }

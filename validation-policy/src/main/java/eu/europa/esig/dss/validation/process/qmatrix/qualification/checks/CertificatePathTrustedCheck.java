@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.validation.process.qmatrix.qualification.checks;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSignatureAnalysis;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -8,11 +8,11 @@ import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class CertificatePathTrustedCheck extends ChainItem<XmlSignatureAnalysis> {
+public class CertificatePathTrustedCheck extends ChainItem<XmlValidationSignatureQualification> {
 
 	private final CertificateWrapper signingCertificate;
 
-	public CertificatePathTrustedCheck(XmlSignatureAnalysis result, CertificateWrapper signingCertificate, LevelConstraint constraint) {
+	public CertificatePathTrustedCheck(XmlValidationSignatureQualification result, CertificateWrapper signingCertificate, LevelConstraint constraint) {
 		super(result, constraint);
 		this.signingCertificate = signingCertificate;
 	}

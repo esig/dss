@@ -27,7 +27,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -35,28 +34,17 @@ import org.junit.runners.Parameterized.Parameters;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.test.TestUtils;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.test.mock.MockTSPSource;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 @RunWith(Parameterized.class)
-public class PAdESDoubleSignatureTest {
-
-	private static SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA_SHA256;
-
-	private static DSSDocument toBeSigned;
-
-	private static MockPrivateKeyEntry privateKeyEntry;
+public class PAdESDoubleSignatureTest extends PKIFactoryAccess {
 
 	@Parameters
 	public static List<Object[]> data() {
@@ -66,40 +54,33 @@ public class PAdESDoubleSignatureTest {
 	public PAdESDoubleSignatureTest() {
 	}
 
-	@BeforeClass
-	public static void setUp() throws Exception {
-		toBeSigned = new FileDocument(new File("src/test/resources/sample.pdf"));
-		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateCertificateChain(signatureAlgorithm);
-	}
-
 	@Test
 	public void testDoubleSignature() throws Exception {
 
-		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
-		PAdESService service = new PAdESService(verifier);
-		CertificateService certificateService = new CertificateService();
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
+		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.pdf"));
+
+		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 
 		PAdESSignatureParameters params = new PAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
-		params.setSigningCertificate(privateKeyEntry.getCertificate());
+		params.setSigningCertificate(getSigningCert());
 
 		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
-		SignatureValue signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry, dataToSign);
+		SignatureValue signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
 		params = new PAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
-		params.setSigningCertificate(privateKeyEntry.getCertificate());
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
+		params.setSigningCertificate(getSigningCert());
+		service.setTspSource(getAlternateGoodTsa());
 
 		dataToSign = service.getDataToSign(signedDocument, params);
-		signatureValue = TestUtils.sign(signatureAlgorithm, privateKeyEntry, dataToSign);
+		signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, params, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleSignedDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
 
@@ -113,6 +94,11 @@ public class PAdESDoubleSignatureTest {
 		for (String signatureId : signatureIdList) {
 			assertTrue(diagnosticData.isBLevelTechnicallyValid(signatureId));
 		}
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 }

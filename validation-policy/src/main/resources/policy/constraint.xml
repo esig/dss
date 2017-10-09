@@ -159,6 +159,132 @@
 <!--		<CounterSignature Level="IGNORE" /> check presence -->
 		</UnsignedAttributes>
 	</SignatureConstraints>
+	<CounterSignatureConstraints>
+		<BasicSignatureConstraints>
+			<ReferenceDataExistence Level="FAIL" />
+			<ReferenceDataIntact Level="FAIL" />
+			<SignatureIntact Level="FAIL" />
+			<ProspectiveCertificateChain Level="FAIL" />
+<!-- 			<TrustedServiceTypeIdentifier Level="WARN"> -->
+<!-- 				<Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id> -->
+<!-- 			</TrustedServiceTypeIdentifier> -->
+<!-- 			<TrustedServiceStatus Level="FAIL"> -->
+<!-- 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id> -->
+<!-- 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id> -->
+<!-- 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Id> -->
+<!-- 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id> -->
+<!-- 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Id> -->
+<!-- 			</TrustedServiceStatus> -->
+			<SigningCertificate>
+				<Recognition Level="FAIL" />
+				<Signature Level="FAIL" />
+				<NotExpired Level="FAIL" />
+				<AuthorityInfoAccessPresent Level="WARN" />
+				<RevocationInfoAccessPresent Level="WARN" />
+				<RevocationDataAvailable Level="FAIL" />
+				<RevocationDataNextUpdatePresent Level="WARN" />
+				<RevocationDataFreshness Level="WARN" />
+				<KeyUsage Level="WARN">
+					<Id>nonRepudiation</Id>
+				</KeyUsage>
+				<SerialNumberPresent Level="WARN" />
+				<NotRevoked Level="FAIL" />
+				<NotOnHold Level="FAIL" />
+<!-- 				<Qualification Level="WARN" /> -->
+<!-- 				<SupportedByQSCD Level="WARN" /> -->
+<!-- 				<IssuedToNaturalPerson Level="INFORM" /> -->
+<!-- 				<IssuedToLegalPerson Level="INFORM" /> -->
+				<UsePseudonym Level="INFORM" />
+				<Cryptographic Level="FAIL">
+					<AcceptableEncryptionAlgo>
+						<Algo>RSA</Algo>
+						<Algo>DSA</Algo>
+						<Algo>ECDSA</Algo>
+					</AcceptableEncryptionAlgo>
+					<MiniPublicKeySize>
+						<Algo Size="128">DSA</Algo>
+						<Algo Size="1024">RSA</Algo>
+						<Algo Size="192">ECDSA</Algo>
+					</MiniPublicKeySize>
+					<AcceptableDigestAlgo>
+						<Algo>SHA1</Algo>
+						<Algo>SHA224</Algo>
+						<Algo>SHA256</Algo>
+						<Algo>SHA384</Algo>
+						<Algo>SHA512</Algo>
+						<Algo>RIPEMD160</Algo>
+					</AcceptableDigestAlgo>
+				</Cryptographic>
+			</SigningCertificate>
+			<CACertificate>
+				<Signature Level="FAIL" />
+				<NotExpired Level="FAIL" />
+				<RevocationDataAvailable Level="FAIL" />
+				<RevocationDataNextUpdatePresent Level="WARN" />
+				<RevocationDataFreshness Level="WARN" />
+				<NotRevoked Level="FAIL" />
+				<NotOnHold Level="FAIL" />
+				<Cryptographic Level="FAIL">
+					<AcceptableEncryptionAlgo>
+						<Algo>RSA</Algo>
+						<Algo>DSA</Algo>
+						<Algo>ECDSA</Algo>
+					</AcceptableEncryptionAlgo>
+					<MiniPublicKeySize>
+						<Algo Size="128">DSA</Algo>
+						<Algo Size="1024">RSA</Algo>
+						<Algo Size="192">ECDSA</Algo>
+					</MiniPublicKeySize>
+					<AcceptableDigestAlgo>
+						<Algo>SHA1</Algo>
+						<Algo>SHA224</Algo>
+						<Algo>SHA256</Algo>
+						<Algo>SHA384</Algo>
+						<Algo>SHA512</Algo>
+						<Algo>RIPEMD160</Algo>
+					</AcceptableDigestAlgo>
+				</Cryptographic>
+			</CACertificate>
+			<Cryptographic Level="FAIL">
+				<AcceptableEncryptionAlgo>
+					<Algo>RSA</Algo>
+					<Algo>DSA</Algo>
+					<Algo>ECDSA</Algo>
+				</AcceptableEncryptionAlgo>
+				<MiniPublicKeySize>
+					<Algo Size="128">DSA</Algo>
+					<Algo Size="1024">RSA</Algo>
+					<Algo Size="192">ECDSA</Algo>
+				</MiniPublicKeySize>
+				<AcceptableDigestAlgo>
+					<Algo>SHA1</Algo>
+					<Algo>SHA224</Algo>
+					<Algo>SHA256</Algo>
+					<Algo>SHA384</Algo>
+					<Algo>SHA512</Algo>
+					<Algo>RIPEMD160</Algo>
+				</AcceptableDigestAlgo>
+			</Cryptographic>
+		</BasicSignatureConstraints>
+		<SignedAttributes>
+			<SigningCertificatePresent Level="FAIL" />
+			<SigningCertificateSigned Level="FAIL" />
+			<CertDigestPresent Level="FAIL" />
+			<CertDigestMatch Level="FAIL" />
+			<IssuerSerialMatch Level="WARN" />
+			<SigningTime Level="FAIL" />
+<!--		<ContentType Level="FAIL" value="1.2.840.113549.1.7.1" />
+			<ContentHints Level="FAIL" value="*" />
+			<CommitmentTypeIndication Level="FAIL">
+				<Id>1.2.840.113549.1.9.16.6.1</Id>
+				<Id>1.2.840.113549.1.9.16.6.4</Id>
+				<Id>1.2.840.113549.1.9.16.6.5</Id>
+				<Id>1.2.840.113549.1.9.16.6.6</Id>
+			</CommitmentTypeIndication>
+			<SignerLocation Level="FAIL" />
+			<ContentTimeStamp Level="FAIL" /> -->
+		</SignedAttributes>
+	</CounterSignatureConstraints>
 	<Timestamp>
 		<TimestampDelay Level="FAIL" Unit="DAYS" Value="0" />
 		<MessageImprintDataFound Level="FAIL" />

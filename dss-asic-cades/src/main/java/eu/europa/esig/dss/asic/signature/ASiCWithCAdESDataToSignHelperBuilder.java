@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.asic.signature;
 
-import java.util.List;
-
 import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
@@ -13,6 +11,8 @@ import eu.europa.esig.dss.asic.signature.asice.DataToSignASiCEWithCAdESFromFiles
 import eu.europa.esig.dss.asic.signature.asics.DataToSignASiCSWithCAdESFromArchive;
 import eu.europa.esig.dss.asic.signature.asics.DataToSignASiCSWithCAdESFromFiles;
 
+import java.util.List;
+
 public class ASiCWithCAdESDataToSignHelperBuilder {
 
 	private ASiCWithCAdESDataToSignHelperBuilder() {
@@ -22,9 +22,9 @@ public class ASiCWithCAdESDataToSignHelperBuilder {
 
 		BLevelParameters bLevel = parameters.bLevel();
 		boolean asice = ASiCUtils.isASiCE(parameters.aSiC());
-		boolean archive = ASiCUtils.isArchive(documents);
+		boolean asic = ASiCUtils.isAsic(documents, parameters.aSiC());
 
-		if (archive) {
+		if (asic) {
 			DSSDocument archiveDoc = documents.get(0);
 			if (!ASiCUtils.isArchiveContainsCorrectSignatureExtension(archiveDoc, ".p7s")) {
 				throw new UnsupportedOperationException("Container type doesn't match");
@@ -46,5 +46,4 @@ public class ASiCWithCAdESDataToSignHelperBuilder {
 			}
 		}
 	}
-
 }

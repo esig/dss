@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -33,10 +34,10 @@ import eu.europa.esig.dss.x509.CertificateToken;
 /**
  * CertificateSource that will retrieve the certificate from a PAdES Signature
  *
- *
  */
-
 public class PAdESCertificateSource extends CAdESCertificateSource {
+
+	private List<CertificateToken> certificationFromDSSDict;
 
 	/**
 	 * The default constructor for PAdESCertificateSource.
@@ -49,22 +50,24 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 	public PAdESCertificateSource(final PdfDssDict dssCatalog, final CMSSignedData cmsSignedData, final CertificatePool certPool) {
 		super(cmsSignedData, certPool);
 
+		extractFromDSSDict(dssCatalog);
+	}
+
+	private void extractFromDSSDict(PdfDssDict dssCatalog) {
+		List<CertificateToken> certificationFromDSSDict = new ArrayList<CertificateToken>();
 		if (dssCatalog != null) {
 			final Set<CertificateToken> certList = dssCatalog.getCertList();
 			for (final CertificateToken certToken : certList) {
-				addCertificate(certToken);
+				CertificateToken addedCertificate = addCertificate(certToken);
+				if (!certificationFromDSSDict.contains(addedCertificate)) {
+					certificationFromDSSDict.add(addedCertificate);
+				}
 			}
 		}
 	}
 
-	@Override
-	public List<CertificateToken> getEncapsulatedCertificates() {
-		return super.getEncapsulatedCertificates();
-	}
-
-	@Override
-	public List<CertificateToken> getKeyInfoCertificates() {
-		return super.getKeyInfoCertificates();
+	public List<CertificateToken> getCertificationFromDSSDict() {
+		return certificationFromDSSDict;
 	}
 
 }

@@ -20,10 +20,11 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
-public abstract class AbstractRequirementChecks {
+public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractRequirementChecks.class);
 

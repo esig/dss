@@ -25,6 +25,8 @@ import eu.europa.esig.dss.x509.CertificateToken;
  */
 public class CertSubjectDNAttributeCondition extends Condition {
 
+	private static final long serialVersionUID = 5941353274395443267L;
+
 	private final List<String> subjectAttributeOids;
 
 	public CertSubjectDNAttributeCondition(List<String> oids) {
@@ -47,7 +49,12 @@ public class CertSubjectDNAttributeCondition extends Condition {
 
 	@Override
 	public String toString(String indent) {
-		return "CertSubjectDNAttributeCondition : " + subjectAttributeOids;
+		if (indent == null) {
+			indent = "";
+		}
+		StringBuilder builder = new StringBuilder();
+		builder.append(indent).append("CertSubjectDNAttributeCondition: ").append(subjectAttributeOids).append('\n');
+		return builder.toString();
 	}
 
 	@Override

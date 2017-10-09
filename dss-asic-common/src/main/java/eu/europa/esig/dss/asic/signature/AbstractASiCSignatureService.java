@@ -1,19 +1,8 @@
 package eu.europa.esig.dss.asic.signature;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
-import java.util.zip.CRC32;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUnsupportedOperationException;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
@@ -25,6 +14,16 @@ import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.zip.CRC32;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureParameters> extends AbstractSignatureService<SP>
 		implements MultipleDocumentsSignatureService<SP> {
@@ -38,27 +37,6 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 
 	protected AbstractASiCSignatureService(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
-	}
-
-	protected void assertCanBeSign(List<DSSDocument> documents, final ASiCParameters asicParameters) {
-		if (!canBeSigned(documents, asicParameters)) { // First verify if the file can be signed
-			throw new DSSUnsupportedOperationException("You only can sign an ASiC container by using the same type of container and of signature");
-		}
-	}
-
-	private boolean canBeSigned(List<DSSDocument> documents, ASiCParameters asicParameters) {
-		boolean isMimetypeCorrect = true;
-		boolean isSignatureTypeCorrect = true;
-		if (ASiCUtils.isArchive(documents)) {
-			DSSDocument archive = documents.get(0);
-			String expectedMimeType = archive.getMimeType().getMimeTypeString();
-			String mimeTypeFromParameter = ASiCUtils.getMimeTypeString(asicParameters);
-			isMimetypeCorrect = Utils.areStringsEqualIgnoreCase(expectedMimeType, mimeTypeFromParameter);
-			if (isMimetypeCorrect) {
-				isSignatureTypeCorrect = ASiCUtils.isArchiveContainsCorrectSignatureExtension(archive, getExpectedSignatureExtension());
-			}
-		}
-		return isMimetypeCorrect && isSignatureTypeCorrect;
 	}
 
 	abstract String getExpectedSignatureExtension();

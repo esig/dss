@@ -568,14 +568,17 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			PDDocument pdfDoc = PDDocument.load(is);
 			PDPage page = pdfDoc.getPage(parameters.getPage());
 
-			PDAcroForm acroForm = new PDAcroForm(pdfDoc);
-			pdfDoc.getDocumentCatalog().setAcroForm(acroForm);
+			PDAcroForm acroForm = pdfDoc.getDocumentCatalog().getAcroForm();
+			if (acroForm == null) {
+				acroForm = new PDAcroForm(pdfDoc);
+				pdfDoc.getDocumentCatalog().setAcroForm(acroForm);
 
-			// Set default appearance
-			PDResources resources = new PDResources();
-			resources.put(COSName.getPDFName("Helv"), PDType1Font.HELVETICA);
-			acroForm.setDefaultResources(resources);
-			acroForm.setDefaultAppearance("/Helv 0 Tf 0 g");
+				// Set default appearance
+				PDResources resources = new PDResources();
+				resources.put(COSName.getPDFName("Helv"), PDType1Font.HELVETICA);
+				acroForm.setDefaultResources(resources);
+				acroForm.setDefaultAppearance("/Helv 0 Tf 0 g");
+			}
 
 			PDSignatureField signatureField = new PDSignatureField(acroForm);
 			if (Utils.isStringNotBlank(parameters.getName())) {

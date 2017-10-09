@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.validation;
 
-import eu.europa.esig.dss.validation.reports.dto.DataToValidateDTO;
+import eu.europa.esig.dss.DataToValidateDTO;
 import eu.europa.esig.dss.validation.reports.dto.ReportsDTO;
 
 @SuppressWarnings("serial")

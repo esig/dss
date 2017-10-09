@@ -61,7 +61,7 @@ public class BasicBuildingBlocks {
 	public XmlBasicBuildingBlocks execute() {
 		XmlBasicBuildingBlocks result = new XmlBasicBuildingBlocks();
 		result.setId(token.getId());
-		result.setType(context.name());
+		result.setType(context);
 		result.setConclusion(new XmlConclusion());
 
 		/**

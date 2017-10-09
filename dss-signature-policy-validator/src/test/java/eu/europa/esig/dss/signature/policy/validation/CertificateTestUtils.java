@@ -98,7 +98,7 @@ public class CertificateTestUtils {
 	}
 
 	private static void loadIssuerFromAiaExtension(DataLoader loader, CertificateToken certificate, CertificatePool certPool) {
-		Collection<CertificateToken> issuerCertificates = DSSUtils.loadIssuerCertificates(certificate, loader);
+		Collection<CertificateToken> issuerCertificates = DSSUtils.loadPotentialIssuerCertificates(certificate, loader);
 
 		if (issuerCertificates != null) {
 			for (CertificateToken certificateToken : issuerCertificates) {

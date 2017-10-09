@@ -24,6 +24,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 
@@ -59,5 +60,20 @@ public interface SignatureTokenConnection {
 	 *             If there is any problem during the signature process
 	 */
 	SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException;
+
+	/**
+	 * @param toBeSigned
+	 *            The data that need to be signed
+	 * @param digestAlgorithm
+	 *            The digest algorithm to be used before signing
+	 * @param mgf
+	 *            the mask generation function
+	 * @param keyEntry
+	 *            The private key to be used
+	 * @return The array of bytes representing the signature value
+	 * @throws DSSException
+	 *             If there is any problem during the signature process
+	 */
+	SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry) throws DSSException;
 
 }

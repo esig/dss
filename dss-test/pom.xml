@@ -6,7 +6,7 @@
  	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.2-SNAPSHOT</version>
+		<version>5.3-SNAPSHOT</version>
 	</parent>
 
 	<name>DSS Test</name>
@@ -16,11 +16,15 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-spi</artifactId>
+			<artifactId>dss-document</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-token</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-service</artifactId>
 		</dependency>
 		
 		<dependency>
