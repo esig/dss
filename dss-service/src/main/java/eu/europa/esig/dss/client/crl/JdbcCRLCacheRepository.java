@@ -27,30 +27,22 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.Date;
-import java.util.List;
 
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.crl.CRLValidity;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.crl.CRLSource;
-import eu.europa.esig.dss.x509.crl.CRLToken;
 
 /**
  * CRLSource that retrieve information from a JDBC datasource
  */
-public class JdbcCacheCRLSource implements CRLSource {
+public class JdbcCRLCacheRepository implements CRLCacheRepository {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JdbcCacheCRLSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(JdbcCRLCacheRepository.class);
 
 	/**
 	 * used in the init method to check if the table exists
@@ -111,68 +103,12 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 */
 	private static final String SQL_FIND_UPDATE = "UPDATE CACHED_CRL SET DATA = ?, SIGNATURE_ALGORITHM = ?, THIS_UPDATE = ?, NEXT_UPDATE = ?, EXPIRED_CERTS_ON_CRL = ?, ISSUER = ?, ISSUER_PRINCIPAL_MATCH = ?, SIGNATURE_INTACT = ?, CRL_SIGN_KEY_USAGE = ?, UNKNOWN_CRITICAL_EXTENSION = ?, SIGNATURE_INVALID_REASON = ?  WHERE ID = ?";
 
-	private OnlineCRLSource cachedSource;
-
 	private DataSource dataSource;
 
 	/**
 	 * The default constructor for JdbcCRLSource.
 	 */
-	public JdbcCacheCRLSource() {
-	}
-
-	@Override
-	public CRLToken findCrl(final CertificateToken certificateToken) throws DSSException {
-		if (certificateToken == null) {
-			return null;
-		}
-		final CertificateToken issuerToken = certificateToken.getIssuerToken();
-		if (issuerToken == null) {
-			return null;
-		}
-		final List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificateToken);
-		if (Utils.isCollectionEmpty(crlUrls)) {
-			return null;
-		}
-		final String crlUrl = crlUrls.get(0);
-		LOG.info("CRL's URL for " + certificateToken.getAbbreviation() + " : " + crlUrl);
-		try {
-
-			final String key = DSSUtils.getSHA1Digest(crlUrl);
-			final CRLValidity storedValidity = findCrlInDB(key);
-			if (storedValidity != null) {
-				if (storedValidity.getNextUpdate().after(new Date())) {
-					LOG.debug("CRL in cache");
-					final CRLToken crlToken = new CRLToken(certificateToken, storedValidity);
-					crlToken.setSourceURL(crlUrl);
-					if (crlToken.isValid()) {
-						return crlToken;
-					}
-				}
-			}
-			final CRLToken crlToken = cachedSource.findCrl(certificateToken);
-			if ((crlToken != null) && crlToken.isValid()) {
-				if (storedValidity == null) {
-					LOG.info("CRL '{}' not in cache", crlUrl);
-					insertCrlInDb(key, crlToken.getCrlValidity());
-				} else {
-					LOG.debug("CRL '{}' expired", crlUrl);
-					updateCrlInDb(key, crlToken.getCrlValidity());
-				}
-			}
-			return crlToken;
-		} catch (SQLException e) {
-			LOG.info("Error with the cache data store", e);
-		}
-		return null;
-	}
-
-	/**
-	 * @param cachedSource
-	 *            the cachedSource to set
-	 */
-	public void setCachedSource(OnlineCRLSource cachedSource) {
-		this.cachedSource = cachedSource;
+	public JdbcCRLCacheRepository() {
 	}
 
 	/**
@@ -235,7 +171,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 * @return the cached crl
 	 * @throws java.sql.SQLException
 	 */
-	private CRLValidity findCrlInDB(String key) throws SQLException {
+	public CRLValidity findCrl(String key) {
 		Connection c = null;
 		PreparedStatement s = null;
 		ResultSet rs = null;
@@ -260,6 +196,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 				cached.setSignatureInvalidityReason(rs.getString(SQL_FIND_QUERY_SIGNATURE_INVALID_REASON));
 				return cached;
 			}
+		} catch (SQLException e) {
+			LOG.error("Error on find CRL {}", key, e);
 		} finally {
 			closeQuietly(c, s, rs);
 		}
@@ -276,7 +214,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 *            the encoded CRL
 	 * @throws java.sql.SQLException
 	 */
-	private void insertCrlInDb(String key, CRLValidity token) throws SQLException {
+	public void insertCrl(String key, CRLValidity token) {
 		Connection c = null;
 		PreparedStatement s = null;
 		ResultSet rs = null;
@@ -315,6 +253,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 			s.setBoolean(11, token.isUnknownCriticalExtension());
 			s.setString(12, token.getSignatureInvalidityReason());
 			s.executeUpdate();
+		} catch (SQLException e) {
+			LOG.error("Error on insert CRL {}", key, e);
 		} finally {
 			closeQuietly(c, s, rs);
 		}
@@ -329,7 +269,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 *            the encoded CRL
 	 * @throws java.sql.SQLException
 	 */
-	private void updateCrlInDb(String key, CRLValidity token) throws SQLException {
+	public void updateCrl(String key, CRLValidity token) {
 		Connection c = null;
 		PreparedStatement s = null;
 		ResultSet rs = null;
@@ -367,6 +307,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 
 			s.setString(12, key);
 			s.executeUpdate();
+		} catch (SQLException e) {
+			LOG.error("Error on update CRL {}", key, e);
 		} finally {
 			closeQuietly(c, s, rs);
 		}
