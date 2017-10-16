@@ -371,6 +371,10 @@ public class CertificateToken extends Token {
 
 			final PublicKey publicKey = issuerToken.getCertificate().getPublicKey();
 			x509Certificate.verify(publicKey);
+			CertificateToken issuerTokenIssuer = issuerToken.getIssuerToken();
+			if ((issuerTokenIssuer != null) && (issuerTokenIssuer.equals(this))) {
+				throw new DSSException("Bridged certificates are not supported yet");
+			}
 			signatureValid = true;
 			if (!isSelfSigned()) {
 				this.issuerToken = issuerToken;
