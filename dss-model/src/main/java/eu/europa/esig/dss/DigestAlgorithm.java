@@ -32,15 +32,24 @@ public enum DigestAlgorithm {
 	// see DEPRECATED http://www.w3.org/TR/2012/WD-xmlsec-algorithms-20120105/
 	// see http://www.w3.org/TR/2013/NOTE-xmlsec-algorithms-20130411/
 	// @formatter:off
-	SHA1("SHA1", "SHA-1", "1.3.14.3.2.26", "http://www.w3.org/2000/09/xmldsig#sha1"),
+	SHA1("SHA1", "SHA1", "1.3.14.3.2.26", "http://www.w3.org/2000/09/xmldsig#sha1", 20),
 
-	SHA224("SHA224", "SHA-224", "2.16.840.1.101.3.4.2.4", "http://www.w3.org/2001/04/xmldsig-more#sha224"),
+	SHA224("SHA224", "SHA224", "2.16.840.1.101.3.4.2.4", "http://www.w3.org/2001/04/xmldsig-more#sha224", 28),
 
-	SHA256("SHA256", "SHA-256", "2.16.840.1.101.3.4.2.1", "http://www.w3.org/2001/04/xmlenc#sha256"),
+	SHA256("SHA256", "SHA256", "2.16.840.1.101.3.4.2.1", "http://www.w3.org/2001/04/xmlenc#sha256", 32),
 
-	SHA384("SHA384", "SHA-384", "2.16.840.1.101.3.4.2.2", "http://www.w3.org/2001/04/xmldsig-more#sha384"),
+	SHA384("SHA384", "SHA384", "2.16.840.1.101.3.4.2.2", "http://www.w3.org/2001/04/xmldsig-more#sha384", 48),
 
-	SHA512("SHA512", "SHA-512", "2.16.840.1.101.3.4.2.3", "http://www.w3.org/2001/04/xmlenc#sha512"),
+	SHA512("SHA512", "SHA512", "2.16.840.1.101.3.4.2.3", "http://www.w3.org/2001/04/xmlenc#sha512", 64),
+
+	// see https://tools.ietf.org/html/rfc6931
+	SHA3_224("SHA3224", "SHA3-224", "2.16.840.1.101.3.4.2.7", "http://www.w3.org/2007/05/xmldsig-more#sha3-224", 28),
+
+	SHA3_256("SHA3256", "SHA3-256", "2.16.840.1.101.3.4.2.8", "http://www.w3.org/2007/05/xmldsig-more#sha3-256", 32),
+
+	SHA3_384("SHA3384", "SHA3-384", "2.16.840.1.101.3.4.2.9", "http://www.w3.org/2007/05/xmldsig-more#sha3-384", 48),
+
+	SHA3_512("SHA3512", "SHA3-512", "2.16.840.1.101.3.4.2.10", "http://www.w3.org/2007/05/xmldsig-more#sha3-512", 64),
 
 	RIPEMD160("RIPEMD160", "RIPEMD160", "1.3.36.3.2.1", "http://www.w3.org/2001/04/xmlenc#ripemd160"),
 
@@ -59,6 +68,8 @@ public enum DigestAlgorithm {
 	private final String javaName;
 	private final String oid;
 	private final String xmlId;
+	/* In case of MGF usage */
+	private final int saltLength;
 
 	private static class Registry {
 
@@ -179,10 +190,15 @@ public enum DigestAlgorithm {
 	}
 
 	private DigestAlgorithm(final String name, final String javaName, final String oid, final String xmlId) {
+		this(name, javaName, oid, xmlId, 0);
+	}
+
+	private DigestAlgorithm(final String name, final String javaName, final String oid, final String xmlId, final int saltLength) {
 		this.name = name;
 		this.javaName = javaName;
 		this.oid = oid;
 		this.xmlId = xmlId;
+		this.saltLength = saltLength;
 	}
 
 	/**
@@ -219,6 +235,10 @@ public enum DigestAlgorithm {
 	 */
 	public String getXmlId() {
 		return xmlId;
+	}
+
+	public int getSaltLength() {
+		return saltLength;
 	}
 
 }

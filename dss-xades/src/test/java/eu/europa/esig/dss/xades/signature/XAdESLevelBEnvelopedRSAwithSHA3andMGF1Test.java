@@ -36,7 +36,7 @@ import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureServi
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBEnvelopedRSAandMGF1Test extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
+public class XAdESLevelBEnvelopedRSAwithSHA3andMGF1Test extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -48,7 +48,7 @@ public class XAdESLevelBEnvelopedRSAandMGF1Test extends AbstractPkiFactoryTestDo
 
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
+		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA3_256);
 		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());

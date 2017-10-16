@@ -27,7 +27,7 @@ public class CAdESLevelBWithMGF1Test extends AbstractCAdESTestSignature {
 
 		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1_SHA256);
+		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);

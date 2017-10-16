@@ -99,7 +99,7 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	@Override
 	public MaskGenerationFunction getMaskGenerationFunction() {
 		String mgf = getMaskGenerationFunctionUsedToSignThisToken();
-		return MaskGenerationFunction.forName(mgf, null);
+		return MaskGenerationFunction.valueOf(mgf);
 	}
 
 	@Override

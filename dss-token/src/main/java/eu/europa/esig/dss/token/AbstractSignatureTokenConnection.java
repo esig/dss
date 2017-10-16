@@ -65,7 +65,7 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 			signature.initSign(((KSPrivateKeyEntry) keyEntry).getPrivateKey());
 
 			if (mgf != null) {
-				signature.setParameter(createPSSParam(mgf));
+				signature.setParameter(createPSSParam(digestAlgorithm));
 			}
 
 			signature.update(toBeSigned.getBytes());
@@ -80,8 +80,8 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 
 	}
 
-	private AlgorithmParameterSpec createPSSParam(MaskGenerationFunction mgf) {
-		String digestJavaName = mgf.getDigestAlgorithm().getJavaName();
-		return new PSSParameterSpec(digestJavaName, "MGF1", new MGF1ParameterSpec(digestJavaName), mgf.getSaltLength(), 1);
+	private AlgorithmParameterSpec createPSSParam(DigestAlgorithm digestAlgo) {
+		String digestJavaName = digestAlgo.getJavaName();
+		return new PSSParameterSpec(digestJavaName, "MGF1", new MGF1ParameterSpec(digestJavaName), digestAlgo.getSaltLength(), 1);
 	}
 }
