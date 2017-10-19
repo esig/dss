@@ -66,4 +66,8 @@ public class SignedAssertion extends ASN1Object {
 
         return new DERSequence(v);
     }
+
+    public DERPrintableString getAssertion() {
+        return assertion;
+    }
 }

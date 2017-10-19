@@ -34,12 +34,9 @@ import org.bouncycastle.asn1.x509.Attribute;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SignerAttributeV2 extends ASN1Object {
     
-    private static final Logger logger = LoggerFactory.getLogger(SignerAttributeV2.class);
     private Object[] values;
 
     public Object[] getValues() {
@@ -80,7 +77,6 @@ public class SignerAttributeV2 extends ASN1Object {
             ASN1Object obj = (ASN1Object) e.nextElement();
             
             ASN1TaggedObject taggedObject = ASN1TaggedObject.getInstance(obj.getEncoded());
-            logger.error(taggedObject.toString());
 
             switch (taggedObject.getTagNo()) {
                 case 0:
@@ -90,15 +86,12 @@ public class SignerAttributeV2 extends ASN1Object {
                         attributes[i] = Attribute.getInstance(attrs.getObjectAt(i));
                     }
                     values[index] = attributes;
-                    logger.info("Attributes");
                     break;
                 case 1:
                     values[index] = CertifiedAttributesV2.getInstance(ASN1Sequence.getInstance(taggedObject, true));
-                    logger.info("CertifiedAttributes");
                     break;
                 case 2:
                     values[index] = SignedAssertions.getInstance(ASN1Sequence.getInstance(taggedObject, true));
-                    logger.info("SignedAssertion: "+SignedAssertions.getInstance(ASN1Sequence.getInstance(taggedObject, true)).toString());
                     break;
                 default:
                     throw new IllegalArgumentException("illegal tag: " + taggedObject.getTagNo());

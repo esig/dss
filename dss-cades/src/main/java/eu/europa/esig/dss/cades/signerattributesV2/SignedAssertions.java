@@ -51,7 +51,11 @@ public class SignedAssertions extends ASN1Object {
     public SignedAssertions(List<SignedAssertion> assertions){
         this(assertions.toArray(new SignedAssertion[0]));
     }
-
+    
+    public SignedAssertion[] getSignedAssertions(){
+        return this.assertions;
+    }
+    
     private SignedAssertions(ASN1Sequence seq) {
 
         int index = 0;
