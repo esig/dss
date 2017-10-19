@@ -127,6 +127,7 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
+import eu.europa.esig.dss.cades.signerattributesV2.SignerAttributeV2;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CAdESCertificateSource;
@@ -656,7 +657,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String[] getClaimedSignerRoles() {
-		final Attribute id_aa_ets_signerAttr = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_signerAttr);
+		//final Attribute id_aa_ets_signerAttr = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_signerAttr);
+                final Attribute id_aa_ets_signerAttr = getSignedAttribute(new ASN1ObjectIdentifier("0.4.0.19122.1.1"));
 		if (id_aa_ets_signerAttr == null) {
 			return null;
 		}
@@ -664,7 +666,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final ASN1Encodable attrValue = attrValues.getObjectAt(0);
 		try {
 
-			final SignerAttribute signerAttr = SignerAttribute.getInstance(attrValue);
+			final SignerAttributeV2 signerAttr = SignerAttributeV2.getInstance(attrValue);
 			if (signerAttr == null) {
 				return null;
 			}
@@ -699,7 +701,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<CertifiedRole> getCertifiedSignerRoles() {
-		final Attribute id_aa_ets_signerAttr = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_signerAttr);
+		final Attribute id_aa_ets_signerAttr = getSignedAttribute(new ASN1ObjectIdentifier("0.4.0.19122.1.1"));
 		if (id_aa_ets_signerAttr == null) {
 			return null;
 		}
@@ -707,7 +709,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final ASN1Encodable asn1EncodableAttrValue = attrValues.getObjectAt(0);
 		try {
 
-			final SignerAttribute signerAttr = SignerAttribute.getInstance(asn1EncodableAttrValue);
+			final SignerAttributeV2 signerAttr = SignerAttributeV2.getInstance(asn1EncodableAttrValue);
 			if (signerAttr == null) {
 				return null;
 			}
