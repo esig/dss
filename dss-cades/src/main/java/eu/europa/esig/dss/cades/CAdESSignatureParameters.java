@@ -10,6 +10,8 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters {
 	private String contentIdentifierPrefix;
 	private String contentIdentifierSuffix;
 
+	private boolean en319122 = true;
+
 	public String getContentHintsType() {
 		return contentHintsType;
 	}
@@ -84,6 +86,14 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters {
 	 */
 	public void setContentIdentifierPrefix(String contentIdentifierPrefix) {
 		this.contentIdentifierPrefix = contentIdentifierPrefix;
+	}
+
+	public boolean isEn319122() {
+		return en319122;
+	}
+
+	public void setEn319122(boolean en319122) {
+		this.en319122 = en319122;
 	}
 
 }

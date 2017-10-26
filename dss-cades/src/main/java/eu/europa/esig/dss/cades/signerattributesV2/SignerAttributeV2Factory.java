@@ -20,49 +20,47 @@
  */
 package eu.europa.esig.dss.cades.signerattributesV2;
 
-import eu.europa.esig.dss.BLevelParameters;
 import java.util.List;
+
 import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 
+import eu.europa.esig.dss.BLevelParameters;
+
 public class SignerAttributeV2Factory {
 
-    public static SignerAttributeV2 getSignerAttributeV2(BLevelParameters blvl, String id, boolean padesUsage) {
+	public static SignerAttributeV2 getSignerAttributeV2(BLevelParameters blvl, String id) {
 
-        SignerAttributeV2.SignerAttributeV2Builder builder = SignerAttributeV2.builder();
+		SignerAttributeV2.SignerAttributeV2Builder builder = SignerAttributeV2.builder();
 
-        if (!padesUsage) {
+		final List<String> claimedSignerRoles = blvl.getClaimedSignerRoles();
 
-            final List<String> claimedSignerRoles = blvl.getClaimedSignerRoles();
+		if (claimedSignerRoles != null) {
 
-            if (claimedSignerRoles != null) {
+			for (final String claimedSignerRole : claimedSignerRoles) {
 
-                for (final String claimedSignerRole : claimedSignerRoles) {
+				final DERUTF8String roles = new DERUTF8String(claimedSignerRole);
 
-                    final DERUTF8String roles = new DERUTF8String(claimedSignerRole);
+				// TODO: role attribute key (id_at_name) should be customizable
+				final org.bouncycastle.asn1.x509.Attribute id_aa_ets_signerAttr = new org.bouncycastle.asn1.x509.Attribute(X509ObjectIdentifiers.id_at_name,
+						new DERSet(roles));
+				builder.addClaimedAttribute(id_aa_ets_signerAttr);
+			}
+		}
 
-                    // TODO: role attribute key (id_at_name) should be customizable
-                    final org.bouncycastle.asn1.x509.Attribute id_aa_ets_signerAttr = new org.bouncycastle.asn1.x509.Attribute(X509ObjectIdentifiers.id_at_name,
-                            new DERSet(roles));
-                    builder.addClaimedAttribute(id_aa_ets_signerAttr);
-                }
-            }
-        }
-        
-        //TODO: CertifiedAttributesV2:  final List<String> certifiedSignerRoles = blvl.getCertifiedSignerRoles();
+		// TODO: CertifiedAttributesV2: final List<String> certifiedSignerRoles = blvl.getCertifiedSignerRoles();
 
-        
-        final List<String> signedAssertions = blvl.getSignedAssertions();
+		final List<String> signedAssertions = blvl.getSignedAssertions();
 
-        if (signedAssertions != null) {
+		if (signedAssertions != null) {
 
-            for (final String signedAssertion : signedAssertions) {
+			for (final String signedAssertion : signedAssertions) {
 
-                SignedAssertion sa = new SignedAssertion(id, signedAssertion);
-                builder.addSignedAssertion(sa);
-            }
-        }
-        return builder.build();
-    }
+				SignedAssertion sa = new SignedAssertion(id, signedAssertion);
+				builder.addSignedAssertion(sa);
+			}
+		}
+		return builder.build();
+	}
 }

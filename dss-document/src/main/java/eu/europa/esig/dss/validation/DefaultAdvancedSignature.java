@@ -98,6 +98,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	// This variable contains the list of enclosed archive signature timestamps.
 	protected List<TimestampToken> archiveTimestamps;
 
+	protected List<String> claimedRoles;
+
+	protected List<CertifiedRole> certifiedRoles;
+
 	// Cached {@code OfflineCRLSource}
 	protected OfflineCRLSource offlineCRLSource;
 

@@ -2,7 +2,6 @@ package eu.europa.esig.dss.validation;
 
 import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -273,7 +272,7 @@ public class DiagnosticDataBuilder {
 
 		xmlSignature.setSignatureProductionPlace(getXmlSignatureProductionPlace(signature.getSignatureProductionPlace()));
 		xmlSignature.setCommitmentTypeIndication(getXmlCommitmentTypeIndication(signature.getCommitmentTypeIndication()));
-		xmlSignature.setClaimedRoles(getXmlClaimedRole(signature.getClaimedSignerRoles()));
+		xmlSignature.setClaimedRoles(signature.getClaimedSignerRoles());
 		xmlSignature.getCertifiedRoles().addAll(getXmlCertifiedRoles(signature.getCertifiedSignerRoles()));
 
 		xmlSignature.setContentType(signature.getContentType());
@@ -478,13 +477,6 @@ public class DiagnosticDataBuilder {
 				xmlCertRoles.add(xmlCertifiedRole);
 			}
 			return xmlCertRoles;
-		}
-		return Collections.emptyList();
-	}
-
-	private List<String> getXmlClaimedRole(String[] claimedRoles) {
-		if (Utils.isArrayNotEmpty(claimedRoles)) {
-			return Arrays.asList(claimedRoles);
 		}
 		return Collections.emptyList();
 	}

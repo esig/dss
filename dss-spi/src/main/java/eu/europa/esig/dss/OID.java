@@ -31,7 +31,11 @@ public class OID {
 	 */
 	public static final ASN1ObjectIdentifier id_aa_ets_archiveTimestampV2 = PKCSObjectIdentifiers.id_aa.branch("48");
 
-	public static final ASN1ObjectIdentifier id_etsi_electronicSignatureStandard_attributes = new ASN1ObjectIdentifier("0.4.0.1733.2");
+	public static final ASN1ObjectIdentifier id_etsi = new ASN1ObjectIdentifier("0.4.0");
+
+	public static final ASN1ObjectIdentifier id_etsi_electronicSignatureStandard = id_etsi.branch("1733");
+
+	public static final ASN1ObjectIdentifier id_etsi_electronicSignatureStandard_attributes = id_etsi_electronicSignatureStandard.branch("2");
 
 	/**
 	 * id-aa-ets-mimeType OBJECT IDENTIFIER ::= { itu-t(0) identified-organization(4) etsi(0)
@@ -50,5 +54,21 @@ public class OID {
 	 * electronicsignature-standard(1733) attributes(2) 5 }
 	 */
 	public static final ASN1ObjectIdentifier id_aa_ATSHashIndex = id_etsi_electronicSignatureStandard_attributes.branch("5");
+
+	public static final ASN1ObjectIdentifier id_etsi_cades = id_etsi.branch("19122");
+
+	public static final ASN1ObjectIdentifier id_etsi_cades_attributes = id_etsi_cades.branch("1");
+
+	/**
+	 * id-aa-ets-signerAttrV2 OBJECT IDENTIFIER ::= { itu-t(0) identified-organization(4) etsi(0) cades(19122)
+	 * attributes(1) 1 }
+	 */
+	public static final ASN1ObjectIdentifier id_aa_ets_signerAttrV2 = id_etsi_cades_attributes.branch("1");
+
+	/**
+	 * id-aa-ets-claimedSAML OBJECT IDENTIFIER ::= { itu-t(0) identified-organization(4) etsi(0) cades(19122)
+	 * attributes(1) 2 }
+	 */
+	public static final ASN1ObjectIdentifier id_aa_ets_claimedSAML = id_etsi_cades_attributes.branch("2");
 
 }

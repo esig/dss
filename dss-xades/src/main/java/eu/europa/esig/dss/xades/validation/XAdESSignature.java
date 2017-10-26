@@ -717,7 +717,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public String[] getClaimedSignerRoles() {
+	public List<String> getClaimedSignerRoles() {
 
 		NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CLAIMED_ROLE);
 		if (nodeList.getLength() == 0) {
@@ -726,10 +726,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				return null;
 			}
 		}
-		final String[] roles = new String[nodeList.getLength()];
+		final List<String> roles = new ArrayList<String>();
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
-
-			roles[ii] = nodeList.item(ii).getTextContent();
+			roles.add(nodeList.item(ii).getTextContent());
 		}
 		return roles;
 	}

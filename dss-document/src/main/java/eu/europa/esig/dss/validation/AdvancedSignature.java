@@ -239,14 +239,14 @@ public interface AdvancedSignature extends Serializable {
 	/**
 	 * Returns the claimed role of the signer.
 	 *
-	 * @return array of the claimed roles as {@code String} array
+	 * @return list of the claimed roles as {@code String} array
 	 */
-	String[] getClaimedSignerRoles();
+	List<String> getClaimedSignerRoles();
 
 	/**
 	 * Returns the certified role of the signer.
 	 *
-	 * @return array of the certified roles
+	 * @return list of the certified roles
 	 */
 	List<CertifiedRole> getCertifiedSignerRoles();
 
