@@ -26,7 +26,9 @@ import java.util.Date;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
@@ -34,7 +36,7 @@ import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class CAdESLevelBSHA512Test extends AbstractCAdESTestSignature {
+public class CAdESLevelBSHA512WithSamlAssertionTest extends AbstractCAdESTestSignature {
 
 	private static final String HELLO_WORLD = "Hello World";
 
@@ -46,6 +48,8 @@ public class CAdESLevelBSHA512Test extends AbstractCAdESTestSignature {
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
+		DSSDocument samlAssertion = new FileDocument("src/test/resources/saml-assertion.xml");
+
 		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList("1.2.3", "1.2.3.4.5.6"));
@@ -55,10 +59,9 @@ public class CAdESLevelBSHA512Test extends AbstractCAdESTestSignature {
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
-		signatureParameters.setEn319122(false);
+		signatureParameters.setClaimedSAMLAssertion(DSSUtils.toByteArray(samlAssertion));
 
 		service = new CAdESService(getCompleteCertificateVerifier());
-
 	}
 
 	@Override

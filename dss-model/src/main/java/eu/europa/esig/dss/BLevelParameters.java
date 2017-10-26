@@ -52,7 +52,6 @@ public class BLevelParameters implements Serializable {
 
 	private List<String> claimedSignerRoles;
 	private List<String> certifiedSignerRoles;
-        private List<String> signedAssertions;
 
 	private Policy signaturePolicy;
 
@@ -156,27 +155,7 @@ public class BLevelParameters implements Serializable {
 	public List<String> getCertifiedSignerRoles() {
 		return certifiedSignerRoles;
 	}
-        
 
-        /**
-	 * Set a list of signed assertions
-	 * 
-	 * @param signedAssertions
-	 *            a list of signed assertions
-	 */
-	public void setSignedAssertions(List<String> signedAssertions) {
-		this.signedAssertions = signedAssertions;
-	}
-
-	/**
-	 * Get signed assertions
-	 *
-	 * @return the list of signed assertions
-	 */
-	public List<String> getSignedAssertions() {
-		return this.signedAssertions;
-	}
-           
 	/**
 	 * Get the commitment type indications
 	 * 

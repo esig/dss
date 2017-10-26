@@ -31,6 +31,7 @@ import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
@@ -105,6 +106,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		checkALevelAndValid(diagnosticData);
 		checkTimestamps(diagnosticData);
 		checkSignatureScopes(diagnosticData);
+		checkCommitmentTypeIndications(diagnosticData);
+		checkClaimedRoles(diagnosticData);
 	}
 
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
@@ -317,6 +320,32 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
 
 		assertEquals(dateFormat.format(originalSigningDate), dateFormat.format(signatureDate));
+	}
+
+	private void checkCommitmentTypeIndications(DiagnosticData diagnosticData) {
+		List<String> commitmentTypeIndications = getSignatureParameters().bLevel().getCommitmentTypeIndications();
+
+		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		int expectedSize = Utils.collectionSize(commitmentTypeIndications);
+		assertEquals(expectedSize, Utils.collectionSize(signatureById.getCommitmentTypeIdentifiers()));
+		if (expectedSize > 0) {
+			for (String commitmentType : commitmentTypeIndications) {
+				assertTrue(signatureById.getCommitmentTypeIdentifiers().contains(commitmentType));
+			}
+		}
+	}
+
+	private void checkClaimedRoles(DiagnosticData diagnosticData) {
+		List<String> claimedSignerRoles = getSignatureParameters().bLevel().getClaimedSignerRoles();
+
+		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		int expectedSize = Utils.collectionSize(claimedSignerRoles);
+		assertEquals(expectedSize, Utils.collectionSize(signatureById.getClaimedRoles()));
+		if (expectedSize > 0) {
+			for (String claimedRole : claimedSignerRoles) {
+				assertTrue(signatureById.getClaimedRoles().contains(claimedRole));
+			}
+		}
 	}
 
 }

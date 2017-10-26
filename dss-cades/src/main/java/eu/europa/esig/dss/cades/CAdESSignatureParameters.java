@@ -10,6 +10,8 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters {
 	private String contentIdentifierPrefix;
 	private String contentIdentifierSuffix;
 
+	private byte[] claimedSAMLAssertion;
+
 	private boolean en319122 = true;
 
 	public String getContentHintsType() {
@@ -94,6 +96,14 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters {
 
 	public void setEn319122(boolean en319122) {
 		this.en319122 = en319122;
+	}
+
+	public byte[] getClaimedSAMLAssertion() {
+		return claimedSAMLAssertion;
+	}
+
+	public void setClaimedSAMLAssertion(byte[] claimedSAMLAssertion) {
+		this.claimedSAMLAssertion = claimedSAMLAssertion;
 	}
 
 }

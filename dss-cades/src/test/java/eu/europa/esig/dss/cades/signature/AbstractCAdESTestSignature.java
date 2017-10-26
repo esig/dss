@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.cades.signature;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -21,6 +22,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -33,6 +35,8 @@ public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestD
 		checkSignedAttributesOrder(byteArray);
 
 		checkGetOriginalDocument(byteArray);
+
+		checkSamlAssertion(byteArray);
 	}
 
 	private void checkGetOriginalDocument(byte[] byteArray) {
@@ -56,9 +60,8 @@ public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestD
 	}
 
 	protected void checkSignedAttributesOrder(byte[] encoded) {
-		ASN1InputStream asn1sInput = null;
-		try {
-			asn1sInput = new ASN1InputStream(encoded);
+		try (ASN1InputStream asn1sInput = new ASN1InputStream(encoded)) {
+
 			ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
 			SignedData signedData = SignedData.getInstance(DERTaggedObject.getInstance(asn1Seq.getObjectAt(1)).getObject());
@@ -79,8 +82,18 @@ public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestD
 			}
 		} catch (Exception e) {
 			fail(e.getMessage());
-		} finally {
-			Utils.closeQuietly(asn1sInput);
+		}
+	}
+
+	private void checkSamlAssertion(byte[] byteArray) {
+		byte[] claimedSAMLAssertion = getSignatureParameters().getClaimedSAMLAssertion();
+		if (Utils.isArrayNotEmpty(claimedSAMLAssertion)) {
+			SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(new InMemoryDocument(byteArray));
+			sdv.setCertificateVerifier(getCompleteCertificateVerifier());
+			List<AdvancedSignature> signatures = sdv.getSignatures();
+			assertEquals(1, signatures.size());
+			CAdESSignature cadesSignature = (CAdESSignature) signatures.get(0);
+			assertArrayEquals(claimedSAMLAssertion, cadesSignature.getSamlAssertion());
 		}
 	}
 

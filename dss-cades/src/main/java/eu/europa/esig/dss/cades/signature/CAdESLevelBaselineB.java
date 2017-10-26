@@ -76,8 +76,6 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.signerattributesV2.SignerAttributeV2;
-import eu.europa.esig.dss.cades.signerattributesV2.SignerAttributeV2Factory;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -163,17 +161,8 @@ public class CAdESLevelBaselineB {
 
 			final List<String> claimedSignerRoles = parameters.bLevel().getClaimedSignerRoles();
 			if (claimedSignerRoles != null) {
-
 				List<org.bouncycastle.asn1.x509.Attribute> claimedAttributes = new ArrayList<org.bouncycastle.asn1.x509.Attribute>(claimedSignerRoles.size());
-				for (final String claimedSignerRole : claimedSignerRoles) {
-
-					final DERUTF8String roles = new DERUTF8String(claimedSignerRole);
-
-					// TODO: role attribute key (id_at_name) should be customizable
-					final org.bouncycastle.asn1.x509.Attribute id_aa_ets_signerAttr = new org.bouncycastle.asn1.x509.Attribute(X509ObjectIdentifiers.id_at_name,
-							new DERSet(roles));
-					claimedAttributes.add(id_aa_ets_signerAttr);
-				}
+				addClaimedSignerRoles(claimedSignerRoles, claimedAttributes);
 				final Attribute attribute = new Attribute(id_aa_ets_signerAttr,
 						new DERSet(new SignerAttribute(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
 				signedAttributes.add(attribute);
@@ -186,11 +175,40 @@ public class CAdESLevelBaselineB {
 	// ETSI EN 319 122-1 V1.1.1 (2016-04) Chapter 5.2.6.1
 	private void addSignerAttributeV2(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
-		SignerAttributeV2 sav2 = SignerAttributeV2Factory.getSignerAttributeV2(parameters.bLevel(), parameters.getDeterministicId());
+		List<String> claimedSignerRoles = parameters.bLevel().getClaimedSignerRoles();
+		byte[] claimedSAMLAssertion = parameters.getClaimedSAMLAssertion();
 
-		final Attribute attribute = new Attribute(OID.id_aa_ets_signerAttrV2, new DERSet(sav2));
+		if (Utils.isCollectionNotEmpty(claimedSignerRoles) || Utils.isArrayNotEmpty(claimedSAMLAssertion)) {
+			List<org.bouncycastle.asn1.x509.Attribute> claimedAttributes = new ArrayList<org.bouncycastle.asn1.x509.Attribute>();
+			if (claimedSignerRoles != null) {
+				addClaimedSignerRoles(claimedSignerRoles, claimedAttributes);
+			}
+			if (claimedSAMLAssertion != null) {
+				addClaimedSAMLAssertion(claimedSAMLAssertion, claimedAttributes);
+			}
 
-		signedAttributes.add(attribute);
+			// The same builder is used because other fields are not supported
+			final Attribute attribute = new Attribute(OID.id_aa_ets_signerAttrV2,
+					new DERSet(new SignerAttribute(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
+			signedAttributes.add(attribute);
+
+		}
+	}
+
+	private void addClaimedSignerRoles(List<String> claimedSignerRoles, List<org.bouncycastle.asn1.x509.Attribute> claimedAttributes) {
+		for (final String claimedSignerRole : claimedSignerRoles) {
+			final DERUTF8String roles = new DERUTF8String(claimedSignerRole);
+			// TODO: role attribute key (id_at_name) should be customizable
+			final org.bouncycastle.asn1.x509.Attribute attribute = new org.bouncycastle.asn1.x509.Attribute(X509ObjectIdentifiers.id_at_name,
+					new DERSet(roles));
+			claimedAttributes.add(attribute);
+		}
+	}
+
+	private void addClaimedSAMLAssertion(byte[] claimedSAMLAssertion, List<org.bouncycastle.asn1.x509.Attribute> claimedAttributes) {
+		final org.bouncycastle.asn1.x509.Attribute attribute = new org.bouncycastle.asn1.x509.Attribute(OID.id_aa_ets_claimedSAML,
+				new DERSet(new DEROctetString(claimedSAMLAssertion)));
+		claimedAttributes.add(attribute);
 	}
 
 	private void addSigningTimeAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {

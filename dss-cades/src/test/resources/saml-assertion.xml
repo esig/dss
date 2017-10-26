@@ -1,0 +1,20 @@
+<saml:Assertion xmlns:saml=”urn:oasis:names:tc:SAML:2.0:assertion”
+	Version="2.0" IssueInstant="2005-01-31T12:00:00Z">
+	<saml:Issuer Format=urn:oasis:names:SAML:2.0:nameid-format:entity>
+		http://www.example.com
+	</saml:Issuer>
+	<saml:Subject>
+		<saml:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress">
+			j.doe@example.com
+		</saml:NameID>
+	</saml:Subject>
+	<saml:Conditions NotBefore="2005-01-31T12:00:00Z" NotOnOrAfter="2005-01-31T12:10:00Z">
+	</saml:Conditions>
+	<saml:AuthnStatement AuthnInstant="2005-01-31T12:00:00Z" SessionIndex="67775277772">
+		<saml:AuthnContext>
+			<saml:AuthnContextClassRef>
+				urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
+			</saml:AuthnContextClassRef>
+		</saml:AuthnContext>
+	</saml:AuthnStatement>
+</saml:Assertion>

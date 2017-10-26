@@ -61,7 +61,6 @@ import org.bouncycastle.asn1.ASN1TaggedObject;
 import org.bouncycastle.asn1.ASN1UTCTime;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.DERPrintableString;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.DERUTF8String;
@@ -129,9 +128,6 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
-import eu.europa.esig.dss.cades.signerattributesV2.SignedAssertion;
-import eu.europa.esig.dss.cades.signerattributesV2.SignedAssertions;
-import eu.europa.esig.dss.cades.signerattributesV2.SignerAttributeV2;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CAdESCertificateSource;
@@ -190,6 +186,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * Cached list of the Signing Certificate Timestamp References.
 	 */
 	private List<TimestampReference> signingCertificateTimestampReferences;
+
+	/**
+	 * Cached claimed-SAML-assertion (ETSI EN 319 122-1 ch. 5.2.6.2)
+	 */
+	private byte[] samlAssertion;
 
 	/**
 	 * @param data
@@ -675,6 +676,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return certifiedRoles;
 	}
 
+	public byte[] getSamlAssertion() {
+		if (samlAssertion == null) {
+			parseSignerAttribute();
+		}
+		return samlAssertion;
+	}
+
 	private void parseSignerAttribute() {
 		claimedRoles = new ArrayList<String>();
 		certifiedRoles = new ArrayList<CertifiedRole>();
@@ -704,7 +712,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 						parseCertifiedAttributes(taggedObject);
 					}
 				} else if (taggedObject.getTagNo() == 2 && signerAttrV2) {
-					// TODO parseSignerAssertions(taggedObject);
+					// Not enough details in the standard
+					LOG.warn("Unsupported SignedAssertions in attribute CertifiedAttributesV2");
 				} else {
 					LOG.warn("Unsupported tagNo {} in attribute {}", taggedObject.getTagNo(), attribute.getAttrType());
 				}
@@ -722,6 +731,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			if (taggedObject.getTagNo() == 0) {
 				parseCertifiedAttributes(taggedObj);
 			} else if (taggedObject.getTagNo() == 1) {
+				// Not enough details in the standard
 				LOG.warn("Unsupported OtherAttributeCertificate in attribute CertifiedAttributesV2");
 			} else {
 				LOG.warn("Unsupported tagNo {} in attribute CertifiedAttributesV2", taggedObject.getTagNo());
@@ -732,14 +742,31 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	private void parseClaimedAttributes(ASN1TaggedObject taggedObject) {
 		ASN1Sequence attrs = ASN1Sequence.getInstance(taggedObject, true);
 		for (int i = 0; i != attrs.size(); i++) {
-			org.bouncycastle.asn1.x509.Attribute claimedRole = org.bouncycastle.asn1.x509.Attribute.getInstance(attrs.getObjectAt(i));
-			final ASN1Encodable[] attrValues = claimedRole.getAttrValues().toArray();
-			for (final ASN1Encodable asn1Encodable : attrValues) {
-				if (asn1Encodable instanceof ASN1String) {
-					ASN1String asn1String = (ASN1String) asn1Encodable;
-					claimedRoles.add(asn1String.getString());
+			org.bouncycastle.asn1.x509.Attribute attribute = org.bouncycastle.asn1.x509.Attribute.getInstance(attrs.getObjectAt(i));
+			if (OID.id_aa_ets_claimedSAML.equals(attribute.getAttrType())) {
+				LOG.info("SAML assertion detected");
+				extractSamlAssertion(attribute);
+			} else {
+				final ASN1Encodable[] attrValues = attribute.getAttrValues().toArray();
+				for (final ASN1Encodable asn1Encodable : attrValues) {
+					if (asn1Encodable instanceof ASN1String) {
+						ASN1String asn1String = (ASN1String) asn1Encodable;
+						claimedRoles.add(asn1String.getString());
+					}
 				}
 			}
+		}
+	}
+
+	private void extractSamlAssertion(org.bouncycastle.asn1.x509.Attribute attribute) {
+		ASN1Set attrValues = attribute.getAttrValues();
+		if (attrValues.size() == 1) {
+			ASN1Encodable encodable = attrValues.getObjectAt(0);
+			if (encodable instanceof ASN1OctetString) {
+				samlAssertion = ((ASN1OctetString) encodable).getOctets();
+			}
+		} else {
+			LOG.warn("Only one AttributeValue is allowed for ClaimedSAML attribute");
 		}
 	}
 
@@ -760,41 +787,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			certifiedRole.setNotBefore(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotBeforeTime()));
 			certifiedRole.setNotAfter(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotAfterTime()));
 			certifiedRoles.add(certifiedRole);
-		}
-	}
-
-	public String[] getSignedAssertions() {
-		// final Attribute id_aa_ets_signerAttr = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_signerAttr);
-		final Attribute id_aa_ets_signerAttr = getSignedAttribute(new ASN1ObjectIdentifier("0.4.0.19122.1.1"));
-		if (id_aa_ets_signerAttr == null) {
-			return null;
-		}
-		final ASN1Set attrValues = id_aa_ets_signerAttr.getAttrValues();
-		final ASN1Encodable attrValue = attrValues.getObjectAt(0);
-		try {
-
-			final SignerAttributeV2 signerAttr = SignerAttributeV2.getInstance(attrValue);
-			if (signerAttr == null) {
-				return null;
-			}
-			final List<String> signedAssertions = new ArrayList<String>();
-			final Object[] signerAttrValues = signerAttr.getValues();
-			for (final Object signerAttrValue : signerAttrValues) {
-				if (!(signerAttrValue instanceof SignedAssertions)) {
-					continue;
-				}
-				final SignedAssertions assertions = (SignedAssertions) signerAttrValue;
-
-				for (SignedAssertion assertion : assertions.getSignedAssertions()) {
-					DERPrintableString s = assertion.getAssertion();
-					signedAssertions.add(s.getString());
-				}
-			}
-			final String[] strings = signedAssertions.toArray(new String[signedAssertions.size()]);
-			return strings;
-		} catch (Exception e) {
-			LOG.error("Error when dealing with signed assertions: [" + attrValue.toString() + "]", e);
-			return null;
 		}
 	}
 

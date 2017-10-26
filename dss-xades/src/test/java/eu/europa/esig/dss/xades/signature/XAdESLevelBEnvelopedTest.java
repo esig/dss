@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Date;
 
 import org.junit.Before;
@@ -46,6 +47,7 @@ public class XAdESLevelBEnvelopedTest extends AbstractPkiFactoryTestDocumentSign
 
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
+		signatureParameters.bLevel().setClaimedSignerRoles(Arrays.asList("Director"));
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
