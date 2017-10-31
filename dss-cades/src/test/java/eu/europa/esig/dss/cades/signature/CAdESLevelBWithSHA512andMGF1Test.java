@@ -14,7 +14,7 @@ import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class CAdESLevelBWithMGF512Test extends AbstractCAdESTestSignature {
+public class CAdESLevelBWithSHA512andMGF1Test extends AbstractCAdESTestSignature {
 
 	private static final String HELLO_WORLD = "Hello World";
 
@@ -29,7 +29,7 @@ public class CAdESLevelBWithMGF512Test extends AbstractCAdESTestSignature {
 		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
-		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1_SHA512);
+		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);

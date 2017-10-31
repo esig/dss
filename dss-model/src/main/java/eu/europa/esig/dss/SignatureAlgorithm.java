@@ -40,15 +40,23 @@ public enum SignatureAlgorithm {
 
 	RSA_SHA512(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA512),
 
-	RSA_SSA_PSS_SHA1_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1, MaskGenerationFunction.MGF1_SHA1),
+	RSA_SSA_PSS_SHA1_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1, MaskGenerationFunction.MGF1),
 
-	RSA_SSA_PSS_SHA224_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA224, MaskGenerationFunction.MGF1_SHA224),
+	RSA_SSA_PSS_SHA224_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA224, MaskGenerationFunction.MGF1),
 
-	RSA_SSA_PSS_SHA256_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA256, MaskGenerationFunction.MGF1_SHA256),
+	RSA_SSA_PSS_SHA256_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA256, MaskGenerationFunction.MGF1),
 
-	RSA_SSA_PSS_SHA384_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA384, MaskGenerationFunction.MGF1_SHA384),
+	RSA_SSA_PSS_SHA384_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA384, MaskGenerationFunction.MGF1),
 
-	RSA_SSA_PSS_SHA512_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA512, MaskGenerationFunction.MGF1_SHA512),
+	RSA_SSA_PSS_SHA512_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA512, MaskGenerationFunction.MGF1),
+
+	RSA_SSA_PSS_SHA3_224_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_224, MaskGenerationFunction.MGF1),
+
+	RSA_SSA_PSS_SHA3_256_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_256, MaskGenerationFunction.MGF1),
+
+	RSA_SSA_PSS_SHA3_384_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_384, MaskGenerationFunction.MGF1),
+
+	RSA_SSA_PSS_SHA3_512_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_512, MaskGenerationFunction.MGF1),
 
 	RSA_RIPEMD160(EncryptionAlgorithm.RSA, DigestAlgorithm.RIPEMD160),
 
@@ -65,6 +73,12 @@ public enum SignatureAlgorithm {
 	ECDSA_SHA384(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA384),
 
 	ECDSA_SHA512(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA512),
+
+	ECDSA_SHA3_256(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_256),
+
+	ECDSA_SHA3_384(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_384),
+
+	ECDSA_SHA3_512(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_512),
 
 	ECDSA_RIPEMD160(EncryptionAlgorithm.ECDSA, DigestAlgorithm.RIPEMD160),
 
@@ -110,6 +124,11 @@ public enum SignatureAlgorithm {
 		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha256-rsa-MGF1", RSA_SSA_PSS_SHA256_MGF1);
 		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha384-rsa-MGF1", RSA_SSA_PSS_SHA384_MGF1);
 		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha512-rsa-MGF1", RSA_SSA_PSS_SHA512_MGF1);
+
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha3-224-rsa-MGF1", RSA_SSA_PSS_SHA3_224_MGF1);
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha3-256-rsa-MGF1", RSA_SSA_PSS_SHA3_256_MGF1);
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha3-384-rsa-MGF1", RSA_SSA_PSS_SHA3_384_MGF1);
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha3-512-rsa-MGF1", RSA_SSA_PSS_SHA3_512_MGF1);
 
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-ripemd160", RSA_RIPEMD160);
 		// Support of not standard AT algorithm name
@@ -180,6 +199,20 @@ public enum SignatureAlgorithm {
 		oidAlgorithms.put("1.2.840.10045.4.3.4", ECDSA_SHA512);
 		oidAlgorithms.put("0.4.0.127.0.7.1.1.4.1.6", ECDSA_RIPEMD160);
 
+		/*
+		 * id-ecdsa-with-sha3-256 {joint-iso-itu-t(2) country(16) us(840) organization(1) gov(101) csor(3)
+		 * nistAlgorithm(4) sigAlgs(3) 10}
+		 * NIST CSOR [18]
+		 * id-ecdsa-with-sha3-384 {joint-iso-itu-t(2) country(16) us(840) organization(1) gov(101) csor(3)
+		 * nistAlgorithm(4) sigAlgs(3) 11}
+		 * NIST CSOR [18]
+		 * id-ecdsa-with-sha3-512 {joint-iso-itu-t(2) country(16) us(840) organization(1) gov(101) csor(3)
+		 * nistAlgorithm(4) sigAlgs(3) 12}
+		 */
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.10", ECDSA_SHA3_256);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.11", ECDSA_SHA3_384);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.12", ECDSA_SHA3_512);
+
 		oidAlgorithms.put("1.2.840.10040.4.3", DSA_SHA1);
 		oidAlgorithms.put("1.2.14888.3.0.1", DSA_SHA1);
 		oidAlgorithms.put("2.16.840.1.101.3.4.3.2", DSA_SHA256);
@@ -216,6 +249,11 @@ public enum SignatureAlgorithm {
 		javaAlgorithms.put("SHA384withRSAandMGF1", RSA_SSA_PSS_SHA384_MGF1);
 		javaAlgorithms.put("SHA512withRSAandMGF1", RSA_SSA_PSS_SHA512_MGF1);
 
+		javaAlgorithms.put("SHA3-224withRSAandMGF1", RSA_SSA_PSS_SHA3_224_MGF1);
+		javaAlgorithms.put("SHA3-256withRSAandMGF1", RSA_SSA_PSS_SHA3_256_MGF1);
+		javaAlgorithms.put("SHA3-384withRSAandMGF1", RSA_SSA_PSS_SHA3_384_MGF1);
+		javaAlgorithms.put("SHA3-512withRSAandMGF1", RSA_SSA_PSS_SHA3_512_MGF1);
+
 		javaAlgorithms.put("RIPEMD160withRSA", RSA_RIPEMD160);
 
 		javaAlgorithms.put("MD5withRSA", RSA_MD5);
@@ -227,6 +265,10 @@ public enum SignatureAlgorithm {
 		javaAlgorithms.put("SHA384withECDSA", ECDSA_SHA384);
 		javaAlgorithms.put("SHA512withECDSA", ECDSA_SHA512);
 		javaAlgorithms.put("RIPEMD160withECDSA", ECDSA_RIPEMD160);
+
+		javaAlgorithms.put("SHA3-256withECDSA", ECDSA_SHA3_256);
+		javaAlgorithms.put("SHA3-384withECDSA", ECDSA_SHA3_384);
+		javaAlgorithms.put("SHA3-512withECDSA", ECDSA_SHA3_512);
 
 		javaAlgorithms.put("SHA1withDSA", DSA_SHA1);
 		javaAlgorithms.put("SHA256withDSA", DSA_SHA256);
@@ -351,8 +393,9 @@ public enum SignatureAlgorithm {
 	 */
 	public static SignatureAlgorithm getAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,
 			final MaskGenerationFunction mgf) {
+
 		StringBuilder sb = new StringBuilder();
-		sb.append(digestAlgorithm.getName().replace("-", ""));
+		sb.append(digestAlgorithm.getJavaName());
 		sb.append("with");
 		sb.append(encryptionAlgorithm.getName());
 		if (mgf != null) {

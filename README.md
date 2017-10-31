@@ -26,7 +26,11 @@ The [documentation](dss-cookbook/src/main/asciidoc/dss-documentation.adoc) and s
 
 # Demonstration
 
-The release is deployed on https://joinup.ec.europa.eu/sd-dss/webapp-demo/home 
+The release is deployed on https://joinup.ec.europa.eu/dss-webapp/ 
+
+# Ready-to-use bundles
+
+Bundles which contain the above demonstration can be downloaded from the [Maven repository](https://ec.europa.eu/cefdigital/artifact/content/repositories/esignaturedss/eu/europa/ec/joinup/sd-dss/dss-demo-bundle/).
 
 The code of the demonstration can be found on https://ec.europa.eu/cefdigital/code/projects/ESIG/repos/dss-demos/browse
 

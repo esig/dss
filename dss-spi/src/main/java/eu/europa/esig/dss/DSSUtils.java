@@ -78,8 +78,6 @@ public final class DSSUtils {
 
 	private static final BouncyCastleProvider securityProvider = new BouncyCastleProvider();
 
-	private static final CertificateFactory certificateFactory;
-
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
 	public static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
@@ -90,16 +88,7 @@ public final class DSSUtils {
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
 	static {
-		try {
-			Security.addProvider(securityProvider);
-			certificateFactory = CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME);
-		} catch (CertificateException e) {
-			LOG.error(e.getMessage(), e);
-			throw new DSSException("Platform does not support X509 certificate", e);
-		} catch (NoSuchProviderException e) {
-			LOG.error(e.getMessage(), e);
-			throw new DSSException("Platform does not support BouncyCastle", e);
-		}
+		Security.addProvider(securityProvider);
 	}
 
 	/**
@@ -255,7 +244,7 @@ public final class DSSUtils {
 		final List<CertificateToken> certificates = new ArrayList<CertificateToken>();
 		try {
 			@SuppressWarnings("unchecked")
-			final Collection<X509Certificate> certificatesCollection = (Collection<X509Certificate>) certificateFactory.generateCertificates(is);
+			final Collection<X509Certificate> certificatesCollection = (Collection<X509Certificate>) CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME).generateCertificates(is);
 			if (certificatesCollection != null) {
 				for (X509Certificate cert : certificatesCollection) {
 					certificates.add(new CertificateToken(cert));
@@ -354,8 +343,8 @@ public final class DSSUtils {
 	@Deprecated
 	public static X509CRL loadCRL(final InputStream inputStream) {
 		try {
-			return (X509CRL) certificateFactory.generateCRL(inputStream);
-		} catch (CRLException e) {
+			return (X509CRL) CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME).generateCRL(inputStream);
+		} catch (CRLException | CertificateException | NoSuchProviderException e) {
 			throw new DSSException(e);
 		}
 	}

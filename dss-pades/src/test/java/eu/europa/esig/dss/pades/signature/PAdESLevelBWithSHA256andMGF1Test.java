@@ -14,7 +14,7 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class PAdESLevelBWithMGF512Test extends AbstractPAdESTestSignature {
+public class PAdESLevelBWithSHA256andMGF1Test extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters> service;
 	private PAdESSignatureParameters signatureParameters;
@@ -28,9 +28,9 @@ public class PAdESLevelBWithMGF512Test extends AbstractPAdESTestSignature {
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1_SHA512);
+		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 		signatureParameters.setLocation("Luxembourg");
 		signatureParameters.setReason("DSS testing");
 		signatureParameters.setContactInfo("Jira");

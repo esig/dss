@@ -55,6 +55,7 @@ import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -101,6 +102,10 @@ import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
 import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.validation.SignatureRSAwithSHA3andMGF1Support.SignatureRSASHA3224MGF1;
+import eu.europa.esig.dss.xades.validation.SignatureRSAwithSHA3andMGF1Support.SignatureRSASHA3256MGF1;
+import eu.europa.esig.dss.xades.validation.SignatureRSAwithSHA3andMGF1Support.SignatureRSASHA3384MGF1;
+import eu.europa.esig.dss.xades.validation.SignatureRSAwithSHA3andMGF1Support.SignatureRSASHA3512MGF1;
 
 /**
  * Parse an XAdES signature structure. Note that for each signature to be validated a new instance of this object must
@@ -153,6 +158,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	static {
 
 		Init.init();
+		JCEMapper.setProviderId(BouncyCastleProvider.PROVIDER_NAME);
 
 		/**
 		 * Adds the support of ECDSA_RIPEMD160 for XML signature. Used by AT. The BC provider must be previously added.
@@ -180,6 +186,28 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			org.apache.xml.security.algorithms.SignatureAlgorithm.register(SignatureRSARIPEMD160AT.XML_ID, SignatureRSARIPEMD160AT.class);
 		} catch (Exception e) {
 			LOG.error("ECDSA_RIPEMD160AT algorithm initialisation failed.", e);
+		}
+
+		try {
+			String rsaRequiredKey = "RSA";
+			String algorithmClass = "Signature";
+			JCEMapper.register(SignatureRSASHA3224MGF1.XML_ID,
+					new JCEMapper.Algorithm(rsaRequiredKey, SignatureAlgorithm.RSA_SSA_PSS_SHA3_224_MGF1.getJCEId(), algorithmClass));
+			org.apache.xml.security.algorithms.SignatureAlgorithm.register(SignatureRSASHA3224MGF1.XML_ID, SignatureRSASHA3224MGF1.class);
+
+			JCEMapper.register(SignatureRSASHA3256MGF1.XML_ID,
+					new JCEMapper.Algorithm(rsaRequiredKey, SignatureAlgorithm.RSA_SSA_PSS_SHA3_256_MGF1.getJCEId(), algorithmClass));
+			org.apache.xml.security.algorithms.SignatureAlgorithm.register(SignatureRSASHA3256MGF1.XML_ID, SignatureRSASHA3256MGF1.class);
+
+			JCEMapper.register(SignatureRSASHA3384MGF1.XML_ID,
+					new JCEMapper.Algorithm(rsaRequiredKey, SignatureAlgorithm.RSA_SSA_PSS_SHA3_384_MGF1.getJCEId(), algorithmClass));
+			org.apache.xml.security.algorithms.SignatureAlgorithm.register(SignatureRSASHA3384MGF1.XML_ID, SignatureRSASHA3384MGF1.class);
+
+			JCEMapper.register(SignatureRSASHA3512MGF1.XML_ID,
+					new JCEMapper.Algorithm(rsaRequiredKey, SignatureAlgorithm.RSA_SSA_PSS_SHA3_512_MGF1.getJCEId(), algorithmClass));
+			org.apache.xml.security.algorithms.SignatureAlgorithm.register(SignatureRSASHA3512MGF1.XML_ID, SignatureRSASHA3512MGF1.class);
+		} catch (Exception e) {
+			LOG.error("Unable to register RSA_PSS with SHA3 algorithms", e);
 		}
 	}
 
