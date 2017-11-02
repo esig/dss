@@ -1,19 +1,20 @@
 package eu.europa.esig.dss.asic;
 
-import eu.europa.esig.dss.ASiCContainerType;
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.utils.Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import eu.europa.esig.dss.ASiCContainerType;
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.utils.Utils;
 
 public final class ASiCUtils {
 
@@ -96,12 +97,10 @@ public final class ASiCUtils {
 					return entry.getName().endsWith(extension);
 				}
 			}
+		} catch (ZipException e) {
+			LOG.warn("Can not read zip file", e);
 		} catch (IOException e) {
-			if(e instanceof ZipException) {
-				LOG.warn("Can not read zip file", e);
-			} else {
-				throw new DSSException("Unable to analyze the archive content", e);
-			}
+			throw new DSSException("Unable to analyze the archive content", e);
 		}
 		return isSignatureTypeCorrect;
 	}
@@ -199,7 +198,7 @@ public final class ASiCUtils {
 		return zeroPad.substring(numStr.length()) + numStr; // 2 -> 002
 	}
 
-	public static boolean isAsic(List<DSSDocument> documents, final ASiCParameters asicParameters) {
+	public static boolean isAsic(List<DSSDocument> documents) {
 		if (ASiCUtils.isArchive(documents)) {
 			DSSDocument archive = documents.get(0);
 			boolean cades = ASiCUtils.hasArchiveCorrectSignature(archive, "p7s");
@@ -209,4 +208,5 @@ public final class ASiCUtils {
 
 		return false;
 	}
+
 }
