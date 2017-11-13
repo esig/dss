@@ -199,9 +199,8 @@ public class FullCAdESSignaturePolicyValidator extends BasicASNSignaturePolicyVa
 			return CertificateTrustPointValidator.buildKnownChain(certificate);
 		}
 		
-		CertStore certStore = CertificateTrustPointValidator.buildCertStore(certificate, getCadesSignature().getCertPool());
 		for (CertificateTrustPoint trustPoint : certificateTrustTrees.getCertificateTrustPoints()) {
-			CertificateTrustPointValidator trustPointValidator = new CertificateTrustPointValidator(getCadesSignature().getCertPool(), certStore, trustPoint);
+			CertificateTrustPointValidator trustPointValidator = new CertificateTrustPointValidator(getCadesSignature().getCertPool(), certificate, trustPoint);
 			if (trustPointValidator.validate()) {
 				return trustPointValidator.getChainCertificates();
 			}

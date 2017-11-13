@@ -61,6 +61,8 @@ public class CertificateTrustPointValidator implements ItemValidator {
 
 	private Set<CertificateToken> chainCertificates = Collections.emptySet();
 
+	private CertificateToken targetCertificate;
+
 
 	public static Set<CertificateToken> buildKnownChain(CertificateToken target) {
 		Set<CertificateToken> knownTrustStore = new LinkedHashSet<CertificateToken>();
@@ -87,16 +89,18 @@ public class CertificateTrustPointValidator implements ItemValidator {
 		return store;
 	}
 
-	public CertificateTrustPointValidator(CertificatePool certPool, CertStore store, CertificateTrustPoint trustPoint) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
+	public CertificateTrustPointValidator(CertificatePool certPool, CertStore store, CertificateTrustPoint trustPoint, CertificateToken targetCertificate) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
 		this.trustPoint = trustPoint;
 		this.certPool = certPool;
 		this.knownTrustStore = store;
+		this.targetCertificate = targetCertificate;
 	}
 
 	public CertificateTrustPointValidator(CertificatePool certPool, CertificateToken target, CertificateTrustPoint trustPoint) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
 		this.trustPoint = trustPoint;
 		this.certPool = certPool;
 		this.knownTrustStore = buildCertStore(target, certPool);
+		this.targetCertificate = target;
 	}
 	
 	public boolean validate() {
@@ -135,10 +139,10 @@ public class CertificateTrustPointValidator implements ItemValidator {
 	private CertPathBuilderResult buildCertPath()
 			throws IOException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException,
 			CertPathBuilderException {
-		X509CertSelector certSelector = new X509CertSelector();
 		Set<TrustAnchor> trustPoints = Collections.singleton(new TrustAnchor(trustPoint.getTrustpoint(), null));
+		X509CertSelector certSelector = new X509CertSelector();
 		certSelector.setPolicy(trustPoint.getAcceptablePolicySet());
-		//certSelector.setNameConstraints(trustPoint.getNameConstraints() == null? null: trustPoint.getNameConstraints().getEncoded());
+		certSelector.setCertificate(targetCertificate.getCertificate());
 		PKIXBuilderParameters buildParams = new PKIXBuilderParameters(trustPoints, certSelector);
 		buildParams.setRevocationEnabled(false);
 		buildParams.addCertStore(knownTrustStore);
