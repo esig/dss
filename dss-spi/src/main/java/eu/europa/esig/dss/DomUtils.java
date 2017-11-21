@@ -104,8 +104,12 @@ public final class DomUtils {
 		dbFactory.setNamespaceAware(true);
 		try {
 			// disable external entities
+			// details : https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#Java
+
 			dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
 			dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
 			dbFactory.setXIncludeAware(false);
 			dbFactory.setExpandEntityReferences(false);
 		} catch (ParserConfigurationException e) {
