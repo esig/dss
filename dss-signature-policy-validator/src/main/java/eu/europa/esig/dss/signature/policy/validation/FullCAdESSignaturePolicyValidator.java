@@ -108,9 +108,7 @@ public class FullCAdESSignaturePolicyValidator extends BasicASNSignaturePolicyVa
 			addError("general", "Unexpected error: " + e.getMessage());
 		}
 		
-		//TODO If the status is changed, it assumes the hash is invalid rather than the policy 
-		//constraints doesn't match. We need to find a better way to flag the policy validation result.
-		//setStatus(getProcessingErrors().isEmpty());
+		
 	}
 
 	private SignaturePolicy parse() {
