@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -232,15 +233,12 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	public List<CertificateToken> getCertificatesWithinSignatureAndTimestamps() {
+		return getCertificatesWithinSignatureAndTimestamps(false);
+	}
 
+	public List<CertificateToken> getCertificatesWithinSignatureAndTimestamps(boolean skipLastArchiveTimestamp) {
 		final List<CertificateToken> certWithinSignatures = new ArrayList<CertificateToken>();
 		certWithinSignatures.addAll(getCertificates());
-		for (final TimestampToken timestampToken : getSignatureTimestamps()) {
-			certWithinSignatures.addAll(timestampToken.getCertificates());
-		}
-		for (final TimestampToken timestampToken : getArchiveTimestamps()) {
-			certWithinSignatures.addAll(timestampToken.getCertificates());
-		}
 		for (final TimestampToken timestampToken : getContentTimestamps()) {
 			certWithinSignatures.addAll(timestampToken.getCertificates());
 		}
@@ -250,7 +248,29 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		for (final TimestampToken timestampToken : getTimestampsX2()) {
 			certWithinSignatures.addAll(timestampToken.getCertificates());
 		}
+		for (final TimestampToken timestampToken : getSignatureTimestamps()) {
+			certWithinSignatures.addAll(timestampToken.getCertificates());
+		}
+
+		List<TimestampToken> archiveTsps = getArchiveTimestamps();
+		if (skipLastArchiveTimestamp) {
+			archiveTsps = removeLastTimestamp(archiveTsps);
+		}
+		for (final TimestampToken timestampToken : archiveTsps) {
+			certWithinSignatures.addAll(timestampToken.getCertificates());
+		}
+
 		return certWithinSignatures;
+	}
+
+	private List<TimestampToken> removeLastTimestamp(List<TimestampToken> timestamps) {
+		List<TimestampToken> tsps = new ArrayList<TimestampToken>();
+		Collections.copy(timestamps, tsps);
+		if (Utils.collectionSize(tsps) > 1) {
+			Collections.sort(tsps, new TimestampByGenerationTimeComparator());
+			tsps.remove(tsps.size() - 1);
+		}
+		return tsps;
 	}
 
 	/**
@@ -534,7 +554,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	/* Defines the level LT */
 	public boolean hasLTProfile() {
-		List<CertificateToken> certificates = getCertificateSource().getCertificates();
+		List<CertificateToken> certificates = getCertificatesWithinSignatureAndTimestamps(true);
 		boolean emptyOCSPs = Utils.isCollectionEmpty(getOCSPSource().getContainedOCSPResponses());
 		boolean emptyCRLs = Utils.isCollectionEmpty(getCRLSource().getContainedX509CRLs());
 
