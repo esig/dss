@@ -120,8 +120,17 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		}
 		return null;
 	}
-
+	
 	@Override
+	public LevelConstraint getSignaturePolicyFormalPolicyValid(Context context) {
+		SignatureConstraints signatureConstraints = getSignatureConstraintsByContext(context);
+		if (signatureConstraints != null) {
+			return signatureConstraints.getFormalPolicyValidation();
+		}
+		return null;
+	}
+
+    @Override
 	public MultiValuesConstraint getSignatureFormatConstraint(Context context) {
 		SignatureConstraints signatureConstraints = getSignatureConstraintsByContext(context);
 		if (signatureConstraints != null) {
@@ -129,6 +138,8 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		}
 		return null;
 	}
+	
+	
 
 	@Override
 	public LevelConstraint getStructuralValidationConstraint(Context context) {

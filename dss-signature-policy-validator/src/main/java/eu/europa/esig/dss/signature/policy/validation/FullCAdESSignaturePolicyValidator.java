@@ -108,7 +108,7 @@ public class FullCAdESSignaturePolicyValidator extends BasicASNSignaturePolicyVa
 			addError("general", "Unexpected error: " + e.getMessage());
 		}
 		
-		setStatus(getProcessingErrors().isEmpty());
+		
 	}
 
 	private SignaturePolicy parse() {
