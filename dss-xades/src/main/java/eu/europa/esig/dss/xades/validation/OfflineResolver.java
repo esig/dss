@@ -23,13 +23,10 @@ package eu.europa.esig.dss.xades.validation;
 import java.io.InputStream;
 import java.util.List;
 
-import org.apache.xml.security.Init;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
-import org.apache.xml.utils.URI;
-import org.apache.xml.utils.URI.MalformedURIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
@@ -52,10 +49,6 @@ public class OfflineResolver extends ResourceResolverSpi {
 	private final List<DSSDocument> documents;
 	private final DigestAlgorithm digestAlgorithm;
 
-	static {
-		Init.init();
-	}
-
 	public OfflineResolver(final List<DSSDocument> documents, DigestAlgorithm digestAlgorithm) {
 		this.documents = documents;
 		this.digestAlgorithm = digestAlgorithm;
@@ -65,58 +58,50 @@ public class OfflineResolver extends ResourceResolverSpi {
 	public boolean engineCanResolveURI(final ResourceResolverContext context) {
 		final Attr uriAttr = context.attr;
 		if (uriAttr != null) {
-			String documentUri = uriAttr.getNodeValue();
-			documentUri = DSSUtils.decodeUrl(documentUri);
+			String documentUri = getDocumentUri(context);
 			if ("".equals(documentUri) || documentUri.startsWith("#")) {
 				return false;
 			}
-			try {
-				if (isKnown(documentUri) != null) {
-					LOG.debug("I state that I can resolve '{}' (external document)", documentUri);
-					return true;
-				}
-				final String baseUriString = context.baseUri;
-				if (Utils.isStringNotEmpty(baseUriString)) {
-					final URI baseUri = new URI(baseUriString);
-					URI uriNew = new URI(baseUri, documentUri);
-					if ("http".equals(uriNew.getScheme())) {
-						LOG.debug("I state that I can resolve '{}'", uriNew.toString());
-						return true;
-					}
-					LOG.debug("I state that I can't resolve '{}'", uriNew.toString());
-				}
-			} catch (MalformedURIException ex) {
-				if (documents == null || documents.isEmpty()) {
-					LOG.warn("OfflineResolver: WARNING: ", ex);
-				}
+			if (isDocumentNamesNotDefined()) {
+				return true;
+			}
+			if (getDocument(documentUri) != null) {
+				LOG.debug("I state that I can resolve '{}' (external document)", documentUri);
+				return true;
 			}
 		} else if (doesContainOnlyOneDocument()) { // no URI is allowed in ASiC-S with one file
 			return true;
 		}
+
 		return false;
+	}
+
+	private boolean isDocumentNamesNotDefined() {
+		for (final DSSDocument dssDocument : documents) {
+			if (Utils.isStringNotEmpty(dssDocument.getName())) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
 	public XMLSignatureInput engineResolveURI(ResourceResolverContext context) throws ResourceResolverException {
+		String documentUri = getDocumentUri(context);
 
-		final Attr uriAttr = context.attr;
-		String documentUri = null;
-		if (uriAttr == null && doesContainOnlyOneDocument()) {
-			documentUri = "";
-		} else if (uriAttr != null) {
-			documentUri = uriAttr.getNodeValue();
+		DSSDocument document = getDocument(documentUri);
+		boolean docNullAndUriNotDefined = ((document == null) && !isUriDefined(context)); // ASiC
+		boolean docNamesNotDefined = (document == null) && isDocumentNamesNotDefined();
+		if ((docNullAndUriNotDefined || docNamesNotDefined) && doesContainOnlyOneDocument()) {
+			document = documents.get(0);
 		}
-		documentUri = DSSUtils.decodeUrl(documentUri);
-		final DSSDocument document = getDocument(documentUri);
-		if (document instanceof DigestDocument) {
 
+		if (document instanceof DigestDocument) {
 			DigestDocument digestDoc = (DigestDocument) document;
 			XMLSignatureInput result = new XMLSignatureInput(digestDoc.getDigest(digestAlgorithm));
 			result.setSourceURI(documentUri);
 			return result;
-
 		} else if (document != null) {
-
 			InputStream inputStream = document.openStream();
 			final XMLSignatureInput result = new XMLSignatureInput(inputStream);
 			result.setSourceURI(documentUri);
@@ -126,12 +111,25 @@ public class OfflineResolver extends ResourceResolverSpi {
 			}
 			return result;
 		} else {
-			Object[] exArgs = { "The uriNodeValue " + documentUri + " is not configured for offline work" };
+			Object[] exArgs = { "The uriNodeValue '" + documentUri + "' is not configured for offline work" };
 			throw new ResourceResolverException("generic.EmptyMessage", exArgs, documentUri, context.baseUri);
 		}
 	}
 
-	private DSSDocument isKnown(final String documentUri) {
+	private boolean isUriDefined(ResourceResolverContext context) {
+		return (context.attr != null) && (context.attr.getNodeValue() != null);
+	}
+
+	private String getDocumentUri(ResourceResolverContext context) {
+		Attr uriAttr = context.attr;
+		String documentUri = "";
+		if (uriAttr != null) {
+			documentUri = uriAttr.getNodeValue();
+		}
+		return DSSUtils.decodeUrl(documentUri);
+	}
+
+	private DSSDocument getDocument(final String documentUri) {
 		for (final DSSDocument dssDocument : documents) {
 			if (isRightDocument(documentUri, dssDocument)) {
 				return dssDocument;
@@ -141,10 +139,11 @@ public class OfflineResolver extends ResourceResolverSpi {
 	}
 
 	private static boolean isRightDocument(final String documentUri, final DSSDocument document) {
-
 		final String documentUri_ = document.getName();
+		if (documentUri_ == null) {
+			return false;
+		}
 		if (documentUri.equals(documentUri_)) {
-
 			return true;
 		}
 		final int length = documentUri.length();
@@ -154,27 +153,12 @@ public class OfflineResolver extends ResourceResolverSpi {
 		// For the file name as "./toto.txt"
 		final boolean case2 = documentUri.startsWith("./") && length - 2 == length_;
 		if (documentUri.endsWith(documentUri_) && (case1 || case2)) {
-
 			return true;
 		}
 		return false;
 	}
 
-	private DSSDocument getDocument(final String documentUri) {
-
-		final DSSDocument document = isKnown(documentUri);
-		if (document != null) {
-			return document;
-		}
-		if (doesContainOnlyOneDocument()) {
-
-			return documents.get(0);
-		}
-		return null;
-	}
-
 	private boolean doesContainOnlyOneDocument() {
-
 		return documents != null && documents.size() == 1;
 	}
 
