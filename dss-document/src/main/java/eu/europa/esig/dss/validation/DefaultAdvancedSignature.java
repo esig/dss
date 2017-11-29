@@ -22,12 +22,18 @@ package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
@@ -38,6 +44,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
+import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.RevocationToken;
@@ -52,16 +59,16 @@ import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
 
 public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultAdvancedSignature.class);
+
 	/**
-	 * This is the reference to the global (external) pool of certificates. All encapsulated certificates in the
-	 * signature are added to this pool. See {@link
-	 * eu.europa.esig.dss.x509.CertificatePool}
+	 * This is the reference to the global (external) pool of certificates. All encapsulated certificates in the signature are added to this pool. See
+	 * {@link eu.europa.esig.dss.x509.CertificatePool}
 	 */
 	protected final CertificatePool certPool;
 
 	/**
-	 * In the case of a non AdES signature the signing certificate is not mandatory within the signature and can be
-	 * provided by the driving application.
+	 * In the case of a non AdES signature the signing certificate is not mandatory within the signature and can be provided by the driving application.
 	 */
 	protected CertificateToken providedSigningCertificateToken;
 
@@ -232,25 +239,50 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	public List<CertificateToken> getCertificatesWithinSignatureAndTimestamps() {
+		List<CertificateToken> certs = new ArrayList<CertificateToken>();
+		Map<String, List<CertificateToken>> certificatesWithinSignatureAndTimestamps = getCertificatesWithinSignatureAndTimestamps(false);
+		for (List<CertificateToken> certificateTokens : certificatesWithinSignatureAndTimestamps.values()) {
+			certs.addAll(certificateTokens);
+		}
+		return certs;
+	}
 
-		final List<CertificateToken> certWithinSignatures = new ArrayList<CertificateToken>();
-		certWithinSignatures.addAll(getCertificates());
-		for (final TimestampToken timestampToken : getSignatureTimestamps()) {
-			certWithinSignatures.addAll(timestampToken.getCertificates());
-		}
-		for (final TimestampToken timestampToken : getArchiveTimestamps()) {
-			certWithinSignatures.addAll(timestampToken.getCertificates());
-		}
+	public Map<String, List<CertificateToken>> getCertificatesWithinSignatureAndTimestamps(boolean skipLastArchiveTimestamp) {
+		Map<String, List<CertificateToken>> certificates = new HashMap<String, List<CertificateToken>>();
+		certificates.put(CertificateSourceType.SIGNATURE.name(), getCertificates());
+		int timestampCounter = 0;
 		for (final TimestampToken timestampToken : getContentTimestamps()) {
-			certWithinSignatures.addAll(timestampToken.getCertificates());
+			certificates.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
 		}
 		for (final TimestampToken timestampToken : getTimestampsX1()) {
-			certWithinSignatures.addAll(timestampToken.getCertificates());
+			certificates.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
 		}
 		for (final TimestampToken timestampToken : getTimestampsX2()) {
-			certWithinSignatures.addAll(timestampToken.getCertificates());
+			certificates.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
 		}
-		return certWithinSignatures;
+		for (final TimestampToken timestampToken : getSignatureTimestamps()) {
+			certificates.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
+		}
+
+		List<TimestampToken> archiveTsps = getArchiveTimestamps();
+		if (skipLastArchiveTimestamp) {
+			archiveTsps = removeLastTimestamp(archiveTsps);
+		}
+		for (final TimestampToken timestampToken : archiveTsps) {
+			certificates.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
+		}
+
+		return certificates;
+	}
+
+	private List<TimestampToken> removeLastTimestamp(List<TimestampToken> timestamps) {
+		List<TimestampToken> tsps = new ArrayList<TimestampToken>();
+		Collections.copy(timestamps, tsps);
+		if (Utils.collectionSize(tsps) > 1) {
+			Collections.sort(tsps, new TimestampByGenerationTimeComparator());
+			tsps.remove(tsps.size() - 1);
+		}
+		return tsps;
 	}
 
 	/**
@@ -534,25 +566,38 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	/* Defines the level LT */
 	public boolean hasLTProfile() {
-		List<CertificateToken> certificates = getCertificateSource().getCertificates();
+		Map<String, List<CertificateToken>> certificateChains = getCertificatesWithinSignatureAndTimestamps(true);
 		boolean emptyOCSPs = Utils.isCollectionEmpty(getOCSPSource().getContainedOCSPResponses());
 		boolean emptyCRLs = Utils.isCollectionEmpty(getCRLSource().getContainedX509CRLs());
 
-		if (Utils.isCollectionEmpty(certificates) && (emptyOCSPs || emptyCRLs)) {
+		if (certificateChains.isEmpty() && (emptyOCSPs || emptyCRLs)) {
 			return false;
 		}
 
-		if (!isAllCertsHaveRevocationData(certificates)) {
+		if (!isAllCertChainsHaveRevocationData(certificateChains)) {
 			return false;
 		}
 
 		return true;
 	}
 
+	private boolean isAllCertChainsHaveRevocationData(Map<String, List<CertificateToken>> certificateChains) {
+		for (Entry<String, List<CertificateToken>> entryCertChain : certificateChains.entrySet()) {
+			LOG.debug("Testing revocation data presence for certificates chain {}", entryCertChain.getKey());
+			if (!isAllCertsHaveRevocationData(entryCertChain.getValue())) {
+				LOG.debug("Revocation data missing in certificate chain {}", entryCertChain.getKey());
+				return false;
+			}
+		}
+		return true;
+	}
+
 	private boolean isAllCertsHaveRevocationData(List<CertificateToken> certificates) {
 		for (CertificateToken certificateToken : certificates) {
-			if (certificateToken.isTrusted() || certificateToken.isSelfSigned() || DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certificateToken)) {
-				continue;
+			if (isRevocationDataNotRequired(certificateToken)) {
+				// TODO we suppose that the certificate chain is well ordered
+				// It returns true to avoid checking upper levels than trusted certificates (cross certification)
+				return true;
 			}
 			Set<RevocationToken> revocationData = certificateToken.getRevocationTokens();
 			if (Utils.isCollectionEmpty(revocationData)) {
@@ -570,6 +615,18 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			}
 		}
 		return true;
+	}
+
+	private boolean isRevocationDataNotRequired(CertificateToken certificateToken) {
+		if (certificateToken.isTrusted() || certificateToken.isSelfSigned()) {
+			return true;
+		}
+
+		if (DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certificateToken)) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/* Defines the level LTA */
