@@ -40,7 +40,6 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -214,7 +213,7 @@ public abstract class XAdESBuilder {
 		final Element digestValueDom = documentDom.createElementNS(XMLNS, DS_DIGEST_VALUE);
 
 		String base64EncodedDigestBytes = null;
-		if (originalDocument.getMimeType() == MimeType.XML && params.isManifestSignature()) {
+		if (params.isManifestSignature()) {
 
 			List<DSSReference> references = params.getReferences();
 			if (Utils.collectionSize(references) != 1) {
