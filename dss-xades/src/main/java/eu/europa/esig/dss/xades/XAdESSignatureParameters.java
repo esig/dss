@@ -44,7 +44,15 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	 */
 	private boolean manifestSignature;
 
+	/**
+	 * This parameter allows to set the id to be used for the manifest tag
+	 */
 	private String manifestId;
+
+	/**
+	 * This parameter allows to add optional X509SubjectName in the tag X509Data
+	 */
+	private boolean addX509SubjectName;
 
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
@@ -168,6 +176,14 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
 	public void setManifestId(String manifestId) {
 		this.manifestId = manifestId;
+	}
+
+	public boolean isAddX509SubjectName() {
+		return addX509SubjectName;
+	}
+
+	public void setAddX509SubjectName(boolean addX509SubjectName) {
+		this.addX509SubjectName = addX509SubjectName;
 	}
 
 }

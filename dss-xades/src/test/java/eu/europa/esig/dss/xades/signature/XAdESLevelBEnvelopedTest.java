@@ -48,6 +48,7 @@ public class XAdESLevelBEnvelopedTest extends AbstractPkiFactoryTestDocumentSign
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
+		signatureParameters.setAddX509SubjectName(true);
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 

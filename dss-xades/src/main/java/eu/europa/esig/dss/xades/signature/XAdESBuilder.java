@@ -68,6 +68,7 @@ public abstract class XAdESBuilder {
 	public static final String DS_TRANSFORMS = "ds:Transforms";
 	public static final String DS_X509_CERTIFICATE = "ds:X509Certificate";
 	public static final String DS_X509_DATA = "ds:X509Data";
+	public static final String DS_X509_SUBJECT_NAME = "ds:X509SubjectName";
 	public static final String DS_X509_ISSUER_NAME = "ds:X509IssuerName";
 	public static final String DS_X509_SERIAL_NUMBER = "ds:X509SerialNumber";
 	public static final String DS_XPATH = "ds:XPath";

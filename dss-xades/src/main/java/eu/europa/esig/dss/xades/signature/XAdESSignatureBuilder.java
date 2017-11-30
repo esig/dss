@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.security.auth.x500.X500Principal;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.slf4j.Logger;
@@ -274,18 +275,33 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 		// <ds:KeyInfo>
 		final Element keyInfoDom = DomUtils.addElement(documentDom, signatureDom, XMLNS, DS_KEY_INFO);
-		// <ds:X509Data>
-		final Element x509DataDom = DomUtils.addElement(documentDom, keyInfoDom, XMLNS, DS_X509_DATA);
-
 		BaselineBCertificateSelector certSelector = new BaselineBCertificateSelector(certificateVerifier, params);
 		List<CertificateToken> certificates = certSelector.getCertificates();
-		for (CertificateToken token : certificates) {
-			addCertificate(x509DataDom, token);
+
+		if (params.isAddX509SubjectName()) {
+			for (CertificateToken token : certificates) {
+				// <ds:X509Data>
+				final Element x509DataDom = DomUtils.addElement(documentDom, keyInfoDom, XMLNS, DS_X509_DATA);
+				addSubjectAndCertificate(x509DataDom, token);
+			}
+		} else {
+			// <ds:X509Data>
+			final Element x509DataDom = DomUtils.addElement(documentDom, keyInfoDom, XMLNS, DS_X509_DATA);
+			for (CertificateToken token : certificates) {
+				addCertificate(x509DataDom, token);
+			}
 		}
 	}
 
+	private void addSubjectAndCertificate(final Element x509DataDom, final CertificateToken token) {
+		// <ds:X509SubjectName>...</X509SubjectName> -> optional
+		DomUtils.addTextElement(documentDom, x509DataDom, XMLNS, DS_X509_SUBJECT_NAME, token.getSubjectX500Principal().getName(X500Principal.RFC2253));
+
+		addCertificate(x509DataDom, token);
+	}
+
 	private void addCertificate(final Element x509DataDom, final CertificateToken token) {
-		// <ds:X509Certificate>...</ds:X509Certificate>
+		// <ds:X509Certificate>...</ds:X509Certificate> -> mandatory
 		DomUtils.addTextElement(documentDom, x509DataDom, XMLNS, DS_X509_CERTIFICATE, Utils.toBase64(token.getEncoded()));
 	}
 
