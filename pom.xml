@@ -216,6 +216,11 @@
 					<version>2.10.4</version>
 				</plugin>
 				<plugin>
+				    <groupId>org.apache.maven.plugins</groupId>
+				    <artifactId>maven-project-info-reports-plugin</artifactId>
+				    <version>2.9</version>
+				</plugin>
+				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
 					<version>2.8.2</version>
@@ -267,6 +272,27 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<!-- Requires GraphViz (see DSS-1282) -->
+					<!-- Be sure that the complete path to graphviz\bin\dot(.exe) is in the PATH -->
+					<doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+					<docletArtifact>
+						<groupId>org.umlgraph</groupId>
+						<artifactId>umlgraph</artifactId>
+						<version>5.6.6</version>
+					</docletArtifact>
+					<additionalparam>-views -all</additionalparam>
+					<useStandardDocletOptions>true</useStandardDocletOptions>					
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 
 	<scm>
 		<url>https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</url>
@@ -629,26 +655,6 @@
 	                            <phase>verify</phase>
 	                            <goals>
 	                                <goal>jar-no-fork</goal>
-	                            </goals>
-	                        </execution>
-	                    </executions>
-	                </plugin>
-	            </plugins>
-	        </build>
-	    </profile>
-	    <profile>
-	        <id>javadoc</id>
-	        <build>
-	            <plugins>
-	                <plugin>
-	                    <groupId>org.apache.maven.plugins</groupId>
-	                    <artifactId>maven-javadoc-plugin</artifactId>
-	                    <executions>
-	                        <execution>
-	                            <id>attach-javadocs</id>
-	                            <phase>verify</phase>
-	                            <goals>
-	                                <goal>jar</goal>
 	                            </goals>
 	                        </execution>
 	                    </executions>
