@@ -1373,9 +1373,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			signatureCryptographicVerification.setReferenceDataIntact(referenceDataHashValid);
 			signatureCryptographicVerification.setSignatureIntact(coreValidity);
 		} catch (Exception e) {
-
-			LOG.error(e.getMessage());
-			LOG.debug(e.getMessage(), e);
+			LOG.error("checkSignatureIntegrity : " + e.getMessage());
+			LOG.debug("checkSignatureIntegrity : " + e.getMessage(), e);
 			StackTraceElement[] stackTrace = e.getStackTrace();
 			final String name = XAdESSignature.class.getName();
 			int lineNumber = 0;

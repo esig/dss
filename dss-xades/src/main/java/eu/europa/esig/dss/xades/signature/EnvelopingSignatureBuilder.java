@@ -122,10 +122,7 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 
 		final List<DSSReference> references = params.getReferences();
 		for (final DSSReference reference : references) {
-
-			final String id = reference.getUri().substring(1);
 			// <ds:Object>
-			DSSDocument tbsDoc = reference.getContents();
 			if (params.isManifestSignature()) {
 
 				Document doc = DomUtils.buildDOM(reference.getContents());
@@ -145,6 +142,7 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 				dom.appendChild(manifestDom);
 				signatureDom.appendChild(dom);
 			} else {
+				final String id = reference.getUri().substring(1);
 				final String base64EncodedOriginalDocument = Utils.toBase64(DSSUtils.toByteArray(reference.getContents()));
 				final Element objectDom = DomUtils.addTextElement(documentDom, signatureDom, XMLSignature.XMLNS, DS_OBJECT, base64EncodedOriginalDocument);
 				objectDom.setAttribute(ID, id);

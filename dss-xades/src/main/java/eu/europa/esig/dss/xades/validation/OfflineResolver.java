@@ -90,7 +90,7 @@ public class OfflineResolver extends ResourceResolverSpi {
 		String documentUri = getDocumentUri(context);
 
 		DSSDocument document = getDocument(documentUri);
-		boolean docNullAndUriNotDefined = ((document == null) && !isUriDefined(context)); // ASiC
+		boolean docNullAndUriNotDefined = (document == null) && !isUriDefined(context); // ASiC
 		boolean docNamesNotDefined = (document == null) && isDocumentNamesNotDefined();
 		if ((docNullAndUriNotDefined || docNamesNotDefined) && doesContainOnlyOneDocument()) {
 			document = documents.get(0);
