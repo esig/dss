@@ -74,6 +74,8 @@ public enum SignatureAlgorithm {
 
 	ECDSA_SHA512(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA512),
 
+	ECDSA_SHA3_224(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_224),
+
 	ECDSA_SHA3_256(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_256),
 
 	ECDSA_SHA3_384(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_384),
@@ -84,7 +86,21 @@ public enum SignatureAlgorithm {
 
 	DSA_SHA1(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA1),
 
+	DSA_SHA224(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA224),
+
 	DSA_SHA256(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA256),
+
+	DSA_SHA384(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA384),
+
+	DSA_SHA512(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA512),
+
+	DSA_SHA3_224(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA3_224),
+
+	DSA_SHA3_256(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA3_256),
+
+	DSA_SHA3_384(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA3_384),
+
+	DSA_SHA3_512(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA3_512),
 
 	HMAC_SHA1(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA1),
 
@@ -209,13 +225,22 @@ public enum SignatureAlgorithm {
 		 * id-ecdsa-with-sha3-512 {joint-iso-itu-t(2) country(16) us(840) organization(1) gov(101) csor(3)
 		 * nistAlgorithm(4) sigAlgs(3) 12}
 		 */
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.9", ECDSA_SHA3_224);
 		oidAlgorithms.put("2.16.840.1.101.3.4.3.10", ECDSA_SHA3_256);
 		oidAlgorithms.put("2.16.840.1.101.3.4.3.11", ECDSA_SHA3_384);
 		oidAlgorithms.put("2.16.840.1.101.3.4.3.12", ECDSA_SHA3_512);
 
 		oidAlgorithms.put("1.2.840.10040.4.3", DSA_SHA1);
 		oidAlgorithms.put("1.2.14888.3.0.1", DSA_SHA1);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.1", DSA_SHA224);
 		oidAlgorithms.put("2.16.840.1.101.3.4.3.2", DSA_SHA256);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.3", DSA_SHA384);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.4", DSA_SHA512);
+
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.5", DSA_SHA3_224);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.6", DSA_SHA3_256);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.7", DSA_SHA3_384);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.8", DSA_SHA3_512);
 
 		oidAlgorithms.put("1.2.840.113549.2.7", HMAC_SHA1);
 		oidAlgorithms.put("1.2.840.113549.2.8", HMAC_SHA224);
@@ -266,12 +291,21 @@ public enum SignatureAlgorithm {
 		javaAlgorithms.put("SHA512withECDSA", ECDSA_SHA512);
 		javaAlgorithms.put("RIPEMD160withECDSA", ECDSA_RIPEMD160);
 
+		javaAlgorithms.put("SHA3-224withECDSA", ECDSA_SHA3_224);
 		javaAlgorithms.put("SHA3-256withECDSA", ECDSA_SHA3_256);
 		javaAlgorithms.put("SHA3-384withECDSA", ECDSA_SHA3_384);
 		javaAlgorithms.put("SHA3-512withECDSA", ECDSA_SHA3_512);
 
 		javaAlgorithms.put("SHA1withDSA", DSA_SHA1);
+		javaAlgorithms.put("SHA224withDSA", DSA_SHA224);
 		javaAlgorithms.put("SHA256withDSA", DSA_SHA256);
+		javaAlgorithms.put("SHA384withDSA", DSA_SHA384);
+		javaAlgorithms.put("SHA512withDSA", DSA_SHA512);
+
+		javaAlgorithms.put("SHA3-224withDSA", DSA_SHA3_224);
+		javaAlgorithms.put("SHA3-256withDSA", DSA_SHA3_256);
+		javaAlgorithms.put("SHA3-384withDSA", DSA_SHA3_384);
+		javaAlgorithms.put("SHA3-512withDSA", DSA_SHA3_512);
 
 		javaAlgorithms.put("SHA1withHMAC", HMAC_SHA1);
 		javaAlgorithms.put("SHA224withHMAC", HMAC_SHA224);
