@@ -80,7 +80,6 @@
 		<module>dss-document</module>
 		<module>dss-service</module>
 		<module>dss-test</module>
-		<module>sscd-mocca-adapter</module>
 		<module>dss-policy-jaxb</module>
 		<module>dss-common-validation-jaxb</module>
 		<module>dss-tsl-jaxb</module>
@@ -279,11 +278,6 @@
 	<dependencyManagement>
 		<dependencies>
 			<!-- Internal Dependencies -->
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>sscd-mocca-adapter</artifactId>
-				<version>${project.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-spi</artifactId>
