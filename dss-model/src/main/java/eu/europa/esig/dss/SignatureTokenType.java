@@ -26,6 +26,6 @@ package eu.europa.esig.dss;
  */
 public enum SignatureTokenType {
 
-	PKCS11, PKCS12, MSCAPI
+	PKCS11, PKCS12, MSCAPI, JKS
 
 }
