@@ -1,4 +1,5 @@
 :toc: left
+:icons: font
 = Digital Signature Service
 :description: Documentation of the open source project DSS (Digital Signature Service). This project allows to produce/validate advanced electronic signatures (AdES).
 :keywords: electronic signature, XAdES, CAdES, PAdES, ASiC, open source, validation
@@ -999,54 +1000,45 @@ A time-stamp policy is a "named set of rules that indicates the applicability of
 
 == Supported algorithms
 
-=== RSA
+DSS supports several signature algorithms (combination of an encryption algorithm and a digest algorithm). Below, you can find the supported combinations. The support of the algorithms depends of the registered OID (ASN1) or URI (XML).
 
+In the next table, XAdES also applies to ASiC with embedded XAdES signatures and CAdES also concerns PAdES and ASiC with embedded CAdES signatures. 
+
+NOTE: SmartCards/HSMs don't allow to sign with all digest algorithms. Please refer to your SmartCard/HSM provider.
+
+[cols="13*^"]
 |===
-| Format | SHA-1 | SHA-224 | SHA-256 | SHA-384 | SHA-512 | SHA3-224 | SHA3-256 | SHA3-384 | SHA3-512 | MD2 | MD5 | RIPEMD160
+| | SHA-1 | SHA-224 | SHA-256 | SHA-384 | SHA-512 | SHA3-224 | SHA3-256 | SHA3-384 | SHA3-512 | MD2 | MD5 | RIPEMD160
 
-| XAdES | X | X | X | X | X | | | | | | X | X 
+13+|*RSA*
 
-| CAdES | X | X | X | X | X | | | | | X | X | X 
-|===
+| XAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | | | | | | icon:check-circle[] | icon:check-circle[] 
 
-=== RSA-PSS
+| CAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | | | | | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] 
 
-|===
-| Format | SHA-1 | SHA-224 | SHA-256 | SHA-384 | SHA-512 | SHA3-224 | SHA3-256 | SHA3-384 | SHA3-512 | MD2 | MD5 | RIPEMD160
+13+|*RSA-PSS*
 
-| XAdES | X | X | X | X | X | X | X | X | X | | | 
+| XAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | | | 
 
-| CAdES | X | X | X | X | X | | | | | | | 
-|===
+| CAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | | | | | | | 
 
-=== ECDSA
+13+|*ECDSA*
 
-|===
-| Format | SHA-1 | SHA-224 | SHA-256 | SHA-384 | SHA-512 | SHA3-224 | SHA3-256 | SHA3-384 | SHA3-512 | MD2 | MD5 | RIPEMD160 
+| XAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | | | | | | | icon:check-circle[]
 
-| XAdES | X | X | X | X | X | | | | | | | X
+| CAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | | | | | | | 
 
-| CAdES | X | X | X | X | X | | | | | | | 
-|===
+13+|*DSA*
 
-=== DSA
+| XAdES | icon:check-circle[] | | icon:check-circle[] | | | | | | | | |  
 
-|===
-| Format | SHA-1 | SHA-224 | SHA-256 | SHA-384 | SHA-512 | SHA3-224 | SHA3-256 | SHA3-384 | SHA3-512 | MD2 | MD5 | RIPEMD160 
+| CAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | | | | | | |
 
-| XAdES | X | X | X | X | X | | | | | | X | X 
+13+|*HMAC*
 
-| CAdES | X | X | X | X | X | | | | | X | X | X 
-|===
+| XAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | | | | | |  | icon:check-circle[] 
 
-=== HMAC
-
-|===
-| Format | SHA-1 | SHA-224 | SHA-256 | SHA-384 | SHA-512 | SHA3-224 | SHA3-256 | SHA3-384 | SHA3-512 | MD2 | MD5 | RIPEMD160 
-
-| XAdES | X | X | X | X | X | | | | | | X | X 
-
-| CAdES | X | X | X | X | X | | | | | X | X | X 
+| CAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | |  |  
 |===
 
 == REST Services
