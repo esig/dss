@@ -1,11 +1,4 @@
-dss-demo-webapp/etc/
-pom.xml.versionsBackup
-dependency-reduced-pom.xml
+*.versionsBackup
 .*
 *.iml
-.idea
-.svn
 target
-dss-demo-webapp/dss-debug.log
-dss-demo-webapp/log.out
-log.out
