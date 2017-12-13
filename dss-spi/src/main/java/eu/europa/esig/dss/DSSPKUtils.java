@@ -44,22 +44,18 @@ public final class DSSPKUtils {
 	/**
 	 * This method returns the public algorithm extracted from public key infrastructure. (ex: RSA)
 	 *
-	 * @param publicKey
-	 * @return
+	 * @param key
+	 *            the public key to be checked
+	 * @return the encryption algorithm name or "?"
 	 */
-	public static String getPublicKeyEncryptionAlgo(final Key publicKey) {
-
+	public static String getPublicKeyEncryptionAlgo(final Key key) {
 		String publicKeyAlgorithm = "?";
-		// (List of different public key implementations with instanceOf test removed)
-		publicKeyAlgorithm = publicKey.getAlgorithm();
+		publicKeyAlgorithm = key.getAlgorithm();
 		if (!"?".equals(publicKeyAlgorithm)) {
-
 			try {
-
 				publicKeyAlgorithm = EncryptionAlgorithm.forName(publicKeyAlgorithm).getName();
 			} catch (DSSException e) {
-
-				LOG.error(e.getMessage());
+				LOG.error("Unable to retrieve the algorithm name : " + e.getMessage());
 			}
 		}
 		return publicKeyAlgorithm;
@@ -68,7 +64,9 @@ public final class DSSPKUtils {
 	/**
 	 * This method returns a key length used to sign this token.
 	 *
-	 * @return
+	 * @param token
+	 *            the token (certificate, crl,...) to be checked
+	 * @return the used key size to sign the given token
 	 */
 	public static String getPublicKeySize(Token token) {
 		String keyLength = "?";
@@ -88,7 +86,8 @@ public final class DSSPKUtils {
 	 * This method returns the public key size extracted from public key infrastructure.
 	 *
 	 * @param publicKey
-	 * @return
+	 *            the public key
+	 * @return the key length
 	 */
 	public static int getPublicKeySize(final PublicKey publicKey) {
 
@@ -125,9 +124,9 @@ public final class DSSPKUtils {
 			DSAPublicKey dsaPublicKey = (DSAPublicKey) publicKey;
 			publicKeySize = dsaPublicKey.getParams().getP().bitLength();
 		} else {
-
 			LOG.error("Unknown public key infrastructure: " + publicKey.getClass().getName());
 		}
 		return publicKeySize;
 	}
+
 }

@@ -36,7 +36,6 @@ import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
-import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.util.Store;
@@ -62,10 +61,11 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 	 * The default constructor for CAdESOCSPSource.
 	 *
 	 * @param cms
-	 * @throws CMSException
+	 *            the CMSSignedData
+	 * @param signerInformation
+	 *            the SignerInformation
 	 */
 	public CAdESOCSPSource(final CMSSignedData cms, final SignerInformation signerInformation) {
-
 		this.cmsSignedData = cms;
 		this.signerInformation = signerInformation;
 	}

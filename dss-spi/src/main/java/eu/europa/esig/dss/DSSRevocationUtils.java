@@ -46,11 +46,9 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
- * Utility class used to convert OCSPResp to BasicOCSPResp
- *
+ * Utility class used to manipulate revocation data (OCSP, CRL)
  *
  */
-
 public final class DSSRevocationUtils {
 
 	private static JcaDigestCalculatorProviderBuilder jcaDigestCalculatorProviderBuilder;
@@ -67,9 +65,12 @@ public final class DSSRevocationUtils {
 	 * Convert a OCSPResp in a BasicOCSPResp
 	 *
 	 * @param ocspResp
-	 * @return
+	 *            the {@code OCSPResp} to be converted to {@code BasicOCSPResp}
+	 * @return the conversion result
+	 * @throws DSSException
+	 *             if the conversion fails
 	 */
-	public static final BasicOCSPResp fromRespToBasic(OCSPResp ocspResp) {
+	public static final BasicOCSPResp fromRespToBasic(OCSPResp ocspResp) throws DSSException {
 		try {
 			return (BasicOCSPResp) ocspResp.getResponseObject();
 		} catch (OCSPException e) {
@@ -82,9 +83,12 @@ public final class DSSRevocationUtils {
 	 * SUCCESSFUL).
 	 *
 	 * @param basicOCSPResp
-	 * @return
+	 *            the {@code BasicOCSPResp} to be converted to {@code OCSPResp}
+	 * @return the result of the conversion
+	 * @throws DSSException
+	 *             if
 	 */
-	public static final OCSPResp fromBasicToResp(final BasicOCSPResp basicOCSPResp) {
+	public static final OCSPResp fromBasicToResp(final BasicOCSPResp basicOCSPResp) throws DSSException {
 		try {
 			final byte[] encoded = basicOCSPResp.getEncoded();
 			final OCSPResp ocspResp = fromBasicToResp(encoded);
@@ -150,17 +154,17 @@ public final class DSSRevocationUtils {
 	 * @param issuerCert
 	 *            {@code CertificateToken} issuer certificate of the {@code cert}
 	 * @return {@code CertificateID}
-	 * @throws eu.europa.esig.dss.DSSException
+	 * @throws DSSException
+	 *             if the CertificateID cannot be created
 	 */
 	public static CertificateID getOCSPCertificateID(final CertificateToken cert, final CertificateToken issuerCert) throws DSSException {
 		try {
 			final BigInteger serialNumber = cert.getSerialNumber();
 			final DigestCalculator digestCalculator = getSHA1DigestCalculator();
 			final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(issuerCert);
-			final CertificateID certificateID = new CertificateID(digestCalculator, x509CertificateHolder, serialNumber);
-			return certificateID;
+			return new CertificateID(digestCalculator, x509CertificateHolder, serialNumber);
 		} catch (OCSPException e) {
-			throw new DSSException(e);
+			throw new DSSException("Unable to create CertificateID", e);
 		}
 	}
 
@@ -170,7 +174,7 @@ public final class DSSRevocationUtils {
 			final DigestCalculator digestCalculator = digestCalculatorProvider.get(CertificateID.HASH_SHA1);
 			return digestCalculator;
 		} catch (OperatorCreationException e) {
-			throw new DSSException(e);
+			throw new DSSException("Unable to create a DigestCalculator instance", e);
 		}
 	}
 
@@ -179,15 +183,14 @@ public final class DSSRevocationUtils {
 	 *
 	 * @param base64Encoded
 	 *            base 64 encoded OCSP response
-	 * @return {@code BasicOCSPResp}
+	 * @return the {@code BasicOCSPResp} object
 	 * @throws IOException
-	 * @throws OCSPException
+	 *             if IO error occurred
 	 */
-	public static BasicOCSPResp loadOCSPBase64Encoded(final String base64Encoded) throws IOException, OCSPException {
+	public static BasicOCSPResp loadOCSPBase64Encoded(final String base64Encoded) throws IOException {
 		final byte[] derEncoded = Utils.fromBase64(base64Encoded);
 		final OCSPResp ocspResp = new OCSPResp(derEncoded);
-		final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
-		return basicOCSPResp;
+		return fromRespToBasic(ocspResp);
 	}
 
 	public static byte[] getEncoded(OCSPResp ocspResp) {

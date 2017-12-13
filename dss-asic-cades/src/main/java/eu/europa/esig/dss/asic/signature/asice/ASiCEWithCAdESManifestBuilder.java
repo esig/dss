@@ -17,7 +17,7 @@ import eu.europa.esig.dss.asic.ASiCNamespace;
  * Sample:
  * 
  * <pre>
- * <code>
+ * {@code
  * 		<asic:ASiCManifest xmlns:asic="http://uri.etsi.org/02918/v1.2.1#">
  *			<asic:SigReference MimeType="application/pkcs7-signature" URI="META-INF/signature001.p7s">
  *				<asic:DataObjectReference URI="document.txt">
@@ -28,7 +28,7 @@ import eu.europa.esig.dss.asic.ASiCNamespace;
  *				</asic:DataObjectReference>
  *			</asic:SigReference>
  *		</asic:ASiCManifest>
- * </code>
+ * }
  * </pre>
  */
 public class ASiCEWithCAdESManifestBuilder extends AbstractManifestBuilder {

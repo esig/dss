@@ -23,7 +23,6 @@ package eu.europa.esig.dss.tsl;
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.europa.esig.dss.DSSNotApplicableMethodException;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
@@ -58,7 +57,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	 */
 	@Override
 	public CertificateToken addCertificate(CertificateToken certificate) {
-		throw new DSSNotApplicableMethodException(getClass());
+		throw new UnsupportedOperationException("Cannot directly add certificate to a TrustedListsCertificateSource");
 	}
 
 	public void updateTlInfo(String countryCode, TLInfo info) {

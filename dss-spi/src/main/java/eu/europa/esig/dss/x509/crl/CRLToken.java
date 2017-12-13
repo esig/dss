@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSNotApplicableMethodException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
@@ -116,7 +115,7 @@ public class CRLToken extends RevocationToken {
 
 	@Override
 	public boolean isSignedBy(final CertificateToken issuerToken) {
-		throw new DSSNotApplicableMethodException(this.getClass());
+		throw new UnsupportedOperationException(this.getClass().getName());
 	}
 
 	public CRLValidity getCrlValidity() {

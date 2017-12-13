@@ -40,7 +40,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.DSSConfigurationException;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -79,7 +78,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 		this.signatureTsa = signatureTsa;
 		this.onlyLastCMSSignature = onlyLastCMSSignature;
 		if (signatureTsa == null) {
-			throw new DSSConfigurationException(DSSConfigurationException.MSG.CONFIGURE_TSP_SERVER);
+			throw new NullPointerException("Missing TSPSource");
 		}
 	}
 

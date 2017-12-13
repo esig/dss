@@ -42,8 +42,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import eu.europa.esig.dss.utils.Utils;
-
 public final class DomUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DomUtils.class);
@@ -143,8 +141,10 @@ public final class DomUtils {
 	/**
 	 * Creates the new empty Document.
 	 *
-	 * @return
+	 * @return a new empty Document
+	 * 
 	 * @throws DSSException
+	 *             in case of exceptions while the document creation
 	 */
 	public static Document buildDOM() {
 		ensureDocumentBuilder();
@@ -160,8 +160,9 @@ public final class DomUtils {
 	 *
 	 * @param xmlString
 	 *            The string representing the dssDocument to be created.
-	 * @return
+	 * @return a new {@link org.w3c.dom.Document} with the xmlString content
 	 * @throws DSSException
+	 *             if the xmlString cannot be parsed
 	 */
 	public static Document buildDOM(final String xmlString) throws DSSException {
 		return buildDOM(DSSUtils.getUtf8Bytes(xmlString));
@@ -172,8 +173,9 @@ public final class DomUtils {
 	 *
 	 * @param bytes
 	 *            The bytes array representing the dssDocument to be created.
-	 * @return
+	 * @return a new {@link org.w3c.dom.Document} with the bytes content
 	 * @throws DSSException
+	 *             if the bytes cannot be parsed
 	 */
 	public static Document buildDOM(final byte[] bytes) throws DSSException {
 		return buildDOM(new ByteArrayInputStream(bytes));
@@ -184,8 +186,9 @@ public final class DomUtils {
 	 *
 	 * @param dssDocument
 	 *            The DSS representation of the document from which the dssDocument is created.
-	 * @return
+	 * @return a new {@link org.w3c.dom.Document} from {@link eu.europa.esig.dss.DSSDocument}
 	 * @throws DSSException
+	 *             if the {@link eu.europa.esig.dss.DSSDocument} cannot be parsed
 	 */
 	public static Document buildDOM(final DSSDocument dssDocument) throws DSSException {
 		return buildDOM(dssDocument.openStream());
@@ -196,18 +199,17 @@ public final class DomUtils {
 	 *
 	 * @param inputStream
 	 *            The inputStream stream representing the dssDocument to be created.
-	 * @return
+	 * @return a new {@link org.w3c.dom.Document} from {@link java.io.InputStream}
 	 * @throws DSSException
+	 *             if the {@link java.io.InputStream} cannot be parsed
 	 */
 	public static Document buildDOM(final InputStream inputStream) throws DSSException {
-		try {
+		try (InputStream is = inputStream) {
 			ensureDocumentBuilder();
-			final Document rootElement = dbFactory.newDocumentBuilder().parse(inputStream);
+			final Document rootElement = dbFactory.newDocumentBuilder().parse(is);
 			return rootElement;
 		} catch (Exception e) {
 			throw new DSSException(e);
-		} finally {
-			Utils.closeQuietly(inputStream);
 		}
 	}
 
@@ -253,11 +255,15 @@ public final class DomUtils {
 	}
 
 	/**
+	 * This method creates a new instance of XPathExpression with the given xpath expression
+	 * 
 	 * @param xpathString
 	 *            XPath query string
-	 * @return
+	 * @return an instance of {@code XPathExpression} for the given xpathString
+	 * @throws DSSException
+	 *             if the xpath expression cannot be compiled
 	 */
-	private static XPathExpression createXPathExpression(final String xpathString) {
+	private static XPathExpression createXPathExpression(final String xpathString) throws DSSException {
 		final XPath xpath = factory.newXPath();
 		xpath.setNamespaceContext(namespacePrefixMapper);
 		try {
@@ -276,9 +282,9 @@ public final class DomUtils {
 	 * @param xPathString
 	 *            XPath query string
 	 * @return string value of the XPath query
-	 * @throws XPathExpressionException
+	 * @throws DSSException
 	 */
-	public static String getValue(final Node xmlNode, final String xPathString) {
+	public static String getValue(final Node xmlNode, final String xPathString) throws DSSException {
 		try {
 			final XPathExpression xPathExpression = createXPathExpression(xPathString);
 			final String string = (String) xPathExpression.evaluate(xmlNode, XPathConstants.STRING);
@@ -295,10 +301,10 @@ public final class DomUtils {
 	 *            The node where the search should be performed.
 	 * @param xPathString
 	 *            XPath query string
-	 * @return
-	 * @throws XPathExpressionException
+	 * @return the NodeList corresponding to the XPath query
+	 * @throws DSSException
 	 */
-	public static NodeList getNodeList(final Node xmlNode, final String xPathString) {
+	public static NodeList getNodeList(final Node xmlNode, final String xPathString) throws DSSException {
 		try {
 			final XPathExpression expr = createXPathExpression(xPathString);
 			final NodeList evaluated = (NodeList) expr.evaluate(xmlNode, XPathConstants.NODESET);
@@ -309,13 +315,13 @@ public final class DomUtils {
 	}
 
 	/**
-	 * Return the Node corresponding to the XPath query.
+	 * Returns the Node corresponding to the XPath query.
 	 *
 	 * @param xmlNode
 	 *            The node where the search should be performed.
 	 * @param xPathString
 	 *            XPath query string
-	 * @return
+	 * @return the Node corresponding to the XPath query.
 	 */
 	public static Node getNode(final Node xmlNode, final String xPathString) {
 		final NodeList list = getNodeList(xmlNode, xPathString);
@@ -326,13 +332,13 @@ public final class DomUtils {
 	}
 
 	/**
-	 * Return the Element corresponding to the XPath query.
+	 * Returns the Element corresponding to the XPath query.
 	 *
 	 * @param xmlNode
 	 *            The node where the search should be performed.
 	 * @param xPathString
 	 *            XPath query string
-	 * @return
+	 * @return the Element corresponding to the XPath query
 	 */
 	public static Element getElement(final Node xmlNode, final String xPathString) {
 		return (Element) getNode(xmlNode, xPathString);
@@ -342,8 +348,10 @@ public final class DomUtils {
 	 * Returns true if the xpath query contains something
 	 *
 	 * @param xmlNode
+	 *            the current node
 	 * @param xPathString
-	 * @return
+	 *            the expected child node
+	 * @return true if the current node has any filled child node
 	 */
 	public static boolean isNotEmpty(final Node xmlNode, final String xPathString) {
 		// xpath suffix allows to skip text nodes and empty lines

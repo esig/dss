@@ -72,7 +72,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	 * The ID of xades:SignedProperties is contained in the signed content of the xades Signature. We must create this
 	 * ID in a deterministic way.
 	 *
-	 * @return
+	 * @return the unique ID for the current signature
 	 */
 	public String getDeterministicId() {
 		if (deterministicId != null) {
@@ -86,7 +86,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	/**
 	 * This method returns the documents to sign. In the case of the DETACHED signature this is the detached document.
 	 *
-	 * @return
+	 * @return the list of detached documents
 	 */
 	public List<DSSDocument> getDetachedContents() {
 		return detachedContents;
@@ -97,10 +97,11 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	 * {@code detachedContent} is overwritten by the service
 	 * parameter. In the case of the DETACHED signature this is the detached document. In the case of ASiC-S this is the
 	 * document to be signed.
-	 * <p />
+	 * <p>
 	 * When extending this method must be invoked to indicate the {@code detachedContent}.
 	 *
-	 * @param detachedContent
+	 * @param detachedContents
+	 *            the list of detached documents
 	 */
 	public void setDetachedContents(final List<DSSDocument> detachedContents) {
 		this.detachedContents = detachedContents;
@@ -109,7 +110,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	/**
 	 * Get the signing certificate
 	 *
-	 * @return the value
+	 * @return the signing certificate
 	 */
 	public CertificateToken getSigningCertificate() {
 		return signingCertificate;
@@ -120,7 +121,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	 * first one of the chain.
 	 *
 	 * @param signingCertificate
-	 *            the value
+	 *            the signing certificate
 	 */
 	public void setSigningCertificate(final CertificateToken signingCertificate) {
 		this.signingCertificate = signingCertificate;
@@ -129,7 +130,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	/**
 	 * Set the certificate chain
 	 *
-	 * @return the value
+	 * @return the certificate chain
 	 */
 	public List<CertificateToken> getCertificateChain() {
 		return certificateChain;
@@ -137,8 +138,6 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 
 	/**
 	 * Clears the certificate chain
-	 *
-	 * @return the value
 	 */
 	public void clearCertificateChain() {
 		certificateChain.clear();
@@ -148,7 +147,7 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	 * Set the certificate chain
 	 *
 	 * @param certificateChain
-	 *            the {@code List} of {@code ChainCertificate}s
+	 *            the {@code List} of {@code CertificateToken}s
 	 */
 	public void setCertificateChain(final List<CertificateToken> certificateChain) {
 		this.certificateChain = certificateChain;

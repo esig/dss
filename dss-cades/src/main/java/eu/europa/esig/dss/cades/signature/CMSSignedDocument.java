@@ -46,12 +46,12 @@ public class CMSSignedDocument extends CommonDocument {
 	 * The default constructor for CMSSignedDocument.
 	 *
 	 * @param data
-	 * @throws IOException
+	 *            the CMSSignedData
 	 */
-	public CMSSignedDocument(final CMSSignedData data) throws DSSException {
+	public CMSSignedDocument(final CMSSignedData data) {
 		this.signedData = data;
 		if (data == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("The CMSSignedData cannot be null");
 		}
 		mimeType = MimeType.PKCS7;
 	}

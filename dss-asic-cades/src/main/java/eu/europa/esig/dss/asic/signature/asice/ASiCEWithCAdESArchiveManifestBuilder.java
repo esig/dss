@@ -17,7 +17,7 @@ import eu.europa.esig.dss.asic.ASiCNamespace;
  * Sample:
  * 
  * <pre>
- * <code>
+ * {@code
  * 		<asic:ASiCManifest xmlns:asic="http://uri.etsi.org/02918/v1.2.1#">
  *			<asic:SigReference URI="META-INF/archive_timestamp.tst" MimeType="application/vnd.etsi.timestamp-token"/>
  *			<asic:DataObjectReference URI="META-INF/signature.p7s" MimeType="application/x-pkcs7-signature">
@@ -33,7 +33,7 @@ import eu.europa.esig.dss.asic.ASiCNamespace;
  *				<DigestValue>g5dY...</DigestValue>
  *			</asic:DataObjectReference>
  * 		</asic:ASiCManifest>
- * </code>
+ * }
  * </pre>
  */
 public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilder {

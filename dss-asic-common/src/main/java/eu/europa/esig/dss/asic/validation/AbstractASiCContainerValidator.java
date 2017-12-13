@@ -6,7 +6,6 @@ import java.util.List;
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUnsupportedOperationException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCUtils;
@@ -142,7 +141,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	@Override
 	public List<DSSDocument> getOriginalDocuments(String signatureId) throws DSSException {
 		// TODO
-		throw new DSSUnsupportedOperationException("This method is not applicable for this kind of file!");
+		throw new UnsupportedOperationException("This method is not applicable for this kind of file!");
 	}
 
 }
