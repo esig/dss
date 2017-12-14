@@ -37,7 +37,8 @@ public class QcStatementCondition extends Condition {
 	/**
 	 * The default constructor for QcStatementCondition.
 	 *
-	 * @param qcStatementId
+	 * @param qcStatementASN1Id
+	 *            the expected oid for the QcStatement
 	 */
 	public QcStatementCondition(final String qcStatementASN1Id) {
 		this.qcStatementASN1Id = qcStatementASN1Id;
@@ -48,7 +49,7 @@ public class QcStatementCondition extends Condition {
 	 *
 	 * @param certToken
 	 *            certificate to be checked
-	 * @return
+	 * @return true if the condition is filled
 	 */
 	@Override
 	public boolean check(final CertificateToken certToken) {

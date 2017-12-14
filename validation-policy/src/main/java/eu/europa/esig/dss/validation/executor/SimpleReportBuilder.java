@@ -84,8 +84,6 @@ public class SimpleReportBuilder {
 	/**
 	 * This method generates the validation simpleReport.
 	 *
-	 * @param params
-	 *            validation process parameters
 	 * @return the object representing {@code SimpleReport}
 	 */
 	public eu.europa.esig.dss.jaxb.simplereport.SimpleReport build() {
@@ -141,8 +139,9 @@ public class SimpleReportBuilder {
 
 	/**
 	 * @param simpleReport
+	 *            the JAXB SimpleReport
 	 * @param signature
-	 *            the diagnosticSignature element in the diagnostic data
+	 *            the signature wrapper
 	 * @param container
 	 *            true if the current file is a container
 	 */

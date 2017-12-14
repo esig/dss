@@ -53,8 +53,8 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 	 * out. A dedicated object based on
 	 * {@code CRLValidity} is created and accordingly updated.
 	 *
-	 * @param x509CRL
-	 *            {@code X509CRL} to be verified (cannot be null)
+	 * @param crlStream
+	 *            {@code InputStream} to be verified (cannot be null)
 	 * @param issuerToken
 	 *            {@code CertificateToken} used to sign the {@code X509CRL} (cannot be null)
 	 * @return {@code CRLValidity}
@@ -128,7 +128,8 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 	 * This method loads a CRL from the given location.
 	 *
 	 * @param inputStream
-	 * @return
+	 *            the {@code InputStream}
+	 * @return a new instance of {@code X509CRL}
 	 */
 	private X509CRL loadCRL(final InputStream inputStream) {
 		try {

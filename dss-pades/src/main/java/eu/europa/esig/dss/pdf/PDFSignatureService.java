@@ -22,7 +22,6 @@ package eu.europa.esig.dss.pdf;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.SignatureException;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -35,7 +34,6 @@ import eu.europa.esig.dss.x509.CertificatePool;
 /**
  * The usage of this interface permits the user to choose the underlying PDF library used to create PDF signatures.
  *
- *
  */
 public interface PDFSignatureService {
 
@@ -43,12 +41,14 @@ public interface PDFSignatureService {
 	 * Returns the digest value of a PDF document
 	 *
 	 * @param toSignDocument
+	 *            the document to be signed
 	 * @param parameters
+	 *            the signature parameters
 	 * @param digestAlgorithm
-	 * @param extraDictionariesToAddBeforeSign
-	 *            only in the case of timestamp
-	 * @return
+	 *            the digest algorithm to be used
+	 * @return the digest value
 	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm) throws DSSException;
 
@@ -56,12 +56,17 @@ public interface PDFSignatureService {
 	 * Signs a PDF document
 	 *
 	 * @param pdfData
+	 *            the pdf document
 	 * @param signatureValue
+	 *            the signature value
 	 * @param signedStream
+	 *            the ouputstream
 	 * @param parameters
+	 *            the signature parameters
 	 * @param digestAlgorithm
-	 * @param extraDictionariesToAddBeforeSign
+	 *            the digest algorithm to be used
 	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	void sign(final InputStream pdfData, final byte[] signatureValue, final OutputStream signedStream, final PAdESSignatureParameters parameters,
 			final DigestAlgorithm digestAlgorithm) throws DSSException;
@@ -70,14 +75,29 @@ public interface PDFSignatureService {
 	 * Retrieves and triggers validation of the signatures from a PDF document
 	 *
 	 * @param validationCertPool
+	 *            the certificate pool
 	 * @param document
+	 *            the document to be validated
 	 * @param callback
+	 *            callback for signature validation
 	 * @throws DSSException
-	 * @throws SignatureException
+	 *             if an error occurred
 	 */
 	void validateSignatures(final CertificatePool validationCertPool, final DSSDocument document, final SignatureValidationCallback callback)
 			throws DSSException;
 
+	/**
+	 * This method adds the DSS dictionary (Baseline-LT)
+	 * 
+	 * @param inputStream
+	 *            the inputstream with the document to be extended
+	 * @param outpuStream
+	 *            the ouputstream with the result
+	 * @param callbacks
+	 *            the callbacks to retrieve the revocation data,...
+	 * @throws DSSException
+	 *             if an error occurred
+	 */
 	void addDssDictionary(InputStream inputStream, OutputStream outpuStream, List<DSSDictionaryCallback> callbacks) throws DSSException;
 
 	/**

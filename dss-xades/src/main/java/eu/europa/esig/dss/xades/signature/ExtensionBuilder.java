@@ -74,7 +74,6 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	/**
 	 * Returns or creates (if it does not exist) the UnsignedPropertiesType DOM object.
 	 *
-	 * @return
 	 * @throws DSSException
 	 */
 	protected void ensureUnsignedProperties() throws DSSException {
@@ -104,7 +103,6 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	/**
 	 * Returns or creates (if it does not exist) the UnsignedSignaturePropertiesType DOM object.
 	 *
-	 * @return
 	 * @throws DSSException
 	 */
 	protected void ensureUnsignedSignatureProperties() throws DSSException {

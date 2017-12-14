@@ -63,6 +63,8 @@ public class JKSSignatureToken extends KeyStoreSignatureTokenConnection {
 	 *            the keystore file
 	 * @param ksPassword
 	 *            the keystore password
+	 * @throws IOException
+	 *             if an error occurred while reading the file
 	 */
 	public JKSSignatureToken(File ksFile, String ksPassword) throws IOException {
 		super(ksFile, KS_TYPE, ksPassword);
@@ -75,6 +77,8 @@ public class JKSSignatureToken extends KeyStoreSignatureTokenConnection {
 	 *            the filepath of the keystore
 	 * @param ksPassword
 	 *            the keystore password
+	 * @throws IOException
+	 *             if an error occurred while reading the file
 	 */
 	public JKSSignatureToken(String filepath, String ksPassword) throws IOException {
 		super(filepath, KS_TYPE, ksPassword);

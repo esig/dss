@@ -75,7 +75,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	}
 
 	/**
-	 * See {@link #setSigningCertificateDigestMethod(DigestAlgorithm).
+	 * See {@link #setSigningCertificateDigestMethod(DigestAlgorithm)}.
 	 *
 	 * @return
 	 */

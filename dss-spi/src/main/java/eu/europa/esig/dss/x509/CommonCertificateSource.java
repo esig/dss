@@ -29,7 +29,8 @@ import javax.security.auth.x500.X500Principal;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 
 /**
- * This source of certificates handles any non trusted certificates. (ex: intermediate certificates used in building certification chain)
+ * This source of certificates handles any non trusted certificates. (ex: intermediate certificates used in building
+ * certification chain)
  */
 public class CommonCertificateSource implements CertificateSource {
 
@@ -76,7 +77,8 @@ public class CommonCertificateSource implements CertificateSource {
 	}
 
 	/**
-	 * This method adds an external certificate to the encapsulated pool and to the source. If the certificate is already present in the pool its
+	 * This method adds an external certificate to the encapsulated pool and to the source. If the certificate is
+	 * already present in the pool its
 	 * source type is associated to the token.
 	 *
 	 * @param x509Certificate
@@ -104,7 +106,8 @@ public class CommonCertificateSource implements CertificateSource {
 	}
 
 	/**
-	 * This method returns the <code>List</code> of <code>CertificateToken</code>(s) corresponding to the given subject distinguished name.
+	 * This method returns the <code>List</code> of <code>CertificateToken</code>(s) corresponding to the given subject
+	 * distinguished name.
 	 * The content of the encapsulated certificates pool can be different from the content of the source.
 	 *
 	 * @param x500Principal
@@ -136,8 +139,10 @@ public class CommonCertificateSource implements CertificateSource {
 	 * This method is used internally to prevent the addition of a certificate through the <code>CertificatePool</code>.
 	 *
 	 * @param certificate
+	 *            the certificate to be added
 	 * @param serviceInfo
-	 * @return
+	 *            the related service info
+	 * @return the complete certificate instance
 	 */
 	protected CertificateToken addCertificate(final CertificateToken certificate, final ServiceInfo serviceInfo) {
 		final CertificateToken certToken = certPool.getInstance(certificate, getCertificateSourceType(), serviceInfo);
@@ -153,6 +158,7 @@ public class CommonCertificateSource implements CertificateSource {
 	 * This method is used internally to remove a certificate from the <code>CertificatePool</code>.
 	 *
 	 * @param certificate
+	 *            the certificate to be removed
 	 * @return true if removed
 	 */
 	public boolean removeCertificate(CertificateToken certificate) {
@@ -167,12 +173,13 @@ public class CommonCertificateSource implements CertificateSource {
 	/**
 	 * This method is used internally to remove a X500Principal from the <code>CertificatePool</code>.
 	 *
-	 * @param certificate
+	 * @param x500Principal
+	 *            the {@code X500Principal} to be removed
 	 * @return true if removed
 	 */
 	public boolean removeX500Principal(X500Principal x500Principal) {
 		boolean removed = false;
-		if (certificateTokens !=null) {
+		if (certificateTokens != null) {
 			List<CertificateToken> listToRemove = get(x500Principal);
 			for (CertificateToken certificateToken : listToRemove) {
 				removed |= removeCertificate(certificateToken);

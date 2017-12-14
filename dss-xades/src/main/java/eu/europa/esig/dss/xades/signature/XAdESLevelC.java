@@ -231,11 +231,11 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 	 * signature up to (but not including ) the signer's certificate.<br>
 	 * A full set of references to the revocation data that have been used in the validation of the signer and CA
 	 * certificates.<br>
-	 * Adds <CompleteCertificateRefs> and <CompleteRevocationRefs> segments into <UnsignedSignatureProperties> element.
+	 * Adds {@code <CompleteCertificateRefs>} and {@code <CompleteRevocationRefs>} segments into
+	 * {@code <UnsignedSignatureProperties>} element.
 	 *
-	 * There SHALL be at most <b>one occurrence of CompleteRevocationRefs & CompleteCertificateRefs</b> properties in
-	 * the
-	 * signature. Old references must be removed.
+	 * There SHALL be at most <b>one occurrence of CompleteRevocationRefs and CompleteCertificateRefs</b> properties in
+	 * the signature. Old references must be removed.
 	 *
 	 * @see XAdESLevelBaselineT#extendSignatureTag()
 	 */

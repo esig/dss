@@ -61,8 +61,8 @@ public abstract class RevocationToken extends Token {
 	protected Date nextUpdate;
 
 	/**
-	 * Represents the revocation date from an X509CRLEntry or from an BasicOCSPResp<br>
-	 * --> getResponses() --> ((RevokedStatus) singleResp.getCertStatus()).getRevocationTime()
+	 * Represents the revocation date from an X509CRLEntry or from an BasicOCSPResp (if the related certificate is
+	 * revoked)
 	 */
 	protected Date revocationDate;
 

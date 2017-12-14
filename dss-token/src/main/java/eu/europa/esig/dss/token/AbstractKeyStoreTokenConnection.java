@@ -42,7 +42,7 @@ public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureT
 	 * 
 	 * @param alias
 	 *            the expected entry alias
-	 * @param private
+	 * @param password
 	 *            key password
 	 * 
 	 * @return the private key or null if the alias does not exist

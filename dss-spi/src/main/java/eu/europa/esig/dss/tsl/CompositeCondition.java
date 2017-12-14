@@ -62,7 +62,7 @@ public class CompositeCondition extends Condition {
 	 * This method adds a child condition. This allows to handle embedded conditions.
 	 *
 	 * @param condition
-	 * @return
+	 *            the condition to add in the composite
 	 */
 	public void addChild(final Condition condition) {
 		children.add(condition);
@@ -78,9 +78,11 @@ public class CompositeCondition extends Condition {
 	}
 
 	/**
+	 * Execute the composite condition of the given certificate
+	 * 
 	 * @param certificateToken
 	 *            certificate to be checked
-	 * @return
+	 * @return true if the condition matches
 	 */
 	@Override
 	public boolean check(final CertificateToken certificateToken) {

@@ -324,7 +324,7 @@ public enum SignatureAlgorithm {
 	}
 
 	/**
-	 * For given signature algorithm & digest algorithm this function returns the Java form of the signature algorithm
+	 * For given signature algorithm and digest algorithm this function returns the Java form of the signature algorithm
 	 * Signature Algorithms
 	 *
 	 * The algorithm names in this section can be specified when generating an instance of Signature.
@@ -353,17 +353,19 @@ public enum SignatureAlgorithm {
 	 * name for the "SHA1withECDSA" algorithm and should not be used. The formal name "SHA1withECDSA" should be used
 	 * instead.
 	 *
-	 * <digest>with<encryption> - Use this to form a name for a signature algorithm with a particular message digest
+	 * {@code <digest>with<encryption>} - Use this to form a name for a signature algorithm with a particular message
+	 * digest
 	 * (such as MD2 or MD5) and algorithm (such as RSA or DSA), just
 	 * as was done for the explicitly-defined standard names in this section (MD2withRSA, etc.). For the new signature
 	 * schemes defined in PKCS1 v 2.0, for which the
-	 * <digest>with<encryption> form is insufficient, <digest>with<encryption>and<mgf> can be used to form a name. Here,
-	 * <mgf> should be replaced by a mask generation function
-	 * such
-	 * as MGF1. Example: MD5withRSAandMGF1.
+	 * {@code <digest>with<encryption>} form is insufficient, {@code <digest>with<encryption>and<mgf>} can be used to
+	 * form a name. Here,
+	 * {@code <mgf>} should be replaced by a mask generation function
+	 * such as MGF1. Example: MD5withRSAandMGF1.
 	 *
 	 * @param javaName
-	 * @return
+	 *            the java name
+	 * @return the corresponding SignatureAlgorithm
 	 */
 	public static SignatureAlgorithm forJAVA(final String javaName) {
 		final SignatureAlgorithm algorithm = JAVA_ALGORITHMS.get(javaName);
@@ -374,22 +376,28 @@ public enum SignatureAlgorithm {
 	}
 
 	/**
-	 * For given encryption algorithm & digest algorithm this function returns the signature algorithm.
+	 * For given encryption algorithm and digest algorithm this function returns the signature algorithm.
 	 *
 	 * @param encryptionAlgorithm
+	 *            the encryption algorithm
 	 * @param digestAlgorithm
-	 * @return
+	 *            the digest algorithm
+	 * @return the corresponding combination of both algorithms
 	 */
 	public static SignatureAlgorithm getAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm) {
 		return getAlgorithm(encryptionAlgorithm, digestAlgorithm, null);
 	}
 
 	/**
-	 * For given encryption algorithm & digest algorithm this function returns the signature algorithm.
+	 * For given encryption algorithm and digest algorithm this function returns the signature algorithm.
 	 *
 	 * @param encryptionAlgorithm
+	 *            the encryption algorithm
 	 * @param digestAlgorithm
-	 * @return
+	 *            the digest algorithm
+	 * @param mgf
+	 *            the mask generation function
+	 * @return the corresponding combination of both algorithms
 	 */
 	public static SignatureAlgorithm getAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,
 			final MaskGenerationFunction mgf) {
@@ -408,7 +416,9 @@ public enum SignatureAlgorithm {
 	 * The default constructor.
 	 *
 	 * @param encryptionAlgorithm
+	 *            the encryption algorithm
 	 * @param digestAlgorithm
+	 *            the digest algorithm
 	 */
 	private SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm) {
 		this.encryptionAlgo = encryptionAlgorithm;
@@ -420,8 +430,10 @@ public enum SignatureAlgorithm {
 	 * The default constructor.
 	 *
 	 * @param encryptionAlgorithm
+	 *            the encryption algorithm
 	 * @param digestAlgorithm
-	 * @param maskGenerationFunction
+	 *            the digest algorithm
+	 * @param mgf
 	 *            the mask generation function
 	 */
 	private SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,
@@ -461,7 +473,7 @@ public enum SignatureAlgorithm {
 	/**
 	 * Returns the XML ID of the signature algorithm.
 	 *
-	 * @return
+	 * @return the XML URI for the current signature algorithm.
 	 */
 	public String getXMLId() {
 		return XML_ALGORITHMS_FOR_KEY.get(this);
@@ -470,7 +482,7 @@ public enum SignatureAlgorithm {
 	/**
 	 * Returns algorithm identifier corresponding to JAVA JCE class names.
 	 *
-	 * @return
+	 * @return the java name for the current signature algorithm.
 	 */
 	public String getJCEId() {
 		return JAVA_ALGORITHMS_FOR_KEY.get(this);

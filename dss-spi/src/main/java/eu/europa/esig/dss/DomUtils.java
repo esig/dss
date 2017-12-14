@@ -303,6 +303,7 @@ public final class DomUtils {
 	 *            XPath query string
 	 * @return the NodeList corresponding to the XPath query
 	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	public static NodeList getNodeList(final Node xmlNode, final String xPathString) throws DSSException {
 		try {

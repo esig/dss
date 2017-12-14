@@ -50,7 +50,8 @@ public class XAdESLevelXL extends XAdESLevelX {
 	}
 
 	/**
-	 * Adds <CertificateValues> and <RevocationValues> segments to <UnsignedSignatureProperties>.<br>
+	 * Adds CertificateValues and RevocationValues segments to UnsignedSignatureProperties.<br>
+	 * 
 	 * An XML electronic signature MAY contain at most one:<br>
 	 * - CertificateValues element and<br>
 	 * - RevocationValues element.
@@ -112,58 +113,87 @@ public class XAdESLevelXL extends XAdESLevelX {
 
 	/**
 	 * This method incorporates revocation values.
+	 * 
+	 * <pre>
+	 * 	{@code
+	 * 		<xades:RevocationValues>
+	 * 	}
+	 * </pre>
 	 *
 	 * @param parentDom
+	 *            the parent element
 	 * @param validationContext
+	 *            the validation context with the revocation data
 	 */
 	protected void incorporateRevocationValues(final Element parentDom, final ValidationContext validationContext) {
-
-		// <xades:RevocationValues>
-
 		final DefaultAdvancedSignature.RevocationDataForInclusion revocationsForInclusion = xadesSignature.getRevocationDataForInclusion(validationContext);
 
 		if (!revocationsForInclusion.isEmpty()) {
-
 			final Element revocationValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:RevocationValues");
-
 			incorporateCrlTokens(revocationValuesDom, revocationsForInclusion.crlTokens);
 			incorporateOcspTokens(revocationValuesDom, revocationsForInclusion.ocspTokens);
 		}
 	}
 
+	/**
+	 * This method incorporates the CRLValues :
+	 * 
+	 * <pre>
+	 * 	{@code
+	 * 		<xades:CRLValues>
+	 * 			<xades:EncapsulatedCRLValue>...</xades:EncapsulatedCRLValue>
+	 * 			...
+	 * 		</xades:CRLValues>
+	 * 	}
+	 * </pre>
+	 * 
+	 * @param parentDom
+	 *            the parent element
+	 * @param crlTokens
+	 *            the list of CRL Tokens to be added
+	 */
 	private void incorporateCrlTokens(final Element parentDom, final List<CRLToken> crlTokens) {
-
 		if (crlTokens.isEmpty()) {
-
 			return;
 		}
-		// ...<xades:CRLValues/>
 		final Element crlValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:CRLValues");
 
 		for (final RevocationToken revocationToken : crlTokens) {
-
 			final byte[] encodedCRL = revocationToken.getEncoded();
 			final String base64EncodedCRL = Utils.toBase64(encodedCRL);
 			DomUtils.addTextElement(documentDom, crlValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedCRLValue", base64EncodedCRL);
 		}
 	}
 
+	/**
+	 * This method incorporates the OCSP responses :
+	 * 
+	 * <pre>
+	 * 	{@code
+	 * 		<xades:OCSPValues>
+	 * 			<xades:EncapsulatedOCSPValue>...</xades:EncapsulatedOCSPValue>
+	 * 			...
+	 * 		</xades:OCSPValues>
+	 * 	}
+	 * </pre>
+	 * 
+	 * @param parentDom
+	 *            the parent element
+	 * @param ocspTokens
+	 *            the list of OCSP Tokens to be added
+	 */
 	private void incorporateOcspTokens(Element parentDom, final List<OCSPToken> ocspTokens) {
-
 		if (ocspTokens.isEmpty()) {
-
 			return;
 		}
 
-		// ...<xades:OCSPValues>
-		// .........<xades:EncapsulatedOCSPValue>MIIERw...
 		final Element ocspValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:OCSPValues");
 
 		for (final RevocationToken revocationToken : ocspTokens) {
-
 			final byte[] encodedOCSP = revocationToken.getEncoded();
 			final String base64EncodedOCSP = Utils.toBase64(encodedOCSP);
 			DomUtils.addTextElement(documentDom, ocspValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedOCSPValue", base64EncodedOCSP);
 		}
 	}
+
 }

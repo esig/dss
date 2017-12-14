@@ -65,7 +65,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSNotETSICompliantException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
@@ -215,9 +214,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * This constructor is used when creating the signature. The default {@code XPathQueryHolder} is set.
 	 *
 	 * @param signatureElement
-	 *            w3c.dom <ds:Signature> element
+	 *            the signature DOM element
 	 * @param certPool
-	 *            can be null
+	 *            the certificate pool (can be null)
 	 */
 	public XAdESSignature(final Element signatureElement, final CertificatePool certPool) {
 		this(signatureElement, Arrays.asList(new XPathQueryHolder()), certPool);
@@ -227,11 +226,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * The default constructor for XAdESSignature.
 	 *
 	 * @param signatureElement
-	 *            w3c.dom <ds:Signature> element
+	 *            the signature DOM element
 	 * @param xPathQueryHolders
 	 *            List of {@code XPathQueryHolder} to use when handling signature
 	 * @param certPool
-	 *            can be null
+	 *            the certificate pool (can be null)
 	 */
 	public XAdESSignature(final Element signatureElement, final List<XPathQueryHolder> xPathQueryHolders, final CertificatePool certPool) {
 		super(certPool);
@@ -898,17 +897,17 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * Checks the presence of ... segment in the signature, what is the proof -B profile existence
 	 *
-	 * @return
+	 * @return true if B Profile is detected
 	 */
 	public boolean hasBProfile() {
 		return DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_SIGNED_SIGNATURE_PROPERTIES);
 	}
 
 	/**
-	 * Checks the presence of CompleteCertificateRefs & CompleteRevocationRefs segments in the signature, what is the
+	 * Checks the presence of CompleteCertificateRefs and CompleteRevocationRefs segments in the signature, what is the
 	 * proof -C profile existence
 	 *
-	 * @return
+	 * @return true if C Profile is detected
 	 */
 	public boolean hasCProfile() {
 		final boolean certRefs = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_COMPLETE_CERTIFICATE_REFS);
@@ -929,6 +928,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Utility method to add content timestamps.
 	 *
 	 * @param timestampTokens
+	 *            List of timestamp tokens
 	 * @param nodes
 	 * @param timestampType
 	 *            {@code TimestampType}
@@ -1013,7 +1013,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 			for (TimestampInclude include : includes) {
 				// retrieve reference element
-				// -> go through references and check for one whose URI matches the
+				// go through references and check for one whose URI matches the
 				// URI of include
 				for (final Reference reference : references) {
 					String id = include.getURI();
@@ -1106,7 +1106,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * these Include elements has its referenceData set to false, the method returns false
 	 *
 	 * @param timestampToken
-	 * @retun
+	 * @return
 	 */
 	public boolean checkTimestampTokenIncludes(final TimestampToken timestampToken) {
 
@@ -1121,7 +1121,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<TimestampToken> getContentTimestamps() {
-
 		if (contentTimestamps == null) {
 			makeTimestampTokens();
 		}
@@ -1599,10 +1598,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final Element certId = (Element) ocspRefNodes.item(i);
 				final Element digestAlgorithmEl = DomUtils.getElement(certId, xPathQueryHolder.XPATH__DAAV_DIGEST_METHOD);
 				final Element digestValueEl = DomUtils.getElement(certId, xPathQueryHolder.XPATH__DAAV_DIGEST_VALUE);
-
-				if ((digestAlgorithmEl == null) || (digestValueEl == null)) {
-					throw new DSSNotETSICompliantException(DSSNotETSICompliantException.MSG.XADES_DIGEST_ALG_AND_VALUE_ENCODING);
-				}
 
 				final String xmlName = digestAlgorithmEl.getAttribute(XMLE_ALGORITHM);
 				final DigestAlgorithm digestAlgo = DigestAlgorithm.forXML(xmlName);

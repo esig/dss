@@ -38,14 +38,9 @@ import java.net.URLDecoder;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.Security;
-import java.security.cert.CRLException;
-import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -115,7 +110,8 @@ public final class DSSUtils {
 	 * the input array is null then null is returned. The obtained string is converted to uppercase.
 	 *
 	 * @param value
-	 * @return
+	 *            the value to be converted to hexadecimal
+	 * @return the hexadecimal String
 	 */
 	public static String toHex(final byte[] value) {
 		return (value != null) ? Utils.toHex(value) : null;
@@ -128,21 +124,10 @@ public final class DSSUtils {
 	 *            the token to be converted to PEM
 	 * @return PEM encoded certificate
 	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	public static String convertToPEM(final CertificateToken cert) throws DSSException {
 		return convertToPEM(cert.getCertificate());
-	}
-
-	/**
-	 * This method converts the given CRL into its PEM string.
-	 *
-	 * @param crl
-	 *            the DER encoded CRL to be converted
-	 * 
-	 * @return the PEM encoded CRL
-	 */
-	public static String convertCrlToPEM(final X509CRL crl) throws DSSException {
-		return convertToPEM(crl);
 	}
 
 	private static String convertToPEM(Object obj) throws DSSException {
@@ -192,7 +177,7 @@ public final class DSSUtils {
 	 *
 	 * @param path
 	 *            resource location.
-	 * @return
+	 * @return the certificate token
 	 */
 	public static CertificateToken loadCertificate(final String path) throws DSSException {
 		final InputStream inputStream = DSSUtils.class.getResourceAsStream(path);
@@ -209,7 +194,7 @@ public final class DSSUtils {
 	 * certificate cannot be loaded.
 	 *
 	 * @param file
-	 * @return
+	 * @return the certificate token
 	 */
 	public static CertificateToken loadCertificate(final File file) throws DSSException {
 		final InputStream inputStream = DSSUtils.toByteArrayInputStream(file);
@@ -226,7 +211,7 @@ public final class DSSUtils {
 	 *
 	 * @param inputStream
 	 *            input stream containing the certificate
-	 * @return
+	 * @return the certificate token
 	 */
 	public static CertificateToken loadCertificate(final InputStream inputStream) throws DSSException {
 		List<CertificateToken> certificates = loadCertificates(inputStream);
@@ -244,7 +229,8 @@ public final class DSSUtils {
 		final List<CertificateToken> certificates = new ArrayList<CertificateToken>();
 		try {
 			@SuppressWarnings("unchecked")
-			final Collection<X509Certificate> certificatesCollection = (Collection<X509Certificate>) CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME).generateCertificates(is);
+			final Collection<X509Certificate> certificatesCollection = (Collection<X509Certificate>) CertificateFactory
+					.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME).generateCertificates(is);
 			if (certificatesCollection != null) {
 				for (X509Certificate cert : certificatesCollection) {
 					certificates.add(new CertificateToken(cert));
@@ -270,7 +256,7 @@ public final class DSSUtils {
 	 *
 	 * @param input
 	 *            array of bytes containing the certificate
-	 * @return
+	 * @return the certificate token
 	 */
 	public static CertificateToken loadCertificate(final byte[] input) throws DSSException {
 		if (input == null) {
@@ -287,7 +273,8 @@ public final class DSSUtils {
 	 * This method loads a certificate from a base 64 encoded String
 	 *
 	 * @param base64Encoded
-	 * @return
+	 *            the base64 encoded certificate
+	 * @return the certificate token
 	 */
 	public static CertificateToken loadCertificateFromBase64EncodedString(final String base64Encoded) {
 		final byte[] bytes = Utils.fromBase64(base64Encoded);
@@ -334,22 +321,6 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method loads a CRL from the given location.
-	 *
-	 * @param inputStream
-	 * @return
-	 * @deprecated for performance reasons, the X509CRL object needs to be avoided
-	 */
-	@Deprecated
-	public static X509CRL loadCRL(final InputStream inputStream) {
-		try {
-			return (X509CRL) CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME).generateCRL(inputStream);
-		} catch (CRLException | CertificateException | NoSuchProviderException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
 	 * This method digests the given string with SHA1 algorithm and encode returned array of bytes as hex string.
 	 *
 	 * @param stringToDigest
@@ -377,9 +348,13 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * Returns a new instance of MessageDigest for a given digest algorithm
+	 * 
 	 * @param digestAlgorithm
-	 * @return
-	 * @throws NoSuchAlgorithmException
+	 *            the digest algoritm
+	 * @return a new instance of MessageDigest
+	 * @throws DSSException
+	 *             if the digest algorithm is not supported
 	 */
 	public static MessageDigest getMessageDigest(final DigestAlgorithm digestAlgorithm) {
 		try {

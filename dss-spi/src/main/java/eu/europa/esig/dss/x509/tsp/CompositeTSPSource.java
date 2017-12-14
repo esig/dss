@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 /**
  * This class allows to retrieve a timestamp with different sources. The composite will try all sources until to get a
@@ -29,7 +28,7 @@ public class CompositeTSPSource implements TSPSource {
 	 * algorithm.
 	 * 
 	 * @param tspSources
-	 *            a map of <String, TSPSource> with a label and its corresponding source
+	 *            a {@code Map} of String and TSPSource with a label and its corresponding source
 	 */
 	public void setTspSources(Map<String, TSPSource> tspSources) {
 		this.tspSources = tspSources;

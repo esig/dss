@@ -220,7 +220,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	 * @param signerInformation
 	 * @param parameters
 	 * @return
-	 * @throws java.io.IOException
+	 * @throws DSSException
 	 */
 	protected abstract SignerInformation extendCMSSignature(CMSSignedData signedData, SignerInformation signerInformation, CAdESSignatureParameters parameters)
 			throws DSSException;

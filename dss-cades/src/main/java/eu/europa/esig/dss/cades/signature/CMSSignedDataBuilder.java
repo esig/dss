@@ -79,7 +79,6 @@ public class CMSSignedDataBuilder {
 	 *            in the context of a signature.
 	 */
 	public CMSSignedDataBuilder(final CertificateVerifier certificateVerifier) {
-
 		this.certificateVerifier = certificateVerifier;
 	}
 
@@ -89,7 +88,7 @@ public class CMSSignedDataBuilder {
 	 * SignedData is present AND (any version 1 attribute certificates are present OR any SignerInfo structures
 	 * are version 3 OR eContentType from encapContentInfo is other than id-data). Otherwise, the CMS
 	 * SignedData version is required to be set to 1.
-	 * ---> CMS SignedData Version is handled automatically by BouncyCastle.
+	 * CMS SignedData Version is handled automatically by BouncyCastle.
 	 *
 	 * @param parameters
 	 *            set of the driving signing parameters
@@ -144,6 +143,8 @@ public class CMSSignedDataBuilder {
 	}
 
 	/**
+	 * This method creates the SignerInfoGeneratorBuilder
+	 * 
 	 * @param parameters
 	 *            the parameters of the signature containing values for the attributes
 	 * @param includeUnsignedAttributes
@@ -205,10 +206,8 @@ public class CMSSignedDataBuilder {
 	 * The order of the certificates is important, the fist one must be the signing certificate.
 	 *
 	 * @return a store with the certificate chain of the signing certificate. The {@code Collection} is unique.
-	 * @throws CertificateEncodingException
 	 */
 	private JcaCertStore getJcaCertStore(final Collection<CertificateToken> certificateChain, CAdESSignatureParameters parameters) {
-
 		BaselineBCertificateSelector certificateSelectors = new BaselineBCertificateSelector(certificateVerifier, parameters);
 		List<CertificateToken> certificatesToAdd = certificateSelectors.getCertificates();
 		for (CertificateToken certificateToken : certificatesToAdd) {

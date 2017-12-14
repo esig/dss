@@ -103,7 +103,7 @@ public abstract class Token implements Serializable {
 	 * method always returns false. This method was introduced in order to manage in a uniform manner the different
 	 * tokens.
 	 *
-	 * @return
+	 * @return true if the token is trusted
 	 */
 	public boolean isTrusted() {
 		return false;
@@ -113,14 +113,14 @@ public abstract class Token implements Serializable {
 	 * Checks if the certificate is self-signed. For all tokens different from CertificateToken this method always
 	 * returns false. This method was introduced in order to manage in a uniform manner the different tokens.
 	 *
-	 * @return
+	 * @return true if the token is self-signed
 	 */
 	public boolean isSelfSigned() {
 		return false;
 	}
 
 	/**
-	 * Returns a DSS unique token identifier. Used by CertificateToken & TimestampToken.
+	 * Returns a DSS unique token identifier.
 	 */
 	public TokenIdentifier getDSSId() {
 		if (tokenIdentifier == null) {
@@ -142,7 +142,7 @@ public abstract class Token implements Serializable {
 	/**
 	 * Returns the {@code X500Principal} of the certificate which was used to sign this token.
 	 *
-	 * @return
+	 * @return the issuer's {@code X500Principal}
 	 */
 	public X500Principal getIssuerX500Principal() {
 		return issuerX500Principal;
@@ -152,7 +152,7 @@ public abstract class Token implements Serializable {
 	 * It returns the issuer certificate token that was used to sign this token (CertificateToken, CRLToken,
 	 * OCSPRespToken, TimestampToken).
 	 *
-	 * @return
+	 * @return the issuer certificate token
 	 */
 	public CertificateToken getIssuerToken() {
 		return issuerToken;
@@ -166,7 +166,7 @@ public abstract class Token implements Serializable {
 	 * that the signer's certificate was found.
 	 *
 	 * @param issuerToken
-	 * @return
+	 * @return true if this token is signed by the given certificate token
 	 */
 	public abstract boolean isSignedBy(CertificateToken issuerToken);
 

@@ -49,7 +49,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	/**
 	 * This method is not applicable for this kind of certificate source. You
 	 * should use
-	 * {@link #addCertificate(java.security.cert.X509Certificate, eu.europa.esig.dss.tsl.ServiceInfo)}
+	 * {@link #addCertificate(eu.europa.esig.dss.x509.CertificateToken, eu.europa.esig.dss.tsl.ServiceInfo)}
 	 *
 	 * @param certificate
 	 *            the certificate you have to trust

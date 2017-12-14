@@ -243,6 +243,12 @@ public final class DSSASN1Utils {
 	 * TS 101 733 5.8.1 : If the signature policy is defined using ASN.1, then the hash is calculated on the value
 	 * without the outer type and length
 	 * fields, and the hashing algorithm shall be as specified in the field sigPolicyHash.
+	 * 
+	 * @param digestAlgorithm
+	 *            the digest algorithm to be used
+	 * @param policyBytes
+	 *            the ASN.1 policy content
+	 * @return the expected digest value
 	 */
 	public static byte[] getAsn1SignaturePolicyDigest(DigestAlgorithm digestAlgorithm, byte[] policyBytes) {
 		ASN1Sequence asn1Seq = toASN1Primitive(policyBytes);
@@ -261,7 +267,8 @@ public final class DSSASN1Utils {
 	 * performed. In fact the hash verification is sufficient.
 	 *
 	 * @param generalNames
-	 * @return
+	 *            the generalNames
+	 * @return the canonicalized name
 	 */
 	public static String getCanonicalizedName(final GeneralNames generalNames) {
 		GeneralName[] names = generalNames.getNames();
@@ -635,7 +642,9 @@ public final class DSSASN1Utils {
 
 	/**
 	 * Returns a {@code X509CertificateHolder} encapsulating the given {@code X509Certificate}.
-	 *
+	 * 
+	 * @param certToken
+	 *            the certificate to be encapsulated
 	 * @return a X509CertificateHolder holding this certificate
 	 */
 	public static X509CertificateHolder getX509CertificateHolder(CertificateToken certToken) {
