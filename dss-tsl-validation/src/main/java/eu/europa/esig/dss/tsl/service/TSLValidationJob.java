@@ -238,6 +238,8 @@ public class TSLValidationJob {
 			LOG.warn("OJ keystore is out-dated !");
 		}
 
+		checkLOTLLocation(parseResult);
+
 		// Copy certificates from the OJ keystore
 		List<CertificateToken> allowedLotlSigners = new ArrayList<CertificateToken>();
 		allowedLotlSigners.addAll(ojContentKeyStore.getCertificates());
@@ -246,7 +248,7 @@ public class TSLValidationJob {
 			extractAllowedLotlSignersFromPivots(parseResult, allowedLotlSigners);
 		}
 
-		if (checkLOTLSignature && (europeanModel.getValidationResult() == null)) {
+		if (checkLOTLSignature && ((europeanModel.getValidationResult() == null) || !europeanModel.getValidationResult().isValid())) {
 			try {
 				TSLValidationResult validationResult = validateLOTL(europeanModel, allowedLotlSigners);
 				europeanModel.setValidationResult(validationResult);
@@ -260,6 +262,18 @@ public class TSLValidationJob {
 		repository.synchronize();
 
 		LOG.debug("TSL Validation Job is finishing ...");
+	}
+
+	private void checkLOTLLocation(TSLParserResult parseResult) {
+		List<TSLPointer> pointers = parseResult.getPointers();
+		for (TSLPointer tslPointer : pointers) {
+			if (Utils.areStringsEqual(lotlCode, tslPointer.getTerritory())) {
+				if (!Utils.areStringsEqual(lotlUrl, tslPointer.getUrl())) {
+					LOG.warn("The LOTL URL has been changed ! Please update your properties (new value : {})", tslPointer.getUrl());
+				}
+				break;
+			}
+		}
 	}
 
 	private void extractAllowedLotlSignersFromPivots(TSLParserResult parseResult, List<CertificateToken> allowedLotlSigners) {
