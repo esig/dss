@@ -54,6 +54,7 @@ public class CommonCertificateSource implements CertificateSource {
 	 * The default constructor with mandatory certificates pool.
 	 *
 	 * @param certPool
+	 *            the certificate pool to use
 	 */
 	public CommonCertificateSource(final CertificatePool certPool) {
 		if (certPool == null) {
@@ -65,7 +66,7 @@ public class CommonCertificateSource implements CertificateSource {
 	/**
 	 * This method returns the certificate source type associated to the implementation class.
 	 *
-	 * @return
+	 * @return the certificate origin
 	 */
 	protected CertificateSourceType getCertificateSourceType() {
 		return CertificateSourceType.OTHER;
@@ -99,7 +100,7 @@ public class CommonCertificateSource implements CertificateSource {
 	/**
 	 * Retrieves the unmodifiable list of all certificate tokens from this source.
 	 *
-	 * @return
+	 * @return all certificates from this source
 	 */
 	public List<CertificateToken> getCertificates() {
 		return Collections.unmodifiableList(certificateTokens);

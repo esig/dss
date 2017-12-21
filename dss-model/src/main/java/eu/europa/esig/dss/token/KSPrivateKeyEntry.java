@@ -50,6 +50,11 @@ public class KSPrivateKeyEntry implements DSSPrivateKeyEntry {
 
 	/**
 	 * The default constructor for KSPrivateKeyEntry.
+	 * 
+	 * @param alias
+	 *            the given alias
+	 * @param privateKeyEntry
+	 *            the keystore private key entry
 	 */
 	public KSPrivateKeyEntry(final String alias, final PrivateKeyEntry privateKeyEntry) {
 		this.alias = alias;
@@ -65,6 +70,11 @@ public class KSPrivateKeyEntry implements DSSPrivateKeyEntry {
 		privateKey = privateKeyEntry.getPrivateKey();
 	}
 
+	/**
+	 * Get the entry alias
+	 * 
+	 * @return the alias
+	 */
 	public String getAlias() {
 		return alias;
 	}
@@ -80,7 +90,9 @@ public class KSPrivateKeyEntry implements DSSPrivateKeyEntry {
 	}
 
 	/**
-	 * @return
+	 * Get the private key
+	 * 
+	 * @return the private key
 	 */
 	public PrivateKey getPrivateKey() {
 		return privateKey;

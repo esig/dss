@@ -22,9 +22,19 @@ package eu.europa.esig.dss.validation.policy.rules;
 
 /**
  * The list of possible values for indications.
+ * 
+ * Source ETSI EN 319 102-1
  */
 public enum Indication {
 
-	TOTAL_PASSED, PASSED, INDETERMINATE, FAILED, TOTAL_FAILED
+	TOTAL_PASSED,
+
+	PASSED,
+
+	INDETERMINATE,
+
+	FAILED,
+
+	TOTAL_FAILED
 
 }

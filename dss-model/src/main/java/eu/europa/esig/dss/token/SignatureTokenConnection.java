@@ -40,7 +40,7 @@ public interface SignatureTokenConnection {
 	void close();
 
 	/**
-	 * Retrieves all the available keys (private keys entries) from the QSCD.
+	 * Retrieves all the available keys (private keys entries) from the token.
 	 *
 	 * @return List of encapsulated private keys
 	 * @throws DSSException
@@ -49,19 +49,26 @@ public interface SignatureTokenConnection {
 	List<DSSPrivateKeyEntry> getKeys() throws DSSException;
 
 	/**
+	 * 
+	 * This method signs the {@code toBeSigned} data with the digest {@code digestAlgorithm} and
+	 * the given {@code keyEntry}.
+	 * 
 	 * @param toBeSigned
 	 *            The data that need to be signed
 	 * @param digestAlgorithm
 	 *            The digest algorithm to be used before signing
 	 * @param keyEntry
 	 *            The private key to be used
-	 * @return The array of bytes representing the signature value
+	 * @return the signature value representation with the used algorithm and the binary value
 	 * @throws DSSException
 	 *             If there is any problem during the signature process
 	 */
 	SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException;
 
 	/**
+	 * This method signs the {@code toBeSigned} data with the digest {@code digestAlgorithm}, the mask {@code mgf} and
+	 * the given {@code keyEntry}.
+	 * 
 	 * @param toBeSigned
 	 *            The data that need to be signed
 	 * @param digestAlgorithm
@@ -70,7 +77,7 @@ public interface SignatureTokenConnection {
 	 *            the mask generation function
 	 * @param keyEntry
 	 *            The private key to be used
-	 * @return The array of bytes representing the signature value
+	 * @return the signature value representation with the used algorithm and the binary value
 	 * @throws DSSException
 	 *             If there is any problem during the signature process
 	 */

@@ -71,6 +71,7 @@ public class ASiCParameters implements Serializable {
 	 * This method allows to indicate if the zip comment will contain the mime type.
 	 *
 	 * @param zipComment
+	 *            true if a zip comment needs to be added
 	 */
 	public void setZipComment(final boolean zipComment) {
 		this.zipComment = zipComment;
@@ -91,6 +92,8 @@ public class ASiCParameters implements Serializable {
 	}
 
 	/**
+	 * The method returns the expected type of the ASiC container
+	 * 
 	 * @return the {@code ASiCContainerType} of the ASiC container
 	 */
 	public ASiCContainerType getContainerType() {

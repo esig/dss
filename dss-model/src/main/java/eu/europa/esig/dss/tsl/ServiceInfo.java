@@ -214,10 +214,6 @@ public class ServiceInfo implements Serializable {
 		this.status = new TimeDependentValues<ServiceInfoStatus>(status);
 	}
 
-	/**
-	 * @param indent
-	 * @return
-	 */
 	public String toString(String indent) {
 		try {
 			StringBuilder buffer = new StringBuilder();

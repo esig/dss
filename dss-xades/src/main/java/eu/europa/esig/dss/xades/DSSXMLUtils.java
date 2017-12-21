@@ -144,7 +144,7 @@ public final class DSSXMLUtils {
 	 *
 	 * @param xmlNode
 	 *            The node to be serialized.
-	 * @return
+	 * @return the serialized bytes
 	 */
 	public static byte[] serializeNode(final Node xmlNode) {
 		try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
@@ -204,7 +204,7 @@ public final class DSSXMLUtils {
 			final Canonicalizer c14n = Canonicalizer.getInstance(canonicalizationMethod);
 			return c14n.canonicalize(toCanonicalizeBytes);
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException("Cannot canonicalize the binaries", e);
 		}
 	}
 
@@ -220,18 +220,16 @@ public final class DSSXMLUtils {
 	public static byte[] canonicalizeSubtree(final String canonicalizationMethod, final Node node) {
 		try {
 			final Canonicalizer c14n = Canonicalizer.getInstance(canonicalizationMethod);
-			final byte[] canonicalized = c14n.canonicalizeSubtree(node);
-			return canonicalized;
+			return c14n.canonicalizeSubtree(node);
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException("Cannot canonicalize the subtree", e);
 		}
 	}
 
 	/**
 	 * An ID attribute can only be dereferenced if it is declared in the validation context. This behaviour is caused by
-	 * the fact that the attribute does not have attached type of
-	 * information. Another solution is to parse the XML against some DTD or XML schema. This process adds the necessary
-	 * type of information to each ID attribute.
+	 * the fact that the attribute does not have attached type of information. Another solution is to parse the XML
+	 * against some DTD or XML schema. This process adds the necessary type of information to each ID attribute.
 	 *
 	 * @param element
 	 */

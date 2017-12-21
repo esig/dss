@@ -57,7 +57,7 @@ public interface DataLoader extends Serializable {
 	 * Execute a HTTP GET operation.
 	 *
 	 * @param url
-	 *            to access
+	 *            the url to access
 	 * @return {@code byte} array of obtained data or null
 	 */
 	byte[] get(final String url);
@@ -89,6 +89,7 @@ public interface DataLoader extends Serializable {
 	 * @param url
 	 *            to access
 	 * @param content
+	 *            the content to post
 	 * @return {@code byte} array of obtained data
 	 */
 	byte[] post(final String url, final byte[] content);
@@ -97,7 +98,7 @@ public interface DataLoader extends Serializable {
 	 * This allows to set the content type. Example: Content-Type "application/ocsp-request"
 	 *
 	 * @param contentType
-	 *            to set
+	 *            to set the Content-Type
 	 */
 	void setContentType(final String contentType);
 

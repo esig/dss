@@ -47,7 +47,7 @@ public interface RemoteMultipleDocumentsSignatureService<DOC, SP extends Abstrac
 	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocuments} and
 	 * {@code parameters}
 	 * . When
-	 * {@code toSignDocument} contains an already existing signature the returned bytes are related to a new parallel
+	 * {@code toSignDocuments} contains an already existing signature the returned bytes are related to a new parallel
 	 * signature.
 	 * 
 	 * @param toSignDocuments
@@ -56,6 +56,7 @@ public interface RemoteMultipleDocumentsSignatureService<DOC, SP extends Abstrac
 	 *            set of the driving signing parameters
 	 * @return the data to be signed
 	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	ToBeSigned getDataToSign(final List<DOC> toSignDocuments, final SP parameters) throws DSSException;
 
@@ -68,8 +69,9 @@ public interface RemoteMultipleDocumentsSignatureService<DOC, SP extends Abstrac
 	 *            set of the driving signing parameters
 	 * @param signatureValue
 	 *            the signature value to incorporate
-	 * @return
+	 * @return the container with the signature and the documents (ASiC) or the signature file
 	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	DSSDocument signDocument(final List<DOC> toSignDocuments, final SP parameters, SignatureValue signatureValue) throws DSSException;
 
@@ -80,8 +82,9 @@ public interface RemoteMultipleDocumentsSignatureService<DOC, SP extends Abstrac
 	 *            document to extend
 	 * @param parameters
 	 *            set of the driving signing parameters
-	 * @return
+	 * @return the extended signature
 	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	DSSDocument extendDocument(final DOC toExtendDocument, final SP parameters) throws DSSException;
 

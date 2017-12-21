@@ -55,6 +55,7 @@ public class CRLUtils {
 	 *            {@code CertificateToken} used to sign the {@code X509CRL} (cannot be null)
 	 * @return {@code CRLValidity}
 	 * @throws IOException
+	 *             if an IO error occurred
 	 */
 	public static CRLValidity isValidCRL(final InputStream crlStream, final CertificateToken issuerToken) throws IOException {
 		return impl.isValidCRL(crlStream, issuerToken);

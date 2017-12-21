@@ -25,14 +25,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 
-/**
- * TODO
- *
- *
- *
- *
- *
- */
 public class ResourceLoader {
 
 	protected Class<?> anyClass = ResourceLoader.class;
@@ -44,11 +36,19 @@ public class ResourceLoader {
 	 * It can be used when there is a need to change the class loader.
 	 *
 	 * @param anyClass
+	 *            the base class to be used
 	 */
 	public ResourceLoader(Class<?> anyClass) {
 		this.anyClass = anyClass;
 	}
 
+	/**
+	 * This method replaces all special characters by an underscore
+	 * 
+	 * @param fileName
+	 *            the filename to normalize
+	 * @return the normalized filename
+	 */
 	public static String getNormalizedFileName(final String fileName) {
 		final String normalizedFileName = fileName.replaceAll("\\W", "_");
 		return normalizedFileName;
@@ -59,7 +59,7 @@ public class ResourceLoader {
 	 *
 	 * @param resourcePath
 	 *            resource path
-	 * @return
+	 * @return the absolute of the parent folder
 	 */
 	public String getAbsoluteResourceFolder(final String resourcePath) throws DSSException {
 		final URL uri = anyClass.getResource(resourcePath);
@@ -79,7 +79,8 @@ public class ResourceLoader {
 	 * This method converts the resource path to the input stream.
 	 *
 	 * @param resourcePath
-	 * @return
+	 *            the resource path
+	 * @return an inputstream
 	 */
 	public InputStream getResource(final String resourcePath) {
 		final InputStream resourceAsStream = anyClass.getResourceAsStream(resourcePath);

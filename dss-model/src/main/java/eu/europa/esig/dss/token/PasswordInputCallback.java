@@ -29,7 +29,7 @@ public interface PasswordInputCallback {
 	/**
 	 * Retrieve the password (from the user)
 	 *
-	 * @return
+	 * @return the password
 	 */
 	char[] getPassword();
 

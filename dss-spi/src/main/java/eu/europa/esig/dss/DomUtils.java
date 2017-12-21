@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -93,6 +94,7 @@ public final class DomUtils {
 	 * Guarantees that the xmlString builder has been created.
 	 *
 	 * @throws DSSException
+	 *             if the DocumentBuilderFactory cannot be built
 	 */
 	private static void ensureDocumentBuilder() throws DSSException {
 		if (dbFactory != null) {
@@ -115,6 +117,11 @@ public final class DomUtils {
 		}
 	}
 
+	/**
+	 * This method returns a new instance of TransformerFactory with secured features enabled
+	 * 
+	 * @return an instance of TransformerFactory with enabled secure features
+	 */
 	public static TransformerFactory getSecureTransformerFactory() {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		try {
@@ -126,6 +133,11 @@ public final class DomUtils {
 		return transformerFactory;
 	}
 
+	/**
+	 * This method returns a new instance of Transformer with secured features enabled
+	 * 
+	 * @return an instance of Transformer with enabled secure features
+	 */
 	public static Transformer getSecureTransformer() {
 		TransformerFactory transformerFactory = getSecureTransformerFactory();
 		Transformer transformer = null;
@@ -165,7 +177,7 @@ public final class DomUtils {
 	 *             if the xmlString cannot be parsed
 	 */
 	public static Document buildDOM(final String xmlString) throws DSSException {
-		return buildDOM(DSSUtils.getUtf8Bytes(xmlString));
+		return buildDOM(xmlString.getBytes(StandardCharsets.UTF_8));
 	}
 
 	/**
@@ -220,7 +232,7 @@ public final class DomUtils {
 	 *            the namespace URI of the document element to create or null
 	 * @param qualifiedName
 	 *            the qualified name of the document element to be created or null
-	 * @return {@code Document}
+	 * @return {@link org.w3c.dom.Document}
 	 */
 	public static Document createDocument(final String namespaceURI, final String qualifiedName) {
 		ensureDocumentBuilder();
@@ -283,6 +295,7 @@ public final class DomUtils {
 	 *            XPath query string
 	 * @return string value of the XPath query
 	 * @throws DSSException
+	 *             if the xpath expression cannot be compiled/evaluated
 	 */
 	public static String getValue(final Node xmlNode, final String xPathString) throws DSSException {
 		try {
@@ -468,6 +481,16 @@ public final class DomUtils {
 		return childrenNames;
 	}
 
+	/**
+	 * This method writes the {@link org.w3c.dom.Document} content to an outputStream
+	 * 
+	 * @param dom
+	 *            the {@link org.w3c.dom.Document} to be writed
+	 * @param os
+	 *            the OutputStream
+	 * @throws DSSException
+	 *             if any error occurred
+	 */
 	public static void writeDocumentTo(final Document dom, final OutputStream os) throws DSSException {
 		try {
 			final DOMSource xmlSource = new DOMSource(dom);
@@ -479,6 +502,15 @@ public final class DomUtils {
 		}
 	}
 
+	/**
+	 * This method creates a new InMemoryDocument with the {@link org.w3c.dom.Document} content and the given name
+	 * 
+	 * @param document
+	 *            the {@link org.w3c.dom.Document} to store
+	 * @param name
+	 *            the ouput filename
+	 * @return a new instance of InMemoryDocument with the XML and the given filename
+	 */
 	public static DSSDocument createDssDocumentFromDomDocument(Document document, String name) {
 		DSSDocument dssDoc = null;
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {

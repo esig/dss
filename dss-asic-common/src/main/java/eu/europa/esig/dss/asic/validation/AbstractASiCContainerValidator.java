@@ -72,7 +72,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	/**
 	 * This method allows to retrieve the container information (ASiC Container)
 	 * 
-	 * @return
+	 * @return a DTO with the container information
 	 */
 	@Override
 	protected ContainerInfo getContainerInfo() {

@@ -217,7 +217,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	}
 
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-		String signingCertificateId = diagnosticData.getSigningCertificateId();
+		String signingCertificateId = diagnosticData.getFirstSigningCertificateId();
 		String certificateDN = diagnosticData.getCertificateDN(signingCertificateId);
 		String certificateSerialNumber = diagnosticData.getCertificateSerialNumber(signingCertificateId);
 		CertificateToken certificate = getToken().getKey(getSigningAlias()).getCertificate();
@@ -226,7 +226,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	}
 
 	protected void checkIssuerSigningCertificateValue(DiagnosticData diagnosticData) {
-		String signingCertificateId = diagnosticData.getSigningCertificateId();
+		String signingCertificateId = diagnosticData.getFirstSigningCertificateId();
 		String issuerDN = diagnosticData.getCertificateIssuerDN(signingCertificateId);
 		CertificateToken certificate = getToken().getKey(getSigningAlias()).getCertificate();
 		assertEquals(certificate.getIssuerX500Principal().getName(X500Principal.RFC2253), issuerDN);
@@ -310,7 +310,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	}
 
 	protected void checkSigningDate(DiagnosticData diagnosticData) {
-		Date signatureDate = diagnosticData.getSignatureDate();
+		Date signatureDate = diagnosticData.getFirstSignatureDate();
 		Date originalSigningDate = getSignatureParameters().bLevel().getSigningDate();
 
 		// Date in signed documents is truncated

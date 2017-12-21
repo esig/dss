@@ -38,6 +38,13 @@ public class MaxSizeInputStream extends InputStream {
 
 	/**
 	 * The default constructor for NativeHTTPDataLoader.MaxSizeInputStream.
+	 * 
+	 * @param wrappedStream
+	 *            the wrapped stream
+	 * @param maxSize
+	 *            the maximum size to read
+	 * @param url
+	 *            the url source
 	 */
 	public MaxSizeInputStream(InputStream wrappedStream, long maxSize, String url) {
 		this.maxSize = maxSize;

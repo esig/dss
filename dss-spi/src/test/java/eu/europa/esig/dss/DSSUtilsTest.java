@@ -13,10 +13,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Date;
@@ -147,13 +145,13 @@ public class DSSUtilsTest {
 	public void convertToPEM() {
 		String convertToPEM = DSSUtils.convertToPEM(certificateWithAIA);
 
-		assertFalse(DSSUtils.isDER(new ByteArrayInputStream(convertToPEM.getBytes())));
+		assertFalse(DSSUtils.isStartWithASN1SequenceTag(new ByteArrayInputStream(convertToPEM.getBytes())));
 
 		CertificateToken certificate = DSSUtils.loadCertificate(convertToPEM.getBytes());
 		assertEquals(certificate, certificateWithAIA);
 
 		byte[] certDER = DSSUtils.convertToDER(convertToPEM);
-		assertTrue(DSSUtils.isDER(new ByteArrayInputStream(certDER)));
+		assertTrue(DSSUtils.isStartWithASN1SequenceTag(new ByteArrayInputStream(certDER)));
 
 		CertificateToken certificate2 = DSSUtils.loadCertificate(certDER);
 		assertEquals(certificate2, certificateWithAIA);

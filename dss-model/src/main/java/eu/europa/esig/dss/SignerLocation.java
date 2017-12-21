@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @SuppressWarnings("serial")
 public class SignerLocation implements Serializable {
 
@@ -90,6 +89,7 @@ public class SignerLocation implements Serializable {
 	 * Adds an address item to the complete address.
 	 *
 	 * @param addressItem
+	 *            an address line
 	 */
 	public void addPostalAddress(final String addressItem) {
 		if (postalAddress == null) {

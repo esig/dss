@@ -26,24 +26,29 @@ import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
  * Interface for a PrivateKey.
- *
  */
 public interface DSSPrivateKeyEntry {
 
 	/**
+	 * Retrieve the signing certificate
+	 * 
 	 * @return the certificate
 	 */
 	CertificateToken getCertificate();
 
 	/**
-	 * @return the certificateChain
+	 * Retrieve the certificate chain linked
+	 * 
+	 * @return the chain of certificates
 	 */
 	CertificateToken[] getCertificateChain();
 
 	/**
-	 * Get the SignatureAlgorithm corresponding to the PrivateKey
+	 * Get the EncryptionAlgorithm corresponding to the PrivateKey
 	 *
-	 * @return
+	 * @return the EncryptionAlgorithm (RSA, ECDSA,...)
+	 * @throws DSSException
+	 *             if the encryption algorithm cannot be detected
 	 */
 	EncryptionAlgorithm getEncryptionAlgorithm() throws DSSException;
 

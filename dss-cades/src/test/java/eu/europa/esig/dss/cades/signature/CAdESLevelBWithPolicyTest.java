@@ -72,7 +72,7 @@ public class CAdESLevelBWithPolicyTest extends AbstractCAdESTestSignature {
 	@Override
 	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
 		super.verifyDiagnosticData(diagnosticData);
-		String policyId = diagnosticData.getPolicyId();
+		String policyId = diagnosticData.getFirstPolicyId();
 		assertEquals(POLICY_ID, policyId);
 	}
 

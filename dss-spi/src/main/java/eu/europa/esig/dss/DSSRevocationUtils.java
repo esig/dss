@@ -86,7 +86,7 @@ public final class DSSRevocationUtils {
 	 *            the {@code BasicOCSPResp} to be converted to {@code OCSPResp}
 	 * @return the result of the conversion
 	 * @throws DSSException
-	 *             if
+	 *             if the conversion fails
 	 */
 	public static final OCSPResp fromBasicToResp(final BasicOCSPResp basicOCSPResp) throws DSSException {
 		try {
@@ -102,12 +102,13 @@ public final class DSSRevocationUtils {
 	 * Convert a BasicOCSPResp in OCSPResp (connection status is set to
 	 * SUCCESSFUL).
 	 *
-	 * @param basicOCSPResp
-	 * @return
+	 * @param basicOCSPRespBinary
+	 *            the binary of BasicOCSPResp
+	 * @return an instance of OCSPResp
 	 */
-	public static final OCSPResp fromBasicToResp(final byte[] basicOCSPResp) {
+	public static final OCSPResp fromBasicToResp(final byte[] basicOCSPRespBinary) {
 		final OCSPResponseStatus responseStatus = new OCSPResponseStatus(OCSPResponseStatus.SUCCESSFUL);
-		final DEROctetString derBasicOCSPResp = new DEROctetString(basicOCSPResp);
+		final DEROctetString derBasicOCSPResp = new DEROctetString(basicOCSPRespBinary);
 		final ResponseBytes responseBytes = new ResponseBytes(OCSPObjectIdentifiers.id_pkix_ocsp_basic, derBasicOCSPResp);
 		final OCSPResponse ocspResponse = new OCSPResponse(responseStatus, responseBytes);
 		final OCSPResp ocspResp = new OCSPResp(ocspResponse);

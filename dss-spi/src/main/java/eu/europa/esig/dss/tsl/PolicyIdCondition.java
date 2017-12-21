@@ -42,6 +42,7 @@ public class PolicyIdCondition extends Condition {
 	 * The default constructor for PolicyIdCondition.
 	 *
 	 * @param policyId
+	 *            the policy oid to check
 	 */
 	public PolicyIdCondition(final String policyId) {
 		if (policyId == null) {
@@ -50,20 +51,6 @@ public class PolicyIdCondition extends Condition {
 		this.policyOid = policyId;
 	}
 
-	/**
-	 * @return the policyOid
-	 */
-	public String getPolicyOid() {
-		return policyOid;
-	}
-
-	/**
-	 * Checks the condition for the given certificate.
-	 *
-	 * @param certificateToken
-	 *            certificate to be checked
-	 * @return
-	 */
 	@Override
 	public boolean check(final CertificateToken certificateToken) {
 		if (certificateToken == null) {
