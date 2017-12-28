@@ -45,7 +45,6 @@ import org.bouncycastle.cms.SimpleAttributeTableGenerator;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.util.Store;
 
 import eu.europa.esig.dss.DSSASN1Utils;
@@ -143,16 +142,14 @@ public class CMSSignedDataBuilder {
 	}
 
 	/**
-	 * This method creates the SignerInfoGeneratorBuilder
-	 * 
 	 * @param parameters
 	 *            the parameters of the signature containing values for the attributes
 	 * @param includeUnsignedAttributes
 	 *            true if the unsigned attributes must be included
-	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the
-	 *         CAdESLevelBaselineB
+	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the CAdESLevelBaselineB
 	 */
-	SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(final CAdESSignatureParameters parameters, final boolean includeUnsignedAttributes) {
+	SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DigestCalculatorProvider digestCalculatorProvider, final CAdESSignatureParameters parameters,
+			final boolean includeUnsignedAttributes) {
 
 		final CAdESLevelBaselineB cadesProfile = new CAdESLevelBaselineB();
 		final AttributeTable signedAttributes = cadesProfile.getSignedAttributes(parameters);
@@ -161,7 +158,7 @@ public class CMSSignedDataBuilder {
 		if (includeUnsignedAttributes) {
 			unsignedAttributes = cadesProfile.getUnsignedAttributes();
 		}
-		return getSignerInfoGeneratorBuilder(signedAttributes, unsignedAttributes);
+		return getSignerInfoGeneratorBuilder(digestCalculatorProvider, signedAttributes, unsignedAttributes);
 	}
 
 	/**
@@ -171,7 +168,8 @@ public class CMSSignedDataBuilder {
 	 *            the unsignedAttributes
 	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the parameters
 	 */
-	private SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(AttributeTable signedAttributes, AttributeTable unsignedAttributes) {
+	private SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DigestCalculatorProvider digestCalculatorProvider, AttributeTable signedAttributes,
+			AttributeTable unsignedAttributes) {
 
 		if ((signedAttributes != null) && (signedAttributes.size() == 0)) {
 			signedAttributes = null;
@@ -182,7 +180,7 @@ public class CMSSignedDataBuilder {
 		}
 		final SimpleAttributeTableGenerator unsignedAttributeGenerator = new SimpleAttributeTableGenerator(unsignedAttributes);
 
-		return getSignerInfoGeneratorBuilder(signedAttributeGenerator, unsignedAttributeGenerator);
+		return getSignerInfoGeneratorBuilder(digestCalculatorProvider, signedAttributeGenerator, unsignedAttributeGenerator);
 	}
 
 	/**
@@ -192,10 +190,8 @@ public class CMSSignedDataBuilder {
 	 *            the unsignedAttribute generator
 	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the parameters
 	 */
-	private SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DefaultSignedAttributeTableGenerator signedAttributeGenerator,
-			SimpleAttributeTableGenerator unsignedAttributeGenerator) {
-
-		final DigestCalculatorProvider digestCalculatorProvider = new BcDigestCalculatorProvider();
+	private SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DigestCalculatorProvider digestCalculatorProvider,
+			DefaultSignedAttributeTableGenerator signedAttributeGenerator, SimpleAttributeTableGenerator unsignedAttributeGenerator) {
 		SignerInfoGeneratorBuilder sigInfoGeneratorBuilder = new SignerInfoGeneratorBuilder(digestCalculatorProvider);
 		sigInfoGeneratorBuilder.setSignedAttributeGenerator(signedAttributeGenerator);
 		sigInfoGeneratorBuilder.setUnsignedAttributeGenerator(unsignedAttributeGenerator);

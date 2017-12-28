@@ -50,7 +50,7 @@ public class CAdESLevelBDetachedDigestDocumentTest extends AbstractPkiFactoryTes
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
+		documentToSign = getDigestDocument();
 
 		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -67,6 +67,16 @@ public class CAdESLevelBDetachedDigestDocumentTest extends AbstractPkiFactoryTes
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
+		DigestDocument digestDocument = getDigestDocument();
+
+		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		detachedContents.add(digestDocument);
+		validator.setDetachedContents(detachedContents);
+
+		return validator.validateDocument();
+	}
+
+	private DigestDocument getDigestDocument() {
 		InMemoryDocument inMemoryDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 		byte[] bytes;
 		try {
@@ -77,12 +87,7 @@ public class CAdESLevelBDetachedDigestDocumentTest extends AbstractPkiFactoryTes
 
 		DigestDocument digestDocument = new DigestDocument();
 		digestDocument.addDigest(DigestAlgorithm.SHA256, Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, bytes)));
-
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
-		detachedContents.add(digestDocument);
-		validator.setDetachedContents(detachedContents);
-
-		return validator.validateDocument();
+		return digestDocument;
 	}
 
 	@Override

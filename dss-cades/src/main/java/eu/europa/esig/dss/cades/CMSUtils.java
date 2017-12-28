@@ -59,7 +59,7 @@ public final class CMSUtils {
 	 * @return
 	 * @throws DSSException
 	 */
-	public static CMSSignedData generateCMSSignedData(final CMSSignedDataGenerator generator, final CMSProcessableByteArray content, final boolean encapsulate)
+	public static CMSSignedData generateCMSSignedData(final CMSSignedDataGenerator generator, final CMSTypedData content, final boolean encapsulate)
 			throws DSSException {
 		try {
 			final CMSSignedData cmsSignedData = generator.generate(content, encapsulate);
