@@ -26,7 +26,7 @@ public class ASiCWithXAdESDataToSignHelperBuilder {
 
 		if (asic) {
 			DSSDocument archiveDoc = documents.get(0);
-			if (!ASiCUtils.isArchiveContainsCorrectSignatureExtension(archiveDoc, ".xml")) {
+			if (!ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archiveDoc, ".xml")) {
 				throw new UnsupportedOperationException("Container type doesn't match");
 			}
 

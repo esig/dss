@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
 import org.slf4j.Logger;
@@ -73,36 +72,19 @@ public final class ASiCUtils {
 		return isASiCE(asicParameters) ? MimeType.ASICE : MimeType.ASICS;
 	}
 
-	public static boolean isArchiveContainsCorrectSignatureExtension(DSSDocument toSignDocument, String extension) {
-		boolean isSignatureTypeCorrect = true;
+	public static boolean isArchiveContainsCorrectSignatureFileWithExtension(DSSDocument toSignDocument, String extension) {
 		try (InputStream is = toSignDocument.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			ZipEntry entry;
 			while ((entry = zis.getNextEntry()) != null) {
-				if (isSignature(entry.getName())) {
-					isSignatureTypeCorrect &= entry.getName().endsWith(extension);
+				String entryName = entry.getName();
+				if (isSignature(entryName) && entryName.endsWith(extension)) {
+					return true;
 				}
 			}
 		} catch (IOException e) {
 			throw new DSSException("Unable to analyze the archive content", e);
 		}
-		return isSignatureTypeCorrect;
-	}
-
-	public static boolean hasArchiveCorrectSignature(DSSDocument toSignDocument, String extension) {
-		boolean isSignatureTypeCorrect = false;
-		try (InputStream is = toSignDocument.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
-			ZipEntry entry;
-			while ((entry = zis.getNextEntry()) != null) {
-				if (isSignature(entry.getName())) {
-					return entry.getName().endsWith(extension);
-				}
-			}
-		} catch (ZipException e) {
-			LOG.warn("Can not read zip file", e);
-		} catch (IOException e) {
-			throw new DSSException("Unable to analyze the archive content", e);
-		}
-		return isSignatureTypeCorrect;
+		return false;
 	}
 
 	public static boolean isArchive(List<DSSDocument> docs) {
@@ -201,8 +183,8 @@ public final class ASiCUtils {
 	public static boolean isAsic(List<DSSDocument> documents) {
 		if (ASiCUtils.isArchive(documents)) {
 			DSSDocument archive = documents.get(0);
-			boolean cades = ASiCUtils.hasArchiveCorrectSignature(archive, "p7s");
-			boolean xades = ASiCUtils.hasArchiveCorrectSignature(archive, "xml");
+			boolean cades = ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archive, "p7s");
+			boolean xades = ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archive, "xml");
 			return cades | xades;
 		}
 
