@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -59,6 +60,8 @@ import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.DLSet;
+import org.bouncycastle.asn1.cms.Attribute;
+import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x500.AttributeTypeAndValue;
@@ -846,6 +849,18 @@ public final class DSSASN1Utils {
 		} catch (Exception e) {
 			LOG.warn("Unable to retrieve the date : " + encodable, e);
 			return null;
+		}
+	}
+
+	public static boolean isEmpty(AttributeTable attributeTable) {
+		return (attributeTable == null) || (attributeTable.size() == 0);
+	}
+
+	public static AttributeTable emptyIfNull(AttributeTable original) {
+		if (original == null) {
+			return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Attribute>());
+		} else {
+			return original;
 		}
 	}
 

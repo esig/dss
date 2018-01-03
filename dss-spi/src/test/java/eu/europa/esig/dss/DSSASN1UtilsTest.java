@@ -8,8 +8,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Hashtable;
 import java.util.List;
 
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -150,6 +153,28 @@ public class DSSASN1UtilsTest {
 	@Test
 	public void getAlgorithmIdentifier() {
 		assertNotNull(DSSASN1Utils.getAlgorithmIdentifier(DigestAlgorithm.SHA256));
+	}
+
+	@Test
+	public void isEmpty() {
+		assertTrue(DSSASN1Utils.isEmpty(null));
+		assertTrue(DSSASN1Utils.isEmpty(new AttributeTable(new Hashtable<>())));
+		Hashtable<ASN1ObjectIdentifier, Object> nonEmpty = new Hashtable<ASN1ObjectIdentifier, Object>();
+		nonEmpty.put(new ASN1ObjectIdentifier("1.2.3.4.5"), 4);
+		assertFalse(DSSASN1Utils.isEmpty(new AttributeTable(nonEmpty)));
+	}
+
+	@Test
+	public void emptyIfNull() {
+		assertNotNull(DSSASN1Utils.emptyIfNull(null));
+
+		Hashtable<ASN1ObjectIdentifier, Object> nonEmpty = new Hashtable<ASN1ObjectIdentifier, Object>();
+		nonEmpty.put(new ASN1ObjectIdentifier("1.2.3.4.5"), 4);
+		AttributeTable attributeTable = new AttributeTable(nonEmpty);
+
+		AttributeTable emptyIfNull = DSSASN1Utils.emptyIfNull(attributeTable);
+		assertNotNull(emptyIfNull);
+		assertEquals(attributeTable, emptyIfNull);
 	}
 
 }

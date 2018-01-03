@@ -67,7 +67,7 @@ import eu.europa.esig.dss.x509.CertificateToken;
  */
 public class CMSSignedDataBuilder {
 
-	private CertificateVerifier certificateVerifier;
+	private final CertificateVerifier certificateVerifier;
 
 	/**
 	 * This is the default constructor for {@code CMSSignedDataGeneratorBuilder}. The {@code CertificateVerifier} is
@@ -92,9 +92,9 @@ public class CMSSignedDataBuilder {
 	 * @param parameters
 	 *            set of the driving signing parameters
 	 * @param contentSigner
-	 *            the contentSigned to get the hash of the data to be signed
+	 *            the contentSigner to get the hash of the data to be signed
 	 * @param signerInfoGeneratorBuilder
-	 *            true if the unsigned attributes must be included
+	 *            the builder for the signer info generator
 	 * @param originalSignedData
 	 *            the original signed data if extending an existing signature. null otherwise.
 	 * @return the bouncycastle signed data generator which signs the document and adds the required signed and unsigned
@@ -142,11 +142,16 @@ public class CMSSignedDataBuilder {
 	}
 
 	/**
+	 * This method creates a builder of SignerInfoGenerator
+	 * 
+	 * @param digestCalculatorProvider
+	 *            the digest calculator (can be pre-computed)
 	 * @param parameters
 	 *            the parameters of the signature containing values for the attributes
 	 * @param includeUnsignedAttributes
 	 *            true if the unsigned attributes must be included
-	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the CAdESLevelBaselineB
+	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the
+	 *         CAdESLevelBaselineB
 	 */
 	SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DigestCalculatorProvider digestCalculatorProvider, final CAdESSignatureParameters parameters,
 			final boolean includeUnsignedAttributes) {
@@ -162,6 +167,10 @@ public class CMSSignedDataBuilder {
 	}
 
 	/**
+	 * This method creates a builder of SignerInfoGenerator
+	 * 
+	 * @param digestCalculatorProvider
+	 *            the digest calculator (can be pre-computed)
 	 * @param signedAttributes
 	 *            the signedAttributes
 	 * @param unsignedAttributes
@@ -171,27 +180,15 @@ public class CMSSignedDataBuilder {
 	private SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DigestCalculatorProvider digestCalculatorProvider, AttributeTable signedAttributes,
 			AttributeTable unsignedAttributes) {
 
-		if ((signedAttributes != null) && (signedAttributes.size() == 0)) {
+		if (DSSASN1Utils.isEmpty(signedAttributes)) {
 			signedAttributes = null;
 		}
 		final DefaultSignedAttributeTableGenerator signedAttributeGenerator = new DefaultSignedAttributeTableGenerator(signedAttributes);
-		if ((unsignedAttributes != null) && (unsignedAttributes.size() == 0)) {
+		if (DSSASN1Utils.isEmpty(unsignedAttributes)) {
 			unsignedAttributes = null;
 		}
 		final SimpleAttributeTableGenerator unsignedAttributeGenerator = new SimpleAttributeTableGenerator(unsignedAttributes);
 
-		return getSignerInfoGeneratorBuilder(digestCalculatorProvider, signedAttributeGenerator, unsignedAttributeGenerator);
-	}
-
-	/**
-	 * @param signedAttributeGenerator
-	 *            the signedAttribute generator
-	 * @param unsignedAttributeGenerator
-	 *            the unsignedAttribute generator
-	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the parameters
-	 */
-	private SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DigestCalculatorProvider digestCalculatorProvider,
-			DefaultSignedAttributeTableGenerator signedAttributeGenerator, SimpleAttributeTableGenerator unsignedAttributeGenerator) {
 		SignerInfoGeneratorBuilder sigInfoGeneratorBuilder = new SignerInfoGeneratorBuilder(digestCalculatorProvider);
 		sigInfoGeneratorBuilder.setSignedAttributeGenerator(signedAttributeGenerator);
 		sigInfoGeneratorBuilder.setUnsignedAttributeGenerator(unsignedAttributeGenerator);
