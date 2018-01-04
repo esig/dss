@@ -43,13 +43,13 @@ public enum DigestAlgorithm {
 	SHA512("SHA512", "SHA512", "2.16.840.1.101.3.4.2.3", "http://www.w3.org/2001/04/xmlenc#sha512", 64),
 
 	// see https://tools.ietf.org/html/rfc6931
-	SHA3_224("SHA3224", "SHA3-224", "2.16.840.1.101.3.4.2.7", "http://www.w3.org/2007/05/xmldsig-more#sha3-224", 28),
+	SHA3_224("SHA3-224", "SHA3-224", "2.16.840.1.101.3.4.2.7", "http://www.w3.org/2007/05/xmldsig-more#sha3-224", 28),
 
-	SHA3_256("SHA3256", "SHA3-256", "2.16.840.1.101.3.4.2.8", "http://www.w3.org/2007/05/xmldsig-more#sha3-256", 32),
+	SHA3_256("SHA3-256", "SHA3-256", "2.16.840.1.101.3.4.2.8", "http://www.w3.org/2007/05/xmldsig-more#sha3-256", 32),
 
-	SHA3_384("SHA3384", "SHA3-384", "2.16.840.1.101.3.4.2.9", "http://www.w3.org/2007/05/xmldsig-more#sha3-384", 48),
+	SHA3_384("SHA3-384", "SHA3-384", "2.16.840.1.101.3.4.2.9", "http://www.w3.org/2007/05/xmldsig-more#sha3-384", 48),
 
-	SHA3_512("SHA3512", "SHA3-512", "2.16.840.1.101.3.4.2.10", "http://www.w3.org/2007/05/xmldsig-more#sha3-512", 64),
+	SHA3_512("SHA3-512", "SHA3-512", "2.16.840.1.101.3.4.2.10", "http://www.w3.org/2007/05/xmldsig-more#sha3-512", 64),
 
 	RIPEMD160("RIPEMD160", "RIPEMD160", "1.3.36.3.2.1", "http://www.w3.org/2001/04/xmlenc#ripemd160"),
 
@@ -112,10 +112,9 @@ public enum DigestAlgorithm {
 	 *             if the given name doesn't match any algorithm
 	 */
 	public static DigestAlgorithm forName(final String name) throws DSSException {
-		final String c14nName = name.replaceAll("-", "");
-		final DigestAlgorithm algorithm = Registry.ALGORITHMS.get(c14nName);
+		final DigestAlgorithm algorithm = Registry.ALGORITHMS.get(name);
 		if (algorithm == null) {
-			throw new DSSException("Unsupported algorithm: " + name + "/" + c14nName);
+			throw new DSSException("Unsupported algorithm: " + name + "/" + name);
 		}
 		return algorithm;
 	}
@@ -130,8 +129,7 @@ public enum DigestAlgorithm {
 	 * @return the corresponding {@code DigestAlgorithm} or the default value
 	 */
 	public static DigestAlgorithm forName(final String name, final DigestAlgorithm defaultValue) {
-		final String c14nName = name.replaceAll("-", "");
-		final DigestAlgorithm algorithm = Registry.ALGORITHMS.get(c14nName);
+		final DigestAlgorithm algorithm = Registry.ALGORITHMS.get(name);
 		if (algorithm == null) {
 			return defaultValue;
 		}
