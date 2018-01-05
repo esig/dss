@@ -18,64 +18,69 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.signature;
+package eu.europa.esig.dss.cades.signature;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.MaskGenerationFunction;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.Reports;
 
-public class XAdESLevelBEnvelopedRSAwithSHA3andMGF1Test extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
+public class CAdESLevelBwithSHA3PkiDetachedTest extends AbstractCAdESTestSignature {
 
-	private DocumentSignatureService<XAdESSignatureParameters> service;
-	private XAdESSignatureParameters signatureParameters;
+	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
-		signatureParameters = new XAdESSignatureParameters();
+		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA3_256);
-		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new CAdESService(getCompleteCertificateVerifier());
+
 	}
 
 	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
+	protected Reports getValidationReport(final DSSDocument signedDocument) {
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		detachedContents.add(documentToSign);
+		validator.setDetachedContents(detachedContents);
+		Reports reports = validator.validateDocument();
+		return reports;
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
 		return service;
 	}
 
 	@Override
-	protected XAdESSignatureParameters getSignatureParameters() {
+	protected CAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.XML;
+		return MimeType.PKCS7;
 	}
 
 	@Override
@@ -91,6 +96,11 @@ public class XAdESLevelBEnvelopedRSAwithSHA3andMGF1Test extends AbstractPkiFacto
 	@Override
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return RSA_SHA3_USER;
 	}
 
 }

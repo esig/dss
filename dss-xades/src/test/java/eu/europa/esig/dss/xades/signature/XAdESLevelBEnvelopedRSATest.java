@@ -21,11 +21,17 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 
 import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
@@ -34,11 +40,26 @@ import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureServi
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBEnvelopedTest extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
+@RunWith(Parameterized.class)
+public class XAdESLevelBEnvelopedRSATest extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
+
+	private final DigestAlgorithm digestAlgo;
+
+	@Parameters(name = "DigestAlgorithm {index} : {0}")
+	public static Collection<DigestAlgorithm> data() {
+		return Arrays.asList(DigestAlgorithm.SHA1, DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512,
+				// DigestAlgorithm.SHA3_224, DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384,
+				// DigestAlgorithm.SHA3_512, DigestAlgorithm.MD2,
+				DigestAlgorithm.MD5, DigestAlgorithm.RIPEMD160);
+	}
+
+	public XAdESLevelBEnvelopedRSATest(DigestAlgorithm digestAlgo) {
+		this.digestAlgo = digestAlgo;
+	}
 
 	@Before
 	public void init() throws Exception {
@@ -51,6 +72,7 @@ public class XAdESLevelBEnvelopedTest extends AbstractPkiFactoryTestDocumentSign
 		signatureParameters.setAddX509SubjectName(true);
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		signatureParameters.setDigestAlgorithm(digestAlgo);
 
 		service = new XAdESService(getCompleteCertificateVerifier());
 	}
