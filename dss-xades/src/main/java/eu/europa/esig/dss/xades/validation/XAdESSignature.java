@@ -522,52 +522,34 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				 * returned.
 				 */
 				final byte[] digest = certificateToken.getDigest(digestAlgorithm);
-				certificateValidity.setDigestEqual(false);
-				BigInteger serialNumber = new BigInteger("0");
-				if (Arrays.equals(digest, storedBase64DigestValue)) {
+				boolean digestEqual = Arrays.equals(digest, storedBase64DigestValue);
+				certificateValidity.setDigestEqual(digestEqual);
+
+				if (digestEqual) {
+					BigInteger serialNumber = new BigInteger("0");
 					X500Principal issuerName = null;
 					if (isEn319132) {
 						final Element issuerNameEl = DomUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_V2);
-						if (issuerNameEl != null) {
-							final String textContent = issuerNameEl.getTextContent();
-
-							ASN1InputStream is = null;
-							GeneralName name = null;
-							ASN1Integer serial = null;
-							try {
-								is = new ASN1InputStream(Utils.fromBase64(textContent));
-								ASN1Sequence seq = (ASN1Sequence) is.readObject();
-								ASN1Sequence obj = (ASN1Sequence) seq.getObjectAt(0);
-								name = GeneralName.getInstance(obj.getObjectAt(0));
-								serial = (ASN1Integer) seq.getObjectAt(1);
-							} catch (IOException e) {
-								LOG.error("Unable to decode textContent " + textContent + " : " + e.getMessage(), e);
-							} finally {
-								Utils.closeQuietly(is);
-							}
-
-							try {
+						final String textContent = issuerNameEl.getTextContent();
+						try (ASN1InputStream is = new ASN1InputStream(Utils.fromBase64(textContent))) {
+							ASN1Sequence seq = (ASN1Sequence) is.readObject();
+							ASN1Sequence obj = (ASN1Sequence) seq.getObjectAt(0);
+							GeneralName name = GeneralName.getInstance(obj.getObjectAt(0));
+							if (name != null) {
 								issuerName = new X500Principal(name.getName().toASN1Primitive().getEncoded());
-							} catch (Exception e) {
-								LOG.error("Unable to decode X500Principal : " + e.getMessage(), e);
 							}
 
-							try {
+							ASN1Integer serial = (ASN1Integer) seq.getObjectAt(1);
+							if (serial != null) {
 								serialNumber = serial.getValue();
-							} catch (Exception e) {
-								LOG.error("Unable to decode serialNumber : " + e.getMessage(), e);
 							}
-
+						} catch (Exception e) {
+							LOG.error("Unable to decode textContent '" + textContent + "' : " + e.getMessage(), e);
 						}
 					} else {
 						final Element issuerNameEl = DomUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_NAME);
-						// This can be allayed when the distinguished name is not
-						// correctly encoded
-						// final String textContent =
-						// DSSUtils.unescapeMultiByteUtf8Literals(issuerNameEl.getTextContent());
-						final String textContent = issuerNameEl.getTextContent();
 
-						issuerName = DSSUtils.getX500PrincipalOrNull(textContent);
+						issuerName = DSSUtils.getX500PrincipalOrNull(issuerNameEl.getTextContent());
 
 						final Element serialNumberEl = DomUtils.getElement(element, xPathQueryHolder.XPATH__X509_SERIAL_NUMBER);
 						final String serialNumberText = serialNumberEl.getTextContent();
@@ -577,6 +559,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					final X500Principal candidateIssuerName = certificateToken.getIssuerX500Principal();
 
 					final boolean issuerNameMatches = DSSUtils.x500PrincipalAreEquals(candidateIssuerName, issuerName);
+					certificateValidity.setDistinguishedNameEqual(issuerNameMatches);
 					if (!issuerNameMatches) {
 						final String c14nCandidateIssuerName = candidateIssuerName.getName(X500Principal.CANONICAL);
 						LOG.info("candidateIssuerName: " + c14nCandidateIssuerName);
@@ -586,10 +569,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 					final BigInteger candidateSerialNumber = certificateToken.getSerialNumber();
 					final boolean serialNumberMatches = candidateSerialNumber.equals(serialNumber);
-
-					certificateValidity.setDigestEqual(true);
 					certificateValidity.setSerialNumberEqual(serialNumberMatches);
-					certificateValidity.setDistinguishedNameEqual(issuerNameMatches);
+
 					// The certificate was identified
 					alreadyProcessedElements.put(element, true);
 					// If the signing certificate is not set yet then it must be
