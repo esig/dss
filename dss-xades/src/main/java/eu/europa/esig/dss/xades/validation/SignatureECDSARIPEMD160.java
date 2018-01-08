@@ -28,24 +28,21 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 /**
  * Class SignatureECDSARIPEMD160
  *
- *
  */
 public class SignatureECDSARIPEMD160 extends SignatureECDSA {
 
-    /**
-     * Constructor SignatureECDSARIPEMD160
-     *
-     * @throws XMLSignatureException
-     */
-    public SignatureECDSARIPEMD160() throws XMLSignatureException {
-        super();
-    }
+	/**
+	 * Constructor SignatureECDSARIPEMD160
+	 *
+	 * @throws XMLSignatureException
+	 */
+	public SignatureECDSARIPEMD160() throws XMLSignatureException {
+		super();
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public String engineGetURI() {
+	@Override
+	public String engineGetURI() {
+		return SignatureAlgorithm.ECDSA_RIPEMD160.getXMLId();
+	}
 
-        return SignatureAlgorithm.ECDSA_RIPEMD160.getXMLId();
-    }
 }

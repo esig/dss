@@ -42,6 +42,7 @@
 									<bindingIncludes>
 										<include>bindings.xjb.xml</include>
 									</bindingIncludes>
+									<strict>false</strict>
 									<specVersion>2.1</specVersion>
 								</configuration>
 							</execution>

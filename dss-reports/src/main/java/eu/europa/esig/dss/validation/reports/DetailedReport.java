@@ -34,16 +34,16 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 /**
  * This class represents the detailed report built during the validation process. It contains information on each
  * executed constraint. It is composed among other of the
- * following building blocks:<br/>
- * - Identification of the Signer's Certificate (ISC)<br/>
- * - Validation Context Initialization (VCI)<br/>
- * - X.509 Certificate Validation (XCV)<br/>
- * - Cryptographic Verification (CV)<br/>
- * - Signature Acceptance Validation (SAV)<br/>
- * - Basic Validation Process<br/>
- * - Validation Process for Time-Stamps<br/>
- * - Validation Process for AdES-T<br/>
- * - Validation of LTV forms<br/>
+ * following building blocks:<br>
+ * - Identification of the Signer's Certificate (ISC)<br>
+ * - Validation Context Initialization (VCI)<br>
+ * - X.509 Certificate Validation (XCV)<br>
+ * - Cryptographic Verification (CV)<br>
+ * - Signature Acceptance Validation (SAV)<br>
+ * - Basic Validation Process<br>
+ * - Validation Process for Time-Stamps<br>
+ * - Validation Process for AdES-T<br>
+ * - Validation of LTV forms<br>
  */
 public class DetailedReport {
 
@@ -57,6 +57,7 @@ public class DetailedReport {
 	 * This method returns the result of the Basic Building Block for a token (signature, timestamp, revocation)
 	 * 
 	 * @param tokenId
+	 *            the token identifier
 	 * @return the Indication
 	 */
 	public Indication getBasicBuildingBlocksIndication(String tokenId) {
@@ -73,6 +74,7 @@ public class DetailedReport {
 	 * This method returns the result of the Basic Building Block for a token (signature, timestamp, revocation)
 	 * 
 	 * @param tokenId
+	 *            the token identifier
 	 * @return the SubIndication
 	 */
 	public SubIndication getBasicBuildingBlocksSubIndication(String tokenId) {

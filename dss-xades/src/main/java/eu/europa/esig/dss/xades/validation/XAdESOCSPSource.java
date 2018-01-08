@@ -35,7 +35,7 @@ import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
- * Retrieves OCSP values from an XAdES (>XL) signature.
+ * Retrieves OCSP values from an XAdES (XL/LT) signature.
  *
  */
 public class XAdESOCSPSource extends OfflineOCSPSource {

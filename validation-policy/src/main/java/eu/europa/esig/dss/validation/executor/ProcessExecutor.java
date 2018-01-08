@@ -35,7 +35,8 @@ public interface ProcessExecutor {
 	 * This method allows to set the {@code Date} that is used
 	 * during the validation process execution.
 	 *
-	 * @param diagnosticData
+	 * @param currentDate
+	 *            the current time
 	 */
 	void setCurrentTime(Date currentDate);
 
@@ -45,6 +46,7 @@ public interface ProcessExecutor {
 	 * during the validation process execution.
 	 *
 	 * @param diagnosticData
+	 *            the JAXB diagnostic data
 	 */
 	void setDiagnosticData(DiagnosticData diagnosticData);
 
@@ -71,7 +73,7 @@ public interface ProcessExecutor {
 	/**
 	 * This method allows to run the validation process.
 	 *
-	 * @return {@code Reports}
+	 * @return the {@code Reports}
 	 */
 	Reports execute();
 

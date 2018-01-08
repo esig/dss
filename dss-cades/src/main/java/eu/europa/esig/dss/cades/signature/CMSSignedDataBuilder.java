@@ -45,7 +45,6 @@ import org.bouncycastle.cms.SimpleAttributeTableGenerator;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.util.Store;
 
 import eu.europa.esig.dss.DSSASN1Utils;
@@ -68,7 +67,7 @@ import eu.europa.esig.dss.x509.CertificateToken;
  */
 public class CMSSignedDataBuilder {
 
-	private CertificateVerifier certificateVerifier;
+	private final CertificateVerifier certificateVerifier;
 
 	/**
 	 * This is the default constructor for {@code CMSSignedDataGeneratorBuilder}. The {@code CertificateVerifier} is
@@ -79,7 +78,6 @@ public class CMSSignedDataBuilder {
 	 *            in the context of a signature.
 	 */
 	public CMSSignedDataBuilder(final CertificateVerifier certificateVerifier) {
-
 		this.certificateVerifier = certificateVerifier;
 	}
 
@@ -89,14 +87,14 @@ public class CMSSignedDataBuilder {
 	 * SignedData is present AND (any version 1 attribute certificates are present OR any SignerInfo structures
 	 * are version 3 OR eContentType from encapContentInfo is other than id-data). Otherwise, the CMS
 	 * SignedData version is required to be set to 1.
-	 * ---> CMS SignedData Version is handled automatically by BouncyCastle.
+	 * CMS SignedData Version is handled automatically by BouncyCastle.
 	 *
 	 * @param parameters
 	 *            set of the driving signing parameters
 	 * @param contentSigner
-	 *            the contentSigned to get the hash of the data to be signed
+	 *            the contentSigner to get the hash of the data to be signed
 	 * @param signerInfoGeneratorBuilder
-	 *            true if the unsigned attributes must be included
+	 *            the builder for the signer info generator
 	 * @param originalSignedData
 	 *            the original signed data if extending an existing signature. null otherwise.
 	 * @return the bouncycastle signed data generator which signs the document and adds the required signed and unsigned
@@ -144,6 +142,10 @@ public class CMSSignedDataBuilder {
 	}
 
 	/**
+	 * This method creates a builder of SignerInfoGenerator
+	 * 
+	 * @param digestCalculatorProvider
+	 *            the digest calculator (can be pre-computed)
 	 * @param parameters
 	 *            the parameters of the signature containing values for the attributes
 	 * @param includeUnsignedAttributes
@@ -151,7 +153,8 @@ public class CMSSignedDataBuilder {
 	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the
 	 *         CAdESLevelBaselineB
 	 */
-	SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(final CAdESSignatureParameters parameters, final boolean includeUnsignedAttributes) {
+	SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DigestCalculatorProvider digestCalculatorProvider, final CAdESSignatureParameters parameters,
+			final boolean includeUnsignedAttributes) {
 
 		final CAdESLevelBaselineB cadesProfile = new CAdESLevelBaselineB();
 		final AttributeTable signedAttributes = cadesProfile.getSignedAttributes(parameters);
@@ -160,41 +163,32 @@ public class CMSSignedDataBuilder {
 		if (includeUnsignedAttributes) {
 			unsignedAttributes = cadesProfile.getUnsignedAttributes();
 		}
-		return getSignerInfoGeneratorBuilder(signedAttributes, unsignedAttributes);
+		return getSignerInfoGeneratorBuilder(digestCalculatorProvider, signedAttributes, unsignedAttributes);
 	}
 
 	/**
+	 * This method creates a builder of SignerInfoGenerator
+	 * 
+	 * @param digestCalculatorProvider
+	 *            the digest calculator (can be pre-computed)
 	 * @param signedAttributes
 	 *            the signedAttributes
 	 * @param unsignedAttributes
 	 *            the unsignedAttributes
 	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the parameters
 	 */
-	private SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(AttributeTable signedAttributes, AttributeTable unsignedAttributes) {
+	private SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DigestCalculatorProvider digestCalculatorProvider, AttributeTable signedAttributes,
+			AttributeTable unsignedAttributes) {
 
-		if ((signedAttributes != null) && (signedAttributes.size() == 0)) {
+		if (DSSASN1Utils.isEmpty(signedAttributes)) {
 			signedAttributes = null;
 		}
 		final DefaultSignedAttributeTableGenerator signedAttributeGenerator = new DefaultSignedAttributeTableGenerator(signedAttributes);
-		if ((unsignedAttributes != null) && (unsignedAttributes.size() == 0)) {
+		if (DSSASN1Utils.isEmpty(unsignedAttributes)) {
 			unsignedAttributes = null;
 		}
 		final SimpleAttributeTableGenerator unsignedAttributeGenerator = new SimpleAttributeTableGenerator(unsignedAttributes);
 
-		return getSignerInfoGeneratorBuilder(signedAttributeGenerator, unsignedAttributeGenerator);
-	}
-
-	/**
-	 * @param signedAttributeGenerator
-	 *            the signedAttribute generator
-	 * @param unsignedAttributeGenerator
-	 *            the unsignedAttribute generator
-	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the parameters
-	 */
-	private SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DefaultSignedAttributeTableGenerator signedAttributeGenerator,
-			SimpleAttributeTableGenerator unsignedAttributeGenerator) {
-
-		final DigestCalculatorProvider digestCalculatorProvider = new BcDigestCalculatorProvider();
 		SignerInfoGeneratorBuilder sigInfoGeneratorBuilder = new SignerInfoGeneratorBuilder(digestCalculatorProvider);
 		sigInfoGeneratorBuilder.setSignedAttributeGenerator(signedAttributeGenerator);
 		sigInfoGeneratorBuilder.setUnsignedAttributeGenerator(unsignedAttributeGenerator);
@@ -205,10 +199,8 @@ public class CMSSignedDataBuilder {
 	 * The order of the certificates is important, the fist one must be the signing certificate.
 	 *
 	 * @return a store with the certificate chain of the signing certificate. The {@code Collection} is unique.
-	 * @throws CertificateEncodingException
 	 */
 	private JcaCertStore getJcaCertStore(final Collection<CertificateToken> certificateChain, CAdESSignatureParameters parameters) {
-
 		BaselineBCertificateSelector certificateSelectors = new BaselineBCertificateSelector(certificateVerifier, parameters);
 		List<CertificateToken> certificatesToAdd = certificateSelectors.getCertificates();
 		for (CertificateToken certificateToken : certificatesToAdd) {

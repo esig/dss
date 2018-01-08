@@ -18,73 +18,79 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package known.issues;
+package eu.europa.esig.dss.cades.signature;
 
-import java.io.File;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 
-import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.signature.AbstractPAdESTestSignature;
-import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.TimestampType;
 
-public class PAdESLevelBWithContentTimestampTest extends AbstractPAdESTestSignature {
+@RunWith(Parameterized.class)
+public class CAdESLevelBRSATest extends AbstractCAdESTestSignature {
 
-	private DocumentSignatureService<PAdESSignatureParameters> service;
-	private PAdESSignatureParameters signatureParameters;
+	private static final String HELLO_WORLD = "Hello World";
+
+	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
+
+	private final DigestAlgorithm digestAlgo;
+
+	@Parameters(name = "DigestAlgorithm {index} : {0}")
+	public static Collection<DigestAlgorithm> data() {
+		return Arrays.asList(DigestAlgorithm.SHA1, DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512,
+				// See DefaultCMSSignatureEncryptionAlgorithmFinder and DefaultCMSSignatureAlgorithmNameGenerator
+				// DigestAlgorithm.SHA3_224, DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384,
+				// DigestAlgorithm.SHA3_512,
+				DigestAlgorithm.RIPEMD160, DigestAlgorithm.MD2, DigestAlgorithm.MD5);
+	}
+
+	public CAdESLevelBRSATest(DigestAlgorithm digestAlgo) {
+		this.digestAlgo = digestAlgo;
+	}
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new FileDocument(new File("src/test/resources/sample.pdf"));
+		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
-		OnlineTSPSource tspSource = getGoodTsa();
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256,
-				DSSUtils.digest(DigestAlgorithm.SHA256, DSSUtils.toByteArray(documentToSign)));
-		TimestampToken token = new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP, new CertificatePool());
-
-		signatureParameters = new PAdESSignatureParameters();
+		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-		signatureParameters.setContentTimestamps(Arrays.asList(token));
+		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		signatureParameters.setDigestAlgorithm(digestAlgo);
 
-		service = new PAdESService(getCompleteCertificateVerifier());
+		service = new CAdESService(getCompleteCertificateVerifier());
+
 	}
 
 	@Override
-	protected DocumentSignatureService<PAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
 		return service;
 	}
 
 	@Override
-	protected PAdESSignatureParameters getSignatureParameters() {
+	protected CAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.PDF;
-	}
-
-	@Override
-	protected boolean hasContentTimestamp() {
-		return true;
+		return MimeType.PKCS7;
 	}
 
 	@Override

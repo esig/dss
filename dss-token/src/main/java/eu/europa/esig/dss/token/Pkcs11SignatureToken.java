@@ -55,6 +55,7 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	 * Create the SignatureTokenConnection, using the provided path for the library.
 	 *
 	 * @param pkcs11Path
+	 *            the path for the library (.dll, .so)
 	 */
 	public Pkcs11SignatureToken(String pkcs11Path) {
 		this(pkcs11Path, (PasswordInputCallback) null);
@@ -65,7 +66,9 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	 * from the user. The default constructor for CallbackPkcs11SignatureToken.
 	 *
 	 * @param pkcs11Path
+	 *            the path for the library (.dll, .so)
 	 * @param callback
+	 *            the callback to enter the pin code / password
 	 */
 	public Pkcs11SignatureToken(String pkcs11Path, PasswordInputCallback callback) {
 		this._pkcs11Path = pkcs11Path;
@@ -78,7 +81,9 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	 * using the provided password. The default constructor for CallbackPkcs11SignatureToken.
 	 *
 	 * @param pkcs11Path
+	 *            the path for the library (.dll, .so)
 	 * @param password
+	 *            the pin code / password to use
 	 */
 	public Pkcs11SignatureToken(String pkcs11Path, char[] password) {
 		this(pkcs11Path, new PrefilledPasswordCallback(password));
@@ -89,8 +94,11 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	 * This create a SignatureTokenConnection and the keys will be accessed using the provided password.
 	 *
 	 * @param pkcs11Path
+	 *            the path for the library (.dll, .so)
 	 * @param callback
+	 *            the callback to enter the pin code / password
 	 * @param slotIndex
+	 *            the slotIndex to use
 	 */
 	public Pkcs11SignatureToken(String pkcs11Path, PasswordInputCallback callback, int slotIndex) {
 		this(pkcs11Path, callback);
@@ -103,8 +111,11 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	 * password from the user.
 	 *
 	 * @param pkcs11Path
+	 *            the path for the library (.dll, .so)
 	 * @param password
+	 *            the pin code / password to use
 	 * @param slotIndex
+	 *            the slotIndex to use
 	 */
 	public Pkcs11SignatureToken(String pkcs11Path, char[] password, int slotIndex) {
 		this(pkcs11Path, password);

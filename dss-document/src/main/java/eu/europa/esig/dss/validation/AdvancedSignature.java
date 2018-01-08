@@ -178,12 +178,9 @@ public interface AdvancedSignature extends Serializable {
 
 	/**
 	 * Verifies the signature integrity; checks if the signed content has not been tampered with. In the case of a
-	 * non-AdES signature no including the signing certificate then the
-	 * latter must be provided by calling {@code setProvidedSigningCertificateToken} In the case of a detached signature
-	 * the signed content must be provided by calling {@code
-	 * setProvidedSigningCertificateToken}
-	 *
-	 * @return SignatureCryptographicVerification with all the information collected during the validation process.
+	 * non-AdES signature no including the signing certificate then the latter must be provided by calling
+	 * {@code setProvidedSigningCertificateToken} In the case of a detached signature the signed content must be
+	 * provided by calling {@code setProvidedSigningCertificateToken}
 	 */
 	void checkSignatureIntegrity();
 

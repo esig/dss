@@ -21,6 +21,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -30,6 +31,7 @@ import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -217,16 +219,21 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	}
 
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-		String signingCertificateId = diagnosticData.getSigningCertificateId();
+		String signingCertificateId = diagnosticData.getFirstSigningCertificateId();
 		String certificateDN = diagnosticData.getCertificateDN(signingCertificateId);
 		String certificateSerialNumber = diagnosticData.getCertificateSerialNumber(signingCertificateId);
 		CertificateToken certificate = getToken().getKey(getSigningAlias()).getCertificate();
 		assertEquals(certificate.getSubjectX500Principal().getName(X500Principal.RFC2253), certificateDN);
 		assertEquals(certificate.getSerialNumber().toString(), certificateSerialNumber);
+
+		SignatureAlgorithm signatureAlgorithm = certificate.getSignatureAlgorithm();
+		CertificateWrapper certificateWrapper = diagnosticData.getUsedCertificateById(signingCertificateId);
+		assertEquals(signatureAlgorithm.getDigestAlgorithm(), certificateWrapper.getDigestAlgorithm());
+		assertEquals(signatureAlgorithm.getEncryptionAlgorithm(), certificateWrapper.getEncryptionAlgorithm());
 	}
 
 	protected void checkIssuerSigningCertificateValue(DiagnosticData diagnosticData) {
-		String signingCertificateId = diagnosticData.getSigningCertificateId();
+		String signingCertificateId = diagnosticData.getFirstSigningCertificateId();
 		String issuerDN = diagnosticData.getCertificateIssuerDN(signingCertificateId);
 		CertificateToken certificate = getToken().getKey(getSigningAlias()).getCertificate();
 		assertEquals(certificate.getIssuerX500Principal().getName(X500Principal.RFC2253), issuerDN);
@@ -235,7 +242,9 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	protected void checkCertificateChain(DiagnosticData diagnosticData) {
 		KSPrivateKeyEntry entry = getToken().getKey(getSigningAlias());
 		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
-		assertEquals(entry.getCertificateChain().length, signatureCertificateChain.size());
+		assertTrue(Utils.isCollectionNotEmpty(signatureCertificateChain));
+		// upper certificate than trust anchors are ignored
+		assertTrue(entry.getCertificateChain().length >= signatureCertificateChain.size());
 	}
 
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
@@ -310,7 +319,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	}
 
 	protected void checkSigningDate(DiagnosticData diagnosticData) {
-		Date signatureDate = diagnosticData.getSignatureDate();
+		Date signatureDate = diagnosticData.getFirstSignatureDate();
 		Date originalSigningDate = getSignatureParameters().bLevel().getSigningDate();
 
 		// Date in signed documents is truncated

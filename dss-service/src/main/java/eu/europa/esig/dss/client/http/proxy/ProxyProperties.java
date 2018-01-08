@@ -67,7 +67,7 @@ public class ProxyProperties {
 	/**
 	 * Set the proxy user
 	 * 
-	 * @param port
+	 * @param user
 	 *            the user to use
 	 */
 	public void setUser(String user) {
@@ -86,7 +86,7 @@ public class ProxyProperties {
 	/**
 	 * Set the proxy password
 	 * 
-	 * @param port
+	 * @param password
 	 *            the password to use
 	 */
 	public void setPassword(String password) {
@@ -105,7 +105,7 @@ public class ProxyProperties {
 	/**
 	 * Set the excluded hosts (can be seperated by ',', ';' or ' ')
 	 * 
-	 * @param port
+	 * @param excludedHosts
 	 *            the excluded hosts (can be seperated by ',', ';' or ' ')
 	 */
 	public void setExcludedHosts(String excludedHosts) {

@@ -53,22 +53,22 @@ public abstract class Token implements Serializable {
 	 */
 	protected X500Principal issuerX500Principal;
 
-	/*
+	/**
 	 * Indicates the token signature is valid.
 	 */
 	protected boolean signatureValid = false;
 
-	/*
+	/**
 	 * Indicates the token signature invalidity reason.
 	 */
 	protected String signatureInvalidityReason = "";
 
-	/*
+	/**
 	 * The algorithm that was used to sign the token.
 	 */
 	protected SignatureAlgorithm signatureAlgorithm;
 
-	/*
+	/**
 	 * Extra information collected during the validation process.
 	 */
 	protected TokenValidationExtraInfo extraInfo;
@@ -103,7 +103,7 @@ public abstract class Token implements Serializable {
 	 * method always returns false. This method was introduced in order to manage in a uniform manner the different
 	 * tokens.
 	 *
-	 * @return
+	 * @return true if the token is trusted
 	 */
 	public boolean isTrusted() {
 		return false;
@@ -113,14 +113,16 @@ public abstract class Token implements Serializable {
 	 * Checks if the certificate is self-signed. For all tokens different from CertificateToken this method always
 	 * returns false. This method was introduced in order to manage in a uniform manner the different tokens.
 	 *
-	 * @return
+	 * @return true if the token is self-signed
 	 */
 	public boolean isSelfSigned() {
 		return false;
 	}
 
 	/**
-	 * Returns a DSS unique token identifier. Used by CertificateToken & TimestampToken.
+	 * Returns a DSS unique token identifier.
+	 * 
+	 * @return an instance of TokenIdentifier
 	 */
 	public TokenIdentifier getDSSId() {
 		if (tokenIdentifier == null) {
@@ -131,6 +133,8 @@ public abstract class Token implements Serializable {
 
 	/**
 	 * Returns a string representation of the unique DSS token identifier.
+	 * 
+	 * @return the unique string for the token
 	 */
 	public String getDSSIdAsString() {
 		if (dssId == null) {
@@ -142,7 +146,7 @@ public abstract class Token implements Serializable {
 	/**
 	 * Returns the {@code X500Principal} of the certificate which was used to sign this token.
 	 *
-	 * @return
+	 * @return the issuer's {@code X500Principal}
 	 */
 	public X500Principal getIssuerX500Principal() {
 		return issuerX500Principal;
@@ -152,7 +156,7 @@ public abstract class Token implements Serializable {
 	 * It returns the issuer certificate token that was used to sign this token (CertificateToken, CRLToken,
 	 * OCSPRespToken, TimestampToken).
 	 *
-	 * @return
+	 * @return the issuer certificate token
 	 */
 	public CertificateToken getIssuerToken() {
 		return issuerToken;
@@ -166,14 +170,15 @@ public abstract class Token implements Serializable {
 	 * that the signer's certificate was found.
 	 *
 	 * @param issuerToken
-	 * @return
+	 *            the issuer to be tested
+	 * @return true if this token is signed by the given certificate token
 	 */
 	public abstract boolean isSignedBy(CertificateToken issuerToken);
 
 	/**
 	 * Returns the additional information gathered during the validation process.
 	 *
-	 * @return
+	 * @return additional validation information
 	 */
 	public List<String> getValidationInfo() {
 		return extraInfo.getValidationInfo();
@@ -182,7 +187,7 @@ public abstract class Token implements Serializable {
 	/**
 	 * This method returns the DSS abbreviation of the token. It is used for debugging purpose.
 	 *
-	 * @return
+	 * @return an abbreviation for the certificate
 	 */
 	public String getAbbreviation() {
 		return "?";
@@ -191,7 +196,7 @@ public abstract class Token implements Serializable {
 	/**
 	 * Returns the algorithm that was used to sign the token (ex: SHA1WithRSAEncryption, SHA1withRSA...).
 	 *
-	 * @return
+	 * @return the used signature algorithm to sign this token
 	 */
 	public SignatureAlgorithm getSignatureAlgorithm() {
 		return signatureAlgorithm;
@@ -201,7 +206,7 @@ public abstract class Token implements Serializable {
 	 * Indicates if the token's signature is intact. For each kind of token the method isSignedBy(CertificateToken) must
 	 * be called to set this flag. Except if the token is trusted: the signature signature is assumed to be valid.
 	 *
-	 * @return
+	 * @return true if the signature is valid or trusted
 	 */
 	public boolean isSignatureValid() {
 		return isTrusted() || signatureValid;
@@ -210,17 +215,18 @@ public abstract class Token implements Serializable {
 	/**
 	 * Returns the object managing the validation extra info.
 	 *
-	 * @return
+	 * @return additional validation information
 	 */
 	public TokenValidationExtraInfo extraInfo() {
 		return extraInfo;
 	}
 
 	/**
-	 * returns a string representation of the token.
+	 * Returns a string representation of the token.
 	 *
 	 * @param indentStr
-	 * @return
+	 *            the indentation to use
+	 * @return string representation of the token
 	 */
 	public abstract String toString(String indentStr);
 

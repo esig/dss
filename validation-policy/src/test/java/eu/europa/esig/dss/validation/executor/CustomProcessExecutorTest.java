@@ -662,20 +662,16 @@ public class CustomProcessExecutorTest {
 
 	private EtsiValidationPolicy loadPolicy() throws Exception {
 		FileInputStream policyFis = new FileInputStream("src/main/resources/policy/constraint.xml");
-		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class);
+		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class, "/xsd/policy.xsd");
 		assertNotNull(policyJaxB);
 		return new EtsiValidationPolicy(policyJaxB);
 	}
 
 	private EtsiValidationPolicy loadPolicyNoRevoc() throws Exception {
 		FileInputStream policyFis = new FileInputStream("src/test/resources/constraint-no-revoc.xml");
-		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class);
+		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class, "/xsd/policy.xsd");
 		assertNotNull(policyJaxB);
 		return new EtsiValidationPolicy(policyJaxB);
-	}
-
-	private <T extends Object> T getJAXBObjectFromString(InputStream is, Class<T> clazz) throws Exception {
-		return getJAXBObjectFromString(is, clazz, null);
 	}
 
 	@SuppressWarnings("unchecked")

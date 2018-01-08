@@ -30,7 +30,6 @@ import org.bouncycastle.util.BigIntegers;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.EncryptionAlgorithm;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This is the utility class to manipulate different signature types.
@@ -47,7 +46,8 @@ public final class DSSSignatureUtils {
 	 * @param algorithm
 	 *            Signature algorithm used to create the signatureValue
 	 * @param signatureValue
-	 * @return
+	 *            the original signature value
+	 * @return the converted signature value
 	 */
 	public static byte[] convertToXmlDSig(final EncryptionAlgorithm algorithm, byte[] signatureValue) {
 		if (EncryptionAlgorithm.ECDSA == algorithm && isAsn1Encoded(signatureValue)) {
@@ -119,15 +119,11 @@ public final class DSSSignatureUtils {
 	 * @return if the signature is ASN.1 encoded.
 	 */
 	private static boolean isAsn1Encoded(byte[] signatureValue) {
-		ASN1InputStream is = null;
-		try {
-			is = new ASN1InputStream(signatureValue);
+		try (ASN1InputStream is = new ASN1InputStream(signatureValue)) {
 			ASN1Sequence seq = (ASN1Sequence) is.readObject();
 			return seq != null && seq.size() == 2;
 		} catch (Exception e) {
 			return false;
-		} finally {
-			Utils.closeQuietly(is);
 		}
 	}
 

@@ -2,13 +2,10 @@ package eu.europa.esig.dss.cades;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Hashtable;
 
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERTaggedObject;
-import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
@@ -59,7 +56,7 @@ public final class CMSUtils {
 	 * @return
 	 * @throws DSSException
 	 */
-	public static CMSSignedData generateCMSSignedData(final CMSSignedDataGenerator generator, final CMSProcessableByteArray content, final boolean encapsulate)
+	public static CMSSignedData generateCMSSignedData(final CMSSignedDataGenerator generator, final CMSTypedData content, final boolean encapsulate)
 			throws DSSException {
 		try {
 			final CMSSignedData cmsSignedData = generator.generate(content, encapsulate);
@@ -122,11 +119,7 @@ public final class CMSUtils {
 	 */
 	public static AttributeTable getUnsignedAttributes(final SignerInformation signerInformation) {
 		final AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
-		if (unsignedAttributes == null) {
-			return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Attribute>());
-		} else {
-			return unsignedAttributes;
-		}
+		return DSSASN1Utils.emptyIfNull(unsignedAttributes);
 	}
 
 	/**
@@ -138,11 +131,7 @@ public final class CMSUtils {
 	 */
 	public static AttributeTable getSignedAttributes(final SignerInformation signerInformation) {
 		final AttributeTable signedAttributes = signerInformation.getSignedAttributes();
-		if (signedAttributes == null) {
-			return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Attribute>());
-		} else {
-			return signedAttributes;
-		}
+		return DSSASN1Utils.emptyIfNull(signedAttributes);
 	}
 
 	/**

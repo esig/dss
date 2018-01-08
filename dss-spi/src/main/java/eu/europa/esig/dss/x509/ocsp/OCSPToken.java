@@ -245,12 +245,6 @@ public class OCSPToken extends RevocationToken {
 		return signatureValid;
 	}
 
-	/**
-	 * This method returns the DSS abbreviation of the certificate. It is used
-	 * for debugging purpose.
-	 *
-	 * @return
-	 */
 	@Override
 	public String getAbbreviation() {
 		return "OCSPToken[" + (basicOCSPResp == null ? "?" : DSSUtils.formatInternal(basicOCSPResp.getProducedAt())) + ", signedBy="

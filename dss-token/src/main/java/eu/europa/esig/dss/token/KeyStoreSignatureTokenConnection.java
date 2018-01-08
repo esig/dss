@@ -36,8 +36,11 @@ public class KeyStoreSignatureTokenConnection extends AbstractKeyStoreTokenConne
 	 * If you want to specify a separate private key password use the {@link #getKey(String, String)} method.
 	 * 
 	 * @param ksStream
+	 *            the inputstream which contains the keystore
 	 * @param ksType
+	 *            the keystore type
 	 * @param ksPassword
+	 *            the keystore password
 	 */
 	public KeyStoreSignatureTokenConnection(InputStream ksStream, String ksType, String ksPassword) {
 		try {

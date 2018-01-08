@@ -18,58 +18,77 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.cades.signature;
+package eu.europa.esig.dss.xades.signature;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class CAdESLevelBSHA512Test extends AbstractCAdESTestSignature {
+public class XAdESLevelBDetachedNoFilenameTest extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
 
-	private static final String HELLO_WORLD = "Hello World";
-
-	private DocumentSignatureService<CAdESSignatureParameters> service;
-	private CAdESSignatureParameters signatureParameters;
+	private DocumentSignatureService<XAdESSignatureParameters> service;
+	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
+		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
-		signatureParameters = new CAdESSignatureParameters();
+		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
-		service = new CAdESService(getCompleteCertificateVerifier());
-
+		service = new XAdESService(getCompleteCertificateVerifier());
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	protected String getSigningAlias() {
+		return GOOD_USER;
+	}
+
+	@Override
+	protected Reports getValidationReport(final DSSDocument signedDocument) {
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		// DSS-1290
+		documentToSign.setName(null);
+		detachedContents.add(documentToSign);
+		validator.setDetachedContents(detachedContents);
+		Reports reports = validator.validateDocument();
+		return reports;
+	}
+
+	@Override
+	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
 		return service;
 	}
 
 	@Override
-	protected CAdESSignatureParameters getSignatureParameters() {
+	protected XAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.PKCS7;
+		return MimeType.XML;
 	}
 
 	@Override
@@ -85,11 +104,6 @@ public class CAdESLevelBSHA512Test extends AbstractCAdESTestSignature {
 	@Override
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
 	}
 
 }

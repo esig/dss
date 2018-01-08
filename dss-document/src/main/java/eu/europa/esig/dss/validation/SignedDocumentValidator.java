@@ -246,7 +246,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * contains the constraint file. If null or empty the default file is used.
 	 *
 	 * @param policyDataStream
-	 *            {@code InputStream}
+	 *            the {@code InputStream} with the validation policy
+	 * @return the validation reports
 	 */
 	@Override
 	public Reports validateDocument(final InputStream policyDataStream) {
@@ -259,9 +260,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * {@code validationPolicyDom} contains the constraint file. If null or
 	 * empty the default file is used.
 	 *
-	 * @param validationPolicyDom
-	 *            {@code Document}
-	 * @return
+	 * @param validationPolicyJaxb
+	 *            the {@code ConstraintsParameters} to use in the validation process
+	 * @return the validation reports
 	 */
 	@Override
 	public Reports validateDocument(final ConstraintsParameters validationPolicyJaxb) {
@@ -275,8 +276,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * empty the default file is used.
 	 *
 	 * @param validationPolicy
-	 *            {@code ValidationPolicy}
-	 * @return
+	 *            the {@code ValidationPolicy} to use in the validation process
+	 * @return the validation reports
 	 */
 	@Override
 	public Reports validateDocument(final ValidationPolicy validationPolicy) {
@@ -336,7 +337,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * This method allows to retrieve the container information (ASiC Container)
 	 * 
-	 * @return
+	 * @return the container information
 	 */
 	protected ContainerInfo getContainerInfo() {
 		return null;

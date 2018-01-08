@@ -20,29 +20,55 @@
  */
 package eu.europa.esig.dss.validation.policy.rules;
 
+/**
+ * Sub indication values
+ * 
+ * Source ETSI EN 319 102-1
+ */
 public enum SubIndication {
 
 	NO_SIGNING_CERTIFICATE_FOUND,
+
 	FORMAT_FAILURE,
+
 	POLICY_PROCESSING_ERROR,
+
 	SIGNATURE_POLICY_NOT_AVAILABLE,
+
 	OUT_OF_BOUNDS_NO_POE,
+
 	NO_CERTIFICATE_CHAIN_FOUND,
+
 	TRY_LATER,
+
 	REVOKED_NO_POE,
+
 	REVOKED_CA_NO_POE,
+
 	CHAIN_CONSTRAINTS_FAILURE,
+
 	CRYPTO_CONSTRAINTS_FAILURE,
+
 	CRYPTO_CONSTRAINTS_FAILURE_NO_POE,
+
 	SIGNED_DATA_NOT_FOUND,
+
 	HASH_FAILURE,
+
 	SIG_CRYPTO_FAILURE,
+
 	SIG_CONSTRAINTS_FAILURE,
+
 	NOT_YET_VALID,
+
 	TIMESTAMP_ORDER_FAILURE,
+
 	REVOKED,
+
 	EXPIRED,
+
 	NO_POE,
+
 	CERTIFICATE_CHAIN_GENERAL_FAILURE,
 
 	/**
@@ -52,6 +78,10 @@ public enum SubIndication {
 
 	/**
 	 * SubIndication can be null
+	 * 
+	 * @param value
+	 *            the string value to be converted
+	 * @return the related SubIndication
 	 */
 	public static SubIndication forName(String value) {
 		if ((value != null) && !value.isEmpty()) {

@@ -110,7 +110,7 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource {
 	/**
 	 * Retrieves the list of all certificate tokens from this source.
 	 *
-	 * @return
+	 * @return list of all certificate tokens from this source
 	 */
 	@Override
 	public List<CertificateToken> getCertificates() {

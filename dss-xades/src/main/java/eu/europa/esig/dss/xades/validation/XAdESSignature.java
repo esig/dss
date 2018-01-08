@@ -55,6 +55,7 @@ import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -64,7 +65,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSNotETSICompliantException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
@@ -101,6 +101,10 @@ import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
 import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.validation.SignatureRSAwithSHA3andMGF1Support.SignatureRSASHA3224MGF1;
+import eu.europa.esig.dss.xades.validation.SignatureRSAwithSHA3andMGF1Support.SignatureRSASHA3256MGF1;
+import eu.europa.esig.dss.xades.validation.SignatureRSAwithSHA3andMGF1Support.SignatureRSASHA3384MGF1;
+import eu.europa.esig.dss.xades.validation.SignatureRSAwithSHA3andMGF1Support.SignatureRSASHA3512MGF1;
 
 /**
  * Parse an XAdES signature structure. Note that for each signature to be validated a new instance of this object must
@@ -153,6 +157,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	static {
 
 		Init.init();
+		JCEMapper.setProviderId(BouncyCastleProvider.PROVIDER_NAME);
 
 		/**
 		 * Adds the support of ECDSA_RIPEMD160 for XML signature. Used by AT. The BC provider must be previously added.
@@ -181,15 +186,37 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		} catch (Exception e) {
 			LOG.error("ECDSA_RIPEMD160AT algorithm initialisation failed.", e);
 		}
+
+		try {
+			String rsaRequiredKey = "RSA";
+			String algorithmClass = "Signature";
+			JCEMapper.register(SignatureRSASHA3224MGF1.XML_ID,
+					new JCEMapper.Algorithm(rsaRequiredKey, SignatureAlgorithm.RSA_SSA_PSS_SHA3_224_MGF1.getJCEId(), algorithmClass));
+			org.apache.xml.security.algorithms.SignatureAlgorithm.register(SignatureRSASHA3224MGF1.XML_ID, SignatureRSASHA3224MGF1.class);
+
+			JCEMapper.register(SignatureRSASHA3256MGF1.XML_ID,
+					new JCEMapper.Algorithm(rsaRequiredKey, SignatureAlgorithm.RSA_SSA_PSS_SHA3_256_MGF1.getJCEId(), algorithmClass));
+			org.apache.xml.security.algorithms.SignatureAlgorithm.register(SignatureRSASHA3256MGF1.XML_ID, SignatureRSASHA3256MGF1.class);
+
+			JCEMapper.register(SignatureRSASHA3384MGF1.XML_ID,
+					new JCEMapper.Algorithm(rsaRequiredKey, SignatureAlgorithm.RSA_SSA_PSS_SHA3_384_MGF1.getJCEId(), algorithmClass));
+			org.apache.xml.security.algorithms.SignatureAlgorithm.register(SignatureRSASHA3384MGF1.XML_ID, SignatureRSASHA3384MGF1.class);
+
+			JCEMapper.register(SignatureRSASHA3512MGF1.XML_ID,
+					new JCEMapper.Algorithm(rsaRequiredKey, SignatureAlgorithm.RSA_SSA_PSS_SHA3_512_MGF1.getJCEId(), algorithmClass));
+			org.apache.xml.security.algorithms.SignatureAlgorithm.register(SignatureRSASHA3512MGF1.XML_ID, SignatureRSASHA3512MGF1.class);
+		} catch (Exception e) {
+			LOG.error("Unable to register RSA_PSS with SHA3 algorithms", e);
+		}
 	}
 
 	/**
 	 * This constructor is used when creating the signature. The default {@code XPathQueryHolder} is set.
 	 *
 	 * @param signatureElement
-	 *            w3c.dom <ds:Signature> element
+	 *            the signature DOM element
 	 * @param certPool
-	 *            can be null
+	 *            the certificate pool (can be null)
 	 */
 	public XAdESSignature(final Element signatureElement, final CertificatePool certPool) {
 		this(signatureElement, Arrays.asList(new XPathQueryHolder()), certPool);
@@ -199,11 +226,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * The default constructor for XAdESSignature.
 	 *
 	 * @param signatureElement
-	 *            w3c.dom <ds:Signature> element
+	 *            the signature DOM element
 	 * @param xPathQueryHolders
 	 *            List of {@code XPathQueryHolder} to use when handling signature
 	 * @param certPool
-	 *            can be null
+	 *            the certificate pool (can be null)
 	 */
 	public XAdESSignature(final Element signatureElement, final List<XPathQueryHolder> xPathQueryHolders, final CertificatePool certPool) {
 		super(certPool);
@@ -495,52 +522,34 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				 * returned.
 				 */
 				final byte[] digest = certificateToken.getDigest(digestAlgorithm);
-				certificateValidity.setDigestEqual(false);
-				BigInteger serialNumber = new BigInteger("0");
-				if (Arrays.equals(digest, storedBase64DigestValue)) {
+				boolean digestEqual = Arrays.equals(digest, storedBase64DigestValue);
+				certificateValidity.setDigestEqual(digestEqual);
+
+				if (digestEqual) {
+					BigInteger serialNumber = new BigInteger("0");
 					X500Principal issuerName = null;
 					if (isEn319132) {
 						final Element issuerNameEl = DomUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_V2);
-						if (issuerNameEl != null) {
-							final String textContent = issuerNameEl.getTextContent();
-
-							ASN1InputStream is = null;
-							GeneralName name = null;
-							ASN1Integer serial = null;
-							try {
-								is = new ASN1InputStream(Utils.fromBase64(textContent));
-								ASN1Sequence seq = (ASN1Sequence) is.readObject();
-								ASN1Sequence obj = (ASN1Sequence) seq.getObjectAt(0);
-								name = GeneralName.getInstance(obj.getObjectAt(0));
-								serial = (ASN1Integer) seq.getObjectAt(1);
-							} catch (IOException e) {
-								LOG.error("Unable to decode textContent " + textContent + " : " + e.getMessage(), e);
-							} finally {
-								Utils.closeQuietly(is);
-							}
-
-							try {
+						final String textContent = issuerNameEl.getTextContent();
+						try (ASN1InputStream is = new ASN1InputStream(Utils.fromBase64(textContent))) {
+							ASN1Sequence seq = (ASN1Sequence) is.readObject();
+							ASN1Sequence obj = (ASN1Sequence) seq.getObjectAt(0);
+							GeneralName name = GeneralName.getInstance(obj.getObjectAt(0));
+							if (name != null) {
 								issuerName = new X500Principal(name.getName().toASN1Primitive().getEncoded());
-							} catch (Exception e) {
-								LOG.error("Unable to decode X500Principal : " + e.getMessage(), e);
 							}
 
-							try {
+							ASN1Integer serial = (ASN1Integer) seq.getObjectAt(1);
+							if (serial != null) {
 								serialNumber = serial.getValue();
-							} catch (Exception e) {
-								LOG.error("Unable to decode serialNumber : " + e.getMessage(), e);
 							}
-
+						} catch (Exception e) {
+							LOG.error("Unable to decode textContent '" + textContent + "' : " + e.getMessage(), e);
 						}
 					} else {
 						final Element issuerNameEl = DomUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_NAME);
-						// This can be allayed when the distinguished name is not
-						// correctly encoded
-						// final String textContent =
-						// DSSUtils.unescapeMultiByteUtf8Literals(issuerNameEl.getTextContent());
-						final String textContent = issuerNameEl.getTextContent();
 
-						issuerName = DSSUtils.getX500PrincipalOrNull(textContent);
+						issuerName = DSSUtils.getX500PrincipalOrNull(issuerNameEl.getTextContent());
 
 						final Element serialNumberEl = DomUtils.getElement(element, xPathQueryHolder.XPATH__X509_SERIAL_NUMBER);
 						final String serialNumberText = serialNumberEl.getTextContent();
@@ -550,6 +559,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					final X500Principal candidateIssuerName = certificateToken.getIssuerX500Principal();
 
 					final boolean issuerNameMatches = DSSUtils.x500PrincipalAreEquals(candidateIssuerName, issuerName);
+					certificateValidity.setDistinguishedNameEqual(issuerNameMatches);
 					if (!issuerNameMatches) {
 						final String c14nCandidateIssuerName = candidateIssuerName.getName(X500Principal.CANONICAL);
 						LOG.info("candidateIssuerName: " + c14nCandidateIssuerName);
@@ -559,10 +569,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 					final BigInteger candidateSerialNumber = certificateToken.getSerialNumber();
 					final boolean serialNumberMatches = candidateSerialNumber.equals(serialNumber);
-
-					certificateValidity.setDigestEqual(true);
 					certificateValidity.setSerialNumberEqual(serialNumberMatches);
-					certificateValidity.setDistinguishedNameEqual(issuerNameMatches);
+
 					// The certificate was identified
 					alreadyProcessedElements.put(element, true);
 					// If the signing certificate is not set yet then it must be
@@ -870,17 +878,17 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * Checks the presence of ... segment in the signature, what is the proof -B profile existence
 	 *
-	 * @return
+	 * @return true if B Profile is detected
 	 */
 	public boolean hasBProfile() {
 		return DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_SIGNED_SIGNATURE_PROPERTIES);
 	}
 
 	/**
-	 * Checks the presence of CompleteCertificateRefs & CompleteRevocationRefs segments in the signature, what is the
+	 * Checks the presence of CompleteCertificateRefs and CompleteRevocationRefs segments in the signature, what is the
 	 * proof -C profile existence
 	 *
-	 * @return
+	 * @return true if C Profile is detected
 	 */
 	public boolean hasCProfile() {
 		final boolean certRefs = DomUtils.isNotEmpty(signatureElement, xPathQueryHolder.XPATH_COMPLETE_CERTIFICATE_REFS);
@@ -901,6 +909,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Utility method to add content timestamps.
 	 *
 	 * @param timestampTokens
+	 *            List of timestamp tokens
 	 * @param nodes
 	 * @param timestampType
 	 *            {@code TimestampType}
@@ -985,7 +994,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 			for (TimestampInclude include : includes) {
 				// retrieve reference element
-				// -> go through references and check for one whose URI matches the
+				// go through references and check for one whose URI matches the
 				// URI of include
 				for (final Reference reference : references) {
 					String id = include.getURI();
@@ -1078,7 +1087,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * these Include elements has its referenceData set to false, the method returns false
 	 *
 	 * @param timestampToken
-	 * @retun
+	 * @return
 	 */
 	public boolean checkTimestampTokenIncludes(final TimestampToken timestampToken) {
 
@@ -1093,7 +1102,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<TimestampToken> getContentTimestamps() {
-
 		if (contentTimestamps == null) {
 			makeTimestampTokens();
 		}
@@ -1345,9 +1353,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			signatureCryptographicVerification.setReferenceDataIntact(referenceDataHashValid);
 			signatureCryptographicVerification.setSignatureIntact(coreValidity);
 		} catch (Exception e) {
-
-			LOG.error(e.getMessage());
-			LOG.debug(e.getMessage(), e);
+			LOG.error("checkSignatureIntegrity : " + e.getMessage());
+			LOG.debug("checkSignatureIntegrity : " + e.getMessage(), e);
 			StackTraceElement[] stackTrace = e.getStackTrace();
 			final String name = XAdESSignature.class.getName();
 			int lineNumber = 0;
@@ -1572,10 +1579,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final Element certId = (Element) ocspRefNodes.item(i);
 				final Element digestAlgorithmEl = DomUtils.getElement(certId, xPathQueryHolder.XPATH__DAAV_DIGEST_METHOD);
 				final Element digestValueEl = DomUtils.getElement(certId, xPathQueryHolder.XPATH__DAAV_DIGEST_VALUE);
-
-				if ((digestAlgorithmEl == null) || (digestValueEl == null)) {
-					throw new DSSNotETSICompliantException(DSSNotETSICompliantException.MSG.XADES_DIGEST_ALG_AND_VALUE_ENCODING);
-				}
 
 				final String xmlName = digestAlgorithmEl.getAttribute(XMLE_ALGORITHM);
 				final DigestAlgorithm digestAlgo = DigestAlgorithm.forXML(xmlName);

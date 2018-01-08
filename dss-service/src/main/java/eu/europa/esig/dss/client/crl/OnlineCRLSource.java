@@ -87,7 +87,7 @@ public class OnlineCRLSource implements CRLSource {
 
 	/**
 	 * This method allows to set the preferred protocol. This parameter is used used when retrieving the CRL to choose
-	 * the canal.<br/>
+	 * the canal.<br>
 	 * Possible values are: http, ldap, ftp
 	 *
 	 * @param preferredProtocol

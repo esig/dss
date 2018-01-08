@@ -37,7 +37,7 @@ public interface ValidationContext {
 	 * This function sets the validation time.
 	 *
 	 * @param currentTime
-	 *            {@code Date}
+	 *            the current {@code Date}
 	 */
 	void setCurrentTime(final Date currentTime);
 
@@ -49,8 +49,8 @@ public interface ValidationContext {
 	 * Adds a list of new revocation tokens to the list of tokens to verify. If the revocation token has already been
 	 * added then it is ignored.
 	 *
-	 * @param revocationToken
-	 *            {@code RevocationToken} revocation token to verify
+	 * @param revocationTokens
+	 *            a list of {@code RevocationToken} revocation tokens to verify
 	 */
 	void addRevocationTokensForVerification(final List<RevocationToken> revocationTokens);
 
@@ -76,6 +76,7 @@ public interface ValidationContext {
 	 * Carries out the validation process in recursive manner for not yet checked tokens.
 	 *
 	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	void validate() throws DSSException;
 

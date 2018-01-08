@@ -35,122 +35,185 @@ public class ServiceInfo implements Serializable {
 	private String tlCountryCode;
 
 	/**
-	 * <tsl:TrustServiceProvider><tsl:TSPInformation><tsl:TSPName>
+	 * <pre>
+	 * {@code
+	 * 	<tsl:TrustServiceProvider><tsl:TSPInformation><tsl:TSPName>
+	 * }
+	 * </pre>
 	 */
 	private String tspName;
 
 	/**
+	 * <pre>
+	 * {@code
 	 * <tsl:TrustServiceProvider><tsl:TSPInformation><tsl:TSPTradeName>
+	 * }
+	 * </pre>
 	 */
 	private String tspTradeName;
 
 	/**
+	 * <pre>
+	 * {@code
 	 * <tsl:TrustServiceProvider><tsl:TSPInformation><tsl:TSPAddress><tsl:PostalAddresses>
+	 * }
+	 * </pre>
 	 */
 	private String tspPostalAddress;
 
 	/**
+	 * <pre>
+	 * {@code
 	 * <tsl:TrustServiceProvider><tsl:TSPInformation><tsl:TSPAddress><tsl:ElectronicAddress>
+	 * }
+	 * </pre>
 	 */
 	private String tspElectronicAddress;
 
 	/**
+	 * <pre>
+	 * {@code
 	 * <tsl:TrustServiceProvider><tsl:TSPServices><tsl:TSPService><tsl:ServiceInformation><tsl:ServiceName>
+	 * }
+	 * </pre>
 	 */
 	private String serviceName;
 
 	private TimeDependentValues<ServiceInfoStatus> status = new TimeDependentValues<ServiceInfoStatus>();
 
+	/**
+	 * Returns the trusted list country code
+	 * 
+	 * @return the country code
+	 */
 	public String getTlCountryCode() {
 		return tlCountryCode;
 	}
 
-	public void setTlCountryCode(String tlCountryCode) {
-		this.tlCountryCode = tlCountryCode;
+	/**
+	 * Returns the status history
+	 * 
+	 * @return the trust service's status history
+	 */
+	public TimeDependentValues<ServiceInfoStatus> getStatus() {
+		return status;
 	}
 
 	/**
-	 * @return
+	 * Returns the service name
+	 * 
+	 * @return the service name
 	 */
 	public String getServiceName() {
 		return serviceName;
 	}
 
 	/**
-	 * @return
+	 * Returns the trust service provider's electronic address
+	 * 
+	 * @return the trust service provider's electronic address
 	 */
 	public String getTspElectronicAddress() {
 		return tspElectronicAddress;
 	}
 
 	/**
-	 * @return
+	 * Returns the trust service provider name
+	 * 
+	 * @return the trust service provider name
 	 */
 	public String getTspName() {
 		return tspName;
 	}
 
 	/**
-	 * @return
+	 * Returns the trust service provider's postal address
+	 * 
+	 * @return the trust service provider's postal address
 	 */
 	public String getTspPostalAddress() {
 		return tspPostalAddress;
 	}
 
 	/**
-	 * @return
+	 * Returns the trust service provider's trade name
+	 * 
+	 * @return the trust service provider's trade name
 	 */
 	public String getTspTradeName() {
 		return tspTradeName;
 	}
 
 	/**
+	 * Sets the country code
+	 * 
+	 * @param tlCountryCode
+	 *            the trusted list country code
+	 */
+	public void setTlCountryCode(String tlCountryCode) {
+		this.tlCountryCode = tlCountryCode;
+	}
+
+	/**
+	 * Sets the service name
+	 * 
 	 * @param serviceName
+	 *            the service name
 	 */
 	public void setServiceName(String serviceName) {
 		this.serviceName = trim(serviceName);
 	}
 
 	/**
+	 * Sets the electronic address
+	 * 
 	 * @param tspElectronicAddress
+	 *            the electronic address
 	 */
 	public void setTspElectronicAddress(String tspElectronicAddress) {
 		this.tspElectronicAddress = trim(tspElectronicAddress);
 	}
 
 	/**
+	 * Sets the trust service provider name
+	 * 
 	 * @param tspName
+	 *            the trust service provider's name
 	 */
 	public void setTspName(String tspName) {
 		this.tspName = trim(tspName);
 	}
 
 	/**
+	 * Sets the trust service provider's postal address
+	 * 
 	 * @param tspPostalAddress
+	 *            the postal address
 	 */
 	public void setTspPostalAddress(String tspPostalAddress) {
 		this.tspPostalAddress = trim(tspPostalAddress);
 	}
 
 	/**
+	 * Sets the trust service provider's trade name
+	 * 
 	 * @param tspTradeName
+	 *            the trade name
 	 */
 	public void setTspTradeName(String tspTradeName) {
 		this.tspTradeName = trim(tspTradeName);
 	}
 
-	public TimeDependentValues<ServiceInfoStatus> getStatus() {
-		return status;
-	}
-
+	/**
+	 * Sets the status history
+	 * 
+	 * @param status
+	 *            the status history
+	 */
 	public void setStatus(TimeDependentValues<ServiceInfoStatus> status) {
 		this.status = new TimeDependentValues<ServiceInfoStatus>(status);
 	}
 
-	/**
-	 * @param indent
-	 * @return
-	 */
 	public String toString(String indent) {
 		try {
 			StringBuilder buffer = new StringBuilder();
@@ -167,7 +230,6 @@ public class ServiceInfo implements Serializable {
 	}
 
 	private String trim(String str) {
-
 		if (str != null) {
 			return str.trim();
 		}

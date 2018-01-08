@@ -43,6 +43,8 @@ public final class TokenIdentifier implements Serializable {
 
 	/**
 	 * Return an ID conformant to XML Id
+	 * 
+	 * @return the XML encoded ID
 	 */
 	public String asXmlId() {
 		return DatatypeConverter.printHexBinary(tokenDigest.getValue());

@@ -83,6 +83,10 @@
 						<Algo>SHA256</Algo>
 						<Algo>SHA384</Algo>
 						<Algo>SHA512</Algo>
+						<Algo>SHA3-224</Algo>
+						<Algo>SHA3-256</Algo>
+						<Algo>SHA3-384</Algo>
+						<Algo>SHA3-512</Algo>
 						<Algo>RIPEMD160</Algo>
 					</AcceptableDigestAlgo>
 				</Cryptographic>
@@ -112,6 +116,10 @@
 						<Algo>SHA256</Algo>
 						<Algo>SHA384</Algo>
 						<Algo>SHA512</Algo>
+						<Algo>SHA3-224</Algo>
+						<Algo>SHA3-256</Algo>
+						<Algo>SHA3-384</Algo>
+						<Algo>SHA3-512</Algo>
 						<Algo>RIPEMD160</Algo>
 					</AcceptableDigestAlgo>
 				</Cryptographic>
@@ -133,6 +141,10 @@
 					<Algo>SHA256</Algo>
 					<Algo>SHA384</Algo>
 					<Algo>SHA512</Algo>
+					<Algo>SHA3-224</Algo>
+					<Algo>SHA3-256</Algo>
+					<Algo>SHA3-384</Algo>
+					<Algo>SHA3-512</Algo>
 					<Algo>RIPEMD160</Algo>
 				</AcceptableDigestAlgo>
 			</Cryptographic>
@@ -212,6 +224,10 @@
 						<Algo>SHA256</Algo>
 						<Algo>SHA384</Algo>
 						<Algo>SHA512</Algo>
+						<Algo>SHA3-224</Algo>
+						<Algo>SHA3-256</Algo>
+						<Algo>SHA3-384</Algo>
+						<Algo>SHA3-512</Algo>
 						<Algo>RIPEMD160</Algo>
 					</AcceptableDigestAlgo>
 				</Cryptographic>
@@ -241,6 +257,10 @@
 						<Algo>SHA256</Algo>
 						<Algo>SHA384</Algo>
 						<Algo>SHA512</Algo>
+						<Algo>SHA3-224</Algo>
+						<Algo>SHA3-256</Algo>
+						<Algo>SHA3-384</Algo>
+						<Algo>SHA3-512</Algo>
 						<Algo>RIPEMD160</Algo>
 					</AcceptableDigestAlgo>
 				</Cryptographic>
@@ -262,6 +282,10 @@
 					<Algo>SHA256</Algo>
 					<Algo>SHA384</Algo>
 					<Algo>SHA512</Algo>
+					<Algo>SHA3-224</Algo>
+					<Algo>SHA3-256</Algo>
+					<Algo>SHA3-384</Algo>
+					<Algo>SHA3-512</Algo>
 					<Algo>RIPEMD160</Algo>
 				</AcceptableDigestAlgo>
 			</Cryptographic>
@@ -325,6 +349,10 @@
 						<Algo>SHA256</Algo>
 						<Algo>SHA384</Algo>
 						<Algo>SHA512</Algo>
+						<Algo>SHA3-224</Algo>
+						<Algo>SHA3-256</Algo>
+						<Algo>SHA3-384</Algo>
+						<Algo>SHA3-512</Algo>
 						<Algo>RIPEMD160</Algo>
 					</AcceptableDigestAlgo>
 				</Cryptographic>
@@ -354,6 +382,10 @@
 						<Algo>SHA256</Algo>
 						<Algo>SHA384</Algo>
 						<Algo>SHA512</Algo>
+						<Algo>SHA3-224</Algo>
+						<Algo>SHA3-256</Algo>
+						<Algo>SHA3-384</Algo>
+						<Algo>SHA3-512</Algo>
 						<Algo>RIPEMD160</Algo>
 					</AcceptableDigestAlgo>
 				</Cryptographic>
@@ -375,6 +407,10 @@
 					<Algo>SHA256</Algo>
 					<Algo>SHA384</Algo>
 					<Algo>SHA512</Algo>
+					<Algo>SHA3-224</Algo>
+					<Algo>SHA3-256</Algo>
+					<Algo>SHA3-384</Algo>
+					<Algo>SHA3-512</Algo>
 					<Algo>RIPEMD160</Algo>
 				</AcceptableDigestAlgo>
 			</Cryptographic>
@@ -413,6 +449,10 @@
 						<Algo>SHA256</Algo>
 						<Algo>SHA384</Algo>
 						<Algo>SHA512</Algo>
+						<Algo>SHA3-224</Algo>
+						<Algo>SHA3-256</Algo>
+						<Algo>SHA3-384</Algo>
+						<Algo>SHA3-512</Algo>
 						<Algo>RIPEMD160</Algo>
 					</AcceptableDigestAlgo>
 				</Cryptographic>
@@ -442,6 +482,10 @@
 						<Algo>SHA256</Algo>
 						<Algo>SHA384</Algo>
 						<Algo>SHA512</Algo>
+						<Algo>SHA3-224</Algo>
+						<Algo>SHA3-256</Algo>
+						<Algo>SHA3-384</Algo>
+						<Algo>SHA3-512</Algo>
 						<Algo>RIPEMD160</Algo>
 					</AcceptableDigestAlgo>
 				</Cryptographic>
@@ -463,6 +507,10 @@
 					<Algo>SHA256</Algo>
 					<Algo>SHA384</Algo>
 					<Algo>SHA512</Algo>
+					<Algo>SHA3-224</Algo>
+					<Algo>SHA3-256</Algo>
+					<Algo>SHA3-384</Algo>
+					<Algo>SHA3-512</Algo>
 					<Algo>RIPEMD160</Algo>
 				</AcceptableDigestAlgo>
 			</Cryptographic>

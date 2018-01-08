@@ -89,6 +89,9 @@ public class PAdESSignature extends CAdESSignature {
 
 	@Override
 	public SignatureForm getSignatureForm() {
+		if (hasPKCS7SubFilter()) {
+			return SignatureForm.PKCS7;
+		}
 		return SignatureForm.PAdES;
 	}
 
@@ -383,16 +386,24 @@ public class PAdESSignature extends CAdESSignature {
 			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_B);
 			break;
 		case PAdES_BASELINE_B:
-			dataForLevelPresent = (pdfSignatureInfo != null) && "ETSI.CAdES.detached".equals(pdfSignatureInfo.getSubFilter());
+			dataForLevelPresent = hasCAdESDetachedSubFilter();
 			break;
 		case PKCS7_B:
-			dataForLevelPresent = (pdfSignatureInfo != null) && "adbe.pkcs7.detached".equals(pdfSignatureInfo.getSubFilter());
+			dataForLevelPresent = hasPKCS7SubFilter();
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown level " + signatureLevel);
 		}
 		LOG.debug("Level {} found on document {} = {}", new Object[] { signatureLevel, document.getName(), dataForLevelPresent });
 		return dataForLevelPresent;
+	}
+
+	private boolean hasCAdESDetachedSubFilter() {
+		return (pdfSignatureInfo != null) && "ETSI.CAdES.detached".equals(pdfSignatureInfo.getSubFilter());
+	}
+
+	private boolean hasPKCS7SubFilter() {
+		return (pdfSignatureInfo != null) && "adbe.pkcs7.detached".equals(pdfSignatureInfo.getSubFilter());
 	}
 
 	@Override

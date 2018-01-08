@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -59,6 +60,8 @@ import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.DLSet;
+import org.bouncycastle.asn1.cms.Attribute;
+import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x500.AttributeTypeAndValue;
@@ -125,6 +128,8 @@ public final class DSSASN1Utils {
 	 *
 	 * @param bytes
 	 *            array of bytes to be transformed to {@code ASN1Primitive}
+	 * @param <T>
+	 *            the expected return type
 	 * @return new {@code T extends ASN1Primitive}
 	 */
 	public static <T extends ASN1Primitive> T toASN1Primitive(final byte[] bytes) throws DSSException {
@@ -141,7 +146,8 @@ public final class DSSASN1Utils {
 	 * This method checks if a given {@code DEROctetString} is null.
 	 *
 	 * @param derOctetString
-	 * @return
+	 *            the {@code DEROctetString} to check
+	 * @return true if the {@code DEROctetString} contains DERNull
 	 */
 	private static boolean isDEROctetStringNull(final DEROctetString derOctetString) {
 		final byte[] derOctetStringBytes = derOctetString.getOctets();
@@ -190,7 +196,9 @@ public final class DSSASN1Utils {
 	 *
 	 * @param timeStampToken
 	 *            {@code TimeStampToken}
-	 * @return Returns an ASN.1 encoded bytes representing the {@code TimeStampToken}
+	 * @return the binary of the {@code TimeStampToken}
+	 * @throws DSSException
+	 *             if the {@code TimeStampToken} encoding fails
 	 */
 	public static byte[] getEncoded(final TimeStampToken timeStampToken) throws DSSException {
 		try {
@@ -212,29 +220,38 @@ public final class DSSASN1Utils {
 	 *             in case of a decoding problem
 	 */
 	public static ASN1Sequence getAsn1SequenceFromDerOctetString(byte[] bytes) throws DSSException {
-		ASN1InputStream input = null;
-		try {
+		return getASN1Sequence(getDEROctetStringContent(bytes));
+	}
 
-			input = new ASN1InputStream(bytes);
+	private static byte[] getDEROctetStringContent(byte[] bytes) throws DSSException {
+		try (ASN1InputStream input = new ASN1InputStream(bytes)) {
 			final DEROctetString s = (DEROctetString) input.readObject();
-			final byte[] content = s.getOctets();
-			input.close();
-			input = new ASN1InputStream(content);
-			final ASN1Sequence seq = (ASN1Sequence) input.readObject();
-			return seq;
+			return s.getOctets();
 		} catch (IOException e) {
-			throw new DSSException("Error when computing certificate's extensions.", e);
-		} finally {
-			Utils.closeQuietly(input);
+			throw new DSSException("Unable to retrieve the DEROctetString content", e);
+		}
+	}
+
+	private static ASN1Sequence getASN1Sequence(byte[] bytes) throws DSSException {
+		try (ASN1InputStream input = new ASN1InputStream(bytes)) {
+			return (ASN1Sequence) input.readObject();
+		} catch (IOException e) {
+			throw new DSSException("Unable to retrieve the ASN1Sequence", e);
 		}
 	}
 
 	/**
-	 * This method computes the digest of an ANS1 signature policy (used in CAdES)
+	 * This method computes the digest of an ASN1 signature policy (used in CAdES)
 	 *
 	 * TS 101 733 5.8.1 : If the signature policy is defined using ASN.1, then the hash is calculated on the value
 	 * without the outer type and length
 	 * fields, and the hashing algorithm shall be as specified in the field sigPolicyHash.
+	 * 
+	 * @param digestAlgorithm
+	 *            the digest algorithm to be used
+	 * @param policyBytes
+	 *            the ASN.1 policy content
+	 * @return the expected digest value
 	 */
 	public static byte[] getAsn1SignaturePolicyDigest(DigestAlgorithm digestAlgorithm, byte[] policyBytes) {
 		ASN1Sequence asn1Seq = toASN1Primitive(policyBytes);
@@ -253,7 +270,8 @@ public final class DSSASN1Utils {
 	 * performed. In fact the hash verification is sufficient.
 	 *
 	 * @param generalNames
-	 * @return
+	 *            the generalNames
+	 * @return the canonicalized name
 	 */
 	public static String getCanonicalizedName(final GeneralNames generalNames) {
 		GeneralName[] names = generalNames.getNames();
@@ -283,7 +301,9 @@ public final class DSSASN1Utils {
 	/**
 	 * Gets the ASN.1 algorithm identifier structure corresponding to a digest algorithm
 	 *
-	 * @return the AlgorithmIdentifier
+	 * @param digestAlgorithm
+	 *            the digest algorithm to encode
+	 * @return the ASN.1 algorithm identifier structure
 	 */
 	public static AlgorithmIdentifier getAlgorithmIdentifier(DigestAlgorithm digestAlgorithm) {
 
@@ -303,12 +323,12 @@ public final class DSSASN1Utils {
 	 * Indicates if the revocation data should be checked for an OCSP signing certificate.<br>
 	 * http://www.ietf.org/rfc/rfc2560.txt?number=2560<br>
 	 * A CA may specify that an OCSP client can trust a responder for the lifetime of the responder's certificate. The
-	 * CA
-	 * does so by including the extension id-pkix-ocsp-nocheck. This SHOULD be a non-critical extension. The value of
-	 * the
-	 * extension should be NULL.
+	 * CA does so by including the extension id-pkix-ocsp-nocheck. This SHOULD be a non-critical extension. The value of
+	 * the extension should be NULL.
 	 *
-	 * @return
+	 * @param token
+	 *            the certificate to be checked
+	 * @return true if the certificate has the id_pkix_ocsp_nocheck extension
 	 */
 	public static boolean hasIdPkixOcspNoCheckExtension(CertificateToken token) {
 		final byte[] extensionValue = token.getCertificate().getExtensionValue(OCSPObjectIdentifiers.id_pkix_ocsp_nocheck.getId());
@@ -342,8 +362,9 @@ public final class DSSASN1Utils {
 	 * Get the list of all QCStatement Ids that are present in the certificate.
 	 * (As per ETSI EN 319 412-5 V2.1.1)
 	 * 
-	 * @param x509Certificate
-	 * @return
+	 * @param certToken
+	 *            the certificate
+	 * @return the list of QC Statements oids
 	 */
 	public static List<String> getQCStatementsIdList(final CertificateToken certToken) {
 		final List<String> extensionIdList = new ArrayList<String>();
@@ -364,7 +385,8 @@ public final class DSSASN1Utils {
 	 * (As per ETSI EN 319 412-5 V2.1.1)
 	 * 
 	 * @param certToken
-	 * @return
+	 *            the certificate
+	 * @return the list of QCTypes oids
 	 */
 	public static List<String> getQCTypesIdList(final CertificateToken certToken) {
 		final List<String> qcTypesIdList = new ArrayList<String>();
@@ -401,9 +423,10 @@ public final class DSSASN1Utils {
 	 * This method returns SKI bytes from the certificate extension.
 	 *
 	 * @param certificateToken
-	 *            {@code CertificateToken}
+	 *            the {@code CertificateToken}
 	 * @return ski bytes from the given certificate or null if missing
 	 * @throws DSSException
+	 *             if encoding error occurred
 	 */
 	public static byte[] getSki(final CertificateToken certificateToken) throws DSSException {
 		return getSki(certificateToken, false);
@@ -419,6 +442,7 @@ public final class DSSASN1Utils {
 	 *            Key
 	 * @return ski bytes from the given certificate
 	 * @throws DSSException
+	 *             if encoding error occurred
 	 */
 	public static byte[] getSki(final CertificateToken certificateToken, boolean computeIfMissing) throws DSSException {
 		try {
@@ -440,16 +464,23 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * Gives back the CA URIs meta-data found within the given X509 cert.
+	 * Gives back the CA URIs meta-data found within the given certificate.
 	 *
 	 * @param certificate
-	 *            the cert token.
+	 *            the certificate token.
 	 * @return a list of CA URIs, or empty list if the extension is not present.
 	 */
 	public static List<String> getCAAccessLocations(final CertificateToken certificate) {
 		return getAccessLocations(certificate, X509ObjectIdentifiers.id_ad_caIssuers);
 	}
 
+	/**
+	 * Gives back the OCSP URIs meta-data found within the given X509 certificate.
+	 *
+	 * @param certificate
+	 *            the certificate token.
+	 * @return a list of OCSP URIs, or empty list if the extension is not present.
+	 */
 	public static List<String> getOCSPAccessLocations(final CertificateToken certificate) {
 		return getOCSPAccessLocations(certificate, true);
 	}
@@ -592,7 +623,9 @@ public final class DSSASN1Utils {
 	 * ocspSigning(9)}<br>
 	 * OID: 1.3.6.1.5.5.7.3.9
 	 *
-	 * @return
+	 * @param certToken
+	 *            the certificate token
+	 * @return true if the certificate has the id_kp_OCSPSigning ExtendedKeyUsage
 	 */
 	public static boolean isOCSPSigning(CertificateToken certToken) {
 		return isExtendedKeyUsagePresent(certToken, KeyPurposeId.id_kp_OCSPSigning.toOID());
@@ -605,14 +638,16 @@ public final class DSSASN1Utils {
 				return true;
 			}
 		} catch (CertificateParsingException e) {
-			LOG.error(e.getMessage(), e);
+			LOG.error("Unable to retrieve ExtendedKeyUsage from certificate", e);
 		}
 		return false;
 	}
 
 	/**
 	 * Returns a {@code X509CertificateHolder} encapsulating the given {@code X509Certificate}.
-	 *
+	 * 
+	 * @param certToken
+	 *            the certificate to be encapsulated
 	 * @return a X509CertificateHolder holding this certificate
 	 */
 	public static X509CertificateHolder getX509CertificateHolder(CertificateToken certToken) {
@@ -814,6 +849,18 @@ public final class DSSASN1Utils {
 		} catch (Exception e) {
 			LOG.warn("Unable to retrieve the date : " + encodable, e);
 			return null;
+		}
+	}
+
+	public static boolean isEmpty(AttributeTable attributeTable) {
+		return (attributeTable == null) || (attributeTable.size() == 0);
+	}
+
+	public static AttributeTable emptyIfNull(AttributeTable original) {
+		if (original == null) {
+			return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Attribute>());
+		} else {
+			return original;
 		}
 	}
 

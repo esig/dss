@@ -145,9 +145,8 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	/**
 	 * Extends the signature to a desired level. This method is overridden by other profiles.<br>
 	 * For -T profile adds the SignatureTimeStamp element which contains a single HashDataInfo element that refers to
-	 * the
-	 * ds:SignatureValue element of the [XMLDSIG] signature. The timestamp token is obtained from TSP source.<br>
-	 * Adds <SignatureTimeStamp> segment into <UnsignedSignatureProperties> element.
+	 * the ds:SignatureValue element of the [XMLDSIG] signature. The timestamp token is obtained from TSP source.<br>
+	 * Adds {@code <SignatureTimeStamp>} segment into {@code <UnsignedSignatureProperties>} element.
 	 *
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
@@ -199,17 +198,25 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	}
 
 	/**
-	 * * This method incorporates all certificates passed as parameter.
+	 * This method incorporates all certificates passed as parameter :
+	 * 
+	 * <pre>
+	 * {@code
+	 * 	<xades:CertificateValues>
+	 *		<xades:EncapsulatedX509Certificate>MIIC9TC...</xades:EncapsulatedX509Certificate>
+	 *		...
+	 * 	</xades:CertificateValues>
+	 * }
+	 * </pre>
 	 *
 	 * @param parentDom
-	 * @param toIncludeCertificates
+	 *            the parent element
+	 * @param validationContext
+	 *            the validation context with all cerrtificates
 	 */
 	protected void incorporateCertificateValues(final Element parentDom, final ValidationContext validationContext) {
 
 		final Set<CertificateToken> toIncludeCertificates = xadesSignature.getCertificatesForInclusion(validationContext);
-
-		// <xades:CertificateValues>
-		// ...<xades:EncapsulatedX509Certificate>MIIC9TC...
 		if (!toIncludeCertificates.isEmpty()) {
 
 			final Element certificateValuesDom = DomUtils.addElement(documentDom, parentDom, XAdES, XADES_CERTIFICATE_VALUES);

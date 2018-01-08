@@ -23,11 +23,14 @@ package eu.europa.esig.dss.cades.signature;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bouncycastle.cms.CMSAbsentContent;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
+import org.bouncycastle.operator.DigestCalculatorProvider;
+import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +38,7 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
@@ -44,6 +48,7 @@ import eu.europa.esig.dss.SigningOperation;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.validation.PrecomputedDigestCalculatorProvider;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.utils.Utils;
@@ -80,15 +85,16 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId());
-		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, false);
+		final DigestCalculatorProvider dcp = getDigestCalculatorProvider(toSignDocument);
+
+		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(dcp, parameters, false);
 		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
 
 		final CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
 				signerInfoGeneratorBuilder, originalCmsSignedData);
 
 		final DSSDocument toSignData = getToSignData(toSignDocument, parameters, originalCmsSignedData);
-
-		final CMSProcessableByteArray content = new CMSProcessableByteArray(DSSUtils.toByteArray(toSignData));
+		final CMSTypedData content = getContentToBeSign(toSignData);
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
 		CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
 		final byte[] bytes = customContentSigner.getOutputStream().toByteArray();
@@ -105,7 +111,8 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
-		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, true);
+		final DigestCalculatorProvider dcp = getDigestCalculatorProvider(toSignDocument);
+		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(dcp, parameters, true);
 		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
 		if ((originalCmsSignedData == null) && SignaturePackaging.DETACHED.equals(packaging) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
 			parameters.setDetachedContents(Arrays.asList(toSignDocument));
@@ -115,7 +122,8 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 				signerInfoGeneratorBuilder, originalCmsSignedData);
 
 		final DSSDocument toSignData = getToSignData(toSignDocument, parameters, originalCmsSignedData);
-		final CMSProcessableByteArray content = new CMSProcessableByteArray(DSSUtils.toByteArray(toSignData));
+		final CMSTypedData content = getContentToBeSign(toSignData);
+
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
 		final CMSSignedData cmsSignedData = CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
 		DSSDocument signature = new CMSSignedDocument(cmsSignedData);
@@ -129,6 +137,23 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 		signature.setName(DSSUtils.getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 		parameters.reinitDeterministicId();
 		return signature;
+	}
+
+	private DigestCalculatorProvider getDigestCalculatorProvider(DSSDocument toSignDocument) {
+		if (toSignDocument instanceof DigestDocument) {
+			return new PrecomputedDigestCalculatorProvider((DigestDocument) toSignDocument);
+		}
+		return new BcDigestCalculatorProvider();
+	}
+
+	private CMSTypedData getContentToBeSign(final DSSDocument toSignData) {
+		CMSTypedData content = null;
+		if (toSignData instanceof DigestDocument) {
+			content = new CMSAbsentContent();
+		} else {
+			content = new CMSProcessableByteArray(DSSUtils.toByteArray(toSignData));
+		}
+		return content;
 	}
 
 	@Override
@@ -216,7 +241,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 	 */
 	private CMSSignedData getCmsSignedData(final DSSDocument dssDocument, final CAdESSignatureParameters parameters) {
 		CMSSignedData cmsSignedData = null;
-		if (DSSASN1Utils.isASN1SequenceTag(DSSUtils.readFirstByte(dssDocument))) {
+		if (!(dssDocument instanceof DigestDocument) && DSSASN1Utils.isASN1SequenceTag(DSSUtils.readFirstByte(dssDocument))) {
 			try {
 				cmsSignedData = new CMSSignedData(DSSUtils.toByteArray(dssDocument));
 				if (SignaturePackaging.ENVELOPING == parameters.getSignaturePackaging() && cmsSignedData.getSignedContent().getContent() == null) {
@@ -240,4 +265,5 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 			throw new DSSException("Unsupported signature packaging: " + packaging);
 		}
 	}
+
 }

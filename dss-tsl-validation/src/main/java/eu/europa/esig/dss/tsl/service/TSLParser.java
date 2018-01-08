@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -45,8 +46,8 @@ import org.w3c.dom.Element;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.tsl.CertSubjectDNAttributeCondition;
-import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.CompositeCondition;
+import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.ExtendedKeyUsageCondition;
 import eu.europa.esig.dss.tsl.KeyUsageCondition;
 import eu.europa.esig.dss.tsl.MatchingCriteriaIndicator;
@@ -619,7 +620,8 @@ public class TSLParser implements Callable<TSLParserResult> {
 	}
 
 	private List<String> getEnglishSchemeInformationURIs(TrustStatusListType tsl) {
-		List<String> result = new ArrayList<String>();
+		// Maintains original order for PIVOTs LOTL
+		List<String> result = new LinkedList<String>();
 		NonEmptyMultiLangURIListType schemeInformationURI = tsl.getSchemeInformation().getSchemeInformationURI();
 		if (schemeInformationURI != null && Utils.isCollectionNotEmpty(schemeInformationURI.getURI())) {
 			for (NonEmptyMultiLangURIType uri : schemeInformationURI.getURI()) {

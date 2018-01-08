@@ -1,4 +1,5 @@
 :toc: left
+:icons: font
 = Digital Signature Service
 :description: Documentation of the open source project DSS (Digital Signature Service). This project allows to produce/validate advanced electronic signatures (AdES).
 :keywords: electronic signature, XAdES, CAdES, PAdES, ASiC, open source, validation
@@ -78,7 +79,6 @@ Please note that the DSS framework is still under maintenance and new features w
 |LOTL			|List of Trusted List or List of the Lists
 |LSP			|Large Scale Pilot
 |MIT			|Massachusetts Institute of Technology
-|MOCCA			|Austrian Modular Open Citizen Card Architecture; implemented in Java
 |MS / EUMS		|Member State
 |MS CAPI		|Microsoft Cryptographic Application Programming Interface
 |OCF			|OEBPS Container Format
@@ -192,7 +192,6 @@ dss-server-signing-rest:: REST webservice for server signing
 dss-server-signing-rest-client:: REST client for server signing 
 dss-server-signing-soap:: SOAP webservice for server signing
 dss-server-signing-soap-client:: SOAP client for server signing
-sscd-mocca-adapter:: Implementation for MOCCA token.
 dss-policy-jaxb:: JAXB model of the validation policy.
 dss-diagnostic-jaxb:: JAXB model of the diagnostic data.
 dss-simple-report-jaxb:: JAXB model of the simple report.
@@ -314,8 +313,6 @@ To write our Java code, we still need to specify the type of KeyStore to use for
  * *Pkcs12SignatureToken :* allows to sign with a PKC#12 keystore (.p12 file).
  * *MSCAPISignatureToken :* handles the signature with MS CAPI (the Microsoft interface to communicate with SmartCards).
  * *JKSSignatureToken :* allows to sign with a Java Key Store (.jks file).
-
-NOTE: The DSS also provides the support for MOCCA framework to communicate with the Smartcard with PC/SC, but it involves the installation of the MOCCA and IAIK libraries.
 
 To know more about the use of the different signature tokens, please consult "Management of Signature Tokens" chapter.
 
@@ -996,6 +993,49 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/OnlineTSPSo
 
 A time-stamp policy is a "named set of rules that indicates the applicability of a time-stamp token to a particular community and/or class of application with common security requirements". A TSA may define its own policy which enhances the policy defined in RFC 3628. Such a policy shall incorporate or further constrain the requirements identified in RFC 3628. A time-stamp policy may be defined by the user of times-stamp services.
 
+
+== Supported algorithms
+
+DSS supports several signature algorithms (combination of an encryption algorithm and a digest algorithm). Below, you can find the supported combinations. The support of the algorithms depends of the registered OID (ASN1) or URI (XML).
+
+In the next table, XAdES also applies to ASiC with embedded XAdES signatures and CAdES also concerns PAdES and ASiC with embedded CAdES signatures. 
+
+NOTE: SmartCards/HSMs don't allow to sign with all digest algorithms. Please refer to your SmartCard/HSM provider.
+
+[cols="13*^"]
+|===
+| | SHA-1 | SHA-224 | SHA-256 | SHA-384 | SHA-512 | SHA3-224 | SHA3-256 | SHA3-384 | SHA3-512 | MD2 | MD5 | RIPEMD160
+
+13+|*RSA*
+
+| XAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | | | | | | icon:check-circle[] | icon:check-circle[] 
+
+| CAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | | | | | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] 
+
+13+|*RSA-PSS*
+
+| XAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | | | 
+
+| CAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | | | | | | | 
+
+13+|*ECDSA*
+
+| XAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | | | | | | | icon:check-circle[]
+
+| CAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | | | | | | | 
+
+13+|*DSA*
+
+| XAdES | icon:check-circle[] | | icon:check-circle[] | | | | | | | | |  
+
+| CAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | | | | | | |
+
+13+|*HMAC*
+
+| XAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | | | | | |  | icon:check-circle[] 
+
+| CAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | |  |  
+|===
 
 == REST Services
 

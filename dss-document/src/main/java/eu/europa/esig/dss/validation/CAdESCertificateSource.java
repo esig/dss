@@ -113,10 +113,10 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 	/**
 	 * Returns the list of certificates included in CAdES equivalent of XAdES
 	 * "ds:KeyInfo/ds:X509Data/ds:X509Certificate" node.
-	 * <p/>
+	 * <p>
 	 * They are extracted from id-signedData OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840) rsadsi(113549)
 	 * pkcs(1) pkcs7(7) 2 }
-	 * <p/>
+	 * <p>
 	 * SignedData ::= SEQUENCE {<br>
 	 * - version CMSVersion,<br>
 	 * - digestAlgorithms DigestAlgorithmIdentifiers,<br>

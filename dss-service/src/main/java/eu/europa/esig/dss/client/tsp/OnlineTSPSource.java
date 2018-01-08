@@ -79,6 +79,7 @@ public class OnlineTSPSource implements TSPSource {
 	 * Build a OnlineTSPSource that will query the specified URL
 	 *
 	 * @param tspServer
+	 *            the tsp URL
 	 */
 	public OnlineTSPSource(final String tspServer) {
 		this.tspServer = tspServer;
@@ -88,6 +89,7 @@ public class OnlineTSPSource implements TSPSource {
 	 * Set the URL of the TSA
 	 *
 	 * @param tspServer
+	 *            the TSA url
 	 */
 	public void setTspServer(final String tspServer) {
 		this.tspServer = tspServer;
@@ -97,6 +99,7 @@ public class OnlineTSPSource implements TSPSource {
 	 * Set the request policy
 	 *
 	 * @param policyOid
+	 *            the policy oid to use
 	 */
 	public void setPolicyOid(final String policyOid) {
 		this.policyOid = new ASN1ObjectIdentifier(policyOid);

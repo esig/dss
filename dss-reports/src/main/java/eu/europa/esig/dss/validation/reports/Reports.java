@@ -73,12 +73,12 @@ public class Reports {
 	/**
 	 * This is the default constructor to instantiate this container.
 	 *
-	 * @param diagnosticData
-	 *            {@code DiagnosticData}
+	 * @param diagnosticDataJaxb
+	 *            the JAXB {@code DiagnosticData}
 	 * @param detailedReport
-	 *            {@code DetailedReport}
+	 *            the JAXB {@code DetailedReport}
 	 * @param simpleReport
-	 *            {@code SimpleReport}
+	 *            the JAXB {@code SimpleReport}
 	 */
 	public Reports(final eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticDataJaxb,
 			final eu.europa.esig.dss.jaxb.detailedreport.DetailedReport detailedReport, final eu.europa.esig.dss.jaxb.simplereport.SimpleReport simpleReport) {
@@ -98,28 +98,53 @@ public class Reports {
 	 * This method returns the reference to the diagnostic data object generated
 	 * during the validation process.
 	 *
-	 * @return {@code DiagnosticData}
+	 * @return the wrapper {@code DiagnosticData}
 	 */
 	public DiagnosticData getDiagnosticData() {
 		return diagnosticDataWrapper;
 	}
 
+	/**
+	 * This method returns the wrapper to manipulate the JAXB DetailedReport
+	 * 
+	 * @return the wrapper {@code DetailedReport}
+	 */
 	public DetailedReport getDetailedReport() {
 		return detailedReportWrapper;
 	}
 
+	/**
+	 * This method returns the wrapper to manipulate the JAXB SimpleReport
+	 * 
+	 * @return the wrapper {@code SimpleReport}
+	 */
 	public SimpleReport getSimpleReport() {
 		return simpleReportWrapper;
 	}
 
+	/**
+	 * This method returns the JAXB DiagnosticData
+	 * 
+	 * @return the JAXB {@code DiagnosticData}
+	 */
 	public eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData getDiagnosticDataJaxb() {
 		return diagnosticData;
 	}
 
+	/**
+	 * This method returns the JAXB DetailedReport
+	 * 
+	 * @return the JAXB {@code DetailedReport}
+	 */
 	public eu.europa.esig.dss.jaxb.detailedreport.DetailedReport getDetailedReportJaxb() {
 		return detailedReport;
 	}
 
+	/**
+	 * This method returns the JAXB SimpleReport
+	 * 
+	 * @return the JAXB {@code SimpleReport}
+	 */
 	public eu.europa.esig.dss.jaxb.simplereport.SimpleReport getSimpleReportJaxb() {
 		return simpleReport;
 	}
@@ -137,6 +162,11 @@ public class Reports {
 		System.out.println("------------------------------------------------");
 	}
 
+	/**
+	 * This method returns the XML representation of the JAXB DiagnosticData String
+	 * 
+	 * @return a String with the XML content of the JAXB {@code DiagnosticData}
+	 */
 	public String getXmlDiagnosticData() {
 		if (xmlDiagnosticData == null) {
 			xmlDiagnosticData = getJAXBObjectAsString(diagnosticData, eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData.class.getPackage().getName(),
@@ -145,6 +175,11 @@ public class Reports {
 		return xmlDiagnosticData;
 	}
 
+	/**
+	 * This method returns the XML representation of the JAXB DetailedReport String
+	 * 
+	 * @return a String with the XML content of the JAXB {@code DetailedReport}
+	 */
 	public String getXmlDetailedReport() {
 		if (xmlDetailedReport == null) {
 			xmlDetailedReport = getJAXBObjectAsString(detailedReport, eu.europa.esig.dss.jaxb.detailedreport.DetailedReport.class.getPackage().getName(),
@@ -153,6 +188,11 @@ public class Reports {
 		return xmlDetailedReport;
 	}
 
+	/**
+	 * This method returns the XML representation of the JAXB SimpleReport String
+	 * 
+	 * @return a String with the XML content of the JAXB {@code SimpleReport}
+	 */
 	public String getXmlSimpleReport() {
 		if (xmlSimpleReport == null) {
 			xmlSimpleReport = getJAXBObjectAsString(simpleReport, eu.europa.esig.dss.jaxb.simplereport.SimpleReport.class.getPackage().getName(),

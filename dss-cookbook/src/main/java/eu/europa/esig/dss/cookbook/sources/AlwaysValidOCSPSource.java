@@ -21,12 +21,10 @@
 package eu.europa.esig.dss.cookbook.sources;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.Security;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
@@ -40,7 +38,6 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.BasicOCSPRespBuilder;
 import org.bouncycastle.cert.ocsp.CertificateID;
 import org.bouncycastle.cert.ocsp.CertificateStatus;
-import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPReq;
 import org.bouncycastle.cert.ocsp.OCSPReqBuilder;
 import org.bouncycastle.cert.ocsp.Req;
@@ -50,7 +47,6 @@ import org.bouncycastle.cert.ocsp.jcajce.JcaBasicOCSPRespBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.DigestCalculator;
-import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,7 +94,6 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 	 *
 	 * @param signerPkcs12Name
 	 * @param password
-	 * @throws Exception
 	 */
 	public AlwaysValidOCSPSource(final String signerPkcs12Name, final String password) {
 
@@ -146,8 +141,16 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 	/**
 	 * This method allows to set the status of the cert to REVOKED.
 	 *
-	 * unspecified = 0; keyCompromise = 1; cACompromise = 2; affiliationChanged = 3; superseded = 4;
-	 * cessationOfOperation = 5; certificateHold = 6; // 7 -> unknown removeFromCRL = 8; privilegeWithdrawn = 9;
+	 * unspecified = 0 <br>
+	 * keyCompromise = 1 <br>
+	 * cACompromise = 2 <br>
+	 * affiliationChanged = 3<br>
+	 * superseded = 4<br>
+	 * cessationOfOperation = 5<br>
+	 * certificateHold = 6<br>
+	 * 7 unknown<br>
+	 * removeFromCRL = 8<br>
+	 * privilegeWithdrawn = 9<br>
 	 * aACompromise = 10;
 	 *
 	 * @param revocationDate
@@ -202,13 +205,7 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 			ocspToken.setCertId(certId);
 			ocspToken.setBasicOCSPResp(basicResp);
 			return ocspToken;
-		} catch (OCSPException e) {
-			throw new DSSException(e);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		} catch (CertificateEncodingException e) {
-			throw new DSSException(e);
-		} catch (OperatorCreationException e) {
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}
@@ -233,11 +230,7 @@ public class AlwaysValidOCSPSource implements OCSPSource {
 			ocspGen.setRequestExtensions(new Extensions(new Extension[] { ext }));
 
 			return ocspGen.build();
-		} catch (OCSPException e) {
-			throw new DSSException(e);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		} catch (CertificateEncodingException e) {
+		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}

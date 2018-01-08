@@ -28,7 +28,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSCannotFetchDataException;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -143,7 +142,7 @@ public class FileCacheDataLoader implements DataLoader {
 	}
 
 	@Override
-	public byte[] get(final String url, final boolean refresh) throws DSSCannotFetchDataException {
+	public byte[] get(final String url, final boolean refresh) {
 
 		if ((toBeLoaded != null) && !toBeLoaded.contains(url)) {
 			return null;
@@ -183,7 +182,7 @@ public class FileCacheDataLoader implements DataLoader {
 	}
 
 	@Override
-	public byte[] get(final String url) throws DSSCannotFetchDataException {
+	public byte[] get(final String url) {
 
 		return get(url, false);
 	}

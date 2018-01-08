@@ -18,60 +18,73 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.signature;
+package eu.europa.esig.dss.pades.signature;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Date;
 
+import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
+import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
+import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.x509.CertificatePool;
+import eu.europa.esig.dss.x509.TimestampType;
 
-public class XAdESLevelBEnvelopedTest extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
+public class PAdESLevelBWithContentTimestampTest extends AbstractPAdESTestSignature {
 
-	private DocumentSignatureService<XAdESSignatureParameters> service;
-	private XAdESSignatureParameters signatureParameters;
+	private DocumentSignatureService<PAdESSignatureParameters> service;
+	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+		documentToSign = new FileDocument(new File("src/test/resources/sample.pdf"));
 
-		signatureParameters = new XAdESSignatureParameters();
+		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
+		byte[] digest = pdfSignatureService.digest(documentToSign.openStream(), signatureParameters, DigestAlgorithm.SHA256);
+		OnlineTSPSource tspSource = getGoodTsa();
+		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
+		TimestampToken token = new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP, new CertificatePool());
+		signatureParameters.setContentTimestamps(Arrays.asList(token));
+
+		service = new PAdESService(getCompleteCertificateVerifier());
 	}
 
 	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
-	}
-
-	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<PAdESSignatureParameters> getService() {
 		return service;
 	}
 
 	@Override
-	protected XAdESSignatureParameters getSignatureParameters() {
+	protected PAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.XML;
+		return MimeType.PDF;
+	}
+
+	@Override
+	protected boolean hasContentTimestamp() {
+		return true;
 	}
 
 	@Override
@@ -87,6 +100,11 @@ public class XAdESLevelBEnvelopedTest extends AbstractPkiFactoryTestDocumentSign
 	@Override
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 }

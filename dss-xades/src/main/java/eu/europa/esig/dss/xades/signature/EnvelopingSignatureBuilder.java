@@ -78,7 +78,7 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 		reference.setContents(document);
 		reference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
 
-		if (reference.getContents().getMimeType() == MimeType.XML && params.isManifestSignature()) {
+		if (params.isManifestSignature()) {
 			reference.setType(HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST);
 			reference.setUri("#" + ((params.getManifestId() == null) ? "manifest" : params.getManifestId()));
 
@@ -122,11 +122,8 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 
 		final List<DSSReference> references = params.getReferences();
 		for (final DSSReference reference : references) {
-
-			final String id = reference.getUri().substring(1);
 			// <ds:Object>
-			DSSDocument tbsDoc = reference.getContents();
-			if (tbsDoc.getMimeType() == MimeType.XML && params.isManifestSignature()) {
+			if (params.isManifestSignature()) {
 
 				Document doc = DomUtils.buildDOM(reference.getContents());
 				Element root = doc.getDocumentElement();
@@ -142,10 +139,10 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 				}
 
 				final Element dom = documentDom.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
-				dom.setAttribute(MIMETYPE, HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST);
 				dom.appendChild(manifestDom);
 				signatureDom.appendChild(dom);
 			} else {
+				final String id = reference.getUri().substring(1);
 				final String base64EncodedOriginalDocument = Utils.toBase64(DSSUtils.toByteArray(reference.getContents()));
 				final Element objectDom = DomUtils.addTextElement(documentDom, signatureDom, XMLSignature.XMLNS, DS_OBJECT, base64EncodedOriginalDocument);
 				objectDom.setAttribute(ID, id);

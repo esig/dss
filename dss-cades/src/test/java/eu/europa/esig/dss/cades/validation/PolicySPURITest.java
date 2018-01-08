@@ -65,7 +65,7 @@ public class PolicySPURITest {
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		SignatureWrapper signatureWrapper = signatures.get(0);
 
-		String policyId = diagnosticData.getPolicyId();
+		String policyId = diagnosticData.getFirstPolicyId();
 		assertEquals("2.16.724.1.3.1.1.2.1.9", policyId);
 		assertEquals("https://sede.060.gob.es/politica_de_firma_anexo_1.pdf", signatureWrapper.getPolicyUrl());
 		assertFalse(signatureWrapper.isPolicyAsn1Processable());

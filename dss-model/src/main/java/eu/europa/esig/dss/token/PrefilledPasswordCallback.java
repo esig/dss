@@ -30,6 +30,9 @@ public class PrefilledPasswordCallback implements PasswordInputCallback {
 
 	/**
 	 * The default constructor for PrefillPasswordCallback.
+	 * 
+	 * @param password
+	 *            the password to use
 	 */
 	public PrefilledPasswordCallback(char[] password) {
 		this.password = password;

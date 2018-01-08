@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?><Document>
+	<Data>To be signed</Data>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="d576bd4f-534b-4b60-9402-df491e466fb5">
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512"/>
+<ds:Reference URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2"><xpf:XPath xmlns:xpf="http://www.w3.org/2002/06/xmldsig-filter2" Filter="intersect">here()/ancestor::*[6]</xpf:XPath></ds:Transform><ds:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2"><xpf:XPath xmlns:xpf="http://www.w3.org/2002/06/xmldsig-filter2" Filter="subtract">here()/ancestor::*[6]/*[namespace-uri()='http://www.w3.org/2000/09/xmldsig#' and local-name()='Signature']</xpf:XPath></ds:Transform><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>8QlKySGPNItEgBpcRMep67vdLyIhkJV/St91hij8XQAFxcFTwaRQ2WRZCRMT85w6C7P3g9RO
+W2Rs7wVb33ti3w==</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-20171012182013Z383620"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>yoKV+zAK8iJVTO7b1nAmoysvJnTxOERiH+uOHZnsRX7Os/8voDyKRa+Kj8h+tivWrKSLMB9J
+O0cvAE9AURa2eQ==</ds:DigestValue></ds:Reference></ds:SignedInfo>
+<ds:SignatureValue>jqqgv7TJv1toy9e9SPnsUxfbHlIGvylltXSQAApBPJ5OqiK+PJvGq6gFi2XR5z/2KjyRLPxm
+FNVNDqi9tHJRXA==</ds:SignatureValue>
+<ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIDjDCCAkCgAwIBAgIEMgypIDBBBgkqhkiG9w0BAQowNKAPMA0GCWCGSAFlAwQCAQUAoRww
+GgYJKoZIhvcNAQEIMA0GCWCGSAFlAwQCAQUAogMCASAwTzELMAkGA1UEBhMCREUxHDAaBgNV
+BAoME0RldXRzY2hlIFRlbGVrb20gQUcxIjAgBgNVBAMMGVRlbGVTZWMgUEtTIFNpZ0cgQ0Eg
+MzQ6UE4wHhcNMTYwMzIxMTExMTA4WhcNMTgwMzI0MjI1OTAwWjA1MQswCQYDVQQGEwJERTEZ
+MBcGA1UEAwwQV2ViZXIsIENocmlzdGlhbjELMAkGA1UEBRMCMjMwWjAUBgcqhkjOPQIBBgkr
+JAMDAggBAQcDQgAEReV4SgNOGVeLS7gwaTpDwwDHg00WmrQlOgvNDbaV3PA2af37IUWoun+9
+1sZKoDnF+mdMOY/U+6We7by+OfAY0qOB6zCB6DAfBgNVHSMEGDAWgBQTDWmsBG8Lfqo+GXTC
+vebIowZJxTAdBgNVHQ4EFgQUPqB9G15Z9w75sudhiXqOjKPsWOIwDgYDVR0PAQH/BAQDAgZA
+MEMGA1UdIAQ8MDowOAYFKyQIAQEwLzAtBggrBgEFBQcCARYhaHR0cDovL3Brcy50ZWxlc2Vj
+LmRlL2Nwcy9jcHMucGRmMDcGCCsGAQUFBwEBBCswKTAnBggrBgEFBQcwAYYbaHR0cDovL3Br
+cy50ZWxlc2VjLmRlL29jc3ByMBgGCCsGAQUFBwEDBAwwCjAIBgYEAI5GAQEwQQYJKoZIhvcN
+AQEKMDSgDzANBglghkgBZQMEAgEFAKEcMBoGCSqGSIb3DQEBCDANBglghkgBZQMEAgEFAKID
+AgEgA4IBAQAvqwHURMG4XdKVjyVW4AvvYl4YHrrEHUSiQmuGL27jQOVld4Xwjqy1g7hF0Ggk
+JGHn5ekW6GLnPADMv/8cM2rxS5QFmdQnYDfH9gt0AABowrPw5FqbKQ6TXBdpsEb1gcX82boC
+vZZeJoW/DqvKkwnp+4EXiWaj4cc97J229kT97yBybTF+xKSDGg0txSl2OE2pDxIQ3SGCiL9T
+VcsyNPQCoz1mN5kCwPjMKaxMe0M0smD97+jL2wBGDnoMYOjgwDs3kTGhIYkwtJFWOJsg7A4c
+IB92E9YADvBAUTWpi/d3LhxnJSKH3ti9ct5jKRhINijIhKACx7k2smePBeumRmiT</ds:X509Certificate><ds:X509SubjectName>C=DE,CN=Weber\, Christian,serialNumber=23</ds:X509SubjectName></ds:X509Data></ds:KeyInfo><ds:Object><dsx:QualifyingProperties xmlns:dsx="http://uri.etsi.org/01903/v1.3.2#" Target="#d576bd4f-534b-4b60-9402-df491e466fb5"><dsx:SignedProperties Id="SignedProperties-20171012182013Z383620"><dsx:SignedSignatureProperties><dsx:SigningTime>2017-10-12T18:20:13Z</dsx:SigningTime><dsx:SigningCertificateV2><dsx:Cert><dsx:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>HHT1GVyJl2586mO2ULO/72WGIeLIAZZ9tJAv7n/NxTA06kxcALokKj13mXS0Mlwo64XZDk32
+z0Lvv0o6EnBDnA==</ds:DigestValue></dsx:CertDigest><dsx:IssuerSerialV2>MFswU6RRME8xCzAJBgNVBAYTAkRFMRwwGgYDVQQKDBNEZXV0c2NoZSBUZWxla29tIEFHMSIw
+IAYDVQQDDBlUZWxlU2VjIFBLUyBTaWdHIENBIDM0OlBOAgQyDKkg</dsx:IssuerSerialV2></dsx:Cert></dsx:SigningCertificateV2></dsx:SignedSignatureProperties></dsx:SignedProperties></dsx:QualifyingProperties></ds:Object></ds:Signature></Document>

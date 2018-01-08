@@ -35,7 +35,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.TimestampType;
 
 /**
  * This class represents all static data extracted by the process analysing the signature. They are independent from the
@@ -75,14 +74,19 @@ public class DiagnosticData {
 	/**
 	 * This method returns the first signature id.
 	 *
-	 * @return
+	 * @return the first signature id
 	 */
 	public String getFirstSignatureId() {
 		SignatureWrapper firstSignature = getFirstSignatureNullSafe();
 		return firstSignature.getId();
 	}
 
-	public Date getSignatureDate() {
+	/**
+	 * This method returns the first signature time.
+	 *
+	 * @return the first signature time
+	 */
+	public Date getFirstSignatureDate() {
 		SignatureWrapper firstSignature = getFirstSignatureNullSafe();
 		return firstSignature.getDateTime();
 	}
@@ -92,7 +96,7 @@ public class DiagnosticData {
 	 *
 	 * @param signatureId
 	 *            The identifier of the signature, for which the date is sought.
-	 * @return
+	 * @return the signature time for the given signature
 	 */
 	public Date getSignatureDate(final String signatureId) {
 		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
@@ -102,9 +106,9 @@ public class DiagnosticData {
 	/**
 	 * This method returns the signature format for the first signature.
 	 *
-	 * @return The signature format
+	 * @return The first signature format
 	 */
-	public String getSignatureFormat() {
+	public String getFirstSignatureFormat() {
 		SignatureWrapper signature = getFirstSignatureNullSafe();
 		return signature.getSignatureFormat();
 	}
@@ -126,7 +130,7 @@ public class DiagnosticData {
 	 *
 	 * @return The {@code DigestAlgorithm} of the first signature
 	 */
-	public DigestAlgorithm getSignatureDigestAlgorithm() {
+	public DigestAlgorithm getFirstSignatureDigestAlgorithm() {
 		SignatureWrapper signature = getFirstSignatureNullSafe();
 		return signature.getDigestAlgorithm();
 	}
@@ -148,7 +152,7 @@ public class DiagnosticData {
 	 *
 	 * @return The {@code EncryptionAlgorithm} of the first signature
 	 */
-	public EncryptionAlgorithm getSignatureEncryptionAlgorithm() {
+	public EncryptionAlgorithm getFirstSignatureEncryptionAlgorithm() {
 		SignatureWrapper signature = getFirstSignatureNullSafe();
 		return signature.getEncryptionAlgorithm();
 	}
@@ -166,11 +170,23 @@ public class DiagnosticData {
 	}
 
 	/**
+	 * This method returns the {@code MaskGenerationFunction} for the given signature.
+	 *
+	 * @param signatureId
+	 *            The identifier of the signature, for which the algorithm is sought.
+	 * @return The {@code MaskGenerationFunction} for the given signature
+	 */
+	public MaskGenerationFunction getSignatureMaskGenerationFunction(String signatureId) {
+		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
+		return signature.getMaskGenerationFunction();
+	}
+
+	/**
 	 * This method returns signing certificate dss id for the first signature.
 	 *
 	 * @return signing certificate dss id.
 	 */
-	public String getSigningCertificateId() {
+	public String getFirstSigningCertificateId() {
 		SignatureWrapper signature = getFirstSignatureNullSafe();
 		return signature.getSigningCertificateId();
 	}
@@ -211,7 +227,12 @@ public class DiagnosticData {
 		return signature.getCertificateChainIds();
 	}
 
-	public String getPolicyId() {
+	/**
+	 * The identifier of the policy of the first signature.
+	 *
+	 * @return the policy identifier of the first signature
+	 */
+	public String getFirstPolicyId() {
 		SignatureWrapper signature = getFirstSignatureNullSafe();
 		return signature.getPolicyId();
 	}
@@ -240,6 +261,13 @@ public class DiagnosticData {
 		return signature.getTimestampIdsList();
 	}
 
+	/**
+	 * This method returns the list of timestamps wrappers which covers the given signature.
+	 *
+	 * @param signatureId
+	 *            The identifier of the signature.
+	 * @return The list of timestamp wrappers
+	 */
 	public List<TimestampWrapper> getTimestampList(final String signatureId) {
 		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
 		return signature.getTimestampList();
@@ -342,6 +370,13 @@ public class DiagnosticData {
 		return timestamp.getSigningCertificateId();
 	}
 
+	/**
+	 * This method returns the timestamp type of the given timestamp
+	 * 
+	 * @param timestampId
+	 *            the timestamp id
+	 * @return the related timestamp type
+	 */
 	public String getTimestampType(String timestampId) {
 		TimestampWrapper timestamp = getTimestampByIdNullSafe(timestampId);
 		return timestamp.getType();
@@ -440,6 +475,13 @@ public class DiagnosticData {
 		return Utils.EMPTY_STRING;
 	}
 
+	/**
+	 * This method retrieves the error message for the given signature id
+	 * 
+	 * @param signatureId
+	 *            the signature id
+	 * @return the error message
+	 */
 	public String getErrorMessage(final String signatureId) {
 		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
 		return signature.getErrorMessage();
@@ -453,6 +495,13 @@ public class DiagnosticData {
 		return new SignatureWrapper(new XmlSignature()); // TODO improve ?
 	}
 
+	/**
+	 * This method returns a signature wrapper for the given signature id
+	 * 
+	 * @param id
+	 *            the signature id
+	 * @return a signature wrapper or null
+	 */
 	public SignatureWrapper getSignatureById(String id) {
 		List<SignatureWrapper> signatures = getSignatures();
 		if (Utils.isCollectionNotEmpty(signatures)) {
@@ -490,6 +539,13 @@ public class DiagnosticData {
 		return new TimestampWrapper(new XmlTimestamp());
 	}
 
+	/**
+	 * This method returns a certificate wrapper for the given certificate id
+	 * 
+	 * @param id
+	 *            the certificate id
+	 * @return a certificate wrapper (or empty object)
+	 */
 	public CertificateWrapper getUsedCertificateByIdNullSafe(String id) {
 		List<CertificateWrapper> certificates = getUsedCertificates();
 		if (Utils.isCollectionNotEmpty(certificates)) {
@@ -502,6 +558,13 @@ public class DiagnosticData {
 		return new CertificateWrapper(new XmlCertificate()); // TODO improve ?
 	}
 
+	/**
+	 * This method returns a certificate wrapper for the given certificate id
+	 * 
+	 * @param id
+	 *            the certificate id
+	 * @return a certificate wrapper or null
+	 */
 	public CertificateWrapper getUsedCertificateById(String id) {
 		List<CertificateWrapper> certificates = getUsedCertificates();
 		if (Utils.isCollectionNotEmpty(certificates)) {
@@ -514,6 +577,11 @@ public class DiagnosticData {
 		return null;
 	}
 
+	/**
+	 * This method retrieves a list of signature wrappers.
+	 * 
+	 * @return a list of signature wrappers.
+	 */
 	public List<SignatureWrapper> getSignatures() {
 		if (foundSignatures == null) {
 			foundSignatures = new ArrayList<SignatureWrapper>();
@@ -527,6 +595,11 @@ public class DiagnosticData {
 		return foundSignatures;
 	}
 
+	/**
+	 * This method retrieves a list of certificate wrappers
+	 * 
+	 * @return a list of certificate wrappers
+	 */
 	public List<CertificateWrapper> getUsedCertificates() {
 		if (usedCertificates == null) {
 			usedCertificates = new ArrayList<CertificateWrapper>();
@@ -543,7 +616,7 @@ public class DiagnosticData {
 	/**
 	 * This method returns signatures (not countersignatures)
 	 * 
-	 * @return
+	 * @return a set of SignatureWrapper
 	 */
 	public Set<SignatureWrapper> getAllSignatures() {
 		Set<SignatureWrapper> signatures = new HashSet<SignatureWrapper>();
@@ -559,7 +632,7 @@ public class DiagnosticData {
 	/**
 	 * This method returns counter-signatures (not signatures)
 	 * 
-	 * @return
+	 * @return a set of SignatureWrapper
 	 */
 	public Set<SignatureWrapper> getAllCounterSignatures() {
 		Set<SignatureWrapper> signatures = new HashSet<SignatureWrapper>();
@@ -572,6 +645,11 @@ public class DiagnosticData {
 		return signatures;
 	}
 
+	/**
+	 * This method returns all revocation data
+	 * 
+	 * @return a set of revocation data
+	 */
 	public Set<RevocationWrapper> getAllRevocationData() {
 		Set<RevocationWrapper> revocationData = new HashSet<RevocationWrapper>();
 		List<CertificateWrapper> certificates = getUsedCertificates();
@@ -586,36 +664,11 @@ public class DiagnosticData {
 		return revocationData;
 	}
 
-	public Set<TimestampWrapper> getAllTimestampsNotArchival() {
-		Set<TimestampWrapper> notArchivalTimestamps = new HashSet<TimestampWrapper>();
-		List<SignatureWrapper> signatures = getSignatures();
-		if (Utils.isCollectionNotEmpty(signatures)) {
-			for (SignatureWrapper signatureWrapper : signatures) {
-				notArchivalTimestamps.addAll(signatureWrapper.getAllTimestampsNotArchival());
-			}
-		}
-		return notArchivalTimestamps;
-	}
-
-	public Set<TimestampWrapper> getAllTimestampsNotArchival(String signatureId) {
-		SignatureWrapper signature = getSignatureById(signatureId);
-		if (signature != null) {
-			return signature.getAllTimestampsNotArchival();
-		}
-		return new HashSet<TimestampWrapper>();
-	}
-
-	public Set<TimestampWrapper> getAllArchiveTimestamps() {
-		Set<TimestampWrapper> archivalTimestamps = new HashSet<TimestampWrapper>();
-		List<SignatureWrapper> signatures = getSignatures();
-		if (Utils.isCollectionNotEmpty(signatures)) {
-			for (SignatureWrapper signatureWrapper : signatures) {
-				archivalTimestamps.addAll(signatureWrapper.getTimestampListByType(TimestampType.ARCHIVE_TIMESTAMP));
-			}
-		}
-		return archivalTimestamps;
-	}
-
+	/**
+	 * This method retrieves a set of timestamp wrappers
+	 * 
+	 * @return a list of timestamp wrappers
+	 */
 	public Set<TimestampWrapper> getAllTimestamps() {
 		Set<TimestampWrapper> allTimestamps = new HashSet<TimestampWrapper>();
 		List<SignatureWrapper> signatures = getSignatures();
@@ -627,14 +680,29 @@ public class DiagnosticData {
 		return allTimestamps;
 	}
 
+	/**
+	 * This method returns the JAXB model
+	 * 
+	 * @return the jaxb model of the diagnostic data
+	 */
 	public eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData getJaxbModel() {
 		return diagnosticData;
 	}
 
+	/**
+	 * This method checks if the document is a container (ASiC)
+	 * 
+	 * @return true if the document is a container
+	 */
 	public boolean isContainerInfoPresent() {
 		return diagnosticData.getContainerInfo() != null;
 	}
 
+	/**
+	 * This method returns the container type
+	 * 
+	 * @return the container type (ASiC-S/E)
+	 */
 	public String getContainerType() {
 		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
 		if (containerInfo != null) {
@@ -643,6 +711,11 @@ public class DiagnosticData {
 		return null;
 	}
 
+	/**
+	 * This method returns the zip comment (if the document is a container)
+	 * 
+	 * @return the zip comment for the current document (if container) or null
+	 */
 	public String getZipComment() {
 		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
 		if (containerInfo != null) {
@@ -651,6 +724,11 @@ public class DiagnosticData {
 		return null;
 	}
 
+	/**
+	 * This method checks if the container has a mimetype file
+	 * 
+	 * @return true if the mimetype file is present
+	 */
 	public boolean isMimetypeFilePresent() {
 		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
 		if (containerInfo != null) {
@@ -659,6 +737,11 @@ public class DiagnosticData {
 		return false;
 	}
 
+	/**
+	 * This method returns the content of the mimetype file (if container)
+	 * 
+	 * @return the content of the mimetype file
+	 */
 	public String getMimetypeFileContent() {
 		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
 		if (containerInfo != null) {
@@ -671,25 +754,35 @@ public class DiagnosticData {
 		return diagnosticData.getContainerInfo();
 	}
 
+	/**
+	 * This method returns the JAXB model of the used trusted lists
+	 * 
+	 * @return the JAXB model of the used trusted lists
+	 */
 	public List<XmlTrustedList> getTrustedLists() {
 		return diagnosticData.getTrustedLists();
 	}
 
+	/**
+	 * This method returns the JAXB model of the LOTL
+	 * 
+	 * @return the JAXB model of the LOTL
+	 */
 	public XmlTrustedList getListOfTrustedLists() {
 		return diagnosticData.getListOfTrustedLists();
 	}
 
+	/**
+	 * This method returns the LOTL country code
+	 * 
+	 * @return the country code of the used LOTL
+	 */
 	public String getLOTLCountryCode() {
 		XmlTrustedList listOfTrustedLists = diagnosticData.getListOfTrustedLists();
 		if (listOfTrustedLists != null) {
 			return listOfTrustedLists.getCountryCode();
 		}
 		return null;
-	}
-
-	public MaskGenerationFunction getSignatureMaskGenerationFunction(String signatureId) {
-		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
-		return signature.getMaskGenerationFunction();
 	}
 
 }

@@ -40,7 +40,6 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -69,6 +68,7 @@ public abstract class XAdESBuilder {
 	public static final String DS_TRANSFORMS = "ds:Transforms";
 	public static final String DS_X509_CERTIFICATE = "ds:X509Certificate";
 	public static final String DS_X509_DATA = "ds:X509Data";
+	public static final String DS_X509_SUBJECT_NAME = "ds:X509SubjectName";
 	public static final String DS_X509_ISSUER_NAME = "ds:X509IssuerName";
 	public static final String DS_X509_SERIAL_NUMBER = "ds:X509SerialNumber";
 	public static final String DS_XPATH = "ds:XPath";
@@ -185,14 +185,19 @@ public abstract class XAdESBuilder {
 
 	/**
 	 * This method creates the ds:DigestMethod DOM object
+	 * 
+	 * <pre>
+	 * {@code
+	 * 		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+	 * }
+	 * </pre>
 	 *
 	 * @param parentDom
+	 *            the parent element
 	 * @param digestAlgorithm
-	 *            digest algorithm xml identifier
+	 *            the digest algorithm xml identifier
 	 */
 	protected void incorporateDigestMethod(final Element parentDom, final DigestAlgorithm digestAlgorithm) {
-
-		// <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
 		final Element digestMethodDom = documentDom.createElementNS(XMLNS, DS_DIGEST_METHOD);
 		final String digestAlgorithmXmlId = digestAlgorithm.getXmlId();
 		digestMethodDom.setAttribute(ALGORITHM, digestAlgorithmXmlId);
@@ -201,20 +206,26 @@ public abstract class XAdESBuilder {
 
 	/**
 	 * This method creates the ds:DigestValue DOM object.
+	 * 
+	 * <pre>
+	 * {@code
+	 * 		<ds:DigestValue>fj8SJujSXU4fi342bdtiKVbglA0=</ds:DigestValue>
+	 * }
+	 * </pre>
 	 *
 	 * @param parentDom
+	 *            the parent element
 	 * @param digestAlgorithm
-	 *            digest algorithm
+	 *            the digest algorithm to be used
 	 * @param originalDocument
-	 *            to digest array of bytes
+	 *            the document to be digested
 	 */
 	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm, final DSSDocument originalDocument) {
 
-		// <ds:DigestValue>b/JEDQH2S1Nfe4Z3GSVtObN34aVB1kMrEbVQZswThfQ=</ds:DigestValue>
 		final Element digestValueDom = documentDom.createElementNS(XMLNS, DS_DIGEST_VALUE);
 
 		String base64EncodedDigestBytes = null;
-		if (originalDocument.getMimeType() == MimeType.XML && params.isManifestSignature()) {
+		if (params.isManifestSignature()) {
 
 			List<DSSReference> references = params.getReferences();
 			if (Utils.collectionSize(references) != 1) {
@@ -248,15 +259,21 @@ public abstract class XAdESBuilder {
 
 	/**
 	 * This method creates the ds:DigestValue DOM object.
+	 * 
+	 * <pre>
+	 * {@code
+	 * 		<ds:DigestValue>fj8SJujSXU4fi342bdtiKVbglA0=</ds:DigestValue>
+	 * }
+	 * </pre>
 	 *
 	 * @param parentDom
+	 *            the parent element
 	 * @param digestAlgorithm
-	 *            digest algorithm
+	 *            the digest algorithm to use
 	 * @param token
-	 *            to digest array of bytes
+	 *            the token to be digested
 	 */
 	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm, final Token token) {
-		// <ds:DigestValue>b/JEDQH2S1Nfe4Z3GSVtObN34aVB1kMrEbVQZswThfQ=</ds:DigestValue>
 		final Element digestValueDom = documentDom.createElementNS(XMLNS, DS_DIGEST_VALUE);
 		final String base64EncodedDigestBytes = Utils.toBase64(token.getDigest(digestAlgorithm));
 		if (LOG.isTraceEnabled()) {
@@ -285,6 +302,29 @@ public abstract class XAdESBuilder {
 		}
 	}
 
+	/**
+	 * Creates Cert DOM object:
+	 * 
+	 * <pre>
+	 * {@code
+	 * 		<Cert>
+	 * 			<CertDigest>
+	 * 				<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+	 * 				<ds:DigestValue>fj8SJujSXU4fi342bdtiKVbglA0=</ds:DigestValue>
+	 * 			</CertDigest>
+	 * 			<IssuerSerial>
+	 * 				<ds:X509IssuerName>CN=ICA A,O=DSS,C=AA</ds:X509IssuerName>
+	 * 				<ds:X509SerialNumber>4</ds:X509SerialNumber>
+	 *			</IssuerSerial>
+	 *		</Cert>
+	 * }
+	 * </pre>
+	 * 
+	 * @param parentDom
+	 *            the parent element
+	 * @param certificate
+	 *            the certificate to be added
+	 */
 	protected Element incorporateCert(final Element parentDom, final CertificateToken certificate) {
 		final Element certDom = DomUtils.addElement(documentDom, parentDom, XAdES, XADES_CERT);
 

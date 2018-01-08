@@ -127,13 +127,13 @@ public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 	public abstract void checkCompleteRevocationReferences();
 
 	/**
-	 * CAdES-C-timestamp shall not be present (B/T >= 0 ; LT/LTA 0)
+	 * CAdES-C-timestamp shall not be present (B/T 0+ ; LT/LTA 0)
 	 */
 	@Test
 	public abstract void checkCAdESCTimestamp();
 
 	/**
-	 * time-stamped-certs-crls-references shall not be present (B/T >= 0 ; LT/LTA 0)
+	 * time-stamped-certs-crls-references shall not be present (B/T 0+ ; LT/LTA 0)
 	 */
 	@Test
 	public abstract void checkTimestampedCertsCrlsReferences();

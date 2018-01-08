@@ -49,14 +49,15 @@
 		<slf4j.version>1.7.25</slf4j.version>
 		<logback-classic.version>1.2.3</logback-classic.version>
 
-		<bouncycastle.version>1.58</bouncycastle.version>
+		<bouncycastle.version>1.59</bouncycastle.version>
 		<xmlsec.version>2.0.9</xmlsec.version>
 		<xalan.version>2.7.2</xalan.version>
-		<pdfbox.version>2.0.7</pdfbox.version>
-		<httpclient.version>4.5.3</httpclient.version>
+		<pdfbox.version>2.0.8</pdfbox.version>
+		<httpclient.version>4.5.4</httpclient.version>
 		<rs-api.version>2.0.1</rs-api.version>
 
 		<junit.version>4.12</junit.version>
+		<mockito.version>2.12.0</mockito.version>
 	</properties>
 	
 	<licenses>
@@ -79,7 +80,6 @@
 		<module>dss-document</module>
 		<module>dss-service</module>
 		<module>dss-test</module>
-		<module>sscd-mocca-adapter</module>
 		<module>dss-policy-jaxb</module>
 		<module>dss-common-validation-jaxb</module>
 		<module>dss-tsl-jaxb</module>
@@ -116,8 +116,21 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.0</version>
+				<version>3.7.0</version>
                 <configuration>
                     <encoding>${project.encoding}</encoding>
                     <source>${project.source.version}</source>
@@ -147,7 +160,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.20</version>
+				<version>2.20.1</version>
 				<configuration>
 					<!-- Default test configuration -->
 					<skipTests>true</skipTests>
@@ -201,20 +214,65 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+                	<encoding>UTF-8</encoding>
+                </configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		
+			<plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-site-plugin</artifactId>
+	            <version>3.6</version>
+	            <inherited>false</inherited>	            
+	            <configuration>
+	                <reportPlugins>
+	                    <plugin>
+	                        <groupId>org.apache.maven.plugins</groupId>
+	                        <artifactId>maven-javadoc-plugin</artifactId>
+							<version>3.0.0</version>
+	                        <reportSets>
+	                            <reportSet>
+	                                <id>aggregate</id>
+	                                <reports>
+	                                    <report>aggregate</report>
+	                                </reports>
+	                            </reportSet>
+	                        </reportSets>
+	                        <configuration>
+                				<encoding>UTF-8</encoding>
+                				                	
+<!-- 							Requires GraphViz (see DSS-1282) -->
+<!-- 							Be sure that the complete path to graphviz\bin\dot(.exe) is in the PATH -->
+								<doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+								<docletArtifact>
+									<groupId>org.umlgraph</groupId>
+									<artifactId>umlgraph</artifactId>
+									<version>5.6.6</version>
+								</docletArtifact>
+								<additionalparam>-views -all</additionalparam>
+								<useStandardDocletOptions>true</useStandardDocletOptions>	
+	                        </configuration>
+	                    </plugin>
+	                </reportPlugins>
+	            </configuration>
+	        </plugin>
+			
 		</plugins>
 
 		<pluginManagement>
 			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-source-plugin</artifactId>
-					<version>3.0.1</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.10.4</version>
-				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
@@ -257,12 +315,17 @@
 				<plugin>
 					<groupId>org.jvnet.jaxb2.maven2</groupId>
 					<artifactId>maven-jaxb2-plugin</artifactId>
-					<version>0.10.0</version>
+					<version>0.13.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-install-plugin</artifactId>
 					<version>2.5.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-project-info-reports-plugin</artifactId>
+					<version>2.9</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -278,11 +341,6 @@
 	<dependencyManagement>
 		<dependencies>
 			<!-- Internal Dependencies -->
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>sscd-mocca-adapter</artifactId>
-				<version>${project.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-spi</artifactId>
@@ -573,6 +631,11 @@
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>${mockito.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -601,7 +664,7 @@
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
-						<version>2.1.1</version>
+						<version>3.0.1</version>
 <!-- 						<configuration> -->
 <!-- 							<failBuildOnCVSS>8</failBuildOnCVSS> -->
 <!-- 						</configuration> -->
@@ -616,45 +679,5 @@
 				</plugins>
 			</build>
 		</profile>
-	    <profile>
-	        <id>src</id>
-	        <build>
-	            <plugins>
-	                <plugin>
-	                    <groupId>org.apache.maven.plugins</groupId>
-	                    <artifactId>maven-source-plugin</artifactId>
-	                    <executions>
-	                        <execution>
-	                            <id>attach-sources</id>
-	                            <phase>verify</phase>
-	                            <goals>
-	                                <goal>jar-no-fork</goal>
-	                            </goals>
-	                        </execution>
-	                    </executions>
-	                </plugin>
-	            </plugins>
-	        </build>
-	    </profile>
-	    <profile>
-	        <id>javadoc</id>
-	        <build>
-	            <plugins>
-	                <plugin>
-	                    <groupId>org.apache.maven.plugins</groupId>
-	                    <artifactId>maven-javadoc-plugin</artifactId>
-	                    <executions>
-	                        <execution>
-	                            <id>attach-javadocs</id>
-	                            <phase>verify</phase>
-	                            <goals>
-	                                <goal>jar</goal>
-	                            </goals>
-	                        </execution>
-	                    </executions>
-	                </plugin>
-	            </plugins>
-	        </build>
-	    </profile>
 	</profiles>
 </project>

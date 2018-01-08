@@ -22,7 +22,7 @@ public interface TimestampValidator {
 	/**
 	 * Sets the {@code DSSDocument} containing the time-stamped content.
 	 *
-	 * @param timestampedDocument
+	 * @param timestampedData
 	 *            the {@code DSSDocument} to set
 	 */
 	void setTimestampedData(DSSDocument timestampedData);

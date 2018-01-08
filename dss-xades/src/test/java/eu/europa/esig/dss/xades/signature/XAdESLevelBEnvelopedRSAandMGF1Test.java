@@ -21,9 +21,14 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 
 import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -36,11 +41,24 @@ import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureServi
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
+@RunWith(Parameterized.class)
 public class XAdESLevelBEnvelopedRSAandMGF1Test extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
+
+	private final DigestAlgorithm digestAlgo;
+
+	@Parameters(name = "DigestAlgorithm {index} : {0}")
+	public static Collection<DigestAlgorithm> data() {
+		return Arrays.asList(DigestAlgorithm.SHA1, DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512,
+				DigestAlgorithm.SHA3_224, DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384, DigestAlgorithm.SHA3_512);
+	}
+
+	public XAdESLevelBEnvelopedRSAandMGF1Test(DigestAlgorithm digestAlgo) {
+		this.digestAlgo = digestAlgo;
+	}
 
 	@Before
 	public void init() throws Exception {
@@ -48,8 +66,8 @@ public class XAdESLevelBEnvelopedRSAandMGF1Test extends AbstractPkiFactoryTestDo
 
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
-		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1_SHA1);
+		signatureParameters.setDigestAlgorithm(digestAlgo);
+		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);

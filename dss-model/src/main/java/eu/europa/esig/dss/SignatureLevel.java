@@ -36,7 +36,8 @@ public enum SignatureLevel {
 	 * Returns the SignatureLevel based on the name (String)
 	 *
 	 * @param name
-	 * @return
+	 *            the signature level's name to retrieve
+	 * @return the SignatureLevel
 	 */
 	public static SignatureLevel valueByName(String name) {
 		return valueOf(name.replace('-', '_'));

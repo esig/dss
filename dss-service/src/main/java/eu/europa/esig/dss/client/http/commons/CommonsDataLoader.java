@@ -94,8 +94,8 @@ import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Implementation of DataLoader for any protocol.
- * <p/>
- * HTTP & HTTPS: using HttpClient which is more flexible for HTTPS without
+ * <p>
+ * HTTP and HTTPS: using HttpClient which is more flexible for HTTPS without
  * having to add the certificate to the JVM TrustStore. It takes into account a
  * proxy management through {@code ProxyPreferenceManager}. The authentication
  * is also supported.

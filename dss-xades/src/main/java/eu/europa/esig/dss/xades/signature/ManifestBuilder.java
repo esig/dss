@@ -18,7 +18,7 @@ import eu.europa.esig.dss.utils.Utils;
  * This class builds a ds:Manifest element
  * 
  * <pre>
- * <code>
+ * {@code
  * 	<ds:Manifest Id="manifest">
  * 		<ds:Reference URI="l_19420170726bg.pdf">
  * 			<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/>
@@ -30,7 +30,7 @@ import eu.europa.esig.dss.utils.Utils;
  * 		</ds:Reference>
  * 		...
  * 	</ds:Manifest>
- * </code>
+ * }
  * </pre>
  * 
  */

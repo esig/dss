@@ -23,10 +23,11 @@ package eu.europa.esig.dss.tsl;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
- * Test if the certificate has a Key usage
+ * Condition based on the certificate key usage
  */
-@SuppressWarnings("serial")
 public class KeyUsageCondition extends Condition {
+
+	private static final long serialVersionUID = -5078159553328523044L;
 
 	private final KeyUsageBit bit;
 	private final boolean value;
@@ -35,6 +36,9 @@ public class KeyUsageCondition extends Condition {
 	 * The default constructor for KeyUsageCondition.
 	 *
 	 * @param bit
+	 *            the key usage
+	 * @param value
+	 *            true if the key usage is required
 	 */
 	public KeyUsageCondition(final KeyUsageBit bit, final boolean value) {
 		this.bit = bit;
@@ -44,26 +48,15 @@ public class KeyUsageCondition extends Condition {
 	/**
 	 * The default constructor for KeyUsageCondition.
 	 *
+	 * @param usage
+	 *            the key usage
 	 * @param value
+	 *            true if the key usage is required
 	 */
 	public KeyUsageCondition(final String usage, final boolean value) {
 		this(KeyUsageBit.valueOf(usage), value);
 	}
 
-	/**
-	 * @return the bit
-	 */
-	public KeyUsageBit getBit() {
-		return bit;
-	}
-
-	/**
-	 * Checks the condition for the given certificate.
-	 *
-	 * @param certificateToken
-	 *            certificate to be checked
-	 * @return
-	 */
 	@Override
 	public boolean check(final CertificateToken certificateToken) {
 		final boolean keyUsage = certificateToken.checkKeyUsage(bit);
@@ -82,11 +75,7 @@ public class KeyUsageCondition extends Condition {
 
 	@Override
 	public String toString() {
-		try {
-			return toString("");
-		} catch (Exception e) {
-			return super.toString();
-		}
+		return toString("");
 	}
 
 }

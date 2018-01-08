@@ -25,6 +25,8 @@ public interface RemoteSignatureTokenConnection {
 	 * @param alias
 	 *            the key alias to retrieve
 	 * 
+	 * @return the RemoteKeyEntry with the given alias
+	 * 
 	 */
 	RemoteKeyEntry getKey(String alias) throws DSSException;
 

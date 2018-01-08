@@ -13,9 +13,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.security.cert.X509CRL;
+import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Date;
@@ -39,6 +38,23 @@ public class DSSUtilsTest {
 	public static void init() {
 		certificateWithAIA = DSSUtils.loadCertificate(new File("src/test/resources/TSP_Certificate_2014.crt"));
 		assertNotNull(certificateWithAIA);
+	}
+
+	@Test
+	public void digest() {
+		byte[] data = "Hello world!".getBytes(StandardCharsets.UTF_8);
+		assertEquals("d3486ae9136e7856bc42212385ea797094475802", Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA1, data)));
+		assertEquals("7e81ebe9e604a0c97fef0e4cfe71f9ba0ecba13332bde953ad1c66e4", Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA224, data)));
+		assertEquals("c0535e4be2b79ffd93291305436bf889314e4a3faec05ecffcbb7df31ad9e51a", Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA256, data)));
+		assertEquals("f6cde2a0f819314cdde55fc227d8d7dae3d28cc556222a0a8ad66d91ccad4aad6094f517a2182360c9aacf6a3dc323162cb6fd8cdffedb0fe038f55e85ffb5b6",
+				Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA512, data)));
+
+		assertEquals("d3ee9b1ba1990fecfd794d2f30e0207aaa7be5d37d463073096d86f8", Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA3_224, data)));
+		assertEquals("d6ea8f9a1f22e1298e5a9506bd066f23cc56001f5d36582344a628649df53ae8", Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA3_256, data)));
+		assertEquals("f9210511d0b2862bdcb672daa3f6a4284576ccb24d5b293b366b39c24c41a6918464035ec4466b12e22056bf559c7a49",
+				Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA3_384, data)));
+		assertEquals("95decc72f0a50ae4d9d5378e1b2252587cfc71977e43292c8f1b84648248509f1bc18bc6f0b0d0b8606a643eff61d611ae84e6fbd4a2683165706bd6fd48b334",
+				Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA3_512, data)));
 	}
 
 	@Test
@@ -129,47 +145,16 @@ public class DSSUtilsTest {
 	public void convertToPEM() {
 		String convertToPEM = DSSUtils.convertToPEM(certificateWithAIA);
 
-		assertFalse(DSSUtils.isDER(new ByteArrayInputStream(convertToPEM.getBytes())));
+		assertFalse(DSSUtils.isStartWithASN1SequenceTag(new ByteArrayInputStream(convertToPEM.getBytes())));
 
 		CertificateToken certificate = DSSUtils.loadCertificate(convertToPEM.getBytes());
 		assertEquals(certificate, certificateWithAIA);
 
 		byte[] certDER = DSSUtils.convertToDER(convertToPEM);
-		assertTrue(DSSUtils.isDER(new ByteArrayInputStream(certDER)));
+		assertTrue(DSSUtils.isStartWithASN1SequenceTag(new ByteArrayInputStream(certDER)));
 
 		CertificateToken certificate2 = DSSUtils.loadCertificate(certDER);
 		assertEquals(certificate2, certificateWithAIA);
-	}
-
-	@Test
-	public void loadCrl() throws Exception {
-		X509CRL crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/belgium2.crl"));
-		assertNotNull(crl);
-		assertTrue(DSSUtils.isDER(new FileInputStream("src/test/resources/crl/belgium2.crl")));
-
-		String convertCRLToPEM = DSSUtils.convertCrlToPEM(crl);
-		assertFalse(DSSUtils.isDER(new ByteArrayInputStream(convertCRLToPEM.getBytes())));
-		assertFalse(DSSUtils.isDER(new ByteArrayInputStream(convertCRLToPEM.getBytes())));
-
-		try (InputStream is = new ByteArrayInputStream(convertCRLToPEM.getBytes())) {
-			X509CRL crl2 = DSSUtils.loadCRL(is);
-			assertEquals(crl, crl2);
-		}
-
-		byte[] convertCRLToDER = DSSUtils.convertToDER(convertCRLToPEM);
-		try (InputStream is = new ByteArrayInputStream(convertCRLToDER)) {
-			X509CRL crl3 = DSSUtils.loadCRL(is);
-			assertEquals(crl, crl3);
-		}
-	}
-
-	@Test
-	public void loadPEMCrl() throws Exception {
-		X509CRL crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/LTRCA.crl"));
-		assertNotNull(crl);
-		try (InputStream is = new FileInputStream("src/test/resources/crl/LTRCA.crl")) {
-			assertFalse(DSSUtils.isDER(is));
-		}
 	}
 
 	@Test

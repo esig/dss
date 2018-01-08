@@ -42,6 +42,13 @@ public interface RestMultipleDocumentSignatureService extends Serializable {
 
 	/**
 	 * Retrieves the bytes of the data that need to be signed based on the toSignDocument and parameters.
+	 * 
+	 * @param dataToSign
+	 *            a DTO with the needed information (one or more document(s) and parameters) to compute the data to be
+	 *            signed
+	 * @return the data to be signed
+	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	@POST
 	@Path("getDataToSignMultiple")
@@ -49,6 +56,13 @@ public interface RestMultipleDocumentSignatureService extends Serializable {
 
 	/**
 	 * Signs the toSignDocuments with the provided signatureValue.
+	 * 
+	 * @param signDocument
+	 *            a DTO with the needed information (one or more document(s), parameters and signature value) to
+	 *            generate the signed document
+	 * @return the signed document
+	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	@POST
 	@Path("signDocument")
@@ -56,6 +70,13 @@ public interface RestMultipleDocumentSignatureService extends Serializable {
 
 	/**
 	 * Extends the level of the signatures in the toExtendDocument
+	 * 
+	 * @param extendDocument
+	 *            a DTO with the needed information (the signed document and extension parameters) to generate the
+	 *            extended document
+	 * @return the extended document
+	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	@POST
 	@Path("extendDocument")

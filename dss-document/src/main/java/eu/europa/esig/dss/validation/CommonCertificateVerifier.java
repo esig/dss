@@ -34,18 +34,16 @@ import eu.europa.esig.dss.x509.ocsp.OCSPSource;
 
 /**
  * This class provides the different sources used to verify the status of a certificate using the trust model. There are
- * four different types of sources to be defined:<br />
+ * four different types of sources to be defined:<br>
  * -
- * Trusted certificates source;<br />
- * - Adjunct certificates source (not trusted);<br />
- * - OCSP source;<br />
- * - CRL source.<br />
+ * Trusted certificates source;<br>
+ * - Adjunct certificates source (not trusted);<br>
+ * - OCSP source;<br>
+ * - CRL source.<br>
  *
  * The {@code DataLoader} should be provided to give access to the certificates through AIA.
  *
- *
  */
-
 public class CommonCertificateVerifier implements CertificateVerifier {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommonCertificateVerifier.class);

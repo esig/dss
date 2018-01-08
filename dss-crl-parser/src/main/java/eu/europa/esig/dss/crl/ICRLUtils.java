@@ -21,6 +21,7 @@ public interface ICRLUtils {
 	 *            {@code CertificateToken} used to sign the {@code X509CRL} (cannot be null)
 	 * @return {@code CRLValidity}
 	 * @throws IOException
+	 *             if an IO error occurred
 	 */
 	CRLValidity isValidCRL(final InputStream crlStream, final CertificateToken issuerToken) throws IOException;
 

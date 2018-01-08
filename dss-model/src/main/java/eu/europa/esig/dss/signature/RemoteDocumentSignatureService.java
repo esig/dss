@@ -61,8 +61,9 @@ public interface RemoteDocumentSignatureService<DOC, SP extends AbstractSerializ
 	 *            document to sign or the already existing signature
 	 * @param parameters
 	 *            set of the driving signing parameters
-	 * @return
+	 * @return the data to be signed
 	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	ToBeSigned getDataToSign(final DOC toSignDocument, final SP parameters) throws DSSException;
 
@@ -75,8 +76,9 @@ public interface RemoteDocumentSignatureService<DOC, SP extends AbstractSerializ
 	 *            set of the driving signing parameters
 	 * @param signatureValue
 	 *            the signature value to incorporate
-	 * @return
+	 * @return the signed document ({@code toSignDocument} with the incorporated signature or the detached signature)
 	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	DSSDocument signDocument(final DOC toSignDocument, final SP parameters, SignatureValue signatureValue) throws DSSException;
 
@@ -87,8 +89,9 @@ public interface RemoteDocumentSignatureService<DOC, SP extends AbstractSerializ
 	 *            document to extend
 	 * @param parameters
 	 *            set of the driving signing parameters
-	 * @return
+	 * @return the extended signature
 	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	DSSDocument extendDocument(final DOC toExtendDocument, final SP parameters) throws DSSException;
 

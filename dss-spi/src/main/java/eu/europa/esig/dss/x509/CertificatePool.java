@@ -67,7 +67,11 @@ public class CertificatePool implements Serializable {
 	 * {@link CertificateToken} is created.
 	 *
 	 * @param cert
-	 * @return
+	 *            the certificate to add in the pool
+	 * @param certSource
+	 *            the source of the given certificate
+	 * @return the complete CertificateToken instance (merged with the pool content)
+	 * 
 	 */
 	public CertificateToken getInstance(final CertificateToken cert, final CertificateSourceType certSource) {
 
@@ -81,9 +85,12 @@ public class CertificatePool implements Serializable {
 	 * already in the pool but has no {@link ServiceInfo} this reference will be added.
 	 *
 	 * @param cert
+	 *            the certificate to add in the pool
 	 * @param certSource
+	 *            the source of the given certificate
 	 * @param serviceInfo
-	 * @return
+	 *            the linked trust service info
+	 * @return the complete CertificateToken instance (merged with the pool content)
 	 */
 	public CertificateToken getInstance(final CertificateToken cert, final CertificateSourceType certSource, final ServiceInfo serviceInfo) {
 
@@ -105,9 +112,12 @@ public class CertificatePool implements Serializable {
 	 * already in the pool but has no {@link ServiceInfo} this reference will be added.
 	 *
 	 * @param certificateToAdd
+	 *            the certificate to add in the pool
 	 * @param sources
+	 *            the sources of the given certificate
 	 * @param services
-	 * @return
+	 *            the linked trust service infos
+	 * @return the complete CertificateToken instance (merged with the pool content)
 	 */
 	public CertificateToken getInstance(final CertificateToken certificateToAdd, final Set<CertificateSourceType> sources, final Set<ServiceInfo> services) {
 
@@ -171,7 +181,7 @@ public class CertificatePool implements Serializable {
 	/**
 	 * This method returns an unmodifiable list containing all encapsulated certificate tokens {@link CertificateToken}.
 	 *
-	 * @return
+	 * @return an unmodifiable list containing all encapsulated certificate
 	 */
 	public List<CertificateToken> getCertificateTokens() {
 		List<CertificateToken> certificateTokenArrayList = new ArrayList<CertificateToken>(certById.values());
@@ -193,6 +203,7 @@ public class CertificatePool implements Serializable {
 	 * {@link CertificateSourceType} are added.
 	 *
 	 * @param certPool
+	 *            the certificate pool to merge
 	 */
 	public void merge(final CertificatePool certPool) {
 
