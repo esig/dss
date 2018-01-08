@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+	<DocumentName>RemoteDocument</DocumentName>
+	<ValidationDate>2017-06-28T22:36:06</ValidationDate>
+	<Signatures>
+		<Signature
+			Id="id-47bbade7caa6360834aca6dc3c2c7f6304b8cde9af50d60b501a8052854a7b73">
+			<SignatureFilename>RemoteDocument</SignatureFilename>
+			<DateTime>2016-08-12T16:07:03</DateTime>
+			<SignatureFormat>PAdES-BASELINE-B</SignatureFormat>
+			<StructuralValidation>
+				<Valid>true</Valid>
+			</StructuralValidation>
+			<BasicSignature>
+				<EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+				<KeyLengthUsedToSignThisToken>1024</KeyLengthUsedToSignThisToken>
+				<DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+				<ReferenceDataFound>true</ReferenceDataFound>
+				<ReferenceDataIntact>true</ReferenceDataIntact>
+				<SignatureIntact>true</SignatureIntact>
+				<SignatureValid>true</SignatureValid>
+			</BasicSignature>
+			<SigningCertificate
+				Id="E370DEA4D95A1E9221BF6EA2C51AC503CD0BBF3D6087396463E33144A0068FBC">
+				<AttributePresent>true</AttributePresent>
+				<DigestValuePresent>true</DigestValuePresent>
+				<DigestValueMatch>true</DigestValueMatch>
+				<IssuerSerialMatch>true</IssuerSerialMatch>
+			</SigningCertificate>
+			<CertificateChain>
+				<ChainItem
+					Id="E370DEA4D95A1E9221BF6EA2C51AC503CD0BBF3D6087396463E33144A0068FBC">
+					<Source>SIGNATURE</Source>
+				</ChainItem>
+			</CertificateChain>
+			<ContentType>application/pdf</ContentType>
+			<CommitmentTypeIndication />
+			<ClaimedRoles />
+			<Timestamps />
+			<SignatureScopes>
+				<SignatureScope name="PDF previous version #1" scope="PdfByteRangeSignatureScope">The
+					document byte range: [0, 196862, 215808, 313]</SignatureScope>
+			</SignatureScopes>
+		</Signature>
+		<Signature
+			Id="id-bdde731d05569cd9523e924eb6d8b30016536a1db336688e08d4d28f547c3af3">
+			<SignatureFilename>RemoteDocument</SignatureFilename>
+			<DateTime>2016-08-12T17:00:34</DateTime>
+			<SignatureFormat>PAdES-BASELINE-B</SignatureFormat>
+			<StructuralValidation>
+				<Valid>true</Valid>
+			</StructuralValidation>
+			<BasicSignature>
+				<EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+				<KeyLengthUsedToSignThisToken>1024</KeyLengthUsedToSignThisToken>
+				<DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+				<ReferenceDataFound>true</ReferenceDataFound>
+				<ReferenceDataIntact>true</ReferenceDataIntact>
+				<SignatureIntact>true</SignatureIntact>
+				<SignatureValid>true</SignatureValid>
+			</BasicSignature>
+			<SigningCertificate
+				Id="E370DEA4D95A1E9221BF6EA2C51AC503CD0BBF3D6087396463E33144A0068FBC">
+				<AttributePresent>true</AttributePresent>
+				<DigestValuePresent>true</DigestValuePresent>
+				<DigestValueMatch>true</DigestValueMatch>
+				<IssuerSerialMatch>true</IssuerSerialMatch>
+			</SigningCertificate>
+			<CertificateChain>
+				<ChainItem
+					Id="E370DEA4D95A1E9221BF6EA2C51AC503CD0BBF3D6087396463E33144A0068FBC">
+					<Source>SIGNATURE</Source>
+				</ChainItem>
+			</CertificateChain>
+			<ContentType>application/pdf</ContentType>
+			<CommitmentTypeIndication />
+			<ClaimedRoles />
+			<Timestamps />
+			<SignatureScopes>
+				<SignatureScope name="Full PDF" scope="FullSignatureScope">Full document</SignatureScope>
+			</SignatureScopes>
+		</Signature>
+	</Signatures>
+	<UsedCertificates>
+		<Certificate
+			Id="E370DEA4D95A1E9221BF6EA2C51AC503CD0BBF3D6087396463E33144A0068FBC">
+			<SubjectDistinguishedName Format="CANONICAL">2.5.4.46=#13083135333734393637,2.5.4.4=#0c1b4d6f6e6163656c6c6954657374496e636172642030322032303136,2.5.4.42=#0c184d6172636f54657374496e63617264203032202032303136,2.5.4.5=#131349543a41414141414130304130304130303041,cn=monacellitestincard
+				02 2016 marcotestincard 02 2016,o=non presente,c=it</SubjectDistinguishedName>
+			<SubjectDistinguishedName Format="RFC2253">2.5.4.46=#13083135333734393637,2.5.4.4=#0c1b4d6f6e6163656c6c6954657374496e636172642030322032303136,2.5.4.42=#0c184d6172636f54657374496e63617264203032202032303136,2.5.4.5=#131349543a41414141414130304130304130303041,CN=MonacelliTestIncard
+				02 2016 MarcoTestIncard 02 2016,O=non presente,C=IT</SubjectDistinguishedName>
+			<IssuerDistinguishedName Format="CANONICAL">cn=arubapec
+				s.p.a. ng ca 3,ou=certification authorityc,o=arubapec s.p.a.,c=it</IssuerDistinguishedName>
+			<IssuerDistinguishedName Format="RFC2253">CN=ArubaPEC
+				S.p.A. NG CA 3,OU=Certification AuthorityC,O=ArubaPEC S.p.A.,C=IT</IssuerDistinguishedName>
+			<SerialNumber>55609823618721925677174773084279051404</SerialNumber>
+			<CommonName>MonacelliTestIncard 02 2016 MarcoTestIncard 02 2016</CommonName>
+			<CountryName>IT</CountryName>
+			<OrganizationName>non presente</OrganizationName>
+			<GivenName>MarcoTestIncard 02 2016</GivenName>
+			<Surname>MonacelliTestIncard 02 2016</Surname>
+			<AuthorityInformationAccessUrls />
+			<CRLDistributionPoints>
+				<Url>http://crl.arubapec.it/ArubaPECSpACertificationAuthorityC/LatestCRL.crl</Url>
+			</CRLDistributionPoints>
+			<OCSPAccessUrls>
+				<Url>http://ocsp.arubapec.it</Url>
+			</OCSPAccessUrls>
+			<DigestAlgoAndValues>
+				<DigestAlgoAndValue>
+					<DigestMethod>SHA1</DigestMethod>
+					<DigestValue>YDdeCpEFNDQ+omp21onw8zc1aoQ=</DigestValue>
+				</DigestAlgoAndValue>
+			</DigestAlgoAndValues>
+			<NotAfter>2019-03-22T23:59:59</NotAfter>
+			<NotBefore>2016-03-22T00:00:00</NotBefore>
+			<PublicKeySize>1024</PublicKeySize>
+			<PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+			<KeyUsageBits>
+				<KeyUsage>nonRepudiation</KeyUsage>
+			</KeyUsageBits>
+			<IdKpOCSPSigning>false</IdKpOCSPSigning>
+			<IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+			<BasicSignature>
+				<EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+				<KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+				<DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+				<ReferenceDataFound>false</ReferenceDataFound>
+				<ReferenceDataIntact>false</ReferenceDataIntact>
+				<SignatureIntact>false</SignatureIntact>
+				<SignatureValid>false</SignatureValid>
+			</BasicSignature>
+			<CertificateChain />
+			<Trusted>false</Trusted>
+			<SelfSigned>false</SelfSigned>
+			<CertificatePolicyIds>
+				<oid>1.3.6.1.4.1.29741.1.1.1</oid>
+			</CertificatePolicyIds>
+			<QCStatementIds>
+				<oid Description="qc-compliant">0.4.0.1862.1.1</oid>
+				<oid>0.4.0.1862.1.3</oid>
+				<oid Description="qc-sscd">0.4.0.1862.1.4</oid>
+			</QCStatementIds>
+			<QCTypes />
+			<TrustedServiceProviders />
+			<Revocations />
+			<Info>
+				<Message Id="0">The certificate used to sign this token is not
+					found or not valid!</Message>
+			</Info>
+			<Base64Encoded>MIIFBDCCA+ygAwIBAgIQKdYP/MjkOoU5T0/ZCVSUjDANBgkqhkiG9w0BAQsFADBsMQswCQYDVQQGEwJJVDEYMBYGA1UECgwPQXJ1YmFQRUMgUy5wLkEuMSEwHwYDVQQLDBhDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eUMxIDAeBgNVBAMMF0FydWJhUEVDIFMucC5BLiBORyBDQSAzMB4XDTE2MDMyMjAwMDAwMFoXDTE5MDMyMjIzNTk1OVowgd0xCzAJBgNVBAYTAklUMRUwEwYDVQQKDAxub24gcHJlc2VudGUxPTA7BgNVBAMMNE1vbmFjZWxsaVRlc3RJbmNhcmQgMDIgMjAxNiBNYXJjb1Rlc3RJbmNhcmQgMDIgIDIwMTYxHDAaBgNVBAUTE0lUOkFBQUFBQTAwQTAwQTAwMEExITAfBgNVBCoMGE1hcmNvVGVzdEluY2FyZCAwMiAgMjAxNjEkMCIGA1UEBAwbTW9uYWNlbGxpVGVzdEluY2FyZCAwMiAyMDE2MREwDwYDVQQuEwgxNTM3NDk2NzCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA1v+FuF+PKj6qZ1/ETY70mJSahJSgUTU/RUIZiQx1lUNkznaLmEqgfiIAg4Rlb3+DssPHbSQKrRdPIuX/mPNn64SitglChrThBKopXV61pG96uawaNmMjFxx/J4gmIHnqY6sj4e6s537/gMhM9LnnELnxrFg9rFgL9vgrBR83NhcCAwEAAaOCAbIwggGuMA4GA1UdDwEB/wQEAwIGQDAdBgNVHQ4EFgQUoZATFiHd3yDDEMpJIkdHe/+KEgQwRwYDVR0gBEAwPjA8BgsrBgEEAYHoLQEBATAtMCsGCCsGAQUFBwIBFh9odHRwczovL2NhLmFydWJhcGVjLml0L2Nwcy5odG1sMFgGA1UdHwRRME8wTaBLoEmGR2h0dHA6Ly9jcmwuYXJ1YmFwZWMuaXQvQXJ1YmFQRUNTcEFDZXJ0aWZpY2F0aW9uQXV0aG9yaXR5Qy9MYXRlc3RDUkwuY3JsMC8GCCsGAQUFBwEDBCMwITAIBgYEAI5GAQEwCwYGBACORgEDAgEUMAgGBgQAjkYBBDApBgNVHREEIjAggR5tYXJjby5tb25hY2VsbGlAc3RhZmYuYXJ1YmEuaXQwHwYDVR0jBBgwFoAU8MBFsbY1tOpfKfqDA0rcL/WzfegwMwYIKwYBBQUHAQEEJzAlMCMGCCsGAQUFBzABhhdodHRwOi8vb2NzcC5hcnViYXBlYy5pdDAoBgNVHQkEITAfMB0GCCsGAQUFBwkBMREYDzE5ODEwODA0MDgwMDAxWjANBgkqhkiG9w0BAQsFAAOCAQEAmTLl3wtMP+HUDp33ELWWAexPSw2j0jdsa8rz9DdzpLRkBc/9MMIQodcuMZP1qZSb7GbLsfFaxzwMIcmyIjAG9rpSEvEeR43oUeWwobRi/0cCIggqadinGA0pzd2LvjmoHwEb9/SXjH5MhRpGGh5wD4aq60HnfibHBTqQMLzGNrLSlfePP8gw9J2lded4pIuxZyAr35eMHg6rntkLnOdy5cUXqsuf7bX5efXTzaMfzd2wQRNGH8EVs4ei1RgXdk3eEnP9APWypd+kmceyEbV9fl6JdmMl8wo4KQ0zQzrD8KFrVJVYSqqrvSm88Y88gIRG8PG6Coy7EmCRdQbVegwmvg==</Base64Encoded>
+		</Certificate>
+	</UsedCertificates>
+	<TrustedLists />
+</DiagnosticData>

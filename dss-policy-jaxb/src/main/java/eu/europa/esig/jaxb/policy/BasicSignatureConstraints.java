@@ -74,7 +74,7 @@ public class BasicSignatureConstraints {
     @XmlElement(name = "SigningCertificate")
     protected CertificateConstraints signingCertificate;
     @XmlElement(name = "CACertificate")
-    protected CertificateConstraints caCertificate;
+    protected CACertificateConstraints caCertificate;
     @XmlElement(name = "Cryptographic")
     protected CryptographicConstraint cryptographic;
 
@@ -290,7 +290,7 @@ public class BasicSignatureConstraints {
      *     {@link CertificateConstraints }
      *     
      */
-    public void setCACertificate(CertificateConstraints value) {
+    public void setCACertificate(CACertificateConstraints value) {
         this.caCertificate = value;
     }
 

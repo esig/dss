@@ -30,6 +30,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
 import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;
+import eu.europa.esig.jaxb.policy.CACertificateConstraints;
 import eu.europa.esig.jaxb.policy.CertificateConstraints;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 import eu.europa.esig.jaxb.policy.ContainerConstraints;
@@ -534,6 +535,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public List<byte[]> getCertificateTrustPoints(Context context) {
+		CACertificateConstraints certificateConstraints = getCACertificateByContext(context);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getTrustPoints().getX509Certificate();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getSigningCertificateRecognitionConstraint(Context context) {
 		CertificateConstraints certificateConstraints = getSigningCertificateByContext(context);
 		if (certificateConstraints != null) {
@@ -715,6 +725,10 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	private CertificateConstraints getSigningCertificateByContext(Context context) {
 		return getCertificateConstraints(context, SubContext.SIGNING_CERT);
+	}
+
+	private CACertificateConstraints getCACertificateByContext(Context context) {
+		return (CACertificateConstraints) getCertificateConstraints(context, SubContext.CA_CERTIFICATE);
 	}
 
 	private CertificateConstraints getCertificateConstraints(Context context, SubContext subContext) {
