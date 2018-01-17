@@ -45,6 +45,20 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	private CertificateToken signingCertificate;
 
 	/**
+	 * Optional parameter that contains the signatory id (ex. name in PDF/PAdES signatures) to use.
+	 * This allows to specify the signatory if signature certificate is not available during getDataToSign.
+	 */
+	private String signatoryId;
+
+	/**
+	 * Optional parameter that contains the actual canonicalized data that was used when creating the
+	 * signature value. This allows scenarios were ToBeSigned was externally updated before signature
+	 * value was created (i.e. signature certificate was appended). If this parameter is specified it
+	 * will be used in the signed document.
+	 */
+	private byte[] signedData;
+
+	/**
 	 * This field contains the {@code List} of chain of certificates. It includes the signing certificate.
 	 */
 	private List<CertificateToken> certificateChain = new LinkedList<CertificateToken>();
@@ -126,6 +140,33 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	public void setSigningCertificate(final CertificateToken signingCertificate) {
 		this.signingCertificate = signingCertificate;
 	}
+
+	/**
+	 * Get signatory identity
+	 *
+	 * @return signatory identity
+	 */
+	public String getSignatoryId() { return signatoryId; }
+
+	/**
+	 * Set signatory identity
+	 * @param signatoryId signatory identity
+	 */
+	public void setSignatoryId(final String signatoryId) {
+		this.signatoryId = signatoryId;
+	}
+
+	/**
+	 * Get signed data
+	 * @return
+	 */
+	public byte[] getSignedData() { return signedData; }
+
+	/**
+	 * Set signed data
+	 * @param signedData data that was used when creating the signature value.
+	 */
+	public void setSignedData(final byte[] signedData) { this.signedData = signedData; }
 
 	/**
 	 * Set the certificate chain
