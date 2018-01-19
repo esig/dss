@@ -33,17 +33,19 @@ import eu.europa.esig.dss.validation.SignatureScopeFinder;
  */
 public class PAdESSignatureScopeFinder implements SignatureScopeFinder<PAdESSignature> {
 
-    @Override
-    public List<SignatureScope> findSignatureScope(final PAdESSignature pAdESSignature) {
+	@Override
+	public List<SignatureScope> findSignatureScope(final PAdESSignature pAdESSignature) {
 
-        List<SignatureScope> result = new ArrayList<SignatureScope>();
-        final PdfSignatureInfo pdfSignature = pAdESSignature.getPdfSignatureInfo();
-        final int outerSignatureSize = pdfSignature.getOuterSignatures().size();
-        if (pAdESSignature.hasOuterSignatures()) {
-            result.add(new PdfByteRangeSignatureScope("PDF previous version #" + outerSignatureSize, pdfSignature.getSignatureByteRange()));
-        } else {
-            result.add(new FullSignatureScope("Full PDF"));
-        }
-        return result;
-    }
+		List<SignatureScope> result = new ArrayList<SignatureScope>();
+		final PdfSignatureInfo pdfSignature = pAdESSignature.getPdfSignatureInfo();
+		if (pdfSignature.isCoverAllOriginalBytes()) {
+			result.add(new FullSignatureScope("Full PDF"));
+		} else if (pAdESSignature.hasOuterSignatures()) {
+			final int outerSignatureSize = pdfSignature.getOuterSignatures().size();
+			result.add(new PdfByteRangeSignatureScope("PDF previous version #" + outerSignatureSize, pdfSignature.getSignatureByteRange()));
+		} else {
+			result.add(new PdfByteRangeSignatureScope("Partial PDF", pdfSignature.getSignatureByteRange()));
+		}
+		return result;
+	}
 }
