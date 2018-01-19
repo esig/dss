@@ -8,7 +8,27 @@
 
 	<artifactId>dss-simple-report-jaxb</artifactId>
 	<name>JAXB Simple Report Model</name>
-	<description>Generated source from XSD for Simple Report.</description>
+	<description>Generated source from XSD for Simple Report and additional XSLT (for HTML/PDF renderings).</description>
+
+	<build>
+		<!-- Inject version number in XSLT -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.xslt</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>**/*.xslt</exclude>
+				</excludes>
+			</resource>
+		</resources>
+	</build>
 
 	<dependencies>
 		<dependency>
