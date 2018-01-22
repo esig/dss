@@ -174,8 +174,8 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		}
 
 		@Override
-		public boolean isCoverCompleteRevision() {
-			return true;
+		public boolean isCoverAllOriginalBytes() {
+			return false;
 		}
 
 	}
