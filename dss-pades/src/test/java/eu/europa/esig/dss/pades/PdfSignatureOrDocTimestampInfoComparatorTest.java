@@ -173,6 +173,11 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 			return null;
 		}
 
+		@Override
+		public boolean isCoverAllOriginalBytes() {
+			return false;
+		}
+
 	}
 
 }

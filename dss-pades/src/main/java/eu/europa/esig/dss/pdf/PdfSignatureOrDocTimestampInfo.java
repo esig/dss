@@ -72,4 +72,7 @@ public interface PdfSignatureOrDocTimestampInfo {
 	Set<PdfSignatureOrDocTimestampInfo> getOuterSignatures();
 
 	boolean isTimestamp();
+
+	boolean isCoverAllOriginalBytes();
+
 }
