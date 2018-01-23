@@ -49,6 +49,10 @@ import eu.europa.esig.dss.xades.XPathQueryHolder;
  */
 public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSignature> {
 
+	private static final String XP_OPEN = "xpointer(";
+
+	private static final String XNS_OPEN = "xmlns(";
+
 	private final List<String> transformationToIgnore = new ArrayList<String>();
 
 	private final Map<String, String> presentableTransformationNames = new HashMap<String, String>();
@@ -96,7 +100,7 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 				result.add(new XmlRootSignatureScope(transformations));
 			} else if (uri.startsWith("#")) {
 				// internal reference
-				final boolean xPointerQuery = XPointerResourceResolver.isXPointerQuery(uri, true);
+				final boolean xPointerQuery = isXPointerQuery(uri);
 				if (xPointerQuery) {
 
 					final String id = DSSXMLUtils.getIDIdentifier(signatureReference);
@@ -105,7 +109,7 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 					continue;
 				}
 				final String xmlIdOfSignedElement = uri.substring(1);
-				final String xPathString = XPathQueryHolder.XPATH_OBJECT + "[@Id='" + xmlIdOfSignedElement + "']";
+				final String xPathString = XPathQueryHolder.XPATH_OBJECT + "[@Id=\"" + xmlIdOfSignedElement + "\"]";
 				Element signedElement = DomUtils.getElement(xadesSignature.getSignatureElement(), xPathString);
 				if (signedElement != null) {
 					if (unsignedObjects.remove(signedElement)) {
@@ -114,7 +118,7 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 					}
 				} else {
 					signedElement = DomUtils.getElement(xadesSignature.getSignatureElement().getOwnerDocument().getDocumentElement(),
-							"//*" + "[@Id='" + xmlIdOfSignedElement + "']");
+							"//*" + "[@Id=\"" + xmlIdOfSignedElement + "\"]");
 					if (signedElement != null) {
 
 						final String namespaceURI = signedElement.getNamespaceURI();
@@ -150,5 +154,35 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 			}
 		}
 		return algorithms;
+	}
+
+	/**
+	 * Indicates if the given URI is an XPointer query.
+	 *
+	 * @param uriValue
+	 *            URI to be analysed
+	 * @return true if it is an XPointer query
+	 */
+	private boolean isXPointerQuery(String uriValue) {
+		if (uriValue.isEmpty() || uriValue.charAt(0) != '#') {
+			return false;
+		}
+
+		String decodedUri = DSSUtils.decodeUrl(uriValue);
+		if (decodedUri == null) {
+			return false;
+		}
+
+		final String[] parts = decodedUri.substring(1).split("\\s");
+		int ii = 0;
+		for (; ii < parts.length - 1; ++ii) {
+			if (!parts[ii].endsWith(")") || !parts[ii].startsWith(XNS_OPEN)) {
+				return false;
+			}
+		}
+		if (!parts[ii].endsWith(")") || !parts[ii].startsWith(XP_OPEN)) {
+			return false;
+		}
+		return true;
 	}
 }
