@@ -37,7 +37,6 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
@@ -191,17 +190,9 @@ public class SimpleReportBuilder {
 
 		XmlValidationSignatureQualification signQualBlock = xmlSig.getValidationSignatureQualification();
 		if (signQualBlock != null) {
-			List<XmlTLAnalysis> tlAnalysis = detailedReport.getTLAnalysis();
-			for (XmlTLAnalysis xmlTLAnalysis : tlAnalysis) {
-				collectErrors(errorList, xmlTLAnalysis);
-				collectWarnings(warnList, xmlTLAnalysis);
-				collectInfos(infoList, xmlTLAnalysis);
-			}
-
 			collectErrors(errorList, signQualBlock);
 			collectWarnings(warnList, signQualBlock);
 			collectInfos(infoList, signQualBlock);
-
 		}
 
 		List<XmlName> errors = conclusion.getErrors();

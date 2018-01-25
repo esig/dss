@@ -25,8 +25,6 @@
 				<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='COUNTER_SIGNATURE']"/>
 				<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='TIMESTAMP']"/>
 				<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='REVOCATION']"/>
-				
-				<xsl:apply-templates select="dss:TLAnalysis" />
 			</div>
 	    </div>
 	    		
@@ -296,6 +294,7 @@
     			<xsl:attribute name="class">panel panel-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
 	    		<div>
 	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
+	    			<xsl:attribute name="style">margin-top : 10px</xsl:attribute>
 		    		<xsl:attribute name="data-target">#collapseTL<xsl:value-of select="@CountryCode"/></xsl:attribute>
 			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
 			       	<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">

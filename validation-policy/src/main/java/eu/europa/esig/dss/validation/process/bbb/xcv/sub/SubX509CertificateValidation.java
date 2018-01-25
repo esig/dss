@@ -79,6 +79,8 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(commonName(currentCertificate, subContext));
 
+		item = item.setNextItem(pseudoUsage(currentCertificate, subContext));
+
 		item = item.setNextItem(pseudonym(currentCertificate, subContext));
 
 		item = item.setNextItem(country(currentCertificate, subContext));
@@ -86,6 +88,18 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		item = item.setNextItem(organizationUnit(currentCertificate, subContext));
 
 		item = item.setNextItem(organizationName(currentCertificate, subContext));
+
+		item = item.setNextItem(certificatePolicyIds(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateQCStatementIds(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateQualified(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateSupportedByQSCD(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateIssuedToLegalPerson(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateIssuedToNaturalPerson(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateSignatureValid(currentCertificate, subContext));
 
@@ -101,22 +115,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(certificateOnHold(currentCertificate, subContext));
 
-		item = item.setNextItem(certificateExpiration(currentCertificate, subContext));
-
-		item = item.setNextItem(certificatePolicyIds(currentCertificate, subContext));
-
-		item = item.setNextItem(certificateQCStatementIds(currentCertificate, subContext));
-
-		item = item.setNextItem(certificateQualified(currentCertificate, subContext));
-
-		item = item.setNextItem(certificateSupportedByQSCD(currentCertificate, subContext));
-
-		item = item.setNextItem(pseudoUsage(currentCertificate, subContext));
-
-		item = item.setNextItem(certificateIssuedToLegalPerson(currentCertificate, subContext));
-
-		item = item.setNextItem(certificateIssuedToNaturalPerson(currentCertificate, subContext));
-
 		if (!isRevocationNoNeedCheck(currentCertificate)) {
 			RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(currentCertificate.getLatestRevocationData(), currentTime, context, subContext,
 					validationPolicy);
@@ -127,6 +125,8 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		} else {
 			item = item.setNextItem(idPkixOcspNoCheck());
 		}
+
+		item = item.setNextItem(certificateExpiration(currentCertificate, subContext));
 	}
 
 	/*

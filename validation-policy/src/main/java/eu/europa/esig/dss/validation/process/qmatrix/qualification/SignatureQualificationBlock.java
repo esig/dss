@@ -2,12 +2,12 @@ package eu.europa.esig.dss.validation.process.qmatrix.qualification;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureQualification;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -28,16 +28,16 @@ import eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.filter
 import eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.filter.TrustedServicesFilterFactory;
 import eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.qualified.QualifiedStatus;
 import eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.type.Type;
+import eu.europa.esig.dss.validation.process.qmatrix.tl.TLValidationBlock;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQualification> {
 
 	private final XmlConclusion etsi319102Conclusion;
-	private final Map<String, XmlTLAnalysis> tlAnalysisResults;
-	private final SignatureWrapper signature;
+	private final Date signingTime; // TODO bestSigningTime ?
+	private final CertificateWrapper signingCertificate;
 	private final DiagnosticData diagnosticData;
 	private final ValidationPolicy policy;
 
@@ -45,15 +45,15 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	private ForeSignatureAtSigningTimeCheck foreSignatureAtSigningTime;
 	private QSCDCertificateAtSigningTimeCheck qscdAtSigningTime;
 
-	public SignatureQualificationBlock(XmlConclusion etsi319102Conclusion, Map<String, XmlTLAnalysis> tlAnalysisResults, SignatureWrapper signature,
+	public SignatureQualificationBlock(XmlConclusion etsi319102Conclusion, Date signingTime, CertificateWrapper signingCertificate,
 			DiagnosticData diagnosticData, ValidationPolicy policy) {
 		super(new XmlValidationSignatureQualification());
 
-		result.setId(signature.getId());
+		// result.setId(signature.getId()); TODO
 
 		this.etsi319102Conclusion = etsi319102Conclusion;
-		this.tlAnalysisResults = tlAnalysisResults;
-		this.signature = signature;
+		this.signingTime = signingTime;
+		this.signingCertificate = signingCertificate;
 		this.diagnosticData = diagnosticData;
 		this.policy = policy;
 	}
@@ -61,24 +61,25 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	@Override
 	protected void initChain() {
 
-		String signingCertificateId = signature.getSigningCertificateId();
-		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(signingCertificateId);
-
 		ChainItem<XmlValidationSignatureQualification> item = firstItem = isAdES(etsi319102Conclusion);
 
 		item = item.setNextItem(certificatePathTrusted(signingCertificate));
 
 		if (signingCertificate != null && signingCertificate.hasTrustedServices()) {
 
-			XmlTLAnalysis lotlAnalysis = tlAnalysisResults.get(diagnosticData.getLOTLCountryCode());
-			if (lotlAnalysis != null) {
+			XmlTrustedList listOfTrustedLists = diagnosticData.getListOfTrustedLists();
+			if (listOfTrustedLists != null) {
+				TLValidationBlock tlValidation = new TLValidationBlock(listOfTrustedLists, signingTime, policy);
+				XmlTLAnalysis lotlAnalysis = tlValidation.execute();
+				result.getTLAnalysis().add(lotlAnalysis);
 				item = item.setNextItem(isAcceptableTL(lotlAnalysis));
 			}
 
 			Set<String> trustedListCountryCodes = signingCertificate.getTrustedListCountryCodes();
 			for (String countryCode : trustedListCountryCodes) {
-				XmlTLAnalysis currentTL = tlAnalysisResults.get(countryCode);
+				XmlTLAnalysis currentTL = executeTlAnalysis(signingTime, countryCode);
 				if (currentTL != null) {
+					result.getTLAnalysis().add(currentTL);
 					item = item.setNextItem(isAcceptableTL(currentTL));
 				}
 			}
@@ -94,16 +95,13 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 
 			item = item.setNextItem(serviceAndCertificateConsistency(caqcServices, signingCertificate));
 
-			Date bestSigningTime = signature.getDateTime(); // TODO
-
 			// Article 32 :
 			// (a) the certificate that supports the signature was, at the time of signing, a qualified certificate for
 			// electronic signature complying with Annex I;
-			qualifiedAtSigningTime = (QualifiedCertificateAtSigningTimeCheck) qualifiedCertificateAtSigningTime(signingCertificate, bestSigningTime,
-					caqcServices);
+			qualifiedAtSigningTime = (QualifiedCertificateAtSigningTimeCheck) qualifiedCertificateAtSigningTime(signingCertificate, signingTime, caqcServices);
 			item = item.setNextItem(qualifiedAtSigningTime);
 
-			foreSignatureAtSigningTime = (ForeSignatureAtSigningTimeCheck) foreSignatureAtSigningTime(signingCertificate, bestSigningTime, caqcServices);
+			foreSignatureAtSigningTime = (ForeSignatureAtSigningTimeCheck) foreSignatureAtSigningTime(signingCertificate, signingTime, caqcServices);
 			item = item.setNextItem(foreSignatureAtSigningTime);
 
 			// (b) the qualified certificate
@@ -125,13 +123,25 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 			// covered in isAdES
 
 			// (f) the electronic signature was created by a qualified electronic signature creation device;
-			qscdAtSigningTime = (QSCDCertificateAtSigningTimeCheck) qscdAtSigningTime(signingCertificate, bestSigningTime, caqcServices,
-					qualifiedAtSigningTime);
+			qscdAtSigningTime = (QSCDCertificateAtSigningTimeCheck) qscdAtSigningTime(signingCertificate, signingTime, caqcServices, qualifiedAtSigningTime);
 			item = item.setNextItem(qscdAtSigningTime);
 
 			// (g) the integrity of the signed data has not been compromised;
 			// covered in isAdES
 		}
+	}
+
+	private XmlTLAnalysis executeTlAnalysis(Date bestSigningTime, String countryCode) {
+		List<XmlTrustedList> trustedLists = diagnosticData.getTrustedLists();
+		if (Utils.isCollectionNotEmpty(trustedLists)) {
+			for (XmlTrustedList xmlTrustedList : trustedLists) {
+				if (countryCode.equals(xmlTrustedList.getCountryCode())) {
+					TLValidationBlock tlValidation = new TLValidationBlock(xmlTrustedList, bestSigningTime, policy);
+					return tlValidation.execute();
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override

@@ -732,6 +732,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	private BasicSignatureConstraints getBasicSignatureConstraintsByContext(Context context) {
 		switch (context) {
 		case SIGNATURE:
+		case CERTIFICATE: // TODO improve
 			SignatureConstraints mainSignature = policy.getSignatureConstraints();
 			if (mainSignature != null) {
 				return mainSignature.getBasicSignatureConstraints();
@@ -764,6 +765,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	private SignatureConstraints getSignatureConstraintsByContext(Context context) {
 		switch (context) {
 		case SIGNATURE:
+		case CERTIFICATE: // TODO improve
 			return policy.getSignatureConstraints();
 		case COUNTER_SIGNATURE:
 			return policy.getCounterSignatureConstraints();

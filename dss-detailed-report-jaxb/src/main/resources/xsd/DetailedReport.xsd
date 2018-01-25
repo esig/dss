@@ -9,7 +9,6 @@
 			<xs:sequence>
 				<xs:element type="Signature" name="Signatures" minOccurs="0" maxOccurs="unbounded" />
 				<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
-				<xs:element type="TLAnalysis" name="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -55,6 +54,9 @@
 	<xs:complexType name="ValidationSignatureQualification">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+					<xs:element name="TLAnalysis" type="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
 				<xs:attribute name="Id" type="xs:string" use="required" />
 				<xs:attribute name="SignatureQualification" type="SignatureQualification" use="optional" />
 			</xs:extension>

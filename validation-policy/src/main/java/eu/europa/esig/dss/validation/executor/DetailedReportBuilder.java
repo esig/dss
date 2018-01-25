@@ -14,17 +14,13 @@ import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignatures;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.bbb.BasicBuildingBlocks;
 import eu.europa.esig.dss.validation.process.qmatrix.qualification.SignatureQualificationBlock;
-import eu.europa.esig.dss.validation.process.qmatrix.tl.TLValidationBlock;
 import eu.europa.esig.dss.validation.process.vpfbs.ValidationProcessForBasicSignatures;
 import eu.europa.esig.dss.validation.process.vpfltvd.ValidationProcessForSignaturesWithLongTermValidationData;
 import eu.europa.esig.dss.validation.process.vpfswatsp.ValidationProcessForSignaturesWithArchivalData;
@@ -56,12 +52,6 @@ public class DetailedReportBuilder {
 		Map<String, XmlBasicBuildingBlocks> bbbs = executeAllBasicBuildingBlocks();
 		detailedReport.getBasicBuildingBlocks().addAll(bbbs.values());
 
-		Map<String, XmlTLAnalysis> tlAnalysisResults = new HashMap<String, XmlTLAnalysis>();
-		if (policy.isEIDASConstraintPresent()) {
-			tlAnalysisResults = executeAllTlAnalysis();
-			detailedReport.getTLAnalysis().addAll(tlAnalysisResults.values());
-		}
-
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 
 			XmlSignature signatureAnalysis = new XmlSignature();
@@ -86,8 +76,8 @@ public class DetailedReportBuilder {
 
 			if (policy.isEIDASConstraintPresent()) {
 				try {
-					SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(conlusion, tlAnalysisResults, signature, diagnosticData,
-							policy);
+					SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(conlusion, signature.getDateTime(),
+							diagnosticData.getUsedCertificateById(signature.getSigningCertificateId()), diagnosticData, policy);
 					signatureAnalysis.setValidationSignatureQualification(qualificationBlock.execute());
 				} catch (Exception e) {
 					LOG.error("Unable to determine the signature qualification", e);
@@ -98,25 +88,6 @@ public class DetailedReportBuilder {
 		}
 
 		return detailedReport;
-	}
-
-	private Map<String, XmlTLAnalysis> executeAllTlAnalysis() {
-		Map<String, XmlTLAnalysis> result = new HashMap<String, XmlTLAnalysis>();
-		XmlTrustedList listOfTrustedLists = diagnosticData.getListOfTrustedLists();
-		if (listOfTrustedLists != null) {
-			TLValidationBlock tlValidation = new TLValidationBlock(listOfTrustedLists, currentTime, policy);
-			result.put(listOfTrustedLists.getCountryCode(), tlValidation.execute());
-		}
-
-		// Validate used trusted lists
-		List<XmlTrustedList> trustedLists = diagnosticData.getTrustedLists();
-		if (Utils.isCollectionNotEmpty(trustedLists)) {
-			for (XmlTrustedList xmlTrustedList : trustedLists) {
-				TLValidationBlock tlValidation = new TLValidationBlock(xmlTrustedList, currentTime, policy);
-				result.put(xmlTrustedList.getCountryCode(), tlValidation.execute());
-			}
-		}
-		return result;
 	}
 
 	private XmlConclusion executeBasicValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs) {
