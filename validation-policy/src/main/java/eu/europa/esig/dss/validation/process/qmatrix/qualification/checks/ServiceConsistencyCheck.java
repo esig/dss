@@ -2,7 +2,7 @@ package eu.europa.esig.dss.validation.process.qmatrix.qualification.checks;
 
 import java.util.List;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -12,13 +12,13 @@ import eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.consis
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class ServiceConsistencyCheck extends ChainItem<XmlValidationSignatureQualification> {
+public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQualification> {
 
 	private final List<TrustedServiceWrapper> trustedServices;
 
 	private MessageTag errorMessage;
 
-	public ServiceConsistencyCheck(XmlValidationSignatureQualification result, List<TrustedServiceWrapper> trustedServices, LevelConstraint constraint) {
+	public ServiceConsistencyCheck(XmlValidationCertificateQualification result, List<TrustedServiceWrapper> trustedServices, LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.trustedServices = trustedServices;

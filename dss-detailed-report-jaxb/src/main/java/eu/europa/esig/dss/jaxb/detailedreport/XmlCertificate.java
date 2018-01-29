@@ -16,20 +16,19 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for SubXCV complex type.
+ * <p>Java class for Certificate complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="SubXCV"&gt;
+ * &lt;complexType name="Certificate"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://dss.esig.europa.eu/validation/detailed-report}ConstraintsConclusion"&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="RFC" type="{http://dss.esig.europa.eu/validation/detailed-report}RFC" minOccurs="0"/&gt;
+ *         &lt;element name="ValidationCertificateQualification" type="{http://dss.esig.europa.eu/validation/detailed-report}ValidationCertificateQualification" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;attribute name="Id" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
- *       &lt;attribute name="TrustAnchor" type="{http://www.w3.org/2001/XMLSchema}boolean" /&gt;
- *     &lt;/extension&gt;
+ *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
@@ -37,42 +36,38 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SubXCV", propOrder = {
-    "rfc"
+@XmlType(name = "Certificate", propOrder = {
+    "validationCertificateQualification"
 })
-public class XmlSubXCV
-    extends XmlConstraintsConclusion
-{
+public class XmlCertificate {
 
-    @XmlElement(name = "RFC")
-    protected XmlRFC rfc;
+    @XmlElement(name = "ValidationCertificateQualification")
+    protected XmlValidationCertificateQualification validationCertificateQualification;
     @XmlAttribute(name = "Id", required = true)
     protected String id;
-    @XmlAttribute(name = "TrustAnchor")
-    protected Boolean trustAnchor;
 
     /**
-     * Gets the value of the rfc property.
+     * Gets the value of the validationCertificateQualification property.
      * 
      * @return
      *     possible object is
-     *     {@link XmlRFC }
+     *     {@link XmlValidationCertificateQualification }
      *     
      */
-    public XmlRFC getRFC() {
-        return rfc;
+    public XmlValidationCertificateQualification getValidationCertificateQualification() {
+        return validationCertificateQualification;
     }
 
     /**
-     * Sets the value of the rfc property.
+     * Sets the value of the validationCertificateQualification property.
      * 
      * @param value
      *     allowed object is
-     *     {@link XmlRFC }
+     *     {@link XmlValidationCertificateQualification }
      *     
      */
-    public void setRFC(XmlRFC value) {
-        this.rfc = value;
+    public void setValidationCertificateQualification(XmlValidationCertificateQualification value) {
+        this.validationCertificateQualification = value;
     }
 
     /**
@@ -97,30 +92,6 @@ public class XmlSubXCV
      */
     public void setId(String value) {
         this.id = value;
-    }
-
-    /**
-     * Gets the value of the trustAnchor property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public Boolean isTrustAnchor() {
-        return trustAnchor;
-    }
-
-    /**
-     * Sets the value of the trustAnchor property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setTrustAnchor(Boolean value) {
-        this.trustAnchor = value;
     }
 
 }

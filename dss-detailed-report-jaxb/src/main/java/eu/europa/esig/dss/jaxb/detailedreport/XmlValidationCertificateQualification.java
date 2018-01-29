@@ -9,30 +9,33 @@
 package eu.europa.esig.dss.jaxb.detailedreport;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import eu.europa.esig.dss.validation.SignatureQualification;
+import eu.europa.esig.dss.validation.CertificateQualification;
 
 
 /**
- * <p>Java class for ValidationSignatureQualification complex type.
+ * <p>Java class for ValidationCertificateQualification complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ValidationSignatureQualification"&gt;
+ * &lt;complexType name="ValidationCertificateQualification"&gt;
  *   &lt;complexContent&gt;
  *     &lt;extension base="{http://dss.esig.europa.eu/validation/detailed-report}ConstraintsConclusion"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="ValidationCertificateQualification" type="{http://dss.esig.europa.eu/validation/detailed-report}ValidationCertificateQualification" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="TLAnalysis" type="{http://dss.esig.europa.eu/validation/detailed-report}TLAnalysis" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;attribute name="Id" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
- *       &lt;attribute name="SignatureQualification" type="{http://dss.esig.europa.eu/validation/detailed-report}SignatureQualification" /&gt;
+ *       &lt;attribute name="DateTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" /&gt;
+ *       &lt;attribute name="CertificateQualification" type="{http://dss.esig.europa.eu/validation/detailed-report}CertificateQualification" /&gt;
  *     &lt;/extension&gt;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
@@ -41,48 +44,52 @@ import eu.europa.esig.dss.validation.SignatureQualification;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ValidationSignatureQualification", propOrder = {
-    "validationCertificateQualification"
+@XmlType(name = "ValidationCertificateQualification", propOrder = {
+    "tlAnalysis"
 })
-public class XmlValidationSignatureQualification
+public class XmlValidationCertificateQualification
     extends XmlConstraintsConclusion
 {
 
-    @XmlElement(name = "ValidationCertificateQualification")
-    protected List<XmlValidationCertificateQualification> validationCertificateQualification;
+    @XmlElement(name = "TLAnalysis")
+    protected List<XmlTLAnalysis> tlAnalysis;
     @XmlAttribute(name = "Id", required = true)
     protected String id;
-    @XmlAttribute(name = "SignatureQualification")
-    @XmlJavaTypeAdapter(Adapter5 .class)
-    protected SignatureQualification signatureQualification;
+    @XmlAttribute(name = "DateTime")
+    @XmlJavaTypeAdapter(Adapter1 .class)
+    @XmlSchemaType(name = "dateTime")
+    protected Date dateTime;
+    @XmlAttribute(name = "CertificateQualification")
+    @XmlJavaTypeAdapter(Adapter4 .class)
+    protected CertificateQualification certificateQualification;
 
     /**
-     * Gets the value of the validationCertificateQualification property.
+     * Gets the value of the tlAnalysis property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the validationCertificateQualification property.
+     * This is why there is not a <CODE>set</CODE> method for the tlAnalysis property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getValidationCertificateQualification().add(newItem);
+     *    getTLAnalysis().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link XmlValidationCertificateQualification }
+     * {@link XmlTLAnalysis }
      * 
      * 
      */
-    public List<XmlValidationCertificateQualification> getValidationCertificateQualification() {
-        if (validationCertificateQualification == null) {
-            validationCertificateQualification = new ArrayList<XmlValidationCertificateQualification>();
+    public List<XmlTLAnalysis> getTLAnalysis() {
+        if (tlAnalysis == null) {
+            tlAnalysis = new ArrayList<XmlTLAnalysis>();
         }
-        return this.validationCertificateQualification;
+        return this.tlAnalysis;
     }
 
     /**
@@ -110,27 +117,51 @@ public class XmlValidationSignatureQualification
     }
 
     /**
-     * Gets the value of the signatureQualification property.
+     * Gets the value of the dateTime property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public SignatureQualification getSignatureQualification() {
-        return signatureQualification;
+    public Date getDateTime() {
+        return dateTime;
     }
 
     /**
-     * Sets the value of the signatureQualification property.
+     * Sets the value of the dateTime property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setSignatureQualification(SignatureQualification value) {
-        this.signatureQualification = value;
+    public void setDateTime(Date value) {
+        this.dateTime = value;
+    }
+
+    /**
+     * Gets the value of the certificateQualification property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public CertificateQualification getCertificateQualification() {
+        return certificateQualification;
+    }
+
+    /**
+     * Sets the value of the certificateQualification property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setCertificateQualification(CertificateQualification value) {
+        this.certificateQualification = value;
     }
 
 }

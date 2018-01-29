@@ -1,13 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" 
-	targetNamespace="http://dss.esig.europa.eu/validation/detailed-report" 
-	xmlns="http://dss.esig.europa.eu/validation/detailed-report"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://dss.esig.europa.eu/validation/detailed-report" 
+	xmlns="http://dss.esig.europa.eu/validation/detailed-report" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
 	<xs:element name="DetailedReport">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element type="Signature" name="Signatures" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element type="Certificate" name="Certificate" minOccurs="0" maxOccurs="1" />
 				<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
@@ -23,6 +22,13 @@
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 		<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
+	</xs:complexType>
+	
+	<xs:complexType name="Certificate">
+		<xs:sequence>
+			<xs:element type="ValidationCertificateQualification" name="ValidationCertificateQualification" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="required" />
 	</xs:complexType>
 
 	<xs:complexType name="BasicBuildingBlocks">
@@ -55,10 +61,23 @@
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
 				<xs:sequence>
-					<xs:element name="TLAnalysis" type="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="ValidationCertificateQualification" type="ValidationCertificateQualification" minOccurs="0" maxOccurs="unbounded" />
 				</xs:sequence>
 				<xs:attribute name="Id" type="xs:string" use="required" />
 				<xs:attribute name="SignatureQualification" type="SignatureQualification" use="optional" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="ValidationCertificateQualification">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+					<xs:element name="TLAnalysis" type="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+				<xs:attribute name="Id" type="xs:string" use="required" />
+        		<xs:attribute name="DateTime" type="xs:dateTime" />
+				<xs:attribute name="CertificateQualification" type="CertificateQualification" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -256,6 +275,25 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
+	<xs:simpleType name="CertificateQualification" final="restriction">
+		<xs:restriction base="xs:string">
+		
+			<xs:enumeration value="QC Cert for ESig with QSCD" />
+			<xs:enumeration value="QC Cert for ESeal with QSCD" />
+			<!-- non sense <xs:enumeration value="QC Cert for WSA with QSCD" /> -->
+			
+			<xs:enumeration value="QC Cert for ESig" />
+			<xs:enumeration value="QC Cert for ESeal" />
+			<xs:enumeration value="QC Cert for WSA" />
+			
+			<xs:enumeration value="Cert for ESig" />
+			<xs:enumeration value="Cert for ESeal" />
+			<xs:enumeration value="Cert for WSA" />
+			
+			<xs:enumeration value="N/A" />
+		</xs:restriction>
+	</xs:simpleType>
+	
 	<xs:simpleType name="SignatureQualification" final="restriction">
 		<xs:restriction base="xs:string">
 		
@@ -293,6 +331,8 @@
 			<xs:enumeration value="COUNTER_SIGNATURE" />
 			<xs:enumeration value="TIMESTAMP" />
 			<xs:enumeration value="REVOCATION" />
+			<!-- For Qualification -->
+			<xs:enumeration value="CERTIFICATE" />
 		</xs:restriction>
 	</xs:simpleType>
 	

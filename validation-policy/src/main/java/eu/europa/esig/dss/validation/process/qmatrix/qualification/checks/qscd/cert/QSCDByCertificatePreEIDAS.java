@@ -3,6 +3,7 @@ package eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.qscd.
 import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
 import eu.europa.esig.dss.validation.process.QCStatementPolicyIdentifiers;
 import eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.qscd.AbstractQSCDCondition;
+import eu.europa.esig.dss.validation.process.qmatrix.qualification.checks.qscd.QSCDStatus;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 
 public class QSCDByCertificatePreEIDAS extends AbstractQSCDCondition {
@@ -14,7 +15,7 @@ public class QSCDByCertificatePreEIDAS extends AbstractQSCDCondition {
 	}
 
 	@Override
-	public boolean check() {
+	public QSCDStatus getQSCDStatus() {
 
 		// checks in policy id extension
 		boolean policyIdSupportedByQSCD = CertificatePolicyIdentifiers.isSupportedByQSCD(certificate);
@@ -22,7 +23,11 @@ public class QSCDByCertificatePreEIDAS extends AbstractQSCDCondition {
 		// checks in QC statement extension
 		boolean qcStatementSupportedByQSCD = QCStatementPolicyIdentifiers.isSupportedByQSCD(certificate);
 
-		return policyIdSupportedByQSCD || qcStatementSupportedByQSCD;
+		if (policyIdSupportedByQSCD || qcStatementSupportedByQSCD) {
+			return QSCDStatus.QSCD;
+		} else {
+			return QSCDStatus.NOT_QSCD;
+		}
 	}
 
 }

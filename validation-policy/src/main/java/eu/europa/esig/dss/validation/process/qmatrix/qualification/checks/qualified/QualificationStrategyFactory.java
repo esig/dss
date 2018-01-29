@@ -26,4 +26,10 @@ public final class QualificationStrategyFactory {
 		return new QualificationByTL(trustedServices, qualifiedInCert);
 	}
 
+	public static QualificationStrategy createQualificationFromCertAndTL(CertificateWrapper signingCertificate,
+			List<TrustedServiceWrapper> caQcTrustedServices) {
+		QualificationStrategy qcFromCert = createQualificationFromCert(signingCertificate);
+		return createQualificationFromTL(caQcTrustedServices, qcFromCert);
+	}
+
 }

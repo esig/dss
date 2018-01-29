@@ -278,19 +278,30 @@ public enum MessageTag {
 
 	QUAL_TRUSTED_LIST_ACCEPT("Is the trusted list acceptable?"),
 	QUAL_TRUSTED_LIST_ACCEPT_ANS("The trusted list is not acceptable!"),
-	QUAL_QC_AT_ST("Is the certificate qualifed at signing time?"),
-	QUAL_QC_AT_ST_ANS("The certificate is not qualified at signing time!"),
 
 	QUAL_FOR_SIGN_AT_ST("Is the certificate for eSig at signing time?"),
 	QUAL_FOR_SIGN_AT_ST_ANS("The certificate is not for eSig at signing time!"),
-	
+	QUAL_FOR_SIGN_AT_CC("Is the certificate for eSig at issuance time?"),
+	QUAL_FOR_SIGN_AT_CC_ANS("The certificate is not for eSig at issuance time!"),
+	QUAL_FOR_SIGN_AT_VT("Is the certificate for eSig at validation time?"),
+	QUAL_FOR_SIGN_AT_VT_ANS("The certificate is not for eSig at validation time!"),
+
+	QUAL_QC_AT_ST("Is the certificate qualifed at signing time?"),
+	QUAL_QC_AT_ST_ANS("The certificate is not qualified at signing time!"),
 	QUAL_QC_AT_CC("Is the certificate qualifed at issuance time?"),
 	QUAL_QC_AT_CC_ANS("The certificate is not qualified at issuance time!"),
+	QUAL_QC_AT_VT("Is the certificate qualifed at validation time?"),
+	QUAL_QC_AT_VT_ANS("The certificate is not qualified at validation time!"),
+
+	QUAL_QSCD_AT_ST("Is the private key on a QSCD at signing time?"),
+	QUAL_QSCD_AT_ST_ANS("The private key is not on a QSCD at signing time!"),
+	QUAL_QSCD_AT_CC("Is the private key on a QSCD at issuance time?"),
+	QUAL_QSCD_AT_CC_ANS("The private key is not on a QSCD at issuance time!"),
+	QUAL_QSCD_AT_VT("Is the private key on a QSCD at validation time?"),
+	QUAL_QSCD_AT_VT_ANS("The private key is not on a QSCD at validation time!"),
 
 	QUAL_UNIQUE_CERT("Is the certificate unique ?"),
 	QUAL_UNIQUE_CERT_ANS("The certificate cannot be defined as unique!"),
-	QUAL_QSCD_AT_ST("Is the signature/seal created by a QSCD?"),
-	QUAL_QSCD_AT_ST_ANS("The signature/seal is not created by a QSCD!"),
 	QUAL_IS_ADES("Is the signature/seal an acceptable AdES (ETSI EN 319 102-1) ?"),
 	QUAL_IS_ADES_IND("The signature/seal is an INDETERMINATE AdES!"),
 	QUAL_IS_ADES_INV("The signature/seal is not a valid AdES!"),
@@ -299,6 +310,9 @@ public enum MessageTag {
 	QUAL_TL_CERT_CONS_ANS1("Inconsistency in TL - Cert claimed as QC for eSeal while Q status not granted for electronic Seal"),
 	QUAL_TL_CERT_CONS_ANS2("Inconsistency in TL - Cert claimed as QC for WSA while Q status not granted for WSA, digital signature generated with cert. for WSA considered as special case of AdESeal"),
 	QUAL_TL_CERT_CONS_ANS3("Inconsistency in TL - Cert claimed as QC for eSig while Q status not granted for electronic Sig"),
+
+	QUAL_HAS_CAQC("Is the certificate related to a CA/QC granted at given time?"),
+	QUAL_HAS_CAQC_ANS("The certificate is not related to a CA/QC granted at given time!"),
 	
 	EMPTY("");
 

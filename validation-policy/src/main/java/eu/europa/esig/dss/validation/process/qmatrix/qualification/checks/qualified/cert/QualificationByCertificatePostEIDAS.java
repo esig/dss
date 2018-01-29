@@ -15,9 +15,7 @@ public class QualificationByCertificatePostEIDAS extends AbstractQualificationCo
 
 	@Override
 	public QualifiedStatus getQualifiedStatus() {
-		boolean qcCompliant = QCStatementPolicyIdentifiers.isQCCompliant(signingCertificate);
-
-		if (qcCompliant) {
+		if (QCStatementPolicyIdentifiers.isQCCompliant(signingCertificate)) {
 			return QualifiedStatus.QC;
 		} else {
 			return QualifiedStatus.NOT_QC;

@@ -6,4 +6,8 @@ public enum QSCDStatus {
 
 	NOT_QSCD;
 
+	public static boolean isQSCD(QSCDStatus status) {
+		return QSCD == status;
+	}
+
 }

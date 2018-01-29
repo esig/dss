@@ -9,19 +9,19 @@
 package eu.europa.esig.dss.jaxb.detailedreport;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.policy.Context;
 
-public class Adapter2
-    extends XmlAdapter<String, Indication>
+public class Adapter6
+    extends XmlAdapter<String, Context>
 {
 
 
-    public Indication unmarshal(String value) {
-        return (eu.europa.esig.dss.jaxb.parsers.IndicationParser.parse(value));
+    public Context unmarshal(String value) {
+        return (eu.europa.esig.dss.jaxb.parsers.ContextParser.parse(value));
     }
 
-    public String marshal(Indication value) {
-        return (eu.europa.esig.dss.jaxb.parsers.IndicationParser.print(value));
+    public String marshal(Context value) {
+        return (eu.europa.esig.dss.jaxb.parsers.ContextParser.print(value));
     }
 
 }

@@ -25,8 +25,10 @@ public class TypeByCertificatePostEIDAS implements TypeStrategy {
 
 		if (qcCompliant && (noneType || esign)) {
 			return Type.ESIGN;
-		} else if (qcCompliant && (eseal || web)) {
+		} else if (qcCompliant && eseal) {
 			return Type.ESEAL;
+		} else if (qcCompliant && web) {
+			return Type.WSA;
 		} else {
 			return Type.UNKNOWN;
 		}

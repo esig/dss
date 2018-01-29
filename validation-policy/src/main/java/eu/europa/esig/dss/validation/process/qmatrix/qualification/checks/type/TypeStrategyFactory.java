@@ -26,4 +26,9 @@ public final class TypeStrategyFactory {
 		return new TypeByTL(trustedServices, typeInCert);
 	}
 
+	public static TypeStrategy createTypeFromCertAndTL(CertificateWrapper signingCertificate, List<TrustedServiceWrapper> caQcTrustedServices) {
+		TypeStrategy typeFromCert = createTypeFromCert(signingCertificate);
+		return createTypeFromTL(caQcTrustedServices, typeFromCert);
+	}
+
 }
