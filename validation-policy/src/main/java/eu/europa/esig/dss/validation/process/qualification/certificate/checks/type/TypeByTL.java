@@ -1,0 +1,45 @@
+package eu.europa.esig.dss.validation.process.qualification.certificate.checks.type;
+
+import java.util.List;
+
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.process.qualification.certificate.Type;
+import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
+import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
+
+class TypeByTL implements TypeStrategy {
+
+	private final List<TrustedServiceWrapper> trustedServices;
+	private final TypeStrategy typeInCert;
+
+	public TypeByTL(List<TrustedServiceWrapper> trustedServices, TypeStrategy typeInCert) {
+		this.trustedServices = trustedServices;
+		this.typeInCert = typeInCert;
+	}
+
+	@Override
+	public Type getType() {
+		if (Utils.isCollectionNotEmpty(trustedServices)) {
+
+			for (TrustedServiceWrapper trustedService : trustedServices) {
+				List<String> usageQualifiers = ServiceQualification.getUsageQualifiers(trustedService.getCapturedQualifiers());
+
+				// If overrules
+				if (Utils.isCollectionNotEmpty(usageQualifiers)) {
+
+					if (ServiceQualification.isQcForEsig(usageQualifiers)) {
+						return Type.ESIGN;
+					}
+
+					if (ServiceQualification.isQcForEseal(usageQualifiers) || ServiceQualification.isQcForWSA(usageQualifiers)) {
+						return Type.ESEAL;
+					}
+
+				}
+			}
+
+		}
+		return typeInCert.getType();
+	}
+
+}

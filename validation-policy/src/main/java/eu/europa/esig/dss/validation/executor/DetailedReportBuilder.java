@@ -20,7 +20,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.bbb.BasicBuildingBlocks;
-import eu.europa.esig.dss.validation.process.qmatrix.qualification.SignatureQualificationBlock;
+import eu.europa.esig.dss.validation.process.qualification.signature.SignatureQualificationBlock;
 import eu.europa.esig.dss.validation.process.vpfbs.ValidationProcessForBasicSignatures;
 import eu.europa.esig.dss.validation.process.vpfltvd.ValidationProcessForSignaturesWithLongTermValidationData;
 import eu.europa.esig.dss.validation.process.vpfswatsp.ValidationProcessForSignaturesWithArchivalData;

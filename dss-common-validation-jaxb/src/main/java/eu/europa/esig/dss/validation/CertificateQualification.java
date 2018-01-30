@@ -8,12 +8,12 @@ public enum CertificateQualification {
 	/**
 	 * Qualified Certificate for Electronic Signatures with private key on QSCD
 	 */
-	QCERT_FOR_ESIG_QSCD("QC Cert for ESig with QSCD", "Qualified Certificate for Electronic Signatures with private key on QSCD"),
+	QCERT_FOR_ESIG_QSCD("QC Cert for ESig with QSCD", "Qualified Certificate for Electronic Signatures with private key on QSCD", true, true, true),
 
 	/**
 	 * Qualified Certificate for Electronic Seals with private key on QSCD
 	 */
-	QCERT_FOR_ESEAL_QSCD("QC Cert for ESeal with QSCD", "Qualified Certificate for Electronic Seals with private key on QSCD"),
+	QCERT_FOR_ESEAL_QSCD("QC Cert for ESeal with QSCD", "Qualified Certificate for Electronic Seals with private key on QSCD", true, false, true),
 
 	// QCERT_FOR_WSA_QSCD non sense
 
@@ -22,39 +22,39 @@ public enum CertificateQualification {
 	/**
 	 * Qualified Certificate for Electronic Signatures
 	 */
-	QCERT_FOR_ESIG("QC Cert for ESig", "Qualified Certificate for Electronic Signatures"),
+	QCERT_FOR_ESIG("QC Cert for ESig", "Qualified Certificate for Electronic Signatures", true, true, false),
 
 	/**
 	 * Qualified Certificate for Electronic Seals
 	 */
-	QCERT_FOR_ESEAL("QC Cert for ESeal", "Qualified Certificate for Electronic Seals"),
+	QCERT_FOR_ESEAL("QC Cert for ESeal", "Qualified Certificate for Electronic Seals", true, false, false),
 
 	/**
 	 * Qualified Certificate for Web Site Authentications
 	 */
-	QCERT_FOR_WSA("QC Cert for WSA", "Qualified Certificate for Web Site Authentications"),
+	QCERT_FOR_WSA("QC Cert for WSA", "Qualified Certificate for Web Site Authentications", true, false, false),
 
 	// --------------------------------------------------------
 
 	/**
 	 * Certificate for Electronic Signatures
 	 */
-	CERT_FOR_ESIG("Cert for ESig", "Certificate for Electronic Signatures"),
+	CERT_FOR_ESIG("Cert for ESig", "Certificate for Electronic Signatures", false, true, false),
 
 	/**
 	 * Certificate for Electronic Seals
 	 */
-	CERT_FOR_ESEAL("Cert for ESeal", "Certificate for Electronic Seals"),
+	CERT_FOR_ESEAL("Cert for ESeal", "Certificate for Electronic Seals", false, false, false),
 
 	/**
 	 * Certificate for Web Site Authentications
 	 */
-	CERT_FOR_WSA("Cert for WSA", "Certificate for Web Site Authentications"),
+	CERT_FOR_WSA("Cert for WSA", "Certificate for Web Site Authentications", false, false, false),
 
 	/**
 	 * Not Applicable
 	 */
-	NA("N/A", "Not applicable");
+	NA("N/A", "Not applicable", false, false, false);
 
 	private static class Registry {
 
@@ -71,10 +71,16 @@ public enum CertificateQualification {
 
 	private final String readable;
 	private final String label;
+	private final boolean qc;
+	private final boolean forEsig;
+	private final boolean qscd;
 
-	private CertificateQualification(String readable, String label) {
+	private CertificateQualification(String readable, String label, boolean qc, boolean forEsig, boolean qscd) {
 		this.readable = readable;
 		this.label = label;
+		this.qc = qc;
+		this.forEsig = forEsig;
+		this.qscd = qscd;
 	}
 
 	public String getReadable() {
@@ -111,6 +117,18 @@ public enum CertificateQualification {
 			return Registry.QUALIFS_BY_READABLE.get(readable);
 		}
 		return null;
+	}
+
+	public boolean isQc() {
+		return qc;
+	}
+
+	public boolean isForEsig() {
+		return forEsig;
+	}
+
+	public boolean isQscd() {
+		return qscd;
 	}
 
 }
