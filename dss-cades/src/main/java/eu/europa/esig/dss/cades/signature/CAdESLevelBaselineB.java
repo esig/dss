@@ -455,7 +455,13 @@ public class CAdESLevelBaselineB {
 			SigningCertificate signingCertificate = new SigningCertificate(essCertID);
 			attribute = new Attribute(id_aa_signingCertificate, new DERSet(signingCertificate));
 		} else {
-			final ESSCertIDv2 essCertIdv2 = new ESSCertIDv2(DSSASN1Utils.getAlgorithmIdentifier(digestAlgorithm), certHash, issuerSerial);
+			ESSCertIDv2 essCertIdv2 = null;
+			if (DigestAlgorithm.SHA256 == digestAlgorithm) {
+				// SHA-256 is default
+				essCertIdv2 = new ESSCertIDv2(null, certHash, issuerSerial);
+			} else {
+				essCertIdv2 = new ESSCertIDv2(DSSASN1Utils.getAlgorithmIdentifier(digestAlgorithm), certHash, issuerSerial);
+			}
 			SigningCertificateV2 signingCertificateV2 = new SigningCertificateV2(essCertIdv2);
 			attribute = new Attribute(id_aa_signingCertificateV2, new DERSet(signingCertificateV2));
 		}
