@@ -8,7 +8,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 /**
  * A Trusted service can not have QCStatement and NotQualified qualifiers for the same certificate.
  */
-public class TrustedServiceQCStatementConsistency implements TrustedServiceCondition {
+class TrustedServiceQCStatementConsistency implements TrustedServiceCondition {
 
 	@Override
 	public boolean isConsistent(TrustedServiceWrapper trustedService) {

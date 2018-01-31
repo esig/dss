@@ -8,6 +8,7 @@
 				<xs:element type="Signature" name="Signatures" minOccurs="0" maxOccurs="unbounded" />
 				<xs:element type="Certificate" name="Certificate" minOccurs="0" maxOccurs="1" />
 				<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="TLAnalysis" type="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -72,9 +73,6 @@
 	<xs:complexType name="ValidationCertificateQualification">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
-				<xs:sequence>
-					<xs:element name="TLAnalysis" type="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
-				</xs:sequence>
 				<xs:attribute name="Id" type="xs:string" use="required" />
         		<xs:attribute name="DateTime" type="xs:dateTime" />
 				<xs:attribute name="CertificateQualification" type="CertificateQualification" use="optional" />
@@ -137,7 +135,9 @@
 	</xs:complexType>
 	<xs:complexType name="RFC">
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion" />
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="Id" type="xs:string" use="required" />
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="CV">

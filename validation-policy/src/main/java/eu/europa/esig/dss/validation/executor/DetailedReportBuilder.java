@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,35 +18,29 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignature
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.process.bbb.BasicBuildingBlocks;
 import eu.europa.esig.dss.validation.process.qualification.signature.SignatureQualificationBlock;
 import eu.europa.esig.dss.validation.process.vpfbs.ValidationProcessForBasicSignatures;
 import eu.europa.esig.dss.validation.process.vpfltvd.ValidationProcessForSignaturesWithLongTermValidationData;
 import eu.europa.esig.dss.validation.process.vpfswatsp.ValidationProcessForSignaturesWithArchivalData;
 import eu.europa.esig.dss.validation.process.vpftsp.ValidationProcessForTimeStamps;
-import eu.europa.esig.dss.validation.reports.wrapper.AbstractTokenProxy;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 
-public class DetailedReportBuilder {
+public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DetailedReportBuilder.class);
 
-	private final Date currentTime;
-	private final ValidationPolicy policy;
 	private final ValidationLevel validationLevel;
-	private final DiagnosticData diagnosticData;
 
 	public DetailedReportBuilder(Date currentTime, ValidationPolicy policy, ValidationLevel validationLevel, DiagnosticData diagnosticData) {
-		this.currentTime = currentTime;
-		this.policy = policy;
+		super(diagnosticData, policy, currentTime);
 		this.validationLevel = validationLevel;
-		this.diagnosticData = diagnosticData;
 	}
 
 	DetailedReport build() {
-		DetailedReport detailedReport = new DetailedReport();
+		DetailedReport detailedReport = init();
 
 		Map<String, XmlBasicBuildingBlocks> bbbs = executeAllBasicBuildingBlocks();
 		detailedReport.getBasicBuildingBlocks().addAll(bbbs.values());
@@ -76,8 +69,9 @@ public class DetailedReportBuilder {
 
 			if (policy.isEIDASConstraintPresent()) {
 				try {
-					SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(conlusion, signature.getDateTime(),
-							diagnosticData.getUsedCertificateById(signature.getSigningCertificateId()), diagnosticData, policy);
+					CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(signature.getSigningCertificateId());
+					SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(conlusion, signature.getDateTime(), signingCertificate,
+							detailedReport.getTLAnalysis(), diagnosticData.getLOTLCountryCode());
 					signatureAnalysis.setValidationSignatureQualification(qualificationBlock.execute());
 				} catch (Exception e) {
 					LOG.error("Unable to determine the signature qualification", e);
@@ -98,7 +92,7 @@ public class DetailedReportBuilder {
 	}
 
 	private void executeTimestampsValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs) {
-		List<TimestampWrapper> allTimestamps = signature.getTimestampList(); // PVA : all timestamps here ? Used in LTV
+		List<TimestampWrapper> allTimestamps = signature.getTimestampList();
 		for (TimestampWrapper timestamp : allTimestamps) {
 			ValidationProcessForTimeStamps vpftsp = new ValidationProcessForTimeStamps(timestamp, bbbs);
 			signatureAnalysis.getValidationProcessTimestamps().add(vpftsp.execute());
@@ -144,14 +138,6 @@ public class DetailedReportBuilder {
 			throw new DSSException("Unsupported validation level " + validationLevel);
 		}
 		return bbbs;
-	}
-
-	private void process(Set<? extends AbstractTokenProxy> tokensToProcess, Context context, Map<String, XmlBasicBuildingBlocks> bbbs) {
-		for (AbstractTokenProxy token : tokensToProcess) {
-			BasicBuildingBlocks bbb = new BasicBuildingBlocks(diagnosticData, token, currentTime, policy, context);
-			XmlBasicBuildingBlocks result = bbb.execute();
-			bbbs.put(token.getId(), result);
-		}
 	}
 
 }

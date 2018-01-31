@@ -9,7 +9,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
  * A Trusted Service can not have QSCD and NoQSCD qualifiers for the same certificate.
  * 
  */
-public class TrustedServiceQSCDConsistency implements TrustedServiceCondition {
+class TrustedServiceQSCDConsistency implements TrustedServiceCondition {
 
 	@Override
 	public boolean isConsistent(TrustedServiceWrapper trustedService) {

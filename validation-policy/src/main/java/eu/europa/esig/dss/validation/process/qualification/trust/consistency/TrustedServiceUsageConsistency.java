@@ -9,7 +9,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
  * A Trusted Service can only have one of these values {QcForEsig, QcForEseal or QcForWSA} or none.
  * 
  */
-public class TrustedServiceUsageConsistency implements TrustedServiceCondition {
+class TrustedServiceUsageConsistency implements TrustedServiceCondition {
 
 	@Override
 	public boolean isConsistent(TrustedServiceWrapper trustedService) {

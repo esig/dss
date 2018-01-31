@@ -9,7 +9,7 @@ import eu.europa.esig.dss.validation.process.qualification.trust.AdditionalServi
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
-public class TrustedServiceQualifierAndAdditionalServiceInfoConsistency implements TrustedServiceCondition {
+class TrustedServiceQualifierAndAdditionalServiceInfoConsistency implements TrustedServiceCondition {
 
 	private static final Map<String, String> CORRESPONDANCE_MAP_QUALIFIER_ASI;
 

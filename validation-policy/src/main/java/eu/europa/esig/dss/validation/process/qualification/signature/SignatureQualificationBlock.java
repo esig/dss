@@ -1,33 +1,32 @@
 package eu.europa.esig.dss.validation.process.qualification.signature;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateQualification;
 import eu.europa.esig.dss.validation.SignatureQualification;
-import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.QualificationTime;
 import eu.europa.esig.dss.validation.process.qualification.certificate.CertQualificationAtTimeBlock;
+import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AdESAcceptableCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.CertificatePathTrustedCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.ForeSignatureAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.QSCDCertificateAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.QualifiedCertificateAtCertificateIssuanceCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.QualifiedCertificateAtSigningTimeCheck;
-import eu.europa.esig.dss.validation.process.qualification.trust.TLValidationBlock;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQualification> {
@@ -35,13 +34,13 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	private final XmlConclusion etsi319102Conclusion;
 	private final Date signingTime; // TODO bestSigningTime ?
 	private final CertificateWrapper signingCertificate;
-	private final DiagnosticData diagnosticData;
-	private final ValidationPolicy policy;
+	private final List<XmlTLAnalysis> tlAnalysis;
+	private final String lotlCountryCode;
 
 	private CertificateQualification qualificationAtSigningTime;
 
 	public SignatureQualificationBlock(XmlConclusion etsi319102Conclusion, Date signingTime, CertificateWrapper signingCertificate,
-			DiagnosticData diagnosticData, ValidationPolicy policy) {
+			List<XmlTLAnalysis> tlAnalysis, String lotlCountryCode) {
 		super(new XmlValidationSignatureQualification());
 
 		// result.setId(signature.getId()); TODO
@@ -49,8 +48,8 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 		this.etsi319102Conclusion = etsi319102Conclusion;
 		this.signingTime = signingTime;
 		this.signingCertificate = signingCertificate;
-		this.diagnosticData = diagnosticData;
-		this.policy = policy;
+		this.tlAnalysis = tlAnalysis;
+		this.lotlCountryCode = lotlCountryCode;
 	}
 
 	@Override
@@ -61,29 +60,25 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 		item = item.setNextItem(certificatePathTrusted(signingCertificate));
 
 		if (signingCertificate != null && signingCertificate.hasTrustedServices()) {
-			//
-			// XmlTrustedList listOfTrustedLists = diagnosticData.getListOfTrustedLists();
-			// if (listOfTrustedLists != null) {
-			// TLValidationBlock tlValidation = new TLValidationBlock(listOfTrustedLists, signingTime, policy);
-			// XmlTLAnalysis lotlAnalysis = tlValidation.execute();
-			// result.getTLAnalysis().add(lotlAnalysis);
-			// item = item.setNextItem(isAcceptableTL(lotlAnalysis));
-			// }
-			//
-			// Set<String> trustedListCountryCodes = signingCertificate.getTrustedListCountryCodes();
-			// for (String countryCode : trustedListCountryCodes) {
-			// XmlTLAnalysis currentTL = executeTlAnalysis(signingTime, countryCode);
-			// if (currentTL != null) {
-			// result.getTLAnalysis().add(currentTL);
-			// item = item.setNextItem(isAcceptableTL(currentTL));
-			// }
-			// }
+
+			XmlTLAnalysis lotlAnalysis = getTlAnalysis(lotlCountryCode);
+			if (lotlAnalysis != null) {
+				item = item.setNextItem(isAcceptableTL(lotlAnalysis));
+			}
 
 			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
 
 			// 1. filter by service for CAQC
 			TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterForAcceptableCAQC();
 			List<TrustedServiceWrapper> caqcServices = filter.filter(originalTSPs);
+
+			Set<String> caQcCountryCodes = getCountryCodes(caqcServices);
+			for (String countryCode : caQcCountryCodes) {
+				XmlTLAnalysis currentTL = getTlAnalysis(countryCode);
+				if (currentTL != null) {
+					item = item.setNextItem(isAcceptableTL(currentTL));
+				}
+			}
 
 			CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(QualificationTime.CERTIFICATE_ISSUANCE_TIME,
 					signingCertificate, caqcServices);
@@ -130,17 +125,21 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 		}
 	}
 
-	private XmlTLAnalysis executeTlAnalysis(Date bestSigningTime, String countryCode) {
-		List<XmlTrustedList> trustedLists = diagnosticData.getTrustedLists();
-		if (Utils.isCollectionNotEmpty(trustedLists)) {
-			for (XmlTrustedList xmlTrustedList : trustedLists) {
-				if (countryCode.equals(xmlTrustedList.getCountryCode())) {
-					TLValidationBlock tlValidation = new TLValidationBlock(xmlTrustedList, bestSigningTime, policy);
-					return tlValidation.execute();
-				}
+	private XmlTLAnalysis getTlAnalysis(String countryCode) {
+		for (XmlTLAnalysis xmlTLAnalysis : tlAnalysis) {
+			if (Utils.areStringsEqual(countryCode, xmlTLAnalysis.getCountryCode())) {
+				return xmlTLAnalysis;
 			}
 		}
 		return null;
+	}
+
+	private Set<String> getCountryCodes(List<TrustedServiceWrapper> caqcServices) {
+		Set<String> countryCodes = new HashSet<String>();
+		for (TrustedServiceWrapper trustedServiceWrapper : caqcServices) {
+			countryCodes.add(trustedServiceWrapper.getCountryCode());
+		}
+		return countryCodes;
 	}
 
 	@Override
@@ -178,9 +177,9 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 		return new CertificatePathTrustedCheck(result, signingCertificate, getFailLevelConstraint());
 	}
 
-	// private ChainItem<XmlValidationSignatureQualification> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
-	// return new AcceptableTrustedListCheck(result, xmlTLAnalysis, getFailLevelConstraint());
-	// }
+	private ChainItem<XmlValidationSignatureQualification> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
+		return new AcceptableTrustedListCheck(result, xmlTLAnalysis, getFailLevelConstraint());
+	}
 
 	private ChainItem<XmlValidationSignatureQualification> isAdES(XmlConclusion etsi319102Conclusion) {
 		return new AdESAcceptableCheck(result, etsi319102Conclusion, getWarnLevelConstraint());

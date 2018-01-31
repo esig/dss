@@ -11,7 +11,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 /**
  * For Seals or Web Authentication are only allowed after eIDAS
  */
-public class TrustedServicePreEIDASConsistency implements TrustedServiceCondition {
+class TrustedServicePreEIDASConsistency implements TrustedServiceCondition {
 
 	@Override
 	public boolean isConsistent(TrustedServiceWrapper trustedService) {

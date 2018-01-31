@@ -3,8 +3,12 @@ package eu.europa.esig.dss.validation;
 import java.util.Date;
 
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.validation.executor.CertificateProcessExecutor;
+import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 public class CertificateValidator {
 
@@ -24,6 +28,9 @@ public class CertificateValidator {
 	}
 
 	public Reports validate() {
+		final ConstraintsParameters validationPolicyJaxb = ValidationResourceManager.loadPolicyData(null);
+		final ValidationPolicy validationPolicy = new EtsiValidationPolicy(validationPolicyJaxb);
+
 		SignatureValidationContext svc = new SignatureValidationContext();
 		svc.addCertificateTokenForVerification(token);
 		svc.setCurrentTime(new Date());
@@ -36,8 +43,18 @@ public class CertificateValidator {
 
 		DiagnosticData diagnosticData = builder.build();
 
-		return new Reports(diagnosticData, null, null);
+		CertificateProcessExecutor executor = provideProcessExecutorInstance();
+		executor.setValidationPolicy(validationPolicy);
+		executor.setDiagnosticData(diagnosticData);
+		executor.setCertificateId(token.getDSSIdAsString());
+		executor.setCurrentTime(svc.getCurrentTime());
+		final Reports reports = executor.execute();
+		return reports;
+	}
 
+	private CertificateProcessExecutor provideProcessExecutorInstance() {
+		// TODO Auto-generated method stub
+		return new CertificateProcessExecutor();
 	}
 
 }

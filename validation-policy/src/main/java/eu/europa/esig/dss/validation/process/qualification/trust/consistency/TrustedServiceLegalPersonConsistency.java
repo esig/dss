@@ -8,7 +8,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 /**
  * A Trusted Service can not have QCForESig and QCForLegalPerson qualifiers for the same certificate.
  */
-public class TrustedServiceLegalPersonConsistency implements TrustedServiceCondition {
+class TrustedServiceLegalPersonConsistency implements TrustedServiceCondition {
 
 	@Override
 	public boolean isConsistent(TrustedServiceWrapper trustedService) {

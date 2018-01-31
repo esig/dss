@@ -2,29 +2,32 @@ package eu.europa.esig.dss.validation.executor;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 public class CertificateProcessExecutor implements ProcessExecutor {
 
-	private Date currentDate;
-	private DiagnosticData diagnosticDataJaxb;
+	private Date currentTime;
 	private ValidationPolicy policy;
+	private eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData jaxbDiagnosticData;
+	private DiagnosticData diagnosticData;
+	private String certificateId;
 
 	@Override
-	public void setCurrentTime(Date currentDate) {
-		this.currentDate = currentDate;
+	public void setCurrentTime(Date currentTime) {
+		this.currentTime = currentTime;
 	}
 
 	@Override
 	public Date getCurrentTime() {
-		return currentDate;
+		return currentTime;
 	}
 
 	@Override
-	public void setDiagnosticData(DiagnosticData diagnosticData) {
-		this.diagnosticDataJaxb = diagnosticData;
+	public void setDiagnosticData(eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticData) {
+		this.jaxbDiagnosticData = diagnosticData;
 	}
 
 	@Override
@@ -37,14 +40,25 @@ public class CertificateProcessExecutor implements ProcessExecutor {
 		return policy;
 	}
 
+	public void setCertificateId(String certificateId) {
+		this.certificateId = certificateId;
+	}
+
 	@Override
 	public void setValidationLevel(ValidationLevel validationLevel) {
 	}
 
 	@Override
 	public Reports execute() {
-		// TODO Auto-generated method stub
-		return null;
+
+		assert jaxbDiagnosticData != null && policy != null && currentTime != null;
+
+		diagnosticData = new DiagnosticData(jaxbDiagnosticData);
+
+		DetailedReportForCertificateBuilder detailedReportBuilder = new DetailedReportForCertificateBuilder(diagnosticData, policy, currentTime, certificateId);
+		DetailedReport detailedReport = detailedReportBuilder.build();
+
+		return new Reports(jaxbDiagnosticData, detailedReport, null);
 	}
 
 }
