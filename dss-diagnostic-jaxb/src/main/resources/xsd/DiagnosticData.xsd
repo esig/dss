@@ -6,7 +6,7 @@
 	<xs:element name="DiagnosticData">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="DocumentName" type="xs:string" />
+				<xs:element name="DocumentName" type="xs:string" minOccurs="0" />
 				<xs:element name="ValidationDate" type="xs:dateTime" />
 				<xs:element name="ContainerInfo" type="ContainerInfo" minOccurs="0" />
 				<xs:element name="Signatures" minOccurs="0">

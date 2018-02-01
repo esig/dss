@@ -26,10 +26,13 @@
 	</xs:complexType>
 	
 	<xs:complexType name="Certificate">
-		<xs:sequence>
-			<xs:element type="ValidationCertificateQualification" name="ValidationCertificateQualification" minOccurs="0" />
-		</xs:sequence>
-		<xs:attribute name="Id" type="xs:string" use="required" />
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+					<xs:element name="ValidationCertificateQualification" type="ValidationCertificateQualification" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="BasicBuildingBlocks">

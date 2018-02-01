@@ -178,7 +178,7 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
-		return new AcceptableTrustedListCheck(result, xmlTLAnalysis, getFailLevelConstraint());
+		return new AcceptableTrustedListCheck<XmlValidationSignatureQualification>(result, xmlTLAnalysis, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> isAdES(XmlConclusion etsi319102Conclusion) {

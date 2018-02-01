@@ -183,20 +183,27 @@ public class BasicBuildingBlocks {
 	}
 
 	private XmlXCV executeX509CertificateValidation() {
-		CertificateWrapper certificate = diagnosticData.getUsedCertificateById(token.getSigningCertificateId());
-		if (certificate != null) {
-			if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context) || Context.CERTIFICATE.equals(context)) {
-				X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime, certificate.getNotBefore(), context,
-						policy);
-				return xcv.execute();
-			} else if (Context.TIMESTAMP.equals(context)) {
-				X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
-						((TimestampWrapper) token).getProductionTime(), context, policy);
-				return xcv.execute();
-			} else if (Context.REVOCATION.equals(context)) {
-				X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
-						((RevocationWrapper) token).getProductionDate(), context, policy);
-				return xcv.execute();
+		if (Context.CERTIFICATE.equals(context)) {
+			CertificateWrapper certificate = (CertificateWrapper) token;
+			X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime, certificate.getNotBefore(), context,
+					policy);
+			return xcv.execute();
+		} else {
+			CertificateWrapper certificate = diagnosticData.getUsedCertificateById(token.getSigningCertificateId());
+			if (certificate != null) {
+				if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
+					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime, certificate.getNotBefore(), context,
+							policy);
+					return xcv.execute();
+				} else if (Context.TIMESTAMP.equals(context)) {
+					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
+							((TimestampWrapper) token).getProductionTime(), context, policy);
+					return xcv.execute();
+				} else if (Context.REVOCATION.equals(context)) {
+					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
+							((RevocationWrapper) token).getProductionDate(), context, policy);
+					return xcv.execute();
+				}
 			}
 		}
 		return null;

@@ -483,7 +483,7 @@ public class CustomProcessExecutorTest {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
-		assertEquals(SignatureQualification.INDETERMINATE_ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureQualification.INDETERMINATE_ADES, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 	}
 
 	@Test

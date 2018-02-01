@@ -1,18 +1,18 @@
 package eu.europa.esig.dss.validation.process.qualification.signature.checks;
 
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class AcceptableTrustedListCheck extends ChainItem<XmlValidationSignatureQualification> {
+public class AcceptableTrustedListCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	private final XmlTLAnalysis tlAnalysis;
 
-	public AcceptableTrustedListCheck(XmlValidationSignatureQualification result, XmlTLAnalysis tlAnalysis, LevelConstraint constraint) {
+	public AcceptableTrustedListCheck(T result, XmlTLAnalysis tlAnalysis, LevelConstraint constraint) {
 		super(result, constraint, tlAnalysis.getCountryCode());
 
 		this.tlAnalysis = tlAnalysis;

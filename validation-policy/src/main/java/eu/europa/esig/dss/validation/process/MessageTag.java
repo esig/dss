@@ -313,6 +313,9 @@ public enum MessageTag {
 
 	QUAL_HAS_CAQC("Is the certificate related to a granted CA/QC?"),
 	QUAL_HAS_CAQC_ANS("The certificate is not related to a granted CA/QC!"),
+
+	BBB_ACCEPT("Is the result of the Basic Building Block acceptable?"),
+	BBB_ACCEPT_ANS("The result of the Basic Building Block is not acceptable!"),
 	
 	EMPTY("");
 

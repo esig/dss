@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.validation;
 
-import java.util.Date;
-
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.validation.executor.CertificateProcessExecutor;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
@@ -30,10 +28,13 @@ public class CertificateValidator {
 	public Reports validate() {
 		final ConstraintsParameters validationPolicyJaxb = ValidationResourceManager.loadPolicyData(null);
 		final ValidationPolicy validationPolicy = new EtsiValidationPolicy(validationPolicyJaxb);
+		return validate(validationPolicy);
+	}
+
+	public Reports validate(ValidationPolicy validationPolicy) {
 
 		SignatureValidationContext svc = new SignatureValidationContext();
 		svc.addCertificateTokenForVerification(token);
-		svc.setCurrentTime(new Date());
 		svc.initialize(certificateVerifier);
 		svc.validate();
 
@@ -52,7 +53,7 @@ public class CertificateValidator {
 		return reports;
 	}
 
-	private CertificateProcessExecutor provideProcessExecutorInstance() {
+	public CertificateProcessExecutor provideProcessExecutorInstance() {
 		// TODO Auto-generated method stub
 		return new CertificateProcessExecutor();
 	}
