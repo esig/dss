@@ -68,7 +68,7 @@ public class PAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 
 	@Test
 	public void testWithDigestDocument() {
-		try{
+		try{	        
 			PAdESService service = getService();
 			PAdESSignatureParameters params = getParams();
 			DSSDocument digestDocument = getDigestDocument();
