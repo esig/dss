@@ -57,6 +57,7 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	 */
 	private final byte[] signedBytes;
 
+	private final boolean coverAllOriginalBytes;
 	private boolean verified;
 	private String uniqueId;
 
@@ -72,8 +73,10 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	 *            the signature binary
 	 * @param signedContent
 	 *            the signed content
+	 * @param coverAllOriginalBytes
+	 *            true if the signature covers all original bytes
 	 */
-	PdfBoxCMSInfo(PDSignature signature, PdfDict dict, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent) {
+	PdfBoxCMSInfo(PDSignature signature, PdfDict dict, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent, boolean coverAllOriginalBytes) {
 		this.cms = cms;
 		this.location = signature.getLocation();
 		this.reason = signature.getReason();
@@ -85,6 +88,7 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 		this.signaturedictionary = dict;
 		this.dssDictionary = dssDictionary;
 		this.signedBytes = signedContent;
+		this.coverAllOriginalBytes = coverAllOriginalBytes;
 	}
 
 	@Override
@@ -176,6 +180,11 @@ abstract class PdfBoxCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	@Override
 	public String getSubFilter() {
 		return subFilter;
+	}
+
+	@Override
+	public boolean isCoverAllOriginalBytes() {
+		return coverAllOriginalBytes;
 	}
 
 	@Override

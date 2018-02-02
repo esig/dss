@@ -50,7 +50,7 @@
 		<logback-classic.version>1.2.3</logback-classic.version>
 
 		<bouncycastle.version>1.59</bouncycastle.version>
-		<xmlsec.version>2.0.9</xmlsec.version>
+		<xmlsec.version>2.0.10</xmlsec.version>
 		<xalan.version>2.7.2</xalan.version>
 		<pdfbox.version>2.0.8</pdfbox.version>
 		<httpclient.version>4.5.4</httpclient.version>
@@ -80,6 +80,7 @@
 		<module>dss-document</module>
 		<module>dss-service</module>
 		<module>dss-test</module>
+		<module>sscd-mocca-adapter</module>
 		<module>dss-policy-jaxb</module>
 		<module>dss-common-validation-jaxb</module>
 		<module>dss-tsl-jaxb</module>
@@ -341,6 +342,11 @@
 	<dependencyManagement>
 		<dependencies>
 			<!-- Internal Dependencies -->
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>sscd-mocca-adapter</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-spi</artifactId>

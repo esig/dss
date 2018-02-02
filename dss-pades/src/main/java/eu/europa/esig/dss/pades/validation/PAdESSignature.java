@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pades.validation;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -260,16 +261,23 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public List<CertificateRef> getCertificateRefs() {
 		List<CertificateRef> refs = new ArrayList<CertificateRef>();
+		// other are unsigned and should be added in the DSS Dictionary
+		List<CertificateToken> encapsulatedCertificates = getCAdESSignature().getCertificateSource().getKeyInfoCertificates();
+		addCertRefs(refs, encapsulatedCertificates);
 		if (dssDictionary != null) {
 			Set<CertificateToken> certList = dssDictionary.getCertList();
-			for (CertificateToken certificateToken : certList) {
-				CertificateRef ref = new CertificateRef();
-				ref.setDigestAlgorithm(DigestAlgorithm.SHA1);
-				ref.setDigestValue(certificateToken.getDigest(DigestAlgorithm.SHA1));
-				refs.add(ref);
-			}
+			addCertRefs(refs, certList);
 		}
 		return refs;
+	}
+
+	private void addCertRefs(List<CertificateRef> refs, Collection<CertificateToken> encapsulatedCertificates) {
+		for (CertificateToken certificateToken : encapsulatedCertificates) {
+			CertificateRef ref = new CertificateRef();
+			ref.setDigestAlgorithm(DigestAlgorithm.SHA1);
+			ref.setDigestValue(certificateToken.getDigest(DigestAlgorithm.SHA1));
+			refs.add(ref);
+		}
 	}
 
 	@Override

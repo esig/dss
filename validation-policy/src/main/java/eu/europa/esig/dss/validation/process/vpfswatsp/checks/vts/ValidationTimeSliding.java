@@ -78,6 +78,8 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 			Collections.reverse(certificateChainIds); // trusted_list -> ... ->
 														// signature
 
+			ChainItem<XmlVTS> item = null;
+
 			for (String certificateId : certificateChainIds) {
 				CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateId);
 				if (certificate.isTrusted()) {
@@ -115,9 +117,10 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 					}
 				}
 
-				ChainItem<XmlVTS> item = satisfyingRevocationDataExists(latestCompliantRevocation);
 				if (firstItem == null) {
-					firstItem = item;
+					item = firstItem = satisfyingRevocationDataExists(latestCompliantRevocation);
+				} else {
+					item = item.setNextItem(satisfyingRevocationDataExists(latestCompliantRevocation));
 				}
 
 				/*
