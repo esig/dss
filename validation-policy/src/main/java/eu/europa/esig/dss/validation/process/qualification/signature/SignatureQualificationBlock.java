@@ -11,11 +11,11 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualificat
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateQualification;
+import eu.europa.esig.dss.validation.ValidationTime;
 import eu.europa.esig.dss.validation.SignatureQualification;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.qualification.QualificationTime;
 import eu.europa.esig.dss.validation.process.qualification.certificate.CertQualificationAtTimeBlock;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AdESAcceptableCheck;
@@ -69,7 +69,7 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
 
 			// 1. filter by service for CAQC
-			TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterForAcceptableCAQC();
+			TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByCaQc();
 			List<TrustedServiceWrapper> caqcServices = filter.filter(originalTSPs);
 
 			Set<String> caQcCountryCodes = getCountryCodes(caqcServices);
@@ -80,13 +80,13 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 				}
 			}
 
-			CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(QualificationTime.CERTIFICATE_ISSUANCE_TIME,
+			CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(ValidationTime.CERTIFICATE_ISSUANCE_TIME,
 					signingCertificate, caqcServices);
 			XmlValidationCertificateQualification certQualAtIssuanceResult = certQualAtIssuanceBlock.execute();
 			result.getValidationCertificateQualification().add(certQualAtIssuanceResult);
 			CertificateQualification qualificationAtIssuance = certQualAtIssuanceResult.getCertificateQualification();
 
-			CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(QualificationTime.SIGNING_TIME, signingTime,
+			CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(ValidationTime.SIGNING_TIME, signingTime,
 					signingCertificate, caqcServices);
 			XmlValidationCertificateQualification certQualAtSigningTimeResult = certQualAtSigningTimeBlock.execute();
 			result.getValidationCertificateQualification().add(certQualAtSigningTimeResult);

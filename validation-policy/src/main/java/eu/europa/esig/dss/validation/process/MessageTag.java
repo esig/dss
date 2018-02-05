@@ -311,8 +311,11 @@ public enum MessageTag {
 	QUAL_TL_CERT_CONS_ANS2("Inconsistency in TL - Cert claimed as QC for WSA while Q status not granted for WSA, digital signature generated with cert. for WSA considered as special case of AdESeal"),
 	QUAL_TL_CERT_CONS_ANS3("Inconsistency in TL - Cert claimed as QC for eSig while Q status not granted for electronic Sig"),
 
-	QUAL_HAS_CAQC("Is the certificate related to a granted CA/QC?"),
-	QUAL_HAS_CAQC_ANS("The certificate is not related to a granted CA/QC!"),
+	QUAL_HAS_CAQC("Is the certificate related to a CA/QC?"),
+	QUAL_HAS_CAQC_ANS("The certificate is not related to a CA/QC!"),
+
+	QUAL_HAS_GRANTED("Is the certificate related to a granted status?"),
+	QUAL_HAS_GRANTED_ANS("The certificate is not related to a granted status!"),
 
 	BBB_ACCEPT("Is the result of the Basic Building Block acceptable?"),
 	BBB_ACCEPT_ANS("The result of the Basic Building Block is not acceptable!"),

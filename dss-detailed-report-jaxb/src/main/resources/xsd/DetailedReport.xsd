@@ -78,6 +78,7 @@
 			<xs:extension base="ConstraintsConclusion">
 				<xs:attribute name="Id" type="xs:string" use="required" />
         		<xs:attribute name="DateTime" type="xs:dateTime" />
+        		<xs:attribute name="ValidationTime" type="ValidationTime" />
 				<xs:attribute name="CertificateQualification" type="CertificateQualification" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
@@ -336,6 +337,14 @@
 			<xs:enumeration value="REVOCATION" />
 			<!-- For Qualification -->
 			<xs:enumeration value="CERTIFICATE" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="ValidationTime" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CERTIFICATE_ISSUANCE_TIME" />
+			<xs:enumeration value="SIGNING_TIME" />
+			<xs:enumeration value="VALIDATION_TIME" />
 		</xs:restriction>
 	</xs:simpleType>
 	

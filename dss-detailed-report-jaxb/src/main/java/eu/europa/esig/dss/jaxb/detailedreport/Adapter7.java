@@ -9,19 +9,19 @@
 package eu.europa.esig.dss.jaxb.detailedreport;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import eu.europa.esig.dss.validation.policy.Context;
+import eu.europa.esig.dss.validation.ValidationTime;
 
-public class Adapter6
-    extends XmlAdapter<String, Context>
+public class Adapter7
+    extends XmlAdapter<String, ValidationTime>
 {
 
 
-    public Context unmarshal(String value) {
-        return (eu.europa.esig.dss.jaxb.parsers.ContextParser.parse(value));
+    public ValidationTime unmarshal(String value) {
+        return (eu.europa.esig.dss.jaxb.parsers.ValidationTimeParser.parse(value));
     }
 
-    public String marshal(Context value) {
-        return (eu.europa.esig.dss.jaxb.parsers.ContextParser.print(value));
+    public String marshal(ValidationTime value) {
+        return (eu.europa.esig.dss.jaxb.parsers.ValidationTimeParser.print(value));
     }
 
 }

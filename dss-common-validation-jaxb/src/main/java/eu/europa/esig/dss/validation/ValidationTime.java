@@ -1,6 +1,6 @@
-package eu.europa.esig.dss.validation.process.qualification;
+package eu.europa.esig.dss.validation;
 
-public enum QualificationTime {
+public enum ValidationTime {
 
 	/**
 	 * Not before date of the certificate

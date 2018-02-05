@@ -45,6 +45,12 @@
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.ContextParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.ContextParser.print" />
 		</jaxb:bindings>
+				
+		<jaxb:bindings node="//xs:simpleType[@name='ValidationTime']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.ValidationTime" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.ValidationTimeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.ValidationTimeParser.print" />
+		</jaxb:bindings>
 		
 		
 	</jaxb:bindings>

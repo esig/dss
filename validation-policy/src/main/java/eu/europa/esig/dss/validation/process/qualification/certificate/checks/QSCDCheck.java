@@ -2,24 +2,24 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
+import eu.europa.esig.dss.validation.ValidationTime;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.process.qualification.QualificationTime;
 import eu.europa.esig.dss.validation.process.qualification.certificate.QSCDStatus;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class QSCDCheck extends ChainItem<XmlValidationCertificateQualification> {
 
 	private final QSCDStatus qscdStatus;
-	private final QualificationTime time;
+	private final ValidationTime validationTime;
 
-	public QSCDCheck(XmlValidationCertificateQualification result, QSCDStatus qscdStatus, QualificationTime time, LevelConstraint constraint) {
+	public QSCDCheck(XmlValidationCertificateQualification result, QSCDStatus qscdStatus, ValidationTime validationTime, LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.qscdStatus = qscdStatus;
-		this.time = time;
+		this.validationTime = validationTime;
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class QSCDCheck extends ChainItem<XmlValidationCertificateQualification> 
 
 	@Override
 	protected MessageTag getMessageTag() {
-		switch (time) {
+		switch (validationTime) {
 		case SIGNING_TIME:
 			return MessageTag.QUAL_QSCD_AT_ST;
 		case CERTIFICATE_ISSUANCE_TIME:
@@ -37,13 +37,13 @@ public class QSCDCheck extends ChainItem<XmlValidationCertificateQualification> 
 		case VALIDATION_TIME:
 			return MessageTag.QUAL_QSCD_AT_VT;
 		default:
-			throw new DSSException("Unsupported time " + time);
+			throw new DSSException("Unsupported time " + validationTime);
 		}
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		switch (time) {
+		switch (validationTime) {
 		case SIGNING_TIME:
 			return MessageTag.QUAL_QSCD_AT_ST_ANS;
 		case CERTIFICATE_ISSUANCE_TIME:
@@ -51,7 +51,7 @@ public class QSCDCheck extends ChainItem<XmlValidationCertificateQualification> 
 		case VALIDATION_TIME:
 			return MessageTag.QUAL_QSCD_AT_VT_ANS;
 		default:
-			throw new DSSException("Unsupported time " + time);
+			throw new DSSException("Unsupported time " + validationTime);
 		}
 	}
 

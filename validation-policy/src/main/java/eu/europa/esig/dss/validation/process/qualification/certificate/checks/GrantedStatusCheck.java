@@ -11,29 +11,29 @@ import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class GrantedCaQcCheck extends ChainItem<XmlValidationCertificateQualification> {
+public class GrantedStatusCheck extends ChainItem<XmlValidationCertificateQualification> {
 
-	private final List<TrustedServiceWrapper> caqcServicesAtTime;
+	private final List<TrustedServiceWrapper> trustServicesAtTime;
 
-	public GrantedCaQcCheck(XmlValidationCertificateQualification result, List<TrustedServiceWrapper> caqcServicesAtTime, LevelConstraint constraint) {
+	public GrantedStatusCheck(XmlValidationCertificateQualification result, List<TrustedServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
 		super(result, constraint);
 
-		this.caqcServicesAtTime = caqcServicesAtTime;
+		this.trustServicesAtTime = trustServicesAtTime;
 	}
 
 	@Override
 	protected boolean process() {
-		return Utils.isCollectionNotEmpty(caqcServicesAtTime);
+		return Utils.isCollectionNotEmpty(trustServicesAtTime);
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.QUAL_HAS_CAQC;
+		return MessageTag.QUAL_HAS_GRANTED;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.QUAL_HAS_CAQC_ANS;
+		return MessageTag.QUAL_HAS_GRANTED_ANS;
 	}
 
 	@Override

@@ -7,8 +7,12 @@ public final class TrustedServicesFilterFactory {
 	private TrustedServicesFilterFactory() {
 	}
 
-	public static TrustedServiceFilter createFilterForAcceptableCAQC() {
-		return new AcceptableCAQCServiceFilter();
+	public static TrustedServiceFilter createFilterByGranted() {
+		return new GrantedServiceFilter();
+	}
+
+	public static TrustedServiceFilter createFilterByCaQc() {
+		return new CaQcServiceFilter();
 	}
 
 	public static TrustedServiceFilter createFilterByDate(Date date) {
