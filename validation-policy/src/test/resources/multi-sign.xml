@@ -222,9 +222,9 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>2.5.29.32.0</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>2.5.29.32.0</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -293,7 +293,7 @@
             <CertificateChain/>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds/>
+            <CertificatePolicies/>
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders/>
@@ -345,9 +345,9 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>1.2.616.1.113560.10.1.1.0</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>1.2.616.1.113560.10.1.1.0</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds>
                 <oid>0.4.0.1862.1.2</oid>
                 <oid>1.2.616.1.101.3.1.1.2</oid>

@@ -43,11 +43,11 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>1.3.36.8.1.1</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.36.8.1.1</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliant">0.4.0.1862.1.1</oid>
+                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -141,11 +141,11 @@
             </BasicSignature>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>1.3.36.8.1.1</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.36.8.1.1</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliant">0.4.0.1862.1.1</oid>
+                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -211,11 +211,11 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>1.3.36.8.1.1</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.36.8.1.1</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliant">0.4.0.1862.1.1</oid>
+                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -313,11 +313,11 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>1.3.36.8.1.1</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.36.8.1.1</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliant">0.4.0.1862.1.1</oid>
+                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -417,10 +417,10 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds/>
+            <CertificatePolicies/>
             <QCStatementIds>
                 <oid>1.3.6.1.5.5.7.11.2</oid>
-                <oid Description="qc-compliant">0.4.0.1862.1.1</oid>
+                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
                 <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
             </QCStatementIds>
             <QCTypes/>
@@ -534,11 +534,11 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>1.3.36.8.1.1</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.36.8.1.1</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliant">0.4.0.1862.1.1</oid>
+                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -637,11 +637,11 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>1.3.36.8.1.1</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.36.8.1.1</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliant">0.4.0.1862.1.1</oid>
+                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -734,11 +734,11 @@
             </BasicSignature>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>1.3.36.8.1.1</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.36.8.1.1</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliant">0.4.0.1862.1.1</oid>
+                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
@@ -816,11 +816,11 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>1.3.36.8.1.1</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.36.8.1.1</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliant">0.4.0.1862.1.1</oid>
+                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>

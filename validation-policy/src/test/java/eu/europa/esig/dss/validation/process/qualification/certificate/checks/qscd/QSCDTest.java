@@ -16,12 +16,11 @@ import org.junit.Test;
 import eu.europa.esig.dss.CertificatePolicyOids;
 import eu.europa.esig.dss.QCStatementOids;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.qualification.certificate.QSCDStatus;
 import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
-import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd.QSCDStrategy;
-import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd.QSCDStrategyFactory;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
@@ -171,7 +170,7 @@ public class QSCDTest {
 		XmlCertificate xmlCert = new XmlCertificate();
 		xmlCert.setNotBefore(PRE_EIDAS_DATE);
 		xmlCert.setQCStatementIds(toOids(qcStatementIds));
-		xmlCert.setCertificatePolicyIds(toOids(certificatePolicyIds));
+		xmlCert.setCertificatePolicies(toCertPolicies(certificatePolicyIds));
 		xmlCert.setQCTypes(toOids(qcTypeIds));
 		return new CertificateWrapper(xmlCert);
 	}
@@ -184,9 +183,19 @@ public class QSCDTest {
 		XmlCertificate xmlCert = new XmlCertificate();
 		xmlCert.setNotBefore(POST_EIDAS_DATE);
 		xmlCert.setQCStatementIds(toOids(qcStatementIds));
-		xmlCert.setCertificatePolicyIds(toOids(certificatePolicyIds));
+		xmlCert.setCertificatePolicies(toCertPolicies(certificatePolicyIds));
 		xmlCert.setQCTypes(toOids(qcTypeIds));
 		return new CertificateWrapper(xmlCert);
+	}
+
+	private List<XmlCertificatePolicy> toCertPolicies(List<String> certificatePolicyIds) {
+		List<XmlCertificatePolicy> cerPolicies = new ArrayList<XmlCertificatePolicy>();
+		for (String oid : certificatePolicyIds) {
+			XmlCertificatePolicy cp = new XmlCertificatePolicy();
+			cp.setValue(oid);
+			cerPolicies.add(cp);
+		}
+		return cerPolicies;
 	}
 
 	private List<XmlOID> toOids(List<String> oids) {

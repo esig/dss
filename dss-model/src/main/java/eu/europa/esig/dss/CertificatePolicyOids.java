@@ -19,6 +19,50 @@ public enum CertificatePolicyOids implements EtsiOid {
 	 */
 	QCP_PUBLIC_WITH_SSCD("qcp-public-with-sscd", "0.4.0.1456.1.1"),
 
+	// ------------ ETSI EN 319 411-1
+
+	/**
+	 * NCP: Normalized Certificate Policy
+	 * itu-t(0) identified-organization(4) etsi(0) other-certificate-policies(2042) policy-identifiers(1) ncp (1)
+	 */
+	NCP("normalized-certificate-policy", "0.4.0.2042.1.1"),
+
+	/**
+	 * NCP+: Normalized Certificate Policy requiring a secure cryptographic device
+	 * itu-t(0)identified-organization(4)etsi(0)other-certificate-policies(2042)policy-identifiers(1)ncpplus(2)
+	 */
+	NCPP("normalized-certificate-policy-sscd", "0.4.0.2042.1.2"),
+
+	/**
+	 * LCP: Lightweight Certificate Policy
+	 * itu-t(0)identified-organization(4)etsi(0)other-certificate-policies(2042)policy-identifiers(1)lcp(3)
+	 */
+	LCP("lightweight-certificate-policy", "0.4.0.2042.1.3"),
+
+	/**
+	 * EVCP: Extended Validation Certificate Policy
+	 * itu-t(0)identified-organization(4)etsi(0)other-certificate-policies(2042)policy-identifiers(1)evcp(4)
+	 */
+	EVCP("extended-validation-certificate-policy", "0.4.0.2042.1.4"),
+
+	/**
+	 * DVCP: Domain Validation Certificate Policy
+	 * itu-t(0)identified-organization(4)etsi(0)other-certificate-policies(2042)policy-identifiers(1)dvcp(6)
+	 */
+	DVCP("domain-validation-certificate-policy", "0.4.0.2042.1.6"),
+
+	/**
+	 * OVCP: Organizational Validation Certificate Policy
+	 * itu-t(0)identified-organization(4)etsi(0)other-certificate-policies(2042)policy-identifiers(1)ovcp(7)
+	 */
+	OVCP("organizational-validation-certificate-policy", "0.4.0.2042.1.7"),
+
+	/**
+	 * IVCP: Individual Validation Certificate Policy
+	 * itu-t(0)identified-organization(4)etsi(0)other-certificate-policies(2042)policy-identifiers(1)ivcp(8)
+	 */
+	IVCP("individual-validation-certificate-policy", "0.4.0.2042.1.8"),
+
 	// ------------ ETSI EN 319 411-2
 
 	/**

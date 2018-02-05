@@ -12,19 +12,18 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
 
 
 /**
- * <p>Java class for anonymous complex type.
+ * <p>Java class for CertificatePolicy complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType&gt;
+ * &lt;complexType name="CertificatePolicy"&gt;
  *   &lt;simpleContent&gt;
- *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema&gt;string"&gt;
- *       &lt;attribute name="Id" use="required" type="{http://www.w3.org/2001/XMLSchema}int" /&gt;
+ *     &lt;extension base="&lt;http://dss.esig.europa.eu/validation/diagnostic&gt;OID"&gt;
+ *       &lt;attribute name="cpsUrl" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
  *     &lt;/extension&gt;
  *   &lt;/simpleContent&gt;
  * &lt;/complexType&gt;
@@ -33,54 +32,36 @@ import javax.xml.bind.annotation.XmlValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "value"
-})
-public class XmlMessage {
+@XmlType(name = "CertificatePolicy")
+public class XmlCertificatePolicy
+    extends XmlOID
+{
 
-    @XmlValue
-    protected String value;
-    @XmlAttribute(name = "Id", required = true)
-    protected int id;
+    @XmlAttribute(name = "cpsUrl")
+    protected String cpsUrl;
 
     /**
-     * Gets the value of the value property.
+     * Gets the value of the cpsUrl property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getValue() {
-        return value;
+    public String getCpsUrl() {
+        return cpsUrl;
     }
 
     /**
-     * Sets the value of the value property.
+     * Sets the value of the cpsUrl property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    /**
-     * Gets the value of the id property.
-     * 
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * Sets the value of the id property.
-     * 
-     */
-    public void setId(int value) {
-        this.id = value;
+    public void setCpsUrl(String value) {
+        this.cpsUrl = value;
     }
 
 }

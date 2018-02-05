@@ -29,6 +29,7 @@ public class TSLServiceProvider {
 
 	private String name;
 	private String tradeName;
+	private String registrationIdentifier;
 	private String postalAddress;
 	private String electronicAddress;
 	private List<TSLService> services;
@@ -47,6 +48,14 @@ public class TSLServiceProvider {
 
 	public void setTradeName(String tradeName) {
 		this.tradeName = tradeName;
+	}
+
+	public String getRegistrationIdentifier() {
+		return registrationIdentifier;
+	}
+
+	public void setRegistrationIdentifier(String registrationIdentifier) {
+		this.registrationIdentifier = registrationIdentifier;
 	}
 
 	public String getPostalAddress() {

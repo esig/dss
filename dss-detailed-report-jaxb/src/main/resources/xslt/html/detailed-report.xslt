@@ -430,7 +430,7 @@
     			<xsl:attribute name="style">margin-top : 10px</xsl:attribute>
 	    		<div>
 	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
-		    		<xsl:attribute name="data-target">#collapseCertQuaAnalysis<xsl:value-of select="@Id"/>-<xsl:value-of select="@Date"/></xsl:attribute>
+		    		<xsl:attribute name="data-target">#cert-qual-<xsl:value-of select="generate-id(.)"/></xsl:attribute>
 			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
 			       	<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
 				        <span>
@@ -459,7 +459,7 @@
 		        </div>
 	    		<div>
 	    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
-		        	<xsl:attribute name="id">collapseCertQuaAnalysis<xsl:value-of select="@Id"/>-<xsl:value-of select="@Date"/></xsl:attribute>
+		        	<xsl:attribute name="id">cert-qual-<xsl:value-of select="generate-id(.)"/></xsl:attribute>
 		        	<xsl:apply-templates/>
 	    		</div>
     		</div>

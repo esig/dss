@@ -20,6 +20,7 @@ import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CertificatePolicy;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSPKUtils;
@@ -31,6 +32,7 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
@@ -760,7 +762,7 @@ public class DiagnosticDataBuilder {
 
 		xmlCert.setQCStatementIds(getXmlOids(DSSASN1Utils.getQCStatementsIdList(certToken)));
 		xmlCert.setQCTypes(getXmlOids(DSSASN1Utils.getQCTypesIdList(certToken)));
-		xmlCert.setCertificatePolicyIds(getXmlOids(DSSASN1Utils.getPolicyIdentifiers(certToken)));
+		xmlCert.setCertificatePolicies(getXmlCertificatePolicies(DSSASN1Utils.getCertificatePolicies(certToken)));
 
 		xmlCert.setSelfSigned(certToken.isSelfSigned());
 		xmlCert.setTrusted(certToken.isTrusted());
@@ -778,6 +780,18 @@ public class DiagnosticDataBuilder {
 		xmlCert.setTrustedServiceProviders(getXmlTrustedServiceProviders(certToken));
 
 		return xmlCert;
+	}
+
+	private List<XmlCertificatePolicy> getXmlCertificatePolicies(List<CertificatePolicy> certificatePolicies) {
+		List<XmlCertificatePolicy> result = new ArrayList<XmlCertificatePolicy>();
+		for (CertificatePolicy cp : certificatePolicies) {
+			XmlCertificatePolicy xmlCP = new XmlCertificatePolicy();
+			xmlCP.setValue(cp.getOid());
+			xmlCP.setDescription(OidRepository.getDescription(cp.getOid()));
+			xmlCP.setCpsUrl(cp.getCpsUrl());
+			result.add(xmlCP);
+		}
+		return result;
 	}
 
 	private List<XmlOID> getXmlOids(List<String> oidList) {
@@ -801,6 +815,7 @@ public class DiagnosticDataBuilder {
 			serviceProvider.setCountryCode(first.getTlCountryCode());
 			serviceProvider.setTSPName(first.getTspName());
 			serviceProvider.setTSPServiceName(first.getServiceName());
+			serviceProvider.setTSPRegistrationIdentifier(first.getTspRegistrationIdentifier());
 			serviceProvider.setTrustedServices(getXmlTrustedServices(serviceByProvider, certToken));
 			result.add(serviceProvider);
 		}

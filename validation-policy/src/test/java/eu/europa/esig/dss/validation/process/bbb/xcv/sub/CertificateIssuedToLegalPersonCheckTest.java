@@ -12,7 +12,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToLegalPersonCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.Level;
@@ -25,13 +25,13 @@ public class CertificateIssuedToLegalPersonCheckTest {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
-		List<XmlOID> qualifiers = new ArrayList<XmlOID>();
-		XmlOID oid = new XmlOID();
+		List<XmlCertificatePolicy> qualifiers = new ArrayList<XmlCertificatePolicy>();
+		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue(CertificatePolicyOids.QCP_LEGAL.getOid());
 		qualifiers.add(oid);
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.setCertificatePolicyIds(qualifiers);
+		xc.setCertificatePolicies(qualifiers);
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificateIssuedToLegalPersonCheck citlp = new CertificateIssuedToLegalPersonCheck(result, new CertificateWrapper(xc), constraint);
@@ -47,13 +47,13 @@ public class CertificateIssuedToLegalPersonCheckTest {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
-		List<XmlOID> qualifiers = new ArrayList<XmlOID>();
-		XmlOID oid = new XmlOID();
+		List<XmlCertificatePolicy> qualifiers = new ArrayList<XmlCertificatePolicy>();
+		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue(CertificatePolicyOids.QCP_NATURAL.getOid());
 		qualifiers.add(oid);
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.setCertificatePolicyIds(qualifiers);
+		xc.setCertificatePolicies(qualifiers);
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificateIssuedToLegalPersonCheck citlp = new CertificateIssuedToLegalPersonCheck(result, new CertificateWrapper(xc), constraint);

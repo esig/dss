@@ -12,15 +12,15 @@ public final class QCTypeIdentifiers {
 	}
 
 	public static boolean isQCTypeEsign(CertificateWrapper certificate) {
-		return hasQCTypeOID(certificate, QCStatementOids.QTC_ESIGN);
+		return hasQCTypeOID(certificate, QCStatementOids.QCT_ESIGN);
 	}
 
 	public static boolean isQCTypeEseal(CertificateWrapper certificate) {
-		return hasQCTypeOID(certificate, QCStatementOids.QTC_ESEAL);
+		return hasQCTypeOID(certificate, QCStatementOids.QCT_ESEAL);
 	}
 
 	public static boolean isQCTypeWeb(CertificateWrapper certificate) {
-		return hasQCTypeOID(certificate, QCStatementOids.QTC_WEB);
+		return hasQCTypeOID(certificate, QCStatementOids.QCT_WEB);
 	}
 
 	private static boolean hasQCTypeOID(CertificateWrapper certificate, QCStatementOids... qcStatements) {

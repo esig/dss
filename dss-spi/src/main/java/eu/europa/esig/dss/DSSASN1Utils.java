@@ -80,6 +80,8 @@ import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.PolicyInformation;
+import org.bouncycastle.asn1.x509.PolicyQualifierId;
+import org.bouncycastle.asn1.x509.PolicyQualifierInfo;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
@@ -345,17 +347,28 @@ public final class DSSASN1Utils {
 		return false;
 	}
 
-	public static List<String> getPolicyIdentifiers(final CertificateToken certToken) {
-		List<String> policyIdentifiers = new ArrayList<String>();
-		final byte[] certificatePolicies = certToken.getCertificate().getExtensionValue(Extension.certificatePolicies.getId());
-		if (certificatePolicies != null) {
-			ASN1Sequence seq = getAsn1SequenceFromDerOctetString(certificatePolicies);
+	public static List<CertificatePolicy> getCertificatePolicies(final CertificateToken certToken) {
+		List<CertificatePolicy> certificatePolicies = new ArrayList<CertificatePolicy>();
+		final byte[] certificatePoliciesBinaries = certToken.getCertificate().getExtensionValue(Extension.certificatePolicies.getId());
+		if (Utils.isArrayNotEmpty(certificatePoliciesBinaries)) {
+			ASN1Sequence seq = getAsn1SequenceFromDerOctetString(certificatePoliciesBinaries);
 			for (int ii = 0; ii < seq.size(); ii++) {
+				CertificatePolicy cp = new CertificatePolicy();
 				final PolicyInformation policyInfo = PolicyInformation.getInstance(seq.getObjectAt(ii));
-				policyIdentifiers.add(policyInfo.getPolicyIdentifier().getId());
+				cp.setOid(policyInfo.getPolicyIdentifier().getId());
+				ASN1Sequence policyQualifiersSeq = policyInfo.getPolicyQualifiers();
+				if (policyQualifiersSeq != null) {
+					for (int jj = 0; jj < policyQualifiersSeq.size(); jj++) {
+						PolicyQualifierInfo pqi = PolicyQualifierInfo.getInstance(policyQualifiersSeq.getObjectAt(jj));
+						if (PolicyQualifierId.id_qt_cps.equals(pqi.getPolicyQualifierId())) {
+							cp.setCpsUrl(getString(pqi.getQualifier()));
+						}
+					}
+				}
+				certificatePolicies.add(cp);
 			}
 		}
-		return policyIdentifiers;
+		return certificatePolicies;
 	}
 
 	/**

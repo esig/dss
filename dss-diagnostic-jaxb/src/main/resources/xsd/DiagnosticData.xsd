@@ -214,10 +214,10 @@
 			<xs:element name="Trusted" type="xs:boolean" />
 			<xs:element name="SelfSigned" type="xs:boolean" />
 			
-			<xs:element name="CertificatePolicyIds" minOccurs="0">
+			<xs:element name="CertificatePolicies" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="oid" type="OID" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="certificatePolicy" type="CertificatePolicy" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -264,6 +264,14 @@
 				<xs:attribute name="Description" type="xs:string" use="optional" />
 			</xs:extension>
 		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="CertificatePolicy">
+		<xs:complexContent>
+			<xs:extension base="OID">
+				<xs:attribute name="cpsUrl" type="xs:string" use="optional" />
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	
 	<xs:complexType name="DistinguishedName">
@@ -442,6 +450,7 @@
 		<xs:sequence>
 			<xs:element name="TSPName" type="xs:string" />
 			<xs:element name="TSPServiceName" type="xs:string" />
+			<xs:element name="TSPRegistrationIdentifier" type="xs:string" minOccurs="0" />
 			<xs:element name="CountryCode" type="xs:string" />
 			
 			<xs:element name="TrustedServices">
