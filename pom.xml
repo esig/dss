@@ -85,6 +85,7 @@
 		<module>dss-tsl-jaxb</module>
 		<module>dss-diagnostic-jaxb</module>
 		<module>dss-simple-report-jaxb</module>
+		<module>dss-simple-certificate-report-jaxb</module>
 		<module>dss-detailed-report-jaxb</module>
 		<module>dss-reports</module>
 		<module>validation-policy</module>
@@ -526,6 +527,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-simple-report-jaxb</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-simple-certificate-report-jaxb</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
