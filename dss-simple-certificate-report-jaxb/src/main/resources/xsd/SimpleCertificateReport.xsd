@@ -8,10 +8,17 @@
 	<xs:element name="SimpleCertificateReport">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="chain" type="ChainItem" maxOccurs="unbounded" minOccurs="0" />
+				<xs:element name="Chain" type="Chain" maxOccurs="1" minOccurs="0" />
 			</xs:sequence>
+			<xs:attribute name="ValidationTime" type="xs:dateTime" />
 		</xs:complexType>
 	</xs:element>
+		
+	<xs:complexType name="Chain">
+		<xs:sequence>
+			<xs:element name="ChainItem" type="ChainItem" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
 	
 	<xs:complexType name="ChainItem">
 		<xs:sequence>
@@ -20,30 +27,34 @@
 			<xs:element name="issuerId" type="xs:string" />
 			<xs:element name="notBefore" type="xs:dateTime" />
 			<xs:element name="notAfter" type="xs:dateTime" />			
-			<xs:element name="ocspUrl" type="xs:string" minOccurs="0" />
-			<xs:element name="crlUrl" type="xs:string" minOccurs="0" />
-			<xs:element name="aiaUrl" type="xs:string" minOccurs="0" />
-			<xs:element name="cpsUrl" type="xs:string" minOccurs="0" />
-			<xs:element name="pdsUrl" type="xs:string" minOccurs="0" />
+			<xs:element name="ocspUrls" type="ListUrls" minOccurs="0" />
+			<xs:element name="crlUrls" type="ListUrls" minOccurs="0" />
+			<xs:element name="aiaUrls" type="ListUrls" minOccurs="0" />
+			<xs:element name="cpsUrls" type="ListUrls" minOccurs="0" />
+			<xs:element name="pdsUrls" type="ListUrls" minOccurs="0" />
 			<xs:element name="qualificationAtIssuance" type="CertificateQualification" />
 			<xs:element name="qualificationAtValidation" type="CertificateQualification" />
 			<xs:element name="revocation" type="Revocation" minOccurs="0" />
-			<xs:element name="trustAnchor" type="TrustAnchor" minOccurs="0" />
+			<xs:element name="trustAnchor" type="TrustAnchor" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
-		<xs:attribute name="trusted" type="xs:boolean" />
+	</xs:complexType>
+	
+	<xs:complexType name="ListUrls">
+		<xs:sequence>
+			<xs:element name="url" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="Revocation">
 		<xs:sequence>
 			<xs:element name="revocationDate" type="xs:dateTime" minOccurs="0" />
-			<xs:element name="revocationReason" type="xs:dateTime" minOccurs="0" />		
+			<xs:element name="revocationReason" type="xs:string" minOccurs="0" />		
 		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="TrustAnchor">
 		<xs:sequence>
 			<xs:element name="countryCode" type="xs:string" />
-			<xs:element name="trustedListUrl" type="xs:string" />
 			<xs:element name="trustServiceProvider" type="xs:string" />
 			<xs:element name="trustServiceProviderRegistrationId" type="xs:string" />
 			<xs:element name="trustServiceName" type="xs:string" />

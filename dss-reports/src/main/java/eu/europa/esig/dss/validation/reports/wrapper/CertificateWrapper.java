@@ -181,6 +181,10 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return Utils.isCollectionNotEmpty(tsps);
 	}
 
+	public List<XmlTrustedServiceProvider> getTrustServiceProviders() {
+		return certificate.getTrustedServiceProviders();
+	}
+
 	public List<TrustedServiceWrapper> getTrustedServices() {
 		List<TrustedServiceWrapper> result = new ArrayList<TrustedServiceWrapper>();
 		List<XmlTrustedServiceProvider> tsps = certificate.getTrustedServiceProviders();
@@ -234,6 +238,19 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public List<String> getOCSPAccessUrls() {
 		return certificate.getOCSPAccessUrls();
+	}
+
+	public List<String> getCpsUrls() {
+		List<String> result = new ArrayList<String>();
+		List<XmlCertificatePolicy> certificatePolicyIds = certificate.getCertificatePolicies();
+		if (Utils.isCollectionNotEmpty(certificatePolicyIds)) {
+			for (XmlCertificatePolicy xmlCertificatePolicy : certificatePolicyIds) {
+				if (Utils.isStringNotBlank(xmlCertificatePolicy.getCpsUrl())) {
+					result.add(xmlCertificatePolicy.getCpsUrl());
+				}
+			}
+		}
+		return result;
 	}
 
 	public List<String> getPolicyIds() {

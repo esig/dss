@@ -4,7 +4,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.validation.executor.CertificateProcessExecutor;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
@@ -25,13 +25,13 @@ public class CertificateValidator {
 		this.certificateVerifier = certificateVerifier;
 	}
 
-	public Reports validate() {
+	public CertificateReports validate() {
 		final ConstraintsParameters validationPolicyJaxb = ValidationResourceManager.loadPolicyData(null);
 		final ValidationPolicy validationPolicy = new EtsiValidationPolicy(validationPolicyJaxb);
 		return validate(validationPolicy);
 	}
 
-	public Reports validate(ValidationPolicy validationPolicy) {
+	public CertificateReports validate(ValidationPolicy validationPolicy) {
 
 		SignatureValidationContext svc = new SignatureValidationContext();
 		svc.addCertificateTokenForVerification(token);
@@ -49,8 +49,7 @@ public class CertificateValidator {
 		executor.setDiagnosticData(diagnosticData);
 		executor.setCertificateId(token.getDSSIdAsString());
 		executor.setCurrentTime(svc.getCurrentTime());
-		final Reports reports = executor.execute();
-		return reports;
+		return executor.execute();
 	}
 
 	public CertificateProcessExecutor provideProcessExecutorInstance() {

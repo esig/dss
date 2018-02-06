@@ -24,9 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificate;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CertificateQualification;
+import eu.europa.esig.dss.validation.ValidationTime;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -244,6 +248,33 @@ public class DetailedReport {
 
 	public eu.europa.esig.dss.jaxb.detailedreport.DetailedReport getJAXBModel() {
 		return jaxbDetailedReport;
+	}
+
+	public CertificateQualification getCertificateQualificationAtIssuance() {
+		return getCertificateQualification(ValidationTime.CERTIFICATE_ISSUANCE_TIME);
+	}
+
+	public CertificateQualification getCertificateQualificationAtValidation() {
+		return getCertificateQualification(ValidationTime.VALIDATION_TIME);
+	}
+
+	public CertificateQualification getCertificateQualificationAtSigningTime() {
+		return getCertificateQualification(ValidationTime.SIGNING_TIME);
+	}
+
+	private CertificateQualification getCertificateQualification(ValidationTime validationTime) {
+		XmlCertificate certificate = jaxbDetailedReport.getCertificate();
+		if (certificate != null) {
+			List<XmlValidationCertificateQualification> validationCertificateQualifications = certificate.getValidationCertificateQualification();
+			if (Utils.isCollectionNotEmpty(validationCertificateQualifications)) {
+				for (XmlValidationCertificateQualification validationCertificateQualification : validationCertificateQualifications) {
+					if (validationTime == validationCertificateQualification.getValidationTime()) {
+						return validationCertificateQualification.getCertificateQualification();
+					}
+				}
+			}
+		}
+		return CertificateQualification.NA;
 	}
 
 }

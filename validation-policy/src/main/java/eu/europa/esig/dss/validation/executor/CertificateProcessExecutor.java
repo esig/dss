@@ -3,11 +3,12 @@ package eu.europa.esig.dss.validation.executor;
 import java.util.Date;
 
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
+import eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-public class CertificateProcessExecutor implements ProcessExecutor {
+public class CertificateProcessExecutor implements ProcessExecutor<CertificateReports> {
 
 	private Date currentTime;
 	private ValidationPolicy policy;
@@ -49,7 +50,7 @@ public class CertificateProcessExecutor implements ProcessExecutor {
 	}
 
 	@Override
-	public Reports execute() {
+	public CertificateReports execute() {
 
 		assert jaxbDiagnosticData != null && policy != null && currentTime != null;
 
@@ -58,7 +59,11 @@ public class CertificateProcessExecutor implements ProcessExecutor {
 		DetailedReportForCertificateBuilder detailedReportBuilder = new DetailedReportForCertificateBuilder(diagnosticData, policy, currentTime, certificateId);
 		DetailedReport detailedReport = detailedReportBuilder.build();
 
-		return new Reports(jaxbDiagnosticData, detailedReport, null);
+		SimpleReportForCertificateBuilder simpleReportBuilder = new SimpleReportForCertificateBuilder(diagnosticData,
+				new eu.europa.esig.dss.validation.reports.DetailedReport(detailedReport), currentTime, certificateId);
+		SimpleCertificateReport simpleReport = simpleReportBuilder.build();
+
+		return new CertificateReports(jaxbDiagnosticData, detailedReport, simpleReport);
 	}
 
 }

@@ -64,6 +64,19 @@
 									<specVersion>2.1</specVersion>
 									<encoding>UTF-8</encoding>
 									<locale>en</locale>
+									
+									<extension>true</extension>
+					                <args>
+					                    <arg>-Xxew</arg>
+					                    <arg>-Xxew:instantiate lazy</arg>
+					                </args>
+									 <plugins>
+					                    <plugin>
+					                        <groupId>com.github.jaxb-xew-plugin</groupId> <!-- Allows to add XmlElementWrapper -->
+					                        <artifactId>jaxb-xew-plugin</artifactId>
+                        					<version>1.9</version>
+					                    </plugin>
+					                </plugins>
 								</configuration>
 							</execution>
 						</executions>

@@ -20,7 +20,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 public class CertificateProcessExecutorTest {
@@ -37,7 +37,7 @@ public class CertificateProcessExecutorTest {
 		executor.setValidationPolicy(loadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
-		Reports reports = executor.execute();
+		CertificateReports reports = executor.execute();
 
 		DetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
 		assertNotNull(detailedReportJaxb);

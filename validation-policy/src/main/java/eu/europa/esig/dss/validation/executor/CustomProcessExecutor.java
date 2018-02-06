@@ -8,7 +8,7 @@ import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-public class CustomProcessExecutor implements ProcessExecutor {
+public class CustomProcessExecutor implements ProcessExecutor<Reports> {
 
 	private Date currentTime = new Date();
 	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
