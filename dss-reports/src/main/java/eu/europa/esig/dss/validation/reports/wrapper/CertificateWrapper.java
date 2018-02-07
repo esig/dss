@@ -138,38 +138,31 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public String getCommonName() {
-		String cn = certificate.getCommonName();
-		return cn == null ? Utils.EMPTY_STRING : cn;
+		return certificate.getCommonName();
 	}
 
 	public String getCountryName() {
-		String c = certificate.getCountryName();
-		return c == null ? Utils.EMPTY_STRING : c;
+		return certificate.getCountryName();
 	}
 
 	public String getGivenName() {
-		String givenName = certificate.getGivenName();
-		return givenName == null ? Utils.EMPTY_STRING : givenName;
+		return certificate.getGivenName();
 	}
 
 	public String getOrganizationName() {
-		String o = certificate.getOrganizationName();
-		return o == null ? Utils.EMPTY_STRING : o;
+		return certificate.getOrganizationName();
 	}
 
 	public String getOrganizationalUnit() {
-		String ou = certificate.getOrganizationalUnit();
-		return ou == null ? Utils.EMPTY_STRING : ou;
+		return certificate.getOrganizationalUnit();
 	}
 
 	public String getSurname() {
-		String surname = certificate.getSurname();
-		return surname == null ? Utils.EMPTY_STRING : surname;
+		return certificate.getSurname();
 	}
 
 	public String getPseudo() {
-		String pseudo = certificate.getPseudonym();
-		return pseudo == null ? Utils.EMPTY_STRING : pseudo;
+		return certificate.getPseudonym();
 	}
 
 	public List<XmlDigestAlgoAndValue> getDigestAlgoAndValues() {

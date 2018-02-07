@@ -449,7 +449,6 @@
 	<xs:complexType name="TrustedServiceProvider">
 		<xs:sequence>
 			<xs:element name="TSPName" type="xs:string" />
-			<xs:element name="TSPServiceName" type="xs:string" />
 			<xs:element name="TSPRegistrationIdentifier" type="xs:string" minOccurs="0" />
 			<xs:element name="CountryCode" type="xs:string" />
 			
@@ -465,6 +464,7 @@
 	
 	<xs:complexType name="TrustedService">
 		<xs:sequence>
+			<xs:element name="ServiceName" type="xs:string" />
 			<xs:element name="ServiceType" type="xs:string" />
 			<xs:element name="Status" type="xs:string" />
 			<xs:element name="StartDate" type="xs:dateTime" />

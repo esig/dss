@@ -68,7 +68,7 @@
 									<extension>true</extension>
 					                <args>
 					                    <arg>-Xxew</arg>
-					                    <arg>-Xxew:instantiate lazy</arg>
+<!-- 					                    <arg>-Xxew:instantiate lazy</arg> -->
 					                </args>
 									 <plugins>
 					                    <plugin>

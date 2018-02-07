@@ -23,7 +23,7 @@
 	<xs:complexType name="ChainItem">
 		<xs:sequence>
 			<xs:element name="id" type="xs:string" />
-			<xs:element name="subject" type="xs:string" />
+			<xs:element name="subject" type="Subject" />
 			<xs:element name="issuerId" type="xs:string" />
 			<xs:element name="notBefore" type="xs:dateTime" />
 			<xs:element name="notAfter" type="xs:dateTime" />			
@@ -35,7 +35,19 @@
 			<xs:element name="qualificationAtIssuance" type="CertificateQualification" />
 			<xs:element name="qualificationAtValidation" type="CertificateQualification" />
 			<xs:element name="revocation" type="Revocation" minOccurs="0" />
-			<xs:element name="trustAnchor" type="TrustAnchor" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="trustAnchors" type="TrustAnchors" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Subject">
+		<xs:sequence>
+			<xs:element name="commonName" type="xs:string" minOccurs="0" />
+			<xs:element name="surname" type="xs:string" minOccurs="0" />
+			<xs:element name="givenName" type="xs:string" minOccurs="0" />
+			<xs:element name="pseudonym" type="xs:string" minOccurs="0" />
+			<xs:element name="organizationName" type="xs:string" minOccurs="0" />
+			<xs:element name="organizationUnit" type="xs:string" minOccurs="0" />
+			<xs:element name="country" type="xs:string" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -49,6 +61,12 @@
 		<xs:sequence>
 			<xs:element name="revocationDate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="revocationReason" type="xs:string" minOccurs="0" />		
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="TrustAnchors">
+		<xs:sequence>
+			<xs:element name="trustAnchor" type="TrustAnchor" minOccurs="1" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 

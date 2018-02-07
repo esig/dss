@@ -814,7 +814,6 @@ public class DiagnosticDataBuilder {
 			XmlTrustedServiceProvider serviceProvider = new XmlTrustedServiceProvider();
 			serviceProvider.setCountryCode(first.getTlCountryCode());
 			serviceProvider.setTSPName(first.getTspName());
-			serviceProvider.setTSPServiceName(first.getServiceName());
 			serviceProvider.setTSPRegistrationIdentifier(first.getTspRegistrationIdentifier());
 			serviceProvider.setTrustedServices(getXmlTrustedServices(serviceByProvider, certToken));
 			result.add(serviceProvider);
@@ -830,6 +829,7 @@ public class DiagnosticDataBuilder {
 				for (ServiceInfoStatus serviceInfoStatus : serviceStatusAfterOfEqualsCertIssuance) {
 					XmlTrustedService trustedService = new XmlTrustedService();
 
+					trustedService.setServiceName(serviceInfo.getServiceName());
 					trustedService.setServiceType(serviceInfoStatus.getType());
 					trustedService.setStatus(serviceInfoStatus.getStatus());
 					trustedService.setStartDate(serviceInfoStatus.getStartDate());
