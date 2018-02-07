@@ -206,10 +206,12 @@
 	    			<xsl:value-of select="concat($rootCountryUrlInTlBrowser, dss:countryCode)" />
 	    		</xsl:attribute>
 	    		<xsl:attribute name="target">_blank</xsl:attribute>
-	    		<xsl:attribute name="class">
-	    			flag <xsl:value-of select="concat('flag_', dss:countryCode)" />
-	    		</xsl:attribute>
 	    		<xsl:attribute name="title"><xsl:value-of select="dss:countryCode" /></xsl:attribute>
+	    		<span>
+	    			<xsl:attribute name="class">
+		    			small_flag <xsl:value-of select="concat('flag_', dss:countryCode)" />
+		    		</xsl:attribute>
+	    		</span>
     		</a>
     		
     		-
