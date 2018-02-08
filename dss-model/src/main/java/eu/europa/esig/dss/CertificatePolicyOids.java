@@ -1,6 +1,6 @@
 package eu.europa.esig.dss;
 
-public enum CertificatePolicyOids implements EtsiOid {
+public enum CertificatePolicyOids implements OidDescription {
 
 	// ------------ ETSI TS 101 456
 

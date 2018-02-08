@@ -29,6 +29,7 @@ import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -874,6 +875,15 @@ public final class DSSASN1Utils {
 			return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Attribute>());
 		} else {
 			return original;
+		}
+	}
+
+	public static List<String> getExtendedKeyUsage(CertificateToken certToken) {
+		try {
+			return certToken.getCertificate().getExtendedKeyUsage();
+		} catch (CertificateParsingException e) {
+			LOG.warn("Unable to retrieve ExtendedKeyUsage " + e.getMessage());
+			return Collections.emptyList();
 		}
 	}
 

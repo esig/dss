@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import eu.europa.esig.dss.ExtendedKeyUsageOids;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
@@ -93,7 +94,15 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isIdKpOCSPSigning() {
-		return Utils.isTrue(certificate.isIdKpOCSPSigning());
+		List<XmlOID> extendedKeyUsages = certificate.getExtendedKeyUsages();
+		if (Utils.isCollectionNotEmpty(extendedKeyUsages)) {
+			for (XmlOID xmlOID : extendedKeyUsages) {
+				if (Utils.areStringsEqual(ExtendedKeyUsageOids.OCSP_SIGNING.getOid(), xmlOID.getValue())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public Date getNotBefore() {
@@ -155,6 +164,18 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public String getOrganizationalUnit() {
 		return certificate.getOrganizationalUnit();
+	}
+
+	public String getEmail() {
+		return certificate.getEmail();
+	}
+
+	public String getLocality() {
+		return certificate.getLocality();
+	}
+
+	public String getState() {
+		return certificate.getState();
 	}
 
 	public String getSurname() {
@@ -282,6 +303,10 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public byte[] getBinaries() {
 		return certificate.getBase64Encoded();
+	}
+
+	public List<XmlOID> getExtendedKeyUsages() {
+		return certificate.getExtendedKeyUsages();
 	}
 
 }

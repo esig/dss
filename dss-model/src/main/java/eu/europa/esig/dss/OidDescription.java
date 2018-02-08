@@ -1,6 +1,6 @@
 package eu.europa.esig.dss;
 
-public interface EtsiOid {
+public interface OidDescription {
 
 	/**
 	 * This method returns the OID value

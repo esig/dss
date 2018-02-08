@@ -26,7 +26,9 @@
 			<xs:element name="subject" type="Subject" />
 			<xs:element name="issuerId" type="xs:string" />
 			<xs:element name="notBefore" type="xs:dateTime" />
-			<xs:element name="notAfter" type="xs:dateTime" />			
+			<xs:element name="notAfter" type="xs:dateTime" />
+			<xs:element name="keyUsages" type="KeyUsages" minOccurs="0" />	
+			<xs:element name="extendedKeyUsages" type="KeyUsages" minOccurs="0" />			
 			<xs:element name="ocspUrls" type="ListUrls" minOccurs="0" />
 			<xs:element name="crlUrls" type="ListUrls" minOccurs="0" />
 			<xs:element name="aiaUrls" type="ListUrls" minOccurs="0" />
@@ -47,7 +49,16 @@
 			<xs:element name="pseudonym" type="xs:string" minOccurs="0" />
 			<xs:element name="organizationName" type="xs:string" minOccurs="0" />
 			<xs:element name="organizationUnit" type="xs:string" minOccurs="0" />
+			<xs:element name="email" type="xs:string" minOccurs="0" />
+			<xs:element name="locality" type="xs:string" minOccurs="0" />
+			<xs:element name="state" type="xs:string" minOccurs="0" />
 			<xs:element name="country" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="KeyUsages">
+		<xs:sequence>
+			<xs:element name="keyUsage" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 	

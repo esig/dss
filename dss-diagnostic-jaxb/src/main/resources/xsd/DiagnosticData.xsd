@@ -161,12 +161,15 @@
 			<xs:element name="IssuerDistinguishedName" type="DistinguishedName" maxOccurs="unbounded" />
 			<xs:element name="SerialNumber" type="xs:integer" />
 			<xs:element name="CommonName" type="xs:string" minOccurs="0"/>
+			<xs:element name="Locality" type="xs:string" minOccurs="0"/>
+			<xs:element name="State" type="xs:string" minOccurs="0"/>
 			<xs:element name="CountryName" type="xs:string" minOccurs="0"/>
 			<xs:element name="OrganizationName" type="xs:string" minOccurs="0"/>
 			<xs:element name="GivenName" type="xs:string" minOccurs="0"/>
 			<xs:element name="OrganizationalUnit" type="xs:string" minOccurs="0"/>
 			<xs:element name="Surname" type="xs:string" minOccurs="0"/>
 			<xs:element name="Pseudonym" type="xs:string" minOccurs="0"/>
+			<xs:element name="Email" type="xs:string" minOccurs="0"/>
 			
 			<xs:element name="AuthorityInformationAccessUrls" minOccurs="0">
 				<xs:complexType>
@@ -203,8 +206,14 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
+			<xs:element name="ExtendedKeyUsages" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="oid" type="OID" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 			
-			<xs:element name="IdKpOCSPSigning" type="xs:boolean" minOccurs="0" />
 			<xs:element name="IdPkixOcspNoCheck" type="xs:boolean" minOccurs="0" />
 
 			<xs:element name="BasicSignature" type="BasicSignature" />

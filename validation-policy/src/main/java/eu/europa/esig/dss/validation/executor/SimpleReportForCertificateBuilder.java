@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport;
@@ -57,9 +58,14 @@ public class SimpleReportForCertificateBuilder {
 		XmlChainItem item = new XmlChainItem();
 		item.setId(certificate.getId());
 		item.setSubject(getSubject(certificate));
-		item.setIssuerId(certificate.getFirstChainCertificateId());
+		String signingCertificateId = certificate.getSigningCertificateId();
+		if (Utils.isStringNotBlank(signingCertificateId)) {
+			item.setIssuerId(signingCertificateId);
+		}
 		item.setNotBefore(certificate.getNotBefore());
 		item.setNotAfter(certificate.getNotAfter());
+		item.setKeyUsages(certificate.getKeyUsages());
+		item.setExtendedKeyUsages(getReadable(certificate.getExtendedKeyUsages()));
 		item.setAiaUrls(emptyToNull(certificate.getAuthorityInformationAccessUrls()));
 		item.setOcspUrls(emptyToNull(certificate.getOCSPAccessUrls()));
 		item.setCrlUrls(emptyToNull(certificate.getCRLDistributionPoints()));
@@ -97,6 +103,21 @@ public class SimpleReportForCertificateBuilder {
 		return item;
 	}
 
+	private List<String> getReadable(List<XmlOID> oids) {
+		if (Utils.isCollectionNotEmpty(oids)) {
+			List<String> result = new ArrayList<String>();
+			for (XmlOID xmlOID : oids) {
+				if (Utils.isStringNotEmpty(xmlOID.getDescription())) {
+					result.add(xmlOID.getDescription());
+				} else {
+					result.add(xmlOID.getValue());
+				}
+			}
+			return result;
+		}
+		return null;
+	}
+
 	private Set<String> getUniqueServiceNames(List<XmlTrustedService> trustedServices) {
 		Set<String> result = new HashSet<String>();
 		for (XmlTrustedService xmlTrustedService : trustedServices) {
@@ -113,6 +134,9 @@ public class SimpleReportForCertificateBuilder {
 		subject.setGivenName(certificate.getGivenName());
 		subject.setOrganizationName(certificate.getOrganizationName());
 		subject.setOrganizationUnit(certificate.getOrganizationalUnit());
+		subject.setEmail(certificate.getEmail());
+		subject.setLocality(certificate.getLocality());
+		subject.setState(certificate.getState());
 		subject.setCountry(certificate.getCountryName());
 		return subject;
 	}

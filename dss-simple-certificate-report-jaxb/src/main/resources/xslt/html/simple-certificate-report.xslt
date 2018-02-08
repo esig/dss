@@ -48,7 +48,33 @@
     			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
 	        	<xsl:attribute name="id">collapseCert-<xsl:value-of select="dss:id"/></xsl:attribute>
 	        	
+	        	<xsl:if test="dss:qualificationAtIssuance or dss:qualificationAtValidation">
+		        	<dl>
+			    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			    		
+			    		<dt>Qualification</dt>
+			    		
+			    		<dd>Issuance Time : 
+			    			<span>
+			    				<xsl:attribute name="class">label label-primary</xsl:attribute>
+			    				
+			    				<xsl:value-of select="dss:qualificationAtIssuance"/>
+			    			</span>
+			    		</dd>
+			    		<dd>Validation Time : 
+			    			<span>
+			    				<xsl:attribute name="class">label label-primary</xsl:attribute>
+			    				
+			    				<xsl:value-of select="dss:qualificationAtValidation"/>
+			    			</span>
+			    		</dd>
+		        	</dl>
+	        	</xsl:if>
+	        	
 				<xsl:apply-templates select="dss:subject"/>
+				
+				<xsl:apply-templates select="dss:keyUsages"/>
+				<xsl:apply-templates select="dss:extendedKeyUsages"/>
 					
 	        	<dl>
 	        		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
@@ -77,45 +103,44 @@
 	        			</xsl:otherwise>
 	        		</xsl:choose>
 	        		
-	        		<xsl:if test="dss:ocspUrls or dss:crlUrls">
-	        			<dt>Revocation Access</dt>
-						<xsl:apply-templates select="dss:ocspUrls"/>
-						<xsl:apply-templates select="dss:crlUrls"/>
-	        		</xsl:if>
-				    
-					<xsl:apply-templates select="dss:aiaUrls"/>
-					<xsl:apply-templates select="dss:cpsUrls"/>
-	        		
-	        		<xsl:if test="dss:qualificationAtIssuance">
-		        		<dt>Qualification at issuance time</dt>
-		        		<dd><xsl:value-of select="dss:qualificationAtIssuance"/></dd>
-	        		</xsl:if>
-	        		<xsl:if test="dss:qualificationAtValidation">
-		        		<dt>Qualification at validation time</dt>
-		        		<dd><xsl:value-of select="dss:qualificationAtValidation"/></dd>
-	        		</xsl:if>
-	        		
-					<xsl:apply-templates select="dss:trustAnchors"/>
-	        		
-	        	</dl>
+					<xsl:apply-templates select="dss:ocspUrls"/>
+					<xsl:apply-templates select="dss:crlUrls"/>
+				</dl>
+				
+	        	<xsl:if test="dss:aiaUrls or dss:cpsUrls">
+					<dl>
+			    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			    		
+						<xsl:apply-templates select="dss:aiaUrls"/>
+						<xsl:apply-templates select="dss:cpsUrls"/>
+		        	</dl>
+	        	</xsl:if>
+				
+	        	<xsl:if test="dss:trustAnchors">
+					<dl>
+			    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+			    		
+						<xsl:apply-templates select="dss:trustAnchors"/>
+		        	</dl>
+	        	</xsl:if>
     		</div>
     	</div>
     </xsl:template>
     
-     <xsl:template match="dss:subject">
+    <xsl:template match="dss:subject">
      	<dl>
 		    <xsl:attribute name="class">dl-horizontal</xsl:attribute>
 	  		<xsl:if test="dss:commonName">
 		   		<dt>Common name</dt>
 		   		<dd><xsl:value-of select="dss:commonName"/></dd>
 	  		</xsl:if>
-	  		<xsl:if test="dss:surname">
-		   		<dt>Surname</dt>
-		   		<dd><xsl:value-of select="dss:surname"/></dd>
-	  		</xsl:if>
 	  		<xsl:if test="dss:givenName">
 		   		<dt>Given name</dt>
 		   		<dd><xsl:value-of select="dss:givenName"/></dd>
+	  		</xsl:if>
+	  		<xsl:if test="dss:surname">
+		   		<dt>Surname</dt>
+		   		<dd><xsl:value-of select="dss:surname"/></dd>
 	  		</xsl:if>
 	  		<xsl:if test="dss:pseudonym">
 		   		<dt>Pseudonym</dt>
@@ -129,35 +154,65 @@
 		   		<dt>Organization Unit</dt>
 		   		<dd><xsl:value-of select="dss:organizationUnit"/></dd>
 	  		</xsl:if>
+	  		<xsl:if test="dss:email">
+		   		<dt>Email</dt>
+		   		<dd><xsl:value-of select="dss:email"/></dd>
+	  		</xsl:if>
+	  		<xsl:if test="dss:locality">
+		   		<dt>Locality</dt>
+		   		<dd><xsl:value-of select="dss:locality"/></dd>
+	  		</xsl:if>
+	  		<xsl:if test="dss:state">
+		   		<dt>State</dt>
+		   		<dd><xsl:value-of select="dss:state"/></dd>
+	  		</xsl:if>
 	  		<xsl:if test="dss:country">
 		   		<dt>Country</dt>
 		   		<dd><xsl:value-of select="dss:country"/></dd>
 	  		</xsl:if>
 	  	</dl>
 	</xsl:template>
+	
+	<xsl:template match="dss:keyUsages">
+     	<dl>
+		    <xsl:attribute name="class">dl-horizontal</xsl:attribute>
+		    
+		    <dt>Key usages</dt>
+			<xsl:apply-templates select="dss:keyUsage"/>
+		</dl>
+	</xsl:template>
+	
+	<xsl:template match="dss:extendedKeyUsages">
+     	<dl>
+		    <xsl:attribute name="class">dl-horizontal</xsl:attribute>
+		    
+		    <dt>Extended key usages</dt>
+			<xsl:apply-templates select="dss:keyUsage"/>
+		</dl>
+	</xsl:template>
+	
+    <xsl:template match="dss:keyUsage">
+    	<dd><xsl:value-of select="." /></dd>
+    </xsl:template>
     
     <xsl:template match="dss:ocspUrls">
-  		<dd>
+  		<dt>
   			<acronym>
   				<xsl:attribute name="title">Online Certificate Status Protocol</xsl:attribute>
   				OCSP
   			</acronym>
-	  		<ul>
-				<xsl:apply-templates select="dss:url"/>
-			</ul>
-		</dd>
+		</dt>
+		<xsl:apply-templates select="dss:url"/>
 	</xsl:template>
 	
   	<xsl:template match="dss:crlUrls">
-  		<dd>
+  		<dt>
   			<acronym>
   				<xsl:attribute name="title">Certificate Revocation List</xsl:attribute>
 		  		CRL
 		  	</acronym>
-			<ul>
-				<xsl:apply-templates select="dss:url"/>
-			</ul>
-		</dd>
+		</dt>
+		<xsl:apply-templates select="dss:url"/>
 	</xsl:template>
 	
 	<xsl:template match="dss:aiaUrls">
@@ -167,11 +222,7 @@
   		  		AIA
   		  	</acronym>
 		</dt>
-		<dd>
-	  		<ul>
-				<xsl:apply-templates select="dss:url"/>
-			</ul>
-		</dd>
+		<xsl:apply-templates select="dss:url"/>
 	</xsl:template>
 	
     <xsl:template match="dss:cpsUrls">
@@ -181,32 +232,25 @@
   		  		CPS
   		  	</acronym>
 		</dt>
-		<dd>
-	  		<ul>
-				<xsl:apply-templates select="dss:url"/>
-			</ul>
-		</dd>
+		<xsl:apply-templates select="dss:url"/>
 	</xsl:template>
 	
     <xsl:template match="dss:trustAnchors">
   		<dt>
   			Trust Anchor
 		</dt>
-		<dd>
-	  		<ul>
-				<xsl:apply-templates select="dss:trustAnchor"/>
-			</ul>
-		</dd>
+		<xsl:apply-templates select="dss:trustAnchor"/>
 	</xsl:template>
     
     <xsl:template match="dss:trustAnchor">
-    	<li>
+    	<dd>
     		<a>
     			<xsl:attribute name="href">
 	    			<xsl:value-of select="concat($rootCountryUrlInTlBrowser, dss:countryCode)" />
 	    		</xsl:attribute>
 	    		<xsl:attribute name="target">_blank</xsl:attribute>
 	    		<xsl:attribute name="title"><xsl:value-of select="dss:countryCode" /></xsl:attribute>
+	    		
 	    		<span>
 	    			<xsl:attribute name="class">
 		    			small_flag <xsl:value-of select="concat('flag_', dss:countryCode)" />
@@ -214,7 +258,9 @@
 	    		</span>
     		</a>
     		
-    		-
+    		<span>
+    			<xsl:attribute name="class">glyphicon glyphicon-arrow-right dss-arrow</xsl:attribute>
+    		</span>
     		
     		<a>
 	    		<xsl:attribute name="href">
@@ -222,20 +268,27 @@
 	    		</xsl:attribute>
 	    		<xsl:attribute name="target">_blank</xsl:attribute>
 	    		<xsl:attribute name="title">View in TL Browser</xsl:attribute>
+	    		
 	    		<xsl:value-of select="dss:trustServiceProvider" /> 
     		</a>
-    		-> <xsl:value-of select="dss:trustServiceName" />
-    	</li>
+    		
+    		<span>
+    			<xsl:attribute name="class">glyphicon glyphicon-arrow-right dss-arrow</xsl:attribute>
+    		</span>
+    		
+    		<xsl:value-of select="dss:trustServiceName" />
+    	</dd>
     </xsl:template>
     
     <xsl:template match="dss:url">
-    	<li>
+    	<dd>
     		<a>
     			<xsl:attribute name="href"><xsl:value-of select="." /></xsl:attribute>
 	    		<xsl:attribute name="target">_blank</xsl:attribute>
+	    		
     			<xsl:value-of select="." />
     		</a>
-    	</li>
+    	</dd>
     </xsl:template>
 
 </xsl:stylesheet>

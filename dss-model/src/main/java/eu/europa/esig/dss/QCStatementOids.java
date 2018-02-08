@@ -1,6 +1,6 @@
 package eu.europa.esig.dss;
 
-public enum QCStatementOids implements EtsiOid {
+public enum QCStatementOids implements OidDescription {
 
 	// --- ETSI EN 319 412-5
 

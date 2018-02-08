@@ -730,12 +730,15 @@ public class DiagnosticDataBuilder {
 
 		X500Principal x500Principal = certToken.getSubjectX500Principal();
 		xmlCert.setCommonName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.CN, x500Principal));
+		xmlCert.setLocality(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.L, x500Principal));
+		xmlCert.setState(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.ST, x500Principal));
 		xmlCert.setCountryName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.C, x500Principal));
 		xmlCert.setOrganizationName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.O, x500Principal));
 		xmlCert.setGivenName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.GIVENNAME, x500Principal));
 		xmlCert.setOrganizationalUnit(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.OU, x500Principal));
 		xmlCert.setSurname(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.SURNAME, x500Principal));
 		xmlCert.setPseudonym(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.PSEUDONYM, x500Principal));
+		xmlCert.setEmail(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.E, x500Principal));
 
 		xmlCert.setAuthorityInformationAccessUrls(DSSASN1Utils.getCAAccessLocations(certToken));
 		xmlCert.setOCSPAccessUrls(DSSASN1Utils.getOCSPAccessLocations(certToken, false));
@@ -750,8 +753,8 @@ public class DiagnosticDataBuilder {
 		xmlCert.setPublicKeyEncryptionAlgo(DSSPKUtils.getPublicKeyEncryptionAlgo(publicKey));
 
 		xmlCert.setKeyUsageBits(getXmlKeyUsages(certToken.getKeyUsageBits()));
+		xmlCert.setExtendedKeyUsages(getXmlOids(DSSASN1Utils.getExtendedKeyUsage(certToken)));
 
-		xmlCert.setIdKpOCSPSigning(DSSASN1Utils.isOCSPSigning(certToken));
 		xmlCert.setIdPkixOcspNoCheck(DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken));
 
 		xmlCert.setBasicSignature(getXmlBasicSignature(certToken));
@@ -796,11 +799,13 @@ public class DiagnosticDataBuilder {
 
 	private List<XmlOID> getXmlOids(List<String> oidList) {
 		List<XmlOID> result = new ArrayList<XmlOID>();
-		for (String oid : oidList) {
-			XmlOID xmlOID = new XmlOID();
-			xmlOID.setValue(oid);
-			xmlOID.setDescription(OidRepository.getDescription(oid));
-			result.add(xmlOID);
+		if (Utils.isCollectionNotEmpty(oidList)) {
+			for (String oid : oidList) {
+				XmlOID xmlOID = new XmlOID();
+				xmlOID.setValue(oid);
+				xmlOID.setDescription(OidRepository.getDescription(oid));
+				result.add(xmlOID);
+			}
 		}
 		return result;
 	}
