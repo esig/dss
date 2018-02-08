@@ -38,6 +38,7 @@
 			<xs:element name="qualificationAtValidation" type="CertificateQualification" />
 			<xs:element name="revocation" type="Revocation" minOccurs="0" />
 			<xs:element name="trustAnchors" type="TrustAnchors" minOccurs="0" />
+			<xs:element name="Indication" type="Indication" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -106,6 +107,14 @@
 			<xs:enumeration value="Cert for WSA" />
 			
 			<xs:enumeration value="N/A" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="Indication" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PASSED" />
+			<xs:enumeration value="INDETERMINATE" />
+			<xs:enumeration value="FAILED" />
 		</xs:restriction>
 	</xs:simpleType>
 

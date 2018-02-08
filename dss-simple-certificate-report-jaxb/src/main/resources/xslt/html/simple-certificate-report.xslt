@@ -29,10 +29,12 @@
 
     <xsl:template match="dss:ChainItem">
     
-    	 <xsl:variable name="indicationCssClass">
+     	<xsl:variable name="indicationText" select="dss:Indication/text()"/>
+        <xsl:variable name="indicationCssClass">
         	<xsl:choose>
-				<xsl:when test="dss:revocation or (dss:notAfter &gt; $validationTime)">danger</xsl:when>
-				<xsl:otherwise>success</xsl:otherwise>
+				<xsl:when test="$indicationText='PASSED'">success</xsl:when>
+				<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
+				<xsl:when test="$indicationText='FAILED'">danger</xsl:when>
 			</xsl:choose>
         </xsl:variable>
     
@@ -73,8 +75,22 @@
 	        	
 				<xsl:apply-templates select="dss:subject"/>
 				
-				<xsl:apply-templates select="dss:keyUsages"/>
-				<xsl:apply-templates select="dss:extendedKeyUsages"/>
+				<xsl:if test="dss:keyUsages or dss:extendedKeyUsages">
+					<div>
+						<xsl:attribute name="class">row</xsl:attribute>
+						
+						<div>
+							<xsl:attribute name="class">col-md-6</xsl:attribute>
+						
+							<xsl:apply-templates select="dss:keyUsages"/>
+						</div>
+						<div>
+							<xsl:attribute name="class">col-md-6</xsl:attribute>
+						
+							<xsl:apply-templates select="dss:extendedKeyUsages"/>
+						</div>
+					</div>
+				</xsl:if>
 					
 	        	<dl>
 	        		<xsl:attribute name="class">dl-horizontal</xsl:attribute>

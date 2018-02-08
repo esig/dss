@@ -14,6 +14,9 @@
 			</jaxb:nameXmlTransform>
 		</jaxb:schemaBindings>
 
+		<jaxb:bindings node="//xs:simpleType[@name='Indication']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.policy.rules.Indication" parseMethod="eu.europa.esig.dss.jaxb.parsers.IndicationParser.parse" printMethod="eu.europa.esig.dss.jaxb.parsers.IndicationParser.print" />
+		</jaxb:bindings>
 
 		<jaxb:bindings node="//xs:simpleType[@name='CertificateQualification']">
 			<jaxb:javaType name="eu.europa.esig.dss.validation.CertificateQualification" 

@@ -23,11 +23,14 @@ package eu.europa.esig.dss.validation.reports;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificate;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateQualification;
 import eu.europa.esig.dss.validation.ValidationTime;
@@ -275,6 +278,25 @@ public class DetailedReport {
 			}
 		}
 		return CertificateQualification.NA;
+	}
+
+	public Indication getCertificateXCVIndicationn(String certificateId) {
+		if (jaxbDetailedReport.getCertificate() == null) {
+			throw new DSSException("Only supported in report for certificate");
+		}
+		List<XmlBasicBuildingBlocks> basicBuildingBlocks = jaxbDetailedReport.getBasicBuildingBlocks();
+		for (XmlBasicBuildingBlocks xmlBasicBuildingBlocks : basicBuildingBlocks) {
+			XmlXCV xcv = xmlBasicBuildingBlocks.getXCV();
+			if (xcv != null) {
+				List<XmlSubXCV> subXCV = xcv.getSubXCV();
+				for (XmlSubXCV xmlSubXCV : subXCV) {
+					if (Utils.areStringsEqual(certificateId, xmlSubXCV.getId())) {
+						return xmlSubXCV.getConclusion().getIndication();
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 }

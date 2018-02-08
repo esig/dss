@@ -100,6 +100,8 @@ public class SimpleReportForCertificateBuilder {
 			item.setTrustAnchors(null);
 		}
 
+		item.setIndication(detailedReport.getCertificateXCVIndicationn(certificate.getId()));
+
 		return item;
 	}
 
