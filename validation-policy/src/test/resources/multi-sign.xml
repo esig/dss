@@ -208,7 +208,6 @@
                 <KeyUsage>keyCertSign</KeyUsage>
                 <KeyUsage>crlSign</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>false</IdKpOCSPSigning>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -230,10 +229,10 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Polish Security Printing Works</TSPName>
-                    <TSPServiceName>Certification authority issuing qualified certificates</TSPServiceName>
                     <CountryCode>PL</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                    		<ServiceName>Certification authority issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
@@ -245,6 +244,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
+                            <ServiceName>Certification authority issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2015-05-08T07:01:06</StartDate>
@@ -279,7 +279,6 @@
             <KeyUsageBits>
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>false</IdKpOCSPSigning>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -326,7 +325,6 @@
             <KeyUsageBits>
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>false</IdKpOCSPSigning>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -356,10 +354,10 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Polish Security Printing Works</TSPName>
-                    <TSPServiceName>Certification authority issuing qualified certificates</TSPServiceName>
                     <CountryCode>PL</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceName>Certification authority issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
@@ -376,6 +374,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
+                        	<ServiceName>Certification authority issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2015-05-08T07:01:06</StartDate>

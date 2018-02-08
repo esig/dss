@@ -24,7 +24,7 @@
             <KeyUsageBits>
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>true</IdKpOCSPSigning>
+            
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -53,15 +53,16 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Federal Network Agency</TSPName>
-                    <TSPServiceName>14R-CA 1:PN</TSPServiceName>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+		                    <ServiceName>14R-CA 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                         </TrustedService>
                         <TrustedService>
+                            <ServiceName>14R-CA 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/setbynationallaw</Status>
                             <StartDate>1997-07-31T22:00:00</StartDate>
@@ -128,7 +129,7 @@
             <KeyUsageBits>
                 <KeyUsage>keyCertSign</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>false</IdKpOCSPSigning>
+            
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -151,15 +152,16 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Federal Network Agency</TSPName>
-                    <TSPServiceName>14R-CA 1:PN</TSPServiceName>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+		                    <ServiceName>14R-CA 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                         </TrustedService>
                         <TrustedService>
+		                    <ServiceName>14R-CA 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/setbynationallaw</Status>
                             <StartDate>1997-07-31T22:00:00</StartDate>
@@ -192,7 +194,6 @@
             <KeyUsageBits>
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>true</IdKpOCSPSigning>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -221,15 +222,16 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Federal Network Agency</TSPName>
-                    <TSPServiceName>14R-CA 1:PN</TSPServiceName>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                    		<ServiceName>14R-CA 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                         </TrustedService>
                         <TrustedService>
+                    		<ServiceName>14R-CA 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/setbynationallaw</Status>
                             <StartDate>1997-07-31T22:00:00</StartDate>
@@ -294,7 +296,6 @@
             <KeyUsageBits>
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>true</IdKpOCSPSigning>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -323,15 +324,16 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Federal Network Agency</TSPName>
-                    <TSPServiceName>14R-CA 1:PN</TSPServiceName>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                    		<ServiceName>14R-CA 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                         </TrustedService>
                         <TrustedService>
+                    		<ServiceName>14R-CA 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/setbynationallaw</Status>
                             <StartDate>1997-07-31T22:00:00</StartDate>
@@ -398,7 +400,7 @@
                 <KeyUsage>nonRepudiation</KeyUsage>
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>false</IdKpOCSPSigning>
+            
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -427,10 +429,10 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Federal Chamber of Notaries</TSPName>
-                    <TSPServiceName>BNotK CA 5 1:PN</TSPServiceName>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                    		<ServiceName>BNotK CA 5 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2017-09-28T22:00:00</StartDate>
@@ -440,6 +442,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                    		<ServiceName>BNotK CA 5 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -450,6 +453,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                    		<ServiceName>BNotK CA 5 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
                             <StartDate>2000-12-13T23:00:00</StartDate>
@@ -515,7 +519,7 @@
             <KeyUsageBits>
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>true</IdKpOCSPSigning>
+            
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -544,15 +548,16 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Federal Network Agency</TSPName>
-                    <TSPServiceName>14R-CA 1:PN</TSPServiceName>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                    		<ServiceName>14R-CA 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                         </TrustedService>
                         <TrustedService>
+                    		<ServiceName>14R-CA 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/setbynationallaw</Status>
                             <StartDate>1997-07-31T22:00:00</StartDate>
@@ -618,7 +623,6 @@
             <KeyUsageBits>
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>true</IdKpOCSPSigning>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -647,15 +651,16 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Federal Network Agency</TSPName>
-                    <TSPServiceName>14R-CA 1:PN</TSPServiceName>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                   			<ServiceName>14R-CA 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                         </TrustedService>
                         <TrustedService>
+                   			<ServiceName>14R-CA 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/setbynationallaw</Status>
                             <StartDate>1997-07-31T22:00:00</StartDate>
@@ -721,7 +726,6 @@
             <KeyUsageBits>
                 <KeyUsage>keyCertSign</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>false</IdKpOCSPSigning>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -744,10 +748,10 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Federal Chamber of Notaries</TSPName>
-                    <TSPServiceName>BNotK CA 5 1:PN</TSPServiceName>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                    		<ServiceName>BNotK CA 5 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
                             <StartDate>2017-09-28T22:00:00</StartDate>
@@ -756,6 +760,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                    		<ServiceName>BNotK CA 5 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
@@ -765,6 +770,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                    		<ServiceName>BNotK CA 5 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
                             <StartDate>2000-12-13T23:00:00</StartDate>
@@ -797,7 +803,7 @@
             <KeyUsageBits>
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>true</IdKpOCSPSigning>
+            
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -826,15 +832,16 @@
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Federal Network Agency</TSPName>
-                    <TSPServiceName>14R-CA 1:PN</TSPServiceName>
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                    		<ServiceName>14R-CA 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
                         </TrustedService>
                         <TrustedService>
+                    		<ServiceName>14R-CA 1:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/setbynationallaw</Status>
                             <StartDate>1997-07-31T22:00:00</StartDate>

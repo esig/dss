@@ -91,6 +91,21 @@ public class CustomProcessExecutorTest {
 	}
 
 	@Test
+	public void universign() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/universign.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		reports.print();
+	}
+
+	@Test
 	public void noPoeRevokedNoTimestamp() throws Exception {
 		FileInputStream fis = new FileInputStream("src/test/resources/no_poe_revoked_no_timestamp.xml");
 		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
