@@ -2,6 +2,7 @@ package eu.europa.esig.dss.validation.executor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -18,6 +19,8 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport;
+import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlChainItem;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
@@ -26,13 +29,15 @@ import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 public class CertificateProcessExecutorTest {
 
 	@Test
-	public void validation() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/test1.xml");
+	public void deRevoked() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/de_revoked.xml");
 		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
 		assertNotNull(diagnosticData);
 
+		String certificateId = "0E9B5C373AFEC1CED5723FCD9231F793BB330FFBF2B94BB8698301C90405B9BF";
+
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();
-		executor.setCertificateId("00B0139A2F9D93B1425D732BF8EEB49D43BE9F40F2DEE00816B28D0407001843");
+		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
@@ -45,6 +50,99 @@ public class CertificateProcessExecutorTest {
 		assertEquals(2, detailedReportJaxb.getTLAnalysis().size());
 		assertEquals(1, detailedReportJaxb.getBasicBuildingBlocks().size());
 		assertEquals(0, detailedReportJaxb.getSignatures().size());
+
+		SimpleCertificateReport simpleReportJaxb = reports.getSimpleReportJaxb();
+		assertNotNull(simpleReportJaxb);
+		assertNotNull(simpleReportJaxb.getChain());
+		assertEquals(2, simpleReportJaxb.getChain().size());
+
+		XmlChainItem cert = simpleReportJaxb.getChain().get(0);
+		assertEquals(certificateId, cert.getId());
+		assertNotNull(cert.getQualificationAtIssuance());
+		assertNotNull(cert.getQualificationAtValidation());
+		assertNull(cert.getTrustAnchors());
+
+		XmlChainItem ca = simpleReportJaxb.getChain().get(1);
+		assertNull(ca.getQualificationAtIssuance());
+		assertNull(ca.getQualificationAtValidation());
+		assertNotNull(ca.getTrustAnchors());
+
+	}
+
+	@Test
+	public void beTSA() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/be_tsa.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		String certificateId = "D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19";
+
+		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		executor.setCertificateId(certificateId);
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		CertificateReports reports = executor.execute();
+
+		DetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
+		assertNotNull(detailedReportJaxb);
+		assertNotNull(detailedReportJaxb.getCertificate());
+		assertEquals(2, detailedReportJaxb.getTLAnalysis().size());
+		assertEquals(1, detailedReportJaxb.getBasicBuildingBlocks().size());
+		assertEquals(0, detailedReportJaxb.getSignatures().size());
+
+		SimpleCertificateReport simpleReportJaxb = reports.getSimpleReportJaxb();
+		assertNotNull(simpleReportJaxb);
+		assertNotNull(simpleReportJaxb.getChain());
+		assertEquals(2, simpleReportJaxb.getChain().size());
+
+		XmlChainItem cert = simpleReportJaxb.getChain().get(0);
+		assertEquals(certificateId, cert.getId());
+		assertNotNull(cert.getQualificationAtIssuance());
+		assertNotNull(cert.getQualificationAtValidation());
+		assertNull(cert.getTrustAnchors());
+
+		XmlChainItem ca = simpleReportJaxb.getChain().get(1);
+		assertNull(ca.getQualificationAtIssuance());
+		assertNull(ca.getQualificationAtValidation());
+		assertNotNull(ca.getTrustAnchors());
+
+	}
+
+	@Test
+	public void dkNoChain() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/dk_no_chain.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		String certificateId = "3ECBC4648AA3BCB671976F53D7516F774DB1C886FAB81FE5469462181187DB8D";
+
+		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		executor.setCertificateId(certificateId);
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		CertificateReports reports = executor.execute();
+
+		DetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
+		assertNotNull(detailedReportJaxb);
+		assertNotNull(detailedReportJaxb.getCertificate());
+		assertEquals(0, detailedReportJaxb.getTLAnalysis().size());
+		assertEquals(1, detailedReportJaxb.getBasicBuildingBlocks().size());
+		assertEquals(0, detailedReportJaxb.getSignatures().size());
+
+		SimpleCertificateReport simpleReportJaxb = reports.getSimpleReportJaxb();
+		assertNotNull(simpleReportJaxb);
+		assertNotNull(simpleReportJaxb.getChain());
+		assertEquals(1, simpleReportJaxb.getChain().size());
+
+		XmlChainItem cert = simpleReportJaxb.getChain().get(0);
+		assertEquals(certificateId, cert.getId());
+		assertNotNull(cert.getQualificationAtIssuance());
+		assertNotNull(cert.getQualificationAtValidation());
+		assertNull(cert.getTrustAnchors());
 
 	}
 

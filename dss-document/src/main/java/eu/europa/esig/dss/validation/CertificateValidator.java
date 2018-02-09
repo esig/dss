@@ -34,8 +34,8 @@ public class CertificateValidator {
 	public CertificateReports validate(ValidationPolicy validationPolicy) {
 
 		SignatureValidationContext svc = new SignatureValidationContext();
-		svc.addCertificateTokenForVerification(token);
 		svc.initialize(certificateVerifier);
+		svc.addCertificateTokenForVerification(token);
 		svc.validate();
 
 		DiagnosticDataBuilder builder = new DiagnosticDataBuilder();
