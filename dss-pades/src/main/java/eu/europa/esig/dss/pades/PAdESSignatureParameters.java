@@ -29,6 +29,12 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	private String signatureSubFilter;
 
 	/**
+	 * This attribute allows to explicitly specify the name for a Signature.
+	 * The person or authority signing the document.
+	 */
+	private String signatureName;
+
+	/**
 	 * This attribute is used to create visible signature in PAdES form
 	 */
 	private SignatureImageParameters signatureImageParameters;
@@ -101,6 +107,12 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 
 	public void setSignatureSubFilter(String signatureSubFilter) {
 		this.signatureSubFilter = signatureSubFilter;
+	}
+
+	public String getSignatureName() { return signatureName; }
+
+	public void setSignatureName(final String signatureName) {
+		this.signatureName = signatureName;
 	}
 
 	public SignatureImageParameters getSignatureImageParameters() {

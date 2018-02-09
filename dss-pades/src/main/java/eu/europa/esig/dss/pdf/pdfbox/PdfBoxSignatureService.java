@@ -215,8 +215,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		String encodedDate = " " + Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA1, Long.toString(date.getTime()).getBytes()));
 		CertificateToken token = parameters.getSigningCertificate();
 
-		if(parameters.getSignatoryId() != null){
-			signature.setName(parameters.getSignatoryId());
+		if(parameters.getSignatureName() != null){
+			signature.setName(parameters.getSignatureName());
 		} else if (token == null) {
 			signature.setName("Unknown signer" + encodedDate);
 		} else {

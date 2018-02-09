@@ -246,7 +246,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 */
 	public void incorporateSignedInfo() {
 		if(params.getSignedData() != null){
-			LOG.debug("Incorporating SignedInfo from parameter");
+			LOG.debug("Using explict SignedInfo from parameter");
 			signedInfoDom = DomUtils.buildDOM(params.getSignedData()).getDocumentElement();
 			signedInfoDom = (Element)documentDom.importNode(signedInfoDom, true);
 			signatureDom.appendChild(signedInfoDom);

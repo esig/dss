@@ -70,7 +70,7 @@ public abstract class AbstractSignatureService<SP extends AbstractSignatureParam
 	 *            set of driving signing parameters
 	 */
 	protected void assertSigningDateInCertificateValidityRange(final SP parameters) {
-		if (parameters.isSignWithExpiredCertificate() || parameters.getSigningCertificate() == null) {
+		if (parameters.isSignWithExpiredCertificate() || (parameters.getSigningCertificate() == null && parameters.isGenerateTBSWithoutCertificate())) {
 			return;
 		}
 		final CertificateToken signingCertificate = parameters.getSigningCertificate();

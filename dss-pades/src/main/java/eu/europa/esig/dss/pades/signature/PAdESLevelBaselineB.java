@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pades.signature;
 
 import java.util.Map;
 
+import eu.europa.esig.dss.cades.CMSUtils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -30,14 +31,21 @@ import org.bouncycastle.cms.CMSAttributeTableGenerator;
 
 import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineB;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * PAdES Baseline B signature
  *
  */
 class PAdESLevelBaselineB {
+	private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBaselineB.class);
 
 	AttributeTable getSignedAttributes(Map params, CAdESLevelBaselineB cadesProfile, PAdESSignatureParameters parameters, byte[] messageDigest) {
+		if(parameters.getSignedData() != null){
+			LOG.debug("Using explict SignedAttributes from parameter");
+			return CMSUtils.getAttributesFromByteArray(parameters.getSignedData());
+		}
 
 		AttributeTable signedAttributes = cadesProfile.getSignedAttributes(parameters);
 
