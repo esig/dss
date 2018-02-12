@@ -1,9 +1,6 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -14,24 +11,25 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQualification> {
 
-	private final List<TrustedServiceWrapper> trustedServices;
+	private final TrustedServiceWrapper trustedService;
 
 	private MessageTag errorMessage;
 
-	public ServiceConsistencyCheck(XmlValidationCertificateQualification result, List<TrustedServiceWrapper> trustedServices, LevelConstraint constraint) {
+	public ServiceConsistencyCheck(XmlValidationCertificateQualification result, TrustedServiceWrapper trustedService, LevelConstraint constraint) {
 		super(result, constraint);
 
-		this.trustedServices = trustedServices;
+		this.trustedService = trustedService;
 	}
 
 	@Override
 	protected boolean process() {
-		if (Utils.isCollectionEmpty(trustedServices)) {
+
+		if (trustedService == null) {
+
 			errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS0;
 			return false;
-		}
 
-		for (TrustedServiceWrapper trustedService : trustedServices) {
+		} else {
 
 			if (!TrustedServiceChecker.isQCStatementConsistent(trustedService)) {
 				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS1;
@@ -62,8 +60,9 @@ public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQ
 				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS6;
 				return false;
 			}
+
+			return true;
 		}
-		return true;
 	}
 
 	@Override

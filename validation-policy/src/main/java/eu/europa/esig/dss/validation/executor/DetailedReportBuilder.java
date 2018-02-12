@@ -70,8 +70,10 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 			if (policy.isEIDASConstraintPresent()) {
 				try {
 					CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(signature.getSigningCertificateId());
+					CertificateWrapper rootCertificate = diagnosticData.getUsedCertificateById(signingCertificate.getLastChainCertificateId());
+
 					SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(conlusion, signature.getDateTime(), signingCertificate,
-							detailedReport.getTLAnalysis(), diagnosticData.getLOTLCountryCode());
+							rootCertificate, detailedReport.getTLAnalysis(), diagnosticData.getLOTLCountryCode());
 					signatureAnalysis.setValidationSignatureQualification(qualificationBlock.execute());
 				} catch (Exception e) {
 					LOG.error("Unable to determine the signature qualification", e);

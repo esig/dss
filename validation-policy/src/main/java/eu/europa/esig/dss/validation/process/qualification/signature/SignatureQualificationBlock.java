@@ -11,8 +11,8 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualificat
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateQualification;
-import eu.europa.esig.dss.validation.ValidationTime;
 import eu.europa.esig.dss.validation.SignatureQualification;
+import eu.europa.esig.dss.validation.ValidationTime;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -34,13 +34,14 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	private final XmlConclusion etsi319102Conclusion;
 	private final Date signingTime; // TODO bestSigningTime ?
 	private final CertificateWrapper signingCertificate;
+	private final CertificateWrapper rootCertificate;
 	private final List<XmlTLAnalysis> tlAnalysis;
 	private final String lotlCountryCode;
 
 	private CertificateQualification qualificationAtSigningTime;
 
 	public SignatureQualificationBlock(XmlConclusion etsi319102Conclusion, Date signingTime, CertificateWrapper signingCertificate,
-			List<XmlTLAnalysis> tlAnalysis, String lotlCountryCode) {
+			CertificateWrapper rootCertificate, List<XmlTLAnalysis> tlAnalysis, String lotlCountryCode) {
 		super(new XmlValidationSignatureQualification());
 
 		// result.setId(signature.getId()); TODO
@@ -48,6 +49,7 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 		this.etsi319102Conclusion = etsi319102Conclusion;
 		this.signingTime = signingTime;
 		this.signingCertificate = signingCertificate;
+		this.rootCertificate = rootCertificate;
 		this.tlAnalysis = tlAnalysis;
 		this.lotlCountryCode = lotlCountryCode;
 	}
@@ -81,13 +83,13 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 			}
 
 			CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(ValidationTime.CERTIFICATE_ISSUANCE_TIME,
-					signingCertificate, caqcServices);
+					signingCertificate, rootCertificate, caqcServices);
 			XmlValidationCertificateQualification certQualAtIssuanceResult = certQualAtIssuanceBlock.execute();
 			result.getValidationCertificateQualification().add(certQualAtIssuanceResult);
 			CertificateQualification qualificationAtIssuance = certQualAtIssuanceResult.getCertificateQualification();
 
 			CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(ValidationTime.SIGNING_TIME, signingTime,
-					signingCertificate, caqcServices);
+					signingCertificate, rootCertificate, caqcServices);
 			XmlValidationCertificateQualification certQualAtSigningTimeResult = certQualAtSigningTimeBlock.execute();
 			result.getValidationCertificateQualification().add(certQualAtSigningTimeResult);
 			qualificationAtSigningTime = certQualAtSigningTimeResult.getCertificateQualification();
@@ -178,7 +180,7 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
-		return new AcceptableTrustedListCheck<XmlValidationSignatureQualification>(result, xmlTLAnalysis, getFailLevelConstraint());
+		return new AcceptableTrustedListCheck<XmlValidationSignatureQualification>(result, xmlTLAnalysis, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> isAdES(XmlConclusion etsi319102Conclusion) {

@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.qualified;
 
-import java.util.List;
-
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
@@ -19,14 +17,13 @@ public final class QualificationStrategyFactory {
 		}
 	}
 
-	public static QualificationStrategy createQualificationFromTL(List<TrustedServiceWrapper> trustedServices, QualificationStrategy qualifiedInCert) {
-		return new QualificationByTL(trustedServices, qualifiedInCert);
+	public static QualificationStrategy createQualificationFromTL(TrustedServiceWrapper trustedService, QualificationStrategy qualifiedInCert) {
+		return new QualificationByTL(trustedService, qualifiedInCert);
 	}
 
-	public static QualificationStrategy createQualificationFromCertAndTL(CertificateWrapper signingCertificate,
-			List<TrustedServiceWrapper> caQcTrustedServices) {
+	public static QualificationStrategy createQualificationFromCertAndTL(CertificateWrapper signingCertificate, TrustedServiceWrapper caQcTrustedService) {
 		QualificationStrategy qcFromCert = createQualificationFromCert(signingCertificate);
-		return createQualificationFromTL(caQcTrustedServices, qcFromCert);
+		return createQualificationFromTL(caQcTrustedService, qcFromCert);
 	}
 
 }

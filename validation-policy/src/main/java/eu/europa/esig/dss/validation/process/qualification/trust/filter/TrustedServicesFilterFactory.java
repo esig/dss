@@ -2,6 +2,8 @@ package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
+
 public final class TrustedServicesFilterFactory {
 
 	private TrustedServicesFilterFactory() {
@@ -21,6 +23,10 @@ public final class TrustedServicesFilterFactory {
 
 	public static TrustedServiceFilter createFilterByCountry(String countryCode) {
 		return new ServiceByCountryFilter(countryCode);
+	}
+
+	public static TrustedServiceFilter createUniqueServiceFilter(CertificateWrapper rootCertificate) {
+		return new UniqueServiceFilter(rootCertificate);
 	}
 
 }

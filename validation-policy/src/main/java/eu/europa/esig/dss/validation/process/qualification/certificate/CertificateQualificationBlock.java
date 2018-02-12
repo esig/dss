@@ -24,16 +24,18 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 	private final XmlConclusion buildingBlocksConclusion;
 	private final Date validationTime;
 	private final CertificateWrapper signingCertificate;
+	private final CertificateWrapper rootCertificate;
 	private final List<XmlTLAnalysis> tlAnalysis;
 	private final String lotlCountryCode;
 
 	public CertificateQualificationBlock(XmlConclusion buildingBlocksConclusion, Date validationTime, CertificateWrapper signingCertificate,
-			List<XmlTLAnalysis> tlAnalysis, String lotlCountryCode) {
+			CertificateWrapper rootCertificate, List<XmlTLAnalysis> tlAnalysis, String lotlCountryCode) {
 		super(new XmlCertificate());
 
 		this.buildingBlocksConclusion = buildingBlocksConclusion;
 		this.validationTime = validationTime;
 		this.signingCertificate = signingCertificate;
+		this.rootCertificate = rootCertificate;
 		this.tlAnalysis = tlAnalysis;
 		this.lotlCountryCode = lotlCountryCode;
 	}
@@ -66,11 +68,11 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 			}
 
 			CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(ValidationTime.CERTIFICATE_ISSUANCE_TIME,
-					signingCertificate, caqcServices);
+					signingCertificate, rootCertificate, caqcServices);
 			result.getValidationCertificateQualification().add(certQualAtIssuanceBlock.execute());
 
 			CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(ValidationTime.VALIDATION_TIME, validationTime,
-					signingCertificate, caqcServices);
+					signingCertificate, rootCertificate, caqcServices);
 			result.getValidationCertificateQualification().add(certQualAtSigningTimeBlock.execute());
 
 		}
@@ -113,11 +115,11 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 	}
 
 	private ChainItem<XmlCertificate> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
-		return new AcceptableTrustedListCheck<XmlCertificate>(result, xmlTLAnalysis, getFailLevelConstraint());
+		return new AcceptableTrustedListCheck<XmlCertificate>(result, xmlTLAnalysis, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlCertificate> isAcceptableBuildingBlockConclusion(XmlConclusion buildingBlocksConclusion) {
-		return new AcceptableBuildingBlockConclusionCheck(result, buildingBlocksConclusion, getFailLevelConstraint());
+		return new AcceptableBuildingBlockConclusionCheck(result, buildingBlocksConclusion, getWarnLevelConstraint());
 	}
 
 }

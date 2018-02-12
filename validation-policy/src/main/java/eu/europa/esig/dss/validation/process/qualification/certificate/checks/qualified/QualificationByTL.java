@@ -9,32 +9,29 @@ import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
 class QualificationByTL implements QualificationStrategy {
 
-	private final List<TrustedServiceWrapper> trustedServices;
+	private final TrustedServiceWrapper trustedService;
 	private final QualificationStrategy qualifiedInCert;
 
-	public QualificationByTL(List<TrustedServiceWrapper> trustedServices, QualificationStrategy qualifiedInCert) {
-		this.trustedServices = trustedServices;
+	public QualificationByTL(TrustedServiceWrapper trustedService, QualificationStrategy qualifiedInCert) {
+		this.trustedService = trustedService;
 		this.qualifiedInCert = qualifiedInCert;
 	}
 
 	@Override
 	public QualifiedStatus getQualifiedStatus() {
-		if (Utils.isCollectionEmpty(trustedServices)) {
+		if (trustedService == null) {
 			return QualifiedStatus.NOT_QC;
 		} else {
+			List<String> capturedQualifiers = trustedService.getCapturedQualifiers();
 
-			for (TrustedServiceWrapper trustedService : trustedServices) {
-				List<String> capturedQualifiers = trustedService.getCapturedQualifiers();
+			// If overrules
+			if (Utils.isCollectionNotEmpty(capturedQualifiers)) {
+				if (ServiceQualification.isNotQualified(capturedQualifiers)) {
+					return QualifiedStatus.NOT_QC;
+				}
 
-				// If overrules
-				if (Utils.isCollectionNotEmpty(capturedQualifiers)) {
-					if (ServiceQualification.isNotQualified(capturedQualifiers)) {
-						return QualifiedStatus.NOT_QC;
-					}
-
-					if (ServiceQualification.isQcStatement(capturedQualifiers)) {
-						return QualifiedStatus.QC;
-					}
+				if (ServiceQualification.isQcStatement(capturedQualifiers)) {
+					return QualifiedStatus.QC;
 				}
 			}
 

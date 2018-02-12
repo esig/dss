@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd;
 
-import java.util.List;
-
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
@@ -20,14 +18,14 @@ public final class QSCDStrategyFactory {
 		}
 	}
 
-	public static QSCDStrategy createQSCDFromTL(List<TrustedServiceWrapper> trustedServices, QualifiedStatus qualified, QSCDStrategy qscdFromCertificate) {
-		return new QSCDByTL(trustedServices, qualified, qscdFromCertificate);
+	public static QSCDStrategy createQSCDFromTL(TrustedServiceWrapper trustedService, QualifiedStatus qualified, QSCDStrategy qscdFromCertificate) {
+		return new QSCDByTL(trustedService, qualified, qscdFromCertificate);
 	}
 
-	public static QSCDStrategy createQSCDFromCertAndTL(CertificateWrapper signingCertificate, List<TrustedServiceWrapper> caQcTrustedServices,
+	public static QSCDStrategy createQSCDFromCertAndTL(CertificateWrapper signingCertificate, TrustedServiceWrapper caQcTrustedService,
 			QualifiedStatus qualified) {
 		QSCDStrategy qscdFromCert = createQSCDFromCert(signingCertificate);
-		return createQSCDFromTL(caQcTrustedServices, qualified, qscdFromCert);
+		return createQSCDFromTL(caQcTrustedService, qualified, qscdFromCert);
 	}
 
 }

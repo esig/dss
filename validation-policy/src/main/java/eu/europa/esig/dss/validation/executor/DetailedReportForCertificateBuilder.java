@@ -27,6 +27,7 @@ public class DetailedReportForCertificateBuilder extends AbstractDetailedReportB
 		DetailedReport detailedReport = init();
 
 		CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateId);
+		CertificateWrapper rootCertificate = diagnosticData.getUsedCertificateById(certificate.getLastChainCertificateId());
 
 		Map<String, XmlBasicBuildingBlocks> bbbs = new HashMap<String, XmlBasicBuildingBlocks>();
 		process(Collections.singleton(certificate), Context.CERTIFICATE, bbbs);
@@ -34,7 +35,7 @@ public class DetailedReportForCertificateBuilder extends AbstractDetailedReportB
 
 		XmlBasicBuildingBlocks basicBuildingBlocks = bbbs.get(certificate.getId());
 
-		CertificateQualificationBlock cqb = new CertificateQualificationBlock(basicBuildingBlocks.getConclusion(), currentTime, certificate,
+		CertificateQualificationBlock cqb = new CertificateQualificationBlock(basicBuildingBlocks.getConclusion(), currentTime, certificate, rootCertificate,
 				detailedReport.getTLAnalysis(), diagnosticData.getLOTLCountryCode());
 		detailedReport.setCertificate(cqb.execute());
 

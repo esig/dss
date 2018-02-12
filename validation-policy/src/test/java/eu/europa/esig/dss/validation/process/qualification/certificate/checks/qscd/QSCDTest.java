@@ -125,41 +125,41 @@ public class QSCDTest {
 	@Test
 	public void trustedServiceButNoQC() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		notQSCD(Arrays.asList(service), QualifiedStatus.NOT_QC, QSCDTrue);
+		notQSCD(service, QualifiedStatus.NOT_QC, QSCDTrue);
 	}
 
 	@Test
 	public void trustedServiceNoOverules() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		qscd(Arrays.asList(service), QualifiedStatus.QC, QSCDTrue);
+		qscd(service, QualifiedStatus.QC, QSCDTrue);
 	}
 
 	@Test
 	public void trustedServiceOverrulesNotQSCD() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_NO_QSCD));
-		notQSCD(Arrays.asList(service), QualifiedStatus.QC, QSCDTrue);
+		notQSCD(service, QualifiedStatus.QC, QSCDTrue);
 	}
 
 	@Test
 	public void trustedServiceOverrulesQSCD() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_QSCD_MANAGED_ON_BEHALF));
-		qscd(Arrays.asList(service), QualifiedStatus.QC, QSCDFalse);
+		qscd(service, QualifiedStatus.QC, QSCDFalse);
 	}
 
 	@Test
 	public void trustedServiceOverrulesQSCDAsInCert() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_QSCD_STATUS_AS_IN_CERT));
-		notQSCD(Arrays.asList(service), QualifiedStatus.QC, QSCDFalse);
+		notQSCD(service, QualifiedStatus.QC, QSCDFalse);
 	}
 
 	@Test
 	public void trustedServiceUnknownOverrule() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
 		service.setCapturedQualifiers(Arrays.asList("Test"));
-		notQSCD(Arrays.asList(service), QualifiedStatus.QC, QSCDFalse);
+		notQSCD(service, QualifiedStatus.QC, QSCDFalse);
 	}
 
 	private CertificateWrapper createPreEIDAS(List<String> qcStatementIds, List<String> certificatePolicyIds) {
@@ -215,8 +215,8 @@ public class QSCDTest {
 		assertTrue(QSCDStatus.isQSCD(strategy.getQSCDStatus()));
 	}
 
-	private void qscd(List<TrustedServiceWrapper> trustedServices, QualifiedStatus qualified, QSCDStrategy qscdInCert) {
-		QSCDStrategy strategy = QSCDStrategyFactory.createQSCDFromTL(trustedServices, qualified, qscdInCert);
+	private void qscd(TrustedServiceWrapper trustedService, QualifiedStatus qualified, QSCDStrategy qscdInCert) {
+		QSCDStrategy strategy = QSCDStrategyFactory.createQSCDFromTL(trustedService, qualified, qscdInCert);
 		assertTrue(QSCDStatus.isQSCD(strategy.getQSCDStatus()));
 	}
 
@@ -225,8 +225,8 @@ public class QSCDTest {
 		assertFalse(QSCDStatus.isQSCD(strategy.getQSCDStatus()));
 	}
 
-	private void notQSCD(List<TrustedServiceWrapper> trustedServices, QualifiedStatus qualified, QSCDStrategy qscdInCert) {
-		QSCDStrategy strategy = QSCDStrategyFactory.createQSCDFromTL(trustedServices, qualified, qscdInCert);
+	private void notQSCD(TrustedServiceWrapper trustedService, QualifiedStatus qualified, QSCDStrategy qscdInCert) {
+		QSCDStrategy strategy = QSCDStrategyFactory.createQSCDFromTL(trustedService, qualified, qscdInCert);
 		assertFalse(QSCDStatus.isQSCD(strategy.getQSCDStatus()));
 	}
 }

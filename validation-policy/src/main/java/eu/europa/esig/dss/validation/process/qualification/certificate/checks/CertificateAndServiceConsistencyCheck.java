@@ -17,41 +17,39 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
 public class CertificateAndServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQualification> {
 
 	private final CertificateWrapper signingCertificate;
-	private final List<TrustedServiceWrapper> trustedServices;
+	private final TrustedServiceWrapper trustedService;
 
 	private MessageTag errorMessage;
 
 	public CertificateAndServiceConsistencyCheck(XmlValidationCertificateQualification result, CertificateWrapper signingCertificate,
-			List<TrustedServiceWrapper> trustedServices, LevelConstraint constraint) {
+			TrustedServiceWrapper trustedService, LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.signingCertificate = signingCertificate;
-		this.trustedServices = trustedServices;
+		this.trustedService = trustedService;
 	}
 
 	@Override
 	protected boolean process() {
-		if (Utils.isCollectionNotEmpty(trustedServices)) {
+		if (trustedService != null) {
 
 			boolean esign = QCTypeIdentifiers.isQCTypeEsign(signingCertificate);
 			boolean eseal = QCTypeIdentifiers.isQCTypeEseal(signingCertificate);
 			boolean web = QCTypeIdentifiers.isQCTypeWeb(signingCertificate);
 
-			for (TrustedServiceWrapper trustedService : trustedServices) {
-				List<String> qualifiers = trustedService.getCapturedQualifiers();
-				List<String> usageQualifiers = ServiceQualification.getUsageQualifiers(qualifiers);
-				if (Utils.isCollectionEmpty(usageQualifiers)) {
-					List<String> asis = trustedService.getAdditionalServiceInfos();
-					if (esign && !AdditionalServiceInformation.isForeSignatures(asis)) {
-						errorMessage = MessageTag.QUAL_TL_CERT_CONS_ANS3;
-						return false;
-					} else if (eseal && !AdditionalServiceInformation.isForeSeals(asis)) {
-						errorMessage = MessageTag.QUAL_TL_CERT_CONS_ANS1;
-						return false;
-					} else if (web && !AdditionalServiceInformation.isForWebAuth(asis)) {
-						errorMessage = MessageTag.QUAL_TL_CERT_CONS_ANS2;
-						return false;
-					}
+			List<String> qualifiers = trustedService.getCapturedQualifiers();
+			List<String> usageQualifiers = ServiceQualification.getUsageQualifiers(qualifiers);
+			if (Utils.isCollectionEmpty(usageQualifiers)) {
+				List<String> asis = trustedService.getAdditionalServiceInfos();
+				if (esign && !AdditionalServiceInformation.isForeSignatures(asis)) {
+					errorMessage = MessageTag.QUAL_TL_CERT_CONS_ANS3;
+					return false;
+				} else if (eseal && !AdditionalServiceInformation.isForeSeals(asis)) {
+					errorMessage = MessageTag.QUAL_TL_CERT_CONS_ANS1;
+					return false;
+				} else if (web && !AdditionalServiceInformation.isForWebAuth(asis)) {
+					errorMessage = MessageTag.QUAL_TL_CERT_CONS_ANS2;
+					return false;
 				}
 			}
 		}
