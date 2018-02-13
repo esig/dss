@@ -213,12 +213,12 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 	private ChainItem<XmlSubXCV> certificateRevoked(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotRevokedConstraint(context, subContext);
-		return new CertificateRevokedCheck(result, certificate, constraint, subContext);
+		return new CertificateRevokedCheck(result, certificate, currentTime, constraint, subContext);
 	}
 
 	private ChainItem<XmlSubXCV> certificateOnHold(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotOnHoldConstraint(context, subContext);
-		return new CertificateOnHoldCheck(result, certificate, constraint);
+		return new CertificateOnHoldCheck(result, certificate, currentTime, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificatePolicyIds(CertificateWrapper certificate, SubContext subContext) {
