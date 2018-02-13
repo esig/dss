@@ -97,7 +97,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		item = item.setNextItem(isQualified(qualifiedStatus));
 
 		// 6. Type?
-		TypeStrategy typeStrategy = TypeStrategyFactory.createTypeFromCertAndTL(signingCertificate, selectedTrustService);
+		TypeStrategy typeStrategy = TypeStrategyFactory.createTypeFromCertAndTL(signingCertificate, selectedTrustService, qualifiedStatus);
 		Type type = typeStrategy.getType();
 		item = item.setNextItem(isForEsig(type));
 

@@ -3,6 +3,7 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.t
 import java.util.List;
 
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
 import eu.europa.esig.dss.validation.process.qualification.certificate.Type;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
@@ -10,18 +11,20 @@ import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 class TypeByTL implements TypeStrategy {
 
 	private final TrustedServiceWrapper trustedService;
+	private final QualifiedStatus qualified;
 	private final TypeStrategy typeInCert;
 
-	public TypeByTL(TrustedServiceWrapper trustedService, TypeStrategy typeInCert) {
+	public TypeByTL(TrustedServiceWrapper trustedService, QualifiedStatus qualified, TypeStrategy typeInCert) {
 		this.trustedService = trustedService;
+		this.qualified = qualified;
 		this.typeInCert = typeInCert;
 	}
 
 	@Override
 	public Type getType() {
-		if (trustedService == null) {
-			return Type.UNKNOWN;
-		} else {
+
+		// overrules are only applicable when the certificate is qualified (cert + TL)
+		if (QualifiedStatus.isQC(qualified)) {
 
 			List<String> usageQualifiers = ServiceQualification.getUsageQualifiers(trustedService.getCapturedQualifiers());
 
@@ -41,9 +44,9 @@ class TypeByTL implements TypeStrategy {
 				}
 
 			}
-
-			return typeInCert.getType();
 		}
+
+		return typeInCert.getType();
 	}
 
 }

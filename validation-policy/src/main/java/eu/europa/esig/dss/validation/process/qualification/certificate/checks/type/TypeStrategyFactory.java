@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.type;
 
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
+import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 
@@ -17,13 +18,14 @@ public final class TypeStrategyFactory {
 		}
 	}
 
-	public static TypeStrategy createTypeFromTL(TrustedServiceWrapper trustedService, TypeStrategy typeInCert) {
-		return new TypeByTL(trustedService, typeInCert);
+	public static TypeStrategy createTypeFromTL(TrustedServiceWrapper trustedService, QualifiedStatus qualified, TypeStrategy typeInCert) {
+		return new TypeByTL(trustedService, qualified, typeInCert);
 	}
 
-	public static TypeStrategy createTypeFromCertAndTL(CertificateWrapper signingCertificate, TrustedServiceWrapper caQcTrustedService) {
+	public static TypeStrategy createTypeFromCertAndTL(CertificateWrapper signingCertificate, TrustedServiceWrapper caQcTrustedService,
+			QualifiedStatus qualified) {
 		TypeStrategy typeFromCert = createTypeFromCert(signingCertificate);
-		return createTypeFromTL(caQcTrustedService, typeFromCert);
+		return createTypeFromTL(caQcTrustedService, qualified, typeFromCert);
 	}
 
 }
