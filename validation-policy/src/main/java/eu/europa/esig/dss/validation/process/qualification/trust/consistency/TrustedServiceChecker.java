@@ -22,6 +22,11 @@ public final class TrustedServiceChecker {
 		return condition.isConsistent(service);
 	}
 
+	public static boolean isQSCDStatusAsInCertConsistent(TrustedServiceWrapper service) {
+		TrustedServiceCondition condition = new TrustedServiceQSCDStatusAsInCertConsistency();
+		return condition.isConsistent(service);
+	}
+
 	public static boolean isUsageConsistent(TrustedServiceWrapper service) {
 		TrustedServiceCondition condition = new TrustedServiceUsageConsistency();
 		return condition.isConsistent(service);
