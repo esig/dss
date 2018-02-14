@@ -793,7 +793,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		try {
 			timestampToken = new TimestampToken(Utils.fromBase64(timestampTokenNode.getTextContent()), timestampType, certPool);
 		} catch (Exception e) {
-			throw new DSSException("Unable to extract timestamp", e);
+			LOG.warn("Unable to build timestamp object '" + timestampTokenNode.getTextContent() + "' : ", e);
+			return null;
 		}
 		timestampToken.setHashCode(timestampElement.hashCode());
 		timestampToken.setCanonicalizationMethod(getTimestampCanonicalizationMethod(timestampElement));
