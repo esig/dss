@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.reports;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSException;
@@ -154,6 +155,23 @@ public class DetailedReport {
 		return result;
 	}
 
+	public Date getBestSignatureTime(String signatureId) {
+		XmlSignature xmlSignature = getXmlSignatureById(signatureId);
+		if (xmlSignature != null) {
+			if (xmlSignature.getValidationProcessArchivalData() != null && xmlSignature.getValidationProcessArchivalData().getBestSignatureTime() != null) {
+				return xmlSignature.getValidationProcessArchivalData().getBestSignatureTime();
+			}
+			if (xmlSignature.getValidationProcessLongTermData() != null && xmlSignature.getValidationProcessLongTermData().getBestSignatureTime() != null) {
+				return xmlSignature.getValidationProcessLongTermData().getBestSignatureTime();
+			}
+			if (xmlSignature.getValidationProcessBasicSignatures() != null
+					&& xmlSignature.getValidationProcessBasicSignatures().getBestSignatureTime() != null) {
+				return xmlSignature.getValidationProcessBasicSignatures().getBestSignatureTime();
+			}
+		}
+		return null;
+	}
+
 	public Indication getBasicValidationIndication(String signatureId) {
 		XmlSignature signature = getXmlSignatureById(signatureId);
 		if (signature != null && signature.getValidationProcessBasicSignatures() != null
@@ -259,10 +277,6 @@ public class DetailedReport {
 
 	public CertificateQualification getCertificateQualificationAtValidation() {
 		return getCertificateQualification(ValidationTime.VALIDATION_TIME);
-	}
-
-	public CertificateQualification getCertificateQualificationAtSigningTime() {
-		return getCertificateQualification(ValidationTime.SIGNING_TIME);
 	}
 
 	private CertificateQualification getCertificateQualification(ValidationTime validationTime) {

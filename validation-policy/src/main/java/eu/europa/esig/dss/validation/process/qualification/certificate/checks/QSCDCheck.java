@@ -30,7 +30,7 @@ public class QSCDCheck extends ChainItem<XmlValidationCertificateQualification> 
 	@Override
 	protected MessageTag getMessageTag() {
 		switch (validationTime) {
-		case SIGNING_TIME:
+		case BEST_SIGNATURE_TIME:
 			return MessageTag.QUAL_QSCD_AT_ST;
 		case CERTIFICATE_ISSUANCE_TIME:
 			return MessageTag.QUAL_QSCD_AT_CC;
@@ -44,7 +44,7 @@ public class QSCDCheck extends ChainItem<XmlValidationCertificateQualification> 
 	@Override
 	protected MessageTag getErrorMessageTag() {
 		switch (validationTime) {
-		case SIGNING_TIME:
+		case BEST_SIGNATURE_TIME:
 			return MessageTag.QUAL_QSCD_AT_ST_ANS;
 		case CERTIFICATE_ISSUANCE_TIME:
 			return MessageTag.QUAL_QSCD_AT_CC_ANS;

@@ -8,9 +8,9 @@ public enum ValidationTime {
 	CERTIFICATE_ISSUANCE_TIME,
 
 	/**
-	 * Date of the signature
+	 * Lowest time at which there exists a POE for the signature
 	 */
-	SIGNING_TIME,
+	BEST_SIGNATURE_TIME,
 
 	/**
 	 * Date of the validation

@@ -156,6 +156,14 @@
 					<xsl:attribute name="class">panel-heading</xsl:attribute>
 					<xsl:attribute name="data-target">#collapseBasicValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
 					<xsl:attribute name="data-toggle">collapse</xsl:attribute>
+
+			       	<xsl:if test="@BestSignatureTime">
+						<span>
+							<xsl:attribute name="class">pull-right glyphicon glyphicon-time dss-clock</xsl:attribute>
+							<xsl:attribute name="title">Best signature time : <xsl:value-of select="@BestSignatureTime"/></xsl:attribute>
+		       			</span>
+	       			</xsl:if>
+
 					<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
 				        <span>
 				        	<xsl:attribute name="class">label label-<xsl:value-of select="$indicationCssClass" /> pull-right</xsl:attribute>
@@ -168,6 +176,7 @@
 				        	<xsl:value-of select="dss:Conclusion/dss:SubIndication"/>
 			        	</span>
 			        </xsl:if>
+			        
 					Validation Process for Basic Signatures
 				</div>
 				<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
@@ -190,6 +199,7 @@
 	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
 		    		<xsl:attribute name="data-target">#collapseTimestampValidation<xsl:value-of select="@Id"/></xsl:attribute>
 					<xsl:attribute name="data-toggle">collapse</xsl:attribute>
+	       			
 					Validation Process for Timestamps
 				</div>
 				<div>
@@ -212,6 +222,12 @@
 					    			<xsl:attribute name="class">panel-heading</xsl:attribute>
 						    		<xsl:attribute name="data-target">#collapseTimestampValidationData<xsl:value-of select="@Id"/></xsl:attribute>
 							       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
+							       
+									<span>
+										<xsl:attribute name="class">pull-right glyphicon glyphicon-time dss-clock</xsl:attribute>
+										<xsl:attribute name="title">Production time : <xsl:value-of select="@ProductionTime"/></xsl:attribute>
+					       			</span>
+					       			
 							       	<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
 								        <span>
 								        	<xsl:attribute name="class">label label-<xsl:value-of select="$indicationCssClass" /> pull-right</xsl:attribute>
@@ -224,6 +240,7 @@
 								        	<xsl:value-of select="dss:Conclusion/dss:SubIndication"/>
 							        	</span>
 							        </xsl:if>
+							        
 					    			<xsl:value-of select="@Type"/> Id = <xsl:value-of select="@Id"/>
 						        </div>
 								<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
@@ -258,6 +275,14 @@
 	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
 		    		<xsl:attribute name="data-target">#collapseArchivalValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
 			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
+			       	
+			       	<xsl:if test="@BestSignatureTime">
+						<span>
+							<xsl:attribute name="class">pull-right glyphicon glyphicon-time dss-clock</xsl:attribute>
+							<xsl:attribute name="title">Best signature time : <xsl:value-of select="@BestSignatureTime"/></xsl:attribute>
+		       			</span>
+	       			</xsl:if>
+	       			
 			       	<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
 				        <span>
 				        	<xsl:attribute name="class">label label-<xsl:value-of select="$indicationCssClass" /> pull-right</xsl:attribute>
@@ -300,6 +325,14 @@
 	    			<xsl:attribute name="class">panel-heading</xsl:attribute>
 		    		<xsl:attribute name="data-target">#collapseLongTermValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
 			       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
+			       	
+			       	<xsl:if test="@BestSignatureTime">
+						<span>
+							<xsl:attribute name="class">pull-right glyphicon glyphicon-time dss-clock</xsl:attribute>
+							<xsl:attribute name="title">Best signature time : <xsl:value-of select="@BestSignatureTime"/></xsl:attribute>
+		       			</span>
+	       			</xsl:if>
+	       			
 			       	<xsl:if test="string-length(dss:Conclusion/dss:SubIndication) &gt; 0">
 				        <span>
 				        	<xsl:attribute name="class">label label-<xsl:value-of select="$indicationCssClass" /> pull-right</xsl:attribute>
@@ -312,6 +345,7 @@
 				        	<xsl:value-of select="dss:Conclusion/dss:SubIndication"/>
 			        	</span>
 			        </xsl:if>
+			        
 	    			Validation Process for Signatures with Time and Signatures with Long-Term Validation Data
 		        </div>
 	    		<div>
@@ -446,12 +480,11 @@
 			        </xsl:if>
 			        
 			        <span>
-						<xsl:attribute name="class">pull-right glyphicon glyphicon-time</xsl:attribute>
+						<xsl:attribute name="class">pull-right glyphicon glyphicon-time dss-clock</xsl:attribute>
 						<xsl:attribute name="title"><xsl:value-of select="@DateTime"/></xsl:attribute>
 	       			</span>
 			        <span>
 						<xsl:attribute name="class">pull-right</xsl:attribute>
-						<xsl:attribute name="style">margin-right:5px</xsl:attribute>
 						<xsl:value-of select="@CertificateQualification"/>	       			
 	       			</span>
 			        

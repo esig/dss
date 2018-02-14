@@ -37,6 +37,8 @@ public class ValidationProcessForTimeStamps extends Chain<XmlValidationProcessTi
 		} else {
 			LOG.error("Basic Building Blocks for timestamp " + timestamp.getId() + " not found!");
 		}
+
+		result.setProductionTime(timestamp.getProductionTime());
 	}
 
 	@Override

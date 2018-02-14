@@ -32,7 +32,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
 public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQualification> {
 
 	private final XmlConclusion etsi319102Conclusion;
-	private final Date signingTime; // TODO bestSigningTime ?
+	private final Date bestSignatureTime;
 	private final CertificateWrapper signingCertificate;
 	private final CertificateWrapper rootCertificate;
 	private final List<XmlTLAnalysis> tlAnalysis;
@@ -40,14 +40,14 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 
 	private CertificateQualification qualificationAtSigningTime;
 
-	public SignatureQualificationBlock(XmlConclusion etsi319102Conclusion, Date signingTime, CertificateWrapper signingCertificate,
+	public SignatureQualificationBlock(XmlConclusion etsi319102Conclusion, Date bestSignatureTime, CertificateWrapper signingCertificate,
 			CertificateWrapper rootCertificate, List<XmlTLAnalysis> tlAnalysis, String lotlCountryCode) {
 		super(new XmlValidationSignatureQualification());
 
 		// result.setId(signature.getId()); TODO
 
 		this.etsi319102Conclusion = etsi319102Conclusion;
-		this.signingTime = signingTime;
+		this.bestSignatureTime = bestSignatureTime;
 		this.signingCertificate = signingCertificate;
 		this.rootCertificate = rootCertificate;
 		this.tlAnalysis = tlAnalysis;
@@ -88,7 +88,7 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 			result.getValidationCertificateQualification().add(certQualAtIssuanceResult);
 			CertificateQualification qualificationAtIssuance = certQualAtIssuanceResult.getCertificateQualification();
 
-			CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(ValidationTime.SIGNING_TIME, signingTime,
+			CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(ValidationTime.BEST_SIGNATURE_TIME, bestSignatureTime,
 					signingCertificate, rootCertificate, caqcServices);
 			XmlValidationCertificateQualification certQualAtSigningTimeResult = certQualAtSigningTimeBlock.execute();
 			result.getValidationCertificateQualification().add(certQualAtSigningTimeResult);

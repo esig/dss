@@ -155,6 +155,7 @@ public class SimpleReportBuilder {
 		addCounterSignature(signature, xmlSignature);
 		addSignatureScope(signature, xmlSignature);
 		addSigningTime(signature, xmlSignature);
+		addBestSignatureTime(signature, xmlSignature);
 		addSignatureFormat(signature, xmlSignature);
 
 		xmlSignature.setSignedBy(getSignedBy(signature));
@@ -237,6 +238,27 @@ public class SimpleReportBuilder {
 		}
 
 		simpleReport.getSignature().add(xmlSignature);
+	}
+
+	private void addBestSignatureTime(SignatureWrapper signature, XmlSignature xmlSignature) {
+		xmlSignature.setBestSignatureTime(getBestSignatureTime(signature.getId()));
+	}
+
+	private Date getBestSignatureTime(String signatureId) {
+		eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature = getXmlSignature(signatureId);
+		if (xmlSignature != null) {
+			if (xmlSignature.getValidationProcessArchivalData() != null && xmlSignature.getValidationProcessArchivalData().getBestSignatureTime() != null) {
+				return xmlSignature.getValidationProcessArchivalData().getBestSignatureTime();
+			}
+			if (xmlSignature.getValidationProcessLongTermData() != null && xmlSignature.getValidationProcessLongTermData().getBestSignatureTime() != null) {
+				return xmlSignature.getValidationProcessLongTermData().getBestSignatureTime();
+			}
+			if (xmlSignature.getValidationProcessBasicSignatures() != null
+					&& xmlSignature.getValidationProcessBasicSignatures().getBestSignatureTime() != null) {
+				return xmlSignature.getValidationProcessBasicSignatures().getBestSignatureTime();
+			}
+		}
+		return null;
 	}
 
 	private eu.europa.esig.dss.jaxb.detailedreport.XmlSignature getXmlSignature(String signatureId) {

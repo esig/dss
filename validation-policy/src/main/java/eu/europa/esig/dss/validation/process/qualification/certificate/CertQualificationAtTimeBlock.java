@@ -56,10 +56,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 			this.date = signingCertificate.getNotBefore();
 			break;
 		case VALIDATION_TIME:
-		case SIGNING_TIME:
-			// if (date == null) {
-			// throw new DSSException("The date must be defined with qualification time : " + time);
-			// }
+		case BEST_SIGNATURE_TIME:
 			this.date = date;
 			break;
 		default:

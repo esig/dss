@@ -93,7 +93,9 @@
 	
 	<xs:complexType name="ValidationProcessBasicSignatures">	
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion" />
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="BestSignatureTime" type="xs:dateTime" use="required" />
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 
@@ -102,19 +104,24 @@
 			<xs:extension base="ConstraintsConclusion">
 				<xs:attribute name="Id" type="xs:string" use="required" />
 				<xs:attribute name="Type" type="xs:string" use="required" />
+				<xs:attribute name="ProductionTime" type="xs:dateTime" use="required" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="ValidationProcessLongTermData">	
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion" />
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="BestSignatureTime" type="xs:dateTime" use="required" />
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="ValidationProcessArchivalData">	
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion" />
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="BestSignatureTime" type="xs:dateTime" use="required" />
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 
@@ -343,7 +350,7 @@
 	<xs:simpleType name="ValidationTime" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="CERTIFICATE_ISSUANCE_TIME" />
-			<xs:enumeration value="SIGNING_TIME" />
+			<xs:enumeration value="BEST_SIGNATURE_TIME" />
 			<xs:enumeration value="VALIDATION_TIME" />
 		</xs:restriction>
 	</xs:simpleType>

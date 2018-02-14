@@ -54,17 +54,24 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 				signatureAnalysis.setCounterSignature(true);
 			}
 
+			Date bestSignatureTime = currentTime;
 			XmlConclusion conlusion = executeBasicValidation(signatureAnalysis, signature, bbbs);
 
 			if (ValidationLevel.TIMESTAMPS.equals(validationLevel)) {
 				executeTimestampsValidation(signatureAnalysis, signature, bbbs);
 			} else if (ValidationLevel.LONG_TERM_DATA.equals(validationLevel)) {
 				executeTimestampsValidation(signatureAnalysis, signature, bbbs);
-				conlusion = executeLongTermValidation(signatureAnalysis, signature, bbbs);
+				XmlValidationProcessLongTermData ltvResult = executeLongTermValidation(signatureAnalysis, signature, bbbs);
+				conlusion = ltvResult.getConclusion();
+				bestSignatureTime = ltvResult.getBestSignatureTime();
 			} else if (ValidationLevel.ARCHIVAL_DATA.equals(validationLevel)) {
 				executeTimestampsValidation(signatureAnalysis, signature, bbbs);
 				executeLongTermValidation(signatureAnalysis, signature, bbbs);
-				conlusion = executeArchiveValidation(signatureAnalysis, signature, bbbs);
+				XmlValidationProcessArchivalData archivalResult = executeArchiveValidation(signatureAnalysis, signature, bbbs);
+				conlusion = archivalResult.getConclusion();
+				if (archivalResult.getBestSignatureTime() != null) {
+					bestSignatureTime = archivalResult.getBestSignatureTime();
+				}
 			}
 
 			if (policy.isEIDASConstraintPresent()) {
@@ -72,7 +79,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 					CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(signature.getSigningCertificateId());
 					CertificateWrapper rootCertificate = diagnosticData.getUsedCertificateById(signingCertificate.getLastChainCertificateId());
 
-					SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(conlusion, signature.getDateTime(), signingCertificate,
+					SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(conlusion, bestSignatureTime, signingCertificate,
 							rootCertificate, detailedReport.getTLAnalysis(), diagnosticData.getLOTLCountryCode());
 					signatureAnalysis.setValidationSignatureQualification(qualificationBlock.execute());
 				} catch (Exception e) {
@@ -89,6 +96,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 	private XmlConclusion executeBasicValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs) {
 		ValidationProcessForBasicSignatures vpfbs = new ValidationProcessForBasicSignatures(diagnosticData, signature, bbbs);
 		XmlValidationProcessBasicSignatures bs = vpfbs.execute();
+		bs.setBestSignatureTime(currentTime);
 		signatureAnalysis.setValidationProcessBasicSignatures(bs);
 		return bs.getConclusion();
 	}
@@ -101,20 +109,22 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 		}
 	}
 
-	private XmlConclusion executeLongTermValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs) {
+	private XmlValidationProcessLongTermData executeLongTermValidation(XmlSignature signatureAnalysis, SignatureWrapper signature,
+			Map<String, XmlBasicBuildingBlocks> bbbs) {
 		ValidationProcessForSignaturesWithLongTermValidationData vpfltvd = new ValidationProcessForSignaturesWithLongTermValidationData(signatureAnalysis,
 				diagnosticData, signature, bbbs, policy, currentTime);
 		XmlValidationProcessLongTermData vpfltvdResult = vpfltvd.execute();
 		signatureAnalysis.setValidationProcessLongTermData(vpfltvdResult);
-		return vpfltvdResult.getConclusion();
+		return vpfltvdResult;
 	}
 
-	private XmlConclusion executeArchiveValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs) {
+	private XmlValidationProcessArchivalData executeArchiveValidation(XmlSignature signatureAnalysis, SignatureWrapper signature,
+			Map<String, XmlBasicBuildingBlocks> bbbs) {
 		ValidationProcessForSignaturesWithArchivalData vpfswad = new ValidationProcessForSignaturesWithArchivalData(signatureAnalysis, signature,
 				diagnosticData, bbbs, policy, currentTime);
 		XmlValidationProcessArchivalData vpfswadResult = vpfswad.execute();
 		signatureAnalysis.setValidationProcessArchivalData(vpfswadResult);
-		return vpfswadResult.getConclusion();
+		return vpfswadResult;
 	}
 
 	private Map<String, XmlBasicBuildingBlocks> executeAllBasicBuildingBlocks() {
