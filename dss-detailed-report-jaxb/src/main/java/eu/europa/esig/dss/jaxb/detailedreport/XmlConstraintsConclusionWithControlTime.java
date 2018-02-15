@@ -8,22 +8,28 @@
 
 package eu.europa.esig.dss.jaxb.detailedreport;
 
+import java.util.Date;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
- * <p>Java class for TLAnalysis complex type.
+ * <p>Java class for ConstraintsConclusionWithControlTime complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="TLAnalysis"&gt;
+ * &lt;complexType name="ConstraintsConclusionWithControlTime"&gt;
  *   &lt;complexContent&gt;
  *     &lt;extension base="{http://dss.esig.europa.eu/validation/detailed-report}ConstraintsConclusion"&gt;
- *       &lt;attribute name="CountryCode" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="ControlTime" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
  *     &lt;/extension&gt;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
@@ -32,36 +38,45 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TLAnalysis")
-public class XmlTLAnalysis
+@XmlType(name = "ConstraintsConclusionWithControlTime", propOrder = {
+    "controlTime"
+})
+@XmlSeeAlso({
+    XmlVTS.class,
+    XmlPCV.class,
+    XmlPSV.class
+})
+public class XmlConstraintsConclusionWithControlTime
     extends XmlConstraintsConclusion
 {
 
-    @XmlAttribute(name = "CountryCode", required = true)
-    protected String countryCode;
+    @XmlElement(name = "ControlTime", type = String.class)
+    @XmlJavaTypeAdapter(Adapter1 .class)
+    @XmlSchemaType(name = "dateTime")
+    protected Date controlTime;
 
     /**
-     * Gets the value of the countryCode property.
+     * Gets the value of the controlTime property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getCountryCode() {
-        return countryCode;
+    public Date getControlTime() {
+        return controlTime;
     }
 
     /**
-     * Sets the value of the countryCode property.
+     * Sets the value of the controlTime property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setCountryCode(String value) {
-        this.countryCode = value;
+    public void setControlTime(Date value) {
+        this.controlTime = value;
     }
 
 }

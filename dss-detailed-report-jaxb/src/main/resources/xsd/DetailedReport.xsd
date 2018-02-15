@@ -91,6 +91,16 @@
 		</xs:sequence>
 	</xs:complexType>
 	
+	<xs:complexType name="ConstraintsConclusionWithControlTime">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+	       			<xs:element name="ControlTime" type="xs:dateTime" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
 	<xs:complexType name="ValidationProcessBasicSignatures">	
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
@@ -183,32 +193,25 @@
 	</xs:complexType>
 	<xs:complexType name="VTS">
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion">
-				<xs:sequence>
-        			<xs:element name="ControlTime" type="xs:dateTime" />
-				</xs:sequence>
-			</xs:extension>
+			<xs:extension base="ConstraintsConclusionWithControlTime" />
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="PCV">
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion">
-				<xs:sequence>
-        			<xs:element name="ControlTime" type="xs:dateTime" minOccurs="0" />
-				</xs:sequence>
-			</xs:extension>
+			<xs:extension base="ConstraintsConclusionWithControlTime" />
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="PSV">
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion" />
+			<xs:extension base="ConstraintsConclusionWithControlTime" />
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="ERV">
-		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion" />
-		</xs:complexContent>
-	</xs:complexType>
+<!-- 	Not supported -->
+<!-- 	<xs:complexType name="ERV"> -->
+<!-- 		<xs:complexContent> -->
+<!-- 			<xs:extension base="ConstraintsConclusion" /> -->
+<!-- 		</xs:complexContent> -->
+<!-- 	</xs:complexType> -->
 	
 	<xs:complexType name="Constraint">
 		<xs:sequence>

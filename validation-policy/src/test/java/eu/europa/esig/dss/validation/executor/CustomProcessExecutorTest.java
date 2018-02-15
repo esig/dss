@@ -102,7 +102,7 @@ public class CustomProcessExecutorTest {
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
-		reports.print();
+		assertNotNull(reports);
 	}
 
 	@Test
@@ -494,7 +494,6 @@ public class CustomProcessExecutorTest {
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
-		reports.print();
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));

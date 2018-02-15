@@ -17,7 +17,7 @@ class QSCDByCertificatePreEIDAS implements QSCDStrategy {
 	public QSCDStatus getQSCDStatus() {
 
 		// checks in policy id extension
-		boolean policyIdSupportedByQSCD = CertificatePolicyIdentifiers.isSupportedByQSCD(certificate);
+		boolean policyIdSupportedByQSCD = CertificatePolicyIdentifiers.isQCPPlus(certificate);
 
 		// checks in QC statement extension
 		boolean qcStatementSupportedByQSCD = QCStatementPolicyIdentifiers.isSupportedByQSCD(certificate);

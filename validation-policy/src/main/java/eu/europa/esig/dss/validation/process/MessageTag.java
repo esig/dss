@@ -314,6 +314,10 @@ public enum MessageTag {
 
 	QUAL_HAS_CAQC("Is the certificate related to a CA/QC?"),
 	QUAL_HAS_CAQC_ANS("The certificate is not related to a CA/QC!"),
+	
+	QUAL_IS_TRUST_CERT_MATCH_SERVICE("Is the trusted certificate match the trust service ?"),
+	QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS1("Organization name is missing in the trusted certificate"),
+	QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS2("The trusted certificate doesn't match the trust service"),
 
 	QUAL_HAS_GRANTED("Is the certificate related to a granted status?"),
 	QUAL_HAS_GRANTED_ANS("The certificate is not related to a granted status!"),

@@ -16,6 +16,7 @@ import eu.europa.esig.dss.validation.process.qualification.certificate.checks.Gr
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.QSCDCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.QualifiedCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.ServiceConsistencyCheck;
+import eu.europa.esig.dss.validation.process.qualification.certificate.checks.TrustedCertificateMatchTrustServiceCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd.QSCDStrategy;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd.QSCDStrategyFactory;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qualified.QualificationStrategy;
@@ -88,17 +89,20 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		// 4. Consistency of trust services ?
 		item = item.setNextItem(serviceConsistency(selectedTrustService));
 
-		// 5. QC?
+		// 5. Trusted certificate matches the trust service properties ?
+		item = item.setNextItem(isTrustedCertificateMatchTrustService(selectedTrustService));
+
+		// 6. QC?
 		QualificationStrategy qcStrategy = QualificationStrategyFactory.createQualificationFromCertAndTL(signingCertificate, selectedTrustService);
 		QualifiedStatus qualifiedStatus = qcStrategy.getQualifiedStatus();
 		item = item.setNextItem(isQualified(qualifiedStatus));
 
-		// 6. Type?
+		// 7. Type?
 		TypeStrategy typeStrategy = TypeStrategyFactory.createTypeFromCertAndTL(signingCertificate, selectedTrustService, qualifiedStatus);
 		Type type = typeStrategy.getType();
 		item = item.setNextItem(isForEsig(type));
 
-		// 7. QSCD ?
+		// 8. QSCD ?
 		QSCDStrategy qscdStrategy = QSCDStrategyFactory.createQSCDFromCertAndTL(signingCertificate, selectedTrustService, qualifiedStatus);
 		QSCDStatus qscdStatus = qscdStrategy.getQSCDStatus();
 		item = item.setNextItem(isQscd(qscdStatus));
@@ -122,8 +126,12 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		return new GrantedStatusCheck(result, caqcServicesAtTime, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationCertificateQualification> serviceConsistency(TrustedServiceWrapper caqcService) {
-		return new ServiceConsistencyCheck(result, caqcService, getFailLevelConstraint());
+	private ChainItem<XmlValidationCertificateQualification> serviceConsistency(TrustedServiceWrapper selectedTrustService) {
+		return new ServiceConsistencyCheck(result, selectedTrustService, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlValidationCertificateQualification> isTrustedCertificateMatchTrustService(TrustedServiceWrapper selectedTrustService) {
+		return new TrustedCertificateMatchTrustServiceCheck(result, rootCertificate, selectedTrustService, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isQualified(QualifiedStatus qualifiedStatus) {
