@@ -5,6 +5,8 @@ import java.util.List;
 
 public class TrustedServiceWrapper {
 
+	private String tspName;
+	private String serviceName;
 	private String countryCode;
 	private String status;
 	private String type;
@@ -12,6 +14,22 @@ public class TrustedServiceWrapper {
 	private Date endDate;
 	private List<String> capturedQualifiers;
 	private List<String> additionalServiceInfos;
+
+	public String getTspName() {
+		return tspName;
+	}
+
+	public void setTspName(String tspName) {
+		this.tspName = tspName;
+	}
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
 
 	public String getCountryCode() {
 		return countryCode;

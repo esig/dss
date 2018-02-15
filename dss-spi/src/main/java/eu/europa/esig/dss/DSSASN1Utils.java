@@ -29,6 +29,7 @@ import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -80,6 +81,8 @@ import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.PolicyInformation;
+import org.bouncycastle.asn1.x509.PolicyQualifierId;
+import org.bouncycastle.asn1.x509.PolicyQualifierInfo;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
@@ -345,21 +348,32 @@ public final class DSSASN1Utils {
 		return false;
 	}
 
-	public static List<String> getPolicyIdentifiers(final CertificateToken certToken) {
-		List<String> policyIdentifiers = new ArrayList<String>();
-		final byte[] certificatePolicies = certToken.getCertificate().getExtensionValue(Extension.certificatePolicies.getId());
-		if (Utils.isArrayNotEmpty(certificatePolicies)) {
+	public static List<CertificatePolicy> getCertificatePolicies(final CertificateToken certToken) {
+		List<CertificatePolicy> certificatePolicies = new ArrayList<CertificatePolicy>();
+		final byte[] certificatePoliciesBinaries = certToken.getCertificate().getExtensionValue(Extension.certificatePolicies.getId());
+		if (Utils.isArrayNotEmpty(certificatePoliciesBinaries)) {
 			try {
-				ASN1Sequence seq = getAsn1SequenceFromDerOctetString(certificatePolicies);
+				ASN1Sequence seq = getAsn1SequenceFromDerOctetString(certificatePoliciesBinaries);
 				for (int ii = 0; ii < seq.size(); ii++) {
+					CertificatePolicy cp = new CertificatePolicy();
 					final PolicyInformation policyInfo = PolicyInformation.getInstance(seq.getObjectAt(ii));
-					policyIdentifiers.add(policyInfo.getPolicyIdentifier().getId());
+					cp.setOid(policyInfo.getPolicyIdentifier().getId());
+					ASN1Sequence policyQualifiersSeq = policyInfo.getPolicyQualifiers();
+					if (policyQualifiersSeq != null) {
+						for (int jj = 0; jj < policyQualifiersSeq.size(); jj++) {
+							PolicyQualifierInfo pqi = PolicyQualifierInfo.getInstance(policyQualifiersSeq.getObjectAt(jj));
+							if (PolicyQualifierId.id_qt_cps.equals(pqi.getPolicyQualifierId())) {
+								cp.setCpsUrl(getString(pqi.getQualifier()));
+							}
+						}
+					}
+					certificatePolicies.add(cp);
 				}
 			} catch (Exception e) {
-				LOG.warn("Unable to parse the certificatePolicies extension '" + Utils.toBase64(certificatePolicies) + "' : " + e.getMessage(), e);
+				LOG.warn("Unable to parse the certificatePolicies extension '" + Utils.toBase64(certificatePoliciesBinaries) + "' : " + e.getMessage(), e);
 			}
 		}
-		return policyIdentifiers;
+		return certificatePolicies;
 	}
 
 	/**
@@ -873,6 +887,15 @@ public final class DSSASN1Utils {
 			return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Attribute>());
 		} else {
 			return original;
+		}
+	}
+
+	public static List<String> getExtendedKeyUsage(CertificateToken certToken) {
+		try {
+			return certToken.getCertificate().getExtendedKeyUsage();
+		} catch (CertificateParsingException e) {
+			LOG.warn("Unable to retrieve ExtendedKeyUsage " + e.getMessage());
+			return Collections.emptyList();
 		}
 	}
 

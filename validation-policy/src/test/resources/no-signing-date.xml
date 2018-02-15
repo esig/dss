@@ -69,7 +69,6 @@
                 <KeyUsage>keyCertSign</KeyUsage>
                 <KeyUsage>crlSign</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>false</IdKpOCSPSigning>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -82,18 +81,18 @@
             </BasicSignature>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>2.5.29.32.0</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>2.5.29.32.0</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>QuoVadis Trustlink B.V.</TSPName>
-                    <TSPServiceName>QuoVadis EU Issuing Certification Authority G3</TSPServiceName>
                     <CountryCode>NL</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+		                    <ServiceName>QuoVadis EU Issuing Certification Authority G3</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T02:00:00</StartDate>
@@ -102,6 +101,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+		                    <ServiceName>QuoVadis EU Issuing Certification Authority G3</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
                             <StartDate>2014-07-02T15:00:00</StartDate>
@@ -134,7 +134,6 @@
             <KeyUsageBits>
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>true</IdKpOCSPSigning>
             <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -153,18 +152,18 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>1.3.6.1.4.1.8024.1.300</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.6.1.4.1.8024.1.300</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>QuoVadis Trustlink B.V.</TSPName>
-                    <TSPServiceName>QuoVadis EU Issuing Certification Authority G3</TSPServiceName>
                     <CountryCode>NL</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+		                    <ServiceName>QuoVadis EU Issuing Certification Authority G3</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T02:00:00</StartDate>
@@ -209,7 +208,6 @@
                 <KeyUsage>digitalSignature</KeyUsage>
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>false</IdKpOCSPSigning>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -228,23 +226,23 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid Description="qcp-public-with-sscd">0.4.0.1456.1.1</oid>
-                <oid>1.3.6.1.4.1.8024.1.400</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
+                <certificatePolicy>1.3.6.1.4.1.8024.1.400</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds>
                 <oid>1.3.6.1.5.5.7.11.2</oid>
-                <oid Description="qc-compliant">0.4.0.1862.1.1</oid>
+                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
                 <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>QuoVadis Trustlink B.V.</TSPName>
-                    <TSPServiceName>QuoVadis EU Issuing Certification Authority G3</TSPServiceName>
                     <CountryCode>NL</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+		                    <ServiceName>QuoVadis EU Issuing Certification Authority G3</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T02:00:00</StartDate>

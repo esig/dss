@@ -300,6 +300,7 @@ public class TSLRepository {
 
 		serviceInfo.setTspName(serviceProvider.getName());
 		serviceInfo.setTspTradeName(serviceProvider.getTradeName());
+		serviceInfo.setTspRegistrationIdentifier(serviceProvider.getRegistrationIdentifier());
 		serviceInfo.setTspPostalAddress(serviceProvider.getPostalAddress());
 		serviceInfo.setTspElectronicAddress(serviceProvider.getElectronicAddress());
 

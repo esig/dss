@@ -37,6 +37,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
+import eu.europa.esig.dss.x509.TimestampType;
 
 /**
  * 5.5 Validation process for Signatures with Time and Signatures with Long-Term Validation Data
@@ -112,7 +113,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * message imprint has been generated according to the corresponding signature format specification
 		 * verification. If the verification fails, the process shall remove the token from the set.
 		 */
-		Set<TimestampWrapper> allowedTimestamps = filterInvalidTimestamps(currentSignature.getTimestampList());
+		Set<TimestampWrapper> allowedTimestamps = filterValidSignatureTimestamps(currentSignature.getTimestampList());
 
 		if (Utils.isCollectionNotEmpty(allowedTimestamps)) {
 
@@ -177,7 +178,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			 * the process shall go to the next step. Otherwise the process shall return the indication FAILED with the
 			 * sub-indication TIMESTAMP_ORDER_FAILURE.
 			 */
-			item = item.setNextItem(timestampCoherenceOrder(allowedTimestamps));
+			item = item.setNextItem(timestampCoherenceOrder(currentSignature.getTimestampList()));
 
 			/*
 			 * 5) Handling Time-stamp delay: If the validation constraints specify a time-stamp delay:
@@ -194,6 +195,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			 */
 			item = item.setNextItem(timestampDelay(bestSignatureTime));
 		}
+
+		result.setBestSignatureTime(bestSignatureTime);
 	}
 
 	private Set<RevocationWrapper> getLinkedRevocationData() {
@@ -215,9 +218,12 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		}
 	}
 
-	private Set<TimestampWrapper> filterInvalidTimestamps(List<TimestampWrapper> allTimestamps) {
+	private Set<TimestampWrapper> filterValidSignatureTimestamps(List<TimestampWrapper> allTimestamps) {
 		Set<TimestampWrapper> result = new HashSet<TimestampWrapper>();
 		for (TimestampWrapper timestampWrapper : allTimestamps) {
+			if (!TimestampType.SIGNATURE_TIMESTAMP.name().equals(timestampWrapper.getType())) {
+				break;
+			}
 			boolean foundValidationTSP = false;
 			for (XmlValidationProcessTimestamps timestampValidation : timestampValidations) {
 				List<XmlConstraint> constraints = timestampValidation.getConstraint();
@@ -258,8 +264,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				policy.getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint());
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> timestampCoherenceOrder(Set<TimestampWrapper> allowedTimestamps) {
-		return new TimestampCoherenceOrderCheck(result, allowedTimestamps, policy.getTimestampCoherenceConstraint());
+	private ChainItem<XmlValidationProcessLongTermData> timestampCoherenceOrder(List<TimestampWrapper> timestamps) {
+		return new TimestampCoherenceOrderCheck(result, timestamps, policy.getTimestampCoherenceConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> signingTimeAttributePresent() {
