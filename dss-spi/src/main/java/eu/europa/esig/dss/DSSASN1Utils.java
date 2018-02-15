@@ -348,11 +348,15 @@ public final class DSSASN1Utils {
 	public static List<String> getPolicyIdentifiers(final CertificateToken certToken) {
 		List<String> policyIdentifiers = new ArrayList<String>();
 		final byte[] certificatePolicies = certToken.getCertificate().getExtensionValue(Extension.certificatePolicies.getId());
-		if (certificatePolicies != null) {
-			ASN1Sequence seq = getAsn1SequenceFromDerOctetString(certificatePolicies);
-			for (int ii = 0; ii < seq.size(); ii++) {
-				final PolicyInformation policyInfo = PolicyInformation.getInstance(seq.getObjectAt(ii));
-				policyIdentifiers.add(policyInfo.getPolicyIdentifier().getId());
+		if (Utils.isArrayNotEmpty(certificatePolicies)) {
+			try {
+				ASN1Sequence seq = getAsn1SequenceFromDerOctetString(certificatePolicies);
+				for (int ii = 0; ii < seq.size(); ii++) {
+					final PolicyInformation policyInfo = PolicyInformation.getInstance(seq.getObjectAt(ii));
+					policyIdentifiers.add(policyInfo.getPolicyIdentifier().getId());
+				}
+			} catch (Exception e) {
+				LOG.warn("Unable to parse the certificatePolicies extension '" + Utils.toBase64(certificatePolicies) + "' : " + e.getMessage(), e);
 			}
 		}
 		return policyIdentifiers;
@@ -369,12 +373,16 @@ public final class DSSASN1Utils {
 	public static List<String> getQCStatementsIdList(final CertificateToken certToken) {
 		final List<String> extensionIdList = new ArrayList<String>();
 		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
-		if (qcStatement != null) {
-			final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
-			// Sequence of QCStatement
-			for (int ii = 0; ii < seq.size(); ii++) {
-				final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(ii));
-				extensionIdList.add(statement.getStatementId().getId());
+		if (Utils.isArrayNotEmpty(qcStatement)) {
+			try {
+				final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
+				// Sequence of QCStatement
+				for (int ii = 0; ii < seq.size(); ii++) {
+					final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(ii));
+					extensionIdList.add(statement.getStatementId().getId());
+				}
+			} catch (Exception e) {
+				LOG.warn("Unable to parse the qCStatements extension '" + Utils.toBase64(qcStatement) + "' : " + e.getMessage(), e);
 			}
 		}
 		return extensionIdList;
@@ -391,28 +399,32 @@ public final class DSSASN1Utils {
 	public static List<String> getQCTypesIdList(final CertificateToken certToken) {
 		final List<String> qcTypesIdList = new ArrayList<String>();
 		final byte[] qcStatement = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
-		if (qcStatement != null) {
-			final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
-			// Sequence of QCStatement
-			for (int ii = 0; ii < seq.size(); ii++) {
-				final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(ii));
-				if (QC_TYPE_STATEMENT_OID.equals(statement.getStatementId().getId())) {
-					final ASN1Encodable qcTypeInfo1 = statement.getStatementInfo();
-					if (qcTypeInfo1 instanceof ASN1Sequence) {
-						final ASN1Sequence qcTypeInfo = (ASN1Sequence) qcTypeInfo1;
-						for (int jj = 0; jj < qcTypeInfo.size(); jj++) {
-							final ASN1Encodable e1 = qcTypeInfo.getObjectAt(jj);
-							if (e1 instanceof ASN1ObjectIdentifier) {
-								final ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) e1;
-								qcTypesIdList.add(oid.getId());
-							} else {
-								throw new IllegalStateException("ASN1Sequence in QcTypes does not contain ASN1ObjectIdentifer, but " + e1.getClass().getName());
+		if (Utils.isArrayNotEmpty(qcStatement)) {
+			try {
+				final ASN1Sequence seq = getAsn1SequenceFromDerOctetString(qcStatement);
+				// Sequence of QCStatement
+				for (int ii = 0; ii < seq.size(); ii++) {
+					final QCStatement statement = QCStatement.getInstance(seq.getObjectAt(ii));
+					if (QC_TYPE_STATEMENT_OID.equals(statement.getStatementId().getId())) {
+						final ASN1Encodable qcTypeInfo1 = statement.getStatementInfo();
+						if (qcTypeInfo1 instanceof ASN1Sequence) {
+							final ASN1Sequence qcTypeInfo = (ASN1Sequence) qcTypeInfo1;
+							for (int jj = 0; jj < qcTypeInfo.size(); jj++) {
+								final ASN1Encodable e1 = qcTypeInfo.getObjectAt(jj);
+								if (e1 instanceof ASN1ObjectIdentifier) {
+									final ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) e1;
+									qcTypesIdList.add(oid.getId());
+								} else {
+									LOG.warn("ASN1Sequence in QcTypes does not contain ASN1ObjectIdentifer, but " + e1.getClass().getName());
+								}
 							}
+						} else {
+							LOG.warn("QcTypes not an ASN1Sequence, but " + qcTypeInfo1.getClass().getName());
 						}
-					} else {
-						throw new IllegalStateException("QcTypes not an ASN1Sequence, but " + qcTypeInfo1.getClass().getName());
 					}
 				}
+			} catch (Exception e) {
+				LOG.warn("Unable to parse the qCStatements extension '" + Utils.toBase64(qcStatement) + "' : " + e.getMessage(), e);
 			}
 		}
 

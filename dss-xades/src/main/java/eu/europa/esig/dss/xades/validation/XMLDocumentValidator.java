@@ -184,14 +184,20 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 			if (signatureId.equals(idIdentifier)) {
 				XAdESSignature signature = (XAdESSignature) signatureList.get(ii);
 				signature.checkSignatureIntegrity();
-				if (getSignatureObjects(signatureEl).isEmpty() && signature.getReferences().isEmpty()) {
+
+				List<Element> signatureObjects = signature.getSignatureObjects();
+				if (signatureObjects.isEmpty() && signature.getReferences().isEmpty()) {
 					throw new DSSException("The signature must be enveloped or enveloping!");
 				} else if (isEnveloping(signatureEl)) {
-					List<Element> references = getSignatureObjects(signatureEl);
-					for (Element element : references) {
-						String content = element.getTextContent();
-						content = isBase64Encoded(content) ? new String(Base64.decode(content)) : content;
-						result.add(new InMemoryDocument(content.getBytes()));
+					for (Element objectElement : signatureObjects) {
+						Node signedContentNode = objectElement.getFirstChild();
+						if (signedContentNode.getNodeType() == Node.ELEMENT_NODE) {
+							result.add(new InMemoryDocument(DSSXMLUtils.serializeNode(signedContentNode)));
+						} else if (signedContentNode.getNodeType() == Node.TEXT_NODE) {
+							String content = signedContentNode.getTextContent();
+							content = isBase64Encoded(content) ? new String(Base64.decode(content)) : content;
+							result.add(new InMemoryDocument(content.getBytes()));
+						}
 					}
 				} else {
 					signatureEl.getParentNode().removeChild(signatureEl);
@@ -225,23 +231,6 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 			}
 		}
 		return objectTagNumber >= 2;
-	}
-
-	private List<Element> getSignatureObjects(Element signatureEl) {
-
-		final NodeList list = DomUtils.getNodeList(signatureEl, XPathQueryHolder.XPATH_OBJECT);
-		final List<Element> references = new ArrayList<Element>(list.getLength());
-		for (int ii = 0; ii < list.getLength(); ii++) {
-			final Node node = list.item(ii);
-			final Element element = (Element) node;
-			XPathQueryHolder queryHolder = new XPathQueryHolder();
-			if (DomUtils.getElement(element, queryHolder.XPATH__QUALIFYING_PROPERTIES_SIGNED_PROPERTIES) != null) {
-				// ignore signed properties
-				continue;
-			}
-			references.add(element);
-		}
-		return references;
 	}
 
 	/**

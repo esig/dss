@@ -323,7 +323,10 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		try {
 			doc = PDDocument.load(originalBytes);
 
+			int originalBytesLength = originalBytes.length;
+
 			List<PDSignature> pdSignatures = doc.getSignatureDictionaries();
+
 			if (Utils.isCollectionNotEmpty(pdSignatures)) {
 				LOG.debug("{} signature(s) found", pdSignatures.size());
 
@@ -351,6 +354,14 @@ class PdfBoxSignatureService implements PDFSignatureService {
 					byte[] signedContent = signature.getSignedContent(originalBytes);
 					int[] byteRange = signature.getByteRange();
 
+					// /ByteRange [0 575649 632483 10206]
+					int beforeSignatureLength = byteRange[1] - byteRange[0];
+					int expectedCMSLength = byteRange[2] - byteRange[1];
+					int afterSignatureLength = byteRange[3];
+					int totalCoveredByByteRange = beforeSignatureLength + expectedCMSLength + afterSignatureLength;
+
+					boolean coverAllOriginalBytes = (originalBytesLength == totalCoveredByByteRange);
+
 					PdfDict signatureDictionary = new PdfBoxDict(signature.getCOSObject(), doc);
 					PdfSignatureOrDocTimestampInfo signatureInfo = null;
 					if (PdfBoxDocTimeStampService.SUB_FILTER_ETSI_RFC3161.getName().equals(subFilter)) {
@@ -365,9 +376,10 @@ class PdfBoxSignatureService implements PDFSignatureService {
 						}
 
 						signatureInfo = new PdfBoxDocTimestampInfo(validationCertPool, signature, signatureDictionary, dssDictionary, cms, signedContent,
-								isArchiveTimestamp);
+								coverAllOriginalBytes, isArchiveTimestamp);
 					} else {
-						signatureInfo = new PdfBoxSignatureInfo(validationCertPool, signature, signatureDictionary, dssDictionary, cms, signedContent);
+						signatureInfo = new PdfBoxSignatureInfo(validationCertPool, signature, signatureDictionary, dssDictionary, cms, signedContent,
+								coverAllOriginalBytes);
 					}
 
 					if (signatureInfo != null) {

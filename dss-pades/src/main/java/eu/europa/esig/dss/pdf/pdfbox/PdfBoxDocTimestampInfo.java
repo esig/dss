@@ -51,14 +51,17 @@ class PdfBoxDocTimestampInfo extends PdfBoxCMSInfo implements PdfDocTimestampInf
 	 *            the DSS dictionary
 	 * @param cms
 	 *            the CMS (CAdES) bytes
+	 * @param coverCompleteRevision
+	 *            true if the signature covers all bytes
 	 * @param isArchiveTimestamp
+	 *            true if the timestamp is an archive timestamp
 	 * @param inputStream
 	 *            the stream of the whole signed document
 	 * @throws DSSException
 	 */
-	PdfBoxDocTimestampInfo(CertificatePool validationCertPool, PDSignature signature, PdfDict dictionary, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent,
-			boolean isArchiveTimestamp) throws DSSException {
-		super(signature, dictionary, dssDictionary, cms, signedContent);
+	PdfBoxDocTimestampInfo(CertificatePool validationCertPool, PDSignature signature, PdfDict dictionary, PdfDssDict dssDictionary, byte[] cms,
+			byte[] signedContent, boolean coverCompleteRevision, boolean isArchiveTimestamp) throws DSSException {
+		super(signature, dictionary, dssDictionary, cms, signedContent, coverCompleteRevision);
 		try {
 			TimestampType timestampType = TimestampType.SIGNATURE_TIMESTAMP;
 			if (isArchiveTimestamp) {

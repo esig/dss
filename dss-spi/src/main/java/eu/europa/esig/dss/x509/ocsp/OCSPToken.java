@@ -90,13 +90,13 @@ public class OCSPToken extends RevocationToken {
 		if (basicOCSPResp != null) {
 			this.productionDate = basicOCSPResp.getProducedAt();
 			this.signatureAlgorithm = SignatureAlgorithm.forOID(basicOCSPResp.getSignatureAlgOID().getId());
-			extractArchiveCutOff();
 
 			SingleResp bestSingleResp = getBestSingleResp(basicOCSPResp, certId);
 			if (bestSingleResp != null) {
 				this.thisUpdate = bestSingleResp.getThisUpdate();
 				this.nextUpdate = bestSingleResp.getNextUpdate();
 				extractStatusInfo(bestSingleResp);
+				extractArchiveCutOff(bestSingleResp);
 			}
 		}
 	}
@@ -157,8 +157,8 @@ public class OCSPToken extends RevocationToken {
 		}
 	}
 
-	private void extractArchiveCutOff() {
-		Extension extension = basicOCSPResp.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_archive_cutoff);
+	private void extractArchiveCutOff(SingleResp bestSingleResp) {
+		Extension extension = bestSingleResp.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_archive_cutoff);
 		if (extension != null) {
 			ASN1GeneralizedTime archiveCutOffAsn1 = (ASN1GeneralizedTime) extension.getParsedValue();
 			try {
