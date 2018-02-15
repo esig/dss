@@ -22,10 +22,16 @@ package eu.europa.esig.dss.xades;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.cert.X509Certificate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.XMLConstants;
+import javax.xml.crypto.dsig.XMLSignature;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -36,20 +42,27 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import eu.europa.esig.dss.*;
+import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.xades.signature.XAdESBuilder;
+import eu.europa.esig.dss.xades.signature.XAdESSignatureBuilder;
 import org.apache.xml.security.Init;
+import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.transforms.Transforms;
+import org.bouncycastle.asn1.ASN1Encoding;
+import org.bouncycastle.asn1.ASN1Integer;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.GeneralNames;
+import org.bouncycastle.asn1.x509.IssuerSerial;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.util.encoders.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.ResourceLoader;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -329,4 +342,150 @@ public final class DSSXMLUtils {
 		return policyId != null && policyId.matches("^(?i)urn:oid:.*$");
 	}
 
+	/**
+	 * Create a XAdES object containing signature certificate, signing time and information about signed object.
+	 *
+	 * @param signingDate Date to set as signing time
+	 * @param signingCertificate Signing certificate to incorporate into object
+	 * @param signatureAlgorithm Signature algorithm to incorporate into object
+	 * @param signedObjectReferenceId Reference ID to use for signed object within the DataObjectFormat element.
+	 * @param signedObjectMimeType Mimetype to use of signed object within the DataObjectFormat element
+     * @return Document representing a XAdES object based on given parameters
+     */
+	public static Document createXAdESObject(final Date signingDate, final X509Certificate signingCertificate, final SignatureAlgorithm signatureAlgorithm, final String signedObjectReferenceId, final MimeType signedObjectMimeType) {
+		Document signedPropertiesDocument;
+
+		try {
+			String deterministicId = DSSUtils.getDeterministicId(signingDate, new CertificateToken(signingCertificate).getDSSId());
+			signedPropertiesDocument = DomUtils.buildDOM();
+			Element objectElement = signedPropertiesDocument.createElementNS(XMLSignature.XMLNS, XAdESBuilder.DS_OBJECT);
+			signedPropertiesDocument.appendChild(objectElement);
+
+			Element qualifyingProperties = signedPropertiesDocument.createElementNS(XAdESNamespaces.XAdES132, XAdESBuilder.XADES_QUALIFYING_PROPERTIES);
+			qualifyingProperties.setAttribute(XAdESBuilder.TARGET, "#" + deterministicId);
+			objectElement.appendChild(qualifyingProperties);
+
+			Element signedPropertiesElement = signedPropertiesDocument.createElementNS(XAdESNamespaces.XAdES132, XAdESBuilder.XADES_SIGNED_PROPERTIES);
+			signedPropertiesElement.setAttribute(XAdESBuilder.ID, "xades-" + deterministicId);
+			qualifyingProperties.appendChild(signedPropertiesElement);
+
+			Element signedSignaturePropertiesElement = signedPropertiesDocument.createElementNS(XAdESNamespaces.XAdES132, XAdESBuilder.XADES_SIGNED_SIGNATURE_PROPERTIES);
+			signedPropertiesElement.appendChild(signedSignaturePropertiesElement);
+			Element signingTimeElement = signedPropertiesDocument.createElementNS(XAdESNamespaces.XAdES132, XAdESBuilder.XADES_SIGNING_TIME);
+			final XMLGregorianCalendar xmlGregorianCalendar = DomUtils.createXMLGregorianCalendar(signingDate);
+			final String xmlSigningTime = xmlGregorianCalendar.toXMLFormat();
+			signingTimeElement.appendChild(signedPropertiesDocument.createTextNode(xmlSigningTime));
+			signedSignaturePropertiesElement.appendChild(signingTimeElement);
+
+			Element signingCertificateV2Element = signedPropertiesDocument.createElementNS(XAdESNamespaces.XAdES132, "xades:SigningCertificateV2");
+			Element certElement = signedPropertiesDocument.createElementNS(XAdESNamespaces.XAdES132, XAdESBuilder.XADES_CERT);
+			Element certDigestElement = signedPropertiesDocument.createElementNS(XAdESNamespaces.XAdES132, XAdESBuilder.XADES_CERT_DIGEST);
+			Element digestMethodElement = signedPropertiesDocument.createElementNS(XMLSignature.XMLNS, XAdESBuilder.DS_DIGEST_METHOD);
+			digestMethodElement.setAttribute(XAdESBuilder.ALGORITHM, signatureAlgorithm.getXMLId());
+			certDigestElement.appendChild(digestMethodElement);
+			Element digestValueElement = signedPropertiesDocument.createElementNS(XMLSignature.XMLNS, XAdESBuilder.DS_DIGEST_VALUE);
+			byte[] certDigestValue = MessageDigest.getInstance(signatureAlgorithm.getDigestAlgorithm().getJavaName()).digest(signingCertificate.getEncoded());
+			digestValueElement.appendChild(signedPropertiesDocument.createTextNode(new String(Base64.encode(certDigestValue))));
+			certDigestElement.appendChild(digestValueElement);
+			certElement.appendChild(certDigestElement);
+			Element issuerSerialV2Element = signedPropertiesDocument.createElementNS(XAdESNamespaces.XAdES132, XAdESBuilder.XADES_ISSUER_SERIAL_V2);
+			X500Name issuerX500Name = new X509CertificateHolder(signingCertificate.getEncoded()).getIssuer();
+			GeneralName generalName = new GeneralName(issuerX500Name);
+			GeneralNames generalNames = new GeneralNames(generalName);
+			BigInteger serialNumber = signingCertificate.getSerialNumber();
+			IssuerSerial issuerSerial = new IssuerSerial(generalNames, new ASN1Integer(serialNumber));
+			issuerSerialV2Element.appendChild(signedPropertiesDocument.createTextNode(new String(Base64.encode(issuerSerial.toASN1Primitive().getEncoded(ASN1Encoding.DER)))));
+			certElement.appendChild(issuerSerialV2Element);
+			signingCertificateV2Element.appendChild(certElement);
+			signedSignaturePropertiesElement.appendChild(signingCertificateV2Element);
+
+			Element signedDataObjectProperties = signedPropertiesDocument.createElementNS(XAdESNamespaces.XAdES132, XAdESBuilder.XADES_SIGNED_DATA_OBJECT_PROPERTIES);
+			Element dataObjectFormatElement = signedPropertiesDocument.createElementNS(XAdESNamespaces.XAdES132, XAdESBuilder.XADES_DATA_OBJECT_FORMAT);
+			dataObjectFormatElement.setAttribute(XAdESSignatureBuilder.OBJECT_REFERENCE, "#" + signedObjectReferenceId);
+			Element mimeTypeElement = signedPropertiesDocument.createElementNS(XAdESNamespaces.XAdES132, XAdESBuilder.XADES_MIME_TYPE);
+			mimeTypeElement.appendChild(signedPropertiesDocument.createTextNode(signedObjectMimeType.getMimeTypeString()));
+			dataObjectFormatElement.appendChild(mimeTypeElement);
+			signedDataObjectProperties.appendChild(dataObjectFormatElement);
+			signedPropertiesElement.appendChild(signedDataObjectProperties);
+		} catch(Exception e){
+			LOG.error("Could not create XAdES object", e);
+			throw new DSSException(e);
+		}
+
+		return signedPropertiesDocument;
+	}
+
+	/**
+	 * Calculate digest value of DOM element
+	 *
+	 * @param element DOM Element to calculate digest value for
+	 * @param canonicalizationMethod Canoncalization method to use
+	 * @param digestAlgorithm Digest algorithm to use
+     * @return Digest value for element based on given parameters
+     */
+	public static byte[] calculateDigestValue(final Element element, final String canonicalizationMethod, final DigestAlgorithm digestAlgorithm){
+		byte[] digestValue;
+		try {
+			byte[] canonicalizedElement = canonicalizeSubtree(canonicalizationMethod, element);
+			MessageDigest messageDigest = MessageDigest.getInstance(digestAlgorithm.getJavaName());
+			digestValue = messageDigest.digest(canonicalizedElement);
+		} catch(Exception e){
+			LOG.error("Could not calculate digest value", e);
+			throw new DSSException(e);
+		}
+		return digestValue;
+	}
+
+	/**
+	 * Get reference element for signed properties (Type equals 'http://uri.etsi.org/01903#SignedProperties')
+	 *
+	 * @param parentDocument Document containing reference
+	 * @return Element for reference to signed properties, or null if reference could not be found.
+     */
+	public static Element getSignedPropertiesReferenceElement(final Document parentDocument){
+		NodeList references = parentDocument.getElementsByTagNameNS(XMLSignature.XMLNS, "Reference");
+		for (int i = 0; i < references.getLength(); i++) {
+			Element referenceCandidate = ((Element) references.item(i));
+			String referenceType = referenceCandidate.getAttribute(XAdESBuilder.TYPE);
+			if (referenceType != null && referenceType.equalsIgnoreCase("http://uri.etsi.org/01903#SignedProperties")) {
+				return referenceCandidate;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Update URI attribute value of a reference element.
+	 *
+	 * @param referenceElement Reference element to update
+	 * @param newURI New value for URI attribute
+     * @return Updated reference, or null if element was null or not a reference
+     */
+	public static Element updateReferenceURI(Element referenceElement, final String newURI) {
+		if(referenceElement != null && referenceElement.getTagName().equalsIgnoreCase(XAdESBuilder.DS_REFERENCE)) {
+			referenceElement.setAttribute(XAdESBuilder.URI, newURI);
+			return referenceElement;
+		}
+		return null;
+	}
+
+	/**
+	 * Update digest value of a reference element
+	 *
+	 * @param referenceElement Reference element to update
+	 * @param newDigestValue New digest value
+     * @return Updated reference, or null if element was null or not a reference
+     */
+	public static Element updateReferenceDigestValue(Element referenceElement, final byte[] newDigestValue) {
+		try {
+			if(referenceElement != null && referenceElement.getTagName().equalsIgnoreCase(XAdESBuilder.DS_REFERENCE)) {
+				Element element = (Element) referenceElement.getElementsByTagNameNS(XMLSignature.XMLNS, "DigestValue").item(0);
+				element.getFirstChild().setNodeValue(new String(Base64.encode(newDigestValue), "UTF-8"));
+				return referenceElement;
+			}
+		} catch(Exception e){
+			LOG.error("Could not update reference digest value", e);
+		}
+		return null;
+	}
 }

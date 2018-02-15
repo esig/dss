@@ -339,7 +339,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 *             if an error occurred
 	 */
 	protected void incorporateKeyInfo() throws DSSException {
-		if(params.getSigningCertificate() == null) {
+		if(params.getSigningCertificate() == null && params.isGenerateTBSWithoutCertificate()) {
 			LOG.debug("Signing certificate not available and must be added to signature DOM later");
 			return;
 		}
@@ -711,7 +711,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * </pre>
 	 */
 	private void incorporateSigningCertificate() {
-		if(params.getSigningCertificate() == null) {
+		if(params.getSigningCertificate() == null && params.isGenerateTBSWithoutCertificate()) {
 			return;
 		}
 

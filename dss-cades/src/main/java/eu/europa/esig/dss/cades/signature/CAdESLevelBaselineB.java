@@ -438,7 +438,7 @@ public class CAdESLevelBaselineB {
 	}
 
 	private void addSigningCertificateAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) throws DSSException {
-		if(parameters.getSigningCertificate() == null) {
+		if(parameters.getSigningCertificate() == null && parameters.isGenerateTBSWithoutCertificate()) {
 			LOG.debug("Signing certificate not available and must be added to signed attributes later");
 			return;
 		}

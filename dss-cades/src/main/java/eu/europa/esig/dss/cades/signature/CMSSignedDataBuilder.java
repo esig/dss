@@ -202,9 +202,8 @@ public class CMSSignedDataBuilder {
 		final ContentSigner contentSigner, CAdESSignatureParameters parameters) throws OperatorCreationException {
 		final CertificateToken signingCertificate = parameters.getSigningCertificate();
 
-		if(signingCertificate == null) {
-			// When preparing signature and generating data-to-be-signed during external
-			// signing we don't have the signing certificate yet.
+		if(signingCertificate == null && parameters.isGenerateTBSWithoutCertificate()) {
+			// Generate data-to-be-signed without signing certificate
 			final SignerId signerId = new SignerId(DSSUtils.EMPTY_BYTE_ARRAY);
 			return signerInfoGeneratorBuilder.build(contentSigner, signerId.getSubjectKeyIdentifier());
 		}
@@ -220,7 +219,13 @@ public class CMSSignedDataBuilder {
 	 */
 	private JcaCertStore getJcaCertStore(final Collection<CertificateToken> certificateChain, CAdESSignatureParameters parameters) {
 		BaselineBCertificateSelector certificateSelectors = new BaselineBCertificateSelector(certificateVerifier, parameters);
-		List<CertificateToken> certificatesToAdd = parameters.getSigningCertificate() != null ? certificateSelectors.getCertificates() : new ArrayList<CertificateToken>();
+		List<CertificateToken> certificatesToAdd;
+		if(parameters.getSigningCertificate() == null && parameters.isGenerateTBSWithoutCertificate()){
+			certificatesToAdd = new ArrayList<CertificateToken>();
+		} else {
+			certificatesToAdd = certificateSelectors.getCertificates();
+		}
+
 		for (CertificateToken certificateToken : certificatesToAdd) {
 			if (!certificateChain.contains(certificateToken)) {
 				certificateChain.add(certificateToken);

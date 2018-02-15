@@ -50,7 +50,7 @@ public class PAdESLevelBExternalSignatureTest extends AbstractPkiFactoryTestDocu
         documentToSign = new FileDocument(new File("src/test/resources/sample.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
-        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
         signatureParameters.setGenerateTBSWithoutCertificate(true);
         signatureParameters.setSignatureName(GOOD_USER);
@@ -83,7 +83,7 @@ public class PAdESLevelBExternalSignatureTest extends AbstractPkiFactoryTestDocu
          */
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(signingDate);
-        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
