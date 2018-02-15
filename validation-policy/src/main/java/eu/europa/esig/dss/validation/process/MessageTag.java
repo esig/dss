@@ -307,11 +307,6 @@ public enum MessageTag {
 	QUAL_IS_ADES_IND("The signature/seal is an INDETERMINATE AdES!"),
 	QUAL_IS_ADES_INV("The signature/seal is not a valid AdES!"),
 	
-	QUAL_TL_CERT_CONS("Is the certificate consistent with the trusted list ?"),
-	QUAL_TL_CERT_CONS_ANS1("Inconsistency in TL - Cert claimed as QC for eSeal while Q status not granted for electronic Seal"),
-	QUAL_TL_CERT_CONS_ANS2("Inconsistency in TL - Cert claimed as QC for WSA while Q status not granted for WSA, digital signature generated with cert. for WSA considered as special case of AdESeal"),
-	QUAL_TL_CERT_CONS_ANS3("Inconsistency in TL - Cert claimed as QC for eSig while Q status not granted for electronic Sig"),
-
 	QUAL_HAS_CAQC("Is the certificate related to a CA/QC?"),
 	QUAL_HAS_CAQC_ANS("The certificate is not related to a CA/QC!"),
 	

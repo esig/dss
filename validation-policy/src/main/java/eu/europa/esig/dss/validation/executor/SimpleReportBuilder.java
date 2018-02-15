@@ -21,25 +21,9 @@
 package eu.europa.esig.dss.validation.executor;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlChainItem;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.jaxb.simplereport.XmlCertificate;
 import eu.europa.esig.dss.jaxb.simplereport.XmlCertificateChain;
@@ -51,6 +35,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureQualification;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
@@ -60,23 +45,18 @@ import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
  */
 public class SimpleReportBuilder {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SimpleReportBuilder.class);
-
 	private final Date currentTime;
 	private final ValidationPolicy policy;
 	private final DiagnosticData diagnosticData;
-	private final ValidationLevel validationLevel;
 	private final DetailedReport detailedReport;
 
 	private int totalSignatureCount = 0;
 	private int validSignatureCount = 0;
 
-	public SimpleReportBuilder(Date currentTime, ValidationPolicy policy, DiagnosticData diagnosticData, ValidationLevel validationLevel,
-			DetailedReport detailedReport) {
+	public SimpleReportBuilder(Date currentTime, ValidationPolicy policy, DiagnosticData diagnosticData, DetailedReport detailedReport) {
 		this.currentTime = currentTime;
 		this.policy = policy;
 		this.diagnosticData = diagnosticData;
-		this.validationLevel = validationLevel;
 		this.detailedReport = detailedReport;
 	}
 
@@ -160,58 +140,15 @@ public class SimpleReportBuilder {
 
 		xmlSignature.setSignedBy(getSignedBy(signature));
 
+		xmlSignature.getErrors().addAll(detailedReport.getErrors(signatureId));
+		xmlSignature.getWarnings().addAll(detailedReport.getWarnings(signatureId));
+		xmlSignature.getInfos().addAll(detailedReport.getInfos(signatureId));
+
 		if (container) {
 			xmlSignature.setFilename(signature.getSignatureFilename());
 		}
 
-		eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSig = getXmlSignature(signatureId);
-
-		XmlConstraintsConclusion constraintsConclusion = null;
-		switch (validationLevel) {
-		case BASIC_SIGNATURES:
-		case TIMESTAMPS:
-			constraintsConclusion = xmlSig.getValidationProcessBasicSignatures();
-			break;
-		case LONG_TERM_DATA:
-			constraintsConclusion = xmlSig.getValidationProcessLongTermData();
-			break;
-		case ARCHIVAL_DATA:
-			constraintsConclusion = xmlSig.getValidationProcessArchivalData();
-			break;
-		default:
-			LOG.error("Unsupported validation level : " + validationLevel);
-			break;
-		}
-
-		XmlConclusion conclusion = constraintsConclusion.getConclusion();
-
-		Set<String> errorList = new HashSet<String>();
-		Set<String> warnList = new HashSet<String>();
-		Set<String> infoList = new HashSet<String>();
-
-		XmlValidationSignatureQualification signQualBlock = xmlSig.getValidationSignatureQualification();
-		if (signQualBlock != null) {
-			collectErrors(errorList, signQualBlock);
-			collectWarnings(warnList, signQualBlock);
-			collectInfos(infoList, signQualBlock);
-		}
-
-		List<XmlName> errors = conclusion.getErrors();
-		if (Utils.isCollectionNotEmpty(errors)) {
-			for (XmlName error : errors) {
-				errorList.add(error.getValue());
-			}
-		}
-
-		errorList.addAll(getLinkedErrors(xmlSig));
-		warnList.addAll(getWarnings(xmlSig));
-		infoList.addAll(getInfos(xmlSig));
-
-		xmlSignature.getErrors().addAll(errorList);
-		xmlSignature.getWarnings().addAll(warnList);
-		xmlSignature.getInfos().addAll(infoList);
-
-		Indication indication = conclusion.getIndication();
+		Indication indication = detailedReport.getHightestIndication(signatureId);
 		if (Indication.PASSED.equals(indication)) {
 			validSignatureCount++;
 			xmlSignature.setIndication(Indication.TOTAL_PASSED);
@@ -220,18 +157,17 @@ public class SimpleReportBuilder {
 		} else {
 			xmlSignature.setIndication(indication); // INDERTERMINATE
 		}
-		xmlSignature.setSubIndication(conclusion.getSubIndication());
+		xmlSignature.setSubIndication(detailedReport.getHightestSubIndication(signatureId));
 
-		addSignatureProfile(signQualBlock, xmlSignature);
+		addSignatureProfile(xmlSignature);
 
-		XmlBasicBuildingBlocks signatureBasicBuildingBlock = getBasicBuildingBlockById(signatureId);
-		List<XmlChainItem> chainItems = signatureBasicBuildingBlock.getCertificateChain().getChainItem();
-		if (Utils.isCollectionNotEmpty(chainItems)) {
+		List<String> certIds = detailedReport.getBasicBuildingBlocksCertChain(signatureId);
+		if (Utils.isCollectionNotEmpty(certIds)) {
 			XmlCertificateChain xmlCertificateChain = new XmlCertificateChain();
-			for (XmlChainItem xmlChainItem : chainItems) {
+			for (String certid : certIds) {
 				XmlCertificate certificate = new XmlCertificate();
-				certificate.setId(xmlChainItem.getId());
-				certificate.setQualifiedName(getReadableCertificateName(xmlChainItem.getId()));
+				certificate.setId(certid);
+				certificate.setQualifiedName(getReadableCertificateName(certid));
 				xmlCertificateChain.getCertificate().add(certificate);
 			}
 			xmlSignature.setCertificateChain(xmlCertificateChain);
@@ -241,166 +177,7 @@ public class SimpleReportBuilder {
 	}
 
 	private void addBestSignatureTime(SignatureWrapper signature, XmlSignature xmlSignature) {
-		xmlSignature.setBestSignatureTime(getBestSignatureTime(signature.getId()));
-	}
-
-	private Date getBestSignatureTime(String signatureId) {
-		eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature = getXmlSignature(signatureId);
-		if (xmlSignature != null) {
-			if (xmlSignature.getValidationProcessArchivalData() != null && xmlSignature.getValidationProcessArchivalData().getBestSignatureTime() != null) {
-				return xmlSignature.getValidationProcessArchivalData().getBestSignatureTime();
-			}
-			if (xmlSignature.getValidationProcessLongTermData() != null && xmlSignature.getValidationProcessLongTermData().getBestSignatureTime() != null) {
-				return xmlSignature.getValidationProcessLongTermData().getBestSignatureTime();
-			}
-			if (xmlSignature.getValidationProcessBasicSignatures() != null
-					&& xmlSignature.getValidationProcessBasicSignatures().getBestSignatureTime() != null) {
-				return xmlSignature.getValidationProcessBasicSignatures().getBestSignatureTime();
-			}
-		}
-		return null;
-	}
-
-	private eu.europa.esig.dss.jaxb.detailedreport.XmlSignature getXmlSignature(String signatureId) {
-		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> signatures = detailedReport.getSignatures();
-		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : signatures) {
-			if (Utils.areStringsEqual(signatureId, xmlSignature.getId())) {
-				return xmlSignature;
-			}
-		}
-		return null;
-	}
-
-	private XmlBasicBuildingBlocks getBasicBuildingBlockById(String id) {
-		if (id != null) {
-			List<XmlBasicBuildingBlocks> basicBuildingBlocks = detailedReport.getBasicBuildingBlocks();
-			if (Utils.isCollectionNotEmpty(basicBuildingBlocks)) {
-				for (XmlBasicBuildingBlocks xmlBasicBuildingBlocks : basicBuildingBlocks) {
-					if (Utils.areStringsEqual(xmlBasicBuildingBlocks.getId(), id)) {
-						return xmlBasicBuildingBlocks;
-					}
-				}
-			}
-		}
-		return null;
-	}
-
-	private Set<String> getLinkedErrors(eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature) {
-		Set<String> errors = new HashSet<String>();
-		List<XmlValidationProcessTimestamps> validationProcessTimestamps = xmlSignature.getValidationProcessTimestamps();
-		if (Utils.isCollectionNotEmpty(validationProcessTimestamps)) {
-			for (XmlValidationProcessTimestamps xmlValidationProcessTimestamps : validationProcessTimestamps) {
-				collectErrors(errors, xmlValidationProcessTimestamps);
-			}
-		}
-		return errors;
-	}
-
-	private Set<String> getWarnings(eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature) {
-		Set<String> warns = new HashSet<String>();
-		collectWarnings(warns, xmlSignature.getValidationProcessBasicSignatures());
-		List<XmlValidationProcessTimestamps> validationProcessTimestamps = xmlSignature.getValidationProcessTimestamps();
-		if (Utils.isCollectionNotEmpty(validationProcessTimestamps)) {
-			for (XmlValidationProcessTimestamps xmlValidationProcessTimestamps : validationProcessTimestamps) {
-				collectWarnings(warns, xmlValidationProcessTimestamps);
-			}
-		}
-		collectWarnings(warns, xmlSignature.getValidationProcessLongTermData());
-		collectWarnings(warns, xmlSignature.getValidationProcessArchivalData());
-		return warns;
-	}
-
-	private void collectWarnings(Set<String> result, XmlConstraintsConclusion constraintConclusion) {
-		if (constraintConclusion != null) {
-			if (Utils.isCollectionNotEmpty(constraintConclusion.getConstraint())) {
-				for (XmlConstraint constraint : constraintConclusion.getConstraint()) {
-					collectWarnings(result, getBasicBuildingBlockById(constraint.getId()));
-					XmlName warning = constraint.getWarning();
-					if (warning != null) {
-						result.add(warning.getValue());
-					}
-				}
-			}
-		}
-	}
-
-	private void collectWarnings(Set<String> result, XmlBasicBuildingBlocks bbb) {
-		if (bbb != null) {
-			collectWarnings(result, bbb.getFC());
-			collectWarnings(result, bbb.getISC());
-			collectWarnings(result, bbb.getCV());
-			collectWarnings(result, bbb.getSAV());
-			XmlXCV xcv = bbb.getXCV();
-			if (xcv != null) {
-				collectWarnings(result, xcv);
-				List<XmlSubXCV> subXCV = xcv.getSubXCV();
-				if (Utils.isCollectionNotEmpty(subXCV)) {
-					for (XmlSubXCV xmlSubXCV : subXCV) {
-						collectWarnings(result, xmlSubXCV);
-					}
-				}
-			}
-			collectWarnings(result, bbb.getVCI());
-		}
-	}
-
-	private void collectErrors(Set<String> result, XmlConstraintsConclusion constraintConclusion) {
-		if (constraintConclusion != null && Utils.isCollectionNotEmpty(constraintConclusion.getConstraint())) {
-			for (XmlConstraint constraint : constraintConclusion.getConstraint()) {
-				XmlName error = constraint.getError();
-				if (error != null) {
-					result.add(error.getValue());
-				}
-			}
-		}
-	}
-
-	private Set<String> getInfos(eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature) {
-		Set<String> infos = new HashSet<String>();
-		collectInfos(infos, xmlSignature.getValidationProcessBasicSignatures());
-		List<XmlValidationProcessTimestamps> validationProcessTimestamps = xmlSignature.getValidationProcessTimestamps();
-		if (Utils.isCollectionNotEmpty(validationProcessTimestamps)) {
-			for (XmlValidationProcessTimestamps xmlValidationProcessTimestamps : validationProcessTimestamps) {
-				collectInfos(infos, xmlValidationProcessTimestamps);
-			}
-		}
-		collectInfos(infos, xmlSignature.getValidationProcessLongTermData());
-		collectInfos(infos, xmlSignature.getValidationProcessArchivalData());
-		return infos;
-	}
-
-	private void collectInfos(Set<String> result, XmlConstraintsConclusion constraintConclusion) {
-		if (constraintConclusion != null) {
-			if (Utils.isCollectionNotEmpty(constraintConclusion.getConstraint())) {
-				for (XmlConstraint constraint : constraintConclusion.getConstraint()) {
-					collectInfos(result, getBasicBuildingBlockById(constraint.getId()));
-					XmlName info = constraint.getInfo();
-					if (info != null) {
-						result.add(info.getValue());
-					}
-				}
-			}
-		}
-	}
-
-	private void collectInfos(Set<String> result, XmlBasicBuildingBlocks bbb) {
-		if (bbb != null) {
-			collectInfos(result, bbb.getFC());
-			collectInfos(result, bbb.getISC());
-			collectInfos(result, bbb.getCV());
-			collectInfos(result, bbb.getSAV());
-			XmlXCV xcv = bbb.getXCV();
-			if (xcv != null) {
-				collectInfos(result, xcv);
-				List<XmlSubXCV> subXCV = xcv.getSubXCV();
-				if (Utils.isCollectionNotEmpty(subXCV)) {
-					for (XmlSubXCV xmlSubXCV : subXCV) {
-						collectInfos(result, xmlSubXCV);
-					}
-				}
-			}
-			collectInfos(result, bbb.getVCI());
-		}
+		xmlSignature.setBestSignatureTime(detailedReport.getBestSignatureTime(signature.getId()));
 	}
 
 	private void addCounterSignature(SignatureWrapper signature, XmlSignature xmlSignature) {
@@ -460,15 +237,13 @@ public class SimpleReportBuilder {
 		return "?";
 	}
 
-	private void addSignatureProfile(XmlValidationSignatureQualification signQualificationBlock, final XmlSignature xmlSignature) {
-		if (signQualificationBlock != null) {
-			SignatureQualification qualification = signQualificationBlock.getSignatureQualification();
-			if (qualification != null) {
-				XmlSignatureLevel sigLevel = new XmlSignatureLevel();
-				sigLevel.setValue(qualification);
-				sigLevel.setDescription(qualification.getLabel());
-				xmlSignature.setSignatureLevel(sigLevel);
-			}
+	private void addSignatureProfile(final XmlSignature xmlSignature) {
+		SignatureQualification qualification = detailedReport.getSignatureQualification(xmlSignature.getId());
+		if (qualification != null) {
+			XmlSignatureLevel sigLevel = new XmlSignatureLevel();
+			sigLevel.setValue(qualification);
+			sigLevel.setDescription(qualification.getLabel());
+			xmlSignature.setSignatureLevel(sigLevel);
 		}
 	}
 
