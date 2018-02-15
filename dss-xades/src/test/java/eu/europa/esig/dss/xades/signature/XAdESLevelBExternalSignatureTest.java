@@ -87,6 +87,7 @@ public class XAdESLevelBExternalSignatureTest extends AbstractPkiFactoryTestDocu
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
         signatureParameters.setSigningCertificate(getSigningCert());
+        signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignedAdESObject(externalSignatureResult.getSignedAdESObject());
         signatureParameters.setSignedData(externalSignatureResult.getSignedData());
 
