@@ -241,7 +241,6 @@ public final class CMSUtils {
 	 *            the digest algorithm to be used
 	 * @param signingToken
 	 *            The signing certificate to be append
-	 * @return Updated signed attributes which includes the given certificate
 	 */
 	public static void addSigningCertificateAttribute(final ASN1EncodableVector signedAttributes, final DigestAlgorithm digestAlgorithm,
 			CertificateToken signingToken) {
