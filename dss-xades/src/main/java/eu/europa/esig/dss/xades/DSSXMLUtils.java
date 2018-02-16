@@ -20,20 +20,10 @@
  */
 package eu.europa.esig.dss.xades;
 
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.ResourceLoader;
-import eu.europa.esig.dss.utils.Utils;
-import org.apache.xml.security.Init;
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.transforms.Transforms;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.OutputKeys;
@@ -45,10 +35,22 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Set;
+
+import org.apache.xml.security.Init;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.transforms.Transforms;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
+
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.ResourceLoader;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Utility class that contains some XML related method.
@@ -326,4 +328,5 @@ public final class DSSXMLUtils {
 	public static boolean isOid(String policyId) {
 		return policyId != null && policyId.matches("^(?i)urn:oid:.*$");
 	}
+
 }
