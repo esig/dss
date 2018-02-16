@@ -24,19 +24,16 @@ import eu.europa.esig.dss.*;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.ExternalXAdESSignatureResult;
+import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.XPathQueryHolder;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.security.cert.X509Certificate;
 import java.util.Date;
@@ -108,32 +105,14 @@ public class XAdESLevelBExternalSignatureTest extends AbstractPkiFactoryTestDocu
         String deterministicId = DSSUtils.getDeterministicId(signingDate, getSigningCert().getDSSId());
 
         try {
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            documentBuilderFactory.setNamespaceAware(true);
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            Document signedInfoDocument = documentBuilder.parse(new ByteArrayInputStream(toBeSigned.getBytes()));
-
-            // Create XAdES object and include signing certificate
-            Document signedPropertiesDocument = DSSXMLUtils.createXAdESObject(signingDate, signingCertificate, signatureParameters.getSignatureAlgorithm(), "r-id-1", MimeType.XML);
-            XPathQueryHolder xPathQueryHolder = new XPathQueryHolder();
-            Element signedPropertiesElement = DomUtils.getElement(signedPropertiesDocument, xPathQueryHolder.XPATH_SIGNED_PROPERTIES);
-
-            // Calculate new digest based on updated SignedProperties
-            byte[] updatedDigest = DSSXMLUtils.calculateDigestValue(signedPropertiesElement, signatureParameters.getSignedPropertiesCanonicalizationMethod(),
-                    signatureParameters.getDigestAlgorithm());
-
-            // Locate and update digest and reference ID within signedInfo
-            Element signedPropertiesReference = DSSXMLUtils.getSignedPropertiesReferenceElement(signedInfoDocument);
-            DSSXMLUtils.updateReferenceURI(signedPropertiesReference, "#xades-" + deterministicId);
-            DSSXMLUtils.updateReferenceDigestValue(signedPropertiesReference, updatedDigest);
-
-            // Canonicalize and update toBeSigned
-            toBeSigned.setBytes(DSSXMLUtils.canonicalizeSubtree(signatureParameters.getSignedInfoCanonicalizationMethod(), signedInfoDocument));
+            // Use Dummy XAdES builder to create XAdES object which include signing certificate, and update toBeSigned
+            DummyXAdESSignatureBuilder dummyXAdESSignatureBuilder = new DummyXAdESSignatureBuilder(getSignatureParameters(), getDocumentToSign(), getCompleteCertificateVerifier());
+            toBeSigned.setBytes(dummyXAdESSignatureBuilder.build(signingDate, getSigningCert()));
             externalSignatureResult.setSignedData(toBeSigned.getBytes());
 
             // Serialize XAdES object
-            Element objectElement = DomUtils.getElement(signedPropertiesDocument, xPathQueryHolder.XPATH_OBJECT);
-            externalSignatureResult.setSignedAdESObject(DSSXMLUtils.serializeNode(objectElement));
+            byte[] serializedObject = dummyXAdESSignatureBuilder.getSerializedObject();
+            externalSignatureResult.setSignedAdESObject(serializedObject);
 
             // Calculate signature
             SignatureValue signatureValue = getToken().sign(toBeSigned, getSignatureParameters().getDigestAlgorithm(),
@@ -179,5 +158,28 @@ public class XAdESLevelBExternalSignatureTest extends AbstractPkiFactoryTestDocu
     @Override
     protected String getSigningAlias() {
         return GOOD_USER;
+    }
+
+    private class DummyXAdESSignatureBuilder extends EnvelopedSignatureBuilder {
+        public DummyXAdESSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument origDoc, final CertificateVerifier certificateVerifier){
+            super(params, origDoc, certificateVerifier);
+        }
+
+        public byte[] build(Date signingDate, CertificateToken signingCertificate){
+            // Re-initialize parameters to simulate external process.
+            params = new XAdESSignatureParameters();
+            params.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+            params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+            params.setSignedPropertiesCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
+            params.setSignedInfoCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
+            params.getBLevelParams().setSigningDate(signingDate);
+            params.setSigningCertificate(signingCertificate);
+            return super.build();
+        }
+
+        public byte[] getSerializedObject(){
+            Element objectDom = DomUtils.getElement(signatureDom, xPathQueryHolder.XPATH_OBJECT);
+            return DSSXMLUtils.serializeNode(objectDom);
+        }
     }
 }
