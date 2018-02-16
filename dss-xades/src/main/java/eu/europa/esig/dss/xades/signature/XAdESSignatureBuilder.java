@@ -233,7 +233,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	/**
 	 * This method incorporates the SignedInfo tag
-	 * 
+	 *
 	 * <pre>
 	 *  {@code
 	 *   	<ds:SignedInfo>
@@ -245,6 +245,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * </pre>
 	 */
 	public void incorporateSignedInfo() {
+		if(params.getSignedData() != null){
+			LOG.debug("Using explict SignedInfo from parameter");
+			signedInfoDom = DomUtils.buildDOM(params.getSignedData()).getDocumentElement();
+			signedInfoDom = (Element)documentDom.importNode(signedInfoDom, true);
+			signatureDom.appendChild(signedInfoDom);
+			return;
+		}
 
 		signedInfoDom = DomUtils.addElement(documentDom, signatureDom, XMLNS, DS_SIGNED_INFO);
 		incorporateCanonicalizationMethod(signedInfoDom, signedInfoCanonicalizationMethod);
@@ -260,13 +267,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	/**
 	 * This method created the CanonicalizationMethod tag like :
-	 * 
+	 *
 	 * <pre>
 	 * 	{@code
 	 * 		<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
 	 * 	}
 	 * </pre>
-	 * 
+	 *
 	 * @param parentDom
 	 *            the parent element
 	 * @param signedInfoCanonicalizationMethod
@@ -283,6 +290,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * the URI will use the default value: "detached-file".
 	 */
 	private void incorporateReferences() {
+		if(params.getSignedData() != null){
+			return;
+		}
+
 		final List<DSSReference> references = params.getReferences();
 		for (final DSSReference reference : references) {
 			incorporateReference(reference);
@@ -293,9 +304,24 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * Creates KeyInfo tag.
 	 * NOTE: when trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are
 	 * included.
-	 * 
+	 *
 	 * <pre>
-	 * 	{@code 
+	 * 	{@code
+	 * 		<ds:KeyInfo>
+	 * 			<ds:X509Data>
+	 *  			<ds:X509Certificate>
+	 * 					MIIB....
+	 * 				</ds:X509Certificate>
+	 * 				<ds:X509Certificate>
+	 * 					MIIB+...
+	 * 				</ds:X509Certificate>
+	 * 			</ds:X509Data>
+	 * 		</ds:KeyInfo>
+	 * }
+	 * </pre>
+	 *
+	 * <pre>
+	 * 	{@code
 	 * 		<ds:KeyInfo>
 	 * 			<ds:X509Data>
 	 *  			<ds:X509Certificate>
@@ -313,6 +339,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 *             if an error occurred
 	 */
 	protected void incorporateKeyInfo() throws DSSException {
+		if(params.getSigningCertificate() == null && params.isGenerateTBSWithoutCertificate()) {
+			LOG.debug("Signing certificate not available and must be added to signature DOM later");
+			return;
+		}
 
 		// <ds:KeyInfo>
 		final Element keyInfoDom = DomUtils.addElement(documentDom, signatureDom, XMLNS, DS_KEY_INFO);
@@ -336,14 +366,14 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	/**
 	 * This method creates the X509SubjectName (optional) and X509Certificate (mandatory) tags
-	 * 
+	 *
 	 * <pre>
 	 * {@code
 	 * 	<ds:X509SubjectName>...</X509SubjectName>
 	 * 	<ds:X509Certificate>...</ds:X509Certificate>
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * @param x509DataDom
 	 *            the parent X509Data tag
 	 * @param token
@@ -356,13 +386,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	/**
 	 * This method creates the X509Certificate tag which is mandatory
-	 * 
+	 *
 	 * <pre>
 	 * {@code
 	 * 	<ds:X509Certificate>...</ds:X509Certificate>
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * @param x509DataDom
 	 *            the parent X509Data tag
 	 * @param token
@@ -374,9 +404,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	/**
 	 * This method incorporates the ds:Object tag
-	 * 
+	 *
 	 * <pre>
-	 * 	{@code 
+	 * 	{@code
 	 * 		<ds:Object>
 	 * 			<xades:QualifyingProperties>
 	 * 				<xades:SignedProperties>
@@ -386,9 +416,17 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * 		</ds:Object>
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 */
 	protected void incorporateObject() {
+        if(params.getSignedAdESObject() != null){
+            LOG.debug("Incorporating signed XAdES Object from parameter");
+            Node signedObjectDom = DomUtils.buildDOM(params.getSignedAdESObject()).getDocumentElement();
+            signedObjectDom = documentDom.importNode(signedObjectDom, true);
+            signatureDom.appendChild(signedObjectDom);
+            return;
+        }
+
 		final Element objectDom = DomUtils.addElement(documentDom, signatureDom, XMLNS, DS_OBJECT);
 
 		qualifyingPropertiesDom = DomUtils.addElement(documentDom, objectDom, XAdES, XADES_QUALIFYING_PROPERTIES);
@@ -400,9 +438,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	/**
 	 * This method incorporates ds:References
-	 * 
+	 *
 	 * <pre>
-	 * 	{@code 
+	 * 	{@code
 	 * 		<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI=
 	"#xades-id-A43023AFEB149830C242377CC941360F">
 	 *			<ds:Transforms>
@@ -415,6 +453,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * </pre>
 	 */
 	protected void incorporateReferenceSignedProperties() {
+        if(params.getSignedData() != null){
+            return;
+        }
 
 		final Element reference = DomUtils.addElement(documentDom, signedInfoDom, XMLNS, DS_REFERENCE);
 		reference.setAttribute(TYPE, xPathQueryHolder.XADES_SIGNED_PROPERTIES);
@@ -535,7 +576,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	/**
 	 * Creates the SignedProperties DOM object element.
-	 * 
+	 *
 	 * <pre>
 	 * {@code
 	 * 		<SignedProperties Id="xades-ide5c549340079fe19f3f90f03354a5965">
@@ -551,7 +592,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	/**
 	 * Creates the SignedSignatureProperties DOM object element.
-	 * 
+	 *
 	 * <pre>
 	 * {@code
 	 * 		<SignedSignatureProperties>
@@ -631,7 +672,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	/**
 	 * Creates SigningTime DOM object element like :
-	 * 
+	 *
 	 * <pre>
 	 * 	{@code
 	 * 		<SigningTime>2013-11-23T11:22:52Z</SigningTime>
@@ -651,7 +692,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	/**
 	 * Creates SigningCertificate(V2) building block DOM object:
-	 * 
+	 *
 	 * <pre>
 	 * {@code
 	 * 	<SigningCertificate>
@@ -670,6 +711,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * </pre>
 	 */
 	private void incorporateSigningCertificate() {
+		if(params.getSigningCertificate() == null && params.isGenerateTBSWithoutCertificate()) {
+			return;
+		}
+
 		final Set<CertificateToken> certificates = new HashSet<CertificateToken>();
 		certificates.add(params.getSigningCertificate());
 
@@ -701,7 +746,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	/**
 	 * This method incorporates the SignedDataObjectProperties DOM element like :
-	 * 
+	 *
 	 * <pre>
 	 * 	{@code
 	 * 		<SignedDataObjectProperties> ...
@@ -735,7 +780,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	/**
 	 * This method returns the mimetype of the given reference
-	 * 
+	 *
 	 * @param reference
 	 *            the reference to compute
 	 * @return the {@code MimeType} of the reference or the default value {@code MimeType.BINARY}

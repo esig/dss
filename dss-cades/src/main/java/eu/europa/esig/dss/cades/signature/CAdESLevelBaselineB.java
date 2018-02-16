@@ -37,15 +37,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 
-import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1GeneralizedTime;
-import org.bouncycastle.asn1.ASN1Object;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.DERSequence;
-import org.bouncycastle.asn1.DERSet;
-import org.bouncycastle.asn1.DERUTF8String;
+import eu.europa.esig.dss.cades.CMSUtils;
+import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.esf.OtherHashAlgAndValue;
@@ -117,8 +110,12 @@ public class CAdESLevelBaselineB {
 	}
 
 	public AttributeTable getSignedAttributes(final CAdESSignatureParameters parameters) {
-
 		ASN1EncodableVector signedAttributes = new ASN1EncodableVector();
+
+		if(parameters.getSignedData() != null){
+			LOG.debug("Using explict SignedAttributes from parameter");
+			return CMSUtils.getAttributesFromByteArray(parameters.getSignedData());
+		}
 
 		addSigningCertificateAttribute(parameters, signedAttributes);
 		addSigningTimeAttribute(parameters, signedAttributes);
@@ -441,6 +438,11 @@ public class CAdESLevelBaselineB {
 	}
 
 	private void addSigningCertificateAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) throws DSSException {
+		if(parameters.getSigningCertificate() == null && parameters.isGenerateTBSWithoutCertificate()) {
+			LOG.debug("Signing certificate not available and must be added to signed attributes later");
+			return;
+		}
+
 		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
 		CertificateToken signingToken = parameters.getSigningCertificate();
 		final byte[] certHash = signingToken.getDigest(digestAlgorithm);

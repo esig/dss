@@ -1,14 +1,30 @@
 package eu.europa.esig.dss.cades;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.X509Certificate;
 
-import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.DERSequence;
-import org.bouncycastle.asn1.DERTaggedObject;
+import eu.europa.esig.dss.SignatureAlgorithm;
+import org.bouncycastle.asn1.*;
+import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.ess.ESSCertID;
+import org.bouncycastle.asn1.ess.ESSCertIDv2;
+import org.bouncycastle.asn1.ess.SigningCertificate;
+import org.bouncycastle.asn1.ess.SigningCertificateV2;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.GeneralNames;
+import org.bouncycastle.asn1.x509.IssuerSerial;
+import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPResp;
@@ -23,6 +39,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
+
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
 
 public final class CMSUtils {
 
@@ -135,6 +153,25 @@ public final class CMSUtils {
 	}
 
 	/**
+	 * This method returns an AttributeTable parsed from ASN.1 encoded representation
+	 *
+	 * @param encodedAttributes ASN.1 encoded AttributesTable
+	 * @return AttributeTable created from given encodedAttributes
+	 * @throws DSSException If error occured when parsing encodedAttributes
+	 */
+	public static AttributeTable getAttributesFromByteArray(final byte[] encodedAttributes) throws DSSException {
+		DLSet dlSet;
+		try {
+			ASN1InputStream asn1InputStream = new ASN1InputStream(new ByteArrayInputStream(encodedAttributes));
+			dlSet = (DLSet) asn1InputStream.readObject();
+		} catch(IOException e){
+			throw new DSSException("Error while reading ASN.1 encoded attributes", e);
+		}
+		final AttributeTable attributesTable = new AttributeTable(dlSet);
+		return attributesTable;
+	}
+
+	/**
 	 * This method allows to create a {@code BasicOCSPResp} from a {@code DERSequence}.
 	 * The value for response SHALL be the DER encoding of BasicOCSPResponse (RFC 2560).
 	 *
@@ -193,4 +230,46 @@ public final class CMSUtils {
 		return basicOCSPResp;
 	}
 
+	/**
+	 * Method to add signing certificate to ASN.1 DER encoded signed attributes. Certificate
+	 * will be added as either signing-certificate or signing-certificate-v2 attribute depending
+	 * on signature algorithm being used.
+	 *
+	 * @param signedAttributes Signed attributes to append signing certificate to
+	 * @param signingCertificate Signing certificate to append
+	 * @param signatureAlgorithm Signature algorithm being used
+	 * @return Updated signed attributes which includes the given  certificate
+	 */
+	public static AttributeTable addSigningCertificateToSignedAttributes(AttributeTable signedAttributes, final X509Certificate signingCertificate, final SignatureAlgorithm signatureAlgorithm) {
+		try {
+			ASN1EncodableVector asn1EncodableVector = signedAttributes.toASN1EncodableVector();
+			X500Name issuerX500Name = new X509CertificateHolder(signingCertificate.getEncoded()).getIssuer();
+			GeneralName generalName = new GeneralName(issuerX500Name);
+			GeneralNames generalNames = new GeneralNames(generalName);
+			BigInteger serialNumber = signingCertificate.getSerialNumber();
+			IssuerSerial issuerSerial = new IssuerSerial(generalNames, new ASN1Integer(serialNumber));
+			MessageDigest messageDigest = MessageDigest.getInstance(signatureAlgorithm.getDigestAlgorithm().getJavaName(), "BC");
+			byte[] certHash = messageDigest.digest(signingCertificate.getEncoded());
+
+			Attribute attribute;
+			if (signatureAlgorithm == SignatureAlgorithm.RSA_SHA1) {
+				ESSCertID essCertID = new ESSCertID(certHash, issuerSerial);
+				SigningCertificate signingCert = new SigningCertificate(essCertID);
+				attribute = new Attribute(id_aa_signingCertificate, new DERSet(signingCert));
+			} else {
+				ASN1ObjectIdentifier asn1ObjectIdentifier = new ASN1ObjectIdentifier(signatureAlgorithm.getDigestAlgorithm().getOid());
+				AlgorithmIdentifier algorithmIdentifier = new AlgorithmIdentifier(asn1ObjectIdentifier, DERNull.INSTANCE);
+				ESSCertIDv2 essCertIDv2 = new ESSCertIDv2(algorithmIdentifier, certHash, issuerSerial);
+				SigningCertificateV2 signingCertV2 = new SigningCertificateV2(essCertIDv2);
+				DERSet derSet = new DERSet(signingCertV2);
+				attribute = new Attribute(PKCSObjectIdentifiers.id_aa_signingCertificateV2, derSet);
+			}
+			asn1EncodableVector.add(attribute);
+			signedAttributes = new AttributeTable(asn1EncodableVector);
+		} catch(Exception e){
+			LOG.error("Error while adding signing certificate to signed attributes", e);
+		}
+
+		return signedAttributes;
+	}
 }
