@@ -397,7 +397,7 @@ public final class DSSXMLUtils {
 			Element certElement = signedPropertiesDocument.createElementNS(XAdESNamespaces.XAdES132, XAdESBuilder.XADES_CERT);
 			Element certDigestElement = signedPropertiesDocument.createElementNS(XAdESNamespaces.XAdES132, XAdESBuilder.XADES_CERT_DIGEST);
 			Element digestMethodElement = signedPropertiesDocument.createElementNS(XMLSignature.XMLNS, XAdESBuilder.DS_DIGEST_METHOD);
-			digestMethodElement.setAttribute(XAdESBuilder.ALGORITHM, signatureAlgorithm.getXMLId());
+			digestMethodElement.setAttribute(XAdESBuilder.ALGORITHM, signatureAlgorithm.getDigestAlgorithm().getXmlId());
 			certDigestElement.appendChild(digestMethodElement);
 			Element digestValueElement = signedPropertiesDocument.createElementNS(XMLSignature.XMLNS, XAdESBuilder.DS_DIGEST_VALUE);
 			byte[] certDigestValue = signingCertificate.getDigest(signatureAlgorithm.getDigestAlgorithm());
