@@ -1,37 +1,40 @@
 package eu.europa.esig.dss.signature;
 
 import eu.europa.esig.dss.SignatureValue;
-import java.security.cert.X509Certificate;
-import java.util.Date;
+import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
  * Class used during test to represent the result returned by
  * an external signature process.
  */
 public class ExternalSignatureResult {
-    private byte[] signedData;
-    private SignatureValue signatureValue;
-    private X509Certificate signingCertificate;
 
-    public byte[] getSignedData() {
-        return signedData;
-    }
+	private byte[] signedData;
+	private SignatureValue signatureValue;
+	private CertificateToken signingCertificate;
 
-    public void setSignedData(byte[] signedData) {
-        this.signedData = signedData;
-    }
+	public byte[] getSignedData() {
+		return signedData;
+	}
 
-    public X509Certificate getSigningCertificate() {
-        return signingCertificate;
-    }
+	public void setSignedData(byte[] signedData) {
+		this.signedData = signedData;
+	}
 
-    public void setSigningCertificate(X509Certificate signingCertificate) { this.signingCertificate = signingCertificate; }
+	public CertificateToken getSigningCertificate() {
+		return signingCertificate;
+	}
 
-    public SignatureValue getSignatureValue() {
-        return signatureValue;
-    }
+	public void setSigningCertificate(CertificateToken signingCertificate) {
+		this.signingCertificate = signingCertificate;
+	}
 
-    public void setSignatureValue(SignatureValue signatureValue) {
-        this.signatureValue = signatureValue;
-    }
+	public SignatureValue getSignatureValue() {
+		return signatureValue;
+	}
+
+	public void setSignatureValue(SignatureValue signatureValue) {
+		this.signatureValue = signatureValue;
+	}
+
 }

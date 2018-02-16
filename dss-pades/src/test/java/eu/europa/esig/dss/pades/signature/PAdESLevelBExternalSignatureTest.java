@@ -20,12 +20,10 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.*;
-import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.signature.ExternalSignatureResult;
+import java.io.File;
+import java.util.Date;
+
+import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.DLSet;
@@ -34,128 +32,141 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.security.cert.X509Certificate;
-import java.util.Date;
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.signature.ExternalSignatureResult;
+import eu.europa.esig.dss.x509.CertificateToken;
 
 public class PAdESLevelBExternalSignatureTest extends AbstractPkiFactoryTestDocumentSignatureService<PAdESSignatureParameters> {
-    private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBExternalSignatureTest.class);
-    private DocumentSignatureService<PAdESSignatureParameters> service;
-    private PAdESSignatureParameters signatureParameters;
-    private DSSDocument documentToSign;
-    private Date signingDate;
+	private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBExternalSignatureTest.class);
+	private DocumentSignatureService<PAdESSignatureParameters> service;
+	private PAdESSignatureParameters signatureParameters;
+	private DSSDocument documentToSign;
+	private Date signingDate;
 
-    @Before
-    public void init() throws Exception {
-        documentToSign = new FileDocument(new File("src/test/resources/sample.pdf"));
+	@Before
+	public void init() throws Exception {
+		documentToSign = new FileDocument(new File("src/test/resources/sample.pdf"));
 
-        signatureParameters = new PAdESSignatureParameters();
-        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-        signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-        signatureParameters.setGenerateTBSWithoutCertificate(true);
-        signatureParameters.setSignatureName(GOOD_USER);
+		signatureParameters = new PAdESSignatureParameters();
+		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+		signatureParameters.setGenerateTBSWithoutCertificate(true);
+		signatureParameters.setSignatureName(GOOD_USER);
 
-        signingDate = new Date();
-        signatureParameters.bLevel().setSigningDate(signingDate);
+		signingDate = new Date();
+		signatureParameters.bLevel().setSigningDate(signingDate);
 
-        service = new PAdESService(getCompleteCertificateVerifier());
-    }
+		service = new PAdESService(getCompleteCertificateVerifier());
+	}
 
-    @Override
-    protected DSSDocument sign() {
-        DSSDocument toBeSigned = getDocumentToSign();
-        PAdESSignatureParameters params = getSignatureParameters();
-        DocumentSignatureService<PAdESSignatureParameters> service = getService();
+	@Override
+	protected DSSDocument sign() {
+		DSSDocument toBeSigned = getDocumentToSign();
+		PAdESSignatureParameters params = getSignatureParameters();
+		DocumentSignatureService<PAdESSignatureParameters> service = getService();
 
-        // Generate toBeSigned without signing certificate
-        assert params.getSigningCertificate() == null;
-        ToBeSigned dataToSign = service.getDataToSign(getDocumentToSign(), params);
+		// Generate toBeSigned without signing certificate
+		assert params.getSigningCertificate() == null;
+		ToBeSigned dataToSign = service.getDataToSign(getDocumentToSign(), params);
 
-        /**
-         * Simulate an external process that updates ASN.1 signed-attributes structure
-         * in dataToSign with signing certificate and calculates signature value.
-         */
-        ExternalSignatureResult externalSignatureResult = simulateExternalSignature(dataToSign);
+		/**
+		 * Simulate an external process that updates ASN.1 signed-attributes structure
+		 * in dataToSign with signing certificate and calculates signature value.
+		 */
+		ExternalSignatureResult externalSignatureResult = simulateExternalSignature(dataToSign);
 
-        /**
-         * Construct new set of parameters including explicitly specified signed data
-         * created by external process and signature name used when calculating toBeSigned.
-         */
-        signatureParameters = new PAdESSignatureParameters();
-        signatureParameters.bLevel().setSigningDate(signingDate);
-        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-        signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-        signatureParameters.setSigningCertificate(getSigningCert());
-        signatureParameters.setCertificateChain(getCertificateChain());
-        signatureParameters.setSignedData(externalSignatureResult.getSignedData());
-        signatureParameters.setSignatureName(GOOD_USER);
+		/**
+		 * Construct new set of parameters including explicitly specified signed data
+		 * created by external process and signature name used when calculating toBeSigned.
+		 */
+		signatureParameters = new PAdESSignatureParameters();
+		signatureParameters.bLevel().setSigningDate(signingDate);
+		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
+		signatureParameters.setSignedData(externalSignatureResult.getSignedData());
+		signatureParameters.setSignatureName(GOOD_USER);
 
-        // Sign document using signature value created by external process.
-        return service.signDocument(toBeSigned, signatureParameters, externalSignatureResult.getSignatureValue());
-    }
+		// Sign document using signature value created by external process.
+		return service.signDocument(toBeSigned, signatureParameters, externalSignatureResult.getSignatureValue());
+	}
 
-    private ExternalSignatureResult simulateExternalSignature(ToBeSigned toBeSigned){
-        ExternalSignatureResult externalSignatureResult = new ExternalSignatureResult();
+	private ExternalSignatureResult simulateExternalSignature(ToBeSigned toBeSigned) {
+		ExternalSignatureResult externalSignatureResult = new ExternalSignatureResult();
 
-        // Get hold of signature certificate.
-        X509Certificate signingCertificate = getSigningCert().getCertificate();
-        externalSignatureResult.setSigningCertificate(signingCertificate);
+		// Get hold of signature certificate.
+		CertificateToken signingCertificate = getSigningCert();
+		externalSignatureResult.setSigningCertificate(signingCertificate);
 
-        try {
-            SignatureAlgorithm signatureAlgorithm = signatureParameters.getSignatureAlgorithm();
+		DigestAlgorithm digestAlgo = signatureParameters.getDigestAlgorithm();
 
-            // Add the signing-certificate/signing-certificate-v2 attribute to DER encoded SignedAttributes.
-            ASN1InputStream asn1InputStream = new ASN1InputStream(toBeSigned.getBytes());
-            DLSet dlSet = (DLSet)asn1InputStream.readObject();
-            AttributeTable signedAttributes = CMSUtils.addSigningCertificateToSignedAttributes(new AttributeTable(dlSet), signingCertificate, signatureAlgorithm);
-            DERSet signedAttributesData = new DERSet(signedAttributes.toASN1EncodableVector());
+		// Add the signing-certificate/signing-certificate-v2 attribute to DER encoded SignedAttributes.
+		try (ASN1InputStream asn1InputStream = new ASN1InputStream(toBeSigned.getBytes())) {
+			DLSet dlSet = (DLSet) asn1InputStream.readObject();
+			AttributeTable signedAttribute = new AttributeTable(dlSet);
+			ASN1EncodableVector signedAttributeEncodableVector = signedAttribute.toASN1EncodableVector();
 
-            // Update toBeSigned
-            toBeSigned.setBytes(signedAttributesData.getEncoded());
-            externalSignatureResult.setSignedData(toBeSigned.getBytes());
-        } catch(Exception e){
-            LOG.error("Error while simulating external PAdES signature", e);
-        }
+			CMSUtils.addSigningCertificateAttribute(signedAttributeEncodableVector, digestAlgo, signingCertificate);
 
-        SignatureValue signatureValue = getToken().sign(toBeSigned, getSignatureParameters().getDigestAlgorithm(),
-                getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
-        externalSignatureResult.setSignatureValue(signatureValue);
+			DERSet signedAttributesData = new DERSet(signedAttributeEncodableVector);
 
-        return externalSignatureResult;
-    }
+			// Update toBeSigned
+			toBeSigned.setBytes(signedAttributesData.getEncoded());
+			externalSignatureResult.setSignedData(toBeSigned.getBytes());
+		} catch (Exception e) {
+			LOG.error("Error while simulating external PAdES signature", e);
+		}
 
-    @Override
-    protected DSSDocument getDocumentToSign() {
-        return documentToSign;
-    }
+		SignatureValue signatureValue = getToken().sign(toBeSigned, digestAlgo, getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+		externalSignatureResult.setSignatureValue(signatureValue);
 
-    @Override
-    protected DocumentSignatureService<PAdESSignatureParameters> getService() {
-        return service;
-    }
+		return externalSignatureResult;
+	}
 
-    @Override
-    protected PAdESSignatureParameters getSignatureParameters() {
-        return signatureParameters;
-    }
+	@Override
+	protected DSSDocument getDocumentToSign() {
+		return documentToSign;
+	}
 
-    @Override
-    protected MimeType getExpectedMime() {
-        return MimeType.PDF;
-    }
+	@Override
+	protected DocumentSignatureService<PAdESSignatureParameters> getService() {
+		return service;
+	}
 
-    @Override
-    protected boolean isBaselineT() {
-        return false;
-    }
+	@Override
+	protected PAdESSignatureParameters getSignatureParameters() {
+		return signatureParameters;
+	}
 
-    @Override
-    protected boolean isBaselineLTA() {
-        return false;
-    }
+	@Override
+	protected MimeType getExpectedMime() {
+		return MimeType.PDF;
+	}
 
-    @Override
-    protected String getSigningAlias() {
-        return GOOD_USER;
-    }
+	@Override
+	protected boolean isBaselineT() {
+		return false;
+	}
+
+	@Override
+	protected boolean isBaselineLTA() {
+		return false;
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
+	}
 }
