@@ -20,18 +20,22 @@
  */
 package eu.europa.esig.dss.xades;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.cert.X509Certificate;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.ResourceLoader;
+import eu.europa.esig.dss.utils.Utils;
+import org.apache.xml.security.Init;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.transforms.Transforms;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
-import javax.xml.crypto.dsig.XMLSignature;
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -41,29 +45,10 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-
-import eu.europa.esig.dss.*;
-import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.xades.signature.XAdESBuilder;
-import eu.europa.esig.dss.xades.signature.XAdESSignatureBuilder;
-import org.apache.xml.security.Init;
-import org.apache.xml.security.algorithms.MessageDigestAlgorithm;
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.transforms.Transforms;
-import org.bouncycastle.asn1.ASN1Encoding;
-import org.bouncycastle.asn1.ASN1Integer;
-import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.asn1.x509.GeneralName;
-import org.bouncycastle.asn1.x509.GeneralNames;
-import org.bouncycastle.asn1.x509.IssuerSerial;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.util.encoders.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
-
-import eu.europa.esig.dss.utils.Utils;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Utility class that contains some XML related method.
