@@ -269,7 +269,7 @@ public enum MessageTag {
 	QUAL_TL_SERV_CONS_ANS1("Trust service not consistent! (QCStatement and NotQualified)"),
 	QUAL_TL_SERV_CONS_ANS2("Trust service not consistent! (QCForLegalPerson and QCForeSig)"),
 	QUAL_TL_SERV_CONS_ANS3("Trust service not consistent! (X_QSCD and NotQSCD)"),
-	QUAL_TL_SERV_CONS_ANS3A("Trust service not consistent! (QSCDStatusAsInCert and QSCD)"),
+	QUAL_TL_SERV_CONS_ANS3A("Trust service not consistent! (QSCDStatusAsInCert and X_QSCD)"),
 	QUAL_TL_SERV_CONS_ANS4("Trust service not consistent! (incompatible usages of QCForeSig, QCForeSeal, QCForWSA)"),
 	QUAL_TL_SERV_CONS_ANS5("Trust service not consistent! (invalid additional service info / qualifier in service before 1/7/16)"),
 	QUAL_TL_SERV_CONS_ANS6("Trust service not consistent! (conflict between additional service info and qualifier)"),
@@ -280,22 +280,22 @@ public enum MessageTag {
 	QUAL_TRUSTED_LIST_ACCEPT("Is the trusted list acceptable?"),
 	QUAL_TRUSTED_LIST_ACCEPT_ANS("The trusted list is not acceptable!"),
 
-	QUAL_FOR_SIGN_AT_ST("Is the certificate for eSig at signing time?"),
-	QUAL_FOR_SIGN_AT_ST_ANS("The certificate is not for eSig at signing time!"),
+	QUAL_FOR_SIGN_AT_ST("Is the certificate for eSig at (best) signing time?"),
+	QUAL_FOR_SIGN_AT_ST_ANS("The certificate is not for eSig at (best) signing time!"),
 	QUAL_FOR_SIGN_AT_CC("Is the certificate for eSig at issuance time?"),
 	QUAL_FOR_SIGN_AT_CC_ANS("The certificate is not for eSig at issuance time!"),
 	QUAL_FOR_SIGN_AT_VT("Is the certificate for eSig at validation time?"),
 	QUAL_FOR_SIGN_AT_VT_ANS("The certificate is not for eSig at validation time!"),
 
-	QUAL_QC_AT_ST("Is the certificate qualifed at signing time?"),
-	QUAL_QC_AT_ST_ANS("The certificate is not qualified at signing time!"),
+	QUAL_QC_AT_ST("Is the certificate qualifed at (best) signing time?"),
+	QUAL_QC_AT_ST_ANS("The certificate is not qualified at (best) signing time!"),
 	QUAL_QC_AT_CC("Is the certificate qualifed at issuance time?"),
 	QUAL_QC_AT_CC_ANS("The certificate is not qualified at issuance time!"),
 	QUAL_QC_AT_VT("Is the certificate qualifed at validation time?"),
 	QUAL_QC_AT_VT_ANS("The certificate is not qualified at validation time!"),
 
-	QUAL_QSCD_AT_ST("Is the private key on a QSCD at signing time?"),
-	QUAL_QSCD_AT_ST_ANS("The private key is not on a QSCD at signing time!"),
+	QUAL_QSCD_AT_ST("Is the private key on a QSCD at (best) signing time?"),
+	QUAL_QSCD_AT_ST_ANS("The private key is not on a QSCD at (best) signing time!"),
 	QUAL_QSCD_AT_CC("Is the private key on a QSCD at issuance time?"),
 	QUAL_QSCD_AT_CC_ANS("The private key is not on a QSCD at issuance time!"),
 	QUAL_QSCD_AT_VT("Is the private key on a QSCD at validation time?"),
@@ -314,9 +314,12 @@ public enum MessageTag {
 	QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS1("Organization name is missing in the trusted certificate"),
 	QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS2("The trusted certificate doesn't match the trust service"),
 
-	QUAL_HAS_GRANTED("Is the certificate related to a granted status?"),
+	QUAL_HAS_GRANTED("Is the certificate related to a trust service with a granted status?"),
 	QUAL_HAS_GRANTED_ANS("The certificate is not related to a granted status!"),
 
+	QUAL_HAS_ONLY_ONE("Is the qualification conclusion certain?"),
+	QUAL_HAS_ONLY_ONE_ANS("There's a possible conflict between trust services!"),
+	
 	BBB_ACCEPT("Is the result of the Basic Building Block acceptable?"),
 	BBB_ACCEPT_ANS("The result of the Basic Building Block is not acceptable!"),
 	

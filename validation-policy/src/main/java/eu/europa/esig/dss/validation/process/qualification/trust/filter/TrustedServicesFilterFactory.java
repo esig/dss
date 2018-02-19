@@ -25,8 +25,8 @@ public final class TrustedServicesFilterFactory {
 		return new ServiceByCountryFilter(countryCode);
 	}
 
-	public static TrustedServiceFilter createUniqueServiceFilter(CertificateWrapper rootCertificate) {
-		return new UniqueServiceFilter(rootCertificate);
+	public static TrustedServiceFilter createUniqueServiceFilter(CertificateWrapper endEntityCertificate) {
+		return new UniqueServiceFilter(endEntityCertificate);
 	}
 
 }

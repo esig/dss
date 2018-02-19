@@ -22,11 +22,14 @@ class TypeByCertificatePostEIDAS implements TypeStrategy {
 
 		boolean noneType = !(esign || eseal || web);
 
-		if (qcCompliant && (noneType || esign)) {
+		// multiple qcTypes are possible (mistake) but MUST be overruled by the trusted list
+		boolean onlyOne = esign ^ eseal ^ web;
+
+		if (qcCompliant && (noneType || (esign && onlyOne))) {
 			return Type.ESIGN;
-		} else if (qcCompliant && eseal) {
+		} else if (qcCompliant && eseal && onlyOne) {
 			return Type.ESEAL;
-		} else if (qcCompliant && web) {
+		} else if (qcCompliant && web && onlyOne) {
 			return Type.WSA;
 		} else {
 			return Type.UNKNOWN;

@@ -6,6 +6,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateQualification;
 import eu.europa.esig.dss.validation.ValidationTime;
 import eu.europa.esig.dss.validation.process.Chain;
@@ -13,6 +14,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.CaQcCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.ForEsigCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.GrantedStatusCheck;
+import eu.europa.esig.dss.validation.process.qualification.certificate.checks.IsAbleToSelectOneTrustService;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.QSCDCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.QualifiedCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.ServiceConsistencyCheck;
@@ -74,35 +76,40 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 
 		ChainItem<XmlValidationCertificateQualification> item = firstItem = item = hasCaQc(caqcServicesAtTime);
 
-		// 2. Filter by Granted
+		// 2.a Filter by Granted
 		TrustedServiceFilter filterByGranted = TrustedServicesFilterFactory.createFilterByGranted();
 		caqcServicesAtTime = filterByGranted.filter(caqcServicesAtTime);
 
-		// 3. Filter one trust service
-		TrustedServiceFilter filterUnique = TrustedServicesFilterFactory.createUniqueServiceFilter(rootCertificate);
-		caqcServicesAtTime = filterUnique.filter(caqcServicesAtTime);
-
 		item = item.setNextItem(hasGrantedStatus(caqcServicesAtTime));
+
+		if (Utils.collectionSize(caqcServicesAtTime) > 1) {
+
+			// 2.b Filter one trust service
+			TrustedServiceFilter filterUnique = TrustedServicesFilterFactory.createUniqueServiceFilter(signingCertificate);
+			caqcServicesAtTime = filterUnique.filter(caqcServicesAtTime);
+
+			item = item.setNextItem(isAbleToSelectOneTrustService(caqcServicesAtTime));
+		}
 
 		TrustedServiceWrapper selectedTrustService = !caqcServicesAtTime.isEmpty() ? caqcServicesAtTime.get(0) : null;
 
-		// 4. Consistency of trust services ?
+		// 3. Consistency of trust services ?
 		item = item.setNextItem(serviceConsistency(selectedTrustService));
 
-		// 5. Trusted certificate matches the trust service properties ?
+		// 4. Trusted certificate matches the trust service properties ?
 		item = item.setNextItem(isTrustedCertificateMatchTrustService(selectedTrustService));
 
-		// 6. QC?
+		// 5. QC?
 		QualificationStrategy qcStrategy = QualificationStrategyFactory.createQualificationFromCertAndTL(signingCertificate, selectedTrustService);
 		QualifiedStatus qualifiedStatus = qcStrategy.getQualifiedStatus();
 		item = item.setNextItem(isQualified(qualifiedStatus));
 
-		// 7. Type?
+		// 6. Type?
 		TypeStrategy typeStrategy = TypeStrategyFactory.createTypeFromCertAndTL(signingCertificate, selectedTrustService, qualifiedStatus);
 		Type type = typeStrategy.getType();
 		item = item.setNextItem(isForEsig(type));
 
-		// 8. QSCD ?
+		// 7. QSCD ?
 		QSCDStrategy qscdStrategy = QSCDStrategyFactory.createQSCDFromCertAndTL(signingCertificate, selectedTrustService, qualifiedStatus);
 		QSCDStatus qscdStatus = qscdStrategy.getQSCDStatus();
 		item = item.setNextItem(isQscd(qscdStatus));
@@ -124,6 +131,10 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 
 	private ChainItem<XmlValidationCertificateQualification> hasGrantedStatus(List<TrustedServiceWrapper> caqcServicesAtTime) {
 		return new GrantedStatusCheck(result, caqcServicesAtTime, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlValidationCertificateQualification> isAbleToSelectOneTrustService(List<TrustedServiceWrapper> caqcServicesAtTime) {
+		return new IsAbleToSelectOneTrustService(result, caqcServicesAtTime, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> serviceConsistency(TrustedServiceWrapper selectedTrustService) {
