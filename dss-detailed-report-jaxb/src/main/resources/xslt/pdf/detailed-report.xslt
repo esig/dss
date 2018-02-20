@@ -90,6 +90,9 @@
 					<xsl:attribute name="flow-name">xsl-region-body</xsl:attribute>
 					<xsl:attribute name="font-size">9pt</xsl:attribute>
 					
+					<xsl:apply-templates select="dss:Certificate"/>
+					<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='CERTIFICATE']"/>
+					
 					<xsl:apply-templates select="dss:Signatures"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='SIGNATURE']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='COUNTER_SIGNATURE']"/>
@@ -146,6 +149,38 @@
     	<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
         	<xsl:apply-templates/>
    		</xsl:if>
+    </xsl:template>
+    
+    <xsl:template match="dss:Certificate">
+		<fo:block>
+			<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
+	        <xsl:variable name="indicationColor">
+	        	<xsl:choose>
+					<xsl:when test="$indicationText='PASSED'">green</xsl:when>
+					<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
+					<xsl:when test="$indicationText='FAILED'">red</xsl:when>
+					<xsl:otherwise>grey</xsl:otherwise>
+				</xsl:choose>
+	        </xsl:variable>
+		
+    		<xsl:attribute name="id"><xsl:value-of select="@Id" /></xsl:attribute>
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+       		<xsl:attribute name="background-color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
+       		<xsl:attribute name="color">white</xsl:attribute>
+       		<xsl:attribute name="padding">5px</xsl:attribute>
+       		<xsl:attribute name="margin-top">15px</xsl:attribute>
+       		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
+	    	Certificate
+    	</fo:block>
+       	<xsl:apply-templates/>
+       	<fo:block>
+			<xsl:attribute name="margin-left">10px</xsl:attribute>	
+			<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
+			<xsl:call-template name="analysis-conclusion">
+				<xsl:with-param name="Conclusion" select="dss:Conclusion" />
+			</xsl:call-template>
+		</fo:block>
     </xsl:template>
     
 	<xsl:template match="dss:ValidationProcessBasicSignatures">
@@ -322,7 +357,6 @@
     <xsl:template match="dss:ValidationSignatureQualification">
 		<fo:block>
 			<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
-	        <xsl:variable name="idSig" select="@Id" />
 	        <xsl:variable name="indicationColor">
 	        	<xsl:choose>
 					<xsl:when test="$indicationText='PASSED'">green</xsl:when>
@@ -339,18 +373,36 @@
        		<xsl:attribute name="padding">5px</xsl:attribute>
        		<xsl:attribute name="margin-top">15px</xsl:attribute>
        		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
-    		Qualification Signature <xsl:value-of select="@Id"/>
+    		Qualification Signature : <xsl:value-of select="@SignatureQualification"/>
     	</fo:block>
-    	<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
-        	<xsl:apply-templates/>
-        	<fo:block>
-				<xsl:attribute name="margin-left">10px</xsl:attribute>	
-				<xsl:attribute name="page-break-inside">avoid</xsl:attribute>
-				<xsl:call-template name="analysis-conclusion">
-					<xsl:with-param name="Conclusion" select="dss:Conclusion" />
-				</xsl:call-template>
-			</fo:block>
-   		</xsl:if>
+    	
+       	<xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="dss:ValidationCertificateQualification">
+		<fo:block>
+			<xsl:variable name="indicationText" select="dss:Conclusion/dss:Indication/text()"/>
+	        <xsl:variable name="indicationColor">
+	        	<xsl:choose>
+					<xsl:when test="$indicationText='PASSED'">green</xsl:when>
+					<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
+					<xsl:when test="$indicationText='FAILED'">red</xsl:when>
+					<xsl:otherwise>grey</xsl:otherwise>
+				</xsl:choose>
+	        </xsl:variable>
+		
+			<xsl:attribute name="keep-with-next">always</xsl:attribute>
+			<xsl:attribute name="font-weight">bold</xsl:attribute>
+       		<xsl:attribute name="background-color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
+       		<xsl:attribute name="color">white</xsl:attribute>
+       		<xsl:attribute name="padding">5px</xsl:attribute>
+       		<xsl:attribute name="margin-top">15px</xsl:attribute>
+       		<xsl:attribute name="margin-bottom">5px</xsl:attribute>
+			
+			<xsl:value-of select="@CertificateQualification"/> @ <xsl:value-of select="@ValidationTime"/>
+    	</fo:block>
+        
+        <xsl:apply-templates/>
     </xsl:template>
     
     <xsl:template match="dss:Conclusion" />
