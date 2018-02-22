@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.tsl.OtherTrustedList;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
 import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLPointer;
@@ -72,6 +73,8 @@ public class TSLValidationJob {
 	private boolean checkLOTLSignature = true;
 	private boolean checkTSLSignatures = true;
 	private List<String> filterTerritories;
+
+	private List<OtherTrustedList> otherTrustedLists;
 
 	public void setExecutorService(ExecutorService executorService) {
 		if (this.executorService != null && !this.executorService.isShutdown()) {
@@ -141,6 +144,16 @@ public class TSLValidationJob {
 
 	public void setFilterTerritories(List<String> filterTerritories) {
 		this.filterTerritories = filterTerritories;
+	}
+
+	/**
+	 * This parameter allows to add non EU trusted lists.
+	 * 
+	 * @param otherTrustedLists
+	 *            a list of additional trusted lists to be supported
+	 */
+	public void setOtherTrustedLists(List<OtherTrustedList> otherTrustedLists) {
+		this.otherTrustedLists = otherTrustedLists;
 	}
 
 	public void initRepository() {
@@ -258,6 +271,8 @@ public class TSLValidationJob {
 		}
 
 		analyzeCountryPointers(parseResult.getPointers(), newLotl);
+
+		analyzeNonEUCountryPointers();
 
 		repository.synchronize();
 
@@ -402,6 +417,25 @@ public class TSLValidationJob {
 			}
 		}
 
+		storeParseResults(futureParseResults);
+		storeValidationResults(futureValidationResults);
+	}
+
+	private void analyzeNonEUCountryPointers() {
+		if (Utils.isCollectionNotEmpty(otherTrustedLists)) {
+			List<TSLPointer> pointers = new ArrayList<TSLPointer>();
+			for (OtherTrustedList otherTrustedList : otherTrustedLists) {
+				TSLPointer customPointer = new TSLPointer();
+				customPointer.setTerritory(otherTrustedList.getCountryCode());
+				customPointer.setUrl(otherTrustedList.getUrl());
+				customPointer.setPotentialSigners(otherTrustedList.getTrustStore().getCertificates());
+				pointers.add(customPointer);
+			}
+			analyzeCountryPointers(pointers, false);
+		}
+	}
+
+	private void storeParseResults(List<Future<TSLParserResult>> futureParseResults) {
 		for (Future<TSLParserResult> futureParseResult : futureParseResults) {
 			try {
 				TSLParserResult tslParserResult = futureParseResult.get();
@@ -410,8 +444,6 @@ public class TSLValidationJob {
 				LOG.error("Unable to get parsing result : " + e.getMessage(), e);
 			}
 		}
-
-		storeValidationResults(futureValidationResults);
 	}
 
 	private void storeValidationResults(List<Future<TSLValidationResult>> futureValidationResults) {
