@@ -3,6 +3,7 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.t
 import java.util.List;
 
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import eu.europa.esig.dss.validation.process.qualification.certificate.QualifiedStatus;
 import eu.europa.esig.dss.validation.process.qualification.certificate.Type;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
@@ -25,6 +26,10 @@ class TypeByTL implements TypeStrategy {
 
 		// overrules are only applicable when the certificate is qualified (cert + TL)
 		if (QualifiedStatus.isQC(qualified)) {
+
+			if (EIDASUtils.isPreEIDAS(trustedService.getStartDate())) {
+				return Type.ESIGN;
+			}
 
 			List<String> usageQualifiers = ServiceQualification.getUsageQualifiers(trustedService.getCapturedQualifiers());
 
