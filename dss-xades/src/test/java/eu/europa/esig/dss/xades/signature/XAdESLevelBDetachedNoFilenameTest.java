@@ -47,6 +47,8 @@ public class XAdESLevelBDetachedNoFilenameTest extends AbstractPkiFactoryTestDoc
 	@Before
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+		// DSS-1334
+		documentToSign.setName(null);
 
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());

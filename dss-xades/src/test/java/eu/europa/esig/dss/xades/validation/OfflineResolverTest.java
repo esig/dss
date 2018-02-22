@@ -102,7 +102,7 @@ public class OfflineResolverTest {
 		// document name + no document in the list
 		when(attr.getNodeValue()).thenReturn("sample.xml");
 		ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
-		assertTrue(resolver.engineCanResolveURI(context));
+		assertFalse(resolver.engineCanResolveURI(context));
 
 		// will throw ResourceResolverException
 		resolver.engineResolveURI(context);
