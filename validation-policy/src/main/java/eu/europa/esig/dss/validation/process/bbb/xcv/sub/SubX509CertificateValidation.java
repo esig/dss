@@ -111,6 +111,9 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(revocationInfoAccessPresent(currentCertificate, subContext));
 
+		// MUST check expiration before revocation (ocsp-no-check is only usable within the certificate validity)
+		item = item.setNextItem(certificateExpiration(currentCertificate, subContext));
+
 		item = item.setNextItem(certificateRevoked(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateOnHold(currentCertificate, subContext));
@@ -126,7 +129,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 			item = item.setNextItem(idPkixOcspNoCheck());
 		}
 
-		item = item.setNextItem(certificateExpiration(currentCertificate, subContext));
 	}
 
 	/*
