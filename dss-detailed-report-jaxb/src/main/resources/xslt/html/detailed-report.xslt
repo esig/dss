@@ -488,7 +488,7 @@
 						<xsl:value-of select="@CertificateQualification"/>	       			
 	       			</span>
 			        
-		       		Certificate Qualification
+		       		Certificate Qualification @ <xsl:value-of select="@ValidationTime" />	       
 		        </div>
 	    		<div>
 	    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
