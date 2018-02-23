@@ -72,7 +72,7 @@ public class OfflineResolver extends ResourceResolverSpi {
 			LOG.debug("I state that I can resolve '{}' (external document)", documentUri);
 			return true;
 		} else {
-			LOG.warn("I state that I cannot resolve '{}' (external document)", documentUri);
+			LOG.debug("I state that I cannot resolve '{}' (external document)", documentUri);
 			return false;
 		}
 
