@@ -33,6 +33,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
@@ -107,6 +108,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		checkALevelAndValid(diagnosticData);
 		checkTimestamps(diagnosticData);
 		checkSignatureScopes(diagnosticData);
+		checkCommitmentTypeIndications(diagnosticData);
 	}
 
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
@@ -326,6 +328,15 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
 
 		assertEquals(dateFormat.format(originalSigningDate), dateFormat.format(signatureDate));
+	}
+
+	protected void checkCommitmentTypeIndications(DiagnosticData diagnosticData) {
+		List<String> commitmentTypeIndications = getSignatureParameters().bLevel().getCommitmentTypeIndications();
+		if (Utils.isCollectionNotEmpty(commitmentTypeIndications)) {
+			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+			List<String> foundCommitmentTypeIdentifiers = signatureWrapper.getCommitmentTypeIdentifiers();
+			assertTrue(commitmentTypeIndications.equals(foundCommitmentTypeIdentifiers));
+		}
 	}
 
 }

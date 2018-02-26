@@ -2057,7 +2057,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public CommitmentType getCommitmentTypeIndication() {
-		return null;
+		CommitmentType result = null;
+
+		NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_COMMITMENT_IDENTIFICATION);
+		if (nodeList != null && nodeList.getLength() > 0) {
+			result = new CommitmentType();
+			for (int ii = 0; ii < nodeList.getLength(); ii++) {
+				result.addIdentifier(DomUtils.getValue(nodeList.item(ii), xPathQueryHolder.XPATH_COMITMENT_IDENTIFIERS));
+			}
+		}
+		return result;
 	}
 
 	/**
