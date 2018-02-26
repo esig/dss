@@ -245,10 +245,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * </pre>
 	 */
 	public void incorporateSignedInfo() {
-		if(params.getSignedData() != null){
+		if (params.getSignedData() != null) {
 			LOG.debug("Using explict SignedInfo from parameter");
 			signedInfoDom = DomUtils.buildDOM(params.getSignedData()).getDocumentElement();
-			signedInfoDom = (Element)documentDom.importNode(signedInfoDom, true);
+			signedInfoDom = (Element) documentDom.importNode(signedInfoDom, true);
 			signatureDom.appendChild(signedInfoDom);
 			return;
 		}
@@ -290,7 +290,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * the URI will use the default value: "detached-file".
 	 */
 	private void incorporateReferences() {
-		if(params.getSignedData() != null){
+		if (params.getSignedData() != null) {
 			return;
 		}
 
@@ -339,7 +339,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 *             if an error occurred
 	 */
 	protected void incorporateKeyInfo() throws DSSException {
-		if(params.getSigningCertificate() == null && params.isGenerateTBSWithoutCertificate()) {
+		if (params.getSigningCertificate() == null && params.isGenerateTBSWithoutCertificate()) {
 			LOG.debug("Signing certificate not available and must be added to signature DOM later");
 			return;
 		}
@@ -419,13 +419,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 *
 	 */
 	protected void incorporateObject() {
-        if(params.getSignedAdESObject() != null){
-            LOG.debug("Incorporating signed XAdES Object from parameter");
-            Node signedObjectDom = DomUtils.buildDOM(params.getSignedAdESObject()).getDocumentElement();
-            signedObjectDom = documentDom.importNode(signedObjectDom, true);
-            signatureDom.appendChild(signedObjectDom);
-            return;
-        }
+		if (params.getSignedAdESObject() != null) {
+			LOG.debug("Incorporating signed XAdES Object from parameter");
+			Node signedObjectDom = DomUtils.buildDOM(params.getSignedAdESObject()).getDocumentElement();
+			signedObjectDom = documentDom.importNode(signedObjectDom, true);
+			signatureDom.appendChild(signedObjectDom);
+			return;
+		}
 
 		final Element objectDom = DomUtils.addElement(documentDom, signatureDom, XMLNS, DS_OBJECT);
 
@@ -453,9 +453,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * </pre>
 	 */
 	protected void incorporateReferenceSignedProperties() {
-        if(params.getSignedData() != null){
-            return;
-        }
+		if (params.getSignedData() != null) {
+			return;
+		}
 
 		final Element reference = DomUtils.addElement(documentDom, signedInfoDom, XMLNS, DS_REFERENCE);
 		reference.setAttribute(TYPE, xPathQueryHolder.XADES_SIGNED_PROPERTIES);
@@ -711,7 +711,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * </pre>
 	 */
 	private void incorporateSigningCertificate() {
-		if(params.getSigningCertificate() == null && params.isGenerateTBSWithoutCertificate()) {
+		if (params.getSigningCertificate() == null && params.isGenerateTBSWithoutCertificate()) {
 			return;
 		}
 
@@ -916,38 +916,45 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	/**
 	 * Below follows the schema definition for this element.
-	 * <xsd:element name="CommitmentTypeIndication" type="CommitmentTypeIndicationType"/>
 	 *
-	 * <xsd:complexType name="CommitmentTypeIndicationType"> ...<xsd:sequence> ......
-	 * <xsd:element name="CommitmentTypeId" type="ObjectIdentifierType"/> ......<xsd:choice>
-	 * .........<xsd:element name="ObjectReference" type="xsd:anyURI" maxOccurs="unbounded"/> .........< xsd:element
-	 * name="AllSignedDataObjects"/> ......</xsd:choice>
-	 * ......<xsd:element name="CommitmentTypeQualifiers" type="CommitmentTypeQualifiersListType" minOccurs="0"/> ...
-	 * </xsd:sequence> </xsd:complexType> <xsd:complexType
-	 * name="CommitmentTypeQualifiersListType"> ...<xsd:sequence> ......
-	 * <xsd:element name="CommitmentTypeQualifier" type="AnyType" minOccurs="0" maxOccurs="unbounded"/>
-	 * ...</xsd:sequence> </xsd:complexType>
+	 * <xsd:element name="CommitmentTypeIndication" type="CommitmentTypeIndicationType"/>
+	 * <xsd:complexType name="CommitmentTypeIndicationType">
+	 * ...<xsd:sequence>
+	 * ......<xsd:element name="CommitmentTypeId" type="ObjectIdentifierType"/>
+	 * ......<xsd:choice>
+	 * .........<xsd:element name="ObjectReference" type="xsd:anyURI" maxOccurs="unbounded"/>
+	 * .........<xsd:element name="AllSignedDataObjects"/>
+	 * ......</xsd:choice>
+	 * ......<xsd:element name="CommitmentTypeQualifiers" type="CommitmentTypeQualifiersListType" minOccurs="0"/>
+	 * ...</xsd:sequence>
+	 * </xsd:complexType>
+	 * 
+	 * <xsd:complexType name="CommitmentTypeQualifiersListType">
+	 * ......<xsd:sequence>
+	 * .........<xsd:element name="CommitmentTypeQualifier"* type="AnyType" minOccurs="0" maxOccurs="unbounded"/>
+	 * ......</xsd:sequence>
+	 * </xsd:complexType
 	 */
 	private void incorporateCommitmentTypeIndications() {
 
 		final List<String> commitmentTypeIndications = params.bLevel().getCommitmentTypeIndications();
-		if (commitmentTypeIndications != null) {
-
-			final Element commitmentTypeIndicationDom = DomUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdES,
-					XADES_COMMITMENT_TYPE_INDICATION);
-
-			final Element commitmentTypeIdDom = DomUtils.addElement(documentDom, commitmentTypeIndicationDom, XAdES, XADES_COMMITMENT_TYPE_ID);
+		if (Utils.isCollectionNotEmpty(commitmentTypeIndications)) {
 
 			for (final String commitmentTypeIndication : commitmentTypeIndications) {
-				DomUtils.addTextElement(documentDom, commitmentTypeIdDom, XAdES, XADES_IDENTIFIER, commitmentTypeIndication);
-			}
-			// final Element objectReferenceDom = DSSXMLUtils.addElement(documentDom, commitmentTypeIndicationDom,
-			// XADES, "ObjectReference");
-			// or
-			DomUtils.addElement(documentDom, commitmentTypeIndicationDom, XAdES, XADES_ALL_SIGNED_DATA_OBJECTS);
+				final Element commitmentTypeIndicationDom = DomUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdES,
+						XADES_COMMITMENT_TYPE_INDICATION);
 
-			// final Element commitmentTypeQualifiersDom = DSSXMLUtils.addElement(documentDom,
-			// commitmentTypeIndicationDom, XADES, "CommitmentTypeQualifiers");
+				final Element commitmentTypeIdDom = DomUtils.addElement(documentDom, commitmentTypeIndicationDom, XAdES, XADES_COMMITMENT_TYPE_ID);
+
+				DomUtils.addTextElement(documentDom, commitmentTypeIdDom, XAdES, XADES_IDENTIFIER, commitmentTypeIndication);
+				// final Element objectReferenceDom = DSSXMLUtils.addElement(documentDom, commitmentTypeIndicationDom,
+				// XADES, "ObjectReference");
+				// or
+				DomUtils.addElement(documentDom, commitmentTypeIndicationDom, XAdES, XADES_ALL_SIGNED_DATA_OBJECTS);
+
+				// final Element commitmentTypeQualifiersDom = DSSXMLUtils.addElement(documentDom,
+				// commitmentTypeIndicationDom, XADES, "CommitmentTypeQualifiers");
+			}
 		}
 	}
 

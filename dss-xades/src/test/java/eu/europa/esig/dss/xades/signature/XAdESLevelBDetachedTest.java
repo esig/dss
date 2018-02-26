@@ -20,18 +20,32 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.Assert.fail;
+
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+
 import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -39,6 +53,8 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESLevelBDetachedTest extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelBDetachedTest.class);
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -49,13 +65,26 @@ public class XAdESLevelBDetachedTest extends AbstractPkiFactoryTestDocumentSigna
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+
+		SignerLocation signerLocation = new SignerLocation();
+		signerLocation.setCountry("BE");
+		signerLocation.setLocality("Brussels");
+		signerLocation.setStreet("Anspach");
+		signatureParameters.bLevel().setSignerLocation(signerLocation);
+
+		signatureParameters.bLevel().setCommitmentTypeIndications(
+				Arrays.asList("http://uri.etsi.org/01903/v1.2.2#ProofOfSender", "http://uri.etsi.org/01903/v1.2.2#ProofOfCreation"));
+
+		signatureParameters.bLevel().setClaimedSignerRoles(Arrays.asList("Manager", "Administrator"));
+
+		signatureParameters.setAddX509SubjectName(true);
 
 		service = new XAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 	}
 
 	@Override
@@ -75,6 +104,26 @@ public class XAdESLevelBDetachedTest extends AbstractPkiFactoryTestDocumentSigna
 	}
 
 	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
+
+		try (FileInputStream xsd1 = new FileInputStream("src/test/resources/xsd/XAdES01903v132-201601.xsd");
+				FileInputStream xsd2 = new FileInputStream("src/test/resources/xsd/XAdES01903v141-201601.xsd");
+				ByteArrayInputStream xmlIS = new ByteArrayInputStream(byteArray)) {
+
+			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			Schema schema = sf.newSchema(new Source[] { new StreamSource(xsd1), new StreamSource(xsd2) });
+
+			Validator validator = schema.newValidator();
+			validator.validate(new StreamSource(xmlIS));
+
+		} catch (Exception e) {
+			LOG.error("Invalid XML", e);
+			fail(e.getMessage());
+		}
+	}
+
+	@Override
 	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
 		return service;
 	}
@@ -91,12 +140,12 @@ public class XAdESLevelBDetachedTest extends AbstractPkiFactoryTestDocumentSigna
 
 	@Override
 	protected boolean isBaselineT() {
-		return false;
+		return true;
 	}
 
 	@Override
 	protected boolean isBaselineLTA() {
-		return false;
+		return true;
 	}
 
 	@Override
