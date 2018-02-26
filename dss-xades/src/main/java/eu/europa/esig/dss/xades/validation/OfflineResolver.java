@@ -121,9 +121,11 @@ public class OfflineResolver extends ResourceResolverSpi {
 	}
 
 	private DSSDocument getDocument(final String documentUri) {
-		for (final DSSDocument dssDocument : documents) {
-			if (isRightDocument(documentUri, dssDocument)) {
-				return dssDocument;
+		if (Utils.isCollectionNotEmpty(documents)) {
+			for (final DSSDocument dssDocument : documents) {
+				if (isRightDocument(documentUri, dssDocument)) {
+					return dssDocument;
+				}
 			}
 		}
 		return null;
@@ -150,9 +152,11 @@ public class OfflineResolver extends ResourceResolverSpi {
 	}
 
 	private boolean isDocumentNamesNotDefined() {
-		for (final DSSDocument dssDocument : documents) {
-			if (Utils.isStringNotEmpty(dssDocument.getName())) {
-				return false;
+		if (Utils.isCollectionNotEmpty(documents)) {
+			for (final DSSDocument dssDocument : documents) {
+				if (Utils.isStringNotEmpty(dssDocument.getName())) {
+					return false;
+				}
 			}
 		}
 		return true;

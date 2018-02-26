@@ -1268,7 +1268,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		try {
 
 			final XMLSignature santuarioSignature = new XMLSignature(signatureElement, "");
-			santuarioSignature.addResourceResolver(new OfflineResolver(detachedContents, getSignatureAlgorithm().getDigestAlgorithm()));
+			if (Utils.isCollectionNotEmpty(detachedContents)) {
+				santuarioSignature.addResourceResolver(new OfflineResolver(detachedContents, getSignatureAlgorithm().getDigestAlgorithm()));
+			}
 
 			boolean coreValidity = false;
 			final List<CertificateValidity> certificateValidityList = getSigningCertificateValidityList(santuarioSignature, signatureCryptographicVerification,
