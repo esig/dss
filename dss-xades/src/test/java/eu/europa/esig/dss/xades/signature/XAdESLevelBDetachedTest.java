@@ -36,11 +36,14 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
@@ -49,7 +52,10 @@ import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.x509.CertificatePool;
+import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESLevelBDetachedTest extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
@@ -82,6 +88,18 @@ public class XAdESLevelBDetachedTest extends AbstractPkiFactoryTestDocumentSigna
 		signatureParameters.bLevel().setClaimedSignerRoles(Arrays.asList("Manager", "Administrator"));
 
 		signatureParameters.setAddX509SubjectName(true);
+
+		TimeStampToken tst1 = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA512,
+				DSSUtils.digest(DigestAlgorithm.SHA512, documentToSign));
+
+		TimestampToken contentTimestamp1 = new TimestampToken(tst1, TimestampType.CONTENT_TIMESTAMP, new CertificatePool());
+
+		TimeStampToken tst2 = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA256,
+				DSSUtils.digest(DigestAlgorithm.SHA256, documentToSign));
+
+		TimestampToken contentTimestamp2 = new TimestampToken(tst2, TimestampType.CONTENT_TIMESTAMP, new CertificatePool());
+
+		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp1, contentTimestamp2));
 
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

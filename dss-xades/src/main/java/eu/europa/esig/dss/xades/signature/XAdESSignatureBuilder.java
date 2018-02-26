@@ -434,6 +434,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		qualifyingPropertiesDom.setAttribute(TARGET, "#" + deterministicId);
 
 		incorporateSignedProperties();
+
 	}
 
 	/**
@@ -588,6 +589,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		signedPropertiesDom.setAttribute(ID, "xades-" + deterministicId);
 
 		incorporateSignedSignatureProperties();
+
+		incorporateSignedDataObjectProperties();
 	}
 
 	/**
@@ -610,15 +613,12 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 		incorporateSigningCertificate();
 
-		incorporateSignedDataObjectProperties();
-
 		incorporatePolicy();
 
 		incorporateSignatureProductionPlace();
 
 		incorporateSignerRole();
 
-		incorporateCommitmentTypeIndications();
 	}
 
 	private void incorporatePolicy() {
@@ -774,6 +774,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			MimeType dataObjectFormatMimeType = getReferenceMimeType(reference);
 			DomUtils.setTextNode(documentDom, mimeTypeDom, dataObjectFormatMimeType.getMimeTypeString());
 		}
+
+		incorporateCommitmentTypeIndications();
 
 		incorporateContentTimestamps();
 	}
