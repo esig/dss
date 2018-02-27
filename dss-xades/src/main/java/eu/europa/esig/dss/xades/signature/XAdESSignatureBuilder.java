@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.security.auth.x500.X500Principal;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -805,27 +806,21 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		if (contentTimestamps == null) {
 			return;
 		}
-		Element allDataObjectsTimestampDom = null;
-		Element individualDataObjectsTimestampDom = null;
-		for (final TimestampToken contentTimestamp : contentTimestamps) {
 
+		for (final TimestampToken contentTimestamp : contentTimestamps) {
+			final String timestampId = "TS-" + UUID.randomUUID().toString();
 			final TimestampType timeStampType = contentTimestamp.getTimeStampType();
 			if (TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timeStampType)) {
-
-				if (allDataObjectsTimestampDom == null) {
-
-					allDataObjectsTimestampDom = DomUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdES, XADES_ALL_DATA_OBJECTS_TIME_STAMP);
-				}
+				Element allDataObjectsTimestampDom = DomUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdES, XADES_ALL_DATA_OBJECTS_TIME_STAMP);
+				allDataObjectsTimestampDom.setAttribute(ID, timestampId);
 				addTimestamp(allDataObjectsTimestampDom, contentTimestamp);
-
 			} else if (TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP.equals(timeStampType)) {
-
-				if (individualDataObjectsTimestampDom == null) {
-
-					individualDataObjectsTimestampDom = DomUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdES,
-							XADES_INDIVIDUAL_DATA_OBJECTS_TIME_STAMP);
-				}
+				Element individualDataObjectsTimestampDom = DomUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdES,
+						XADES_INDIVIDUAL_DATA_OBJECTS_TIME_STAMP);
+				individualDataObjectsTimestampDom.setAttribute(ID, timestampId);
 				addTimestamp(individualDataObjectsTimestampDom, contentTimestamp);
+			} else {
+				throw new DSSException("Only types ALL_DATA_OBJECTS_TIMESTAMP and INDIVIDUAL_DATA_OBJECTS_TIMESTAMP are allowed");
 			}
 		}
 	}
@@ -1011,10 +1006,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				timestampElement.appendChild(timestampIncludeElement);
 			}
 		}
-		final Element canonicalizationMethodElement = documentDom.createElementNS(XMLNS, DS_CANONICALIZATION_METHOD);
-		canonicalizationMethodElement.setAttribute(ALGORITHM, token.getCanonicalizationMethod());
 
-		timestampElement.appendChild(canonicalizationMethodElement);
+		String canonicalizationMethod = token.getCanonicalizationMethod();
+		if (Utils.isStringNotEmpty(canonicalizationMethod)) {
+			final Element canonicalizationMethodElement = documentDom.createElementNS(XMLNS, DS_CANONICALIZATION_METHOD);
+			canonicalizationMethodElement.setAttribute(ALGORITHM, canonicalizationMethod);
+			timestampElement.appendChild(canonicalizationMethodElement);
+		}
 
 		Element encapsulatedTimestampElement = documentDom.createElementNS(XAdES, XADES_ENCAPSULATED_TIME_STAMP);
 		encapsulatedTimestampElement.setTextContent(Utils.toBase64(token.getEncoded()));

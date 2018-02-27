@@ -89,15 +89,13 @@ public class XAdESLevelBDetachedTest extends AbstractPkiFactoryTestDocumentSigna
 
 		signatureParameters.setAddX509SubjectName(true);
 
-		TimeStampToken tst1 = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA512,
-				DSSUtils.digest(DigestAlgorithm.SHA512, documentToSign));
+		TimeStampToken tst1 = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA512, DSSUtils.digest(DigestAlgorithm.SHA512, documentToSign));
 
-		TimestampToken contentTimestamp1 = new TimestampToken(tst1, TimestampType.CONTENT_TIMESTAMP, new CertificatePool());
+		TimestampToken contentTimestamp1 = new TimestampToken(tst1, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP, new CertificatePool());
 
-		TimeStampToken tst2 = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA256,
-				DSSUtils.digest(DigestAlgorithm.SHA256, documentToSign));
+		TimeStampToken tst2 = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, documentToSign));
 
-		TimestampToken contentTimestamp2 = new TimestampToken(tst2, TimestampType.CONTENT_TIMESTAMP, new CertificatePool());
+		TimestampToken contentTimestamp2 = new TimestampToken(tst2, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP, new CertificatePool());
 
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp1, contentTimestamp2));
 
@@ -112,6 +110,7 @@ public class XAdESLevelBDetachedTest extends AbstractPkiFactoryTestDocumentSigna
 
 	@Override
 	protected Reports getValidationReport(final DSSDocument signedDocument) {
+
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();

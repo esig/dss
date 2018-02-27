@@ -280,6 +280,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 				TimestampType type = TimestampType.valueOf(timestampType);
 				switch (type) {
 				case CONTENT_TIMESTAMP:
+				case ALL_DATA_OBJECTS_TIMESTAMP:
+				case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
 					foundContentTimeStamp = true;
 					break;
 				case SIGNATURE_TIMESTAMP:
