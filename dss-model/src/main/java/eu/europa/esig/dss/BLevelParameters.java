@@ -166,7 +166,7 @@ public class BLevelParameters implements Serializable {
 	}
 
 	/**
-	 * Set the commitment type indications
+	 * Set the commitment type indications (predefined values are available in {@code CommitmentType})
 	 * 
 	 * @param commitmentTypeIndications
 	 *            a list of commitment type indications
