@@ -1,4 +1,4 @@
-package known.issues;
+package eu.europa.esig.dss.xades.extension;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class XAdESBWithoutSignedDataObjectPropertiesToLTATest extends PKIFactoryAccess {
+public class ExtendXAdESBWithoutSignedDataObjectPropertiesToLTATest extends PKIFactoryAccess {
 
 	@Test
 	public void test() throws Exception {
