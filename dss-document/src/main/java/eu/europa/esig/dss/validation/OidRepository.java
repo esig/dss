@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import eu.europa.esig.dss.CertificatePolicyOids;
-import eu.europa.esig.dss.EtsiOid;
+import eu.europa.esig.dss.ExtendedKeyUsageOids;
+import eu.europa.esig.dss.OidDescription;
 import eu.europa.esig.dss.QCStatementOids;
 
 public class OidRepository {
@@ -12,10 +13,13 @@ public class OidRepository {
 	private static final Map<String, String> repository = new HashMap<String, String>();
 
 	static {
-		for (EtsiOid oid : CertificatePolicyOids.values()) {
+		for (OidDescription oid : CertificatePolicyOids.values()) {
 			repository.put(oid.getOid(), oid.getDescription());
 		}
-		for (EtsiOid oid : QCStatementOids.values()) {
+		for (OidDescription oid : QCStatementOids.values()) {
+			repository.put(oid.getOid(), oid.getDescription());
+		}
+		for (ExtendedKeyUsageOids oid : ExtendedKeyUsageOids.values()) {
 			repository.put(oid.getOid(), oid.getDescription());
 		}
 	}

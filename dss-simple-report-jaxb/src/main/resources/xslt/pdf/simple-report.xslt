@@ -262,6 +262,22 @@
 						<fo:block>
 							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
        						<xsl:attribute name="font-weight">bold</xsl:attribute>
+							Best signature time : 
+						</fo:block>
+					</fo:table-cell>
+					<fo:table-cell>
+						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+							<xsl:value-of select="dss:BestSignatureTime"/>
+						</fo:block>
+					</fo:table-cell>
+				</fo:table-row>
+				
+				<fo:table-row>
+					<fo:table-cell>
+						<fo:block>
+							<xsl:attribute name="padding-bottom">3px</xsl:attribute>
+       						<xsl:attribute name="font-weight">bold</xsl:attribute>
 							Signature position : 
 						</fo:block>
 					</fo:table-cell>

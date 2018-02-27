@@ -8,8 +8,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import eu.europa.esig.dss.ExtendedKeyUsageOids;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
@@ -92,7 +94,15 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public boolean isIdKpOCSPSigning() {
-		return Utils.isTrue(certificate.isIdKpOCSPSigning());
+		List<XmlOID> extendedKeyUsages = certificate.getExtendedKeyUsages();
+		if (Utils.isCollectionNotEmpty(extendedKeyUsages)) {
+			for (XmlOID xmlOID : extendedKeyUsages) {
+				if (Utils.areStringsEqual(ExtendedKeyUsageOids.OCSP_SIGNING.getOid(), xmlOID.getValue())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public Date getNotBefore() {
@@ -137,38 +147,43 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	public String getCommonName() {
-		String cn = certificate.getCommonName();
-		return cn == null ? Utils.EMPTY_STRING : cn;
+		return certificate.getCommonName();
 	}
 
 	public String getCountryName() {
-		String c = certificate.getCountryName();
-		return c == null ? Utils.EMPTY_STRING : c;
+		return certificate.getCountryName();
 	}
 
 	public String getGivenName() {
-		String givenName = certificate.getGivenName();
-		return givenName == null ? Utils.EMPTY_STRING : givenName;
+		return certificate.getGivenName();
 	}
 
 	public String getOrganizationName() {
-		String o = certificate.getOrganizationName();
-		return o == null ? Utils.EMPTY_STRING : o;
+		return certificate.getOrganizationName();
 	}
 
 	public String getOrganizationalUnit() {
-		String ou = certificate.getOrganizationalUnit();
-		return ou == null ? Utils.EMPTY_STRING : ou;
+		return certificate.getOrganizationalUnit();
+	}
+
+	public String getEmail() {
+		return certificate.getEmail();
+	}
+
+	public String getLocality() {
+		return certificate.getLocality();
+	}
+
+	public String getState() {
+		return certificate.getState();
 	}
 
 	public String getSurname() {
-		String surname = certificate.getSurname();
-		return surname == null ? Utils.EMPTY_STRING : surname;
+		return certificate.getSurname();
 	}
 
 	public String getPseudo() {
-		String pseudo = certificate.getPseudonym();
-		return pseudo == null ? Utils.EMPTY_STRING : pseudo;
+		return certificate.getPseudonym();
 	}
 
 	public List<XmlDigestAlgoAndValue> getDigestAlgoAndValues() {
@@ -180,6 +195,10 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return Utils.isCollectionNotEmpty(tsps);
 	}
 
+	public List<XmlTrustedServiceProvider> getTrustServiceProviders() {
+		return certificate.getTrustedServiceProviders();
+	}
+
 	public List<TrustedServiceWrapper> getTrustedServices() {
 		List<TrustedServiceWrapper> result = new ArrayList<TrustedServiceWrapper>();
 		List<XmlTrustedServiceProvider> tsps = certificate.getTrustedServiceProviders();
@@ -189,6 +208,8 @@ public class CertificateWrapper extends AbstractTokenProxy {
 				if (Utils.isCollectionNotEmpty(trustedServices)) {
 					for (XmlTrustedService trustedService : trustedServices) {
 						TrustedServiceWrapper wrapper = new TrustedServiceWrapper();
+						wrapper.setTspName(tsp.getTSPName());
+						wrapper.setServiceName(trustedService.getServiceName());
 						wrapper.setCountryCode(tsp.getCountryCode());
 						wrapper.setStatus(trustedService.getStatus());
 						wrapper.setType(trustedService.getServiceType());
@@ -235,37 +256,40 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return certificate.getOCSPAccessUrls();
 	}
 
-	public List<String> getPolicyIds() {
-		List<XmlOID> certificatePolicyIds = certificate.getCertificatePolicyIds();
+	public List<String> getCpsUrls() {
+		List<String> result = new ArrayList<String>();
+		List<XmlCertificatePolicy> certificatePolicyIds = certificate.getCertificatePolicies();
 		if (Utils.isCollectionNotEmpty(certificatePolicyIds)) {
-			return getOidValues(certificatePolicyIds);
-		} else {
-			return Collections.emptyList();
+			for (XmlCertificatePolicy xmlCertificatePolicy : certificatePolicyIds) {
+				if (Utils.isStringNotBlank(xmlCertificatePolicy.getCpsUrl())) {
+					result.add(xmlCertificatePolicy.getCpsUrl());
+				}
+			}
 		}
+		return result;
+	}
+
+	public List<String> getPolicyIds() {
+		List<XmlCertificatePolicy> certificatePolicyIds = certificate.getCertificatePolicies();
+		return getOidValues(certificatePolicyIds);
 	}
 
 	public List<String> getQCStatementIds() {
 		List<XmlOID> certificateQCStatementIds = certificate.getQCStatementIds();
-		if (Utils.isCollectionNotEmpty(certificateQCStatementIds)) {
-			return getOidValues(certificateQCStatementIds);
-		} else {
-			return Collections.emptyList();
-		}
+		return getOidValues(certificateQCStatementIds);
 	}
 
 	public List<String> getQCTypes() {
 		List<XmlOID> certificateQCTypeIds = certificate.getQCTypes();
-		if (Utils.isCollectionNotEmpty(certificateQCTypeIds)) {
-			return getOidValues(certificateQCTypeIds);
-		} else {
-			return Collections.emptyList();
-		}
+		return getOidValues(certificateQCTypeIds);
 	}
 
-	private List<String> getOidValues(List<XmlOID> xmlOids) {
+	private List<String> getOidValues(List<? extends XmlOID> xmlOids) {
 		List<String> result = new ArrayList<String>();
-		for (XmlOID xmlOID : xmlOids) {
-			result.add(xmlOID.getValue());
+		if (Utils.isCollectionNotEmpty(xmlOids)) {
+			for (XmlOID xmlOID : xmlOids) {
+				result.add(xmlOID.getValue());
+			}
 		}
 		return result;
 	}
@@ -281,6 +305,10 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public byte[] getBinaries() {
 		return certificate.getBase64Encoded();
+	}
+
+	public List<XmlOID> getExtendedKeyUsages() {
+		return certificate.getExtendedKeyUsages();
 	}
 
 }

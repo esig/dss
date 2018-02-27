@@ -13,6 +13,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPSV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.Context;
@@ -34,7 +35,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 	private static final Logger LOG = LoggerFactory.getLogger(ValidationProcessForSignaturesWithArchivalData.class);
 
-	private final XmlConstraintsConclusion validationProcessLongTermData;
+	private final XmlValidationProcessLongTermData validationProcessLongTermData;
 	private final List<XmlValidationProcessTimestamps> validationProcessTimestamps;
 	private final SignatureWrapper signature;
 	private final DiagnosticData diagnosticData;
@@ -97,6 +98,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 */
 		ChainItem<XmlValidationProcessArchivalData> item = firstItem = longTermValidation();
 		if (isValid(validationProcessLongTermData)) {
+			result.setBestSignatureTime(validationProcessLongTermData.getBestSignatureTime());
 			return;
 		}
 

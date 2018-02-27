@@ -35,8 +35,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 	private final Context context;
 	private final SubContext subContext;
 
-	public RevocationFreshnessChecker(RevocationWrapper revocationData, Date validationDate, Context context,
-			SubContext subContext, ValidationPolicy policy) {
+	public RevocationFreshnessChecker(RevocationWrapper revocationData, Date validationDate, Context context, SubContext subContext, ValidationPolicy policy) {
 		super(new XmlRFC());
 
 		this.revocationData = revocationData;
@@ -53,6 +52,9 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 		ChainItem<XmlRFC> item = firstItem = revocationDataAvailable(revocationData);
 
 		if (revocationData != null) {
+
+			result.setId(revocationData.getId());
+
 			/*
 			 * 1) The building block shall get the maximum accepted revocation
 			 * freshness from the X.509 validation constraints for the given
@@ -112,15 +114,13 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 		 * freshness.
 		 */
 		else {
-			return new RevocationDataFreshCheckWithNullConstraint(result, revocationData, validationDate,
-					getFailLevelConstraint());
+			return new RevocationDataFreshCheckWithNullConstraint(result, revocationData, validationDate, getFailLevelConstraint());
 		}
 
 	}
 
 	private ChainItem<XmlRFC> revocationCryptographic(RevocationWrapper revocationData) {
-		CryptographicConstraint cryptographicConstraint = policy.getCertificateCryptographicConstraint(context,
-				subContext);
+		CryptographicConstraint cryptographicConstraint = policy.getCertificateCryptographicConstraint(context, subContext);
 		return new CryptographicCheck<XmlRFC>(result, revocationData, validationDate, cryptographicConstraint);
 	}
 

@@ -80,6 +80,7 @@ public class XPathQueryHolder implements Serializable {
 	public final String XPATH_X509_DATA = XPATH_KEY_INFO + "/ds:X509Data";
 	public final String XPATH__ALL_DATA_OBJECTS_TIMESTAMP = "xades:AllDataObjectsTimeStamp";
 	public final String XPATH__INDIVIDUAL_DATA_OBJECTS_TIMESTAMP = "xades:IndividualDataObjectsTimeStamp";
+	public final String XPATH__COMMITMENT_TYPE_INDICATION = "xades:CommitmentTypeIndication";
 
 	public final String XPATH_KEY_INFO_X509_CERTIFICATE = XPATH_X509_DATA + "/ds:X509Certificate";
 
@@ -118,6 +119,9 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH__POLICY_DIGEST_VALUE = "./xades:SignaturePolicyId/xades:SigPolicyHash/ds:DigestValue";
 	public String XPATH__POLICY_SPURI = "./xades:SignaturePolicyId/xades:SigPolicyQualifiers/xades:SigPolicyQualifier/xades:SPURI";
 	public String XPATH__INCLUDE = "./xades:Include";
+
+	public String XPATH_COMMITMENT_IDENTIFICATION = XPATH_SIGNED_DATA_OBJECT_PROPERTIES + "/" + XPATH__COMMITMENT_TYPE_INDICATION;
+	public String XPATH_COMITMENT_IDENTIFIERS = "./xades:CommitmentTypeId/xades:Identifier";
 
 	public String XPATH__X509_ISSUER_NAME = "./xades:IssuerSerial/ds:X509IssuerName";
 	public String XPATH__X509_SERIAL_NUMBER = "./xades:IssuerSerial/ds:X509SerialNumber";

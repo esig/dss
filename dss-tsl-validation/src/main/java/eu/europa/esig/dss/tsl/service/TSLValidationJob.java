@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.tsl.OtherTrustedList;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
 import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLPointer;
@@ -72,6 +73,8 @@ public class TSLValidationJob {
 	private boolean checkLOTLSignature = true;
 	private boolean checkTSLSignatures = true;
 	private List<String> filterTerritories;
+
+	private List<OtherTrustedList> otherTrustedLists;
 
 	public void setExecutorService(ExecutorService executorService) {
 		if (this.executorService != null && !this.executorService.isShutdown()) {
@@ -143,6 +146,16 @@ public class TSLValidationJob {
 		this.filterTerritories = filterTerritories;
 	}
 
+	/**
+	 * This parameter allows to add non EU trusted lists.
+	 * 
+	 * @param otherTrustedLists
+	 *            a list of additional trusted lists to be supported
+	 */
+	public void setOtherTrustedLists(List<OtherTrustedList> otherTrustedLists) {
+		this.otherTrustedLists = otherTrustedLists;
+	}
+
 	public void initRepository() {
 		LOG.info("Initialization of the TSL repository ...");
 		int loadedTSL = 0;
@@ -179,15 +192,22 @@ public class TSLValidationJob {
 			}
 
 			if (checkTSLSignatures && ((europeanModel != null) && (europeanModel.getParseResult() != null))) {
-				List<TSLPointer> pointers = europeanModel.getParseResult().getPointers();
+				List<TSLPointer> lotlPointers = europeanModel.getParseResult().getPointers();
 				List<Future<TSLValidationResult>> futureValidationResults = new ArrayList<Future<TSLValidationResult>>();
 				Map<String, TSLValidationModel> map = repository.getAllMapTSLValidationModels();
 				for (Entry<String, TSLValidationModel> entry : map.entrySet()) {
 					String countryCode = entry.getKey();
+
 					if (!lotlCode.equals(countryCode)) {
 						TSLValidationModel countryModel = entry.getValue();
-						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), countryCode,
-								getPotentialSigners(pointers, countryCode));
+						OtherTrustedList otherTL = getNonEUTrustedList(countryCode);
+						List<CertificateToken> potentialSigners = null;
+						if (otherTL != null) {
+							potentialSigners = otherTL.getTrustStore().getCertificates();
+						} else {
+							potentialSigners = getPotentialSigners(lotlPointers, countryCode);
+						}
+						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), countryCode, potentialSigners);
 						futureValidationResults.add(executorService.submit(tslValidator));
 					}
 				}
@@ -198,6 +218,17 @@ public class TSLValidationJob {
 			repository.synchronize();
 		}
 		LOG.info(loadedTSL + " loaded TSL from cached files in the repository");
+	}
+
+	private OtherTrustedList getNonEUTrustedList(String countryCode) {
+		if (Utils.isCollectionNotEmpty(otherTrustedLists)) {
+			for (OtherTrustedList otherTrustedList : otherTrustedLists) {
+				if (Utils.areStringsEqual(countryCode, otherTrustedList.getCountryCode())) {
+					return otherTrustedList;
+				}
+			}
+		}
+		return null;
 	}
 
 	public void refresh() {
@@ -258,6 +289,8 @@ public class TSLValidationJob {
 		}
 
 		analyzeCountryPointers(parseResult.getPointers(), newLotl);
+
+		analyzeNonEUCountryPointers();
 
 		repository.synchronize();
 
@@ -402,6 +435,25 @@ public class TSLValidationJob {
 			}
 		}
 
+		storeParseResults(futureParseResults);
+		storeValidationResults(futureValidationResults);
+	}
+
+	private void analyzeNonEUCountryPointers() {
+		if (Utils.isCollectionNotEmpty(otherTrustedLists)) {
+			List<TSLPointer> pointers = new ArrayList<TSLPointer>();
+			for (OtherTrustedList otherTrustedList : otherTrustedLists) {
+				TSLPointer customPointer = new TSLPointer();
+				customPointer.setTerritory(otherTrustedList.getCountryCode());
+				customPointer.setUrl(otherTrustedList.getUrl());
+				customPointer.setPotentialSigners(otherTrustedList.getTrustStore().getCertificates());
+				pointers.add(customPointer);
+			}
+			analyzeCountryPointers(pointers, false);
+		}
+	}
+
+	private void storeParseResults(List<Future<TSLParserResult>> futureParseResults) {
 		for (Future<TSLParserResult> futureParseResult : futureParseResults) {
 			try {
 				TSLParserResult tslParserResult = futureParseResult.get();
@@ -410,8 +462,6 @@ public class TSLValidationJob {
 				LOG.error("Unable to get parsing result : " + e.getMessage(), e);
 			}
 		}
-
-		storeValidationResults(futureValidationResults);
 	}
 
 	private void storeValidationResults(List<Future<TSLValidationResult>> futureValidationResults) {

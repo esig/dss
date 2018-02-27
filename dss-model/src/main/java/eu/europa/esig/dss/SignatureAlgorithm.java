@@ -343,6 +343,12 @@ public enum SignatureAlgorithm {
 		javaAlgorithms.put("SHA256withHMAC", HMAC_SHA256);
 		javaAlgorithms.put("SHA384withHMAC", HMAC_SHA384);
 		javaAlgorithms.put("SHA512withHMAC", HMAC_SHA512);
+
+		javaAlgorithms.put("SHA3-224withHMAC", HMAC_SHA3_224);
+		javaAlgorithms.put("SHA3-256withHMAC", HMAC_SHA3_256);
+		javaAlgorithms.put("SHA3-384withHMAC", HMAC_SHA3_384);
+		javaAlgorithms.put("SHA3-512withHMAC", HMAC_SHA3_512);
+
 		javaAlgorithms.put("RIPEMD160withHMAC", HMAC_RIPEMD160);
 		return javaAlgorithms;
 	}
@@ -468,7 +474,7 @@ public enum SignatureAlgorithm {
 			final MaskGenerationFunction mgf) {
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(digestAlgorithm.getJavaName());
+		sb.append(digestAlgorithm.getName());
 		sb.append("with");
 		sb.append(encryptionAlgorithm.getName());
 		if (mgf != null) {

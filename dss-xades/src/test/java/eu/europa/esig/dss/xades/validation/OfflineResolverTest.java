@@ -41,6 +41,20 @@ public class OfflineResolverTest {
 		resolver.engineResolveURI(context);
 	}
 
+	@Test(expected = ResourceResolverException.class)
+	public void nullListAndNullAttribute() throws ResourceResolverException {
+		OfflineResolver resolver = new OfflineResolver(null, DigestAlgorithm.SHA256);
+
+		Attr attr = null;
+
+		// Empty
+		ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
+		assertFalse(resolver.engineCanResolveURI(context));
+
+		// will throw ResourceResolverException
+		resolver.engineResolveURI(context);
+	}
+
 	@Test
 	public void nullAttributeOneDoc() throws ResourceResolverException {
 		OfflineResolver resolver = new OfflineResolver(Arrays.<DSSDocument> asList(new InMemoryDocument(new byte[] { 1, 2, 3 })), DigestAlgorithm.SHA256);
@@ -102,7 +116,7 @@ public class OfflineResolverTest {
 		// document name + no document in the list
 		when(attr.getNodeValue()).thenReturn("sample.xml");
 		ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
-		assertTrue(resolver.engineCanResolveURI(context));
+		assertFalse(resolver.engineCanResolveURI(context));
 
 		// will throw ResourceResolverException
 		resolver.engineResolveURI(context);

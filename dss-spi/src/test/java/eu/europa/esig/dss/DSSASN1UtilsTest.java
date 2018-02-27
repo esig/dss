@@ -51,10 +51,16 @@ public class DSSASN1UtilsTest {
 	}
 
 	@Test
-	public void getPolicies() {
-		List<String> policyIdentifiers = DSSASN1Utils.getPolicyIdentifiers(certificateWithAIA);
-		assertTrue(Utils.isCollectionNotEmpty(policyIdentifiers));
-		assertTrue(policyIdentifiers.contains("1.3.171.1.1.10.8.1"));
+	public void getCertificatePolicies() {
+		List<CertificatePolicy> policyIdentifiers = DSSASN1Utils.getCertificatePolicies(certificateWithAIA);
+		assertEquals(2, policyIdentifiers.size());
+		CertificatePolicy certificatePolicy1 = policyIdentifiers.get(0);
+		assertEquals("1.3.171.1.1.10.8.1", certificatePolicy1.getOid());
+		assertEquals("https://repository.luxtrust.lu", certificatePolicy1.getCpsUrl());
+
+		CertificatePolicy certificatePolicy2 = policyIdentifiers.get(1);
+		assertEquals("0.4.0.2042.1.3", certificatePolicy2.getOid());
+		assertNull(certificatePolicy2.getCpsUrl());
 	}
 
 	@Test

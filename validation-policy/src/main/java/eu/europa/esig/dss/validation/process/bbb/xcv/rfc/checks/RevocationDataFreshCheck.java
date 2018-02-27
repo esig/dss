@@ -3,6 +3,7 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.validation.policy.RuleUtils;
@@ -20,8 +21,7 @@ public class RevocationDataFreshCheck extends ChainItem<XmlRFC> {
 	private final Date validationDate;
 	private final TimeConstraint timeConstraint;
 
-	public RevocationDataFreshCheck(XmlRFC result, RevocationWrapper revocationData, Date validationDate,
-			TimeConstraint constraint) {
+	public RevocationDataFreshCheck(XmlRFC result, RevocationWrapper revocationData, Date validationDate, TimeConstraint constraint) {
 		super(result, constraint);
 
 		this.revocationData = revocationData;
@@ -48,9 +48,10 @@ public class RevocationDataFreshCheck extends ChainItem<XmlRFC> {
 
 	@Override
 	protected String getAdditionalInfo() {
-		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
 		String nextUpdateString = "not defined";
 		if (revocationData != null && revocationData.getNextUpdate() != null) {
+			SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
+			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 			nextUpdateString = sdf.format(revocationData.getNextUpdate());
 		}
 		Object[] params = new Object[] { nextUpdateString };

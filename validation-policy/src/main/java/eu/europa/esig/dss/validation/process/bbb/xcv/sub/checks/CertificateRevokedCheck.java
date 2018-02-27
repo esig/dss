@@ -2,6 +2,8 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.validation.policy.SubContext;
@@ -18,11 +20,13 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
 public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
 
 	private final CertificateWrapper certificate;
+	private final Date currentTime;
 	private final SubContext subContext;
 
-	public CertificateRevokedCheck(XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint, SubContext subContext) {
+	public CertificateRevokedCheck(XmlSubXCV result, CertificateWrapper certificate, Date currentTime, LevelConstraint constraint, SubContext subContext) {
 		super(result, constraint);
 		this.certificate = certificate;
+		this.currentTime = currentTime;
 		this.subContext = subContext;
 	}
 
@@ -30,6 +34,9 @@ public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
 	protected boolean process() {
 		RevocationWrapper revocationData = certificate.getLatestRevocationData();
 		boolean isRevoked = (revocationData != null) && !revocationData.isStatus() && !CRLReasonEnum.certificateHold.name().equals(revocationData.getReason());
+		if (isRevoked) {
+			isRevoked = revocationData.getRevocationDate() != null && currentTime.after(revocationData.getRevocationDate());
+		}
 		return !isRevoked;
 	}
 
@@ -38,6 +45,7 @@ public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
 		RevocationWrapper revocationData = certificate.getLatestRevocationData();
 		if (revocationData != null && revocationData.getRevocationDate() != null) {
 			SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
+			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 			String revocationDateStr = sdf.format(revocationData.getRevocationDate());
 			Object[] params = new Object[] { revocationData.getReason(), revocationDateStr };
 			return MessageFormat.format(AdditionalInfo.REVOCATION, params);

@@ -28,6 +28,12 @@
 				printMethod="eu.europa.esig.dss.jaxb.parsers.SubIndicationParser.print" />
 		</jaxb:bindings>
 		
+		<jaxb:bindings node="//xs:simpleType[@name='CertificateQualification']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.CertificateQualification" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.CertificateQualificationParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.CertificateQualificationParser.print" />
+		</jaxb:bindings>
+		
 		<jaxb:bindings node="//xs:simpleType[@name='SignatureQualification']">
 			<jaxb:javaType name="eu.europa.esig.dss.validation.SignatureQualification" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.SignatureQualificationParser.parse" 
@@ -38,6 +44,12 @@
 			<jaxb:javaType name="eu.europa.esig.dss.validation.policy.Context" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.ContextParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.ContextParser.print" />
+		</jaxb:bindings>
+				
+		<jaxb:bindings node="//xs:simpleType[@name='ValidationTime']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.ValidationTime" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.ValidationTimeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.ValidationTimeParser.print" />
 		</jaxb:bindings>
 		
 		

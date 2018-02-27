@@ -22,6 +22,7 @@ package eu.europa.esig.dss.tsl;
 
 import java.util.List;
 
+import eu.europa.esig.dss.CertificatePolicy;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -60,8 +61,13 @@ public class PolicyIdCondition extends Condition {
 		 * Certificate policies identifier: 2.5.29.32 (IETF RFC 3280)<br>
 		 * Gets all certificate's policies
 		 */
-		List<String> contextPolicyIdentifiers = DSSASN1Utils.getPolicyIdentifiers(certificateToken);
-		return contextPolicyIdentifiers.contains(policyOid);
+		List<CertificatePolicy> contextPolicyIdentifiers = DSSASN1Utils.getCertificatePolicies(certificateToken);
+		for (CertificatePolicy certificatePolicy : contextPolicyIdentifiers) {
+			if (policyOid.equals(certificatePolicy.getOid())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

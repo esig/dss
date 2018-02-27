@@ -53,7 +53,7 @@
 		<xmlsec.version>2.0.10</xmlsec.version>
 		<xalan.version>2.7.2</xalan.version>
 		<pdfbox.version>2.0.8</pdfbox.version>
-		<httpclient.version>4.5.4</httpclient.version>
+		<httpclient.version>4.5.5</httpclient.version>
 		<rs-api.version>2.0.1</rs-api.version>
 
 		<junit.version>4.12</junit.version>
@@ -86,6 +86,7 @@
 		<module>dss-tsl-jaxb</module>
 		<module>dss-diagnostic-jaxb</module>
 		<module>dss-simple-report-jaxb</module>
+		<module>dss-simple-certificate-report-jaxb</module>
 		<module>dss-detailed-report-jaxb</module>
 		<module>dss-reports</module>
 		<module>validation-policy</module>
@@ -536,6 +537,11 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-simple-certificate-report-jaxb</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>validation-policy</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -670,7 +676,7 @@
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
-						<version>3.0.1</version>
+						<version>3.1.1</version>
 <!-- 						<configuration> -->
 <!-- 							<failBuildOnCVSS>8</failBuildOnCVSS> -->
 <!-- 						</configuration> -->
