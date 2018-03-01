@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import org.bouncycastle.cms.CMSProcessableByteArray;
@@ -33,8 +32,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
@@ -49,7 +46,6 @@ import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
 /**
@@ -142,11 +138,8 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 			data = cadesLevelBaselineT.extendCMSSignatures(data, parameters);
 		}
 
-		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		final byte[] encodedData = CMSUtils.getEncoded(data);
-		pdfSignatureService.sign(toSignDocument, encodedData, byteArrayOutputStream, parameters, parameters.getDigestAlgorithm());
-		DSSDocument signature = new InMemoryDocument(byteArrayOutputStream.toByteArray());
-		signature.setMimeType(MimeType.PDF);
+		DSSDocument signature = pdfSignatureService.sign(toSignDocument, encodedData, parameters, parameters.getDigestAlgorithm());
 
 		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(signatureLevel);
 		if ((signatureLevel != SignatureLevel.PAdES_BASELINE_B) && (signatureLevel != SignatureLevel.PAdES_BASELINE_T) && (extension != null)) {

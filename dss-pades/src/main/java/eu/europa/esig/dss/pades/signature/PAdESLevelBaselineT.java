@@ -20,12 +20,8 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import java.io.ByteArrayOutputStream;
-
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
@@ -45,15 +41,10 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 
 	@Override
 	public DSSDocument extendSignatures(final DSSDocument document, final PAdESSignatureParameters params) throws DSSException {
-
 		// Will add a DocumentTimeStamp. signature-timestamp (CMS) is impossible to add while extending
 		final PdfObjFactory factory = PdfObjFactory.getInstance();
-		final ByteArrayOutputStream tDoc = new ByteArrayOutputStream();
 		final PDFTimestampService timestampService = factory.newTimestampSignatureService();
-		timestampService.timestamp(document, tDoc, params, tspSource);
-		final InMemoryDocument inMemoryDocument = new InMemoryDocument(tDoc.toByteArray());
-		inMemoryDocument.setMimeType(MimeType.PDF);
-		return inMemoryDocument;
+		return timestampService.timestamp(document, params, tspSource);
 	}
 
 }

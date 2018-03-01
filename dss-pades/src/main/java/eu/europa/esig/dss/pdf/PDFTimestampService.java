@@ -20,19 +20,13 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.io.OutputStream;
-
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
-/**
- * TODO
- *
- */
-public interface PDFTimestampService extends PDFSignatureService {
+public interface PDFTimestampService {
 
-	void timestamp(final DSSDocument document, final OutputStream signedStream, final PAdESSignatureParameters parameters, final TSPSource tspSource) throws DSSException;
+	DSSDocument timestamp(final DSSDocument document, final PAdESSignatureParameters parameters, final TSPSource tspSource) throws DSSException;
 
 }

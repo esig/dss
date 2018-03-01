@@ -97,6 +97,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 				InputStream is = toSignDocument.openStream();
 				PDDocument pdDocument = PDDocument.load(is)) {
+
 			PDSignature pdSignature = createSignatureDictionary(parameters, pdDocument);
 			return signDocumentAndReturnDigest(parameters, signatureValue, outputStream, pdDocument, pdSignature, digestAlgorithm);
 		} catch (IOException e) {
@@ -105,12 +106,19 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	}
 
 	@Override
-	public void sign(final DSSDocument toSignDocument, final byte[] signatureValue, final OutputStream signedStream, final PAdESSignatureParameters parameters,
+	public DSSDocument sign(final DSSDocument toSignDocument, final byte[] signatureValue, final PAdESSignatureParameters parameters,
 			final DigestAlgorithm digestAlgorithm) throws DSSException {
 
-		try (InputStream is = toSignDocument.openStream(); PDDocument pdDocument = PDDocument.load(is)) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				InputStream is = toSignDocument.openStream();
+				PDDocument pdDocument = PDDocument.load(is)) {
+
 			final PDSignature pdSignature = createSignatureDictionary(parameters, pdDocument);
-			signDocumentAndReturnDigest(parameters, signatureValue, signedStream, pdDocument, pdSignature, digestAlgorithm);
+			signDocumentAndReturnDigest(parameters, signatureValue, baos, pdDocument, pdSignature, digestAlgorithm);
+
+			DSSDocument signature = new InMemoryDocument(baos.toByteArray());
+			signature.setMimeType(MimeType.PDF);
+			return signature;
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}

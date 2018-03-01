@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.io.OutputStream;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -58,8 +57,6 @@ public interface PDFSignatureService {
 	 *            the pdf document
 	 * @param signatureValue
 	 *            the signature value
-	 * @param signedStream
-	 *            the ouputstream
 	 * @param parameters
 	 *            the signature parameters
 	 * @param digestAlgorithm
@@ -67,8 +64,8 @@ public interface PDFSignatureService {
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	void sign(final DSSDocument pdfData, final byte[] signatureValue, final OutputStream signedStream, final PAdESSignatureParameters parameters,
-			final DigestAlgorithm digestAlgorithm) throws DSSException;
+	DSSDocument sign(final DSSDocument pdfData, final byte[] signatureValue, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm)
+			throws DSSException;
 
 	/**
 	 * Retrieves and triggers validation of the signatures from a PDF document
