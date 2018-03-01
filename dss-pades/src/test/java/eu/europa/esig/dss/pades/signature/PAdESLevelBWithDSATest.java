@@ -1,10 +1,12 @@
 package eu.europa.esig.dss.pades.signature;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Date;
 
 import org.junit.Before;
 
+import eu.europa.esig.dss.CommitmentType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
@@ -26,6 +28,7 @@ public class PAdESLevelBWithDSATest extends AbstractPAdESTestSignature {
 
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
+		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList(CommitmentType.ProofOfOrigin.getOid()));
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);

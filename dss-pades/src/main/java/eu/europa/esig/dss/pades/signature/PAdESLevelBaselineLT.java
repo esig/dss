@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,8 +28,6 @@ import java.util.Set;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
@@ -66,7 +63,7 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 	 * @throws IOException
 	 */
 	@Override
-	public InMemoryDocument extendSignatures(DSSDocument document, final PAdESSignatureParameters parameters) throws DSSException {
+	public DSSDocument extendSignatures(DSSDocument document, final PAdESSignatureParameters parameters) throws DSSException {
 
 		// check if needed to extends with PAdESLevelBaselineT
 		PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
@@ -94,14 +91,9 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 			}
 		}
 
-		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
 		final PDFSignatureService signatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
-		signatureService.addDssDictionary(document.openStream(), baos, callbacks);
+		return signatureService.addDssDictionary(document, callbacks);
 
-		final InMemoryDocument inMemoryDocument = new InMemoryDocument(baos.toByteArray());
-		inMemoryDocument.setMimeType(MimeType.PDF);
-		return inMemoryDocument;
 	}
 
 	private DSSDictionaryCallback validate(PAdESSignature signature) {

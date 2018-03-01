@@ -90,46 +90,36 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxSignatureService.class);
 
 	@Override
-	public byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm)
+	public byte[] digest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm)
 			throws DSSException {
 
 		final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		PDDocument pdDocument = null;
-		try {
-			pdDocument = PDDocument.load(toSignDocument);
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+				InputStream is = toSignDocument.openStream();
+				PDDocument pdDocument = PDDocument.load(is)) {
 			PDSignature pdSignature = createSignatureDictionary(parameters, pdDocument);
-
 			return signDocumentAndReturnDigest(parameters, signatureValue, outputStream, pdDocument, pdSignature, digestAlgorithm);
 		} catch (IOException e) {
 			throw new DSSException(e);
-		} finally {
-			Utils.closeQuietly(pdDocument);
-			Utils.closeQuietly(outputStream);
 		}
 	}
 
 	@Override
-	public void sign(final InputStream pdfData, final byte[] signatureValue, final OutputStream signedStream, final PAdESSignatureParameters parameters,
+	public void sign(final DSSDocument toSignDocument, final byte[] signatureValue, final OutputStream signedStream, final PAdESSignatureParameters parameters,
 			final DigestAlgorithm digestAlgorithm) throws DSSException {
 
-		PDDocument pdDocument = null;
-		try {
-			pdDocument = PDDocument.load(pdfData);
+		try (InputStream is = toSignDocument.openStream(); PDDocument pdDocument = PDDocument.load(is)) {
 			final PDSignature pdSignature = createSignatureDictionary(parameters, pdDocument);
 			signDocumentAndReturnDigest(parameters, signatureValue, signedStream, pdDocument, pdSignature, digestAlgorithm);
 		} catch (IOException e) {
 			throw new DSSException(e);
-		} finally {
-			Utils.closeQuietly(pdDocument);
 		}
 	}
 
 	private byte[] signDocumentAndReturnDigest(final PAdESSignatureParameters parameters, final byte[] signatureBytes, final OutputStream fileOutputStream,
 			final PDDocument pdDocument, final PDSignature pdSignature, final DigestAlgorithm digestAlgorithm) throws DSSException {
 
-		SignatureOptions options = new SignatureOptions();
-		try {
+		try (SignatureOptions options = new SignatureOptions()) {
 
 			final MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
 			// register signature dictionary and sign interface
@@ -159,14 +149,12 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			return digestValue;
 		} catch (IOException e) {
 			throw new DSSException(e);
-		} finally {
-			Utils.closeQuietly(options.getVisualSignature());
 		}
 	}
 
-	protected void fillImageParameters(final PDDocument doc, final PAdESSignatureParameters signatureParameters, SignatureOptions options) throws IOException {
-		SignatureImageParameters signatureImageParameters = signatureParameters.getSignatureImageParameters();
-		fillImageParameters(doc, signatureImageParameters, options);
+	protected void fillImageParameters(PDDocument pdDocument, PAdESSignatureParameters parameters, SignatureOptions options) throws IOException {
+		SignatureImageParameters signatureImageParameters = parameters.getSignatureImageParameters();
+		fillImageParameters(pdDocument, signatureImageParameters, options);
 	}
 
 	protected void fillImageParameters(final PDDocument doc, final SignatureImageParameters signatureImageParameters, SignatureOptions options)
@@ -215,7 +203,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		String encodedDate = " " + Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA1, Long.toString(date.getTime()).getBytes()));
 		CertificateToken token = parameters.getSigningCertificate();
 
-		if(parameters.getSignatureName() != null){
+		if (parameters.getSignatureName() != null) {
 			signature.setName(parameters.getSignatureName());
 		} else if (token == null) {
 			signature.setName("Unknown signer" + encodedDate);
@@ -304,8 +292,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	@Override
 	public void validateSignatures(CertificatePool validationCertPool, DSSDocument document, SignatureValidationCallback callback) throws DSSException {
 		// recursive search of signature
-		InputStream inputStream = document.openStream();
-		try {
+		try (InputStream inputStream = document.openStream()) {
 			List<PdfSignatureOrDocTimestampInfo> signaturesFound = getSignatures(validationCertPool, Utils.toByteArray(inputStream));
 			for (PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo : signaturesFound) {
 				callback.validate(pdfSignatureOrDocTimestampInfo);
@@ -313,15 +300,11 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		} catch (IOException e) {
 			LOG.error("Cannot validate signatures : " + e.getMessage(), e);
 		}
-
-		Utils.closeQuietly(inputStream);
 	}
 
 	private List<PdfSignatureOrDocTimestampInfo> getSignatures(CertificatePool validationCertPool, byte[] originalBytes) {
 		List<PdfSignatureOrDocTimestampInfo> signatures = new ArrayList<PdfSignatureOrDocTimestampInfo>();
-		PDDocument doc = null;
-		try {
-			doc = PDDocument.load(originalBytes);
+		try (PDDocument doc = PDDocument.load(originalBytes)) {
 
 			int originalBytesLength = originalBytes.length;
 
@@ -397,8 +380,6 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 		} catch (Exception e) {
 			LOG.warn("Cannot analyze signatures : " + e.getMessage(), e);
-		} finally {
-			Utils.closeQuietly(doc);
 		}
 
 		return signatures;
@@ -421,10 +402,8 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	}
 
 	private boolean isDSSDictionaryPresentInPreviousRevision(byte[] originalBytes) {
-		PDDocument doc = null;
 		PdfDssDict dssDictionary = null;
-		try {
-			doc = PDDocument.load(originalBytes);
+		try (PDDocument doc = PDDocument.load(originalBytes)) {
 			List<PDSignature> pdSignatures = doc.getSignatureDictionaries();
 			if (Utils.isCollectionNotEmpty(pdSignatures)) {
 				PdfDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSObject(), doc);
@@ -432,8 +411,6 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			}
 		} catch (Exception e) {
 			LOG.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
-		} finally {
-			Utils.closeQuietly(doc);
 		}
 
 		return dssDictionary != null;
@@ -447,22 +424,23 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	}
 
 	@Override
-	public void addDssDictionary(InputStream inputStream, OutputStream outputStream, List<DSSDictionaryCallback> callbacks) {
-		PDDocument pdDocument = null;
-		try {
-			pdDocument = PDDocument.load(inputStream);
+	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); InputStream is = document.openStream(); PDDocument pdDocument = PDDocument.load(is)) {
+
 			if (Utils.isCollectionNotEmpty(callbacks)) {
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSObject();
 				cosDictionary.setItem("DSS", buildDSSDictionary(callbacks));
 				cosDictionary.setNeedToBeUpdated(true);
 			}
 
-			pdDocument.saveIncremental(outputStream);
+			pdDocument.saveIncremental(baos);
+
+			DSSDocument inMemoryDocument = new InMemoryDocument(baos.toByteArray());
+			inMemoryDocument.setMimeType(MimeType.PDF);
+			return inMemoryDocument;
 
 		} catch (Exception e) {
 			throw new DSSException(e);
-		} finally {
-			Utils.closeQuietly(pdDocument);
 		}
 	}
 

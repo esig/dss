@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pdf.pdfbox;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.pdfbox.cos.COSName;
@@ -74,14 +73,10 @@ class PdfBoxDocTimeStampService extends PdfBoxSignatureService implements PDFSig
 			throws DSSException {
 
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
-		InputStream inputStream = document.openStream();
-		final byte[] digest = digest(inputStream, parameters, timestampDigestAlgorithm);
-		Utils.closeQuietly(inputStream);
+		final byte[] digest = digest(document, parameters, timestampDigestAlgorithm);
 		final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digest);
 		final byte[] encoded = DSSASN1Utils.getEncoded(timeStampToken);
-		inputStream = document.openStream();
-		sign(inputStream, encoded, signedStream, parameters, timestampDigestAlgorithm);
-		Utils.closeQuietly(inputStream);
+		sign(document, encoded, signedStream, parameters, timestampDigestAlgorithm);
 	}
 
 	@Override

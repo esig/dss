@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.List;
 
 import org.junit.Test;
@@ -54,6 +55,10 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 	@Test
 	public void test() throws Exception {
 		DSSDocument signedDocument = getSignedDocument();
+
+		String signedFilePath = "target/" + signedDocument.getName();
+		signedDocument.save(signedFilePath);
+
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
@@ -68,8 +73,6 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		checkBLevelValid(diagnosticData);
 
 		DSSDocument extendedDocument = extendSignature(signedDocument);
-
-		// extendedDocument.save("target/" + extendedDocument.getName());
 
 		assertNotNull(extendedDocument);
 		assertNotNull(extendedDocument.getMimeType());
@@ -89,6 +92,15 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		checkFinalLevel(diagnosticData);
 		checkBLevelValid(diagnosticData);
 		checkTLevelAndValid(diagnosticData);
+
+		String extendedFilePath = "target/" + extendedDocument.getName();
+		extendedDocument.save(extendedFilePath);
+
+		File fileToBeDeleted = new File(signedFilePath);
+		assertTrue("Cannot delete signed document (IO error)", fileToBeDeleted.delete());
+
+		fileToBeDeleted = new File(extendedFilePath);
+		assertTrue("Cannot delete extended document (IO error)", fileToBeDeleted.delete());
 	}
 
 	private DSSDocument extendSignature(DSSDocument signedDocument) throws Exception {

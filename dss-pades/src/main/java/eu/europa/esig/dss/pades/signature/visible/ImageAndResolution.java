@@ -2,6 +2,8 @@ package eu.europa.esig.dss.pades.signature.visible;
 
 import java.io.InputStream;
 
+import eu.europa.esig.dss.DSSDocument;
+
 /**
  * An InputStream wrapper for an image, and its horizontal and vertical resolution
  * 
@@ -9,16 +11,15 @@ import java.io.InputStream;
  *
  */
 public class ImageAndResolution {
+
 	private int xDpi;
-
 	private int yDpi;
+	private DSSDocument image;
 
-	private InputStream inputStream;
-
-	public ImageAndResolution(InputStream inputStream, int xDpi, int yDpi) {
+	public ImageAndResolution(DSSDocument image, int xDpi, int yDpi) {
 		this.xDpi = xDpi;
 		this.yDpi = yDpi;
-		this.inputStream = inputStream;
+		this.image = image;
 	}
 
 	public int getxDpi() {
@@ -51,7 +52,7 @@ public class ImageAndResolution {
 	}
 
 	public InputStream getInputStream() {
-		return inputStream;
+		return image.openStream();
 	}
 
 }

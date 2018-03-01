@@ -110,18 +110,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 			PAdESSignature padesSignature = (PAdESSignature) signature;
 			if (padesSignature.getId().equals(signatureId)) {
 				CAdESSignature cadesSignature = padesSignature.getCAdESSignature();
-				for (DSSDocument document : cadesSignature.getDetachedContents()) {
-					InputStream is = null;
-					try {
-						is = document.openStream();
-						byte[] content = Utils.toByteArray(is);
-						result.add(new InMemoryDocument(content));
-					} catch (IOException e) {
-						throw new DSSException("Unable to retrieve the original document for document '" + document.getName() + "'",e);
-					} finally {
-						Utils.closeQuietly(is);
-					}
-				}
+				return cadesSignature.getDetachedContents();
 			}
 		}
 		return result;

@@ -58,7 +58,7 @@ public class PAdESLevelBWithContentTimestampTest extends AbstractPAdESTestSignat
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
 		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
-		byte[] digest = pdfSignatureService.digest(documentToSign.openStream(), signatureParameters, DigestAlgorithm.SHA256);
+		byte[] digest = pdfSignatureService.digest(documentToSign, signatureParameters, DigestAlgorithm.SHA256);
 		OnlineTSPSource tspSource = getGoodTsa();
 		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
 		TimestampToken token = new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP, new CertificatePool());

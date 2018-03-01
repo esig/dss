@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pades.signature;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.util.List;
 
 import org.bouncycastle.cms.CMSProcessableByteArray;
@@ -101,9 +100,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId());
 
 		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
-		final InputStream inputStream = toSignDocument.openStream();
-		final byte[] messageDigest = pdfSignatureService.digest(inputStream, parameters, parameters.getDigestAlgorithm());
-		Utils.closeQuietly(inputStream);
+		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters, parameters.getDigestAlgorithm());
 
 		SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = padesCMSSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, messageDigest);
 
@@ -128,9 +125,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
 
 		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
-		InputStream inputStream = toSignDocument.openStream();
-		final byte[] messageDigest = pdfSignatureService.digest(inputStream, parameters, parameters.getDigestAlgorithm());
-		Utils.closeQuietly(inputStream);
+		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters, parameters.getDigestAlgorithm());
 
 		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = padesCMSSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, messageDigest);
 
@@ -149,9 +144,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		final byte[] encodedData = CMSUtils.getEncoded(data);
-		inputStream = toSignDocument.openStream();
-		pdfSignatureService.sign(inputStream, encodedData, byteArrayOutputStream, parameters, parameters.getDigestAlgorithm());
-		Utils.closeQuietly(inputStream);
+		pdfSignatureService.sign(toSignDocument, encodedData, byteArrayOutputStream, parameters, parameters.getDigestAlgorithm());
 		DSSDocument signature = new InMemoryDocument(byteArrayOutputStream.toByteArray());
 		signature.setMimeType(MimeType.PDF);
 
