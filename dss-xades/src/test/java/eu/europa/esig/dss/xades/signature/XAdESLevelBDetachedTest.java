@@ -36,13 +36,11 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
@@ -52,10 +50,7 @@ import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESLevelBDetachedTest extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
@@ -68,7 +63,7 @@ public class XAdESLevelBDetachedTest extends AbstractPkiFactoryTestDocumentSigna
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+		documentToSign = new FileDocument(new File("src/test/resources/sample.png"));
 
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -89,15 +84,9 @@ public class XAdESLevelBDetachedTest extends AbstractPkiFactoryTestDocumentSigna
 
 		signatureParameters.setAddX509SubjectName(true);
 
-		TimeStampToken tst1 = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA512, DSSUtils.digest(DigestAlgorithm.SHA512, documentToSign));
-
-		TimestampToken contentTimestamp1 = new TimestampToken(tst1, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP, new CertificatePool());
-
-		TimeStampToken tst2 = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, documentToSign));
-
-		TimestampToken contentTimestamp2 = new TimestampToken(tst2, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP, new CertificatePool());
-
-		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp1, contentTimestamp2));
+		AllDataObjectsTimeStampBuilder builder1 = new AllDataObjectsTimeStampBuilder(getAlternateGoodTsa(), DigestAlgorithm.SHA512);
+		AllDataObjectsTimeStampBuilder builder2 = new AllDataObjectsTimeStampBuilder(getAlternateGoodTsa(), DigestAlgorithm.SHA256);
+		signatureParameters.setContentTimestamps(Arrays.asList(builder1.build(documentToSign), builder2.build(documentToSign)));
 
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

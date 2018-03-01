@@ -81,6 +81,9 @@ public class TimestampToken extends Token {
 
 	private List<TimestampReference> timestampedReferences;
 
+	/**
+	 * In case of XAdES IndividualDataObjectsTimeStamp, Includes shall be specified
+	 */
 	private List<TimestampInclude> timestampIncludes;
 
 	/**
@@ -208,24 +211,33 @@ public class TimestampToken extends Token {
 	 */
 	public boolean matchData(final byte[] data) {
 
-		try {
-			processed = true;
-			messageImprintData = data != null;
-			final TimeStampTokenInfo timeStampInfo = timeStamp.getTimeStampInfo();
-			final ASN1ObjectIdentifier hashAlgorithm = timeStampInfo.getHashAlgorithm().getAlgorithm();
-			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(hashAlgorithm.getId());
+		processed = true;
 
-			final byte[] computedDigest = DSSUtils.digest(digestAlgorithm, data);
-			final byte[] timestampDigest = timeStampInfo.getMessageImprintDigest();
-			messageImprintIntact = Arrays.equals(computedDigest, timestampDigest);
-			if (!messageImprintIntact) {
-				LOG.error("Computed digest ({}) on the extracted data from the document : {}", digestAlgorithm, Utils.toHex(computedDigest));
-				LOG.error("Digest present in TimestampToken: {}", Utils.toHex(timestampDigest));
-				LOG.error("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
+		messageImprintData = data != null;
+		messageImprintIntact = false;
+
+		if (messageImprintData) {
+			try {
+				final TimeStampTokenInfo timeStampInfo = timeStamp.getTimeStampInfo();
+				final ASN1ObjectIdentifier hashAlgorithm = timeStampInfo.getHashAlgorithm().getAlgorithm();
+				final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(hashAlgorithm.getId());
+
+				final byte[] computedDigest = DSSUtils.digest(digestAlgorithm, data);
+				final byte[] timestampDigest = timeStampInfo.getMessageImprintDigest();
+				messageImprintIntact = Arrays.equals(computedDigest, timestampDigest);
+				if (!messageImprintIntact) {
+					LOG.warn("Computed digest ({}) on the extracted data from the document : {}", digestAlgorithm, Utils.toHex(computedDigest));
+					LOG.warn("Digest present in TimestampToken: {}", Utils.toHex(timestampDigest));
+					LOG.warn("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
+				}
+
+			} catch (DSSException e) {
+				LOG.warn("Unable to validate the timestamp", e);
 			}
-		} catch (DSSException e) {
-			messageImprintIntact = false;
+		} else {
+			LOG.warn("Timestamped data not found !");
 		}
+
 		return messageImprintIntact;
 	}
 
@@ -327,7 +339,7 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * Applies only fro XAdES timestamps
+	 * Applies only from XAdES timestamps
 	 *
 	 * @return {@code String} representing the canonicalization method used by the timestamp
 	 */
@@ -354,12 +366,15 @@ public class TimestampToken extends Token {
 		}
 	}
 
-	// TODO-Vin (12/09/2014): Comment!
+	/**
+	 * Returns the covered references by the current timestamp (XAdES IndividualDataObjectsTimeStamp)
+	 * 
+	 * @return
+	 */
 	public List<TimestampInclude> getTimestampIncludes() {
 		return timestampIncludes;
 	}
 
-	// TODO-Vin (12/09/2014): Comment!
 	public void setTimestampIncludes(List<TimestampInclude> timestampIncludes) {
 		this.timestampIncludes = timestampIncludes;
 	}

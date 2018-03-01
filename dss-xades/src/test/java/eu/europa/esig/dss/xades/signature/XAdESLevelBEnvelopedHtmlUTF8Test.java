@@ -21,11 +21,14 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Date;
 
+import org.apache.xml.security.c14n.Canonicalizer;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
@@ -50,6 +53,13 @@ public class XAdESLevelBEnvelopedHtmlUTF8Test extends AbstractPkiFactoryTestDocu
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+
+		AllDataObjectsTimeStampBuilder builder1 = new AllDataObjectsTimeStampBuilder(getGoodTsa(), DigestAlgorithm.SHA512,
+				Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
+		AllDataObjectsTimeStampBuilder builder2 = new AllDataObjectsTimeStampBuilder(getAlternateGoodTsa(), DigestAlgorithm.SHA256,
+				Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
+
+		signatureParameters.setContentTimestamps(Arrays.asList(builder1.build(documentToSign), builder2.build(documentToSign)));
 
 		service = new XAdESService(getCompleteCertificateVerifier());
 	}

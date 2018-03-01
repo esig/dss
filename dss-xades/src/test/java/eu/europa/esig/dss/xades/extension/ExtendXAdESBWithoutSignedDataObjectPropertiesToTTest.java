@@ -20,7 +20,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class ExtendXAdESBWithoutSignedDataObjectPropertiesToLTATest extends PKIFactoryAccess {
+public class ExtendXAdESBWithoutSignedDataObjectPropertiesToTTest extends PKIFactoryAccess {
 
 	@Test
 	public void test() throws Exception {
@@ -30,7 +30,7 @@ public class ExtendXAdESBWithoutSignedDataObjectPropertiesToLTATest extends PKIF
 		service.setTspSource(getGoodTsa());
 
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		parameters.setSigningCertificate(getSigningCert());
 		parameters.setCertificateChain(getCertificateChain());
@@ -53,7 +53,7 @@ public class ExtendXAdESBWithoutSignedDataObjectPropertiesToLTATest extends PKIF
 		Reports reports = validator.validateDocument();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		Assert.assertEquals(SignatureLevel.XAdES_BASELINE_LTA.toString(), diagnosticData.getSignatureFormat(simpleReport.getFirstSignatureId()));
+		Assert.assertEquals(SignatureLevel.XAdES_BASELINE_T.toString(), diagnosticData.getSignatureFormat(simpleReport.getFirstSignatureId()));
 	}
 
 	@Override

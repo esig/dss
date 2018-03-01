@@ -227,6 +227,23 @@ public final class DSSXMLUtils {
 	}
 
 	/**
+	 * This methods canonicalizes or serializes the given node depending on the canonicalization method (can be null)
+	 * 
+	 * @param canonicalizationMethod
+	 *            the canonicalization method or null
+	 * @param node
+	 *            the node to be canonicalized/serialized
+	 * @return array of bytes
+	 */
+	public static byte[] canonicalizeOrSerializeSubtree(final String canonicalizationMethod, final Node node) {
+		if (canonicalizationMethod == null) {
+			return serializeNode(node);
+		} else {
+			return canonicalizeSubtree(canonicalizationMethod, node);
+		}
+	}
+
+	/**
 	 * An ID attribute can only be dereferenced if it is declared in the validation context. This behaviour is caused by
 	 * the fact that the attribute does not have attached type of information. Another solution is to parse the XML
 	 * against some DTD or XML schema. This process adds the necessary type of information to each ID attribute.
