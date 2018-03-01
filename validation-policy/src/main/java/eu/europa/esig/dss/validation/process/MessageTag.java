@@ -287,11 +287,11 @@ public enum MessageTag {
 	QUAL_FOR_SIGN_AT_VT("Is the certificate for eSig at validation time?"),
 	QUAL_FOR_SIGN_AT_VT_ANS("The certificate is not for eSig at validation time!"),
 
-	QUAL_QC_AT_ST("Is the certificate qualifed at (best) signing time?"),
+	QUAL_QC_AT_ST("Is the certificate qualified at (best) signing time?"),
 	QUAL_QC_AT_ST_ANS("The certificate is not qualified at (best) signing time!"),
-	QUAL_QC_AT_CC("Is the certificate qualifed at issuance time?"),
+	QUAL_QC_AT_CC("Is the certificate qualified at issuance time?"),
 	QUAL_QC_AT_CC_ANS("The certificate is not qualified at issuance time!"),
-	QUAL_QC_AT_VT("Is the certificate qualifed at validation time?"),
+	QUAL_QC_AT_VT("Is the certificate qualified at validation time?"),
 	QUAL_QC_AT_VT_ANS("The certificate is not qualified at validation time!"),
 
 	QUAL_QSCD_AT_ST("Is the private key on a QSCD at (best) signing time?"),
