@@ -46,15 +46,32 @@ public abstract class PdfObjFactory {
 					Class<PdfObjFactory> factoryClass = (Class<PdfObjFactory>) Class.forName(factoryClassName);
 					INSTANCE = factoryClass.newInstance();
 				} catch (Exception ex) {
-					LOG.error("dss.pdf_obj_factory is '" + factoryClassName + "' but factory cannot be instantiated (fallback will be used)");
+					LOG.error("dss.pdf_obj_factory is '" + factoryClassName
+							+ "' but factory cannot be instantiated (fallback will be used)");
 				}
 			}
 			if (INSTANCE == null) {
-				LOG.info("Fallback to '" + PdfBoxObjectFactory.class.getName() + "' as the PDF Object Factory Implementation");
+				LOG.info("Fallback to '" + PdfBoxObjectFactory.class.getName()
+						+ "' as the PDF Object Factory Implementation");
 				INSTANCE = new PdfBoxObjectFactory();
 			}
 		}
 		return INSTANCE;
+	}
+
+	/**
+	 * This method allows to set a custom PdfObjFactory (or null to reset to the default behavior)
+	 * 
+	 * @param instance
+	 *            the new instance to be used
+	 */
+	public static void setInstance(PdfObjFactory instance) {
+		if (instance != null) {
+			LOG.info("Using '" + instance.getClass() + "' as the PDF Object Factory Implementation");
+		} else {
+			LOG.info("Reseting the PDF Object Factory Implementation");
+		}
+		INSTANCE = instance;
 	}
 
 	public abstract PDFSignatureService newPAdESSignatureService();
