@@ -51,9 +51,9 @@ public final class ASiCUtils {
 	}
 
 	public static ASiCContainerType getASiCContainerType(final MimeType asicMimeType) {
-		if (MimeType.ASICS == asicMimeType) {
+		if (MimeType.ASICS.equals(asicMimeType)) {
 			return ASiCContainerType.ASiC_S;
-		} else if (MimeType.ASICE == asicMimeType || MimeType.ODT == asicMimeType || MimeType.ODS.equals(asicMimeType)) {
+		} else if (MimeType.ASICE.equals(asicMimeType) || MimeType.ODT.equals(asicMimeType) || MimeType.ODS.equals(asicMimeType)) {
 			return ASiCContainerType.ASiC_E;
 		} else {
 			throw new IllegalArgumentException("Not allowed mimetype " + asicMimeType);
