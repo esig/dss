@@ -37,7 +37,6 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.TimestampType;
 
 public class CAdESLevelBWithTwoContentTimestampsTest extends AbstractCAdESTestSignature {
@@ -52,13 +51,11 @@ public class CAdESLevelBWithTwoContentTimestampsTest extends AbstractCAdESTestSi
 
 		OnlineTSPSource tspSource = getGoodTsa();
 
-		TimeStampToken timeStampResponse1 = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256,
-				DSSUtils.digest(DigestAlgorithm.SHA256, DSSUtils.toByteArray(documentToSign)));
-		TimestampToken contentTimestamp1 = new TimestampToken(timeStampResponse1, TimestampType.CONTENT_TIMESTAMP, new CertificatePool());
+		TimeStampToken timeStampResponse1 = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, documentToSign));
+		TimestampToken contentTimestamp1 = new TimestampToken(timeStampResponse1, TimestampType.CONTENT_TIMESTAMP);
 
-		TimeStampToken timeStampResponse2 = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1,
-				DSSUtils.digest(DigestAlgorithm.SHA1, DSSUtils.toByteArray(documentToSign)));
-		TimestampToken contentTimestamp2 = new TimestampToken(timeStampResponse2, TimestampType.CONTENT_TIMESTAMP, new CertificatePool());
+		TimeStampToken timeStampResponse2 = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, DSSUtils.digest(DigestAlgorithm.SHA1, documentToSign));
+		TimestampToken contentTimestamp2 = new TimestampToken(timeStampResponse2, TimestampType.CONTENT_TIMESTAMP);
 
 		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());

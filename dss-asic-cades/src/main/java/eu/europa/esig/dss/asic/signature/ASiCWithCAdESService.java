@@ -34,6 +34,7 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.TimestampToken;
 
 @SuppressWarnings("serial")
 public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithCAdESSignatureParameters> {
@@ -45,6 +46,12 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	public ASiCWithCAdESService(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 		LOG.debug("+ ASiCService with CAdES created");
+	}
+
+	@Override
+	public TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, ASiCWithCAdESSignatureParameters parameters) {
+		GetDataToSignASiCWithCAdESHelper getDataToSignHelper = ASiCWithCAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
+		return getCAdESService().getContentTimestamp(getDataToSignHelper.getToBeSigned(), parameters);
 	}
 
 	@Override

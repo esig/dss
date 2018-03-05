@@ -25,24 +25,18 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.TimestampType;
 
 public class CAdESLevelBDetachedWithContentTimestampTest extends AbstractCAdESTestSignature {
 
@@ -52,12 +46,10 @@ public class CAdESLevelBDetachedWithContentTimestampTest extends AbstractCAdESTe
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello World".getBytes());
+		service = new CAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getAlternateGoodTsa());
 
-		OnlineTSPSource tspSource = getGoodTsa();
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256,
-				DSSUtils.digest(DigestAlgorithm.SHA256, DSSUtils.toByteArray(documentToSign)));
-		TimestampToken contentTimestamp = new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP, new CertificatePool());
+		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
 		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -65,9 +57,9 @@ public class CAdESLevelBDetachedWithContentTimestampTest extends AbstractCAdESTe
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 
-		service = new CAdESService(getCompleteCertificateVerifier());
+		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
+		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 	}
 
 	@Override

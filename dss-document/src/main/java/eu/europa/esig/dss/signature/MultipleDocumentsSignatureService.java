@@ -20,8 +20,11 @@
  */
 package eu.europa.esig.dss.signature;
 
+import java.util.List;
+
 import eu.europa.esig.dss.AbstractSerializableSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.validation.TimestampToken;
 
 /**
  * This interface {@code MultipleDocumentsSignatureService} provides operations for the signature creation and for its
@@ -30,5 +33,7 @@ import eu.europa.esig.dss.DSSDocument;
  */
 public interface MultipleDocumentsSignatureService<SP extends AbstractSerializableSignatureParameters>
 		extends RemoteMultipleDocumentsSignatureService<DSSDocument, SP> {
+
+	TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, SP parameters);
 
 }
