@@ -37,7 +37,6 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTi
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -120,6 +119,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
@@ -749,7 +749,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public byte[] getContentTimestampData(final TimestampToken timestampToken) {
-		return getOriginalDocumentBinaries();
+		return DSSUtils.toByteArray(getOriginalDocument());
 	}
 
 	@Override
@@ -1370,28 +1370,18 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final CadesLevelBaselineLTATimestampExtractor timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(this);
 		final Attribute atsHashIndexAttribute = timestampExtractor.getVerifiedAtsHashIndex(signerInformation, timestampToken);
 
-		byte[] originalDocumentBytes = getOriginalDocumentBinaries();
 		final DigestAlgorithm signedDataDigestAlgorithm = timestampToken.getSignedDataDigestAlgo();
-		byte[] originalDocumentDigest = DSSUtils.digest(signedDataDigestAlgorithm, originalDocumentBytes);
+		byte[] originalDocumentDigest = DSSUtils.digest(signedDataDigestAlgorithm, getOriginalDocument());
 		byte[] archiveTimestampData = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentDigest);
 		return archiveTimestampData;
 	}
 
-	public byte[] getOriginalDocumentBinaries() {
-		try (InputStream is = getOriginalDocumentStream()) {
-			return Utils.toByteArray(is);
-		} catch (Exception e) {
-			LOG.warn("Unable to retrieve original document binaries", e);
-			return DSSUtils.EMPTY_BYTE_ARRAY;
-		}
-	}
-
-	public InputStream getOriginalDocumentStream() throws DSSException {
+	public DSSDocument getOriginalDocument() throws DSSException {
 		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
 		if (signedContent != null) {
-			return new ByteArrayInputStream(CMSUtils.getSignedContent(signedContent));
+			return new InMemoryDocument(CMSUtils.getSignedContent(signedContent));
 		} else if (Utils.collectionSize(detachedContents) == 1) {
-			return detachedContents.get(0).openStream();
+			return detachedContents.get(0);
 		} else {
 			throw new DSSException("Only enveloping and detached signatures are supported");
 		}
@@ -1445,7 +1435,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				 * Detached signatures have either no encapContentInfo in
 				 * signedData, or it exists but has no eContent
 				 */
-				byte[] originalDocumentBinaries = getOriginalDocumentBinaries();
+				byte[] originalDocumentBinaries = DSSUtils.toByteArray(getOriginalDocument());
 				if (Utils.isArrayNotEmpty(originalDocumentBinaries)) {
 					data.write(content.toASN1Primitive().getEncoded());
 					data.write(originalDocumentBinaries);
