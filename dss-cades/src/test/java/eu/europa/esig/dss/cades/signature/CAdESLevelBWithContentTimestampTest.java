@@ -23,22 +23,18 @@ package eu.europa.esig.dss.cades.signature;
 import java.util.Arrays;
 import java.util.Date;
 
-import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.TimestampType;
 
 public class CAdESLevelBWithContentTimestampTest extends AbstractCAdESTestSignature {
 
@@ -48,16 +44,10 @@ public class CAdESLevelBWithContentTimestampTest extends AbstractCAdESTestSignat
 
 	@Before
 	public void init() throws Exception {
+		service = new CAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
+
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
-
-		OnlineTSPSource tspSource = getGoodTsa();
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256,
-				DSSUtils.digest(DigestAlgorithm.SHA256, DSSUtils.toByteArray(documentToSign)));
-		TimestampToken contentTimestamp = new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP, new CertificatePool());
-
-		TimeStampToken timeStampResponse2 = tspSource.getTimeStampResponse(DigestAlgorithm.SHA512,
-				DSSUtils.digest(DigestAlgorithm.SHA512, DSSUtils.toByteArray(documentToSign)));
-		TimestampToken contentTimestamp2 = new TimestampToken(timeStampResponse2, TimestampType.CONTENT_TIMESTAMP, new CertificatePool());
 
 		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -65,9 +55,20 @@ public class CAdESLevelBWithContentTimestampTest extends AbstractCAdESTestSignat
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+
+		TimestampParameters contentTimestampParameters = new TimestampParameters();
+		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
+
+		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
+
+		contentTimestampParameters = new TimestampParameters();
+		contentTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
+
+		TimestampToken contentTimestamp2 = service.getContentTimestamp(documentToSign, signatureParameters);
+
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp, contentTimestamp2));
 
-		service = new CAdESService(getCompleteCertificateVerifier());
 	}
 
 	@Override

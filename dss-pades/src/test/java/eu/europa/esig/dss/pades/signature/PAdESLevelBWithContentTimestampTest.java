@@ -24,22 +24,15 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
 
-import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.TimestampType;
 
 public class PAdESLevelBWithContentTimestampTest extends AbstractPAdESTestSignature {
 
@@ -49,6 +42,9 @@ public class PAdESLevelBWithContentTimestampTest extends AbstractPAdESTestSignat
 
 	@Before
 	public void init() throws Exception {
+		service = new PAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
+
 		documentToSign = new FileDocument(new File("src/test/resources/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
@@ -57,14 +53,8 @@ public class PAdESLevelBWithContentTimestampTest extends AbstractPAdESTestSignat
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
-		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
-		byte[] digest = pdfSignatureService.digest(documentToSign, signatureParameters, DigestAlgorithm.SHA256);
-		OnlineTSPSource tspSource = getGoodTsa();
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
-		TimestampToken token = new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP, new CertificatePool());
-		signatureParameters.setContentTimestamps(Arrays.asList(token));
-
-		service = new PAdESService(getCompleteCertificateVerifier());
+		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
+		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 	}
 
 	@Override

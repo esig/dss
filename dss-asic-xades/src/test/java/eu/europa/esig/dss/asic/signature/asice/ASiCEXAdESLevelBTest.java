@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -33,9 +34,11 @@ import org.junit.Before;
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.asic.ASiCExtractResult;
 import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
@@ -43,6 +46,7 @@ import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.TimestampToken;
 
 public class ASiCEXAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatureService<ASiCWithXAdESSignatureParameters> {
 
@@ -52,6 +56,9 @@ public class ASiCEXAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatur
 
 	@Before
 	public void init() throws Exception {
+		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getAlternateGoodTsa());
+
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
 
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
@@ -61,7 +68,9 @@ public class ASiCEXAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatur
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
-		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
+		signatureParameters.setContentTimestampParameters(new TimestampParameters(DigestAlgorithm.SHA512));
+		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
+		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 	}
 
 	@Override

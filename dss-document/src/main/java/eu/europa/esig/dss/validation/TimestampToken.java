@@ -112,6 +112,10 @@ public class TimestampToken extends Token {
 		this(new TimeStampToken(cms), type, certPool);
 	}
 
+	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type) {
+		this(timeStamp, type, new CertificatePool());
+	}
+
 	/**
 	 * Constructor with an indication of the timestamp type. The default constructor for {@code TimestampToken}.
 	 *

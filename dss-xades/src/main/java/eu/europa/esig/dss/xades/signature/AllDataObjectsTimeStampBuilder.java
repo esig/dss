@@ -10,28 +10,26 @@ import org.bouncycastle.tsp.TimeStampToken;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 
+/**
+ * This class allows to create a XAdES content-timestamp which covers all documents (AllDataObjectsTimeStamp).
+ * 
+ */
 public class AllDataObjectsTimeStampBuilder {
 
 	private final TSPSource tspSource;
-	private final DigestAlgorithm digestAlgorithm;
-	private final String canonicalizationAlgorithm;
+	private final TimestampParameters timestampParameters;
 
-	public AllDataObjectsTimeStampBuilder(TSPSource tspSource, DigestAlgorithm digestAlgorithm) {
-		this(tspSource, digestAlgorithm, null);
-	}
-
-	public AllDataObjectsTimeStampBuilder(TSPSource tspSource, DigestAlgorithm digestAlgorithm, String canonicalizationAlgorithm) {
+	public AllDataObjectsTimeStampBuilder(TSPSource tspSource, TimestampParameters timestampParameters) {
 		this.tspSource = tspSource;
-		this.digestAlgorithm = digestAlgorithm;
-		this.canonicalizationAlgorithm = canonicalizationAlgorithm;
+		this.timestampParameters = timestampParameters;
 	}
 
 	public TimestampToken build(DSSDocument document) {
@@ -39,30 +37,39 @@ public class AllDataObjectsTimeStampBuilder {
 	}
 
 	public TimestampToken build(List<DSSDocument> documents) {
-		byte[] digestToTimestamp = DSSUtils.digest(digestAlgorithm, getToBeDigested(documents));
-		return build(digestToTimestamp);
-	}
+		boolean canonicalizationUsed = false;
+		byte[] dataToBeDigested = null;
 
-	private TimestampToken build(byte[] digestToTimestamp) {
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, digestToTimestamp);
-		TimestampToken token = new TimestampToken(timeStampResponse, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP, new CertificatePool());
-		token.setCanonicalizationMethod(canonicalizationAlgorithm);
-		return token;
-	}
-
-	private byte[] getToBeDigested(List<DSSDocument> documents) {
+		/*
+		 * 1) process the retrieved ds:Reference element according to the reference-processing model of XMLDSIG [1]
+		 * clause 4.4.3.2;
+		 * 2) if the result is a XML node set, canonicalize it as specified in clause 4.5; and
+		 * 3) concatenate the resulting octets to those resulting from previously processed ds:Reference elements in
+		 * ds:SignedInfo.
+		 */
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			for (DSSDocument document : documents) {
 				byte[] binaries = DSSUtils.toByteArray(document);
-				if (Utils.isStringNotEmpty(canonicalizationAlgorithm)) {
-					binaries = DSSXMLUtils.canonicalize(canonicalizationAlgorithm, binaries);
+				if (Utils.isStringNotEmpty(timestampParameters.getCanonicalizationMethod()) && DomUtils.isDOM(binaries)) {
+					binaries = DSSXMLUtils.canonicalize(timestampParameters.getCanonicalizationMethod(), binaries);
+					canonicalizationUsed = true;
 				}
 				baos.write(binaries);
 			}
-			return baos.toByteArray();
+			dataToBeDigested = baos.toByteArray();
 		} catch (IOException e) {
 			throw new DSSException("Unable to compute the data to be digested", e);
 		}
+
+		byte[] digestToTimestamp = DSSUtils.digest(timestampParameters.getDigestAlgorithm(), dataToBeDigested);
+		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(timestampParameters.getDigestAlgorithm(), digestToTimestamp);
+		TimestampToken token = new TimestampToken(timeStampResponse, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
+
+		if (canonicalizationUsed) {
+			token.setCanonicalizationMethod(timestampParameters.getCanonicalizationMethod());
+		}
+
+		return token;
 	}
 
 }

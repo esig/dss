@@ -25,7 +25,8 @@ import java.io.Serializable;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
 /**
- * This class represents the parameters provided when generating specific timestamps in a signature, such as an AllDataObjectsTimestamp or an
+ * This class represents the parameters provided when generating specific timestamps in a signature, such as an
+ * AllDataObjectsTimestamp or an
  * IndividualDataObjectsTimestamp.
  */
 @SuppressWarnings("serial")
@@ -37,19 +38,34 @@ public class TimestampParameters implements Serializable {
 	private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
 
 	/**
-	 * This is the default canonicalization method for XMLDSIG used for timestamps. Another complication arises because of the way that the default canonicalization algorithm
-	 * handles namespace declarations; frequently a signed XML document needs to be embedded in another document; in this case the original canonicalization algorithm will not
-	 * yield the same result as if the document is treated alone. For this reason, the so-called Exclusive Canonicalization, which serializes XML namespace declarations
+	 * This is the default canonicalization method for XMLDSIG used for timestamps. Another complication arises because
+	 * of the way that the default canonicalization algorithm
+	 * handles namespace declarations; frequently a signed XML document needs to be embedded in another document; in
+	 * this case the original canonicalization algorithm will not
+	 * yield the same result as if the document is treated alone. For this reason, the so-called Exclusive
+	 * Canonicalization, which serializes XML namespace declarations
 	 * independently of the surrounding XML, was created.
 	 */
 	private String canonicalizationMethod = CanonicalizationMethod.EXCLUSIVE;
+
+	public TimestampParameters() {
+	}
+
+	public TimestampParameters(DigestAlgorithm digestAlgorithm) {
+		this.digestAlgorithm = digestAlgorithm;
+		this.canonicalizationMethod = null;
+	}
+
+	public TimestampParameters(DigestAlgorithm digestAlgorithm, String canonicalizationMethod) {
+		this.digestAlgorithm = digestAlgorithm;
+		this.canonicalizationMethod = canonicalizationMethod;
+	}
 
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgorithm;
 	}
 
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
-
 		if (digestAlgorithm == null) {
 			throw new NullPointerException();
 		}
@@ -61,9 +77,6 @@ public class TimestampParameters implements Serializable {
 	}
 
 	public void setCanonicalizationMethod(final String canonicalizationMethod) {
-		if ((canonicalizationMethod == null) || canonicalizationMethod.isEmpty()) {
-			throw new NullPointerException();
-		}
 		this.canonicalizationMethod = canonicalizationMethod;
 	}
 

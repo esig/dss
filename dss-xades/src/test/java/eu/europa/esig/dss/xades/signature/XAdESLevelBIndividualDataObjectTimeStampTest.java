@@ -25,13 +25,11 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.TimestampInclude;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.signature.XAdESService;
 
 public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
 
@@ -73,7 +71,7 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractPkiFac
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSXMLUtils.canonicalize(canonicalizationAlgo, DSSUtils.toByteArray(documentToSign)));
 		TimeStampToken timeStampResponse = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA1, digest);
-		TimestampToken timestampToken = new TimestampToken(timeStampResponse, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP, new CertificatePool());
+		TimestampToken timestampToken = new TimestampToken(timeStampResponse, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 		timestampToken.setTimestampIncludes(Arrays.asList(new TimestampInclude(referenceId, true)));
 		timestampToken.setCanonicalizationMethod(canonicalizationAlgo);
 		signatureParameters.setContentTimestamps(Arrays.asList(timestampToken));

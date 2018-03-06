@@ -8,8 +8,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Test;
@@ -31,7 +29,6 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
-import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -43,6 +40,9 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 
 	@Test
 	public void multiDocsEnveloping() throws Exception {
+		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
+
 		List<DSSDocument> docs = new ArrayList<DSSDocument>();
 		FileDocument fileToBeTimestamped = new FileDocument(FILE1);
 		docs.add(fileToBeTimestamped);
@@ -61,15 +61,14 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, docCanonicalized);
 		TimeStampToken bcTst = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA256, digest);
 
-		TimestampToken tst = new TimestampToken(bcTst, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP, new CertificatePool());
+		TimestampToken tst = new TimestampToken(bcTst, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 		tst.setTimestampIncludes(Arrays.asList(new TimestampInclude("r-id-1", true))); // TODO
 		tst.setCanonicalizationMethod(usedCanonicalizationAlgo);
 
-		AllDataObjectsTimeStampBuilder builder = new AllDataObjectsTimeStampBuilder(getGoodTsa(), DigestAlgorithm.SHA256, CanonicalizationMethod.INCLUSIVE);
+		TimestampToken contentTimestamp = service.getContentTimestamp(docs, signatureParameters);
 
-		signatureParameters.setContentTimestamps(Arrays.asList(tst, builder.build(docs)));
+		signatureParameters.setContentTimestamps(Arrays.asList(tst, contentTimestamp));
 
-		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		ToBeSigned toSign1 = service.getDataToSign(docs, signatureParameters);
 		SignatureValue value = getToken().sign(toSign1, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument result = service.signDocument(docs, signatureParameters, value);

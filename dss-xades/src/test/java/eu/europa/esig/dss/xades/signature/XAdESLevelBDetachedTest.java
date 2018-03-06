@@ -47,9 +47,11 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignerLocation;
+import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
@@ -63,6 +65,9 @@ public class XAdESLevelBDetachedTest extends AbstractPkiFactoryTestDocumentSigna
 
 	@Before
 	public void init() throws Exception {
+		service = new XAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
+
 		documentToSign = new FileDocument(new File("src/test/resources/sample.png"));
 
 		signatureParameters = new XAdESSignatureParameters();
@@ -84,12 +89,19 @@ public class XAdESLevelBDetachedTest extends AbstractPkiFactoryTestDocumentSigna
 
 		signatureParameters.setAddX509SubjectName(true);
 
-		AllDataObjectsTimeStampBuilder builder1 = new AllDataObjectsTimeStampBuilder(getAlternateGoodTsa(), DigestAlgorithm.SHA512);
-		AllDataObjectsTimeStampBuilder builder2 = new AllDataObjectsTimeStampBuilder(getAlternateGoodTsa(), DigestAlgorithm.SHA256);
-		signatureParameters.setContentTimestamps(Arrays.asList(builder1.build(documentToSign), builder2.build(documentToSign)));
+		TimestampParameters contentTimestampParameters = new TimestampParameters();
+		contentTimestampParameters.setCanonicalizationMethod(null); // The file cannot be canonicalized
+		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
+		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getGoodTsa());
+		contentTimestampParameters = new TimestampParameters();
+		contentTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+		contentTimestampParameters.setCanonicalizationMethod(null); // The file cannot be canonicalized
+		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
+		TimestampToken contentTimestamp2 = service.getContentTimestamp(documentToSign, signatureParameters);
+
+		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp, contentTimestamp2));
+
 	}
 
 	@Override

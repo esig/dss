@@ -918,7 +918,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			for (final Reference reference : references) {
 				if (isContentTimestampedReference(reference, timeStampType, includes)) {
 					byte[] referencedBytes = reference.getReferencedBytes();
-					if (Utils.isStringNotBlank(canonicalizationMethod)) {
+					if (Utils.isStringNotBlank(canonicalizationMethod) && DomUtils.isDOM(referencedBytes)) {
 						referencedBytes = DSSXMLUtils.canonicalize(canonicalizationMethod, referencedBytes);
 					}
 					if (LOG.isTraceEnabled()) {

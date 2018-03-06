@@ -33,8 +33,10 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.TimestampParameters;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESLevelBEnvelopedHtmlUTF8Test extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
@@ -45,6 +47,9 @@ public class XAdESLevelBEnvelopedHtmlUTF8Test extends AbstractPkiFactoryTestDocu
 
 	@Before
 	public void init() throws Exception {
+		service = new XAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getAlternateGoodTsa());
+
 		documentToSign = new FileDocument(new File("src/test/resources/htmlUTF8.html"));
 
 		signatureParameters = new XAdESSignatureParameters();
@@ -54,14 +59,19 @@ public class XAdESLevelBEnvelopedHtmlUTF8Test extends AbstractPkiFactoryTestDocu
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
-		AllDataObjectsTimeStampBuilder builder1 = new AllDataObjectsTimeStampBuilder(getGoodTsa(), DigestAlgorithm.SHA512,
-				Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-		AllDataObjectsTimeStampBuilder builder2 = new AllDataObjectsTimeStampBuilder(getAlternateGoodTsa(), DigestAlgorithm.SHA256,
-				Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
+		TimestampParameters contentTimestampParameters = new TimestampParameters();
+		contentTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+		contentTimestampParameters.setCanonicalizationMethod(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
+		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
+		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
 
-		signatureParameters.setContentTimestamps(Arrays.asList(builder1.build(documentToSign), builder2.build(documentToSign)));
+		contentTimestampParameters = new TimestampParameters();
+		contentTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
+		contentTimestampParameters.setCanonicalizationMethod(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
+		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
+		TimestampToken contentTimestamp2 = service.getContentTimestamp(documentToSign, signatureParameters);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp, contentTimestamp2));
 	}
 
 	@Override
