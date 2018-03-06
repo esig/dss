@@ -209,6 +209,23 @@ public final class DomUtils {
 	}
 
 	/**
+	 * This method returns true if the binaries contains a {@link org.w3c.dom.Document}
+	 * 
+	 * @param bytes
+	 *            the binaries to be tested
+	 * @return true if the binaries is a XML
+	 */
+	public static boolean isDOM(final byte[] bytes) {
+		try {
+			final Document dom = buildDOM(bytes);
+			return dom != null;
+		} catch (DSSException e) {
+			// NOT DOM
+			return false;
+		}
+	}
+
+	/**
 	 * This method returns the {@link org.w3c.dom.Document} created based on the XML inputStream.
 	 *
 	 * @param inputStream

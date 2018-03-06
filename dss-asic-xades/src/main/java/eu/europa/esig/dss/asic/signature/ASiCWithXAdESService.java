@@ -24,6 +24,7 @@ import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
@@ -39,6 +40,12 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	public ASiCWithXAdESService(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 		LOG.debug("+ ASiCService with XAdES created");
+	}
+
+	@Override
+	public TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, ASiCWithXAdESSignatureParameters parameters) {
+		GetDataToSignASiCWithXAdESHelper getDataToSignHelper = ASiCWithXAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
+		return getXAdESService().getContentTimestamp(getDataToSignHelper.getSignedDocuments(), parameters);
 	}
 
 	@Override
