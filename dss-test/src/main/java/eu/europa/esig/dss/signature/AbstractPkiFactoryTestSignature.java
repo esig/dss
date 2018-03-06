@@ -254,6 +254,11 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	}
 
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertTrue(signatureWrapper.isReferenceDataFound());
+		assertTrue(signatureWrapper.isReferenceDataIntact());
+		assertTrue(signatureWrapper.isSignatureIntact());
+		assertTrue(signatureWrapper.isSignatureValid());
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 
@@ -313,13 +318,13 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			assertNotNull(timestampWrapper.getProductionTime());
 			assertTrue(timestampWrapper.isMessageImprintDataFound());
 			assertTrue(timestampWrapper.isMessageImprintDataIntact());
-			assertTrue(timestampWrapper.isSignatureValid());
 			assertTrue(timestampWrapper.isSignatureIntact());
+			assertTrue(timestampWrapper.isSignatureValid());
 		}
 	}
 
 	protected boolean hasContentTimestamp() {
-		return false;
+		return Utils.isCollectionNotEmpty(getSignatureParameters().getContentTimestamps());
 	}
 
 	protected void checkSigningDate(DiagnosticData diagnosticData) {
