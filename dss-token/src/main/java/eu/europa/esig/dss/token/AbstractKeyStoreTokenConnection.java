@@ -25,7 +25,12 @@ public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureT
 			final Enumeration<String> aliases = keyStore.aliases();
 			while (aliases.hasMoreElements()) {
 				final String alias = aliases.nextElement();
-				list.add(getKSPrivateKeyEntry(alias, getKeyProtectionParameter()));
+				final KSPrivateKeyEntry ksPrivateKeyEntry = getKSPrivateKeyEntry(alias, getKeyProtectionParameter());
+				if (ksPrivateKeyEntry != null) {
+					list.add(ksPrivateKeyEntry);
+				} else {
+					LOG.warn("KeyEntry not found with alias '{}' (key algorithm not supported,...)", alias);
+				}
 			}
 		} catch (GeneralSecurityException e) {
 			throw new DSSException("Unable to retrieve keys from keystore", e);
