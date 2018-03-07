@@ -211,20 +211,21 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		String encodedDate = " " + Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA1, Long.toString(date.getTime()).getBytes()));
 		CertificateToken token = parameters.getSigningCertificate();
 
-		if (parameters.getSignatureName() != null) {
-			signature.setName(parameters.getSignatureName());
-		} else if (token == null) {
-			signature.setName("Unknown signer" + encodedDate);
-		} else {
-			String shortName = DSSASN1Utils.getHumanReadableName(parameters.getSigningCertificate()) + encodedDate;
-			signature.setName(shortName);
-		}
-
 		signature.setFilter(getFilter(parameters));
 		// sub-filter for basic and PAdES Part 2 signatures
 		signature.setSubFilter(getSubFilter(parameters));
 
 		if (COSName.SIG.equals(getType())) {
+
+			if (parameters.getSignatureName() != null) {
+				signature.setName(parameters.getSignatureName());
+			} else if (token == null) {
+				signature.setName("Unknown signer" + encodedDate);
+			} else {
+				String shortName = DSSASN1Utils.getHumanReadableName(parameters.getSigningCertificate()) + encodedDate;
+				signature.setName(shortName);
+			}
+
 			if (Utils.isStringNotEmpty(parameters.getContactInfo())) {
 				signature.setContactInfo(parameters.getContactInfo());
 			}
@@ -236,13 +237,14 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			if (Utils.isStringNotEmpty(parameters.getReason())) {
 				signature.setReason(parameters.getReason());
 			}
+
+			// the signing date, needed for valid signature
+			final Calendar cal = Calendar.getInstance();
+			final Date signingDate = parameters.bLevel().getSigningDate();
+			cal.setTime(signingDate);
+			signature.setSignDate(cal);
 		}
 
-		// the signing date, needed for valid signature
-		final Calendar cal = Calendar.getInstance();
-		final Date signingDate = parameters.bLevel().getSigningDate();
-		cal.setTime(signingDate);
-		signature.setSignDate(cal);
 		return signature;
 	}
 

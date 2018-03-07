@@ -20,13 +20,21 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
@@ -52,9 +60,33 @@ public class PAdESLevelBWithContentTimestampTest extends AbstractPAdESTestSignat
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+		signatureParameters.setReason("Reason");
+		signatureParameters.setLocation("Luxembourg");
+		signatureParameters.setReason("DSS testing");
+		signatureParameters.setContactInfo("Jira");
 
 		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
 		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
+	}
+
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
+
+		try (PDDocument doc = PDDocument.load(byteArray)) {
+			List<PDSignature> signatureDictionaries = doc.getSignatureDictionaries();
+			assertEquals(1, signatureDictionaries.size());
+			PDSignature pdSignature = signatureDictionaries.get(0);
+			assertNotNull(pdSignature.getName());
+			assertNotNull(pdSignature.getReason());
+			assertNotNull(pdSignature.getLocation());
+			assertNotNull(pdSignature.getContactInfo());
+			assertNotNull(pdSignature.getSignDate()); // M
+			assertEquals("Adobe.PPKLite", pdSignature.getFilter());
+			assertEquals("ETSI.CAdES.detached", pdSignature.getSubFilter());
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
 	}
 
 	@Override
