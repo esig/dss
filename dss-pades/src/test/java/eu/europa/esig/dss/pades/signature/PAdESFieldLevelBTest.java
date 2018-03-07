@@ -33,7 +33,9 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.DocumentValidator;
 
 public class PAdESFieldLevelBTest extends AbstractPAdESTestSignature {
 
@@ -95,6 +97,11 @@ public class PAdESFieldLevelBTest extends AbstractPAdESTestSignature {
 	@Override
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
+	}
+
+	@Override
+	protected void checkGetOriginal(DocumentValidator validator, PAdESSignature padesSig) {
+		// Ignore : original document badly formed (%%EOF)
 	}
 
 	@Override

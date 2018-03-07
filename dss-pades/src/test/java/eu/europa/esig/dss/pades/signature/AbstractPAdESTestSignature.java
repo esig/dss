@@ -15,34 +15,37 @@ import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
 
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<PAdESSignatureParameters> {
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
-		checkSignedAttributesOrder(byteArray);
-	}
 
-	protected void checkSignedAttributesOrder(byte[] encoded) {
+		InMemoryDocument dssDocument = new InMemoryDocument(byteArray);
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new InMemoryDocument(encoded));
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());
 
-		ASN1InputStream asn1sInput = null;
-		try {
-			PAdESSignature padesSig = (PAdESSignature) signatures.get(0);
-			byte[] encodedCMS = padesSig.getCAdESSignature().getCmsSignedData().getEncoded();
+		PAdESSignature padesSig = (PAdESSignature) signatures.get(0);
 
-			asn1sInput = new ASN1InputStream(encodedCMS);
+		checkSignedAttributesOrder(padesSig);
+		checkGetOriginal(validator, padesSig);
+	}
+
+	protected void checkSignedAttributesOrder(PAdESSignature padesSig) {
+
+		try (ASN1InputStream asn1sInput = new ASN1InputStream(padesSig.getCAdESSignature().getCmsSignedData().getEncoded())) {
 			ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
 			SignedData signedData = SignedData.getInstance(DERTaggedObject.getInstance(asn1Seq.getObjectAt(1)).getObject());
@@ -63,9 +66,17 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 			}
 		} catch (Exception e) {
 			fail(e.getMessage());
-		} finally {
-			Utils.closeQuietly(asn1sInput);
 		}
+	}
+
+	protected void checkGetOriginal(DocumentValidator validator, PAdESSignature padesSig) {
+		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(padesSig.getId());
+		assertEquals(1, originalDocuments.size());
+
+		DSSDocument documentToSign = getDocumentToSign();
+		DSSDocument retrievedDoc = originalDocuments.get(0);
+
+		assertEquals(documentToSign.getDigest(DigestAlgorithm.SHA256), retrievedDoc.getDigest(DigestAlgorithm.SHA256));
 	}
 
 }

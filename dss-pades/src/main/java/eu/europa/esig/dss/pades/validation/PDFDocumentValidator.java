@@ -20,15 +20,19 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
@@ -106,12 +110,51 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 		List<DSSDocument> result = new ArrayList<DSSDocument>();
 
 		List<AdvancedSignature> signatures = getSignatures();
+		int counterSig = 0;
 		for (AdvancedSignature signature : signatures) {
 			PAdESSignature padesSignature = (PAdESSignature) signature;
 			if (padesSignature.getId().equals(signatureId)) {
 				CAdESSignature cadesSignature = padesSignature.getCAdESSignature();
-				return cadesSignature.getDetachedContents();
+				List<DSSDocument> cadesDetachedFile = cadesSignature.getDetachedContents();
+				if (Utils.collectionSize(cadesDetachedFile) == 1) {
+					// data before adding the signature value
+					DSSDocument dataToBeSigned = cadesDetachedFile.get(0);
+
+					int counterEOF = 0;
+					byte[] eof = new byte[] { '%', '%', 'E', 'O', 'F' };
+					try (InputStream is = dataToBeSigned.openStream();
+							BufferedInputStream bis = new BufferedInputStream(is);
+							ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
+						ByteArrayOutputStream temp = new ByteArrayOutputStream();
+						int b;
+						while ((b = bis.read()) != -1) {
+							if ((char) b != 0x0a && (char) b != 0x0d) {
+								temp.write(b);
+							} else {
+								final byte[] byteArray = temp.toByteArray();
+								temp.close();
+								baos.write(byteArray);
+								baos.write(b);
+								// End of a document revision
+								if (Arrays.equals(byteArray, eof)) {
+									if (counterSig == counterEOF) {
+										break;
+									}
+									counterEOF++;
+								}
+								temp = new ByteArrayOutputStream();
+							}
+						}
+
+						baos.flush();
+						result.add(new InMemoryDocument(baos.toByteArray(), "original.pdf", MimeType.PDF));
+					} catch (IOException e) {
+						throw new DSSException("Unable to retrieve original file", e);
+					}
+				}
 			}
+			counterSig++;
 		}
 		return result;
 	}
