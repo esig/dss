@@ -577,7 +577,26 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		if (!isAllCertChainsHaveRevocationData(certificateChains)) {
 			return false;
 		}
+		
+		if (isAllSelfSignedCertificates(certificateChains) && (emptyOCSPs && emptyCRLs)) {
+			return false;
+		}
 
+		return true;
+	}
+
+	private boolean isAllSelfSignedCertificates(Map<String, List<CertificateToken>> certificateChains) {
+		for (Entry<String, List<CertificateToken>> entryCertChain : certificateChains.entrySet()) {
+			List<CertificateToken> chain = entryCertChain.getValue();
+			if (Utils.collectionSize(chain) == 1) {
+				CertificateToken certificateToken = chain.get(0);
+				if (!certificateToken.isSelfSigned()) {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
 		return true;
 	}
 
