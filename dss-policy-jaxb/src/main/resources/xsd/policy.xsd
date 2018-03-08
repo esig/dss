@@ -130,6 +130,8 @@
 			<xs:element name="SerialNumberPresent" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="NotRevoked" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="NotOnHold" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="SelfSigned" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="NotSelfSigned" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="PolicyIds" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="QCStatementIds" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="Qualification" type="tns:LevelConstraint" minOccurs="0" />

@@ -205,6 +205,12 @@ public enum MessageTag {
 	BBB_XCV_ISCGCOMMONN("Has the certificate given common name?"),
 	BBB_XCV_ISCGCOMMONN_ANS("The certificate has not expected common name!"),
 
+	BBB_XCV_ISSSC("Is self-signed certificate?"),
+	BBB_XCV_ISSSC_ANS("The certificate is not self-signed!"),
+	
+	BBB_XCV_ISNSSC("Is not self-signed certificate?"),
+	BBB_XCV_ISNSSC_ANS("The certificate is self-signed!"),
+
 	XCV_IFCCIIPC_ANS("The interval ['%s', '%s'] for the certificate ['%s'] is inconsistent in the prospective chain."),
 
 	XCV_TSL_ESP("Is the expected trust service status present ?"),

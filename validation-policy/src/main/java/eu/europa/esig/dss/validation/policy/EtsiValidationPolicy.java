@@ -462,6 +462,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getCertificateNotSelfSignedConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getNotSelfSigned();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateSelfSignedConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getSelfSigned();
+		}
+		return null;
+	}
+
+	@Override
 	public MultiValuesConstraint getTrustedServiceStatusConstraint(Context context) {
 		BasicSignatureConstraints sigConstraints = getBasicSignatureConstraintsByContext(context);
 		if (sigConstraints != null) {

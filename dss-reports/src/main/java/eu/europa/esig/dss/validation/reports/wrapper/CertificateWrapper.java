@@ -54,6 +54,10 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return certificate.isTrusted();
 	}
 
+	public boolean isSelfSigned() {
+		return certificate.isSelfSigned();
+	}
+
 	public List<String> getKeyUsages() {
 		List<String> keyUsageBits = certificate.getKeyUsageBits();
 		if (Utils.isCollectionNotEmpty(keyUsageBits)) {

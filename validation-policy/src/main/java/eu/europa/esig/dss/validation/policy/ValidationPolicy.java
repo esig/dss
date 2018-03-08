@@ -241,6 +241,10 @@ public interface ValidationPolicy {
 	 */
 	LevelConstraint getCertificateNotOnHoldConstraint(Context context, SubContext subContext);
 
+	LevelConstraint getCertificateNotSelfSignedConstraint(Context context, SubContext subContext);
+
+	LevelConstraint getCertificateSelfSignedConstraint(Context context, SubContext subContext);
+
 	MultiValuesConstraint getTrustedServiceTypeIdentifierConstraint(Context context);
 
 	MultiValuesConstraint getTrustedServiceStatusConstraint(Context context);
