@@ -59,6 +59,7 @@ public abstract class PKIFactoryAccess {
 	protected static final String DSA_USER = "good-dsa-user";
 	protected static final String ECDSA_USER = "good-ecdsa-user";
 	protected static final String RSA_SHA3_USER = "sha3-good-user";
+	protected static final String SELF_SIGNED_USER = "self-signed";
 
 	protected abstract String getSigningAlias();
 
