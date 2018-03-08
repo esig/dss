@@ -12,6 +12,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractGetDataToSignASiCS {
@@ -40,7 +41,7 @@ public abstract class AbstractGetDataToSignASiCS {
 
 			zos.finish();
 
-			return new InMemoryDocument(baos.toByteArray(), "package.zip");
+			return new InMemoryDocument(baos.toByteArray(), ASiCUtils.PACKAGE_ZIP);
 		} catch (IOException e) {
 			throw new DSSException("Unable to create package.zip file", e);
 		}

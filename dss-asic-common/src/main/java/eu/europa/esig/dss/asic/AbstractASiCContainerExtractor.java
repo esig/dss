@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.asic;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
@@ -10,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -38,24 +36,24 @@ public abstract class AbstractASiCContainerExtractor {
 				String entryName = entry.getName();
 				if (isMetaInfFolder(entryName)) {
 					if (isAllowedSignature(entryName)) {
-						result.getSignatureDocuments().add(getCurrentDocument(entryName, asicInputStream));
+						result.getSignatureDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
 					} else if (isAllowedManifest(entryName)) {
-						result.getManifestDocuments().add(getCurrentDocument(entryName, asicInputStream));
+						result.getManifestDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
 					} else if (isAllowedArchiveManifest(entryName)) {
-						result.getArchiveManifestDocuments().add(getCurrentDocument(entryName, asicInputStream));
+						result.getArchiveManifestDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
 					} else if (isAllowedTimestamp(entryName)) {
-						result.getTimestampDocuments().add(getCurrentDocument(entryName, asicInputStream));
+						result.getTimestampDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
 					} else if (!isFolder(entryName)) {
-						result.getUnsupportedDocuments().add(getCurrentDocument(entryName, asicInputStream));
+						result.getUnsupportedDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
 					}
 				} else if (!isFolder(entryName)) {
 					if (isMimetype(entryName)) {
-						result.setMimeTypeDocument(getCurrentDocument(entryName, asicInputStream));
+						result.setMimeTypeDocument(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
 					} else {
-						result.getSignedDocuments().add(getCurrentDocument(entryName, asicInputStream));
+						result.getSignedDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
 					}
 				} else {
-					result.getUnsupportedDocuments().add(getCurrentDocument(entryName, asicInputStream));
+					result.getUnsupportedDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
 				}
 			}
 
@@ -123,13 +121,5 @@ public abstract class AbstractASiCContainerExtractor {
 	abstract boolean isAllowedTimestamp(String entryName);
 
 	abstract boolean isAllowedSignature(String entryName);
-
-	private DSSDocument getCurrentDocument(String filepath, ZipInputStream zis) throws IOException {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			Utils.copy(zis, baos);
-			baos.flush();
-			return new InMemoryDocument(baos.toByteArray(), filepath);
-		}
-	}
 
 }

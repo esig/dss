@@ -50,7 +50,7 @@ public class ASiCECAdESLevelBSHA512Test extends AbstractASiCECAdESTestSignature 
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
 		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 	}
