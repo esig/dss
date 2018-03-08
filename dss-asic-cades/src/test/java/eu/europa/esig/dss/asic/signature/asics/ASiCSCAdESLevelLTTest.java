@@ -27,14 +27,12 @@ import org.junit.Before;
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class ASiCSCAdESLevelLTTest extends AbstractPkiFactoryTestDocumentSignatureService<ASiCWithCAdESSignatureParameters> {
+public class ASiCSCAdESLevelLTTest extends AbstractASiCSCAdESTestSignature {
 
 	private DocumentSignatureService<ASiCWithCAdESSignatureParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
@@ -63,21 +61,6 @@ public class ASiCSCAdESLevelLTTest extends AbstractPkiFactoryTestDocumentSignatu
 	@Override
 	protected ASiCWithCAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
-	}
-
-	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.ASICS;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return true;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
 	}
 
 	@Override

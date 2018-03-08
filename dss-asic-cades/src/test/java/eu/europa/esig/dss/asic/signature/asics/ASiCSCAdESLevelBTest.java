@@ -42,11 +42,10 @@ import eu.europa.esig.dss.asic.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.TimestampToken;
 
-public class ASiCSCAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatureService<ASiCWithCAdESSignatureParameters> {
+public class ASiCSCAdESLevelBTest extends AbstractASiCSCAdESTestSignature {
 
 	private DocumentSignatureService<ASiCWithCAdESSignatureParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
@@ -110,21 +109,6 @@ public class ASiCSCAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatur
 	@Override
 	protected ASiCWithCAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
-	}
-
-	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.ASICS;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return false;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
 	}
 
 	@Override

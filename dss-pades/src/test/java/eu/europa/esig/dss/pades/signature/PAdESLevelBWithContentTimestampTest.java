@@ -36,7 +36,6 @@ import org.junit.Before;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -100,23 +99,8 @@ public class PAdESLevelBWithContentTimestampTest extends AbstractPAdESTestSignat
 	}
 
 	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.PDF;
-	}
-
-	@Override
 	protected boolean hasContentTimestamp() {
 		return true;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return false;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
 	}
 
 	@Override

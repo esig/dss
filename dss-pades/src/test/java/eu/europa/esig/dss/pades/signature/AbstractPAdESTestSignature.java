@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -18,6 +19,8 @@ import org.bouncycastle.asn1.cms.SignerInfo;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
@@ -41,6 +44,11 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 
 		checkSignedAttributesOrder(padesSig);
 		checkGetOriginal(validator, padesSig);
+	}
+
+	@Override
+	protected List<DSSDocument> getOriginalDocuments() {
+		return Collections.singletonList(getDocumentToSign());
 	}
 
 	protected void checkSignedAttributesOrder(PAdESSignature padesSig) {
@@ -77,6 +85,23 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		DSSDocument retrievedDoc = originalDocuments.get(0);
 
 		assertEquals(documentToSign.getDigest(DigestAlgorithm.SHA256), retrievedDoc.getDigest(DigestAlgorithm.SHA256));
+	}
+
+	@Override
+	protected MimeType getExpectedMime() {
+		return MimeType.PDF;
+	}
+
+	@Override
+	protected boolean isBaselineT() {
+		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
+		return SignatureLevel.PAdES_BASELINE_LTA.equals(signatureLevel) || SignatureLevel.PAdES_BASELINE_LT.equals(signatureLevel)
+				|| SignatureLevel.PAdES_BASELINE_T.equals(signatureLevel);
+	}
+
+	@Override
+	protected boolean isBaselineLTA() {
+		return SignatureLevel.PAdES_BASELINE_LTA.equals(getSignatureParameters().getSignatureLevel());
 	}
 
 }

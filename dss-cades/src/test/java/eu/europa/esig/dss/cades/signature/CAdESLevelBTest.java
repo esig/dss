@@ -29,6 +29,7 @@ import java.security.MessageDigest;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -307,6 +308,11 @@ public class CAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatureServ
 	@Override
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
+	}
+
+	@Override
+	protected List<DSSDocument> getOriginalDocuments() {
+		return Collections.singletonList(getDocumentToSign());
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -74,7 +75,12 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 		checkMimeType(signedDocument);
 
-		Reports reports = getValidationReport(signedDocument);
+		SignedDocumentValidator validator = getValidator(signedDocument);
+
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		assertTrue(Utils.isCollectionNotEmpty(signatures));
+
+		Reports reports = validator.validateDocument();
 		// reports.setValidateXml(true);
 		// reports.print();
 
@@ -86,7 +92,36 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		verifyDetailedReport(detailedReport);
+
+		getOriginalDocument(signedDocument, diagnosticData);
 	}
+
+	protected void getOriginalDocument(DSSDocument signedDocument, DiagnosticData diagnosticData) {
+		List<String> signatureIdList = diagnosticData.getSignatureIdList();
+		if (Utils.collectionSize(signatureIdList) == 1) {
+
+			SignedDocumentValidator validator = getValidator(signedDocument);
+			List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureIdList.get(0));
+
+			assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
+			List<DSSDocument> originalDocuments = getOriginalDocuments();
+			assertEquals(originalDocuments.size(), retrievedOriginalDocuments.size());
+
+			for (DSSDocument original : originalDocuments) {
+				boolean found = false;
+				String originalDigest = original.getDigest(DigestAlgorithm.SHA256);
+				for (DSSDocument retrieved : retrievedOriginalDocuments) {
+					String retrievedDigest = retrieved.getDigest(DigestAlgorithm.SHA256);
+					if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
+						found = true;
+					}
+				}
+				assertTrue("Unable to retrieve the document " + original.getName(), found);
+			}
+		}
+	}
+
+	protected abstract List<DSSDocument> getOriginalDocuments();
 
 	protected abstract DSSDocument sign();
 
@@ -181,15 +216,11 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		}
 	}
 
-	protected Reports getValidationReport(final DSSDocument signedDocument) {
+	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		validator.setSignaturePolicyProvider(getSignaturePolicyProvider());
-		List<AdvancedSignature> signatures = validator.getSignatures();
-		assertTrue(Utils.isCollectionNotEmpty(signatures));
-
-		Reports reports = validator.validateDocument();
-		return reports;
+		return validator;
 	}
 
 	protected SignaturePolicyProvider getSignaturePolicyProvider() {
@@ -197,7 +228,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	}
 
 	protected void checkMimeType(DSSDocument signedDocument) {
-		assertEquals(getExpectedMime(), signedDocument.getMimeType());
+		assertTrue(getExpectedMime().equals(signedDocument.getMimeType()));
 	}
 
 	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {

@@ -35,6 +35,11 @@ public abstract class AbstractPkiFactoryTestMultipleDocumentsSignatureService<SP
 	protected abstract MultipleDocumentsSignatureService<SP> getService();
 
 	@Override
+	protected List<DSSDocument> getOriginalDocuments() {
+		return getDocumentsToSign();
+	}
+
+	@Override
 	protected DSSDocument sign() {
 		List<DSSDocument> toBeSigneds = getDocumentsToSign();
 		SP params = getSignatureParameters();

@@ -96,13 +96,9 @@ public abstract class CommonDocument implements DSSDocument {
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
 		String base64EncodeDigest = base64EncodeDigestMap.get(digestAlgorithm);
 		if (base64EncodeDigest == null) {
-			try (InputStream inputStream = openStream()) {
-				final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, inputStream);
-				base64EncodeDigest = Utils.toBase64(digestBytes);
-				base64EncodeDigestMap.put(digestAlgorithm, base64EncodeDigest);
-			} catch (Exception e) {
-				throw new DSSException("Unable to compute digest", e);
-			}
+			final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, this);
+			base64EncodeDigest = Utils.toBase64(digestBytes);
+			base64EncodeDigestMap.put(digestAlgorithm, base64EncodeDigest);
 		}
 		return base64EncodeDigest;
 	}

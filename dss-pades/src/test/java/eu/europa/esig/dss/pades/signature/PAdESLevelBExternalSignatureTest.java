@@ -21,7 +21,9 @@
 package eu.europa.esig.dss.pades.signature;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -168,5 +170,10 @@ public class PAdESLevelBExternalSignatureTest extends AbstractPkiFactoryTestDocu
 	@Override
 	protected String getSigningAlias() {
 		return GOOD_USER;
+	}
+
+	@Override
+	protected List<DSSDocument> getOriginalDocuments() {
+		return Collections.singletonList(getDocumentToSign());
 	}
 }

@@ -39,10 +39,9 @@ import eu.europa.esig.dss.asic.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class ASiCSCAdESLevelBWithMimeTypeTest extends AbstractPkiFactoryTestDocumentSignatureService<ASiCWithCAdESSignatureParameters> {
+public class ASiCSCAdESLevelBWithMimeTypeTest extends AbstractASiCSCAdESTestSignature {
 
 	private static final String APPLICATION_VND_OASIS_OPENDOCUMENT_TEXT = "application/vnd.oasis.opendocument.text";
 	private DocumentSignatureService<ASiCWithCAdESSignatureParameters> service;
@@ -87,21 +86,6 @@ public class ASiCSCAdESLevelBWithMimeTypeTest extends AbstractPkiFactoryTestDocu
 	@Override
 	protected ASiCWithCAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
-	}
-
-	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.ASICS;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return false;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
 	}
 
 	@Override

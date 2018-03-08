@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -168,4 +170,10 @@ public class CAdESLevelBExternalSignatureTest extends AbstractPkiFactoryTestDocu
 	protected String getSigningAlias() {
 		return GOOD_USER;
 	}
+
+	@Override
+	protected List<DSSDocument> getOriginalDocuments() {
+		return Collections.singletonList(getDocumentToSign());
+	}
+
 }
