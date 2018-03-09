@@ -17,7 +17,6 @@ import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
@@ -25,7 +24,6 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<PAdESSignatureParameters> {
@@ -43,7 +41,6 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		PAdESSignature padesSig = (PAdESSignature) signatures.get(0);
 
 		checkSignedAttributesOrder(padesSig);
-		checkGetOriginal(validator, padesSig);
 	}
 
 	@Override
@@ -52,7 +49,6 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 	}
 
 	protected void checkSignedAttributesOrder(PAdESSignature padesSig) {
-
 		try (ASN1InputStream asn1sInput = new ASN1InputStream(padesSig.getCAdESSignature().getCmsSignedData().getEncoded())) {
 			ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
@@ -75,16 +71,6 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
-	}
-
-	protected void checkGetOriginal(DocumentValidator validator, PAdESSignature padesSig) {
-		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(padesSig.getId());
-		assertEquals(1, originalDocuments.size());
-
-		DSSDocument documentToSign = getDocumentToSign();
-		DSSDocument retrievedDoc = originalDocuments.get(0);
-
-		assertEquals(documentToSign.getDigest(DigestAlgorithm.SHA256), retrievedDoc.getDigest(DigestAlgorithm.SHA256));
 	}
 
 	@Override
