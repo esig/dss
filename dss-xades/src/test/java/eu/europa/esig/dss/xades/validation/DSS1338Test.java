@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
@@ -29,16 +28,18 @@ public class DSS1338Test {
 		String firstSignatureId = reports.getSimpleReport().getFirstSignatureId();
 
 		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(firstSignatureId);
-		assertEquals(1, originalDocuments.size());
+		assertEquals(2, originalDocuments.size());
 
+		boolean found = false;
 		for (DSSDocument dssDocument : originalDocuments) {
 			byte[] byteArray = DSSUtils.toByteArray(dssDocument);
 			String signedContent = new String(byteArray, "UTF-8");
-			assertTrue(signedContent.contains("<ns2:flusso xmlns:ns2=\"http://www.bancaditalia.it"));
-			assertTrue(signedContent.endsWith("</ns2:flusso>"));
-			assertFalse(signedContent.contains("<ds:Object"));
+			System.out.println(signedContent);
+			if (signedContent.contains("<ns2:flusso xmlns:ns2=\"http://www.bancaditalia.it") && signedContent.endsWith("</ns2:flusso>")) {
+				found = true;
+			}
 		}
-
+		assertTrue(found);
 	}
 
 }

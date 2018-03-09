@@ -11,10 +11,15 @@ import java.util.List;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
@@ -105,13 +110,13 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 			assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
 			List<DSSDocument> originalDocuments = getOriginalDocuments();
-			assertEquals(originalDocuments.size(), retrievedOriginalDocuments.size());
 
 			for (DSSDocument original : originalDocuments) {
 				boolean found = false;
-				String originalDigest = original.getDigest(DigestAlgorithm.SHA256);
+				boolean toBeCanonicalized = MimeType.XML.equals(original.getMimeType()) || MimeType.HTML.equals(original.getMimeType());
+				String originalDigest = getDigest(original, toBeCanonicalized);
 				for (DSSDocument retrieved : retrievedOriginalDocuments) {
-					String retrievedDigest = retrieved.getDigest(DigestAlgorithm.SHA256);
+					String retrievedDigest = getDigest(retrieved, toBeCanonicalized);
 					if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
 						found = true;
 					}
@@ -119,6 +124,21 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 				assertTrue("Unable to retrieve the document " + original.getName(), found);
 			}
 		}
+	}
+
+	private String getDigest(DSSDocument doc, boolean toBeCanonicalized) {
+		byte[] byteArray = DSSUtils.toByteArray(doc);
+		if (toBeCanonicalized) {
+			try {
+				// we canonicalize to ignore the header (which is not covered by the signature)
+				Canonicalizer c14n = Canonicalizer.getInstance(CanonicalizationMethod.INCLUSIVE);
+				byteArray = c14n.canonicalize(byteArray);
+			} catch (XMLSecurityException | ParserConfigurationException | IOException | SAXException e) {
+				// Not always able to canonicalize (more than one file can be covered (XML + something else) )
+			}
+		}
+		// LOG.info("Bytes : {}", new String(byteArray));
+		return Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, byteArray));
 	}
 
 	protected abstract List<DSSDocument> getOriginalDocuments();

@@ -1,16 +1,17 @@
 package eu.europa.esig.dss.xades.validation;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.transforms.Transforms;
-import org.junit.Assert;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
@@ -50,14 +51,66 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		Reports reports = validator.validateDocument();
 
 		List<DSSDocument> originals = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
-		Assert.assertEquals(1, originals.size());
+		assertEquals(1, originals.size());
 
 		DSSDocument original = originals.get(0);
 
 		Canonicalizer canon = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
 		String firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(document)));
 		String secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(original)));
-		Assert.assertEquals(firstDocument, secondDocument);
+		assertEquals(firstDocument, secondDocument);
+	}
+
+	@Test
+	public final void getOneOriginalDocumentFromEnvelopedSignatureTwice() throws Exception {
+		DSSDocument document = new FileDocument("src/test/resources/sample.xml");
+
+		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
+		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+
+		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
+
+		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
+		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
+
+		signatureParameters = new XAdESSignatureParameters();
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
+		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+
+		service = new XAdESService(getCompleteCertificateVerifier());
+
+		dataToSign = service.getDataToSign(signedDocument, signatureParameters);
+		signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
+		final DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
+
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(resignedDocument);
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		Reports reports = validator.validateDocument();
+
+		List<String> signatureIdList = reports.getDiagnosticData().getSignatureIdList();
+		assertEquals(2, signatureIdList.size());
+
+		List<DSSDocument> originals = validator.getOriginalDocuments(signatureIdList.get(0));
+		assertEquals(1, originals.size());
+		DSSDocument original = originals.get(0);
+		Canonicalizer canon = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
+		String firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(document)));
+		String secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(original)));
+		assertEquals(firstDocument, secondDocument);
+
+		originals = validator.getOriginalDocuments(signatureIdList.get(1));
+		assertEquals(1, originals.size());
+		original = originals.get(0);
+		canon = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
+		firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(document)));
+		secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(original)));
+		assertEquals(firstDocument, secondDocument);
 	}
 
 	@Test
@@ -82,17 +135,17 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		Reports reports = validator.validateDocument();
 
 		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
-		Assert.assertEquals(1, results.size());
+		assertEquals(1, results.size());
 
 		DSSDocument dssDocument = results.get(0);
 
 		Canonicalizer canon = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
 		String firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(document)));
 		String secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(dssDocument)));
-		Assert.assertEquals(firstDocument, secondDocument);
+		assertEquals(firstDocument, secondDocument);
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public final void getOneOriginalDocumentFromDetachedSignature() throws Exception {
 		DSSDocument document = new FileDocument("src/test/resources/sample.xml");
 
@@ -110,10 +163,19 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		validator.setDetachedContents(Arrays.asList(document));
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
+		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
+		assertEquals(1, results.size());
+
+		DSSDocument dssDocument = results.get(0);
+
+		Canonicalizer canon = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
+		String firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(document)));
+		String secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(dssDocument)));
+		assertEquals(firstDocument, secondDocument);
 	}
 
 	@Test
@@ -165,7 +227,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		Reports reports = validator.validateDocument();
 
 		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
-		Assert.assertEquals(2, results.size());
+		assertEquals(2, results.size());
 
 		DSSDocument orig1 = results.get(0);
 		DSSDocument orig2 = results.get(1);
@@ -173,11 +235,11 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		Canonicalizer canon = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
 		String firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(doc1)));
 		String secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(orig1)));
-		Assert.assertEquals(firstDocument, secondDocument);
+		assertEquals(firstDocument, secondDocument);
 
 		firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(doc2)));
 		secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(orig2)));
-		Assert.assertEquals(firstDocument, secondDocument);
+		assertEquals(firstDocument, secondDocument);
 	}
 
 	@Override

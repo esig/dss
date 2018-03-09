@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,19 +29,14 @@ import org.junit.Before;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
+public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -54,11 +46,11 @@ public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest exten
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+		documentToSign = new FileDocument("src/test/resources/sample.xml");
 
 		// Load any two files (rather not XML) to sign them
-		attachment1 = createDocument("src/test/resources/sample.txt");
-		attachment2 = createDocument("src/test/resources/sample.png");
+		attachment1 = new FileDocument("src/test/resources/sample.txt");
+		attachment2 = new FileDocument("src/test/resources/sample.png");
 
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -68,6 +60,7 @@ public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest exten
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
 		List<DSSReference> references = new ArrayList<DSSReference>();
+		references.add(createReference(documentToSign));
 		references.add(createReference(attachment1));
 		references.add(createReference(attachment2));
 
@@ -75,12 +68,6 @@ public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest exten
 
 		service = new XAdESService(getCompleteCertificateVerifier());
 
-	}
-
-	private DSSDocument createDocument(String filePath) throws IOException {
-		File file = new File(filePath);
-		byte[] content = Utils.toByteArray(new FileInputStream(file));
-		return new InMemoryDocument(content, filePath);
 	}
 
 	private DSSReference createReference(DSSDocument fileDocument) {
@@ -93,17 +80,17 @@ public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest exten
 	}
 
 	@Override
-	protected Reports getValidationReport(DSSDocument signedDocument) {
+	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
+		detachedContents.add(documentToSign);
 		detachedContents.add(attachment1);
 		detachedContents.add(attachment2);
 		validator.setDetachedContents(detachedContents);
 
-		Reports reports = validator.validateDocument();
-		return reports;
+		return validator;
 	}
 
 	@Override
@@ -114,21 +101,6 @@ public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest exten
 	@Override
 	protected XAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
-	}
-
-	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.XML;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return false;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
 	}
 
 	@Override
