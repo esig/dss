@@ -110,7 +110,6 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 		List<DSSDocument> result = new ArrayList<DSSDocument>();
 
 		List<AdvancedSignature> signatures = getSignatures();
-		int counterSig = 0;
 		for (AdvancedSignature signature : signatures) {
 			PAdESSignature padesSignature = (PAdESSignature) signature;
 			if (padesSignature.getId().equals(signatureId)) {
@@ -120,43 +119,56 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 					// data before adding the signature value
 					DSSDocument dataToBeSigned = cadesDetachedFile.get(0);
 
-					int counterEOF = 0;
-					byte[] eof = new byte[] { '%', '%', 'E', 'O', 'F' };
-					try (InputStream is = dataToBeSigned.openStream();
-							BufferedInputStream bis = new BufferedInputStream(is);
-							ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-
-						ByteArrayOutputStream temp = new ByteArrayOutputStream();
-						int b;
-						while ((b = bis.read()) != -1) {
-							if ((char) b != 0x0a && (char) b != 0x0d) {
-								temp.write(b);
-							} else {
-								final byte[] byteArray = temp.toByteArray();
-								temp.close();
-								baos.write(byteArray);
-								baos.write(b);
-								// End of a document revision
-								if (Arrays.equals(byteArray, eof)) {
-									if (counterSig == counterEOF) {
-										break;
-									}
-									counterEOF++;
-								}
-								temp = new ByteArrayOutputStream();
-							}
-						}
-
-						baos.flush();
-						result.add(new InMemoryDocument(baos.toByteArray(), "original.pdf", MimeType.PDF));
-					} catch (IOException e) {
-						throw new DSSException("Unable to retrieve original file", e);
-					}
+					int[] signatureByteRange = padesSignature.getSignatureByteRange();
+					DSSDocument firstByteRangePart = DSSUtils.splitDocument(dataToBeSigned, signatureByteRange[0], signatureByteRange[1]);
+					DSSDocument lastRevision = retrieveLastPDFRevision(firstByteRangePart);
+					result.add(lastRevision);
 				}
 			}
-			counterSig++;
 		}
 		return result;
+	}
+
+	private DSSDocument retrieveLastPDFRevision(DSSDocument firstByteRangePart) {
+		final byte[] eof = new byte[] { '%', '%', 'E', 'O', 'F' };
+		try (InputStream is = firstByteRangePart.openStream();
+				BufferedInputStream bis = new BufferedInputStream(is);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
+			ByteArrayOutputStream tempLine = new ByteArrayOutputStream();
+			ByteArrayOutputStream tempRevision = new ByteArrayOutputStream();
+			int b;
+			while ((b = bis.read()) != -1) {
+				final char c = (char) b;
+				/*
+				 * 0x0a = New Line
+				 * 0x0d = Carriage return
+				 */
+				if ((c != 0x0a) && (c != 0x0d)) {
+					tempLine.write(b);
+				} else {
+					final byte[] byteArray = tempLine.toByteArray();
+					tempRevision.write(byteArray);
+					tempRevision.write(b);
+					// End of a document revision
+					if (Arrays.equals(byteArray, eof)) {
+						baos.write(tempRevision.toByteArray());
+						tempRevision.close();
+						tempRevision = new ByteArrayOutputStream();
+					}
+					tempLine.close();
+					tempLine = new ByteArrayOutputStream();
+				}
+			}
+			tempRevision.close();
+			tempLine.close();
+
+			baos.flush();
+			return new InMemoryDocument(baos.toByteArray(), "original.pdf", MimeType.PDF);
+
+		} catch (IOException e) {
+			throw new DSSException("Unable to retrieve the last revision", e);
+		}
 	}
 
 }

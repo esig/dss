@@ -356,6 +356,10 @@ public class PAdESSignature extends CAdESSignature {
 		return DSSUtils.getMD5Digest(baos.toByteArray());
 	}
 
+	public int[] getSignatureByteRange() {
+		return pdfSignatureInfo.getSignatureByteRange();
+	}
+
 	@Override
 	public List<TimestampReference> getTimestampedReferences() {
 		/* Not applicable for PAdES */
