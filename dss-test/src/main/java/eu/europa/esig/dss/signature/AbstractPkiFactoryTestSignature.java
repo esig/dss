@@ -68,14 +68,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 		// signedDocument.save("target/" + signedDocument.getName());
 
-		try {
-			byte[] byteArray = Utils.toByteArray(signedDocument.openStream());
-			onDocumentSigned(byteArray);
-			if (LOG.isDebugEnabled()) {
-				LOG.debug(new String(byteArray));
-			}
-		} catch (Exception e) {
-			LOG.error("Cannot display file content", e);
+		byte[] byteArray = DSSUtils.toByteArray(signedDocument);
+		onDocumentSigned(byteArray);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug(new String(byteArray));
 		}
 
 		checkMimeType(signedDocument);
@@ -103,10 +99,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 	protected void getOriginalDocument(DSSDocument signedDocument, DiagnosticData diagnosticData) {
 		List<String> signatureIdList = diagnosticData.getSignatureIdList();
-		if (Utils.collectionSize(signatureIdList) == 1) {
+		for (String signatureId : signatureIdList) {
 
 			SignedDocumentValidator validator = getValidator(signedDocument);
-			List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureIdList.get(0));
+			List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
 
 			assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
 			List<DSSDocument> originalDocuments = getOriginalDocuments();
@@ -121,9 +117,40 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 						found = true;
 					}
 				}
-				assertTrue("Unable to retrieve the document " + original.getName(), found);
+
+				if (!MimeType.PDF.equals(original.getMimeType())) {
+					assertTrue("Unable to retrieve the document " + original.getName(), found);
+				} else if (!found) {
+					byte[] originalByteArray = DSSUtils.toByteArray(original);
+					DSSDocument retrieved = retrievedOriginalDocuments.get(0);
+					byte[] retrievedByteArray = DSSUtils.toByteArray(retrieved);
+					assertTrue(isOnlyOneByteDifferAtLastPosition(originalByteArray, retrievedByteArray));
+				}
 			}
 		}
+	}
+
+	/**
+	 * In some cases, PDF files finish with %%EOF + EOL and some other cases only %%EOF
+	 * 
+	 * There's no technical way to extract the exact file ending.
+	 */
+	private boolean isOnlyOneByteDifferAtLastPosition(byte[] originalByteArray, byte[] retrievedByteArray) {
+		int lengthOrigin = originalByteArray.length;
+		int lengthRetrieved = retrievedByteArray.length;
+
+		int min = Math.min(lengthOrigin, lengthRetrieved);
+		if ((lengthOrigin - min > 1) || (lengthRetrieved - min > 1)) {
+			return false;
+		}
+
+		for (int i = 0; i < min; i++) {
+			if (originalByteArray[i] != retrievedByteArray[i]) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private String getDigest(DSSDocument doc, boolean toBeCanonicalized) {
