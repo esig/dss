@@ -104,6 +104,10 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
+		final MimeType documentMimeType = dssDocument.getMimeType();
+		if ((documentMimeType != null) && MimeType.XML.equals(documentMimeType)) {
+			return true;
+		}
 		final String dssDocumentName = dssDocument.getName();
 		if ((dssDocumentName != null) && MimeType.XML.equals(MimeType.fromFileName(dssDocumentName))) {
 			return true;
@@ -111,7 +115,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		int headerLength = xmlPreamble.length;
 		byte[] preamble = new byte[headerLength];
 		DSSUtils.readToArray(dssDocument, headerLength, preamble);
-		return (Arrays.equals(preamble, xmlPreamble) || Arrays.equals(preamble, xmlUtf8));
+		return Arrays.equals(preamble, xmlPreamble) || Arrays.equals(preamble, xmlUtf8);
 	}
 
 	@Override
