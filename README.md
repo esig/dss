@@ -26,7 +26,7 @@ The [documentation](dss-cookbook/src/main/asciidoc/dss-documentation.adoc) and s
 
 # Demonstration
 
-The release is deployed on https://joinup.ec.europa.eu/dss-webapp/ 
+The release is deployed on https://ec.europa.eu/cefdigital/DSS/webapp-demo 
 
 # Ready-to-use bundles
 
