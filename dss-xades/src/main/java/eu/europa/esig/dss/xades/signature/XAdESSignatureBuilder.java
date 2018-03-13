@@ -474,7 +474,12 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			LOG.trace("Canonicalization method  --> {}", signedPropertiesCanonicalizationMethod);
 			LOG.trace("Canonicalised REF_2      --> {}", new String(canonicalizedBytes));
 		}
-		incorporateDigestValue(reference, digestAlgorithm, new InMemoryDocument(canonicalizedBytes));
+
+		final Element digestValueDom = documentDom.createElementNS(XMLNS, DS_DIGEST_VALUE);
+		final String base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, canonicalizedBytes));
+		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
+		digestValueDom.appendChild(textNode);
+		reference.appendChild(digestValueDom);
 	}
 
 	/**
@@ -510,7 +515,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Reference canonicalization method  -->" + signedInfoCanonicalizationMethod);
 		}
-		incorporateDigestValue(referenceDom, digestAlgorithm, canonicalizedDocument);
+		incorporateDigestValue(referenceDom, dssReference, digestAlgorithm, canonicalizedDocument);
 	}
 
 	static void createTransform(final Document document, final DSSTransform dssTransform, final Element transformDom) {

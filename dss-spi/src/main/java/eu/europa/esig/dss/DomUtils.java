@@ -240,7 +240,7 @@ public final class DomUtils {
 			final Document rootElement = dbFactory.newDocumentBuilder().parse(is);
 			return rootElement;
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException("Unable to parse content (XML expected)", e);
 		}
 	}
 

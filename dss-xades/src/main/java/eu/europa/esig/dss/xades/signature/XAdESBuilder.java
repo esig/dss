@@ -27,11 +27,14 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.crypto.dsig.XMLSignature;
+
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.DSSASN1Utils;
@@ -215,46 +218,58 @@ public abstract class XAdESBuilder {
 	 *
 	 * @param parentDom
 	 *            the parent element
+	 * @param dssReference
+	 *            the current reference to incorporate
 	 * @param digestAlgorithm
 	 *            the digest algorithm to be used
 	 * @param originalDocument
 	 *            the document to be digested
 	 */
-	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm, final DSSDocument originalDocument) {
+	protected void incorporateDigestValue(final Element parentDom, DSSReference dssReference, final DigestAlgorithm digestAlgorithm,
+			final DSSDocument originalDocument) {
 
 		final Element digestValueDom = documentDom.createElementNS(XMLNS, DS_DIGEST_VALUE);
 
 		String base64EncodedDigestBytes = null;
 		if (params.isManifestSignature()) {
-
-			List<DSSReference> references = params.getReferences();
-			if (Utils.collectionSize(references) != 1) {
-				throw new DSSException("Unsupported operation");
-			}
-			DSSReference dssReference = references.get(0);
-
-			List<DSSTransform> transforms = dssReference.getTransforms();
-			if (Utils.collectionSize(transforms) != 1) {
-				throw new DSSException("Unsupported operation");
-			}
-
-			Document doc = DomUtils.buildDOM(originalDocument.openStream());
-			DSSTransform dssTransform = transforms.get(0);
+			DSSTransform dssTransform = getUniqueTransformation(dssReference);
+			Document doc = DomUtils.buildDOM(originalDocument);
 			byte[] bytes = DSSXMLUtils.canonicalizeSubtree(dssTransform.getAlgorithm(), doc);
 			base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
+		} else if (params.isEmbedXML()) {
+			DSSTransform dssTransform = getUniqueTransformation(dssReference);
 
-			LOG.trace("C14n Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
+			Document doc = DomUtils.buildDOM(originalDocument);
+			Element root = doc.getDocumentElement();
+
+			Document doc2 = DomUtils.buildDOM();
+			final Element dom = doc2.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
+			final Element dom2 = doc2.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
+			doc2.appendChild(dom2);
+			dom2.appendChild(dom);
+			dom.setAttribute(ID, dssReference.getUri().substring(1));
+
+			Node adopted = doc2.adoptNode(root);
+			dom.appendChild(adopted);
+
+			byte[] bytes = DSSXMLUtils.canonicalizeSubtree(dssTransform.getAlgorithm(), dom);
+			base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
 		} else {
 			base64EncodedDigestBytes = originalDocument.getDigest(digestAlgorithm);
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
-			}
 		}
 
+		LOG.trace("C14n Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
 		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
 		digestValueDom.appendChild(textNode);
-
 		parentDom.appendChild(digestValueDom);
+	}
+
+	private DSSTransform getUniqueTransformation(DSSReference dssReference) {
+		List<DSSTransform> transforms = dssReference.getTransforms();
+		if (Utils.collectionSize(transforms) != 1) {
+			throw new DSSException("Only one transformation is supported");
+		}
+		return transforms.get(0);
 	}
 
 	/**

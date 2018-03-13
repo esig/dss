@@ -32,6 +32,12 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
 	private String xPathLocationString;
 
+	/**
+	 * In case of ENVELOPING signature, this parameter allows to include the complete XML and not its base64 encoded
+	 * value
+	 */
+	private boolean embedXML;
+
 	private boolean en319132 = true;
 
 	/**
@@ -54,12 +60,12 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	 */
 	private boolean addX509SubjectName;
 
-    /**
-     * Optional parameter that contains the canonicalized XML of the XAdES object that was digested,
-     * referenced from the SigningInfo, and indirectly signed when the signature value was created.
-     * If this parameter is specified it will be used in the signed XML document.
-     */
-    private byte[] signedAdESObject;
+	/**
+	 * Optional parameter that contains the canonicalized XML of the XAdES object that was digested,
+	 * referenced from the SigningInfo, and indirectly signed when the signature value was created.
+	 * If this parameter is specified it will be used in the signed XML document.
+	 */
+	private byte[] signedAdESObject;
 
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
@@ -169,6 +175,14 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 		this.en319132 = en319132;
 	}
 
+	public boolean isEmbedXML() {
+		return embedXML;
+	}
+
+	public void setEmbedXML(boolean embedXML) {
+		this.embedXML = embedXML;
+	}
+
 	public boolean isManifestSignature() {
 		return manifestSignature;
 	}
@@ -193,12 +207,12 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 		this.addX509SubjectName = addX509SubjectName;
 	}
 
-    public byte[] getSignedAdESObject() {
-	    return signedAdESObject;
+	public byte[] getSignedAdESObject() {
+		return signedAdESObject;
 	}
 
-    public void setSignedAdESObject(byte[] signedAdESObject) {
-	    this.signedAdESObject = signedAdESObject;
+	public void setSignedAdESObject(byte[] signedAdESObject) {
+		this.signedAdESObject = signedAdESObject;
 	}
 
 }
