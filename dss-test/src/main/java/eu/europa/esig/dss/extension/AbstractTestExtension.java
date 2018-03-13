@@ -41,6 +41,7 @@ import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public abstract class AbstractTestExtension<SP extends AbstractSignatureParameters> extends PKIFactoryAccess {
 
@@ -51,6 +52,10 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 	protected abstract SignatureLevel getFinalSignatureLevel();
 
 	protected abstract DocumentSignatureService<SP> getSignatureServiceToExtend() throws Exception;
+
+	protected abstract TSPSource getUsedTSPSourceAtSignatureTime();
+
+	protected abstract TSPSource getUsedTSPSourceAtExtensionTime();
 
 	@Test
 	public void test() throws Exception {

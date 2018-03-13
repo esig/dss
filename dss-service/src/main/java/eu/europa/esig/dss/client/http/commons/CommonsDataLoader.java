@@ -53,6 +53,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
@@ -410,15 +411,6 @@ public class CommonsDataLoader implements DataLoader {
 		return get(url);
 	}
 
-	private byte[] fileGet(String urlString) {
-		try {
-			return DSSUtils.toByteArray(new URL(urlString).openStream());
-		} catch (IOException e) {
-			LOG.warn("An IO error occured while reading url " + urlString, e);
-		}
-		return null;
-	}
-
 	/**
 	 * This method retrieves data using LDAP protocol. - CRL from given LDAP
 	 * url, e.g. ldap://ldap.infonotary.com/dc=identity-ca,dc=infonotary,dc=com
@@ -469,20 +461,25 @@ public class CommonsDataLoader implements DataLoader {
 	 * @return
 	 */
 	protected byte[] ftpGet(final String urlString) {
-
-		InputStream inputStream = null;
-		try {
-
-			final URL url = new URL(urlString);
-			inputStream = url.openStream();
+		final URL url = getURL(urlString);
+		try (InputStream inputStream = url.openStream()) {
 			return DSSUtils.toByteArray(inputStream);
 		} catch (Exception e) {
-
-			LOG.warn(e.getMessage());
-		} finally {
-			Utils.closeQuietly(inputStream);
+			LOG.warn("Unable to retrieve URL {} content : {}", urlString, e.getMessage());
 		}
 		return null;
+	}
+
+	protected byte[] fileGet(final String urlString) {
+		return ftpGet(urlString);
+	}
+
+	private URL getURL(String urlString) {
+		try {
+			return new URL(urlString);
+		} catch (MalformedURLException e) {
+			throw new DSSException("Unable to create URL instance", e);
+		}
 	}
 
 	/**
@@ -617,21 +614,18 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	protected byte[] readHttpResponse(final String url, final HttpResponse httpResponse) throws DSSException {
-
-		final int statusCode = httpResponse.getStatusLine().getStatusCode();
-		if (LOG.isDebugEnabled()) {
-			LOG.debug(url + " status code is " + statusCode + " - " + (statusCode == HttpStatus.SC_OK ? "OK" : "NOK"));
-		}
+		final StatusLine statusLine = httpResponse.getStatusLine();
+		final int statusCode = statusLine.getStatusCode();
+		final String reasonPhrase = statusLine.getReasonPhrase();
 
 		if (statusCode != HttpStatus.SC_OK) {
-			LOG.warn("No content available via url: " + url);
-			return null;
+			String reason = Utils.isStringNotEmpty(reasonPhrase) ? " / reason : " + reasonPhrase : "";
+			throw new DSSException("Unable to request '" + url + "' (HTTP status code : " + statusCode + reason + ")");
 		}
 
 		final HttpEntity responseEntity = httpResponse.getEntity();
 		if (responseEntity == null) {
-			LOG.warn("No message entity for this response - will use nothing: " + url);
-			return null;
+			throw new DSSException("No message entity for this response - will use nothing: " + url);
 		}
 
 		final byte[] content = getContent(responseEntity);
@@ -639,15 +633,10 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	protected byte[] getContent(final HttpEntity responseEntity) throws DSSException {
-		InputStream content = null;
-		try {
-			content = responseEntity.getContent();
-			final byte[] bytes = DSSUtils.toByteArray(content);
-			return bytes;
+		try (InputStream content = responseEntity.getContent()) {
+			return DSSUtils.toByteArray(content);
 		} catch (IOException e) {
 			throw new DSSException(e);
-		} finally {
-			Utils.closeQuietly(content);
 		}
 	}
 

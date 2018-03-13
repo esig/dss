@@ -3,6 +3,8 @@ package eu.europa.esig.dss.signature;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import eu.europa.esig.dss.client.crl.OnlineCRLSource;
@@ -22,6 +24,8 @@ import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
+import eu.europa.esig.dss.x509.tsp.CompositeTSPSource;
+import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public abstract class PKIFactoryAccess {
 
@@ -46,6 +50,11 @@ public abstract class PKIFactoryAccess {
 	private static final String GOOD_TSA = "good-tsa";
 	private static final String EE_GOOD_TSA = "ee-good-tsa";
 	private static final String GOOD_TSA_CROSS_CERTIF = "cc-good-tsa-crossed";
+
+	/* Produces timestamp with a fail status */
+	private static final String FAIL_GOOD_TSA = "fail/good-tsa";
+	/* Produces HTTP error 500 */
+	private static final String ERROR500_GOOD_TSA = "error-500/good-tsa";
 
 	private static final String KEYSTORE_TYPE = "PKCS12";
 	// JDK-7 + PKCS12 is not allowed for trust-store
@@ -132,24 +141,38 @@ public abstract class PKIFactoryAccess {
 		return cacheDataLoader;
 	}
 
-	protected OnlineTSPSource getGoodTsa() {
-		OnlineTSPSource tspSource = new OnlineTSPSource(getTsaUrl(GOOD_TSA));
-		TimestampDataLoader dataLoader = new TimestampDataLoader();
-		dataLoader.setProxyConfig(getProxyConfig());
-		tspSource.setDataLoader(dataLoader);
-		return tspSource;
+	protected TSPSource getCompositeTsa() {
+		CompositeTSPSource composite = new CompositeTSPSource();
+		Map<String, TSPSource> tspSources = new HashMap<String, TSPSource>();
+		tspSources.put(FAIL_GOOD_TSA, getFailGoodTsa());
+		tspSources.put(GOOD_TSA, getGoodTsa());
+		tspSources.put(EE_GOOD_TSA, getAlternateGoodTsa());
+		composite.setTspSources(tspSources);
+		return composite;
 	}
 
-	protected OnlineTSPSource getAlternateGoodTsa() {
-		OnlineTSPSource tspSource = new OnlineTSPSource(getTsaUrl(EE_GOOD_TSA));
-		TimestampDataLoader dataLoader = new TimestampDataLoader();
-		dataLoader.setProxyConfig(getProxyConfig());
-		tspSource.setDataLoader(dataLoader);
-		return tspSource;
+	protected TSPSource getGoodTsa() {
+		return getOnlineTSPSource(GOOD_TSA);
 	}
 
-	protected OnlineTSPSource getGoodTsaCrossCertification() {
-		OnlineTSPSource tspSource = new OnlineTSPSource(getTsaUrl(GOOD_TSA_CROSS_CERTIF));
+	protected TSPSource getFailGoodTsa() {
+		return getOnlineTSPSource(FAIL_GOOD_TSA);
+	}
+
+	protected TSPSource getError500GoodTsa() {
+		return getOnlineTSPSource(ERROR500_GOOD_TSA);
+	}
+
+	protected TSPSource getAlternateGoodTsa() {
+		return getOnlineTSPSource(EE_GOOD_TSA);
+	}
+
+	protected TSPSource getGoodTsaCrossCertification() {
+		return getOnlineTSPSource(GOOD_TSA_CROSS_CERTIF);
+	}
+
+	private OnlineTSPSource getOnlineTSPSource(String tsaName) {
+		OnlineTSPSource tspSource = new OnlineTSPSource(getTsaUrl(tsaName));
 		TimestampDataLoader dataLoader = new TimestampDataLoader();
 		dataLoader.setProxyConfig(getProxyConfig());
 		tspSource.setDataLoader(dataLoader);

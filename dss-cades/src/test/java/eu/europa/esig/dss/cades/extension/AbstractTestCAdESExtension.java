@@ -29,8 +29,19 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.extension.AbstractTestExtension;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public abstract class AbstractTestCAdESExtension extends AbstractTestExtension<CAdESSignatureParameters> {
+
+	@Override
+	protected TSPSource getUsedTSPSourceAtSignatureTime() {
+		return getGoodTsa();
+	}
+
+	@Override
+	protected TSPSource getUsedTSPSourceAtExtensionTime() {
+		return getAlternateGoodTsa();
+	}
 
 	@Override
 	protected DSSDocument getSignedDocument() throws Exception {
@@ -45,7 +56,7 @@ public abstract class AbstractTestCAdESExtension extends AbstractTestExtension<C
 		signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
 
 		CAdESService service = new CAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getGoodTsa());
+		service.setTspSource(getUsedTSPSourceAtSignatureTime());
 
 		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -56,7 +67,7 @@ public abstract class AbstractTestCAdESExtension extends AbstractTestExtension<C
 	@Override
 	protected DocumentSignatureService<CAdESSignatureParameters> getSignatureServiceToExtend() throws Exception {
 		CAdESService service = new CAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getGoodTsa());
+		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;
 	}
 
