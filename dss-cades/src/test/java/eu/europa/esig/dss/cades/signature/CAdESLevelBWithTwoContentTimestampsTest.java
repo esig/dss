@@ -33,10 +33,10 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.TimestampType;
+import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public class CAdESLevelBWithTwoContentTimestampsTest extends AbstractCAdESTestSignature {
 
@@ -48,7 +48,7 @@ public class CAdESLevelBWithTwoContentTimestampsTest extends AbstractCAdESTestSi
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
-		OnlineTSPSource tspSource = getGoodTsa();
+		TSPSource tspSource = getGoodTsa();
 
 		TimeStampToken timeStampResponse1 = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, documentToSign));
 		TimestampToken contentTimestamp1 = new TimestampToken(timeStampResponse1, TimestampType.CONTENT_TIMESTAMP);
