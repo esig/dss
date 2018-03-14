@@ -18,12 +18,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.client.http.commons;
 
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+
+import eu.europa.esig.dss.DSSException;
 
 public class ResourceLoader {
 
@@ -73,18 +74,6 @@ public class ResourceLoader {
 		} catch (UnsupportedEncodingException e) {
 			throw new DSSException(e);
 		}
-	}
-
-	/**
-	 * This method converts the resource path to the input stream.
-	 *
-	 * @param resourcePath
-	 *            the resource path
-	 * @return an inputstream
-	 */
-	public InputStream getResource(final String resourcePath) {
-		final InputStream resourceAsStream = anyClass.getResourceAsStream(resourcePath);
-		return resourceAsStream;
 	}
 
 }
