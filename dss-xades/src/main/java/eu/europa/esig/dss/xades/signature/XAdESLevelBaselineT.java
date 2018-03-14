@@ -281,13 +281,8 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdES141, XADES141_ARCHIVE_TIME_STAMP);
 			timestampDigestAlgorithm = params.getArchiveTimestampParameters().getDigestAlgorithm();
 			break;
-		case ALL_DATA_OBJECTS_TIMESTAMP:
-			timeStampDom = DomUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdES, XADES_ALL_DATA_OBJECTS_TIME_STAMP);
-			break;
-		case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
-			timeStampDom = DomUtils.addElement(documentDom, signedDataObjectPropertiesDom, XAdES, XADES_INDIVIDUAL_DATA_OBJECTS_TIME_STAMP);
-			break;
 		default:
+			// Content timestamps need to be generated before the signature itself
 			LOG.error("Unsupported timestamp type : " + timestampType);
 			break;
 		}
