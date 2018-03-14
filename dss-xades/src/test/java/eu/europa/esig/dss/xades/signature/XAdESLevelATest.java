@@ -23,7 +23,6 @@ package eu.europa.esig.dss.xades.signature;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.util.Date;
 
 import org.junit.Before;
 
@@ -46,11 +45,11 @@ public class XAdESLevelATest extends AbstractXAdESTestSignature {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_A);
+		signatureParameters.setEn319132(false);
 
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

@@ -34,7 +34,6 @@ public class DSS1338Test {
 		for (DSSDocument dssDocument : originalDocuments) {
 			byte[] byteArray = DSSUtils.toByteArray(dssDocument);
 			String signedContent = new String(byteArray, "UTF-8");
-			System.out.println(signedContent);
 			if (signedContent.contains("<ns2:flusso xmlns:ns2=\"http://www.bancaditalia.it") && signedContent.endsWith("</ns2:flusso>")) {
 				found = true;
 			}

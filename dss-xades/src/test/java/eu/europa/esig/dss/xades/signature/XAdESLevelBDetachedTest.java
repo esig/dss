@@ -20,21 +20,10 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.Assert.fail;
-
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.xml.XMLConstants;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 
 import org.junit.Before;
 import org.slf4j.Logger;
@@ -114,26 +103,6 @@ public class XAdESLevelBDetachedTest extends AbstractXAdESTestSignature {
 		detachedContents.add(documentToSign);
 		validator.setDetachedContents(detachedContents);
 		return validator;
-	}
-
-	@Override
-	protected void onDocumentSigned(byte[] byteArray) {
-		super.onDocumentSigned(byteArray);
-
-		try (FileInputStream xsd1 = new FileInputStream("src/test/resources/xsd/XAdES01903v132-201601.xsd");
-				FileInputStream xsd2 = new FileInputStream("src/test/resources/xsd/XAdES01903v141-201601.xsd");
-				ByteArrayInputStream xmlIS = new ByteArrayInputStream(byteArray)) {
-
-			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			Schema schema = sf.newSchema(new Source[] { new StreamSource(xsd1), new StreamSource(xsd2) });
-
-			Validator validator = schema.newValidator();
-			validator.validate(new StreamSource(xmlIS));
-
-		} catch (Exception e) {
-			LOG.error("Invalid XML", e);
-			fail(e.getMessage());
-		}
 	}
 
 	@Override
