@@ -49,6 +49,7 @@ public class XAdESLevelBWithSignaturePolicyImpliedTest extends AbstractXAdESTest
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
 		String xmlContent = new String(byteArray);
 		logger.info(xmlContent);
 		assertTrue(xmlContent.contains(":SignaturePolicyImplied"));

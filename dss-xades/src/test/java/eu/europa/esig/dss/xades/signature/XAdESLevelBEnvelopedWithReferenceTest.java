@@ -105,6 +105,8 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
+
 		try {
 			Document doc = DomUtils.buildDOM(byteArray);
 
