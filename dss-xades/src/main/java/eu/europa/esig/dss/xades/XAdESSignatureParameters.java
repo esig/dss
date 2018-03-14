@@ -46,14 +46,10 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	private Document rootDocument;
 
 	/**
-	 * This parameter allows to produce Manifest signature (https://www.w3.org/TR/xmldsig-core/#sec-o-Manifest)
+	 * This parameter allows to produce Manifest signature (https://www.w3.org/TR/xmldsig-core/#sec-o-Manifest).
+	 * The Id of the manifest is the DSSDocument name
 	 */
 	private boolean manifestSignature;
-
-	/**
-	 * This parameter allows to set the id to be used for the manifest tag
-	 */
-	private String manifestId;
 
 	/**
 	 * This parameter allows to add optional X509SubjectName in the tag X509Data
@@ -189,14 +185,6 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
 	public void setManifestSignature(boolean manifestSignature) {
 		this.manifestSignature = manifestSignature;
-	}
-
-	public String getManifestId() {
-		return manifestId;
-	}
-
-	public void setManifestId(String manifestId) {
-		this.manifestId = manifestId;
 	}
 
 	public boolean isAddX509SubjectName() {
