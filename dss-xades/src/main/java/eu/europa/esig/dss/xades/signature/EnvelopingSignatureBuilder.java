@@ -80,8 +80,9 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 
 		if (params.isManifestSignature()) {
 			reference.setType(HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST);
-			reference.setUri("#" + ((document.getName() == null) ? "manifest" : document.getName()));
-
+			Document manifestDoc = DomUtils.buildDOM(document);
+			Element manifestElement = manifestDoc.getDocumentElement();
+			reference.setUri("#" + manifestElement.getAttribute(ID));
 			DSSTransform xmlTransform = new DSSTransform();
 			xmlTransform.setAlgorithm(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
 			reference.setTransforms(Arrays.asList(xmlTransform));

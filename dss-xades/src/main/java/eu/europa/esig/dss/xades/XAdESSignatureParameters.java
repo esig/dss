@@ -47,7 +47,6 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
 	/**
 	 * This parameter allows to produce Manifest signature (https://www.w3.org/TR/xmldsig-core/#sec-o-Manifest).
-	 * The Id of the manifest is the DSSDocument name
 	 */
 	private boolean manifestSignature;
 
