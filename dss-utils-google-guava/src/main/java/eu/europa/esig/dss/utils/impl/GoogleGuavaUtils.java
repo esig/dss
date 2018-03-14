@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 
 import com.google.common.base.Ascii;
 import com.google.common.base.CharMatcher;
@@ -113,6 +114,14 @@ public class GoogleGuavaUtils implements IUtils {
 	}
 
 	@Override
+	public boolean startsWithIgnoreCase(String text, String expected) {
+		if (Strings.isNullOrEmpty(text) || Strings.isNullOrEmpty(expected)) {
+			return false;
+		}
+		return lowerCase(text).startsWith(lowerCase(expected));
+	}
+
+	@Override
 	public String lowerCase(String text) {
 		if (Strings.isNullOrEmpty(text)) {
 			return text;
@@ -163,6 +172,12 @@ public class GoogleGuavaUtils implements IUtils {
 
 	@Override
 	@SuppressWarnings("rawtypes")
+	public boolean isMapEmpty(Map collection) {
+		return collection == null || collection.isEmpty();
+	}
+
+	@Override
+	@SuppressWarnings("rawtypes")
 	public boolean isCollectionEmpty(Collection collection) {
 		return collection == null || collection.isEmpty();
 	}
@@ -170,7 +185,7 @@ public class GoogleGuavaUtils implements IUtils {
 	@Override
 	@SuppressWarnings("rawtypes")
 	public boolean isCollectionNotEmpty(Collection collection) {
-		return collection != null && !collection.isEmpty();
+		return !this.isCollectionEmpty(collection);
 	}
 
 	@Override

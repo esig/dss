@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.Map;
 
 public interface IUtils {
 
@@ -31,6 +32,8 @@ public interface IUtils {
 
 	boolean endsWithIgnoreCase(String text, String expected);
 
+	boolean startsWithIgnoreCase(String text, String expected);
+
 	String lowerCase(String text);
 
 	String upperCase(String text);
@@ -49,6 +52,9 @@ public interface IUtils {
 
 	@SuppressWarnings("rawtypes")
 	boolean isCollectionEmpty(Collection collection);
+
+	@SuppressWarnings("rawtypes")
+	boolean isMapEmpty(Map collection);
 
 	@SuppressWarnings("rawtypes")
 	boolean isCollectionNotEmpty(Collection collection);

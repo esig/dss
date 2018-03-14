@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 
 public final class Utils {
@@ -73,6 +74,10 @@ public final class Utils {
 		return impl.endsWithIgnoreCase(text, expected);
 	}
 
+	public static boolean startsWithIgnoreCase(String text, String expected) {
+		return impl.startsWithIgnoreCase(text, expected);
+	}
+
 	public static String lowerCase(String text) {
 		return impl.lowerCase(text);
 	}
@@ -103,6 +108,11 @@ public final class Utils {
 
 	public static boolean isTrue(Boolean bool) {
 		return impl.isTrue(bool);
+	}
+
+	@SuppressWarnings("rawtypes")
+	public static boolean isMapEmpty(Map collection) {
+		return impl.isMapEmpty(collection);
 	}
 
 	@SuppressWarnings("rawtypes")

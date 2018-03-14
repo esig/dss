@@ -139,6 +139,9 @@ public enum MessageTag {
 	
 	BBB_VCI_ISPM("Is the signature policy's hash match?"),
 	BBB_VCI_ISPM_ANS("The signature policy's hash doesn't match the computed one!"),
+	
+	BBB_VCI_ISPF("Is the signature according to policy's specifications?"),
+	BBB_VCI_ISPF_ANS("The signature does not comply with all the policy specifications."),
 
 	BBB_XCV_SUB("Is the certificate validation concluant ?"),
 	BBB_XCV_SUB_ANS("The certificate validation is not concluant!"),

@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="AcceptablePolicies" type="{http://dss.esig.europa.eu/validation/policy}MultiValuesConstraint" minOccurs="0"/&gt;
  *         &lt;element name="PolicyAvailable" type="{http://dss.esig.europa.eu/validation/policy}LevelConstraint" minOccurs="0"/&gt;
  *         &lt;element name="PolicyHashMatch" type="{http://dss.esig.europa.eu/validation/policy}LevelConstraint" minOccurs="0"/&gt;
+ *         &lt;element name="FormalPolicyValidation" type="{http://dss.esig.europa.eu/validation/policy}LevelConstraint" minOccurs="0"/&gt;
  *         &lt;element name="AcceptableFormats" type="{http://dss.esig.europa.eu/validation/policy}MultiValuesConstraint" minOccurs="0"/&gt;
  *         &lt;element name="BasicSignatureConstraints" type="{http://dss.esig.europa.eu/validation/policy}BasicSignatureConstraints" minOccurs="0"/&gt;
  *         &lt;element name="SignedAttributes" type="{http://dss.esig.europa.eu/validation/policy}SignedAttributesConstraints" minOccurs="0"/&gt;
@@ -46,6 +47,7 @@ import javax.xml.bind.annotation.XmlType;
     "acceptablePolicies",
     "policyAvailable",
     "policyHashMatch",
+    "formalPolicyValidation",
     "acceptableFormats",
     "basicSignatureConstraints",
     "signedAttributes",
@@ -61,6 +63,8 @@ public class SignatureConstraints {
     protected LevelConstraint policyAvailable;
     @XmlElement(name = "PolicyHashMatch")
     protected LevelConstraint policyHashMatch;
+    @XmlElement(name = "FormalPolicyValidation")
+    protected LevelConstraint formalPolicyValidation;
     @XmlElement(name = "AcceptableFormats")
     protected MultiValuesConstraint acceptableFormats;
     @XmlElement(name = "BasicSignatureConstraints")
@@ -165,6 +169,31 @@ public class SignatureConstraints {
     public void setPolicyHashMatch(LevelConstraint value) {
         this.policyHashMatch = value;
     }
+    
+    /**
+     * Gets the value of the formalPolicyValidation property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link LevelConstraint }
+     *     
+     */
+    public LevelConstraint getFormalPolicyValidation() {
+        return formalPolicyValidation;
+    }
+
+    /**
+     * Sets the value of the formalPolicyValidation property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link LevelConstraint }
+     *     
+     */
+    public void setFormalPolicyValidation(LevelConstraint value) {
+        this.formalPolicyValidation = value;
+    }
+
 
     /**
      * Gets the value of the acceptableFormats property.

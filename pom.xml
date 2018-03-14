@@ -112,6 +112,7 @@
 		<module>dss-server-signing-soap-client</module>
 		<module>dss-server-signing-soap</module>
 		<module>dss-cookbook</module>
+		<module>dss-signature-policy-validator</module>
 	</modules>
 
 	<build>

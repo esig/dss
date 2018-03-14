@@ -58,7 +58,14 @@ public interface ValidationPolicy {
 	LevelConstraint getSignaturePolicyIdentifiedConstraint(Context context);
 
 	LevelConstraint getSignaturePolicyPolicyHashValid(Context context);
-
+	
+	/**
+	 * Indicates that the policy is valid according to its specific constraints (when it is a ASN1 verifiable policy) 	
+	 * @param context
+	 * @return
+	 */
+	LevelConstraint getSignaturePolicyFormalPolicyValid(Context context);
+	
 	/**
 	 * Indicates if the structural validation should be checked. If StructuralValidation element is absent within the
 	 * constraint file then null is returned.

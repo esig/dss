@@ -5,6 +5,7 @@ import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyFormalValidation;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyHashValidCheck;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyIdentifiedCheck;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyIdentifierCheck;
@@ -46,6 +47,8 @@ public class ValidationContextInitialization extends Chain<XmlVCI> {
 			item = item.setNextItem(signaturePolicyIdentified());
 
 			item = item.setNextItem(signaturePolicyHashValid());
+			
+			item = item.setNextItem(signaturePolicyFormalValid());
 		}
 
 	}
@@ -62,6 +65,11 @@ public class ValidationContextInitialization extends Chain<XmlVCI> {
 	private ChainItem<XmlVCI> signaturePolicyHashValid() {
 		LevelConstraint constraint = validationPolicy.getSignaturePolicyPolicyHashValid(context);
 		return new SignaturePolicyHashValidCheck(result, signature, constraint);
+	}
+	
+	private ChainItem<XmlVCI> signaturePolicyFormalValid() {
+		LevelConstraint constraint = validationPolicy.getSignaturePolicyFormalPolicyValid(context);
+		return new SignaturePolicyFormalValidation(result, signature, constraint);
 	}
 
 }
