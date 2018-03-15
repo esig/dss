@@ -31,6 +31,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.KeyStore;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -115,6 +116,8 @@ public class CommonsDataLoader implements DataLoader {
 
 	public static final String CONTENT_TYPE = "Content-Type";
 
+	public static final List<Integer> ACCEPTED_HTTP_STATUS = Arrays.asList(HttpStatus.SC_OK);
+
 	protected String contentType;
 
 	// TODO: (Bob: 2014 Jan 28) It should be taken into account: Content-Transfer-Encoding if it is not the default
@@ -129,6 +132,7 @@ public class CommonsDataLoader implements DataLoader {
 	private int connectionsMaxTotal = CONNECTIONS_MAX_TOTAL;
 	private int connectionsMaxPerRoute = CONNECTIONS_MAX_PER_ROUTE;
 	private boolean redirectsEnabled = true;
+	private List<Integer> acceptedHttpStatus = ACCEPTED_HTTP_STATUS;
 
 	private final Map<HttpHost, UsernamePasswordCredentials> authenticationMap = new HashMap<HttpHost, UsernamePasswordCredentials>();
 
@@ -618,7 +622,7 @@ public class CommonsDataLoader implements DataLoader {
 		final int statusCode = statusLine.getStatusCode();
 		final String reasonPhrase = statusLine.getReasonPhrase();
 
-		if (statusCode != HttpStatus.SC_OK) {
+		if (!acceptedHttpStatus.contains(statusCode)) {
 			String reason = Utils.isStringNotEmpty(reasonPhrase) ? " / reason : " + reasonPhrase : "";
 			throw new DSSException("Unable to request '" + url + "' (HTTP status code : " + statusCode + reason + ")");
 		}
@@ -752,8 +756,21 @@ public class CommonsDataLoader implements DataLoader {
 	 */
 	@Override
 	public void setContentType(final String contentType) {
-
 		this.contentType = contentType;
+	}
+
+	public List<Integer> getAcceptedHttpStatus() {
+		return acceptedHttpStatus;
+	}
+
+	/**
+	 * This allows to set a list of accepted http status. Example: 200 (OK)
+	 *
+	 * @param acceptedHttpStatus
+	 *            a list of integer which correspond to the http status code
+	 */
+	public void setAcceptedHttpStatus(List<Integer> acceptedHttpStatus) {
+		this.acceptedHttpStatus = acceptedHttpStatus;
 	}
 
 	/**
