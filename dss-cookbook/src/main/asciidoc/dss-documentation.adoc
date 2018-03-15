@@ -463,22 +463,7 @@ include::samples/xades-explicit-policy.adoc[]
 
 XAdES-BASELINE-T is a signature for which there exists a trusted time associated to the signature. It provides the initial steps towards providing long term validity and more specifically it provides a protection against repudiation. This extension of the signature can be created as well during the generation process as validation process. However, the case when these validation data are not added during the generation process should no longer occur. The XAdES-BASELINE-T trusted time indications must be created before the signing certificate has been revoked or expired and close to the time that the XAdES signature was produced. The XAdES-BASELINE-T form must be built on a XAdES-BASELINE-B form. The DSS framework allows extending the old -BES and -EPES profiles to the new BASELINE-T profile, indeed there is no difference in the structure of the signature.
 
-To implement this profile of signature you must indicate to the service the TSA source, which delivers from each Timestamp Request a Timestamp Response (RFC 3161 (cf. <<R07>>)) containing tokens. Below is the source code that creates a XAdES-BASELINE-T signature. For our example we will use a virtual provider. In a real situation, you can use OnlineTSPSource class encompassing communication with Time Stamping Authority based on RFC 3161 (cf. <<R07>>) or you can implement your own class using TSPSource interface (see "TSP Sources" chapter for more details).
-
-[[SignXmlXadesTTest.java]]
-[source,java,indent=0]
-.SignXmlXadesTTest.java
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesTTest.java[tags=demo]
-----
-
-The SignatureTimeStamp mandated by the XAdES-T form appears as an unsigned property within the QualifyingProperties:
-
-include::samples/xades-signature-timestamp.adoc[]
-
-===== Use of online TSP source
-
-If you know the address of an online TSP source, so you can make the call as below:
+To implement this profile of signature you must indicate to the service the TSA source, which delivers from each Timestamp Request a Timestamp Response (RFC 3161 (cf. <<R07>>)) containing tokens. Below is the source code that creates a XAdES-BASELINE-T signature. For our example, we will use the Belgian provider and an instance of OnlineTSPSource (see "TSP Sources" chapter for more details).
 
 [[SignXmlXadesTWithOnlineSourceTest.java]]
 [source,java,indent=0]
@@ -488,6 +473,10 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesTW
 ----
 
 If the timestamp source is not set a NullPointerException is thrown.
+
+The SignatureTimeStamp mandated by the XAdES-T form appears as an unsigned property within the QualifyingProperties:
+
+include::samples/xades-signature-timestamp.adoc[]
 
 ==== XAdES-BASELINE-LT
 
@@ -633,7 +622,7 @@ On 16 October 2009 the European Commission adopted a Decision setting out measur
 
 In order to allow access to the trusted lists of all Member States in an easy manner, the European Commission has published a central list with links to national "trusted lists". This central list will now be designated in the document under the abbreviation LOTL.
 
-The LOTL is published by the EU at the following URL : https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml. This XML file contains the list of the trusted list. This file must be signed by an allowed certificate. To know who has the permission to sign / publish the LOTL, we need to refer to the Official Journal Of the Union (http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2015.435.01.0001.01.ENG).
+The LOTL is published by the EU at the following URL : https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml. This XML file contains the list of the trusted list. This file must be signed by an allowed certificate. To know who has the permission to sign / publish the LOTL, we need to refer to the Official Journal Of the Union (http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG).
 
 The signature format of the LOTL and TL should be XAdES-BASELINE-B. If the LOTL signature is valid, its content can be trusted. The LOTL contains for each country some informations : urls of the XML/PDF files, the allowed certificates to sign, ...
 
@@ -645,7 +634,7 @@ To build the source of trust, DSS requires :
  * the LOTL country code;
  * a trust store which contains allowed certificates (extracted from the OJ).
  
-Bellow, you can find a complete example to load the LOTL and its linked TL.
+Below, you can find a complete example to load the LOTL and its linked TLs.
  
 [[LOTLLoadingTest.java]]
 [source,java,indent=0]
@@ -657,6 +646,17 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/LOTLLoading
 The TrustedListsCertificateSource is updated with the trusted certificates. 
 
 To generate the trust store, there's an utility class CreateKeyStoreApp in the dss-cookbook module.
+
+==== Non-European trusted lists support
+
+Additionally, DSS can load external trusted lists. These trusted lists are checked against their trust store (keystore which contains the authorized TL signers).
+
+[[NonEUTrustedListLoadingSnippet.java]]
+[source,java,indent=0]
+.NonEUTrustedListLoadingSnippet.java
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/NonEUTrustedListLoadingSnippet.java[tags=demo]
+----
  
 ===	Validation Result Materials
 
@@ -993,10 +993,20 @@ The following bit of Java code illustrates how you might use this class:
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/OnlineTSPSourceTest.java[tags=demo]
 ----
 
-=== Time-stamp policy:
+=== Time-stamp policy
 
 A time-stamp policy is a "named set of rules that indicates the applicability of a time-stamp token to a particular community and/or class of application with common security requirements". A TSA may define its own policy which enhances the policy defined in RFC 3628. Such a policy shall incorporate or further constrain the requirements identified in RFC 3628. A time-stamp policy may be defined by the user of times-stamp services.
 
+=== Composite TSP Source
+
+Sometimes, timestamping servers may encounter interruptions (restart,...). To avoid failing signature extension, DSS allows to configure several TSP Sources. DSS will try source by source until getting an usable timestamp token. 
+
+[[CompositeTSPSource.java]]
+[source,java,indent=0]
+.CompositeTSPSource.java
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/CompositeTSPSourceTest.java[tags=demo]
+----
 
 == Supported algorithms
 

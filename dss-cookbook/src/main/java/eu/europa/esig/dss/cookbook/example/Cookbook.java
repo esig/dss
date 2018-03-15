@@ -24,11 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureAlgorithm;
-import eu.europa.esig.dss.cookbook.mock.MockTSPSource;
-import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.token.AbstractSignatureTokenConnection;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.Pkcs12SignatureToken;
@@ -97,10 +93,6 @@ public class Cookbook {
 		String pkcs12TokenFile = getPathFromResource("/user_a_rsa.p12");
 		signingToken = new Pkcs12SignatureToken(pkcs12TokenFile, "password");
 		privateKey = signingToken.getKeys().get(0);
-	}
-
-	protected static MockTSPSource getMockTSPSource() throws DSSException, Exception {
-		return new MockTSPSource(new CertificateService().generateTspCertificate(SignatureAlgorithm.RSA_SHA256));
 	}
 
 }

@@ -18,22 +18,27 @@ public class LOTLLoadingTest {
 
 		// tag::demo[]
 
-		// The keystore contains certificates extracted from the OJ
-		KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12",
-				"dss-password");
+		TSLRepository tslRepository = new TSLRepository();
 
 		TrustedListsCertificateSource certificateSource = new TrustedListsCertificateSource();
-
-		TSLRepository tslRepository = new TSLRepository();
 		tslRepository.setTrustedListsCertificateSource(certificateSource);
 
 		TSLValidationJob job = new TSLValidationJob();
 		job.setDataLoader(new CommonsDataLoader());
-		job.setOjContentKeyStore(keyStoreCertificateSource);
-		job.setLotlRootSchemeInfoUri("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl.html");
+		job.setCheckLOTLSignature(true);
+		job.setCheckTSLSignatures(true);
 		job.setLotlUrl("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml");
-		job.setOjUrl("http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG");
 		job.setLotlCode("EU");
+
+		// This information is needed to be able to filter the LOTL pivots
+		job.setLotlRootSchemeInfoUri("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl.html");
+
+		// The keystore contains certificates referenced in the Official Journal Link (OJ URL)
+		KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12",
+				"dss-password");
+		job.setOjUrl("http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG");
+		job.setOjContentKeyStore(keyStoreCertificateSource);
+
 		job.setRepository(tslRepository);
 
 		job.refresh();
@@ -41,4 +46,5 @@ public class LOTLLoadingTest {
 		// end::demo[]
 
 	}
+
 }

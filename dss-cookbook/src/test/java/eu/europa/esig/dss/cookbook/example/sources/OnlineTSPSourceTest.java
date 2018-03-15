@@ -45,7 +45,7 @@ public class OnlineTSPSourceTest {
 		OnlineTSPSource tspSource = new OnlineTSPSource(tspServer);
 
 		final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
-		final byte[] toDigest = "digest value".getBytes("UTF-8");
+		final byte[] toDigest = "Hello world".getBytes("UTF-8");
 		final byte[] digestValue = DSSUtils.digest(digestAlgorithm, toDigest);
 		final TimeStampToken tsr = tspSource.getTimeStampResponse(digestAlgorithm, digestValue);
 
