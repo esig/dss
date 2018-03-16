@@ -11,8 +11,15 @@ import eu.europa.esig.dss.ToBeSigned;
 public class PKCS11SignatureTokenApp {
 
 	public static void main(String[] args) {
+		System.setProperty("java.security.debug", "sunpkcs11");
 
-		Pkcs11SignatureToken token = new Pkcs11SignatureToken("C:\\Windows\\System32\\beidpkcs11.dll");
+		// 32b
+		// Pkcs11SignatureToken token = new Pkcs11SignatureToken("C:\\Windows\\SysWOW64\\onepin-opensc-pkcs11.dll");
+
+		// 64b
+		// Pkcs11SignatureToken token = new Pkcs11SignatureToken("C:\\Windows\\System32\\onepin-opensc-pkcs11.dll");
+		// Pkcs11SignatureToken token = new Pkcs11SignatureToken("C:\\Windows\\System32\\beidpkcs11.dll");
+		Pkcs11SignatureToken token = new Pkcs11SignatureToken("C:\\Windows\\System32\\beidpkcs11.dll", (PasswordInputCallback) null, 1);
 
 		List<DSSPrivateKeyEntry> keys = token.getKeys();
 		for (DSSPrivateKeyEntry entry : keys) {

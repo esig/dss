@@ -28,8 +28,6 @@ public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureT
 				final KSPrivateKeyEntry ksPrivateKeyEntry = getKSPrivateKeyEntry(alias, getKeyProtectionParameter());
 				if (ksPrivateKeyEntry != null) {
 					list.add(ksPrivateKeyEntry);
-				} else {
-					LOG.warn("KeyEntry not found with alias '{}' (key algorithm not supported,...)", alias);
 				}
 			}
 		} catch (GeneralSecurityException e) {
@@ -62,6 +60,8 @@ public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureT
 			if (keyStore.isKeyEntry(alias)) {
 				final PrivateKeyEntry entry = (PrivateKeyEntry) keyStore.getEntry(alias, passwordProtection);
 				return new KSPrivateKeyEntry(alias, entry);
+			} else {
+				LOG.debug("No related/supported key found for alias '{}'", alias);
 			}
 		} catch (GeneralSecurityException e) {
 			throw new DSSException("Unable to retrieve key for alias '" + alias + "'", e);

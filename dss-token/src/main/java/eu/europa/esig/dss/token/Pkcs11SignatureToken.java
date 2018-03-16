@@ -22,6 +22,7 @@ package eu.europa.esig.dss.token;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.security.KeyStore;
 import java.security.KeyStore.ProtectionParameter;
 import java.security.Provider;
@@ -43,13 +44,13 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 
 	private Provider _pkcs11Provider;
 
-	private final String _pkcs11Path;
-
 	private KeyStore _keyStore;
+
+	private final String _pkcs11Path;
 
 	private final PasswordInputCallback callback;
 
-	private int slotIndex;
+	private final int slotIndex;
 
 	/**
 	 * Create the SignatureTokenConnection, using the provided path for the library.
@@ -71,9 +72,7 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	 *            the callback to enter the pin code / password
 	 */
 	public Pkcs11SignatureToken(String pkcs11Path, PasswordInputCallback callback) {
-		this._pkcs11Path = pkcs11Path;
-		this.callback = callback;
-		this.slotIndex = 0;
+		this(pkcs11Path, callback, 0);
 	}
 
 	/**
@@ -91,22 +90,6 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 
 	/**
 	 * Sometimes, multiple SmartCard reader is connected. To create a connection on a specific one, slotIndex is used.
-	 * This create a SignatureTokenConnection and the keys will be accessed using the provided password.
-	 *
-	 * @param pkcs11Path
-	 *            the path for the library (.dll, .so)
-	 * @param callback
-	 *            the callback to enter the pin code / password
-	 * @param slotIndex
-	 *            the slotIndex to use
-	 */
-	public Pkcs11SignatureToken(String pkcs11Path, PasswordInputCallback callback, int slotIndex) {
-		this(pkcs11Path, callback);
-		this.slotIndex = slotIndex;
-	}
-
-	/**
-	 * Sometimes, multiple SmartCard reader is connected. To create a connection on a specific one, slotIndex is used.
 	 * This Create the SignatureTokenConnection, using the provided path for the library and a way of retrieving the
 	 * password from the user.
 	 *
@@ -118,10 +101,27 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	 *            the slotIndex to use
 	 */
 	public Pkcs11SignatureToken(String pkcs11Path, char[] password, int slotIndex) {
-		this(pkcs11Path, password);
+		this(pkcs11Path, new PrefilledPasswordCallback(password), slotIndex);
+	}
+
+	/**
+	 * Sometimes, multiple SmartCard reader is connected. To create a connection on a specific one, slotIndex is used.
+	 * This create a SignatureTokenConnection and the keys will be accessed using the provided password.
+	 *
+	 * @param pkcs11Path
+	 *            the path for the library (.dll, .so)
+	 * @param callback
+	 *            the callback to enter the pin code / password
+	 * @param slotIndex
+	 *            the slotIndex to use
+	 */
+	public Pkcs11SignatureToken(String pkcs11Path, PasswordInputCallback callback, int slotIndex) {
+		this._pkcs11Path = pkcs11Path;
+		this.callback = callback;
 		this.slotIndex = slotIndex;
 	}
 
+	@SuppressWarnings("restriction")
 	private Provider getProvider() {
 		try {
 			if (_pkcs11Provider == null) {
@@ -129,11 +129,16 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 				final Provider[] providers = Security.getProviders();
 				if (providers != null) {
 					for (final Provider provider : providers) {
-						final String providerInfo = provider.getInfo();
-						if (providerInfo.contains(getPkcs11Path())) {
-							_pkcs11Provider = provider;
-							return provider;
+						if (provider instanceof sun.security.pkcs11.SunPKCS11) {
+							final String providerInfo = provider.getInfo();
+							// we need to retrieve the slotId because it's not included in the provider info
+							final long slotId = getSlotId(provider);
+							if (providerInfo.contains(getPkcs11Path()) && (slotId == slotIndex)) {
+								_pkcs11Provider = provider;
+								return provider;
+							}
 						}
+
 					}
 				}
 				// provider not already installed
@@ -143,6 +148,17 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 			return _pkcs11Provider;
 		} catch (ProviderException ex) {
 			throw new DSSException("Not a PKCS#11 library", ex);
+		}
+	}
+
+	private long getSlotId(final Provider provider) {
+		try {
+			Field slotIdField = provider.getClass().getDeclaredField("slotID");
+			slotIdField.setAccessible(true);
+			return slotIdField.getLong(provider);
+		} catch (ReflectiveOperationException | SecurityException | IllegalArgumentException e) {
+			LOG.error("Unable to retrieve slotID attribute (fallback returns 0)", e);
+			return 0;
 		}
 	}
 
