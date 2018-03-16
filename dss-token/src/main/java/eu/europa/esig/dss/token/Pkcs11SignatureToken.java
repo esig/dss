@@ -20,21 +20,22 @@
  */
 package eu.europa.esig.dss.token;
 
+import eu.europa.esig.dss.DSSException;
+
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.security.auth.login.LoginException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.security.AuthProvider;
 import java.security.KeyStore;
 import java.security.KeyStore.ProtectionParameter;
 import java.security.Provider;
 import java.security.ProviderException;
 import java.security.Security;
 import java.util.UUID;
-
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.PasswordCallback;
-import javax.security.auth.callback.UnsupportedCallbackException;
-
-import eu.europa.esig.dss.DSSException;
 
 /**
  * PKCS11 token with callback
@@ -227,6 +228,13 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	public void close() {
 		if (_pkcs11Provider != null) {
 			try {
+				try {
+					if(_pkcs11Provider instanceof AuthProvider) {
+						((AuthProvider) _pkcs11Provider).logout();
+					}
+				} catch (LoginException e) {
+					LOG.error(e.getMessage(), e);
+				}
 				Security.removeProvider(_pkcs11Provider.getName());
 			} catch (Exception ex) {
 				LOG.error(ex.getMessage(), ex);
