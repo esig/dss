@@ -208,7 +208,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 								}
 							} else {
 								try {
-									result.add(new InMemoryDocument(reference.getReferencedBytes()));
+									result.add(new InMemoryDocument(reference.getReferencedBytes(), reference.getURI()));
 								} catch (XMLSignatureException e) {
 									LOG.warn("Unable to retrieve reference {}", reference.getId(), e);
 								}
