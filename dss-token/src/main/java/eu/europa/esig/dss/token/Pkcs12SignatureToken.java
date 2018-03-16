@@ -23,6 +23,7 @@ package eu.europa.esig.dss.token;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.KeyStore.PasswordProtection;
 
 /**
  * Class holding all PKCS#12 file access logic.
@@ -39,8 +40,8 @@ public class Pkcs12SignatureToken extends KeyStoreSignatureTokenConnection {
 	 * @param ksPassword
 	 *            the keystore password
 	 */
-	public Pkcs12SignatureToken(InputStream ksStream, String ksPassword) {
-		super(ksStream, KS_TYPE, ksPassword);
+	public Pkcs12SignatureToken(InputStream ksStream, PasswordProtection password) {
+		super(ksStream, KS_TYPE, password);
 	}
 
 	/**
@@ -48,11 +49,11 @@ public class Pkcs12SignatureToken extends KeyStoreSignatureTokenConnection {
 	 *
 	 * @param ksBytes
 	 *            the binaries
-	 * @param ksPassword
+	 * @param password
 	 *            the keystore password
 	 */
-	public Pkcs12SignatureToken(byte[] ksBytes, String ksPassword) {
-		super(ksBytes, KS_TYPE, ksPassword);
+	public Pkcs12SignatureToken(byte[] ksBytes, PasswordProtection password) {
+		super(ksBytes, KS_TYPE, password);
 	}
 
 	/**
@@ -60,13 +61,13 @@ public class Pkcs12SignatureToken extends KeyStoreSignatureTokenConnection {
 	 *
 	 * @param ksFile
 	 *            the keystore file
-	 * @param ksPassword
+	 * @param password
 	 *            the keystore password
 	 * @throws IOException
 	 *             if an error occurred while reading the file
 	 */
-	public Pkcs12SignatureToken(File ksFile, String ksPassword) throws IOException {
-		super(ksFile, KS_TYPE, ksPassword);
+	public Pkcs12SignatureToken(File ksFile, PasswordProtection password) throws IOException {
+		super(ksFile, KS_TYPE, password);
 	}
 
 	/**
@@ -74,13 +75,13 @@ public class Pkcs12SignatureToken extends KeyStoreSignatureTokenConnection {
 	 *
 	 * @param filepath
 	 *            the filepath of the keystore
-	 * @param ksPassword
+	 * @param password
 	 *            the keystore password
 	 * @throws IOException
 	 *             if an error occurred while reading the file
 	 */
-	public Pkcs12SignatureToken(String filepath, String ksPassword) throws IOException {
-		super(filepath, KS_TYPE, ksPassword);
+	public Pkcs12SignatureToken(String filepath, PasswordProtection password) throws IOException {
+		super(filepath, KS_TYPE, password);
 	}
 
 }

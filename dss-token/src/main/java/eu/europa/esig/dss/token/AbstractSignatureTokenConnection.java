@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.token;
 
+import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.MGF1ParameterSpec;
@@ -61,7 +62,7 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 		LOG.info("Signature algorithm : {}", javaSignatureAlgorithm);
 
 		try {
-			final Signature signature = Signature.getInstance(javaSignatureAlgorithm);
+			final Signature signature = getSignatureInstance(javaSignatureAlgorithm);
 			signature.initSign(((KSPrivateKeyEntry) keyEntry).getPrivateKey());
 
 			if (mgf != null) {
@@ -78,6 +79,10 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 			throw new DSSException(e);
 		}
 
+	}
+
+	protected Signature getSignatureInstance(final String javaSignatureAlgorithm) throws NoSuchAlgorithmException {
+		return Signature.getInstance(javaSignatureAlgorithm);
 	}
 
 	private AlgorithmParameterSpec createPSSParam(DigestAlgorithm digestAlgo) {
