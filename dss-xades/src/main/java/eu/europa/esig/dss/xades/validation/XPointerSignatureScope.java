@@ -39,7 +39,7 @@ public class XPointerSignatureScope extends SignatureScope {
 
 	@Override
 	public String getDescription() {
-		StringBuffer sb = new StringBuffer("The XML element with ID '");
+		StringBuilder sb = new StringBuilder("The XML element with ID '");
 		sb.append(getName());
 		sb.append("' is an XPointer query (uri: '");
 		sb.append(uri);

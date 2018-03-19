@@ -132,7 +132,7 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 			String aPKCS11LibraryFileName = getPkcs11Path();
 			aPKCS11LibraryFileName = escapePath(aPKCS11LibraryFileName);
 
-			StringBuffer pkcs11Config = new StringBuffer();
+			StringBuilder pkcs11Config = new StringBuilder();
 			pkcs11Config.append("name = SmartCard").append(UUID.randomUUID().toString()).append(NEW_LINE);
 			pkcs11Config.append("library = \"").append(aPKCS11LibraryFileName).append("\"").append(NEW_LINE);
 			pkcs11Config.append("slot = ").append(slotId);
