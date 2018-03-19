@@ -9,10 +9,10 @@ import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.RemoteCertificate;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
+import eu.europa.esig.dss.RemoteConverter;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
@@ -104,20 +104,9 @@ public class AbstractRemoteSignatureServiceImpl {
 		if (Utils.isCollectionNotEmpty(remoteDocuments)) {
 			List<DSSDocument> dssDocuments = new ArrayList<DSSDocument>();
 			for (RemoteDocument remoteDocument : remoteDocuments) {
-				dssDocuments.add(createDSSDocument(remoteDocument));
+				dssDocuments.add(RemoteConverter.toDSSDocument(remoteDocument));
 			}
 			return dssDocuments;
-		}
-		return null;
-	}
-
-	protected InMemoryDocument createDSSDocument(RemoteDocument remoteDocument) {
-		if (remoteDocument != null) {
-			InMemoryDocument dssDocument = new InMemoryDocument(remoteDocument.getBytes());
-			dssDocument.setMimeType(remoteDocument.getMimeType());
-			dssDocument.setAbsolutePath(remoteDocument.getAbsolutePath());
-			dssDocument.setName(remoteDocument.getName());
-			return dssDocument;
 		}
 		return null;
 	}

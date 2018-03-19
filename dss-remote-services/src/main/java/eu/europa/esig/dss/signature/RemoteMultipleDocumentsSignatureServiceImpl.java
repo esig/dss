@@ -11,6 +11,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
+import eu.europa.esig.dss.RemoteConverter;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
@@ -19,6 +20,7 @@ import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
+@SuppressWarnings("serial")
 public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteSignatureServiceImpl
 		implements RemoteMultipleDocumentsSignatureService<RemoteDocument, RemoteSignatureParameters> {
 
@@ -73,7 +75,7 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 		LOG.info("ExtendDocument in process...");
 		AbstractSignatureParameters parameters = createParameters(remoteParameters);
 		MultipleDocumentsSignatureService service = getServiceForSignature(remoteParameters);
-		DSSDocument dssDocument = createDSSDocument(toExtendDocument);
+		DSSDocument dssDocument = RemoteConverter.toDSSDocument(toExtendDocument);
 		DSSDocument extendDocument = service.extendDocument(dssDocument, parameters);
 		LOG.info("ExtendDocument is finished");
 		return extendDocument;
