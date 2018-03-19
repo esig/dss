@@ -22,13 +22,7 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 	@Override
 	public List<RemoteKeyEntry> getKeys() throws DSSException {
 		List<RemoteKeyEntry> result = new ArrayList<RemoteKeyEntry>();
-		List<DSSPrivateKeyEntry> keys = new ArrayList<DSSPrivateKeyEntry>();
-		try {
-			keys = token.getKeys();
-		} finally {
-			token.close();
-		}
-
+		List<DSSPrivateKeyEntry> keys = token.getKeys();
 		for (DSSPrivateKeyEntry keyEntry : keys) {
 			result.add(convert((KSPrivateKeyEntry) keyEntry));
 		}
@@ -37,25 +31,14 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 
 	@Override
 	public RemoteKeyEntry getKey(String alias) throws DSSException {
-		KSPrivateKeyEntry key = null;
-		try {
-			key = token.getKey(alias);
-		} finally {
-			token.close();
-		}
+		KSPrivateKeyEntry key = (KSPrivateKeyEntry) token.getKey(alias);
 		return convert(key);
 	}
 
 	@Override
 	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, String alias) throws DSSException {
-		SignatureValue signatureValue = null;
-		try {
-			DSSPrivateKeyEntry key = token.getKey(alias);
-			signatureValue = token.sign(toBeSigned, digestAlgorithm, key);
-		} finally {
-			token.close();
-		}
-		return signatureValue;
+		DSSPrivateKeyEntry key = token.getKey(alias);
+		return token.sign(toBeSigned, digestAlgorithm, key);
 	}
 
 	private RemoteKeyEntry convert(KSPrivateKeyEntry key) {
