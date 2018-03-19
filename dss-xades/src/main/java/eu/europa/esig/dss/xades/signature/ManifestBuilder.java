@@ -9,10 +9,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This class builds a ds:Manifest element
@@ -85,7 +83,7 @@ public class ManifestBuilder {
 			digestMethodDom.setAttribute(XAdESBuilder.ALGORITHM, digestAlgorithm.getXmlId());
 
 			Element digestValueDom = DomUtils.addElement(documentDom, referenceDom, XMLSignature.XMLNS, XAdESBuilder.DS_DIGEST_VALUE);
-			Text textNode = documentDom.createTextNode(Utils.toBase64(DSSUtils.digest(digestAlgorithm, document)));
+			Text textNode = documentDom.createTextNode(document.getDigest(digestAlgorithm));
 			digestValueDom.appendChild(textNode);
 
 		}
