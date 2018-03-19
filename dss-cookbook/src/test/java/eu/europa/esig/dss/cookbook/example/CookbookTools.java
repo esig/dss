@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.KeyStore.PasswordProtection;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
@@ -12,8 +13,6 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.cookbook.mock.MockTSPSource;
 import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.token.AbstractSignatureTokenConnection;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.Pkcs12SignatureToken;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -33,18 +32,6 @@ public class CookbookTools {
 	static protected DSSDocument toExtendDocument;
 
 	/**
-	 * The object which is in charge of digesting and encrypting the data to
-	 * sign.
-	 */
-	static protected AbstractSignatureTokenConnection signingToken;
-
-	/**
-	 * This object contains the private key associated to the signing
-	 * certificate.
-	 */
-	static protected DSSPrivateKeyEntry privateKey;
-
-	/**
 	 * This method sets the common parameters.
 	 */
 	protected static void prepareXmlDoc() {
@@ -59,13 +46,11 @@ public class CookbookTools {
 	}
 
 	/**
-	 * This method sets the common parameters.
+	 * This method creates a new instance of PKCS12 keystore
 	 * 
-	 * @throws IOException
 	 */
-	protected static void preparePKCS12TokenAndKey() throws IOException {
-		signingToken = new Pkcs12SignatureToken("src/main/resources/user_a_rsa.p12", "password");
-		privateKey = signingToken.getKeys().get(0);
+	protected static Pkcs12SignatureToken getPkcs12Token() throws IOException {
+		return new Pkcs12SignatureToken("src/main/resources/user_a_rsa.p12", new PasswordProtection("password".toCharArray()));
 	}
 
 	protected static MockTSPSource getMockTSPSource() throws Exception {

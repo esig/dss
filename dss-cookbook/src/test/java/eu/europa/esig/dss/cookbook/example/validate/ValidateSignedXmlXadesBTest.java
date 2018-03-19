@@ -23,7 +23,6 @@ package eu.europa.esig.dss.cookbook.example.validate;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.junit.Test;
 
@@ -33,6 +32,8 @@ import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.cookbook.mock.MockServiceInfo;
 import eu.europa.esig.dss.cookbook.mock.MockTSLCertificateSource;
 import eu.europa.esig.dss.cookbook.sources.AlwaysValidOCSPSource;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -46,7 +47,7 @@ import eu.europa.esig.dss.x509.CertificateToken;
 public class ValidateSignedXmlXadesBTest extends CookbookTools {
 
 	@Test
-	public void validateXAdESBaselineB() throws IOException {
+	public void validateXAdESBaselineB() throws Exception {
 
 		// tag::demo[]
 
@@ -54,36 +55,40 @@ public class ValidateSignedXmlXadesBTest extends CookbookTools {
 		// anchor.
 		// If you have a real signature for which it is possible to build the chain till the TSL then just skip this
 		// point.
-		preparePKCS12TokenAndKey();
-		final CertificateToken[] certificateChain = privateKey.getCertificateChain();
-		final CertificateToken trustedCertificate = certificateChain[0];
 
-		// Already signed document - Created with the SignXmlXadesB Class
-		DSSDocument document = new FileDocument(new File("src/test/resources/signedXmlXadesB.xml"));
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
+		try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 
-		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
-		AlwaysValidOCSPSource ocspSource = new AlwaysValidOCSPSource();
-		verifier.setOcspSource(ocspSource);
+			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
+			final CertificateToken[] certificateChain = privateKey.getCertificateChain();
+			final CertificateToken trustedCertificate = certificateChain[0];
 
-		/**
-		 * This Trusted List Certificates Source points to
-		 * "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml"
-		 */
-		MockTSLCertificateSource trustedCertSource = new MockTSLCertificateSource();
-		ServiceInfo mockServiceInfo = new MockServiceInfo();
-		trustedCertSource.addCertificate(trustedCertificate, mockServiceInfo);
-		verifier.setTrustedCertSource(trustedCertSource);
+			// Already signed document - Created with the SignXmlXadesB Class
+			DSSDocument document = new FileDocument(new File("src/test/resources/signedXmlXadesB.xml"));
+			SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 
-		validator.setCertificateVerifier(verifier);
+			CommonCertificateVerifier verifier = new CommonCertificateVerifier();
+			AlwaysValidOCSPSource ocspSource = new AlwaysValidOCSPSource();
+			verifier.setOcspSource(ocspSource);
 
-		Reports reports = validator.validateDocument();
-		SimpleReport simpleReport = reports.getSimpleReport();
+			/**
+			 * This Trusted List Certificates Source points to
+			 * "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml"
+			 */
+			MockTSLCertificateSource trustedCertSource = new MockTSLCertificateSource();
+			ServiceInfo mockServiceInfo = new MockServiceInfo();
+			trustedCertSource.addCertificate(trustedCertificate, mockServiceInfo);
+			verifier.setTrustedCertSource(trustedCertSource);
 
-		// end::demo[]
+			validator.setCertificateVerifier(verifier);
 
-		assertNotNull(reports);
-		assertNotNull(simpleReport);
+			Reports reports = validator.validateDocument();
+			SimpleReport simpleReport = reports.getSimpleReport();
+
+			// end::demo[]
+
+			assertNotNull(reports);
+			assertNotNull(simpleReport);
+		}
 	}
 
 }

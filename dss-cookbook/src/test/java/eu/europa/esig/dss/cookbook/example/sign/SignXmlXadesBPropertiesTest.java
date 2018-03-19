@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +35,8 @@ import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -46,46 +47,49 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 public class SignXmlXadesBPropertiesTest extends CookbookTools {
 
 	@Test
-	public void testWithProperties() throws IOException {
+	public void testWithProperties() throws Exception {
 
 		prepareXmlDoc();
 
-		preparePKCS12TokenAndKey();
+		try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 
-		// tag::demo[]
+			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
-		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
-		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+			// tag::demo[]
 
-		parameters.setSigningCertificate(privateKey.getCertificate());
-		parameters.setCertificateChain(privateKey.getCertificateChain());
+			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
+			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+			parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 
-		BLevelParameters bLevelParameters = parameters.bLevel();
-		bLevelParameters.setClaimedSignerRoles(Arrays.asList("My Claimed Role"));
+			parameters.setSigningCertificate(privateKey.getCertificate());
+			parameters.setCertificateChain(privateKey.getCertificateChain());
 
-		SignerLocation signerLocation = new SignerLocation();
-		signerLocation.setCountry("BE");
-		signerLocation.setStateOrProvince("Luxembourg");
-		signerLocation.setPostalCode("1234");
-		signerLocation.setLocality("SimCity");
-		bLevelParameters.setSignerLocation(signerLocation);
+			BLevelParameters bLevelParameters = parameters.bLevel();
+			bLevelParameters.setClaimedSignerRoles(Arrays.asList("My Claimed Role"));
 
-		List<String> commitmentTypeIndications = new ArrayList<String>();
-		commitmentTypeIndications.add("http://uri.etsi.org/01903/v1.2.2#ProofOfOrigin");
-		commitmentTypeIndications.add("http://uri.etsi.org/01903/v1.2.2#ProofOfApproval");
-		bLevelParameters.setCommitmentTypeIndications(commitmentTypeIndications);
+			SignerLocation signerLocation = new SignerLocation();
+			signerLocation.setCountry("BE");
+			signerLocation.setStateOrProvince("Luxembourg");
+			signerLocation.setPostalCode("1234");
+			signerLocation.setLocality("SimCity");
+			bLevelParameters.setSignerLocation(signerLocation);
 
-		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
-		XAdESService service = new XAdESService(verifier);
-		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
-		SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
+			List<String> commitmentTypeIndications = new ArrayList<String>();
+			commitmentTypeIndications.add("http://uri.etsi.org/01903/v1.2.2#ProofOfOrigin");
+			commitmentTypeIndications.add("http://uri.etsi.org/01903/v1.2.2#ProofOfApproval");
+			bLevelParameters.setCommitmentTypeIndications(commitmentTypeIndications);
 
-		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+			CommonCertificateVerifier verifier = new CommonCertificateVerifier();
+			XAdESService service = new XAdESService(verifier);
+			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
+			SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
 
-		// end::demo[]
+			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
-		testFinalDocument(signedDocument);
+			// end::demo[]
+
+			testFinalDocument(signedDocument);
+		}
 	}
 }

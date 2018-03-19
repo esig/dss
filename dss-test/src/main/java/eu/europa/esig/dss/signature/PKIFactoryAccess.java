@@ -3,6 +3,7 @@ package eu.europa.esig.dss.signature;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.security.KeyStore.PasswordProtection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -102,11 +103,12 @@ public abstract class PKIFactoryAccess {
 	}
 
 	protected KSPrivateKeyEntry getPrivateKeyEntry() {
-		return getToken().getKey(getSigningAlias());
+		return (KSPrivateKeyEntry) getToken().getKey(getSigningAlias());
 	}
 
 	protected KeyStoreSignatureTokenConnection getToken() {
-		return new KeyStoreSignatureTokenConnection(getKeystoreContent(getSigningAlias() + ".p12"), KEYSTORE_TYPE, PKI_FACTORY_KEYSTORE_PASSWORD);
+		return new KeyStoreSignatureTokenConnection(getKeystoreContent(getSigningAlias() + ".p12"), KEYSTORE_TYPE,
+				new PasswordProtection(PKI_FACTORY_KEYSTORE_PASSWORD.toCharArray()));
 	}
 
 	private byte[] getKeystoreContent(String keystoreName) {

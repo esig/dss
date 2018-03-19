@@ -46,7 +46,7 @@ public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureT
 	 * @return the private key or null if the alias does not exist
 	 */
 	public DSSPrivateKeyEntry getKey(String alias) {
-		return getKey(alias, (PasswordProtection) null);
+		return getKey(alias, getKeyProtectionParameter());
 	}
 
 	/**

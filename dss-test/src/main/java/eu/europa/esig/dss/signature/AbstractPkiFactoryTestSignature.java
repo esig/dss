@@ -320,7 +320,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	}
 
 	protected void checkCertificateChain(DiagnosticData diagnosticData) {
-		KSPrivateKeyEntry entry = getToken().getKey(getSigningAlias());
+		KSPrivateKeyEntry entry = (KSPrivateKeyEntry) getToken().getKey(getSigningAlias());
 		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
 		assertTrue(Utils.isCollectionNotEmpty(signatureCertificateChain));
 		// upper certificate than trust anchors are ignored

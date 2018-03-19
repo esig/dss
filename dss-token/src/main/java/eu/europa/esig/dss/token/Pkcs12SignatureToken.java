@@ -37,7 +37,7 @@ public class Pkcs12SignatureToken extends KeyStoreSignatureTokenConnection {
 	 *
 	 * @param ksStream
 	 *            the inputstream
-	 * @param ksPassword
+	 * @param password
 	 *            the keystore password
 	 */
 	public Pkcs12SignatureToken(InputStream ksStream, PasswordProtection password) {

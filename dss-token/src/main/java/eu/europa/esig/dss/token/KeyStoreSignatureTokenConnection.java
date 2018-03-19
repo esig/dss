@@ -34,13 +34,14 @@ public class KeyStoreSignatureTokenConnection extends AbstractKeyStoreTokenConne
 	 * Please note that the keystore password will also be used to retrieve the private key.
 	 * For each keystore entry (identifiable by alias) the same private key password will be used.
 	 * 
-	 * If you want to specify a separate private key password use the {@link #getKey(String, String)} method.
+	 * If you want to specify a separate private key password use the {@link #getKey(String, PasswordProtection)}
+	 * method.
 	 * 
 	 * @param ksStream
 	 *            the inputstream which contains the keystore
 	 * @param ksType
 	 *            the keystore type
-	 * @param ksPassword
+	 * @param password
 	 *            the keystore password
 	 */
 	public KeyStoreSignatureTokenConnection(InputStream ksStream, String ksType, PasswordProtection password) {

@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.io.IOException;
-
 import org.junit.Test;
 
 import eu.europa.esig.dss.ASiCContainerType;
@@ -33,6 +31,8 @@ import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
 /**
@@ -41,7 +41,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 public class SignPdfASiCSBTest extends CookbookTools {
 
 	@Test
-	public void signASiCSBaselineB() throws IOException {
+	public void signASiCSBaselineB() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -50,50 +50,53 @@ public class SignPdfASiCSBTest extends CookbookTools {
 		// Get a token connection based on a pkcs12 file commonly used to store private
 		// keys with accompanying public key certificates, protected with a password-based
 		// symmetric key -
-		// Return AbstractSignatureTokenConnection signingToken
+		// Return SignatureTokenConnection signingToken
 
 		// and it's first private key entry from the PKCS12 store
 		// Return DSSPrivateKeyEntry privateKey *****
-		preparePKCS12TokenAndKey();
+		try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 
-		// tag::demo[]
+			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
-		// Preparing parameters for the AsicS signature
-		ASiCWithXAdESSignatureParameters parameters = new ASiCWithXAdESSignatureParameters();
-		// We choose the level of the signature (-B, -T, -LT, LTA).
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		// We choose the container type (ASiC-S or ASiC-E)
-		parameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+			// tag::demo[]
 
-		// We set the digest algorithm to use with the signature algorithm. You must use the
-		// same parameter when you invoke the method sign on the token. The default value is
-		// SHA256
-		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+			// Preparing parameters for the AsicS signature
+			ASiCWithXAdESSignatureParameters parameters = new ASiCWithXAdESSignatureParameters();
+			// We choose the level of the signature (-B, -T, -LT, LTA).
+			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+			// We choose the container type (ASiC-S or ASiC-E)
+			parameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
-		// We set the signing certificate
-		parameters.setSigningCertificate(privateKey.getCertificate());
-		// We set the certificate chain
-		parameters.setCertificateChain(privateKey.getCertificateChain());
+			// We set the digest algorithm to use with the signature algorithm. You must use the
+			// same parameter when you invoke the method sign on the token. The default value is
+			// SHA256
+			parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-		// Create common certificate verifier
-		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
-		// Create ASiC service for signature
-		ASiCWithXAdESService service = new ASiCWithXAdESService(commonCertificateVerifier);
+			// We set the signing certificate
+			parameters.setSigningCertificate(privateKey.getCertificate());
+			// We set the certificate chain
+			parameters.setCertificateChain(privateKey.getCertificateChain());
 
-		// Get the SignedInfo segment that need to be signed.
-		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
+			// Create common certificate verifier
+			CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
+			// Create ASiC service for signature
+			ASiCWithXAdESService service = new ASiCWithXAdESService(commonCertificateVerifier);
 
-		// This function obtains the signature value for signed information using the
-		// private key and specified algorithm
-		DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-		SignatureValue signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKey);
+			// Get the SignedInfo segment that need to be signed.
+			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
 
-		// We invoke the xadesService to sign the document with the signature value obtained in
-		// the previous step.
-		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+			// This function obtains the signature value for signed information using the
+			// private key and specified algorithm
+			DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
+			SignatureValue signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKey);
 
-		// end::demo[]
+			// We invoke the xadesService to sign the document with the signature value obtained in
+			// the previous step.
+			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
-		testFinalDocument(signedDocument);
+			// end::demo[]
+
+			testFinalDocument(signedDocument);
+		}
 	}
 }

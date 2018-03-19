@@ -22,6 +22,7 @@ package eu.europa.esig.dss.cookbook.example;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.KeyStore.PasswordProtection;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
@@ -91,7 +92,7 @@ public class Cookbook {
 	 */
 	protected static void preparePKCS12TokenAndKey() throws IOException {
 		String pkcs12TokenFile = getPathFromResource("/user_a_rsa.p12");
-		signingToken = new Pkcs12SignatureToken(pkcs12TokenFile, "password");
+		signingToken = new Pkcs12SignatureToken(pkcs12TokenFile, new PasswordProtection("password".toCharArray()));
 		privateKey = signingToken.getKeys().get(0);
 	}
 

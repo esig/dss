@@ -23,7 +23,6 @@ package eu.europa.esig.dss.cookbook.example.validate;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.junit.Test;
 
@@ -35,6 +34,8 @@ import eu.europa.esig.dss.client.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.cookbook.mock.MockServiceInfo;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.tsl.service.TSLRepository;
 import eu.europa.esig.dss.tsl.service.TSLValidationJob;
@@ -52,7 +53,7 @@ import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
 public class ValidateXmlXadesLTWithOnlineSourcesTest extends CookbookTools {
 
 	@Test
-	public void validateXAdESBaselineLTWithOnlineSources() throws IOException {
+	public void validateXAdESBaselineLTWithOnlineSources() throws Exception {
 
 		// tag::demo[]
 
@@ -60,65 +61,69 @@ public class ValidateXmlXadesLTWithOnlineSourcesTest extends CookbookTools {
 		// anchor.
 		// If you have a real signature for which it is possible to build the chain till the TSL then just skip this
 		// point.
-		preparePKCS12TokenAndKey();
-		final CertificateToken[] certificateChain = privateKey.getCertificateChain();
-		final CertificateToken trustedCertificate = certificateChain[0];
 
-		// Already signed document
-		DSSDocument document = new FileDocument(new File("src/test/resources/signedXmlXadesLT.xml"));
+		try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
+			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
+			final CertificateToken[] certificateChain = privateKey.getCertificateChain();
+			final CertificateToken trustedCertificate = certificateChain[0];
 
-		CommonsDataLoader commonsDataLoader = new CommonsDataLoader();
+			// Already signed document
+			DSSDocument document = new FileDocument(new File("src/test/resources/signedXmlXadesLT.xml"));
 
-		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
-		OnlineCRLSource crlSource = new OnlineCRLSource();
-		crlSource.setDataLoader(commonsDataLoader);
-		verifier.setCrlSource(crlSource);
+			SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 
-		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
-		// The default OCSPDataLoader is created. You can also create your own HttpDataLoader.
-		verifier.setOcspSource(ocspSource);
+			CommonsDataLoader commonsDataLoader = new CommonsDataLoader();
 
-		// SEE NOTE 1
-		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
-		File cacheFolder = new File("/temp");
-		fileCacheDataLoader.setFileCacheDirectory(cacheFolder);
+			CommonCertificateVerifier verifier = new CommonCertificateVerifier();
+			OnlineCRLSource crlSource = new OnlineCRLSource();
+			crlSource.setDataLoader(commonsDataLoader);
+			verifier.setCrlSource(crlSource);
 
-		KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12",
-				"dss-password");
+			OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+			// The default OCSPDataLoader is created. You can also create your own HttpDataLoader.
+			verifier.setOcspSource(ocspSource);
 
-		TrustedListsCertificateSource certificateSource = new TrustedListsCertificateSource();
+			// SEE NOTE 1
+			FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+			File cacheFolder = new File("/temp");
+			fileCacheDataLoader.setFileCacheDirectory(cacheFolder);
 
-		TSLRepository tslRepository = new TSLRepository();
-		tslRepository.setTrustedListsCertificateSource(certificateSource);
+			KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12",
+					"dss-password");
 
-		TSLValidationJob job = new TSLValidationJob();
-		job.setDataLoader(new CommonsDataLoader());
-		job.setOjContentKeyStore(keyStoreCertificateSource);
-		job.setLotlRootSchemeInfoUri("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl.html");
-		job.setLotlUrl("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml");
-		job.setOjUrl("http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG");
-		job.setLotlCode("EU");
-		job.setRepository(tslRepository);
+			TrustedListsCertificateSource certificateSource = new TrustedListsCertificateSource();
 
-		job.refresh();
+			TSLRepository tslRepository = new TSLRepository();
+			tslRepository.setTrustedListsCertificateSource(certificateSource);
 
-		certificateSource.addCertificate(trustedCertificate, new MockServiceInfo());
-		verifier.setTrustedCertSource(certificateSource);
+			TSLValidationJob job = new TSLValidationJob();
+			job.setDataLoader(new CommonsDataLoader());
+			job.setOjContentKeyStore(keyStoreCertificateSource);
+			job.setLotlRootSchemeInfoUri("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl.html");
+			job.setLotlUrl("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml");
+			job.setOjUrl("http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG");
+			job.setLotlCode("EU");
+			job.setRepository(tslRepository);
 
-		verifier.setDataLoader(fileCacheDataLoader);
+			job.refresh();
 
-		validator.setCertificateVerifier(verifier);
+			certificateSource.addCertificate(trustedCertificate, new MockServiceInfo());
+			verifier.setTrustedCertSource(certificateSource);
 
-		Reports reports = validator.validateDocument();
-		SimpleReport simpleReport = reports.getSimpleReport();
-		DetailedReport detailedReport = reports.getDetailedReport();
+			verifier.setDataLoader(fileCacheDataLoader);
 
-		// end::demo[]
+			validator.setCertificateVerifier(verifier);
 
-		assertNotNull(reports);
-		assertNotNull(simpleReport);
-		assertNotNull(detailedReport);
+			Reports reports = validator.validateDocument();
+			SimpleReport simpleReport = reports.getSimpleReport();
+			DetailedReport detailedReport = reports.getDetailedReport();
+
+			// end::demo[]
+
+			assertNotNull(reports);
+			assertNotNull(simpleReport);
+			assertNotNull(detailedReport);
+		}
 	}
 }
