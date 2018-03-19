@@ -120,7 +120,7 @@ public class SignXmlXadesLTTest extends CookbookTools {
 			// Create XAdES service for signature
 			XAdESService service = new XAdESService(commonCertificateVerifier);
 			try {
-				service.setTspSource(getMockTSPSource());
+				service.setTspSource(getOnlineTSPSource());
 			} catch (Exception e) {
 				throw new DSSException("Error during MockTspSource", e);
 			}
@@ -141,4 +141,5 @@ public class SignXmlXadesLTTest extends CookbookTools {
 			testFinalDocument(signedDocument);
 		}
 	}
+
 }

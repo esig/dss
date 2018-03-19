@@ -18,74 +18,62 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.cookbook.mock;
+package eu.europa.esig.dss.x509.crl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.cert.CRLException;
-import java.security.cert.X509CRL;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
 
 /**
- * This class allows to provide a mock CRL source based on the list of
- * individual CRL(s);
- *
+ * This class allows to provide a CRL source based on the list of external CRL(s);
  */
-public class MockCRLSource extends OfflineCRLSource {
+public class ExternalResourcesCRLSource extends OfflineCRLSource {
 
 	private static final long serialVersionUID = -985602836642741439L;
 
+	private static final Logger LOG = LoggerFactory.getLogger(ExternalResourcesCRLSource.class);
+
 	/**
-	 * This constructor allows to build a mock CRL source from a list of
+	 * This constructor allows to build a CRL source from a list of
 	 * resource paths.
 	 *
 	 * @param paths
+	 *            paths to be loaded as CRL
 	 */
-	public MockCRLSource(final String... paths) {
+	public ExternalResourcesCRLSource(final String... paths) {
 		for (final String pathItem : paths) {
-			final InputStream inputStream = getClass().getResourceAsStream(pathItem);
-			addCRLToken(inputStream);
+			try {
+				addCRLToken(getClass().getResourceAsStream(pathItem));
+			} catch (Exception e) {
+				LOG.error("Unable to load '" + pathItem + "'", e);
+			}
 		}
 	}
 
 	/**
-	 * This constructor allows to build a mock CRL source from a list of
+	 * This constructor allows to build a CRL source from a list of
 	 * <code>InputStream</code>.
 	 *
 	 * @param inputStreams
-	 *            the list of <code>InputStream</code>
+	 *            the list of <code>InputStream</code> to be loaded as CRL
 	 */
-	public MockCRLSource(final InputStream... inputStreams) {
+	public ExternalResourcesCRLSource(final InputStream... inputStreams) {
 		for (final InputStream inputStream : inputStreams) {
 			addCRLToken(inputStream);
 		}
 	}
 
-	/**
-	 * This constructor allows to build a mock CRL source from a list of
-	 * <code>X509CRL</code>.
-	 *
-	 * @param crls
-	 *            the list of <code>X509CRL</code>
-	 */
-	public MockCRLSource(final X509CRL... crls) {
-		for (X509CRL x509crl : crls) {
-			try {
-				addCRLBinary(x509crl.getEncoded());
-			} catch (CRLException e) {
-				throw new DSSException(e);
-			}
-		}
-	}
-
 	private void addCRLToken(final InputStream inputStream) {
-		try {
+		try (InputStream is = inputStream) {
 			addCRLBinary(Utils.toByteArray(inputStream));
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}
+
 }

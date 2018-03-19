@@ -28,67 +28,82 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.cookbook.example.CookbookTools;
-import eu.europa.esig.dss.cookbook.mock.MockServiceInfo;
-import eu.europa.esig.dss.cookbook.mock.MockTSLCertificateSource;
-import eu.europa.esig.dss.cookbook.sources.AlwaysValidOCSPSource;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
-import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.tsl.ServiceInfo;
+import eu.europa.esig.dss.client.crl.OnlineCRLSource;
+import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.x509.CertificateSource;
 
 /**
  * How to validate a XAdES-BASELINE-B signature.
  */
-public class ValidateSignedXmlXadesBTest extends CookbookTools {
+public class ValidateSignedXmlXadesBTest {
 
 	@Test
 	public void validateXAdESBaselineB() throws Exception {
 
+		// See Trusted Lists loading
+		CertificateSource trustedCertSource = null;
+		CertificateSource adjunctCertSource = null;
+
 		// tag::demo[]
 
-		// To be able to validate our fake signature, we must define one of the certificates in the chain as trusted
-		// anchor.
-		// If you have a real signature for which it is possible to build the chain till the TSL then just skip this
-		// point.
+		// First, we need a Certificate verifier
+		CertificateVerifier cv = new CommonCertificateVerifier();
 
-		try (SignatureTokenConnection signingToken = getPkcs12Token()) {
+		// We can inject several sources. eg: OCSP, CRL, AIA, trusted lists
 
-			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
-			final CertificateToken[] certificateChain = privateKey.getCertificateChain();
-			final CertificateToken trustedCertificate = certificateChain[0];
+		// Capability to download resources from AIA
+		cv.setDataLoader(new CommonsDataLoader());
 
-			// Already signed document - Created with the SignXmlXadesB Class
-			DSSDocument document = new FileDocument(new File("src/test/resources/signedXmlXadesB.xml"));
-			SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
+		// Capability to request OCSP Responders
+		cv.setOcspSource(new OnlineOCSPSource());
 
-			CommonCertificateVerifier verifier = new CommonCertificateVerifier();
-			AlwaysValidOCSPSource ocspSource = new AlwaysValidOCSPSource();
-			verifier.setOcspSource(ocspSource);
+		// Capability to download CRL
+		cv.setCrlSource(new OnlineCRLSource());
 
-			/**
-			 * This Trusted List Certificates Source points to
-			 * "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml"
-			 */
-			MockTSLCertificateSource trustedCertSource = new MockTSLCertificateSource();
-			ServiceInfo mockServiceInfo = new MockServiceInfo();
-			trustedCertSource.addCertificate(trustedCertificate, mockServiceInfo);
-			verifier.setTrustedCertSource(trustedCertSource);
+		// We now add trust anchors (trusted list, keystore,...)
+		cv.setTrustedCertSource(trustedCertSource);
 
-			validator.setCertificateVerifier(verifier);
+		// We also can add missing certificates
+		cv.setAdjunctCertSource(adjunctCertSource);
 
-			Reports reports = validator.validateDocument();
-			SimpleReport simpleReport = reports.getSimpleReport();
+		// Here is the document to be validated
+		DSSDocument document = new FileDocument(new File("src/test/resources/signedXmlXadesLT.xml"));
 
-			// end::demo[]
+		// We create an instance of DocumentValidator
+		// It will automatically select the supported validator from the classpath
+		SignedDocumentValidator documentValidator = SignedDocumentValidator.fromDocument(document);
 
-			assertNotNull(reports);
-			assertNotNull(simpleReport);
-		}
+		// We add the certificate verifier (which allows to verify and trust certificates)
+		documentValidator.setCertificateVerifier(cv);
+
+		// Here, everything is ready. We can execute the validation (for the example, we use the default and embedded
+		// validation policy)
+		Reports reports = documentValidator.validateDocument();
+
+		// We have 3 reports
+		// The diagnostic data which contains all used and static data
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		// The detailed report which is the result of the process of the diagnostic data and the validation policy
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		// The simple report is a summary of the detailed report (more user-friendly)
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		// end::demo[]
+
+		assertNotNull(reports);
+		assertNotNull(diagnosticData);
+		assertNotNull(detailedReport);
+		assertNotNull(simpleReport);
 	}
 
 }

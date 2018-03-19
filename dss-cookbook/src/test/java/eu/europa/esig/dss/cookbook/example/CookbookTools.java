@@ -10,16 +10,15 @@ import java.security.KeyStore.PasswordProtection;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureAlgorithm;
-import eu.europa.esig.dss.cookbook.mock.MockTSPSource;
-import eu.europa.esig.dss.test.gen.CertificateService;
+import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.token.Pkcs12SignatureToken;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.x509.tsp.TSPSource;
 
-public class CookbookTools {
+public class CookbookTools extends PKIFactoryAccess {
 
 	/**
 	 * The document to sign
@@ -53,10 +52,6 @@ public class CookbookTools {
 		return new Pkcs12SignatureToken("src/main/resources/user_a_rsa.p12", new PasswordProtection("password".toCharArray()));
 	}
 
-	protected static MockTSPSource getMockTSPSource() throws Exception {
-		return new MockTSPSource(new CertificateService().generateTspCertificate(SignatureAlgorithm.RSA_SHA256));
-	}
-
 	protected void testFinalDocument(DSSDocument signedDocument) {
 		assertNotNull(signedDocument);
 		assertNotNull(DSSUtils.toByteArray(signedDocument));
@@ -68,6 +63,15 @@ public class CookbookTools {
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+
+	protected TSPSource getOnlineTSPSource() {
+		return getGoodTsa();
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return null;
 	}
 
 }

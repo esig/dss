@@ -22,14 +22,12 @@ package eu.europa.esig.dss.cookbook.example.sign;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.util.Date;
 
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
@@ -44,7 +42,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 /**
  * How to sign PDF Document with PAdES-BASELINE-B and include a visual representation
  */
-public class SignPdfPadesBVisibleExisting extends CookbookTools {
+public class SignPdfPadesBVisibleExistingTest extends CookbookTools {
 
 	@Test
 	public void signPAdESBaselineBWithExistingVisibleSignature() throws Exception {
@@ -67,11 +65,8 @@ public class SignPdfPadesBVisibleExisting extends CookbookTools {
 
 			// Preparing parameters for the PAdES signature
 			PAdESSignatureParameters parameters = new PAdESSignatureParameters();
-			parameters.bLevel().setSigningDate(new Date());
 			// We choose the level of the signature (-B, -T, -LT, -LTA).
 			parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-			// We choose the type of the signature packaging (ENVELOPING, DETACHED).
-			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 			// We set the digest algorithm to use with the signature algorithm. You must use the
 			// same parameter when you invoke the method sign on the token. The default value is
 			// SHA256

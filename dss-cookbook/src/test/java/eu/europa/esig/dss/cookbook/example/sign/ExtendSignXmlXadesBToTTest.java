@@ -47,7 +47,7 @@ public class ExtendSignXmlXadesBToTTest extends CookbookTools {
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		XAdESService xadesService = new XAdESService(certificateVerifier);
-		xadesService.setTspSource(getMockTSPSource());
+		xadesService.setTspSource(getOnlineTSPSource());
 
 		DSSDocument extendedDocument = xadesService.extendDocument(document, parameters);
 

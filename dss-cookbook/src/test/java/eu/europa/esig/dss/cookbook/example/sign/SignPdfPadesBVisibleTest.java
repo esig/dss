@@ -28,7 +28,6 @@ import org.junit.Test;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
@@ -69,8 +68,6 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 			PAdESSignatureParameters parameters = new PAdESSignatureParameters();
 			// We choose the level of the signature (-B, -T, -LT, -LTA).
 			parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-			// We choose the type of the signature packaging (ENVELOPING, DETACHED).
-			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 
 			// We set the signing certificate
 			parameters.setSigningCertificate(privateKey.getCertificate());

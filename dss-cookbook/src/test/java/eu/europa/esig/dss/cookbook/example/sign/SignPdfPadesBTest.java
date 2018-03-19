@@ -25,7 +25,6 @@ import org.junit.Test;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
@@ -64,8 +63,6 @@ public class SignPdfPadesBTest extends CookbookTools {
 			PAdESSignatureParameters parameters = new PAdESSignatureParameters();
 			// We choose the level of the signature (-B, -T, -LT, -LTA).
 			parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-			// We choose the type of the signature packaging (ENVELOPING, DETACHED).
-			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 			// We set the digest algorithm to use with the signature algorithm. You must use the
 			// same parameter when you invoke the method sign on the token. The default value is
 			// SHA256

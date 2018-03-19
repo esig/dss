@@ -584,7 +584,7 @@ Note that the current version of the framework during the validation process doe
 
 At the end of the validation process three reports are created. They contain the different details level concerning the validation result. They provide three kinds of visions of validation process: macroscopic, microscopic and input data. For more information about these reports, please refer to "Simple Report" chapter.
 
-Below is the simplest example of the validation of the signature of a document. The first thing to do is instantiating an object named validator, which orchestrates the verification of the different rules. To perform this it is necessary to invoke a static method fromDocument() on the abstract class SignedDocumentValidator. This method returns the object in question whose type is chosen dynamically based on the type of source document. The DSS framework provides four types of validators:
+Below is the simplest example of the validation of the signature of a document. The first thing to do is instantiating an object named validator, which orchestrates the verification of the different rules. To perform this it is necessary to invoke a static method fromDocument() on the abstract class SignedDocumentValidator. This method returns the object in question whose type is chosen dynamically based on the type of source document. The DSS framework provides five types of validators:
  
  * XMLDocumentValidator,
  * CMSDocumentValidator,
@@ -603,18 +603,9 @@ Note this validation process uses the default validation policy which can be cha
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/ValidateSignedXmlXadesBTest.java[tags=demo]
 ----
 
-It is also possible to use the real sources of OSCP, CRL and certificates:
-
-[[ValidateXmlXadesLTWithOnlineSourcesTest.java]]
-[source,java,indent=0]
-.ValidateXmlXadesLTWithOnlineSourcesTest.java
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/ValidateXmlXadesLTWithOnlineSourcesTest.java[tags=demo]
-----
-
 NOTE: When using the TrustedListsCertificateSource class, for performance reasons, consider creating a single instance of this class and initialize it only once.
 
-NOTE: In general, the signature must cover the entire document so that the DSS framework can validate it. However, for example in the case of a XAdES signature, some transformations can be applied on the XML document. They can include operations such as canonicalization, encoding/decoding, XSLT, XPath, XML schema validation, or XInclude. XPath transforms permit the signer to derive an XML document that omits portions of the source document. Consequently those excluded portions can change without affecting signature validity. Note that the current version of the framework can sign only the entire document.
+NOTE: In general, the signature must cover the entire document so that the DSS framework can validate it. However, for example in the case of a XAdES signature, some transformations can be applied on the XML document. They can include operations such as canonicalization, encoding/decoding, XSLT, XPath, XML schema validation, or XInclude. XPath transforms permit the signer to derive an XML document that omits portions of the source document. Consequently those excluded portions can change without affecting signature validity. 
 
 ===	EU Trusted Lists of Certification Service Providers
 

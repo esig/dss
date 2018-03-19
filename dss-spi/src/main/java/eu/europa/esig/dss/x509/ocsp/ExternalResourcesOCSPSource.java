@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package eu.europa.esig.dss.cookbook.mock;
+package eu.europa.esig.dss.x509.ocsp;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -29,10 +29,8 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
 
-
-public class MockOCSPSource extends OfflineOCSPSource {
+public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
 
 	protected List<BasicOCSPResp> ocspResponses = new ArrayList<BasicOCSPResp>();
 
@@ -41,12 +39,9 @@ public class MockOCSPSource extends OfflineOCSPSource {
 	 *
 	 * @param paths
 	 */
-	public MockOCSPSource(final String... paths) {
-
+	public ExternalResourcesOCSPSource(final String... paths) {
 		for (final String pathItem : paths) {
-
-			final InputStream inputStream = getClass().getResourceAsStream(pathItem);
-			load(inputStream);
+			load(getClass().getResourceAsStream(pathItem));
 		}
 	}
 
@@ -55,10 +50,8 @@ public class MockOCSPSource extends OfflineOCSPSource {
 	 *
 	 * @param inputStreams
 	 */
-	public MockOCSPSource(final InputStream... inputStreams) {
-
+	public ExternalResourcesOCSPSource(final InputStream... inputStreams) {
 		for (final InputStream inputStream : inputStreams) {
-
 			load(inputStream);
 		}
 	}
@@ -69,21 +62,18 @@ public class MockOCSPSource extends OfflineOCSPSource {
 	 * @param inputStream
 	 */
 	private void load(final InputStream inputStream) {
-
-		try {
-
-			final OCSPResp ocspResp = new OCSPResp(inputStream);
+		try (InputStream is = inputStream) {
+			final OCSPResp ocspResp = new OCSPResp(is);
 			final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
 			ocspResponses.add(basicOCSPResp);
 		} catch (Exception e) {
-
 			throw new DSSException(e);
 		}
 	}
 
 	@Override
 	public List<BasicOCSPResp> getContainedOCSPResponses() {
-
 		return ocspResponses;
 	}
+
 }
