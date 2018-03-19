@@ -4,7 +4,6 @@ import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStore.PrivateKeyEntry;
-import java.security.KeyStore.ProtectionParameter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -15,21 +14,21 @@ public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureT
 
 	abstract KeyStore getKeyStore() throws DSSException;
 
-	abstract ProtectionParameter getKeyProtectionParameter();
+	abstract PasswordProtection getKeyProtectionParameter();
 
 	@Override
 	public List<DSSPrivateKeyEntry> getKeys() throws DSSException {
 		final List<DSSPrivateKeyEntry> list = new ArrayList<DSSPrivateKeyEntry>();
 		try {
-			KeyStore keyStore = getKeyStore();
+			final KeyStore keyStore = getKeyStore();
 			final Enumeration<String> aliases = keyStore.aliases();
 			while (aliases.hasMoreElements()) {
 				final String alias = aliases.nextElement();
-				final KSPrivateKeyEntry ksPrivateKeyEntry = getKSPrivateKeyEntry(alias, getKeyProtectionParameter());
-				if (ksPrivateKeyEntry != null) {
-					list.add(ksPrivateKeyEntry);
+				if (keyStore.isKeyEntry(alias)) {
+					final PrivateKeyEntry entry = (PrivateKeyEntry) keyStore.getEntry(alias, getKeyProtectionParameter());
+					list.add(new KSPrivateKeyEntry(alias, entry));
 				} else {
-					LOG.warn("KeyEntry not found with alias '{}' (key algorithm not supported,...)", alias);
+					LOG.debug("No related/supported key found for alias '{}'", alias);
 				}
 			}
 		} catch (GeneralSecurityException e) {
@@ -38,8 +37,16 @@ public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureT
 		return list;
 	}
 
-	public KSPrivateKeyEntry getKey(String alias) {
-		return getKSPrivateKeyEntry(alias, getKeyProtectionParameter());
+	/**
+	 * This method allows to retrieve a DSSPrivateKeyEntry by alias
+	 * 
+	 * @param alias
+	 *            the expected entry alias
+	 * 
+	 * @return the private key or null if the alias does not exist
+	 */
+	public DSSPrivateKeyEntry getKey(String alias) {
+		return getKey(alias, (PasswordProtection) null);
 	}
 
 	/**
@@ -47,31 +54,24 @@ public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureT
 	 * 
 	 * @param alias
 	 *            the expected entry alias
-	 * @param password
+	 * @param passwordProtection
 	 *            key password
 	 * 
 	 * @return the private key or null if the alias does not exist
 	 */
-	public KSPrivateKeyEntry getKey(String alias, String password) {
-		return getKSPrivateKeyEntry(alias, createProtectionParameter(password));
-	}
-
-	private KSPrivateKeyEntry getKSPrivateKeyEntry(final String alias, ProtectionParameter passwordProtection) {
-		KeyStore keyStore = getKeyStore();
+	public DSSPrivateKeyEntry getKey(String alias, PasswordProtection passwordProtection) {
 		try {
+			final KeyStore keyStore = getKeyStore();
 			if (keyStore.isKeyEntry(alias)) {
 				final PrivateKeyEntry entry = (PrivateKeyEntry) keyStore.getEntry(alias, passwordProtection);
 				return new KSPrivateKeyEntry(alias, entry);
+			} else {
+				LOG.debug("No related/supported key found for alias '{}'", alias);
 			}
 		} catch (GeneralSecurityException e) {
-			throw new DSSException("Unable to retrieve key for alias '" + alias + "'", e);
+			throw new DSSException("Unable to retrieve key from keystore", e);
 		}
 		return null;
-	}
-
-	protected ProtectionParameter createProtectionParameter(String password) {
-		ProtectionParameter protection = (password == null) ? null : new PasswordProtection(password.toCharArray());
-		return protection;
 	}
 
 }
