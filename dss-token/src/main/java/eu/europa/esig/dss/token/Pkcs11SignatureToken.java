@@ -218,8 +218,9 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 				Security.removeProvider(provider.getName());
 			} catch (SecurityException e) {
 				LOG.error("Unable to remove provider '" + provider.getName() + "'", e);
+			} finally {
+				provider = null;
 			}
-			provider = null;
 		}
 	}
 
