@@ -87,7 +87,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 			throw new DSSException("A TSPSource is required !");
 		}
 		DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, DSSUtils.digest(digestAlgorithm, toSignDocument));
+		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, Utils.fromBase64(toSignDocument.getDigest(digestAlgorithm)));
 		return new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP);
 	}
 
