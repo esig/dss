@@ -70,7 +70,7 @@ public class ExternalResourcesCRLSource extends OfflineCRLSource {
 
 	private void addCRLToken(final InputStream inputStream) {
 		try (InputStream is = inputStream) {
-			addCRLBinary(Utils.toByteArray(inputStream));
+			addCRLBinary(Utils.toByteArray(is));
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}

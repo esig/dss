@@ -135,6 +135,10 @@ Please note that the DSS framework is still under maintenance and new features w
 |[[R06]]	R06	|Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures.	|DIRECTIVE 1999/93/EC	|
 |[[R07]]	R07	|Internet X.509 Public Key Infrastructure - Time-Stamp Protocol (TSP)			|RFC 3161					|
 |[[R08]]	R08	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|ETSI EN 319 102-1			|1.0.0
+|[[R09]]	R09	|ESI - Signature validation policy for European qualified electronic signatures/seals using trusted lists		|ETSI TS 119 172-4			|draft
+|[[R10]]	R10	|ESI - Trusted Lists															|ETSI TS 119 612		|2.1.1
+|[[R11]]	R11	|eIDAS Regulation No 910/2014													|910/2014/EU			|
+
 
 |=======================
 
@@ -326,9 +330,8 @@ This is the complete code that allows you to sign our XML document.
 
 :sourcetestdir: ../../test/java
 
-[[SignXmlXadesB.java]]
 [source,java,indent=0]
-.SignXmlXadesB.java
+.Create a XAdES signature
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBTest.java[tags=demo]
 ----
@@ -408,7 +411,7 @@ The DSS framework allows to setup the following signed properties: SignerRole, S
 
 [[SignXmlXadesBProperties.java]]
 [source,java,indent=0]
-.SignXmlXadesBProperties.java
+.XAdES signature with additional signed attributes
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBPropertiesTest.java[tags=demo]
 ----
@@ -435,9 +438,8 @@ The signer may reference the policy either implicitly or explicitly. An implied 
 
 This example demonstrates an implicit policy identifier. To implement this alternative you must set SignaturePolicyId to empty string.
 
-[[SignXmlXadesBImplicitPolicyTest.java]]
 [source,java,indent=0]
-.SignXmlXadesBImplicitPolicyTest.java
+.XAdES with implicit policy
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBImplicitPolicyTest.java[tags=demo]
 ----
@@ -448,9 +450,8 @@ include::samples/xades-implicit-policy.adoc[]
 
 The next example demonstrates an explicit policy identifier. This is obtained by setting -B profile signature policy and assigning values to the policy parameters. The Signature Policy Identifier is a URI or OID  that uniquely identifies the version of the policy document. The signature will contain the identifier of the hash algorithm and the hash value of the policy document. The DSS framework does not automatically calculate the hash value; it is to the developer to proceed with the calculation using for example java.security.MessageDigest class (rt.jar). It is important to keep the policy file intact in order to keep the hash constant. It would be wise to make the policy file read-only. See also chapter 7 for further information.
 
-[[SignXmlXadesBExplicitPolicyTest.java]]
 [source,java,indent=0]
-.SignXmlXadesBExplicitPolicyTest.java
+.XAdES with explicit policy
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBExplicitPolicyTest.java[tags=demo]
 ----
@@ -465,9 +466,8 @@ XAdES-BASELINE-T is a signature for which there exists a trusted time associated
 
 To implement this profile of signature you must indicate to the service the TSA source, which delivers from each Timestamp Request a Timestamp Response (RFC 3161 (cf. <<R07>>)) containing tokens. Below is the source code that creates a XAdES-BASELINE-T signature. For our example, we will use the Belgian provider and an instance of OnlineTSPSource (see "TSP Sources" chapter for more details).
 
-[[SignXmlXadesTWithOnlineSourceTest.java]]
 [source,java,indent=0]
-.SignXmlXadesTWithOnlineSourceTest.java
+.Create a XAdES-Baseline-T with an OnlineTSPSource
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesTWithOnlineSourceTest.java[tags=demo]
 ----
@@ -540,9 +540,8 @@ The XAdES-BASELINE-T trusted time indications have to be created before a certif
 
 Here is an example of creating an extension of type T:
 
-[[ExtendSignXmlXadesBToTTest.java]]
 [source,java,indent=0]
-.ExtendSignXmlXadesBToTTest.java
+.Extend a XAdES signature
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/ExtendSignXmlXadesBToTTest.java[tags=demo]
 ----
@@ -596,9 +595,8 @@ The next step is to create an object that will check the status of a certificate
 
 Note this validation process uses the default validation policy which can be changed by each implementer. To see how to use a customised validation policy, please refer to "5.4" More information can be found on joinup: https://joinup.ec.europa.eu/asset/sd-dss/topic/how-validate-signature-real-crl-ocsp-and-certificate-sources#comment-15459
 
-[[ValidateSignedXmlXadesBTest.java]]
 [source,java,indent=0]
-.ValidateSignedXmlXadesBTest.java
+.Validation of a signature
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/ValidateSignedXmlXadesBTest.java[tags=demo]
 ----
@@ -627,9 +625,8 @@ To build the source of trust, DSS requires :
  
 Below, you can find a complete example to load the LOTL and its linked TLs.
  
-[[LOTLLoadingTest.java]]
 [source,java,indent=0]
-.LOTLLoadingTest.java
+.Configuration to load the LOTL and related TLs
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/LOTLLoadingTest.java[tags=demo]
 ----
@@ -642,11 +639,10 @@ To generate the trust store, there's an utility class CreateKeyStoreApp in the d
 
 Additionally, DSS can load external trusted lists. These trusted lists are checked against their trust store (keystore which contains the authorized TL signers).
 
-[[NonEUTrustedListLoadingSnippet.java]]
 [source,java,indent=0]
-.NonEUTrustedListLoadingSnippet.java
+.Handling of Non-European trusted list(s)
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/NonEUTrustedListLoadingSnippet.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/LOTLLoadingTest.java[tags=additionalTL]
 ----
  
 ===	Validation Result Materials
@@ -710,7 +706,7 @@ The validation process may be driven by a set of constraints that are contained 
 .constraint.xml (default policy is provided in validation-policy module)
 include::samples/constraint.adoc[]
 
-== CAdES signature and validation
+== CAdES signature (CMS)
 
 To familiarise yourself with this type of signature it is advisable to read the following document:
 
@@ -718,14 +714,13 @@ To familiarise yourself with this type of signature it is advisable to read the 
 
 To implement this form of signature you can use the XAdES examples. You only need to instantiate the CAdES object service and change the SignatureLevel parameter value. Below is an example of the CAdES-Baseline-B signature:
 
-[[SignXmlCadesBTest.java]]
 [source,java,indent=0]
-.SignXmlCadesBTest.java
+.Signing a file with CAdES
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlCadesBTest.java[tags=demo]
 ----
 
-== PAdES signature and validation
+== PAdES signature (PDF)
 
 The standard ISO 32000-1 (cf. <<R05>>) allows defining a file format for portable electronic documents. It is based on PDF 1.7 of Adobe Systems. Concerning the digital signature it supports three operations: 
 
@@ -745,9 +740,8 @@ To familiarise yourself with this type of signature it is advisable to read the 
 
 Below is an example of code to perform a PAdES-BASELINE-B type signature:
 
-[[SignPdfPadesBTest.java]]
 [source,java,indent=0]
-.SignPdfPadesBTest.java
+.Signing a PDF file with PAdES
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBTest.java[tags=demo]
 ----
@@ -779,14 +773,20 @@ The extension of a signature of the level PAdES-BASELINE-B up to PAdES-BASELINE-
 The framework also allows to create PDF files with visible signature as specified in ETSI EN 319 142 (cf. <<R03>>). In the SignatureParameters object, there's a special attribute named ImageParameters. This parameter let you custom the visual signature (with text, with image or with image and text).
 Below is an example of code to perform a PADES-BASELINE-B type signature with a visible signature:
 
-[[SignPdfPadesBVisibleTest.java]]
 [source,java,indent=0]
-.SignPdfPadesBVisibleTest.java
+.Add a visible signature to a PDF document
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=demo]
 ----
 
-== ASiC signature and validation
+Additionally, DSS also allows to insert a visible signature in an existing field : 
+
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=select-pdf-signature-field]
+----
+
+== ASiC signature (containers)
 
 When creating a digital signature, the user must choose between different packaging elements, namely enveloping, enveloped or detached. This choice is not obvious, because in one case the signature will alter the signed document and in the other case it is possible to lose the association between the signed document and its signature. That's where the standard ETSI EN 319 162 (cf. <<R04>>) offers a standardized use of container forms to establish a common way for associating data objects with advanced signatures or time-stamp tokens.
 
@@ -817,25 +817,37 @@ For the moment the DSS framework has some restriction on the containers you can 
 
 This is an example of the source code for signing a document using ASiCS-S based on XAdES-B:
 
-[[SignPdfASiCSBTest.java]]
 [source,java,indent=0]
-.SignPdfASiCSBTest.java
+.Sign a file within an ASiC-S container
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfASiCSBTest.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignOneFileWithASiCSBTest.java[tags=demo]
 ----
 
 This is another example of the source code for signing a document using ASiCS-E based on CAdES:
 
-[[SignPdfASiCSEWithCAdESTest.java]]
 [source,java,indent=0]
-.SignPdfASiCSEWithCAdESTest.java
+.Sign multiple files within an ASiC-E container
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfASiCSEWithCAdESTest.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignMultipleDocumentsWithASiCSEWithCAdESTest.java[tags=demo]
 ----
 
 Please note that you need to pass only few parameters to the service. Other parameters, although are positioned, will be overwritten by the internal implementation of the service. Therefore, the obtained signature is always based on XAdES and of DETACHED packaging.
 
 It is also possible with the framework DSS to make an extension of an ASiC container to the level XAdES-BASELINE-T or -LT.
+
+== Available implementations of DSSDocument
+
+DSS allows to create different kinds of DSSDocument : 
+
+ * InMemoryDocument : fully loads in memory. This type of DSSDocument can be instantiated with an array of bytes, an InputStream,...
+ * FileDocument : refers an existing File
+ * DigestDocument : only contains pre-computed digest values for a given document. That allows to avoid sending the full document (detached signatures). 
+ 
+[source,java,indent=0]
+.DigestDocument
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DigestDocumentTest.java[tags=demo]
+----
 
 == Management of signature tokens
 
@@ -847,9 +859,8 @@ This design permits also other card providers/adopters to create own implementat
 
 PKCS#11 is widely used to access smart cards and HSMs. Most commercial software uses PKCS#11 to access the signature key of the CA or to enrol user certificates. In the DSS framework, this standard is encapsulated in the class Pkcs11SignatureToken.
 
-[[PKCS11Snippet.java]]
 [source,java,indent=0]
-.PKCS11Snippet.java
+.Pkcs11SignatureToken usage
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PKCS11Snippet.java[tags=demo]
 ----
@@ -860,9 +871,8 @@ This standard defines a file format commonly used to store the private key and c
 
 In order to use this format with the DSS framework you have to go through the class Pkcs12SignatureToken. 
 
-[[PKCS12Snippet.java]]
 [source,java,indent=0]
-.PKCS12Snippet.java
+.Pkcs12SignatureToken usage
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PKCS12Snippet.java[tags=demo]
 ----
@@ -871,9 +881,8 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PKCS12Snip
 
 If the middleware for communicating with an SSDC provides a CSP based on MS CAPI specification, then to sign the documents you can use MSCAPISignatureToken class.
 
-[[MSCAPISnippet.java]]
 [source,java,indent=0]
-.MSCAPISnippet.java
+.MSCAPISignatureToken usage
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/MSCAPISnippet.java[tags=demo]
 ----
@@ -959,7 +968,7 @@ Such sources find the status of a certificate either from a list stored locally 
  **** CAdESCRLSource : Retrieves information from a CAdES signature.
  **** PAdESCRLSource : Retrieves information from a PAdES signature.
  **** XAdESCRLSource : Retrieves information from a XAdES signature.
- **** MockCRLSource : A class of test that can instantiate a list of certificate revocation lists from a directory where should be the individual lists (each individual list file must end with the extension ".crl").
+ **** ExternalResourcesCRLSource : A class that can instantiate a list of certificate revocation lists from a directory where should be the individual lists (each individual list file must end with the extension ".crl").
  ** OnlineCRLSource : This is a representation of an Online CRL repository. This implementation will contact using HTTP protocol the CRL Responder to download the CRLs from the given URI. Note that certificate"s Authority Information Access (AIA) extension is used to find issuer's resources location like CRT file and/or Online Certificate Status Protocol (OCSP). The URIs of CRL server will be extracted from this property (OID value: 1.3.6.1.5.5.7.48.1.3).
  * OCSP sources
  ** OfflineOCSPSource : An abstract class that helps to implement OCSPSource with an already loaded list of OCSPToken. It implements in a generic way the getOCSPResponse method that operates on the different OCSP implementations in children classes.
@@ -968,7 +977,7 @@ Such sources find the status of a certificate either from a list stored locally 
  **** CAdESOCSPSource : Retrieves information from a CAdES signature.
  **** PAdESOCSPSource : Retrieves information from a PAdES signature.
  **** XAdESOCSPSource : Retrieves information from a XAdES signature.
- **** MockOCSPSource : A class of test that can instantiate a list of OCSPToken from a directory where should be the individual DER Encoded X509 certificates files (each individual file must end with the extension ".der").
+ **** ExternalResourcesOCSPSource : A class that can instantiate a list of OCSPToken from a directory where should be the individual DER Encoded X509 certificates files (each individual file must end with the extension ".der").
  ** OnlineOCSPSource : This is a representation of an Online OCSP repository. This implementation will contact using HTTP protocol the OCSP Responder to retrieve the OCSP response. Note that certificate's Authority Information Access (AIA) extension is used to find issuer's resources location like CRT file and/or Online Certificate Status Protocol (OCSP). The URIs of OCSP server will be extracted from this property (OID value: 1.3.6.1.5.5.7.48.1). 
 
 == TSP Sources
@@ -977,9 +986,8 @@ The Time Stamp Authority by creating time-stamp tokens provides independent and 
 The DSS framework proposes TSPSource interface to implement the communication with TSA. The class OnlineTSPSource is the default implementation of TSP using HTTP(S) communication layer.
 The following bit of Java code illustrates how you might use this class:
 
-[[OnlineTSPSource.java]]
 [source,java,indent=0]
-.OnlineTSPSource.java
+.OnlineTSPSource usage
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/OnlineTSPSourceTest.java[tags=demo]
 ----
@@ -992,9 +1000,8 @@ A time-stamp policy is a "named set of rules that indicates the applicability of
 
 Sometimes, timestamping servers may encounter interruptions (restart,...). To avoid failing signature extension, DSS allows to configure several TSP Sources. DSS will try source by source until getting an usable timestamp token. 
 
-[[CompositeTSPSource.java]]
 [source,java,indent=0]
-.CompositeTSPSource.java
+.Configuration of a CompositeTSPSource
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/CompositeTSPSourceTest.java[tags=demo]
 ----
@@ -1041,6 +1048,32 @@ NOTE: SmartCards/HSMs don't allow to sign with all digest algorithms. Please ref
 
 | CAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | |  |  
 |===
+
+== Additional features
+
+=== Certificate validation
+
+DSS offers the possibility to validate a certificate. For a given certificate, the framework builds a certificate path until a known trust anchor (trusted list, keystore,...), validates each found certificate (OCSP / CRL) and determines its European "qualification". 
+
+To determine the certificate qualification, DSS follows the draft standard ETSI TS 119 172-4 (<<R09>>). It analyses the certificate properties (QCStatements, Certificate Policies,...) and applies possibles overrules from the related trusted list ("catched" qualifiers from a trust service). 
+
+DSS always computes the status at 2 different times : certificate issuance and signing/validation time. The certificate qualification can evolve in the time, its status is not immuable (eg: a trust service provider lost its granted status). The eIDAS regulation (<<R11>>) clearly defines these different times in the Article 32 and related Annex I. 
+
+[source,java,indent=0]
+.Validate a certificate and retrieve its qualification level
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/CertificateValidationTest.java[tags=demo]
+----
+
+=== Extract the signed data from a signature
+
+DSS is able to retrieve the original data from a valid signature. 
+
+[source,java,indent=0]
+.Retrieve original data from a signed document
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/RetrieveOriginalDocumentTest.java[tags=demo]
+----
 
 == REST Services
 

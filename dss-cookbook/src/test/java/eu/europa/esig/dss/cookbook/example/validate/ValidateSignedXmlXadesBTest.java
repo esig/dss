@@ -74,7 +74,7 @@ public class ValidateSignedXmlXadesBTest {
 		// We also can add missing certificates
 		cv.setAdjunctCertSource(adjunctCertSource);
 
-		// Here is the document to be validated
+		// Here is the document to be validated (any kind of signature file)
 		DSSDocument document = new FileDocument(new File("src/test/resources/signedXmlXadesLT.xml"));
 
 		// We create an instance of DocumentValidator

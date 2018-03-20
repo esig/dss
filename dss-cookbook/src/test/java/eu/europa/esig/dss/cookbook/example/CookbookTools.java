@@ -5,17 +5,19 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.KeyStore.PasswordProtection;
+import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.token.Pkcs12SignatureToken;
+import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public class CookbookTools extends PKIFactoryAccess {
@@ -24,11 +26,6 @@ public class CookbookTools extends PKIFactoryAccess {
 	 * The document to sign
 	 */
 	static protected DSSDocument toSignDocument;
-
-	/**
-	 * The document to extend
-	 */
-	static protected DSSDocument toExtendDocument;
 
 	/**
 	 * This method sets the common parameters.
@@ -44,14 +41,6 @@ public class CookbookTools extends PKIFactoryAccess {
 		toSignDocument = new FileDocument(new File("src/main/resources/hello-world.pdf"));
 	}
 
-	/**
-	 * This method creates a new instance of PKCS12 keystore
-	 * 
-	 */
-	protected static Pkcs12SignatureToken getPkcs12Token() throws IOException {
-		return new Pkcs12SignatureToken("src/main/resources/user_a_rsa.p12", new PasswordProtection("password".toCharArray()));
-	}
-
 	protected void testFinalDocument(DSSDocument signedDocument) {
 		assertNotNull(signedDocument);
 		assertNotNull(DSSUtils.toByteArray(signedDocument));
@@ -62,7 +51,26 @@ public class CookbookTools extends PKIFactoryAccess {
 		assertNotNull(reports);
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		for (SignatureWrapper signatureWrapper : signatures) {
+			assertTrue(signatureWrapper.isBLevelTechnicallyValid());
+
+			List<TimestampWrapper> timestampList = signatureWrapper.getTimestampList();
+			for (TimestampWrapper timestampWrapper : timestampList) {
+				assertTrue(timestampWrapper.isMessageImprintDataFound());
+				assertTrue(timestampWrapper.isMessageImprintDataIntact());
+				assertTrue(timestampWrapper.isSignatureValid());
+			}
+		}
+	}
+
+	/**
+	 * This method retrieves an instance of PKCS12 keystore
+	 * 
+	 */
+	protected SignatureTokenConnection getPkcs12Token() throws IOException {
+		return getToken();
 	}
 
 	protected TSPSource getOnlineTSPSource() {
@@ -71,7 +79,7 @@ public class CookbookTools extends PKIFactoryAccess {
 
 	@Override
 	protected String getSigningAlias() {
-		return null;
+		return GOOD_USER;
 	}
 
 }

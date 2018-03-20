@@ -2,10 +2,12 @@ package eu.europa.esig.dss.cookbook.example.sources;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Test;
 
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.tsl.OtherTrustedList;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.tsl.service.TSLRepository;
 import eu.europa.esig.dss.tsl.service.TSLValidationJob;
@@ -45,6 +47,30 @@ public class LOTLLoadingTest {
 
 		// end::demo[]
 
+	}
+
+	public void additionalTL() {
+
+		// tag::additionalTL[]
+
+		TSLValidationJob job = new TSLValidationJob();
+		// ...
+
+		// Configuration to load the peruvian trusted list.
+		// DSS requires the country code, the URL and allowed signing certificates
+		OtherTrustedList peru = new OtherTrustedList();
+		peru.setCountryCode("PE");
+		peru.setUrl("https://iofe.indecopi.gob.pe/TSL/tsl-pe.xml");
+		peru.setTrustStore(getTrustStore());
+
+		job.setOtherTrustedLists(Arrays.asList(peru));
+
+		// end::additionalTL[]
+
+	}
+
+	private KeyStoreCertificateSource getTrustStore() {
+		return null;
 	}
 
 }

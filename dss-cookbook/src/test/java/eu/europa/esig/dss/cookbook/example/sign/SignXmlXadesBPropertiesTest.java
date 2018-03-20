@@ -27,6 +27,7 @@ import java.util.List;
 import org.junit.Test;
 
 import eu.europa.esig.dss.BLevelParameters;
+import eu.europa.esig.dss.CommitmentType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
@@ -38,6 +39,7 @@ import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
@@ -58,16 +60,21 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			// tag::demo[]
 
 			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
+
+			// Basic signature configuration
 			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 			parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
-
 			parameters.setSigningCertificate(privateKey.getCertificate());
 			parameters.setCertificateChain(privateKey.getCertificateChain());
 
+			// Configuration of several signed attributes like ...
 			BLevelParameters bLevelParameters = parameters.bLevel();
-			bLevelParameters.setClaimedSignerRoles(Arrays.asList("My Claimed Role"));
 
+			// claimed signer role(s)
+			bLevelParameters.setClaimedSignerRoles(Arrays.asList("Manager"));
+
+			// signer location
 			SignerLocation signerLocation = new SignerLocation();
 			signerLocation.setCountry("BE");
 			signerLocation.setStateOrProvince("Luxembourg");
@@ -75,16 +82,23 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			signerLocation.setLocality("SimCity");
 			bLevelParameters.setSignerLocation(signerLocation);
 
+			// commitment type(s)
 			List<String> commitmentTypeIndications = new ArrayList<String>();
-			commitmentTypeIndications.add("http://uri.etsi.org/01903/v1.2.2#ProofOfOrigin");
-			commitmentTypeIndications.add("http://uri.etsi.org/01903/v1.2.2#ProofOfApproval");
+			commitmentTypeIndications.add(CommitmentType.ProofOfOrigin.getUri());
+			commitmentTypeIndications.add(CommitmentType.ProofOfApproval.getUri());
 			bLevelParameters.setCommitmentTypeIndications(commitmentTypeIndications);
 
 			CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 			XAdESService service = new XAdESService(verifier);
+			service.setTspSource(getOnlineTSPSource());
+
+			// a content-timestamp (part of the signed attributes)
+			TimestampToken contentTimestamp = service.getContentTimestamp(toSignDocument, parameters);
+			parameters.setContentTimestamps(Arrays.asList(contentTimestamp));
+
+			// Signature process with its 3 stateless steps
 			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
 			SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
-
 			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
 			// end::demo[]

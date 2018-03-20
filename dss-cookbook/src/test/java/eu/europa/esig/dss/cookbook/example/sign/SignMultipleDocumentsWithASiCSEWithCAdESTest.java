@@ -1,10 +1,14 @@
 package eu.europa.esig.dss.cookbook.example.sign;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
@@ -15,14 +19,10 @@ import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
-public class SignPdfASiCSEWithCAdESTest extends CookbookTools {
+public class SignMultipleDocumentsWithASiCSEWithCAdESTest extends CookbookTools {
 
 	@Test
-	public void signASiCSBaselineB() throws Exception {
-
-		// GET document to be signed -
-		// Return DSSDocument toSignDocument
-		preparePdfDoc();
+	public void signASiCEBaselineB() throws Exception {
 
 		// Get a token connection based on a pkcs12 file commonly used to store
 		// private
@@ -38,7 +38,12 @@ public class SignPdfASiCSEWithCAdESTest extends CookbookTools {
 
 			// tag::demo[]
 
-			// Preparing parameters for the AsicE signature
+			// Preparing the documents to be embedded in the container and signed
+			List<DSSDocument> documentsToBeSigned = new ArrayList<DSSDocument>();
+			documentsToBeSigned.add(new FileDocument("src/main/resources/hello-world.pdf"));
+			documentsToBeSigned.add(new FileDocument("src/main/resources/xml_example.xml"));
+
+			// Preparing parameters for the ASiC-E signature
 			ASiCWithCAdESSignatureParameters parameters = new ASiCWithCAdESSignatureParameters();
 
 			// We choose the level of the signature (-B, -T, -LT or -LTA).
@@ -64,7 +69,7 @@ public class SignPdfASiCSEWithCAdESTest extends CookbookTools {
 			ASiCWithCAdESService service = new ASiCWithCAdESService(commonCertificateVerifier);
 
 			// Get the SignedInfo segment that need to be signed.
-			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
+			ToBeSigned dataToSign = service.getDataToSign(documentsToBeSigned, parameters);
 
 			// This function obtains the signature value for signed information
 			// using the
@@ -75,7 +80,7 @@ public class SignPdfASiCSEWithCAdESTest extends CookbookTools {
 			// We invoke the xadesService to sign the document with the signature
 			// value obtained in
 			// the previous step.
-			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+			DSSDocument signedDocument = service.signDocument(documentsToBeSigned, parameters, signatureValue);
 
 			// end::demo[]
 
