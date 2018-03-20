@@ -3,7 +3,7 @@
 {
   "diagnosticData" : {
     "documentName" : "xades-detached.xml",
-    "validationDate" : 1506597227083,
+    "validationDate" : 1521553262918,
     "containerInfo" : null,
     "signatures" : [ {
       "signatureFilename" : "xades-detached.xml",
@@ -19,6 +19,7 @@
         "encryptionAlgoUsedToSignThisToken" : "RSA",
         "keyLengthUsedToSignThisToken" : "2048",
         "digestAlgoUsedToSignThisToken" : "SHA256",
+        "maskGenerationFunctionUsedToSignThisToken" : null,
         "referenceDataFound" : true,
         "referenceDataIntact" : true,
         "signatureIntact" : true,
@@ -38,9 +39,6 @@
       }, {
         "source" : "SIGNATURE",
         "id" : "6F35DE3965B9A69BC3661D1A355B0AE60907ADB741CC1911EFD0F3BE72D6A6E9"
-      }, {
-        "source" : "AIA",
-        "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7"
       } ],
       "contentType" : "text/xml",
       "contentIdentifier" : null,
@@ -61,10 +59,10 @@
     } ],
     "usedCertificates" : [ {
       "subjectDistinguishedName" : [ {
-        "value" : "c=lu,ou=pki-test,o=nowina solutions,cn=root-ca",
+        "value" : "c=lu,ou=pki-test,o=nowina solutions,cn=ocsp-responder",
         "format" : "CANONICAL"
       }, {
-        "value" : "C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca",
+        "value" : "C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ocsp-responder",
         "format" : "RFC2253"
       } ],
       "issuerDistinguishedName" : [ {
@@ -74,82 +72,34 @@
         "value" : "C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca",
         "format" : "RFC2253"
       } ],
-      "serialNumber" : 1,
-      "commonName" : "root-ca",
+      "serialNumber" : 2,
+      "commonName" : "ocsp-responder",
+      "locality" : null,
+      "state" : null,
       "countryName" : "LU",
       "organizationName" : "Nowina Solutions",
       "givenName" : null,
       "organizationalUnit" : "PKI-TEST",
       "surname" : null,
       "pseudonym" : null,
+      "email" : null,
       "authorityInformationAccessUrls" : [ ],
       "digestAlgoAndValues" : [ ],
-      "notAfter" : 1537948468000,
-      "notBefore" : 1474876468000,
-      "publicKeySize" : 2048,
-      "publicKeyEncryptionAlgo" : "RSA",
-      "keyUsageBits" : [ "crlSign", "keyCertSign" ],
-      "idKpOCSPSigning" : false,
-      "idPkixOcspNoCheck" : false,
-      "basicSignature" : {
-        "encryptionAlgoUsedToSignThisToken" : "RSA",
-        "keyLengthUsedToSignThisToken" : "2048",
-        "digestAlgoUsedToSignThisToken" : "SHA512",
-        "referenceDataFound" : true,
-        "referenceDataIntact" : true,
-        "signatureIntact" : true,
-        "signatureValid" : true
-      },
-      "signingCertificate" : null,
-      "certificateChain" : [ ],
-      "trusted" : false,
-      "selfSigned" : true,
-      "certificatePolicyIds" : [ ],
-      "trustedServiceProviders" : [ ],
-      "revocations" : [ ],
-      "info" : [ ],
-      "base64Encoded" : "MIIDVzCCAj+gAwIBAgIBATANBgkqhkiG9w0BAQ0FADBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTYwOTI2MDc1NDI4WhcNMTgwOTI2MDc1NDI4WjBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDmgRFzEBukQ6iDi8e28PYHElFugLBcjh3VtjykDQ7AWIbQuBmi/KrilZwefmhoNycoCE799nDKnyt8iU3dkmc6O5V05gXEuKb5HQlaoxLLe3xvBLHFbA4QEWTPvlYyTq7RSfydYRvY3YNA0vbCUDP3osnwPhlM8Hwa8aAbUbWbvu+JfcIWMkcNhgZApk0e696e8fxVeusuNJBhmLcVYJlZYV514+a/EL0XNpZnTEe4N/9w4Z2Ho4b7mAysdhx20KLw4FIX4HRrNrnh4HM7LKxOIgJQOxuncPBpOUDxFawsnKEg28KGfP1OVGyPPzsL2tcvThbM7ljXOopMuGnQjUAtAgMBAAGjQjBAMA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQUliNpTHOE9S3WEIbsXxonbRwj3bMwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQ0FAAOCAQEATMtEIGgQMZp4pqTU9WUzf5Dd2T1HYQdMR+YK2ENOLC4+iDXHJdaE3DGDCM7uPSg9UlezBMCHZ2Nv0tiE7h/blxfs6uxs243hBliu3Q4k3RE1kdb35qgxxU7xBJmxeHAswmeuX4MZNMksygBBjQqqcouKr/kTirMsaRg11oJtT5J4GcqdRf+ZYeFNwxrpvVcRnJJdlYEXZvsY0I8MQoXFiSkvFU2jF9YY6F6BU4lYGIuFpOggtra6eRGKfhlmpkn2zTDDvAF3lln7g8OnqLauGQvyVJCa/iAwziV5+S/ZonmjPpe2paq+gXLgAvwHlSDcEkGmFdkwOzTriraR9f8GCA==",
-      "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7",
-      "qctypes" : [ ],
-      "qcstatementIds" : [ ],
-      "ocspaccessUrls" : [ ],
-      "crldistributionPoints" : [ ]
-    }, {
-      "subjectDistinguishedName" : [ {
-        "value" : "c=lu,ou=pki-test,o=nowina solutions,cn=good-ca",
-        "format" : "CANONICAL"
-      }, {
-        "value" : "C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=good-ca",
-        "format" : "RFC2253"
-      } ],
-      "issuerDistinguishedName" : [ {
-        "value" : "c=lu,ou=pki-test,o=nowina solutions,cn=root-ca",
-        "format" : "CANONICAL"
-      }, {
-        "value" : "C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca",
-        "format" : "RFC2253"
-      } ],
-      "serialNumber" : 4,
-      "commonName" : "good-ca",
-      "countryName" : "LU",
-      "organizationName" : "Nowina Solutions",
-      "givenName" : null,
-      "organizationalUnit" : "PKI-TEST",
-      "surname" : null,
-      "pseudonym" : null,
-      "authorityInformationAccessUrls" : [ "http://dss.nowina.lu/pki-factory/crt/root-ca.crt" ],
-      "digestAlgoAndValues" : [ ],
-      "notAfter" : 1535270070000,
-      "notBefore" : 1477468470000,
+      "notAfter" : 1552548365000,
+      "notBefore" : 1489476365000,
       "publicKeySize" : 2048,
       "publicKeyEncryptionAlgo" : "RSA",
       "keyUsageBits" : [ "digitalSignature" ],
-      "idKpOCSPSigning" : false,
-      "idPkixOcspNoCheck" : false,
+      "extendedKeyUsages" : [ {
+        "value" : "1.3.6.1.5.5.7.3.9",
+        "description" : "ocspSigning"
+      } ],
+      "idPkixOcspNoCheck" : true,
       "basicSignature" : {
         "encryptionAlgoUsedToSignThisToken" : "RSA",
         "keyLengthUsedToSignThisToken" : "2048",
         "digestAlgoUsedToSignThisToken" : "SHA256",
+        "maskGenerationFunctionUsedToSignThisToken" : null,
         "referenceDataFound" : true,
         "referenceDataIntact" : true,
         "signatureIntact" : true,
@@ -161,67 +111,27 @@
         "digestValueMatch" : null,
         "issuerSerialMatch" : null,
         "signed" : null,
-        "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7"
+        "id" : "3A501823FF37F3D615E3F32F72308606CEDA520261E377E0D021DC5D9807980E"
       },
       "certificateChain" : [ {
         "source" : "AIA",
-        "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7"
+        "id" : "3A501823FF37F3D615E3F32F72308606CEDA520261E377E0D021DC5D9807980E"
       } ],
       "trusted" : false,
       "selfSigned" : false,
-      "certificatePolicyIds" : [ ],
+      "certificatePolicies" : [ ],
       "trustedServiceProviders" : [ ],
-      "revocations" : [ {
-        "origin" : "EXTERNAL",
-        "source" : "CRLToken",
-        "sourceAddress" : "http://dss.nowina.lu/pki-factory/crl/root-ca.crl",
-        "available" : false,
-        "status" : true,
-        "reason" : null,
-        "productionDate" : 1506596990000,
-        "thisUpdate" : 1506596990000,
-        "nextUpdate" : 1506683390000,
-        "revocationDate" : null,
-        "expiredCertsOnCRL" : null,
-        "archiveCutOff" : null,
-        "digestAlgoAndValues" : [ ],
-        "basicSignature" : {
-          "encryptionAlgoUsedToSignThisToken" : "RSA",
-          "keyLengthUsedToSignThisToken" : "2048",
-          "digestAlgoUsedToSignThisToken" : "SHA1",
-          "referenceDataFound" : true,
-          "referenceDataIntact" : true,
-          "signatureIntact" : true,
-          "signatureValid" : true
-        },
-        "signingCertificate" : {
-          "attributePresent" : null,
-          "digestValuePresent" : null,
-          "digestValueMatch" : null,
-          "issuerSerialMatch" : null,
-          "signed" : null,
-          "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7"
-        },
-        "certificateChain" : [ {
-          "source" : "UNKNOWN",
-          "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7"
-        } ],
-        "info" : [ ],
-        "id" : "6f35de3965b9a69bc3661d1a355b0ae60907adb741cc1911efd0f3be72d6a6e99673d3e7f6c4a93bba7270f8a268b33df38913ab27c174f2719467022f3e91c6"
-      } ],
+      "revocations" : [ ],
       "info" : [ {
-        "value" : "No CRL info found !",
+        "value" : "OCSP check not needed: id-pkix-ocsp-nocheck extension present.",
         "id" : 0
-      }, {
-        "value" : "OSCP Uri not found in certificate meta-data !",
-        "id" : 1
       } ],
-      "base64Encoded" : "MIID6jCCAtKgAwIBAgIBBDANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTYxMDI2MDc1NDMwWhcNMTgwODI2MDc1NDMwWjBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCbbl5sKBCjSB8TMdacymx/WfOjMW1giIjVJRY28JbNWkCVmtzgmitghfrPQPlueu0DTalbDkrSSyhCvzzPSGPwCFOahF/n7hQa1F3UaHSxTKrFC5nOwdLzxKRO3WjVtIGRSX2kv1FfUpQy5Eyy+rsfSzJ59dU5ZZdWpdaDuDxVVyDer3EIyCbG7/5H9MD4YuzNpeTFWmM6cUST0796XDlbExSTTGQXFJA2+CCsy9DXnJa8nz0FE8fmcvQHeU6k9QbpzGjMd3DWlE6no7UdCYD1H04+usBp5hhCrAB670NdoTrNTmGNAFt4JT0vitjKHq9KEId6Lhdcm2Tg93dDcWFtAgMBAAGjgdQwgdEwDgYDVR0PAQH/BAQDAgeAMEEGA1UdHwQ6MDgwNqA0oDKGMGh0dHA6Ly9kc3Mubm93aW5hLmx1L3BraS1mYWN0b3J5L2NybC9yb290LWNhLmNybDBMBggrBgEFBQcBAQRAMD4wPAYIKwYBBQUHMAKGMGh0dHA6Ly9kc3Mubm93aW5hLmx1L3BraS1mYWN0b3J5L2NydC9yb290LWNhLmNydDAdBgNVHQ4EFgQU+2tFqpNe3G23YR8yqBZIiVWS3vUwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAE+Nud05XGOM6FEZHWTc8+bmz/6B0XQXN564KWBBhch9i5GadjqpSsevkn+teLq5m6CLo3e4lX2dJ7hsPAvyaLqOIpzg49TGdib1nOB2O74+yAhT8v9FZtH1ECHXxYsuySGIKvd+L5IjJTis3ll4vU8FHzyRlM9IQnwZR506jFcJeGlOgyZh+ULWnRNEEwqN8DTF2D0XogYBsrCxCBj0PpaJFruvEQqpUuuYg14R1DJFahLwqVYSOD5gPhmA0HR4z3GF3jHSz0i9jXSTOsUcdkvUJy0tIOnujsUEkg3H6Wg3lz8Tw3Ic7V1NHb+MC5K4ZvX+5SYyu0+er7bFscIrYZw==",
-      "id" : "6F35DE3965B9A69BC3661D1A355B0AE60907ADB741CC1911EFD0F3BE72D6A6E9",
-      "qctypes" : [ ],
-      "qcstatementIds" : [ ],
+      "base64Encoded" : "MIIDdjCCAl6gAwIBAgIBAjANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTcwMzE0MDcyNjA1WhcNMTkwMzE0MDcyNjA1WjBUMRcwFQYDVQQDDA5vY3NwLXJlc3BvbmRlcjEZMBcGA1UECgwQTm93aW5hIFNvbHV0aW9uczERMA8GA1UECwwIUEtJLVRFU1QxCzAJBgNVBAYTAkxVMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApwKwkc3XSBV7i72s6wAxUgX1M7K+lGcaI7HYRXn1Ij4KjsKr0MDOaKLXnewiR+dFeHfU9YoD2M6/zcVFs6uN5lDWfLJpCuWfn8CJO1/aaWzBtZ8ryp74vnnBxgCCOFsWk7ms5kVvke36XyWoHxcWxToZCQSiME3Djiu7hDxVpI1g4QOnaFcCEZFIUyLpRbun4ifJKmTRZAsDhVbq5TuKeRJrzIqCq3ODq5bDK/kQ95H7mJtDFfeo8dOnWNpjLekiUsU+/3DIRBcYgiQtsHJbuVQFRwY718842+MP0sGjcy+QhabRPLL17p0dXZeWP/YXzUNJtCMzTdHwPojAW9rDFQIDAQABo1owWDAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwkwHQYDVR0OBBYEFEDTgwH/HInGGMGfQAq3gHRIsDzSMA8GCSsGAQUFBzABBQQCBQAwDQYJKoZIhvcNAQELBQADggEBALHv0SnZ02nq9mni383v2OHKyNlIxeRSGNYCjWJPAM59jmfvwCFvtzoZiDxV+dVoHgyiHMCzGch/P+8nKY0LTgHbbM/vQQkSnMCYjOMFXDHy5f5K4bf1Vvy76bEz/mdAKN4xlQMKDmA8OL7yJUqALRvIkfpdPK4ibuYEBP809Xu43+tOT7WRG8buvrMSpAx8zk9N4N0aW/H+HvwR693X/MRuGyOLQP6pX/uMNuRKqESw5oTWN29RgwFLpeSet4exdWPufJr43AKXbKnsR47yN6CBRIlfJMZv2pjJUnoY9nMgzI3wrhVeM48CgxD0yjmvmFrPxY14QIQmcNe5i8zhVLI=",
+      "id" : "55CFA09B96FF9D03850B8D1D75BD473EEA556CEFCDA064A9AB16FBBA13F89869",
+      "crldistributionPoints" : [ ],
       "ocspaccessUrls" : [ ],
-      "crldistributionPoints" : [ "http://dss.nowina.lu/pki-factory/crl/root-ca.crl" ]
+      "qcstatementIds" : [ ],
+      "qctypes" : [ ]
     }, {
       "subjectDistinguishedName" : [ {
         "value" : "c=lu,ou=pki-test,o=nowina solutions,cn=good-user",
@@ -239,12 +149,15 @@
       } ],
       "serialNumber" : 10,
       "commonName" : "good-user",
+      "locality" : null,
+      "state" : null,
       "countryName" : "LU",
       "organizationName" : "Nowina Solutions",
       "givenName" : null,
       "organizationalUnit" : "PKI-TEST",
       "surname" : null,
       "pseudonym" : null,
+      "email" : null,
       "authorityInformationAccessUrls" : [ "http://dss.nowina.lu/pki-factory/crt/good-ca.crt" ],
       "digestAlgoAndValues" : [ ],
       "notAfter" : 1535270071000,
@@ -252,12 +165,13 @@
       "publicKeySize" : 2048,
       "publicKeyEncryptionAlgo" : "RSA",
       "keyUsageBits" : [ "nonRepudiation" ],
-      "idKpOCSPSigning" : false,
+      "extendedKeyUsages" : [ ],
       "idPkixOcspNoCheck" : false,
       "basicSignature" : {
         "encryptionAlgoUsedToSignThisToken" : "RSA",
         "keyLengthUsedToSignThisToken" : "2048",
         "digestAlgoUsedToSignThisToken" : "SHA256",
+        "maskGenerationFunctionUsedToSignThisToken" : null,
         "referenceDataFound" : true,
         "referenceDataIntact" : true,
         "signatureIntact" : true,
@@ -274,13 +188,10 @@
       "certificateChain" : [ {
         "source" : "SIGNATURE",
         "id" : "6F35DE3965B9A69BC3661D1A355B0AE60907ADB741CC1911EFD0F3BE72D6A6E9"
-      }, {
-        "source" : "AIA",
-        "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7"
       } ],
       "trusted" : false,
       "selfSigned" : false,
-      "certificatePolicyIds" : [ ],
+      "certificatePolicies" : [ ],
       "trustedServiceProviders" : [ ],
       "revocations" : [ {
         "origin" : "EXTERNAL",
@@ -289,8 +200,8 @@
         "available" : true,
         "status" : true,
         "reason" : null,
-        "productionDate" : 1506597227000,
-        "thisUpdate" : 1506597227000,
+        "productionDate" : 1521553263000,
+        "thisUpdate" : 1521553263000,
         "nextUpdate" : null,
         "revocationDate" : null,
         "expiredCertsOnCRL" : null,
@@ -300,6 +211,7 @@
           "encryptionAlgoUsedToSignThisToken" : "RSA",
           "keyLengthUsedToSignThisToken" : "2048",
           "digestAlgoUsedToSignThisToken" : "SHA1",
+          "maskGenerationFunctionUsedToSignThisToken" : null,
           "referenceDataFound" : true,
           "referenceDataIntact" : true,
           "signatureIntact" : true,
@@ -311,17 +223,17 @@
           "digestValueMatch" : null,
           "issuerSerialMatch" : null,
           "signed" : null,
-          "id" : "759E821713B05655B3513F8EE20D0D652A247B37799383B6452A78D7CCECDF10"
+          "id" : "55CFA09B96FF9D03850B8D1D75BD473EEA556CEFCDA064A9AB16FBBA13F89869"
         },
         "certificateChain" : [ {
           "source" : "OCSP_RESPONSE",
-          "id" : "759E821713B05655B3513F8EE20D0D652A247B37799383B6452A78D7CCECDF10"
+          "id" : "55CFA09B96FF9D03850B8D1D75BD473EEA556CEFCDA064A9AB16FBBA13F89869"
         }, {
           "source" : "AIA",
-          "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7"
+          "id" : "3A501823FF37F3D615E3F32F72308606CEDA520261E377E0D021DC5D9807980E"
         } ],
         "info" : [ ],
-        "id" : "f0ff0b4514d316304f2817dba0bfb05dedb98527c0e47c73e8d8fdfe16df267ea00213366ef135374b41ecffaec477378fef1f39f231f51a5afe0542268e9bb3"
+        "id" : "f0ff0b4514d316304f2817dba0bfb05dedb98527c0e47c73e8d8fdfe16df267efef4dfc576bc1dd5fa8a34574a8e393fd55046107039e84e4265c9f125de749c"
       } ],
       "info" : [ {
         "value" : "No CRL info found !",
@@ -329,16 +241,16 @@
       } ],
       "base64Encoded" : "MIID1DCCArygAwIBAgIBCjANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTYxMDI2MDc1NDMxWhcNMTgwODI2MDc1NDMxWjBPMRIwEAYDVQQDDAlnb29kLXVzZXIxGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALRCUIQZbw3nSdLp+B9czECgpZkkQ5xV4g9M/7wlg97oCCf7UEh9BA1d+zYjszv+BJ1bJZPgan2144AvgsoGJfb6UIyVW4gklUgIl1arUvon+WkKnseFuQOfJyjSFUDIwnuvp0hzcJXHXRmLdmyh+n+6NMH0om5tVoSfQrtBViCLeSMVzuD5EPj0mIRcx91pL38e3FNTW7NaGZLeezuFuR/q7z93lLkvZ4VAMNGGLvIXOYeRBZMyPhpBZ4L3A8I3EElKWH/1LwiiXTTSG1sM6WvMTVbf2vbd47nZRQA2mSpNGjQouOAErfeVVUqzICghQCHRGONuSLG/HfqFHb4jWg0CAwEAAaOBvDCBuTAOBgNVHQ8BAf8EBAMCBkAwgYcGCCsGAQUFBwEBBHsweTA5BggrBgEFBQcwAYYtaHR0cDovL2Rzcy5ub3dpbmEubHUvcGtpLWZhY3Rvcnkvb2NzcC9nb29kLWNhMDwGCCsGAQUFBzAChjBodHRwOi8vZHNzLm5vd2luYS5sdS9wa2ktZmFjdG9yeS9jcnQvZ29vZC1jYS5jcnQwHQYDVR0OBBYEFN2pHD/7PefmBT8oX29ZhWy/OHJ1MA0GCSqGSIb3DQEBCwUAA4IBAQBK3VOLhDIVWKoFrrhhWzaddtk6XQtcwRoNPVSsi/gOrzsdM70A31xITw7YfLhpoVA1xo7ovHldpLlhqy9o5wh282yCpqBUAtgrSkDGog+K7CL6gUprlYiZuGZrtg2X3fHS2Usx4ZJ3tIj6wVecDEUqISFfFT2Esm0QXUngIKFMl95Xgmtw2wxXbOzUeDd4DIPrv+mW5poAWr6ItsV+H2VQ+ZL/kBnwWHjSTOaGFisqXY/aH/1PtBXA+15+YIWemJBSv3kDaFzOXAEtR9ZI8lYOJarnY7Ay/aN6b9uGffrbo/hVAcL4WDdhkbBN3m8w+g76LoAXNeEeu04A/0xLZzUB",
       "id" : "F0FF0B4514D316304F2817DBA0BFB05DEDB98527C0E47C73E8D8FDFE16DF267E",
-      "qctypes" : [ ],
-      "qcstatementIds" : [ ],
+      "crldistributionPoints" : [ ],
       "ocspaccessUrls" : [ "http://dss.nowina.lu/pki-factory/ocsp/good-ca" ],
-      "crldistributionPoints" : [ ]
+      "qcstatementIds" : [ ],
+      "qctypes" : [ ]
     }, {
       "subjectDistinguishedName" : [ {
-        "value" : "c=lu,ou=pki-test,o=nowina solutions,cn=ocsp-responder",
+        "value" : "c=lu,ou=pki-test,o=nowina solutions,cn=root-ca",
         "format" : "CANONICAL"
       }, {
-        "value" : "C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ocsp-responder",
+        "value" : "C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca",
         "format" : "RFC2253"
       } ],
       "issuerDistinguishedName" : [ {
@@ -348,59 +260,115 @@
         "value" : "C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca",
         "format" : "RFC2253"
       } ],
-      "serialNumber" : 2,
-      "commonName" : "ocsp-responder",
+      "serialNumber" : 1,
+      "commonName" : "root-ca",
+      "locality" : null,
+      "state" : null,
       "countryName" : "LU",
       "organizationName" : "Nowina Solutions",
       "givenName" : null,
       "organizationalUnit" : "PKI-TEST",
       "surname" : null,
       "pseudonym" : null,
+      "email" : null,
       "authorityInformationAccessUrls" : [ ],
       "digestAlgoAndValues" : [ ],
-      "notAfter" : 1537948469000,
-      "notBefore" : 1474876469000,
+      "notAfter" : 1552548364000,
+      "notBefore" : 1489476364000,
       "publicKeySize" : 2048,
       "publicKeyEncryptionAlgo" : "RSA",
-      "keyUsageBits" : [ "digitalSignature" ],
-      "idKpOCSPSigning" : true,
-      "idPkixOcspNoCheck" : true,
+      "keyUsageBits" : [ "keyCertSign", "crlSign" ],
+      "extendedKeyUsages" : [ ],
+      "idPkixOcspNoCheck" : false,
       "basicSignature" : {
         "encryptionAlgoUsedToSignThisToken" : "RSA",
         "keyLengthUsedToSignThisToken" : "2048",
-        "digestAlgoUsedToSignThisToken" : "SHA256",
+        "digestAlgoUsedToSignThisToken" : "SHA512",
+        "maskGenerationFunctionUsedToSignThisToken" : null,
         "referenceDataFound" : true,
         "referenceDataIntact" : true,
         "signatureIntact" : true,
         "signatureValid" : true
       },
-      "signingCertificate" : {
-        "attributePresent" : null,
-        "digestValuePresent" : null,
-        "digestValueMatch" : null,
-        "issuerSerialMatch" : null,
-        "signed" : null,
-        "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7"
-      },
-      "certificateChain" : [ {
-        "source" : "AIA",
-        "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7"
+      "signingCertificate" : null,
+      "certificateChain" : [ ],
+      "trusted" : false,
+      "selfSigned" : true,
+      "certificatePolicies" : [ ],
+      "trustedServiceProviders" : [ ],
+      "revocations" : [ ],
+      "info" : [ ],
+      "base64Encoded" : "MIIDVzCCAj+gAwIBAgIBATANBgkqhkiG9w0BAQ0FADBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTcwMzE0MDcyNjA0WhcNMTkwMzE0MDcyNjA0WjBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC1Mddn3UpVh3p3CqR5ZBAGCVwPVHWbLFHO3z7CkOXmQe+lESjYrHvxz/9SaUlks7ZdrnCvwsQBrh5pZcNjjgwEv6s2A4jH6RI7CpXx2kXYqV+BhkeDKHi6lunGLk9hlBIvpqvtZsnjI/9nLHG1eKyrd0gq0sqigljYt4lxlb/1KULWSMWKWqOLZAH4Jg++z10EBUvXpwg0MIWtRLxKim3j0rmYyvhHMXyJNCK8krZkHZJHagyprEdwmAceG0J8Mi7OiKYddLXflQFFuMiLWk8fsCpNofgF+f39pBWgJr/e+Ci7AYpCP03/4z/Jjw/RLJ042dNHIq9IFM9SwOqvECDTAgMBAAGjQjBAMA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQU4UJtrVQO6gmq5tuNuKpeZsLOBTgwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQ0FAAOCAQEAX5kdL3IR4cM/jzyxqJA/VWz9nKoAglBDRVw6oVbjOMm4WSj/0XXNRFV/ltuPOHMlpXeAUPr/qY+9SiWxJ+0PM0IJ7KaUiZpLblnrrRjNkOL7b34DDB2uwoFifD/hAxtW0YQU54YPfbSCK5FkiULn8UlQEwXwxgzBJrw36RCUv7Nv8iBD1AjmFj6ax0CDBikj9Wq+vjf/vl3DiyaWUtTJC497hnLufk5UgMgYhCnBDS98ztcO7R+s8Zz4WRkPguaPINb+Si6Hu1Qi31kdqMfaiADmGJTwA8uzjf6sJELlEh8gr09MfIxu95wI7SLvEu25ija7RkOiecJWUlOTHAL3Hw==",
+      "id" : "3A501823FF37F3D615E3F32F72308606CEDA520261E377E0D021DC5D9807980E",
+      "crldistributionPoints" : [ ],
+      "ocspaccessUrls" : [ ],
+      "qcstatementIds" : [ ],
+      "qctypes" : [ ]
+    }, {
+      "subjectDistinguishedName" : [ {
+        "value" : "c=lu,ou=pki-test,o=nowina solutions,cn=good-ca",
+        "format" : "CANONICAL"
+      }, {
+        "value" : "C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=good-ca",
+        "format" : "RFC2253"
       } ],
+      "issuerDistinguishedName" : [ {
+        "value" : "c=lu,ou=pki-test,o=nowina solutions,cn=root-ca",
+        "format" : "CANONICAL"
+      }, {
+        "value" : "C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca",
+        "format" : "RFC2253"
+      } ],
+      "serialNumber" : 4,
+      "commonName" : "good-ca",
+      "locality" : null,
+      "state" : null,
+      "countryName" : "LU",
+      "organizationName" : "Nowina Solutions",
+      "givenName" : null,
+      "organizationalUnit" : "PKI-TEST",
+      "surname" : null,
+      "pseudonym" : null,
+      "email" : null,
+      "authorityInformationAccessUrls" : [ "http://dss.nowina.lu/pki-factory/crt/root-ca.crt" ],
+      "digestAlgoAndValues" : [ ],
+      "notAfter" : 1535270070000,
+      "notBefore" : 1477468470000,
+      "publicKeySize" : 2048,
+      "publicKeyEncryptionAlgo" : "RSA",
+      "keyUsageBits" : [ "digitalSignature" ],
+      "extendedKeyUsages" : [ ],
+      "idPkixOcspNoCheck" : false,
+      "basicSignature" : {
+        "encryptionAlgoUsedToSignThisToken" : "RSA",
+        "keyLengthUsedToSignThisToken" : "?",
+        "digestAlgoUsedToSignThisToken" : "SHA256",
+        "maskGenerationFunctionUsedToSignThisToken" : null,
+        "referenceDataFound" : false,
+        "referenceDataIntact" : false,
+        "signatureIntact" : false,
+        "signatureValid" : false
+      },
+      "signingCertificate" : null,
+      "certificateChain" : [ ],
       "trusted" : false,
       "selfSigned" : false,
-      "certificatePolicyIds" : [ ],
+      "certificatePolicies" : [ ],
       "trustedServiceProviders" : [ ],
       "revocations" : [ ],
       "info" : [ {
-        "value" : "OCSP check not needed: id-pkix-ocsp-nocheck extension present.",
+        "value" : "The certificate used to sign this token is not found or not valid!",
         "id" : 0
+      }, {
+        "value" : "The certificate used to sign this token is not found or not valid!",
+        "id" : 1
       } ],
-      "base64Encoded" : "MIIDdjCCAl6gAwIBAgIBAjANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTYwOTI2MDc1NDI5WhcNMTgwOTI2MDc1NDI5WjBUMRcwFQYDVQQDDA5vY3NwLXJlc3BvbmRlcjEZMBcGA1UECgwQTm93aW5hIFNvbHV0aW9uczERMA8GA1UECwwIUEtJLVRFU1QxCzAJBgNVBAYTAkxVMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuDavisHUTyUmo2Tpzjcxmm3Rsysda1OJzU8xKvVQ83YWUGHOyZ0m6EDp5zLWCELq86k8rmWm286HBAlWx0n+EggIPEXbya1NRubzckaG1yDjs/c/xhpXr2pGWaRDiFn13GZcqGPFblUrmxjfdc86BMV0P6QJR5ndOCm5jgB+iWB3QlKrBiu6Rzy7tkcr6aJcjU3GCOoX04sT7bJLnbbj4+g0qoch1a42gXErKwuQau8EcDRrLhlQ+3rekOTxAZfDqD5tIJOUObLgDu5CtT3cek4/gq6d/uFwj1v+8OaJX1RV0t+086Y5KgLA038ipCIuvY1gULFmZlZgM7kUcz394QIDAQABo1owWDAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwkwHQYDVR0OBBYEFECkR0xosGujskkwrRCFHwsvC3rpMA8GCSsGAQUFBzABBQQCBQAwDQYJKoZIhvcNAQELBQADggEBAMuIDZ/H6aZcY7XS43DjcymeSo+S8mvrbmZlVPTv3pCh2zLFo9zqMCx2hIEdqTqooOGkl5bfOh+88xU0A+dR1zoSwSCsUZSZHRuqQQAs5cM9OV/ADvjVBh7hm7cNEqfQRY6jC+1SqjXN1JnGsKDHuXLPcADrHjl+mWuOMBtL9RbFWrmxQJhxTrnHz51w+Fw9Vc1f729lK+yPVl0YAO/o8/d0xyVEcX4In23QLS0KiDlCDKhzT7nTmNszSGkB6pGxbA6egUranv5lHMoS4h1G0rv9Ktko4bnJGYCdieyIEd7rTYc1nSIPWzWxX8eF5eYIdvy9WBJlZ2zFZjJIa6mJldI=",
-      "id" : "759E821713B05655B3513F8EE20D0D652A247B37799383B6452A78D7CCECDF10",
-      "qctypes" : [ ],
-      "qcstatementIds" : [ ],
+      "base64Encoded" : "MIID6jCCAtKgAwIBAgIBBDANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTYxMDI2MDc1NDMwWhcNMTgwODI2MDc1NDMwWjBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCbbl5sKBCjSB8TMdacymx/WfOjMW1giIjVJRY28JbNWkCVmtzgmitghfrPQPlueu0DTalbDkrSSyhCvzzPSGPwCFOahF/n7hQa1F3UaHSxTKrFC5nOwdLzxKRO3WjVtIGRSX2kv1FfUpQy5Eyy+rsfSzJ59dU5ZZdWpdaDuDxVVyDer3EIyCbG7/5H9MD4YuzNpeTFWmM6cUST0796XDlbExSTTGQXFJA2+CCsy9DXnJa8nz0FE8fmcvQHeU6k9QbpzGjMd3DWlE6no7UdCYD1H04+usBp5hhCrAB670NdoTrNTmGNAFt4JT0vitjKHq9KEId6Lhdcm2Tg93dDcWFtAgMBAAGjgdQwgdEwDgYDVR0PAQH/BAQDAgeAMEEGA1UdHwQ6MDgwNqA0oDKGMGh0dHA6Ly9kc3Mubm93aW5hLmx1L3BraS1mYWN0b3J5L2NybC9yb290LWNhLmNybDBMBggrBgEFBQcBAQRAMD4wPAYIKwYBBQUHMAKGMGh0dHA6Ly9kc3Mubm93aW5hLmx1L3BraS1mYWN0b3J5L2NydC9yb290LWNhLmNydDAdBgNVHQ4EFgQU+2tFqpNe3G23YR8yqBZIiVWS3vUwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAE+Nud05XGOM6FEZHWTc8+bmz/6B0XQXN564KWBBhch9i5GadjqpSsevkn+teLq5m6CLo3e4lX2dJ7hsPAvyaLqOIpzg49TGdib1nOB2O74+yAhT8v9FZtH1ECHXxYsuySGIKvd+L5IjJTis3ll4vU8FHzyRlM9IQnwZR506jFcJeGlOgyZh+ULWnRNEEwqN8DTF2D0XogYBsrCxCBj0PpaJFruvEQqpUuuYg14R1DJFahLwqVYSOD5gPhmA0HR4z3GF3jHSz0i9jXSTOsUcdkvUJy0tIOnujsUEkg3H6Wg3lz8Tw3Ic7V1NHb+MC5K4ZvX+5SYyu0+er7bFscIrYZw==",
+      "id" : "6F35DE3965B9A69BC3661D1A355B0AE60907ADB741CC1911EFD0F3BE72D6A6E9",
+      "crldistributionPoints" : [ "http://dss.nowina.lu/pki-factory/crl/root-ca.crl" ],
       "ocspaccessUrls" : [ ],
-      "crldistributionPoints" : [ ]
+      "qcstatementIds" : [ ],
+      "qctypes" : [ ]
     } ],
     "trustedLists" : [ ],
     "listOfTrustedLists" : null
@@ -410,7 +378,7 @@
       "policyName" : "QES AdESQC TL based",
       "policyDescription" : "Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a\n\t\tQualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes\n\t\tsigner's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).\n\t"
     },
-    "validationTime" : 1506597227083,
+    "validationTime" : 1521553262918,
     "documentName" : "xades-detached.xml",
     "validSignaturesCount" : 0,
     "signaturesCount" : 1,
@@ -418,6 +386,7 @@
     "signature" : [ {
       "filename" : null,
       "signingTime" : 1506596944000,
+      "bestSignatureTime" : 1521553262918,
       "signedBy" : "good-user",
       "certificateChain" : {
         "certificate" : [ {
@@ -426,9 +395,6 @@
         }, {
           "id" : "6F35DE3965B9A69BC3661D1A355B0AE60907ADB741CC1911EFD0F3BE72D6A6E9",
           "qualifiedName" : "good-ca"
-        }, {
-          "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7",
-          "qualifiedName" : "root-ca"
         } ]
       },
       "signatureLevel" : {
@@ -437,7 +403,7 @@
       },
       "indication" : "INDETERMINATE",
       "subIndication" : "NO_CERTIFICATE_CHAIN_FOUND",
-      "errors" : [ "The certificate path is not trusted!", "The certificate chain for signature is not trusted, there is no trusted anchor." ],
+      "errors" : [ "The certificate path is not trusted!", "The result of the LTV validation process is not acceptable to continue the process!" ],
       "warnings" : [ "The signature/seal is an INDETERMINATE AdES!" ],
       "infos" : [ ],
       "signatureScope" : [ {
@@ -478,7 +444,8 @@
           } ],
           "warnings" : [ ],
           "infos" : [ ]
-        }
+        },
+        "bestSignatureTime" : 1521553262918
       },
       "validationProcessTimestamps" : [ ],
       "validationProcessLongTermData" : {
@@ -506,7 +473,8 @@
           } ],
           "warnings" : [ ],
           "infos" : [ ]
-        }
+        },
+        "bestSignatureTime" : 1521553262918
       },
       "validationProcessArchivalData" : {
         "constraint" : [ {
@@ -533,7 +501,8 @@
           } ],
           "warnings" : [ ],
           "infos" : [ ]
-        }
+        },
+        "bestSignatureTime" : null
       },
       "validationSignatureQualification" : {
         "constraint" : [ {
@@ -581,12 +550,14 @@
           } ],
           "infos" : [ ]
         },
-        "id" : "id-afde782436468dd74eeb181f7ce110e1",
+        "validationCertificateQualification" : [ ],
+        "id" : null,
         "signatureQualification" : "NA"
       },
       "id" : "id-afde782436468dd74eeb181f7ce110e1",
       "counterSignature" : null
     } ],
+    "certificate" : null,
     "basicBuildingBlocks" : [ {
       "fc" : null,
       "isc" : {
@@ -612,10 +583,10 @@
         "certificateChain" : {
           "chainItem" : [ {
             "source" : "OCSP_RESPONSE",
-            "id" : "759E821713B05655B3513F8EE20D0D652A247B37799383B6452A78D7CCECDF10"
+            "id" : "55CFA09B96FF9D03850B8D1D75BD473EEA556CEFCDA064A9AB16FBBA13F89869"
           }, {
             "source" : "AIA",
-            "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7"
+            "id" : "3A501823FF37F3D615E3F32F72308606CEDA520261E377E0D021DC5D9807980E"
           } ]
         }
       },
@@ -673,7 +644,7 @@
           "error" : null,
           "warning" : null,
           "info" : null,
-          "additionalInfo" : "Validation time : 2017-09-28 13:13",
+          "additionalInfo" : "Validation time : 2018-03-20 13:41",
           "id" : null
         } ],
         "conclusion" : {
@@ -709,7 +680,7 @@
           "warning" : null,
           "info" : null,
           "additionalInfo" : null,
-          "id" : "759E821713B05655B3513F8EE20D0D652A247B37799383B6452A78D7CCECDF10"
+          "id" : "55CFA09B96FF9D03850B8D1D75BD473EEA556CEFCDA064A9AB16FBBA13F89869"
         }, {
           "name" : {
             "value" : "Is the certificate validation concluant ?",
@@ -720,7 +691,7 @@
           "warning" : null,
           "info" : null,
           "additionalInfo" : null,
-          "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7"
+          "id" : "3A501823FF37F3D615E3F32F72308606CEDA520261E377E0D021DC5D9807980E"
         } ],
         "conclusion" : {
           "indication" : "PASSED",
@@ -750,7 +721,18 @@
             "error" : null,
             "warning" : null,
             "info" : null,
-            "additionalInfo" : "Validation time : 2017-09-28 13:13",
+            "additionalInfo" : "Validation time : 2018-03-20 13:41",
+            "id" : null
+          }, {
+            "name" : {
+              "value" : "Is the current time in the validity range of the signer's certificate?",
+              "nameId" : "BBB_XCV_ICTIVRSC"
+            },
+            "status" : "OK",
+            "error" : null,
+            "warning" : null,
+            "info" : null,
+            "additionalInfo" : "Certificate validity : 2017-03-14 07:26 to 2019-03-14 07:26",
             "id" : null
           }, {
             "name" : {
@@ -776,17 +758,6 @@
             "id" : null
           }, {
             "name" : {
-              "value" : "Is the current time in the validity range of the signer's certificate?",
-              "nameId" : "BBB_XCV_ICTIVRSC"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : "Certificate validity : 2016-09-26 09:54 to 2018-09-26 09:54",
-            "id" : null
-          }, {
-            "name" : {
               "value" : "The certificate has the id-pkix-ocsp-nocheck extension (RFC is skipped)",
               "nameId" : "BBB_XCV_OCSP_NO_CHECK"
             },
@@ -805,7 +776,7 @@
             "infos" : [ ]
           },
           "rfc" : null,
-          "id" : "759E821713B05655B3513F8EE20D0D652A247B37799383B6452A78D7CCECDF10",
+          "id" : "55CFA09B96FF9D03850B8D1D75BD473EEA556CEFCDA064A9AB16FBBA13F89869",
           "trustAnchor" : false
         }, {
           "constraint" : [ {
@@ -828,7 +799,18 @@
             "error" : null,
             "warning" : null,
             "info" : null,
-            "additionalInfo" : "Validation time : 2017-09-28 13:13",
+            "additionalInfo" : "Validation time : 2018-03-20 13:41",
+            "id" : null
+          }, {
+            "name" : {
+              "value" : "Is the current time in the validity range of the signer's certificate?",
+              "nameId" : "BBB_XCV_ICTIVRSC"
+            },
+            "status" : "OK",
+            "error" : null,
+            "warning" : null,
+            "info" : null,
+            "additionalInfo" : "Certificate validity : 2017-03-14 07:26 to 2019-03-14 07:26",
             "id" : null
           }, {
             "name" : {
@@ -851,17 +833,6 @@
             "warning" : null,
             "info" : null,
             "additionalInfo" : null,
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Is the current time in the validity range of the signer's certificate?",
-              "nameId" : "BBB_XCV_ICTIVRSC"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : "Certificate validity : 2016-09-26 09:54 to 2018-09-26 09:54",
             "id" : null
           }, {
             "name" : {
@@ -904,9 +875,10 @@
               "errors" : [ ],
               "warnings" : [ ],
               "infos" : [ ]
-            }
+            },
+            "id" : null
           },
-          "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7",
+          "id" : "3A501823FF37F3D615E3F32F72308606CEDA520261E377E0D021DC5D9807980E",
           "trustAnchor" : false
         } ]
       },
@@ -916,10 +888,10 @@
       "certificateChain" : {
         "chainItem" : [ {
           "source" : "OCSP_RESPONSE",
-          "id" : "759E821713B05655B3513F8EE20D0D652A247B37799383B6452A78D7CCECDF10"
+          "id" : "55CFA09B96FF9D03850B8D1D75BD473EEA556CEFCDA064A9AB16FBBA13F89869"
         }, {
           "source" : "AIA",
-          "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7"
+          "id" : "3A501823FF37F3D615E3F32F72308606CEDA520261E377E0D021DC5D9807980E"
         } ]
       },
       "conclusion" : {
@@ -932,7 +904,7 @@
         } ],
         "infos" : [ ]
       },
-      "id" : "f0ff0b4514d316304f2817dba0bfb05dedb98527c0e47c73e8d8fdfe16df267ea00213366ef135374b41ecffaec477378fef1f39f231f51a5afe0542268e9bb3",
+      "id" : "f0ff0b4514d316304f2817dba0bfb05dedb98527c0e47c73e8d8fdfe16df267efef4dfc576bc1dd5fa8a34574a8e393fd55046107039e84e4265c9f125de749c",
       "type" : "REVOCATION"
     }, {
       "fc" : {
@@ -1038,9 +1010,6 @@
           }, {
             "source" : "SIGNATURE",
             "id" : "6F35DE3965B9A69BC3661D1A355B0AE60907ADB741CC1911EFD0F3BE72D6A6E9"
-          }, {
-            "source" : "AIA",
-            "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7"
           } ]
         }
       },
@@ -1129,7 +1098,7 @@
           "error" : null,
           "warning" : null,
           "info" : null,
-          "additionalInfo" : "Validation time : 2017-09-28 13:13",
+          "additionalInfo" : "Validation time : 2018-03-20 13:41",
           "id" : null
         } ],
         "conclusion" : {
@@ -1180,6 +1149,28 @@
             "id" : null
           }, {
             "name" : {
+              "value" : "Is pseudo used ?",
+              "nameId" : "BBB_XCV_PSEUDO_USE"
+            },
+            "status" : "OK",
+            "error" : null,
+            "warning" : null,
+            "info" : null,
+            "additionalInfo" : null,
+            "id" : null
+          }, {
+            "name" : {
+              "value" : "Is not self-signed certificate?",
+              "nameId" : "BBB_XCV_ISNSSC"
+            },
+            "status" : "OK",
+            "error" : null,
+            "warning" : null,
+            "info" : null,
+            "additionalInfo" : null,
+            "id" : null
+          }, {
+            "name" : {
               "value" : "Is the certificate's signature intact?",
               "nameId" : "BBB_XCV_ICSI"
             },
@@ -1198,7 +1189,7 @@
             "error" : null,
             "warning" : null,
             "info" : null,
-            "additionalInfo" : "Validation time : 2017-09-28 13:13",
+            "additionalInfo" : "Validation time : 2018-03-20 13:41",
             "id" : null
           }, {
             "name" : {
@@ -1235,6 +1226,17 @@
             "id" : null
           }, {
             "name" : {
+              "value" : "Is the current time in the validity range of the signer's certificate?",
+              "nameId" : "BBB_XCV_ICTIVRSC"
+            },
+            "status" : "OK",
+            "error" : null,
+            "warning" : null,
+            "info" : null,
+            "additionalInfo" : "Certificate validity : 2016-10-26 07:54 to 2018-08-26 07:54",
+            "id" : null
+          }, {
+            "name" : {
               "value" : "Is the certificate not revoked?",
               "nameId" : "BBB_XCV_ISCR"
             },
@@ -1248,28 +1250,6 @@
             "name" : {
               "value" : "Is the certificate on hold?",
               "nameId" : "BBB_XCV_ISCOH"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : null,
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Is the current time in the validity range of the signer's certificate?",
-              "nameId" : "BBB_XCV_ICTIVRSC"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : "Certificate validity : 2016-10-26 09:54 to 2018-08-26 09:54",
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Is pseudo used ?",
-              "nameId" : "BBB_XCV_PSEUDO_USE"
             },
             "status" : "OK",
             "error" : null,
@@ -1342,7 +1322,7 @@
               "error" : null,
               "warning" : null,
               "info" : null,
-              "additionalInfo" : "Validation time : 2017-09-28 13:13",
+              "additionalInfo" : "Validation time : 2018-03-20 13:41",
               "id" : null
             } ],
             "conclusion" : {
@@ -1351,7 +1331,8 @@
               "errors" : [ ],
               "warnings" : [ ],
               "infos" : [ ]
-            }
+            },
+            "id" : "f0ff0b4514d316304f2817dba0bfb05dedb98527c0e47c73e8d8fdfe16df267efef4dfc576bc1dd5fa8a34574a8e393fd55046107039e84e4265c9f125de749c"
           },
           "id" : "F0FF0B4514D316304F2817DBA0BFB05DEDB98527C0E47C73E8D8FDFE16DF267E",
           "trustAnchor" : false
@@ -1361,196 +1342,10 @@
               "value" : "Is the certificate's signature intact?",
               "nameId" : "BBB_XCV_ICSI"
             },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : null,
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Are signature cryptographic constraints met?",
-              "nameId" : "ASCCM"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : "Validation time : 2017-09-28 13:13",
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Is the certificate not revoked?",
-              "nameId" : "BBB_XCV_ISCR"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : null,
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Is the certificate on hold?",
-              "nameId" : "BBB_XCV_ISCOH"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : null,
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Is the current time in the validity range of the signer's certificate?",
-              "nameId" : "BBB_XCV_ICTIVRSC"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : "Certificate validity : 2016-10-26 09:54 to 2018-08-26 09:54",
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Is the revocation freshness check concluant ?",
-              "nameId" : "BBB_XCV_RFC"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : null,
-            "id" : null
-          } ],
-          "conclusion" : {
-            "indication" : "PASSED",
-            "subIndication" : null,
-            "errors" : [ ],
-            "warnings" : [ ],
-            "infos" : [ ]
-          },
-          "rfc" : {
-            "constraint" : [ {
-              "name" : {
-                "value" : "Is the revocation data present for the certificate?",
-                "nameId" : "BBB_XCV_IRDPFC"
-              },
-              "status" : "OK",
-              "error" : null,
-              "warning" : null,
-              "info" : null,
-              "additionalInfo" : null,
-              "id" : null
-            }, {
-              "name" : {
-                "value" : "Is there a Next Update defined for the revocation data?",
-                "nameId" : "BBB_RFC_NUP"
-              },
-              "status" : "OK",
-              "error" : null,
-              "warning" : null,
-              "info" : null,
-              "additionalInfo" : null,
-              "id" : null
-            }, {
-              "name" : {
-                "value" : "Is the revocation information fresh for the certificate?",
-                "nameId" : "BBB_RFC_IRIF"
-              },
-              "status" : "OK",
-              "error" : null,
-              "warning" : null,
-              "info" : null,
-              "additionalInfo" : "Next update : 2017-09-29 13:09",
-              "id" : null
-            }, {
-              "name" : {
-                "value" : "Are signature cryptographic constraints met?",
-                "nameId" : "ASCCM"
-              },
-              "status" : "OK",
-              "error" : null,
-              "warning" : null,
-              "info" : null,
-              "additionalInfo" : "Validation time : 2017-09-28 13:13",
-              "id" : null
-            } ],
-            "conclusion" : {
-              "indication" : "PASSED",
-              "subIndication" : null,
-              "errors" : [ ],
-              "warnings" : [ ],
-              "infos" : [ ]
-            }
-          },
-          "id" : "6F35DE3965B9A69BC3661D1A355B0AE60907ADB741CC1911EFD0F3BE72D6A6E9",
-          "trustAnchor" : false
-        }, {
-          "constraint" : [ {
-            "name" : {
-              "value" : "Is the certificate's signature intact?",
-              "nameId" : "BBB_XCV_ICSI"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : null,
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Are signature cryptographic constraints met?",
-              "nameId" : "ASCCM"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : "Validation time : 2017-09-28 13:13",
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Is the certificate not revoked?",
-              "nameId" : "BBB_XCV_ISCR"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : null,
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Is the certificate on hold?",
-              "nameId" : "BBB_XCV_ISCOH"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : null,
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Is the current time in the validity range of the signer's certificate?",
-              "nameId" : "BBB_XCV_ICTIVRSC"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : "Certificate validity : 2016-09-26 09:54 to 2018-09-26 09:54",
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Is the revocation freshness check concluant ?",
-              "nameId" : "BBB_XCV_RFC"
-            },
             "status" : "NOT_OK",
             "error" : {
-              "value" : "The revocation freshness check is not concluant!",
-              "nameId" : "BBB_XCV_RFC_ANS"
+              "value" : "The signature of the certificate is spoiled or it is not possible to validate it!",
+              "nameId" : "BBB_XCV_ICSI_ANS"
             },
             "warning" : null,
             "info" : null,
@@ -1559,10 +1354,10 @@
           } ],
           "conclusion" : {
             "indication" : "INDETERMINATE",
-            "subIndication" : "TRY_LATER",
+            "subIndication" : "CERTIFICATE_CHAIN_GENERAL_FAILURE",
             "errors" : [ {
-              "value" : "No revocation data for the certificate",
-              "nameId" : "BBB_XCV_IRDPFC_ANS"
+              "value" : "The signature of the certificate is spoiled or it is not possible to validate it!",
+              "nameId" : "BBB_XCV_ICSI_ANS"
             } ],
             "warnings" : [ ],
             "infos" : [ ]
@@ -1592,9 +1387,10 @@
               } ],
               "warnings" : [ ],
               "infos" : [ ]
-            }
+            },
+            "id" : null
           },
-          "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7",
+          "id" : "6F35DE3965B9A69BC3661D1A355B0AE60907ADB741CC1911EFD0F3BE72D6A6E9",
           "trustAnchor" : false
         } ]
       },
@@ -1608,9 +1404,6 @@
         }, {
           "source" : "SIGNATURE",
           "id" : "6F35DE3965B9A69BC3661D1A355B0AE60907ADB741CC1911EFD0F3BE72D6A6E9"
-        }, {
-          "source" : "AIA",
-          "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7"
         } ]
       },
       "conclusion" : {
@@ -1625,276 +1418,6 @@
       },
       "id" : "id-afde782436468dd74eeb181f7ce110e1",
       "type" : "SIGNATURE"
-    }, {
-      "fc" : null,
-      "isc" : {
-        "constraint" : [ {
-          "name" : {
-            "value" : "Is there an identified candidate for the signing certificate?",
-            "nameId" : "BBB_ICS_ISCI"
-          },
-          "status" : "OK",
-          "error" : null,
-          "warning" : null,
-          "info" : null,
-          "additionalInfo" : null,
-          "id" : null
-        } ],
-        "conclusion" : {
-          "indication" : "PASSED",
-          "subIndication" : null,
-          "errors" : [ ],
-          "warnings" : [ ],
-          "infos" : [ ]
-        },
-        "certificateChain" : {
-          "chainItem" : [ {
-            "source" : "UNKNOWN",
-            "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7"
-          } ]
-        }
-      },
-      "vci" : null,
-      "cv" : {
-        "constraint" : [ {
-          "name" : {
-            "value" : "Is the reference data object(s) found?",
-            "nameId" : "BBB_CV_IRDOF"
-          },
-          "status" : "OK",
-          "error" : null,
-          "warning" : null,
-          "info" : null,
-          "additionalInfo" : null,
-          "id" : null
-        }, {
-          "name" : {
-            "value" : "Is the reference data object(s) intact?",
-            "nameId" : "BBB_CV_IRDOI"
-          },
-          "status" : "OK",
-          "error" : null,
-          "warning" : null,
-          "info" : null,
-          "additionalInfo" : null,
-          "id" : null
-        }, {
-          "name" : {
-            "value" : "Is the signature intact?",
-            "nameId" : "BBB_CV_ISI"
-          },
-          "status" : "OK",
-          "error" : null,
-          "warning" : null,
-          "info" : null,
-          "additionalInfo" : null,
-          "id" : null
-        } ],
-        "conclusion" : {
-          "indication" : "PASSED",
-          "subIndication" : null,
-          "errors" : [ ],
-          "warnings" : [ ],
-          "infos" : [ ]
-        }
-      },
-      "sav" : {
-        "constraint" : [ {
-          "name" : {
-            "value" : "Are signature cryptographic constraints met?",
-            "nameId" : "ASCCM"
-          },
-          "status" : "OK",
-          "error" : null,
-          "warning" : null,
-          "info" : null,
-          "additionalInfo" : "Validation time : 2017-09-28 13:13",
-          "id" : null
-        } ],
-        "conclusion" : {
-          "indication" : "PASSED",
-          "subIndication" : null,
-          "errors" : [ ],
-          "warnings" : [ ],
-          "infos" : [ ]
-        }
-      },
-      "xcv" : {
-        "constraint" : [ {
-          "name" : {
-            "value" : "Can the certificate chain be built till the trust anchor?",
-            "nameId" : "BBB_XCV_CCCBB"
-          },
-          "status" : "WARNING",
-          "error" : null,
-          "warning" : {
-            "value" : "The certificate chain for revocation data is not trusted, there is no trusted anchor.",
-            "nameId" : "BBB_XCV_CCCBB_REV_ANS"
-          },
-          "info" : null,
-          "additionalInfo" : null,
-          "id" : null
-        }, {
-          "name" : {
-            "value" : "Is the certificate validation concluant ?",
-            "nameId" : "BBB_XCV_SUB"
-          },
-          "status" : "NOT_OK",
-          "error" : {
-            "value" : "The certificate validation is not concluant!",
-            "nameId" : "BBB_XCV_SUB_ANS"
-          },
-          "warning" : null,
-          "info" : null,
-          "additionalInfo" : null,
-          "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7"
-        } ],
-        "conclusion" : {
-          "indication" : "INDETERMINATE",
-          "subIndication" : "TRY_LATER",
-          "errors" : [ {
-            "value" : "No revocation data for the certificate",
-            "nameId" : "BBB_XCV_IRDPFC_ANS"
-          } ],
-          "warnings" : [ ],
-          "infos" : [ ]
-        },
-        "subXCV" : [ {
-          "constraint" : [ {
-            "name" : {
-              "value" : "Is the certificate's signature intact?",
-              "nameId" : "BBB_XCV_ICSI"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : null,
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Are signature cryptographic constraints met?",
-              "nameId" : "ASCCM"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : "Validation time : 2017-09-28 13:13",
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Is the certificate not revoked?",
-              "nameId" : "BBB_XCV_ISCR"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : null,
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Is the certificate on hold?",
-              "nameId" : "BBB_XCV_ISCOH"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : null,
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Is the current time in the validity range of the signer's certificate?",
-              "nameId" : "BBB_XCV_ICTIVRSC"
-            },
-            "status" : "OK",
-            "error" : null,
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : "Certificate validity : 2016-09-26 09:54 to 2018-09-26 09:54",
-            "id" : null
-          }, {
-            "name" : {
-              "value" : "Is the revocation freshness check concluant ?",
-              "nameId" : "BBB_XCV_RFC"
-            },
-            "status" : "NOT_OK",
-            "error" : {
-              "value" : "The revocation freshness check is not concluant!",
-              "nameId" : "BBB_XCV_RFC_ANS"
-            },
-            "warning" : null,
-            "info" : null,
-            "additionalInfo" : null,
-            "id" : null
-          } ],
-          "conclusion" : {
-            "indication" : "INDETERMINATE",
-            "subIndication" : "TRY_LATER",
-            "errors" : [ {
-              "value" : "No revocation data for the certificate",
-              "nameId" : "BBB_XCV_IRDPFC_ANS"
-            } ],
-            "warnings" : [ ],
-            "infos" : [ ]
-          },
-          "rfc" : {
-            "constraint" : [ {
-              "name" : {
-                "value" : "Is the revocation data present for the certificate?",
-                "nameId" : "BBB_XCV_IRDPFC"
-              },
-              "status" : "NOT_OK",
-              "error" : {
-                "value" : "No revocation data for the certificate",
-                "nameId" : "BBB_XCV_IRDPFC_ANS"
-              },
-              "warning" : null,
-              "info" : null,
-              "additionalInfo" : null,
-              "id" : null
-            } ],
-            "conclusion" : {
-              "indication" : "INDETERMINATE",
-              "subIndication" : "TRY_LATER",
-              "errors" : [ {
-                "value" : "No revocation data for the certificate",
-                "nameId" : "BBB_XCV_IRDPFC_ANS"
-              } ],
-              "warnings" : [ ],
-              "infos" : [ ]
-            }
-          },
-          "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7",
-          "trustAnchor" : false
-        } ]
-      },
-      "psv" : null,
-      "pcv" : null,
-      "vts" : null,
-      "certificateChain" : {
-        "chainItem" : [ {
-          "source" : "UNKNOWN",
-          "id" : "464AF729A7FA4E9DF96D5D1E11F5CC358D07FBEE1AE708D6851100ED1EE5EFC7"
-        } ]
-      },
-      "conclusion" : {
-        "indication" : "INDETERMINATE",
-        "subIndication" : "TRY_LATER",
-        "errors" : [ {
-          "value" : "No revocation data for the certificate",
-          "nameId" : "BBB_XCV_IRDPFC_ANS"
-        } ],
-        "warnings" : [ {
-          "value" : "The certificate chain for revocation data is not trusted, there is no trusted anchor.",
-          "nameId" : "BBB_XCV_CCCBB_REV_ANS"
-        } ],
-        "infos" : [ ]
-      },
-      "id" : "6f35de3965b9a69bc3661d1a355b0ae60907adb741cc1911efd0f3be72d6a6e99673d3e7f6c4a93bba7270f8a268b33df38913ab27c174f2719467022f3e91c6",
-      "type" : "REVOCATION"
     } ],
     "tlanalysis" : [ ]
   }

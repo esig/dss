@@ -3,11 +3,13 @@
 $ echo '{
   "parameters" : {
     "signWithExpiredCertificate" : false,
+    "generateTBSWithoutCertificate" : false,
     "signatureLevel" : "XAdES_BASELINE_B",
     "signaturePackaging" : "DETACHED",
     "signatureAlgorithm" : "RSA_SHA256",
     "encryptionAlgorithm" : "RSA",
     "digestAlgorithm" : "SHA256",
+    "maskGenerationFunction" : null,
     "contentTimestampParameters" : {
       "digestAlgorithm" : "SHA256",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#"
@@ -28,7 +30,7 @@ $ echo '{
     "asicContainerType" : "ASiC_E",
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1506597227934,
+      "signingDate" : 1521553264036,
       "claimedSignerRoles" : null,
       "certifiedSignerRoles" : null,
       "signaturePolicy" : null,
@@ -42,16 +44,16 @@ $ echo '{
   },
   "toSignDocuments" : [ {
     "bytes" : "SGVsbG8=",
+    "digestAlgorithm" : null,
     "name" : "test1.bin",
-    "absolutePath" : "RemoteDocument",
     "mimeType" : null
   }, {
     "bytes" : "V29ybGQ=",
+    "digestAlgorithm" : null,
     "name" : "test2.bin",
-    "absolutePath" : "RemoteDocument",
     "mimeType" : null
   } ]
 }' | http POST 'http://localhost:8080/services/rest/signature/multiple-documents/signDocument' \
-    'Accept:application/json, application/javascript, text/javascript' \
+    'Accept:application/json, application/javascript, text/javascript, text/json' \
     'Content-Type:application/json; charset=UTF-8'
 ----

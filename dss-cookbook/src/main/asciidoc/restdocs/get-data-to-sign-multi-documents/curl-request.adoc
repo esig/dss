@@ -1,16 +1,18 @@
 [source,bash]
 ----
 $ curl 'http://localhost:8080/services/rest/signature/multiple-documents/getDataToSignMultiple' -i -X POST \
-    -H 'Accept: application/json, application/javascript, text/javascript' \
+    -H 'Accept: application/json, application/javascript, text/javascript, text/json' \
     -H 'Content-Type: application/json; charset=UTF-8' \
     -d '{
   "parameters" : {
     "signWithExpiredCertificate" : false,
+    "generateTBSWithoutCertificate" : false,
     "signatureLevel" : "XAdES_BASELINE_B",
     "signaturePackaging" : "DETACHED",
     "signatureAlgorithm" : "RSA_SHA256",
     "encryptionAlgorithm" : "RSA",
     "digestAlgorithm" : "SHA256",
+    "maskGenerationFunction" : null,
     "contentTimestampParameters" : {
       "digestAlgorithm" : "SHA256",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#"
@@ -31,7 +33,7 @@ $ curl 'http://localhost:8080/services/rest/signature/multiple-documents/getData
     "asicContainerType" : "ASiC_E",
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1506597228545,
+      "signingDate" : 1521553264787,
       "claimedSignerRoles" : null,
       "certifiedSignerRoles" : null,
       "signaturePolicy" : null,
@@ -41,13 +43,13 @@ $ curl 'http://localhost:8080/services/rest/signature/multiple-documents/getData
   },
   "toSignDocuments" : [ {
     "bytes" : "SGVsbG8=",
+    "digestAlgorithm" : null,
     "name" : "test1.bin",
-    "absolutePath" : "RemoteDocument",
     "mimeType" : null
   }, {
     "bytes" : "V29ybGQ=",
+    "digestAlgorithm" : null,
     "name" : "test2.bin",
-    "absolutePath" : "RemoteDocument",
     "mimeType" : null
   } ]
 }'

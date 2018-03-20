@@ -1,19 +1,21 @@
 [source,http,options="nowrap"]
 ----
 POST /services/rest/signature/one-document/signDocument HTTP/1.1
-Accept: application/json, application/javascript, text/javascript
+Accept: application/json, application/javascript, text/javascript, text/json
 Content-Type: application/json; charset=UTF-8
 Host: localhost:8080
-Content-Length: 2445
+Content-Length: 2520
 
 {
   "parameters" : {
     "signWithExpiredCertificate" : false,
+    "generateTBSWithoutCertificate" : false,
     "signatureLevel" : "CAdES_BASELINE_B",
     "signaturePackaging" : "ENVELOPING",
     "signatureAlgorithm" : "RSA_SHA256",
     "encryptionAlgorithm" : "RSA",
     "digestAlgorithm" : "SHA256",
+    "maskGenerationFunction" : null,
     "contentTimestampParameters" : {
       "digestAlgorithm" : "SHA256",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#"
@@ -34,7 +36,7 @@ Content-Length: 2445
     "asicContainerType" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1506597228260,
+      "signingDate" : 1521553264414,
       "claimedSignerRoles" : null,
       "certifiedSignerRoles" : null,
       "signaturePolicy" : null,
@@ -48,8 +50,8 @@ Content-Length: 2445
   },
   "toSignDocument" : {
     "bytes" : "SGVsbG8=",
+    "digestAlgorithm" : null,
     "name" : "RemoteDocument",
-    "absolutePath" : "RemoteDocument",
     "mimeType" : null
   }
 }

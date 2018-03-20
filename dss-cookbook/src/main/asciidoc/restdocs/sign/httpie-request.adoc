@@ -3,6 +3,6 @@
 $ echo '{
   "bytes" : "AQID"
 }' | http POST 'http://localhost:8080/services/rest/server-signing/sign/certificate/SHA256' \
-    'Accept:application/json, application/javascript, text/javascript' \
+    'Accept:application/json, application/javascript, text/javascript, text/json' \
     'Content-Type:application/json; charset=UTF-8'
 ----
