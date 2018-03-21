@@ -271,5 +271,4 @@ public class CMSSignedDataBuilder {
 		}
 	}
 
-	// TODO Vincent: regeneration of SignedData -> Content-TS
 }

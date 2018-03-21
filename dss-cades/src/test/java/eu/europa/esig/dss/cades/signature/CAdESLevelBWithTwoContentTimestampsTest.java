@@ -78,11 +78,6 @@ public class CAdESLevelBWithTwoContentTimestampsTest extends AbstractCAdESTestSi
 	}
 
 	@Override
-	protected boolean hasContentTimestamp() {
-		return true;
-	}
-
-	@Override
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
 	}

@@ -61,7 +61,6 @@ public class CertificateValidator {
 	}
 
 	public CertificateProcessExecutor provideProcessExecutorInstance() {
-		// TODO Auto-generated method stub
 		return new CertificateProcessExecutor();
 	}
 

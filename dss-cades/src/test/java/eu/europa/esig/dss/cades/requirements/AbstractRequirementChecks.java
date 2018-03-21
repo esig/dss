@@ -138,6 +138,12 @@ public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 	@Test
 	public abstract void checkTimestampedCertsCrlsReferences();
 
+	/**
+	 * archive-time-stamp-v3 (B/T/LT 0; LTA 1+)
+	 */
+	@Test
+	public abstract void checkArchiveTimeStampV3();
+
 	protected boolean isSignedAttributeFound(ASN1ObjectIdentifier oid) {
 		return countSignedAttribute(oid) > 0;
 	}

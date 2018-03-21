@@ -353,7 +353,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		List<String> timestampIdList = diagnosticData.getTimestampIdList(diagnosticData.getFirstSignatureId());
 
-		boolean foundContentTimeStamp = false;
+		int nbContentTimestamps = 0;
 		boolean foundSignatureTimeStamp = false;
 		boolean foundArchiveTimeStamp = false;
 
@@ -365,7 +365,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 				case CONTENT_TIMESTAMP:
 				case ALL_DATA_OBJECTS_TIMESTAMP:
 				case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
-					foundContentTimeStamp = true;
+					nbContentTimestamps++;
 					break;
 				case SIGNATURE_TIMESTAMP:
 					foundSignatureTimeStamp = true;
@@ -379,9 +379,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			}
 		}
 
-		if (hasContentTimestamp()) {
-			assertTrue(foundContentTimeStamp);
-		}
+		assertEquals(nbContentTimestamps, Utils.collectionSize(getSignatureParameters().getContentTimestamps()));
 
 		if (isBaselineT()) {
 			assertTrue(foundSignatureTimeStamp);
@@ -399,10 +397,6 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			assertTrue(timestampWrapper.isSignatureIntact());
 			assertTrue(timestampWrapper.isSignatureValid());
 		}
-	}
-
-	protected boolean hasContentTimestamp() {
-		return Utils.isCollectionNotEmpty(getSignatureParameters().getContentTimestamps());
 	}
 
 	protected void checkSigningDate(DiagnosticData diagnosticData) {

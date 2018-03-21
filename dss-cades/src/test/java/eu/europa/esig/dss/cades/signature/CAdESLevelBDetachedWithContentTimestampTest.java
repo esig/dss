@@ -81,11 +81,6 @@ public class CAdESLevelBDetachedWithContentTimestampTest extends AbstractCAdESTe
 	}
 
 	@Override
-	protected boolean isBaselineLTA() {
-		return false;
-	}
-
-	@Override
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
 	}

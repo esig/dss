@@ -35,7 +35,7 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.TimestampToken;
 
-public class CAdESLevelBWithContentTimestampTest extends AbstractCAdESTestSignature {
+public class CAdESLevelLTAWithContentTimestampTest extends AbstractCAdESTestSignature {
 
 	private DocumentSignatureService<CAdESSignatureParameters> service;
 	private CAdESSignatureParameters signatureParameters;
@@ -53,7 +53,7 @@ public class CAdESLevelBWithContentTimestampTest extends AbstractCAdESTestSignat
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 
 		TimestampParameters contentTimestampParameters = new TimestampParameters();
 		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
@@ -78,11 +78,6 @@ public class CAdESLevelBWithContentTimestampTest extends AbstractCAdESTestSignat
 	@Override
 	protected CAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
 	}
 
 	@Override
