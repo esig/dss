@@ -33,7 +33,7 @@ import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 
 /**
- * A SimpleReport holder to fetch properties from a XmlDom simpleReport.
+ * A SimpleReport holder to fetch values from a JAXB SimpleReport.
  */
 public class SimpleReport {
 

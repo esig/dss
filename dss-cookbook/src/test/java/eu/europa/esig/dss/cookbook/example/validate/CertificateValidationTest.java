@@ -15,6 +15,7 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
+import eu.europa.esig.dss.validation.reports.SimpleCertificateReport;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -67,11 +68,15 @@ public class CertificateValidationTest {
 		// The detailed report which is the result of the process of the diagnostic data and the validation policy
 		DetailedReport detailedReport = certificateReports.getDetailedReport();
 
+		// The simple report is a summary of the detailed report or diagnostic data (more user-friendly)
+		SimpleCertificateReport simpleReport = certificateReports.getSimpleReport();
+
 		// end::demo[]
 
 		assertNotNull(certificateReports);
 		assertNotNull(diagnosticData);
 		assertNotNull(detailedReport);
+		assertNotNull(simpleReport);
 
 	}
 }

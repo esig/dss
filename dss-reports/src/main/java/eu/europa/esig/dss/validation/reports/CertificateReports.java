@@ -31,7 +31,7 @@ public class CertificateReports extends AbstractReports {
 	 */
 	protected eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport simpleReport;
 
-	// protected SimpleReport simpleReportWrapper;
+	protected SimpleCertificateReport simpleReportWrapper;
 
 	private String xmlSimpleReport;
 
@@ -50,17 +50,17 @@ public class CertificateReports extends AbstractReports {
 			final eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport simpleReport) {
 		super(diagnosticDataJaxb, detailedReport);
 		this.simpleReport = simpleReport;
-		// this.simpleReportWrapper = new SimpleReport(simpleReport);
+		this.simpleReportWrapper = new SimpleCertificateReport(simpleReport);
 	}
 
-	// /**
-	// * This method returns the wrapper to manipulate the JAXB SimpleReport
-	// *
-	// * @return the wrapper {@code SimpleReport}
-	// */
-	// public SimpleReport getSimpleReport() {
-	// return simpleReportWrapper;
-	// }
+	/**
+	 * This method returns the wrapper to manipulate the JAXB SimpleCertificateReport
+	 *
+	 * @return the wrapper {@code SimpleCertificateReport}
+	 */
+	public SimpleCertificateReport getSimpleReport() {
+		return simpleReportWrapper;
+	}
 
 	/**
 	 * This method returns the JAXB SimpleCertificateReport

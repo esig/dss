@@ -3,9 +3,11 @@ package eu.europa.esig.dss.validation.executor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -23,6 +25,7 @@ import eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlChainItem;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
@@ -50,6 +53,25 @@ public class CertificateProcessExecutorTest {
 		assertEquals(2, detailedReportJaxb.getTLAnalysis().size());
 		assertEquals(1, detailedReportJaxb.getBasicBuildingBlocks().size());
 		assertEquals(0, detailedReportJaxb.getSignatures().size());
+
+		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		assertNotNull(simpleReport);
+		List<String> certificateIds = simpleReport.getCertificateIds();
+		assertEquals(2, certificateIds.size());
+		for (String certId : certificateIds) {
+			assertNotNull(simpleReport.getCertificateNotAfter(certId));
+			assertNotNull(simpleReport.getCertificateNotBefore(certId));
+		}
+		assertNotNull(simpleReport.getQualificationAtCertificateIssuance());
+		assertNotNull(simpleReport.getQualificationAtValidationTime());
+		assertNotNull(simpleReport.getValidationTime());
+		assertNotNull(simpleReport.getJaxbModel());
+		assertEquals(Indication.INDETERMINATE, simpleReport.getCertificateIndication(certificateId));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getCertificateCrlUrls(certificateId)));
+		assertNotNull(simpleReport.getCertificateRevocationDate(certificateId));
+		assertEquals("unspecified", simpleReport.getCertificateRevocationReason(certificateId));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getCertificateCrlUrls(certificateId)));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getTrustAnchorVATNumbers()));
 
 		SimpleCertificateReport simpleReportJaxb = reports.getSimpleReportJaxb();
 		assertNotNull(simpleReportJaxb);
