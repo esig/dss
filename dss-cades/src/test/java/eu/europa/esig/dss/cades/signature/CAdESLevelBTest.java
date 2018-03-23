@@ -96,6 +96,7 @@ public class CAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatureServ
 		signerLocation.setPostalAddress(Arrays.asList("Line1", "Line2"));
 		signatureParameters.bLevel().setSignerLocation(signerLocation);
 
+		signatureParameters.bLevel().setClaimedSignerRoles(Arrays.asList("supplier"));
 		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList("1.2.3", "2.4.5.6"));
 
 		signatureParameters.setSigningCertificate(getSigningCert());

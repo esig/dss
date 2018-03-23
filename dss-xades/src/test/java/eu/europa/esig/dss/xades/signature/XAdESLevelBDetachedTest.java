@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CommitmentType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
@@ -68,8 +69,8 @@ public class XAdESLevelBDetachedTest extends AbstractXAdESTestSignature {
 		signerLocation.setStreet("Anspach");
 		signatureParameters.bLevel().setSignerLocation(signerLocation);
 
-		signatureParameters.bLevel().setCommitmentTypeIndications(
-				Arrays.asList("http://uri.etsi.org/01903/v1.2.2#ProofOfSender", "http://uri.etsi.org/01903/v1.2.2#ProofOfCreation"));
+		signatureParameters.bLevel()
+				.setCommitmentTypeIndications(Arrays.asList(CommitmentType.ProofOfSender.getUri(), CommitmentType.ProofOfCreation.getUri()));
 
 		signatureParameters.bLevel().setClaimedSignerRoles(Arrays.asList("Manager", "Administrator"));
 

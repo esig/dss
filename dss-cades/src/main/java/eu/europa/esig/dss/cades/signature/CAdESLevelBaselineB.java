@@ -58,12 +58,12 @@ import org.bouncycastle.asn1.ess.ContentIdentifier;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Time;
-import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.DSSASN1Utils;
+import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
@@ -147,7 +147,6 @@ public class CAdESLevelBaselineB {
 	 * @return
 	 */
 	private void addSignerAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
-
 		// In PAdES, the role is in the signature dictionary
 		if (!padesUsage) {
 
@@ -156,11 +155,8 @@ public class CAdESLevelBaselineB {
 
 				List<org.bouncycastle.asn1.x509.Attribute> claimedAttributes = new ArrayList<org.bouncycastle.asn1.x509.Attribute>(claimedSignerRoles.size());
 				for (final String claimedSignerRole : claimedSignerRoles) {
-
 					final DERUTF8String roles = new DERUTF8String(claimedSignerRole);
-
-					// TODO: role attribute key (id_at_name) should be customizable
-					final org.bouncycastle.asn1.x509.Attribute id_aa_ets_signerAttr = new org.bouncycastle.asn1.x509.Attribute(X509ObjectIdentifiers.id_at_name,
+					final org.bouncycastle.asn1.x509.Attribute id_aa_ets_signerAttr = new org.bouncycastle.asn1.x509.Attribute(OID.id_at_role,
 							new DERSet(roles));
 					claimedAttributes.add(id_aa_ets_signerAttr);
 				}
@@ -168,8 +164,6 @@ public class CAdESLevelBaselineB {
 						new DERSet(new SignerAttribute(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
 				signedAttributes.add(attribute);
 			}
-			// TODO: handle CertifiedAttributes ::= AttributeCertificate -- as defined in RFC 3281: see clause 4.1.
-			// final List<String> certifiedSignerRoles = parameters.bLevel().getCertifiedSignerRoles();
 		}
 	}
 

@@ -191,6 +191,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		checkTimestamps(diagnosticData);
 		checkSignatureScopes(diagnosticData);
 		checkCommitmentTypeIndications(diagnosticData);
+		checkClaimedRoles(diagnosticData);
 	}
 
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
@@ -415,6 +416,15 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 			List<String> foundCommitmentTypeIdentifiers = signatureWrapper.getCommitmentTypeIdentifiers();
 			assertTrue(commitmentTypeIndications.equals(foundCommitmentTypeIdentifiers));
+		}
+	}
+
+	protected void checkClaimedRoles(DiagnosticData diagnosticData) {
+		List<String> claimedRoles = getSignatureParameters().bLevel().getClaimedSignerRoles();
+		if (Utils.isCollectionNotEmpty(claimedRoles)) {
+			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+			List<String> foundClaimedRoles = signatureWrapper.getClaimedRoles();
+			assertTrue(claimedRoles.equals(foundClaimedRoles));
 		}
 	}
 
