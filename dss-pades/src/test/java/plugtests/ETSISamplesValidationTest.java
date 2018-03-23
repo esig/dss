@@ -12,6 +12,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -46,7 +47,10 @@ public class ETSISamplesValidationTest {
 	@Test
 	public void testValidate() {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(fileToTest));
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
 
 		Reports validateDocument = validator.validateDocument();
 		assertNotNull(validateDocument);
