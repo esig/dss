@@ -750,7 +750,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (id_aa_ets_signerAttr != null) {
 			final ASN1Set attrValues = id_aa_ets_signerAttr.getAttrValues();
 			final ASN1Encodable attrValue = attrValues.getObjectAt(0);
-			return SignerAttribute.getInstance(attrValue);
+			try {
+				return SignerAttribute.getInstance(attrValue);
+			} catch (Exception e) {
+				LOG.warn("Unable to parse signerAttr " + Utils.toBase64(DSSASN1Utils.getDEREncoded(attrValue)) + "", e);
+			}
 		}
 		return null;
 	}
@@ -760,7 +764,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (id_aa_ets_signerAttrV2 != null) {
 			final ASN1Set attrValues = id_aa_ets_signerAttrV2.getAttrValues();
 			final ASN1Encodable attrValue = attrValues.getObjectAt(0);
-			return SignerAttributeV2.getInstance(attrValue);
+			try {
+				return SignerAttributeV2.getInstance(attrValue);
+			} catch (Exception e) {
+				LOG.warn("Unable to parse signerAttrV2 " + Utils.toBase64(DSSASN1Utils.getDEREncoded(attrValue)) + "", e);
+			}
 		}
 		return null;
 	}
