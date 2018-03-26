@@ -121,11 +121,13 @@ import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MaskGenerationFunction;
+import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.SignerAttributeV2;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -656,29 +658,28 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String[] getClaimedSignerRoles() {
-		final Attribute id_aa_ets_signerAttr = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_signerAttr);
-		if (id_aa_ets_signerAttr == null) {
-			return null;
-		}
-		final ASN1Set attrValues = id_aa_ets_signerAttr.getAttrValues();
-		final ASN1Encodable attrValue = attrValues.getObjectAt(0);
+		final SignerAttribute signerAttr = getSignerAttributeV1();
+		final SignerAttributeV2 signerAttrV2 = getSignerAttributeV2();
+
+		Object[] signerAttrValues = null;
 		try {
 
-			final SignerAttribute signerAttr = SignerAttribute.getInstance(attrValue);
-			if (signerAttr == null) {
+			if (signerAttr != null) {
+				signerAttrValues = signerAttr.getValues();
+			} else if (signerAttrV2 != null) {
+				signerAttrValues = signerAttrV2.getValues();
+			}
+			if (signerAttrValues == null) {
 				return null;
 			}
+
 			final List<String> claimedRoles = new ArrayList<String>();
-			final Object[] signerAttrValues = signerAttr.getValues();
 			for (final Object signerAttrValue : signerAttrValues) {
-
 				if (!(signerAttrValue instanceof org.bouncycastle.asn1.x509.Attribute[])) {
-
 					continue;
 				}
 				final org.bouncycastle.asn1.x509.Attribute[] signerAttrValueArray = (org.bouncycastle.asn1.x509.Attribute[]) signerAttrValue;
 				for (final org.bouncycastle.asn1.x509.Attribute claimedRole : signerAttrValueArray) {
-
 					final ASN1Encodable[] attrValues1 = claimedRole.getAttrValues().toArray();
 					for (final ASN1Encodable asn1Encodable : attrValues1) {
 						if (asn1Encodable instanceof ASN1String) {
@@ -692,33 +693,30 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			final String[] strings = claimedRoles.toArray(new String[claimedRoles.size()]);
 			return strings;
 		} catch (Exception e) {
-			LOG.error("Error when dealing with claimed signer roles: [" + attrValue.toString() + "]", e);
+			LOG.error("Error when dealing with claimed signer roles: [" + signerAttrValues + "]", e);
 			return null;
 		}
 	}
 
 	@Override
 	public List<CertifiedRole> getCertifiedSignerRoles() {
-		final Attribute id_aa_ets_signerAttr = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_signerAttr);
-		if (id_aa_ets_signerAttr == null) {
-			return null;
-		}
-		final ASN1Set attrValues = id_aa_ets_signerAttr.getAttrValues();
-		final ASN1Encodable asn1EncodableAttrValue = attrValues.getObjectAt(0);
-		try {
+		final SignerAttribute signerAttr = getSignerAttributeV1();
+		final SignerAttributeV2 signerAttrV2 = getSignerAttributeV2();
 
-			final SignerAttribute signerAttr = SignerAttribute.getInstance(asn1EncodableAttrValue);
-			if (signerAttr == null) {
+		Object[] signerAttrValues = null;
+		try {
+			if (signerAttr != null) {
+				signerAttrValues = signerAttr.getValues();
+			} else if (signerAttrV2 != null) {
+				signerAttrValues = signerAttrV2.getValues();
+			}
+			if (signerAttrValues == null) {
 				return null;
 			}
 			List<CertifiedRole> roles = null;
-			final Object[] signerAttrValues = signerAttr.getValues();
 			for (final Object signerAttrValue : signerAttrValues) {
-
 				if (signerAttrValue instanceof AttributeCertificate) {
-
 					if (roles == null) {
-
 						roles = new ArrayList<CertifiedRole>();
 					}
 					final AttributeCertificate attributeCertificate = (AttributeCertificate) signerAttrValue;
@@ -742,9 +740,29 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 			return roles;
 		} catch (Exception e) {
-			LOG.error("Error when dealing with certified signer roles: [" + asn1EncodableAttrValue.toString() + "]", e);
+			LOG.error("Error when dealing with certified signer roles: [" + signerAttrValues + "]", e);
 			return null;
 		}
+	}
+
+	private SignerAttribute getSignerAttributeV1() {
+		final Attribute id_aa_ets_signerAttr = getSignedAttribute(PKCSObjectIdentifiers.id_aa_ets_signerAttr);
+		if (id_aa_ets_signerAttr != null) {
+			final ASN1Set attrValues = id_aa_ets_signerAttr.getAttrValues();
+			final ASN1Encodable attrValue = attrValues.getObjectAt(0);
+			return SignerAttribute.getInstance(attrValue);
+		}
+		return null;
+	}
+
+	private SignerAttributeV2 getSignerAttributeV2() {
+		final Attribute id_aa_ets_signerAttrV2 = getSignedAttribute(OID.id_aa_ets_signerAttrV2);
+		if (id_aa_ets_signerAttrV2 != null) {
+			final ASN1Set attrValues = id_aa_ets_signerAttrV2.getAttrValues();
+			final ASN1Encodable attrValue = attrValues.getObjectAt(0);
+			return SignerAttributeV2.getInstance(attrValue);
+		}
+		return null;
 	}
 
 	@Override

@@ -835,8 +835,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	private void incorporateSignerRole() {
 
 		final List<String> claimedSignerRoles = params.bLevel().getClaimedSignerRoles();
-		final List<String> certifiedSignerRoles = params.bLevel().getCertifiedSignerRoles();
-		if ((claimedSignerRoles != null) || (certifiedSignerRoles != null)) {
+		if (claimedSignerRoles != null) {
 
 			final Element signerRoleDom;
 
@@ -851,16 +850,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				addRoles(claimedSignerRoles, claimedRolesDom, XADES_CLAIMED_ROLE);
 			}
 
-			if (Utils.isCollectionNotEmpty(certifiedSignerRoles)) {
-				final Element certifiedRolesDom;
-				if (params.isEn319132()) {
-					certifiedRolesDom = DomUtils.addElement(documentDom, signerRoleDom, XAdES, XADES_CERTIFIED_ROLES_V2);
-				} else {
-					certifiedRolesDom = DomUtils.addElement(documentDom, signerRoleDom, XAdES, XADES_CERTIFIED_ROLES);
-				}
-
-				addRoles(certifiedSignerRoles, certifiedRolesDom, XADES_CERTIFIED_ROLE);
-			}
 		}
 
 	}

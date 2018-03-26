@@ -52,6 +52,12 @@ public class OID {
 	public static final ASN1ObjectIdentifier id_aa_ATSHashIndex = id_etsi_electronicSignatureStandard_attributes.branch("5");
 
 	/**
+	 * id-aa-ets-signerAttrV2 OBJECT IDENTIFIER ::= { itu-t(0) identified-organization(4) etsi(0) cades(19122)
+	 * attributes(1) 1 }
+	 */
+	public static final ASN1ObjectIdentifier id_aa_ets_signerAttrV2 = new ASN1ObjectIdentifier("0.4.0.19122.1.1");
+
+	/**
 	 * id-at OBJECT IDENTIFIER ::= { joint-iso-ccitt(2) ds(5) 4 }
 	 * id-at-role OBJECT IDENTIFIER ::= { id-at 72}
 	 */

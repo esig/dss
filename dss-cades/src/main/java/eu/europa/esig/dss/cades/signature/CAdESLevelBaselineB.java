@@ -67,6 +67,7 @@ import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.SignerAttributeV2;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.TimestampToken;
 
@@ -160,9 +161,15 @@ public class CAdESLevelBaselineB {
 							new DERSet(roles));
 					claimedAttributes.add(id_aa_ets_signerAttr);
 				}
-				final org.bouncycastle.asn1.cms.Attribute attribute = new org.bouncycastle.asn1.cms.Attribute(id_aa_ets_signerAttr,
-						new DERSet(new SignerAttribute(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
-				signedAttributes.add(attribute);
+				org.bouncycastle.asn1.cms.Attribute signerAttributes;
+				if (!parameters.isEn319122()) {
+					signerAttributes = new org.bouncycastle.asn1.cms.Attribute(id_aa_ets_signerAttr,
+							new DERSet(new SignerAttribute(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
+				} else {
+					signerAttributes = new org.bouncycastle.asn1.cms.Attribute(OID.id_aa_ets_signerAttrV2,
+							new DERSet(new SignerAttributeV2(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
+				}
+				signedAttributes.add(signerAttributes);
 			}
 		}
 	}
