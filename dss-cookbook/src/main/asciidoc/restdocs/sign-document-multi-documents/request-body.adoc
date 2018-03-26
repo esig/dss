@@ -30,9 +30,8 @@
     "asicContainerType" : "ASiC_E",
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1521553264036,
+      "signingDate" : 1522051928249,
       "claimedSignerRoles" : null,
-      "certifiedSignerRoles" : null,
       "signaturePolicy" : null,
       "commitmentTypeIndications" : null,
       "signerLocation" : null

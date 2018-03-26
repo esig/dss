@@ -4,7 +4,7 @@ POST /services/rest/signature/multiple-documents/signDocument HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
 Content-Type: application/json; charset=UTF-8
 Host: localhost:8080
-Content-Length: 2638
+Content-Length: 2600
 
 {
   "parameters" : {
@@ -36,9 +36,8 @@ Content-Length: 2638
     "asicContainerType" : "ASiC_E",
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1521553264036,
+      "signingDate" : 1522051928249,
       "claimedSignerRoles" : null,
-      "certifiedSignerRoles" : null,
       "signaturePolicy" : null,
       "commitmentTypeIndications" : null,
       "signerLocation" : null

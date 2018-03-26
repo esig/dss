@@ -33,9 +33,8 @@ $ curl 'http://localhost:8080/services/rest/signature/multiple-documents/getData
     "asicContainerType" : "ASiC_E",
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1521553264787,
+      "signingDate" : 1522051929368,
       "claimedSignerRoles" : null,
-      "certifiedSignerRoles" : null,
       "signaturePolicy" : null,
       "commitmentTypeIndications" : null,
       "signerLocation" : null
