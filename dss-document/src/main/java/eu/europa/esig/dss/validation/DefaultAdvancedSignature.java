@@ -35,6 +35,7 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CertificateReorderer;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -249,7 +250,15 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	public Map<String, List<CertificateToken>> getCertificatesWithinSignatureAndTimestamps(boolean skipLastArchiveTimestamp) {
 		Map<String, List<CertificateToken>> certificates = new HashMap<String, List<CertificateToken>>();
-		certificates.put(CertificateSourceType.SIGNATURE.name(), getCertificates());
+		// We can have more than one chain in the signature : signing certificate, ocsp responder,...
+		List<CertificateToken> keyInfoCertificates = getCertificateSource().getKeyInfoCertificates();
+		if (Utils.isCollectionNotEmpty(keyInfoCertificates)) {
+			certificates.put(CertificateSourceType.SIGNATURE.name() + "KeyInfo", keyInfoCertificates);
+		}
+		List<CertificateToken> encapsulatedCertificates = getCertificateSource().getEncapsulatedCertificates();
+		if (Utils.isCollectionNotEmpty(encapsulatedCertificates)) {
+			certificates.put(CertificateSourceType.SIGNATURE.name() + "Encapsulated", encapsulatedCertificates);
+		}
 		int timestampCounter = 0;
 		for (final TimestampToken timestampToken : getContentTimestamps()) {
 			certificates.put(timestampToken.getTimeStampType().name() + timestampCounter++, timestampToken.getCertificates());
@@ -577,7 +586,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		if (!isAllCertChainsHaveRevocationData(certificateChains)) {
 			return false;
 		}
-		
+
 		if (isAllSelfSignedCertificates(certificateChains) && (emptyOCSPs && emptyCRLs)) {
 			return false;
 		}
@@ -612,9 +621,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	private boolean isAllCertsHaveRevocationData(List<CertificateToken> certificates) {
-		for (CertificateToken certificateToken : certificates) {
-			if (isRevocationDataNotRequired(certificateToken)) {
-				// TODO we suppose that the certificate chain is well ordered
+		// we reorder the certificate list, the order is not guaranteed
+		List<CertificateToken> orderedCerts = order(certificates);
+		for (CertificateToken certificateToken : orderedCerts) {
+			if (!isRevocationRequired(certificateToken)) {
 				// It returns true to avoid checking upper levels than trusted certificates (cross certification)
 				return true;
 			}
@@ -636,16 +646,21 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return true;
 	}
 
-	private boolean isRevocationDataNotRequired(CertificateToken certificateToken) {
+	private List<CertificateToken> order(List<CertificateToken> certificates) {
+		CertificateReorderer reorderer = new CertificateReorderer(certificates);
+		return reorderer.getOrderedCertificates();
+	}
+
+	private boolean isRevocationRequired(CertificateToken certificateToken) {
 		if (certificateToken.isTrusted() || certificateToken.isSelfSigned()) {
-			return true;
+			return false;
 		}
 
 		if (DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certificateToken)) {
-			return true;
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	/* Defines the level LTA */

@@ -291,17 +291,42 @@ public class CertificateToken extends Token {
 
 	/**
 	 * Checks if the certificate is self-signed.
+	 * 
+	 * "Self-signed certificates are self-issued certificates where the digital signature may be verified by the public
+	 * key bound into the certificate. Self-signed certificates are used to convey a public key for use to begin
+	 * certification paths." [RFC5280]
 	 *
 	 * @return true if the certificate is a self-sign
 	 */
 	@Override
 	public boolean isSelfSigned() {
 		if (selfSigned == null) {
-			final String n1 = x509Certificate.getSubjectX500Principal().getName(X500Principal.CANONICAL);
-			final String n2 = x509Certificate.getIssuerX500Principal().getName(X500Principal.CANONICAL);
-			selfSigned = n1.equals(n2);
+			selfSigned = isSelfIssued();
+			if (selfSigned) {
+				try {
+					PublicKey publicKey = x509Certificate.getPublicKey();
+					x509Certificate.verify(publicKey);
+					selfSigned = true;
+				} catch (Exception e) {
+					selfSigned = false;
+				}
+			}
 		}
 		return selfSigned;
+	}
+
+	/**
+	 * This method returns true if the certificate is self-issued.
+	 * 
+	 * "Self-issued certificates are CA certificates in which the issuer and subject are the same entity.
+	 * Self-issued certificates are generated to support changes in policy or operations." [RFC5280]
+	 * 
+	 * @return true if the certificate is self-issued
+	 */
+	public boolean isSelfIssued() {
+		final String n1 = x509Certificate.getSubjectX500Principal().getName(X500Principal.CANONICAL);
+		final String n2 = x509Certificate.getIssuerX500Principal().getName(X500Principal.CANONICAL);
+		return n1.equals(n2);
 	}
 
 	/**
