@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process;
 
-public enum MessageTag {
+public enum MessageTag implements IMessageTag {
 
 	/* BBB -> FC */
 	BBB_FC_IEFF("Is the expected format found?"),
@@ -335,6 +335,15 @@ public enum MessageTag {
 
 	MessageTag(final String message) {
 		this.message = message;
+	}
+
+	/**
+	 * This method return the id code of the referred message.
+	 *
+	 * @return {@code String} message.
+	 */
+	public String getId() {
+		return name();
 	}
 
 	/**
