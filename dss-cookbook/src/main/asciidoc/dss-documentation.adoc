@@ -145,6 +145,7 @@ Please note that the DSS framework is still under maintenance and new features w
 === Useful links
 
  * https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eSignature[CEF Digital]
+ * https://webgate.ec.europa.eu/tl-browser/#/[TL Browser]
  * https://github.com/esig/dss[Source code (GitHub)]
  * https://ec.europa.eu/cefdigital/code/projects/ESIG/repos/dss/browse[Source code (EC Bitbucket)]
  * https://ec.europa.eu/cefdigital/code/projects/ESIG/repos/dss-demos/browse[Source code demonstrations (EC Bitbucket)]
@@ -301,7 +302,10 @@ When signing data, the resulting signature needs to be linked with the data to w
  
  * *ENVELOPED :* when the signature applies to data that surround the rest of the document;
  * *ENVELOPING :* when the signed data form a sub-element of the signature itself;
- * *DETACHED :* when the signature relates to the external resources separated from it.
+ ** Base64 encoded binaries;
+ ** Embed XML object(s);
+ ** Embed https://www.w3.org/TR/xmldsig-core/#sec-o-Manifest[Manifest] object(s)
+ * *DETACHED :* when the signature relates to the external resource(s) separated from it.
 
 For our example, we will use ENVELOPED packaging.
 
@@ -327,8 +331,6 @@ To know more about the use of the different signature tokens, please consult "Ma
 In our example the class: "Pkcs12SignatureToken" will be used. A file in PKCS#12 format must be provided to the constructor of the class. It contains an X.509 private key accompanying the public key certificate and protected by symmetrical password. The certification chain can also be included in this file. It is possible to generate dummy certificates and their chains with OpenSSL. Please visit http://www.openssl.org/ for more details.
 
 This is the complete code that allows you to sign our XML document.
-
-:sourcetestdir: ../../test/java
 
 [source,java,indent=0]
 .Create a XAdES signature
@@ -401,7 +403,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.j
 
 For this type (XAdES-BASELINE-B) of signature it is possible to identify some additional attributes:
 
- * SignerRole - contains claimed or certified roles assumed by the signer when creating the signature.
+ * SignerRole - contains claimed roles assumed by the signer when creating the signature.
  * SignatureProductionPlace - contains the indication of the purported place where the signer claims to have produced the signature.
  * CommitmentTypeIndication - identifies the commitment undertaken by the signer in signing (a) signed data object(s) in the context of the selected signature policy.
  * AllDataObjectsTimeStamp - each time-stamp token within this property covers the full set of references defined in the Signature's SignedInfo element, excluding references of type "SignedProperties".
@@ -593,8 +595,6 @@ Below is the simplest example of the validation of the signature of a document. 
 
 The next step is to create an object that will check the status of a certificate using the Trusted List model (see "Trusted Lists of Certification Service Provider" for more information). In our example, this object is instantiated from the TrustedListCertificateVerifier class. In turn, this object needs an OCSP and/or CRL source and a TSL source (which defines how the certificates are retrieved from the Trusted Lists). See chapter "Management of CRL and OCSP Sources" for more information concerning sources.
 
-Note this validation process uses the default validation policy which can be changed by each implementer. To see how to use a customised validation policy, please refer to "5.4" More information can be found on joinup: https://joinup.ec.europa.eu/asset/sd-dss/topic/how-validate-signature-real-crl-ocsp-and-certificate-sources#comment-15459
-
 [source,java,indent=0]
 .Validation of a signature
 ----
@@ -613,7 +613,7 @@ In order to allow access to the trusted lists of all Member States in an easy ma
 
 The LOTL is published by the EU at the following URL : https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml. This XML file contains the list of the trusted list. This file must be signed by an allowed certificate. To know who has the permission to sign / publish the LOTL, we need to refer to the Official Journal Of the Union (http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG).
 
-The signature format of the LOTL and TL should be XAdES-BASELINE-B. If the LOTL signature is valid, its content can be trusted. The LOTL contains for each country some informations : urls of the XML/PDF files, the allowed certificates to sign, ...
+The signature format of the LOTL and TL should be XAdES-BASELINE-B. If the LOTL signature is valid, its content can be trusted. The LOTL contains for each country some information : urls of the XML/PDF files, the allowed certificates to sign, ...
 
 So, we trusted the LOTL, we can process each trusted list. If they are valid, we can trust the service providers and its certificates.
 
@@ -653,7 +653,11 @@ The result of the validation process consists of three elements:
  * the detailed report and,
  * the diagnostic data.
  
-All these reports are encoded using XML, which allows the implementer to easily manipulate and extract information for further analysis. You will find below a detailed description of each of these elements.
+All these reports are encoded using XML, which allows the implementer to easily manipulate and extract information for further analysis. For each report, XML Schema and JaxB model are available as maven dependencies.
+
+DSS also provides XSLT to able to generate PDF or HTML reports (simple and detailed reports).
+
+You will find below a detailed description of each of these elements.
 
 ==== Simple Report 
 

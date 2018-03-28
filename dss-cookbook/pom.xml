@@ -123,6 +123,9 @@
 					        <headerFooter>true</headerFooter>
 					    	<preserveDirectories>true</preserveDirectories>
 							<encoding>UTF-8</encoding>
+							<attributes>
+								<sourcetestdir>${project.build.testSourceDirectory}</sourcetestdir>
+							</attributes>
 					    </configuration>
 					</plugin>
 				</plugins>		
