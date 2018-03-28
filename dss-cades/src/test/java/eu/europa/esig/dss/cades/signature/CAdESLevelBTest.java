@@ -22,6 +22,7 @@ package eu.europa.esig.dss.cades.signature;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.math.BigInteger;
@@ -71,6 +72,8 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 public class CAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters> {
@@ -99,6 +102,11 @@ public class CAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatureServ
 		signatureParameters.bLevel().setClaimedSignerRoles(Arrays.asList("supplier"));
 		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList("1.2.3", "2.4.5.6"));
 
+		signatureParameters.setContentHintsType("1.2.840.113549.1.7.1");
+		signatureParameters.setContentHintsDescription("text/plain");
+		signatureParameters.setContentIdentifierPrefix("TEST-PREFIX");
+		// signatureParameters.setContentIdentifierSuffix("TEST-SUFFIX");
+
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -106,6 +114,15 @@ public class CAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatureServ
 
 		service = new CAdESService(getCompleteCertificateVerifier());
 
+	}
+
+	@Override
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		super.verifyDiagnosticData(diagnosticData);
+
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertTrue(Utils.isStringNotBlank(signature.getContentHints()));
+		assertTrue(Utils.isStringNotBlank(signature.getContentIdentifier()));
 	}
 
 	@Override
