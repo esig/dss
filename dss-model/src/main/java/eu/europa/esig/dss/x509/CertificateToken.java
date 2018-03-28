@@ -405,7 +405,7 @@ public class CertificateToken extends Token {
 			final PublicKey publicKey = issuerToken.getCertificate().getPublicKey();
 			x509Certificate.verify(publicKey);
 			signatureValid = true;
-			if (!isSelfSigned()) {
+			if (!isSelfSigned() && !this.equals(issuerToken)) {
 				this.issuerToken = issuerToken;
 			}
 		} catch (InvalidKeyException e) {
