@@ -12,7 +12,7 @@
 	   			<xsl:attribute name="class">panel-heading</xsl:attribute>
 	    		<xsl:attribute name="data-target">#collapseETSI</xsl:attribute>
 		       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
-		       	Validation (ETSI EN 319 102-1)
+		       	Validation
 		    </div>
 		    <div>
 				<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
@@ -437,7 +437,7 @@
 						<xsl:value-of select="@SignatureQualification"/>	       			
 	       			</span>
 			        
-		       		Qualification (ETSI TS 119 172-4)
+		       		Qualification
 		        </div>
 	    		<div>
 	    			<xsl:attribute name="class">panel-body collapse in</xsl:attribute>
