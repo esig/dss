@@ -73,9 +73,9 @@ public class CertificateReorderer {
 		}
 
 		if (certificates.size() > result.size()) {
-			LOG.warn("Some certificates are ignored");
-			LOG.warn("Before : {}", certificates);
-			LOG.warn("After : {}", result);
+			LOG.debug("Some certificates are ignored");
+			LOG.debug("Before : {}", certificates);
+			LOG.debug("After : {}", result);
 		}
 
 		return result;
