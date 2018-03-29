@@ -310,7 +310,13 @@ public final class DSSUtils {
 
 		for (String url : urls) {
 			LOG.debug("Loading certificate(s) from {}", url);
-			byte[] bytes = loader.get(url);
+			byte[] bytes = null;
+			try {
+				bytes = loader.get(url);
+			} catch (Exception e) {
+				LOG.warn("Unable to download certificate from '" + url + "': ", e.getMessage());
+				continue;
+			}
 			if (Utils.isArrayNotEmpty(bytes)) {
 				LOG.debug("Base64 content : {}", Utils.toBase64(bytes));
 				try (InputStream is = new ByteArrayInputStream(bytes)) {

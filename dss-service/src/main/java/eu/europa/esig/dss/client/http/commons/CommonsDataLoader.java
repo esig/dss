@@ -612,7 +612,7 @@ public class CommonsDataLoader implements DataLoader {
 			final HttpResponse response = client.execute(targetHost, httpRequest, localContext);
 			return response;
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException("Unable to retrieve HttpResponse from url '" + url + "'", e);
 		}
 
 	}
