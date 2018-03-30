@@ -240,7 +240,25 @@ public abstract class AbstractTestCRLUtils {
 		}
 	}
 
-	private CertificateToken loadCert(InputStream is) throws CertificateException {
+	@Test
+	public void testRealNot() throws Exception {
+		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/realts2019.crl");
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/realts2019.crt")) {
+			CertificateToken certificateToken = loadCert(isCer);
+			CRLValidity wrongIssuerCRL = CRLUtils.isValidCRL(is, certificateToken);
+
+			assertNotNull(wrongIssuerCRL);
+			assertNull(wrongIssuerCRL.getIssuerToken());
+			assertNotNull(wrongIssuerCRL.getThisUpdate());
+			assertNotNull(wrongIssuerCRL.getNextUpdate());
+			assertTrue(wrongIssuerCRL.isIssuerX509PrincipalMatches());
+			assertNotNull(wrongIssuerCRL.getSignatureInvalidityReason());
+			assertFalse(wrongIssuerCRL.isValid());
+			assertEquals(SignatureAlgorithm.RSA_SHA256, wrongIssuerCRL.getSignatureAlgorithm());
+		}
+	}
+
+	protected CertificateToken loadCert(InputStream is) throws CertificateException {
 		X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(is);
 		return new CertificateToken(certificate);
 	}
