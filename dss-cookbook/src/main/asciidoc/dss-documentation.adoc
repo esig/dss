@@ -698,7 +698,7 @@ Each block contains a number of rules that are executed sequentially. The rules 
 
 This is a data set constructed from the information contained in the signature itself, but also from information retrieved dynamically as revocation data and information extrapolated as the mathematical validity of a signature. All this information is independent of the applied validation policy. Two different validation policies applied to the same diagnostic data can lead to different results.
 
-This is an example of the diagnostic data for a XAdES signature. Certain fields and certain values were trimmed or deleted to make reading easier:
+This is an example of the diagnostic data for a PAdES signature. Certain fields and certain values were trimmed or deleted to make reading easier:
 
 .Diagnostic Data
 include::samples/diagnostic-data-example.adoc[]
@@ -798,7 +798,7 @@ A number of application environments use ZIP based container formats to package 
 
 The standard defines two types of containers; the first (ASiC-S) allows you to associate one or more signatures with a single data element. In this case the structure of the signature can be based (in a general way) on a single CAdES signature or on multiple XAdES signatures or finally on a single TST; the second is an extended container (ASiC-E) that includes multiple data objects. Each data object may be signed by one or more signatures which structure is similar to ASiC-S. This second type of container is compatible with OCF, UCF and ODF formats.
 
-For the moment the DSS framework has some restriction on the containers you can generate, depending on the input file. If the input file is already an ASiC container, the output container must be the same type of container based on the same type of signature. If the input is any other file, the output does not have any restriction.
+For the moment the DSS framework has some restrictions on the containers you can generate, depending on the input file. If the input file is already an ASiC container, the output container must be the same type of container based on the same type of signature. If the input is any other file, the output does not have any restriction.
 
 |===
 |Input |Output
@@ -827,7 +827,7 @@ This is an example of the source code for signing a document using ASiCS-S based
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignOneFileWithASiCSBTest.java[tags=demo]
 ----
 
-This is another example of the source code for signing a document using ASiCS-E based on CAdES:
+This is another example of the source code for signing multiple documents using ASiCS-E based on CAdES:
 
 [source,java,indent=0]
 .Sign multiple files within an ASiC-E container
@@ -835,7 +835,7 @@ This is another example of the source code for signing a document using ASiCS-E 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignMultipleDocumentsWithASiCSEWithCAdESTest.java[tags=demo]
 ----
 
-Please note that you need to pass only few parameters to the service. Other parameters, although are positioned, will be overwritten by the internal implementation of the service. Therefore, the obtained signature is always based on XAdES and of DETACHED packaging.
+Please note that you need to pass only few parameters to the service. Other parameters, although are positioned, will be overwritten by the internal implementation of the service. Therefore, the obtained signature is always based on CAdES and of DETACHED packaging.
 
 It is also possible with the framework DSS to make an extension of an ASiC container to the level XAdES-BASELINE-T or -LT.
 
@@ -1053,15 +1053,32 @@ NOTE: SmartCards/HSMs don't allow to sign with all digest algorithms. Please ref
 | CAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | |  |  
 |===
 
+== Multi-theading
+
+DSS can be used in multi-threaded environments but some points need to be considered like resources sharing and caching. All operations are stateless and this fact requires to be maintained. Some resources can be shared, others are proper to an operation. 
+
+For each provided operation, DSS requires a CertificateVerifier object. This object is responsible to provide certificates and accesses to external resources (AIA, CRL, OCSP,...). At the beginning of all operation, a new internal CertificatePool is created and all available certificates are copied. Throughout the signature/validation process, the CertificatePool content evolves. Certificates are added/updated from the signature, timestamp(s), revocation data,... Revocation data / issuer certificates are collected and added to the certificate. Certificate status are updated to give as much as possible information. For these reasons, integrators need to be careful about the CertificateVerifier configuration.
+
+=== Resource sharing
+
+The trusted certificates can be shared between multiple threads because these certificates are static. This means they don't require more analysis. Their status won't evolve. For these certificates, DSS doesn't need to collect issuer certificate and/or their revocation data. 
+
+In opposition, the adjunct certificates cannot be shared. These certificates concern a specific signature/validation operation. This parameter is used to provide missing certificate(s). When DSS is unable to build the complete certificate path with the provided certificates (as signature parameters or embedded within a signature), it is possible to inject not present certificates. These certificates are not necessarily trusted and may require future "modifications" like revocation data collection,... 
+
+=== Caching
+
+In case of multi-threading usage, we strongly recommend to cache external resources. All external resources can be cached (AIA, CRL, OCSP) to improve performances and to avoid requesting too much time the same resources. FileCacheDataLoader and JdbcCacheCRLSource can help you in this way. 
+
+
 == Additional features
 
 === Certificate validation
 
 DSS offers the possibility to validate a certificate. For a given certificate, the framework builds a certificate path until a known trust anchor (trusted list, keystore,...), validates each found certificate (OCSP / CRL) and determines its European "qualification". 
 
-To determine the certificate qualification, DSS follows the draft standard ETSI TS 119 172-4 (<<R09>>). It analyses the certificate properties (QCStatements, Certificate Policies,...) and applies possibles overrules from the related trusted list ("catched" qualifiers from a trust service). 
+To determine the certificate qualification, DSS follows the draft standard ETSI TS 119 172-4 (<<R09>>). It analyses the certificate properties (QCStatements, Certificate Policies,...) and applies possible overrules from the related trusted list ("catched" qualifiers from a trust service). More information about qualifiers can be found in the standard ETSI TS 119 612 (<<R10>>).
 
-DSS always computes the status at 2 different times : certificate issuance and signing/validation time. The certificate qualification can evolve in the time, its status is not immuable (eg: a trust service provider lost its granted status). The eIDAS regulation (<<R11>>) clearly defines these different times in the Article 32 and related Annex I. 
+DSS always computes the status at 2 different times : certificate issuance and signing/validation time. The certificate qualification can evolve in the time, its status is not immutable (eg: a trust service provider lost its granted status). The eIDAS regulation (<<R11>>) clearly defines these different times in the Article 32 and related Annex I. 
 
 [source,java,indent=0]
 .Validate a certificate and retrieve its qualification level
