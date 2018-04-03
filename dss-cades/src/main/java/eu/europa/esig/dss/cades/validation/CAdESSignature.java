@@ -57,6 +57,9 @@ import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.ASN1UTCTime;
+import org.bouncycastle.asn1.BERSequence;
+import org.bouncycastle.asn1.BERSet;
+import org.bouncycastle.asn1.BERTaggedObject;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
@@ -1377,10 +1380,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public byte[] getArchiveTimestampData(final TimestampToken timestampToken, String canonicalizationMethod) throws DSSException {
 
 		final ArchiveTimestampType archiveTimestampType = timestampToken.getArchiveTimestampType();
-		final byte[] archiveTimestampData;
+		byte[] archiveTimestampData;
 		switch (archiveTimestampType) {
 		case CAdES_V2:
 			archiveTimestampData = getArchiveTimestampDataV2(timestampToken);
+			if (!timestampToken.matchData(archiveTimestampData))
+				archiveTimestampData = getArchiveTimestampDataV2(timestampToken, false);
 			break;
 		case CAdES_v3:
 			archiveTimestampData = getArchiveTimestampDataV3(timestampToken);
@@ -1449,6 +1454,32 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * @throws DSSException
 	 */
 	private byte[] getArchiveTimestampDataV2(TimestampToken timestampToken) throws DSSException {
+		return getArchiveTimestampDataV2(timestampToken, true);
+	}
+	
+	/**
+	 * There is a difference in ETSI TS 101 733 version 1.8.3 and version 2.2.1 in archive-timestamp-v2 hash calculation.
+	 * In the 1.8.3 version the calculation did not include the tag and the length octets of the unsigned attributes set.
+	 * The hash calculation is described in Annex K in both versions of ETSI TS 101 733.
+	 * The differences are in TableK.3: Signed Data in rows 22 and 23.
+	 * However, there is a note in 2.2.1 version (Annex K, Table K.3: SignedData, Note 3) that says:
+	 * "A previous version of CAdES did not include the tag and length octets of this SET OF type
+	 * of unsignedAttrs element in this annex, which contradicted the normative section. To maximize
+	 * interoperability, it is recommended to imultaneously compute the two hash values
+	 * (including and not including the tag and length octets of SET OF type) and to test
+	 * the value of the timestamp against both."
+	 * The includeUnsignedAttrsTagAndLength parameter decides whether the tag and length octets are included.
+	 * 
+	 * According to RFC 5652 it is possible to use DER or BER encoding for SignedData structure.
+	 * The exception is the signed attributes attribute and authenticated attributes attributes which
+	 * have to be DER encoded. 
+	 * 
+	 * @param timestampToken
+	 * @param includeUnsignedAttrsTagAndLength
+	 * @return
+	 * @throws DSSException
+	 */
+	private byte[] getArchiveTimestampDataV2(TimestampToken timestampToken, boolean includeUnsignedAttrsTagAndLength) throws DSSException {
 
 		try (ByteArrayOutputStream data = new ByteArrayOutputStream(); ByteArrayOutputStream signerByteArrayOutputStream = new ByteArrayOutputStream()) {
 
@@ -1482,7 +1513,17 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			final ASN1Set certificates = signedData.getCertificates();
 			if (certificates != null) {
 
-				final byte[] certificatesBytes = new DERTaggedObject(false, 0, new DERSequence(certificates.toArray())).getEncoded();
+				byte[] certificatesBytes = null;
+				/*
+				 * In order to calculate correct message imprint it is important
+				 * to use the correct encoding.
+				 */
+				if (certificates instanceof BERSet) {
+					certificatesBytes = new BERTaggedObject(false, 0, new BERSequence(certificates.toArray())).getEncoded();
+				} else {
+					certificatesBytes = new DERTaggedObject(false, 0, new DERSequence(certificates.toArray())).getEncoded();
+				}
+				
 				if (LOG.isTraceEnabled()) {
 					LOG.trace("Certificates: {}", DSSUtils.toHex(certificatesBytes));
 				}
@@ -1500,7 +1541,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			final SignerInfo signerInfo = signerInformation.toASN1Structure();
 			final ASN1Set unauthenticatedAttributes = signerInfo.getUnauthenticatedAttributes();
 			final ASN1Sequence filteredUnauthenticatedAttributes = filterUnauthenticatedAttributes(unauthenticatedAttributes, timestampToken);
-			final ASN1Sequence asn1Object = getSignerInfoEncoded(signerInfo, filteredUnauthenticatedAttributes);
+			final ASN1Sequence asn1Object = getSignerInfoEncoded(signerInfo, filteredUnauthenticatedAttributes, includeUnsignedAttrsTagAndLength);
 			for (int ii = 0; ii < asn1Object.size(); ii++) {
 				final byte[] signerInfoBytes = DSSASN1Utils.getDEREncoded(asn1Object.getObjectAt(ii).toASN1Primitive());
 				signerByteArrayOutputStream.write(signerInfoBytes);
@@ -1527,13 +1568,26 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * Copied from org.bouncycastle.asn1.cms.SignerInfo#toASN1Object() and
 	 * adapted to be able to use the custom unauthenticatedAttributes
+	 * 
+	 * There is a difference in ETSI TS 101 733 version 1.8.3 and version 2.2.1 in archive-timestamp-v2 hash calculation.
+	 * In the 1.8.3 version the calculation did not include the tag and the length octets of the unsigned attributes set.
+	 * The hash calculation is described in Annex K in both versions of ETSI TS 101 733.
+	 * The differences are in TableK.3: Signed Data in rows 22 and 23.
+	 * However, there is a note in 2.2.1 version (Annex K, Table K.3: SignedData, Note 3) that says:
+	 * "A previous version of CAdES did not include the tag and length octets of this SET OF type
+	 * of unsignedAttrs element in this annex, which contradicted the normative section. To maximize
+	 * interoperability, it is recommended to imultaneously compute the two hash values
+	 * (including and not including the tag and length octets of SET OF type) and to test
+	 * the value of the timestamp against both."
+	 * The includeUnsignedAttrsTagAndLength parameter decides whether the tag and length octets are included.
 	 *
 	 * @param signerInfo
 	 * @param signerInfo
 	 * @param unauthenticatedAttributes
+	 * @param includeUnsignedAttrsTagAndLength
 	 * @return
 	 */
-	private ASN1Sequence getSignerInfoEncoded(final SignerInfo signerInfo, final ASN1Encodable unauthenticatedAttributes) {
+	private ASN1Sequence getSignerInfoEncoded(final SignerInfo signerInfo, final ASN1Sequence unauthenticatedAttributes, final boolean includeUnsignedAttrsTagAndLength) {
 
 		ASN1EncodableVector v = new ASN1EncodableVector();
 
@@ -1550,8 +1604,15 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		v.add(signerInfo.getEncryptedDigest());
 
 		if (unauthenticatedAttributes != null) {
-			v.add(new DERTaggedObject(false, 1, unauthenticatedAttributes));
+			if (includeUnsignedAttrsTagAndLength) {
+				v.add(new DERTaggedObject(false, 1, unauthenticatedAttributes));
+			} else {
+				for (int i = 0; i < unauthenticatedAttributes.size(); i++) {
+					v.add(unauthenticatedAttributes.getObjectAt(i));
+				}
+			}
 		}
+		
 
 		return new DERSequence(v);
 	}
