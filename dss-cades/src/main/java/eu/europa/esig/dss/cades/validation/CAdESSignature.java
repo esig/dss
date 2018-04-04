@@ -57,6 +57,7 @@ import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.ASN1UTCTime;
+import org.bouncycastle.asn1.BEROctetString;
 import org.bouncycastle.asn1.BERSequence;
 import org.bouncycastle.asn1.BERSet;
 import org.bouncycastle.asn1.BERTaggedObject;
@@ -1491,31 +1492,30 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 			final ContentInfo contentInfo = cmsSignedData.toASN1Structure();
 			final SignedData signedData = SignedData.getInstance(contentInfo.getContent());
-
-			ContentInfo content = signedData.getEncapContentInfo();
-			if ((content == null) || (content.getContent() == null)) {
+			final ContentInfo content = signedData.getEncapContentInfo();
+			byte[] contentInfoBytes;
+			if (content.getContent() instanceof BEROctetString) {
+				contentInfoBytes = DSSASN1Utils.getBEREncoded(content);
+			} else {
+				contentInfoBytes = DSSASN1Utils.getDEREncoded(content);
+			}
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("Content Info: {}", DSSUtils.toHex(contentInfoBytes));
+			}
+			data.write(contentInfoBytes);
+			if (isDetachedSignature()) {
 				/*
-				 * Detached signatures have either no encapContentInfo in
-				 * signedData, or it exists but has no eContent
+				 * Detached signatures have either no encapContentInfo in signedData, or it
+				 * exists but has no eContent
 				 */
 				byte[] originalDocumentBinaries = DSSUtils.toByteArray(getOriginalDocument());
 				if (Utils.isArrayNotEmpty(originalDocumentBinaries)) {
-					data.write(content.toASN1Primitive().getEncoded());
 					data.write(originalDocumentBinaries);
 				} else {
 					throw new DSSException("Signature is detached and no original data provided.");
 				}
-			} else {
-
-				ASN1OctetString octet = (ASN1OctetString) content.getContent();
-
-				ContentInfo info2 = new ContentInfo(PKCSObjectIdentifiers.data, octet);
-				final byte[] contentInfoBytes = info2.getEncoded();
-				if (LOG.isTraceEnabled()) {
-					LOG.trace("Content Info: {}", DSSUtils.toHex(contentInfoBytes));
-				}
-				data.write(contentInfoBytes);
 			}
+			
 			final ASN1Set certificates = signedData.getCertificates();
 			if (certificates != null) {
 
