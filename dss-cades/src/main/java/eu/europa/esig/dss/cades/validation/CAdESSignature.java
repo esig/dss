@@ -1383,9 +1383,15 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		byte[] archiveTimestampData;
 		switch (archiveTimestampType) {
 		case CAdES_V2:
+			/**
+			 * There is a difference between message imprint calculation in ETSI TS 101 733 version 1.8.3 and version 2.2.1.
+			 * So we first check the message imprint according to 2.2.1 version and then if it fails get the message imprint
+			 * data for the 1.8.3 version message imprint calculation. 
+			 */
 			archiveTimestampData = getArchiveTimestampDataV2(timestampToken);
-			if (!timestampToken.matchData(archiveTimestampData))
+			if (!timestampToken.matchData(archiveTimestampData, true)) {
 				archiveTimestampData = getArchiveTimestampDataV2(timestampToken, false);
+			}
 			break;
 		case CAdES_v3:
 			archiveTimestampData = getArchiveTimestampDataV3(timestampToken);
@@ -1465,7 +1471,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * However, there is a note in 2.2.1 version (Annex K, Table K.3: SignedData, Note 3) that says:
 	 * "A previous version of CAdES did not include the tag and length octets of this SET OF type
 	 * of unsignedAttrs element in this annex, which contradicted the normative section. To maximize
-	 * interoperability, it is recommended to imultaneously compute the two hash values
+	 * interoperability, it is recommended to simultaneously compute the two hash values
 	 * (including and not including the tag and length octets of SET OF type) and to test
 	 * the value of the timestamp against both."
 	 * The includeUnsignedAttrsTagAndLength parameter decides whether the tag and length octets are included.
