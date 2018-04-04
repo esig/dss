@@ -159,17 +159,44 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * This method return DER encoded ASN1 attribute. The {@code IOException} is transformed in {@code DSSException}.
+	 * This method returns DER encoded ASN1 attribute. The {@code IOException} is
+	 * transformed in {@code DSSException}.
 	 *
 	 * @param asn1Encodable
 	 *            asn1Encodable to be DER encoded
 	 * @return array of bytes representing the DER encoded asn1Encodable
 	 */
 	public static byte[] getDEREncoded(ASN1Encodable asn1Encodable) {
+		return getEncoded(asn1Encodable, ASN1Encoding.DER);
+	}
+
+	/**
+	 * This method returns BER encoded ASN1 attribute. The {@code IOException} is
+	 * transformed in {@code DSSException}.
+	 *
+	 * @param asn1Encodable
+	 *            asn1Encodable to be BER encoded
+	 * @return array of bytes representing the BER encoded asn1Encodable
+	 */
+	public static byte[] getBEREncoded(ASN1Encodable asn1Encodable) {
+		return getEncoded(asn1Encodable, ASN1Encoding.BER);
+	}
+
+	/**
+	 * This method returns encoded ASN1 attribute. The {@code IOException} is
+	 * transformed in {@code DSSException}.
+	 *
+	 * @param asn1Encodable
+	 *            asn1Encodable to be the given encoding
+	 * @param encoding
+	 *            the expected encoding
+	 * @return array of bytes representing the encoded asn1Encodable
+	 */
+	private static byte[] getEncoded(ASN1Encodable asn1Encodable, String encoding) {
 		try {
-			return asn1Encodable.toASN1Primitive().getEncoded(ASN1Encoding.DER);
+			return asn1Encodable.toASN1Primitive().getEncoded(encoding);
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException("Unable to encode to " + encoding, e);
 		}
 	}
 

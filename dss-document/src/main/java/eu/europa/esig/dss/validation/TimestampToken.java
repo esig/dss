@@ -214,6 +214,24 @@ public class TimestampToken extends Token {
 	 * @return true if the data is verified by the TimeStampToken
 	 */
 	public boolean matchData(final byte[] data) {
+		return matchData(data, false);
+	}
+	
+	/**
+	 * Checks if the {@code TimeStampToken} matches the signed data.
+	 * 
+	 * This method is used when we want to test whether the {@code TimeStampToken} matches the signed data
+	 * calculated according to ETSI TS 101 733 v2.2.1 and depending on the result re-run the message imprint
+	 * calculation according to ETSI TS 101 733 v1.8.3. It is part of solution for the issue DSS-1401 
+	 * (https://ec.europa.eu/cefdigital/tracker/browse/DSS-1401)
+	 * 
+	 * @param data
+	 * 			  the array of {@code byte} representing the timestamped data
+	 * @param suppressMatchWarnings
+	 * 			  if true the message imprint match warning logs are suppressed. 
+	 * @return true if the data is verified by the TimeStampToken
+	 */
+	public boolean matchData(final byte[] data, final boolean suppressMatchWarnings) {
 
 		processed = true;
 
@@ -229,7 +247,7 @@ public class TimestampToken extends Token {
 				final byte[] computedDigest = DSSUtils.digest(digestAlgorithm, data);
 				final byte[] timestampDigest = timeStampInfo.getMessageImprintDigest();
 				messageImprintIntact = Arrays.equals(computedDigest, timestampDigest);
-				if (!messageImprintIntact) {
+				if (!messageImprintIntact && !suppressMatchWarnings) {
 					LOG.warn("Computed digest ({}) on the extracted data from the document : {}", digestAlgorithm, Utils.toHex(computedDigest));
 					LOG.warn("Digest present in TimestampToken: {}", Utils.toHex(timestampDigest));
 					LOG.warn("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
