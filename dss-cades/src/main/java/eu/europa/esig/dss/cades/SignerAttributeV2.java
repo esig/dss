@@ -77,7 +77,8 @@ public class SignerAttributeV2 extends ASN1Object {
 			} else if (taggedObject.getTagNo() == 1) {
 				values[index] = CertifiedAttributesV2.getInstance(ASN1Sequence.getInstance(taggedObject, true));
 			} else if (taggedObject.getTagNo() == 2) {
-				LOG.info("SAML assertion detected");
+			    	LOG.info("SAML assertion detected");
+				values[index] = SignedAssertions.getInstance(ASN1Sequence.getInstance(taggedObject, true));
 			} else {
 				throw new IllegalArgumentException("illegal tag: " + taggedObject.getTagNo());
 			}
@@ -93,6 +94,11 @@ public class SignerAttributeV2 extends ASN1Object {
 	public SignerAttributeV2(CertifiedAttributesV2 certifiedAttributes) {
 		this.values = new Object[1];
 		this.values[0] = certifiedAttributes;
+	}
+	
+	public SignerAttributeV2(SignedAssertions signedAssertions) {
+		this.values = new Object[1];
+		this.values[0] = signedAssertions;
 	}
 
 	/**
@@ -127,6 +133,8 @@ public class SignerAttributeV2 extends ASN1Object {
 				v.add(new DERTaggedObject(0, new DERSequence((Attribute[]) values[i])));
 			} else if (values[i] instanceof CertifiedAttributesV2) {
 				v.add(new DERTaggedObject(1, (CertifiedAttributesV2) values[i]));
+			} else if (values[i] instanceof SignedAssertions) {
+				v.add(new DERTaggedObject(2, (SignedAssertions) values[i]));
 			} else {
 				LOG.warn("Unsupported type {}", values[i]);
 			}
