@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.security.PublicKey;
+import java.security.cert.CertificateParsingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -225,6 +227,15 @@ public class SignatureValidationContext implements ValidationContext {
 		LOG.info("Retrieving {} certificate's issuer using AIA.", token.getAbbreviation());
 		Collection<CertificateToken> candidates = DSSUtils.loadPotentialIssuerCertificates(token, dataLoader);
 		if (Utils.isCollectionNotEmpty(candidates)) {
+			// The potential issuers might support 3 known scenarios:
+			//  - issuer certificate with single entry
+			//  - issuer certificate is a collection of bridge certificates (all having the same public key)
+			//  - full certification path (up to the root of the chain)
+			// In case the issuer is a collection of bridge certificates, only one of the bridge certificates needs to be verified
+			CertificateToken bridgedIssuer = findBestBridgeCertificate(token, candidates);
+			if (bridgedIssuer != null) {
+				return bridgedIssuer;
+			}
 			for (CertificateToken candidate : candidates) {
 				addCertificateTokenForVerification(validationCertificatePool.getInstance(candidate, CertificateSourceType.AIA));
 			}
@@ -241,6 +252,49 @@ public class SignatureValidationContext implements ValidationContext {
 			LOG.info("The retrieved certificate(s) using AIA does not sign the certificate {}.", token.getAbbreviation());
 		}
 		return null;
+	}
+
+	private CertificateToken findBestBridgeCertificate(CertificateToken token, Collection<CertificateToken> candidates) {
+		if (Utils.isCollectionEmpty(candidates) || candidates.size() == 1) {
+			return null;
+		}
+		PublicKey commonPublicKey = null;
+		CertificateToken bestMatch = null;
+		for (CertificateToken candidate : candidates) {
+			if (commonPublicKey == null) {
+				if (!token.isSignedBy(candidate)) {
+					return null;
+				}
+				commonPublicKey = candidate.getPublicKey();
+				bestMatch = candidate;
+			}
+			
+			if (!candidate.getPublicKey().equals(commonPublicKey)) {
+				return null;
+			}
+			
+			try {
+				Collection<List<?>> subjectAlternativeNamesCollection = candidate.getCertificate().getSubjectAlternativeNames();
+				if (Utils.isCollectionEmpty(subjectAlternativeNamesCollection)) {
+					continue;
+				}
+				for(List<?> subjectAlternativeNames : subjectAlternativeNamesCollection) {
+					if (Utils.isCollectionEmpty(subjectAlternativeNames)) {
+						continue;
+					}
+					
+					for(Object san : subjectAlternativeNames) {
+						if (token.getIssuerX500Principal().equals(san)) {
+							bestMatch = candidate;
+						}
+					}
+				}
+			} catch (CertificateParsingException e) {
+				LOG.trace("Error parsing SubjectAlternativeNames, ignoring entry {}", candidate.getSubjectX500Principal());
+			}
+		}
+		
+		return bestMatch;
 	}
 
 	/**
