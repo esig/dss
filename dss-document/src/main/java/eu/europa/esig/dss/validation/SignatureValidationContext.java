@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.validation;
 
 import java.security.PublicKey;
-import java.security.cert.CertificateParsingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -234,6 +233,7 @@ public class SignatureValidationContext implements ValidationContext {
 			// In case the issuer is a collection of bridge certificates, only one of the bridge certificates needs to be verified
 			CertificateToken bridgedIssuer = findBestBridgeCertificate(token, candidates);
 			if (bridgedIssuer != null) {
+				addCertificateTokenForVerification(validationCertificatePool.getInstance(bridgedIssuer, CertificateSourceType.AIA));
 				return bridgedIssuer;
 			}
 			for (CertificateToken candidate : candidates) {
@@ -267,30 +267,19 @@ public class SignatureValidationContext implements ValidationContext {
 				}
 				commonPublicKey = candidate.getPublicKey();
 				bestMatch = candidate;
-			}
-			
-			if (!candidate.getPublicKey().equals(commonPublicKey)) {
+			} else if (!candidate.getPublicKey().equals(commonPublicKey)) {
 				return null;
+			} else if (bestMatch.isTrusted()) {
+				continue;
 			}
-			
-			try {
-				Collection<List<?>> subjectAlternativeNamesCollection = candidate.getCertificate().getSubjectAlternativeNames();
-				if (Utils.isCollectionEmpty(subjectAlternativeNamesCollection)) {
-					continue;
+
+			List<CertificateToken> list = validationCertificatePool.get(candidate.getSubjectX500Principal());
+			for(CertificateToken pooledToken : list) {
+				if (pooledToken.getPublicKey().equals(commonPublicKey) && pooledToken.isTrusted()) {
+					bestMatch = pooledToken;
+					token.isSignedBy(candidate);
+					break;
 				}
-				for(List<?> subjectAlternativeNames : subjectAlternativeNamesCollection) {
-					if (Utils.isCollectionEmpty(subjectAlternativeNames)) {
-						continue;
-					}
-					
-					for(Object san : subjectAlternativeNames) {
-						if (token.getIssuerX500Principal().equals(san)) {
-							bestMatch = candidate;
-						}
-					}
-				}
-			} catch (CertificateParsingException e) {
-				LOG.trace("Error parsing SubjectAlternativeNames, ignoring entry {}", candidate.getSubjectX500Principal());
 			}
 		}
 		
