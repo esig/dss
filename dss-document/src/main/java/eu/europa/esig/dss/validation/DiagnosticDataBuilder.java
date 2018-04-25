@@ -389,13 +389,15 @@ public class DiagnosticDataBuilder {
 
 			CertificateToken issuerToken_ = token;
 			final List<XmlChainItem> certChainTokens = new ArrayList<XmlChainItem>();
+			Set<CertificateToken> processedTokens = new HashSet<CertificateToken>();
 			do {
 
 				certChainTokens.add(getXmlChainItem(issuerToken_));
-				if (issuerToken_.isTrusted() || issuerToken_.isSelfSigned()) {
+				if (issuerToken_.isTrusted() || issuerToken_.isSelfSigned() || processedTokens.contains(issuerToken_)) {
 
 					break;
 				}
+				processedTokens.add(issuerToken_);
 				issuerToken_ = issuerToken_.getIssuerToken();
 			} while (issuerToken_ != null);
 			return certChainTokens;

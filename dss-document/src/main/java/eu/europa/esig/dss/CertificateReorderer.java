@@ -67,7 +67,8 @@ public class CertificateReorderer {
 		// Build complete chain
 		List<CertificateToken> result = new LinkedList<CertificateToken>();
 		CertificateToken certToAdd = getSigningCertificate(certificates);
-		while (certToAdd != null) {
+		
+		while (certToAdd != null && !result.contains(certToAdd)) {
 			result.add(certToAdd);
 			certToAdd = certToAdd.getIssuerToken();
 		}
