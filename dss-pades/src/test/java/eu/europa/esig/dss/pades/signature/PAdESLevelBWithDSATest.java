@@ -28,6 +28,7 @@ public class PAdESLevelBWithDSATest extends AbstractPAdESTestSignature {
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList(CommitmentType.ProofOfOrigin.getOid()));
+		signatureParameters.bLevel().setClaimedSignerRoles(Arrays.asList("supplier"));
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);

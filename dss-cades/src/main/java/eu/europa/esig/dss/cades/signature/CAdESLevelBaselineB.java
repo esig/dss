@@ -148,29 +148,25 @@ public class CAdESLevelBaselineB {
 	 * @return
 	 */
 	private void addSignerAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
-		// In PAdES, the role is in the signature dictionary
-		if (!padesUsage) {
+		final List<String> claimedSignerRoles = parameters.bLevel().getClaimedSignerRoles();
+		if (claimedSignerRoles != null) {
 
-			final List<String> claimedSignerRoles = parameters.bLevel().getClaimedSignerRoles();
-			if (claimedSignerRoles != null) {
-
-				List<org.bouncycastle.asn1.x509.Attribute> claimedAttributes = new ArrayList<org.bouncycastle.asn1.x509.Attribute>(claimedSignerRoles.size());
-				for (final String claimedSignerRole : claimedSignerRoles) {
-					final DERUTF8String roles = new DERUTF8String(claimedSignerRole);
-					final org.bouncycastle.asn1.x509.Attribute id_aa_ets_signerAttr = new org.bouncycastle.asn1.x509.Attribute(OID.id_at_role,
-							new DERSet(roles));
-					claimedAttributes.add(id_aa_ets_signerAttr);
-				}
-				org.bouncycastle.asn1.cms.Attribute signerAttributes;
-				if (!parameters.isEn319122()) {
-					signerAttributes = new org.bouncycastle.asn1.cms.Attribute(id_aa_ets_signerAttr,
-							new DERSet(new SignerAttribute(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
-				} else {
-					signerAttributes = new org.bouncycastle.asn1.cms.Attribute(OID.id_aa_ets_signerAttrV2,
-							new DERSet(new SignerAttributeV2(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
-				}
-				signedAttributes.add(signerAttributes);
+			List<org.bouncycastle.asn1.x509.Attribute> claimedAttributes = new ArrayList<org.bouncycastle.asn1.x509.Attribute>(claimedSignerRoles.size());
+			for (final String claimedSignerRole : claimedSignerRoles) {
+				final DERUTF8String roles = new DERUTF8String(claimedSignerRole);
+				final org.bouncycastle.asn1.x509.Attribute id_aa_ets_signerAttr = new org.bouncycastle.asn1.x509.Attribute(OID.id_at_role,
+						new DERSet(roles));
+				claimedAttributes.add(id_aa_ets_signerAttr);
 			}
+			org.bouncycastle.asn1.cms.Attribute signerAttributes;
+			if (!parameters.isEn319122()) {
+				signerAttributes = new org.bouncycastle.asn1.cms.Attribute(id_aa_ets_signerAttr,
+						new DERSet(new SignerAttribute(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
+			} else {
+				signerAttributes = new org.bouncycastle.asn1.cms.Attribute(OID.id_aa_ets_signerAttrV2,
+						new DERSet(new SignerAttributeV2(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
+			}
+			signedAttributes.add(signerAttributes);
 		}
 	}
 
