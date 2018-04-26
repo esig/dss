@@ -98,6 +98,9 @@ public final class ASiCUtils {
 	}
 
 	public static boolean isASiCContainer(DSSDocument dssDocument) {
+		if (dssDocument == null) {
+			return false;
+		}
 		byte[] preamble = new byte[2];
 		try (InputStream is = dssDocument.openStream()) {
 			int r = is.read(preamble, 0, 2);
