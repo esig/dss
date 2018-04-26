@@ -494,25 +494,28 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				certificateValidity.setDigestEqual(digestEqual);
 
 				if (digestEqual) {
-					BigInteger serialNumber = new BigInteger("0");
+					BigInteger serialNumber = null;
 					X500Principal issuerName = null;
 					if (isEn319132) {
-						final Element issuerNameEl = DomUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_V2);
-						final String textContent = issuerNameEl.getTextContent();
-						try (ASN1InputStream is = new ASN1InputStream(Utils.fromBase64(textContent))) {
-							ASN1Sequence seq = (ASN1Sequence) is.readObject();
-							ASN1Sequence obj = (ASN1Sequence) seq.getObjectAt(0);
-							GeneralName name = GeneralName.getInstance(obj.getObjectAt(0));
-							if (name != null) {
-								issuerName = new X500Principal(name.getName().toASN1Primitive().getEncoded());
-							}
+						final Element issuerSerialV2Element = DomUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_V2);
+						// Tag issuerSerialV2 is optional
+						if (issuerSerialV2Element != null) {
+							final String textContent = issuerSerialV2Element.getTextContent();
+							try (ASN1InputStream is = new ASN1InputStream(Utils.fromBase64(textContent))) {
+								ASN1Sequence seq = (ASN1Sequence) is.readObject();
+								ASN1Sequence obj = (ASN1Sequence) seq.getObjectAt(0);
+								GeneralName name = GeneralName.getInstance(obj.getObjectAt(0));
+								if (name != null) {
+									issuerName = new X500Principal(name.getName().toASN1Primitive().getEncoded());
+								}
 
-							ASN1Integer serial = (ASN1Integer) seq.getObjectAt(1);
-							if (serial != null) {
-								serialNumber = serial.getValue();
+								ASN1Integer serial = (ASN1Integer) seq.getObjectAt(1);
+								if (serial != null) {
+									serialNumber = serial.getValue();
+								}
+							} catch (Exception e) {
+								LOG.error("Unable to decode textContent '" + textContent + "' : " + e.getMessage(), e);
 							}
-						} catch (Exception e) {
-							LOG.error("Unable to decode textContent '" + textContent + "' : " + e.getMessage(), e);
 						}
 					} else {
 						final Element issuerNameEl = DomUtils.getElement(element, xPathQueryHolder.XPATH__X509_ISSUER_NAME);
