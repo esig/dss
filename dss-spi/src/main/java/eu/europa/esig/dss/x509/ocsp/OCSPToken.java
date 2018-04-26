@@ -28,6 +28,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1OctetString;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.isismtt.ISISMTTObjectIdentifiers;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -46,6 +50,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
@@ -97,6 +103,7 @@ public class OCSPToken extends RevocationToken {
 				this.nextUpdate = bestSingleResp.getNextUpdate();
 				extractStatusInfo(bestSingleResp);
 				extractArchiveCutOff(bestSingleResp);
+				extractCertHashExtension(bestSingleResp);
 			}
 		}
 	}
@@ -165,6 +172,38 @@ public class OCSPToken extends RevocationToken {
 				archiveCutOff = archiveCutOffAsn1.getDate();
 			} catch (ParseException e) {
 				LOG.warn("Unable to extract id_pkix_ocsp_archive_cutoff : " + e.getMessage());
+			}
+		}
+	}
+
+	/**
+	 * This method extracts the CertHash extension if present
+	 * 
+	 * Common PKI Part 4: Operational Protocols
+	 * 3.1.2 Common PKI Private OCSP Extensions
+	 * 
+	 * CertHash ::= SEQUENCE {
+	 * hashAlgorithm AlgorithmIdentifier,
+	 * certificateHash OCTET STRING }
+	 * 
+	 * @param bestSingleResp
+	 *            the related SingleResponse
+	 * 
+	 * 
+	 */
+	private void extractCertHashExtension(SingleResp bestSingleResp) {
+		Extension extension = bestSingleResp.getExtension(ISISMTTObjectIdentifiers.id_isismtt_at_certHash);
+		if (extension != null) {
+			try {
+				ASN1Sequence extensionSeq = (ASN1Sequence) extension.getParsedValue();
+
+				ASN1Sequence asn1Sequence = (ASN1Sequence) extensionSeq.getObjectAt(0);
+				ASN1ObjectIdentifier asn1ObjectIdentifier = (ASN1ObjectIdentifier) asn1Sequence.getObjectAt(0);
+				DigestAlgorithm digestAlgo = DigestAlgorithm.forOID(asn1ObjectIdentifier.getId());
+				ASN1OctetString digestValueOctetString = (ASN1OctetString) extensionSeq.getObjectAt(1);
+				certHash = new Digest(digestAlgo, digestValueOctetString.getOctets());
+			} catch (Exception e) {
+				LOG.warn("Unable to extract id_isismtt_at_certHash : " + e.getMessage());
 			}
 		}
 	}
