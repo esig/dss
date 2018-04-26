@@ -28,10 +28,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1OctetString;
-import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.isismtt.ISISMTTObjectIdentifiers;
+import org.bouncycastle.asn1.isismtt.ocsp.CertHash;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -188,20 +186,14 @@ public class OCSPToken extends RevocationToken {
 	 * 
 	 * @param bestSingleResp
 	 *            the related SingleResponse
-	 * 
-	 * 
 	 */
 	private void extractCertHashExtension(SingleResp bestSingleResp) {
 		Extension extension = bestSingleResp.getExtension(ISISMTTObjectIdentifiers.id_isismtt_at_certHash);
 		if (extension != null) {
 			try {
-				ASN1Sequence extensionSeq = (ASN1Sequence) extension.getParsedValue();
-
-				ASN1Sequence asn1Sequence = (ASN1Sequence) extensionSeq.getObjectAt(0);
-				ASN1ObjectIdentifier asn1ObjectIdentifier = (ASN1ObjectIdentifier) asn1Sequence.getObjectAt(0);
-				DigestAlgorithm digestAlgo = DigestAlgorithm.forOID(asn1ObjectIdentifier.getId());
-				ASN1OctetString digestValueOctetString = (ASN1OctetString) extensionSeq.getObjectAt(1);
-				certHash = new Digest(digestAlgo, digestValueOctetString.getOctets());
+				CertHash asn1CertHash = CertHash.getInstance(extension.getParsedValue());
+				DigestAlgorithm digestAlgo = DigestAlgorithm.forOID(asn1CertHash.getHashAlgorithm().getAlgorithm().getId());
+				certHash = new Digest(digestAlgo, asn1CertHash.getCertificateHash());
 			} catch (Exception e) {
 				LOG.warn("Unable to extract id_isismtt_at_certHash : " + e.getMessage());
 			}
