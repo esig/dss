@@ -359,7 +359,7 @@ public class DiagnosticDataBuilder {
 			xmlRevocation.setCertHashExtensionPresent(true);
 			byte[] expectedDigest = certToken.getDigest(certHash.getAlgorithm());
 			byte[] foundDigest = certHash.getValue();
-			xmlRevocation.setCertHashExtensionPresent(Arrays.equals(expectedDigest, foundDigest));
+			xmlRevocation.setCertHashExtensionMatch(Arrays.equals(expectedDigest, foundDigest));
 		}
 
 		xmlRevocation.setBasicSignature(getXmlBasicSignature(revocationToken));
