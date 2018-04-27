@@ -189,6 +189,8 @@ public enum MessageTag implements IMessageTag {
 	BBB_XCV_AIA_PRES_ANS("Authority info access is not present!"),
 	BBB_XCV_REVOC_PRES("Is revocation info access present?"),
 	BBB_XCV_REVOC_PRES_ANS("Revocation info access is not present!"),
+	BBB_XCV_REVOC_CERT_HASH("Is the certHash from OCSP Response(s) match?"),
+	BBB_XCV_REVOC_CERT_HASH_ANS("The certHash content doesn't match the current certificate!"),
 
 	BBB_XCV_ISCGCOUN("Has the certificate given country-name?"),
 	BBB_XCV_ISCGCOUN_ANS("The certificate has not expected country-name!"),

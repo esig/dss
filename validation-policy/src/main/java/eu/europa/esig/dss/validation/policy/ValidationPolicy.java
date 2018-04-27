@@ -366,6 +366,8 @@ public interface ValidationPolicy {
 
 	LevelConstraint getCertificateRevocationInfoAccessPresentConstraint(Context context, SubContext subContext);
 
+	LevelConstraint getRevocationCertHashMatchConstraint(Context context, SubContext subContext);
+
 	MultiValuesConstraint getCertificatePolicyIdsConstraint(Context context, SubContext subContext);
 
 	MultiValuesConstraint getCertificateQCStatementIdsConstraint(Context context, SubContext subContext);
