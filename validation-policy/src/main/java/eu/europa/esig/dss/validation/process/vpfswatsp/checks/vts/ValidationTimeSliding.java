@@ -245,7 +245,10 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 			}
 		}
 
-		return thisUpdate != null && certNotBefore.before(thisUpdate) && (certNotAfter.compareTo(notAfterRevoc) >= 0);
+		/* certHash extension can be present in an OCSP Response. If present, its digest must match */
+		boolean certHashOK = revocationData.isCertHashExtensionPresent() && revocationData.isCertHashExtensionMatch();
+
+		return thisUpdate != null && certNotBefore.before(thisUpdate) && ((certNotAfter.compareTo(notAfterRevoc) >= 0) || certHashOK);
 	}
 
 	private boolean isIssuanceBeforeControlTime(RevocationWrapper revocationData) {
