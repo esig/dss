@@ -24,6 +24,7 @@ import eu.europa.esig.dss.CertificatePolicy;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSPKUtils;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
@@ -326,9 +327,13 @@ public class DiagnosticDataBuilder {
 		return Utils.EMPTY_STRING;
 	}
 
-	private XmlRevocation getXmlRevocation(RevocationToken revocationToken, String xmlId, Set<DigestAlgorithm> usedDigestAlgorithms) {
+	private XmlRevocation getXmlRevocation(CertificateToken certToken, RevocationToken revocationToken, Set<DigestAlgorithm> usedDigestAlgorithms) {
 		final XmlRevocation xmlRevocation = new XmlRevocation();
+
+		// In case of CRL, the X509CRL can be the same for different certificates
+		String xmlId = Utils.toHex(certToken.getDigest(DigestAlgorithm.SHA256)) + Utils.toHex(revocationToken.getDigest(DigestAlgorithm.SHA256));
 		xmlRevocation.setId(xmlId);
+
 		xmlRevocation.setOrigin(revocationToken.getOrigin().name());
 		final Boolean revocationTokenStatus = revocationToken.getStatus();
 		// revocationTokenStatus can be null when OCSP return Unknown. In
@@ -347,6 +352,14 @@ public class DiagnosticDataBuilder {
 		if (Utils.isStringNotEmpty(sourceURL)) { // not empty = online
 			xmlRevocation.setSourceAddress(sourceURL);
 			xmlRevocation.setAvailable(revocationToken.isAvailable());
+		}
+
+		Digest certHash = revocationToken.getCertHash();
+		if (certHash != null) {
+			xmlRevocation.setCertHashExtensionPresent(true);
+			byte[] expectedDigest = certToken.getDigest(certHash.getAlgorithm());
+			byte[] foundDigest = certHash.getValue();
+			xmlRevocation.setCertHashExtensionPresent(Arrays.equals(expectedDigest, foundDigest));
 		}
 
 		xmlRevocation.setBasicSignature(getXmlBasicSignature(revocationToken));
@@ -776,9 +789,7 @@ public class DiagnosticDataBuilder {
 		final Set<RevocationToken> revocationTokens = certToken.getRevocationTokens();
 		if (Utils.isCollectionNotEmpty(revocationTokens)) {
 			for (RevocationToken revocationToken : revocationTokens) {
-				// In case of CRL, the X509CRL can be the same for different certificates
-				String xmlId = Utils.toHex(certToken.getDigest(DigestAlgorithm.SHA256)) + Utils.toHex(revocationToken.getDigest(DigestAlgorithm.SHA256));
-				xmlCert.getRevocations().add(getXmlRevocation(revocationToken, xmlId, usedDigestAlgorithms));
+				xmlCert.getRevocations().add(getXmlRevocation(certToken, revocationToken, usedDigestAlgorithms));
 			}
 		}
 

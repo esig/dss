@@ -74,6 +74,14 @@ public class RevocationWrapper extends AbstractTokenProxy {
 		return revocation.getArchiveCutOff();
 	}
 
+	public boolean isCertHashExtensionPresent() {
+		return Utils.isTrue(revocation.isCertHashExtensionPresent());
+	}
+
+	public boolean isCertHashExtensionMatch() {
+		return Utils.isTrue(revocation.isCertHashExtensionMatch());
+	}
+
 	public String getSource() {
 		return revocation.getSource();
 	}
