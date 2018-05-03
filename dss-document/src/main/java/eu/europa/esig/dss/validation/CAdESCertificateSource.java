@@ -20,13 +20,16 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.ess.OtherCertID;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -38,6 +41,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
@@ -88,7 +93,7 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 		if ((signerInformation != null) && (signerInformation.getUnsignedAttributes() != null)) {
 			AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
 			extractCertificateFromUnsignedAttribute(encapsulatedCerts, unsignedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_certValues));
-			extractCertificateFromUnsignedAttribute(encapsulatedCerts, unsignedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_certificateRefs));
+			extractCertificateRefsFromUnsignedAttribute(encapsulatedCerts, unsignedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_certificateRefs));
 		}
 		return encapsulatedCerts;
 	}
@@ -105,6 +110,38 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 					}
 				} catch (Exception e) {
 					LOG.warn("Unable to parse encapsulated certificate : " + e.getMessage());
+				}
+			}
+		}
+	}
+
+	private void extractCertificateRefsFromUnsignedAttribute(List<CertificateToken> encapsulatedCertRefs, Attribute attribute) {
+		if (attribute != null) {
+			final ASN1Sequence seq = (ASN1Sequence) attribute.getAttrValues().getObjectAt(0);
+			for (int ii = 0; ii < seq.size(); ii++) {
+				try {
+					OtherCertID otherCertId = OtherCertID.getInstance(seq.getObjectAt(ii));
+					byte[] expectedCertHash = otherCertId.getCertHash();
+					DigestAlgorithm digestAlgo = DigestAlgorithm.forOID(otherCertId.getAlgorithmHash().getAlgorithm().getId());
+					BigInteger expectedSerialNumber = null;
+					if (otherCertId.getIssuerSerial() != null) {
+						expectedSerialNumber = otherCertId.getIssuerSerial().getSerial().getValue();
+					}
+					boolean found = false;
+					List<CertificateToken> certificates = getCertificates();
+					for (CertificateToken certificateToken : certificates) {
+						byte[] certHash = certificateToken.getDigest(digestAlgo);
+						if (Arrays.equals(expectedCertHash, certHash)
+								&& (expectedSerialNumber == null || expectedSerialNumber.equals(certificateToken.getSerialNumber()))) {
+							found = true;
+							break;
+						}
+					}
+					if (!found) {
+						LOG.warn("Certificate Ref (SN:{} / {}:{}) is not known", expectedSerialNumber, digestAlgo, Utils.toBase64(expectedCertHash));
+					}
+				} catch (Exception e) {
+					LOG.warn("Unable to parse encapsulated OtherCertID : " + e.getMessage());
 				}
 			}
 		}
@@ -149,4 +186,5 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 		}
 		return essCertIDCerts;
 	}
+
 }
