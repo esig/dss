@@ -5,6 +5,8 @@
 	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
 	version="2.1" jaxb:extensionBindingPrefixes="xjc">
     
-    <jaxb:globalBindings localScoping="toplevel"/>
+    <jaxb:globalBindings localScoping="toplevel">
+		<xjc:serializable uid="1" />
+    </jaxb:globalBindings>
 
 </jaxb:bindings>
