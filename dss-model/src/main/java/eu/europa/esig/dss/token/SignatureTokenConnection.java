@@ -34,6 +34,9 @@ import eu.europa.esig.dss.ToBeSigned;
  */
 public interface SignatureTokenConnection extends AutoCloseable {
 
+	@Override
+	void close();
+
 	/**
 	 * Retrieves all the available keys (private keys entries) from the token.
 	 *
