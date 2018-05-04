@@ -7,6 +7,7 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 public class PAdESSignatureParameters extends CAdESSignatureParameters {
 
 	private static final long serialVersionUID = -1632557456487796227L;
+
 	private String reason;
 	private String contactInfo;
 	private String location;
@@ -54,6 +55,12 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	private String timestampSubFilter;
 
 	private SignatureImageParameters timestampImageParameters;
+
+	/**
+	 * This attribute allows to create a "certification signature". That allows to remove permission(s) in case of
+	 * future change(s).
+	 */
+	private CertificationPermission permission;
 
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
@@ -109,7 +116,9 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 		this.signatureSubFilter = signatureSubFilter;
 	}
 
-	public String getSignatureName() { return signatureName; }
+	public String getSignatureName() {
+		return signatureName;
+	}
 
 	public void setSignatureName(final String signatureName) {
 		this.signatureName = signatureName;
@@ -177,6 +186,14 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	 */
 	public void setSignatureSize(int signatureSize) {
 		this.signatureSize = signatureSize;
+	}
+
+	public CertificationPermission getPermission() {
+		return permission;
+	}
+
+	public void setPermission(CertificationPermission permission) {
+		this.permission = permission;
 	}
 
 }

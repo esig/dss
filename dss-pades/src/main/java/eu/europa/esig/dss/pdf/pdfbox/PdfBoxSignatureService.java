@@ -65,6 +65,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -238,6 +239,11 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				signature.setReason(parameters.getReason());
 			}
 
+			CertificationPermission permission = parameters.getPermission();
+			if (permission != null) {
+				setMDPPermission(pdDocument, signature, permission.getCode());
+			}
+
 			// the signing date, needed for valid signature
 			final Calendar cal = Calendar.getInstance();
 			final Date signingDate = parameters.bLevel().getSigningDate();
@@ -246,6 +252,48 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 
 		return signature;
+	}
+
+	/**
+	 * Set the access permissions granted for this document in the DocMDP transform parameters
+	 * dictionary. Details are described in the table "Entries in the DocMDP transform parameters
+	 * dictionary" in the PDF specification.
+	 *
+	 * @param doc
+	 *            The document.
+	 * @param signature
+	 *            The signature object.
+	 * @param accessPermissions
+	 *            The permission value (1, 2 or 3).
+	 */
+	public void setMDPPermission(PDDocument doc, PDSignature signature, int accessPermissions) {
+		COSDictionary sigDict = signature.getCOSObject();
+
+		// DocMDP specific stuff
+		COSDictionary transformParameters = new COSDictionary();
+		transformParameters.setItem(COSName.TYPE, COSName.getPDFName("TransformParams"));
+		transformParameters.setInt(COSName.P, accessPermissions);
+		transformParameters.setName(COSName.V, "1.2");
+		transformParameters.setNeedToBeUpdated(true);
+
+		COSDictionary referenceDict = new COSDictionary();
+		referenceDict.setItem(COSName.TYPE, COSName.getPDFName("SigRef"));
+		referenceDict.setItem("TransformMethod", COSName.DOCMDP);
+		referenceDict.setItem("TransformParams", transformParameters);
+		referenceDict.setNeedToBeUpdated(true);
+
+		COSArray referenceArray = new COSArray();
+		referenceArray.add(referenceDict);
+		sigDict.setItem("Reference", referenceArray);
+		referenceArray.setNeedToBeUpdated(true);
+
+		// Document Catalog
+		COSDictionary catalogDict = doc.getDocumentCatalog().getCOSObject();
+		COSDictionary permsDict = new COSDictionary();
+		catalogDict.setItem(COSName.PERMS, permsDict);
+		permsDict.setItem(COSName.DOCMDP, signature);
+		catalogDict.setNeedToBeUpdated(true);
+		permsDict.setNeedToBeUpdated(true);
 	}
 
 	private PDSignature findExistingSignature(PDDocument doc, String sigFieldName) {
