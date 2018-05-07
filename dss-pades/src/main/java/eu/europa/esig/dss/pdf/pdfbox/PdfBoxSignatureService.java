@@ -200,7 +200,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters, PDDocument pdDocument) {
 
 		PDSignature signature;
-		if ((parameters.getSignatureFieldId() != null) && (!parameters.getSignatureFieldId().isEmpty())) {
+		if (Utils.isStringNotEmpty(parameters.getSignatureFieldId())) {
 			signature = findExistingSignature(pdDocument, parameters.getSignatureFieldId());
 		} else {
 			signature = new PDSignature();
@@ -240,7 +240,9 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			}
 
 			CertificationPermission permission = parameters.getPermission();
-			if (permission != null) {
+			// A document can contain only one signature field that contains a DocMDP transform method;
+			// it shall be the first signed field in the document.
+			if (permission != null && !containsSignatureField(pdDocument)) {
 				setMDPPermission(pdDocument, signature, permission.getCode());
 			}
 
@@ -252,6 +254,16 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 
 		return signature;
+	}
+
+	private boolean containsSignatureField(PDDocument pdDocument) {
+		try {
+			List<PDSignatureField> signatureFields = pdDocument.getSignatureFields();
+			return Utils.isCollectionNotEmpty(signatureFields);
+		} catch (IOException e) {
+			LOG.warn("Cannot read the signature fields", e);
+			return true;
+		}
 	}
 
 	/**

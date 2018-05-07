@@ -8,19 +8,21 @@ package eu.europa.esig.dss.pades;
 public enum CertificationPermission {
 
 	/**
-	 * Any change to the document shall invalidate the signature
+	 * No changes to the document are permitted; any change to the document shall invalidate the signature.
 	 */
 	NO_CHANGE_PERMITTED(1),
 
 	/**
-	 * Allowed changes are : form filling, signing, page templating. Other changes shall invalidate the signature
+	 * Permitted changes shall be filling in forms, instantiating page templates, and signing; other changes shall
+	 * invalidate the signature.
 	 */
 	MINIMAL_CHANGES_PERMITTED(2),
 
 	/**
-	 * All changes are allowed like signing, page creation/deletion,...
+	 * Permitted changes are the same as for 2, as well as annotation creation, deletion, and modification; other
+	 * changes shall invalidate the signature.
 	 */
-	ALL_CHANGES_PERMITTED(3);
+	CHANGES_PERMITTED(3);
 
 	private final int code;
 
