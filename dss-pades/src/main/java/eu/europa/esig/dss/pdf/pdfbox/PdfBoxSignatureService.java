@@ -242,7 +242,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			CertificationPermission permission = parameters.getPermission();
 			// A document can contain only one signature field that contains a DocMDP transform method;
 			// it shall be the first signed field in the document.
-			if (permission != null && !containsSignatureField(pdDocument)) {
+			if (permission != null && !containsFilledSignature(pdDocument)) {
 				setMDPPermission(pdDocument, signature, permission.getCode());
 			}
 
@@ -256,13 +256,18 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		return signature;
 	}
 
-	private boolean containsSignatureField(PDDocument pdDocument) {
+	private boolean containsFilledSignature(PDDocument pdDocument) {
 		try {
-			List<PDSignatureField> signatureFields = pdDocument.getSignatureFields();
-			return Utils.isCollectionNotEmpty(signatureFields);
+			List<PDSignature> signatures = pdDocument.getSignatureDictionaries();
+			for (PDSignature pdSignature : signatures) {
+				if (pdSignature.getCOSObject().containsKey(COSName.BYTERANGE)) {
+					return true;
+				}
+			}
+			return false;
 		} catch (IOException e) {
-			LOG.warn("Cannot read the signature fields", e);
-			return true;
+			LOG.warn("Cannot read the existing signature(s)", e);
+			return false;
 		}
 	}
 

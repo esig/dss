@@ -20,8 +20,15 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -29,6 +36,8 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
@@ -39,7 +48,7 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new FileDocument(new File("src/test/resources/sample.pdf"));
+		documentToSign = new FileDocument(new File("src/test/resources/pdf-two-fields.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -48,9 +57,33 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 		signatureParameters.setLocation("Luxembourg");
 		signatureParameters.setReason("DSS testing");
 		signatureParameters.setContactInfo("Jira");
-		signatureParameters.setPermission(CertificationPermission.NO_CHANGE_PERMITTED);
+		signatureParameters.setPermission(CertificationPermission.MINIMAL_CHANGES_PERMITTED);
+		signatureParameters.setSignatureFieldId("signature-test");
+		SignatureImageParameters signatureImageParameters = new SignatureImageParameters();
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("TEST FIELD");
+		signatureImageParameters.setTextParameters(textParameters);
+		signatureParameters.setSignatureImageParameters(signatureImageParameters);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
+	}
+
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
+
+		try {
+			PDDocument document = PDDocument.load(byteArray);
+			COSBase docMDP = null;
+			COSBase perms = document.getDocumentCatalog().getCOSObject().getDictionaryObject(COSName.PERMS);
+			if (perms instanceof COSDictionary) {
+				COSDictionary permsDict = (COSDictionary) perms;
+				docMDP = permsDict.getDictionaryObject(COSName.DOCMDP);
+			}
+			assertNotNull(docMDP);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
 	}
 
 	@Override
