@@ -51,10 +51,8 @@ public class CAdESLevelBRSATest extends AbstractCAdESTestSignature {
 	@Parameters(name = "DigestAlgorithm {index} : {0}")
 	public static Collection<DigestAlgorithm> data() {
 		return Arrays.asList(DigestAlgorithm.SHA1, DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512,
-				// See DefaultCMSSignatureEncryptionAlgorithmFinder and DefaultCMSSignatureAlgorithmNameGenerator
-				// DigestAlgorithm.SHA3_224, DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384,
-				// DigestAlgorithm.SHA3_512,
-				DigestAlgorithm.RIPEMD160, DigestAlgorithm.MD2, DigestAlgorithm.MD5);
+				DigestAlgorithm.SHA3_224, DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384, DigestAlgorithm.SHA3_512, DigestAlgorithm.RIPEMD160,
+				DigestAlgorithm.MD2, DigestAlgorithm.MD5);
 	}
 
 	public CAdESLevelBRSATest(DigestAlgorithm digestAlgo) {
