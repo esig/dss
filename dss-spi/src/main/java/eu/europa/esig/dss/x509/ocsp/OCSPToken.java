@@ -28,6 +28,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
+import org.bouncycastle.asn1.isismtt.ISISMTTObjectIdentifiers;
+import org.bouncycastle.asn1.isismtt.ocsp.CertHash;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -46,6 +48,8 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
@@ -90,13 +94,14 @@ public class OCSPToken extends RevocationToken {
 		if (basicOCSPResp != null) {
 			this.productionDate = basicOCSPResp.getProducedAt();
 			this.signatureAlgorithm = SignatureAlgorithm.forOID(basicOCSPResp.getSignatureAlgOID().getId());
-			extractArchiveCutOff();
 
 			SingleResp bestSingleResp = getBestSingleResp(basicOCSPResp, certId);
 			if (bestSingleResp != null) {
 				this.thisUpdate = bestSingleResp.getThisUpdate();
 				this.nextUpdate = bestSingleResp.getNextUpdate();
 				extractStatusInfo(bestSingleResp);
+				extractArchiveCutOff(bestSingleResp);
+				extractCertHashExtension(bestSingleResp);
 			}
 		}
 	}
@@ -157,14 +162,40 @@ public class OCSPToken extends RevocationToken {
 		}
 	}
 
-	private void extractArchiveCutOff() {
-		Extension extension = basicOCSPResp.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_archive_cutoff);
+	private void extractArchiveCutOff(SingleResp bestSingleResp) {
+		Extension extension = bestSingleResp.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_archive_cutoff);
 		if (extension != null) {
 			ASN1GeneralizedTime archiveCutOffAsn1 = (ASN1GeneralizedTime) extension.getParsedValue();
 			try {
 				archiveCutOff = archiveCutOffAsn1.getDate();
 			} catch (ParseException e) {
 				LOG.warn("Unable to extract id_pkix_ocsp_archive_cutoff : " + e.getMessage());
+			}
+		}
+	}
+
+	/**
+	 * This method extracts the CertHash extension if present
+	 * 
+	 * Common PKI Part 4: Operational Protocols
+	 * 3.1.2 Common PKI Private OCSP Extensions
+	 * 
+	 * CertHash ::= SEQUENCE {
+	 * hashAlgorithm AlgorithmIdentifier,
+	 * certificateHash OCTET STRING }
+	 * 
+	 * @param bestSingleResp
+	 *            the related SingleResponse
+	 */
+	private void extractCertHashExtension(SingleResp bestSingleResp) {
+		Extension extension = bestSingleResp.getExtension(ISISMTTObjectIdentifiers.id_isismtt_at_certHash);
+		if (extension != null) {
+			try {
+				CertHash asn1CertHash = CertHash.getInstance(extension.getParsedValue());
+				DigestAlgorithm digestAlgo = DigestAlgorithm.forOID(asn1CertHash.getHashAlgorithm().getAlgorithm().getId());
+				certHash = new Digest(digestAlgo, asn1CertHash.getCertificateHash());
+			} catch (Exception e) {
+				LOG.warn("Unable to extract id_isismtt_at_certHash : " + e.getMessage());
 			}
 		}
 	}

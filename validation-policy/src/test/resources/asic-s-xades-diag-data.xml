@@ -82,7 +82,7 @@
             <KeyUsageBits>
                 <KeyUsage>nonRepudiation</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>false</IdKpOCSPSigning>
+            
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -104,21 +104,21 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>2.16.56.12.1.1.2.1</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>2.16.56.12.1.1.2.1</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds>
-                <oid Description="qc-compliant">0.4.0.1862.1.1</oid>
+                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
                 <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
             </QCStatementIds>
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Certipost n.v./s.a.</TSPName>
-                    <TSPServiceName>CN=Belgium Root CA4, C=BE</TSPServiceName>
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+		                    <ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
@@ -191,7 +191,7 @@
             <KeyUsageBits>
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>true</IdKpOCSPSigning>
+            
             <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -213,16 +213,16 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds/>
+            <CertificatePolicies/>
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Certipost n.v./s.a.</TSPName>
-                    <TSPServiceName>CN=Belgium Root CA4, C=BE</TSPServiceName>
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+		                    <ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
@@ -261,7 +261,6 @@
                 <KeyUsage>keyCertSign</KeyUsage>
                 <KeyUsage>crlSign</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>false</IdKpOCSPSigning>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -280,18 +279,18 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>2.16.56.12.1.1.2</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>2.16.56.12.1.1.2</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Certipost n.v./s.a.</TSPName>
-                    <TSPServiceName>CN=Belgium Root CA4, C=BE</TSPServiceName>
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+		                    <ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
@@ -301,6 +300,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+		                    <ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2013-06-26T12:00:00</StartDate>
@@ -366,7 +366,6 @@
                 <KeyUsage>keyCertSign</KeyUsage>
                 <KeyUsage>crlSign</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>false</IdKpOCSPSigning>
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
@@ -380,18 +379,18 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>2.16.56.12.1.1</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>2.16.56.12.1.1</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds/>
             <QCTypes/>
             <TrustedServiceProviders>
                 <TrustedServiceProvider>
                     <TSPName>Certipost n.v./s.a.</TSPName>
-                    <TSPServiceName>CN=Belgium Root CA4, C=BE</TSPServiceName>
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+		                    <ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
@@ -401,6 +400,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+		                    <ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2013-06-26T12:00:00</StartDate>

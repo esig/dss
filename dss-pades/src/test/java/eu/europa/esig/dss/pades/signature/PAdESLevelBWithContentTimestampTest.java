@@ -20,26 +20,26 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
-import org.bouncycastle.tsp.TimeStampToken;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.TimestampType;
 
 public class PAdESLevelBWithContentTimestampTest extends AbstractPAdESTestSignature {
 
@@ -49,6 +49,9 @@ public class PAdESLevelBWithContentTimestampTest extends AbstractPAdESTestSignat
 
 	@Before
 	public void init() throws Exception {
+		service = new PAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
+
 		documentToSign = new FileDocument(new File("src/test/resources/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
@@ -56,15 +59,33 @@ public class PAdESLevelBWithContentTimestampTest extends AbstractPAdESTestSignat
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+		signatureParameters.setReason("Reason");
+		signatureParameters.setLocation("Luxembourg");
+		signatureParameters.setReason("DSS testing");
+		signatureParameters.setContactInfo("Jira");
 
-		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
-		byte[] digest = pdfSignatureService.digest(documentToSign.openStream(), signatureParameters, DigestAlgorithm.SHA256);
-		OnlineTSPSource tspSource = getGoodTsa();
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
-		TimestampToken token = new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP, new CertificatePool());
-		signatureParameters.setContentTimestamps(Arrays.asList(token));
+		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
+		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
+	}
 
-		service = new PAdESService(getCompleteCertificateVerifier());
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
+
+		try (PDDocument doc = PDDocument.load(byteArray)) {
+			List<PDSignature> signatureDictionaries = doc.getSignatureDictionaries();
+			assertEquals(1, signatureDictionaries.size());
+			PDSignature pdSignature = signatureDictionaries.get(0);
+			assertNotNull(pdSignature.getName());
+			assertNotNull(pdSignature.getReason());
+			assertNotNull(pdSignature.getLocation());
+			assertNotNull(pdSignature.getContactInfo());
+			assertNotNull(pdSignature.getSignDate()); // M
+			assertEquals("Adobe.PPKLite", pdSignature.getFilter());
+			assertEquals("ETSI.CAdES.detached", pdSignature.getSubFilter());
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
 	}
 
 	@Override
@@ -75,26 +96,6 @@ public class PAdESLevelBWithContentTimestampTest extends AbstractPAdESTestSignat
 	@Override
 	protected PAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
-	}
-
-	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.PDF;
-	}
-
-	@Override
-	protected boolean hasContentTimestamp() {
-		return true;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return false;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
 	}
 
 	@Override

@@ -13,7 +13,7 @@ public class OidRepositoryTest {
 	@Test
 	public void test() {
 		assertEquals(CertificatePolicyOids.QCP_LEGAL.getDescription(), OidRepository.getDescription(CertificatePolicyOids.QCP_LEGAL.getOid()));
-		assertEquals(QCStatementOids.QC_COMPLIANT.getDescription(), OidRepository.getDescription(QCStatementOids.QC_COMPLIANT.getOid()));
+		assertEquals(QCStatementOids.QC_COMPLIANCE.getDescription(), OidRepository.getDescription(QCStatementOids.QC_COMPLIANCE.getOid()));
 		assertNull(OidRepository.getDescription("1.2.3"));
 	}
 

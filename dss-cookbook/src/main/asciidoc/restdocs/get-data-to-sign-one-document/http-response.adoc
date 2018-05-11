@@ -1,18 +1,12 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
-Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-Pragma: no-cache
-Expires: 0
-X-Frame-Options: DENY
-Date: Thu, 28 Sep 2017 11:13:48 GMT
+Date: Mon, 26 Mar 2018 08:12:09 GMT
 Content-Type: application/json
 Transfer-Encoding: chunked
-Content-Length: 412
+Content-Length: 392
 
 {
-  "bytes" : "MYIBITAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xNzA5MjgxMTEzNDhaMC0GCSqGSIb3DQEJNDEgMB4wDQYJYIZIAWUDBAIBBQChDQYJKoZIhvcNAQELBQAwLwYJKoZIhvcNAQkEMSIEIBhfjbMicf4l9WGm/JOLLiZDBuwwTtpRgAfRdkgmOBlpMIGGBgsqhkiG9w0BCRACLzF3MHUwczBxMA0GCWCGSAFlAwQCAQUABCAC8+vKAWMnQlO8gJ0nSY3UG7AxbX5rBmlgEV3hVVidnDA+MDSkMjAwMRswGQYDVQQDDBJSb290U2VsZlNpZ25lZEZha2UxETAPBgNVBAoMCERTUy10ZXN0AgYu1hTXu1c="
+  "bytes" : "MYIBETAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xODAzMjYwODEyMDlaMC0GCSqGSIb3DQEJNDEgMB4wDQYJYIZIAWUDBAIBBQChDQYJKoZIhvcNAQELBQAwLwYJKoZIhvcNAQkEMSIEIBhfjbMicf4l9WGm/JOLLiZDBuwwTtpRgAfRdkgmOBlpMHcGCyqGSIb3DQEJEAIvMWgwZjBkMGIEIALz68oBYydCU7yAnSdJjdQbsDFtfmsGaWARXeFVWJ2cMD4wNKQyMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QCBi7WFNe7Vw=="
 }
 ----

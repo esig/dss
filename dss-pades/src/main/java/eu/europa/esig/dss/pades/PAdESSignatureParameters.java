@@ -7,6 +7,7 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 public class PAdESSignatureParameters extends CAdESSignatureParameters {
 
 	private static final long serialVersionUID = -1632557456487796227L;
+
 	private String reason;
 	private String contactInfo;
 	private String location;
@@ -29,6 +30,12 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	private String signatureSubFilter;
 
 	/**
+	 * This attribute allows to explicitly specify the name for a Signature.
+	 * The person or authority signing the document.
+	 */
+	private String signatureName;
+
+	/**
 	 * This attribute is used to create visible signature in PAdES form
 	 */
 	private SignatureImageParameters signatureImageParameters;
@@ -48,6 +55,12 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	private String timestampSubFilter;
 
 	private SignatureImageParameters timestampImageParameters;
+
+	/**
+	 * This attribute allows to create a "certification signature". That allows to remove permission(s) in case of
+	 * future change(s).
+	 */
+	private CertificationPermission permission;
 
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
@@ -101,6 +114,14 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 
 	public void setSignatureSubFilter(String signatureSubFilter) {
 		this.signatureSubFilter = signatureSubFilter;
+	}
+
+	public String getSignatureName() {
+		return signatureName;
+	}
+
+	public void setSignatureName(final String signatureName) {
+		this.signatureName = signatureName;
 	}
 
 	public SignatureImageParameters getSignatureImageParameters() {
@@ -165,6 +186,14 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	 */
 	public void setSignatureSize(int signatureSize) {
 		this.signatureSize = signatureSize;
+	}
+
+	public CertificationPermission getPermission() {
+		return permission;
+	}
+
+	public void setPermission(CertificationPermission permission) {
+		this.permission = permission;
 	}
 
 }

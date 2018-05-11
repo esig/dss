@@ -4,11 +4,21 @@ import eu.europa.esig.dss.AbstractSignatureParameters;
 
 public class CAdESSignatureParameters extends AbstractSignatureParameters {
 
+	private boolean en319122 = true;
+
 	private String contentHintsType;
 	private String contentHintsDescription;
 
 	private String contentIdentifierPrefix;
 	private String contentIdentifierSuffix;
+
+	public boolean isEn319122() {
+		return en319122;
+	}
+
+	public void setEn319122(boolean en319122) {
+		this.en319122 = en319122;
+	}
 
 	public String getContentHintsType() {
 		return contentHintsType;

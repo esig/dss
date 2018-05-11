@@ -78,6 +78,8 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 			Collections.reverse(certificateChainIds); // trusted_list -> ... ->
 														// signature
 
+			ChainItem<XmlVTS> item = null;
+
 			for (String certificateId : certificateChainIds) {
 				CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateId);
 				if (certificate.isTrusted()) {
@@ -115,9 +117,10 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 					}
 				}
 
-				ChainItem<XmlVTS> item = satisfyingRevocationDataExists(latestCompliantRevocation);
 				if (firstItem == null) {
-					firstItem = item;
+					item = firstItem = satisfyingRevocationDataExists(latestCompliantRevocation);
+				} else {
+					item = item.setNextItem(satisfyingRevocationDataExists(latestCompliantRevocation));
 				}
 
 				/*
@@ -242,7 +245,13 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 			}
 		}
 
-		return thisUpdate != null && certNotBefore.before(thisUpdate) && (certNotAfter.compareTo(notAfterRevoc) >= 0);
+		/*
+		 * certHash extension can be present in an OCSP Response. If present, a digest match indicates the OCSP
+		 * responder knows the certificate as we have it, and so also its revocation state
+		 */
+		boolean certHashOK = revocationData.isCertHashExtensionPresent() && revocationData.isCertHashExtensionMatch();
+
+		return thisUpdate != null && certNotBefore.before(thisUpdate) && ((certNotAfter.compareTo(notAfterRevoc) >= 0) || certHashOK);
 	}
 
 	private boolean isIssuanceBeforeControlTime(RevocationWrapper revocationData) {

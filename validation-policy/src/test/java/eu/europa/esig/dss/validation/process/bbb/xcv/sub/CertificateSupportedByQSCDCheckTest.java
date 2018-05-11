@@ -10,7 +10,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSupportedByQSCDCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.Level;
@@ -24,9 +24,9 @@ public class CertificateSupportedByQSCDCheckTest {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCertificate xc = new XmlCertificate();
-		XmlOID oid = new XmlOID();
+		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue("0.4.0.1456.1.1");
-		xc.getCertificatePolicyIds().add(oid);
+		xc.getCertificatePolicies().add(oid);
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificateSupportedByQSCDCheck csbsc = new CertificateSupportedByQSCDCheck(result, new CertificateWrapper(xc), constraint);
@@ -44,9 +44,9 @@ public class CertificateSupportedByQSCDCheckTest {
 
 		XmlCertificate xc = new XmlCertificate();
 
-		XmlOID oid = new XmlOID();
+		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue("0.4.0.1456.1.12");
-		xc.getCertificatePolicyIds().add(oid);
+		xc.getCertificatePolicies().add(oid);
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificateSupportedByQSCDCheck csbsc = new CertificateSupportedByQSCDCheck(result, new CertificateWrapper(xc), constraint);

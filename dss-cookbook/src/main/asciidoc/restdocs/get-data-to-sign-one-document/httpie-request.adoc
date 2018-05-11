@@ -3,11 +3,13 @@
 $ echo '{
   "parameters" : {
     "signWithExpiredCertificate" : false,
+    "generateTBSWithoutCertificate" : false,
     "signatureLevel" : "CAdES_BASELINE_B",
     "signaturePackaging" : "ENVELOPING",
     "signatureAlgorithm" : "RSA_SHA256",
     "encryptionAlgorithm" : "RSA",
     "digestAlgorithm" : "SHA256",
+    "maskGenerationFunction" : null,
     "contentTimestampParameters" : {
       "digestAlgorithm" : "SHA256",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#"
@@ -28,9 +30,8 @@ $ echo '{
     "asicContainerType" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1506597228373,
+      "signingDate" : 1522051929178,
       "claimedSignerRoles" : null,
-      "certifiedSignerRoles" : null,
       "signaturePolicy" : null,
       "commitmentTypeIndications" : null,
       "signerLocation" : null
@@ -38,11 +39,11 @@ $ echo '{
   },
   "toSignDocument" : {
     "bytes" : "SGVsbG8=",
+    "digestAlgorithm" : null,
     "name" : "RemoteDocument",
-    "absolutePath" : "RemoteDocument",
     "mimeType" : null
   }
 }' | http POST 'http://localhost:8080/services/rest/signature/one-document/getDataToSign' \
-    'Accept:application/json, application/javascript, text/javascript' \
+    'Accept:application/json, application/javascript, text/javascript, text/json' \
     'Content-Type:application/json; charset=UTF-8'
 ----

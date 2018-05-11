@@ -21,6 +21,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -143,6 +144,7 @@ public final class DomUtils {
 		Transformer transformer = null;
 		try {
 			transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
 		} catch (TransformerConfigurationException e) {
 			throw new DSSException(e);
 		}
@@ -207,6 +209,23 @@ public final class DomUtils {
 	}
 
 	/**
+	 * This method returns true if the binaries contains a {@link org.w3c.dom.Document}
+	 * 
+	 * @param bytes
+	 *            the binaries to be tested
+	 * @return true if the binaries is a XML
+	 */
+	public static boolean isDOM(final byte[] bytes) {
+		try {
+			final Document dom = buildDOM(bytes);
+			return dom != null;
+		} catch (DSSException e) {
+			// NOT DOM
+			return false;
+		}
+	}
+
+	/**
 	 * This method returns the {@link org.w3c.dom.Document} created based on the XML inputStream.
 	 *
 	 * @param inputStream
@@ -221,7 +240,7 @@ public final class DomUtils {
 			final Document rootElement = dbFactory.newDocumentBuilder().parse(is);
 			return rootElement;
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException("Unable to parse content (XML expected)", e);
 		}
 	}
 

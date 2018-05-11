@@ -1,10 +1,9 @@
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -17,14 +16,10 @@ import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters> {
 
@@ -32,33 +27,15 @@ public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestD
 	protected void onDocumentSigned(byte[] byteArray) {
 		checkSignedAttributesOrder(byteArray);
 
-		checkGetOriginalDocument(byteArray);
 	}
 
-	private void checkGetOriginalDocument(byte[] byteArray) {
-		SignedDocumentValidator sdv = SignedDocumentValidator.fromDocument(new InMemoryDocument(byteArray));
-		sdv.setCertificateVerifier(getCompleteCertificateVerifier());
-
-		if (SignaturePackaging.DETACHED == getSignatureParameters().getSignaturePackaging()) {
-			sdv.setDetachedContents(Arrays.asList(getDocumentToSign()));
-		}
-
-		List<AdvancedSignature> signatures = sdv.getSignatures();
-		assertEquals(1, signatures.size());
-
-		List<DSSDocument> originalDocuments = sdv.getOriginalDocuments(signatures.get(0).getId());
-		assertEquals(1, originalDocuments.size());
-
-		DSSDocument original = originalDocuments.get(0);
-		String digest = original.getDigest(DigestAlgorithm.SHA384);
-		String digest2 = getDocumentToSign().getDigest(DigestAlgorithm.SHA384);
-		assertEquals(digest, digest2);
+	@Override
+	protected List<DSSDocument> getOriginalDocuments() {
+		return Collections.singletonList(getDocumentToSign());
 	}
 
 	protected void checkSignedAttributesOrder(byte[] encoded) {
-		ASN1InputStream asn1sInput = null;
-		try {
-			asn1sInput = new ASN1InputStream(encoded);
+		try (ASN1InputStream asn1sInput = new ASN1InputStream(encoded)) {
 			ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
 			SignedData signedData = SignedData.getInstance(DERTaggedObject.getInstance(asn1Seq.getObjectAt(1)).getObject());
@@ -79,9 +56,24 @@ public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestD
 			}
 		} catch (Exception e) {
 			fail(e.getMessage());
-		} finally {
-			Utils.closeQuietly(asn1sInput);
 		}
+	}
+
+	@Override
+	protected MimeType getExpectedMime() {
+		return MimeType.PKCS7;
+	}
+
+	@Override
+	protected boolean isBaselineT() {
+		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
+		return SignatureLevel.CAdES_BASELINE_LTA.equals(signatureLevel) || SignatureLevel.CAdES_BASELINE_LT.equals(signatureLevel)
+				|| SignatureLevel.CAdES_BASELINE_T.equals(signatureLevel);
+	}
+
+	@Override
+	protected boolean isBaselineLTA() {
+		return SignatureLevel.CAdES_BASELINE_LTA.equals(getSignatureParameters().getSignatureLevel());
 	}
 
 }

@@ -29,6 +29,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
+import eu.europa.esig.dss.RemoteConverter;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
@@ -109,7 +110,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 		LOG.info("GetDataToSign in process...");
 		AbstractSignatureParameters parameters = createParameters(remoteParameters);
 		DocumentSignatureService service = getServiceForSignature(remoteParameters);
-		DSSDocument dssDocument = createDSSDocument(remoteDocument);
+		DSSDocument dssDocument = RemoteConverter.toDSSDocument(remoteDocument);
 		ToBeSigned dataToSign = service.getDataToSign(dssDocument, parameters);
 		LOG.info("GetDataToSign is finished");
 		return dataToSign;
@@ -122,7 +123,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 		LOG.info("SignDocument in process...");
 		AbstractSignatureParameters parameters = createParameters(remoteParameters);
 		DocumentSignatureService service = getServiceForSignature(remoteParameters);
-		DSSDocument dssDocument = createDSSDocument(remoteDocument);
+		DSSDocument dssDocument = RemoteConverter.toDSSDocument(remoteDocument);
 		DSSDocument signDocument = service.signDocument(dssDocument, parameters, signatureValue);
 		LOG.info("SignDocument is finished");
 		return signDocument;
@@ -134,7 +135,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 		LOG.info("ExtendDocument in process...");
 		AbstractSignatureParameters parameters = createParameters(remoteParameters);
 		DocumentSignatureService service = getServiceForSignature(remoteParameters);
-		DSSDocument dssDocument = createDSSDocument(remoteDocument);
+		DSSDocument dssDocument = RemoteConverter.toDSSDocument(remoteDocument);
 		DSSDocument extendDocument = service.extendDocument(dssDocument, parameters);
 		LOG.info("ExtendDocument is finished");
 		return extendDocument;

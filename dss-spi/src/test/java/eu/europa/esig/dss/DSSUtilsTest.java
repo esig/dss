@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Date;
@@ -229,5 +230,25 @@ public class DSSUtilsTest {
 		String deterministicId3 = DSSUtils.getDeterministicId(new Date(), certificateWithAIA.getDSSId());
 
 		assertThat(deterministicId2, not(equalTo(deterministicId3)));
+	}
+
+	@Test
+	public void isSelfSigned() {
+		CertificateToken selfSign = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrca2-self-sign.crt"));
+		assertTrue(selfSign.isSelfSigned());
+		assertTrue(selfSign.isSelfIssued());
+
+		CertificateToken cert = DSSUtils.loadCertificateFromBase64EncodedString(
+				"MIIB+jCCAWOgAwIBAgIGE3w6Wr8TMA0GCSqGSIb3DQEBBQUAMDYxITAfBgNVBAMMGFJvb3RJc3N1ZXJTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTUwMjE3MTYxMTM4WhcNMTUwMjI4MTYxMTM4WjA3MSIwIAYDVQQDDBlSb290U3ViamVjdFNlbGZTaWduZWRGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAqwNS7KYkSvJw8oDzUknI20lcuUWyaY3EBk83a8u3puluyw7C8PLjwScIwd6+sHm20OWgpS+h7RNOatP+6VEDxS2IbDtwKzGlii3SV1HbHWf+rqRnQFnhq7/5FIAEg7/+lK6Lhox/+n+zTq2hMEARU9rc1CHdbywh9JPwO6zkxbECAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgeAMA0GCSqGSIb3DQEBBQUAA4GBAASVNBDdoCRo/X6FiJMolH4+acjIbCcIMF5tlsIVf0TauTEsVQE4j+OlLSiY+SRnHlNRvSR7v+8V62QsFVne6Nx+OKs1blwTeOIYFP7g0RBHja8Vtl+Jx4LCC7JI7V3IWFYidCrZp8m70HBY8E4CTeQMgzUrH/ej5V0siL2NdUeh");
+		PublicKey publicKey = cert.getPublicKey();
+		boolean signedWithItsPublicKey = false;
+		try {
+			cert.getCertificate().verify(publicKey);
+			signedWithItsPublicKey = true;
+		} catch (Exception e) {
+		}
+		assertTrue(signedWithItsPublicKey);
+		assertFalse(cert.isSelfIssued());
+		assertFalse(cert.isSelfSigned());
 	}
 }

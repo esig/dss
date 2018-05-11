@@ -19,7 +19,7 @@ public final class QCStatementPolicyIdentifiers {
 	}
 
 	public static boolean isQCCompliant(CertificateWrapper certificate) {
-		return hasQCStatementOID(certificate, QCStatementOids.QC_COMPLIANT);
+		return hasQCStatementOID(certificate, QCStatementOids.QC_COMPLIANCE);
 	}
 
 	private static boolean hasQCStatementOID(CertificateWrapper certificate, QCStatementOids... qcStatements) {

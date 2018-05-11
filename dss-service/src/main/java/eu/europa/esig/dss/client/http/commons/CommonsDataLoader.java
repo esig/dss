@@ -31,6 +31,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.KeyStore;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -53,6 +54,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
@@ -114,6 +116,8 @@ public class CommonsDataLoader implements DataLoader {
 
 	public static final String CONTENT_TYPE = "Content-Type";
 
+	public static final List<Integer> ACCEPTED_HTTP_STATUS = Arrays.asList(HttpStatus.SC_OK);
+
 	protected String contentType;
 
 	// TODO: (Bob: 2014 Jan 28) It should be taken into account: Content-Transfer-Encoding if it is not the default
@@ -128,6 +132,7 @@ public class CommonsDataLoader implements DataLoader {
 	private int connectionsMaxTotal = CONNECTIONS_MAX_TOTAL;
 	private int connectionsMaxPerRoute = CONNECTIONS_MAX_PER_ROUTE;
 	private boolean redirectsEnabled = true;
+	private List<Integer> acceptedHttpStatus = ACCEPTED_HTTP_STATUS;
 
 	private final Map<HttpHost, UsernamePasswordCredentials> authenticationMap = new HashMap<HttpHost, UsernamePasswordCredentials>();
 
@@ -410,15 +415,6 @@ public class CommonsDataLoader implements DataLoader {
 		return get(url);
 	}
 
-	private byte[] fileGet(String urlString) {
-		try {
-			return DSSUtils.toByteArray(new URL(urlString).openStream());
-		} catch (IOException e) {
-			LOG.warn("An IO error occured while reading url " + urlString, e);
-		}
-		return null;
-	}
-
 	/**
 	 * This method retrieves data using LDAP protocol. - CRL from given LDAP
 	 * url, e.g. ldap://ldap.infonotary.com/dc=identity-ca,dc=infonotary,dc=com
@@ -469,20 +465,25 @@ public class CommonsDataLoader implements DataLoader {
 	 * @return
 	 */
 	protected byte[] ftpGet(final String urlString) {
-
-		InputStream inputStream = null;
-		try {
-
-			final URL url = new URL(urlString);
-			inputStream = url.openStream();
+		final URL url = getURL(urlString);
+		try (InputStream inputStream = url.openStream()) {
 			return DSSUtils.toByteArray(inputStream);
 		} catch (Exception e) {
-
-			LOG.warn(e.getMessage());
-		} finally {
-			Utils.closeQuietly(inputStream);
+			LOG.warn("Unable to retrieve URL {} content : {}", urlString, e.getMessage());
 		}
 		return null;
+	}
+
+	protected byte[] fileGet(final String urlString) {
+		return ftpGet(urlString);
+	}
+
+	private URL getURL(String urlString) {
+		try {
+			return new URL(urlString);
+		} catch (MalformedURLException e) {
+			throw new DSSException("Unable to create URL instance", e);
+		}
 	}
 
 	/**
@@ -611,27 +612,24 @@ public class CommonsDataLoader implements DataLoader {
 			final HttpResponse response = client.execute(targetHost, httpRequest, localContext);
 			return response;
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException("Unable to retrieve HttpResponse from url '" + url + "'", e);
 		}
 
 	}
 
 	protected byte[] readHttpResponse(final String url, final HttpResponse httpResponse) throws DSSException {
+		final StatusLine statusLine = httpResponse.getStatusLine();
+		final int statusCode = statusLine.getStatusCode();
+		final String reasonPhrase = statusLine.getReasonPhrase();
 
-		final int statusCode = httpResponse.getStatusLine().getStatusCode();
-		if (LOG.isDebugEnabled()) {
-			LOG.debug(url + " status code is " + statusCode + " - " + (statusCode == HttpStatus.SC_OK ? "OK" : "NOK"));
-		}
-
-		if (statusCode != HttpStatus.SC_OK) {
-			LOG.warn("No content available via url: " + url);
-			return null;
+		if (!acceptedHttpStatus.contains(statusCode)) {
+			String reason = Utils.isStringNotEmpty(reasonPhrase) ? " / reason : " + reasonPhrase : "";
+			throw new DSSException("Unable to request '" + url + "' (HTTP status code : " + statusCode + reason + ")");
 		}
 
 		final HttpEntity responseEntity = httpResponse.getEntity();
 		if (responseEntity == null) {
-			LOG.warn("No message entity for this response - will use nothing: " + url);
-			return null;
+			throw new DSSException("No message entity for this response - will use nothing: " + url);
 		}
 
 		final byte[] content = getContent(responseEntity);
@@ -639,15 +637,10 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	protected byte[] getContent(final HttpEntity responseEntity) throws DSSException {
-		InputStream content = null;
-		try {
-			content = responseEntity.getContent();
-			final byte[] bytes = DSSUtils.toByteArray(content);
-			return bytes;
+		try (InputStream content = responseEntity.getContent()) {
+			return DSSUtils.toByteArray(content);
 		} catch (IOException e) {
 			throw new DSSException(e);
-		} finally {
-			Utils.closeQuietly(content);
 		}
 	}
 
@@ -763,8 +756,21 @@ public class CommonsDataLoader implements DataLoader {
 	 */
 	@Override
 	public void setContentType(final String contentType) {
-
 		this.contentType = contentType;
+	}
+
+	public List<Integer> getAcceptedHttpStatus() {
+		return acceptedHttpStatus;
+	}
+
+	/**
+	 * This allows to set a list of accepted http status. Example: 200 (OK)
+	 *
+	 * @param acceptedHttpStatus
+	 *            a list of integer which correspond to the http status code
+	 */
+	public void setAcceptedHttpStatus(List<Integer> acceptedHttpStatus) {
+		this.acceptedHttpStatus = acceptedHttpStatus;
 	}
 
 	/**

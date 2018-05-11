@@ -81,6 +81,9 @@ public class TimestampToken extends Token {
 
 	private List<TimestampReference> timestampedReferences;
 
+	/**
+	 * In case of XAdES IndividualDataObjectsTimeStamp, Includes shall be specified
+	 */
 	private List<TimestampInclude> timestampIncludes;
 
 	/**
@@ -107,6 +110,10 @@ public class TimestampToken extends Token {
 
 	public TimestampToken(final CMSSignedData cms, final TimestampType type, final CertificatePool certPool) throws TSPException, IOException {
 		this(new TimeStampToken(cms), type, certPool);
+	}
+
+	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type) {
+		this(timeStamp, type, new CertificatePool());
 	}
 
 	/**
@@ -207,25 +214,52 @@ public class TimestampToken extends Token {
 	 * @return true if the data is verified by the TimeStampToken
 	 */
 	public boolean matchData(final byte[] data) {
+		return matchData(data, false);
+	}
+	
+	/**
+	 * Checks if the {@code TimeStampToken} matches the signed data.
+	 * 
+	 * This method is used when we want to test whether the {@code TimeStampToken} matches the signed data
+	 * calculated according to ETSI TS 101 733 v2.2.1 and depending on the result re-run the message imprint
+	 * calculation according to ETSI TS 101 733 v1.8.3. It is part of solution for the issue DSS-1401 
+	 * (https://ec.europa.eu/cefdigital/tracker/browse/DSS-1401)
+	 * 
+	 * @param data
+	 * 			  the array of {@code byte} representing the timestamped data
+	 * @param suppressMatchWarnings
+	 * 			  if true the message imprint match warning logs are suppressed. 
+	 * @return true if the data is verified by the TimeStampToken
+	 */
+	public boolean matchData(final byte[] data, final boolean suppressMatchWarnings) {
 
-		try {
-			processed = true;
-			messageImprintData = data != null;
-			final TimeStampTokenInfo timeStampInfo = timeStamp.getTimeStampInfo();
-			final ASN1ObjectIdentifier hashAlgorithm = timeStampInfo.getHashAlgorithm().getAlgorithm();
-			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(hashAlgorithm.getId());
+		processed = true;
 
-			final byte[] computedDigest = DSSUtils.digest(digestAlgorithm, data);
-			final byte[] timestampDigest = timeStampInfo.getMessageImprintDigest();
-			messageImprintIntact = Arrays.equals(computedDigest, timestampDigest);
-			if (!messageImprintIntact) {
-				LOG.error("Computed digest ({}) on the extracted data from the document : {}", digestAlgorithm, Utils.toHex(computedDigest));
-				LOG.error("Digest present in TimestampToken: {}", Utils.toHex(timestampDigest));
-				LOG.error("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
+		messageImprintData = data != null;
+		messageImprintIntact = false;
+
+		if (messageImprintData) {
+			try {
+				final TimeStampTokenInfo timeStampInfo = timeStamp.getTimeStampInfo();
+				final ASN1ObjectIdentifier hashAlgorithm = timeStampInfo.getHashAlgorithm().getAlgorithm();
+				final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(hashAlgorithm.getId());
+
+				final byte[] computedDigest = DSSUtils.digest(digestAlgorithm, data);
+				final byte[] timestampDigest = timeStampInfo.getMessageImprintDigest();
+				messageImprintIntact = Arrays.equals(computedDigest, timestampDigest);
+				if (!messageImprintIntact && !suppressMatchWarnings) {
+					LOG.warn("Computed digest ({}) on the extracted data from the document : {}", digestAlgorithm, Utils.toHex(computedDigest));
+					LOG.warn("Digest present in TimestampToken: {}", Utils.toHex(timestampDigest));
+					LOG.warn("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
+				}
+
+			} catch (DSSException e) {
+				LOG.warn("Unable to validate the timestamp", e);
 			}
-		} catch (DSSException e) {
-			messageImprintIntact = false;
+		} else {
+			LOG.warn("Timestamped data not found !");
 		}
+
 		return messageImprintIntact;
 	}
 
@@ -327,7 +361,7 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * Applies only fro XAdES timestamps
+	 * Applies only from XAdES timestamps
 	 *
 	 * @return {@code String} representing the canonicalization method used by the timestamp
 	 */
@@ -354,12 +388,15 @@ public class TimestampToken extends Token {
 		}
 	}
 
-	// TODO-Vin (12/09/2014): Comment!
+	/**
+	 * Returns the covered references by the current timestamp (XAdES IndividualDataObjectsTimeStamp)
+	 * 
+	 * @return
+	 */
 	public List<TimestampInclude> getTimestampIncludes() {
 		return timestampIncludes;
 	}
 
-	// TODO-Vin (12/09/2014): Comment!
 	public void setTimestampIncludes(List<TimestampInclude> timestampIncludes) {
 		this.timestampIncludes = timestampIncludes;
 	}

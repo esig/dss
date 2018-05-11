@@ -147,6 +147,23 @@
 		        
 		        <dl>
 		    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
+		            <dt>Best signature time:</dt>
+		            <dd>
+		            	<xsl:value-of select="dss:BestSignatureTime"/>
+		            	<span>
+			    			<xsl:attribute name="class">glyphicon glyphicon-info-sign text-info</xsl:attribute>
+							<xsl:attribute name="style">margin-left : 10px</xsl:attribute>
+							<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+							<xsl:attribute name="data-placement">right</xsl:attribute>
+							<xsl:attribute name="title">
+								Lowest time at which there exists a proof of existence for the signature 
+							</xsl:attribute>
+			    		</span>		
+		            </dd>
+		        </dl>
+		        
+		        <dl>
+		    		<xsl:attribute name="class">dl-horizontal</xsl:attribute>
 		            <dt>Signature position:</dt>
 		            <dd><xsl:value-of select="count(preceding-sibling::dss:Signature) + 1"/> out of <xsl:value-of select="count(ancestor::*/dss:Signature)"/></dd>
 		        </dl>

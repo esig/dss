@@ -38,6 +38,7 @@ public class MimeType implements Serializable {
 
 	public static final MimeType BINARY = new MimeType("application/octet-stream");
 	public static final MimeType XML = new MimeType("text/xml");
+	public static final MimeType HTML = new MimeType("text/html");
 	public static final MimeType PDF = new MimeType("application/pdf");
 	public static final MimeType PKCS7 = new MimeType("application/pkcs7-signature");
 	public static final MimeType TST = new MimeType("application/vnd.etsi.timestamp-token");
@@ -54,6 +55,7 @@ public class MimeType implements Serializable {
 
 	static {
 		fileExtensions.put("xml", XML);
+		fileExtensions.put("html", HTML);
 
 		fileExtensions.put("pkcs7", PKCS7);
 		fileExtensions.put("p7s", PKCS7);

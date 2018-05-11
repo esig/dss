@@ -112,9 +112,9 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 
 	protected abstract boolean process();
 
-	protected abstract MessageTag getMessageTag();
+	protected abstract IMessageTag getMessageTag();
 
-	protected abstract MessageTag getErrorMessageTag();
+	protected abstract IMessageTag getErrorMessageTag();
 
 	protected List<XmlName> getPreviousErrors() {
 		return Collections.emptyList();
@@ -192,10 +192,10 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 		result.getConstraint().add(constraint);
 	}
 
-	private XmlName buildXmlName(MessageTag messageTag) {
+	private XmlName buildXmlName(IMessageTag messageTag) {
 		XmlName xmlName = new XmlName();
 		if (messageTag != null) {
-			xmlName.setNameId(messageTag.name());
+			xmlName.setNameId(messageTag.getId());
 			xmlName.setValue(messageTag.getMessage());
 		} else {
 			LOG.error("MessageTag is null");

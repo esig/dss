@@ -1,19 +1,21 @@
 [source,http,options="nowrap"]
 ----
 POST /services/rest/signature/multiple-documents/getDataToSignMultiple HTTP/1.1
-Accept: application/json, application/javascript, text/javascript
+Accept: application/json, application/javascript, text/javascript, text/json
 Content-Type: application/json; charset=UTF-8
 Host: localhost:8080
-Content-Length: 2483
+Content-Length: 2511
 
 {
   "parameters" : {
     "signWithExpiredCertificate" : false,
+    "generateTBSWithoutCertificate" : false,
     "signatureLevel" : "XAdES_BASELINE_B",
     "signaturePackaging" : "DETACHED",
     "signatureAlgorithm" : "RSA_SHA256",
     "encryptionAlgorithm" : "RSA",
     "digestAlgorithm" : "SHA256",
+    "maskGenerationFunction" : null,
     "contentTimestampParameters" : {
       "digestAlgorithm" : "SHA256",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#"
@@ -34,9 +36,8 @@ Content-Length: 2483
     "asicContainerType" : "ASiC_E",
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1506597228545,
+      "signingDate" : 1522051929368,
       "claimedSignerRoles" : null,
-      "certifiedSignerRoles" : null,
       "signaturePolicy" : null,
       "commitmentTypeIndications" : null,
       "signerLocation" : null
@@ -44,13 +45,13 @@ Content-Length: 2483
   },
   "toSignDocuments" : [ {
     "bytes" : "SGVsbG8=",
+    "digestAlgorithm" : null,
     "name" : "test1.bin",
-    "absolutePath" : "RemoteDocument",
     "mimeType" : null
   }, {
     "bytes" : "V29ybGQ=",
+    "digestAlgorithm" : null,
     "name" : "test2.bin",
-    "absolutePath" : "RemoteDocument",
     "mimeType" : null
   } ]
 }

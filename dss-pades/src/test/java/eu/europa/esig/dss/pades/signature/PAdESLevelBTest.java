@@ -26,9 +26,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -68,7 +66,6 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -102,10 +99,16 @@ public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 
-		try {
-			InputStream inputStream = new ByteArrayInputStream(byteArray);
+		byte[] originalBinaries = DSSUtils.toByteArray(documentToSign);
 
-			PDDocument document = PDDocument.load(inputStream);
+		for (int i = 0; i < originalBinaries.length; i++) {
+			byte originalByte = originalBinaries[i];
+			byte signedByte = byteArray[i];
+			assertEquals(originalByte, signedByte);
+		}
+
+		try (PDDocument document = PDDocument.load(byteArray)) {
+
 			List<PDSignature> signatures = document.getSignatureDictionaries();
 			assertEquals(1, signatures.size());
 
@@ -227,8 +230,6 @@ public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 				Utils.closeQuietly(asn1sInput);
 			}
 
-			Utils.closeQuietly(inputStream);
-			document.close();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			fail(e.getMessage());
@@ -259,21 +260,6 @@ public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 	@Override
 	protected PAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
-	}
-
-	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.PDF;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return false;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
 	}
 
 	@Override

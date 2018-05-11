@@ -3,10 +3,13 @@ package eu.europa.esig.dss.asic.validation;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
 
@@ -65,6 +68,28 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 			}
 		}
 		return descriptions;
+	}
+
+	@Override
+	public List<DSSDocument> getOriginalDocuments(String signatureId) throws DSSException {
+		List<DSSDocument> result = new ArrayList<DSSDocument>();
+		List<DSSDocument> potentials = getSignedDocuments();
+		for (final DSSDocument signature : getSignatureDocuments()) {
+			XMLDocumentForASiCValidator xadesValidator = new XMLDocumentForASiCValidator(signature);
+			xadesValidator.setCertificateVerifier(certificateVerifier);
+			xadesValidator.setDetachedContents(potentials);
+			List<DSSDocument> retrievedDocs = xadesValidator.getOriginalDocuments(signatureId);
+			if (Utils.isCollectionNotEmpty(retrievedDocs)) {
+				if (ASiCContainerType.ASiC_S.equals(getContainerType())) {
+					result.addAll(getSignedDocumentsASiCS(retrievedDocs));
+				} else {
+					result.addAll(retrievedDocs);
+				}
+				break;
+			}
+		}
+
+		return result;
 	}
 
 }

@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -29,8 +28,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.namespace.NamespaceContext;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
@@ -46,17 +43,17 @@ import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
+public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -64,6 +61,8 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractPkiFactoryTes
 
 	@Before
 	public void init() throws Exception {
+		Init.init();
+
 		documentToSign = new FileDocument(new File("src/test/resources/sampleWithPlaceOfSignature.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
@@ -106,19 +105,16 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractPkiFactoryTes
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
-		try {
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			dbf.setNamespaceAware(true);
+		super.onDocumentSigned(byteArray);
 
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.parse(new ByteArrayInputStream(byteArray));
+		try {
+			Document doc = DomUtils.buildDOM(byteArray);
 
 			XPathFactory f = XPathFactory.newInstance();
 			XPath xPath = f.newXPath();
 			xPath.setNamespaceContext(new Name());
 			Node node = (Node) xPath.evaluate("root/data[@id='data1']", doc, XPathConstants.NODE);
 
-			Init.init();
 			Canonicalizer c14n = Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#");
 			byte c14nBytes[] = c14n.canonicalizeSubtree(node);
 
@@ -126,7 +122,6 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractPkiFactoryTes
 
 			node = (Node) xPath.evaluate("root/data[@id='data2']", doc, XPathConstants.NODE);
 
-			Init.init();
 			c14n = Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#");
 			c14nBytes = c14n.canonicalizeSubtree(node);
 
@@ -137,6 +132,11 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractPkiFactoryTes
 	}
 
 	@Override
+	protected void getOriginalDocument(DSSDocument signedDocument, DiagnosticData diagnosticData) {
+		// Ignored sampleWithPlaceOfSignature itself is not covered
+	}
+
+	@Override
 	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
 		return service;
 	}
@@ -144,21 +144,6 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractPkiFactoryTes
 	@Override
 	protected XAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
-	}
-
-	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.XML;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return false;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
 	}
 
 	@Override

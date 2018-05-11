@@ -1,5 +1,15 @@
 package eu.europa.esig.dss.asic.signature;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.zip.CRC32;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -14,16 +24,7 @@ import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
-import java.util.zip.CRC32;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
+import eu.europa.esig.dss.validation.TimestampToken;
 
 public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureParameters> extends AbstractSignatureService<SP>
 		implements MultipleDocumentsSignatureService<SP> {
@@ -40,6 +41,11 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 	}
 
 	abstract String getExpectedSignatureExtension();
+
+	@Override
+	public TimestampToken getContentTimestamp(DSSDocument toSignDocument, SP parameters) {
+		return getContentTimestamp(Arrays.asList(toSignDocument), parameters);
+	}
 
 	@Override
 	public ToBeSigned getDataToSign(DSSDocument toSignDocument, SP parameters) throws DSSException {

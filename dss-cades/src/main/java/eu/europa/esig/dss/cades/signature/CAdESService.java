@@ -31,6 +31,7 @@ import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
+import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +39,7 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -53,6 +55,8 @@ import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.x509.TimestampType;
 
 /**
  * CAdES implementation of DocumentSignatureService
@@ -75,6 +79,16 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 		super(certificateVerifier);
 		cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
 		LOG.debug("+ CAdESService created");
+	}
+
+	@Override
+	public TimestampToken getContentTimestamp(DSSDocument toSignDocument, CAdESSignatureParameters parameters) {
+		if (tspSource == null) {
+			throw new DSSException("A TSPSource is required !");
+		}
+		DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
+		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, Utils.fromBase64(toSignDocument.getDigest(digestAlgorithm)));
+		return new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP);
 	}
 
 	@Override

@@ -27,8 +27,6 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_content
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_sigPolicyId;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_signerAttr;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_signerLocation;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.pkcs_9_at_signingTime;
 
 import java.util.ArrayList;
@@ -57,27 +55,21 @@ import org.bouncycastle.asn1.esf.SignerAttribute;
 import org.bouncycastle.asn1.esf.SignerLocation;
 import org.bouncycastle.asn1.ess.ContentHints;
 import org.bouncycastle.asn1.ess.ContentIdentifier;
-import org.bouncycastle.asn1.ess.ESSCertID;
-import org.bouncycastle.asn1.ess.ESSCertIDv2;
-import org.bouncycastle.asn1.ess.SigningCertificate;
-import org.bouncycastle.asn1.ess.SigningCertificateV2;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.Time;
-import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.SignerAttributeV2;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
  * This class holds the CAdES-B signature profile; it supports the inclusion of the mandatory signed
@@ -117,9 +109,12 @@ public class CAdESLevelBaselineB {
 	}
 
 	public AttributeTable getSignedAttributes(final CAdESSignatureParameters parameters) {
+		if (parameters.getSignedData() != null) {
+			LOG.debug("Using explict SignedAttributes from parameter");
+			return CMSUtils.getAttributesFromByteArray(parameters.getSignedData());
+		}
 
 		ASN1EncodableVector signedAttributes = new ASN1EncodableVector();
-
 		addSigningCertificateAttribute(parameters, signedAttributes);
 		addSigningTimeAttribute(parameters, signedAttributes);
 		addSignerAttribute(parameters, signedAttributes);
@@ -153,29 +148,25 @@ public class CAdESLevelBaselineB {
 	 * @return
 	 */
 	private void addSignerAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+		final List<String> claimedSignerRoles = parameters.bLevel().getClaimedSignerRoles();
+		if (claimedSignerRoles != null) {
 
-		// In PAdES, the role is in the signature dictionary
-		if (!padesUsage) {
-
-			final List<String> claimedSignerRoles = parameters.bLevel().getClaimedSignerRoles();
-			if (claimedSignerRoles != null) {
-
-				List<org.bouncycastle.asn1.x509.Attribute> claimedAttributes = new ArrayList<org.bouncycastle.asn1.x509.Attribute>(claimedSignerRoles.size());
-				for (final String claimedSignerRole : claimedSignerRoles) {
-
-					final DERUTF8String roles = new DERUTF8String(claimedSignerRole);
-
-					// TODO: role attribute key (id_at_name) should be customizable
-					final org.bouncycastle.asn1.x509.Attribute id_aa_ets_signerAttr = new org.bouncycastle.asn1.x509.Attribute(X509ObjectIdentifiers.id_at_name,
-							new DERSet(roles));
-					claimedAttributes.add(id_aa_ets_signerAttr);
-				}
-				final org.bouncycastle.asn1.cms.Attribute attribute = new org.bouncycastle.asn1.cms.Attribute(id_aa_ets_signerAttr,
-						new DERSet(new SignerAttribute(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
-				signedAttributes.add(attribute);
+			List<org.bouncycastle.asn1.x509.Attribute> claimedAttributes = new ArrayList<org.bouncycastle.asn1.x509.Attribute>(claimedSignerRoles.size());
+			for (final String claimedSignerRole : claimedSignerRoles) {
+				final DERUTF8String roles = new DERUTF8String(claimedSignerRole);
+				final org.bouncycastle.asn1.x509.Attribute id_aa_ets_signerAttr = new org.bouncycastle.asn1.x509.Attribute(OID.id_at_role,
+						new DERSet(roles));
+				claimedAttributes.add(id_aa_ets_signerAttr);
 			}
-			// TODO: handle CertifiedAttributes ::= AttributeCertificate -- as defined in RFC 3281: see clause 4.1.
-			// final List<String> certifiedSignerRoles = parameters.bLevel().getCertifiedSignerRoles();
+			org.bouncycastle.asn1.cms.Attribute signerAttributes;
+			if (!parameters.isEn319122()) {
+				signerAttributes = new org.bouncycastle.asn1.cms.Attribute(id_aa_ets_signerAttr,
+						new DERSet(new SignerAttribute(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
+			} else {
+				signerAttributes = new org.bouncycastle.asn1.cms.Attribute(OID.id_aa_ets_signerAttrV2,
+						new DERSet(new SignerAttributeV2(claimedAttributes.toArray(new org.bouncycastle.asn1.x509.Attribute[claimedAttributes.size()]))));
+			}
+			signedAttributes.add(signerAttributes);
 		}
 	}
 
@@ -305,7 +296,7 @@ public class CAdESLevelBaselineB {
 	 */
 	private void addContentTimestamps(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
-		if ((parameters.getContentTimestamps() != null) && !parameters.getContentTimestamps().isEmpty()) {
+		if (Utils.isCollectionNotEmpty(parameters.getContentTimestamps())) {
 
 			final List<TimestampToken> contentTimestamps = parameters.getContentTimestamps();
 			for (final TimestampToken contentTimestamp : contentTimestamps) {
@@ -440,26 +431,13 @@ public class CAdESLevelBaselineB {
 		}
 	}
 
-	private void addSigningCertificateAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) throws DSSException {
-		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-		CertificateToken signingToken = parameters.getSigningCertificate();
-		final byte[] certHash = signingToken.getDigest(digestAlgorithm);
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Adding Certificate Hash {} with algorithm {}", Utils.toHex(certHash), digestAlgorithm.getName());
+	private void addSigningCertificateAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+		if (parameters.getSigningCertificate() == null && parameters.isGenerateTBSWithoutCertificate()) {
+			LOG.debug("Signing certificate not available and must be added to signed attributes later");
+			return;
 		}
-		final IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(parameters.getSigningCertificate());
 
-		Attribute attribute = null;
-		if (digestAlgorithm == DigestAlgorithm.SHA1) {
-			final ESSCertID essCertID = new ESSCertID(certHash, issuerSerial);
-			SigningCertificate signingCertificate = new SigningCertificate(essCertID);
-			attribute = new Attribute(id_aa_signingCertificate, new DERSet(signingCertificate));
-		} else {
-			final ESSCertIDv2 essCertIdv2 = new ESSCertIDv2(DSSASN1Utils.getAlgorithmIdentifier(digestAlgorithm), certHash, issuerSerial);
-			SigningCertificateV2 signingCertificateV2 = new SigningCertificateV2(essCertIdv2);
-			attribute = new Attribute(id_aa_signingCertificateV2, new DERSet(signingCertificateV2));
-		}
-		signedAttributes.add(attribute);
+		CMSUtils.addSigningCertificateAttribute(signedAttributes, parameters.getDigestAlgorithm(), parameters.getSigningCertificate());
 	}
 
 }

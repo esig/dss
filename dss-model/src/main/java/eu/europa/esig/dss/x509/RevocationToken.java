@@ -22,6 +22,8 @@ package eu.europa.esig.dss.x509;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.Digest;
+
 @SuppressWarnings("serial")
 public abstract class RevocationToken extends Token {
 
@@ -69,6 +71,11 @@ public abstract class RevocationToken extends Token {
 	protected Date expiredCertsOnCRL;
 
 	protected Date archiveCutOff;
+
+	/**
+	 * Represents the certHash extension from an OCSP Response (optional)
+	 */
+	protected Digest certHash;
 
 	/**
 	 * The reason of the revocation.
@@ -177,6 +184,15 @@ public abstract class RevocationToken extends Token {
 	 */
 	public Date getArchiveCutOff() {
 		return archiveCutOff;
+	}
+
+	/**
+	 * Returns the certHash extension (from an OCSP Response)
+	 * 
+	 * @return the certHash contains or null
+	 */
+	public Digest getCertHash() {
+		return certHash;
 	}
 
 	/**

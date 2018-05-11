@@ -39,15 +39,15 @@ public class CompositeTSPSource implements TSPSource {
 		for (Entry<String, TSPSource> entry : tspSources.entrySet()) {
 			String sourceKey = entry.getKey();
 			TSPSource source = entry.getValue();
-			LOG.debug("Trying to get timestamp with TSPSource {}", sourceKey);
+			LOG.debug("Trying to get timestamp with TSPSource '{}'", sourceKey);
 			try {
 				TimeStampToken token = source.getTimeStampResponse(digestAlgorithm, digestValue);
 				if (token != null) {
-					LOG.debug("Successfully retrieved timestamp with TSPSource {}", sourceKey);
+					LOG.debug("Successfully retrieved timestamp with TSPSource '{}'", sourceKey);
 					return token;
 				}
 			} catch (Exception e) {
-				LOG.warn("Unable to retrieve the timestamp with TSPSource {} : {}", sourceKey, e.getMessage());
+				LOG.warn("Unable to retrieve the timestamp with TSPSource '{}' : {}", sourceKey, e.getMessage());
 			}
 		}
 		throw new DSSException("Unable to retrieve the timestamp (" + tspSources.size() + " tries)");

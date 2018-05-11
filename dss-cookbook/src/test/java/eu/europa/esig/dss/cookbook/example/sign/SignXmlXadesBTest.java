@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.io.IOException;
-
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -31,6 +29,8 @@ import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -41,7 +41,7 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 public class SignXmlXadesBTest extends CookbookTools {
 
 	@Test
-	public void signXAdESBaselineB() throws IOException {
+	public void signXAdESBaselineB() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -53,51 +53,49 @@ public class SignXmlXadesBTest extends CookbookTools {
 		// Return AbstractSignatureTokenConnection signingToken
 		// and it's first private key entry from the PKCS12 store
 		// Return DSSPrivateKeyEntry privateKey
-		preparePKCS12TokenAndKey();
 
-		// tag::demo[]
+		try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 
-		// Preparing parameters for the XAdES signature
-		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
-		// We choose the level of the signature (-B, -T, -LT, -LTA).
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		// We choose the type of the signature packaging (ENVELOPED, ENVELOPING, DETACHED).
-		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-		// We set the digest algorithm to use with the signature algorithm. You must use the
-		// same parameter when you invoke the method sign on the token. The default value is SHA256
-		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
-		// We set the signing certificate
-		parameters.setSigningCertificate(privateKey.getCertificate());
-		// We set the certificate chain
-		parameters.setCertificateChain(privateKey.getCertificateChain());
+			// tag::demo[]
 
-		// Create common certificate verifier
-		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
+			// Preparing parameters for the XAdES signature
+			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
+			// We choose the level of the signature (-B, -T, -LT, -LTA).
+			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+			// We choose the type of the signature packaging (ENVELOPED, ENVELOPING, DETACHED).
+			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+			// We set the digest algorithm to use with the signature algorithm. You must use the
+			// same parameter when you invoke the method sign on the token. The default value is SHA256
+			parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-		// Create XAdES service for signature
-		XAdESService service = new XAdESService(commonCertificateVerifier);
+			// We set the signing certificate
+			parameters.setSigningCertificate(privateKey.getCertificate());
+			// We set the certificate chain
+			parameters.setCertificateChain(privateKey.getCertificateChain());
 
-		// Get the SignedInfo XML segment that need to be signed.
-		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
+			// Create common certificate verifier
+			CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 
-		// This function obtains the signature value for signed information using the
-		// private key and specified algorithm
-		SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
+			// Create XAdES service for signature
+			XAdESService service = new XAdESService(commonCertificateVerifier);
 
-		// We invoke the service to sign the document with the signature value obtained in
-		// the previous step.
-		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+			// Get the SignedInfo XML segment that need to be signed.
+			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
 
-		// end::demo[]
+			// This function obtains the signature value for signed information using the
+			// private key and specified algorithm
+			SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
 
-		// try {
-		// signedDocument.save("src/test/resources/signedXmlXadesB.xml");
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
+			// We invoke the service to sign the document with the signature value obtained in
+			// the previous step.
+			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
-		testFinalDocument(signedDocument);
+			// end::demo[]
+
+			testFinalDocument(signedDocument);
+		}
 	}
 
 }

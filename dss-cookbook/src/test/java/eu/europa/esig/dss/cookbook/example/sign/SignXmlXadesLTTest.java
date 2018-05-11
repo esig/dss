@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.cookbook.example.sign;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.junit.Test;
 
@@ -36,6 +35,8 @@ import eu.europa.esig.dss.client.crl.OnlineCRLSource;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.tsl.service.TSLRepository;
 import eu.europa.esig.dss.tsl.service.TSLValidationJob;
@@ -50,7 +51,7 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 public class SignXmlXadesLTTest extends CookbookTools {
 
 	@Test
-	public void signXAdESBaselineLT() throws IOException {
+	public void signXAdESBaselineLT() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -62,85 +63,83 @@ public class SignXmlXadesLTTest extends CookbookTools {
 		// Return AbstractSignatureTokenConnection signingToken
 		// and it's first private key entry from the PKCS12 store
 		// Return DSSPrivateKeyEntry privateKey *****
-		preparePKCS12TokenAndKey();
+		try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 
-		// tag::demo[]
+			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
-		// Preparing parameters for the XAdES signature
-		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
-		// We choose the level of the signature (-B, -T, -LT, -LTA).
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
-		// We choose the type of the signature packaging (ENVELOPED, ENVELOPING, DETACHED).
-		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-		// We set the digest algorithm to use with the signature algorithm. You must use the
-		// same parameter when you invoke the method sign on the token. The default value is SHA256
-		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+			// tag::demo[]
 
-		// We set the signing certificate
-		parameters.setSigningCertificate(privateKey.getCertificate());
-		// We set the certificate chain
-		parameters.setCertificateChain(privateKey.getCertificateChain());
+			// Preparing parameters for the XAdES signature
+			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
+			// We choose the level of the signature (-B, -T, -LT, -LTA).
+			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
+			// We choose the type of the signature packaging (ENVELOPED, ENVELOPING, DETACHED).
+			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+			// We set the digest algorithm to use with the signature algorithm. You must use the
+			// same parameter when you invoke the method sign on the token. The default value is SHA256
+			parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-		// Create common certificate verifier
-		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
+			// We set the signing certificate
+			parameters.setSigningCertificate(privateKey.getCertificate());
+			// We set the certificate chain
+			parameters.setCertificateChain(privateKey.getCertificateChain());
 
-		CommonsDataLoader commonsHttpDataLoader = new CommonsDataLoader();
+			// Create common certificate verifier
+			CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 
-		KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12",
-				"dss-password");
+			CommonsDataLoader commonsHttpDataLoader = new CommonsDataLoader();
 
-		TrustedListsCertificateSource tslCertificateSource = new TrustedListsCertificateSource();
+			KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12",
+					"dss-password");
 
-		TSLRepository tslRepository = new TSLRepository();
-		tslRepository.setTrustedListsCertificateSource(tslCertificateSource);
+			TrustedListsCertificateSource tslCertificateSource = new TrustedListsCertificateSource();
 
-		TSLValidationJob job = new TSLValidationJob();
-		job.setDataLoader(commonsHttpDataLoader);
-		job.setOjContentKeyStore(keyStoreCertificateSource);
-		job.setLotlRootSchemeInfoUri("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl.html");
-		job.setLotlUrl("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml");
-		job.setOjUrl("http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG");
-		job.setLotlCode("EU");
-		job.setRepository(tslRepository);
-		job.refresh();
+			TSLRepository tslRepository = new TSLRepository();
+			tslRepository.setTrustedListsCertificateSource(tslCertificateSource);
 
-		commonCertificateVerifier.setTrustedCertSource(tslCertificateSource);
+			TSLValidationJob job = new TSLValidationJob();
+			job.setDataLoader(commonsHttpDataLoader);
+			job.setOjContentKeyStore(keyStoreCertificateSource);
+			job.setLotlRootSchemeInfoUri("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl.html");
+			job.setLotlUrl("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml");
+			job.setOjUrl("http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG");
+			job.setLotlCode("EU");
+			job.setRepository(tslRepository);
+			job.refresh();
 
-		OnlineCRLSource onlineCRLSource = new OnlineCRLSource();
-		onlineCRLSource.setDataLoader(commonsHttpDataLoader);
-		commonCertificateVerifier.setCrlSource(onlineCRLSource);
+			commonCertificateVerifier.setTrustedCertSource(tslCertificateSource);
 
-		OnlineOCSPSource onlineOCSPSource = new OnlineOCSPSource();
-		onlineOCSPSource.setDataLoader(commonsHttpDataLoader);
-		commonCertificateVerifier.setOcspSource(onlineOCSPSource);
+			OnlineCRLSource onlineCRLSource = new OnlineCRLSource();
+			onlineCRLSource.setDataLoader(commonsHttpDataLoader);
+			commonCertificateVerifier.setCrlSource(onlineCRLSource);
 
-		// Create XAdES service for signature
-		XAdESService service = new XAdESService(commonCertificateVerifier);
-		try {
-			service.setTspSource(getMockTSPSource());
-		} catch (Exception e) {
-			throw new DSSException("Error during MockTspSource", e);
+			OnlineOCSPSource onlineOCSPSource = new OnlineOCSPSource();
+			onlineOCSPSource.setDataLoader(commonsHttpDataLoader);
+			commonCertificateVerifier.setOcspSource(onlineOCSPSource);
+
+			// Create XAdES service for signature
+			XAdESService service = new XAdESService(commonCertificateVerifier);
+			try {
+				service.setTspSource(getOnlineTSPSource());
+			} catch (Exception e) {
+				throw new DSSException("Error during MockTspSource", e);
+			}
+
+			// Get the SignedInfo XML segment that need to be signed.
+			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
+
+			// This function obtains the signature value for signed information using the
+			// private key and specified algorithm
+			SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
+
+			// We invoke the service to sign the document with the signature value obtained in
+			// the previous step.
+			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+
+			// end::demo[]
+
+			testFinalDocument(signedDocument);
 		}
-
-		// Get the SignedInfo XML segment that need to be signed.
-		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
-
-		// This function obtains the signature value for signed information using the
-		// private key and specified algorithm
-		SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
-
-		// We invoke the service to sign the document with the signature value obtained in
-		// the previous step.
-		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
-
-		// end::demo[]
-
-		testFinalDocument(signedDocument);
-
-		// try {
-		// signedDocument.save("src/test/resources/signedXmlXadesLT.xml");
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
 	}
+
 }

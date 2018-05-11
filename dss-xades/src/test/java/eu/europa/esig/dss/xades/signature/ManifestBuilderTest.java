@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.MimeType;
@@ -41,7 +40,7 @@ public class ManifestBuilderTest {
 			String xmlContent = new String(Utils.toByteArray(is), "UTF-8");
 			assertTrue(xmlContent.contains(XAdESBuilder.DS_MANIFEST));
 			assertTrue(xmlContent.contains(file1.getName()));
-			assertTrue(xmlContent.contains(Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA512, file1))));
+			assertTrue(xmlContent.contains(file1.getDigest(DigestAlgorithm.SHA512)));
 			LOG.info(xmlContent);
 		}
 	}

@@ -3,11 +3,13 @@
 {
   "parameters" : {
     "signWithExpiredCertificate" : false,
+    "generateTBSWithoutCertificate" : false,
     "signatureLevel" : "XAdES_BASELINE_B",
     "signaturePackaging" : "DETACHED",
     "signatureAlgorithm" : "RSA_SHA256",
     "encryptionAlgorithm" : "RSA",
     "digestAlgorithm" : "SHA256",
+    "maskGenerationFunction" : null,
     "contentTimestampParameters" : {
       "digestAlgorithm" : "SHA256",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#"
@@ -28,9 +30,8 @@
     "asicContainerType" : "ASiC_E",
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1506597227934,
+      "signingDate" : 1522051928249,
       "claimedSignerRoles" : null,
-      "certifiedSignerRoles" : null,
       "signaturePolicy" : null,
       "commitmentTypeIndications" : null,
       "signerLocation" : null
@@ -42,13 +43,13 @@
   },
   "toSignDocuments" : [ {
     "bytes" : "SGVsbG8=",
+    "digestAlgorithm" : null,
     "name" : "test1.bin",
-    "absolutePath" : "RemoteDocument",
     "mimeType" : null
   }, {
     "bytes" : "V29ybGQ=",
+    "digestAlgorithm" : null,
     "name" : "test2.bin",
-    "absolutePath" : "RemoteDocument",
     "mimeType" : null
   } ]
 }

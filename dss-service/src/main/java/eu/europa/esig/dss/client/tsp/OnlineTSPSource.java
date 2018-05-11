@@ -164,7 +164,7 @@ public class OnlineTSPSource implements TSPSource {
 
 			String statusString = timeStampResponse.getStatusString();
 			if (statusString != null) {
-				LOG.info("Status: " + statusString);
+				LOG.info("TSP Status: " + statusString);
 			}
 
 			PKIFailureInfo failInfo = timeStampResponse.getFailInfo();
@@ -176,6 +176,8 @@ public class OnlineTSPSource implements TSPSource {
 
 			if (timeStampToken != null) {
 				LOG.info("TSP SID : SN " + timeStampToken.getSID().getSerialNumber() + ", Issuer " + timeStampToken.getSID().getIssuer());
+			} else {
+				throw new DSSException("No retrieved timestamp token (TSP Status : " + statusString + " / " + failInfo + ")");
 			}
 
 			return timeStampToken;

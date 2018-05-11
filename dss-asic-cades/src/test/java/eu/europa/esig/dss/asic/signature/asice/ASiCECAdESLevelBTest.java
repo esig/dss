@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -41,10 +42,10 @@ import eu.europa.esig.dss.asic.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.TimestampToken;
 
-public class ASiCECAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatureService<ASiCWithCAdESSignatureParameters> {
+public class ASiCECAdESLevelBTest extends AbstractASiCECAdESTestSignature {
 
 	private DocumentSignatureService<ASiCWithCAdESSignatureParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
@@ -52,6 +53,9 @@ public class ASiCECAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatur
 
 	@Before
 	public void init() throws Exception {
+		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getAlternateGoodTsa());
+
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();
@@ -61,7 +65,8 @@ public class ASiCECAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatur
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
-		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
+		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
+		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 	}
 
 	@Override
@@ -107,21 +112,6 @@ public class ASiCECAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatur
 	@Override
 	protected ASiCWithCAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
-	}
-
-	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.ASICE;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return false;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
 	}
 
 	@Override

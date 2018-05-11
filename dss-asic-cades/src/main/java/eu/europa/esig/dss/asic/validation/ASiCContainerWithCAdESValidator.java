@@ -10,10 +10,12 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
@@ -159,6 +161,47 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		}
 
 		return descriptions;
+	}
+
+	@Override
+	public List<DSSDocument> getOriginalDocuments(String signatureId) throws DSSException {
+		List<DSSDocument> result = new ArrayList<DSSDocument>();
+		List<AdvancedSignature> signatures = getSignatures();
+		for (AdvancedSignature signature : signatures) {
+			if (signature.getId().equals(signatureId)) {
+				List<DSSDocument> retrievedDocs = signature.getDetachedContents();
+				if (ASiCContainerType.ASiC_S.equals(getContainerType())) {
+					result.addAll(getSignedDocumentsASiCS(retrievedDocs));
+				} else {
+					DSSDocument signatureDocument = getSignatureDocument(signature.getSignatureFilename());
+					ASiCEWithCAdESManifestValidator manifestValidator = new ASiCEWithCAdESManifestValidator(
+							signatureDocument, getManifestDocuments(), getSignedDocuments());
+					DSSDocument linkedManifest = manifestValidator.getLinkedManifest();
+					ASiCEWithCAdESManifestParser parser = new ASiCEWithCAdESManifestParser(linkedManifest);
+					ManifestFile manifestFile = parser.getDescription();
+					List<String> entries = manifestFile.getEntries();
+					List<DSSDocument> signedDocuments = getSignedDocuments();
+					for (String entry : entries) {
+						for (DSSDocument signedDocument : signedDocuments) {
+							if (Utils.areStringsEqual(entry, signedDocument.getName())) {
+								result.add(signedDocument);
+							}
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	private DSSDocument getSignatureDocument(String signatureFilename) {
+		List<DSSDocument> signatureDocuments = getSignatureDocuments();
+		for (DSSDocument dssDocument : signatureDocuments) {
+			if (Utils.areStringsEqual(signatureFilename, dssDocument.getName())) {
+				return dssDocument;
+			}
+		}
+		return null;
 	}
 
 }

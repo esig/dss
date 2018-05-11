@@ -21,37 +21,36 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Date;
 
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
+public class XAdESLevelBTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
-	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
+
+	private Date signingDate;
+	private TimestampToken contentTimestamp;
 
 	@Before
 	public void init() throws Exception {
+		service = new XAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
+
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
-		signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setSigningCertificate(getSigningCert());
-		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-
-		service = new XAdESService(getCompleteCertificateVerifier());
+		signingDate = new Date();
+		contentTimestamp = service.getContentTimestamp(documentToSign, getSignatureParameters());
 	}
 
 	@Override
@@ -61,22 +60,17 @@ public class XAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatureServ
 
 	@Override
 	protected XAdESSignatureParameters getSignatureParameters() {
+		// Stateless mode
+		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+		signatureParameters.bLevel().setSigningDate(signingDate);
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
+		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		if (contentTimestamp != null) {
+			signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
+		}
 		return signatureParameters;
-	}
-
-	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.XML;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return false;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
 	}
 
 	@Override

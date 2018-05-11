@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -50,7 +48,7 @@ public interface PDFSignatureService {
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	byte[] digest(final InputStream toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm) throws DSSException;
+	byte[] digest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm) throws DSSException;
 
 	/**
 	 * Signs a PDF document
@@ -59,8 +57,6 @@ public interface PDFSignatureService {
 	 *            the pdf document
 	 * @param signatureValue
 	 *            the signature value
-	 * @param signedStream
-	 *            the ouputstream
 	 * @param parameters
 	 *            the signature parameters
 	 * @param digestAlgorithm
@@ -68,8 +64,8 @@ public interface PDFSignatureService {
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	void sign(final InputStream pdfData, final byte[] signatureValue, final OutputStream signedStream, final PAdESSignatureParameters parameters,
-			final DigestAlgorithm digestAlgorithm) throws DSSException;
+	DSSDocument sign(final DSSDocument pdfData, final byte[] signatureValue, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm)
+			throws DSSException;
 
 	/**
 	 * Retrieves and triggers validation of the signatures from a PDF document
@@ -89,16 +85,16 @@ public interface PDFSignatureService {
 	/**
 	 * This method adds the DSS dictionary (Baseline-LT)
 	 * 
-	 * @param inputStream
-	 *            the inputstream with the document to be extended
-	 * @param outpuStream
-	 *            the ouputstream with the result
+	 * @param document
+	 *            the document to be extended
 	 * @param callbacks
 	 *            the callbacks to retrieve the revocation data,...
+	 * @return the pdf document with the added dss dictionary
+	 * 
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	void addDssDictionary(InputStream inputStream, OutputStream outpuStream, List<DSSDictionaryCallback> callbacks) throws DSSException;
+	DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks) throws DSSException;
 
 	/**
 	 * This method returns not signed signature-fields

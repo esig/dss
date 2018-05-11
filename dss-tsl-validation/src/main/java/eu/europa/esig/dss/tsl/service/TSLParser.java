@@ -108,6 +108,9 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 	private static final String ENGLISH_LANGUAGE = "en";
 
+	private static final String VAT_PREFIX = "VAT";
+	private static final String NTR_PREFIX = "NTR";
+
 	private static final String TSL_MIME_TYPE = "application/vnd.etsi.tsl+xml";
 
 	private static final JAXBContext jaxbContext;
@@ -311,12 +314,26 @@ public class TSLParser implements Callable<TSLParserResult> {
 		TSPInformationType tspInformation = tsp.getTSPInformation();
 		if (tspInformation != null) {
 			serviceProvider.setName(getEnglishOrFirst(tspInformation.getTSPName()));
+			serviceProvider.setRegistrationIdentifier(getRegistrationIdentifier(tspInformation.getTSPTradeName()));
 			serviceProvider.setTradeName(getEnglishOrFirst(tspInformation.getTSPTradeName()));
 			serviceProvider.setPostalAddress(getPostalAddress(tspInformation));
 			serviceProvider.setElectronicAddress(getElectronicAddress(tspInformation));
 			serviceProvider.setServices(getServices(tsp.getTSPServices()));
 		}
 		return serviceProvider;
+	}
+
+	private String getRegistrationIdentifier(InternationalNamesType tspTradeName) {
+		if (tspTradeName == null) {
+			return null;
+		}
+		for (MultiLangNormStringType s : tspTradeName.getName()) {
+			String value = s.getValue();
+			if (value != null && (value.startsWith(VAT_PREFIX) || value.startsWith(NTR_PREFIX))) {
+				return value;
+			}
+		}
+		return null;
 	}
 
 	private List<TSLService> getServices(TSPServicesListType tspServices) {

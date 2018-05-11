@@ -20,13 +20,18 @@
  */
 package eu.europa.esig.dss.token;
 
+import java.security.KeyStore.PasswordProtection;
+
+import javax.security.auth.DestroyFailedException;
+import javax.security.auth.Destroyable;
+
 /**
  * Class that hold a simple password.
  *
  */
-public class PrefilledPasswordCallback implements PasswordInputCallback {
+public class PrefilledPasswordCallback implements PasswordInputCallback, Destroyable {
 
-	private final char[] password;
+	private final PasswordProtection password;
 
 	/**
 	 * The default constructor for PrefillPasswordCallback.
@@ -34,13 +39,23 @@ public class PrefilledPasswordCallback implements PasswordInputCallback {
 	 * @param password
 	 *            the password to use
 	 */
-	public PrefilledPasswordCallback(char[] password) {
+	public PrefilledPasswordCallback(PasswordProtection password) {
 		this.password = password;
 	}
 
 	@Override
 	public char[] getPassword() {
-		return password;
+		return password.getPassword();
+	}
+
+	@Override
+	public void destroy() throws DestroyFailedException {
+		password.destroy();
+	}
+
+	@Override
+	public boolean isDestroyed() {
+		return password.isDestroyed();
 	}
 
 }

@@ -344,7 +344,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	protected Reports processValidationPolicy(DiagnosticData diagnosticData, ValidationPolicy validationPolicy) {
-		final ProcessExecutor executor = provideProcessExecutorInstance();
+		final ProcessExecutor<Reports> executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
 		executor.setValidationLevel(validationLevel);
 		executor.setDiagnosticData(diagnosticData);
@@ -375,7 +375,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *
 	 * @return {@code ProcessExecutor}
 	 */
-	public ProcessExecutor provideProcessExecutorInstance() {
+	public ProcessExecutor<Reports> provideProcessExecutorInstance() {
 		if (processExecutor == null) {
 			processExecutor = new CustomProcessExecutor();
 		}

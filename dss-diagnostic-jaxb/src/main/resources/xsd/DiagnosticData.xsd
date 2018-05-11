@@ -6,7 +6,7 @@
 	<xs:element name="DiagnosticData">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="DocumentName" type="xs:string" />
+				<xs:element name="DocumentName" type="xs:string" minOccurs="0" />
 				<xs:element name="ValidationDate" type="xs:dateTime" />
 				<xs:element name="ContainerInfo" type="ContainerInfo" minOccurs="0" />
 				<xs:element name="Signatures" minOccurs="0">
@@ -161,12 +161,15 @@
 			<xs:element name="IssuerDistinguishedName" type="DistinguishedName" maxOccurs="unbounded" />
 			<xs:element name="SerialNumber" type="xs:integer" />
 			<xs:element name="CommonName" type="xs:string" minOccurs="0"/>
+			<xs:element name="Locality" type="xs:string" minOccurs="0"/>
+			<xs:element name="State" type="xs:string" minOccurs="0"/>
 			<xs:element name="CountryName" type="xs:string" minOccurs="0"/>
 			<xs:element name="OrganizationName" type="xs:string" minOccurs="0"/>
 			<xs:element name="GivenName" type="xs:string" minOccurs="0"/>
 			<xs:element name="OrganizationalUnit" type="xs:string" minOccurs="0"/>
 			<xs:element name="Surname" type="xs:string" minOccurs="0"/>
 			<xs:element name="Pseudonym" type="xs:string" minOccurs="0"/>
+			<xs:element name="Email" type="xs:string" minOccurs="0"/>
 			
 			<xs:element name="AuthorityInformationAccessUrls" minOccurs="0">
 				<xs:complexType>
@@ -203,8 +206,14 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
+			<xs:element name="ExtendedKeyUsages" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="oid" type="OID" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 			
-			<xs:element name="IdKpOCSPSigning" type="xs:boolean" minOccurs="0" />
 			<xs:element name="IdPkixOcspNoCheck" type="xs:boolean" minOccurs="0" />
 
 			<xs:element name="BasicSignature" type="BasicSignature" />
@@ -214,10 +223,10 @@
 			<xs:element name="Trusted" type="xs:boolean" />
 			<xs:element name="SelfSigned" type="xs:boolean" />
 			
-			<xs:element name="CertificatePolicyIds" minOccurs="0">
+			<xs:element name="CertificatePolicies" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="oid" type="OID" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="certificatePolicy" type="CertificatePolicy" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -264,6 +273,14 @@
 				<xs:attribute name="Description" type="xs:string" use="optional" />
 			</xs:extension>
 		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="CertificatePolicy">
+		<xs:complexContent>
+			<xs:extension base="OID">
+				<xs:attribute name="cpsUrl" type="xs:string" use="optional" />
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	
 	<xs:complexType name="DistinguishedName">
@@ -413,6 +430,8 @@
 			<xs:element name="RevocationDate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="ExpiredCertsOnCRL" type="xs:dateTime" minOccurs="0" /> <!-- CRL -->
 			<xs:element name="ArchiveCutOff" type="xs:dateTime" minOccurs="0" /> <!-- OCSP -->
+			<xs:element name="CertHashExtensionPresent" type="xs:boolean" minOccurs="0" /> <!-- OCSP -->
+			<xs:element name="CertHashExtensionMatch" type="xs:boolean" minOccurs="0" /> <!-- OCSP -->
 
 			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValues" minOccurs="0" />
 			
@@ -441,7 +460,7 @@
 	<xs:complexType name="TrustedServiceProvider">
 		<xs:sequence>
 			<xs:element name="TSPName" type="xs:string" />
-			<xs:element name="TSPServiceName" type="xs:string" />
+			<xs:element name="TSPRegistrationIdentifier" type="xs:string" minOccurs="0" />
 			<xs:element name="CountryCode" type="xs:string" />
 			
 			<xs:element name="TrustedServices">
@@ -456,6 +475,7 @@
 	
 	<xs:complexType name="TrustedService">
 		<xs:sequence>
+			<xs:element name="ServiceName" type="xs:string" />
 			<xs:element name="ServiceType" type="xs:string" />
 			<xs:element name="Status" type="xs:string" />
 			<xs:element name="StartDate" type="xs:dateTime" />

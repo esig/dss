@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +33,7 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
@@ -116,9 +116,11 @@ public class ImageUtils {
 
 		DSSDocument docImage = imageParameters.getImage();
 		if (docImage != null) {
-			BufferedImage image = ImageIO.read(docImage.openStream());
-			width = image.getWidth();
-			height = image.getHeight();
+			try (InputStream is = docImage.openStream()) {
+				BufferedImage image = ImageIO.read(is);
+				width = image.getWidth();
+				height = image.getHeight();
+			}
 		}
 
 		SignatureImageTextParameters textParamaters = imageParameters.getTextParameters();
@@ -186,7 +188,7 @@ public class ImageUtils {
 			int x = Integer.parseInt(e.getAttribute("Xdensity"));
 			int y = Integer.parseInt(e.getAttribute("Ydensity"));
 
-			return new ImageAndResolution(image.openStream(), x, y);
+			return new ImageAndResolution(image, x, y);
 		}
 	}
 
@@ -214,7 +216,7 @@ public class ImageUtils {
 				vdpi = (int) (mm2inch / Float.parseFloat(((Element) lst.item(0)).getAttribute("value")));
 			}
 
-			return new ImageAndResolution(image.openStream(), hdpi, vdpi);
+			return new ImageAndResolution(image, hdpi, vdpi);
 		}
 	}
 
@@ -274,8 +276,7 @@ public class ImageUtils {
 		try (ByteArrayOutputStream os = new ByteArrayOutputStream(); ImageOutputStream imageOs = ImageIO.createImageOutputStream(os)) {
 			writer.setOutput(imageOs);
 			writer.write(metadata, new IIOImage(buffImage, null, metadata), imageWriterParams);
-			InputStream is = new ByteArrayInputStream(os.toByteArray());
-			return new ImageAndResolution(is, dpi, dpi);
+			return new ImageAndResolution(new InMemoryDocument(os.toByteArray()), dpi, dpi);
 		}
 	}
 

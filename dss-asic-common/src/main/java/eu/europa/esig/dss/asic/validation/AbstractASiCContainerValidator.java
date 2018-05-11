@@ -1,7 +1,11 @@
 package eu.europa.esig.dss.asic.validation;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
@@ -138,10 +142,31 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		return extractResult.getArchiveManifestDocuments();
 	}
 
-	@Override
-	public List<DSSDocument> getOriginalDocuments(String signatureId) throws DSSException {
-		// TODO
-		throw new UnsupportedOperationException("This method is not applicable for this kind of file!");
+	protected List<DSSDocument> getSignedDocumentsASiCS(List<DSSDocument> retrievedDocs) {
+		if (Utils.collectionSize(retrievedDocs) > 1) {
+			throw new DSSException("ASiC-S : More than one file");
+		}
+		DSSDocument uniqueDoc = retrievedDocs.get(0);
+		List<DSSDocument> result = new ArrayList<DSSDocument>();
+		if (Utils.areStringsEqual(ASiCUtils.PACKAGE_ZIP, uniqueDoc.getName())) {
+			result.addAll(getPackageZipContent(uniqueDoc));
+		} else {
+			result.add(uniqueDoc);
+		}
+		return result;
+	}
+
+	private List<DSSDocument> getPackageZipContent(DSSDocument packageZip) {
+		List<DSSDocument> result = new ArrayList<DSSDocument>();
+		try (InputStream is = packageZip.openStream(); ZipInputStream packageZipInputStream = new ZipInputStream(is)) {
+			ZipEntry entry;
+			while ((entry = packageZipInputStream.getNextEntry()) != null) {
+				result.add(ASiCUtils.getCurrentDocument(entry.getName(), packageZipInputStream));
+			}
+		} catch (IOException e) {
+			throw new DSSException("Unable to extract package.zip", e);
+		}
+		return result;
 	}
 
 }

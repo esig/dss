@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.pdf.pdfbox;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -36,12 +34,11 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
-class PdfBoxDocTimeStampService extends PdfBoxSignatureService implements PDFSignatureService, PDFTimestampService {
+class PdfBoxDocTimeStampService extends PdfBoxSignatureService implements PDFTimestampService {
 
 	/**
 	 * A timestamp sub-filter value.
@@ -70,18 +67,13 @@ class PdfBoxDocTimeStampService extends PdfBoxSignatureService implements PDFSig
 	}
 
 	@Override
-	public void timestamp(final DSSDocument document, final OutputStream signedStream, final PAdESSignatureParameters parameters, final TSPSource tspSource)
-			throws DSSException {
+	public DSSDocument timestamp(final DSSDocument document, final PAdESSignatureParameters parameters, final TSPSource tspSource) throws DSSException {
 
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
-		InputStream inputStream = document.openStream();
-		final byte[] digest = digest(inputStream, parameters, timestampDigestAlgorithm);
-		Utils.closeQuietly(inputStream);
+		final byte[] digest = digest(document, parameters, timestampDigestAlgorithm);
 		final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digest);
 		final byte[] encoded = DSSASN1Utils.getEncoded(timeStampToken);
-		inputStream = document.openStream();
-		sign(inputStream, encoded, signedStream, parameters, timestampDigestAlgorithm);
-		Utils.closeQuietly(inputStream);
+		return sign(document, encoded, parameters, timestampDigestAlgorithm);
 	}
 
 	@Override

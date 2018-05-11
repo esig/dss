@@ -20,9 +20,11 @@ import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CertificatePolicy;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSPKUtils;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
@@ -31,6 +33,7 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
@@ -324,9 +327,13 @@ public class DiagnosticDataBuilder {
 		return Utils.EMPTY_STRING;
 	}
 
-	private XmlRevocation getXmlRevocation(RevocationToken revocationToken, String xmlId, Set<DigestAlgorithm> usedDigestAlgorithms) {
+	private XmlRevocation getXmlRevocation(CertificateToken certToken, RevocationToken revocationToken, Set<DigestAlgorithm> usedDigestAlgorithms) {
 		final XmlRevocation xmlRevocation = new XmlRevocation();
+
+		// In case of CRL, the X509CRL can be the same for different certificates
+		String xmlId = Utils.toHex(certToken.getDigest(DigestAlgorithm.SHA256)) + Utils.toHex(revocationToken.getDigest(DigestAlgorithm.SHA256));
 		xmlRevocation.setId(xmlId);
+
 		xmlRevocation.setOrigin(revocationToken.getOrigin().name());
 		final Boolean revocationTokenStatus = revocationToken.getStatus();
 		// revocationTokenStatus can be null when OCSP return Unknown. In
@@ -345,6 +352,14 @@ public class DiagnosticDataBuilder {
 		if (Utils.isStringNotEmpty(sourceURL)) { // not empty = online
 			xmlRevocation.setSourceAddress(sourceURL);
 			xmlRevocation.setAvailable(revocationToken.isAvailable());
+		}
+
+		Digest certHash = revocationToken.getCertHash();
+		if (certHash != null) {
+			xmlRevocation.setCertHashExtensionPresent(true);
+			byte[] expectedDigest = certToken.getDigest(certHash.getAlgorithm());
+			byte[] foundDigest = certHash.getValue();
+			xmlRevocation.setCertHashExtensionMatch(Arrays.equals(expectedDigest, foundDigest));
 		}
 
 		xmlRevocation.setBasicSignature(getXmlBasicSignature(revocationToken));
@@ -387,13 +402,15 @@ public class DiagnosticDataBuilder {
 
 			CertificateToken issuerToken_ = token;
 			final List<XmlChainItem> certChainTokens = new ArrayList<XmlChainItem>();
+			Set<CertificateToken> processedTokens = new HashSet<CertificateToken>();
 			do {
 
 				certChainTokens.add(getXmlChainItem(issuerToken_));
-				if (issuerToken_.isTrusted() || issuerToken_.isSelfSigned()) {
+				if (issuerToken_.isTrusted() || issuerToken_.isSelfSigned() || processedTokens.contains(issuerToken_)) {
 
 					break;
 				}
+				processedTokens.add(issuerToken_);
 				issuerToken_ = issuerToken_.getIssuerToken();
 			} while (issuerToken_ != null);
 			return certChainTokens;
@@ -728,12 +745,15 @@ public class DiagnosticDataBuilder {
 
 		X500Principal x500Principal = certToken.getSubjectX500Principal();
 		xmlCert.setCommonName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.CN, x500Principal));
+		xmlCert.setLocality(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.L, x500Principal));
+		xmlCert.setState(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.ST, x500Principal));
 		xmlCert.setCountryName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.C, x500Principal));
 		xmlCert.setOrganizationName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.O, x500Principal));
 		xmlCert.setGivenName(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.GIVENNAME, x500Principal));
 		xmlCert.setOrganizationalUnit(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.OU, x500Principal));
 		xmlCert.setSurname(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.SURNAME, x500Principal));
 		xmlCert.setPseudonym(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.PSEUDONYM, x500Principal));
+		xmlCert.setEmail(DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.E, x500Principal));
 
 		xmlCert.setAuthorityInformationAccessUrls(DSSASN1Utils.getCAAccessLocations(certToken));
 		xmlCert.setOCSPAccessUrls(DSSASN1Utils.getOCSPAccessLocations(certToken, false));
@@ -748,8 +768,8 @@ public class DiagnosticDataBuilder {
 		xmlCert.setPublicKeyEncryptionAlgo(DSSPKUtils.getPublicKeyEncryptionAlgo(publicKey));
 
 		xmlCert.setKeyUsageBits(getXmlKeyUsages(certToken.getKeyUsageBits()));
+		xmlCert.setExtendedKeyUsages(getXmlOids(DSSASN1Utils.getExtendedKeyUsage(certToken)));
 
-		xmlCert.setIdKpOCSPSigning(DSSASN1Utils.isOCSPSigning(certToken));
 		xmlCert.setIdPkixOcspNoCheck(DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken));
 
 		xmlCert.setBasicSignature(getXmlBasicSignature(certToken));
@@ -760,7 +780,7 @@ public class DiagnosticDataBuilder {
 
 		xmlCert.setQCStatementIds(getXmlOids(DSSASN1Utils.getQCStatementsIdList(certToken)));
 		xmlCert.setQCTypes(getXmlOids(DSSASN1Utils.getQCTypesIdList(certToken)));
-		xmlCert.setCertificatePolicyIds(getXmlOids(DSSASN1Utils.getPolicyIdentifiers(certToken)));
+		xmlCert.setCertificatePolicies(getXmlCertificatePolicies(DSSASN1Utils.getCertificatePolicies(certToken)));
 
 		xmlCert.setSelfSigned(certToken.isSelfSigned());
 		xmlCert.setTrusted(certToken.isTrusted());
@@ -769,9 +789,7 @@ public class DiagnosticDataBuilder {
 		final Set<RevocationToken> revocationTokens = certToken.getRevocationTokens();
 		if (Utils.isCollectionNotEmpty(revocationTokens)) {
 			for (RevocationToken revocationToken : revocationTokens) {
-				// In case of CRL, the X509CRL can be the same for different certificates
-				String xmlId = Utils.toHex(certToken.getDigest(DigestAlgorithm.SHA256)) + Utils.toHex(revocationToken.getDigest(DigestAlgorithm.SHA256));
-				xmlCert.getRevocations().add(getXmlRevocation(revocationToken, xmlId, usedDigestAlgorithms));
+				xmlCert.getRevocations().add(getXmlRevocation(certToken, revocationToken, usedDigestAlgorithms));
 			}
 		}
 
@@ -780,13 +798,27 @@ public class DiagnosticDataBuilder {
 		return xmlCert;
 	}
 
+	private List<XmlCertificatePolicy> getXmlCertificatePolicies(List<CertificatePolicy> certificatePolicies) {
+		List<XmlCertificatePolicy> result = new ArrayList<XmlCertificatePolicy>();
+		for (CertificatePolicy cp : certificatePolicies) {
+			XmlCertificatePolicy xmlCP = new XmlCertificatePolicy();
+			xmlCP.setValue(cp.getOid());
+			xmlCP.setDescription(OidRepository.getDescription(cp.getOid()));
+			xmlCP.setCpsUrl(cp.getCpsUrl());
+			result.add(xmlCP);
+		}
+		return result;
+	}
+
 	private List<XmlOID> getXmlOids(List<String> oidList) {
 		List<XmlOID> result = new ArrayList<XmlOID>();
-		for (String oid : oidList) {
-			XmlOID xmlOID = new XmlOID();
-			xmlOID.setValue(oid);
-			xmlOID.setDescription(OidRepository.getDescription(oid));
-			result.add(xmlOID);
+		if (Utils.isCollectionNotEmpty(oidList)) {
+			for (String oid : oidList) {
+				XmlOID xmlOID = new XmlOID();
+				xmlOID.setValue(oid);
+				xmlOID.setDescription(OidRepository.getDescription(oid));
+				result.add(xmlOID);
+			}
 		}
 		return result;
 	}
@@ -800,7 +832,7 @@ public class DiagnosticDataBuilder {
 			XmlTrustedServiceProvider serviceProvider = new XmlTrustedServiceProvider();
 			serviceProvider.setCountryCode(first.getTlCountryCode());
 			serviceProvider.setTSPName(first.getTspName());
-			serviceProvider.setTSPServiceName(first.getServiceName());
+			serviceProvider.setTSPRegistrationIdentifier(first.getTspRegistrationIdentifier());
 			serviceProvider.setTrustedServices(getXmlTrustedServices(serviceByProvider, certToken));
 			result.add(serviceProvider);
 		}
@@ -815,6 +847,7 @@ public class DiagnosticDataBuilder {
 				for (ServiceInfoStatus serviceInfoStatus : serviceStatusAfterOfEqualsCertIssuance) {
 					XmlTrustedService trustedService = new XmlTrustedService();
 
+					trustedService.setServiceName(serviceInfo.getServiceName());
 					trustedService.setServiceType(serviceInfoStatus.getType());
 					trustedService.setStatus(serviceInfoStatus.getStatus());
 					trustedService.setStartDate(serviceInfoStatus.getStartDate());

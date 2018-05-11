@@ -34,6 +34,12 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	private boolean signWithExpiredCertificate = false;
 
 	/**
+	 * This variable indicates if it is possible to generate ToBeSigned data without
+	 * the signing certificate.
+	 */
+	private boolean generateTBSWithoutCertificate = false;
+
+	/**
 	 * This variable indicates the expected signature level
 	 */
 	private SignatureLevel signatureLevel;
@@ -100,6 +106,25 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 */
 	public void setSignWithExpiredCertificate(final boolean signWithExpiredCertificate) {
 		this.signWithExpiredCertificate = signWithExpiredCertificate;
+	}
+
+	/**
+	 * Indicates if it is possible to generate ToBeSigned data without the signing certificate.
+	 * The default values is false.
+	 *
+	 * @return true if signing certificate is not required when generating ToBeSigned data.
+	 */
+	public boolean isGenerateTBSWithoutCertificate() { return generateTBSWithoutCertificate; }
+
+	/**
+	 * Allows to change the default behaviour regarding the requirements of signing certificate
+	 * to generate ToBeSigned data.
+	 *
+	 * @param generateTBSWithoutCertificate
+	 *            true if it should be possible to generate ToBeSigned data without certificate.
+	 */
+	public void setGenerateTBSWithoutCertificate(final boolean generateTBSWithoutCertificate) {
+		this.generateTBSWithoutCertificate = generateTBSWithoutCertificate;
 	}
 
 	/**
@@ -304,11 +329,11 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 
 	@Override
 	public String toString() {
-		return "SignatureParameters{" + "signWithExpiredCertificate=" + signWithExpiredCertificate + ", signatureLevel=" + signatureLevel
-				+ ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm=" + signatureAlgorithm + ", encryptionAlgorithm=" + encryptionAlgorithm
-				+ ", digestAlgorithm=" + digestAlgorithm + ", bLevelParams=" + bLevelParams + ", signatureTimestampParameters="
-				+ ((signatureTimestampParameters == null) ? null : signatureTimestampParameters.toString()) + ", archiveTimestampParameters="
-				+ ((archiveTimestampParameters == null) ? null : archiveTimestampParameters.toString()) + '}';
+		return "SignatureParameters{" + "signWithExpiredCertificate=" + signWithExpiredCertificate + ", generateTBSWithoutCertificate=" + generateTBSWithoutCertificate
+				+ ", signatureLevel=" + signatureLevel + ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm=" + signatureAlgorithm
+				+ ", encryptionAlgorithm=" + encryptionAlgorithm + ", digestAlgorithm=" + digestAlgorithm + ", bLevelParams=" + bLevelParams
+				+ ", signatureTimestampParameters=" + ((signatureTimestampParameters == null) ? null : signatureTimestampParameters.toString())
+				+ ", archiveTimestampParameters=" + ((archiveTimestampParameters == null) ? null : archiveTimestampParameters.toString()) + '}';
 	}
 
 	@Override
@@ -321,6 +346,7 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		result = (prime * result) + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
 		result = (prime * result) + ((encryptionAlgorithm == null) ? 0 : encryptionAlgorithm.hashCode());
 		result = (prime * result) + (signWithExpiredCertificate ? 1231 : 1237);
+		result = (prime * result) + (generateTBSWithoutCertificate ? 1231 : 1237);
 		result = (prime * result) + ((signatureAlgorithm == null) ? 0 : signatureAlgorithm.hashCode());
 		result = (prime * result) + ((signatureLevel == null) ? 0 : signatureLevel.hashCode());
 		result = (prime * result) + ((signaturePackaging == null) ? 0 : signaturePackaging.hashCode());
@@ -368,6 +394,9 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 			return false;
 		}
 		if (signWithExpiredCertificate != other.signWithExpiredCertificate) {
+			return false;
+		}
+		if (generateTBSWithoutCertificate != other.generateTBSWithoutCertificate) {
 			return false;
 		}
 		if (signatureAlgorithm != other.signatureAlgorithm) {

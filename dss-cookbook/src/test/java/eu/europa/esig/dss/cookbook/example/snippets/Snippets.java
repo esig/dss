@@ -9,6 +9,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.JKSSignatureToken;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -69,6 +70,14 @@ public class Snippets {
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 		// end::demoSigningProcessSignDocument[]
 
+	}
+
+	public void demo2() {
+		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
+
+		// tag::select-pdf-signature-field[]
+		parameters.setSignatureFieldId("field-id");
+		// end::select-pdf-signature-field[]
 	}
 
 }

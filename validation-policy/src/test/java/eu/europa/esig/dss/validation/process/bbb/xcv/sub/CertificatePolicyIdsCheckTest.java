@@ -11,7 +11,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyIdsCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.jaxb.policy.Level;
@@ -21,8 +21,8 @@ public class CertificatePolicyIdsCheckTest {
 
 	@Test
 	public void certificatePolicyIdsCheck() throws Exception {
-		List<XmlOID> policyIds = new ArrayList<XmlOID>();
-		XmlOID oid = new XmlOID();
+		List<XmlCertificatePolicy> policyIds = new ArrayList<XmlCertificatePolicy>();
+		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue("1.3.76.38.1.1.1");
 		policyIds.add(oid);
 
@@ -31,7 +31,7 @@ public class CertificatePolicyIdsCheckTest {
 		constraint.getId().add("1.3.76.38.1.1.1");
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.setCertificatePolicyIds(policyIds);
+		xc.setCertificatePolicies(policyIds);
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificatePolicyIdsCheck cpic = new CertificatePolicyIdsCheck(result, new CertificateWrapper(xc), constraint);
@@ -44,8 +44,8 @@ public class CertificatePolicyIdsCheckTest {
 
 	@Test
 	public void failedCertificatePolicyIdsCheck() throws Exception {
-		List<XmlOID> policyIds = new ArrayList<XmlOID>();
-		XmlOID oid = new XmlOID();
+		List<XmlCertificatePolicy> policyIds = new ArrayList<XmlCertificatePolicy>();
+		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue("1.3.76.38.1.1.1");
 		policyIds.add(oid);
 
@@ -54,7 +54,7 @@ public class CertificatePolicyIdsCheckTest {
 		constraint.getId().add("1.3.76.38.1.1.2");
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.setCertificatePolicyIds(policyIds);
+		xc.setCertificatePolicies(policyIds);
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificatePolicyIdsCheck cpic = new CertificatePolicyIdsCheck(result, new CertificateWrapper(xc), constraint);

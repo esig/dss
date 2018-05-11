@@ -33,15 +33,17 @@ public class XPointerSignatureScope extends SignatureScope {
 	private final String uri;
 
 	protected XPointerSignatureScope(final String xmlId, final String uri) {
-
 		super(xmlId);
 		this.uri = uri;
 	}
 
 	@Override
 	public String getDescription() {
-
-		String description = "The XML element with ID '" + getName() + "' is an XPointer query.";
-		return description;
+		StringBuilder sb = new StringBuilder("The XML element with ID '");
+		sb.append(getName());
+		sb.append("' is an XPointer query (uri: '");
+		sb.append(uri);
+		sb.append("').");
+		return sb.toString();
 	}
 }

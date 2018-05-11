@@ -32,11 +32,9 @@ import eu.europa.esig.dss.ToBeSigned;
  * Connection through available API to the QSCD (SmartCard, MSCAPI, PKCS#12)
  *
  */
-public interface SignatureTokenConnection {
+public interface SignatureTokenConnection extends AutoCloseable {
 
-	/**
-	 * Closes the connection to the QSCD.
-	 */
+	@Override
 	void close();
 
 	/**

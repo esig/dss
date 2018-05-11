@@ -28,16 +28,13 @@ import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBDetachedSpecialCharTest extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
+public class XAdESLevelBDetachedSpecialCharTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -63,14 +60,13 @@ public class XAdESLevelBDetachedSpecialCharTest extends AbstractPkiFactoryTestDo
 	}
 
 	@Override
-	protected Reports getValidationReport(final DSSDocument signedDocument) {
+	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 		detachedContents.add(documentToSign);
 		validator.setDetachedContents(detachedContents);
-		Reports reports = validator.validateDocument();
-		return reports;
+		return validator;
 	}
 
 	@Override
@@ -81,21 +77,6 @@ public class XAdESLevelBDetachedSpecialCharTest extends AbstractPkiFactoryTestDo
 	@Override
 	protected XAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
-	}
-
-	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.XML;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return false;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
 	}
 
 	@Override

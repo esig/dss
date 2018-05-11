@@ -30,8 +30,19 @@ import eu.europa.esig.dss.extension.AbstractTestExtension;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<PAdESSignatureParameters> {
+
+	@Override
+	protected TSPSource getUsedTSPSourceAtSignatureTime() {
+		return getGoodTsa();
+	}
+
+	@Override
+	protected TSPSource getUsedTSPSourceAtExtensionTime() {
+		return getAlternateGoodTsa();
+	}
 
 	@Override
 	protected DSSDocument getSignedDocument() throws Exception {
@@ -45,7 +56,7 @@ public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<P
 		signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
 
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getGoodTsa());
+		service.setTspSource(getUsedTSPSourceAtSignatureTime());
 
 		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -55,7 +66,7 @@ public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<P
 	@Override
 	protected DocumentSignatureService<PAdESSignatureParameters> getSignatureServiceToExtend() throws Exception {
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getGoodTsa());
+		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;
 	}
 

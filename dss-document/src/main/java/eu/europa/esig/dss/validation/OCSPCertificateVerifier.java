@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.ocsp.ResponderID;
@@ -115,18 +117,29 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 			final RespID responderId = basicOCSPResp.getResponderId();
 			final ResponderID responderIdAsASN1Object = responderId.toASN1Primitive();
 			final DERTaggedObject derTaggedObject = (DERTaggedObject) responderIdAsASN1Object.toASN1Primitive();
-			if (2 == derTaggedObject.getTagNo()) {
-				throw new DSSException("Certificate's key hash management not implemented yet!");
-			}
-			final ASN1Primitive derObject = derTaggedObject.getObject();
-			final byte[] derEncoded = DSSASN1Utils.getDEREncoded(derObject);
-			final X500Principal x500Principal_ = new X500Principal(derEncoded);
-			final X500Principal x500Principal = DSSUtils.getNormalizedX500Principal(x500Principal_);
-			final List<CertificateToken> certificateTokens = validationCertPool.get(x500Principal);
-			for (final CertificateToken issuerCertificateToken : certificateTokens) {
-				if (ocspToken.isSignedBy(issuerCertificateToken)) {
-					break;
+			if (1 == derTaggedObject.getTagNo()) {
+				final ASN1Primitive derObject = derTaggedObject.getObject();
+				final byte[] derEncoded = DSSASN1Utils.getDEREncoded(derObject);
+				final X500Principal x500Principal_ = new X500Principal(derEncoded);
+				final X500Principal x500Principal = DSSUtils.getNormalizedX500Principal(x500Principal_);
+				final List<CertificateToken> certificateTokens = validationCertPool.get(x500Principal);
+				for (final CertificateToken issuerCertificateToken : certificateTokens) {
+					if (ocspToken.isSignedBy(issuerCertificateToken)) {
+						break;
+					}
 				}
+			} else if (2 == derTaggedObject.getTagNo()) {
+				final ASN1OctetString hashOctetString = (ASN1OctetString) derTaggedObject.getObject();
+				final byte[] expectedHash = hashOctetString.getOctets();
+				final List<CertificateToken> certificateTokens = validationCertPool.getCertificateTokens();
+				for (CertificateToken issuerCertificateToken : certificateTokens) {
+					final byte[] ski = DSSASN1Utils.getSki(issuerCertificateToken, true);
+					if (Arrays.equals(expectedHash, ski) && ocspToken.isSignedBy(issuerCertificateToken)) {
+						break;
+					}
+				}
+			} else {
+				throw new DSSException("Unsupported tag No " + derTaggedObject.getTagNo());
 			}
 		}
 	}

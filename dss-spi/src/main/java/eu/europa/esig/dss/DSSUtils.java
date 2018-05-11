@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -309,7 +310,13 @@ public final class DSSUtils {
 
 		for (String url : urls) {
 			LOG.debug("Loading certificate(s) from {}", url);
-			byte[] bytes = loader.get(url);
+			byte[] bytes = null;
+			try {
+				bytes = loader.get(url);
+			} catch (Exception e) {
+				LOG.warn("Unable to download certificate from '" + url + "': ", e.getMessage());
+				continue;
+			}
 			if (Utils.isArrayNotEmpty(bytes)) {
 				LOG.debug("Base64 content : {}", Utils.toBase64(bytes));
 				try (InputStream is = new ByteArrayInputStream(bytes)) {
@@ -490,6 +497,37 @@ public final class DSSUtils {
 	private static byte[] readFileToByteArray(final File file) throws IOException {
 		try (InputStream is = openInputStream(file)) {
 			return toByteArray(is);
+		}
+	}
+
+	/**
+	 * This method create a new document from a sub-part of another document
+	 * 
+	 * @param origin
+	 *            the original document
+	 * @param start
+	 *            the start position to retrieve
+	 * @param end
+	 *            the end position to retrieve
+	 * @return a new DSSDocument
+	 */
+	public static DSSDocument splitDocument(DSSDocument origin, int start, int end) {
+		try (InputStream is = origin.openStream();
+				BufferedInputStream bis = new BufferedInputStream(is);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
+			int i = 0;
+			int r;
+			while ((r = bis.read()) != -1) {
+				if (i >= start && i <= end) {
+					baos.write(r);
+				}
+				i++;
+			}
+			baos.flush();
+			return new InMemoryDocument(baos.toByteArray());
+		} catch (Exception e) {
+			throw new DSSException("Unable to split document", e);
 		}
 	}
 

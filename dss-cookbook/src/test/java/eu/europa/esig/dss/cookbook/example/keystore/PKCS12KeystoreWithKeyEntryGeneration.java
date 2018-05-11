@@ -3,6 +3,7 @@ package eu.europa.esig.dss.cookbook.example.keystore;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.security.KeyStore;
+import java.security.KeyStore.PasswordProtection;
 import java.security.cert.Certificate;
 import java.util.Date;
 
@@ -12,7 +13,6 @@ import org.junit.Test;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.test.gen.CertificateService;
 import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.token.AbstractSignatureTokenConnection;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.Pkcs12SignatureToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -35,10 +35,11 @@ public class PKCS12KeystoreWithKeyEntryGeneration {
 		OutputStream fos = new FileOutputStream(KEYSTORE_FILEPATH);
 		keystore.store(fos, KEYSTORE_PASSWORD.toCharArray());
 
-		AbstractSignatureTokenConnection signingToken = new Pkcs12SignatureToken(KEYSTORE_PASSWORD, KEYSTORE_FILEPATH);
-		Assert.assertEquals(1, signingToken.getKeys().size());
-		DSSPrivateKeyEntry privateEntry = signingToken.getKeys().get(0);
-		Assert.assertNotNull(privateEntry);
+		try (Pkcs12SignatureToken signingToken = new Pkcs12SignatureToken(KEYSTORE_FILEPATH, new PasswordProtection(KEYSTORE_PASSWORD.toCharArray()))) {
+			Assert.assertEquals(1, signingToken.getKeys().size());
+			DSSPrivateKeyEntry privateEntry = signingToken.getKeys().get(0);
+			Assert.assertNotNull(privateEntry);
+		}
 	}
 
 	private static void addCertificate(KeyStore store, String alias, CertificateToken cert, MockPrivateKeyEntry entry) throws Exception {

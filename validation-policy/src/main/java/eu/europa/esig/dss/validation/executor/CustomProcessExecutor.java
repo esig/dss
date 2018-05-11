@@ -2,13 +2,13 @@ package eu.europa.esig.dss.validation.executor;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-public class CustomProcessExecutor implements ProcessExecutor {
+public class CustomProcessExecutor implements ProcessExecutor<Reports> {
 
 	private Date currentTime = new Date();
 	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
@@ -46,12 +46,14 @@ public class CustomProcessExecutor implements ProcessExecutor {
 		diagnosticData = new DiagnosticData(jaxbDiagnosticData);
 
 		DetailedReportBuilder detailedReportBuilder = new DetailedReportBuilder(currentTime, policy, validationLevel, diagnosticData);
-		DetailedReport detailedReport = detailedReportBuilder.build();
+		eu.europa.esig.dss.jaxb.detailedreport.DetailedReport jaxbDetailedReport = detailedReportBuilder.build();
 
-		SimpleReportBuilder simpleReportBuilder = new SimpleReportBuilder(currentTime, policy, diagnosticData, validationLevel, detailedReport);
+		DetailedReport detailedReportWrapper = new DetailedReport(jaxbDetailedReport);
+
+		SimpleReportBuilder simpleReportBuilder = new SimpleReportBuilder(currentTime, policy, diagnosticData, detailedReportWrapper);
 		SimpleReport simpleReport = simpleReportBuilder.build();
 
-		return new Reports(jaxbDiagnosticData, detailedReport, simpleReport);
+		return new Reports(jaxbDiagnosticData, jaxbDetailedReport, simpleReport);
 	}
 
 	@Override

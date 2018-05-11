@@ -1,16 +1,19 @@
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pades.signature.visible.ImageAndResolution;
-import eu.europa.esig.dss.pades.signature.visible.ImageUtils;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pades.signature.visible.ImageAndResolution;
+import eu.europa.esig.dss.pades.signature.visible.ImageUtils;
 
 public class SignatureImageAndPositionProcessor {
 
@@ -24,25 +27,27 @@ public class SignatureImageAndPositionProcessor {
     private static final String SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE = "not supported horizontal alignment: ";
 
     public static SignatureImageAndPosition process(final SignatureImageParameters signatureImageParameters, final PDDocument doc, final ImageAndResolution ires) throws IOException {
-        BufferedImage visualImageSignature = ImageIO.read(ires.getInputStream());
-        PDPage pdPage = doc.getPages().get(signatureImageParameters.getPage() - 1);
+		try (InputStream is = ires.getInputStream()) {
+			BufferedImage visualImageSignature = ImageIO.read(is);
+			PDPage pdPage = doc.getPages().get(signatureImageParameters.getPage() - 1);
 
-        int rotate = getRotation(signatureImageParameters.getRotation(), pdPage);
-        if(rotate != ANGLE_360) {
-            visualImageSignature = ImageUtils.rotate(visualImageSignature, rotate);
-        }
+			int rotate = getRotation(signatureImageParameters.getRotation(), pdPage);
+			if (rotate != ANGLE_360) {
+				visualImageSignature = ImageUtils.rotate(visualImageSignature, rotate);
+			}
 
-        float x = processX(rotate, ires, visualImageSignature, pdPage, signatureImageParameters);
-        float y = processY(rotate, ires, visualImageSignature, pdPage, signatureImageParameters);
+			float x = processX(rotate, ires, visualImageSignature, pdPage, signatureImageParameters);
+			float y = processY(rotate, ires, visualImageSignature, pdPage, signatureImageParameters);
 
-        ByteArrayOutputStream visualImageSignatureOutputStream = new ByteArrayOutputStream();
-        String imageType = "jpg";
-        if(visualImageSignature.getColorModel().hasAlpha()) {
-            imageType = "png";
-        }
-        ImageIO.write(visualImageSignature, imageType, visualImageSignatureOutputStream);
+			ByteArrayOutputStream visualImageSignatureOutputStream = new ByteArrayOutputStream();
+			String imageType = "jpg";
+			if (visualImageSignature.getColorModel().hasAlpha()) {
+				imageType = "png";
+			}
+			ImageIO.write(visualImageSignature, imageType, visualImageSignatureOutputStream);
 
-        return new SignatureImageAndPosition(x, y, visualImageSignatureOutputStream.toByteArray());
+			return new SignatureImageAndPosition(x, y, visualImageSignatureOutputStream.toByteArray());
+		}
     }
 
     private static float processX(int rotate, ImageAndResolution ires, BufferedImage visualImageSignature, PDPage pdPage, SignatureImageParameters signatureImageParameters) {

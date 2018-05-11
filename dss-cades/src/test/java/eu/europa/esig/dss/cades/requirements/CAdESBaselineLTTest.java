@@ -1,11 +1,13 @@
 package eu.europa.esig.dss.cades.requirements;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
@@ -23,7 +25,7 @@ public class CAdESBaselineLTTest extends AbstractRequirementChecks {
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 
 		CAdESService service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
@@ -61,6 +63,12 @@ public class CAdESBaselineLTTest extends AbstractRequirementChecks {
 	@Override
 	public void checkTimestampedCertsCrlsReferences() {
 		assertFalse(isUnsignedAttributeFound(PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp));
+	}
+
+	@Override
+	public void checkArchiveTimeStampV3() {
+		int counter = countUnsignedAttribute(OID.id_aa_ets_archiveTimestampV3);
+		assertEquals(0, counter);
 	}
 
 	@Override

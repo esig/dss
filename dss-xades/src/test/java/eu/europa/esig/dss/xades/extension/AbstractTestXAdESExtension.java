@@ -29,14 +29,24 @@ import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.extension.AbstractTestExtension;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.x509.tsp.TSPSource;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
 public abstract class AbstractTestXAdESExtension extends AbstractTestExtension<XAdESSignatureParameters> {
 
 	@Override
-	protected DSSDocument getSignedDocument() throws Exception {
+	protected TSPSource getUsedTSPSourceAtSignatureTime() {
+		return getGoodTsa();
+	}
 
+	@Override
+	protected TSPSource getUsedTSPSourceAtExtensionTime() {
+		return getAlternateGoodTsa();
+	}
+
+	@Override
+	protected DSSDocument getSignedDocument() throws Exception {
 		DSSDocument document = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		// Sign
@@ -47,7 +57,7 @@ public abstract class AbstractTestXAdESExtension extends AbstractTestExtension<X
 		signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
 
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getGoodTsa());
+		service.setTspSource(getUsedTSPSourceAtSignatureTime());
 
 		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -57,7 +67,7 @@ public abstract class AbstractTestXAdESExtension extends AbstractTestExtension<X
 	@Override
 	protected DocumentSignatureService<XAdESSignatureParameters> getSignatureServiceToExtend() throws Exception {
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getAlternateGoodTsa());
+		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;
 	}
 

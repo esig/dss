@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.3-SNAPSHOT</version>
+		<version>5.4-SNAPSHOT</version>
 	</parent>
 
 	<name>CookBook</name>
@@ -83,7 +83,7 @@
 						<executions>
 					        <execution>
 					            <id>output-html</id>
-					            <phase>generate-resources</phase>
+			            		<phase>package</phase>
 					            <goals>
 					                <goal>process-asciidoc</goal>
 					            </goals>
@@ -100,7 +100,7 @@
 					        </execution>
 					        <execution>
 		                        <id>output-pdf</id>
-		                        <phase>generate-resources</phase>
+			            		<phase>package</phase>
 		                        <goals>
 		                            <goal>process-asciidoc</goal>
 		                        </goals>
@@ -123,6 +123,9 @@
 					        <headerFooter>true</headerFooter>
 					    	<preserveDirectories>true</preserveDirectories>
 							<encoding>UTF-8</encoding>
+							<attributes>
+								<sourcetestdir>${project.build.testSourceDirectory}</sourcetestdir>
+							</attributes>
 					    </configuration>
 					</plugin>
 				</plugins>		

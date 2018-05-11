@@ -27,6 +27,7 @@ import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +36,7 @@ import org.junit.Before;
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
@@ -49,19 +51,23 @@ import eu.europa.esig.dss.signature.AbstractPkiFactoryTestMultipleDocumentsSigna
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 public class ASiCEXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters> {
 
-	private MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters> service;
+	private ASiCWithXAdESService service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns = new ArrayList<DSSDocument>();
 
 	@Before
 	public void init() throws Exception {
+		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
+
 		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
-		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
+		documentToSigns.add(new FileDocument("src/test/resources/manifest-sample.xml"));
 
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -70,7 +76,8 @@ public class ASiCEXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultip
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
-		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
+		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSigns, signatureParameters);
+		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 	}
 
 	@Override

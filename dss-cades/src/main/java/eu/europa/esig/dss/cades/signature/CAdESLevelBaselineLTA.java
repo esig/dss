@@ -109,7 +109,7 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 
 		final CadesLevelBaselineLTATimestampExtractor timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(cadesSignature);
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
-		byte[] originalDocumentDigest = DSSUtils.digest(timestampDigestAlgorithm, cadesSignature.getOriginalDocumentStream());
+		byte[] originalDocumentDigest = DSSUtils.digest(timestampDigestAlgorithm, cadesSignature.getOriginalDocument());
 
 		final Attribute atsHashIndexAttribute = timestampExtractor.getAtsHashIndex(signerInformation, timestampDigestAlgorithm);
 

@@ -53,6 +53,17 @@ public class ServiceInfo implements Serializable {
 	private String tspTradeName;
 
 	/**
+	 * VAT or NTR
+	 * 
+	 * <pre>
+	 * {@code
+	 * <tsl:TrustServiceProvider><tsl:TSPInformation><tsl:TSPTradeName><tsl:Name> 
+	 * }
+	 * </pre>
+	 */
+	private String tspRegistrationIdentifier;
+
+	/**
 	 * <pre>
 	 * {@code
 	 * <tsl:TrustServiceProvider><tsl:TSPInformation><tsl:TSPAddress><tsl:PostalAddresses>
@@ -127,6 +138,15 @@ public class ServiceInfo implements Serializable {
 	}
 
 	/**
+	 * Returns the trust service VAT or NTR number
+	 * 
+	 * @return the trust service VAT or NTR number
+	 */
+	public String getTspRegistrationIdentifier() {
+		return tspRegistrationIdentifier;
+	}
+
+	/**
 	 * Returns the trust service provider's postal address
 	 * 
 	 * @return the trust service provider's postal address
@@ -185,6 +205,16 @@ public class ServiceInfo implements Serializable {
 	}
 
 	/**
+	 * Sets the trust service VAT / NTR number
+	 * 
+	 * @param tspRegistrationIdentifier
+	 *            the trust service VAT / NTR number
+	 */
+	public void setTspRegistrationIdentifier(String tspRegistrationIdentifier) {
+		this.tspRegistrationIdentifier = tspRegistrationIdentifier;
+	}
+
+	/**
 	 * Sets the trust service provider's postal address
 	 * 
 	 * @param tspPostalAddress
@@ -221,6 +251,7 @@ public class ServiceInfo implements Serializable {
 			buffer.append(indent).append("ServiceName               \t= ").append(serviceName).append('\n');
 			buffer.append(indent).append("StatusAndExtensions       \t= ").append(status).append('\n');
 			buffer.append(indent).append("TSPTradeName              \t= ").append(tspTradeName).append('\n');
+			buffer.append(indent).append("TSPRegistrationIdentifier \t= ").append(tspRegistrationIdentifier).append('\n');
 			buffer.append(indent).append("TSPPostalAddress          \t= ").append(tspPostalAddress).append('\n');
 			buffer.append(indent).append("TSPElectronicAddress      \t= ").append(tspElectronicAddress).append("\n\n");
 			return buffer.toString();
