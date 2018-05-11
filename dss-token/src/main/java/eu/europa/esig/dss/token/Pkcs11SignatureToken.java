@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.security.AuthProvider;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStore.ProtectionParameter;
@@ -38,6 +39,7 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.security.auth.login.LoginException;
 
 import eu.europa.esig.dss.DSSException;
 
@@ -51,14 +53,17 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	private static final String SUN_PKCS11_CLASSNAME = "sun.security.pkcs11.SunPKCS11";
 
 	private static final String NEW_LINE = "\n";
+	private static final String DOUBLE_QUOTE = "\"";
 
 	private Provider provider;
 
-	private final String _pkcs11Path;
+	private final String pkcs11Path;
 
 	private final PasswordInputCallback callback;
 
 	private final int slotId;
+
+	private final String extraPkcs11Config;
 
 	/**
 	 * Create the SignatureTokenConnection, using the provided path for the library.
@@ -69,6 +74,18 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	public Pkcs11SignatureToken(String pkcs11Path) {
 		this(pkcs11Path, (PasswordInputCallback) null);
 	}
+
+    /**
+     * Create the SignatureTokenConnection, using the provided path for the library.
+     *
+     * @param pkcs11Path
+     *            the path for the library (.dll, .so)
+     * @param extraPkcs11Config
+     *            extra configuration for pkcs11 library
+     */
+    public Pkcs11SignatureToken(String pkcs11Path, String extraPkcs11Config) {
+        this(pkcs11Path, (PasswordInputCallback) null, extraPkcs11Config);
+    }
 
 	/**
 	 * Sometimes, the password is known in advance. This create a SignatureTokenConnection and the keys will be accessed
@@ -83,6 +100,21 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 		this(pkcs11Path, password, 0);
 	}
 
+    /**
+     * Sometimes, the password is known in advance. This create a SignatureTokenConnection and the keys will be accessed
+     * using the provided password. The default constructor for CallbackPkcs11SignatureToken.
+     *
+     * @param pkcs11Path
+     *            the path for the library (.dll, .so)
+     * @param password
+     *            the pin code / password to use
+     * @param extraPkcs11Config
+     *            extra configuration for pkcs11 library
+     */
+    public Pkcs11SignatureToken(String pkcs11Path, PasswordProtection password, String extraPkcs11Config) {
+        this(pkcs11Path, password, 0, extraPkcs11Config);
+    }
+
 	/**
 	 * Create the SignatureTokenConnection, using the provided path for the library and a way of retrieving the password
 	 * from the user. The default constructor for CallbackPkcs11SignatureToken.
@@ -95,6 +127,21 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	public Pkcs11SignatureToken(String pkcs11Path, PasswordInputCallback callback) {
 		this(pkcs11Path, callback, 0);
 	}
+
+    /**
+     * Create the SignatureTokenConnection, using the provided path for the library and a way of retrieving the password
+     * from the user. The default constructor for CallbackPkcs11SignatureToken.
+     *
+     * @param pkcs11Path
+     *            the path for the library (.dll, .so)
+     * @param callback
+     *            the callback to enter the pin code / password
+     * @param extraPkcs11Config
+     *            extra configuration for pkcs11 library
+     */
+    public Pkcs11SignatureToken(String pkcs11Path, PasswordInputCallback callback, String extraPkcs11Config) {
+        this(pkcs11Path, callback, 0, extraPkcs11Config);
+    }
 
 	/**
 	 * Sometimes, multiple SmartCard reader is connected. To create a connection on a specific one, slotIndex is used.
@@ -112,6 +159,24 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 		this(pkcs11Path, new PrefilledPasswordCallback(password), slotId);
 	}
 
+    /**
+     * Sometimes, multiple SmartCard reader is connected. To create a connection on a specific one, slotIndex is used.
+     * This Create the SignatureTokenConnection, using the provided path for the library and a way of retrieving the
+     * password from the user.
+     *
+     * @param pkcs11Path
+     *            the path for the library (.dll, .so)
+     * @param password
+     *            the pin code / password to use
+     * @param slotId
+     *            the slotId to use
+     * @param extraPkcs11Config
+     *            extra configuration for pkcs11 library
+     */
+    public Pkcs11SignatureToken(String pkcs11Path, PasswordProtection password, int slotId, String extraPkcs11Config) {
+        this(pkcs11Path, new PrefilledPasswordCallback(password), slotId, extraPkcs11Config);
+    }
+
 	/**
 	 * Sometimes, multiple SmartCard reader is connected. To create a connection on a specific one, slotIndex is used.
 	 * This create a SignatureTokenConnection and the keys will be accessed using the provided password.
@@ -124,10 +189,28 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	 *            the slotId to use
 	 */
 	public Pkcs11SignatureToken(String pkcs11Path, PasswordInputCallback callback, int slotId) {
-		this._pkcs11Path = pkcs11Path;
-		this.callback = callback;
-		this.slotId = slotId;
+		this(pkcs11Path, callback, slotId, null);
 	}
+
+    /**
+     * Sometimes, multiple SmartCard reader is connected. To create a connection on a specific one, slotIndex is used.
+     * This create a SignatureTokenConnection and the keys will be accessed using the provided password.
+     *
+     * @param pkcs11Path
+     *            the path for the library (.dll, .so)
+     * @param callback
+     *            the callback to enter the pin code / password
+     * @param slotId
+     *            the slotId to use
+     * @param extraPkcs11Config
+     *            extra configuration for pkcs11 library
+     */
+    public Pkcs11SignatureToken(String pkcs11Path, PasswordInputCallback callback, int slotId, String extraPkcs11Config) {
+        this.pkcs11Path = pkcs11Path;
+        this.callback = callback;
+        this.slotId = slotId;
+        this.extraPkcs11Config = extraPkcs11Config;
+    }
 
 	protected Provider getProvider() {
 		if (provider == null) {
@@ -193,9 +276,14 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 		aPKCS11LibraryFileName = escapePath(aPKCS11LibraryFileName);
 
 		StringBuilder pkcs11Config = new StringBuilder();
-		pkcs11Config.append("name = SmartCard").append(UUID.randomUUID().toString()).append(NEW_LINE);
-		pkcs11Config.append("library = \"").append(aPKCS11LibraryFileName).append("\"").append(NEW_LINE);
-		pkcs11Config.append("slot = ").append(slotId);
+		pkcs11Config.append("name = SmartCard").append(UUID.randomUUID());
+		pkcs11Config.append(NEW_LINE).append("library = ").append(DOUBLE_QUOTE).append(aPKCS11LibraryFileName)
+				.append(DOUBLE_QUOTE);
+		pkcs11Config.append(NEW_LINE).append("slot = ").append(slotId);
+
+		if (extraPkcs11Config != null && !extraPkcs11Config.isEmpty()) {
+			pkcs11Config.append(NEW_LINE).append(extraPkcs11Config);
+		}
 
 		return pkcs11Config.toString();
 	}
@@ -227,7 +315,7 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 									return;
 								}
 							}
-							throw new RuntimeException("No password callback");
+							throw new DSSException("No password callback");
 						}
 					});
 				}
@@ -244,7 +332,7 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	}
 
 	protected String getPkcs11Path() {
-		return _pkcs11Path;
+		return pkcs11Path;
 	}
 
 	@Override
@@ -261,6 +349,14 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	public void close() {
 		if (provider != null) {
 			try {
+				try {
+					if (provider instanceof AuthProvider) {
+						((AuthProvider) provider).logout();
+						provider.clear();
+					}
+				} catch (LoginException e) {
+					LOG.error("Unable to logout : " + e.getMessage(), e);
+				}
 				Security.removeProvider(provider.getName());
 			} catch (SecurityException e) {
 				LOG.error("Unable to remove provider '" + provider.getName() + "'", e);
