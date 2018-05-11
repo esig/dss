@@ -49,7 +49,7 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 
     private Provider provider;
 
-	private final String _pkcs11Path;
+	private final String pkcs11Path;
 
 	private final PasswordInputCallback callback;
 
@@ -198,7 +198,7 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
      *            extra configuration for pkcs11 library
      */
     public Pkcs11SignatureToken(String pkcs11Path, PasswordInputCallback callback, int slotId, String extraPkcs11Config) {
-        this._pkcs11Path = pkcs11Path;
+        this.pkcs11Path = pkcs11Path;
         this.callback = callback;
         this.slotId = slotId;
         this.extraPkcs11Config = extraPkcs11Config;
@@ -267,24 +267,22 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 									return;
 								}
 							}
-							throw new RuntimeException("No password callback");
+							throw new DSSException("No password callback");
 						}
 					});
 				}
 			});
 			return keyStore;
 		} catch (Exception e) {
-			if (e instanceof sun.security.pkcs11.wrapper.PKCS11Exception) {
-				if ("CKR_PIN_INCORRECT".equals(e.getMessage())) {
-					throw new DSSException("Bad password for PKCS11", e);
-				}
+			if (e instanceof sun.security.pkcs11.wrapper.PKCS11Exception && "CKR_PIN_INCORRECT".equals(e.getMessage())) {
+			    throw new DSSException("Bad password for PKCS11", e);
 			}
 			throw new DSSException("Can't initialize Sun PKCS#11 security provider. Reason: " + e.getMessage(), e);
 		}
 	}
 
 	protected String getPkcs11Path() {
-		return _pkcs11Path;
+		return pkcs11Path;
 	}
 
 	@Override
