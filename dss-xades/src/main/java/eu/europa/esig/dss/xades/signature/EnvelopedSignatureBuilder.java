@@ -34,6 +34,7 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
@@ -91,7 +92,8 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 		dssReference.setId("r-id-" + referenceIndex);
 		dssReference.setUri("");
 		dssReference.setContents(document);
-		dssReference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
+		DigestAlgorithm digestAlgorithm = params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
+		dssReference.setDigestMethodAlgorithm(digestAlgorithm);
 
 		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
 

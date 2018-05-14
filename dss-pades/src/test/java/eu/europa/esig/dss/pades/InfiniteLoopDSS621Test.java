@@ -106,7 +106,7 @@ public class InfiniteLoopDSS621Test {
 		assertEquals(5, signatures.size()); // 1 timestamp is not counted as signature
 		for (final SignatureWrapper signature : signatures) {
 			assertTrue(signature.isReferenceDataFound());
-			assertFalse(signature.isReferenceDataIntact());
+			assertTrue(signature.isReferenceDataIntact());
 			assertFalse(signature.isSignatureIntact());
 			assertFalse(signature.isSignatureValid());
 			assertTrue(Utils.isCollectionNotEmpty(signature.getTimestampList()));
