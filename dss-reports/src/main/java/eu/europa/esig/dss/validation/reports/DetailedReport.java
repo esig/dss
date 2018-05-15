@@ -339,7 +339,7 @@ public class DetailedReport {
 		return CertificateQualification.NA;
 	}
 
-	public Indication getCertificateXCVIndicationn(String certificateId) {
+	public Indication getCertificateXCVIndication(String certificateId) {
 		if (jaxbDetailedReport.getCertificate() == null) {
 			throw new DSSException("Only supported in report for certificate");
 		}
@@ -358,15 +358,15 @@ public class DetailedReport {
 		return null;
 	}
 
-	public Indication getHightestIndication(String signatureId) {
-		return getHightestConclusion(signatureId).getConclusion().getIndication();
+	public Indication getHighestIndication(String signatureId) {
+		return getHighestConclusion(signatureId).getConclusion().getIndication();
 	}
 
-	public SubIndication getHightestSubIndication(String signatureId) {
-		return getHightestConclusion(signatureId).getConclusion().getSubIndication();
+	public SubIndication getHighestSubIndication(String signatureId) {
+		return getHighestConclusion(signatureId).getConclusion().getSubIndication();
 	}
 
-	private XmlConstraintsConclusion getHightestConclusion(String signatureId) {
+	private XmlConstraintsConclusion getHighestConclusion(String signatureId) {
 		XmlSignature xmlSignature = getXmlSignatureById(signatureId);
 		if (xmlSignature.getValidationProcessArchivalData() != null) {
 			return xmlSignature.getValidationProcessArchivalData();
@@ -397,7 +397,7 @@ public class DetailedReport {
 		collect(type, result, signatureById.getValidationSignatureQualification());
 
 		if (MessageType.ERROR == type) {
-			collect(type, result, getHightestConclusion(signatureId));
+			collect(type, result, getHighestConclusion(signatureId));
 			collectTimestamps(type, result, signatureById);
 		} else {
 			collect(type, result, signatureById.getValidationProcessBasicSignatures());

@@ -148,7 +148,7 @@ public class SimpleReportBuilder {
 			xmlSignature.setFilename(signature.getSignatureFilename());
 		}
 
-		Indication indication = detailedReport.getHightestIndication(signatureId);
+		Indication indication = detailedReport.getHighestIndication(signatureId);
 		if (Indication.PASSED.equals(indication)) {
 			validSignatureCount++;
 			xmlSignature.setIndication(Indication.TOTAL_PASSED);
@@ -157,7 +157,7 @@ public class SimpleReportBuilder {
 		} else {
 			xmlSignature.setIndication(indication); // INDERTERMINATE
 		}
-		xmlSignature.setSubIndication(detailedReport.getHightestSubIndication(signatureId));
+		xmlSignature.setSubIndication(detailedReport.getHighestSubIndication(signatureId));
 
 		addSignatureProfile(xmlSignature);
 
