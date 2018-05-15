@@ -691,5 +691,40 @@
 				</plugins>
 			</build>
 		</profile>
+		
+		<profile>
+            <id>jdk19-plus</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <configuration>
+                                <additionalJOptions>
+	                                <additionalJOption>-html5</additionalJOption>
+                                    <additionalJOption>--add-modules</additionalJOption>
+                                    <additionalJOption>java.xml.bind,java.xml.ws,java.smartcardio</additionalJOption>
+                                </additionalJOptions>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <configuration>
+                            	<!-- java.xml.bind : several JAXB usages -->
+                            	<!-- java.xml.ws : SOAP  -->
+                            	<!-- javax.smartcardio : MOCCA -->
+                                <argLine>--add-modules java.xml.bind,java.xml.ws,java.smartcardio</argLine>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+             </build>
+         </profile>
+		
 	</profiles>
 </project>
