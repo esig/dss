@@ -47,9 +47,9 @@ public abstract class AbstractCRLUtils {
 			final boolean onlyUserCerts = issuingDistributionPoint.onlyContainsUserCerts();
 			final boolean indirectCrl = issuingDistributionPoint.isIndirectCRL();
 			ReasonFlags onlySomeReasons = issuingDistributionPoint.getOnlySomeReasons();
-			DistributionPointName distributionPoint = issuingDistributionPoint.getDistributionPoint();
 			boolean urlFound = false;
-			if (DistributionPointName.FULL_NAME == distributionPoint.getType()) {
+			DistributionPointName distributionPoint = issuingDistributionPoint.getDistributionPoint();
+			if ((distributionPoint != null) && (DistributionPointName.FULL_NAME == distributionPoint.getType())) {
 				final GeneralNames generalNames = (GeneralNames) distributionPoint.getName();
 				if ((generalNames != null) && (generalNames.getNames() != null && generalNames.getNames().length > 0)) {
 					for (GeneralName generalName : generalNames.getNames()) {
