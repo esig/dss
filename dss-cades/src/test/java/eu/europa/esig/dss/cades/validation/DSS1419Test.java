@@ -225,4 +225,88 @@ public class DSS1419Test {
 		assertFalse(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 
+	@Test
+	public void testSHA3_7() {
+		// CAdES-BpB-att-SHA256-SHA512withRSA.p7m
+		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1419/CAdES-BpB-att-SHA256-SHA512withRSA.p7m");
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		assertEquals(1, signatures.size());
+		CAdESSignature cades = (CAdESSignature) signatures.get(0);
+
+		Set<DigestAlgorithm> messageDigestAlgorithms = cades.getMessageDigestAlgorithms();
+		assertEquals(1, signatures.size());
+		assertEquals(DigestAlgorithm.SHA256, messageDigestAlgorithms.iterator().next());
+		assertNotNull(cades.getMessageDigestValue());
+
+		assertEquals(EncryptionAlgorithm.RSA, cades.getEncryptionAlgorithm());
+		assertEquals(DigestAlgorithm.SHA512, cades.getDigestAlgorithm());
+		assertNull(cades.getMaskGenerationFunction());
+		Reports reports = validator.validateDocument();
+
+		// reports.print();
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		assertFalse(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+
+	@Test
+	public void testSHA3_8() {
+		// CAdES-BpB-att-SHA3_224-SHA3_224withRSA.p7m
+		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1419/CAdES-BpB-att-SHA3_224-SHA3_224withRSA.p7m");
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		assertEquals(1, signatures.size());
+		CAdESSignature cades = (CAdESSignature) signatures.get(0);
+
+		Set<DigestAlgorithm> messageDigestAlgorithms = cades.getMessageDigestAlgorithms();
+		assertEquals(1, signatures.size());
+		assertEquals(DigestAlgorithm.SHA3_224, messageDigestAlgorithms.iterator().next());
+		assertNotNull(cades.getMessageDigestValue());
+
+		assertEquals(EncryptionAlgorithm.RSA, cades.getEncryptionAlgorithm());
+		assertEquals(DigestAlgorithm.SHA3_224, cades.getDigestAlgorithm());
+		assertNull(cades.getMaskGenerationFunction());
+		Reports reports = validator.validateDocument();
+
+		// reports.print();
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+
+	@Test
+	public void testSHA3_9() {
+		// CAdES-BpB-att-SHA3_512-SHA3_512withRSA.p7m
+		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/dss-1419/CAdES-BpB-att-SHA3_512-SHA3_512withRSA.p7m");
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		assertEquals(1, signatures.size());
+		CAdESSignature cades = (CAdESSignature) signatures.get(0);
+
+		Set<DigestAlgorithm> messageDigestAlgorithms = cades.getMessageDigestAlgorithms();
+		assertEquals(1, signatures.size());
+		assertEquals(DigestAlgorithm.SHA3_512, messageDigestAlgorithms.iterator().next());
+		assertNotNull(cades.getMessageDigestValue());
+
+		assertEquals(EncryptionAlgorithm.RSA, cades.getEncryptionAlgorithm());
+		assertEquals(DigestAlgorithm.SHA3_512, cades.getDigestAlgorithm());
+		assertNull(cades.getMaskGenerationFunction());
+		Reports reports = validator.validateDocument();
+
+		// reports.print();
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+
 }
