@@ -90,12 +90,12 @@ import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.asn1.x509.qualified.QCStatement;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.tsp.TimeStampToken;
-import org.bouncycastle.x509.extension.X509ExtensionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -502,7 +502,8 @@ public final class DSSASN1Utils {
 		try {
 			byte[] sKI = certificateToken.getCertificate().getExtensionValue(Extension.subjectKeyIdentifier.getId());
 			if (Utils.isArrayNotEmpty(sKI)) {
-				ASN1Primitive extension = X509ExtensionUtil.fromExtensionValue(sKI);
+
+				ASN1Primitive extension = JcaX509ExtensionUtils.parseExtensionValue(sKI);
 				SubjectKeyIdentifier skiBC = SubjectKeyIdentifier.getInstance(extension);
 				return skiBC.getKeyIdentifier();
 			} else if (computeIfMissing) {
