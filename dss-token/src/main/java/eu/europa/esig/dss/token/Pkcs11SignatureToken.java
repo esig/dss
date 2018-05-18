@@ -22,6 +22,9 @@ package eu.europa.esig.dss.token;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStore.ProtectionParameter;
@@ -141,15 +144,22 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 
 			LOG.debug("PKCS11 Config : \n{}", configString);
 
-			try (ByteArrayInputStream confStream = new ByteArrayInputStream(configString.getBytes())) {
-				sun.security.pkcs11.SunPKCS11 sunPKCS11 = new sun.security.pkcs11.SunPKCS11(confStream);
-				// we need to add the provider to be able to sign later
-				Security.addProvider(sunPKCS11);
-				provider = sunPKCS11;
-				return provider;
-			} catch (Exception e) {
-				throw new DSSException("Unable to instantiate SunPKCS11", e);
+			try {
+				// configure does not seem to support ByteArrayInputStream config files
+				// double hyphen is an undocumented feature, so it might change
+				Method configure = Provider.class.getMethod("configure", String.class);
+				Provider pkcs11 = Security.getProvider("SunPKCS11");
+				provider = (Provider) configure.invoke(pkcs11, "--" + configString);
+			} catch (NoSuchMethodException e) {
+				// for java versions lower than 9
+				byte[] pkcs11ConfigBytes = configString.getBytes();
+				ByteArrayInputStream confStream = new ByteArrayInputStream(pkcs11ConfigBytes);
+
+				// untested, lacks import above (Java 7 compatible?)
+				Constructor<sun.security.pkcs11.SunPKCS11> pkcs11 = sun.security.pkcs11.SunPKCS11.class.getConstructor(InputStream.class);
+				provider = pkcs11.newInstance(confStream);
 			}
+
 		}
 		return provider;
 	}

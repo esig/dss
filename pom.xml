@@ -697,6 +697,12 @@
             <activation>
                 <jdk>[9,)</jdk>
             </activation>
+            
+            <properties>
+				<project.source.version>1.9</project.source.version>
+				<project.target.version>1.9</project.target.version>
+            </properties>
+            
             <build>
                 <pluginManagement>
                     <plugins>
@@ -707,7 +713,7 @@
                                 <additionalJOptions>
 	                                <additionalJOption>-html5</additionalJOption>
                                     <additionalJOption>--add-modules</additionalJOption>
-                                    <additionalJOption>java.xml.bind,java.xml.ws,java.smartcardio</additionalJOption>
+                                    <additionalJOption>java.xml.bind,java.xml.ws,java.smartcardio,jdk.crypto.cryptoki</additionalJOption>
                                 </additionalJOptions>
                             </configuration>
                         </plugin>
@@ -718,7 +724,8 @@
                             	<!-- java.xml.bind : several JAXB usages -->
                             	<!-- java.xml.ws : SOAP  -->
                             	<!-- javax.smartcardio : MOCCA -->
-                                <argLine>--add-modules java.xml.bind,java.xml.ws,java.smartcardio</argLine>
+                            	<!-- jdk.crypto.cryptoki : SunPKCS11 -->
+                                <argLine>--add-modules java.xml.bind,java.xml.ws,java.smartcardio,jdk.crypto.cryptoki</argLine>
                             </configuration>
                         </plugin>
                     </plugins>
