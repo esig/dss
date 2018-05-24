@@ -1,9 +1,8 @@
 package eu.europa.esig.dss.token;
 
 import java.security.KeyStore.PasswordProtection;
+import java.util.Base64;
 import java.util.List;
-
-import javax.xml.bind.DatatypeConverter;
 
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureValue;
@@ -51,7 +50,8 @@ public class PKCS11SignatureTokenApp {
 
 			ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes());
 			SignatureValue signatureValue = token.sign(toBeSigned, DigestAlgorithm.SHA256, key);
-			System.out.println("Signature value : " + DatatypeConverter.printBase64Binary(signatureValue.getValue()));
+
+			System.out.println("Signature value : " + Base64.getEncoder().encodeToString(signatureValue.getValue()));
 		}
 	}
 
