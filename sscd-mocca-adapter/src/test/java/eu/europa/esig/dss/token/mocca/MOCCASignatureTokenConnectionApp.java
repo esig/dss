@@ -3,7 +3,7 @@ package eu.europa.esig.dss.token.mocca;
 import java.security.KeyStore.PasswordProtection;
 import java.util.List;
 
-import javax.xml.bind.DatatypeConverter;
+import org.bouncycastle.util.encoders.Base64;
 
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureValue;
@@ -26,7 +26,7 @@ public class MOCCASignatureTokenConnectionApp {
 
 			ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes());
 			SignatureValue signatureValue = token.sign(toBeSigned, DigestAlgorithm.SHA1, keys.get(0));
-			System.out.println("Signature value : " + DatatypeConverter.printBase64Binary(signatureValue.getValue()));
+			System.out.println("Signature value : " + Base64.toBase64String(signatureValue.getValue()));
 		}
 	}
 
