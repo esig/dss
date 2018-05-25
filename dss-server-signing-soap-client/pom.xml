@@ -9,11 +9,27 @@
 	<name>DSS Server signing SOAP Client</name>
 	<artifactId>dss-server-signing-soap-client</artifactId>
 	
-	
 	<dependencies>
 	  	<dependency>
 	    	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	    	<artifactId>dss-model</artifactId>
 	  	</dependency>
 	</dependencies>
+	
+	<profiles>
+		<profile>
+            <id>jdk19-plus</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            
+            <dependencies>
+	            <dependency>
+				    <groupId>com.sun.xml.ws</groupId>
+				    <artifactId>jaxws-ri</artifactId>
+			    	<type>pom</type>
+				</dependency>
+            </dependencies>
+    	</profile>
+    </profiles>
 </project>
