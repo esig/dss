@@ -25,7 +25,8 @@ public class XAdESNamespaceContext implements NamespaceContext {
 	}
 
 	@Override
-	public Iterator<?> getPrefixes(String namespaceURI) {
+	@SuppressWarnings("rawtypes")
+	public Iterator getPrefixes(String namespaceURI) {
 		return null;
 	}
 
