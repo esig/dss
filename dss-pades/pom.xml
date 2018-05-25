@@ -37,5 +37,21 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
+	
+    <!-- PDFBox use DataSource -->
+	<profiles>
+		<profile>
+            <id>jdk19-plus</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            
+            <dependencies>
+	            <dependency>
+					<groupId>com.sun.activation</groupId>
+			    	<artifactId>javax.activation</artifactId>
+				</dependency>
+            </dependencies>
+    	</profile>
+    </profiles>
 </project>
