@@ -147,7 +147,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.2.201409121644</version>
+				<version>0.8.1</version>
 				<executions>
 					<execution>
 						<id>prepare-unit-test-agent</id>
@@ -167,7 +167,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.20.1</version>
+				<version>2.21.0</version>
 				<configuration>
 					<!-- Default test configuration -->
 					<skipTests>true</skipTests>
@@ -227,6 +227,9 @@
 				<version>3.0.0</version>
 				<configuration>
                 	<encoding>UTF-8</encoding>
+					<additionalJOptions>
+						<additionalJOption>-html5</additionalJOption>
+					</additionalJOptions>
                 </configuration>
 				<executions>
 					<execution>
@@ -729,47 +732,6 @@
 				</plugins>
 			</build>
 		</profile>
-		
-		<profile>
-            <id>jdk19-plus</id>
-            <activation>
-                <jdk>[9,)</jdk>
-            </activation>
-            
-            <properties>
-				<project.source.version>1.9</project.source.version>
-				<project.target.version>1.9</project.target.version>
-            </properties>
-            
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-javadoc-plugin</artifactId>
-                            <configuration>
-                                <additionalJOptions>
-	                                <additionalJOption>-html5</additionalJOption>
-                                    <additionalJOption>--add-modules</additionalJOption>
-                                    <additionalJOption>java.xml.bind,java.xml.ws,java.smartcardio,jdk.crypto.cryptoki</additionalJOption>
-                                </additionalJOptions>
-                            </configuration>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-surefire-plugin</artifactId>
-                            <configuration>
-                            	<!-- java.xml.bind : several JAXB usages -->
-                            	<!-- java.xml.ws : SOAP  -->
-                            	<!-- javax.smartcardio : MOCCA -->
-                            	<!-- jdk.crypto.cryptoki : SunPKCS11 -->
-                                <argLine>--add-modules java.xml.bind,java.xml.ws,java.smartcardio,jdk.crypto.cryptoki</argLine>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-             </build>
-         </profile>
 		
 	</profiles>
 </project>

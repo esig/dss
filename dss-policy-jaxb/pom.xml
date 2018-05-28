@@ -59,6 +59,10 @@
             </activation>
             
             <dependencies>
+				<dependency>
+				    <groupId>com.sun.activation</groupId>
+				    <artifactId>javax.activation</artifactId>
+				</dependency>
 	            <dependency>
 				    <groupId>javax.xml.bind</groupId>
 				    <artifactId>jaxb-api</artifactId>
