@@ -1,4 +1,4 @@
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.signature;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

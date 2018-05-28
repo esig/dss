@@ -24,12 +24,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 @SuppressWarnings("serial")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class BLevelParameters implements Serializable {
 
 	/**
@@ -47,7 +42,6 @@ public class BLevelParameters implements Serializable {
 	 */
 	private boolean trustAnchorBPPolicy = true;
 
-	@XmlJavaTypeAdapter(value = DateAdapter.class)
 	private Date signingDate = new Date();
 
 	private List<String> claimedSignerRoles;
