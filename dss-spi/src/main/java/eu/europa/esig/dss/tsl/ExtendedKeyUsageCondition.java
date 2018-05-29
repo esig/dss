@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.tsl;
 
+import java.util.Collections;
 import java.util.List;
+import static java.util.Collections.unmodifiableList;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 
@@ -33,6 +35,18 @@ public class ExtendedKeyUsageCondition extends Condition {
 		this.extendedKeyUsageOids = oids;
 	}
 
+    /**
+     * Returns the list key purpose IDs to be be checked against the
+     * certificate’s extended key usage extension.
+     * 
+     * @return an unmodifiable list, possibly empty; never {@code null}
+     */
+    public final List<String> getKeyPurposeIds() {
+        return extendedKeyUsageOids == null ?
+            Collections.<String> emptyList() :
+            unmodifiableList(extendedKeyUsageOids);
+    }
+    
 	@Override
 	public boolean check(CertificateToken certificateToken) {
 		if (Utils.isCollectionNotEmpty(extendedKeyUsageOids)) {

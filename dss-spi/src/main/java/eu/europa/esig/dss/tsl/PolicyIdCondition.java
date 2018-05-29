@@ -52,6 +52,15 @@ public class PolicyIdCondition extends Condition {
 		this.policyOid = policyId;
 	}
 
+    /**
+     *  Returns the policy OID.
+     * 
+     *  @return never {@code null}
+     */
+    public final String getPolicyOid() {
+        return policyOid;
+    }
+
 	@Override
 	public boolean check(final CertificateToken certificateToken) {
 		if (certificateToken == null) {

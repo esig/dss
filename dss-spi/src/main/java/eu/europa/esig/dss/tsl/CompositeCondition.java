@@ -22,6 +22,7 @@ package eu.europa.esig.dss.tsl;
 
 import java.util.ArrayList;
 import java.util.List;
+import static java.util.Collections.unmodifiableList;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -57,6 +58,15 @@ public class CompositeCondition extends Condition {
 	public CompositeCondition(final MatchingCriteriaIndicator matchingCriteriaIndicator) {
 		this.matchingCriteriaIndicator = matchingCriteriaIndicator;
 	}
+
+    /**
+     * Returns the list of child conditions.
+     * 
+     * @return an unmodifiable list, possibly empty; never {@code null}
+     */
+    public final List<Condition> getChildren() {
+        return unmodifiableList(children);
+    }
 
 	/**
 	 * This method adds a child condition. This allows to handle embedded conditions.
