@@ -63,6 +63,10 @@
 
 		<junit.version>4.12</junit.version>
 		<mockito.version>2.12.0</mockito.version>
+		
+	    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+	    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+	    <sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPaths>
 	</properties>
 	
 	<licenses>
@@ -148,6 +152,10 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.1</version>
+			    <configuration>
+			        <destFile>${sonar.jacoco.reportPaths}</destFile>
+			        <append>true</append>
+			    </configuration>
 				<executions>
 					<execution>
 						<id>prepare-unit-test-agent</id>
