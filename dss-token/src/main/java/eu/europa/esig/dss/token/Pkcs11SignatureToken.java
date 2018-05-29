@@ -22,6 +22,9 @@ package eu.europa.esig.dss.token;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStore.ProtectionParameter;
@@ -42,6 +45,10 @@ import eu.europa.esig.dss.DSSException;
  * PKCS11 token with callback
  */
 public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
+
+	private static final String SUN_PKCS11_KEYSTORE_TYPE = "PKCS11";
+	private static final String SUN_PKCS11_PROVIDERNAME = "SunPKCS11";
+	private static final String SUN_PKCS11_CLASSNAME = "sun.security.pkcs11.SunPKCS11";
 
 	private static final String NEW_LINE = "\n";
 
@@ -122,36 +129,75 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 		this.slotId = slotId;
 	}
 
-	@SuppressWarnings("restriction")
 	protected Provider getProvider() {
 		if (provider == null) {
-			/*
-			 * The smartCardNameIndex int is added at the end of the smartCard name in order to enable the successive
-			 * loading of multiple pkcs11 libraries
-			 */
-			String aPKCS11LibraryFileName = getPkcs11Path();
-			aPKCS11LibraryFileName = escapePath(aPKCS11LibraryFileName);
-
-			StringBuilder pkcs11Config = new StringBuilder();
-			pkcs11Config.append("name = SmartCard").append(UUID.randomUUID().toString()).append(NEW_LINE);
-			pkcs11Config.append("library = \"").append(aPKCS11LibraryFileName).append("\"").append(NEW_LINE);
-			pkcs11Config.append("slot = ").append(slotId);
-
-			String configString = pkcs11Config.toString();
-
+			String configString = buildConfig();
 			LOG.debug("PKCS11 Config : \n{}", configString);
 
-			try (ByteArrayInputStream confStream = new ByteArrayInputStream(configString.getBytes())) {
-				sun.security.pkcs11.SunPKCS11 sunPKCS11 = new sun.security.pkcs11.SunPKCS11(confStream);
-				// we need to add the provider to be able to sign later
-				Security.addProvider(sunPKCS11);
-				provider = sunPKCS11;
-				return provider;
-			} catch (Exception e) {
-				throw new DSSException("Unable to instantiate SunPKCS11", e);
+			if (isJavaGreaterOrEquals9()) {
+				provider = getProviderJavaGreaterOrEquals9(configString);
+			} else {
+				provider = getProviderJavaLowerThan9(configString);
 			}
+
+			if (provider == null) {
+				throw new DSSException("Unable to create PKCS11 provider");
+			}
+
+			// we need to add the provider to be able to sign later
+			Security.addProvider(provider);
 		}
 		return provider;
+	}
+
+	private Provider getProviderJavaLowerThan9(String configString) {
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(configString.getBytes())) {
+			Class<?> sunPkcs11ProviderClass = Class.forName(SUN_PKCS11_CLASSNAME);
+			Constructor<?> constructor = sunPkcs11ProviderClass.getConstructor(InputStream.class);
+			return (Provider) constructor.newInstance(bais);
+		} catch (Exception e) {
+			throw new DSSException("Unable to instantiate PKCS11 (JDK < 9) ", e);
+		}
+	}
+
+	private boolean isJavaGreaterOrEquals9() {
+		try {
+			Provider provider = Security.getProvider(SUN_PKCS11_PROVIDERNAME);
+			if (provider != null) {
+				Method configureMethod = provider.getClass().getMethod("configure", String.class);
+				return configureMethod != null;
+			}
+		} catch (NoSuchMethodException e) {
+			// ignore
+		}
+		return false;
+	}
+
+	private Provider getProviderJavaGreaterOrEquals9(String configString) {
+		try {
+			Provider provider = Security.getProvider(SUN_PKCS11_PROVIDERNAME);
+			Method configureMethod = provider.getClass().getMethod("configure", String.class);
+			// "--" is permitted in the constructor sun.security.pkcs11.Config
+			return (Provider) configureMethod.invoke(provider, "--" + configString);
+		} catch (Exception e) {
+			throw new DSSException("Unable to instantiate PKCS11 (JDK >= 9)", e);
+		}
+	}
+
+	private String buildConfig() {
+		/*
+		 * The smartCardNameIndex int is added at the end of the smartCard name in order to enable the successive
+		 * loading of multiple pkcs11 libraries
+		 */
+		String aPKCS11LibraryFileName = getPkcs11Path();
+		aPKCS11LibraryFileName = escapePath(aPKCS11LibraryFileName);
+
+		StringBuilder pkcs11Config = new StringBuilder();
+		pkcs11Config.append("name = SmartCard").append(UUID.randomUUID().toString()).append(NEW_LINE);
+		pkcs11Config.append("library = \"").append(aPKCS11LibraryFileName).append("\"").append(NEW_LINE);
+		pkcs11Config.append("slot = ").append(slotId);
+
+		return pkcs11Config.toString();
 	}
 
 	private String escapePath(String pathToEscape) {
@@ -166,7 +212,7 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	@SuppressWarnings("restriction")
 	KeyStore getKeyStore() throws DSSException {
 		try {
-			KeyStore keyStore = KeyStore.getInstance("PKCS11", getProvider());
+			KeyStore keyStore = KeyStore.getInstance(SUN_PKCS11_KEYSTORE_TYPE, getProvider());
 			keyStore.load(new KeyStore.LoadStoreParameter() {
 
 				@Override
