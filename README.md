@@ -35,3 +35,4 @@ Bundles which contain the above demonstration can be downloaded from the [Maven 
 The code of the demonstration can be found on https://ec.europa.eu/cefdigital/code/projects/ESIG/repos/dss-demos/browse
 
 [![License (LGPL version 2.1)](https://img.shields.io/badge/license-GNU%20LGPL%20version%202.1-blue.svg?style=flat-square)](https://www.gnu.org/licenses/lgpl-2.1.html)
+[![SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=eu.europa.ec.joinup.sd-dss%3Asd-dss&metric=alert_status)](https://sonarcloud.io/dashboard?id=eu.europa.ec.joinup.sd-dss%3Asd-dss)
