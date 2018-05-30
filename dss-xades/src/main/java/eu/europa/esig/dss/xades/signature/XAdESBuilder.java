@@ -361,7 +361,7 @@ public abstract class XAdESBuilder {
 
 		final Element x509SerialNumberDom = DomUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_SERIAL_NUMBER);
 		final BigInteger serialNumber = certificate.getSerialNumber();
-		final String serialNumberString = new String(serialNumber.toString());
+		final String serialNumberString = serialNumber.toString();
 		DomUtils.setTextNode(documentDom, x509SerialNumberDom, serialNumberString);
 	}
 

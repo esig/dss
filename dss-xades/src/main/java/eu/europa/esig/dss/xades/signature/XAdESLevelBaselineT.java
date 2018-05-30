@@ -264,10 +264,6 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			// <xades:SignatureTimeStamp Id="time-stamp-1dee38c4-8388-40d1-8880-9eeda853fe60">
 			timeStampDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdES, XADES_SIGNATURE_TIME_STAMP);
 			break;
-		case VALIDATION_DATA_REFSONLY_TIMESTAMP:
-			// timeStampDom = DSSXMLUtils.addElement(documentDom, unsignedSignaturePropertiesDom,
-			// XAdESNamespaces.XAdES, XADES_);
-			break;
 		case VALIDATION_DATA_TIMESTAMP:
 			// <xades:SigAndRefsTimeStamp Id="time-stamp-a762ab0e-e05c-4cc8-a804-cf2c4ffb5516">
 			if (params.isEn319132() && !isOldGeneration(params.getSignatureLevel())) {
@@ -283,14 +279,12 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			break;
 		default:
 			// Content timestamps need to be generated before the signature itself
-			LOG.error("Unsupported timestamp type : " + timestampType);
-			break;
+			throw new DSSException("Unsupported timestamp type : " + timestampType);
 		}
 
 		if (LOG.isDebugEnabled()) {
-
-			final String encodedDigestValue = Utils.toBase64(digestValue);
-			LOG.debug("Timestamp generation: " + timestampDigestAlgorithm.getName() + " / " + timestampC14nMethod + " / " + encodedDigestValue);
+			LOG.debug("Timestamp generation: {} / {} / {}", timestampDigestAlgorithm.getName(), timestampC14nMethod,
+					Utils.toBase64(digestValue));
 		}
 		final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digestValue);
 		final String base64EncodedTimeStampToken = Utils.toBase64(DSSASN1Utils.getEncoded(timeStampToken));

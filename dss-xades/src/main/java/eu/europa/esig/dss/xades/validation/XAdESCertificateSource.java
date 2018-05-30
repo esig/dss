@@ -22,6 +22,7 @@ package eu.europa.esig.dss.xades.validation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,12 +49,8 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 
 	private final Element signatureElement;
 
-	private final XPathQueryHolder xPathQueryHolder;
-
 	private List<CertificateToken> keyInfoCerts;
-
 	private List<CertificateToken> encapsulatedCerts;
-
 	private List<CertificateToken> timestampValidationDataCerts;
 
 	/**
@@ -67,21 +64,13 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	 *            {@code CertificatePool} to use to declare the found certificates
 	 */
 	public XAdESCertificateSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder, final CertificatePool certificatePool) {
-
 		super(certificatePool);
-		if (signatureElement == null) {
+		Objects.requireNonNull(signatureElement, "Element signature must not be null");
+		Objects.requireNonNull(xPathQueryHolder, "XPathQueryHolder must not be null");
 
-			throw new NullPointerException();
-		}
-		if (xPathQueryHolder == null) {
-
-			throw new NullPointerException();
-		}
 		this.signatureElement = signatureElement;
-		this.xPathQueryHolder = xPathQueryHolder;
 
 		if (certificateTokens == null) {
-
 			certificateTokens = new ArrayList<CertificateToken>();
 			encapsulatedCerts = getCertificates(xPathQueryHolder.XPATH_ENCAPSULATED_X509_CERTIFICATE);
 			keyInfoCerts = getCertificates(xPathQueryHolder.XPATH_KEY_INFO_X509_CERTIFICATE);
@@ -94,9 +83,11 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	/**
+	 * This method extracts certificates from the given xpath query
+	 * 
 	 * @param xPathQuery
 	 *            XPath query
-	 * @return
+	 * @return a list of {@code CertificateToken}
 	 */
 	private List<CertificateToken> getCertificates(final String xPathQuery) {
 
@@ -117,7 +108,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 					list.add(certToken);
 				}
 			} catch (Exception e) {
-				LOG.warn("Unable to parse certificate '" + certificateElement.getTextContent() + "' : " + e.getMessage());
+				LOG.warn("Unable to parse certificate '{}' : {}", certificateElement.getTextContent(), e.getMessage());
 			}
 		}
 		return list;
@@ -131,7 +122,6 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	 */
 	@Override
 	public List<CertificateToken> getEncapsulatedCertificates() throws DSSException {
-
 		return encapsulatedCerts;
 	}
 
@@ -142,7 +132,6 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	 */
 	@Override
 	public List<CertificateToken> getKeyInfoCertificates() throws DSSException {
-
 		return keyInfoCerts;
 	}
 
@@ -153,7 +142,6 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
 	public List<CertificateToken> getTimestampCertificates() throws DSSException {
-
 		return timestampValidationDataCerts;
 	}
 }

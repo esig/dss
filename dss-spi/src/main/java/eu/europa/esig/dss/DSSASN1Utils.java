@@ -457,11 +457,12 @@ public final class DSSASN1Utils {
 									final ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) e1;
 									qcTypesIdList.add(oid.getId());
 								} else {
-									LOG.warn("ASN1Sequence in QcTypes does not contain ASN1ObjectIdentifer, but " + e1.getClass().getName());
+									LOG.warn("ASN1Sequence in QcTypes does not contain ASN1ObjectIdentifer, but {}",
+											e1.getClass().getName());
 								}
 							}
 						} else {
-							LOG.warn("QcTypes not an ASN1Sequence, but " + qcTypeInfo1.getClass().getName());
+							LOG.warn("QcTypes not an ASN1Sequence, but {}", qcTypeInfo1.getClass().getName());
 						}
 					}
 				}
@@ -834,9 +835,9 @@ public final class DSSASN1Utils {
 		} else if (attributeValue instanceof ASN1ObjectIdentifier) {
 			string = ((ASN1ObjectIdentifier) attributeValue).getId();
 		} else {
-			LOG.error("!!!*******!!! This encoding is unknown: " + attributeValue.getClass().getSimpleName());
+			LOG.error("!!!*******!!! This encoding is unknown: {}", attributeValue.getClass().getSimpleName());
 			string = attributeValue.toString();
-			LOG.error("!!!*******!!! value: " + string);
+			LOG.error("!!!*******!!! value: {}", string);
 		}
 		return string;
 	}
@@ -925,7 +926,7 @@ public final class DSSASN1Utils {
 		try {
 			return certToken.getCertificate().getExtendedKeyUsage();
 		} catch (CertificateParsingException e) {
-			LOG.warn("Unable to retrieve ExtendedKeyUsage " + e.getMessage());
+			LOG.warn("Unable to retrieve ExtendedKeyUsage : {}", e.getMessage());
 			return Collections.emptyList();
 		}
 	}

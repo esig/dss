@@ -150,11 +150,12 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 					basicOCSPResp = CMSUtils.getBasicOcspResp(otherRevocationInfoMatch);
 				} else {
 					final OCSPResp ocspResp = CMSUtils.getOcspResp(otherRevocationInfoMatch);
-					basicOCSPResp = CMSUtils.getBasicOCSPResp(ocspResp);
+					basicOCSPResp = CMSUtils.getBasicOcspResp(ocspResp);
 				}
 				addBasicOcspResp(basicOCSPResps, basicOCSPResp);
 			} else {
-				LOG.warn("Unsupported object type for id_ri_ocsp_response (SHALL be DER encoding) : " + object.getClass().getSimpleName());
+				LOG.warn("Unsupported object type for id_ri_ocsp_response (SHALL be DER encoding) : {}",
+						object.getClass().getSimpleName());
 			}
 		}
 	}
@@ -168,7 +169,8 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 				final BasicOCSPResp basicOCSPResp = CMSUtils.getBasicOcspResp(otherRevocationInfoMatch);
 				addBasicOcspResp(basicOCSPResps, basicOCSPResp);
 			} else {
-				LOG.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be DER encoding) : " + object.getClass().getSimpleName());
+				LOG.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be DER encoding) : {}",
+						object.getClass().getSimpleName());
 			}
 		}
 	}

@@ -782,8 +782,9 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 			if (revocationConstraints != null) {
 				return revocationConstraints.getBasicSignatureConstraints();
 			}
+			break;
 		default:
-			LOG.warn("Unsupported context " + context);
+			LOG.warn("Unsupported context {}", context);
 			break;
 		}
 		return null;
@@ -797,7 +798,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		case COUNTER_SIGNATURE:
 			return policy.getCounterSignatureConstraints();
 		default:
-			LOG.warn("Unsupported context " + context);
+			LOG.warn("Unsupported context {}", context);
 			break;
 		}
 		return null;
