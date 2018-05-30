@@ -417,32 +417,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			length = list.getLength();
 			isEn319132 = true;
 		}
-		if (length == 0) {
-			final CertificateValidity theCertificateValidity = candidates.getTheCertificateValidity();
-			final CertificateToken certificateToken = theCertificateValidity == null ? null : theCertificateValidity.getCertificateToken();
-			// The check need to be done at the level of KeyInfo
-			for (final Reference reference : references) {
 
-				final String uri = reference.getURI();
-				if (!uri.startsWith("#")) {
-					continue;
-				}
-
-				final String id = uri.substring(1);
-				final Element element = signatureElement.getOwnerDocument().getElementById(id);
-				// final Element element =
-				// DomUtils.getElement(signatureElement, "");
-				if (!hasSignatureAsParent(element)) {
-
-					continue;
-				}
-				if ((certificateToken != null) && id.equals(certificateToken.getXmlId())) {
-
-					theCertificateValidity.setSigned(element.getNodeName());
-					return;
-				}
-			}
-		}
 		// This Map contains the list of the references to the certificate which
 		// were already checked and which correspond to a certificate.
 		Map<Element, Boolean> alreadyProcessedElements = new HashMap<Element, Boolean>();
@@ -555,50 +530,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Checks if the given {@code Element} has as parent the current signature. This is the security check.
-	 *
-	 * @param element
-	 *            the element to be checked (can be null)
-	 * @return true if the given element has as parent the current signature element, false otherwise
-	 */
-	private boolean hasSignatureAsParent(final Element element) {
-
-		if (element == null) {
-			return false;
-		}
-		Node node = element;
-		String nodeName = node.getNodeName();
-		if (XPathQueryHolder.XMLE_X509CERTIFICATE.equals(nodeName)) {
-
-			node = node.getParentNode();
-			if (node == null) {
-				return false;
-			}
-			nodeName = node.getNodeName();
-
-		}
-		if (XPathQueryHolder.XMLE_X509DATA.equals(nodeName)) {
-
-			node = node.getParentNode();
-			if (node == null) {
-				return false;
-			}
-			nodeName = node.getNodeName();
-		}
-		if (XPathQueryHolder.XMLE_KEYINFO.equals(nodeName)) {
-
-			node = node.getParentNode();
-			if (node == null) {
-				return false;
-			}
-		}
-		if (!node.equals(signatureElement)) {
-			return false;
-		}
-		return true;
 	}
 
 	@Override

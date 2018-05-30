@@ -467,7 +467,6 @@ public class DiagnosticDataBuilder {
 		xmlSignCertType.setDigestValueMatch(theCertificateValidity.isDigestEqual());
 		final boolean issuerSerialMatch = theCertificateValidity.isSerialNumberEqual() && theCertificateValidity.isDistinguishedNameEqual();
 		xmlSignCertType.setIssuerSerialMatch(issuerSerialMatch);
-		xmlSignCertType.setSigned(theCertificateValidity.getSigned());
 		return xmlSignCertType;
 	}
 
