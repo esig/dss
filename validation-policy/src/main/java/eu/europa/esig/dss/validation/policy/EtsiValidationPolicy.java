@@ -570,18 +570,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getSigningCertificateSignedConstraint(final Context context) {
-		SignatureConstraints mainSignature = getSignatureConstraintsByContext(context);
-		if (mainSignature != null) {
-			SignedAttributesConstraints signedAttributeConstraints = mainSignature.getSignedAttributes();
-			if (signedAttributeConstraints != null) {
-				return signedAttributeConstraints.getSigningCertificateSigned();
-			}
-		}
-		return null;
-	}
-
-	@Override
 	public LevelConstraint getSigningCertificateAttributePresentConstraint(Context context) {
 		SignatureConstraints mainSignature = getSignatureConstraintsByContext(context);
 		if (mainSignature != null) {

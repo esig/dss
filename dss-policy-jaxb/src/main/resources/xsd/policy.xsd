@@ -47,7 +47,6 @@
 	<xs:complexType name="SignedAttributesConstraints">
 		<xs:sequence>
 			<xs:element name="SigningCertificatePresent" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="SigningCertificateSigned" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="CertDigestPresent" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="CertDigestMatch" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="IssuerSerialMatch" type="tns:LevelConstraint" minOccurs="0" />

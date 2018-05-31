@@ -277,12 +277,6 @@ public interface ValidationPolicy {
 	LevelConstraint getSigningCertificateRecognitionConstraint(Context context);
 
 	/**
-	 * @return {@code LevelConstraint} if Signed for a given context element is present in the constraint file, null
-	 *         otherwise.
-	 */
-	LevelConstraint getSigningCertificateSignedConstraint(Context context);
-
-	/**
 	 * @return {@code LevelConstraint} if SigningCertificateAttribute for a given context element is present in the
 	 *         constraint file, null otherwise.
 	 */

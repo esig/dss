@@ -41,8 +41,6 @@ public interface TokenProxy {
 
 	String getSigningCertificateId();
 
-	String getSigningCertificateSigned();
-
 	String getLastChainCertificateId();
 
 	String getFirstChainCertificateId();
