@@ -30,17 +30,8 @@ import eu.europa.esig.dss.x509.CertificateToken;
  */
 public class TSLService {
 
-	private String name;
 	private List<CertificateToken> certificates;
 	private TimeDependentValues<TSLServiceStatusAndInformationExtensions> status;
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public List<CertificateToken> getCertificates() {
 		return certificates;

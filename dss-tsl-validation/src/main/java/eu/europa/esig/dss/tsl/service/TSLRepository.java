@@ -304,14 +304,13 @@ public class TSLRepository {
 		serviceInfo.setTspPostalAddress(serviceProvider.getPostalAddress());
 		serviceInfo.setTspElectronicAddress(serviceProvider.getElectronicAddress());
 
-		serviceInfo.setServiceName(service.getName());
-
 		final MutableTimeDependentValues<ServiceInfoStatus> status = new MutableTimeDependentValues<ServiceInfoStatus>();
 		final TimeDependentValues<TSLServiceStatusAndInformationExtensions> serviceStatus = service.getStatusAndInformationExtensions();
 		if (serviceStatus != null) {
 			for (TSLServiceStatusAndInformationExtensions tslServiceStatus : serviceStatus) {
 				final Map<String, List<Condition>> qualifiersAndConditions = getMapConditionsByQualifier(tslServiceStatus);
-				final ServiceInfoStatus s = new ServiceInfoStatus(tslServiceStatus.getType(), tslServiceStatus.getStatus(), qualifiersAndConditions,
+				final ServiceInfoStatus s = new ServiceInfoStatus(tslServiceStatus.getName(),
+						tslServiceStatus.getType(), tslServiceStatus.getStatus(), qualifiersAndConditions,
 						tslServiceStatus.getAdditionalServiceInfoUris(), tslServiceStatus.getServiceSupplyPoints(),
 						tslServiceStatus.getExpiredCertsRevocationInfo(), tslServiceStatus.getStartDate(), tslServiceStatus.getEndDate());
 

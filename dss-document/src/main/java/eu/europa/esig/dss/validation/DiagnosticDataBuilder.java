@@ -826,13 +826,13 @@ public class DiagnosticDataBuilder {
 		List<XmlTrustedServiceProvider> result = new ArrayList<XmlTrustedServiceProvider>();
 		Set<ServiceInfo> services = getLinkedTrustedServices(certToken);
 		Map<String, List<ServiceInfo>> servicesByProviders = classifyByServiceProvider(services);
-		for (List<ServiceInfo> serviceByProvider : servicesByProviders.values()) {
-			ServiceInfo first = serviceByProvider.get(0);
+		for (List<ServiceInfo> servicesByProvider : servicesByProviders.values()) {
+			ServiceInfo first = servicesByProvider.get(0);
 			XmlTrustedServiceProvider serviceProvider = new XmlTrustedServiceProvider();
 			serviceProvider.setCountryCode(first.getTlCountryCode());
 			serviceProvider.setTSPName(first.getTspName());
 			serviceProvider.setTSPRegistrationIdentifier(first.getTspRegistrationIdentifier());
-			serviceProvider.setTrustedServices(getXmlTrustedServices(serviceByProvider, certToken));
+			serviceProvider.setTrustedServices(getXmlTrustedServices(servicesByProvider, certToken));
 			result.add(serviceProvider);
 		}
 		return Collections.unmodifiableList(result);
@@ -846,7 +846,7 @@ public class DiagnosticDataBuilder {
 				for (ServiceInfoStatus serviceInfoStatus : serviceStatusAfterOfEqualsCertIssuance) {
 					XmlTrustedService trustedService = new XmlTrustedService();
 
-					trustedService.setServiceName(serviceInfo.getServiceName());
+					trustedService.setServiceName(serviceInfoStatus.getServiceName());
 					trustedService.setServiceType(serviceInfoStatus.getType());
 					trustedService.setStatus(serviceInfoStatus.getStatus());
 					trustedService.setStartDate(serviceInfoStatus.getStartDate());

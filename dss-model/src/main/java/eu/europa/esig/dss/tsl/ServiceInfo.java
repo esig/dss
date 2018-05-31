@@ -25,7 +25,8 @@ import java.io.Serializable;
 import eu.europa.esig.dss.util.TimeDependentValues;
 
 /**
- * From a validation point of view, a Service is a set of pair ("Qualification Statement", "Condition").
+ * From a validation point of view, a Service is a set of pair ("Qualification
+ * Statement", "Condition").
  *
  */
 public class ServiceInfo implements Serializable {
@@ -81,15 +82,6 @@ public class ServiceInfo implements Serializable {
 	 */
 	private String tspElectronicAddress;
 
-	/**
-	 * <pre>
-	 * {@code
-	 * <tsl:TrustServiceProvider><tsl:TSPServices><tsl:TSPService><tsl:ServiceInformation><tsl:ServiceName>
-	 * }
-	 * </pre>
-	 */
-	private String serviceName;
-
 	private TimeDependentValues<ServiceInfoStatus> status = new TimeDependentValues<ServiceInfoStatus>();
 
 	/**
@@ -108,15 +100,6 @@ public class ServiceInfo implements Serializable {
 	 */
 	public TimeDependentValues<ServiceInfoStatus> getStatus() {
 		return status;
-	}
-
-	/**
-	 * Returns the service name
-	 * 
-	 * @return the service name
-	 */
-	public String getServiceName() {
-		return serviceName;
 	}
 
 	/**
@@ -172,16 +155,6 @@ public class ServiceInfo implements Serializable {
 	 */
 	public void setTlCountryCode(String tlCountryCode) {
 		this.tlCountryCode = tlCountryCode;
-	}
-
-	/**
-	 * Sets the service name
-	 * 
-	 * @param serviceName
-	 *            the service name
-	 */
-	public void setServiceName(String serviceName) {
-		this.serviceName = trim(serviceName);
 	}
 
 	/**
@@ -248,12 +221,12 @@ public class ServiceInfo implements Serializable {
 		try {
 			StringBuilder buffer = new StringBuilder();
 			buffer.append(indent).append("TSPName                   \t= ").append(tspName).append('\n');
-			buffer.append(indent).append("ServiceName               \t= ").append(serviceName).append('\n');
-			buffer.append(indent).append("StatusAndExtensions       \t= ").append(status).append('\n');
 			buffer.append(indent).append("TSPTradeName              \t= ").append(tspTradeName).append('\n');
-			buffer.append(indent).append("TSPRegistrationIdentifier \t= ").append(tspRegistrationIdentifier).append('\n');
+			buffer.append(indent).append("TSPRegistrationIdentifier \t= ").append(tspRegistrationIdentifier)
+					.append('\n');
 			buffer.append(indent).append("TSPPostalAddress          \t= ").append(tspPostalAddress).append('\n');
 			buffer.append(indent).append("TSPElectronicAddress      \t= ").append(tspElectronicAddress).append("\n\n");
+			buffer.append(indent).append("StatusAndExtensions       \t= ").append(status).append('\n');
 			return buffer.toString();
 		} catch (Exception e) {
 			return super.toString();
@@ -277,8 +250,12 @@ public class ServiceInfo implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + ((serviceName == null) ? 0 : serviceName.hashCode());
-		result = (prime * result) + ((tspName == null) ? 0 : tspName.hashCode());
+		result = prime * result + ((tlCountryCode == null) ? 0 : tlCountryCode.hashCode());
+		result = prime * result + ((tspElectronicAddress == null) ? 0 : tspElectronicAddress.hashCode());
+		result = prime * result + ((tspName == null) ? 0 : tspName.hashCode());
+		result = prime * result + ((tspPostalAddress == null) ? 0 : tspPostalAddress.hashCode());
+		result = prime * result + ((tspRegistrationIdentifier == null) ? 0 : tspRegistrationIdentifier.hashCode());
+		result = prime * result + ((tspTradeName == null) ? 0 : tspTradeName.hashCode());
 		return result;
 	}
 
@@ -294,11 +271,18 @@ public class ServiceInfo implements Serializable {
 			return false;
 		}
 		ServiceInfo other = (ServiceInfo) obj;
-		if (serviceName == null) {
-			if (other.serviceName != null) {
+		if (tlCountryCode == null) {
+			if (other.tlCountryCode != null) {
 				return false;
 			}
-		} else if (!serviceName.equals(other.serviceName)) {
+		} else if (!tlCountryCode.equals(other.tlCountryCode)) {
+			return false;
+		}
+		if (tspElectronicAddress == null) {
+			if (other.tspElectronicAddress != null) {
+				return false;
+			}
+		} else if (!tspElectronicAddress.equals(other.tspElectronicAddress)) {
 			return false;
 		}
 		if (tspName == null) {
@@ -306,6 +290,27 @@ public class ServiceInfo implements Serializable {
 				return false;
 			}
 		} else if (!tspName.equals(other.tspName)) {
+			return false;
+		}
+		if (tspPostalAddress == null) {
+			if (other.tspPostalAddress != null) {
+				return false;
+			}
+		} else if (!tspPostalAddress.equals(other.tspPostalAddress)) {
+			return false;
+		}
+		if (tspRegistrationIdentifier == null) {
+			if (other.tspRegistrationIdentifier != null) {
+				return false;
+			}
+		} else if (!tspRegistrationIdentifier.equals(other.tspRegistrationIdentifier)) {
+			return false;
+		}
+		if (tspTradeName == null) {
+			if (other.tspTradeName != null) {
+				return false;
+			}
+		} else if (!tspTradeName.equals(other.tspTradeName)) {
 			return false;
 		}
 		return true;

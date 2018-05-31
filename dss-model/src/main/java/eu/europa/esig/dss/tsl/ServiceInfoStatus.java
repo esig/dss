@@ -14,6 +14,15 @@ public class ServiceInfoStatus extends BaseTimeDependent implements Serializable
 	/**
 	 * <pre>
 	 * {@code
+	 * <tsl:TrustServiceProvider><tsl:TSPServices><tsl:TSPService><tsl:ServiceInformation><tsl:ServiceName>
+	 * }
+	 * </pre>
+	 */
+	private final String serviceName;
+
+	/**
+	 * <pre>
+	 * {@code
 	 * <tsl:TrustServiceProvider><tsl:TSPServices><tsl:TSPService><tsl:ServiceInformation><tsl:ServiceTypeIdentifier>
 	 * }
 	 * </pre>
@@ -58,15 +67,26 @@ public class ServiceInfoStatus extends BaseTimeDependent implements Serializable
 	 */
 	private final Date expiredCertsRevocationInfo;
 
-	public ServiceInfoStatus(String type, String status, Map<String, List<Condition>> qualifiersAndConditions, List<String> additionalServiceInfoUris,
+	public ServiceInfoStatus(String serviceName, String type, String status,
+			Map<String, List<Condition>> qualifiersAndConditions, List<String> additionalServiceInfoUris,
 			List<String> serviceSupplyPoints, Date expiredCertsRevocationInfo, Date startDate, Date endDate) {
 		super(startDate, endDate);
+		this.serviceName = serviceName;
 		this.type = type;
 		this.status = status;
 		this.qualifiersAndConditions = qualifiersAndConditions;
 		this.additionalServiceInfoUris = additionalServiceInfoUris;
 		this.serviceSupplyPoints = serviceSupplyPoints;
 		this.expiredCertsRevocationInfo = expiredCertsRevocationInfo;
+	}
+
+	/**
+	 * Returns the service name
+	 * 
+	 * @return the service name
+	 */
+	public String getServiceName() {
+		return serviceName;
 	}
 
 	/**
