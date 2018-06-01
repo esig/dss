@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,8 +50,6 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSigProperties;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSignDesigner;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.slf4j.Logger;
@@ -69,8 +66,6 @@ import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pades.signature.visible.ImageAndResolution;
-import eu.europa.esig.dss.pades.signature.visible.ImageUtils;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfDict;
@@ -89,6 +84,19 @@ import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 class PdfBoxSignatureService implements PDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxSignatureService.class);
+
+	protected PdfBoxVisibleSignatureDrawer visibleSignatureDrawer = new DefaultPdfBoxVisibleSignatureDrawer();
+
+	/**
+	 * This method allows to inject a custom {@Code PdfBoxVisibleSignatureDrawer}
+	 * 
+	 * @param visibleSignatureDrawer
+	 *            an implementation of {@Code PdfBoxVisibleSignatureDrawer} which
+	 *            generates the visible signature
+	 */
+	public void setVisibleSignatureDrawer(PdfBoxVisibleSignatureDrawer visibleSignatureDrawer) {
+		this.visibleSignatureDrawer = visibleSignatureDrawer;
+	}
 
 	@Override
 	public byte[] digest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm)
@@ -128,7 +136,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 	private byte[] signDocumentAndReturnDigest(final PAdESSignatureParameters parameters, final byte[] signatureBytes, final OutputStream fileOutputStream,
 			final PDDocument pdDocument, final PDSignature pdSignature, final DigestAlgorithm digestAlgorithm) throws DSSException {
 
-		try (SignatureOptions options = new SignatureOptions()) {
+		try (SignatureOptions options = createSignatureOptions(pdDocument, parameters)) {
 
 			final MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
 			// register signature dictionary and sign interface
@@ -147,7 +155,6 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			};
 
 			options.setPreferredSignatureSize(parameters.getSignatureSize());
-			fillImageParameters(pdDocument, parameters, options);
 			pdDocument.addSignature(pdSignature, signatureInterface, options);
 
 			saveDocumentIncrementally(parameters, fileOutputStream, pdDocument);
@@ -161,40 +168,10 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 	}
 
-	protected void fillImageParameters(PDDocument pdDocument, PAdESSignatureParameters parameters, SignatureOptions options) throws IOException {
-		SignatureImageParameters signatureImageParameters = parameters.getSignatureImageParameters();
-		fillImageParameters(pdDocument, signatureImageParameters, options);
-	}
-
-	protected void fillImageParameters(final PDDocument doc, final SignatureImageParameters signatureImageParameters, SignatureOptions options)
+	protected SignatureOptions createSignatureOptions(PDDocument pdDocument, PAdESSignatureParameters parameters)
 			throws IOException {
-		if (signatureImageParameters != null) {
-			// DSS-747. Using the DPI resolution to convert java size to dot
-			ImageAndResolution ires = ImageUtils.create(signatureImageParameters);
-
-			SignatureImageAndPosition signatureImageAndPosition = SignatureImageAndPositionProcessor.process(signatureImageParameters, doc, ires);
-
-			PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(doc, new ByteArrayInputStream(signatureImageAndPosition.getSignatureImage()),
-					signatureImageParameters.getPage());
-
-			visibleSig.xAxis(signatureImageAndPosition.getX());
-			visibleSig.yAxis(signatureImageAndPosition.getY());
-
-			if ((signatureImageParameters.getWidth() != 0) && (signatureImageParameters.getHeight() != 0)) {
-				visibleSig.width(signatureImageParameters.getWidth());
-				visibleSig.height(signatureImageParameters.getHeight());
-			} else {
-				visibleSig.width(ires.toXPoint(visibleSig.getWidth()));
-				visibleSig.height(ires.toYPoint(visibleSig.getHeight()));
-			}
-			visibleSig.zoom(signatureImageParameters.getZoom() - 100); // pdfbox is 0 based
-
-			PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
-			signatureProperties.visualSignEnabled(true).setPdVisibleSignature(visibleSig).buildSignature();
-
-			options.setVisualSignature(signatureProperties);
-			options.setPage(signatureImageParameters.getPage() - 1); // DSS-1138
-		}
+		SignatureImageParameters signatureImageParameters = parameters.getSignatureImageParameters();
+		return visibleSignatureDrawer.createVisualSignature(pdDocument, signatureImageParameters);
 	}
 
 	private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters, PDDocument pdDocument) {
@@ -207,11 +184,6 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 
 		signature.setType(getType());
-		// signature.setName(String.format("SD-DSS Signature %s", parameters.getDeterministicId()));
-		Date date = parameters.bLevel().getSigningDate();
-		String encodedDate = " " + Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA1, Long.toString(date.getTime()).getBytes()));
-		CertificateToken token = parameters.getSigningCertificate();
-
 		signature.setFilter(getFilter(parameters));
 		// sub-filter for basic and PAdES Part 2 signatures
 		signature.setSubFilter(getSubFilter(parameters));
@@ -220,11 +192,19 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 			if (parameters.getSignatureName() != null) {
 				signature.setName(parameters.getSignatureName());
-			} else if (token == null) {
-				signature.setName("Unknown signer" + encodedDate);
 			} else {
-				String shortName = DSSASN1Utils.getHumanReadableName(parameters.getSigningCertificate()) + encodedDate;
-				signature.setName(shortName);
+
+				CertificateToken token = parameters.getSigningCertificate();
+				Date date = parameters.bLevel().getSigningDate();
+				String encodedDate = Utils
+						.toHex(DSSUtils.digest(DigestAlgorithm.SHA1, Long.toString(date.getTime()).getBytes()));
+
+				if (token == null) {
+					signature.setName("Unknown signer" + encodedDate);
+				} else {
+					String shortName = DSSASN1Utils.getHumanReadableName(token) + encodedDate;
+					signature.setName(shortName);
+				}
 			}
 
 			if (Utils.isStringNotEmpty(parameters.getContactInfo())) {
