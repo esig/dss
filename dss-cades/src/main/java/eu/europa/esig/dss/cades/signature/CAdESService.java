@@ -99,7 +99,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId());
-		final DigestCalculatorProvider dcp = getDigestCalculatorProvider(toSignDocument);
+		final DigestCalculatorProvider dcp = getDigestCalculatorProvider(toSignDocument, parameters);
 
 		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(dcp, parameters, false);
 		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
@@ -125,7 +125,7 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
-		final DigestCalculatorProvider dcp = getDigestCalculatorProvider(toSignDocument);
+		final DigestCalculatorProvider dcp = getDigestCalculatorProvider(toSignDocument, parameters);
 		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(dcp, parameters, true);
 		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
 		if ((originalCmsSignedData == null) && SignaturePackaging.DETACHED.equals(packaging) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
@@ -153,8 +153,11 @@ public class CAdESService extends AbstractSignatureService<CAdESSignatureParamet
 		return signature;
 	}
 
-	private DigestCalculatorProvider getDigestCalculatorProvider(DSSDocument toSignDocument) {
-		if (toSignDocument instanceof DigestDocument) {
+	private DigestCalculatorProvider getDigestCalculatorProvider(DSSDocument toSignDocument, CAdESSignatureParameters parameters) {
+		DigestAlgorithm referenceDigestAlgorithm = parameters.getReferenceDigestAlgorithm();
+		if (referenceDigestAlgorithm != null) {
+			return new CustomMessageDigestCalculatorProvider(referenceDigestAlgorithm, toSignDocument.getDigest(referenceDigestAlgorithm));
+		} else if (toSignDocument instanceof DigestDocument) {
 			return new PrecomputedDigestCalculatorProvider((DigestDocument) toSignDocument);
 		}
 		return new BcDigestCalculatorProvider();

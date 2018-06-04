@@ -36,6 +36,7 @@ import org.w3c.dom.Text;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
@@ -76,7 +77,8 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 		final DSSReference reference = new DSSReference();
 		reference.setId("r-id-" + referenceIndex);
 		reference.setContents(document);
-		reference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
+		DigestAlgorithm digestAlgorithm = params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
+		reference.setDigestMethodAlgorithm(digestAlgorithm);
 
 		if (params.isManifestSignature()) {
 			reference.setType(HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST);
