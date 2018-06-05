@@ -8,12 +8,14 @@ public enum CertificateQualification {
 	/**
 	 * Qualified Certificate for Electronic Signatures with private key on QSCD
 	 */
-	QCERT_FOR_ESIG_QSCD("QC Cert for ESig with QSCD", "Qualified Certificate for Electronic Signatures with private key on QSCD", true, true, true),
+	QCERT_FOR_ESIG_QSCD("QC for eSig with QSCD",
+			"Qualified Certificate for Electronic Signatures with private key on QSCD", true, true, true),
 
 	/**
 	 * Qualified Certificate for Electronic Seals with private key on QSCD
 	 */
-	QCERT_FOR_ESEAL_QSCD("QC Cert for ESeal with QSCD", "Qualified Certificate for Electronic Seals with private key on QSCD", true, false, true),
+	QCERT_FOR_ESEAL_QSCD("QC for eSeal with QSCD",
+			"Qualified Certificate for Electronic Seals with private key on QSCD", true, false, true),
 
 	// QCERT_FOR_WSA_QSCD non sense
 
@@ -22,29 +24,29 @@ public enum CertificateQualification {
 	/**
 	 * Qualified Certificate for Electronic Signatures
 	 */
-	QCERT_FOR_ESIG("QC Cert for ESig", "Qualified Certificate for Electronic Signatures", true, true, false),
+	QCERT_FOR_ESIG("QC for eSig", "Qualified Certificate for Electronic Signatures", true, true, false),
 
 	/**
 	 * Qualified Certificate for Electronic Seals
 	 */
-	QCERT_FOR_ESEAL("QC Cert for ESeal", "Qualified Certificate for Electronic Seals", true, false, false),
+	QCERT_FOR_ESEAL("QC for eSeal", "Qualified Certificate for Electronic Seals", true, false, false),
 
 	/**
 	 * Qualified Certificate for Web Site Authentications
 	 */
-	QCERT_FOR_WSA("QC Cert for WSA", "Qualified Certificate for Web Site Authentications", true, false, false),
+	QCERT_FOR_WSA("QC for WSA", "Qualified Certificate for Web Site Authentications", true, false, false),
 
 	// --------------------------------------------------------
 
 	/**
 	 * Certificate for Electronic Signatures
 	 */
-	CERT_FOR_ESIG("Cert for ESig", "Certificate for Electronic Signatures", false, true, false),
+	CERT_FOR_ESIG("Cert for eSig", "Certificate for Electronic Signatures", false, true, false),
 
 	/**
 	 * Certificate for Electronic Seals
 	 */
-	CERT_FOR_ESEAL("Cert for ESeal", "Certificate for Electronic Seals", false, false, false),
+	CERT_FOR_ESEAL("Cert for eSeal", "Certificate for Electronic Seals", false, false, false),
 
 	/**
 	 * Certificate for Web Site Authentications
