@@ -6,12 +6,9 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 
 public interface TokenProxy {
-
-	boolean isReferenceDataFound();
-
-	boolean isReferenceDataIntact();
 
 	boolean isSignatureIntact();
 
@@ -52,5 +49,7 @@ public interface TokenProxy {
 	List<XmlChainItem> getCertificateChain();
 
 	List<String> getCertificateChainIds();
+
+	List<XmlDigestMatcher> getDigestMatchers();
 
 }

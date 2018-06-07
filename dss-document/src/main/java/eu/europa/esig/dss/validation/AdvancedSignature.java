@@ -430,4 +430,12 @@ public interface AdvancedSignature extends Serializable {
 
 	List<SignatureScope> getSignatureScopes();
 
+	/**
+	 * Returns individual validation foreach reference (XAdES) or for the
+	 * message-imprint (CAdES)
+	 * 
+	 * @return a list with one or more {@code ReferenceValidation}
+	 */
+	List<ReferenceValidation> getReferenceValidations();
+
 }

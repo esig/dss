@@ -90,7 +90,7 @@ public class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extend
 		reference.setId(fileDocument.getName());
 		reference.setUri(fileDocument.getName());
 		reference.setContents(fileDocument);
-		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA1);
+		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
 		return reference;
 	}
 

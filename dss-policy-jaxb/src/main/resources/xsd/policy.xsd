@@ -71,8 +71,6 @@
 	<xs:complexType name="TimestampConstraints">
 		<xs:sequence>
 			<xs:element name="TimestampDelay" type="tns:TimeConstraint" minOccurs="0" />
-			<xs:element name="MessageImprintDataFound" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="MessageImprintDataIntact" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="RevocationTimeAgainstBestSignatureTime" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="BestSignatureTimeBeforeIssuanceDateOfSigningCertificate" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="SigningCertificateValidityAtBestSignatureTime" type="tns:LevelConstraint" minOccurs="0" />

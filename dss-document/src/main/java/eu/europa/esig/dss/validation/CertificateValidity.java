@@ -23,7 +23,6 @@ package eu.europa.esig.dss.validation;
 import java.io.Serializable;
 import java.security.PublicKey;
 
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -43,9 +42,6 @@ public class CertificateValidity implements Serializable {
 	private boolean attributePresent;
 	private boolean serialNumberEqual;
 	private boolean distinguishedNameEqual;
-
-	private String digest;
-	private DigestAlgorithm digestAlgorithm;
 
 	/**
 	 * This constructor create an object containing all information concerning the validity of a candidate for the
@@ -146,22 +142,6 @@ public class CertificateValidity implements Serializable {
 	public boolean isValid() {
 		final boolean valid = isDigestEqual() || (isDistinguishedNameEqual() && isSerialNumberEqual());
 		return valid;
-	}
-
-	public void setDigest(final String digest) {
-		this.digest = digest;
-	}
-
-	public String getDigest() {
-		return digest;
-	}
-
-	public DigestAlgorithm getDigestAlgorithm() {
-		return digestAlgorithm;
-	}
-
-	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
-		this.digestAlgorithm = digestAlgorithm;
 	}
 
 }

@@ -311,8 +311,6 @@
 	</CounterSignatureConstraints>
 	<Timestamp>
 		<TimestampDelay Level="FAIL" Unit="DAYS" Value="0" />
-		<MessageImprintDataFound Level="FAIL" />
-		<MessageImprintDataIntact Level="FAIL" />
 		<RevocationTimeAgainstBestSignatureTime	Level="FAIL" />
 		<BestSignatureTimeBeforeIssuanceDateOfSigningCertificate Level="FAIL" />
 		<SigningCertificateValidityAtBestSignatureTime Level="FAIL" />

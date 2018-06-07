@@ -318,10 +318,6 @@ public interface ValidationPolicy {
 	 */
 	LevelConstraint getSignatureIntactConstraint(Context context);
 
-	LevelConstraint getMessageImprintDataFoundConstraint();
-
-	LevelConstraint getMessageImprintDataIntactConstraint();
-
 	LevelConstraint getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint();
 
 	LevelConstraint getSigningCertificateValidityAtBestSignatureTimeConstraint();
@@ -395,5 +391,6 @@ public interface ValidationPolicy {
 	ValueConstraint getTLVersionConstraint();
 
 	LevelConstraint getTLConsistencyConstraint();
+
 
 }

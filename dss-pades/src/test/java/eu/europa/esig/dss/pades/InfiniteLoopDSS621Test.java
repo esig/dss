@@ -70,6 +70,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -105,8 +106,12 @@ public class InfiniteLoopDSS621Test {
 
 		assertEquals(5, signatures.size()); // 1 timestamp is not counted as signature
 		for (final SignatureWrapper signature : signatures) {
-			assertTrue(signature.isReferenceDataFound());
-			assertTrue(signature.isReferenceDataIntact());
+			List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
+			for (XmlDigestMatcher digestMatcher : digestMatchers) {
+				assertTrue(digestMatcher.isDataFound());
+				assertTrue(digestMatcher.isDataIntact());
+			}
+
 			assertFalse(signature.isSignatureIntact());
 			assertFalse(signature.isSignatureValid());
 			assertTrue(Utils.isCollectionNotEmpty(signature.getTimestampList()));
