@@ -109,7 +109,7 @@ public class OfflineResolver extends ResourceResolverSpi {
 	}
 
 	private boolean isUriDefined(Attr uriAttr) {
-		return (uriAttr != null) && (uriAttr.getNodeValue() != null);
+		return (uriAttr != null) && (Utils.isStringNotEmpty(uriAttr.getNodeValue()));
 	}
 
 	private String getDocumentUri(Attr uriAttr) {
