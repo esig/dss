@@ -20,6 +20,7 @@ import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.jaxb.ecc.CriteriaListType;
@@ -199,9 +200,13 @@ public class TSLParserTest {
 		for (TSLServiceProvider tslServiceProvider : serviceProviders) {
 			List<TSLService> services = tslServiceProvider.getServices();
 			for (TSLService tslService : services) {
-				if (serviceNameToFind.equals(tslService.getName())) {
-					service = tslService;
-					break;
+				TimeDependentValues<TSLServiceStatusAndInformationExtensions> statusAndInformationExtensions = tslService
+						.getStatusAndInformationExtensions();
+				for (TSLServiceStatusAndInformationExtensions tslServiceStatusAndInformationExtensions : statusAndInformationExtensions) {
+					if (serviceNameToFind.equals(tslServiceStatusAndInformationExtensions.getName())) {
+						service = tslService;
+						break;
+					}
 				}
 			}
 		}

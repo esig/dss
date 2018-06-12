@@ -191,13 +191,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 
 	private SignerInformation getFirstSigner(CMSSignedData cmsSignedData) {
 		final Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
-		SignerInformation lastSignerInformation;
-		lastSignerInformation = null;
-		for (SignerInformation signerInformation : signers) {
-			lastSignerInformation = signerInformation;
-			break;
-		}
-		return lastSignerInformation;
+		return signers.iterator().next();
 	}
 
 	private void assertSignatureValid(final CAdESSignature cadesSignature, final CAdESSignatureParameters parameters) {
@@ -260,7 +254,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 		try {
 
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Message to timestamp is: " + Utils.toHex(messageToTimestamp));
+				LOG.debug("Message to timestamp is: {}", Utils.toHex(messageToTimestamp));
 			}
 			byte[] timestampDigest = DSSUtils.digest(timestampDigestAlgorithm, messageToTimestamp);
 			if (LOG.isDebugEnabled()) {

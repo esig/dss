@@ -7,12 +7,21 @@ import eu.europa.esig.dss.util.BaseTimeDependent;
 
 public class TSLServiceStatusAndInformationExtensions extends BaseTimeDependent {
 
+	private String name;
 	private String type;
 	private String status;
 	private List<TSLConditionsForQualifiers> conditionsForQualifiers;
 	private List<String> additionalServiceInfoUris;
 	private List<String> serviceSupplyPoints;
 	private Date expiredCertsRevocationInfo;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public String getType() {
 		return type;

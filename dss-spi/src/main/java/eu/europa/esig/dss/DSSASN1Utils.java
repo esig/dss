@@ -90,12 +90,12 @@ import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.asn1.x509.qualified.QCStatement;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.tsp.TimeStampToken;
-import org.bouncycastle.x509.extension.X509ExtensionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -457,11 +457,12 @@ public final class DSSASN1Utils {
 									final ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) e1;
 									qcTypesIdList.add(oid.getId());
 								} else {
-									LOG.warn("ASN1Sequence in QcTypes does not contain ASN1ObjectIdentifer, but " + e1.getClass().getName());
+									LOG.warn("ASN1Sequence in QcTypes does not contain ASN1ObjectIdentifer, but {}",
+											e1.getClass().getName());
 								}
 							}
 						} else {
-							LOG.warn("QcTypes not an ASN1Sequence, but " + qcTypeInfo1.getClass().getName());
+							LOG.warn("QcTypes not an ASN1Sequence, but {}", qcTypeInfo1.getClass().getName());
 						}
 					}
 				}
@@ -502,7 +503,8 @@ public final class DSSASN1Utils {
 		try {
 			byte[] sKI = certificateToken.getCertificate().getExtensionValue(Extension.subjectKeyIdentifier.getId());
 			if (Utils.isArrayNotEmpty(sKI)) {
-				ASN1Primitive extension = X509ExtensionUtil.fromExtensionValue(sKI);
+
+				ASN1Primitive extension = JcaX509ExtensionUtils.parseExtensionValue(sKI);
 				SubjectKeyIdentifier skiBC = SubjectKeyIdentifier.getInstance(extension);
 				return skiBC.getKeyIdentifier();
 			} else if (computeIfMissing) {
@@ -833,9 +835,9 @@ public final class DSSASN1Utils {
 		} else if (attributeValue instanceof ASN1ObjectIdentifier) {
 			string = ((ASN1ObjectIdentifier) attributeValue).getId();
 		} else {
-			LOG.error("!!!*******!!! This encoding is unknown: " + attributeValue.getClass().getSimpleName());
+			LOG.error("!!!*******!!! This encoding is unknown: {}", attributeValue.getClass().getSimpleName());
 			string = attributeValue.toString();
-			LOG.error("!!!*******!!! value: " + string);
+			LOG.error("!!!*******!!! value: {}", string);
 		}
 		return string;
 	}
@@ -924,7 +926,7 @@ public final class DSSASN1Utils {
 		try {
 			return certToken.getCertificate().getExtendedKeyUsage();
 		} catch (CertificateParsingException e) {
-			LOG.warn("Unable to retrieve ExtendedKeyUsage " + e.getMessage());
+			LOG.warn("Unable to retrieve ExtendedKeyUsage : {}", e.getMessage());
 			return Collections.emptyList();
 		}
 	}

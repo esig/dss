@@ -151,15 +151,6 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	}
 
 	@Override
-	public String getSigningCertificateSigned() {
-		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
-		if (currentSigningCertificate != null) {
-			return currentSigningCertificate.getSigned();
-		}
-		return Utils.EMPTY_STRING;
-	}
-
-	@Override
 	public String getLastChainCertificateId() {
 		XmlChainItem item = getLastChainCertificate();
 		return item == null ? Utils.EMPTY_STRING : item.getId();

@@ -417,32 +417,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			length = list.getLength();
 			isEn319132 = true;
 		}
-		if (length == 0) {
-			final CertificateValidity theCertificateValidity = candidates.getTheCertificateValidity();
-			final CertificateToken certificateToken = theCertificateValidity == null ? null : theCertificateValidity.getCertificateToken();
-			// The check need to be done at the level of KeyInfo
-			for (final Reference reference : references) {
 
-				final String uri = reference.getURI();
-				if (!uri.startsWith("#")) {
-					continue;
-				}
-
-				final String id = uri.substring(1);
-				final Element element = signatureElement.getOwnerDocument().getElementById(id);
-				// final Element element =
-				// DomUtils.getElement(signatureElement, "");
-				if (!hasSignatureAsParent(element)) {
-
-					continue;
-				}
-				if ((certificateToken != null) && id.equals(certificateToken.getXmlId())) {
-
-					theCertificateValidity.setSigned(element.getNodeName());
-					return;
-				}
-			}
-		}
 		// This Map contains the list of the references to the certificate which
 		// were already checked and which correspond to a certificate.
 		Map<Element, Boolean> alreadyProcessedElements = new HashMap<Element, Boolean>();
@@ -533,9 +508,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					certificateValidity.setDistinguishedNameEqual(issuerNameMatches);
 					if (!issuerNameMatches) {
 						final String c14nCandidateIssuerName = candidateIssuerName.getName(X500Principal.CANONICAL);
-						LOG.info("candidateIssuerName: " + c14nCandidateIssuerName);
+						LOG.info("candidateIssuerName : {}", c14nCandidateIssuerName);
 						final String c14nIssuerName = issuerName == null ? "" : issuerName.getName(X500Principal.CANONICAL);
-						LOG.info("issuerName         : " + c14nIssuerName);
+						LOG.info("issuerName : {}", c14nIssuerName);
 					}
 
 					final BigInteger candidateSerialNumber = certificateToken.getSerialNumber();
@@ -555,50 +530,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Checks if the given {@code Element} has as parent the current signature. This is the security check.
-	 *
-	 * @param element
-	 *            the element to be checked (can be null)
-	 * @return true if the given element has as parent the current signature element, false otherwise
-	 */
-	private boolean hasSignatureAsParent(final Element element) {
-
-		if (element == null) {
-			return false;
-		}
-		Node node = element;
-		String nodeName = node.getNodeName();
-		if (XPathQueryHolder.XMLE_X509CERTIFICATE.equals(nodeName)) {
-
-			node = node.getParentNode();
-			if (node == null) {
-				return false;
-			}
-			nodeName = node.getNodeName();
-
-		}
-		if (XPathQueryHolder.XMLE_X509DATA.equals(nodeName)) {
-
-			node = node.getParentNode();
-			if (node == null) {
-				return false;
-			}
-			nodeName = node.getNodeName();
-		}
-		if (XPathQueryHolder.XMLE_KEYINFO.equals(nodeName)) {
-
-			node = node.getParentNode();
-			if (node == null) {
-				return false;
-			}
-		}
-		if (!node.equals(signatureElement)) {
-			return false;
-		}
-		return true;
 	}
 
 	@Override
@@ -778,7 +709,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		final Element timestampTokenNode = DomUtils.getElement(timestampElement, xPathQueryHolder.XPATH__ENCAPSULATED_TIMESTAMP);
 		if (timestampTokenNode == null) {
-			LOG.warn("The timestamp (" + timestampType.name() + ") cannot be extracted from the signature!");
+			LOG.warn("The timestamp {} cannot be extracted from the signature!", timestampType.name());
 			return null;
 		}
 		TimestampToken timestampToken = null;
@@ -1218,7 +1149,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						preliminaryErrorMessages.add(errorMessagePrefix + "Signature verification failed");
 					}
 				} catch (XMLSignatureException e) {
-					LOG.debug("Exception while probing candidate certificate as signing certificate: " + e.getMessage());
+					LOG.debug("Exception while probing candidate certificate as signing certificate: {}",
+							e.getMessage());
 					preliminaryErrorMessages.add(errorMessagePrefix + e.getMessage());
 				}
 				certificateNumber++;
@@ -1254,7 +1186,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			signatureCryptographicVerification.setReferenceDataIntact(referenceDataHashValid);
 			signatureCryptographicVerification.setSignatureIntact(coreValidity);
 		} catch (Exception e) {
-			LOG.error("checkSignatureIntegrity : " + e.getMessage());
+			LOG.error("checkSignatureIntegrity : {}", e.getMessage());
 			LOG.debug("checkSignatureIntegrity : " + e.getMessage(), e);
 			StackTraceElement[] stackTrace = e.getStackTrace();
 			final String name = XAdESSignature.class.getName();
@@ -1499,11 +1431,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
 			writeCanonicalizedValue(xPathQueryHolder.XPATH_SIGNATURE_VALUE, canonicalizationMethod, buffer);
+			final byte[] byteArray = buffer.toByteArray();
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("Signature timestamp: canonicalization method  --> {}", canonicalizationMethod);
-				LOG.trace("                   : canonicalized string     --> {}", buffer.toString());
+				LOG.trace("Signature timestamp canonicalized string : \n{}", new String(byteArray));
 			}
-			return buffer.toByteArray();
+			return byteArray;
 		} catch (IOException e) {
 			throw new DSSException("Error when computing the SignatureTimestamp", e);
 		}
@@ -1527,10 +1459,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 			writeCanonicalizedValue(xPathQueryHolder.XPATH_COMPLETE_CERTIFICATE_REFS, canonicalizationMethod, buffer);
 			writeCanonicalizedValue(xPathQueryHolder.XPATH_COMPLETE_REVOCATION_REFS, canonicalizationMethod, buffer);
+			final byte[] byteArray = buffer.toByteArray();
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("X1Timestamp (SigAndRefsTimeStamp) canonicalised string:\n" + buffer.toString());
+				LOG.trace("X1Timestamp (SigAndRefsTimeStamp) canonicalised string : \n{}", new String(byteArray));
 			}
-			return buffer.toByteArray();
+			return byteArray;
 		} catch (IOException e) {
 			throw new DSSException("Error when computing the SigAndRefsTimeStamp (X1Timestamp)", e);
 		}
@@ -1543,10 +1476,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
 			writeCanonicalizedValue(xPathQueryHolder.XPATH_COMPLETE_CERTIFICATE_REFS, canonicalizationMethod, buffer);
 			writeCanonicalizedValue(xPathQueryHolder.XPATH_COMPLETE_REVOCATION_REFS, canonicalizationMethod, buffer);
+
+			final byte[] byteArray = buffer.toByteArray();
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("TimestampX2Data (RefsOnlyTimeStamp) canonicalised string:\n" + buffer.toString());
+				LOG.trace("TimestampX2Data (RefsOnlyTimeStamp) canonicalised string : \n{}", new String(byteArray));
 			}
-			return buffer.toByteArray();
+			return byteArray;
 		} catch (IOException e) {
 			throw new DSSException("Error when computing the RefsOnlyTimeStamp (TimestampX2D)", e);
 		}
@@ -1695,8 +1630,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					canonicalizedValue = DSSXMLUtils.canonicalizeOrSerializeSubtree(canonicalizationMethod, node);
 				}
 				if (LOG.isTraceEnabled()) {
-					LOG.trace(localName + ": Canonicalization: " + canonicalizationMethod);
-					LOG.trace(new String(canonicalizedValue) + "\n");
+					LOG.trace("{}: Canonicalization: {} : \n", localName, canonicalizationMethod,
+							new String(canonicalizedValue));
 				}
 				buffer.write(canonicalizedValue);
 			}

@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.tsl;
 
+import java.util.Collections;
 import java.util.List;
+import static java.util.Collections.unmodifiableList;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -32,6 +34,18 @@ public class CertSubjectDNAttributeCondition extends Condition {
 	public CertSubjectDNAttributeCondition(List<String> oids) {
 		this.subjectAttributeOids = oids;
 	}
+
+    /**
+     * Returns the list of DN attribute OIDs to be checked
+     * against the certificate’s subject DN.
+     * 
+     * @return an unmodifiable list, possibly empty; never {@code null}
+     */
+    public final List<String> getAttributeOids() {
+        return subjectAttributeOids == null ?
+            Collections.<String> emptyList() :
+            unmodifiableList(subjectAttributeOids);
+    }
 
 	@Override
 	public boolean check(CertificateToken certificateToken) {

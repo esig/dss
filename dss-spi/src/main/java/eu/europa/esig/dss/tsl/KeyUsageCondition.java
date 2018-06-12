@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.tsl;
 
+import static java.util.Objects.requireNonNull;
+
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -33,29 +35,48 @@ public class KeyUsageCondition extends Condition {
 	private final boolean value;
 
 	/**
-	 * The default constructor for KeyUsageCondition.
+	 * Constructs a new KeyUsageCondition.
 	 *
 	 * @param bit
 	 *            the key usage
 	 * @param value
-	 *            true if the key usage is required
+	 *            the required value of the key usage bit
 	 */
 	public KeyUsageCondition(final KeyUsageBit bit, final boolean value) {
+        requireNonNull(bit, "key usage");
 		this.bit = bit;
 		this.value = value;
 	}
 
 	/**
-	 * The default constructor for KeyUsageCondition.
+	 * Constructs a new KeyUsageCondition.
 	 *
 	 * @param usage
 	 *            the key usage
 	 * @param value
-	 *            true if the key usage is required
+	 *            the required value of the key usage bit
 	 */
 	public KeyUsageCondition(final String usage, final boolean value) {
 		this(KeyUsageBit.valueOf(usage), value);
 	}
+
+    /**
+     * Returns the key usage to be checked.
+     * 
+     * @return never {@code null}
+     */
+    public final KeyUsageBit getBit() {
+        return bit;
+    }
+    
+    /**
+     * Returns the required bit value of the key usage to be checked.
+     * 
+     * @return the required bit value of the key usage to be checked
+     */
+    public final boolean getValue() {
+        return value;
+    }
 
 	@Override
 	public boolean check(final CertificateToken certificateToken) {

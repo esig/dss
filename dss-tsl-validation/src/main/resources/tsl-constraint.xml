@@ -31,7 +31,6 @@
 		</BasicSignatureConstraints>
 		<SignedAttributes>
 			<SigningCertificatePresent Level="FAIL" />
-			<SigningCertificateSigned Level="FAIL" />
 			<CertDigestPresent Level="FAIL" />
 			<CertDigestMatch Level="FAIL" />
 			<SigningTime Level="FAIL" />

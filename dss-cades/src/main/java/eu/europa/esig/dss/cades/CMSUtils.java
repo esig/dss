@@ -215,7 +215,7 @@ public final class CMSUtils {
 	 *            {@code OCSPResp} to analysed
 	 * @return
 	 */
-	public static BasicOCSPResp getBasicOCSPResp(final OCSPResp ocspResp) {
+	public static BasicOCSPResp getBasicOcspResp(final OCSPResp ocspResp) {
 		BasicOCSPResp basicOCSPResp = null;
 		try {
 			final Object responseObject = ocspResp.getResponseObject();

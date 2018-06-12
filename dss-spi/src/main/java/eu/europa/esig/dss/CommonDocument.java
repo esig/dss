@@ -25,8 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.EnumMap;
 
 import eu.europa.esig.dss.utils.Utils;
 
@@ -37,7 +36,8 @@ import eu.europa.esig.dss.utils.Utils;
 @SuppressWarnings("serial")
 public abstract class CommonDocument implements DSSDocument {
 
-	protected Map<DigestAlgorithm, String> base64EncodeDigestMap = new HashMap<DigestAlgorithm, String>();
+	protected EnumMap<DigestAlgorithm, String> base64EncodeDigestMap = new EnumMap<DigestAlgorithm, String>(
+			DigestAlgorithm.class);
 
 	protected MimeType mimeType;
 
@@ -108,8 +108,7 @@ public abstract class CommonDocument implements DSSDocument {
 		final StringWriter stringWriter = new StringWriter();
 		stringWriter.append("Name: " + getName()).append(" / ").append(mimeType == null ? "" : mimeType.getMimeTypeString()).append(" / ")
 				.append(getAbsolutePath());
-		final String string = stringWriter.toString();
-		return string;
+		return stringWriter.toString();
 	}
 
 }

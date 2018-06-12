@@ -191,7 +191,7 @@ public final class ASiCUtils {
 			DSSDocument archive = documents.get(0);
 			boolean cades = ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archive, "p7s");
 			boolean xades = ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archive, "xml");
-			return cades | xades;
+			return cades || xades;
 		}
 
 		return false;

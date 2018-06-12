@@ -7,12 +7,12 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Future;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -59,60 +59,30 @@ public class CertificatePoolTest {
 	}
 
 	@Test
-	public void test() throws InterruptedException {
-		List<Runnable> runnables = new ArrayList<Runnable>();
+	public void test() throws InterruptedException, ExecutionException {
+
+		final ExecutorService threadPool = Executors.newFixedThreadPool(NB_THREADS);
+		List<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
 
 		for (int i = 0; i < NB_THREADS; i++) {
-			runnables.add(new Runnable() {
+			futures.add(threadPool.submit(new Callable<Boolean>() {
 
 				@Override
-				public void run() {
+				public Boolean call() throws Exception {
 					CertificatePool pool = new CertificatePool();
 					pool.merge(ORIGINAL_POOL);
-					assertTrue(pool.getNumberOfCertificates() > 0);
-					assertTrue(Utils.isCollectionNotEmpty(pool.get(EXPECTED_TOKEN.getSubjectX500Principal())));
+					final boolean positiveNumber = pool.getNumberOfCertificates() > 0;
+					final boolean foundCert = Utils
+							.isCollectionNotEmpty(pool.get(EXPECTED_TOKEN.getSubjectX500Principal()));
+					return positiveNumber && foundCert;
 				}
-			});
+
+			}));
 		}
 
-		assertConcurrent("CertificatePool.merge() is not thread-safe", runnables, 2);
-	}
-
-	public static void assertConcurrent(final String message, final List<? extends Runnable> runnables, final int maxTimeoutSeconds)
-			throws InterruptedException {
-		final int numThreads = runnables.size();
-		final List<Throwable> exceptions = Collections.synchronizedList(new ArrayList<Throwable>());
-		final ExecutorService threadPool = Executors.newFixedThreadPool(numThreads);
-		try {
-			final CountDownLatch allExecutorThreadsReady = new CountDownLatch(numThreads);
-			final CountDownLatch afterInitBlocker = new CountDownLatch(1);
-			final CountDownLatch allDone = new CountDownLatch(numThreads);
-			for (final Runnable submittedTestRunnable : runnables) {
-				threadPool.submit(new Runnable() {
-					@Override
-					public void run() {
-						allExecutorThreadsReady.countDown();
-						try {
-							afterInitBlocker.await();
-							submittedTestRunnable.run();
-						} catch (final Throwable e) {
-							exceptions.add(e);
-						} finally {
-							allDone.countDown();
-						}
-					}
-				});
-			}
-			// wait until all threads are ready
-			assertTrue("Timeout initializing threads! Perform long lasting initializations before passing runnables to assertConcurrent",
-					allExecutorThreadsReady.await(runnables.size() * 10, TimeUnit.MILLISECONDS));
-			// start all test runners
-			afterInitBlocker.countDown();
-			assertTrue(message + " timeout! More than " + maxTimeoutSeconds + " seconds", allDone.await(maxTimeoutSeconds, TimeUnit.SECONDS));
-		} finally {
-			threadPool.shutdownNow();
+		for (Future<Boolean> future : futures) {
+			assertTrue(future.get());
 		}
-		assertTrue(message + " failed with exception(s) " + exceptions, exceptions.isEmpty());
 	}
 
 }

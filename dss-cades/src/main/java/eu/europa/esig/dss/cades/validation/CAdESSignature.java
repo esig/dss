@@ -374,7 +374,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
 		final byte[] signingTokenCertHash = signingCertificateValidity.getCertificateToken().getDigest(digestAlgorithm);
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("Candidate Certificate Hash {} with algorithm {}", Utils.toHex(signingTokenCertHash), digestAlgorithm.getName());
+			LOG.debug("Candidate Certificate Hash {} with algorithm {}", Utils.toHex(signingTokenCertHash),
+					digestAlgorithm);
 		}
 
 		final ASN1Set attrValues = signingCertificateAttributeV1.getAttrValues();
@@ -388,7 +389,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				final byte[] certHash = essCertID.getCertHash();
 				signingCertificateValidity.setDigestPresent(true);
 				if (LOG.isDebugEnabled()) {
-					LOG.debug("Found Certificate Hash in signingCertificateAttributeV1 {} with algorithm {}", Utils.toHex(certHash), digestAlgorithm.getName());
+					LOG.debug("Found Certificate Hash in signingCertificateAttributeV1 {} with algorithm {}",
+							Utils.toHex(certHash), digestAlgorithm);
 				}
 				final IssuerSerial issuerSerial = essCertID.getIssuerSerial();
 				final boolean match = verifySigningCertificateReferences(signingTokenSerialNumber, signingTokenIssuerName, signingTokenCertHash, certHash,
@@ -427,14 +429,16 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				if (digestAlgorithm != lastDigestAlgorithm) {
 					signingTokenCertHash = signingCertificateValidity.getCertificateToken().getDigest(digestAlgorithm);
 					if (LOG.isDebugEnabled()) {
-						LOG.debug("Candidate Certificate Hash {} with algorithm {}", Utils.toHex(signingTokenCertHash), digestAlgorithm.getName());
+						LOG.debug("Candidate Certificate Hash {} with algorithm {}", Utils.toHex(signingTokenCertHash),
+								digestAlgorithm);
 					}
 					lastDigestAlgorithm = digestAlgorithm;
 				}
 				final byte[] certHash = essCertIDv2.getCertHash();
 				signingCertificateValidity.setDigestPresent(true);
 				if (LOG.isDebugEnabled()) {
-					LOG.debug("Found Certificate Hash in SigningCertificateV2 {} with algorithm {}", Utils.toHex(certHash), digestAlgorithm.getName());
+					LOG.debug("Found Certificate Hash in SigningCertificateV2 {} with algorithm {}",
+							Utils.toHex(certHash), digestAlgorithm);
 				}
 				final IssuerSerial issuerSerial = essCertIDv2.getIssuerSerial();
 				final boolean match = verifySigningCertificateReferences(signingTokenSerialNumber, signingTokenIssuerName, signingTokenCertHash, certHash,
@@ -522,7 +526,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 						signaturePolicy.setUrl(policyQualifierInfoValue);
 						signaturePolicy.setPolicyContent(signaturePolicyProvider.getSignaturePolicyByUrl(policyQualifierInfoValue));
 					} else {
-						LOG.error("Unknown signature policy qualifier id: " + policyQualifierInfoId + " with value: " + policyQualifierInfoValue);
+						LOG.error("Unknown signature policy qualifier id: {} with value: {}", policyQualifierInfoId,
+								policyQualifierInfoValue);
 					}
 				} catch (Exception e) {
 					LOG.error("Unable to read SigPolicyQualifierInfo " + ii, e.getMessage());
@@ -556,14 +561,14 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				if (!(attrValue instanceof ASN1UTCTime)) {
 					LOG.error(
 							"RFC 3852 states that dates between January 1, 1950 and December 31, 2049 (inclusive) must be encoded as UTCTime. Any dates with year values before 1950 or after 2049 must be encoded as GeneralizedTime. Date found is {} encoded as {}",
-							signingDate.toString(), attrValue.getClass());
+							signingDate, attrValue.getClass());
 					return null;
 				}
 			}
 			return signingDate;
 		}
 		if (LOG.isErrorEnabled()) {
-			LOG.error("Error when reading signing time. Unrecognized " + attrValue.getClass());
+			LOG.error("Error when reading signing time. Unrecognized {}", attrValue.getClass());
 		}
 		return null;
 	}
@@ -650,7 +655,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 						final ASN1ObjectIdentifier commitmentTypeId = commitmentTypeIndication.getCommitmentTypeId();
 						commitmentType.addIdentifier(commitmentTypeId.getId());
 					} else {
-						LOG.warn("Unsupported type for CommitmentType : " + attrValues.getObjectAt(ii).getClass());
+						LOG.warn("Unsupported type for CommitmentType : {}", attrValues.getObjectAt(ii).getClass());
 					}
 				}
 			}
@@ -900,7 +905,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				final ASN1Set attrValues = attribute.getAttrValues();
 				for (final ASN1Encodable value : attrValues.toArray()) {
 					if (value instanceof DEROctetString) {
-						LOG.warn("Illegal content for timestamp (OID : " + attrType + ") : OCTET STRING is not allowed !");
+						LOG.warn("Illegal content for timestamp (OID : {}) : OCTET STRING is not allowed !", attrType);
 					} else {
 						try {
 							byte[] encoded = value.toASN1Primitive().getEncoded();
@@ -1095,14 +1100,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					signatureCryptographicVerification.setSignatureIntact(false);
 				}
 			}
-		} catch (CMSException e) {
-			LOG.error(e.getMessage(), e);
-			signatureCryptographicVerification.setErrorMessage(e.getMessage());
-		} catch (IOException e) {
+		} catch (CMSException | IOException e) {
 			LOG.error(e.getMessage(), e);
 			signatureCryptographicVerification.setErrorMessage(e.getMessage());
 		}
-		LOG.debug(" - RESULT: " + signatureCryptographicVerification.toString());
+		LOG.debug(" - RESULT: {}", signatureCryptographicVerification);
 	}
 
 	/**

@@ -82,7 +82,7 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 		try {
 			reference.setUri(URLEncoder.encode(fileURI, "UTF-8"));
 		} catch (Exception e) {
-			LOG.warn("Unable to encode uri '" + fileURI + "' : " + e.getMessage());
+			LOG.warn("Unable to encode uri '{}' : {}", fileURI, e.getMessage());
 			reference.setUri(fileURI);
 		}
 		reference.setContents(document);

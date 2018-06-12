@@ -60,8 +60,6 @@ public enum MessageTag implements IMessageTag {
 	/* BBB -> ICS */
 	BBB_ICS_ISCI("Is there an identified candidate for the signing certificate?"),
 	BBB_ICS_ISCI_ANS("There is no candidate for the signing certificate!"),
-	BBB_ICS_ISCS("Is the signing certificate signed?"),
-	BBB_ICS_ISCS_ANS("The signing certificate is not signed!"),
 	BBB_ICS_ISASCP("Is the signed attribute: 'signing-certificate' present?"),
 	BBB_ICS_ISASCP_ANS("The signed attribute: 'signing-certificate' is absent!"),
 	BBB_ICS_ISACDP("Is the signed attribute: 'cert-digest' of the certificate present?"),
@@ -344,6 +342,7 @@ public enum MessageTag implements IMessageTag {
 	 *
 	 * @return {@code String} message.
 	 */
+	@Override
 	public String getId() {
 		return name();
 	}
@@ -353,6 +352,7 @@ public enum MessageTag implements IMessageTag {
 	 *
 	 * @return {@code String} message.
 	 */
+	@Override
 	public String getMessage() {
 		return message;
 	}

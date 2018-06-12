@@ -31,4 +31,45 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	
+	<profiles>
+		<profile>
+            <id>jdk19-plus</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            
+            <build>
+				<plugins>
+		              <plugin>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<configuration>
+							<source>9</source>
+							<target>9</target>
+
+	                        <!-- jdk.crypto.cryptoki : SunPKCS11 -->
+	                        <compilerArgs>
+								<arg>--add-modules</arg>
+								<arg>jdk.crypto.cryptoki</arg>
+								
+								<arg>--add-exports</arg>
+								<arg>jdk.crypto.cryptoki/sun.security.pkcs11.wrapper=ALL-UNNAMED</arg>		
+														
+								<!-- Reflection at runtime -->
+								<arg>--add-opens</arg>
+								<arg>jdk.crypto.cryptoki/sun.security.pkcs11=ALL-UNNAMED</arg>
+							</compilerArgs>
+						</configuration>
+					</plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <argLine>--add-modules jdk.crypto.cryptoki</argLine>
+                        </configuration>
+                    </plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
