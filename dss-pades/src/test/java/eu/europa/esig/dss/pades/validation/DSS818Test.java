@@ -65,6 +65,7 @@ public class DSS818Test {
 	public void testSK() throws Exception {
 		SignedDocumentValidator validator = SignedDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/validation/dss-818/Signature-P-SK-1 (HASH_FAILURE).pdf")));
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature advancedSignature : signatures) {

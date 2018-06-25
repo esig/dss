@@ -434,7 +434,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			}
 
 		} catch (Exception e) {
-			LOG.warn("Cannot analyze signatures : " + e.getMessage(), e);
+			throw new DSSException("Cannot analyze signatures : " + e.getMessage(), e);
 		}
 
 		return signatures;
