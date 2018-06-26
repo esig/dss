@@ -24,6 +24,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlChainItem;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CertificateQualification;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
@@ -166,6 +167,28 @@ public class CertificateProcessExecutorTest {
 		assertNotNull(cert.getQualificationAtValidation());
 		assertNull(cert.getTrustAnchors());
 
+	}
+
+	@Test
+	public void inconsistentTrustService() throws Exception {
+
+		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/inconsistent-state.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		String certificateId = "A1E2D4CA9C521332369FA3224F0B7282AD2596E8A7416CBC0DF087E05D8F5502";
+
+		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		executor.setCertificateId(certificateId);
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		CertificateReports reports = executor.execute();
+
+		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtCertificateIssuance());
+		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtValidationTime());
 	}
 
 	private EtsiValidationPolicy loadPolicy() throws Exception {
