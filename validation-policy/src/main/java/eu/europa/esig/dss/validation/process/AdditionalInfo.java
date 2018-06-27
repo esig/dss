@@ -24,4 +24,6 @@ public class AdditionalInfo {
 
 	public static final String PSEUDO = "Pseudo : {0}";
 
+	public static final String TRUSTED_LIST = "Trusted List : {0}";
+
 }
