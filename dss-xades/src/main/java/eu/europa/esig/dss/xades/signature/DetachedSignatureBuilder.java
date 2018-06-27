@@ -31,6 +31,7 @@ import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -78,12 +79,14 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
 		final DSSReference reference = new DSSReference();
 		reference.setId("r-id-" + referenceIndex);
-		final String fileURI = document.getName() != null ? document.getName() : "";
-		try {
-			reference.setUri(URLEncoder.encode(fileURI, "UTF-8"));
-		} catch (Exception e) {
-			LOG.warn("Unable to encode uri '{}' : {}", fileURI, e.getMessage());
-			reference.setUri(fileURI);
+		if (Utils.isStringNotEmpty(document.getName())) {
+			final String fileURI = document.getName();
+			try {
+				reference.setUri(URLEncoder.encode(fileURI, "UTF-8"));
+			} catch (Exception e) {
+				LOG.warn("Unable to encode uri '" + fileURI + "' : " + e.getMessage());
+				reference.setUri(fileURI);
+			}
 		}
 		reference.setContents(document);
 		reference.setDigestMethodAlgorithm(params.getDigestAlgorithm());

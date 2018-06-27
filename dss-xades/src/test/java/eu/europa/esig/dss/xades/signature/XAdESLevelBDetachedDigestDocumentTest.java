@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.Test;
@@ -62,6 +63,26 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 
 		DSSDocument extendDocument = service.extendDocument(signedDoc, getExtendParams());
 		validate(extendDocument, completeDocument);
+	}
+
+	@Test
+	public void testWithCompleteDocumentNoName() throws IOException {
+		XAdESService service = getService();
+		XAdESSignatureParameters params = getParams();
+		DSSDocument completeDocumentNoName = getCompleteDocumentNoName();
+
+		ToBeSigned toBeSigned = service.getDataToSign(completeDocumentNoName, params);
+		SignatureValue signatureValue = getToken().sign(toBeSigned, params.getDigestAlgorithm(), getPrivateKeyEntry());
+		DSSDocument signedDoc = service.signDocument(completeDocumentNoName, params, signatureValue);
+
+		signedDoc.save("target/test.xml");
+
+		validate(signedDoc, completeDocumentNoName);
+		validate(signedDoc, getDigestDocument());
+		validateWrong(signedDoc);
+
+		DSSDocument extendDocument = service.extendDocument(signedDoc, getExtendParams());
+		validate(extendDocument, completeDocumentNoName);
 	}
 
 	@Test
@@ -129,9 +150,12 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 		return new InMemoryDocument("Hello World !".getBytes(), DOCUMENT_NAME);
 	}
 
+	private DSSDocument getCompleteDocumentNoName() {
+		return new InMemoryDocument("Hello World !".getBytes());
+	}
+
 	private DSSDocument getDigestDocument() {
 		DigestDocument digestDocument = new DigestDocument();
-		digestDocument.setName(DOCUMENT_NAME); // Mandatory with XAdES
 		digestDocument.addDigest(USED_DIGEST, getCompleteDocument().getDigest(USED_DIGEST));
 		return digestDocument;
 	}
