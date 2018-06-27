@@ -1,9 +1,12 @@
 package eu.europa.esig.dss.validation.process.qualification.signature.checks;
 
+import java.text.MessageFormat;
+
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
@@ -19,8 +22,8 @@ public class AcceptableTrustedListCheck<T extends XmlConstraintsConclusion> exte
 	}
 
 	@Override
-	protected boolean process() {
-		return isAcceptableConclusion(tlAnalysis.getConclusion());
+	public boolean process() {
+		return isValidConclusion(tlAnalysis.getConclusion());
 	}
 
 	@Override
@@ -31,6 +34,12 @@ public class AcceptableTrustedListCheck<T extends XmlConstraintsConclusion> exte
 	@Override
 	protected MessageTag getErrorMessageTag() {
 		return MessageTag.QUAL_TRUSTED_LIST_ACCEPT_ANS;
+	}
+
+	@Override
+	protected String getAdditionalInfo() {
+		Object[] params = new Object[] { tlAnalysis.getCountryCode() };
+		return MessageFormat.format(AdditionalInfo.TRUSTED_LIST, params);
 	}
 
 	@Override
