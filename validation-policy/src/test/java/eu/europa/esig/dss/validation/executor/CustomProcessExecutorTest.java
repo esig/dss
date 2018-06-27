@@ -787,46 +787,6 @@ public class CustomProcessExecutorTest {
 		validateBestSigningTimes(reports);
 	}
 
-	@Test
-	public void testInvalidTL() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/sig-invalid-tl.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
-		assertNotNull(diagnosticData);
-
-		CustomProcessExecutor executor = new CustomProcessExecutor();
-		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
-		executor.setCurrentTime(diagnosticData.getValidationDate());
-
-		Reports reports = executor.execute();
-		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
-		assertEquals(SignatureQualification.ADES,
-				simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
-
-		validateBestSigningTimes(reports);
-	}
-
-	@Test
-	public void testExpiredTL() throws Exception {
-		FileInputStream fis = new FileInputStream("src/test/resources/sig-expired-tl.xml");
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
-		assertNotNull(diagnosticData);
-
-		CustomProcessExecutor executor = new CustomProcessExecutor();
-		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
-		executor.setCurrentTime(diagnosticData.getValidationDate());
-
-		Reports reports = executor.execute();
-		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
-		assertEquals(SignatureQualification.QESIG,
-				simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
-
-		validateBestSigningTimes(reports);
-	}
-
 	private void checkReports(Reports reports) {
 		// reports.print();
 		assertNotNull(reports);

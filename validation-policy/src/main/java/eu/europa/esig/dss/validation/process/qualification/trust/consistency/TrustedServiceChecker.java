@@ -7,6 +7,12 @@ public final class TrustedServiceChecker {
 	private TrustedServiceChecker() {
 	}
 
+	public static boolean isFullyConsistent(TrustedServiceWrapper service) {
+		return isLegalPersonConsistent(service) && isQCStatementConsistent(service) && isQSCDConsistent(service)
+				&& isQSCDStatusAsInCertConsistent(service) && isUsageConsistent(service)
+				&& isPreEIDASConsistent(service) && isQualifierAndAdditionalServiceInfoConsistent(service);
+	}
+
 	public static boolean isLegalPersonConsistent(TrustedServiceWrapper service) {
 		TrustedServiceCondition condition = new TrustedServiceLegalPersonConsistency();
 		return condition.isConsistent(service);

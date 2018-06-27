@@ -17,8 +17,7 @@ public class TypeByCertificatePostEIDASTest {
 	@Test
 	public void esig() {
 
-		CertificateWrapper cert = new MockCertificateWrapper(Arrays.asList(QCStatementOids.QC_COMPLIANCE.getOid()),
-				Arrays.asList(QCStatementOids.QCT_ESIGN.getOid()));
+		CertificateWrapper cert = new MockCertificateWrapper(Arrays.asList(QCStatementOids.QCT_ESIGN.getOid()));
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(Type.ESIGN, strategy.getType());
@@ -27,7 +26,7 @@ public class TypeByCertificatePostEIDASTest {
 	@Test
 	public void esigDefault() {
 
-		CertificateWrapper cert = new MockCertificateWrapper(Arrays.asList(QCStatementOids.QC_COMPLIANCE.getOid()), Collections.<String> emptyList());
+		CertificateWrapper cert = new MockCertificateWrapper(Collections.<String>emptyList());
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(Type.ESIGN, strategy.getType());
@@ -36,8 +35,7 @@ public class TypeByCertificatePostEIDASTest {
 	@Test
 	public void eseal() {
 
-		CertificateWrapper cert = new MockCertificateWrapper(Arrays.asList(QCStatementOids.QC_COMPLIANCE.getOid()),
-				Arrays.asList(QCStatementOids.QCT_ESEAL.getOid()));
+		CertificateWrapper cert = new MockCertificateWrapper(Arrays.asList(QCStatementOids.QCT_ESEAL.getOid()));
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(Type.ESEAL, strategy.getType());
@@ -45,8 +43,7 @@ public class TypeByCertificatePostEIDASTest {
 
 	@Test
 	public void wsa() {
-		CertificateWrapper cert = new MockCertificateWrapper(Arrays.asList(QCStatementOids.QC_COMPLIANCE.getOid()),
-				Arrays.asList(QCStatementOids.QCT_WEB.getOid()));
+		CertificateWrapper cert = new MockCertificateWrapper(Arrays.asList(QCStatementOids.QCT_WEB.getOid()));
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(Type.WSA, strategy.getType());
@@ -55,16 +52,8 @@ public class TypeByCertificatePostEIDASTest {
 	// MUST be overruled
 	@Test
 	public void multiple() {
-		CertificateWrapper cert = new MockCertificateWrapper(Arrays.asList(QCStatementOids.QC_COMPLIANCE.getOid()),
+		CertificateWrapper cert = new MockCertificateWrapper(
 				Arrays.asList(QCStatementOids.QCT_ESIGN.getOid(), QCStatementOids.QCT_ESEAL.getOid()));
-		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
-
-		assertEquals(Type.UNKNOWN, strategy.getType());
-	}
-
-	@Test
-	public void noCompliance() {
-		CertificateWrapper cert = new MockCertificateWrapper(Collections.<String> emptyList(), Arrays.asList(QCStatementOids.QCT_ESIGN.getOid()));
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(Type.UNKNOWN, strategy.getType());
@@ -72,18 +61,11 @@ public class TypeByCertificatePostEIDASTest {
 
 	private class MockCertificateWrapper extends CertificateWrapper {
 
-		private final List<String> qcStatementOids;
 		private final List<String> qcTypesOids;
 
-		public MockCertificateWrapper(List<String> qcStatementOids, List<String> qcTypesOids) {
+		public MockCertificateWrapper(List<String> qcTypesOids) {
 			super(null);
-			this.qcStatementOids = qcStatementOids;
 			this.qcTypesOids = qcTypesOids;
-		}
-
-		@Override
-		public List<String> getQCStatementIds() {
-			return qcStatementOids;
 		}
 
 		@Override

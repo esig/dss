@@ -34,4 +34,12 @@ public final class TrustedServicesFilterFactory {
 		return new UniqueServiceFilter(endEntityCertificate);
 	}
 
+	public static TrustedServiceFilter createConsistentServiceFilter() {
+		return new FullyConsistentServiceFilter();
+	}
+
+	public static TrustedServiceFilter createFilterByCertificateType(CertificateWrapper certificate) {
+		return new ServiceByCertificateTypeFilter(certificate);
+	}
+
 }

@@ -1,47 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
-    <DocumentName>21.1.1-TEST FILE.xml</DocumentName>
     <ValidationDate>2018-06-25T14:45:33</ValidationDate>
-    <Signatures>
-        <Signature Id="id-b40035ff93ad2c17ddc67d0c250d5b38">
-            <SignatureFilename>21.1.1-TEST FILE.xml</SignatureFilename>
-            <DateTime>2018-06-25T14:38:17</DateTime>
-            <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
-            <StructuralValidation>
-                <Valid>true</Valid>
-            </StructuralValidation>
-            <BasicSignature>
-                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                <ReferenceDataFound>true</ReferenceDataFound>
-                <ReferenceDataIntact>true</ReferenceDataIntact>
-                <SignatureIntact>true</SignatureIntact>
-                <SignatureValid>true</SignatureValid>
-            </BasicSignature>
-            <SigningCertificate Id="86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B">
-                <AttributePresent>true</AttributePresent>
-                <DigestValuePresent>true</DigestValuePresent>
-                <DigestValueMatch>true</DigestValueMatch>
-                <IssuerSerialMatch>true</IssuerSerialMatch>
-            </SigningCertificate>
-            <CertificateChain>
-                <ChainItem Id="86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Id="296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
-            </CertificateChain>
-            <ContentType>text/xml</ContentType>
-            <CommitmentTypeIndication/>
-            <ClaimedRoles/>
-            <Timestamps/>
-            <SignatureScopes>
-                <SignatureScope name="Full XML File" scope="XmlRootSignatureScope">The full XML file with transformations: XPath filtering; Exclusive Canonical XML (omits comments).</SignatureScope>
-            </SignatureScopes>
-        </Signature>
-    </Signatures>
     <UsedCertificates>
         <Certificate Id="296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF">
             <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=cert for test,o=tsp-21.1 name,cn=sdi-21.1.1</SubjectDistinguishedName>
@@ -167,7 +126,9 @@
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00</StartDate>
-                            <CapturedQualifiers/>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD</Qualifier>
+                            </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
                                 <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
                             </AdditionalServiceInfoUris>
@@ -218,7 +179,7 @@
             <LastLoading>2018-06-25T14:45:31</LastLoading>
             <IssueDate>2018-06-24T14:37:39</IssueDate>
             <NextUpdate>2018-07-26T14:37:39</NextUpdate>
-            <WellSigned>false</WellSigned>
+            <WellSigned>true</WellSigned>
         </TrustedList>
     </TrustedLists>
     <ListOfTrustedLists>
