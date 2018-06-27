@@ -9,7 +9,6 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualificat
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateQualification;
 import eu.europa.esig.dss.validation.ValidationTime;
-import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.CaQcCheck;
@@ -83,6 +82,10 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 
 		item = item.setNextItem(hasGrantedStatus(caqcServicesAtTime));
 
+		TrustedServiceFilter filterByCertificateType = TrustedServicesFilterFactory
+				.createFilterByCertificateType(signingCertificate);
+		caqcServicesAtTime = filterByCertificateType.filter(caqcServicesAtTime);
+
 		if (Utils.collectionSize(caqcServicesAtTime) > 1) {
 
 			// 2.b Filter one trust service
@@ -96,6 +99,10 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 
 		// 3. Consistency of trust services ?
 		item = item.setNextItem(serviceConsistency(selectedTrustService));
+
+		TrustedServiceFilter filterConsistent = TrustedServicesFilterFactory.createConsistentServiceFilter();
+		caqcServicesAtTime = filterConsistent.filter(caqcServicesAtTime);
+		selectedTrustService = !caqcServicesAtTime.isEmpty() ? caqcServicesAtTime.get(0) : null;
 
 		// 4. Trusted certificate matches the trust service properties ?
 		item = item.setNextItem(isTrustedCertificateMatchTrustService(selectedTrustService));
@@ -121,11 +128,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 
 	@Override
 	protected void addAdditionalInfo() {
-		if (Indication.PASSED == result.getConclusion().getIndication()) {
-			result.setCertificateQualification(certificateQualification);
-		} else {
-			result.setCertificateQualification(CertificateQualification.NA);
-		}
+		result.setCertificateQualification(certificateQualification);
 		result.setValidationTime(validationTime);
 		result.setDateTime(date);
 	}
