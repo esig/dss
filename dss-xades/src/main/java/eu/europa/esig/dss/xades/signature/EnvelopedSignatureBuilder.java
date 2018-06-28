@@ -89,6 +89,10 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 
 		DSSReference dssReference = new DSSReference();
 		dssReference.setId("r-id-" + referenceIndex);
+		// XMLDSIG : 4.4.3.2
+		// URI=""
+		// Identifies the node-set (minus any comment nodes) of the XML resource
+		// containing the signature
 		dssReference.setUri("");
 		dssReference.setContents(document);
 		dssReference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
