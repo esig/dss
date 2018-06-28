@@ -109,7 +109,8 @@ public class OfflineResolver extends ResourceResolverSpi {
 	}
 
 	private boolean isUriDefined(Attr uriAttr) {
-		return (uriAttr != null) && (Utils.isStringNotEmpty(uriAttr.getNodeValue()));
+		// empty URI (URI="") is not a detached signature !
+		return (uriAttr != null) && (uriAttr.getNodeValue() != null);
 	}
 
 	private String getDocumentUri(Attr uriAttr) {

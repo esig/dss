@@ -75,8 +75,6 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 		SignatureValue signatureValue = getToken().sign(toBeSigned, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDoc = service.signDocument(completeDocumentNoName, params, signatureValue);
 
-		signedDoc.save("target/test.xml");
-
 		validate(signedDoc, completeDocumentNoName);
 		validate(signedDoc, getDigestDocument());
 		validateWrong(signedDoc);
