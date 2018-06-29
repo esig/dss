@@ -323,6 +323,12 @@ public enum MessageTag implements IMessageTag {
 	QUAL_HAS_GRANTED("Is the certificate related to a trust service with a granted status?"),
 	QUAL_HAS_GRANTED_ANS("The certificate is not related to a granted status!"),
 
+	QUAL_HAS_CONSISTENT("Is the certificate related to a consistent trust service declaration?"),
+	QUAL_HAS_CONSISTENT_ANS("The certificate is not related to a consistent trust service declaration!"),
+
+	QUAL_HAS_CERT_TYPE_COVERAGE("Is the certificate type can be issued by a found trust service(s)?"),
+	QUAL_HAS_CERT_TYPE_COVERAGE_ANS("The certificate type cannot be issued by found trust service(s)!"),
+
 	QUAL_HAS_ONLY_ONE("Is the qualification conclusion certain?"),
 	QUAL_HAS_ONLY_ONE_ANS("There's a possible conflict between trust services!"),
 	

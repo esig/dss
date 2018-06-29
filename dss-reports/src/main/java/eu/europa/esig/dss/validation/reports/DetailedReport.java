@@ -38,6 +38,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateQualification;
@@ -394,7 +395,16 @@ public class DetailedReport {
 
 		XmlSignature signatureById = getXmlSignatureById(signatureId);
 
-		collect(type, result, signatureById.getValidationSignatureQualification());
+		XmlValidationSignatureQualification validationSignatureQualification = signatureById
+				.getValidationSignatureQualification();
+		if (validationSignatureQualification != null) {
+			List<XmlValidationCertificateQualification> validationCertificateQualifications = validationSignatureQualification
+					.getValidationCertificateQualification();
+			for (XmlValidationCertificateQualification validationCertificateQualification : validationCertificateQualifications) {
+				collect(type, result, validationCertificateQualification);
+			}
+			collect(type, result, validationSignatureQualification);
+		}
 
 		if (MessageType.ERROR == type) {
 			collect(type, result, getHighestConclusion(signatureId));
