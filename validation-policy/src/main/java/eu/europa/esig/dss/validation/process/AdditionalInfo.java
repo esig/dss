@@ -26,4 +26,6 @@ public class AdditionalInfo {
 
 	public static final String TRUSTED_LIST = "Trusted List : {0}";
 
+	public static final String TRUST_SERVICE_NAME = "Trust service name : {0}";
+
 }

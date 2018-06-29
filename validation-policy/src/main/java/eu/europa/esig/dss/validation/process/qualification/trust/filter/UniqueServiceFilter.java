@@ -1,9 +1,8 @@
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.EnumMap;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +41,8 @@ public class UniqueServiceFilter implements TrustedServiceFilter {
 		} else if (Utils.isCollectionNotEmpty(trustServices)) {
 			LOG.info("More than one selected trust services");
 
-			Set<CertificateQualification> qualificationResults = new HashSet<CertificateQualification>();
+			EnumMap<CertificateQualification, String> qualificationResults = new EnumMap<CertificateQualification, String>(
+					CertificateQualification.class);
 			for (TrustedServiceWrapper trustService : trustServices) {
 				QualificationStrategy qcStrategy = QualificationStrategyFactory.createQualificationFromCertAndTL(endEntityCert, trustService);
 				QualifiedStatus qualifiedStatus = qcStrategy.getQualifiedStatus();
@@ -53,13 +53,17 @@ public class UniqueServiceFilter implements TrustedServiceFilter {
 				QSCDStrategy qscdStrategy = QSCDStrategyFactory.createQSCDFromCertAndTL(endEntityCert, trustService, qualifiedStatus);
 				QSCDStatus qscdStatus = qscdStrategy.getQSCDStatus();
 
-				qualificationResults.add(CertQualificationMatrix.getCertQualification(qualifiedStatus, type, qscdStatus));
+				CertificateQualification certQualification = CertQualificationMatrix.getCertQualification(qualifiedStatus, type, qscdStatus);
+
+				if (!qualificationResults.containsKey(certQualification)) {
+					qualificationResults.put(certQualification, trustService.getServiceName());
+				}
 			}
 
-			if (Utils.collectionSize(qualificationResults) > 1) {
+			if (qualificationResults.size() > 1) {
 				LOG.warn("Unable to select the trust service ! Several possible conclusions " + qualificationResults);
 			} else {
-				LOG.info("All trust services conclude with the same result : {}", qualificationResults.iterator().next());
+				LOG.info("All trust services conclude with the same result");
 				selectedTrustedService = trustServices.get(0);
 			}
 		}
