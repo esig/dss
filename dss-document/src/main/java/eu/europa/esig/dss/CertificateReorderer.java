@@ -51,14 +51,14 @@ public class CertificateReorderer {
 
 		// Build the chain cert -> issuer
 		for (CertificateToken token : certificates) {
-			if (!token.isSelfSigned() && token.getIssuerToken() == null) {
+			if (isIssuerNeeded(token)) {
 				for (CertificateToken signer : certificates) {
 					if (token.isSignedBy(signer)) {
 						LOG.debug("{} is signed by {}", token.getDSSIdAsString(), signer.getDSSIdAsString());
 						break;
 					}
 				}
-				if (!token.isSelfSigned() && token.getIssuerToken() == null) {
+				if (isIssuerNeeded(token)) {
 					LOG.warn("Issuer not found for certificate {}", token.getDSSIdAsString());
 				}
 			}
@@ -80,6 +80,10 @@ public class CertificateReorderer {
 		}
 
 		return result;
+	}
+
+	private boolean isIssuerNeeded(CertificateToken token) {
+		return !token.isSelfSigned() && !token.isTrusted() && token.getIssuerToken() == null;
 	}
 
 	/**
