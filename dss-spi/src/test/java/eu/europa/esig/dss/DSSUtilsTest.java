@@ -251,4 +251,10 @@ public class DSSUtilsTest {
 		assertFalse(cert.isSelfIssued());
 		assertFalse(cert.isSelfSigned());
 	}
+
+	@Test
+	public void printSecurityProviders() {
+		DSSUtils.printSecurityProviders();
+	}
+
 }

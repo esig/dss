@@ -84,8 +84,6 @@ public class DSS798Test extends PKIFactoryAccess {
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		validator.setDetachedContents(Arrays.asList(documentToSign));
 		Reports reports = validator.validateDocument();
-		reports.print();
-
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(SignatureLevel.CAdES_BASELINE_T.toString(), simpleReport.getSignatureFormat(simpleReport.getFirstSignatureId()));
 	}

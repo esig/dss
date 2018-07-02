@@ -95,8 +95,7 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 		result.setSubIndication(simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
 		if (!isValid) {
-			LOG.info("The TSL signature is not valid : \n");
-			reports.print();
+			LOG.info("The TSL signature is not valid : \n{}", reports.getXmlSimpleReport());
 		}
 
 		return result;

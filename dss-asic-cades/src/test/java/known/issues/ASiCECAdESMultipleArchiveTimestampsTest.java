@@ -70,8 +70,6 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
 		Reports reports = validator.validateDocument();
-		reports.print();
-
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<String> signatureIdList = diagnosticData.getSignatureIdList();
 		assertEquals(1, signatureIdList.size());

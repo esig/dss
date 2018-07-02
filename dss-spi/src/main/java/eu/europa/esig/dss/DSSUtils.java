@@ -754,16 +754,14 @@ public final class DSSUtils {
 	/**
 	 * This method lists all defined security providers.
 	 */
-	public static void printSecurityProvides() {
-
+	public static void printSecurityProviders() {
 		final Provider[] providers = Security.getProviders();
 		for (final Provider provider : providers) {
-
-			System.out.println("PROVIDER: " + provider.getName());
+			LOG.info("PROVIDER: {}", provider.getName());
 			final Set<Provider.Service> services = provider.getServices();
 			for (final Provider.Service service : services) {
-
-				System.out.println("\tALGORITHM: " + service.getAlgorithm() + " / " + service.getType() + " / " + service.getClassName());
+				LOG.info("\tALGORITHM: {} / {} / {}", service.getAlgorithm(), service.getType(),
+						service.getClassName());
 			}
 		}
 	}

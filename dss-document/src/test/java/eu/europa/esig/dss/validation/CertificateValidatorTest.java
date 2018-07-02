@@ -26,7 +26,6 @@ public class CertificateValidatorTest {
 		assertNotNull(reports.getSimpleReportJaxb());
 		assertNotNull(reports.getXmlSimpleReport());
 
-		reports.print();
 	}
 
 }
