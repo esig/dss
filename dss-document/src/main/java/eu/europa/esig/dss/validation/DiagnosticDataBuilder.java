@@ -764,7 +764,7 @@ public class DiagnosticDataBuilder {
 		xmlCert.setNotBefore(certToken.getNotBefore());
 		final PublicKey publicKey = certToken.getPublicKey();
 		xmlCert.setPublicKeySize(DSSPKUtils.getPublicKeySize(publicKey));
-		xmlCert.setPublicKeyEncryptionAlgo(DSSPKUtils.getPublicKeyEncryptionAlgo(publicKey));
+		xmlCert.setPublicKeyEncryptionAlgo(EncryptionAlgorithm.forKey(publicKey).getName());
 
 		xmlCert.setKeyUsageBits(getXmlKeyUsages(certToken.getKeyUsageBits()));
 		xmlCert.setExtendedKeyUsages(getXmlOids(DSSASN1Utils.getExtendedKeyUsage(certToken)));

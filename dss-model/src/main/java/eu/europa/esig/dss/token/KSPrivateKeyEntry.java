@@ -24,9 +24,6 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.DSAPrivateKey;
-import java.security.interfaces.ECPrivateKey;
-import java.security.interfaces.RSAPrivateKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,15 +97,7 @@ public class KSPrivateKeyEntry implements DSSPrivateKeyEntry {
 
 	@Override
 	public EncryptionAlgorithm getEncryptionAlgorithm() throws DSSException {
-		if (privateKey instanceof RSAPrivateKey) {
-			return EncryptionAlgorithm.RSA;
-		} else if (privateKey instanceof DSAPrivateKey) {
-			return EncryptionAlgorithm.DSA;
-		} else if (privateKey instanceof ECPrivateKey) {
-			return EncryptionAlgorithm.ECDSA;
-		} else {
-			return EncryptionAlgorithm.forName(privateKey.getAlgorithm());
-		}
+		return EncryptionAlgorithm.forKey(certificate.getPublicKey());
 	}
 
 }

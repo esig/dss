@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss;
 
-import java.security.Key;
 import java.security.PublicKey;
 import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.ECPublicKey;
@@ -39,26 +38,6 @@ public final class DSSPKUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(DSSPKUtils.class);
 
 	private DSSPKUtils() {
-	}
-
-	/**
-	 * This method returns the public algorithm extracted from public key infrastructure. (ex: RSA)
-	 *
-	 * @param key
-	 *            the public key to be checked
-	 * @return the encryption algorithm name or "?"
-	 */
-	public static String getPublicKeyEncryptionAlgo(final Key key) {
-		String publicKeyAlgorithm = "?";
-		publicKeyAlgorithm = key.getAlgorithm();
-		if (!"?".equals(publicKeyAlgorithm)) {
-			try {
-				publicKeyAlgorithm = EncryptionAlgorithm.forName(publicKeyAlgorithm).getName();
-			} catch (DSSException e) {
-				LOG.error("Unable to retrieve the algorithm name : " + e.getMessage());
-			}
-		}
-		return publicKeyAlgorithm;
 	}
 
 	/**
