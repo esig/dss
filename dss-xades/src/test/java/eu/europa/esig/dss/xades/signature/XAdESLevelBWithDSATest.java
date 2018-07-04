@@ -3,7 +3,6 @@ package eu.europa.esig.dss.xades.signature;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -12,7 +11,6 @@ import org.junit.runners.Parameterized.Parameters;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
@@ -42,12 +40,10 @@ public class XAdESLevelBWithDSATest extends AbstractXAdESTestSignature {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.DSA);
 		signatureParameters.setDigestAlgorithm(digestAlgo);
 
 		service = new XAdESService(getCompleteCertificateVerifier());

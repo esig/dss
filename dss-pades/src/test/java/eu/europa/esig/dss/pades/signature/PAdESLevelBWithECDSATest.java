@@ -1,13 +1,11 @@
 package eu.europa.esig.dss.pades.signature;
 
 import java.io.File;
-import java.util.Date;
 
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
@@ -24,11 +22,9 @@ public class PAdESLevelBWithECDSATest extends AbstractPAdESTestSignature {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-		signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.ECDSA);
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 		signatureParameters.setLocation("Luxembourg");
 		signatureParameters.setReason("DSS testing");

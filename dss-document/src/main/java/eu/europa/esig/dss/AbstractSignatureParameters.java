@@ -77,22 +77,22 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	}
 
 	/**
-	 * The ID of xades:SignedProperties is contained in the signed content of the xades Signature. We must create this
-	 * ID in a deterministic way.
+	 * The ID of xades:SignedProperties is contained in the signed content of the
+	 * xades Signature. We must create this ID in a deterministic way.
 	 *
 	 * @return the unique ID for the current signature
 	 */
 	public String getDeterministicId() {
-		if (deterministicId != null) {
-			return deterministicId;
+		if (deterministicId == null) {
+			final TokenIdentifier identifier = (signingCertificate == null ? null : signingCertificate.getDSSId());
+			deterministicId = DSSUtils.getDeterministicId(bLevel().getSigningDate(), identifier);
 		}
-		final TokenIdentifier identifier = (signingCertificate == null ? null : signingCertificate.getDSSId());
-		deterministicId = DSSUtils.getDeterministicId(bLevel().getSigningDate(), identifier);
 		return deterministicId;
 	}
 
 	/**
-	 * This method returns the documents to sign. In the case of the DETACHED signature this is the detached document.
+	 * This method returns the documents to sign. In the case of the DETACHED
+	 * signature this is the detached document.
 	 *
 	 * @return the list of detached documents
 	 */
@@ -125,27 +125,33 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	}
 
 	/**
-	 * Set the signing certificate. If this certificate is not a part of the certificate chain then it's added as the
-	 * first one of the chain.
+	 * Set the signing certificate. The encryption algorithm is also set from the
+	 * public key.
 	 *
-	 * @param signingCertificate
-	 *            the signing certificate
+	 * @param signingCertificate the signing certificate
 	 */
 	public void setSigningCertificate(final CertificateToken signingCertificate) {
 		this.signingCertificate = signingCertificate;
+		setEncryptionAlgorithm(EncryptionAlgorithm.forKey(signingCertificate.getPublicKey()));
 	}
 
 	/**
 	 * Get signed data
+	 * 
 	 * @return
 	 */
-	public byte[] getSignedData() { return signedData; }
+	public byte[] getSignedData() {
+		return signedData;
+	}
 
 	/**
 	 * Set signed data
+	 * 
 	 * @param signedData data that was used when creating the signature value.
 	 */
-	public void setSignedData(final byte[] signedData) { this.signedData = signedData; }
+	public void setSignedData(final byte[] signedData) {
+		this.signedData = signedData;
+	}
 
 	/**
 	 * Set the certificate chain
@@ -166,19 +172,18 @@ public abstract class AbstractSignatureParameters extends AbstractSerializableSi
 	/**
 	 * Set the certificate chain
 	 *
-	 * @param certificateChain
-	 *            the {@code List} of {@code CertificateToken}s
+	 * @param certificateChain the {@code List} of {@code CertificateToken}s
 	 */
 	public void setCertificateChain(final List<CertificateToken> certificateChain) {
 		this.certificateChain = certificateChain;
 	}
 
 	/**
-	 * This method sets the list of certificates which constitute the chain. If the certificate is already present in
-	 * the array then it is ignored.
+	 * This method sets the list of certificates which constitute the chain. If the
+	 * certificate is already present in the array then it is ignored.
 	 *
-	 * @param certificateChainArray
-	 *            the array containing all certificates composing the chain
+	 * @param certificateChainArray the array containing all certificates composing
+	 *                              the chain
 	 */
 	public void setCertificateChain(final CertificateToken... certificateChainArray) {
 		for (final CertificateToken certificate : certificateChainArray) {

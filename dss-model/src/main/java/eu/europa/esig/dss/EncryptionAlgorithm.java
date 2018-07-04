@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss;
 
+import java.security.Key;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,6 +69,17 @@ public enum EncryptionAlgorithm {
 			throw new DSSException("Unsupported algorithm: " + oid);
 		}
 		return algorithm;
+	}
+
+	/**
+	 * Returns the encryption algorithm associated to the given key.
+	 *
+	 * @param key the key
+	 * @return the linked encryption algorithm
+	 * @throws DSSException if the key doesn't match any algorithm
+	 */
+	public static EncryptionAlgorithm forKey(Key key) {
+		return forName(key.getAlgorithm());
 	}
 
 	/**
