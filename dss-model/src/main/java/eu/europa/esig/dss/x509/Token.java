@@ -81,7 +81,7 @@ public abstract class Token implements Serializable {
 	private Map<DigestAlgorithm, byte[]> digests = new HashMap<DigestAlgorithm, byte[]>();
 
 	@Override
-	public final boolean equals(Object obj) {
+	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -94,7 +94,7 @@ public abstract class Token implements Serializable {
 	}
 
 	@Override
-	public final int hashCode() {
+	public int hashCode() {
 		return getDSSId().hashCode();
 	}
 

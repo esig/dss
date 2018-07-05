@@ -27,6 +27,8 @@ import eu.europa.esig.dss.Digest;
 @SuppressWarnings("serial")
 public abstract class RevocationToken extends Token {
 
+	private String relatedCertificateID;
+
 	/**
 	 * Origin of the revocation data (signature or external)
 	 */
@@ -81,6 +83,14 @@ public abstract class RevocationToken extends Token {
 	 * The reason of the revocation.
 	 */
 	protected String reason;
+
+	public String getRelatedCertificateID() {
+		return relatedCertificateID;
+	}
+
+	public void setRelatedCertificateID(String relatedCertificateID) {
+		this.relatedCertificateID = relatedCertificateID;
+	}
 
 	/**
 	 * Returns the URL of the source (if available)
@@ -211,5 +221,43 @@ public abstract class RevocationToken extends Token {
 	 * @return {@code true} if the conditions are meet
 	 */
 	public abstract boolean isValid();
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((productionDate == null) ? 0 : productionDate.hashCode());
+		result = prime * result + ((relatedCertificateID == null) ? 0 : relatedCertificateID.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		RevocationToken other = (RevocationToken) obj;
+		if (productionDate == null) {
+			if (other.productionDate != null) {
+				return false;
+			}
+		} else if (!productionDate.equals(other.productionDate)) {
+			return false;
+		}
+		if (relatedCertificateID == null) {
+			if (other.relatedCertificateID != null) {
+				return false;
+			}
+		} else if (!relatedCertificateID.equals(other.relatedCertificateID)) {
+			return false;
+		}
+		return true;
+	}
 
 }

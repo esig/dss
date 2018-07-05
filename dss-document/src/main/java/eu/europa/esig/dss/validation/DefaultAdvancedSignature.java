@@ -47,7 +47,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.TimestampType;
@@ -576,6 +575,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/* Defines the level LT */
 	public boolean hasLTProfile() {
 		Map<String, List<CertificateToken>> certificateChains = getCertificatesWithinSignatureAndTimestamps(true);
+		
 		boolean emptyOCSPs = Utils.isCollectionEmpty(getOCSPSource().getContainedOCSPResponses());
 		boolean emptyCRLs = Utils.isCollectionEmpty(getCRLSource().getContainedX509CRLs());
 
@@ -610,9 +610,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	private boolean isAllCertChainsHaveRevocationData(Map<String, List<CertificateToken>> certificateChains) {
+		CertificateStatusVerifier certificateStatusVerifier = new OCSPAndCRLCertificateVerifier(getCRLSource(), getOCSPSource(), certPool);
+
 		for (Entry<String, List<CertificateToken>> entryCertChain : certificateChains.entrySet()) {
 			LOG.debug("Testing revocation data presence for certificates chain {}", entryCertChain.getKey());
-			if (!isAllCertsHaveRevocationData(entryCertChain.getValue())) {
+			if (!isAllCertsHaveRevocationData(certificateStatusVerifier, entryCertChain.getValue())) {
 				LOG.debug("Revocation data missing in certificate chain {}", entryCertChain.getKey());
 				return false;
 			}
@@ -620,7 +622,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return true;
 	}
 
-	private boolean isAllCertsHaveRevocationData(List<CertificateToken> certificates) {
+	private boolean isAllCertsHaveRevocationData(CertificateStatusVerifier certificateStatusVerifier, List<CertificateToken> certificates) {
 		// we reorder the certificate list, the order is not guaranteed
 		List<CertificateToken> orderedCerts = order(certificates);
 		for (CertificateToken certificateToken : orderedCerts) {
@@ -628,19 +630,9 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 				// It returns true to avoid checking upper levels than trusted certificates (cross certification)
 				return true;
 			}
-			Set<RevocationToken> revocationData = certificateToken.getRevocationTokens();
-			if (Utils.isCollectionEmpty(revocationData)) {
+			RevocationToken revocationData = certificateStatusVerifier.check(certificateToken);
+			if (revocationData == null) {
 				return false;
-			} else {
-				boolean foundInSignature = false;
-				for (RevocationToken revocationToken : revocationData) {
-					if (RevocationOrigin.SIGNATURE == revocationToken.getOrigin()) {
-						foundInSignature = true;
-					}
-				}
-				if (!foundInSignature) {
-					return false;
-				}
 			}
 		}
 		return true;

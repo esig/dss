@@ -80,6 +80,7 @@ public class DiagnosticDataBuilder {
 	private ContainerInfo containerInfo;
 	private List<AdvancedSignature> signatures;
 	private Set<CertificateToken> usedCertificates;
+	private Set<RevocationToken> usedRevocations;
 	private TrustedListsCertificateSource trustedListCertSource;
 	private Date validationDate;
 
@@ -128,6 +129,18 @@ public class DiagnosticDataBuilder {
 	 */
 	public DiagnosticDataBuilder usedCertificates(Set<CertificateToken> usedCertificates) {
 		this.usedCertificates = usedCertificates;
+		return this;
+	}
+
+	/**
+	 * This method allows to set the used revocation data
+	 * 
+	 * @param usedRevocations
+	 *                        the used revocation data
+	 * @return the builder
+	 */
+	public DiagnosticDataBuilder usedRevocations(Set<RevocationToken> usedRevocations) {
+		this.usedRevocations = usedRevocations;
 		return this;
 	}
 
@@ -785,7 +798,7 @@ public class DiagnosticDataBuilder {
 		xmlCert.setTrusted(certToken.isTrusted());
 		xmlCert.setInfo(getXmlInfo(certToken.getValidationInfo()));
 
-		final Set<RevocationToken> revocationTokens = certToken.getRevocationTokens();
+		final Set<RevocationToken> revocationTokens = getRevocationsForCert(certToken);
 		if (Utils.isCollectionNotEmpty(revocationTokens)) {
 			for (RevocationToken revocationToken : revocationTokens) {
 				xmlCert.getRevocations().add(getXmlRevocation(certToken, revocationToken, usedDigestAlgorithms));
@@ -795,6 +808,16 @@ public class DiagnosticDataBuilder {
 		xmlCert.setTrustedServiceProviders(getXmlTrustedServiceProviders(certToken));
 
 		return xmlCert;
+	}
+
+	private Set<RevocationToken> getRevocationsForCert(CertificateToken certToken) {
+		Set<RevocationToken> revocations = new HashSet<RevocationToken>();
+		for (RevocationToken revocationToken : usedRevocations) {
+			if (Utils.areStringsEqual(certToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())) {
+				revocations.add(revocationToken);
+			}
+		}
+		return revocations;
 	}
 
 	private List<XmlCertificatePolicy> getXmlCertificatePolicies(List<CertificatePolicy> certificatePolicies) {
@@ -936,5 +959,6 @@ public class DiagnosticDataBuilder {
 		xmlDigestAlgAndValue.setDigestValue(digestValue);
 		return xmlDigestAlgAndValue;
 	}
+
 
 }

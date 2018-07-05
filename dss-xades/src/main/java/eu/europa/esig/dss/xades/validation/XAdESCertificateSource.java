@@ -36,7 +36,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
@@ -102,9 +101,6 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 				final CertificateToken cert = DSSUtils.loadCertificate(derEncoded);
 				final CertificateToken certToken = addCertificate(cert);
 				if (!list.contains(certToken)) {
-
-					final String idIdentifier = DSSXMLUtils.getIDIdentifier(certificateElement);
-					certToken.setXmlId(idIdentifier);
 					list.add(certToken);
 				}
 			} catch (Exception e) {

@@ -157,9 +157,7 @@ public class OnlineOCSPSource implements OCSPSource {
 				certificateToken.extraInfo().infoOCSPException("OCSP Response status : " + status);
 				return null;
 			}
-		} catch (OCSPException e) {
-			throw new DSSException(e);
-		} catch (IOException e) {
+		} catch (OCSPException | IOException e) {
 			throw new DSSException(e);
 		}
 	}
@@ -181,9 +179,7 @@ public class OnlineOCSPSource implements OCSPSource {
 			final OCSPReq ocspReq = ocspReqBuilder.build();
 			final byte[] ocspReqData = ocspReq.getEncoded();
 			return ocspReqData;
-		} catch (OCSPException e) {
-			throw new DSSException("Cannot build OCSP Request", e);
-		} catch (IOException e) {
+		} catch (OCSPException | IOException e) {
 			throw new DSSException("Cannot build OCSP Request", e);
 		}
 	}

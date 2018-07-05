@@ -77,7 +77,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 
 		final CertificateToken issuerToken = certificateToken.getIssuerToken();
 		if (issuerToken == null) {
-			throw new NullPointerException();
+			return null;
 		}
 
 		final CRLValidity bestCRLValidity = getBestCrlValidity(certificateToken, issuerToken);

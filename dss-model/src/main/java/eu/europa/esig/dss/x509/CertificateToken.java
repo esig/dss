@@ -38,8 +38,6 @@ import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.tsl.ServiceInfo;
@@ -56,7 +54,7 @@ public class CertificateToken extends Token {
 	/**
 	 * Encapsulated X509 certificate.
 	 */
-	private X509Certificate x509Certificate;
+	private final X509Certificate x509Certificate;
 
 	/**
 	 * This array contains the different sources for this certificate.
@@ -70,27 +68,10 @@ public class CertificateToken extends Token {
 	private Set<ServiceInfo> associatedTSPS = new HashSet<ServiceInfo>();
 
 	/**
-	 * The default algorithm used to compute the digest value of this certificate
-	 */
-	private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
-
-	private EncryptionAlgorithm encryptionAlgorithm;
-
-	/**
-	 * OCSP or CRL revocation data for this token.
-	 */
-	private Set<RevocationToken> revocationTokens = new HashSet<RevocationToken>();
-
-	/**
 	 * Indicates if the certificate is self-signed. This attribute stays null till the first call to
 	 * {@link #isSelfSigned()} function.
 	 */
 	private Boolean selfSigned;
-
-	/**
-	 * In the case of the XML signature this is the Id associated with the certificate if any.
-	 */
-	private String xmlId;
 
 	/**
 	 * The key usage bits used in the certificate
@@ -123,8 +104,6 @@ public class CertificateToken extends Token {
 		this.issuerX500Principal = x509Certificate.getIssuerX500Principal();
 		// The Algorithm OID is used and not the name {@code x509Certificate.getSigAlgName()}
 		this.signatureAlgorithm = SignatureAlgorithm.forOID(x509Certificate.getSigAlgOID());
-		this.digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
-		this.encryptionAlgorithm = signatureAlgorithm.getEncryptionAlgorithm();
 
 		this.extraInfo = new TokenValidationExtraInfo();
 	}
@@ -156,26 +135,6 @@ public class CertificateToken extends Token {
 	@Override
 	public String getAbbreviation() {
 		return getDSSIdAsString();
-	}
-
-	/**
-	 * Adds a revocation data for the current certificate
-	 * 
-	 * @param revocationToken
-	 *            This is the reference to the CertificateStatus. The object type is used because of the organisation
-	 *            of module.
-	 */
-	public void addRevocationToken(RevocationToken revocationToken) {
-		this.revocationTokens.add(revocationToken);
-	}
-
-	/**
-	 * Returns the certificate revocation revocationToken object.
-	 * 
-	 * @return a Set of revocation data (OCSP responses and/or CRL)
-	 */
-	public Set<RevocationToken> getRevocationTokens() {
-		return revocationTokens;
 	}
 
 	/**
@@ -241,42 +200,9 @@ public class CertificateToken extends Token {
 		try {
 			x509Certificate.checkValidity(date);
 			return true;
-		} catch (CertificateExpiredException e) {
-			return false;
-		} catch (CertificateNotYetValidException e) {
+		} catch (CertificateExpiredException | CertificateNotYetValidException e) {
 			return false;
 		}
-	}
-
-	/**
-	 * This method indicates if the encapsulated certificate is revoked.
-	 *
-	 * @return null if the revocation data cannot be checked, or true or false
-	 */
-	public Boolean isRevoked() {
-		if (isTrusted()) {
-			return false;
-		}
-		RevocationToken latest = getLatestRevocationToken();
-		if (latest == null) {
-			return null;
-		}
-		Boolean status = latest.getStatus();
-		if (status == null) {
-			return null;
-		}
-		status = !status;
-		return status;
-	}
-
-	private RevocationToken getLatestRevocationToken() {
-		RevocationToken latest = null;
-		for (RevocationToken revocationToken : revocationTokens) {
-			if (latest == null || revocationToken.getProductionDate().after(latest.getProductionDate())) {
-				latest = revocationToken;
-			}
-		}
-		return latest;
 	}
 
 	/**
@@ -423,24 +349,6 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * Returns the used digest algorithm when the certificate was signed
-	 * 
-	 * @return the used digest algorithm
-	 */
-	public DigestAlgorithm getDigestAlgorithm() {
-		return digestAlgorithm;
-	}
-
-	/**
-	 * Returns the used encryption algorithm when the certificate was signed (issuer private key algorithm)
-	 * 
-	 * @return the used encryption algorithm
-	 */
-	public EncryptionAlgorithm getEncryptionAlgorithm() {
-		return encryptionAlgorithm;
-	}
-
-	/**
 	 * Returns the trust anchor associated with the certificate. If it is the self-signed certificate then {@code this}
 	 * is returned.
 	 *
@@ -550,25 +458,6 @@ public class CertificateToken extends Token {
 		} catch (Exception e) {
 			return e.getMessage();
 		}
-	}
-
-	/**
-	 * Returns a XML compliant ID
-	 * 
-	 * @return the id associated with the certificate in case of an XML signature, or null
-	 */
-	public String getXmlId() {
-		return xmlId;
-	}
-
-	/**
-	 * Sets the Id associated with the certificate in case of an XML signature.
-	 *
-	 * @param xmlId
-	 *            xml compliant id
-	 */
-	public void setXmlId(final String xmlId) {
-		this.xmlId = xmlId;
 	}
 
 	/**

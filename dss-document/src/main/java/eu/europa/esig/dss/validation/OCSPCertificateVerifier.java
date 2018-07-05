@@ -78,16 +78,22 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 		}
 
 		try {
-			final OCSPToken ocspToken = ocspSource.getOCSPToken(toCheckToken, toCheckToken.getIssuerToken());
+			CertificateToken issuerToken = toCheckToken.getIssuerToken();
+			if (issuerToken == null) {
+				LOG.warn("issuerToken null");
+				return null;
+			}
+
+			final OCSPToken ocspToken = ocspSource.getOCSPToken(toCheckToken, issuerToken);
 			if (ocspToken == null) {
 				LOG.debug("No matching OCSP response found for " + toCheckToken.getDSSIdAsString());
 			} else {
+				ocspToken.setRelatedCertificateID(toCheckToken.getDSSIdAsString());
 				ocspToken.extractInfo();
 				final boolean found = extractSigningCertificateFromResponse(ocspToken);
 				if (!found) {
 					extractSigningCertificateFormResponderId(ocspToken);
 				}
-				toCheckToken.addRevocationToken(ocspToken);
 			}
 			return ocspToken;
 		} catch (DSSException e) {

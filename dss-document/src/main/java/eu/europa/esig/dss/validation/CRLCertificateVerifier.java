@@ -31,9 +31,7 @@ import eu.europa.esig.dss.x509.crl.CRLToken;
 /**
  * Verifier based on CRL
  *
- *
  */
-
 public class CRLCertificateVerifier implements CertificateStatusVerifier {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CRLCertificateVerifier.class);
@@ -47,7 +45,6 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
 	 *            the CRL repository used by this CRL trust linker.
 	 */
 	public CRLCertificateVerifier(final CRLSource crlSource) {
-
 		this.crlSource = crlSource;
 	}
 
@@ -66,12 +63,12 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
 				certificateToken.extraInfo().infoNoCRLInfoFound();
 				return null;
 			}
+			crlToken.setRelatedCertificateID(certificateToken.getDSSIdAsString());
 			if (!crlToken.isValid()) {
 				LOG.warn("The CRL is not valid !");
 				certificateToken.extraInfo().infoCRLIsNotValid();
 				return null;
 			}
-			certificateToken.addRevocationToken(crlToken);
 			return crlToken;
 		} catch (final Exception e) {
 			LOG.error("Exception when accessing CRL for " + certificateToken.getDSSIdAsString(), e);
