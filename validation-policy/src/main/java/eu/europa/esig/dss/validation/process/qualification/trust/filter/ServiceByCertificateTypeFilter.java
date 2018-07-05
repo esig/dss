@@ -58,6 +58,9 @@ public class ServiceByCertificateTypeFilter extends AbstractTrustedServiceFilter
 				return asiEseals || overruleForEsign || overruleForWSA;
 			case WSA:
 				return asiWsa || overruleForEseals || overruleForEsign;
+			case UNKNOWN:
+				// multiple cert types + overrule ?
+				return overruleForEsign || overruleForEseals || overruleForWSA;
 			default:
 				return false;
 			}

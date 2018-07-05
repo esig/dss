@@ -35,12 +35,12 @@ public final class SigQualificationMatrix {
 
 		QUALIFS[ADES][QCERT_FOR_ESIG] = SignatureQualification.ADESIG_QC;
 		QUALIFS[ADES][QCERT_FOR_ESEAL] = SignatureQualification.ADESEAL_QC;
-		QUALIFS[ADES][QCERT_FOR_WSA] = SignatureQualification.ADES_QC;
+		QUALIFS[ADES][QCERT_FOR_WSA] = SignatureQualification.NOT_ADES;
 
 		QUALIFS[ADES][CERT_FOR_ESIG] = SignatureQualification.ADESIG;
 		QUALIFS[ADES][CERT_FOR_ESEAL] = SignatureQualification.ADESEAL;
-		QUALIFS[ADES][CERT_FOR_WSA] = SignatureQualification.ADES;
-		QUALIFS[ADES][NA] = SignatureQualification.ADES;
+		QUALIFS[ADES][CERT_FOR_WSA] = SignatureQualification.NOT_ADES;
+		QUALIFS[ADES][NA] = SignatureQualification.NA;
 
 		// Indeterminate AdES
 
@@ -49,12 +49,12 @@ public final class SigQualificationMatrix {
 
 		QUALIFS[INDETERMINATE_ADES][QCERT_FOR_ESIG] = SignatureQualification.INDETERMINATE_ADESIG_QC;
 		QUALIFS[INDETERMINATE_ADES][QCERT_FOR_ESEAL] = SignatureQualification.INDETERMINATE_ADESEAL_QC;
-		QUALIFS[INDETERMINATE_ADES][QCERT_FOR_WSA] = SignatureQualification.INDETERMINATE_ADES_QC;
+		QUALIFS[INDETERMINATE_ADES][QCERT_FOR_WSA] = SignatureQualification.NOT_ADES;
 
 		QUALIFS[INDETERMINATE_ADES][CERT_FOR_ESIG] = SignatureQualification.INDETERMINATE_ADESIG;
 		QUALIFS[INDETERMINATE_ADES][CERT_FOR_ESEAL] = SignatureQualification.INDETERMINATE_ADESEAL;
-		QUALIFS[INDETERMINATE_ADES][CERT_FOR_WSA] = SignatureQualification.INDETERMINATE_ADES;
-		QUALIFS[INDETERMINATE_ADES][NA] = SignatureQualification.INDETERMINATE_ADES;
+		QUALIFS[INDETERMINATE_ADES][CERT_FOR_WSA] = SignatureQualification.NOT_ADES;
+		QUALIFS[INDETERMINATE_ADES][NA] = SignatureQualification.NA;
 
 		// Not AdES
 
@@ -63,7 +63,7 @@ public final class SigQualificationMatrix {
 
 		QUALIFS[NOT_ADES][QCERT_FOR_ESIG] = SignatureQualification.NOT_ADES_QC;
 		QUALIFS[NOT_ADES][QCERT_FOR_ESEAL] = SignatureQualification.NOT_ADES_QC;
-		QUALIFS[NOT_ADES][QCERT_FOR_WSA] = SignatureQualification.NOT_ADES_QC;
+		QUALIFS[NOT_ADES][QCERT_FOR_WSA] = SignatureQualification.NOT_ADES;
 
 		QUALIFS[NOT_ADES][CERT_FOR_ESIG] = SignatureQualification.NOT_ADES;
 		QUALIFS[NOT_ADES][CERT_FOR_ESEAL] = SignatureQualification.NOT_ADES;
