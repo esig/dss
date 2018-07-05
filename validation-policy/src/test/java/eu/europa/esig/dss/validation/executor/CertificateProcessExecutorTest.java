@@ -237,6 +237,28 @@ public class CertificateProcessExecutorTest {
 	}
 
 	@Test
+	public void wsaQC() throws Exception {
+
+		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/cert_WSAQC.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		String certificateId = "24A830ADC0D077255FD14A607513D398CDB278A53A3DBAB79AC4ADE6A66EEAA6";
+
+		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		executor.setCertificateId(certificateId);
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		CertificateReports reports = executor.execute();
+
+		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		assertEquals(CertificateQualification.QCERT_FOR_WSA, simpleReport.getQualificationAtCertificateIssuance());
+		assertEquals(CertificateQualification.QCERT_FOR_WSA, simpleReport.getQualificationAtValidationTime());
+	}
+
+	@Test
 	public void overruleNotQualified() throws Exception {
 
 		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/overrule-NotQualified-tl.xml");
