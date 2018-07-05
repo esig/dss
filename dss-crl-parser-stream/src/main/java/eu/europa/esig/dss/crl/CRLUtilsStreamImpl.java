@@ -104,8 +104,10 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 			crlValidity.setIssuerToken(signer);
 			crlValidity.setCrlSignKeyUsage(signer.checkKeyUsage(KeyUsageBit.crlSign));
 		} else {
-			String message = MessageFormat.format("Signed digest {0} and computed digest ''{1}'' don''t match",
-					extractedDigest == null ? "" : Hex.toHexString(extractedDigest), expectedDigest == null ? "" : Hex.toHexString(expectedDigest));
+			String extractedDigestString = extractedDigest == null ? "" : Hex.toHexString(extractedDigest);
+			String expectedDigestString = expectedDigest == null ? "" : Hex.toHexString(expectedDigest);
+			String message = MessageFormat.format("Signed digest ''{0}'' and computed digest ''{1}'' don''t match",
+					new Object[] { extractedDigestString, expectedDigestString });
 			crlValidity.setSignatureInvalidityReason(message);
 			LOG.warn(message);
 		}
