@@ -7,12 +7,18 @@
 	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
 	        <DateTime>2016-06-10T16:50:58</DateTime>
 	        <SignatureFormat>CAdES_BASELINE_B</SignatureFormat>
+	        <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
 	        <BasicSignature>
 	            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
 	            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
 	            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	            <ReferenceDataFound>true</ReferenceDataFound>
-	            <ReferenceDataIntact>true</ReferenceDataIntact>
 	            <SignatureIntact>true</SignatureIntact>
 	            <SignatureValid>true</SignatureValid>
 	        </BasicSignature>
@@ -59,8 +65,6 @@
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
                 <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                <ReferenceDataFound>true</ReferenceDataFound>
-                <ReferenceDataIntact>true</ReferenceDataIntact>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -90,13 +94,10 @@
             <KeyUsageBits>
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
-            
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
                 <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                <ReferenceDataFound>true</ReferenceDataFound>
-                <ReferenceDataIntact>true</ReferenceDataIntact>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -117,13 +118,6 @@
             <Info>
                 <Message Id="0">No CRL info found !</Message>
                 <Message Id="0">OSCP Uri not found in certificate meta-data !</Message>
-                <Message Id="0">No CRL info found !</Message>
-                <Message Id="0">No CRL info found !</Message>
-                <Message Id="0">OSCP Uri not found in certificate meta-data !</Message>
-                <Message Id="0">No CRL info found !</Message>
-                <Message Id="0">No CRL info found !</Message>
-                <Message Id="0">OSCP Uri not found in certificate meta-data !</Message>
-                <Message Id="0">No CRL info found !</Message>
             </Info>
         </Certificate>
         <Certificate Id="79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC">
@@ -148,8 +142,6 @@
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
                 <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                <ReferenceDataFound>true</ReferenceDataFound>
-                <ReferenceDataIntact>true</ReferenceDataIntact>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -185,8 +177,6 @@
 	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
 	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
 	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <ReferenceDataFound>true</ReferenceDataFound>
-	                    <ReferenceDataIntact>true</ReferenceDataIntact>
 	                    <SignatureIntact>true</SignatureIntact>
 	                    <SignatureValid>true</SignatureValid>
 	                </BasicSignature>
@@ -213,8 +203,6 @@
 	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
 	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
 	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <ReferenceDataFound>true</ReferenceDataFound>
-	                    <ReferenceDataIntact>true</ReferenceDataIntact>
 	                    <SignatureIntact>true</SignatureIntact>
 	                    <SignatureValid>true</SignatureValid>
 	                </BasicSignature>
@@ -241,8 +229,6 @@
 	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
 	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
 	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <ReferenceDataFound>true</ReferenceDataFound>
-	                    <ReferenceDataIntact>true</ReferenceDataIntact>
 	                    <SignatureIntact>true</SignatureIntact>
 	                    <SignatureValid>true</SignatureValid>
 	                </BasicSignature>

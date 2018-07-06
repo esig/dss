@@ -7,12 +7,24 @@
 	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
 	        <DateTime>2014-10-14T14:49:13</DateTime>
 	        <SignatureFormat>XAdES_BASELINE_B</SignatureFormat>
+	        <DigestMatchers>
+                <DigestMatcher type="REFERENCE" name="#test">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>cfwwLPkuUbNIaaaaaL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
 	        <BasicSignature>
 	            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
 	            <KeyLengthUsedToSignThisToken>1024</KeyLengthUsedToSignThisToken>
 	            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	            <ReferenceDataFound>true</ReferenceDataFound>
-	            <ReferenceDataIntact>true</ReferenceDataIntact>
 	            <SignatureIntact>true</SignatureIntact>
 	            <SignatureValid>true</SignatureValid>
 	        </BasicSignature>
@@ -59,8 +71,6 @@
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
                 <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                <ReferenceDataFound>true</ReferenceDataFound>
-                <ReferenceDataIntact>true</ReferenceDataIntact>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -95,8 +105,6 @@
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
                 <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                <ReferenceDataFound>true</ReferenceDataFound>
-                <ReferenceDataIntact>true</ReferenceDataIntact>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -135,8 +143,6 @@
 	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
 	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
 	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <ReferenceDataFound>true</ReferenceDataFound>
-	                    <ReferenceDataIntact>true</ReferenceDataIntact>
 	                    <SignatureIntact>true</SignatureIntact>
 	                    <SignatureValid>true</SignatureValid>
 	                </BasicSignature>
@@ -165,8 +171,6 @@
 	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
 	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
 	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <ReferenceDataFound>true</ReferenceDataFound>
-	                    <ReferenceDataIntact>true</ReferenceDataIntact>
 	                    <SignatureIntact>true</SignatureIntact>
 	                    <SignatureValid>true</SignatureValid>
 	                </BasicSignature>
@@ -182,7 +186,6 @@
 	            </Revocation>
 	        </Revocations>
             <Info>
-                <Message Id="0">No CRL info found !</Message>
                 <Message Id="0">No CRL info found !</Message>
             </Info>
         </Certificate>
@@ -203,14 +206,11 @@
             <KeyUsageBits>
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
-            
             <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
                 <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                <ReferenceDataFound>true</ReferenceDataFound>
-                <ReferenceDataIntact>true</ReferenceDataIntact>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -227,7 +227,6 @@
             <QCTypes />
             <TrustedServiceProviders />
             <Info>
-                <Message Id="0">OCSP check not needed: id-pkix-ocsp-nocheck extension present.</Message>
                 <Message Id="0">OCSP check not needed: id-pkix-ocsp-nocheck extension present.</Message>
             </Info>
         </Certificate>

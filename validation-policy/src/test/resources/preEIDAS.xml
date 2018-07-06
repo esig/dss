@@ -7,12 +7,18 @@
             <SignatureFilename>Signature-P-CZ_ALIS-1.pdf</SignatureFilename>
             <DateTime>2016-04-27T09:16:13</DateTime>
             <SignatureFormat>PAdES-BASELINE-B</SignatureFormat>
+	        <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
                 <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                <ReferenceDataFound>true</ReferenceDataFound>
-                <ReferenceDataIntact>true</ReferenceDataIntact>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -80,8 +86,6 @@
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
                 <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                <ReferenceDataFound>true</ReferenceDataFound>
-                <ReferenceDataIntact>true</ReferenceDataIntact>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -151,8 +155,6 @@
                         <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                         <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
                         <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <ReferenceDataFound>true</ReferenceDataFound>
-                        <ReferenceDataIntact>true</ReferenceDataIntact>
                         <SignatureIntact>true</SignatureIntact>
                         <SignatureValid>true</SignatureValid>
                     </BasicSignature>
@@ -209,8 +211,6 @@
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
                 <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                <ReferenceDataFound>true</ReferenceDataFound>
-                <ReferenceDataIntact>true</ReferenceDataIntact>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -284,8 +284,6 @@
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
                 <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                <ReferenceDataFound>true</ReferenceDataFound>
-                <ReferenceDataIntact>true</ReferenceDataIntact>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>

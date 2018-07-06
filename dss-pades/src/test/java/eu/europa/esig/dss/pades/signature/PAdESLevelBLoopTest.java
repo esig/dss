@@ -34,7 +34,6 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 @RunWith(Parameterized.class)
@@ -46,7 +45,7 @@ public class PAdESLevelBLoopTest extends AbstractPAdESTestSignature {
 		File[] listFiles = folder.listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File pathname) {
-				return pathname.getName().endsWith("pdf");
+				return pathname.getName().endsWith("pdf") && !pathname.getName().contains("corrupted");
 			}
 		});
 		Collection<Object[]> dataToRun = new ArrayList<Object[]>();

@@ -48,10 +48,10 @@ public enum MessageTag implements IMessageTag {
 	BBB_FC_IMFP_ASICS_ANS("The manifest file is present!"),
 	
 	/* BBB -> CV */
-	BBB_CV_IRDOF("Is the reference data object(s) found?"),
-	BBB_CV_IRDOF_ANS("The reference data object(s) is not found!"),
-	BBB_CV_IRDOI("Is the reference data object(s) intact?"),
-	BBB_CV_IRDOI_ANS("The reference data object(s) is not intact!"),
+	BBB_CV_IRDOF("Is the reference data object found?"),
+	BBB_CV_IRDOF_ANS("The reference data object is not found!"),
+	BBB_CV_IRDOI("Is the reference data object intact?"),
+	BBB_CV_IRDOI_ANS("The reference data object is not intact!"),
 	BBB_CV_ISI("Is the signature intact?"),
 	BBB_CV_ISI_ANS("The signature is not intact!"),
 	BBB_CV_IAFS("Is all files signed?"),

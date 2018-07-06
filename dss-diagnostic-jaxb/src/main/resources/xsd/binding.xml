@@ -25,6 +25,12 @@
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.TimestampedObjectTypeParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.TimestampedObjectTypeParser.print" />
 		</jaxb:bindings>
+  
+  <jaxb:bindings node="//xs:simpleType[@name='DigestMatcherType']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.DigestMatcherType" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.DigestMatcherTypeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.DigestMatcherTypeParser.print" />
+		</jaxb:bindings>
   </jaxb:bindings>
   
 </jaxb:bindings>

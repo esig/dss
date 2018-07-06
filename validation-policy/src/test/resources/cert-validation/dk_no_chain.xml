@@ -36,8 +36,6 @@
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
                 <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                <ReferenceDataFound>false</ReferenceDataFound>
-                <ReferenceDataIntact>false</ReferenceDataIntact>
                 <SignatureIntact>false</SignatureIntact>
                 <SignatureValid>false</SignatureValid>
             </BasicSignature>

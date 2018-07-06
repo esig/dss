@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -53,11 +52,11 @@ public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest exten
 		attachment2 = new FileDocument("src/test/resources/sample.png");
 
 		signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		signatureParameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA1);
 
 		List<DSSReference> references = new ArrayList<DSSReference>();
 		references.add(createReference(documentToSign));

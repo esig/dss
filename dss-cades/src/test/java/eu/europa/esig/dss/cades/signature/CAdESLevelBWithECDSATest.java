@@ -1,7 +1,9 @@
 package eu.europa.esig.dss.cades.signature;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -25,17 +27,27 @@ public class CAdESLevelBWithECDSATest extends AbstractCAdESTestSignature {
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
+	private final DigestAlgorithm messageDigestAlgo;
 	private final DigestAlgorithm digestAlgo;
 
-	@Parameters(name = "DigestAlgorithm {index} : {0}")
-	public static Collection<DigestAlgorithm> data() {
-		return Arrays.asList(DigestAlgorithm.SHA1, DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512
-		// , DigestAlgorithm.SHA3_224, DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384, DigestAlgorithm.SHA3_512,
-		// DigestAlgorithm.RIPEMD160
+	@Parameters(name = "Combination {index} of message-digest algorithm {0} + digest algorithm {1}")
+	public static Collection<Object[]> data() {
+		List<DigestAlgorithm> digestAlgos = Arrays.asList(DigestAlgorithm.SHA1, DigestAlgorithm.SHA224,
+				DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512,
+				DigestAlgorithm.SHA3_224, DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384, DigestAlgorithm.SHA3_512
 		);
+
+		List<Object[]> data = new ArrayList<Object[]>();
+		for (DigestAlgorithm digest1 : digestAlgos) {
+			for (DigestAlgorithm digest2 : digestAlgos) {
+				data.add(new Object[] { digest1, digest2 });
+			}
+		}
+		return data;
 	}
 
-	public CAdESLevelBWithECDSATest(DigestAlgorithm digestAlgo) {
+	public CAdESLevelBWithECDSATest(DigestAlgorithm messageDigestAlgo, DigestAlgorithm digestAlgo) {
+		this.messageDigestAlgo = messageDigestAlgo;
 		this.digestAlgo = digestAlgo;
 	}
 
@@ -48,6 +60,7 @@ public class CAdESLevelBWithECDSATest extends AbstractCAdESTestSignature {
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		signatureParameters.setReferenceDigestAlgorithm(messageDigestAlgo);
 		signatureParameters.setDigestAlgorithm(digestAlgo);
 
 		service = new CAdESService(getCompleteCertificateVerifier());

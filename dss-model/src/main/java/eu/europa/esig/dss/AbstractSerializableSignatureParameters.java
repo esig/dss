@@ -65,6 +65,11 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	private DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
 
 	/**
+	 * XAdES: The digest algorithm used to hash ds:Reference.
+	 */
+	private DigestAlgorithm referenceDigestAlgorithm;
+
+	/**
 	 * The mask generation function
 	 */
 	private MaskGenerationFunction maskGenerationFunction = signatureAlgorithm.getMaskGenerationFunction();
@@ -114,7 +119,9 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	 *
 	 * @return true if signing certificate is not required when generating ToBeSigned data.
 	 */
-	public boolean isGenerateTBSWithoutCertificate() { return generateTBSWithoutCertificate; }
+	public boolean isGenerateTBSWithoutCertificate() {
+		return generateTBSWithoutCertificate;
+	}
 
 	/**
 	 * Allows to change the default behaviour regarding the requirements of signing certificate
@@ -234,6 +241,19 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 	}
 
 	/**
+	 * Get the digest algorithm for ds:Reference or message-digest attribute
+	 * 
+	 * @return the digest algorithm for ds:Reference or message-digest attribute
+	 */
+	public DigestAlgorithm getReferenceDigestAlgorithm() {
+		return referenceDigestAlgorithm;
+	}
+
+	public void setReferenceDigestAlgorithm(DigestAlgorithm referenceDigestAlgorithm) {
+		this.referenceDigestAlgorithm = referenceDigestAlgorithm;
+	}
+
+	/**
 	 * Get Baseline B parameters (signed properties)
 	 * 
 	 * @return the Baseline B parameters
@@ -329,28 +349,31 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 
 	@Override
 	public String toString() {
-		return "SignatureParameters{" + "signWithExpiredCertificate=" + signWithExpiredCertificate + ", generateTBSWithoutCertificate=" + generateTBSWithoutCertificate
-				+ ", signatureLevel=" + signatureLevel + ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm=" + signatureAlgorithm
-				+ ", encryptionAlgorithm=" + encryptionAlgorithm + ", digestAlgorithm=" + digestAlgorithm + ", bLevelParams=" + bLevelParams
-				+ ", signatureTimestampParameters=" + ((signatureTimestampParameters == null) ? null : signatureTimestampParameters.toString())
-				+ ", archiveTimestampParameters=" + ((archiveTimestampParameters == null) ? null : archiveTimestampParameters.toString()) + '}';
+		return "AbstractSerializableSignatureParameters [signWithExpiredCertificate=" + signWithExpiredCertificate + ", generateTBSWithoutCertificate="
+				+ generateTBSWithoutCertificate + ", signatureLevel=" + signatureLevel + ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm="
+				+ signatureAlgorithm + ", encryptionAlgorithm=" + encryptionAlgorithm + ", digestAlgorithm=" + digestAlgorithm + ", referenceDigestAlgorithm="
+				+ referenceDigestAlgorithm + ", maskGenerationFunction=" + maskGenerationFunction + ", bLevelParams=" + bLevelParams
+				+ ", contentTimestampParameters=" + contentTimestampParameters + ", signatureTimestampParameters=" + signatureTimestampParameters
+				+ ", archiveTimestampParameters=" + archiveTimestampParameters + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + ((archiveTimestampParameters == null) ? 0 : archiveTimestampParameters.hashCode());
-		result = (prime * result) + ((bLevelParams == null) ? 0 : bLevelParams.hashCode());
-		result = (prime * result) + ((contentTimestampParameters == null) ? 0 : contentTimestampParameters.hashCode());
-		result = (prime * result) + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
-		result = (prime * result) + ((encryptionAlgorithm == null) ? 0 : encryptionAlgorithm.hashCode());
-		result = (prime * result) + (signWithExpiredCertificate ? 1231 : 1237);
-		result = (prime * result) + (generateTBSWithoutCertificate ? 1231 : 1237);
-		result = (prime * result) + ((signatureAlgorithm == null) ? 0 : signatureAlgorithm.hashCode());
-		result = (prime * result) + ((signatureLevel == null) ? 0 : signatureLevel.hashCode());
-		result = (prime * result) + ((signaturePackaging == null) ? 0 : signaturePackaging.hashCode());
-		result = (prime * result) + ((signatureTimestampParameters == null) ? 0 : signatureTimestampParameters.hashCode());
+		result = prime * result + ((archiveTimestampParameters == null) ? 0 : archiveTimestampParameters.hashCode());
+		result = prime * result + ((bLevelParams == null) ? 0 : bLevelParams.hashCode());
+		result = prime * result + ((contentTimestampParameters == null) ? 0 : contentTimestampParameters.hashCode());
+		result = prime * result + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
+		result = prime * result + ((encryptionAlgorithm == null) ? 0 : encryptionAlgorithm.hashCode());
+		result = prime * result + (generateTBSWithoutCertificate ? 1231 : 1237);
+		result = prime * result + ((maskGenerationFunction == null) ? 0 : maskGenerationFunction.hashCode());
+		result = prime * result + ((referenceDigestAlgorithm == null) ? 0 : referenceDigestAlgorithm.hashCode());
+		result = prime * result + (signWithExpiredCertificate ? 1231 : 1237);
+		result = prime * result + ((signatureAlgorithm == null) ? 0 : signatureAlgorithm.hashCode());
+		result = prime * result + ((signatureLevel == null) ? 0 : signatureLevel.hashCode());
+		result = prime * result + ((signaturePackaging == null) ? 0 : signaturePackaging.hashCode());
+		result = prime * result + ((signatureTimestampParameters == null) ? 0 : signatureTimestampParameters.hashCode());
 		return result;
 	}
 
@@ -393,10 +416,16 @@ public abstract class AbstractSerializableSignatureParameters implements Seriali
 		if (encryptionAlgorithm != other.encryptionAlgorithm) {
 			return false;
 		}
-		if (signWithExpiredCertificate != other.signWithExpiredCertificate) {
+		if (generateTBSWithoutCertificate != other.generateTBSWithoutCertificate) {
 			return false;
 		}
-		if (generateTBSWithoutCertificate != other.generateTBSWithoutCertificate) {
+		if (maskGenerationFunction != other.maskGenerationFunction) {
+			return false;
+		}
+		if (referenceDigestAlgorithm != other.referenceDigestAlgorithm) {
+			return false;
+		}
+		if (signWithExpiredCertificate != other.signWithExpiredCertificate) {
 			return false;
 		}
 		if (signatureAlgorithm != other.signatureAlgorithm) {

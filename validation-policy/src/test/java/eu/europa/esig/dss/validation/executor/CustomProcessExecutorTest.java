@@ -57,6 +57,8 @@ public class CustomProcessExecutorTest {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -73,6 +75,8 @@ public class CustomProcessExecutorTest {
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -122,6 +126,8 @@ public class CustomProcessExecutorTest {
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -153,6 +159,8 @@ public class CustomProcessExecutorTest {
 
 		assertEquals(Indication.INDETERMINATE, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, detailedReport.getArchiveDataValidationSubIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -168,6 +176,8 @@ public class CustomProcessExecutorTest {
 
 		Reports reports = executor.execute();
 		assertNotNull(reports);
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -188,6 +198,8 @@ public class CustomProcessExecutorTest {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -219,6 +231,8 @@ public class CustomProcessExecutorTest {
 
 		assertEquals(Indication.INDETERMINATE, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.NO_POE, detailedReport.getArchiveDataValidationSubIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -250,6 +264,8 @@ public class CustomProcessExecutorTest {
 		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(simpleReport.getFirstSignatureId()));
 
 		assertEquals(Indication.INDETERMINATE, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -283,6 +299,8 @@ public class CustomProcessExecutorTest {
 		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, detailedReport.getLongTermValidationSubIndication(simpleReport.getFirstSignatureId()));
 
 		assertEquals(Indication.PASSED, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -318,6 +336,8 @@ public class CustomProcessExecutorTest {
 		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(simpleReport.getFirstSignatureId()));
 
 		assertEquals(Indication.PASSED, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -353,6 +373,8 @@ public class CustomProcessExecutorTest {
 		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(simpleReport.getFirstSignatureId()));
 
 		assertEquals(Indication.PASSED, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -384,6 +406,8 @@ public class CustomProcessExecutorTest {
 
 		assertEquals(Indication.FAILED, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.HASH_FAILURE, detailedReport.getArchiveDataValidationSubIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -415,6 +439,8 @@ public class CustomProcessExecutorTest {
 
 		assertEquals(Indication.FAILED, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, detailedReport.getArchiveDataValidationSubIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -448,6 +474,8 @@ public class CustomProcessExecutorTest {
 
 		assertEquals(Indication.INDETERMINATE, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.NO_SIGNING_CERTIFICATE_FOUND, detailedReport.getArchiveDataValidationSubIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -464,6 +492,8 @@ public class CustomProcessExecutorTest {
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -505,6 +535,8 @@ public class CustomProcessExecutorTest {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(SignatureQualification.INDETERMINATE_ADESIG_QC, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -522,6 +554,8 @@ public class CustomProcessExecutorTest {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -548,6 +582,8 @@ public class CustomProcessExecutorTest {
 
 		assertEquals(Indication.INDETERMINATE, detailedReport.getArchiveDataValidationIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.NO_POE, detailedReport.getArchiveDataValidationSubIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -565,6 +601,8 @@ public class CustomProcessExecutorTest {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(SignatureQualification.NA, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -583,6 +621,8 @@ public class CustomProcessExecutorTest {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SignatureQualification.INDETERMINATE_QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -605,6 +645,8 @@ public class CustomProcessExecutorTest {
 		assertEquals(3, xmlSignature.getCertificateChain().getCertificate().size());
 		ByteArrayOutputStream s = new ByteArrayOutputStream();
 		JAXB.marshal(simpleReport.getJaxbModel(), s);
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -624,6 +666,8 @@ public class CustomProcessExecutorTest {
 		assertEquals(1, simpleReport.getJaxbModel().getSignaturesCount());
 		XmlSignature xmlSignature = simpleReport.getJaxbModel().getSignature().get(0);
 		assertEquals(null, xmlSignature.getCertificateChain());
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -648,6 +692,8 @@ public class CustomProcessExecutorTest {
 		assertEquals(4, detailedReport.getSignatureIds().size());
 
 		LOG.info(reports.getXmlDetailedReport());
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -672,6 +718,8 @@ public class CustomProcessExecutorTest {
 		assertEquals(2, detailedReport.getSignatureIds().size());
 
 		LOG.info(reports.getXmlDetailedReport());
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -690,6 +738,8 @@ public class CustomProcessExecutorTest {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -708,6 +758,8 @@ public class CustomProcessExecutorTest {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -726,6 +778,8 @@ public class CustomProcessExecutorTest {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -744,6 +798,8 @@ public class CustomProcessExecutorTest {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	@Test
@@ -760,6 +816,8 @@ public class CustomProcessExecutorTest {
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
 	}
 
 	private void checkReports(Reports reports) {
@@ -774,6 +832,16 @@ public class CustomProcessExecutorTest {
 		assertTrue(Utils.isStringNotBlank(reports.getXmlDiagnosticData()));
 		assertTrue(Utils.isStringNotBlank(reports.getXmlSimpleReport()));
 		assertTrue(Utils.isStringNotBlank(reports.getXmlDetailedReport()));
+	}
+
+	private void validateBestSigningTimes(Reports reports) {
+		eu.europa.esig.dss.jaxb.detailedreport.DetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
+		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> xmlSignatures = detailedReportJaxb.getSignatures();
+		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : xmlSignatures) {
+			assertNotNull(xmlSignature.getValidationProcessBasicSignatures().getBestSignatureTime());
+			assertNotNull(xmlSignature.getValidationProcessLongTermData().getBestSignatureTime());
+			assertNotNull(xmlSignature.getValidationProcessArchivalData().getBestSignatureTime());
+		}
 	}
 
 	private EtsiValidationPolicy loadPolicy() throws Exception {

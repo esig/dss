@@ -645,24 +645,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getMessageImprintDataFoundConstraint() {
-		TimestampConstraints timestamp = policy.getTimestamp();
-		if (timestamp != null) {
-			return timestamp.getMessageImprintDataFound();
-		}
-		return null;
-	}
-
-	@Override
-	public LevelConstraint getMessageImprintDataIntactConstraint() {
-		TimestampConstraints timestamp = policy.getTimestamp();
-		if (timestamp != null) {
-			return timestamp.getMessageImprintDataIntact();
-		}
-		return null;
-	}
-
-	@Override
 	public LevelConstraint getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint() {
 		TimestampConstraints timestamp = policy.getTimestamp();
 		if (timestamp != null) {

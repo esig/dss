@@ -466,7 +466,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final Element transform = DomUtils.addElement(documentDom, transforms, XMLNS, DS_TRANSFORM);
 		transform.setAttribute(ALGORITHM, signedPropertiesCanonicalizationMethod);
 
-		final DigestAlgorithm digestAlgorithm = params.getDigestAlgorithm();
+		final DigestAlgorithm digestAlgorithm = params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm()
+				: params.getDigestAlgorithm();
 		incorporateDigestMethod(reference, digestAlgorithm);
 
 		final byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(signedPropertiesCanonicalizationMethod, signedPropertiesDom);

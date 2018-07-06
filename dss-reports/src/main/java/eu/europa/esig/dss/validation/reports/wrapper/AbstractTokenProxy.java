@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.validation.reports.wrapper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -8,6 +9,7 @@ import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -18,6 +20,11 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	protected abstract List<XmlChainItem> getCurrentCertificateChain();
 
 	protected abstract XmlSigningCertificate getCurrentSigningCertificate();
+
+	@Override
+	public List<XmlDigestMatcher> getDigestMatchers() {
+		return Collections.emptyList();
+	}
 
 	@Override
 	public List<XmlChainItem> getCertificateChain() {
@@ -37,18 +44,6 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 			}
 		}
 		return result;
-	}
-
-	@Override
-	public boolean isReferenceDataFound() {
-		XmlBasicSignature basicSignature = getCurrentBasicSignature();
-		return (basicSignature != null) && Utils.isTrue(basicSignature.isReferenceDataFound());
-	}
-
-	@Override
-	public boolean isReferenceDataIntact() {
-		XmlBasicSignature basicSignature = getCurrentBasicSignature();
-		return (basicSignature != null) && Utils.isTrue(basicSignature.isReferenceDataIntact());
 	}
 
 	@Override

@@ -3,7 +3,6 @@ package eu.europa.esig.dss.xades.signature;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
@@ -59,11 +58,11 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdEST
 		references.add(dssReference);
 
 		signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		signatureParameters.setReferences(references);
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSXMLUtils.canonicalize(canonicalizationAlgo, DSSUtils.toByteArray(documentToSign)));

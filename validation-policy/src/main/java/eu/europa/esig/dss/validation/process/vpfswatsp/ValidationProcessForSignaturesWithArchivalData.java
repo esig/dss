@@ -97,8 +97,8 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * - In all other cases, the long term validation process shall fail with returned code and information.
 		 */
 		ChainItem<XmlValidationProcessArchivalData> item = firstItem = longTermValidation();
+		result.setBestSignatureTime(validationProcessLongTermData.getBestSignatureTime());
 		if (isValid(validationProcessLongTermData)) {
-			result.setBestSignatureTime(validationProcessLongTermData.getBestSignatureTime());
 			return;
 		}
 

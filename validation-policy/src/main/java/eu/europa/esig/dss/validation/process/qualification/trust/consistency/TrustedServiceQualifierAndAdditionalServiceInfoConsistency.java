@@ -35,7 +35,9 @@ class TrustedServiceQualifierAndAdditionalServiceInfoConsistency implements Trus
 
 	private boolean isQualifierInAdditionServiceInfos(List<String> qualifiers, List<String> asis) {
 		if (Utils.collectionSize(asis) >= 1) {
-			if (Utils.collectionSize(qualifiers) == 1) { // Cannot have more than 1 usage
+			// Cannot have more than 1 usage (>1 is covered in
+			// TrustedServiceUsageConsistency)
+			if (Utils.collectionSize(qualifiers) == 1) {
 				String currentUsage = qualifiers.get(0);
 				String expectedASI = CORRESPONDANCE_MAP_QUALIFIER_ASI.get(currentUsage);
 				return asis.contains(expectedASI);

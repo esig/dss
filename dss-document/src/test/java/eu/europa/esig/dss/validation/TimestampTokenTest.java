@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
@@ -50,13 +51,19 @@ public class TimestampTokenTest {
 			assertTrue(Utils.isCollectionNotEmpty(token.getCertificates()));
 			assertNotNull(token.getSignatureAlgorithm());
 			assertEquals(TimestampType.ARCHIVE_TIMESTAMP, token.getTimeStampType());
-			assertEquals(DigestAlgorithm.SHA256, token.getSignedDataDigestAlgo());
 			assertEquals(SignatureAlgorithm.RSA_SHA256, token.getSignatureAlgorithm());
-			assertTrue(Utils.isStringNotBlank(token.getEncodedSignedDataDigestValue()));
+			
+			Digest messageImprint = token.getMessageImprint();
+			assertNotNull(messageImprint);
+			assertEquals(DigestAlgorithm.SHA256, messageImprint.getAlgorithm());
+			assertNotNull(messageImprint.getValue());
+			assertTrue(Utils.isStringNotBlank(messageImprint.getHexValue()));
 
 			assertNotNull(token.getIssuerToken());
 			assertTrue(token.isSignedBy(token.getIssuerToken()));
 			assertFalse(token.isSelfSigned());
+
+			assertFalse(token.matchData(null));
 
 			assertFalse(token.matchData(new byte[] { 1, 2, 3 }));
 			assertTrue(token.isMessageImprintDataFound());

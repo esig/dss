@@ -85,6 +85,15 @@
 			<xs:element name="SignatureFormat" type="xs:string" />
 
 			<xs:element name="StructuralValidation"	type="StructuralValidation" minOccurs="0" />
+			
+			<xs:element name="DigestMatchers" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="DigestMatcher" type="DigestMatcher" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
 			<xs:element name="BasicSignature" type="BasicSignature" />
 			<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 			<xs:element name="CertificateChain"	type="CertificateChain" minOccurs="0" />
@@ -313,8 +322,6 @@
 			<xs:element name="KeyLengthUsedToSignThisToken" type="xs:string" minOccurs="0" />
 			<xs:element name="DigestAlgoUsedToSignThisToken" type="xs:string" minOccurs="0"  />
 			<xs:element name="MaskGenerationFunctionUsedToSignThisToken" type="xs:string" minOccurs="0"  />
-			<xs:element name="ReferenceDataFound" type="xs:boolean" />
-			<xs:element name="ReferenceDataIntact" type="xs:boolean" />
 			<xs:element name="SignatureIntact" type="xs:boolean" />
 			<xs:element name="SignatureValid" type="xs:boolean" />
 		</xs:sequence>
@@ -391,20 +398,42 @@
 	
 	<xs:complexType name="DigestAlgoAndValue">
 		<xs:sequence>
-			<xs:element name="DigestMethod" type="xs:string" />
-			<xs:element name="DigestValue" type="xs:string" />
+			<xs:element name="DigestMethod" type="xs:string" minOccurs="0" /> <!-- Optional in case the digest cannot be retrieved -->
+			<xs:element name="DigestValue" type="xs:string" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
+	
+	<xs:complexType name="DigestMatcher">
+		<xs:complexContent>
+			<xs:extension base="DigestAlgoAndValue">
+				<xs:sequence>
+					<xs:element name="DataFound" type="xs:boolean" />
+					<xs:element name="DataIntact" type="xs:boolean" />
+				</xs:sequence>
+				<xs:attribute name="type" type="DigestMatcherType" use="required" />
+				<xs:attribute name="name" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="DigestMatcherType" final="restriction">
+		<xs:restriction base="xs:string">
+			<!-- XAdES -->
+			<xs:enumeration value="REFERENCE" />
+			<xs:enumeration value="SIGNED_PROPERTIES" />
+			
+			<!-- CAdES -->
+			<xs:enumeration value="MESSAGE_DIGEST" />
+			
+			<!-- TIMESTAMP -->
+			<xs:enumeration value="MESSAGE_IMPRINT" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="Timestamp">
 		<xs:sequence>
 			<xs:element name="ProductionTime" type="xs:dateTime" />
-			<xs:element name="SignedDataDigestAlgo" type="xs:string" />
-			<xs:element name="EncodedSignedDataDigestValue" type="xs:string" />
-			<xs:element name="MessageImprintDataFound" type="xs:boolean" />
-			<xs:element name="MessageImprintDataIntact" type="xs:boolean" />
-			<xs:element name="CanonicalizationMethod" type="xs:string" minOccurs="0" />
-
+			<xs:element name="DigestMatcher" type="DigestMatcher" />
 			<xs:element name="BasicSignature" type="BasicSignature" />
 			<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />

@@ -10,6 +10,7 @@ import java.util.Set;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
@@ -30,6 +31,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	@Override
 	public String getId() {
 		return signature.getId();
+	}
+
+	@Override
+	public List<XmlDigestMatcher> getDigestMatchers() {
+		return signature.getDigestMatchers();
 	}
 
 	@Override
@@ -213,10 +219,9 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	private boolean isTimestampValid(List<TimestampWrapper> timestampList) {
 		for (final TimestampWrapper timestamp : timestampList) {
 			final boolean signatureValid = timestamp.isSignatureValid();
-			final boolean messageImprintIntact = timestamp.isMessageImprintDataIntact();
-			if (signatureValid && messageImprintIntact) { // TODO correct ?
-															// return true if at
-															// least 1 TSP OK
+			final XmlDigestMatcher messageImprint = timestamp.getMessageImprint();
+			final boolean messageImprintIntact = messageImprint.isDataFound() && messageImprint.isDataIntact();
+			if (signatureValid && messageImprintIntact) {
 				return true;
 			}
 		}

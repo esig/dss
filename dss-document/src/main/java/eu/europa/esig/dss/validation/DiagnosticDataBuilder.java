@@ -38,6 +38,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlManifestFile;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlMessage;
@@ -296,6 +297,7 @@ public class DiagnosticDataBuilder {
 
 		xmlSignature.setCertificateChain(getXmlForCertificateChain(signingCertificateToken));
 
+		xmlSignature.setDigestMatchers(getXmlDigestMatchers(signature));
 		xmlSignature.setBasicSignature(getXmlBasicSignature(signature, signingCertificateToken));
 
 		xmlSignature.setPolicy(getXmlPolicy(signature));
@@ -618,11 +620,7 @@ public class DiagnosticDataBuilder {
 		xmlTimestampToken.setId(timestampToken.getDSSIdAsString());
 		xmlTimestampToken.setType(timestampToken.getTimeStampType().name());
 		xmlTimestampToken.setProductionTime(timestampToken.getGenerationTime());
-		xmlTimestampToken.setSignedDataDigestAlgo(timestampToken.getSignedDataDigestAlgo().getName());
-		xmlTimestampToken.setEncodedSignedDataDigestValue(timestampToken.getEncodedSignedDataDigestValue());
-		xmlTimestampToken.setMessageImprintDataFound(timestampToken.isMessageImprintDataFound());
-		xmlTimestampToken.setMessageImprintDataIntact(timestampToken.isMessageImprintDataIntact());
-		xmlTimestampToken.setCanonicalizationMethod(timestampToken.getCanonicalizationMethod());
+		xmlTimestampToken.setDigestMatcher(getXmlDigestMatcher(timestampToken));
 		xmlTimestampToken.setBasicSignature(getXmlBasicSignature(timestampToken));
 
 		final CertificateToken issuerToken = timestampToken.getIssuerToken();
@@ -632,6 +630,16 @@ public class DiagnosticDataBuilder {
 		xmlTimestampToken.setTimestampedObjects(getXmlTimestampedObjects(timestampToken.getTimestampedReferences()));
 
 		return xmlTimestampToken;
+	}
+
+	private XmlDigestMatcher getXmlDigestMatcher(TimestampToken timestampToken) {
+		XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
+		digestMatcher.setType(DigestMatcherType.MESSAGE_IMPRINT);
+		digestMatcher.setDigestMethod(timestampToken.getMessageImprint().getAlgorithm().getName());
+		digestMatcher.setDigestValue(Utils.toBase64(timestampToken.getMessageImprint().getValue()));
+		digestMatcher.setDataFound(timestampToken.isMessageImprintDataFound());
+		digestMatcher.setDataIntact(timestampToken.isMessageImprintDataIntact());
+		return digestMatcher;
 	}
 
 	private List<XmlTimestampedObject> getXmlTimestampedObjects(List<TimestampReference> timestampReferences) {
@@ -668,8 +676,6 @@ public class DiagnosticDataBuilder {
 		xmlBasicSignatureType.setKeyLengthUsedToSignThisToken(DSSPKUtils.getPublicKeySize(token));
 
 		final boolean signatureValid = token.isSignatureValid();
-		xmlBasicSignatureType.setReferenceDataFound(signatureValid);
-		xmlBasicSignatureType.setReferenceDataIntact(signatureValid);
 		xmlBasicSignatureType.setSignatureIntact(signatureValid);
 		xmlBasicSignatureType.setSignatureValid(signatureValid);
 		return xmlBasicSignatureType;
@@ -703,11 +709,33 @@ public class DiagnosticDataBuilder {
 		}
 
 		SignatureCryptographicVerification scv = signature.getSignatureCryptographicVerification();
-		xmlBasicSignature.setReferenceDataFound(scv.isReferenceDataFound());
-		xmlBasicSignature.setReferenceDataIntact(scv.isReferenceDataIntact());
 		xmlBasicSignature.setSignatureIntact(scv.isSignatureIntact());
 		xmlBasicSignature.setSignatureValid(scv.isSignatureValid());
 		return xmlBasicSignature;
+	}
+
+	private List<XmlDigestMatcher> getXmlDigestMatchers(AdvancedSignature signature) {
+		List<XmlDigestMatcher> refs = new ArrayList<XmlDigestMatcher>();
+		List<ReferenceValidation> refValidations = signature.getReferenceValidations();
+		for (ReferenceValidation referenceValidation : refValidations) {
+			refs.add(getXmlDigestMatcher(referenceValidation));
+		}
+		return refs;
+	}
+
+	private XmlDigestMatcher getXmlDigestMatcher(ReferenceValidation referenceValidation) {
+		XmlDigestMatcher ref = new XmlDigestMatcher();
+		ref.setType(referenceValidation.getType());
+		ref.setName(referenceValidation.getName());
+		Digest digest = referenceValidation.getDigest();
+		if (digest != null) {
+			ref.setDigestValue(Utils.toBase64(digest.getValue()));
+			DigestAlgorithm algorithm = digest.getAlgorithm();
+			ref.setDigestMethod(algorithm != null ? algorithm.getName() : "?");
+		}
+		ref.setDataFound(referenceValidation.isFound());
+		ref.setDataIntact(referenceValidation.isIntact());
+		return ref;
 	}
 
 	private List<XmlSignatureScope> getXmlSignatureScopes(List<SignatureScope> scopes) {

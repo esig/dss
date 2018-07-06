@@ -9,6 +9,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualificat
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateQualification;
 import eu.europa.esig.dss.validation.ValidationTime;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.CaQcCheck;
@@ -120,7 +121,11 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 
 	@Override
 	protected void addAdditionalInfo() {
-		result.setCertificateQualification(certificateQualification);
+		if (Indication.PASSED == result.getConclusion().getIndication()) {
+			result.setCertificateQualification(certificateQualification);
+		} else {
+			result.setCertificateQualification(CertificateQualification.NA);
+		}
 		result.setValidationTime(validationTime);
 		result.setDateTime(date);
 	}

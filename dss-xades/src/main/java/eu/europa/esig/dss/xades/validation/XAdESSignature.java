@@ -61,6 +61,7 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.EncryptionAlgorithm;
@@ -79,7 +80,9 @@ import eu.europa.esig.dss.validation.CertificateValidity;
 import eu.europa.esig.dss.validation.CertifiedRole;
 import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
+import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.OCSPRef;
+import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
@@ -1115,17 +1118,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			return;
 		}
 		signatureCryptographicVerification = new SignatureCryptographicVerification();
-		final Document document = signatureElement.getOwnerDocument();
-		final Element rootElement = document.getDocumentElement();
-
-		DSSXMLUtils.setIDIdentifier(rootElement);
-		DSSXMLUtils.recursiveIdBrowse(rootElement);
 		try {
-
-			final XMLSignature santuarioSignature = new XMLSignature(signatureElement, "");
-			if (Utils.isCollectionNotEmpty(detachedContents)) {
-				santuarioSignature.addResourceResolver(new OfflineResolver(detachedContents, getSignatureAlgorithm().getDigestAlgorithm()));
-			}
+			final XMLSignature santuarioSignature = getSantuarioSignature();
 
 			boolean coreValidity = false;
 			final List<CertificateValidity> certificateValidityList = getSigningCertificateValidityList(santuarioSignature, signatureCryptographicVerification,
@@ -1161,29 +1155,17 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					signatureCryptographicVerification.setErrorMessage(preliminaryErrorMessage);
 				}
 			}
-			final SignedInfo signedInfo = santuarioSignature.getSignedInfo();
-			final int length = signedInfo.getLength();
 
-			boolean referenceDataFound = length > 0;
-			boolean referenceDataHashValid = length > 0;
-
-			boolean foundSignedProperties = false;
-			for (int ii = 0; ii < length; ii++) {
-				final Reference reference = signedInfo.item(ii);
-				if (xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType())) {
-					foundSignedProperties = true;
-				}
-				if (!coreValidity) {
-					referenceDataHashValid = referenceDataHashValid && reference.verify();
-				}
-				references.add(reference);
+			boolean allReferenceDataFound = true;
+			boolean allReferenceDataIntact = true;
+			List<ReferenceValidation> refValidations = getReferenceValidations();
+			for (ReferenceValidation referenceValidation : refValidations) {
+				allReferenceDataFound = allReferenceDataFound && referenceValidation.isFound();
+				allReferenceDataIntact = allReferenceDataIntact && referenceValidation.isIntact();
 			}
 
-			// 1 reference for SignedProperties + 1 reference / signed object
-			referenceDataFound = referenceDataFound && foundSignedProperties;
-
-			signatureCryptographicVerification.setReferenceDataFound(referenceDataFound);
-			signatureCryptographicVerification.setReferenceDataIntact(referenceDataHashValid);
+			signatureCryptographicVerification.setReferenceDataFound(allReferenceDataFound);
+			signatureCryptographicVerification.setReferenceDataIntact(allReferenceDataIntact);
 			signatureCryptographicVerification.setSignatureIntact(coreValidity);
 		} catch (Exception e) {
 			LOG.error("checkSignatureIntegrity : {}", e.getMessage());
@@ -1201,6 +1183,93 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 			}
 			signatureCryptographicVerification.setErrorMessage(e.getMessage() + "/ XAdESSignature/Line number/" + lineNumber);
+		}
+	}
+
+	@Override
+	public List<ReferenceValidation> getReferenceValidations() {
+		if (referenceValidations == null) {
+			referenceValidations = new ArrayList<ReferenceValidation>();
+
+			final XMLSignature santuarioSignature = getSantuarioSignature();
+			final SignedInfo signedInfo = santuarioSignature.getSignedInfo();
+			final int numberOfReferences = signedInfo.getLength();
+
+			boolean signedPropertiesFound = false;
+			boolean referenceFound = false;
+			for (int ii = 0; ii < numberOfReferences; ii++) {
+				ReferenceValidation validation = new ReferenceValidation();
+				boolean found = false;
+				boolean intact = false;
+				try {
+					final Reference reference = signedInfo.item(ii);
+					references.add(reference);
+
+					final String id = reference.getId();
+					final String uri = reference.getURI();
+					if (Utils.isStringNotBlank(id)) {
+						validation.setName(id);
+					} else if (Utils.isStringNotBlank(uri)) {
+						validation.setName(uri);
+					}
+
+					if (xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType())) {
+						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
+						signedPropertiesFound = true;
+					} else {
+						validation.setType(DigestMatcherType.REFERENCE);
+						referenceFound = true;
+					}
+
+					final Digest digest = new Digest();
+					digest.setValue(reference.getDigestValue());
+					digest.setAlgorithm(
+							DigestAlgorithm.forXML(reference.getMessageDigestAlgorithm().getAlgorithmURI()));
+					validation.setDigest(digest);
+
+					found = reference.getContentsBeforeTransformation() != null;
+
+					intact = reference.verify();
+				} catch (XMLSecurityException e) {
+					LOG.warn("Unable to verify reference {} : {}", ii, e.getMessage());
+				}
+				validation.setFound(found);
+				validation.setIntact(intact);
+				referenceValidations.add(validation);
+			}
+			if (!signedPropertiesFound) {
+				referenceValidations.add(notFound(DigestMatcherType.SIGNED_PROPERTIES));
+			}
+			if (!referenceFound) {
+				referenceValidations.add(notFound(DigestMatcherType.REFERENCE));
+			}
+		}
+		return referenceValidations;
+	}
+
+	private ReferenceValidation notFound(DigestMatcherType type) {
+		ReferenceValidation validation = new ReferenceValidation();
+		validation.setType(type);
+		validation.setFound(false);
+		return validation;
+	}
+
+	private XMLSignature getSantuarioSignature() {
+		try {
+			final Document document = signatureElement.getOwnerDocument();
+			final Element rootElement = document.getDocumentElement();
+
+			DSSXMLUtils.setIDIdentifier(rootElement);
+			DSSXMLUtils.recursiveIdBrowse(rootElement);
+
+			final XMLSignature santuarioSignature = new XMLSignature(signatureElement, "");
+			if (Utils.isCollectionNotEmpty(detachedContents)) {
+				santuarioSignature.addResourceResolver(
+						new OfflineResolver(detachedContents, getSignatureAlgorithm().getDigestAlgorithm()));
+			}
+			return santuarioSignature;
+		} catch (XMLSecurityException e) {
+			throw new DSSException("Unable to initialize santuario XMLSignature", e);
 		}
 	}
 

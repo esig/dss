@@ -36,32 +36,26 @@ public class SignatureCryptographicVerification implements Serializable {
 	private String errorMessage = "";
 
 	public boolean isReferenceDataFound() {
-
 		return referenceDataFound;
 	}
 
 	public void setReferenceDataFound(boolean referenceDataFound) {
-
 		this.referenceDataFound = referenceDataFound;
 	}
 
 	public boolean isReferenceDataIntact() {
-
 		return referenceDataIntact;
 	}
 
 	public void setReferenceDataIntact(boolean referenceDataIntact) {
-
 		this.referenceDataIntact = referenceDataIntact;
 	}
 
 	public boolean isSignatureIntact() {
-
 		return signatureIntact;
 	}
 
 	public void setSignatureIntact(boolean signatureIntact) {
-
 		this.signatureIntact = signatureIntact;
 	}
 
@@ -69,29 +63,24 @@ public class SignatureCryptographicVerification implements Serializable {
 	 * This means that the {@code referenceDataFound} and {@code referenceDataIntact} and {@code signatureValid} are true
 	 */
 	public boolean isSignatureValid() {
-
 		return referenceDataFound && signatureIntact && referenceDataIntact;
 	}
 
 	public String getErrorMessage() {
-
 		return errorMessage;
 	}
 
 	public void setErrorMessage(final String errorMessage) {
-
 		if (this.errorMessage != null && !this.errorMessage.isEmpty()) {
-
 			this.errorMessage += "<br/>\n" + errorMessage;
 		} else {
-
 			this.errorMessage = errorMessage;
 		}
 	}
 
 	@Override
 	public String toString() {
-
 		return "referenceDataFound:" + referenceDataFound + ", referenceDataIntact:" + referenceDataIntact + ", signatureValid;" + signatureIntact + " / " + errorMessage;
 	}
+
 }

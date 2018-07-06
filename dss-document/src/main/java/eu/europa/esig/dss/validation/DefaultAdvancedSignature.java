@@ -79,6 +79,12 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	protected List<DSSDocument> detachedContents;
 
 	/**
+	 * This variable contains a list of reference validations (reference tag for
+	 * XAdES or message-digest for CAdES)
+	 */
+	protected List<ReferenceValidation> referenceValidations;
+
+	/**
 	 * This variable contains the result of the signature mathematical validation. It is initialised when the method
 	 * {@code checkSignatureIntegrity} is called.
 	 */

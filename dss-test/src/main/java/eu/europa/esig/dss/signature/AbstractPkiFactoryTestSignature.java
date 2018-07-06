@@ -28,6 +28,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -192,6 +193,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		checkSignatureScopes(diagnosticData);
 		checkCommitmentTypeIndications(diagnosticData);
 		checkClaimedRoles(diagnosticData);
+		checkMessageDigestAlgorithm(diagnosticData);
 	}
 
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
@@ -334,8 +336,14 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertTrue(signatureWrapper.isReferenceDataFound());
-		assertTrue(signatureWrapper.isReferenceDataIntact());
+
+		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
+		assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
+		for (XmlDigestMatcher digestMatcher : digestMatchers) {
+			assertTrue(digestMatcher.isDataFound());
+			assertTrue(digestMatcher.isDataIntact());
+		}
+
 		assertTrue(signatureWrapper.isSignatureIntact());
 		assertTrue(signatureWrapper.isSignatureValid());
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
@@ -425,6 +433,20 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 			List<String> foundClaimedRoles = signatureWrapper.getClaimedRoles();
 			assertTrue(claimedRoles.equals(foundClaimedRoles));
+		}
+	}
+
+	protected void checkMessageDigestAlgorithm(DiagnosticData diagnosticData) {
+		DigestAlgorithm expectedDigestAlgorithm = getSignatureParameters().getReferenceDigestAlgorithm();
+		if (expectedDigestAlgorithm == null) {
+			expectedDigestAlgorithm = getSignatureParameters().getDigestAlgorithm();
+		}
+
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
+		assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
+		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
+			assertEquals(expectedDigestAlgorithm.getName(), xmlDigestMatcher.getDigestMethod());
 		}
 	}
 

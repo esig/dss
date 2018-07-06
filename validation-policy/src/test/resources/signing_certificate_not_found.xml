@@ -7,12 +7,18 @@
 	    	<SignatureFilename>firmaok.zip.p7m</SignatureFilename>
 	        <DateTime>2016-04-25T08:09:51</DateTime>
 	        <SignatureFormat>PDF_NOT_ETSI</SignatureFormat>
+	        <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
 	        <BasicSignature>
 	            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
 	            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
 	            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	            <ReferenceDataFound>true</ReferenceDataFound>
-	            <ReferenceDataIntact>true</ReferenceDataIntact>
 	            <SignatureIntact>true</SignatureIntact>
 	            <SignatureValid>true</SignatureValid>
 	        </BasicSignature>
@@ -60,13 +66,10 @@
                 <KeyUsage>nonRepudiation</KeyUsage>
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
-            
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
                 <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-                <ReferenceDataFound>true</ReferenceDataFound>
-                <ReferenceDataIntact>true</ReferenceDataIntact>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -103,8 +106,6 @@
 	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
 	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
 	                    <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-	                    <ReferenceDataFound>true</ReferenceDataFound>
-	                    <ReferenceDataIntact>true</ReferenceDataIntact>
 	                    <SignatureIntact>true</SignatureIntact>
 	                    <SignatureValid>true</SignatureValid>
 	                </BasicSignature>
@@ -150,8 +151,6 @@
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
                 <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-                <ReferenceDataFound>true</ReferenceDataFound>
-                <ReferenceDataIntact>true</ReferenceDataIntact>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -193,8 +192,6 @@
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
                 <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-                <ReferenceDataFound>true</ReferenceDataFound>
-                <ReferenceDataIntact>true</ReferenceDataIntact>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
@@ -235,8 +232,6 @@
 	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
 	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
 	                    <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-	                    <ReferenceDataFound>true</ReferenceDataFound>
-	                    <ReferenceDataIntact>true</ReferenceDataIntact>
 	                    <SignatureIntact>true</SignatureIntact>
 	                    <SignatureValid>true</SignatureValid>
 	                </BasicSignature>

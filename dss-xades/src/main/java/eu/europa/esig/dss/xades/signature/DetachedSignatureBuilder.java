@@ -30,6 +30,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -89,7 +90,8 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 			}
 		}
 		reference.setContents(document);
-		reference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
+		DigestAlgorithm digestAlgorithm = params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
+		reference.setDigestMethodAlgorithm(digestAlgorithm);
 		return reference;
 	}
 
