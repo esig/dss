@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <ValidationDate>2018-06-27T08:37:00</ValidationDate>
+    <UsedCertificates>
+        <Certificate Id="3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=cert for test,o=tsp-3.1 name,cn=sdi-3.1.4</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=CERT FOR TEST,O=TSP-3.1 Name,CN=SDI-3.1.4</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=cert for test,o=tsp-3.1 name,cn=sdi-3.1.4</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=CERT FOR TEST,O=TSP-3.1 Name,CN=SDI-3.1.4</IssuerDistinguishedName>
+            <SerialNumber>8</SerialNumber>
+            <CommonName>SDI-3.1.4</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>TSP-3.1 Name</OrganizationName>
+            <OrganizationalUnit>CERT FOR TEST</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <DigestAlgoAndValues/>
+            <NotAfter>2019-06-27T08:32:31</NotAfter>
+            <NotBefore>2017-06-27T08:32:31</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits/>
+            <ExtendedKeyUsages>
+                <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>TSP-3.1 Name</TSPName>
+                    <CountryCode>LU</CountryCode>
+                    <TrustedServices>
+                        <TrustedService>
+                            <ServiceName>TS-3.1.4 Name</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
+                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations/>
+            <Info/>
+            <Base64Encoded>MIIDZTCCAk2gAwIBAgIBCDANBgkqhkiG9w0BAQsFADBQMRIwEAYDVQQDDAlTREktMy4xLjQxFTATBgNVBAoMDFRTUC0zLjEgTmFtZTEWMBQGA1UECwwNQ0VSVCBGT1IgVEVTVDELMAkGA1UEBhMCTFUwHhcNMTcwNjI3MDgzMjMxWhcNMTkwNjI3MDgzMjMxWjBQMRIwEAYDVQQDDAlTREktMy4xLjQxFTATBgNVBAoMDFRTUC0zLjEgTmFtZTEWMBQGA1UECwwNQ0VSVCBGT1IgVEVTVDELMAkGA1UEBhMCTFUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQD5JVd2IyOOQK+e28hxvkckJ7ZS81clCWit2JSV7tIWN7aQKWrPTU4H+24b7qNXxNwqEMMhp2bEARu93/2Zc55qE2rhTUY4GeHJv31cmyvfUuHy3eRaX9PmEk881HVkjDQtsgpN9k0yo8OnPbINNBW+JRWAScaWOZ+avJYT9BR2sFc2LoyUW3raJOgbaB1i8XtqZNgVBHFj+pc7B3gUdSXqAtBWvFJTotyF9kpywrKUOIKXdReQAGOubk5lBjZgEae2KTpU6b5KiI13SSKQhVzw77xGzgJWXs6g/NHF9EtBbDU5wgBNRy0txs0ZbbiClCGR0f1WQ4BRsgpGi5g7lManAgMBAAGjSjBIMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMJMB0GA1UdDgQWBBRu5QIkh6fe8Ya6ulpfHVoG2N/f1zAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCjqg3Mvtlr0butNfuVno74ZTTyXbZ7gFNO6vva+2RAgdseEDUMnOzd8gfmQVe0PG6dF7K9fxphMg3EO/nxpSDOJk+kOLD3Vo0cl0NCexLXWm8oMq9FpguAV4ndeC+Ol9Xh047QudQA2wce9VC400A+R+2e5c4TnqC78sUtQmPYKJLigIWJgVYiSGPWmdimGvMpBnfOiGmN6UYMLIsFB093cBrb//vCCQqI3VoCKYouo1WX3NEKbSaUIU7uGSHhm3S/yY121x9dRztWIr8YG6pIJw5ytZMb7+t+eIAks0TKm9pBHEJdDQDhqwF0cewqQx+Osqb2Rhp8bCia0RfIjaoH</Base64Encoded>
+        </Certificate>
+        <Certificate Id="18D60FFCE5904ED1E2B3DE04A7BA48BF7F904A34D6988962B964843649A33456">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=cert for test,o=tl3 organization,cn=cert-test-3.1.4</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=CERT FOR TEST,O=TL3 Organization,CN=CERT-TEST-3.1.4</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=cert for test,o=tsp-3.1 name,cn=sdi-3.1.4</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=CERT FOR TEST,O=TSP-3.1 Name,CN=SDI-3.1.4</IssuerDistinguishedName>
+            <SerialNumber>9</SerialNumber>
+            <CommonName>CERT-TEST-3.1.4</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>TL3 Organization</OrganizationName>
+            <OrganizationalUnit>CERT FOR TEST</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <Url>http://localhost:8080/qes-validation-web/crt/SDI-3.1.4.crt</Url>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <Url>http://localhost:8080/qes-validation-web/crl/SDI-3.1.4.crl</Url>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <Url>http://localhost:8080/qes-validation-web/ocsp/SDI-3.1.4</Url>
+            </OCSPAccessUrls>
+            <DigestAlgoAndValues/>
+            <NotAfter>2019-06-27T08:32:32</NotAfter>
+            <NotBefore>2017-06-27T08:32:32</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <ReferenceDataFound>true</ReferenceDataFound>
+                <ReferenceDataIntact>true</ReferenceDataIntact>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376"/>
+            <CertificateChain>
+                <ChainItem Id="3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <QCStatementIds>
+                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
+                <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
+                <oid>0.4.0.1862.1.6</oid>
+            </QCStatementIds>
+            <QCTypes>
+                <oid Description="qc-type-esign">0.4.0.1862.1.6.1</oid>
+            </QCTypes>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>TSP-3.1 Name</TSPName>
+                    <CountryCode>LU</CountryCode>
+                    <TrustedServices>
+                        <TrustedService>
+                            <ServiceName>TS-3.1.4 Name</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
+                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations>
+                <Revocation Id="18d60ffce5904ed1e2b3de04a7ba48bf7f904a34d6988962b964843649a334563b36cbfdce6aa8c34ae67c8acb33073fcf5d2fab96e4adf03d77e66ad2a4f4a9">
+                    <Origin>EXTERNAL</Origin>
+                    <Source>OCSPToken</Source>
+                    <SourceAddress>http://localhost:8080/qes-validation-web/ocsp/SDI-3.1.4</SourceAddress>
+                    <Available>true</Available>
+                    <Status>true</Status>
+                    <ProductionDate>2018-06-27T08:37:00</ProductionDate>
+                    <ThisUpdate>2018-06-27T08:37:00</ThisUpdate>
+                    <DigestAlgoAndValues/>
+                    <BasicSignature>
+                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                        <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                        <ReferenceDataFound>true</ReferenceDataFound>
+                        <ReferenceDataIntact>true</ReferenceDataIntact>
+                        <SignatureIntact>true</SignatureIntact>
+                        <SignatureValid>true</SignatureValid>
+                    </BasicSignature>
+                    <SigningCertificate Id="3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376"/>
+                    <CertificateChain>
+                        <ChainItem Id="3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
+                            <Source>TRUSTED_LIST</Source>
+                        </ChainItem>
+                    </CertificateChain>
+                    <Info/>
+                </Revocation>
+            </Revocations>
+            <Info>
+                <Message Id="0">No CRL info found !</Message>
+            </Info>
+            <Base64Encoded>MIIEgzCCA2ugAwIBAgIBCTANBgkqhkiG9w0BAQsFADBQMRIwEAYDVQQDDAlTREktMy4xLjQxFTATBgNVBAoMDFRTUC0zLjEgTmFtZTEWMBQGA1UECwwNQ0VSVCBGT1IgVEVTVDELMAkGA1UEBhMCTFUwHhcNMTcwNjI3MDgzMjMyWhcNMTkwNjI3MDgzMjMyWjBaMRgwFgYDVQQDDA9DRVJULVRFU1QtMy4xLjQxGTAXBgNVBAoMEFRMMyBPcmdhbml6YXRpb24xFjAUBgNVBAsMDUNFUlQgRk9SIFRFU1QxCzAJBgNVBAYTAkxVMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3bK7ldb/iYomIVXb4Z5QPQto+xHZOCi4qzOOQIcuRBZ9lb1wlvqHN9RbDnsBeRddhbaNwHph8JSvxS9jgQzpma0vLEictmRaLwFTix42Dy2UflRCjqvuIYIuqQf9uoU9VAoXIBkAolHij29jpwk8W5o+HXVf34neWts7619Wsg4DS8RQoF77JqoQBwguU7U4F/ZMJ3bZEK5dxXWqC81stMMhb+bnrOA4BvL7j3kHRkZxkVolL51iHvpEkT//vYNZng3KHWFIn5TqUSUtSJzo1isEOSxMsmcIMkTtcY72e4iJDLlDzLkOp5sRgE32vTmDm85YVuDKNBxra5/cWiFsvwIDAQABo4IBXDCCAVgwDgYDVR0PAQH/BAQDAgZAMDoGCCsGAQUFBwEDAQH/BCswKTAIBgYEAI5GAQEwCAYGBACORgEEMBMGBgQAjkYBBjAJBgcEAI5GAQYBMEsGA1UdHwREMEIwQKA+oDyGOmh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9xZXMtdmFsaWRhdGlvbi13ZWIvY3JsL1NESS0zLjEuNC5jcmwwgZ0GCCsGAQUFBwEBBIGQMIGNMEMGCCsGAQUFBzABhjdodHRwOi8vbG9jYWxob3N0OjgwODAvcWVzLXZhbGlkYXRpb24td2ViL29jc3AvU0RJLTMuMS40MEYGCCsGAQUFBzAChjpodHRwOi8vbG9jYWxob3N0OjgwODAvcWVzLXZhbGlkYXRpb24td2ViL2NydC9TREktMy4xLjQuY3J0MB0GA1UdDgQWBBSko4bHRnAaFRw1AUeonsWPxajJwjANBgkqhkiG9w0BAQsFAAOCAQEACX3OZ4ZtAotx4ffKXHrVmXesdOTXoy8nMi6FgRLq8He2UKOGcGOMMY23+aEkP3XxnH0ZZEJkOeYHZg/bPHd1CUoeS32+dDCeW4a6B40OH9g7ZMSvibpsyXoobf+xcNNCjdDfSsV58SzhpTYwAwqHCkX6u1WHRq2yQUAfbb4cW4iVc/lRFZXbOLFs3zcnKY/rloITwigBL1stvVykSRhjnBvPNN8GXn5Z/mDNDhx8szS3bnQvVx/SIPn/NqZScxn/gBMqo0TJsybT7n7hpBYBnY5oZKaz7GPRbg+CTtF2ncchcOjRuL9kWNk9FqeZG58gKrUNpTik/LFEROBaoTPQQw==</Base64Encoded>
+        </Certificate>
+    </UsedCertificates>
+    <TrustedLists>
+        <TrustedList>
+            <CountryCode>LU</CountryCode>
+            <Url>http://localhost:8080/qes-validation-web/tl/TL-3.xml</Url>
+            <SequenceNumber>1</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2018-06-27T08:37:00</LastLoading>
+            <IssueDate>2018-06-26T08:32:16</IssueDate>
+            <NextUpdate>2018-07-28T08:32:16</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+    <ListOfTrustedLists>
+        <CountryCode>EU</CountryCode>
+        <Url>http://localhost:8080/qes-validation-web/tl/LOTL-3.xml</Url>
+        <SequenceNumber>1</SequenceNumber>
+        <Version>5</Version>
+        <LastLoading>2018-06-27T08:36:59</LastLoading>
+        <IssueDate>2018-06-26T08:32:16</IssueDate>
+        <NextUpdate>2018-07-28T08:32:16</NextUpdate>
+        <WellSigned>true</WellSigned>
+    </ListOfTrustedLists>
+</DiagnosticData>

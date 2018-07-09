@@ -67,11 +67,10 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 			} else if (ValidationLevel.ARCHIVAL_DATA.equals(validationLevel)) {
 				executeTimestampsValidation(signatureAnalysis, signature, bbbs);
 				executeLongTermValidation(signatureAnalysis, signature, bbbs);
-				XmlValidationProcessArchivalData archivalResult = executeArchiveValidation(signatureAnalysis, signature, bbbs);
+				XmlValidationProcessArchivalData archivalResult = executeArchiveValidation(signatureAnalysis, signature,
+						bbbs);
 				conlusion = archivalResult.getConclusion();
-				if (archivalResult.getBestSignatureTime() != null) {
-					bestSignatureTime = archivalResult.getBestSignatureTime();
-				}
+				bestSignatureTime = archivalResult.getBestSignatureTime();
 			}
 
 			if (policy.isEIDASConstraintPresent()) {

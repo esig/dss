@@ -53,19 +53,27 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 				item = item.setNextItem(isAcceptableTL(lotlAnalysis));
 			}
 
+			Set<String> acceptableCountries = new HashSet<String>();
+
 			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
-
-			// 1. filter by service for CAQC
-			TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByCaQc();
-			List<TrustedServiceWrapper> caqcServices = filter.filter(originalTSPs);
-
-			Set<String> caQcCountryCodes = getCountryCodes(caqcServices);
-			for (String countryCode : caQcCountryCodes) {
+			Set<String> countryCodes = getCountryCodes(originalTSPs);
+			for (String countryCode : countryCodes) {
 				XmlTLAnalysis currentTL = getTlAnalysis(countryCode);
 				if (currentTL != null) {
-					item = item.setNextItem(isAcceptableTL(currentTL));
+					AcceptableTrustedListCheck<XmlCertificate> acceptableTL = isAcceptableTL(currentTL);
+					item = item.setNextItem(acceptableTL);
+					if (acceptableTL.process()) {
+						acceptableCountries.add(countryCode);
+					}
 				}
 			}
+
+			// 1. filter by service for CAQC
+			TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByCountries(acceptableCountries);
+			List<TrustedServiceWrapper> acceptableServices = filter.filter(originalTSPs);
+
+			filter = TrustedServicesFilterFactory.createFilterByCaQc();
+			List<TrustedServiceWrapper> caqcServices = filter.filter(acceptableServices);
 
 			CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(ValidationTime.CERTIFICATE_ISSUANCE_TIME,
 					signingCertificate, rootCertificate, caqcServices);
@@ -114,8 +122,8 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 		}
 	}
 
-	private ChainItem<XmlCertificate> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
-		return new AcceptableTrustedListCheck<XmlCertificate>(result, xmlTLAnalysis, getWarnLevelConstraint());
+	private AcceptableTrustedListCheck<XmlCertificate> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
+		return new AcceptableTrustedListCheck<XmlCertificate>(result, xmlTLAnalysis, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlCertificate> isAcceptableBuildingBlockConclusion(XmlConclusion buildingBlocksConclusion) {

@@ -109,6 +109,7 @@ public class OfflineResolver extends ResourceResolverSpi {
 	}
 
 	private boolean isUriDefined(Attr uriAttr) {
+		// empty URI (URI="") is not a detached signature !
 		return (uriAttr != null) && (uriAttr.getNodeValue() != null);
 	}
 
