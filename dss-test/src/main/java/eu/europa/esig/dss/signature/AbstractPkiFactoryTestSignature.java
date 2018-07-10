@@ -305,7 +305,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		String signingCertificateId = diagnosticData.getFirstSigningCertificateId();
 		String certificateDN = diagnosticData.getCertificateDN(signingCertificateId);
 		String certificateSerialNumber = diagnosticData.getCertificateSerialNumber(signingCertificateId);
-		CertificateToken certificate = getToken().getKey(getSigningAlias()).getCertificate();
+		CertificateToken certificate = getPrivateKeyEntry().getCertificate();
 		assertEquals(certificate.getSubjectX500Principal().getName(X500Principal.RFC2253), certificateDN);
 		assertEquals(certificate.getSerialNumber().toString(), certificateSerialNumber);
 
@@ -318,12 +318,12 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	protected void checkIssuerSigningCertificateValue(DiagnosticData diagnosticData) {
 		String signingCertificateId = diagnosticData.getFirstSigningCertificateId();
 		String issuerDN = diagnosticData.getCertificateIssuerDN(signingCertificateId);
-		CertificateToken certificate = getToken().getKey(getSigningAlias()).getCertificate();
+		CertificateToken certificate = getPrivateKeyEntry().getCertificate();
 		assertEquals(certificate.getIssuerX500Principal().getName(X500Principal.RFC2253), issuerDN);
 	}
 
 	protected void checkCertificateChain(DiagnosticData diagnosticData) {
-		KSPrivateKeyEntry entry = (KSPrivateKeyEntry) getToken().getKey(getSigningAlias());
+		KSPrivateKeyEntry entry = getPrivateKeyEntry();
 		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
 		assertTrue(Utils.isCollectionNotEmpty(signatureCertificateChain));
 		// upper certificate than trust anchors are ignored

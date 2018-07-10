@@ -85,7 +85,7 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 		return Signature.getInstance(javaSignatureAlgorithm);
 	}
 
-	private AlgorithmParameterSpec createPSSParam(DigestAlgorithm digestAlgo) {
+	protected AlgorithmParameterSpec createPSSParam(DigestAlgorithm digestAlgo) {
 		String digestJavaName = digestAlgo.getJavaName();
 		return new PSSParameterSpec(digestJavaName, "MGF1", new MGF1ParameterSpec(digestJavaName), digestAlgo.getSaltLength(), 1);
 	}

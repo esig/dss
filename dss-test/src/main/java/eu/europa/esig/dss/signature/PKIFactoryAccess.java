@@ -17,6 +17,7 @@ import eu.europa.esig.dss.client.http.commons.TimestampDataLoader;
 import eu.europa.esig.dss.client.http.proxy.ProxyConfig;
 import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
+import eu.europa.esig.dss.token.AbstractKeyStoreTokenConnection;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.token.KeyStoreSignatureTokenConnection;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -106,7 +107,7 @@ public abstract class PKIFactoryAccess {
 		return (KSPrivateKeyEntry) getToken().getKey(getSigningAlias());
 	}
 
-	protected KeyStoreSignatureTokenConnection getToken() {
+	protected AbstractKeyStoreTokenConnection getToken() {
 		return new KeyStoreSignatureTokenConnection(getKeystoreContent(getSigningAlias() + ".p12"), KEYSTORE_TYPE,
 				new PasswordProtection(PKI_FACTORY_KEYSTORE_PASSWORD.toCharArray()));
 	}
