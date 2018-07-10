@@ -12,11 +12,11 @@ import eu.europa.esig.dss.ToBeSigned;
 public interface RemoteSignatureTokenConnection {
 
 	/**
-	 * Retrieves all the available keys (private keys entries) from the QSCD.
+	 * Retrieves all the available keys (private keys entries) from the token.
 	 *
 	 * @return List of encapsulated private keys
 	 * @throws DSSException
-	 *             If there is any problem during the retrieval process
+	 *                      If there is any problem during the retrieval process
 	 */
 	List<RemoteKeyEntry> getKeys() throws DSSException;
 
