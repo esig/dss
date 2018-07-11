@@ -266,20 +266,29 @@ class CRLParser {
 
 		// TBSCertList -> revokedCertificates (optional)
 		if (tagNo == BERTags.SEQUENCE) {
+			// process data only if this sequence contains any data
+			if (length > 0) {
+				// TODO find a way to avoid mark/reset
+				s.mark(10);
+				int intraTag = DERUtil.readTag(s);
+				int intraTagNo = DERUtil.readTagNumber(s, intraTag);
+				s.reset();
 
-			// TODO find a way to avoid mark/reset
-			s.mark(10);
-			int intraTag = DERUtil.readTag(s);
-			int intraTagNo = DERUtil.readTagNumber(s, intraTag);
-			s.reset();
+				// If sequence of sequence -> revokedCertificates else CertificateList -> signatureAlgorithm
+				if (intraTagNo == BERTags.SEQUENCE) {
 
-			// If sequence of sequence -> revokedCertificates else CertificateList -> signatureAlgorithm
-			if (intraTagNo == BERTags.SEQUENCE) {
+					// Don't parse revokedCertificates
+					skip(s, length);
+					LOG.debug("TBSCertList -> revokedCertificates : skipped (length={})", length);
 
-				// Don't parse revokedCertificates
-				skip(s, length);
-				LOG.debug("TBSCertList -> revokedCertificates : skipped (length={})", length);
-
+					tag = DERUtil.readTag(s);
+					tagNo = DERUtil.readTagNumber(s, tag);
+					length = DERUtil.readLength(s);
+				}
+			} else {
+				LOG.debug("TBSCertList -> revokedCertificates : Empty sequence");
+				
+				// even if the sequence is empty we must prepare for the next sequence to be read
 				tag = DERUtil.readTag(s);
 				tagNo = DERUtil.readTagNumber(s, tag);
 				length = DERUtil.readLength(s);

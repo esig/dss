@@ -192,5 +192,28 @@ public class CRLParserTest {
 			assertEquals(serialNumber, entry.getSerialNumber());
 		}
 	}
+	
+	@Test
+	public void parseCRLWithoutRevokedCertificates() throws IOException {
+		try (InputStream fis = CRLParserTest.class.getResourceAsStream("/DS_NA2_CA-B1.crl");
+				BufferedInputStream is = new BufferedInputStream(fis)) {
+			CRLInfo handler = parser.retrieveInfo(is);
+
+			assertEquals("1.2.840.113549.1.1.11", handler.getCertificateListSignatureAlgorithmOid());
+			assertNotNull(handler.getIssuer());
+			assertNotNull(handler.getThisUpdate());
+			assertNotNull(handler.getNextUpdate());
+
+			assertTrue(handler.getCriticalExtensions().isEmpty());
+
+			assertTrue(!handler.getNonCriticalExtensions().isEmpty());
+			assertTrue(Utils.isArrayEmpty(handler.getNonCriticalExtension("2.5.29.60")));
+
+			assertEquals("1.2.840.113549.1.1.11", handler.getTbsSignatureAlgorithmOid());
+
+			byte[] signatureValue = handler.getSignatureValue();
+			assertTrue(Utils.isArrayNotEmpty(signatureValue));
+		}
+	}
 
 }
