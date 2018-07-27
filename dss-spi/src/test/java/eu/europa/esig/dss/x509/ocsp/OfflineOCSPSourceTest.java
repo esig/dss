@@ -72,7 +72,7 @@ public class OfflineOCSPSourceTest {
 
 		CertificateToken user = DSSUtils.loadCertificate(new File("src/test/resources/sk_user.cer"));
 		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/sk_ca.cer"));
-		assertTrue(user.isSignedBy(caToken));
+		assertTrue(user.isSignedBy(caToken.getPublicKey()));
 
 		OCSPSource ocspSource = new ExternalResourcesOCSPSource("/sk_ocsp.bin");
 

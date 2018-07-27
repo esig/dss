@@ -22,6 +22,7 @@ package eu.europa.esig.dss.x509;
 
 import java.io.Serializable;
 import java.security.MessageDigest;
+import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,8 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.TokenIdentifier;
 
 /**
- * This is the base class for the different types of tokens (certificate, OCSP, CRL, Timestamp) used in the process of
- * signature validation.
+ * This is the base class for the different types of tokens (certificate, OCSP,
+ * CRL, Timestamp) used in the process of signature validation.
  */
 @SuppressWarnings("serial")
 public abstract class Token implements Serializable {
@@ -43,15 +44,14 @@ public abstract class Token implements Serializable {
 	private String dssId;
 
 	/**
-	 * This attribute represents the {@link CertificateToken} which is the issuer of the encapsulated Token. In other
-	 * words this is the CertificateToken used to sign the enclosed Token.
+	 * The token identifier to avoid to compute more than one time the digest value
 	 */
-	protected CertificateToken issuerToken;
+	private TokenIdentifier tokenIdentifier;
 
 	/**
-	 * The normalized {@link X500Principal} of the signer's certificate of this token.
+	 * The publicKey of the signed certificate(s)
 	 */
-	protected X500Principal issuerX500Principal;
+	protected PublicKey publicKeyOfTheSigner;
 
 	/**
 	 * Indicates the token signature is valid.
@@ -72,11 +72,6 @@ public abstract class Token implements Serializable {
 	 * Extra information collected during the validation process.
 	 */
 	protected TokenValidationExtraInfo extraInfo;
-
-	/**
-	 * The token identifier to avoid to compute more than one time the digest value
-	 */
-	private TokenIdentifier tokenIdentifier;
 
 	private Map<DigestAlgorithm, byte[]> digests = new HashMap<DigestAlgorithm, byte[]>();
 
@@ -99,9 +94,9 @@ public abstract class Token implements Serializable {
 	}
 
 	/**
-	 * Checks if the certificate is provided by the trusted list. For all tokens different from CertificateToken this
-	 * method always returns false. This method was introduced in order to manage in a uniform manner the different
-	 * tokens.
+	 * Checks if the certificate is provided by the trusted list. For all tokens
+	 * different from CertificateToken this method always returns false. This method
+	 * was introduced in order to manage in a uniform manner the different tokens.
 	 *
 	 * @return true if the token is trusted
 	 */
@@ -110,8 +105,9 @@ public abstract class Token implements Serializable {
 	}
 
 	/**
-	 * Checks if the certificate is self-signed. For all tokens different from CertificateToken this method always
-	 * returns false. This method was introduced in order to manage in a uniform manner the different tokens.
+	 * Checks if the certificate is self-signed. For all tokens different from
+	 * CertificateToken this method always returns false. This method was introduced
+	 * in order to manage in a uniform manner the different tokens.
 	 *
 	 * @return true if the token is self-signed
 	 */
@@ -144,36 +140,33 @@ public abstract class Token implements Serializable {
 	}
 
 	/**
-	 * Returns the {@code X500Principal} of the certificate which was used to sign this token.
+	 * Checks if the token is signed by the public key given in the parameter. *
+	 * 
+	 * @param publicKey
+	 *                  the public key to be tested
+	 * @return true if this token is signed by the given certificate token
+	 */
+	public boolean isSignedBy(PublicKey publicKey) {
+		if (publicKeyOfTheSigner != null) {
+			return publicKeyOfTheSigner.equals(publicKey);
+		} else if (checkIsSignedBy(publicKey)) {
+			if (!isSelfSigned()) {
+				this.publicKeyOfTheSigner = publicKey;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	protected abstract boolean checkIsSignedBy(PublicKey publicKey);
+
+	/**
+	 * Returns the {@code X500Principal} of the certificate which was used to sign
+	 * this token.
 	 *
 	 * @return the issuer's {@code X500Principal}
 	 */
-	public X500Principal getIssuerX500Principal() {
-		return issuerX500Principal;
-	}
-
-	/**
-	 * It returns the issuer certificate token that was used to sign this token (CertificateToken, CRLToken,
-	 * OCSPRespToken, TimestampToken).
-	 *
-	 * @return the issuer certificate token
-	 */
-	public CertificateToken getIssuerToken() {
-		return issuerToken;
-	}
-
-	/**
-	 * Checks if the token is signed by the token given in the parameter. Each check changes the associated with the
-	 * token signer's certificate. If
-	 * the issuerToken is already known, and the current check fail the issuerToken stays unchanged. It is up to the
-	 * calling function to make sure
-	 * that the signer's certificate was found.
-	 *
-	 * @param issuerToken
-	 *            the issuer to be tested
-	 * @return true if this token is signed by the given certificate token
-	 */
-	public abstract boolean isSignedBy(CertificateToken issuerToken);
+	public abstract X500Principal getIssuerX500Principal();
 
 	/**
 	 * Returns the additional information gathered during the validation process.
@@ -185,7 +178,8 @@ public abstract class Token implements Serializable {
 	}
 
 	/**
-	 * This method returns the DSS abbreviation of the token. It is used for debugging purpose.
+	 * This method returns the DSS abbreviation of the token. It is used for
+	 * debugging purpose.
 	 *
 	 * @return an abbreviation for the certificate
 	 */
@@ -194,7 +188,8 @@ public abstract class Token implements Serializable {
 	}
 
 	/**
-	 * Returns the algorithm that was used to sign the token (ex: SHA1WithRSAEncryption, SHA1withRSA...).
+	 * Returns the algorithm that was used to sign the token (ex:
+	 * SHA1WithRSAEncryption, SHA1withRSA...).
 	 *
 	 * @return the used signature algorithm to sign this token
 	 */
@@ -203,13 +198,23 @@ public abstract class Token implements Serializable {
 	}
 
 	/**
-	 * Indicates if the token's signature is intact. For each kind of token the method isSignedBy(CertificateToken) must
-	 * be called to set this flag. Except if the token is trusted: the signature signature is assumed to be valid.
+	 * Indicates if the token's signature is intact. For each kind of token the
+	 * method isSignedBy(CertificateToken) must be called to set this flag. Except
+	 * if the token is trusted: the signature signature is assumed to be valid.
 	 *
 	 * @return true if the signature is valid or trusted
 	 */
 	public boolean isSignatureValid() {
 		return isTrusted() || signatureValid;
+	}
+
+	/**
+	 * This method returns the public key of the token signer
+	 * 
+	 * @return the public key which signed this token
+	 */
+	public PublicKey getPublicKeyOfTheSigner() {
+		return publicKeyOfTheSigner;
 	}
 
 	/**
@@ -225,7 +230,7 @@ public abstract class Token implements Serializable {
 	 * Returns a string representation of the token.
 	 *
 	 * @param indentStr
-	 *            the indentation to use
+	 *                  the indentation to use
 	 * @return string representation of the token
 	 */
 	public abstract String toString(String indentStr);
@@ -246,21 +251,25 @@ public abstract class Token implements Serializable {
 	 * Returns the digest value of the wrapped token
 	 * 
 	 * @param digestAlgorithm
-	 *            the requested digest algorithm
+	 *                        the requested digest algorithm
 	 * @return the digest value in binaries
 	 */
 	public byte[] getDigest(DigestAlgorithm digestAlgorithm) {
 		byte[] digestValue = digests.get(digestAlgorithm);
 		if (digestValue == null) {
-			try {
-				MessageDigest md = MessageDigest.getInstance(digestAlgorithm.getJavaName());
-				digestValue = md.digest(getEncoded());
-				digests.put(digestAlgorithm, digestValue);
-			} catch (Exception e) {
-				throw new DSSException("Unable to compute digest with algo " + digestAlgorithm, e);
-			}
+			digestValue = getDigest(digestAlgorithm, getEncoded());
+			digests.put(digestAlgorithm, digestValue);
 		}
 		return digestValue;
+	}
+
+	protected byte[] getDigest(DigestAlgorithm digestAlgorithm, byte[] toBeDigested) {
+		try {
+			MessageDigest md = MessageDigest.getInstance(digestAlgorithm.getJavaName());
+			return md.digest(toBeDigested);
+		} catch (Exception e) {
+			throw new DSSException("Unable to compute digest with algo " + digestAlgorithm, e);
+		}
 	}
 
 }

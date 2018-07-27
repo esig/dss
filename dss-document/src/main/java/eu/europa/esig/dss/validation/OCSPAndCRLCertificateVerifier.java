@@ -99,14 +99,8 @@ public class OCSPAndCRLCertificateVerifier implements CertificateStatusVerifier 
 	}
 
 	public RevocationToken checkCRL(final CertificateToken certificateToken) {
-		/**
-		 * The validationPool is not needed for the CRLCertificateVerifier because it should be signed by the same
-		 * certificate as the certificate to be checked. But: - a CA Designated Responder (Authorized Responder, defined
-		 * in Section 4.2.2.2) who holds a specially marked certificate issued directly by the CA, indicating that the
-		 * responder may issue OCSP responses for that CA.
-		 */
 		if (crlSource != null) {
-			final CRLCertificateVerifier crlVerifier = new CRLCertificateVerifier(crlSource);
+			final CRLCertificateVerifier crlVerifier = new CRLCertificateVerifier(crlSource, validationCertPool);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("CRL request for: {} using: {}", certificateToken.getDSSIdAsString(), crlSource.getClass().getSimpleName());
 			}

@@ -113,6 +113,8 @@ public class OnlineOCSPSource implements OCSPSource {
 		try {
 			final String dssIdAsString = certificateToken.getDSSIdAsString();
 			LOG.trace("--> OnlineOCSPSource queried for " + dssIdAsString);
+
+			// TODO Urls from TL SupplyPoints
 			final List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
 			if (Utils.isCollectionEmpty(ocspAccessLocations)) {
 				LOG.debug("No OCSP location found for " + dssIdAsString);

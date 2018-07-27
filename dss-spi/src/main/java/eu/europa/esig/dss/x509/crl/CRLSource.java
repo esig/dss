@@ -37,14 +37,19 @@ public interface CRLSource extends Serializable {
 	 * - the CRL's signature is checked;<br>
 	 * - the key usage of the CRL's signing certificate is verified;<br>
 	 *
-	 * The most recent CRL is returned. If the parameter is <code>null</code> than <code>null</code> is returned.
+	 * The most recent CRL is returned. If the parameter is <code>null</code> than
+	 * <code>null</code> is returned.
 	 *
 	 * @param certificateToken
-	 *            the certificate token for which the CRL need to be found.
+	 *                               the certificate token for which the CRL need to
+	 *                               be found.
+	 * @param issuerCertificateToken
+	 *                               The {@code CertificateToken} which is the
+	 *                               issuer of the certificateToken
 	 * @return {@code CRLToken}, null if not found.
 	 * @throws DSSException
-	 *             if an error occurred
+	 *                      if an error occurred
 	 */
-	CRLToken findCrl(final CertificateToken certificateToken) throws DSSException;
+	CRLToken findCrl(final CertificateToken certificateToken, CertificateToken issuerCertificateToken) throws DSSException;
 
 }

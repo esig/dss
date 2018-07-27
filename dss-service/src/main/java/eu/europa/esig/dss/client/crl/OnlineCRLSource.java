@@ -110,15 +110,16 @@ public class OnlineCRLSource implements CRLSource {
 	}
 
 	@Override
-	public CRLToken findCrl(final CertificateToken certificateToken) throws DSSException {
+	public CRLToken findCrl(final CertificateToken certificateToken, final CertificateToken issuerToken) throws DSSException {
 
 		if (certificateToken == null) {
 			return null;
 		}
-		final CertificateToken issuerToken = certificateToken.getIssuerToken();
 		if (issuerToken == null) {
 			return null;
 		}
+
+		// TODO Urls from TL SupplyPoints
 		final List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificateToken);
 		LOG.info("CRL's URL for " + certificateToken.getAbbreviation() + " : " + crlUrls);
 		if (Utils.isCollectionEmpty(crlUrls)) {

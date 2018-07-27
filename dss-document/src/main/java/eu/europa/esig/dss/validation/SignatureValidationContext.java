@@ -32,8 +32,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.security.auth.x500.X500Principal;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,10 +126,6 @@ public class SignatureValidationContext implements ValidationContext {
 			validationCertificatePool = certificateVerifier.createValidationPool();
 		}
 
-		for (CertificateToken certificateToken : processedCertificates) {
-			validationCertificatePool.getInstance(certificateToken, CertificateSourceType.UNKNOWN);
-		}
-
 		this.crlSource = certificateVerifier.getCrlSource();
 		this.ocspSource = certificateVerifier.getOcspSource();
 		this.dataLoader = certificateVerifier.getDataLoader();
@@ -172,43 +166,31 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * This method returns the issuer certificate (the certificate which was used to sign the token) of the given token.
+	 * This method returns the issuer certificate (the certificate which was used to
+	 * sign the token) of the given token.
 	 *
 	 * @param token
-	 *            the token for which the issuer must be obtained.
+	 *              the token for which the issuer must be obtained.
 	 * @return the issuer certificate token of the given token or null if not found.
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
 	private CertificateToken getIssuerCertificate(final Token token) throws DSSException {
-
 		if (token.isTrusted()) {
-
-			// When the token is trusted the check of the issuer token is not needed so null is returned. Only a
+			// When the token is trusted the check of the issuer token is not needed so null
+			// is returned. Only a
 			// certificate token can be trusted.
 			return null;
 		}
-		if (token.getIssuerToken() != null) {
 
-			/**
-			 * The signer's certificate have been found already. This can happen in the case of:<br>
-			 * - multiple signatures that use the same certificate,<br>
-			 * - OCSPRespTokens (the issuer certificate is known from the beginning)
-			 */
-			return token.getIssuerToken();
-		}
-		final X500Principal issuerX500Principal = token.getIssuerX500Principal();
-		CertificateToken issuerCertificateToken = getIssuerFromPool(token, issuerX500Principal);
-
+		CertificateToken issuerCertificateToken = validationCertificatePool.getBestIssuer(token);
 		if ((issuerCertificateToken == null) && (token instanceof CertificateToken)) {
-
 			issuerCertificateToken = getIssuerFromAIA((CertificateToken) token);
 		}
 		if (issuerCertificateToken == null) {
-
 			token.extraInfo().infoTheSigningCertNotFound();
 		}
-		if ((issuerCertificateToken != null) && !issuerCertificateToken.isTrusted() && !issuerCertificateToken.isSelfSigned()) {
-
+		if ((issuerCertificateToken != null) && !issuerCertificateToken.isTrusted() && !issuerCertificateToken.isSelfSigned()
+				&& !token.equals(issuerCertificateToken)) {
 			// The full chain is retrieved for each certificate
 			getIssuerCertificate(issuerCertificateToken);
 		}
@@ -216,10 +198,11 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * Get the issuer's certificate from Authority Information Access through id-ad-caIssuers extension.
+	 * Get the issuer's certificate from Authority Information Access through
+	 * id-ad-caIssuers extension.
 	 *
 	 * @param token
-	 *            {@code CertificateToken} for which the issuer is sought.
+	 *              {@code CertificateToken} for which the issuer is sought.
 	 * @return {@code CertificateToken} representing the issuer certificate or null.
 	 */
 	private CertificateToken getIssuerFromAIA(final CertificateToken token) {
@@ -227,10 +210,12 @@ public class SignatureValidationContext implements ValidationContext {
 		Collection<CertificateToken> candidates = DSSUtils.loadPotentialIssuerCertificates(token, dataLoader);
 		if (Utils.isCollectionNotEmpty(candidates)) {
 			// The potential issuers might support 3 known scenarios:
-			//  - issuer certificate with single entry
-			//  - issuer certificate is a collection of bridge certificates (all having the same public key)
-			//  - full certification path (up to the root of the chain)
-			// In case the issuer is a collection of bridge certificates, only one of the bridge certificates needs to be verified
+			// - issuer certificate with single entry
+			// - issuer certificate is a collection of bridge certificates (all having the
+			// same public key)
+			// - full certification path (up to the root of the chain)
+			// In case the issuer is a collection of bridge certificates, only one of the
+			// bridge certificates needs to be verified
 			CertificateToken bridgedIssuer = findBestBridgeCertificate(token, candidates);
 			if (bridgedIssuer != null) {
 				addCertificateTokenForVerification(validationCertificatePool.getInstance(bridgedIssuer, CertificateSourceType.AIA));
@@ -240,7 +225,7 @@ public class SignatureValidationContext implements ValidationContext {
 				addCertificateTokenForVerification(validationCertificatePool.getInstance(candidate, CertificateSourceType.AIA));
 			}
 			for (CertificateToken candidate : candidates) {
-				if (token.isSignedBy(candidate)) {
+				if (token.isSignedBy(candidate.getPublicKey())) {
 					if (!token.getIssuerX500Principal().equals(candidate.getSubjectX500Principal())) {
 						LOG.info("There is AIA extension, but the issuer subject name and subject name does not match.");
 						LOG.info("CERT ISSUER    : " + token.getIssuerX500Principal().toString());
@@ -249,7 +234,7 @@ public class SignatureValidationContext implements ValidationContext {
 					return candidate;
 				}
 			}
-			LOG.info("The retrieved certificate(s) using AIA does not sign the certificate {}.", token.getAbbreviation());
+			LOG.warn("The retrieved certificate(s) using AIA does not sign the certificate {}.", token.getAbbreviation());
 		}
 		return null;
 	}
@@ -261,61 +246,39 @@ public class SignatureValidationContext implements ValidationContext {
 		PublicKey commonPublicKey = null;
 		CertificateToken bestMatch = null;
 		for (CertificateToken candidate : candidates) {
+			PublicKey candidatePublicKey = candidate.getPublicKey();
 			if (commonPublicKey == null) {
-				if (!token.isSignedBy(candidate)) {
+				if (!token.isSignedBy(candidatePublicKey)) {
 					return null;
 				}
-				commonPublicKey = candidate.getPublicKey();
+				commonPublicKey = candidatePublicKey;
 				bestMatch = candidate;
-			} else if (!candidate.getPublicKey().equals(commonPublicKey)) {
+			} else if (!candidatePublicKey.equals(commonPublicKey)) {
 				return null;
 			} else if (bestMatch.isTrusted()) {
 				continue;
 			}
 
 			List<CertificateToken> list = validationCertificatePool.get(candidate.getSubjectX500Principal());
-			for(CertificateToken pooledToken : list) {
+			for (CertificateToken pooledToken : list) {
 				if (pooledToken.getPublicKey().equals(commonPublicKey) && pooledToken.isTrusted()) {
 					bestMatch = pooledToken;
-					token.isSignedBy(candidate);
+					token.isSignedBy(candidatePublicKey);
 					break;
 				}
 			}
 		}
-		
+
 		return bestMatch;
 	}
 
-	/**
-	 * This function retrieves the issuer certificate from the validation pool (this pool should contain trusted
-	 * certificates). The check is made if the token is well signed by
-	 * the retrieved certificate.
-	 *
-	 * @param token
-	 *            token for which the issuer have to be found
-	 * @param issuerX500Principal
-	 *            issuer's subject distinguished name
-	 * @return the corresponding {@code CertificateToken} or null if not found
-	 */
-	private CertificateToken getIssuerFromPool(final Token token, final X500Principal issuerX500Principal) {
-
-		final List<CertificateToken> issuerCertList = validationCertificatePool.get(issuerX500Principal);
-		for (final CertificateToken issuerCertToken : issuerCertList) {
-
-			// We keep the first issuer that signs the certificate
-			if (token.isSignedBy(issuerCertToken)) {
-
-				return issuerCertToken;
-			}
-		}
-		return null;
-	}
 
 	/**
-	 * Adds a new token to the list of tokens to verify only if it was not already verified.
+	 * Adds a new token to the list of tokens to verify only if it was not already
+	 * verified.
 	 *
 	 * @param token
-	 *            token to verify
+	 *              token to verify
 	 * @return true if the token was not yet verified, false otherwise.
 	 */
 	private boolean addTokenForVerification(final Token token) {
@@ -390,6 +353,11 @@ public class SignatureValidationContext implements ValidationContext {
 
 		if (addTokenForVerification(timestampToken)) {
 
+			List<CertificateToken> certificates = timestampToken.getCertificates();
+			for (CertificateToken certificateToken : certificates) {
+				addCertificateTokenForVerification(certificateToken);
+			}
+
 			final boolean added = processedTimestamps.add(timestampToken);
 			if (LOG.isTraceEnabled()) {
 				if (added) {
@@ -426,9 +394,9 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * Retrieves the revocation data from signature (if exists) or from the online sources. The issuer certificate must
-	 * be provided, the underlining library (bouncy castle) needs
-	 * it to build the request.
+	 * Retrieves the revocation data from signature (if exists) or from the online
+	 * sources. The issuer certificate must be provided, the underlining library
+	 * (bouncy castle) needs it to build the request.
 	 *
 	 * @param certToken
 	 * @return
@@ -436,18 +404,12 @@ public class SignatureValidationContext implements ValidationContext {
 	private List<RevocationToken> getRevocationData(final CertificateToken certToken) {
 
 		if (LOG.isTraceEnabled()) {
-			LOG.trace("Checking revocation data for: " + certToken.getDSSIdAsString());
+			LOG.trace("Checking revocation data for : {}", certToken.getDSSIdAsString());
 		}
 		if (certToken.isSelfSigned() || certToken.isTrusted()) {
 			// This check is not needed for the trust anchor.
 			return Collections.emptyList();
-		} else if (certToken.getIssuerToken() == null) {
-			// It is not possible to check the revocation data without its signing certificate;
-			LOG.warn("Cannot retrieve revocation data (issuer is unknown)");
-			return Collections.emptyList();
-		}
-
-		if (DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken)) {
+		} else if (DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken)) {
 			certToken.extraInfo().infoOCSPNoCheckPresent();
 			return Collections.emptyList();
 		}
@@ -502,7 +464,8 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * This method returns the human readable representation of the ValidationContext.
+	 * This method returns the human readable representation of the
+	 * ValidationContext.
 	 *
 	 * @param indentStr
 	 * @return
@@ -515,7 +478,8 @@ public class SignatureValidationContext implements ValidationContext {
 			final StringBuilder builder = new StringBuilder();
 			builder.append(indentStr).append("ValidationContext[").append('\n');
 			indentStr += "\t";
-			// builder.append(indentStr).append("Validation time:").append(validationDate).append('\n');
+			// builder.append(indentStr).append("Validation
+			// time:").append(validationDate).append('\n');
 			builder.append(indentStr).append("Certificates[").append('\n');
 			indentStr += "\t";
 			for (CertificateToken certToken : processedCertificates) {

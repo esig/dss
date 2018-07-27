@@ -1,5 +1,6 @@
 package eu.europa.esig.dss;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,12 +49,15 @@ public class CertificateReorderer {
 	public List<CertificateToken> getOrderedCertificates() {
 
 		List<CertificateToken> certificates = getAllCertificatesOnce();
+		if (Utils.collectionSize(certificates) == 1) {
+			return certificates;
+		}
 
 		// Build the chain cert -> issuer
 		for (CertificateToken token : certificates) {
 			if (isIssuerNeeded(token)) {
 				for (CertificateToken signer : certificates) {
-					if (token.isSignedBy(signer)) {
+					if (token.isSignedBy(signer.getPublicKey())) {
 						LOG.debug("{} is signed by {}", token.getDSSIdAsString(), signer.getDSSIdAsString());
 						break;
 					}
@@ -70,7 +74,7 @@ public class CertificateReorderer {
 		
 		while (certToAdd != null && !result.contains(certToAdd)) {
 			result.add(certToAdd);
-			certToAdd = certToAdd.getIssuerToken();
+			certToAdd = getCertificateByPubKey(certificates, certToAdd.getPublicKeyOfTheSigner());
 		}
 
 		if (certificates.size() > result.size()) {
@@ -82,8 +86,17 @@ public class CertificateReorderer {
 		return result;
 	}
 
+	private CertificateToken getCertificateByPubKey(List<CertificateToken> certificates, PublicKey publicKeyOfTheSigner) {
+		for (CertificateToken certificateToken : certificates) {
+			if (certificateToken.getPublicKey().equals(publicKeyOfTheSigner)) {
+				return certificateToken;
+			}
+		}
+		return null;
+	}
+
 	private boolean isIssuerNeeded(CertificateToken token) {
-		return !token.isSelfSigned() && !token.isTrusted() && token.getIssuerToken() == null;
+		return !token.isSelfSigned() && !token.isTrusted() && token.getPublicKeyOfTheSigner() == null;
 	}
 
 	/**
@@ -121,7 +134,7 @@ public class CertificateReorderer {
 			boolean isSigner = false;
 
 			for (CertificateToken token : certificates) {
-				if (signer.equals(token.getIssuerToken())) {
+				if (signer.getPublicKey().equals(token.getPublicKeyOfTheSigner())) {
 					isSigner = true;
 					break;
 				}

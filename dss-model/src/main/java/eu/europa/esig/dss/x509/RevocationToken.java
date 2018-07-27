@@ -23,6 +23,7 @@ package eu.europa.esig.dss.x509;
 import java.util.Date;
 
 import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 
 @SuppressWarnings("serial")
 public abstract class RevocationToken extends Token {
@@ -82,7 +83,7 @@ public abstract class RevocationToken extends Token {
 	/**
 	 * The reason of the revocation.
 	 */
-	protected String reason;
+	protected CRLReasonEnum reason;
 
 	public String getRelatedCertificateID() {
 		return relatedCertificateID;
@@ -210,7 +211,7 @@ public abstract class RevocationToken extends Token {
 	 * 
 	 * @return the revocation reason or null
 	 */
-	public String getReason() {
+	public CRLReasonEnum getReason() {
 		return reason;
 	}
 

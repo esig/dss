@@ -171,22 +171,4 @@ public class CommonCertificateSource implements CertificateSource {
 		return false;
 	}
 
-	/**
-	 * This method is used internally to remove a X500Principal from the <code>CertificatePool</code>.
-	 *
-	 * @param x500Principal
-	 *            the {@code X500Principal} to be removed
-	 * @return true if removed
-	 */
-	public boolean removeX500Principal(X500Principal x500Principal) {
-		boolean removed = false;
-		if (certificateTokens != null) {
-			List<CertificateToken> listToRemove = get(x500Principal);
-			for (CertificateToken certificateToken : listToRemove) {
-				removed |= removeCertificate(certificateToken);
-			}
-		}
-		return removed;
-	}
-
 }

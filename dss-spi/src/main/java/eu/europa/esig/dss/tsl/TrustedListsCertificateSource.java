@@ -20,9 +20,16 @@
  */
 package eu.europa.esig.dss.tsl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
@@ -31,6 +38,8 @@ import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
  * This class allows to inject trusted certificates from Trusted Lists
  */
 public class TrustedListsCertificateSource extends CommonTrustedCertificateSource {
+
+	private static final Logger LOG = LoggerFactory.getLogger(TrustedListsCertificateSource.class);
 
 	private Map<String, TLInfo> tlInfos = new HashMap<String, TLInfo>();
 
@@ -47,12 +56,12 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	}
 
 	/**
-	 * This method is not applicable for this kind of certificate source. You
-	 * should use
+	 * This method is not applicable for this kind of certificate source. You should
+	 * use
 	 * {@link #addCertificate(eu.europa.esig.dss.x509.CertificateToken, eu.europa.esig.dss.tsl.ServiceInfo)}
 	 *
 	 * @param certificate
-	 *            the certificate you have to trust
+	 *                    the certificate you have to trust
 	 * @return the corresponding certificate token
 	 */
 	@Override
@@ -79,6 +88,42 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	public Map<String, TLInfo> getSummary() {
 		return tlInfos;
+	}
+
+	public Set<ServiceInfo> getTrustServices(CertificateToken token) {
+		return certPool.getRelatedTrustServices(token);
+	}
+
+	public List<String> getOCSPUrlsFromServiceSupplyPoint(CertificateToken certificateToken) {
+		return getServiceSupplyPoints(certificateToken, "ocsp");
+	}
+
+	public List<String> getCRLUrlsFromServiceSupplyPoint(CertificateToken certificateToken) {
+		return getServiceSupplyPoints(certificateToken, "crl", "certificateRevocationList");
+	}
+
+	private List<String> getServiceSupplyPoints(CertificateToken certificateToken, String... keywords) {
+		List<String> urls = new ArrayList<String>();
+		CertificateToken trustAnchor = certPool.getTrustAnchor(certificateToken);
+		Set<ServiceInfo> trustServices = certPool.getRelatedTrustServices(trustAnchor);
+
+		for (ServiceInfo serviceInfo : trustServices) {
+			for (ServiceInfoStatus serviceInfoStatus : serviceInfo.getStatus()) {
+				List<String> serviceSupplyPoints = serviceInfoStatus.getServiceSupplyPoints();
+				if (Utils.isCollectionNotEmpty(serviceSupplyPoints)) {
+					for (String serviceSupplyPoint : serviceSupplyPoints) {
+						for (String keyword : keywords) {
+							if (serviceSupplyPoint.contains(keyword)) {
+								LOG.debug("ServiceSupplyPoints (TL) found for keyword '{}'", keyword);
+								urls.add(serviceSupplyPoint);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return urls;
 	}
 
 }

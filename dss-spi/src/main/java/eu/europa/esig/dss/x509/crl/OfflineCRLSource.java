@@ -64,7 +64,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	private Map<CertificateToken, CRLToken> validCRLTokenList = new HashMap<CertificateToken, CRLToken>();
 
 	@Override
-	public final CRLToken findCrl(final CertificateToken certificateToken) {
+	public final CRLToken findCrl(final CertificateToken certificateToken, final CertificateToken issuerToken) {
 		if (certificateToken == null) {
 			throw new NullPointerException();
 		}
@@ -75,7 +75,6 @@ public abstract class OfflineCRLSource implements CRLSource {
 			return validCRLToken;
 		}
 
-		final CertificateToken issuerToken = certificateToken.getIssuerToken();
 		if (issuerToken == null) {
 			return null;
 		}
@@ -109,10 +108,10 @@ public abstract class OfflineCRLSource implements CRLSource {
 
 		for (final Entry<String, byte[]> crlEntry : crlsMap.entrySet()) {
 			final CRLValidity crlValidity = getCrlValidity(crlEntry.getKey(), crlEntry.getValue(), issuerToken);
-			if (crlValidity == null) {
+			if (crlValidity == null || !crlValidity.isValid()) {
 				continue;
 			}
-			if (issuerToken.equals(crlValidity.getIssuerToken()) && crlValidity.isValid()) {
+			if (issuerToken.getPublicKey().equals(crlValidity.getIssuerToken().getPublicKey())) {
 				// check the overlapping of the [thisUpdate, nextUpdate] from the CRL and [notBefore, notAfter] from
 				// the X509Certificate
 				final Date thisUpdate = crlValidity.getThisUpdate();

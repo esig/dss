@@ -21,11 +21,13 @@
 package eu.europa.esig.dss.validation;
 
 import java.io.IOException;
-import java.security.cert.X509Certificate;
+import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+
+import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -97,6 +99,8 @@ public class TimestampToken extends Token {
 	 */
 	private String canonicalizationMethod;
 
+	private X500Principal issuerX500Principal;
+
 	/**
 	 * This attribute is used only with XAdES timestamps. It represents the hash code of the DOM element containing the
 	 * timestamp. It's an internal attribute which allows to
@@ -137,8 +141,17 @@ public class TimestampToken extends Token {
 		for (final CertificateToken certificateToken : certs) {
 			final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(certificateToken);
 			if (timeStamp.getSID().match(x509CertificateHolder)) {
-				boolean valid = isSignedBy(certificateToken);
-				if (valid) {
+				TimestampValidity timestampValidity = validateTimestampToken(timeStamp, certificateToken);
+				signatureInvalidityReason = timestampValidity.name();
+				signatureValid = TimestampValidity.VALID == timestampValidity;
+				if (signatureValid) {
+					this.publicKeyOfTheSigner = certificateToken.getPublicKey();
+					this.issuerX500Principal = certificateToken.getSubjectX500Principal();
+					final String algorithm = certificateToken.getPublicKey().getAlgorithm();
+					final EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.forName(algorithm);
+					final AlgorithmIdentifier hashAlgorithm = timeStamp.getTimeStampInfo().getHashAlgorithm();
+					final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(hashAlgorithm.getAlgorithm().getId());
+					signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
 					break;
 				}
 			}
@@ -146,39 +159,22 @@ public class TimestampToken extends Token {
 	}
 
 	@Override
+	public X500Principal getIssuerX500Principal() {
+		return issuerX500Principal;
+	}
+
+	@Override
 	public String getAbbreviation() {
 		return timeStampType.name() + ": " + getDSSIdAsString() + ": " + DSSUtils.formatInternal(timeStamp.getTimeStampInfo().getGenTime());
 	}
 
-	@Override
-	public final boolean isSignedBy(final CertificateToken issuerToken) {
-		if (this.issuerToken != null) {
-			return this.issuerToken.equals(issuerToken);
-		}
-		final TimestampValidity timestampValidity = validateTimestampToken(timeStamp, issuerToken);
-		signatureInvalidityReason = timestampValidity.name();
-		signatureValid = TimestampValidity.VALID == timestampValidity;
-		if (signatureValid) {
-
-			this.issuerToken = issuerToken;
-			this.issuerX500Principal = issuerToken.getSubjectX500Principal();
-
-			final String algorithm = issuerToken.getPublicKey().getAlgorithm();
-			final EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.forName(algorithm);
-			final AlgorithmIdentifier hashAlgorithm = timeStamp.getTimeStampInfo().getHashAlgorithm();
-			final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(hashAlgorithm.getAlgorithm().getId());
-			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
-		}
-		return signatureValid;
-	}
-
-	private TimestampValidity validateTimestampToken(final TimeStampToken timeStampToken, final CertificateToken issuerToken) {
+	private TimestampValidity validateTimestampToken(final TimeStampToken timeStampToken, final CertificateToken potentialIssuer) {
 		TimestampValidity timestampValidity;
 		try {
 
 			final JcaSimpleSignerInfoVerifierBuilder verifierBuilder = new JcaSimpleSignerInfoVerifierBuilder();
-			final X509Certificate x509Certificate = issuerToken.getCertificate();
-			final SignerInformationVerifier verifier = verifierBuilder.build(x509Certificate);
+			// Certificate presence is mandatory here
+			final SignerInformationVerifier verifier = verifierBuilder.build(potentialIssuer.getCertificate());
 			timeStampToken.validate(verifier);
 			timestampValidity = TimestampValidity.VALID;
 		} catch (IllegalArgumentException e) {
@@ -439,7 +435,7 @@ public class TimestampToken extends Token {
 		try {
 
 			final StringBuilder out = new StringBuilder();
-			out.append(indentStr).append("TimestampToken[signedBy=").append(issuerToken == null ? "?" : issuerToken.getDSSIdAsString());
+			out.append(indentStr).append("TimestampToken[signedBy=").append(getIssuerX500Principal());
 			out.append(", generated: ").append(DSSUtils.formatInternal(timeStamp.getTimeStampInfo().getGenTime()));
 			out.append(" / ").append(timeStampType).append('\n');
 			if (signatureValid) {
@@ -464,18 +460,17 @@ public class TimestampToken extends Token {
 					out.append(indentStr).append("Timestamp DOES NOT MATCH the signed data.").append('\n');
 				}
 			}
-			indentStr = indentStr.substring(1);
-			if (issuerToken != null) {
-
-				indentStr += "\t";
-				out.append(issuerToken.toString(indentStr)).append('\n');
-				indentStr = indentStr.substring(1);
-				out.append(indentStr);
-			}
 			out.append(']');
 			return out.toString();
 		} catch (Exception e) {
 			return getClass().getName();
 		}
 	}
+
+	@Override
+	protected boolean checkIsSignedBy(PublicKey publicKey) {
+
+		throw new UnsupportedOperationException(this.getClass().getName());
+	}
+
 }

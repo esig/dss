@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.crl.CRLSource;
@@ -38,14 +39,18 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
 
 	private final CRLSource crlSource;
 
+	private final CertificatePool validationCertPool;
+
 	/**
 	 * Main constructor.
 	 *
 	 * @param crlSource
-	 *            the CRL repository used by this CRL trust linker.
+	 *                           the CRL repository used by this CRL trust linker.
+	 * @param validationCertPool
 	 */
-	public CRLCertificateVerifier(final CRLSource crlSource) {
+	public CRLCertificateVerifier(final CRLSource crlSource, final CertificatePool validationCertPool) {
 		this.crlSource = crlSource;
+		this.validationCertPool = validationCertPool;
 	}
 
 	@Override
@@ -55,10 +60,17 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
 				certificateToken.extraInfo().infoCRLSourceIsNull();
 				return null;
 			}
-			final CRLToken crlToken = crlSource.findCrl(certificateToken);
+
+			CertificateToken issuerToken = validationCertPool.getIssuer(certificateToken);
+			if (issuerToken == null) {
+				LOG.debug("Issuer is null");
+				return null;
+			}
+
+			final CRLToken crlToken = crlSource.findCrl(certificateToken, issuerToken);
 			if (crlToken == null) {
-				if (LOG.isInfoEnabled()) {
-					LOG.info("No CRL found for: " + certificateToken.getDSSIdAsString());
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("No CRL found for: " + certificateToken.getDSSIdAsString());
 				}
 				certificateToken.extraInfo().infoNoCRLInfoFound();
 				return null;

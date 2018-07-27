@@ -44,7 +44,7 @@ public class TimestampTokenTest {
 			assertNotNull(token);
 			LOG.info(token.toString());
 
-			assertFalse(token.isSignedBy(wrongToken));
+			assertFalse(token.isSignedBy(wrongToken.getPublicKey()));
 			assertNotNull(token.getGenerationTime());
 			assertNotNull(token.getAbbreviation());
 			assertTrue(Utils.isCollectionNotEmpty(token.getCertificates()));
@@ -54,8 +54,8 @@ public class TimestampTokenTest {
 			assertEquals(SignatureAlgorithm.RSA_SHA256, token.getSignatureAlgorithm());
 			assertTrue(Utils.isStringNotBlank(token.getEncodedSignedDataDigestValue()));
 
-			assertNotNull(token.getIssuerToken());
-			assertTrue(token.isSignedBy(token.getIssuerToken()));
+			assertNotNull(token.getPublicKeyOfTheSigner());
+			assertTrue(token.isSignedBy(token.getPublicKeyOfTheSigner()));
 			assertFalse(token.isSelfSigned());
 
 			assertFalse(token.matchData(new byte[] { 1, 2, 3 }));

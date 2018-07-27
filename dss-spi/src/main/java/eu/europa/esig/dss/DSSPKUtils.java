@@ -50,8 +50,8 @@ public final class DSSPKUtils {
 	public static String getPublicKeySize(Token token) {
 		String keyLength = "?";
 		PublicKey issuerPublicKey = null;
-		if (token.getIssuerToken() != null) {
-			issuerPublicKey = token.getIssuerToken().getPublicKey();
+		if (token.getPublicKeyOfTheSigner() != null) {
+			issuerPublicKey = token.getPublicKeyOfTheSigner();
 		} else if (token.isSelfSigned()) {
 			issuerPublicKey = ((CertificateToken) token).getPublicKey();
 		}

@@ -21,7 +21,7 @@ public class OCSPCertificateVerifierTest {
 	public void testKeyHash() {
 		CertificateToken toCheckToken = DSSUtils.loadCertificate(new File("src/test/resources/peru_client.cer"));
 		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/peru_CA.cer"));
-		assertTrue(toCheckToken.isSignedBy(caToken));
+		assertTrue(toCheckToken.isSignedBy(caToken.getPublicKey()));
 
 		OCSPSource ocspSource = new ExternalResourcesOCSPSource("/peru_ocsp.bin");
 		CertificatePool validationCertPool = new CertificatePool();
@@ -31,7 +31,7 @@ public class OCSPCertificateVerifierTest {
 		OCSPCertificateVerifier ocspVerifier = new OCSPCertificateVerifier(ocspSource, validationCertPool);
 		RevocationToken revocationToken = ocspVerifier.check(toCheckToken);
 		assertNotNull(revocationToken);
-		assertNotNull(revocationToken.getIssuerToken());
+		assertNotNull(revocationToken.getPublicKeyOfTheSigner());
 	}
 
 }

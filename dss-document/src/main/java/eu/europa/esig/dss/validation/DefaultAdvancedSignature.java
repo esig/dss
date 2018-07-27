@@ -186,28 +186,29 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/**
 	 * This method validates the signing certificate and all timestamps.
 	 *
-	 * @return signature validation context containing all certificates and revocation data used during the validation
-	 *         process.
+	 * @return signature validation context containing all certificates and
+	 *         revocation data used during the validation process.
 	 */
 	public ValidationContext getSignatureValidationContext(final CertificateVerifier certificateVerifier) {
 
 		final ValidationContext validationContext = new SignatureValidationContext();
+		certificateVerifier.setSignatureCRLSource(new ListCRLSource(getCRLSource()));
+		certificateVerifier.setSignatureOCSPSource(new ListOCSPSource(getOCSPSource()));
+		validationContext.initialize(certificateVerifier);
+
 		final List<CertificateToken> certificates = getCertificates();
 		for (final CertificateToken certificate : certificates) {
-
 			validationContext.addCertificateTokenForVerification(certificate);
 		}
 		prepareTimestamps(validationContext);
-		certificateVerifier.setSignatureCRLSource(new ListCRLSource(getCRLSource()));
-		certificateVerifier.setSignatureOCSPSource(new ListOCSPSource(getOCSPSource()));
-		// certificateVerifier.setAdjunctCertSource(getCertificateSource());
-		validationContext.initialize(certificateVerifier);
+
 		validationContext.validate();
 		return validationContext;
 	}
 
 	/**
-	 * Returns an unmodifiable list of all certificate tokens encapsulated in the signature
+	 * Returns an unmodifiable list of all certificate tokens encapsulated in the
+	 * signature
 	 * 
 	 * @see eu.europa.esig.dss.validation.AdvancedSignature#getCertificates()
 	 */
@@ -249,14 +250,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	public Map<String, List<CertificateToken>> getCertificatesWithinSignatureAndTimestamps(boolean skipLastArchiveTimestamp) {
 		Map<String, List<CertificateToken>> certificates = new HashMap<String, List<CertificateToken>>();
-		// We can have more than one chain in the signature : signing certificate, ocsp responder,...
-		List<CertificateToken> keyInfoCertificates = getCertificateSource().getKeyInfoCertificates();
-		if (Utils.isCollectionNotEmpty(keyInfoCertificates)) {
-			certificates.put(CertificateSourceType.SIGNATURE.name() + "KeyInfo", keyInfoCertificates);
-		}
-		List<CertificateToken> encapsulatedCertificates = getCertificateSource().getEncapsulatedCertificates();
-		if (Utils.isCollectionNotEmpty(encapsulatedCertificates)) {
-			certificates.put(CertificateSourceType.SIGNATURE.name() + "Encapsulated", encapsulatedCertificates);
+		// We can have more than one chain in the signature : signing certificate, ocsp
+		// responder,...
+		List<CertificateToken> certificatesSig = getCertificateSource().getCertificates();
+		if (Utils.isCollectionNotEmpty(certificatesSig)) {
+			certificates.put(CertificateSourceType.SIGNATURE.name(), certificatesSig);
 		}
 		int timestampCounter = 0;
 		for (final TimestampToken timestampToken : getContentTimestamps()) {
@@ -644,7 +642,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	private boolean isRevocationRequired(CertificateToken certificateToken) {
-		if (certificateToken.isTrusted() || certificateToken.isSelfSigned()) {
+		if (certPool.isTrusted(certificateToken) || certificateToken.isSelfSigned()) {
 			return false;
 		}
 
