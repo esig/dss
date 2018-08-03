@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss;
 
+import eu.europa.esig.dss.utils.Utils;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -28,6 +31,8 @@ import java.io.InputStream;
  * of the digest associated to the file can be done externally.
  */
 public class DigestDocument extends CommonDocument {
+
+	private DigestAlgorithm digestAlgorithm;
 
 	/**
 	 * Creates DigestDocument.
@@ -47,6 +52,7 @@ public class DigestDocument extends CommonDocument {
 	 */
 	public void addDigest(final DigestAlgorithm digestAlgorithm, final String base64EncodeDigest) {
 		base64EncodeDigestMap.put(digestAlgorithm, base64EncodeDigest);
+		this.digestAlgorithm = digestAlgorithm;
 	}
 
 	@Override
@@ -60,7 +66,8 @@ public class DigestDocument extends CommonDocument {
 
 	@Override
 	public InputStream openStream() throws DSSException {
-		throw new DSSException("Digest document");
+		String base64EncodeDigest = base64EncodeDigestMap.get(digestAlgorithm);
+		return new ByteArrayInputStream(Utils.fromBase64(base64EncodeDigest));
 	}
 
 	@Override
