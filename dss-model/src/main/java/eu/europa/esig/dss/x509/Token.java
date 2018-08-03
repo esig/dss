@@ -23,6 +23,7 @@ package eu.europa.esig.dss.x509;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.PublicKey;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,17 +95,6 @@ public abstract class Token implements Serializable {
 	}
 
 	/**
-	 * Checks if the certificate is provided by the trusted list. For all tokens
-	 * different from CertificateToken this method always returns false. This method
-	 * was introduced in order to manage in a uniform manner the different tokens.
-	 *
-	 * @return true if the token is trusted
-	 */
-	public boolean isTrusted() {
-		return false;
-	}
-
-	/**
 	 * Checks if the certificate is self-signed. For all tokens different from
 	 * CertificateToken this method always returns false. This method was introduced
 	 * in order to manage in a uniform manner the different tokens.
@@ -140,25 +130,25 @@ public abstract class Token implements Serializable {
 	}
 
 	/**
-	 * Checks if the token is signed by the public key given in the parameter. *
+	 * Checks if the token is signed by the given token in the parameter.
 	 * 
-	 * @param publicKey
-	 *                  the public key to be tested
+	 * @param token
+	 *              the candidate to be tested
 	 * @return true if this token is signed by the given certificate token
 	 */
-	public boolean isSignedBy(PublicKey publicKey) {
+	public boolean isSignedBy(CertificateToken token) {
 		if (publicKeyOfTheSigner != null) {
-			return publicKeyOfTheSigner.equals(publicKey);
-		} else if (checkIsSignedBy(publicKey)) {
+			return publicKeyOfTheSigner.equals(token.getPublicKey());
+		} else if (checkIsSignedBy(token)) {
 			if (!isSelfSigned()) {
-				this.publicKeyOfTheSigner = publicKey;
+				this.publicKeyOfTheSigner = token.getPublicKey();
 			}
 			return true;
 		}
 		return false;
 	}
 
-	protected abstract boolean checkIsSignedBy(PublicKey publicKey);
+	protected abstract boolean checkIsSignedBy(CertificateToken token);
 
 	/**
 	 * Returns the {@code X500Principal} of the certificate which was used to sign
@@ -167,6 +157,17 @@ public abstract class Token implements Serializable {
 	 * @return the issuer's {@code X500Principal}
 	 */
 	public abstract X500Principal getIssuerX500Principal();
+
+	/**
+	 * Returns the creation date of this token.
+	 * 
+	 * This date is mainly used to retrieve the correct issuer within a collection
+	 * of renewed certificates (new certificate with the same key pair).
+	 * 
+	 * @return the creation date of the token (notBefore for a certificate,
+	 *         productionDate for revocation data,...)
+	 */
+	public abstract Date getCreationDate();
 
 	/**
 	 * Returns the additional information gathered during the validation process.
@@ -199,13 +200,12 @@ public abstract class Token implements Serializable {
 
 	/**
 	 * Indicates if the token's signature is intact. For each kind of token the
-	 * method isSignedBy(CertificateToken) must be called to set this flag. Except
-	 * if the token is trusted: the signature signature is assumed to be valid.
+	 * method isSignedBy(CertificateToken) must be called to set this flag.
 	 *
-	 * @return true if the signature is valid or trusted
+	 * @return true if the signature is valid
 	 */
 	public boolean isSignatureValid() {
-		return isTrusted() || signatureValid;
+		return signatureValid;
 	}
 
 	/**

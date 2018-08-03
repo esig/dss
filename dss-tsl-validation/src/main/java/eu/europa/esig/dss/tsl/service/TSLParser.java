@@ -291,7 +291,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 					CertificateToken certificate = DSSUtils.loadCertificate(digitalId.getX509Certificate());
 					certificates.add(certificate);
 				} catch (Exception e) {
-					LOG.warn("Unable to load certificate : " + e.getMessage(), e);
+					LOG.warn("Unable to load certificate '" + Utils.toBase64(digitalId.getX509Certificate()) + "' : ", e);
 				}
 			}
 		}

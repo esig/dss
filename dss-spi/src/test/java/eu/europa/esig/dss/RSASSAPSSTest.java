@@ -13,7 +13,7 @@ public class RSASSAPSSTest {
 		CertificateToken token = DSSUtils.loadCertificate(this.getClass().getResourceAsStream("/BA-QC-Wurzel-CA-2_PN.txt"));
 
 		Assert.assertTrue(token.isSelfSigned());
-		Assert.assertTrue(token.isSignedBy(token.getPublicKey()));
+		Assert.assertTrue(token.isSignedBy(token));
 
 
 	}

@@ -226,17 +226,12 @@ public class TSLRepository {
 				TSLValidationModel model = entry.getValue();
 				// Synchronize certpool
 				if (!model.isCertificateSourceSynchronized()) {
+					LOG.info("Synchronizing TL {} ...", countryCode);
 					TSLParserResult parseResult = model.getParseResult();
 					if (parseResult != null) {
-						List<TSLServiceProvider> serviceProviders = parseResult.getServiceProviders();
-						for (TSLServiceProvider serviceProvider : serviceProviders) {
-							for (TSLService service : serviceProvider.getServices()) {
-								for (CertificateToken certificate : service.getCertificates()) {
-									// Update info
-									trustedListsCertificateSource.removeCertificate(certificate);
-									trustedListsCertificateSource.addCertificate(certificate, getServiceInfo(serviceProvider, service, countryCode));
-								}
-							}
+						Map<CertificateToken, List<ServiceInfo>> servicesByCertMap = getServicesByCert(parseResult);
+						for (Entry<CertificateToken, List<ServiceInfo>> servicesByCertEntry : servicesByCertMap.entrySet()) {
+							trustedListsCertificateSource.addCertificate(servicesByCertEntry.getKey(), servicesByCertEntry.getValue());
 						}
 					}
 					model.setCertificateSourceSynchronized(true);
@@ -244,11 +239,30 @@ public class TSLRepository {
 
 				// Synchronize tlInfos
 				trustedListsCertificateSource.updateTlInfo(countryCode, getTlInfo(countryCode, model));
-
 			}
 			LOG.info("Nb of loaded trusted lists : " + allMapTSLValidationModels.size());
 			LOG.info("Nb of trusted certificates : " + trustedListsCertificateSource.getNumberOfTrustedCertificates());
 		}
+	}
+
+	private Map<CertificateToken, List<ServiceInfo>> getServicesByCert(TSLParserResult parseResult) {
+		Map<CertificateToken, List<ServiceInfo>> servicesByCert = new HashMap<CertificateToken, List<ServiceInfo>>();
+		List<TSLServiceProvider> serviceProviders = parseResult.getServiceProviders();
+		String countryCode = parseResult.getTerritory();
+		for (TSLServiceProvider serviceProvider : serviceProviders) {
+			for (TSLService service : serviceProvider.getServices()) {
+				ServiceInfo serviceInfo = getServiceInfo(serviceProvider, service, countryCode);
+				for (CertificateToken certificate : service.getCertificates()) {
+					List<ServiceInfo> currentCertServices = servicesByCert.get(certificate);
+					if (currentCertServices == null) {
+						currentCertServices = new ArrayList<ServiceInfo>();
+						servicesByCert.put(certificate, currentCertServices);
+					}
+					currentCertServices.add(serviceInfo);
+				}
+			}
+		}
+		return servicesByCert;
 	}
 
 	private TLInfo getTlInfo(String countryCode, TSLValidationModel model) {

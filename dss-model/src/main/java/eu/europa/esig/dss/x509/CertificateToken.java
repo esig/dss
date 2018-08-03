@@ -62,11 +62,6 @@ public class CertificateToken extends Token {
 	private final EntityIdentifier entityKey;
 
 	/**
-	 * This array contains the different sources for this certificate.
-	 */
-	private Set<CertificateSourceType> sources = new HashSet<CertificateSourceType>();
-
-	/**
 	 * Indicates if the certificate is self-signed. This attribute stays null till the first call to
 	 * {@link #isSelfSigned()} function.
 	 */
@@ -106,18 +101,6 @@ public class CertificateToken extends Token {
 		this.signatureAlgorithm = SignatureAlgorithm.forOID(x509Certificate.getSigAlgOID());
 
 		this.extraInfo = new TokenValidationExtraInfo();
-	}
-
-	/**
-	 * This method adds the source type of the certificate (what is its origin). Each source is present only once.
-	 *
-	 * @param certSourceType
-	 *            the origin of the certificate
-	 */
-	public void addSourceType(final CertificateSourceType certSourceType) {
-		if (certSourceType != null) {
-			sources.add(certSourceType);
-		}
 	}
 
 	@Override
@@ -170,6 +153,11 @@ public class CertificateToken extends Token {
 		return x509Certificate.getNotBefore();
 	}
 
+	@Override
+	public Date getCreationDate() {
+		return getNotBefore();
+	}
+
 	/**
 	 * Checks if the certificate is expired on the given date.
 	 *
@@ -204,16 +192,6 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * Checks if the certificate is provided by the trusted source.
-	 *
-	 * @return true if the certificate is trusted (from a Trusted List or a TrustStore)
-	 */
-	@Override
-	public boolean isTrusted() {
-		return sources.contains(CertificateSourceType.TRUSTED_LIST) || sources.contains(CertificateSourceType.TRUSTED_STORE);
-	}
-
-	/**
 	 * Checks if the certificate is self-signed.
 	 * 
 	 * "Self-signed certificates are self-issued certificates where the digital signature may be verified by the public
@@ -228,8 +206,7 @@ public class CertificateToken extends Token {
 			selfSigned = isSelfIssued();
 			if (selfSigned) {
 				try {
-					PublicKey publicKey = x509Certificate.getPublicKey();
-					x509Certificate.verify(publicKey);
+					x509Certificate.verify(x509Certificate.getPublicKey());
 					selfSigned = true;
 				} catch (Exception e) {
 					selfSigned = false;
@@ -277,17 +254,6 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * Gets information about the context in which this certificate token was created (TRUSTED_LIST, TRUSTED_STORE,
-	 * ...).
-	 * This method does not guarantee that the token is trusted or not.
-	 *
-	 * @return the different sources where the certificate is found
-	 */
-	public Set<CertificateSourceType> getSources() {
-		return sources;
-	}
-
-	/**
 	 * Gets the serialNumber value from the encapsulated certificate. The serial number is an integer assigned by the
 	 * certification authority to each certificate. It must be unique for each certificate issued by a given CA.
 	 *
@@ -319,11 +285,11 @@ public class CertificateToken extends Token {
 	}
 
 	@Override
-	public boolean checkIsSignedBy(final PublicKey publicKey) {
+	protected boolean checkIsSignedBy(final CertificateToken candidate) {
 		signatureValid = false;
 		signatureInvalidityReason = "";
 		try {
-			x509Certificate.verify(publicKey);
+			x509Certificate.verify(candidate.getPublicKey());
 			signatureValid = true;
 		} catch (InvalidKeyException e) {
 			signatureInvalidityReason = "InvalidKeyException - on incorrect key.";
@@ -353,56 +319,26 @@ public class CertificateToken extends Token {
 
 	@Override
 	public String toString(String indentStr) {
-		try {
-			final StringBuilder out = new StringBuilder();
-			out.append(indentStr).append("CertificateToken[\n");
-			indentStr += "\t";
+		final StringBuilder out = new StringBuilder();
+		out.append(indentStr).append("CertificateToken[\n");
+		indentStr += "\t";
 
-			String issuerAsString = "";
-				if (isSelfSigned()) {
-					issuerAsString = "[SELF-SIGNED]";
-				} else {
-					issuerAsString = getIssuerX500Principal().toString();
-				}
-			String certSource = "UNKNOWN";
-			if (sources.size() > 0) {
-				for (final CertificateSourceType source : sources) {
-					final String name = source.name();
-					if ("UNKNOWN".equals(certSource)) {
-						certSource = name;
-					} else {
-						certSource += "/" + name;
-					}
-				}
-			}
-			out.append(indentStr).append(getDSSIdAsString()).append("<--").append(issuerAsString).append(", source=").append(certSource);
-			out.append(", serial=" + x509Certificate.getSerialNumber()).append('\n');
-			// Validity period
-			out.append(indentStr).append("Validity period    : ").append(x509Certificate.getNotBefore()).append(" - ").append(x509Certificate.getNotAfter())
-					.append('\n');
-			out.append(indentStr).append("Subject name       : ").append(getSubjectX500Principal()).append('\n');
-			out.append(indentStr).append("Issuer subject name: ").append(getIssuerX500Principal()).append('\n');
-			out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');
-			if (isTrusted()) {
-				out.append(indentStr).append("Signature validity : Signature verification is not needed: trusted certificate\n");
-			} else {
-				if (signatureValid) {
-					out.append(indentStr).append("Signature validity : VALID").append('\n');
-				} else {
-					if (!signatureInvalidityReason.isEmpty()) {
-						out.append(indentStr).append("Signature validity : INVALID").append(" - ").append(signatureInvalidityReason).append('\n');
-					}
-				}
-			}
-			for (String info : this.extraInfo.getValidationInfo()) {
-				out.append(indentStr).append("- ").append(info).append('\n');
-			}
-			indentStr = indentStr.substring(1);
-			out.append(indentStr).append(']');
-			return out.toString();
-		} catch (Exception e) {
-			return e.getMessage();
+		out.append(indentStr).append("DSS Id              : ").append(getDSSIdAsString()).append('\n');
+		out.append(indentStr).append("Identity Id         : ").append(getEntityKey()).append('\n');
+		out.append(indentStr).append("Validity period     : ").append(x509Certificate.getNotBefore()).append(" - ").append(x509Certificate.getNotAfter())
+				.append('\n');
+		out.append(indentStr).append("Subject name        : ").append(getSubjectX500Principal().getName(X500Principal.CANONICAL)).append('\n');
+		out.append(indentStr).append("Issuer subject name : ").append(getIssuerX500Principal().getName(X500Principal.CANONICAL)).append('\n');
+		out.append(indentStr).append("Serial Number       : ").append(getSerialNumber()).append('\n');
+		out.append(indentStr).append("Signature algorithm : ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');
+
+		if (isSelfSigned()) {
+			out.append(indentStr).append("[SELF-SIGNED]").append('\n');
 		}
+
+		indentStr = indentStr.substring(1);
+		out.append(indentStr).append(']');
+		return out.toString();
 	}
 
 	/**

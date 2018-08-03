@@ -22,7 +22,6 @@ package eu.europa.esig.dss.x509;
 
 import java.io.Serializable;
 import java.security.PublicKey;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,12 +34,15 @@ import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cms.SignerId;
+import org.bouncycastle.util.CollectionStore;
+import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.EntityIdentifier;
-import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -48,8 +50,8 @@ import eu.europa.esig.dss.utils.Utils;
  * process. A certificate can be found in different sources: trusted list,
  * signature, OCSP response... but each certificate is unambiguously identified
  * by its issuer DN and serial number. This class allows to keep only one
- * occurrence of the certificate regardless its provenance. Two pools of
- * certificates can be merged using the {@link #merge(CertificatePool)} method.
+ * occurrence of the certificate regardless its provenance. A CertificateSource
+ * can be imported with the {@link #importCerts(CertificateSource)} method .
  */
 public class CertificatePool implements Serializable {
 
@@ -57,8 +59,10 @@ public class CertificatePool implements Serializable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificatePool.class);
 
+	/* Map of entries, the key is a hash of the public key */
 	private Map<String, CertificatePoolEntity> entriesByPublicKeyHash = new HashMap<String, CertificatePoolEntity>();
 
+	/* Map of entries, the key is th canonicalized SubjectX500Principal */
 	private Map<String, CertificatePoolEntity> entriesBySubject = new HashMap<String, CertificatePoolEntity>();
 
 	public CertificatePool() {
@@ -66,93 +70,40 @@ public class CertificatePool implements Serializable {
 	}
 
 	/**
-	 * Returns the instance of a certificate token. If the certificate is not
-	 * referenced yet a new instance of {@link CertificateToken} is created.
-	 *
-	 * @param cert
-	 *                   the certificate to add in the pool
-	 * @param certSource
-	 *                   the source of the given certificate
-	 * @return the complete CertificateToken instance (merged with the pool content)
-	 * 
-	 */
-	public CertificateToken getInstance(final CertificateToken cert, final CertificateSourceType certSource) {
-		return getInstance(cert, certSource, (ServiceInfo) null);
-	}
-
-	/**
-	 * This method returns the instance of a {@link CertificateToken} corresponding
-	 * to the given {@link X509Certificate} . If the given certificate is not yet
-	 * present in the pool it will be added. If the {@link CertificateToken} exists
-	 * already in the pool but has no {@link ServiceInfo} this reference will be
-	 * added.
-	 *
-	 * @param cert
-	 *                    the certificate to add in the pool
-	 * @param certSource
-	 *                    the source of the given certificate
-	 * @param serviceInfo
-	 *                    the linked trust service info
-	 * @return the complete CertificateToken instance (merged with the pool content)
-	 */
-	public CertificateToken getInstance(final CertificateToken cert, final CertificateSourceType certSource, final ServiceInfo serviceInfo) {
-		final Set<ServiceInfo> services = new HashSet<ServiceInfo>();
-		if (serviceInfo != null) {
-			services.add(serviceInfo);
-		}
-		final Set<CertificateSourceType> sources = new HashSet<CertificateSourceType>();
-		if (certSource != null) {
-			sources.add(certSource);
-		}
-		return getInstance(cert, sources, services);
-	}
-
-	/**
-	 * This method returns the instance of a {@link CertificateToken} corresponding
-	 * to the given {@link X509Certificate} . If the given certificate is not yet
-	 * present in the pool it will added. If the {@link CertificateToken} exists
-	 * already in the pool but has no {@link ServiceInfo} this reference will be
-	 * added.
+	 * This method returns the instance of a {@link CertificateToken}.
 	 *
 	 * @param certificateToAdd
 	 *                         the certificate to add in the pool
-	 * @param sources
-	 *                         the sources of the given certificate
-	 * @param services
-	 *                         the linked trust service infos
+	 * @param certSource
+	 *                         the source of the given certificate
 	 * @return the complete CertificateToken instance (merged with the pool content)
 	 */
-	public CertificateToken getInstance(final CertificateToken certificateToAdd, final Set<CertificateSourceType> sources, final Set<ServiceInfo> services) {
+	public CertificateToken getInstance(final CertificateToken certificateToAdd, final CertificateSourceType certSource) {
 		if (certificateToAdd == null) {
-			throw new NullPointerException("The certificate must be filled");
+			throw new IllegalArgumentException("The certificate must be filled");
 		}
-
-		if (Utils.isCollectionEmpty(sources)) {
-			throw new IllegalStateException("The certificate source type must be set.");
+		if (certSource == null) {
+			throw new IllegalArgumentException("The certificate source type must be set.");
 		}
 
 		if (LOG.isTraceEnabled()) {
-			LOG.trace("Certificate to add: " + certificateToAdd.getIssuerX500Principal() + "|" + certificateToAdd.getSerialNumber());
+			LOG.trace("Certificate to add: {} | {}", certificateToAdd.getIssuerX500Principal(), certificateToAdd.getSerialNumber());
 		}
 
-		final String entityKey = certificateToAdd.getEntityKey();
-		synchronized (entityKey) {
+		synchronized (entriesByPublicKeyHash) {
+			final String entityKey = certificateToAdd.getEntityKey();
 			CertificatePoolEntity poolEntity = entriesByPublicKeyHash.get(entityKey);
 			if (poolEntity == null) {
-				LOG.trace("Public key " + entityKey + " is not in the pool");
-				poolEntity = new CertificatePoolEntity(certificateToAdd);
+				LOG.trace("Public key {} is not in the pool", entityKey);
+				poolEntity = new CertificatePoolEntity(certificateToAdd, certSource);
 				entriesByPublicKeyHash.put(entityKey, poolEntity);
 				entriesBySubject.put(getCanonicalizedSubject(certificateToAdd), poolEntity);
 			} else {
-				LOG.trace("Public key " + entityKey + " is already in the pool");
+				LOG.trace("Public key {} is already in the pool", entityKey);
 				poolEntity.addEquivalentCertificate(certificateToAdd);
+				poolEntity.addSource(certSource);
 			}
 
-			poolEntity.addRelatedTrustServices(services);
-
-			for (final CertificateSourceType sourceType : sources) {
-				certificateToAdd.addSourceType(sourceType);
-			}
 		}
 		return certificateToAdd;
 	}
@@ -162,45 +113,46 @@ public class CertificatePool implements Serializable {
 		return poolEntity != null && poolEntity.isTrusted();
 	}
 
-	public Set<ServiceInfo> getRelatedTrustServices(CertificateToken cert) {
-		final CertificatePoolEntity poolEntity = getPoolEntry(cert);
-		if (poolEntity != null) {
-			return poolEntity.getRelatedTrustServices();
-		}
-		return Collections.emptySet();
-	}
-
-	public List<CertificateToken> getIssuers(Token token) {
+	/**
+	 * This method returns all known issuers for the given token.
+	 * 
+	 * @param token
+	 *              the child certificate, timestamp or revocation data for which
+	 *              the issuers are required
+	 * @return a {@code List} of all known {@code CertificateToken}
+	 */
+	public List<CertificateToken> getIssuers(final Token token) {
 		if (token.getPublicKeyOfTheSigner() != null) {
 			return get(token.getPublicKeyOfTheSigner());
 		} else if (token.getIssuerX500Principal() != null) {
 			List<CertificateToken> potentialIssuers = get(token.getIssuerX500Principal());
 			for (CertificateToken potentialIssuer : potentialIssuers) {
-				if (token.isSignedBy(potentialIssuer.getPublicKey())) {
-					return potentialIssuers;
+				if (token.isSignedBy(potentialIssuer)) {
+					return get(potentialIssuer.getPublicKey());
 				}
 			}
 		}
 		return Collections.emptyList();
 	}
 
-	public CertificateToken getIssuer(Token token) {
+	/**
+	 * THis method returns an issuer for the given token
+	 * 
+	 * @param token
+	 *              the child certificate, timestamp or revocation data for which an
+	 *              issuer is required
+	 * @return an issuer which is valid on the token creation, or a matched issuer
+	 *         with the public key or null
+	 */
+	public CertificateToken getIssuer(final Token token) {
 		List<CertificateToken> issuers = getIssuers(token);
-		if (!issuers.isEmpty()) {
-			return issuers.iterator().next();
-		} else {
-			return null;
-		}
-	}
-
-	public CertificateToken getBestIssuer(Token token) {
-		List<CertificateToken> issuers = getIssuers(token);
-		if (!issuers.isEmpty()) {
+		if (Utils.isCollectionNotEmpty(issuers)) {
 			for (CertificateToken issuer : issuers) {
-				if (issuer.isTrusted()) {
+				if (issuer.isValidOn(token.getCreationDate())) {
 					return issuer;
 				}
 			}
+			LOG.warn("No issuer found for the token creation date. The process continues with an issuer which has the same public key.");
 			return issuers.iterator().next();
 		} else {
 			return null;
@@ -233,7 +185,7 @@ public class CertificatePool implements Serializable {
 	}
 
 	/**
-	 * This method returns the Set of certificates with the same subjectDN.
+	 * This method returns the List of certificates with the same subjectDN.
 	 *
 	 * @param x500Principal
 	 *                      subject distinguished name to match.
@@ -247,6 +199,13 @@ public class CertificatePool implements Serializable {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * This method returns the List of certificates with the same Public key.
+	 *
+	 * @param publicKey
+	 *                  expected public key.
+	 * @return If no match is found then an empty list is returned.
+	 */
 	public List<CertificateToken> get(PublicKey publicKey) {
 		final CertificatePoolEntity poolEntity = entriesByPublicKeyHash.get(getPublicKeyHash(publicKey));
 		if (poolEntity != null) {
@@ -255,12 +214,20 @@ public class CertificatePool implements Serializable {
 		return Collections.emptyList();
 	}
 
-	public List<CertificateToken> getBySki(byte[] expectedSki) {
+	/**
+	 * This method returns the List of certificates with the same SKI (subject key
+	 * identifier = SHA-1 of the Public Key).
+	 *
+	 * @param expectedSki
+	 *                    expected SKI value.
+	 * @return If no match is found then an empty list is returned.
+	 */
+	public List<CertificateToken> getBySki(final byte[] expectedSki) {
 		Collection<CertificatePoolEntity> values = entriesByPublicKeyHash.values();
 		for (CertificatePoolEntity entity : values) {
 			List<CertificateToken> certificates = entity.getEquivalentCertificates();
 			CertificateToken first = certificates.iterator().next();
-			byte[] computedSki = DSSASN1Utils.getSki(first, true);
+			final byte[] computedSki = DSSASN1Utils.getSki(first, true);
 			if (Arrays.equals(expectedSki, computedSki)) {
 				return certificates;
 			}
@@ -268,8 +235,27 @@ public class CertificatePool implements Serializable {
 		return Collections.emptyList();
 	}
 
-	private String canonicalize(final X500Principal x500Principal) {
-		return x500Principal.getName(X500Principal.CANONICAL);
+	/**
+	 * This method returns the List of certificates with the same SignerId.
+	 *
+	 * @param signerId
+	 *                 expected signerId.
+	 * @return If no match is found then an empty list is returned.
+	 */
+	@SuppressWarnings("unchecked")
+	public List<CertificateToken> getBySignerId(SignerId signerId) {
+		Collection<CertificatePoolEntity> values = entriesByPublicKeyHash.values();
+		for (CertificatePoolEntity entity : values) {
+			List<CertificateToken> equivalentCertificates = entity.getEquivalentCertificates();
+			CertificateToken token = equivalentCertificates.iterator().next();
+			X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(token);
+			Store<X509CertificateHolder> store = new CollectionStore<X509CertificateHolder>(Collections.singleton(x509CertificateHolder));
+			Collection<X509CertificateHolder> matches = store.getMatches(signerId);
+			if (!matches.isEmpty()) {
+				return equivalentCertificates;
+			}
+		}
+		return Collections.emptyList();
 	}
 
 	private CertificatePoolEntity getPoolEntry(CertificateToken cert) {
@@ -289,22 +275,25 @@ public class CertificatePool implements Serializable {
 		return canonicalize(cert.getSubjectX500Principal());
 	}
 
+	private String canonicalize(final X500Principal x500Principal) {
+		return x500Principal.getName(X500Principal.CANONICAL);
+	}
+
 	/**
-	 * This method allows to add certificates from another {@link CertificatePool}.
-	 * If an instance of the {@link CertificateToken} already exists in this pool
-	 * only the {@link ServiceInfo} and {@link CertificateSourceType} are added.
+	 * This method allows to imports certificates from a
+	 * {@link CommonCertificateSource}. If an instance of the
+	 * {@link CertificateToken} already exists in this pool only the
+	 * {@link CertificateSourceType} are added.
 	 *
-	 * @param certPool
-	 *                 the certificate pool to merge
+	 * @param certificateSource
+	 *                          the certificate source where certificates will be
+	 *                          copied
 	 */
-	public void merge(final CertificatePool certPool) {
-		final Map<String, CertificatePoolEntity> toImport = certPool.entriesByPublicKeyHash;
-		for (CertificatePoolEntity entity : toImport.values()) {
-			List<CertificateToken> certificates = entity.getEquivalentCertificates();
-			Set<ServiceInfo> trustServices = entity.getRelatedTrustServices();
-			for (CertificateToken certificateToImport : certificates) {
-				getInstance(certificateToImport, certificateToImport.getSources(), trustServices);
-			}
+	public void importCerts(final CertificateSource certificateSource) {
+		final List<CertificateToken> unmodifiableList = Collections.unmodifiableList(certificateSource.getCertificates());
+		final CertificateSourceType source = certificateSource.getCertificateSourceType();
+		for (CertificateToken certificateToImport : unmodifiableList) {
+			getInstance(certificateToImport, source);
 		}
 	}
 
@@ -341,45 +330,53 @@ public class CertificatePool implements Serializable {
 
 	private class CertificatePoolEntity {
 
+		/**
+		 * Equivalent certificates (which have the same public key)
+		 */
 		private List<CertificateToken> equivalentCertificates = new ArrayList<CertificateToken>();
 
-		private Set<ServiceInfo> relatedTrustServices;
+		/**
+		 * This Set contains the different sources for this certificate.
+		 */
+		private Set<CertificateSourceType> sources = new HashSet<CertificateSourceType>();
 
-		public CertificatePoolEntity(CertificateToken initialCert) {
+		public CertificatePoolEntity(CertificateToken initialCert, CertificateSourceType source) {
 			equivalentCertificates.add(initialCert);
+			sources.add(source);
 		}
 
 		public void addEquivalentCertificate(CertificateToken token) {
 			if (!equivalentCertificates.contains(token)) {
 				LOG.debug("Certificate with same public key detected : {}", token.getAbbreviation());
-				equivalentCertificates.add(token);
+				final byte[] newSKI = DSSASN1Utils.computeSkiFromCert(token);
+				CertificateToken equivalent = equivalentCertificates.iterator().next();
+				final byte[] skiEquivalent = DSSASN1Utils.computeSkiFromCert(equivalent);
+				// This should never happen
+				if (!Arrays.equals(newSKI, skiEquivalent)) {
+
+					LOG.warn("{} \nCERT : {} \nSKI : {} \nPubKey : {}", token, Utils.toBase64(token.getEncoded()), Utils.toBase64(newSKI),
+							Utils.toBase64(token.getPublicKey().getEncoded()));
+
+					LOG.warn("is not equivalent to");
+
+					LOG.warn("{} \nCERT : {} \nSKI : {} \nPubKey : {}", equivalent, Utils.toBase64(equivalent.getEncoded()), Utils.toBase64(skiEquivalent),
+							Utils.toBase64(token.getPublicKey().getEncoded()));
+				} else {
+					equivalentCertificates.add(token);
+				}
 			}
 		}
 
-		public void addRelatedTrustServices(Set<ServiceInfo> trustServices) {
-			if (relatedTrustServices == null) {
-				relatedTrustServices = new HashSet<ServiceInfo>();
-			}
-			for (ServiceInfo serviceInfo : trustServices) {
-				relatedTrustServices.add(serviceInfo);
-			}
+		public void addSource(CertificateSourceType source) {
+			sources.add(source);
 		}
 
 		public List<CertificateToken> getEquivalentCertificates() {
 			return Collections.unmodifiableList(equivalentCertificates);
 		}
 
-		public Set<ServiceInfo> getRelatedTrustServices() {
-			return Collections.unmodifiableSet(relatedTrustServices);
-		}
-
 		public boolean isTrusted() {
-			for (CertificateToken certificateToken : equivalentCertificates) {
-				if (certificateToken.isTrusted()) {
-					return true;
-				}
-			}
-			return false;
+			return sources.contains(CertificateSourceType.TRUSTED_LIST) || sources.contains(CertificateSourceType.TRUSTED_STORE);
 		}
 
 	}

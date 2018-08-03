@@ -205,10 +205,10 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	public CertificatePool createValidationPool() {
 		final CertificatePool validationPool = new CertificatePool();
 		if (trustedCertSource != null) {
-			validationPool.merge(trustedCertSource.getCertificatePool());
+			validationPool.importCerts(trustedCertSource);
 		}
 		if (adjunctCertSource != null) {
-			validationPool.merge(adjunctCertSource.getCertificatePool());
+			validationPool.importCerts(adjunctCertSource);
 		}
 		return validationPool;
 	}

@@ -65,7 +65,7 @@ public class DSSUtilsTest {
 		assertFalse(issuers.isEmpty());
 		boolean foundIssuer = false;
 		for (CertificateToken issuer : issuers) {
-			if (certificateWithAIA.isSignedBy(issuer.getPublicKey())) {
+			if (certificateWithAIA.isSignedBy(issuer)) {
 				foundIssuer = true;
 			}
 		}
@@ -169,12 +169,12 @@ public class DSSUtilsTest {
 		CertificateToken childCert = DSSUtils.loadCertificate(new File("src/test/resources/es_certificate_from_SchemeServiceDefinitionURI.crt"));
 		assertNotNull(childCert);
 		assertFalse(childCert.isSelfSigned());
-		assertTrue(childCert.isSignedBy(issuerCert.getPublicKey()));
+		assertTrue(childCert.isSignedBy(issuerCert));
 
 		CertificateToken childCert2 = DSSUtils.loadCertificate(new File("src/test/resources/es_certificate_from_SchemeServiceDefinitionURI2.crt"));
 		assertNotNull(childCert2);
 		assertFalse(childCert2.isSelfSigned());
-		assertTrue(childCert2.isSignedBy(issuerCert.getPublicKey()));
+		assertTrue(childCert2.isSignedBy(issuerCert));
 	}
 
 	@Test
@@ -208,8 +208,8 @@ public class DSSUtilsTest {
 		assertTrue(selfSign.isSelfSigned());
 		assertFalse(signed.isSelfSigned());
 
-		assertTrue(tsa.isSignedBy(signed.getPublicKey()));
-		assertTrue(tsa.isSignedBy(selfSign.getPublicKey()));
+		assertTrue(tsa.isSignedBy(signed));
+		assertTrue(tsa.isSignedBy(selfSign));
 	}
 
 	@Test

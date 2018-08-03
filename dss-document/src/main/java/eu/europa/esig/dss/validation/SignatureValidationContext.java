@@ -175,26 +175,53 @@ public class SignatureValidationContext implements ValidationContext {
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
 	private CertificateToken getIssuerCertificate(final Token token) throws DSSException {
-		if (token.isTrusted()) {
+		if (isTrusted(token)) {
 			// When the token is trusted the check of the issuer token is not needed so null
-			// is returned. Only a
-			// certificate token can be trusted.
+			// is returned. Only a certificate token can be trusted.
 			return null;
 		}
 
-		CertificateToken issuerCertificateToken = validationCertificatePool.getBestIssuer(token);
+		CertificateToken issuerCertificateToken = validationCertificatePool.getIssuer(token);
+
 		if ((issuerCertificateToken == null) && (token instanceof CertificateToken)) {
 			issuerCertificateToken = getIssuerFromAIA((CertificateToken) token);
 		}
+
+		if ((issuerCertificateToken == null) && (token instanceof TimestampToken)) {
+			issuerCertificateToken = getTSACertificate((TimestampToken) token);
+		}
+
 		if (issuerCertificateToken == null) {
 			token.extraInfo().infoTheSigningCertNotFound();
 		}
-		if ((issuerCertificateToken != null) && !issuerCertificateToken.isTrusted() && !issuerCertificateToken.isSelfSigned()
-				&& !token.equals(issuerCertificateToken)) {
+//		if ((issuerCertificateToken != null) && !issuerCertificateToken.isTrusted() && !issuerCertificateToken.isSelfSigned()
+//				&& !token.equals(issuerCertificateToken)) {
 			// The full chain is retrieved for each certificate
-			getIssuerCertificate(issuerCertificateToken);
-		}
+//			getIssuerCertificate(issuerCertificateToken);
+//		}
 		return issuerCertificateToken;
+	}
+
+	private CertificateToken getTSACertificate(TimestampToken timestamp) {
+		List<CertificateToken> candidates = timestamp.getCertificates();
+		for (CertificateToken candidate : candidates) {
+			if (timestamp.isSignedBy(candidate)) {
+				return candidate;
+			}
+		}
+
+		LOG.info("TSA certificate not found in the token");
+
+		candidates = validationCertificatePool.getBySignerId(timestamp.getSignerId());
+		for (CertificateToken candidate : candidates) {
+			if (timestamp.isSignedBy(candidate)) {
+				return candidate;
+			}
+		}
+
+		LOG.warn("TSA certificate not found in the certificate pool");
+
+		return null;
 	}
 
 	/**
@@ -225,7 +252,7 @@ public class SignatureValidationContext implements ValidationContext {
 				addCertificateTokenForVerification(validationCertificatePool.getInstance(candidate, CertificateSourceType.AIA));
 			}
 			for (CertificateToken candidate : candidates) {
-				if (token.isSignedBy(candidate.getPublicKey())) {
+				if (token.isSignedBy(candidate)) {
 					if (!token.getIssuerX500Principal().equals(candidate.getSubjectX500Principal())) {
 						LOG.info("There is AIA extension, but the issuer subject name and subject name does not match.");
 						LOG.info("CERT ISSUER    : " + token.getIssuerX500Principal().toString());
@@ -248,22 +275,22 @@ public class SignatureValidationContext implements ValidationContext {
 		for (CertificateToken candidate : candidates) {
 			PublicKey candidatePublicKey = candidate.getPublicKey();
 			if (commonPublicKey == null) {
-				if (!token.isSignedBy(candidatePublicKey)) {
+				if (!token.isSignedBy(candidate)) {
 					return null;
 				}
 				commonPublicKey = candidatePublicKey;
 				bestMatch = candidate;
 			} else if (!candidatePublicKey.equals(commonPublicKey)) {
 				return null;
-			} else if (bestMatch.isTrusted()) {
+			} else if (isTrusted(bestMatch)) {
 				continue;
 			}
 
 			List<CertificateToken> list = validationCertificatePool.get(candidate.getSubjectX500Principal());
 			for (CertificateToken pooledToken : list) {
-				if (pooledToken.getPublicKey().equals(commonPublicKey) && pooledToken.isTrusted()) {
+				if (pooledToken.getPublicKey().equals(commonPublicKey) && isTrusted(pooledToken)) {
 					bestMatch = pooledToken;
-					token.isSignedBy(candidatePublicKey);
+					token.isSignedBy(pooledToken);
 					break;
 				}
 			}
@@ -271,7 +298,6 @@ public class SignatureValidationContext implements ValidationContext {
 
 		return bestMatch;
 	}
-
 
 	/**
 	 * Adds a new token to the list of tokens to verify only if it was not already
@@ -371,26 +397,22 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@Override
 	public void validate() throws DSSException {
-		Token token = null;
-		do {
-			token = getNotYetVerifiedToken();
-			if (token != null) {
-
-				/**
-				 * Gets the issuer certificate of the Token and checks its signature
-				 */
-				final CertificateToken issuerCertToken = getIssuerCertificate(token);
-				if (issuerCertToken != null) {
-					addCertificateTokenForVerification(issuerCertToken);
-				}
-
-				if (token instanceof CertificateToken) {
-					final List<RevocationToken> revocationTokens = getRevocationData((CertificateToken) token);
-					addRevocationTokensForVerification(revocationTokens);
-				}
-
+		Token token = getNotYetVerifiedToken();
+		while (token != null) {
+			/**
+			 * Gets the issuer certificate of the Token and checks its signature
+			 */
+			final CertificateToken issuerCertToken = getIssuerCertificate(token);
+			if (issuerCertToken != null) {
+				addCertificateTokenForVerification(issuerCertToken);
 			}
-		} while (token != null);
+
+			if (token instanceof CertificateToken) {
+				final List<RevocationToken> revocationTokens = getRevocationData((CertificateToken) token);
+				addRevocationTokensForVerification(revocationTokens);
+			}
+			token = getNotYetVerifiedToken();
+		}
 	}
 
 	/**
@@ -406,7 +428,7 @@ public class SignatureValidationContext implements ValidationContext {
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Checking revocation data for : {}", certToken.getDSSIdAsString());
 		}
-		if (certToken.isSelfSigned() || certToken.isTrusted()) {
+		if (certToken.isSelfSigned() || isTrusted(certToken)) {
 			// This check is not needed for the trust anchor.
 			return Collections.emptyList();
 		} else if (DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken)) {
@@ -463,43 +485,8 @@ public class SignatureValidationContext implements ValidationContext {
 		return Collections.unmodifiableSet(processedTimestamps);
 	}
 
-	/**
-	 * This method returns the human readable representation of the
-	 * ValidationContext.
-	 *
-	 * @param indentStr
-	 * @return
-	 */
-
-	public String toString(String indentStr) {
-
-		try {
-
-			final StringBuilder builder = new StringBuilder();
-			builder.append(indentStr).append("ValidationContext[").append('\n');
-			indentStr += "\t";
-			// builder.append(indentStr).append("Validation
-			// time:").append(validationDate).append('\n');
-			builder.append(indentStr).append("Certificates[").append('\n');
-			indentStr += "\t";
-			for (CertificateToken certToken : processedCertificates) {
-
-				builder.append(certToken.toString(indentStr));
-			}
-			indentStr = indentStr.substring(1);
-			builder.append(indentStr).append("],\n");
-			indentStr = indentStr.substring(1);
-			builder.append(indentStr).append("],\n");
-			return builder.toString();
-		} catch (Exception e) {
-
-			return super.toString();
-		}
+	private boolean isTrusted(Token token) {
+		return token instanceof CertificateToken && validationCertificatePool.isTrusted((CertificateToken) token);
 	}
 
-	@Override
-	public String toString() {
-
-		return toString("");
-	}
 }

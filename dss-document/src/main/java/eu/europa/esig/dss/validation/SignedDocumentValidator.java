@@ -293,13 +293,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		List<AdvancedSignature> allSignatureList = processSignaturesValidation(validationContext, structuralValidation);
 
-		final DiagnosticDataBuilder builder = new DiagnosticDataBuilder();
-		builder.document(document).containerInfo(getContainerInfo()).foundSignatures(allSignatureList)
+		final DiagnosticData diagnosticData = new DiagnosticDataBuilder().document(document).containerInfo(getContainerInfo()).foundSignatures(allSignatureList)
 				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
-				.trustedListsCertificateSource(certificateVerifier.getTrustedCertSource())
-				.validationDate(validationContext.getCurrentTime());
+				.trustedCertificateSource(certificateVerifier.getTrustedCertSource())
+				.validationDate(validationContext.getCurrentTime()).build();
 
-		return processValidationPolicy(builder.build(), validationPolicy);
+		return processValidationPolicy(diagnosticData, validationPolicy);
 	}
 
 	@Override

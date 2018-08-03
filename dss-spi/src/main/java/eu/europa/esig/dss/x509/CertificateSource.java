@@ -33,13 +33,6 @@ import javax.security.auth.x500.X500Principal;
 public interface CertificateSource extends Serializable {
 
 	/**
-	 * This method return the {@link CertificatePool} encapsulated by the source.
-	 * 
-	 * @return the certificate pool
-	 */
-	CertificatePool getCertificatePool();
-
-	/**
 	 * This method allows to manually add any certificate to the source. The type of the source is automatically set par
 	 * each specific
 	 * implementation.
@@ -61,5 +54,20 @@ public interface CertificateSource extends Serializable {
 	 * @return a {@link List} of {@link CertificateToken} which have x500Principal as subject
 	 */
 	List<CertificateToken> get(final X500Principal x500Principal);
+
+	/**
+	 * This method returns the certificate source type associated to the
+	 * implementation class.
+	 *
+	 * @return the certificate origin
+	 */
+	CertificateSourceType getCertificateSourceType();
+
+	/**
+	 * Retrieves the unmodifiable list of all certificate tokens from this source.
+	 *
+	 * @return all certificates from this source
+	 */
+	List<CertificateToken> getCertificates();
 
 }

@@ -22,7 +22,6 @@ package eu.europa.esig.dss.x509.ocsp;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.security.PublicKey;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -53,6 +52,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.TokenValidationExtraInfo;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
@@ -204,7 +204,7 @@ public class OCSPToken extends RevocationToken {
 	}
 
 	@Override
-	protected boolean checkIsSignedBy(final PublicKey publicKey) {
+	protected boolean checkIsSignedBy(final CertificateToken candidate) {
 		if (basicOCSPResp == null) {
 			return false;
 		}
@@ -212,7 +212,7 @@ public class OCSPToken extends RevocationToken {
 			signatureInvalidityReason = "";
 			JcaContentVerifierProviderBuilder jcaContentVerifierProviderBuilder = new JcaContentVerifierProviderBuilder();
 			jcaContentVerifierProviderBuilder.setProvider(BouncyCastleProvider.PROVIDER_NAME);
-			ContentVerifierProvider contentVerifierProvider = jcaContentVerifierProviderBuilder.build(publicKey);
+			ContentVerifierProvider contentVerifierProvider = jcaContentVerifierProviderBuilder.build(candidate.getPublicKey());
 			signatureValid = basicOCSPResp.isSignatureValid(contentVerifierProvider);
 		} catch (Exception e) {
 			signatureInvalidityReason = e.getClass().getSimpleName() + " - " + e.getMessage();

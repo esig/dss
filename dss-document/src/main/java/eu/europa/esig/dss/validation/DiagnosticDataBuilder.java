@@ -64,6 +64,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.Token;
@@ -82,7 +83,7 @@ public class DiagnosticDataBuilder {
 	private List<AdvancedSignature> signatures;
 	private Set<CertificateToken> usedCertificates;
 	private Set<RevocationToken> usedRevocations;
-	private TrustedListsCertificateSource trustedListCertSource;
+	private CommonTrustedCertificateSource trustedCertSource;
 	private Date validationDate;
 
 	/**
@@ -152,9 +153,9 @@ public class DiagnosticDataBuilder {
 	 *                          the trusted lists certificate source
 	 * @return the builder
 	 */
-	public DiagnosticDataBuilder trustedListsCertificateSource(CertificateSource trustedCertSource) {
-		if (trustedCertSource instanceof TrustedListsCertificateSource) {
-			this.trustedListCertSource = (TrustedListsCertificateSource) trustedCertSource;
+	public DiagnosticDataBuilder trustedCertificateSource(CertificateSource trustedCertSource) {
+		if (trustedCertSource instanceof CommonTrustedCertificateSource) {
+			this.trustedCertSource = (CommonTrustedCertificateSource) trustedCertSource;
 		}
 		return this;
 	}
@@ -194,8 +195,8 @@ public class DiagnosticDataBuilder {
 			for (CertificateToken certificateToken : usedCertificates) {
 				xmlCertificates.add(getXmlCertificate(allUsedCertificatesDigestAlgorithms, certificateToken));
 
-				if (trustedListCertSource != null) {
-					Set<ServiceInfo> associatedTSPS = trustedListCertSource.getTrustServices(certificateToken);
+				if (trustedCertSource != null) {
+					Set<ServiceInfo> associatedTSPS = trustedCertSource.getTrustServices(certificateToken);
 					if (Utils.isCollectionNotEmpty(associatedTSPS)) {
 						for (ServiceInfo serviceInfo : associatedTSPS) {
 							countryCodes.add(serviceInfo.getTlCountryCode());
@@ -206,10 +207,11 @@ public class DiagnosticDataBuilder {
 		}
 		diagnosticData.setUsedCertificates(Collections.unmodifiableList(xmlCertificates));
 
-		if (trustedListCertSource != null) {
+		if (trustedCertSource instanceof TrustedListsCertificateSource) {
+			TrustedListsCertificateSource tlCS = (TrustedListsCertificateSource) trustedCertSource;
 			boolean addLOTL = false;
 			for (String countryCode : countryCodes) {
-				TLInfo tlInfo = trustedListCertSource.getTlInfo(countryCode);
+				TLInfo tlInfo = tlCS.getTlInfo(countryCode);
 				if (tlInfo != null) {
 					diagnosticData.getTrustedLists().add(getXmlTrustedList(countryCode, tlInfo));
 					addLOTL = true;
@@ -217,7 +219,7 @@ public class DiagnosticDataBuilder {
 			}
 
 			if (addLOTL) {
-				diagnosticData.setListOfTrustedLists(getXmlTrustedList("LOTL", trustedListCertSource.getLotlInfo()));
+				diagnosticData.setListOfTrustedLists(getXmlTrustedList("LOTL", tlCS.getLotlInfo()));
 			}
 		}
 
@@ -420,9 +422,9 @@ public class DiagnosticDataBuilder {
 			Set<CertificateToken> processedTokens = new HashSet<CertificateToken>();
 			do {
 				CertificateToken issuerToken_ = getCertificateByPubKey(certPubKey);
-				System.out.println(issuerToken_);
 				certChainTokens.add(getXmlChainItem(issuerToken_));
-				if (issuerToken_.isTrusted() || issuerToken_.isSelfSigned() || processedTokens.contains(issuerToken_)) {
+				if (issuerToken_.isSelfSigned() || processedTokens.contains(issuerToken_)
+						|| isTrusted(issuerToken_)) {
 					break;
 				}
 				processedTokens.add(issuerToken_);
@@ -431,6 +433,10 @@ public class DiagnosticDataBuilder {
 			return certChainTokens;
 		}
 		return null;
+	}
+
+	private boolean isTrusted(CertificateToken cert) {
+		return trustedCertSource != null && !trustedCertSource.get(cert.getSubjectX500Principal()).isEmpty();
 	}
 
 	private XmlChainItem getXmlChainItem(final CertificateToken token) {
@@ -442,16 +448,16 @@ public class DiagnosticDataBuilder {
 
 	private CertificateSourceType getCertificateMainSourceType(final CertificateToken issuerToken) {
 		CertificateSourceType mainSource = CertificateSourceType.UNKNOWN;
-		final Set<CertificateSourceType> sourceList = issuerToken.getSources();
-		if (sourceList.size() > 0) {
-			if (sourceList.contains(CertificateSourceType.TRUSTED_LIST)) {
-				mainSource = CertificateSourceType.TRUSTED_LIST;
-			} else if (sourceList.contains(CertificateSourceType.TRUSTED_STORE)) {
-				mainSource = CertificateSourceType.TRUSTED_STORE;
-			} else {
-				mainSource = sourceList.iterator().next();
-			}
-		}
+//		final Set<CertificateSourceType> sourceList = issuerToken.getSources();
+//		if (sourceList.size() > 0) {
+//			if (sourceList.contains(CertificateSourceType.TRUSTED_LIST)) {
+//				mainSource = CertificateSourceType.TRUSTED_LIST;
+//			} else if (sourceList.contains(CertificateSourceType.TRUSTED_STORE)) {
+//				mainSource = CertificateSourceType.TRUSTED_STORE;
+//			} else {
+//				mainSource = sourceList.iterator().next();
+//			}
+//		}
 		return mainSource;
 	}
 
@@ -473,10 +479,18 @@ public class DiagnosticDataBuilder {
 	}
 
 	private CertificateToken getCertificateByPubKey(final PublicKey certPubKey) {
+		List<CertificateToken> founds = new ArrayList<CertificateToken>();
 		for (CertificateToken cert : usedCertificates) {
 			if (certPubKey.equals(cert.getPublicKey())) {
-				return cert;
+				founds.add(cert);
+				if (isTrusted(cert)) {
+					return cert;
+				}
 			}
+		}
+
+		if (Utils.isCollectionNotEmpty(founds)) {
+			return founds.iterator().next();
 		}
 		return null;
 	}
@@ -805,7 +819,7 @@ public class DiagnosticDataBuilder {
 		xmlCert.setCertificatePolicies(getXmlCertificatePolicies(DSSASN1Utils.getCertificatePolicies(certToken)));
 
 		xmlCert.setSelfSigned(certToken.isSelfSigned());
-		xmlCert.setTrusted(certToken.isTrusted());
+		xmlCert.setTrusted(isTrusted(certToken));
 		xmlCert.setInfo(getXmlInfo(certToken.getValidationInfo()));
 
 		final Set<RevocationToken> revocationTokens = getRevocationsForCert(certToken);
@@ -815,7 +829,7 @@ public class DiagnosticDataBuilder {
 			}
 		}
 
-		if (trustedListCertSource != null) {
+		if (trustedCertSource != null) {
 			xmlCert.setTrustedServiceProviders(getXmlTrustedServiceProviders(certToken));
 		}
 		return xmlCert;
@@ -858,7 +872,7 @@ public class DiagnosticDataBuilder {
 
 	private List<XmlTrustedServiceProvider> getXmlTrustedServiceProviders(CertificateToken certToken) {
 		List<XmlTrustedServiceProvider> result = new ArrayList<XmlTrustedServiceProvider>();
-		Set<ServiceInfo> services = trustedListCertSource.getTrustServices(certToken);
+		Set<ServiceInfo> services = getRelatedTrustServices(certToken);
 		Map<String, List<ServiceInfo>> servicesByProviders = classifyByServiceProvider(services);
 		for (List<ServiceInfo> servicesByProvider : servicesByProviders.values()) {
 			ServiceInfo first = servicesByProvider.get(0);
@@ -870,6 +884,24 @@ public class DiagnosticDataBuilder {
 			result.add(serviceProvider);
 		}
 		return Collections.unmodifiableList(result);
+	}
+
+	private Set<ServiceInfo> getRelatedTrustServices(CertificateToken certToken) {
+		if (trustedCertSource instanceof TrustedListsCertificateSource) {
+			Set<ServiceInfo> result = new HashSet<ServiceInfo>();
+			do {
+				result.addAll(trustedCertSource.getTrustServices(certToken));
+				PublicKey issuerPublicKey = certToken.getPublicKeyOfTheSigner();
+				if (issuerPublicKey != null) {
+					certToken = getCertificateByPubKey(issuerPublicKey);
+				} else {
+					certToken = null;
+				}
+			} while (certToken != null);
+			return result;
+		} else {
+			return Collections.emptySet();
+		}
 	}
 
 	private List<XmlTrustedService> getXmlTrustedServices(List<ServiceInfo> serviceInfos, CertificateToken certToken) {

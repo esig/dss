@@ -22,7 +22,6 @@ package eu.europa.esig.dss.x509.crl;
 
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.security.PublicKey;
 import java.security.cert.CRLReason;
 import java.security.cert.X509CRLEntry;
 import java.util.List;
@@ -112,7 +111,7 @@ public class CRLToken extends RevocationToken {
 	}
 
 	@Override
-	protected boolean checkIsSignedBy(final PublicKey publicKey) {
+	protected boolean checkIsSignedBy(final CertificateToken token) {
 		throw new UnsupportedOperationException(this.getClass().getName());
 	}
 

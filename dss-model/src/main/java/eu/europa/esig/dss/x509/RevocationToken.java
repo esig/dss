@@ -157,6 +157,11 @@ public abstract class RevocationToken extends Token {
 		return productionDate;
 	}
 
+	@Override
+	public Date getCreationDate() {
+		return productionDate;
+	}
+
 	public Date getThisUpdate() {
 		return thisUpdate;
 	}

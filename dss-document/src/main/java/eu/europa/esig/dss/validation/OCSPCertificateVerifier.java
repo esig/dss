@@ -108,7 +108,7 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 			for (final X509CertificateHolder x509CertificateHolder : basicOCSPResp.getCerts()) {
 				CertificateToken certificateToken = DSSASN1Utils.getCertificate(x509CertificateHolder);
 				CertificateToken certToken = validationCertPool.getInstance(certificateToken, CertificateSourceType.OCSP_RESPONSE);
-				if (ocspToken.isSignedBy(certToken.getPublicKey())) {
+				if (ocspToken.isSignedBy(certToken)) {
 					ocspToken.setIssuerX500Principal(certToken.getSubjectX500Principal());
 					return true;
 				}
@@ -130,7 +130,7 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 				final X500Principal x500Principal = DSSUtils.getNormalizedX500Principal(x500Principal_);
 				final List<CertificateToken> certificateTokens = validationCertPool.get(x500Principal);
 				for (final CertificateToken issuerCertificateToken : certificateTokens) {
-					if (ocspToken.isSignedBy(issuerCertificateToken.getPublicKey())) {
+					if (ocspToken.isSignedBy(issuerCertificateToken)) {
 						ocspToken.setIssuerX500Principal(issuerCertificateToken.getSubjectX500Principal());
 						break;
 					}
@@ -140,7 +140,7 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 				final byte[] expectedHash = hashOctetString.getOctets();
 				final List<CertificateToken> certificateTokens = validationCertPool.getBySki(expectedHash);
 				for (CertificateToken issuerCertificateToken : certificateTokens) {
-					if (ocspToken.isSignedBy(issuerCertificateToken.getPublicKey())) {
+					if (ocspToken.isSignedBy(issuerCertificateToken)) {
 						ocspToken.setIssuerX500Principal(issuerCertificateToken.getSubjectX500Principal());
 						break;
 					}

@@ -21,7 +21,7 @@ public class OCSPCertificateVerifierTest {
 	public void testKeyHash() {
 		CertificateToken toCheckToken = DSSUtils.loadCertificate(new File("src/test/resources/peru_client.cer"));
 		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/peru_CA.cer"));
-		assertTrue(toCheckToken.isSignedBy(caToken.getPublicKey()));
+		assertTrue(toCheckToken.isSignedBy(caToken));
 
 		OCSPSource ocspSource = new ExternalResourcesOCSPSource("/peru_ocsp.bin");
 		CertificatePool validationCertPool = new CertificatePool();

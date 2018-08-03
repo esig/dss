@@ -505,12 +505,20 @@ public final class DSSASN1Utils {
 				return skiBC.getKeyIdentifier();
 			} else if (computeIfMissing) {
 				// If extension not present, we compute it from the certificate public key
-				DLSequence seq = (DLSequence) DERSequence.fromByteArray(certificateToken.getPublicKey().getEncoded());
-				DERBitString item = (DERBitString) seq.getObjectAt(1);
-				return DSSUtils.digest(DigestAlgorithm.SHA1, item.getOctets());
+				return computeSkiFromCert(certificateToken);
 			}
 			return null;
-		} catch (Exception e) {
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	public static byte[] computeSkiFromCert(final CertificateToken certificateToken) {
+		try {
+			DLSequence seq = (DLSequence) DERSequence.fromByteArray(certificateToken.getPublicKey().getEncoded());
+			DERBitString item = (DERBitString) seq.getObjectAt(1);
+			return DSSUtils.digest(DigestAlgorithm.SHA1, item.getOctets());
+		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}

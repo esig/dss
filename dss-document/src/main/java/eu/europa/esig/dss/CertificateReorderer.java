@@ -57,7 +57,7 @@ public class CertificateReorderer {
 		for (CertificateToken token : certificates) {
 			if (isIssuerNeeded(token)) {
 				for (CertificateToken signer : certificates) {
-					if (token.isSignedBy(signer.getPublicKey())) {
+					if (token.isSignedBy(signer)) {
 						LOG.debug("{} is signed by {}", token.getDSSIdAsString(), signer.getDSSIdAsString());
 						break;
 					}

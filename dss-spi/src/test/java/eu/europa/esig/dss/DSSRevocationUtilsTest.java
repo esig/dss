@@ -38,7 +38,7 @@ public class DSSRevocationUtilsTest {
 	public void testGetOCSPCertificateIDAndMatch() throws IOException, OCSPException {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));
 		CertificateToken issuer = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrs2.crt"));
-		assertTrue(certificate.isSignedBy(issuer.getPublicKey()));
+		assertTrue(certificate.isSignedBy(issuer));
 
 		CertificateID certificateID = DSSRevocationUtils.getOCSPCertificateID(certificate, issuer);
 		assertNotNull(certificateID);

@@ -61,6 +61,23 @@ public final class DomUtils {
 		namespacePrefixMapper = new NamespaceContextMap();
 		namespaces = new HashMap<String, String>();
 		registerDefaultNamespaces();
+
+		dbFactory = DocumentBuilderFactory.newInstance();
+		dbFactory.setNamespaceAware(true);
+		try {
+			// disable external entities
+			// details :
+			// https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#Java
+
+			dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+			dbFactory.setXIncludeAware(false);
+			dbFactory.setExpandEntityReferences(false);
+		} catch (ParserConfigurationException e) {
+			throw new DSSException("Unable to initialize the DocumentBuilderFactory", e);
+		}
 	}
 
 	/**
@@ -91,32 +108,6 @@ public final class DomUtils {
 		return put == null;
 	}
 
-	/**
-	 * Guarantees that the xmlString builder has been created.
-	 *
-	 * @throws DSSException
-	 *             if the DocumentBuilderFactory cannot be built
-	 */
-	private static void ensureDocumentBuilder() throws DSSException {
-		if (dbFactory != null) {
-			return;
-		}
-		dbFactory = DocumentBuilderFactory.newInstance();
-		dbFactory.setNamespaceAware(true);
-		try {
-			// disable external entities
-			// details : https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#Java
-
-			dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-			dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-			dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-
-			dbFactory.setXIncludeAware(false);
-			dbFactory.setExpandEntityReferences(false);
-		} catch (ParserConfigurationException e) {
-			throw new DSSException(e);
-		}
-	}
 
 	/**
 	 * This method returns a new instance of TransformerFactory with secured features enabled
@@ -161,7 +152,6 @@ public final class DomUtils {
 	 *             in case of exceptions while the document creation
 	 */
 	public static Document buildDOM() {
-		ensureDocumentBuilder();
 		try {
 			return dbFactory.newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
@@ -236,7 +226,6 @@ public final class DomUtils {
 	 */
 	public static Document buildDOM(final InputStream inputStream) throws DSSException {
 		try (InputStream is = inputStream) {
-			ensureDocumentBuilder();
 			final Document rootElement = dbFactory.newDocumentBuilder().parse(is);
 			return rootElement;
 		} catch (Exception e) {
@@ -254,8 +243,6 @@ public final class DomUtils {
 	 * @return {@link org.w3c.dom.Document}
 	 */
 	public static Document createDocument(final String namespaceURI, final String qualifiedName) {
-		ensureDocumentBuilder();
-
 		DOMImplementation domImpl;
 		try {
 			domImpl = dbFactory.newDocumentBuilder().getDOMImplementation();

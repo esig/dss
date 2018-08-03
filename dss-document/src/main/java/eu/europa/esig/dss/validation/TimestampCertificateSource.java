@@ -13,7 +13,7 @@ public class TimestampCertificateSource extends CAdESCertificateSource {
 	}
 
 	@Override
-	protected CertificateSourceType getCertificateSourceType() {
+	public CertificateSourceType getCertificateSourceType() {
 		return CertificateSourceType.TIMESTAMP;
 	}
 

@@ -46,12 +46,10 @@ public class CertificateValidator {
 		svc.setCurrentTime(validationTime);
 		svc.validate();
 
-		DiagnosticDataBuilder builder = new DiagnosticDataBuilder();
-		builder.usedCertificates(svc.getProcessedCertificates()).usedRevocations(svc.getProcessedRevocations())
-				.trustedListsCertificateSource(certificateVerifier.getTrustedCertSource())
-				.validationDate(svc.getCurrentTime());
-
-		DiagnosticData diagnosticData = builder.build();
+		final DiagnosticData diagnosticData = new DiagnosticDataBuilder().usedCertificates(svc.getProcessedCertificates())
+				.usedRevocations(svc.getProcessedRevocations())
+				.trustedCertificateSource(certificateVerifier.getTrustedCertSource())
+				.validationDate(svc.getCurrentTime()).build();
 
 		CertificateProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);

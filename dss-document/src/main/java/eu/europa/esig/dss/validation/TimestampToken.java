@@ -21,9 +21,7 @@
 package eu.europa.esig.dss.validation;
 
 import java.io.IOException;
-import java.security.PublicKey;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -35,11 +33,10 @@ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformationVerifier;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
-import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.tsp.TSPException;
-import org.bouncycastle.tsp.TSPValidationException;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.tsp.TimeStampTokenInfo;
 import org.slf4j.Logger;
@@ -56,7 +53,6 @@ import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.x509.TimestampValidity;
 import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.TokenValidationExtraInfo;
 
@@ -69,13 +65,13 @@ public class TimestampToken extends Token {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TimestampToken.class);
 
-	private boolean processed = false;
-
 	private final TimeStampToken timeStamp;
 
-	private TimestampType timeStampType;
+	private final TimestampType timeStampType;
 
-	private TimestampCertificateSource certificateSource;
+	private final TimestampCertificateSource certificateSource;
+
+	private boolean processed = false;
 
 	private boolean messageImprintData;
 
@@ -99,7 +95,7 @@ public class TimestampToken extends Token {
 	 */
 	private String canonicalizationMethod;
 
-	private X500Principal issuerX500Principal;
+	private X500Principal tsaX500Principal;
 
 	/**
 	 * This attribute is used only with XAdES timestamps. It represents the hash code of the DOM element containing the
@@ -133,34 +129,14 @@ public class TimestampToken extends Token {
 	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final CertificatePool certPool) {
 		this.timeStamp = timeStamp;
 		this.timeStampType = type;
-		this.extraInfo = new TokenValidationExtraInfo();
-
 		this.certificateSource = new TimestampCertificateSource(timeStamp, certPool);
 
-		final Collection<CertificateToken> certs = certificateSource.getCertificates();
-		for (final CertificateToken certificateToken : certs) {
-			final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(certificateToken);
-			if (timeStamp.getSID().match(x509CertificateHolder)) {
-				TimestampValidity timestampValidity = validateTimestampToken(timeStamp, certificateToken);
-				signatureInvalidityReason = timestampValidity.name();
-				signatureValid = TimestampValidity.VALID == timestampValidity;
-				if (signatureValid) {
-					this.publicKeyOfTheSigner = certificateToken.getPublicKey();
-					this.issuerX500Principal = certificateToken.getSubjectX500Principal();
-					final String algorithm = certificateToken.getPublicKey().getAlgorithm();
-					final EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.forName(algorithm);
-					final AlgorithmIdentifier hashAlgorithm = timeStamp.getTimeStampInfo().getHashAlgorithm();
-					final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(hashAlgorithm.getAlgorithm().getId());
-					signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
-					break;
-				}
-			}
-		}
+		this.extraInfo = new TokenValidationExtraInfo();
 	}
 
 	@Override
 	public X500Principal getIssuerX500Principal() {
-		return issuerX500Principal;
+		return tsaX500Principal;
 	}
 
 	@Override
@@ -168,38 +144,37 @@ public class TimestampToken extends Token {
 		return timeStampType.name() + ": " + getDSSIdAsString() + ": " + DSSUtils.formatInternal(timeStamp.getTimeStampInfo().getGenTime());
 	}
 
-	private TimestampValidity validateTimestampToken(final TimeStampToken timeStampToken, final CertificateToken potentialIssuer) {
-		TimestampValidity timestampValidity;
-		try {
+	@Override
+	protected boolean checkIsSignedBy(final CertificateToken candidate) {
 
-			final JcaSimpleSignerInfoVerifierBuilder verifierBuilder = new JcaSimpleSignerInfoVerifierBuilder();
-			// Certificate presence is mandatory here
-			final SignerInformationVerifier verifier = verifierBuilder.build(potentialIssuer.getCertificate());
-			timeStampToken.validate(verifier);
-			timestampValidity = TimestampValidity.VALID;
-		} catch (IllegalArgumentException e) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("No signing certificate for timestamp token: ", e);
-			} else {
-				LOG.info("No signing certificate for timestamp token: {}", e.getMessage());
+		final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(candidate);
+		if (timeStamp.getSID().match(x509CertificateHolder)) {
+			try {
+				final JcaSimpleSignerInfoVerifierBuilder verifierBuilder = new JcaSimpleSignerInfoVerifierBuilder();
+				final SignerInformationVerifier verifier = verifierBuilder.build(candidate.getCertificate());
+				timeStamp.validate(verifier);
+				signatureValid = true;
+
+				this.publicKeyOfTheSigner = candidate.getPublicKey();
+				this.tsaX500Principal = candidate.getSubjectX500Principal();
+				final String algorithm = candidate.getPublicKey().getAlgorithm();
+				final EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.forName(algorithm);
+				final AlgorithmIdentifier hashAlgorithm = timeStamp.getTimeStampInfo().getHashAlgorithm();
+				final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(hashAlgorithm.getAlgorithm().getId());
+				signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
+
+			} catch (Exception e) {
+				signatureValid = false;
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("Unable to validate timestamp token : ", e);
+				} else {
+					LOG.warn("Unable to validate timestamp token : {}", e.getMessage());
+				}
+				signatureInvalidityReason = e.getClass().getSimpleName() + " : " + e.getMessage();
 			}
-			timestampValidity = TimestampValidity.NO_SIGNING_CERTIFICATE;
-		} catch (TSPValidationException e) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("No valid signature for timestamp token: ", e);
-			} else {
-				LOG.info("No valid signature for timestamp token: {}", e.getMessage());
-			}
-			timestampValidity = TimestampValidity.NOT_VALID_SIGNATURE;
-		} catch (TSPException | OperatorCreationException e) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("No valid structure for timestamp token: ", e);
-			} else {
-				LOG.info("No valid structure for timestamp token: {}", e.getMessage());
-			}
-			timestampValidity = TimestampValidity.NOT_VALID_STRUCTURE;
+			return signatureValid;
 		}
-		return timestampValidity;
+		return false;
 	}
 
 	/**
@@ -228,7 +203,6 @@ public class TimestampToken extends Token {
 	 * @return true if the data is verified by the TimeStampToken
 	 */
 	public boolean matchData(final byte[] data, final boolean suppressMatchWarnings) {
-
 		processed = true;
 
 		messageImprintData = data != null;
@@ -279,6 +253,11 @@ public class TimestampToken extends Token {
 	 */
 	public Date getGenerationTime() {
 		return timeStamp.getTimeStampInfo().getGenTime();
+	}
+
+	@Override
+	public Date getCreationDate() {
+		return getGenerationTime();
 	}
 
 	/**
@@ -467,10 +446,8 @@ public class TimestampToken extends Token {
 		}
 	}
 
-	@Override
-	protected boolean checkIsSignedBy(PublicKey publicKey) {
-
-		throw new UnsupportedOperationException(this.getClass().getName());
+	public SignerId getSignerId() {
+		return timeStamp.getSID();
 	}
 
 }

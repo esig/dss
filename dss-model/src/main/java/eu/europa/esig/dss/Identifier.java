@@ -33,20 +33,10 @@ public abstract class Identifier implements Serializable {
 
 	private static final DigestAlgorithm DIGEST_ALGO = DigestAlgorithm.SHA256;
 
-	private static final MessageDigest MD;
-
-	static {
-		try {
-			MD = MessageDigest.getInstance(DIGEST_ALGO.getJavaName());
-		} catch (NoSuchAlgorithmException e) {
-			throw new DSSException("Unable to initialize MessageDigest", e);
-		}
-	}
-
 	private final Digest id;
 
 	Identifier(byte[] data) {
-		this.id = new Digest(DIGEST_ALGO, MD.digest(data));
+		this.id = new Digest(DIGEST_ALGO, getMessageDigest().digest(data));
 	}
 
 	/**
@@ -56,6 +46,14 @@ public abstract class Identifier implements Serializable {
 	 */
 	public String asXmlId() {
 		return id.getHexValue();
+	}
+
+	private MessageDigest getMessageDigest() {
+		try {
+			return MessageDigest.getInstance(DIGEST_ALGO.getJavaName());
+		} catch (NoSuchAlgorithmException e) {
+			throw new DSSException("Unable to initialize MessageDigest", e);
+		}
 	}
 
 	@Override

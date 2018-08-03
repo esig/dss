@@ -21,7 +21,10 @@
 package eu.europa.esig.dss.tsl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +46,8 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	private Map<String, TLInfo> tlInfos = new HashMap<String, TLInfo>();
 
+	private Map<String, List<ServiceInfo>> trustServicesByEntity = new HashMap<String, List<ServiceInfo>>();
+
 	/**
 	 * The default constructor.
 	 */
@@ -51,14 +56,31 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	}
 
 	@Override
-	protected CertificateSourceType getCertificateSourceType() {
+	public CertificateSourceType getCertificateSourceType() {
 		return CertificateSourceType.TRUSTED_LIST;
+	}
+
+	public void addCertificate(CertificateToken certificate, List<ServiceInfo> serviceInfos) {
+		certificate = super.addCertificate(certificate);
+
+		String entityKey = certificate.getEntityKey();
+		if (trustServicesByEntity.containsKey(entityKey)) {
+			List<ServiceInfo> storedServiceInfos = trustServicesByEntity.get(entityKey);
+			
+			if (!Arrays.equals(serviceInfos.toArray(new ServiceInfo[serviceInfos.size()]),
+					storedServiceInfos.toArray(new ServiceInfo[storedServiceInfos.size()]))) {
+
+				LOG.warn("NOT THE SAME");
+			}
+
+		}
+
+		trustServicesByEntity.put(entityKey, serviceInfos);
 	}
 
 	/**
 	 * This method is not applicable for this kind of certificate source. You should
-	 * use
-	 * {@link #addCertificate(eu.europa.esig.dss.x509.CertificateToken, eu.europa.esig.dss.tsl.ServiceInfo)}
+	 * use {@link #addCertificate(CertificateToken, List)}
 	 *
 	 * @param certificate
 	 *                    the certificate you have to trust
@@ -90,8 +112,14 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		return tlInfos;
 	}
 
+	@Override
 	public Set<ServiceInfo> getTrustServices(CertificateToken token) {
-		return certPool.getRelatedTrustServices(token);
+		List<ServiceInfo> trustServicesForToken = trustServicesByEntity.get(token.getEntityKey());
+		if (trustServicesForToken != null) {
+			return new HashSet<>(trustServicesForToken);
+		} else {
+			return Collections.emptySet();
+		}
 	}
 
 	public List<String> getOCSPUrlsFromServiceSupplyPoint(CertificateToken certificateToken) {
@@ -105,7 +133,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	private List<String> getServiceSupplyPoints(CertificateToken certificateToken, String... keywords) {
 		List<String> urls = new ArrayList<String>();
 		CertificateToken trustAnchor = certPool.getTrustAnchor(certificateToken);
-		Set<ServiceInfo> trustServices = certPool.getRelatedTrustServices(trustAnchor);
+		List<ServiceInfo> trustServices = trustServicesByEntity.get(trustAnchor.getEntityKey());
 
 		for (ServiceInfo serviceInfo : trustServices) {
 			for (ServiceInfoStatus serviceInfoStatus : serviceInfo.getStatus()) {
