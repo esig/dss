@@ -22,6 +22,8 @@ package eu.europa.esig.dss.token;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStore.ProtectionParameter;
@@ -142,8 +144,17 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 			LOG.debug("PKCS11 Config : \n{}", configString);
 
 			try (ByteArrayInputStream confStream = new ByteArrayInputStream(configString.getBytes())) {
-				sun.security.pkcs11.SunPKCS11 sunPKCS11 = new sun.security.pkcs11.SunPKCS11(confStream);
+				Provider sunPKCS11  = null;
+				try {
+					sunPKCS11 = new sun.security.pkcs11.SunPKCS11(confStream);
+				}catch ( java.lang.NoSuchMethodError e){
+					LOG.info( "Not JDK 8 SunPKCS11 constructor" );
+					sunPKCS11 = new sun.security.pkcs11.SunPKCS11();
+                    Class pkcsClass = Class.forName("sun.security.pkcs11.SunPKCS11");
+                    sunPKCS11 = (Provider) pkcsClass.getMethod( "configure", String.class ).invoke(sunPKCS11,"--"+configString );
+				}
 				// we need to add the provider to be able to sign later
+                LOG.debug( "PKCS11 Info: \n{}", sunPKCS11.getInfo() );
 				Security.addProvider(sunPKCS11);
 				provider = sunPKCS11;
 				return provider;
