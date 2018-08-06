@@ -31,6 +31,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -208,6 +209,7 @@ public class CertificateToken extends Token {
 				try {
 					x509Certificate.verify(x509Certificate.getPublicKey());
 					selfSigned = true;
+					signatureValid = true;
 				} catch (Exception e) {
 					selfSigned = false;
 				}
@@ -228,6 +230,19 @@ public class CertificateToken extends Token {
 		final String n1 = x509Certificate.getSubjectX500Principal().getName(X500Principal.CANONICAL);
 		final String n2 = x509Certificate.getIssuerX500Principal().getName(X500Principal.CANONICAL);
 		return n1.equals(n2);
+	}
+
+	/**
+	 * This method returns true if the given token is equivalent.
+	 * 
+	 * @param token
+	 *              the token to be compared
+	 * @return true if the given certificate has the same public key
+	 */
+	public boolean isEquivalent(CertificateToken token) {
+		PublicKey currentPublicKey = getPublicKey();
+		PublicKey tokenPublicKey = token.getPublicKey();
+		return Arrays.equals(currentPublicKey.getEncoded(), tokenPublicKey.getEncoded());
 	}
 
 	/**
