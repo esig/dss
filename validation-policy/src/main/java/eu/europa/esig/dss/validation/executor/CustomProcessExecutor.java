@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.validation.executor;
 
 import java.util.Date;
+import java.util.Objects;
 
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -41,7 +42,10 @@ public class CustomProcessExecutor implements ProcessExecutor<Reports> {
 	@Override
 	public Reports execute() {
 
-		assert jaxbDiagnosticData != null && policy != null && currentTime != null && validationLevel != null;
+		Objects.requireNonNull(jaxbDiagnosticData, "The diagnostic data is missing");
+		Objects.requireNonNull(policy, "The validation policy is missing");
+		Objects.requireNonNull(currentTime, "The current time is missing");
+		Objects.requireNonNull(validationLevel, "The validation level is missing");
 
 		diagnosticData = new DiagnosticData(jaxbDiagnosticData);
 

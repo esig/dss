@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.validation;
 
 import java.util.Date;
+import java.util.Objects;
 
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.validation.executor.CertificateProcessExecutor;
@@ -17,6 +18,7 @@ public class CertificateValidator {
 	private CertificateVerifier certificateVerifier;
 
 	private CertificateValidator(CertificateToken token) {
+		Objects.requireNonNull(token, "The certificate is missing");
 		this.token = token;
 	}
 

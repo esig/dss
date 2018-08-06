@@ -25,7 +25,26 @@ public class CertificateValidatorTest {
 		assertNotNull(reports.getXmlDetailedReport());
 		assertNotNull(reports.getSimpleReportJaxb());
 		assertNotNull(reports.getXmlSimpleReport());
+	}
 
+	@Test(expected = NullPointerException.class)
+	public void testCertNull() {
+		CertificateValidator.fromCertificate(null);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testPolicyNull() {
+		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/CZ.cer")));
+		cv.setCertificateVerifier(new CommonCertificateVerifier());
+		cv.validate(null);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testDateNull() {
+		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/CZ.cer")));
+		cv.setCertificateVerifier(new CommonCertificateVerifier());
+		cv.setValidationTime(null);
+		cv.validate();
 	}
 
 }

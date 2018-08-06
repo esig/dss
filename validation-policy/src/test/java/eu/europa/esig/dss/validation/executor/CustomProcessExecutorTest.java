@@ -762,6 +762,56 @@ public class CustomProcessExecutorTest {
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 	}
 
+	@Test(expected = NullPointerException.class)
+	public void diagDataNotNull() throws Exception {
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(null);
+		executor.setValidationPolicy(loadPolicyNoRevoc());
+		executor.setCurrentTime(new Date());
+
+		executor.execute();
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void validationPolicyNotNull() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/DSS-1330-diag-data.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(null);
+		executor.setCurrentTime(new Date());
+
+		executor.execute();
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void currentDateNotNull() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/DSS-1330-diag-data.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicyNoRevoc());
+		executor.setCurrentTime(null);
+
+		executor.execute();
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void validationLevelNotNull() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/DSS-1330-diag-data.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicyNoRevoc());
+		executor.setCurrentTime(new Date());
+		executor.setValidationLevel(null);
+
+		executor.execute();
+	}
+
 	private void checkReports(Reports reports) {
 		// reports.print();
 		assertNotNull(reports);
