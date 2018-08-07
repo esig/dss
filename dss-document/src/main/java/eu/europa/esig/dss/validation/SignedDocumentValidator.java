@@ -440,7 +440,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	private void prepareCertificatesAndTimestamps(final List<AdvancedSignature> allSignatureList, final ValidationContext validationContext) {
 		for (final AdvancedSignature signature : allSignatureList) {
-			final List<CertificateToken> candidates = signature.getCertificateSource().getCertificates();
+			final List<CertificateToken> candidates = signature.getCertificates();
 			for (final CertificateToken certificateToken : candidates) {
 				validationContext.addCertificateTokenForVerification(certificateToken);
 			}

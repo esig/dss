@@ -18,36 +18,34 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.signature;
-
-import java.io.File;
+package eu.europa.esig.dss.cades.signature;
 
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelLTWrongAIATest extends AbstractXAdESTestSignature {
+public class CAdESLevelLTWrongAIATest extends AbstractCAdESTestSignature {
 
-	private DocumentSignatureService<XAdESSignatureParameters> service;
-	private XAdESSignatureParameters signatureParameters;
+	private DocumentSignatureService<CAdESSignatureParameters> service;
+	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
-		signatureParameters = new XAdESSignatureParameters();
+		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());
 	}
 
@@ -57,12 +55,12 @@ public class XAdESLevelLTWrongAIATest extends AbstractXAdESTestSignature {
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
 		return service;
 	}
 
 	@Override
-	protected XAdESSignatureParameters getSignatureParameters() {
+	protected CAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 

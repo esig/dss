@@ -256,19 +256,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		this.signerInformation = signerInformation;
 	}
 
-	/**
-	 * This method returns the certificate pool used by this instance to handle
-	 * encapsulated certificates.
-	 *
-	 * @return the certificate pool associated with the signature
-	 */
-	public CertificatePool getCertPool() {
-		return certPool;
-	}
-
 	@Override
 	public SignatureForm getSignatureForm() {
-
 		return SignatureForm.CAdES;
 	}
 

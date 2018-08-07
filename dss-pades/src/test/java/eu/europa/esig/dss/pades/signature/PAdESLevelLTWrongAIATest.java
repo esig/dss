@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.signature;
+package eu.europa.esig.dss.pades.signature;
 
 import java.io.File;
 
@@ -28,26 +28,26 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelLTWrongAIATest extends AbstractXAdESTestSignature {
+public class PAdESLevelLTWrongAIATest extends AbstractPAdESTestSignature {
 
-	private DocumentSignatureService<XAdESSignatureParameters> service;
-	private XAdESSignatureParameters signatureParameters;
+	private DocumentSignatureService<PAdESSignatureParameters> service;
+	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+		documentToSign = new FileDocument(new File("src/test/resources/sample.pdf"));
 
-		signatureParameters = new XAdESSignatureParameters();
+		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
+		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());
 	}
 
@@ -57,12 +57,12 @@ public class XAdESLevelLTWrongAIATest extends AbstractXAdESTestSignature {
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
+	protected DocumentSignatureService<PAdESSignatureParameters> getService() {
 		return service;
 	}
 
 	@Override
-	protected XAdESSignatureParameters getSignatureParameters() {
+	protected PAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 

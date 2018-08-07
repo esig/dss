@@ -23,6 +23,7 @@ package eu.europa.esig.dss.x509;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -55,9 +56,9 @@ public class CommonCertificateSource implements CertificateSource {
 	 *            the certificate pool to use
 	 */
 	public CommonCertificateSource(final CertificatePool certPool) {
-		if (certPool == null) {
-			throw new NullPointerException();
-		}
+
+		Objects.requireNonNull(certPool, "Certificate pool is missing");
+
 		this.certPool = certPool;
 	}
 

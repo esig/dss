@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
@@ -79,12 +80,8 @@ public class CertificatePool implements Serializable {
 	 * @return the complete CertificateToken instance (merged with the pool content)
 	 */
 	public CertificateToken getInstance(final CertificateToken certificateToAdd, final CertificateSourceType certSource) {
-		if (certificateToAdd == null) {
-			throw new IllegalArgumentException("The certificate must be filled");
-		}
-		if (certSource == null) {
-			throw new IllegalArgumentException("The certificate source type must be set.");
-		}
+		Objects.requireNonNull(certificateToAdd, "The certificate must be filled");
+		Objects.requireNonNull(certSource, "The certificate source type must be set.");
 
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Certificate to add: {} | {}", certificateToAdd.getIssuerX500Principal(), certificateToAdd.getSerialNumber());
