@@ -226,10 +226,15 @@ public class TSLRepository {
 				TSLValidationModel model = entry.getValue();
 				// Synchronize certpool
 				if (!model.isCertificateSourceSynchronized()) {
-					LOG.info("Synchronizing TL {} ...", countryCode);
+					LOG.info("Synchronizing TL for country {} ...", countryCode);
 					TSLParserResult parseResult = model.getParseResult();
 					if (parseResult != null) {
 						Map<CertificateToken, List<ServiceInfo>> servicesByCertMap = getServicesByCert(parseResult);
+
+						for (CertificateToken cert : servicesByCertMap.keySet()) {
+							trustedListsCertificateSource.reinit(cert);
+						}
+
 						for (Entry<CertificateToken, List<ServiceInfo>> servicesByCertEntry : servicesByCertMap.entrySet()) {
 							trustedListsCertificateSource.addCertificate(servicesByCertEntry.getKey(), servicesByCertEntry.getValue());
 						}
@@ -240,8 +245,9 @@ public class TSLRepository {
 				// Synchronize tlInfos
 				trustedListsCertificateSource.updateTlInfo(countryCode, getTlInfo(countryCode, model));
 			}
-			LOG.info("Nb of loaded trusted lists : " + allMapTSLValidationModels.size());
-			LOG.info("Nb of trusted certificates : " + trustedListsCertificateSource.getNumberOfTrustedCertificates());
+			LOG.info("Nb of loaded trusted lists : {}", allMapTSLValidationModels.size());
+			LOG.info("Nb of trusted certificates : {}", trustedListsCertificateSource.getNumberOfTrustedCertificates());
+			LOG.info("Nb of trusted public keys : {}", trustedListsCertificateSource.getNumberOfTrustedPublicKeys());
 		}
 	}
 

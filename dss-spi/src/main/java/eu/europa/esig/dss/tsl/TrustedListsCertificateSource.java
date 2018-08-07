@@ -60,22 +60,30 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		return CertificateSourceType.TRUSTED_LIST;
 	}
 
+	public void reinit(CertificateToken certificate) {
+		String entityKey = certificate.getEntityKey();
+		trustServicesByEntity.remove(entityKey);
+	}
+
 	public void addCertificate(CertificateToken certificate, List<ServiceInfo> serviceInfos) {
 		certificate = super.addCertificate(certificate);
 
 		String entityKey = certificate.getEntityKey();
-		if (trustServicesByEntity.containsKey(entityKey)) {
-			List<ServiceInfo> storedServiceInfos = trustServicesByEntity.get(entityKey);
-			
-			if (!Arrays.equals(serviceInfos.toArray(new ServiceInfo[serviceInfos.size()]),
-					storedServiceInfos.toArray(new ServiceInfo[storedServiceInfos.size()]))) {
 
-				LOG.warn("NOT THE SAME");
+		synchronized (trustServicesByEntity) {
+
+			if (trustServicesByEntity.containsKey(entityKey)) {
+				List<ServiceInfo> storedServiceInfos = trustServicesByEntity.get(entityKey);
+				if (!Arrays.equals(serviceInfos.toArray(new ServiceInfo[serviceInfos.size()]),
+						storedServiceInfos.toArray(new ServiceInfo[storedServiceInfos.size()]))) {
+					storedServiceInfos.addAll(serviceInfos);
+				}
+			} else {
+				trustServicesByEntity.put(entityKey, serviceInfos);
 			}
 
 		}
 
-		trustServicesByEntity.put(entityKey, serviceInfos);
 	}
 
 	/**
@@ -152,6 +160,10 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		}
 
 		return urls;
+	}
+
+	public int getNumberOfTrustedPublicKeys() {
+		return trustServicesByEntity.size();
 	}
 
 }

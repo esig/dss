@@ -70,4 +70,9 @@ public class TimeDependentValues<T extends TimeDependent> implements Iterable<T>
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		return list.toString();
+	}
+
 }

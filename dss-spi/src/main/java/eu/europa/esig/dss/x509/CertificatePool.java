@@ -348,6 +348,8 @@ public class CertificatePool implements Serializable {
 		public void addEquivalentCertificate(CertificateToken token) {
 			if (!equivalentCertificates.contains(token)) {
 				LOG.debug("Certificate with same public key detected : {}", token.getAbbreviation());
+				// we manually recompute the SKI (we had cases with wrongly encoded value in the
+				// certificate)
 				final byte[] newSKI = DSSASN1Utils.computeSkiFromCert(token);
 				CertificateToken equivalent = equivalentCertificates.iterator().next();
 				final byte[] skiEquivalent = DSSASN1Utils.computeSkiFromCert(equivalent);
