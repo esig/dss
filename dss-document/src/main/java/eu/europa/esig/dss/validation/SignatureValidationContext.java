@@ -376,13 +376,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@Override
 	public void addTimestampTokenForVerification(final TimestampToken timestampToken) {
-
 		if (addTokenForVerification(timestampToken)) {
-
-			List<CertificateToken> certificates = timestampToken.getCertificates();
-			for (CertificateToken certificateToken : certificates) {
-				addCertificateTokenForVerification(certificateToken);
-			}
 
 			final boolean added = processedTimestamps.add(timestampToken);
 			if (LOG.isTraceEnabled()) {

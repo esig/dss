@@ -96,7 +96,7 @@ public class CertificateReorderer {
 	}
 
 	private boolean isIssuerNeeded(CertificateToken token) {
-		return !token.isSelfSigned() && !token.isTrusted() && token.getPublicKeyOfTheSigner() == null;
+		return !token.isSelfSigned() && token.getPublicKeyOfTheSigner() == null;
 	}
 
 	/**

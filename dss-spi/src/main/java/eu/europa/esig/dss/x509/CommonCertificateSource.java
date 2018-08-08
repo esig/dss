@@ -94,7 +94,11 @@ public class CommonCertificateSource implements CertificateSource {
 	 */
 	@Override
 	public List<CertificateToken> getCertificates() {
-		return Collections.unmodifiableList(certificateTokens);
+		if (certificateTokens == null) {
+			return Collections.emptyList();
+		} else {
+			return Collections.unmodifiableList(certificateTokens);
+		}
 	}
 
 	/**

@@ -191,7 +191,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 */
 	public ValidationContext getSignatureValidationContext(final CertificateVerifier certificateVerifier) {
 
-		final ValidationContext validationContext = new SignatureValidationContext();
+		final ValidationContext validationContext = new SignatureValidationContext(certPool);
 		certificateVerifier.setSignatureCRLSource(new ListCRLSource(getCRLSource()));
 		certificateVerifier.setSignatureOCSPSource(new ListOCSPSource(getOCSPSource()));
 		validationContext.initialize(certificateVerifier);

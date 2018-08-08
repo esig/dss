@@ -420,16 +420,16 @@ public class DiagnosticDataBuilder {
 		if (certPubKey != null) {
 			final List<XmlChainItem> certChainTokens = new ArrayList<XmlChainItem>();
 			Set<CertificateToken> processedTokens = new HashSet<CertificateToken>();
-			do {
-				CertificateToken issuerToken_ = getCertificateByPubKey(certPubKey);
-				certChainTokens.add(getXmlChainItem(issuerToken_));
-				if (issuerToken_.isSelfSigned() || processedTokens.contains(issuerToken_)
-						|| isTrusted(issuerToken_)) {
+			CertificateToken issuerToken = getCertificateByPubKey(certPubKey);
+			while (issuerToken !=null) {
+				certChainTokens.add(getXmlChainItem(issuerToken));
+				if (issuerToken.isSelfSigned() || processedTokens.contains(issuerToken)
+						|| isTrusted(issuerToken)) {
 					break;
 				}
-				processedTokens.add(issuerToken_);
-				certPubKey = issuerToken_.getPublicKeyOfTheSigner();
-			} while (certPubKey != null);
+				processedTokens.add(issuerToken);
+				issuerToken  = getCertificateByPubKey(issuerToken.getPublicKeyOfTheSigner());
+			} 
 			return certChainTokens;
 		}
 		return null;
@@ -469,9 +469,9 @@ public class DiagnosticDataBuilder {
 	 * @return
 	 */
 	private XmlSigningCertificate getXmlSigningCertificate(final PublicKey certPubKey) {
-		if (certPubKey != null) {
+		final CertificateToken certificateByPubKey = getCertificateByPubKey(certPubKey);
+		if (certificateByPubKey != null) {
 			final XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
-			final CertificateToken certificateByPubKey = getCertificateByPubKey(certPubKey);
 			xmlSignCertType.setId(certificateByPubKey.getDSSIdAsString());
 			return xmlSignCertType;
 		}
@@ -479,6 +479,10 @@ public class DiagnosticDataBuilder {
 	}
 
 	private CertificateToken getCertificateByPubKey(final PublicKey certPubKey) {
+		if (certPubKey == null) {
+			return null;
+		}
+
 		List<CertificateToken> founds = new ArrayList<CertificateToken>();
 		for (CertificateToken cert : usedCertificates) {
 			if (certPubKey.equals(cert.getPublicKey())) {
