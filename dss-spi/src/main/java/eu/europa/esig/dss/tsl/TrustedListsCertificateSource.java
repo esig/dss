@@ -60,9 +60,9 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		return CertificateSourceType.TRUSTED_LIST;
 	}
 
-	public void reinit(CertificateToken certificate) {
-		String entityKey = certificate.getEntityKey();
-		trustServicesByEntity.remove(entityKey);
+	public void reinit() {
+		tlInfos = new HashMap<String, TLInfo>();
+		trustServicesByEntity = new HashMap<String, List<ServiceInfo>>();
 	}
 
 	public void addCertificate(CertificateToken certificate, List<ServiceInfo> serviceInfos) {
