@@ -81,6 +81,15 @@ public interface ValidationContext {
 	void validate() throws DSSException;
 
 	/**
+	 * This method allows to verify if all processed certificates have a revocation
+	 * data
+	 * 
+	 * @return true if at least one revocation data is present for each certificate
+	 * 
+	 */
+	boolean isAllRequiredRevocationDataPresent();
+
+	/**
 	 * Returns a read only list of all certificates used in the process of the validation of all signatures from the
 	 * given document. This list
 	 * includes the certificate to check, certification chain certificates, OCSP response certificate...

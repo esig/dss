@@ -422,11 +422,8 @@ public class SignatureValidationContext implements ValidationContext {
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Checking revocation data for : {}", certToken.getDSSIdAsString());
 		}
-		if (certToken.isSelfSigned() || isTrusted(certToken)) {
-			// This check is not needed for the trust anchor.
-			return Collections.emptyList();
-		} else if (DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken)) {
-			certToken.extraInfo().infoOCSPNoCheckPresent();
+
+		if (isRevocationDataNotRequired(certToken)) {
 			return Collections.emptyList();
 		}
 
@@ -462,6 +459,29 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 
 		return revocations;
+	}
+
+	@Override
+	public boolean isAllRequiredRevocationDataPresent() {
+		for (CertificateToken certificateToken : processedCertificates) {
+			if (!isRevocationDataNotRequired(certificateToken)) {
+				boolean found = false;
+				for (RevocationToken revocationToken : processedRevocations) {
+					if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	private boolean isRevocationDataNotRequired(CertificateToken certToken) {
+		return certToken.isSelfSigned() || isTrusted(certToken) || DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken);
 	}
 
 	@Override

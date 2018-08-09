@@ -20,16 +20,20 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import java.io.IOException;
+
 import org.junit.Before;
+import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class CAdESLevelLTATest extends AbstractCAdESTestSignature {
+public class CAdESLevelImpossibleLTExceptionTest extends AbstractCAdESTestSignature {
 
 	private DocumentSignatureService<CAdESSignatureParameters> service;
 	private CAdESSignatureParameters signatureParameters;
@@ -43,10 +47,16 @@ public class CAdESLevelLTATest extends AbstractCAdESTestSignature {
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 
-		service = new CAdESService(getCompleteCertificateVerifier());
+		service = new CAdESService(getEmptyCertificateVerifier());
 		service.setTspSource(getGoodTsa());
+	}
+
+	@Override
+	@Test(expected = DSSException.class)
+	public void signAndVerify() throws IOException {
+		super.signAndVerify(); // unable to extend to LT (no online CRL/OCSP)
 	}
 
 	@Override

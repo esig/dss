@@ -99,6 +99,11 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 	private DSSDictionaryCallback validate(PAdESSignature signature) {
 
 		ValidationContext validationContext = signature.getSignatureValidationContext(certificateVerifier);
+
+		if (!validationContext.isAllRequiredRevocationDataPresent()) {
+			throw new DSSException("Revocation data is missing");
+		}
+
 		DefaultAdvancedSignature.RevocationDataForInclusion revocationsForInclusionInProfileLT = signature.getRevocationDataForInclusion(validationContext);
 
 		DSSDictionaryCallback validationCallback = new DSSDictionaryCallback();

@@ -18,55 +18,65 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.cades.signature;
+package eu.europa.esig.dss.xades.signature;
+
+import java.io.File;
+import java.io.IOException;
 
 import org.junit.Before;
+import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class CAdESLevelLTATest extends AbstractCAdESTestSignature {
+public class XAdESLevelImpossibleLTAExceptionTest extends AbstractXAdESTestSignature {
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
-	private CAdESSignatureParameters signatureParameters;
+	private DocumentSignatureService<XAdESSignatureParameters> service;
+	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello World".getBytes());
+		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
-		signatureParameters = new CAdESSignatureParameters();
+		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-
-		service = new CAdESService(getCompleteCertificateVerifier());
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+		service = new XAdESService(getEmptyCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
 
 	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	@Test(expected = DSSException.class)
+	public void signAndVerify() throws IOException {
+		super.signAndVerify(); // unable to extend to LT (no online CRL/OCSP)
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
+	}
+
+	@Override
+	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
 		return service;
 	}
 
 	@Override
-	protected CAdESSignatureParameters getSignatureParameters() {
+	protected XAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
 	}
 
 	@Override
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
 	}
 
 }
