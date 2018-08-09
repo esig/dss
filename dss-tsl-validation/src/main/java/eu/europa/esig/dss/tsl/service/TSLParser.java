@@ -341,7 +341,11 @@ public class TSLParser implements Callable<TSLParserResult> {
 		if ((tspServices != null) && Utils.isCollectionNotEmpty(tspServices.getTSPService())) {
 			for (TSPServiceType tslService : tspServices.getTSPService()) {
 				if (tslService.getServiceInformation() != null) {
-					services.add(getService(tslService));
+					try {
+						services.add(getService(tslService));
+					} catch (IllegalArgumentException e) {
+						LOG.error("Unable to load service '{}' : {}", getEnglishOrFirst(tslService.getServiceInformation().getServiceName()), e.getMessage());
+					}
 				}
 			}
 		}
