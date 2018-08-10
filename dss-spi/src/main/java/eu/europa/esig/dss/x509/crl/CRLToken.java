@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.cert.CRLReason;
 import java.security.cert.X509CRLEntry;
-import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -37,7 +36,6 @@ import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.TokenValidationExtraInfo;
 
 /**
  * This class represents a CRL and provides the information about its validity.
@@ -78,7 +76,6 @@ public class CRLToken extends RevocationToken {
 		this.nextUpdate = crlValidity.getNextUpdate();
 		this.expiredCertsOnCRL = crlValidity.getExpiredCertsOnCRL();
 		this.publicKeyOfTheSigner = crlValidity.getIssuerToken().getPublicKey();
-		this.extraInfo = new TokenValidationExtraInfo();
 
 		this.signatureValid = crlValidity.isSignatureIntact();
 		this.signatureInvalidityReason = crlValidity.getSignatureInvalidityReason();
@@ -170,15 +167,6 @@ public class CRLToken extends RevocationToken {
 			out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');
 			out.append(indentStr).append("Status: ").append(getStatus()).append('\n');
 			out.append(indentStr).append("Issuer's certificate: ").append(getIssuerX500Principal()).append('\n');
-			List<String> validationExtraInfo = extraInfo.getValidationInfo();
-			if (validationExtraInfo.size() > 0) {
-
-				for (String info : validationExtraInfo) {
-
-					out.append('\n').append(indentStr).append("\t- ").append(info);
-				}
-				out.append('\n');
-			}
 			indentStr = indentStr.substring(1);
 			out.append(indentStr).append(']');
 			return out.toString();

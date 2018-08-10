@@ -453,9 +453,6 @@
 	                </CertificateChain>
 	            </Revocation>
 	        </Revocations>
-            <Info>
-                <Message Id="0">OSCP Uri not found in certificate meta-data !</Message>
-            </Info>
         </Certificate>
         <Certificate Id="0AF09567AEFB2E6B8C76FE459CF2CCE0D5182A6D093D01BEA21C6423EDC47B46">
             <SubjectDistinguishedName Format="CANONICAL">cn=acaeid2 - qualified issuing certificate (kvalifikovaný systémový certifikát vydávající ca),l=vinohradská 184/2396\, 130 00\, praha 3,ou=akreditovaný poskytovatel certifikačních služeb,o=eidentity a.s.,c=cz</SubjectDistinguishedName>
@@ -596,9 +593,6 @@
 	                </CertificateChain>
 	            </Revocation>
 	       	</Revocations>
-            <Info>
-                <Message Id="0">OSCP Uri not found in certificate meta-data !</Message>
-            </Info>
         </Certificate>
     </UsedCertificates>
 </DiagnosticData>

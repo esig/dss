@@ -25,7 +25,6 @@ import java.security.MessageDigest;
 import java.security.PublicKey;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.security.auth.x500.X500Principal;
@@ -68,11 +67,6 @@ public abstract class Token implements Serializable {
 	 * The algorithm that was used to sign the token.
 	 */
 	protected SignatureAlgorithm signatureAlgorithm;
-
-	/**
-	 * Extra information collected during the validation process.
-	 */
-	protected TokenValidationExtraInfo extraInfo;
 
 	private Map<DigestAlgorithm, byte[]> digests = new HashMap<DigestAlgorithm, byte[]>();
 
@@ -170,15 +164,6 @@ public abstract class Token implements Serializable {
 	public abstract Date getCreationDate();
 
 	/**
-	 * Returns the additional information gathered during the validation process.
-	 *
-	 * @return additional validation information
-	 */
-	public List<String> getValidationInfo() {
-		return extraInfo.getValidationInfo();
-	}
-
-	/**
 	 * This method returns the DSS abbreviation of the token. It is used for
 	 * debugging purpose.
 	 *
@@ -215,15 +200,6 @@ public abstract class Token implements Serializable {
 	 */
 	public PublicKey getPublicKeyOfTheSigner() {
 		return publicKeyOfTheSigner;
-	}
-
-	/**
-	 * Returns the object managing the validation extra info.
-	 *
-	 * @return additional validation information
-	 */
-	public TokenValidationExtraInfo extraInfo() {
-		return extraInfo;
 	}
 
 	/**

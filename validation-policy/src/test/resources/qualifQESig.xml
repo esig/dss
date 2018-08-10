@@ -201,7 +201,6 @@
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
-                    <Info/>
                 </Revocation>
                 <Revocation Id="d74af393cf3b506da33b46bc52b49cd6fac12b2bdaa9ce1fba25c0c1e4ebbe1937478d403aa751c3f67f0d56db9f9340b7876dbbc05396911ebe8dc6162bf388">
                     <Origin>EXTERNAL</Origin>
@@ -237,12 +236,8 @@
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
-                    <Info/>
                 </Revocation>
             </Revocations>
-            <Info>
-                <Message Id="0">OSCP Uri not found in certificate meta-data !</Message>
-            </Info>
         </Certificate>
         <Certificate Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
             <SubjectDistinguishedName Format="CANONICAL">cn=belgium root ca2,c=be</SubjectDistinguishedName>
@@ -321,7 +316,6 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
-            <Info/>
         </Certificate>
         <Certificate Id="75F5216C135CA7D30473723247E8AD6104F843A598ACEBF82764F556E378D62D">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130b3739313032353230393931,2.5.4.42=#130b4672616e6b2048656e7269,2.5.4.4=#1308436f726e656c6973,cn=f c (signature),c=be</SubjectDistinguishedName>
@@ -466,7 +460,6 @@
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
-                    <Info/>
                 </Revocation>
                 <Revocation Id="75f5216c135ca7d30473723247e8ad6104f843a598acebf82764f556e378d62d0b07eb2dbac8ca8fcdcb77ce16df70577cf9133aeed18b94c3f3fb11a5fc2ff9">
                     <Origin>SIGNATURE</Origin>
@@ -506,12 +499,8 @@
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
-                    <Info/>
                 </Revocation>
             </Revocations>
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-            </Info>
         </Certificate>
         <Certificate Id="A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
             <SubjectDistinguishedName Format="CANONICAL">cn=belgium root ca3,c=be</SubjectDistinguishedName>
@@ -590,7 +579,6 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
-            <Info/>
         </Certificate>
         <Certificate Id="D64BB62EFF83D5D9D368BBABEAA8BC6B291FD3F76B2AAEBD187387EECCB73A13">
             <SubjectDistinguishedName Format="CANONICAL">c=be,cn=belgium ocsp responder</SubjectDistinguishedName>
@@ -664,9 +652,6 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
-            <Info>
-                <Message Id="0">OCSP check not needed: id-pkix-ocsp-nocheck extension present.</Message>
-            </Info>
         </Certificate>
         <Certificate Id="A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#1306323031343034,cn=citizen ca,c=be</SubjectDistinguishedName>
@@ -784,7 +769,6 @@
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
-                    <Info/>
                 </Revocation>
                 <Revocation Id="a2bcb1e8523fbb23b9a277afa0b67da2e61e9ad8bac1b926a733a1ae07c67cde52e8de03ed10fb4ba24696f38afbf93c309823f76ef058871bb8604533ce4ca4">
                     <Origin>EXTERNAL</Origin>
@@ -820,12 +804,8 @@
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
-                    <Info/>
                 </Revocation>
             </Revocations>
-            <Info>
-                <Message Id="0">OSCP Uri not found in certificate meta-data !</Message>
-            </Info>
         </Certificate>
         <Certificate Id="6C9DA2AA6632C9006C9805D4B3849D9FDFB97DA182DF8FA47219625FD47E12BE">
             <SubjectDistinguishedName Format="CANONICAL">c=be,cn=belgium ocsp responder</SubjectDistinguishedName>
@@ -909,9 +889,6 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
-            <Info>
-                <Message Id="0">OCSP check not needed: id-pkix-ocsp-nocheck extension present.</Message>
-            </Info>
         </Certificate>
     </UsedCertificates>
     <TrustedLists>

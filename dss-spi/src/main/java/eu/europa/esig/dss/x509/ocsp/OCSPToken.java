@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -54,7 +53,6 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.TokenValidationExtraInfo;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 
 /**
@@ -90,7 +88,6 @@ public class OCSPToken extends RevocationToken {
 	private BasicOCSPResp basicOCSPResp;
 
 	public OCSPToken() {
-		this.extraInfo = new TokenValidationExtraInfo();
 	}
 
 	public void extractInfo() {
@@ -131,7 +128,6 @@ public class OCSPToken extends RevocationToken {
 			responses = basicOCSPResp.getResponses();
 		} catch (Exception e) {
 			LOG.error("Unable to parse the responses object from OCSP", e);
-			extraInfo.infoOCSPException("Unable to parse the responses object from OCSP : " + e.getMessage());
 		}
 		return responses;
 	}
@@ -287,15 +283,6 @@ public class OCSPToken extends RevocationToken {
 		out.append("SignedBy: ").append(getIssuerX500Principal().toString()).append('\n');
 		indentStr += "\t";
 		out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm.getJCEId()).append('\n');
-		final List<String> validationExtraInfo = extraInfo.getValidationInfo();
-		if (validationExtraInfo.size() > 0) {
-
-			for (final String info : validationExtraInfo) {
-
-				out.append('\n').append(indentStr).append("\t- ").append(info);
-			}
-			out.append('\n');
-		}
 		indentStr = indentStr.substring(1);
 		out.append(indentStr).append("]");
 		return out.toString();

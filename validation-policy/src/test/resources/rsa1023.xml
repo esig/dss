@@ -156,13 +156,9 @@
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
-                    <Info/>
+        
                 </Revocation>
             </Revocations>
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-                <Message Id="1">OSCP Uri not found in certificate meta-data !</Message>
-            </Info>
         </Certificate>
         <Certificate Id="C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0">
             <SubjectDistinguishedName Format="CANONICAL">cn=belgium root ca4,c=be</SubjectDistinguishedName>
@@ -237,7 +233,6 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
-            <Info/>
         </Certificate>
         <Certificate Id="4FAB29027727E58E4518ED0B6AE554D055F05B3D9197E0D16B20028D227D1A9F">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130b3837303132373330373338,2.5.4.42=#130d506965727269636b205061636f,2.5.4.4=#130d56616e64656e62726f75636b65,cn=p v (signature),c=be</SubjectDistinguishedName>
@@ -359,12 +354,9 @@
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
-                    <Info/>
+        
                 </Revocation>
             </Revocations>
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-            </Info>
         </Certificate>
         <Certificate Id="827D5794C2E16B837350551291FB81527C7C282DBBD1668DDF4559C87CD58275">
             <SubjectDistinguishedName Format="CANONICAL">c=be,cn=belgium ocsp responder</SubjectDistinguishedName>
@@ -434,9 +426,6 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
-            <Info>
-                <Message Id="0">OCSP check not needed: id-pkix-ocsp-nocheck extension present.</Message>
-            </Info>
         </Certificate>
     </UsedCertificates>
     <TrustedLists>

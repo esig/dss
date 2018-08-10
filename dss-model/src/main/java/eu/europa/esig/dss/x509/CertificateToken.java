@@ -34,6 +34,7 @@ import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
@@ -91,17 +92,13 @@ public class CertificateToken extends Token {
 	 *            the X509Certificate object
 	 */
 	public CertificateToken(X509Certificate x509Certificate) {
-		if (x509Certificate == null) {
-			throw new NullPointerException("X509 certificate is missing");
-		}
+		Objects.requireNonNull(x509Certificate, "X509 certificate is missing");
 
 		this.x509Certificate = x509Certificate;
 		this.entityKey = new EntityIdentifier(x509Certificate.getPublicKey());
 
 		// The Algorithm OID is used and not the name {@code x509Certificate.getSigAlgName()}
 		this.signatureAlgorithm = SignatureAlgorithm.forOID(x509Certificate.getSigAlgOID());
-
-		this.extraInfo = new TokenValidationExtraInfo();
 	}
 
 	@Override

@@ -71,8 +71,7 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 	@Override
 	public RevocationToken check(final CertificateToken toCheckToken) {
 		if (ocspSource == null) {
-			LOG.warn("OCSPSource null");
-			toCheckToken.extraInfo().infoOCSPSourceIsNull();
+			LOG.debug("OCSPSource null");
 			return null;
 		}
 
@@ -97,7 +96,6 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 			return ocspToken;
 		} catch (DSSException e) {
 			LOG.error("OCSP DSS Exception: " + e.getMessage(), e);
-			toCheckToken.extraInfo().infoOCSPException(e.getMessage());
 			return null;
 		}
 	}

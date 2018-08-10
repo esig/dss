@@ -40,7 +40,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlManifestFile;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlMessage;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
@@ -388,7 +387,6 @@ public class DiagnosticDataBuilder {
 
 		xmlRevocation.setSigningCertificate(getXmlSigningCertificate(revocationToken.getPublicKeyOfTheSigner()));
 		xmlRevocation.setCertificateChain(getXmlForCertificateChain(revocationToken.getPublicKeyOfTheSigner()));
-		xmlRevocation.setInfo(getXmlInfo(revocationToken.getValidationInfo()));
 
 		return xmlRevocation;
 	}
@@ -399,21 +397,6 @@ public class DiagnosticDataBuilder {
 			result.add(getXmlDigestAlgoAndValue(digestAlgorithm, Utils.toBase64(token.getDigest(digestAlgorithm))));
 		}
 		return result;
-	}
-
-	private List<XmlMessage> getXmlInfo(List<String> infos) {
-		List<XmlMessage> messages = new ArrayList<XmlMessage>();
-		if (Utils.isCollectionNotEmpty(infos)) {
-			int i = 0;
-			for (String message : infos) {
-				final XmlMessage xmlMessage = new XmlMessage();
-				xmlMessage.setId(i);
-				xmlMessage.setValue(message);
-				messages.add(xmlMessage);
-				i++;
-			}
-		}
-		return messages;
 	}
 
 	private List<XmlChainItem> getXmlForCertificateChain(PublicKey certPubKey) {
@@ -824,7 +807,6 @@ public class DiagnosticDataBuilder {
 
 		xmlCert.setSelfSigned(certToken.isSelfSigned());
 		xmlCert.setTrusted(isTrusted(certToken));
-		xmlCert.setInfo(getXmlInfo(certToken.getValidationInfo()));
 
 		final Set<RevocationToken> revocationTokens = getRevocationsForCert(certToken);
 		if (Utils.isCollectionNotEmpty(revocationTokens)) {

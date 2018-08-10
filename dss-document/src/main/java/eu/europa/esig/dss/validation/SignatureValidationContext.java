@@ -191,14 +191,6 @@ public class SignatureValidationContext implements ValidationContext {
 			issuerCertificateToken = getTSACertificate((TimestampToken) token);
 		}
 
-		if (issuerCertificateToken == null) {
-			token.extraInfo().infoTheSigningCertNotFound();
-		}
-//		if ((issuerCertificateToken != null) && !issuerCertificateToken.isTrusted() && !issuerCertificateToken.isSelfSigned()
-//				&& !token.equals(issuerCertificateToken)) {
-			// The full chain is retrieved for each certificate
-//			getIssuerCertificate(issuerCertificateToken);
-//		}
 		return issuerCertificateToken;
 	}
 

@@ -54,7 +54,6 @@ import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.Token;
-import eu.europa.esig.dss.x509.TokenValidationExtraInfo;
 
 /**
  * SignedToken containing a TimeStamp.
@@ -130,8 +129,6 @@ public class TimestampToken extends Token {
 		this.timeStamp = timeStamp;
 		this.timeStampType = type;
 		this.certificateSource = new TimestampCertificateSource(timeStamp, certPool);
-
-		this.extraInfo = new TokenValidationExtraInfo();
 	}
 
 	@Override

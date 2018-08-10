@@ -144,9 +144,6 @@
 	                </CertificateChain>
 	            </Revocation>
             </Revocations>
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-            </Info>
         </Certificate>
         <Certificate Id="C02F95F78AF80B249A3481CA41924AE60D7663867C5F22FF8437A0E8CC344137">
             <SubjectDistinguishedName Format="CANONICAL">cn=n ca firma qualificata,ou=certification authority,o=n s.p.a./02046570426,c=it</SubjectDistinguishedName>
@@ -225,11 +222,6 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-                <Message Id="0">OSCP Uri not found in certificate meta-data !</Message>
-                <Message Id="0">No CRL info found !</Message>
-            </Info>
         </Certificate>
         <Certificate Id="768B62E709F02EDFF5E223BC92DEB7069643C9D4B623B09AA993E4CAA6C8552E">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.46=#13145245545332303136303431393633373838393938,cn=test scadenza,2.5.4.5=#131349543a54535453444e37394130314132373154,2.5.4.42=#0c0853434144454e5a41,2.5.4.4=#0c0454455354,o=non presente,c=it</SubjectDistinguishedName>
@@ -306,9 +298,6 @@
 	                </CertificateChain>
 	            </Revocation>
             </Revocations>
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-            </Info>
         </Certificate>
     </UsedCertificates>
 </DiagnosticData>

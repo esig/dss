@@ -112,13 +112,12 @@ public class OnlineOCSPSource implements OCSPSource {
 
 		try {
 			final String dssIdAsString = certificateToken.getDSSIdAsString();
-			LOG.trace("--> OnlineOCSPSource queried for " + dssIdAsString);
+			LOG.trace("--> OnlineOCSPSource queried for {}", dssIdAsString);
 
 			// TODO Urls from TL SupplyPoints
 			final List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
 			if (Utils.isCollectionEmpty(ocspAccessLocations)) {
-				LOG.debug("No OCSP location found for " + dssIdAsString);
-				certificateToken.extraInfo().infoNoOcspUriFoundInCertificate();
+				LOG.debug("No OCSP location found for {}", dssIdAsString);
 				return null;
 			}
 
@@ -156,7 +155,7 @@ public class OnlineOCSPSource implements OCSPSource {
 				}
 				return ocspToken;
 			} else {
-				certificateToken.extraInfo().infoOCSPException("OCSP Response status : " + status);
+				LOG.warn("OCSP Response status : {}", status);
 				return null;
 			}
 		} catch (OCSPException | IOException e) {
