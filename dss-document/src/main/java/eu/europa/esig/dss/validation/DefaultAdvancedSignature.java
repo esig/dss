@@ -622,23 +622,26 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	private boolean isAllCertsHaveRevocationData(CertificateStatusVerifier certificateStatusVerifier, List<CertificateToken> certificates) {
 		// we reorder the certificate list, the order is not guaranteed
-		List<CertificateToken> orderedCerts = order(certificates);
-		for (CertificateToken certificateToken : orderedCerts) {
-			if (!isRevocationRequired(certificateToken)) {
-				// It returns true to avoid checking upper levels than trusted certificates (cross certification)
-				return true;
-			}
-			RevocationToken revocationData = certificateStatusVerifier.check(certificateToken);
-			if (revocationData == null) {
-				return false;
+		Map<CertificateToken, List<CertificateToken>> orderedCerts = order(certificates);
+		for (List<CertificateToken> chain : orderedCerts.values()) {
+			for (CertificateToken certificateToken : chain) {
+				if (!isRevocationRequired(certificateToken)) {
+					// Skip this loop to avoid checking upper levels than trusted certificates
+					// (cross certification)
+					break;
+				}
+				RevocationToken revocationData = certificateStatusVerifier.check(certificateToken);
+				if (revocationData == null) {
+					return false;
+				}
 			}
 		}
 		return true;
 	}
 
-	private List<CertificateToken> order(List<CertificateToken> certificates) {
+	private Map<CertificateToken, List<CertificateToken>> order(List<CertificateToken> certificates) {
 		CertificateReorderer reorderer = new CertificateReorderer(certificates);
-		return reorderer.getOrderedCertificates();
+		return reorderer.getOrderedCertificateChains();
 	}
 
 	private boolean isRevocationRequired(CertificateToken certificateToken) {
