@@ -69,12 +69,12 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
 
 			final CRLToken crlToken = crlSource.findCrl(certificateToken, issuerToken);
 			if (crlToken == null) {
-				LOG.debug("No CRL found for: " + certificateToken.getDSSIdAsString());
+				LOG.debug("{} : No CRL found for: {}", crlSource.getClass().getSimpleName(), certificateToken.getDSSIdAsString());
 				return null;
 			}
 			crlToken.setRelatedCertificateID(certificateToken.getDSSIdAsString());
 			if (!crlToken.isValid()) {
-				LOG.warn("The CRL is not valid !");
+				LOG.warn("{} : The CRL is not valid !", crlSource.getClass().getSimpleName());
 				return null;
 			}
 			return crlToken;
