@@ -149,6 +149,26 @@ public interface CertificateVerifier {
 	void setSignatureOCSPSource(final ListOCSPSource signatureOCSPSource);
 
 	/**
+	 * This method allows to change the behavior on missing revocation data (LT/LTA
+	 * augmentation). (default : true)
+	 * 
+	 * @param throwExceptionOnMissingRevocationData
+	 *                                              true if an exception is raised
+	 *                                              on missing revocation data,
+	 *                                              false will only display a
+	 *                                              warning message
+	 */
+	void setExceptionOnMissingRevocationData(boolean throwExceptionOnMissingRevocationData);
+
+	/**
+	 * This method returns true if an exception needs to be thrown on missing
+	 * revocation data.
+	 * 
+	 * @return true if an exception is thrown, false if a warning message is added
+	 */
+	boolean isExceptionOnMissingRevocationData();
+
+	/**
 	 * This method creates the validation pool of certificates which is used
 	 * during the validation process.
 	 */

@@ -86,7 +86,15 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private ListOCSPSource signatureOCSPSource;
 
 	/**
-	 * The default constructor. The {@code DataLoader} is created to allow the retrieval of certificates through AIA.
+	 * This variable set the bahavior to follow in case of missing revocation data
+	 * (augmentation process). True : throw an exception / False : add a warning
+	 * message. Default : true
+	 */
+	private boolean exceptionOnMissingRevocationData = true;
+
+	/**
+	 * The default constructor. The {@code DataLoader} is created to allow the
+	 * retrieval of certificates through AIA.
 	 */
 	public CommonCertificateVerifier() {
 		this(false);
@@ -199,6 +207,17 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public void setSignatureOCSPSource(final ListOCSPSource signatureOCSPSource) {
 		this.signatureOCSPSource = signatureOCSPSource;
+	}
+
+	@Override
+	public void setExceptionOnMissingRevocationData(boolean throwExceptionOnMissingRevocationData) {
+		this.exceptionOnMissingRevocationData = throwExceptionOnMissingRevocationData;
+
+	}
+
+	@Override
+	public boolean isExceptionOnMissingRevocationData() {
+		return exceptionOnMissingRevocationData;
 	}
 
 	@Override

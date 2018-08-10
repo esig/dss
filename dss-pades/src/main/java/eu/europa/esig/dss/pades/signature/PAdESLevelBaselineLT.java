@@ -26,6 +26,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.SignatureLevel;
@@ -47,6 +50,8 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
  * PAdES Baseline LT signature
  */
 class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameters> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBaselineLT.class);
 
 	private final CertificateVerifier certificateVerifier;
 	private final TSPSource tspSource;
@@ -101,7 +106,12 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 		ValidationContext validationContext = signature.getSignatureValidationContext(certificateVerifier);
 
 		if (!validationContext.isAllRequiredRevocationDataPresent()) {
-			throw new DSSException("Revocation data is missing");
+			String message = "Revocation data is missing";
+			if (certificateVerifier.isExceptionOnMissingRevocationData()) {
+				throw new DSSException(message);
+			} else {
+				LOG.warn(message);
+			}
 		}
 
 		DefaultAdvancedSignature.RevocationDataForInclusion revocationsForInclusionInProfileLT = signature.getRevocationDataForInclusion(validationContext);
