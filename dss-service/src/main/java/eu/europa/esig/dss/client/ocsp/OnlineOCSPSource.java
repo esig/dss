@@ -110,57 +110,61 @@ public class OnlineOCSPSource implements OCSPSource {
 			throw new NullPointerException("DataLoader is not provided !");
 		}
 
-		try {
-			final String dssIdAsString = certificateToken.getDSSIdAsString();
-			LOG.trace("--> OnlineOCSPSource queried for {}", dssIdAsString);
+		final String dssIdAsString = certificateToken.getDSSIdAsString();
+		LOG.trace("--> OnlineOCSPSource queried for {}", dssIdAsString);
 
-			// TODO Urls from TL SupplyPoints
-			final List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
-			if (Utils.isCollectionEmpty(ocspAccessLocations)) {
-				LOG.debug("No OCSP location found for {}", dssIdAsString);
-				return null;
-			}
-
-			String ocspAccessLocation = ocspAccessLocations.get(0);
-
-			final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
-
-			BigInteger nonce = null;
-			if (nonceSource != null) {
-				nonce = nonceSource.getNonce();
-			}
-
-			final byte[] content = buildOCSPRequest(certId, nonce);
-
-			final byte[] ocspRespBytes = dataLoader.post(ocspAccessLocation, content);
-			if (Utils.isArrayEmpty(ocspRespBytes)) {
-				return null;
-			}
-
-			final OCSPResp ocspResp = new OCSPResp(ocspRespBytes);
-
-			OCSPRespStatus status = OCSPRespStatus.fromInt(ocspResp.getStatus());
-			if (OCSPRespStatus.SUCCESSFUL.equals(status)) {
-				OCSPToken ocspToken = new OCSPToken();
-				ocspToken.setResponseStatus(status);
-				ocspToken.setSourceURL(ocspAccessLocation);
-				ocspToken.setCertId(certId);
-				ocspToken.setAvailable(true);
-				final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
-				ocspToken.setBasicOCSPResp(basicOCSPResp);
-
-				if (nonceSource != null) {
-					ocspToken.setUseNonce(true);
-					ocspToken.setNonceMatch(isNonceMatch(basicOCSPResp, nonce));
-				}
-				return ocspToken;
-			} else {
-				LOG.warn("OCSP Response status : {}", status);
-				return null;
-			}
-		} catch (OCSPException | IOException e) {
-			throw new DSSException(e);
+		// TODO Urls from TL SupplyPoints
+		final List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
+		if (Utils.isCollectionEmpty(ocspAccessLocations)) {
+			LOG.debug("No OCSP location found for {}", dssIdAsString);
+			return null;
 		}
+
+		final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
+
+		BigInteger nonce = null;
+		if (nonceSource != null) {
+			nonce = nonceSource.getNonce();
+		}
+
+		final byte[] content = buildOCSPRequest(certId, nonce);
+
+		int nbTries = ocspAccessLocations.size();
+		for (String ocspAccessLocation : ocspAccessLocations) {
+			nbTries--;
+			try {
+				final byte[] ocspRespBytes = dataLoader.post(ocspAccessLocation, content);
+				if (!Utils.isArrayEmpty(ocspRespBytes)) {
+					final OCSPResp ocspResp = new OCSPResp(ocspRespBytes);
+					OCSPRespStatus status = OCSPRespStatus.fromInt(ocspResp.getStatus());
+					if (OCSPRespStatus.SUCCESSFUL.equals(status)) {
+						OCSPToken ocspToken = new OCSPToken();
+						ocspToken.setResponseStatus(status);
+						ocspToken.setSourceURL(ocspAccessLocation);
+						ocspToken.setCertId(certId);
+						ocspToken.setAvailable(true);
+						final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
+						ocspToken.setBasicOCSPResp(basicOCSPResp);
+
+						if (nonceSource != null) {
+							ocspToken.setUseNonce(true);
+							ocspToken.setNonceMatch(isNonceMatch(basicOCSPResp, nonce));
+						}
+						return ocspToken;
+					} else {
+						LOG.warn("OCSP Response status with URL '{}' : {}", ocspAccessLocation, status);
+					}
+				}
+			} catch (Exception e) {
+				if (nbTries == 0) {
+					throw new DSSException("Unable to retrieve OCSP response", e);
+				} else {
+					LOG.warn("Unable to retrieve OCSP response with URL '{}' : {}", ocspAccessLocation, e.getMessage());
+				}
+			}
+		}
+
+		return null;
 	}
 
 	private byte[] buildOCSPRequest(final CertificateID certId, BigInteger nonce) throws DSSException {
