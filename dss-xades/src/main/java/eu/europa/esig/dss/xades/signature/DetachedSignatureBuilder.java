@@ -82,7 +82,8 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 		if (Utils.isStringNotEmpty(document.getName())) {
 			final String fileURI = document.getName();
 			try {
-				reference.setUri(URLEncoder.encode(fileURI, "UTF-8"));
+				// MUST comply RFC 3896 (see DSS-1475 for details)
+				reference.setUri(URLEncoder.encode(fileURI, "UTF-8").replace("+", "%20"));
 			} catch (Exception e) {
 				LOG.warn("Unable to encode uri '" + fileURI + "' : " + e.getMessage());
 				reference.setUri(fileURI);
