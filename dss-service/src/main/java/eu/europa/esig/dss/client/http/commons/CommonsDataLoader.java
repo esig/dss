@@ -190,8 +190,8 @@ public class CommonsDataLoader implements DataLoader {
 		connectionManager.setMaxTotal(getConnectionsMaxTotal());
 		connectionManager.setDefaultMaxPerRoute(getConnectionsMaxPerRoute());
 
-		LOG.debug("PoolingHttpClientConnectionManager: max total: " + connectionManager.getMaxTotal());
-		LOG.debug("PoolingHttpClientConnectionManager: max per route: " + connectionManager.getDefaultMaxPerRoute());
+		LOG.debug("PoolingHttpClientConnectionManager: max total: {}", connectionManager.getMaxTotal());
+		LOG.debug("PoolingHttpClientConnectionManager: max per route: {}", connectionManager.getDefaultMaxPerRoute());
 
 		return connectionManager;
 	}
@@ -321,7 +321,7 @@ public class CommonsDataLoader implements DataLoader {
 				credentialsProvider.setCredentials(proxyAuth, proxyCredentials);
 			}
 
-			LOG.debug("proxy host/port: " + proxyHost + ":" + proxyPort);
+			LOG.debug("proxy host/port: {}:{}", proxyHost, proxyPort);
 			// TODO SSL peer shut down incorrectly when protocol is https
 			final HttpHost proxy = new HttpHost(proxyHost, proxyPort, Protocol.HTTP.getName());
 
@@ -444,7 +444,7 @@ public class CommonsDataLoader implements DataLoader {
 			final DirContext ctx = new InitialDirContext(env);
 			final Attributes attributes = ctx.getAttributes(Utils.EMPTY_STRING, new String[] { attributeName });
 			if (attributes == null || attributes.size() < 1) {
-				LOG.warn("Cannot download CRL from: " + urlString + ", no attributes with name: " + attributeName + " returned");
+				LOG.warn("Cannot download binaries from: {}, no attributes with name: {} returned", urlString, attributeName);
 			} else {
 				final Attribute attribute = attributes.getAll().next();
 				final byte[] ldapBytes = (byte[]) attribute.get();
@@ -533,7 +533,7 @@ public class CommonsDataLoader implements DataLoader {
 	@Override
 	public byte[] post(final String url, final byte[] content) throws DSSException {
 
-		LOG.debug("Fetching data via POST from url " + url);
+		LOG.debug("Fetching data via POST from url {}", url);
 
 		HttpPost httpRequest = null;
 		HttpResponse httpResponse = null;
