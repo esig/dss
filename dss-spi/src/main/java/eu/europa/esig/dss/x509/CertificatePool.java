@@ -110,6 +110,15 @@ public class CertificatePool implements Serializable {
 		return poolEntity != null && poolEntity.isTrusted();
 	}
 
+	public Set<CertificateSourceType> getSources(CertificateToken certificateToken) {
+		final CertificatePoolEntity poolEntity = getPoolEntry(certificateToken);
+		if (poolEntity != null) {
+		return poolEntity.sources;
+		}else {
+			return Collections.emptySet();
+		}
+	}
+
 	/**
 	 * This method returns all known issuers for the given token.
 	 * 

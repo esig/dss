@@ -41,13 +41,13 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.RevocationSourceAlternateUrlsSupport;
+import eu.europa.esig.dss.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.x509.AlternateUrlsSourceAdapter;
+import eu.europa.esig.dss.x509.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.crl.CRLSource;
@@ -533,6 +533,16 @@ public class SignatureValidationContext implements ValidationContext {
 	@Override
 	public Set<CertificateToken> getProcessedCertificates() {
 		return Collections.unmodifiableSet(processedCertificates);
+	}
+
+	@Override
+	public Map<CertificateToken, Set<CertificateSourceType>> getCertificateSourceTypes() {
+		Set<CertificateToken> certs = getProcessedCertificates();
+		Map<CertificateToken, Set<CertificateSourceType>> result = new HashMap<CertificateToken, Set<CertificateSourceType>>();
+		for (CertificateToken certificateToken : certs) {
+			result.put(certificateToken, validationCertificatePool.getSources(certificateToken));
+		}
+		return result;
 	}
 
 	@Override

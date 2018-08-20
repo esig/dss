@@ -22,9 +22,11 @@ package eu.europa.esig.dss.validation;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 
@@ -97,6 +99,14 @@ public interface ValidationContext {
 	 * @return The list of CertificateToken(s)
 	 */
 	Set<CertificateToken> getProcessedCertificates();
+
+	/**
+	 * Returns a map of {@code CertificateSourceType} by {@code CertificateToken}
+	 * which contains the sources where the certificate was found.
+	 * 
+	 * @return a map of CertificateSourceType by CertificateToken
+	 */
+	Map<CertificateToken, Set<CertificateSourceType>> getCertificateSourceTypes();
 
 	/**
 	 * Returns a read only list of all revocations used in the process of the validation of all signatures from the

@@ -81,6 +81,7 @@ public class DiagnosticDataBuilder {
 	private ContainerInfo containerInfo;
 	private List<AdvancedSignature> signatures;
 	private Set<CertificateToken> usedCertificates;
+	private Map<CertificateToken, Set<CertificateSourceType>> certificateSourceTypes;
 	private Set<RevocationToken> usedRevocations;
 	private CommonTrustedCertificateSource trustedCertSource;
 	private Date validationDate;
@@ -130,6 +131,18 @@ public class DiagnosticDataBuilder {
 	 */
 	public DiagnosticDataBuilder usedCertificates(Set<CertificateToken> usedCertificates) {
 		this.usedCertificates = usedCertificates;
+		return this;
+	}
+
+	/**
+	 * This method allows to set the certificate source types
+	 * 
+	 * @param certificateSourceTypes
+	 *                               the certificate source types
+	 * @return the builder
+	 */
+	public DiagnosticDataBuilder certificateSourceTypes(Map<CertificateToken, Set<CertificateSourceType>> certificateSourceTypes) {
+		this.certificateSourceTypes = certificateSourceTypes;
 		return this;
 	}
 
@@ -429,18 +442,20 @@ public class DiagnosticDataBuilder {
 		return chainItem;
 	}
 
-	private CertificateSourceType getCertificateMainSourceType(final CertificateToken issuerToken) {
+	private CertificateSourceType getCertificateMainSourceType(final CertificateToken token) {
 		CertificateSourceType mainSource = CertificateSourceType.UNKNOWN;
-//		final Set<CertificateSourceType> sourceList = issuerToken.getSources();
-//		if (sourceList.size() > 0) {
-//			if (sourceList.contains(CertificateSourceType.TRUSTED_LIST)) {
-//				mainSource = CertificateSourceType.TRUSTED_LIST;
-//			} else if (sourceList.contains(CertificateSourceType.TRUSTED_STORE)) {
-//				mainSource = CertificateSourceType.TRUSTED_STORE;
-//			} else {
-//				mainSource = sourceList.iterator().next();
-//			}
-//		}
+		if (certificateSourceTypes != null) {
+			Set<CertificateSourceType> sourceTypes = certificateSourceTypes.get(token);
+			if (sourceTypes.size() > 0) {
+				if (sourceTypes.contains(CertificateSourceType.TRUSTED_LIST)) {
+					mainSource = CertificateSourceType.TRUSTED_LIST;
+				} else if (sourceTypes.contains(CertificateSourceType.TRUSTED_STORE)) {
+					mainSource = CertificateSourceType.TRUSTED_STORE;
+				} else {
+					mainSource = sourceTypes.iterator().next();
+				}
+			}
+		}
 		return mainSource;
 	}
 
