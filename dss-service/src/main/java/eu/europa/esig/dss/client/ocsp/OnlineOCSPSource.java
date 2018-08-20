@@ -52,13 +52,14 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.x509.ocsp.OCSPRespStatus;
+import eu.europa.esig.dss.x509.ocsp.OCSPSource;
 import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 /**
  * Online OCSP repository. This implementation will contact the OCSP Responder to retrieve the OCSP response.
  */
 @SuppressWarnings("serial")
-public class OnlineOCSPSource implements RevocationSourceAlternateUrlsSupport<OCSPToken> {
+public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUrlsSupport<OCSPToken> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OnlineOCSPSource.class);
 
