@@ -124,25 +124,25 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	public Set<ServiceInfo> getTrustServices(CertificateToken token) {
 		List<ServiceInfo> trustServicesForToken = trustServicesByEntity.get(token.getEntityKey());
 		if (trustServicesForToken != null) {
-			return new HashSet<>(trustServicesForToken);
+			return new HashSet<ServiceInfo>(trustServicesForToken);
 		} else {
 			return Collections.emptySet();
 		}
 	}
 
-	public List<String> getOCSPUrlsFromServiceSupplyPoint(CertificateToken certificateToken) {
-		return getServiceSupplyPoints(certificateToken, "ocsp");
+	@Override
+	public List<String> getAlternativeOCSPUrls(CertificateToken trustAnchor) {
+		return getServiceSupplyPoints(trustAnchor, "ocsp");
 	}
 
-	public List<String> getCRLUrlsFromServiceSupplyPoint(CertificateToken certificateToken) {
-		return getServiceSupplyPoints(certificateToken, "crl", "certificateRevocationList");
+	@Override
+	public List<String> getAlternativeCRLUrls(CertificateToken trustAnchor) {
+		return getServiceSupplyPoints(trustAnchor, "crl", "certificateRevocationList");
 	}
 
-	private List<String> getServiceSupplyPoints(CertificateToken certificateToken, String... keywords) {
+	private List<String> getServiceSupplyPoints(CertificateToken trustAnchor, String... keywords) {
 		List<String> urls = new ArrayList<String>();
-		CertificateToken trustAnchor = certPool.getTrustAnchor(certificateToken);
-		List<ServiceInfo> trustServices = trustServicesByEntity.get(trustAnchor.getEntityKey());
-
+		Set<ServiceInfo> trustServices = getTrustServices(trustAnchor);
 		for (ServiceInfo serviceInfo : trustServices) {
 			for (ServiceInfoStatus serviceInfoStatus : serviceInfo.getStatus()) {
 				List<String> serviceSupplyPoints = serviceInfoStatus.getServiceSupplyPoints();

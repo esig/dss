@@ -82,7 +82,7 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 		}
 
 		try {
-			final OCSPToken ocspToken = ocspSource.getOCSPToken(toCheckToken, issuerToken);
+			final OCSPToken ocspToken = ocspSource.getRevocationToken(toCheckToken, issuerToken);
 			if (ocspToken == null) {
 				LOG.debug("{} : No matching OCSP response found for {}", ocspSource.getClass().getSimpleName(), toCheckToken.getDSSIdAsString());
 			} else {

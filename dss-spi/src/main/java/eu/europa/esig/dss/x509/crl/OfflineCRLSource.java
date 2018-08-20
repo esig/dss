@@ -64,7 +64,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	private Map<CertificateToken, CRLToken> validCRLTokenList = new HashMap<CertificateToken, CRLToken>();
 
 	@Override
-	public final CRLToken findCrl(final CertificateToken certificateToken, final CertificateToken issuerToken) {
+	public final CRLToken getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerToken) {
 		if (certificateToken == null) {
 			throw new NullPointerException();
 		}

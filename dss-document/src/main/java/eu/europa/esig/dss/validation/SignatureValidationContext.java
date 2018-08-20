@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,13 +41,19 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.x509.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.x509.CertificatePool;
+import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.crl.CRLSource;
+import eu.europa.esig.dss.x509.crl.CRLToken;
 import eu.europa.esig.dss.x509.ocsp.OCSPSource;
+import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 /**
  * During the validation of a signature, the software retrieves different X509 artifacts like Certificate, CRL and OCSP
@@ -86,6 +93,8 @@ public class SignatureValidationContext implements ValidationContext {
 
 	// OCSP from the signature.
 	private OCSPSource signatureOCSPSource;
+
+	private CertificateSource trustedCertSource;
 
 	/**
 	 * This is the time at what the validation is carried out. It is used only for test purpose.
@@ -131,6 +140,7 @@ public class SignatureValidationContext implements ValidationContext {
 		this.dataLoader = certificateVerifier.getDataLoader();
 		this.signatureCRLSource = certificateVerifier.getSignatureCRLSource();
 		this.signatureOCSPSource = certificateVerifier.getSignatureOCSPSource();
+		this.trustedCertSource = certificateVerifier.getTrustedCertSource();
 	}
 
 	@Override
@@ -166,32 +176,43 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * This method returns the issuer certificate (the certificate which was used to
-	 * sign the token) of the given token.
+	 * This method builds the complete certificate chain from the given token.
 	 *
 	 * @param token
-	 *              the token for which the issuer must be obtained.
-	 * @return the issuer certificate token of the given token or null if not found.
+	 *              the token for which the certificate chain must be obtained.
+	 * @return the built certificate chain
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
-	private CertificateToken getIssuerCertificate(final Token token) throws DSSException {
+	private List<Token> getCertChain(final Token token) throws DSSException {
 		if (isTrusted(token)) {
 			// When the token is trusted the check of the issuer token is not needed so null
 			// is returned. Only a certificate token can be trusted.
 			return null;
 		}
 
-		CertificateToken issuerCertificateToken = validationCertificatePool.getIssuer(token);
+		List<Token> chain = new LinkedList<Token>();
+		Token issuerCertificateToken = token;
+		do {
+			chain.add(issuerCertificateToken);
 
-		if ((issuerCertificateToken == null) && (token instanceof CertificateToken)) {
-			issuerCertificateToken = getIssuerFromAIA((CertificateToken) token);
-		}
+			issuerCertificateToken = validationCertificatePool.getIssuer(issuerCertificateToken);
 
-		if ((issuerCertificateToken == null) && (token instanceof TimestampToken)) {
-			issuerCertificateToken = getTSACertificate((TimestampToken) token);
-		}
+			if ((issuerCertificateToken == null) && (token instanceof CertificateToken)) {
+				issuerCertificateToken = getIssuerFromAIA((CertificateToken) token);
+			}
 
-		return issuerCertificateToken;
+			if ((issuerCertificateToken == null) && (token instanceof TimestampToken)) {
+				issuerCertificateToken = getTSACertificate((TimestampToken) token);
+			}
+
+			if (issuerCertificateToken instanceof CertificateToken) {
+				addCertificateTokenForVerification((CertificateToken) issuerCertificateToken);
+			}
+
+		} while (issuerCertificateToken != null && !chain.contains(issuerCertificateToken) && !issuerCertificateToken.isSelfSigned()
+				&& !isTrusted(issuerCertificateToken));
+
+		return chain;
 	}
 
 	private CertificateToken getTSACertificate(TimestampToken timestamp) {
@@ -385,16 +406,10 @@ public class SignatureValidationContext implements ValidationContext {
 	public void validate() throws DSSException {
 		Token token = getNotYetVerifiedToken();
 		while (token != null) {
-			/**
-			 * Gets the issuer certificate of the Token and checks its signature
-			 */
-			final CertificateToken issuerCertToken = getIssuerCertificate(token);
-			if (issuerCertToken != null) {
-				addCertificateTokenForVerification(issuerCertToken);
-			}
 
+			List<Token> certChain = getCertChain(token);
 			if (token instanceof CertificateToken) {
-				final List<RevocationToken> revocationTokens = getRevocationData((CertificateToken) token);
+				final List<RevocationToken> revocationTokens = getRevocationData((CertificateToken) token, certChain);
 				addRevocationTokensForVerification(revocationTokens);
 			}
 			token = getNotYetVerifiedToken();
@@ -407,9 +422,12 @@ public class SignatureValidationContext implements ValidationContext {
 	 * (bouncy castle) needs it to build the request.
 	 *
 	 * @param certToken
+	 *                  the current token
+	 * @param certChain
+	 *                  the complete chain
 	 * @return
 	 */
-	private List<RevocationToken> getRevocationData(final CertificateToken certToken) {
+	private List<RevocationToken> getRevocationData(final CertificateToken certToken, List<Token> certChain) {
 
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Checking revocation data for : {}", certToken.getDSSIdAsString());
@@ -438,7 +456,14 @@ public class SignatureValidationContext implements ValidationContext {
 
 		if (revocations.isEmpty()) {
 			// Online resources (OCSP and CRL if OCSP doesn't reply)
-			final OCSPAndCRLCertificateVerifier onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
+			OCSPAndCRLCertificateVerifier onlineVerifier = null;
+
+			if (trustedCertSource instanceof CommonTrustedCertificateSource) {
+				onlineVerifier = instantiateWithTrustServices((CommonTrustedCertificateSource) trustedCertSource, certToken, certChain);
+			} else {
+				onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
+			}
+
 			final RevocationToken onlineRevocationToken = onlineVerifier.check(certToken);
 			// CRL can already exist in the signature
 			if (onlineRevocationToken != null && !revocations.contains(onlineRevocationToken)) {
@@ -451,6 +476,35 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 
 		return revocations;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private OCSPAndCRLCertificateVerifier instantiateWithTrustServices(CommonTrustedCertificateSource trustedCertSource, CertificateToken certToken,
+			List<Token> certChain) {
+
+		CertificateToken trustAnchor = certToken;
+		Token lastToken = certChain.get(certChain.size() - 1);
+		if (lastToken instanceof CertificateToken) {
+			trustAnchor = (CertificateToken) lastToken;
+		}
+
+		OCSPSource currentOCSPSource = null;
+		List<String> alternativeOCSPUrls = trustedCertSource.getAlternativeOCSPUrls(trustAnchor);
+		if (Utils.isCollectionNotEmpty(alternativeOCSPUrls) && ocspSource instanceof RevocationSourceAlternateUrlsSupport) {
+			currentOCSPSource = (OCSPSource) new AlternateUrlsSourceAdapter<OCSPToken>((RevocationSourceAlternateUrlsSupport) ocspSource, alternativeOCSPUrls);
+		} else {
+			currentOCSPSource = ocspSource;
+		}
+
+		CRLSource currentCRLSource = null;
+		List<String> alternativeCRLUrls = trustedCertSource.getAlternativeCRLUrls(trustAnchor);
+		if (Utils.isCollectionNotEmpty(alternativeCRLUrls) && crlSource instanceof RevocationSourceAlternateUrlsSupport) {
+			currentCRLSource = (CRLSource) new AlternateUrlsSourceAdapter<CRLToken>((RevocationSourceAlternateUrlsSupport) crlSource, alternativeCRLUrls);
+		} else {
+			currentCRLSource = crlSource;
+		}
+
+		return new OCSPAndCRLCertificateVerifier(currentCRLSource, currentOCSPSource, validationCertificatePool);
 	}
 
 	@Override

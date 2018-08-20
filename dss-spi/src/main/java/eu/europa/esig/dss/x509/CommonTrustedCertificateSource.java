@@ -90,8 +90,16 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource {
 		return certPool.getNumberOfCertificates();
 	}
 
-	public Set<ServiceInfo> getTrustServices(CertificateToken certificateToken) {
+	public Set<ServiceInfo> getTrustServices(CertificateToken trustAnchor) {
 		return Collections.emptySet();
+	}
+
+	public List<String> getAlternativeOCSPUrls(CertificateToken trustAnchor) {
+		return Collections.emptyList();
+	}
+
+	public List<String> getAlternativeCRLUrls(CertificateToken trustAnchor) {
+		return Collections.emptyList();
 	}
 
 }

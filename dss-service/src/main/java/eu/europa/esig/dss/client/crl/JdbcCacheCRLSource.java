@@ -122,7 +122,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 	}
 
 	@Override
-	public CRLToken findCrl(final CertificateToken certificateToken, final CertificateToken issuerToken) throws DSSException {
+	public CRLToken getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerToken) throws DSSException {
 		if (certificateToken == null) {
 			return null;
 		}
@@ -149,7 +149,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 					}
 				}
 			}
-			final CRLToken crlToken = cachedSource.findCrl(certificateToken, issuerToken);
+			final CRLToken crlToken = cachedSource.getRevocationToken(certificateToken, issuerToken);
 			if ((crlToken != null) && crlToken.isValid()) {
 				if (storedValidity == null) {
 					LOG.info("CRL '{}' not in cache", crlUrl);

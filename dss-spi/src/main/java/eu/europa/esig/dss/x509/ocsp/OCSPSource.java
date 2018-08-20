@@ -20,25 +20,15 @@
  */
 package eu.europa.esig.dss.x509.ocsp;
 
-import java.io.Serializable;
-
-import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationSource;
 
 /**
- * The validation of a certificate may require the use of OCSP information. Theses information can be provided by multiple sources
- * (the signature itself, online OCSP server, ...). This interface provides an abstraction for a source of OCSPResp
- *
+ * Typed sub-interface which allows to collect {@code OCSPToken}. The validation
+ * of a certificate may require the use of OCSP information. Theses information
+ * can be provided by multiple sources (the signature itself, online OCSP
+ * server, ...). This interface provides an abstraction for a source of OCSPResp
  *
  */
+public interface OCSPSource extends RevocationSource<OCSPToken> {
 
-public interface OCSPSource extends Serializable {
-
-	/**
-	 * Gets an {@code OCSPToken} for the given certificate / issuer's certificate couple. The coherence between the response and the request is checked.
-	 *
-	 * @param certificateToken The {@code CertificateToken} for which the request is made
-	 * @param issuerCertificateToken The {@code CertificateToken} which is the issuer of the certificateToken
-	 * @return {@code OCSPToken} containing information about the validity of the cert
-	 */
-	OCSPToken getOCSPToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken);
 }

@@ -44,7 +44,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineOCSPSource.class);
 
 	@Override
-	public final OCSPToken getOCSPToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+	public final OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		final List<BasicOCSPResp> containedOCSPResponses = getContainedOCSPResponses();
 		if (Utils.isCollectionEmpty(containedOCSPResponses)) {
 			return null;

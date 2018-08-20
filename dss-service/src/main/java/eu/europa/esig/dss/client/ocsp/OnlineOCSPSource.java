@@ -23,6 +23,7 @@ package eu.europa.esig.dss.client.ocsp;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.Security;
+import java.util.Collections;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1OctetString;
@@ -49,15 +50,15 @@ import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.x509.ocsp.OCSPRespStatus;
-import eu.europa.esig.dss.x509.ocsp.OCSPSource;
 import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 /**
  * Online OCSP repository. This implementation will contact the OCSP Responder to retrieve the OCSP response.
  */
 @SuppressWarnings("serial")
-public class OnlineOCSPSource implements OCSPSource {
+public class OnlineOCSPSource implements RevocationSourceAlternateUrlsSupport<OCSPToken> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OnlineOCSPSource.class);
 
@@ -105,20 +106,28 @@ public class OnlineOCSPSource implements OCSPSource {
 	}
 
 	@Override
-	public OCSPToken getOCSPToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+		return getRevocationToken(certificateToken, issuerCertificateToken, Collections.<String>emptyList());
+	}
+
+	@Override
+	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken, List<String> alternativeUrls) {
 		if (dataLoader == null) {
 			throw new NullPointerException("DataLoader is not provided !");
 		}
 
 		final String dssIdAsString = certificateToken.getDSSIdAsString();
 		LOG.trace("--> OnlineOCSPSource queried for {}", dssIdAsString);
+		if (Utils.isCollectionNotEmpty(alternativeUrls)) {
+			LOG.info("OCSP alternative urls : {}", alternativeUrls);
+		}
 
-		// TODO Urls from TL SupplyPoints
 		final List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
-		if (Utils.isCollectionEmpty(ocspAccessLocations)) {
+		if (Utils.isCollectionEmpty(ocspAccessLocations) && Utils.isCollectionEmpty(alternativeUrls)) {
 			LOG.debug("No OCSP location found for {}", dssIdAsString);
 			return null;
 		}
+		ocspAccessLocations.addAll(alternativeUrls);
 
 		final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
 

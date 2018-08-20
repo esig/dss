@@ -67,7 +67,7 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
 				return null;
 			}
 
-			final CRLToken crlToken = crlSource.findCrl(certificateToken, issuerToken);
+			final CRLToken crlToken = crlSource.getRevocationToken(certificateToken, issuerToken);
 			if (crlToken == null) {
 				LOG.debug("{} : No CRL found for: {}", crlSource.getClass().getSimpleName(), certificateToken.getDSSIdAsString());
 				return null;
