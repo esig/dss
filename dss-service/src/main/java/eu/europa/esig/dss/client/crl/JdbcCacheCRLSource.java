@@ -60,7 +60,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 	/**
 	 * used in the init method to create the table, if not existing: ID (char40 = SHA1 length) and DATA (blob)
 	 */
-	private static final String SQL_INIT_CREATE_TABLE = "CREATE TABLE CACHED_CRL (ID CHAR(40), DATA LONGVARBINARY, SIGNATURE_ALGORITHM VARCHAR(20), THIS_UPDATE TIMESTAMP, NEXT_UPDATE TIMESTAMP, EXPIRED_CERTS_ON_CRL TIMESTAMP, ISSUER LONGVARBINARY, ISSUER_PRINCIPAL_MATCH BOOLEAN, SIGNATURE_INTACT BOOLEAN, CRL_SIGN_KEY_USAGE BOOLEAN, UNKNOWN_CRITICAL_EXTENSION BOOLEAN, SIGNATURE_INVALID_REASON VARCHAR(256))";
+	private static final String SQL_INIT_CREATE_TABLE = "CREATE TABLE CACHED_CRL (ID CHAR(40), DATA BLOB, SIGNATURE_ALGORITHM VARCHAR(20), THIS_UPDATE TIMESTAMP, NEXT_UPDATE TIMESTAMP, EXPIRED_CERTS_ON_CRL TIMESTAMP, ISSUER LONGVARBINARY, ISSUER_PRINCIPAL_MATCH BOOLEAN, SIGNATURE_INTACT BOOLEAN, CRL_SIGN_KEY_USAGE BOOLEAN, UNKNOWN_CRITICAL_EXTENSION BOOLEAN, SIGNATURE_INVALID_REASON VARCHAR(256))";
 
 	/**
 	 * used in the find method to select the crl via the id
@@ -122,11 +122,10 @@ public class JdbcCacheCRLSource implements CRLSource {
 	}
 
 	@Override
-	public CRLToken findCrl(final CertificateToken certificateToken) throws DSSException {
+	public CRLToken getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerToken) throws DSSException {
 		if (certificateToken == null) {
 			return null;
 		}
-		final CertificateToken issuerToken = certificateToken.getIssuerToken();
 		if (issuerToken == null) {
 			return null;
 		}
@@ -150,7 +149,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 					}
 				}
 			}
-			final CRLToken crlToken = cachedSource.findCrl(certificateToken);
+			final CRLToken crlToken = cachedSource.getRevocationToken(certificateToken, issuerToken);
 			if ((crlToken != null) && crlToken.isValid()) {
 				if (storedValidity == null) {
 					LOG.info("CRL '{}' not in cache", crlUrl);

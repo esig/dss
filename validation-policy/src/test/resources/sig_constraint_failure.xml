@@ -203,9 +203,6 @@
 	                </CertificateChain>
 	            </Revocation>
             </Revocations>
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-            </Info>
         </Certificate>
         <Certificate Id="D9CAABC3225B7030CDB83E3846E3691C14ED790B1764CE1B4F043157899C5C58">
             <SubjectDistinguishedName Format="CANONICAL">cn=certum ev tsa sha2,ou=certum certification authority,o=unizeto technologies s.a.,c=pl</SubjectDistinguishedName>
@@ -285,9 +282,6 @@
 	                </CertificateChain>
 	            </Revocation>
             </Revocations>
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-            </Info>
         </Certificate>
         <Certificate Id="8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733">
             <SubjectDistinguishedName Format="CANONICAL">cn=certum validation service,ou=certum certification authority,o=unizeto technologies s.a.,c=pl</SubjectDistinguishedName>
@@ -334,9 +328,6 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
-            <Info>
-                <Message Id="0">OCSP check not needed: id-pkix-ocsp-nocheck extension present.</Message>
-            </Info>
         </Certificate>
         <Certificate Id="8DA084FCF99CE07722F89B3205939806FA5CB811E1C813F6A108C7D336B3408E">
             <SubjectDistinguishedName Format="CANONICAL">cn=tc trustcenter class 3 ca ii,ou=tc trustcenter class 3 ca,o=tc trustcenter gmbh,c=de</SubjectDistinguishedName>
@@ -419,9 +410,6 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
-            <Info>
-                <Message Id="0">OCSP check not needed: id-pkix-ocsp-nocheck extension present.</Message>
-            </Info>
         </Certificate>
     </UsedCertificates>
 </DiagnosticData>

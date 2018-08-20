@@ -31,21 +31,21 @@ import eu.europa.esig.dss.x509.ocsp.OCSPSource;
 /**
  * Provides information on the sources to be used in the validation process in
  * the context of a signature.
- *
  */
 public interface CertificateVerifier {
 
 	/**
 	 * Returns the OCSP source associated with this verifier.
 	 *
-	 * @return
+	 * @return the used OCSP source for external access (web, filesystem,
+	 *         cached,...)
 	 */
 	OCSPSource getOcspSource();
 
 	/**
 	 * Returns the CRL source associated with this verifier.
 	 *
-	 * @return
+	 * @return the used CRL source for external access (web, filesystem, cached,...)
 	 */
 	CRLSource getCrlSource();
 
@@ -53,7 +53,8 @@ public interface CertificateVerifier {
 	 * Defines the source of CRL used by this class
 	 *
 	 * @param crlSource
-	 *            the crlSource to set
+	 *                  the CRL source to set for external access (web, filesystem,
+	 *                  cached,...)
 	 */
 	void setCrlSource(final CRLSource crlSource);
 
@@ -61,15 +62,16 @@ public interface CertificateVerifier {
 	 * Defines the source of OCSP used by this class
 	 *
 	 * @param ocspSource
-	 *            the ocspSource to set
+	 *                   the OCSP source to set for external access (web,
+	 *                   filesystem, cached,...)
 	 */
 	void setOcspSource(final OCSPSource ocspSource);
 
 	/**
-	 * Returns the trusted certificates source associated with this verifier.
-	 * This source is used to identify the trusted anchor.
+	 * Returns the trusted certificates source associated with this verifier. This
+	 * source is used to identify the trusted anchors.
 	 *
-	 * @return
+	 * @return the certificate source which contains trusted certificates
 	 */
 	CertificateSource getTrustedCertSource();
 
@@ -77,14 +79,15 @@ public interface CertificateVerifier {
 	 * Sets the trusted certificates source.
 	 *
 	 * @param certSource
-	 *            The certificates source to set
+	 *                   The certificates source with known trusted certificates
 	 */
 	void setTrustedCertSource(final CertificateSource certSource);
 
 	/**
 	 * Returns the adjunct certificates source associated with this verifier.
 	 *
-	 * @return
+	 * @return the certificate source which contains additional certificate (missing
+	 *         CA,...)
 	 */
 	CertificateSource getAdjunctCertSource();
 
@@ -92,27 +95,31 @@ public interface CertificateVerifier {
 	 * Associates an adjunct certificates source to this verifier.
 	 *
 	 * @param adjunctCertSource
+	 *                          the certificate source with additional and missing
+	 *                          certificates
 	 */
 	void setAdjunctCertSource(final CertificateSource adjunctCertSource);
 
 	/**
 	 * The data loader used to access AIA certificate source.
 	 *
-	 * @return
+	 * @return the used data loaded to load AIA resources and policy files
 	 */
 	DataLoader getDataLoader();
 
 	/**
-	 * The data loader used to access AIA certificate source. If this property
-	 * is not set the default {@code CommonsHttpDataLoader} is created.
+	 * The data loader used to access AIA certificate source. If this property is
+	 * not set the default {@code CommonsHttpDataLoader} is created.
 	 *
 	 * @param dataLoader
+	 *                   the used data loaded to load AIA resources and policy files
 	 */
 	void setDataLoader(final DataLoader dataLoader);
 
 	/**
-	 * This method returns the CRL source (information extracted from
-	 * signatures).
+	 * This method returns the CRL source (information extracted from signatures).
+	 * 
+	 * @return the CRL sources from the signature
 	 */
 	ListCRLSource getSignatureCRLSource();
 
@@ -121,12 +128,14 @@ public interface CertificateVerifier {
 	 * signatures).
 	 *
 	 * @param signatureCRLSource
+	 *                           the CRL sources from the signature
 	 */
 	void setSignatureCRLSource(final ListCRLSource signatureCRLSource);
 
 	/**
-	 * This method returns the OCSP source (information extracted from
-	 * signatures).
+	 * This method returns the OCSP source (information extracted from signatures).
+	 * 
+	 * @return the OCSP sources from the signature
 	 */
 	ListOCSPSource getSignatureOCSPSource();
 
@@ -135,8 +144,29 @@ public interface CertificateVerifier {
 	 * signatures).
 	 *
 	 * @param signatureOCSPSource
+	 *                            the OCSP sources from the signature
 	 */
 	void setSignatureOCSPSource(final ListOCSPSource signatureOCSPSource);
+
+	/**
+	 * This method allows to change the behavior on missing revocation data (LT/LTA
+	 * augmentation). (default : true)
+	 * 
+	 * @param throwExceptionOnMissingRevocationData
+	 *                                              true if an exception is raised
+	 *                                              on missing revocation data,
+	 *                                              false will only display a
+	 *                                              warning message
+	 */
+	void setExceptionOnMissingRevocationData(boolean throwExceptionOnMissingRevocationData);
+
+	/**
+	 * This method returns true if an exception needs to be thrown on missing
+	 * revocation data.
+	 * 
+	 * @return true if an exception is thrown, false if a warning message is added
+	 */
+	boolean isExceptionOnMissingRevocationData();
 
 	/**
 	 * This method creates the validation pool of certificates which is used

@@ -149,9 +149,6 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
-            <Info>
-                <Message Id="0">The certificate used to sign this token is not found or not valid!</Message>
-            </Info>
         </Certificate>
     </UsedCertificates>
     <TrustedLists/>

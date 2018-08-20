@@ -46,7 +46,7 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 
 		service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

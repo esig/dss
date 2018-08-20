@@ -164,13 +164,8 @@
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
-                    <Info/>
                 </Revocation>
             </Revocations>
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-                <Message Id="1">OSCP Uri not found in certificate meta-data !</Message>
-            </Info>
         </Certificate>
         <Certificate Id="3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
             <SubjectDistinguishedName Format="CANONICAL">cn=postsignum qualified ca 2,o=česká pošta\, s.p. [ič 47114983],c=cz</SubjectDistinguishedName>
@@ -247,7 +242,6 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
-            <Info/>
         </Certificate>
         <Certificate Id="AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
             <SubjectDistinguishedName Format="CANONICAL">cn=postsignum root qca 2,o=česká pošta\, s.p. [ič 47114983],c=cz</SubjectDistinguishedName>
@@ -296,7 +290,6 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
-            <Info/>
         </Certificate>
     </UsedCertificates>
     <TrustedLists>

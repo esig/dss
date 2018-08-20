@@ -217,22 +217,6 @@ public class ServiceInfo implements Serializable {
 		this.status = new TimeDependentValues<ServiceInfoStatus>(status);
 	}
 
-	public String toString(String indent) {
-		try {
-			StringBuilder buffer = new StringBuilder();
-			buffer.append(indent).append("TSPName                   \t= ").append(tspName).append('\n');
-			buffer.append(indent).append("TSPTradeName              \t= ").append(tspTradeName).append('\n');
-			buffer.append(indent).append("TSPRegistrationIdentifier \t= ").append(tspRegistrationIdentifier)
-					.append('\n');
-			buffer.append(indent).append("TSPPostalAddress          \t= ").append(tspPostalAddress).append('\n');
-			buffer.append(indent).append("TSPElectronicAddress      \t= ").append(tspElectronicAddress).append("\n\n");
-			buffer.append(indent).append("StatusAndExtensions       \t= ").append(status).append('\n');
-			return buffer.toString();
-		} catch (Exception e) {
-			return super.toString();
-		}
-	}
-
 	private String trim(String str) {
 		if (str != null) {
 			return str.trim();
@@ -242,14 +226,21 @@ public class ServiceInfo implements Serializable {
 
 	@Override
 	public String toString() {
-
-		return toString("");
+		StringBuilder buffer = new StringBuilder();
+		buffer.append("TSPName                   \t= ").append(tspName).append('\n');
+		buffer.append("TSPTradeName              \t= ").append(tspTradeName).append('\n');
+		buffer.append("TSPRegistrationIdentifier \t= ").append(tspRegistrationIdentifier).append('\n');
+		buffer.append("TSPPostalAddress          \t= ").append(tspPostalAddress).append('\n');
+		buffer.append("TSPElectronicAddress      \t= ").append(tspElectronicAddress).append("\n\n");
+		buffer.append("StatusAndExtensions       \t= ").append(status).append('\n');
+		return buffer.toString();
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
 		result = prime * result + ((tlCountryCode == null) ? 0 : tlCountryCode.hashCode());
 		result = prime * result + ((tspElectronicAddress == null) ? 0 : tspElectronicAddress.hashCode());
 		result = prime * result + ((tspName == null) ? 0 : tspName.hashCode());
@@ -271,6 +262,13 @@ public class ServiceInfo implements Serializable {
 			return false;
 		}
 		ServiceInfo other = (ServiceInfo) obj;
+		if (status == null) {
+			if (other.status != null) {
+				return false;
+			}
+		} else if (!status.equals(other.status)) {
+			return false;
+		}
 		if (tlCountryCode == null) {
 			if (other.tlCountryCode != null) {
 				return false;

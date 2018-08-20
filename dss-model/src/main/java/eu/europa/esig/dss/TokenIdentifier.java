@@ -20,67 +20,17 @@
  */
 package eu.europa.esig.dss;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.x509.Token;
 
 /**
  * This class is used to obtain a unique id for Token
  */
-public final class TokenIdentifier implements Serializable {
+public final class TokenIdentifier extends Identifier {
 
-	private final Digest tokenDigest;
-
-	TokenIdentifier(DigestAlgorithm digestAlgo, byte[] digest) {
-		this.tokenDigest = new Digest(digestAlgo, digest);
-	}
+	private static final long serialVersionUID = 1201653840828853681L;
 
 	public TokenIdentifier(final Token token) {
-		this(DigestAlgorithm.SHA256, token.getDigest(DigestAlgorithm.SHA256));
-	}
-
-	/**
-	 * Return an ID conformant to XML Id
-	 * 
-	 * @return the XML encoded ID
-	 */
-	public String asXmlId() {
-		return tokenDigest.getHexValue();
-	}
-
-	@Override
-	public String toString() {
-		return "{id:" + tokenDigest + "}";
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + ((tokenDigest == null) ? 0 : tokenDigest.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		TokenIdentifier other = (TokenIdentifier) obj;
-		if (tokenDigest == null) {
-			if (other.tokenDigest != null) {
-				return false;
-			}
-		} else if (!tokenDigest.equals(other.tokenDigest)) {
-			return false;
-		}
-		return true;
+		super(token.getEncoded());
 	}
 
 }

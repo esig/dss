@@ -34,6 +34,8 @@ public final class Digest implements Serializable {
 
 	private byte[] value;
 
+	private String hex;
+
 	public Digest() {
 	}
 
@@ -43,12 +45,15 @@ public final class Digest implements Serializable {
 	}
 
 	public String getHexValue() {
-		try (Formatter formatter = new Formatter()) {
-			for (byte b : value) {
-				formatter.format("%02X", b);
+		if (hex == null) {
+			try (Formatter formatter = new Formatter()) {
+				for (byte b : value) {
+					formatter.format("%02X", b);
+				}
+				hex = formatter.toString();
 			}
-			return formatter.toString();
 		}
+		return hex;
 	}
 
 	@Override
@@ -95,7 +100,7 @@ public final class Digest implements Serializable {
 
 	/**
 	 * @param algorithm
-	 *            the algorithm to set
+	 *                  the algorithm to set
 	 */
 	public void setAlgorithm(DigestAlgorithm algorithm) {
 		this.algorithm = algorithm;
@@ -110,7 +115,7 @@ public final class Digest implements Serializable {
 
 	/**
 	 * @param value
-	 *            the value to set
+	 *              the value to set
 	 */
 	public void setValue(byte[] value) {
 		this.value = value;

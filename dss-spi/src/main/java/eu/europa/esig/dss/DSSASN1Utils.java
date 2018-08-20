@@ -32,12 +32,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
 
 import javax.naming.InvalidNameException;
@@ -99,8 +97,6 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.tsl.ServiceInfo;
-import eu.europa.esig.dss.tsl.ServiceInfoStatus;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -509,12 +505,20 @@ public final class DSSASN1Utils {
 				return skiBC.getKeyIdentifier();
 			} else if (computeIfMissing) {
 				// If extension not present, we compute it from the certificate public key
-				DLSequence seq = (DLSequence) DERSequence.fromByteArray(certificateToken.getPublicKey().getEncoded());
-				DERBitString item = (DERBitString) seq.getObjectAt(1);
-				return DSSUtils.digest(DigestAlgorithm.SHA1, item.getOctets());
+				return computeSkiFromCert(certificateToken);
 			}
 			return null;
-		} catch (Exception e) {
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	public static byte[] computeSkiFromCert(final CertificateToken certificateToken) {
+		try {
+			DLSequence seq = (DLSequence) DERSequence.fromByteArray(certificateToken.getPublicKey().getEncoded());
+			DERBitString item = (DERBitString) seq.getObjectAt(1);
+			return DSSUtils.digest(DigestAlgorithm.SHA1, item.getOctets());
+		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}
@@ -531,31 +535,14 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * Gives back the OCSP URIs meta-data found within the given X509 certificate.
-	 *
-	 * @param certificate
-	 *            the certificate token.
-	 * @return a list of OCSP URIs, or empty list if the extension is not present.
-	 */
-	public static List<String> getOCSPAccessLocations(final CertificateToken certificate) {
-		return getOCSPAccessLocations(certificate, true);
-	}
-
-	/**
 	 * Gives back the OCSP URIs meta-data found within the given X509 cert.
 	 *
 	 * @param certificate
 	 *            the cert token.
-	 * @param checkInTrustAnchors
-	 *            if true, the method will search in the ServiceSupplyPoint urls
 	 * @return a list of OCSP URIs, or empty list if the extension is not present.
 	 */
-	public static List<String> getOCSPAccessLocations(final CertificateToken certificate, boolean checkInTrustAnchors) {
-		List<String> ocspUrls = getAccessLocations(certificate, X509ObjectIdentifiers.id_ad_ocsp);
-		if (Utils.isCollectionEmpty(ocspUrls) && checkInTrustAnchors) {
-			return getServiceSupplyPoints(certificate, "ocsp");
-		}
-		return ocspUrls;
+	public static List<String> getOCSPAccessLocations(final CertificateToken certificate) {
+		return getAccessLocations(certificate, X509ObjectIdentifiers.id_ad_ocsp);
 	}
 
 	private static List<String> getAccessLocations(final CertificateToken certificate, ASN1ObjectIdentifier aiaType) {
@@ -584,20 +571,14 @@ public final class DSSASN1Utils {
 		return locationsUrls;
 	}
 
-	public static List<String> getCrlUrls(final CertificateToken certificateToken) {
-		return getCrlUrls(certificateToken, true);
-	}
-
 	/**
 	 * Gives back the {@code List} of CRL URI meta-data found within the given X509 certificate.
 	 *
 	 * @param certificateToken
 	 *            the cert token certificate
-	 * @param checkInTrustAnchors
-	 *            if true, the method will search in the ServiceSupplyPoint urls
 	 * @return the {@code List} of CRL URI, or empty list if the extension is not present
 	 */
-	public static List<String> getCrlUrls(final CertificateToken certificateToken, boolean checkInTrustAnchors) {
+	public static List<String> getCrlUrls(final CertificateToken certificateToken) {
 		final List<String> urls = new ArrayList<String>();
 
 		final byte[] crlDistributionPointsBytes = certificateToken.getCertificate().getExtensionValue(Extension.cRLDistributionPoints.getId());
@@ -626,38 +607,6 @@ public final class DSSASN1Utils {
 			}
 		}
 
-		if (Utils.isCollectionEmpty(urls) && checkInTrustAnchors) {
-			return getServiceSupplyPoints(certificateToken, "crl", "certificateRevocationList");
-		}
-		return urls;
-	}
-
-	private static List<String> getServiceSupplyPoints(CertificateToken certificateToken, String... keywords) {
-		List<String> urls = new ArrayList<String>();
-		CertificateToken issuerToken = certificateToken.getIssuerToken();
-		Set<CertificateToken> processedTokens = new HashSet<CertificateToken>();
-		while ((issuerToken != null) && (!processedTokens.contains(issuerToken))) {
-			processedTokens.add(issuerToken);
-			if (issuerToken.isTrusted() && Utils.isCollectionNotEmpty(issuerToken.getAssociatedTSPS())) {
-				Set<ServiceInfo> services = issuerToken.getAssociatedTSPS();
-				for (ServiceInfo serviceInfo : services) {
-					for (ServiceInfoStatus serviceInfoStatus : serviceInfo.getStatus()) {
-						List<String> serviceSupplyPoints = serviceInfoStatus.getServiceSupplyPoints();
-						if (Utils.isCollectionNotEmpty(serviceSupplyPoints)) {
-							for (String serviceSupplyPoint : serviceSupplyPoints) {
-								for (String keyword : keywords) {
-									if (serviceSupplyPoint.contains(keyword)) {
-										LOG.debug("ServiceSupplyPoints (TL) found for keyword '{}'", keyword);
-										urls.add(serviceSupplyPoint);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			issuerToken = issuerToken.getIssuerToken();
-		}
 		return urls;
 	}
 

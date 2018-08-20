@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.x509;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -42,55 +43,8 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource {
 	}
 
 	@Override
-	protected CertificateSourceType getCertificateSourceType() {
+	public CertificateSourceType getCertificateSourceType() {
 		return CertificateSourceType.TRUSTED_STORE;
-	}
-
-	protected CertificateToken addCertificate(final CertificateToken cert, final Set<CertificateSourceType> sources, final Set<ServiceInfo> services) {
-		final CertificateToken certToken = certPool.getInstance(cert, sources, services);
-		return certToken;
-	}
-
-	/**
-	 * This method allows to define (to add) any certificate as trusted. A
-	 * service information is associated to this certificate. The source of the
-	 * certificate is set to {@code CertificateSourceType.TRUSTED_LIST}
-	 *
-	 * @param certificate
-	 *            the certificate you have to trust
-	 * @param serviceInfo
-	 *            the service information associated to the service
-	 * @return the corresponding certificate token
-	 */
-	@Override
-	public CertificateToken addCertificate(final CertificateToken certificate, final ServiceInfo serviceInfo) {
-		final CertificateToken certToken = certPool.getInstance(certificate, getCertificateSourceType(), serviceInfo);
-		return certToken;
-	}
-
-	/**
-	 * This method allows to define (to add) any certificate as trusted. A
-	 * service information is associated to this certificate. The source of the
-	 * certificate is set to {@code CertificateSourceType.TRUSTED_LIST}
-	 *
-	 * @param x500Principal
-	 *            the X500Principal you have to trust
-	 * @param serviceInfo
-	 *            the service information associated to the service
-	 * @return the corresponding certificate token
-	 */
-	public CertificateToken addX500Principal(final X500Principal x500Principal, final ServiceInfo serviceInfo) {
-		CertificateToken certificateToken = null;
-		List<CertificateToken> certificateTokens = get(x500Principal);
-		if (certificateTokens.size() > 0) {
-			certificateToken = certificateTokens.get(0);
-		} else {
-			LOG.debug("WARNING: There is currently no certificate with the given X500Principal: '{}' within the certificate pool!", x500Principal);
-		}
-		if (certificateToken != null) {
-			addCertificate(certificateToken, serviceInfo);
-		}
-		return certificateToken;
 	}
 
 	/**
@@ -134,6 +88,18 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource {
 
 	public int getNumberOfTrustedCertificates() {
 		return certPool.getNumberOfCertificates();
+	}
+
+	public Set<ServiceInfo> getTrustServices(CertificateToken trustAnchor) {
+		return Collections.emptySet();
+	}
+
+	public List<String> getAlternativeOCSPUrls(CertificateToken trustAnchor) {
+		return Collections.emptyList();
+	}
+
+	public List<String> getAlternativeCRLUrls(CertificateToken trustAnchor) {
+		return Collections.emptyList();
 	}
 
 }

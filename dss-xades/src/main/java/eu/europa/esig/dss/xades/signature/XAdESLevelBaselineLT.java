@@ -22,6 +22,8 @@ package eu.europa.esig.dss.xades.signature;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DSSException;
@@ -42,6 +44,8 @@ import eu.europa.esig.dss.x509.ocsp.OCSPToken;
  *
  */
 public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
+
+	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelBaselineLT.class);
 
 	/**
 	 * The default constructor for XAdESLevelBaselineLT.
@@ -76,13 +80,22 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 		 */
 		checkSignatureIntegrity();
 
-		final ValidationContext valContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
+		final ValidationContext validationContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
+
+		if (!validationContext.isAllRequiredRevocationDataPresent()) {
+			String message = "Revocation data is missing";
+			if (certificateVerifier.isExceptionOnMissingRevocationData()) {
+				throw new DSSException(message);
+			} else {
+				LOG.warn(message);
+			}
+		}
 
 		removeOldCertificateValues();
 		removeOldRevocationValues();
 
-		incorporateCertificateValues(unsignedSignaturePropertiesDom, valContext);
-		incorporateRevocationValues(unsignedSignaturePropertiesDom, valContext);
+		incorporateCertificateValues(unsignedSignaturePropertiesDom, validationContext);
+		incorporateRevocationValues(unsignedSignaturePropertiesDom, validationContext);
 
 		/**
 		 * Certificate(s), revocation data where added, XAdES signature certificate source must be reset.

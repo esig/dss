@@ -33,6 +33,7 @@ import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.client.crl.OnlineCRLSource;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.client.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
@@ -88,6 +89,7 @@ public class SignXmlXadesLTTest extends CookbookTools {
 			CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 
 			CommonsDataLoader commonsHttpDataLoader = new CommonsDataLoader();
+			OCSPDataLoader ocspDataLoader = new OCSPDataLoader();
 
 			KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12",
 					"dss-password");
@@ -114,7 +116,7 @@ public class SignXmlXadesLTTest extends CookbookTools {
 			commonCertificateVerifier.setCrlSource(onlineCRLSource);
 
 			OnlineOCSPSource onlineOCSPSource = new OnlineOCSPSource();
-			onlineOCSPSource.setDataLoader(commonsHttpDataLoader);
+			onlineOCSPSource.setDataLoader(ocspDataLoader);
 			commonCertificateVerifier.setOcspSource(onlineOCSPSource);
 
 			// Create XAdES service for signature

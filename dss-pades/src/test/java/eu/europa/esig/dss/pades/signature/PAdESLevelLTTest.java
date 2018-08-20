@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pades.signature;
 
 import java.io.File;
-import java.util.Date;
 
 import org.junit.Before;
 
@@ -42,7 +41,6 @@ public class PAdESLevelLTTest extends AbstractPAdESTestSignature {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);

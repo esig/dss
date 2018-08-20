@@ -97,13 +97,14 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 		}
 	}
 
-	private void checkAllRevocationOnce(DiagnosticData diagnosticData) throws CMSException {
+	private void checkAllRevocationOnce(DiagnosticData diagnosticData) {
 		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
 		for (CertificateWrapper certificateWrapper : usedCertificates) {
 			if (certificateWrapper.isTrusted() || certificateWrapper.isIdPkixOcspNoCheck()) {
 				continue;
 			}
-			assertEquals(1, certificateWrapper.getRevocationData().size());
+			int nbRevoc = certificateWrapper.getRevocationData().size();
+			assertEquals("Nb revoc for cert " + certificateWrapper.getCommonName() + " = " + nbRevoc, 1, nbRevoc);
 		}
 	}
 

@@ -1,8 +1,12 @@
 package eu.europa.esig.dss;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +52,53 @@ public class CertificateReorderer {
 	public List<CertificateToken> getOrderedCertificates() {
 
 		List<CertificateToken> certificates = getAllCertificatesOnce();
+		if (Utils.collectionSize(certificates) == 1) {
+			return certificates;
+		}
 
+		initIssuerPublicKeys(certificates);
+
+		// Build complete chain
+		List<CertificateToken> identifiedSigningCerts = getSigningCertificates(certificates);
+		CertificateToken selectedSigningCert = selectSigningCertificateInList(identifiedSigningCerts);
+
+		List<CertificateToken> rebuiltCertificateChain = buildCertificateChainForCert(certificates, selectedSigningCert);
+
+		if (certificates.size() > rebuiltCertificateChain.size()) {
+			LOG.debug("Some certificates are ignored");
+			LOG.debug("Before : {}", certificates);
+			LOG.debug("After : {}", rebuiltCertificateChain);
+		}
+
+		return rebuiltCertificateChain;
+	}
+
+	/**
+	 * This method is used to order the certificates (signing certificate, CA1, CA2
+	 * and Root)
+	 * 
+	 * @return a map of one or more ordered certificates chain
+	 */
+	public Map<CertificateToken, List<CertificateToken>> getOrderedCertificateChains() {
+
+		List<CertificateToken> certificates = getAllCertificatesOnce();
+		if (Utils.collectionSize(certificates) == 1) {
+			CertificateToken uniqueCert = certificates.get(0);
+			return Collections.singletonMap(uniqueCert, Collections.singletonList(uniqueCert));
+		}
+
+		initIssuerPublicKeys(certificates);
+
+		Map<CertificateToken, List<CertificateToken>> result = new HashMap<CertificateToken, List<CertificateToken>>();
+		List<CertificateToken> identifiedSigningCerts = getSigningCertificates(certificates);
+		for (CertificateToken identifiedSigningCert : identifiedSigningCerts) {
+			result.put(identifiedSigningCert, buildCertificateChainForCert(certificates, identifiedSigningCert));
+		}
+
+		return result;
+	}
+
+	private void initIssuerPublicKeys(List<CertificateToken> certificates) {
 		// Build the chain cert -> issuer
 		for (CertificateToken token : certificates) {
 			if (isIssuerNeeded(token)) {
@@ -63,27 +113,43 @@ public class CertificateReorderer {
 				}
 			}
 		}
+	}
 
-		// Build complete chain
+	private List<CertificateToken> buildCertificateChainForCert(List<CertificateToken> certificates, CertificateToken certToAdd) {
 		List<CertificateToken> result = new LinkedList<CertificateToken>();
-		CertificateToken certToAdd = getSigningCertificate(certificates);
-		
 		while (certToAdd != null && !result.contains(certToAdd)) {
 			result.add(certToAdd);
-			certToAdd = certToAdd.getIssuerToken();
+			certToAdd = getCertificateByPubKey(certificates, certToAdd.getPublicKeyOfTheSigner());
 		}
-
-		if (certificates.size() > result.size()) {
-			LOG.debug("Some certificates are ignored");
-			LOG.debug("Before : {}", certificates);
-			LOG.debug("After : {}", result);
-		}
-
 		return result;
 	}
 
+	private CertificateToken getCertificateByPubKey(List<CertificateToken> certificates, PublicKey publicKeyOfTheSigner) {
+		for (CertificateToken certificateToken : certificates) {
+			if (certificateToken.getPublicKey().equals(publicKeyOfTheSigner)) {
+				return certificateToken;
+			}
+		}
+		return null;
+	}
+
 	private boolean isIssuerNeeded(CertificateToken token) {
-		return !token.isSelfSigned() && !token.isTrusted() && token.getIssuerToken() == null;
+		return !token.isSelfSigned() && token.getPublicKeyOfTheSigner() == null;
+	}
+
+	private CertificateToken selectSigningCertificateInList(List<CertificateToken> identifiedSigningCerts) {
+		CertificateToken selectedSigningCert;
+		if (identifiedSigningCerts.size() == 1) {
+			selectedSigningCert = identifiedSigningCerts.get(0);
+		} else {
+			LOG.warn("More than one chain detected");
+			if (identifiedSigningCerts.contains(signingCertificate)) {
+				selectedSigningCert = signingCertificate;
+			} else {
+				throw new DSSException("No pertinent paramaters");
+			}
+		}
+		return selectedSigningCert;
 	}
 
 	/**
@@ -110,18 +176,19 @@ public class CertificateReorderer {
 	}
 
 	/**
-	 * This method is used to identify the signing certificate (the certificate which didn't sign any other certificate)
+	 * This method is used to identify the signing certificates (the certificate
+	 * which didn't sign any other certificate)
 	 * 
 	 * @param certificates
-	 * @return the identified signing certificate
+	 * @return the identified signing certificates
 	 */
-	private CertificateToken getSigningCertificate(List<CertificateToken> certificates) {
+	private List<CertificateToken> getSigningCertificates(List<CertificateToken> certificates) {
 		List<CertificateToken> potentialSigners = new ArrayList<CertificateToken>();
 		for (CertificateToken signer : certificates) {
 			boolean isSigner = false;
 
 			for (CertificateToken token : certificates) {
-				if (signer.equals(token.getIssuerToken())) {
+				if (signer.getPublicKey().equals(token.getPublicKeyOfTheSigner())) {
 					isSigner = true;
 					break;
 				}
@@ -134,19 +201,9 @@ public class CertificateReorderer {
 
 		if (Utils.isCollectionEmpty(potentialSigners)) {
 			throw new DSSException("No signing certificate found");
-		} else if (Utils.collectionSize(potentialSigners) == 1) {
-			CertificateToken signer = potentialSigners.get(0);
-			if (signingCertificate != null && !signingCertificate.equals(signer)) {
-				LOG.warn("Identified signer is different than parameter");
-			}
-			return signer;
-		} else {
-			if (signingCertificate != null && potentialSigners.contains(signingCertificate)) {
-				return signingCertificate;
-			}
-			LOG.warn("More than one identified signers (returns first)");
-			return potentialSigners.get(0);
 		}
+
+		return potentialSigners;
 	}
 
 }

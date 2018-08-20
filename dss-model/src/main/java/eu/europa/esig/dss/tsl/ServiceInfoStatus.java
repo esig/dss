@@ -143,4 +143,14 @@ public class ServiceInfoStatus extends BaseTimeDependent implements Serializable
 		return expiredCertsRevocationInfo;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder buffer = new StringBuilder();
+		buffer.append("ServiceName               \t= ").append(serviceName).append('\n');
+		buffer.append("ServiceType               \t= ").append(type).append('\n');
+		buffer.append("ServiceStatus             \t= ").append(status).append('\n');
+		buffer.append("Dates                     \t= ").append(super.toString()).append('\n');
+		return buffer.toString();
+	}
+
 }

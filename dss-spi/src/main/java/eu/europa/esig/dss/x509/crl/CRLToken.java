@@ -24,7 +24,8 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.cert.CRLReason;
 import java.security.cert.X509CRLEntry;
-import java.util.List;
+
+import javax.security.auth.x500.X500Principal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,6 @@ import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.TokenValidationExtraInfo;
 
 /**
  * This class represents a CRL and provides the information about its validity.
@@ -75,13 +75,7 @@ public class CRLToken extends RevocationToken {
 		this.productionDate = crlValidity.getThisUpdate(); // dates are equals in case of CRL
 		this.nextUpdate = crlValidity.getNextUpdate();
 		this.expiredCertsOnCRL = crlValidity.getExpiredCertsOnCRL();
-
-		if (crlValidity.getIssuerToken() != null) { // if the signature is invalid, the issuer is null
-			this.issuerToken = crlValidity.getIssuerToken();
-			this.issuerX500Principal = crlValidity.getIssuerToken().getSubjectX500Principal();
-		}
-
-		this.extraInfo = new TokenValidationExtraInfo();
+		this.publicKeyOfTheSigner = crlValidity.getIssuerToken().getPublicKey();
 
 		this.signatureValid = crlValidity.isSignatureIntact();
 		this.signatureInvalidityReason = crlValidity.getSignatureInvalidityReason();
@@ -92,8 +86,8 @@ public class CRLToken extends RevocationToken {
 	 *            the {@code CertificateToken} which is managed by this CRL.
 	 */
 	private void setRevocationStatus(final CertificateToken certificateToken) {
-		final CertificateToken issuerToken = certificateToken.getIssuerToken();
-		if (!issuerToken.equals(crlValidity.getIssuerToken())) {
+		final X500Principal issuerToken = certificateToken.getIssuerX500Principal();
+		if (!DSSUtils.x500PrincipalAreEquals(issuerToken, crlValidity.getIssuerToken().getSubjectX500Principal())) {
 			if (!crlValidity.isSignatureIntact()) {
 				throw new DSSException(crlValidity.getSignatureInvalidityReason());
 			}
@@ -108,18 +102,27 @@ public class CRLToken extends RevocationToken {
 			revocationDate = crlEntry.getRevocationDate();
 			CRLReason revocationReason = crlEntry.getRevocationReason();
 			if (revocationReason != null) {
-				reason = CRLReasonEnum.fromInt(revocationReason.ordinal()).name();
+				reason = CRLReasonEnum.fromInt(revocationReason.ordinal());
 			}
 		}
 	}
 
 	@Override
-	public boolean isSignedBy(final CertificateToken issuerToken) {
+	protected boolean checkIsSignedBy(final CertificateToken token) {
 		throw new UnsupportedOperationException(this.getClass().getName());
 	}
 
 	public CRLValidity getCrlValidity() {
 		return crlValidity;
+	}
+
+	@Override
+	public X500Principal getIssuerX500Principal() {
+		if (crlValidity.getIssuerToken() != null) { // if the signature is invalid, the issuer is null
+		return crlValidity.getIssuerToken().getSubjectX500Principal();
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -131,7 +134,7 @@ public class CRLToken extends RevocationToken {
 	@Override
 	public String getAbbreviation() {
 		return "CRLToken[" + (productionDate == null ? "?" : DSSUtils.formatInternal(productionDate)) + ", signedBy="
-				+ (issuerToken == null ? "?" : issuerToken.getDSSIdAsString()) + "]";
+				+ getIssuerX500Principal() + "]";
 	}
 
 	@Override
@@ -163,18 +166,7 @@ public class CRLToken extends RevocationToken {
 			out.append(indentStr).append("Production time: ").append(productionDate == null ? "?" : DSSUtils.formatInternal(productionDate)).append('\n');
 			out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');
 			out.append(indentStr).append("Status: ").append(getStatus()).append('\n');
-			if (issuerToken != null) {
-				out.append(indentStr).append("Issuer's certificate: ").append(issuerToken.getDSSIdAsString()).append('\n');
-			}
-			List<String> validationExtraInfo = extraInfo.getValidationInfo();
-			if (validationExtraInfo.size() > 0) {
-
-				for (String info : validationExtraInfo) {
-
-					out.append('\n').append(indentStr).append("\t- ").append(info);
-				}
-				out.append('\n');
-			}
+			out.append(indentStr).append("Issuer's certificate: ").append(getIssuerX500Principal()).append('\n');
 			indentStr = indentStr.substring(1);
 			out.append(indentStr).append(']');
 			return out.toString();
@@ -182,4 +174,5 @@ public class CRLToken extends RevocationToken {
 			return ((Object) this).toString();
 		}
 	}
+
 }

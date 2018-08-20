@@ -120,9 +120,6 @@
 	                </CertificateChain>
 	            </Revocation>
 	        </Revocations>
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-            </Info>
         </Certificate>
         <Certificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
             <SubjectDistinguishedName Format="CANONICAL">c=bg,st=b:831641791,l=sofia,o=information services plc.,cn=stampit qualified ca,street=2 p. volov str.</SubjectDistinguishedName>
@@ -246,9 +243,6 @@
 	                </CertificateChain>
 	            </Revocation>
 	        </Revocations>
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-            </Info>
         </Certificate>
     </UsedCertificates>
 </DiagnosticData>

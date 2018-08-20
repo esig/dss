@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import java.util.Date;
-
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -42,11 +40,10 @@ public class CAdESLevelLTATest extends AbstractCAdESTestSignature {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
 		signatureParameters = new CAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 
 		service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

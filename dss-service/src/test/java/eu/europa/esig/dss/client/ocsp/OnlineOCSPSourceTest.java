@@ -31,7 +31,7 @@ public class OnlineOCSPSourceTest {
 	public void testOCSPWithoutNonce() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		ocspSource.setDataLoader(new OCSPDataLoader());
-		OCSPToken ocspToken = ocspSource.getOCSPToken(certificateToken, rootToken);
+		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getBasicOCSPResp());
 		assertFalse(ocspToken.isUseNonce());
@@ -42,7 +42,7 @@ public class OnlineOCSPSourceTest {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		ocspSource.setDataLoader(new OCSPDataLoader());
 		ocspSource.setNonceSource(new SecureRandomNonceSource());
-		OCSPToken ocspToken = ocspSource.getOCSPToken(certificateToken, rootToken);
+		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
 		assertTrue(ocspToken.isUseNonce());
 		assertTrue(ocspToken.isNonceMatch());
@@ -57,12 +57,12 @@ public class OnlineOCSPSourceTest {
 
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		ocspSource.setDataLoader(fileCacheDataLoader);
-		OCSPToken ocspToken = ocspSource.getOCSPToken(certificateToken, rootToken);
+		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getBasicOCSPResp());
 		assertFalse(ocspToken.isUseNonce());
 
-		ocspToken = ocspSource.getOCSPToken(certificateToken, rootToken);
+		ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getBasicOCSPResp());
 		assertFalse(ocspToken.isUseNonce());

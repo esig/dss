@@ -185,9 +185,6 @@
 	                </CertificateChain>
 	            </Revocation>
 	        </Revocations>
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-            </Info>
         </Certificate>
         <Certificate Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
             <SubjectDistinguishedName Format="CANONICAL">cn=ocsp responder firma qualificata 2015_12 02,ou=certificatore accreditato,o=infocert spa,c=it</SubjectDistinguishedName>
@@ -226,9 +223,6 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
-            <Info>
-                <Message Id="0">OCSP check not needed: id-pkix-ocsp-nocheck extension present.</Message>
-            </Info>
         </Certificate>
     </UsedCertificates>
 </DiagnosticData>

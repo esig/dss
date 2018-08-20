@@ -267,7 +267,7 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 		}
 	}
 
-	private String buildConfig() {
+	protected String buildConfig() {
 		/*
 		 * The smartCardNameIndex int is added at the end of the smartCard name in order to enable the successive
 		 * loading of multiple pkcs11 libraries
@@ -288,7 +288,7 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 		return pkcs11Config.toString();
 	}
 
-	private String escapePath(String pathToEscape) {
+	protected String escapePath(String pathToEscape) {
 		if (pathToEscape != null) {
 			return pathToEscape.replace("\\", "\\\\");
 		} else {

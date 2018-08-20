@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.asic.signature.asice;
 
-import java.util.Date;
-
 import org.junit.Before;
 
 import eu.europa.esig.dss.ASiCContainerType;
@@ -40,10 +38,9 @@ public class ASiCEXAdESLevelBSpecialCharInFilenameTest extends AbstractASiCEXAdE
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "012éù*34ä5µ£6789~#%&()+=`@{[]}'.txt");
+		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "012éù*34ä5µ£ 6789~#%&()+=`@{[]}'.txt");
 
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);

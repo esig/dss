@@ -22,9 +22,11 @@ package eu.europa.esig.dss.validation;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 
@@ -81,6 +83,15 @@ public interface ValidationContext {
 	void validate() throws DSSException;
 
 	/**
+	 * This method allows to verify if all processed certificates have a revocation
+	 * data
+	 * 
+	 * @return true if at least one revocation data is present for each certificate
+	 * 
+	 */
+	boolean isAllRequiredRevocationDataPresent();
+
+	/**
 	 * Returns a read only list of all certificates used in the process of the validation of all signatures from the
 	 * given document. This list
 	 * includes the certificate to check, certification chain certificates, OCSP response certificate...
@@ -88,6 +99,14 @@ public interface ValidationContext {
 	 * @return The list of CertificateToken(s)
 	 */
 	Set<CertificateToken> getProcessedCertificates();
+
+	/**
+	 * Returns a map of {@code CertificateSourceType} by {@code CertificateToken}
+	 * which contains the sources where the certificate was found.
+	 * 
+	 * @return a map of CertificateSourceType by CertificateToken
+	 */
+	Map<CertificateToken, Set<CertificateSourceType>> getCertificateSourceTypes();
 
 	/**
 	 * Returns a read only list of all revocations used in the process of the validation of all signatures from the

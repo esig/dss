@@ -326,7 +326,6 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
-            <Info/>
         </Certificate>
         <Certificate Id="A53125188D2110AA964B02C7B7C6DA3203170894E5FB71FFFB6667D5E6810A36">
             <SubjectDistinguishedName Format="CANONICAL">cn=gte cybertrust global root,ou=gte cybertrust solutions\, inc.,o=gte corporation,c=us</SubjectDistinguishedName>
@@ -376,7 +375,6 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
-            <Info/>
         </Certificate>
         <Certificate Id="4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
             <SubjectDistinguishedName Format="CANONICAL">c=fr,o=cryptolog international,ou=0002 43912916400026,cn=universign timestamping ca</SubjectDistinguishedName>
@@ -473,7 +471,6 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
-            <Info/>
         </Certificate>
         <Certificate Id="E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.12=#13055469746c65,1.2.840.113549.1.9.1=#1613636572746e5f3230343840534d4330312e6575,l=brussels,ou=date of birth : 01/04/1965,o=organization nv / sa,c=be,cn=certn-activetestcertifcertipost first-name second-name thirdname</SubjectDistinguishedName>
@@ -625,10 +622,9 @@
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
-                    <Info/>
+        
                 </Revocation>
             </Revocations>
-            <Info/>
         </Certificate>
         <Certificate Id="058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4">
             <SubjectDistinguishedName Format="CANONICAL">cn=certipost e-trust primary qualified ca,o=certipost s.a./n.v.,c=be</SubjectDistinguishedName>
@@ -722,7 +718,6 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
-            <Info/>
         </Certificate>
         <Certificate Id="F4E7DF969A590AF41E38E5854542EBF9DF6A5BE9B16FD31494FA689509057494">
             <SubjectDistinguishedName Format="CANONICAL">c=fr,o=cryptolog international,ou=0002 43912916400026,cn=universign timestamping unit 018</SubjectDistinguishedName>
@@ -842,13 +837,9 @@
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
-                    <Info/>
+        
                 </Revocation>
             </Revocations>
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-                <Message Id="1">OSCP Uri not found in certificate meta-data !</Message>
-            </Info>
         </Certificate>
         <Certificate Id="1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0">
             <SubjectDistinguishedName Format="CANONICAL">cn=certipost e-trust secondary qualified ca for physical persons,o=certipost s.a./n.v.,c=be</SubjectDistinguishedName>
@@ -983,10 +974,9 @@
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
-                    <Info/>
+        
                 </Revocation>
             </Revocations>
-            <Info/>
         </Certificate>
         <Certificate Id="CFF2E3B95D7EBF7D89B1D586102D09632CE5E39BFA31115C3C9577461DD856AD">
             <SubjectDistinguishedName Format="CANONICAL">c=fr,o=cryptolog international,ou=0002 43912916400026,cn=universign timestamping unit 009</SubjectDistinguishedName>
@@ -1125,10 +1115,9 @@
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
-                    <Info/>
+        
                 </Revocation>
             </Revocations>
-            <Info/>
         </Certificate>
         <Certificate Id="81AF749F424A8DF91012FF63D44357A75384FF64BB1C2ED59D0A658EE3C8C755">
             <SubjectDistinguishedName Format="CANONICAL">c=fr,o=cryptolog international,ou=0002 43912916400026,cn=universign timestamping unit 008</SubjectDistinguishedName>
@@ -1267,10 +1256,9 @@
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
-                    <Info/>
+        
                 </Revocation>
             </Revocations>
-            <Info/>
         </Certificate>
         <Certificate Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
             <SubjectDistinguishedName Format="CANONICAL">cn=universign timestamping ca 2015,ou=0002 43912916400026,o=cryptolog international,c=fr</SubjectDistinguishedName>
@@ -1367,7 +1355,6 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
-            <Info/>
         </Certificate>
     </UsedCertificates>
     <TrustedLists>

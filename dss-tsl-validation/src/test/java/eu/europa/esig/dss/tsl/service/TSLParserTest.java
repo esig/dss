@@ -12,7 +12,6 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.TSLConditionsForQualifiers;
@@ -121,7 +120,7 @@ public class TSLParserTest {
 		assertEquals(oldResult, certs.size());
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void tslWithDateOverlapping() throws Exception {
 		TSLParser parser = new TSLParser("src/test/resources/wrong-service-dates.xml");
 		parser.call();

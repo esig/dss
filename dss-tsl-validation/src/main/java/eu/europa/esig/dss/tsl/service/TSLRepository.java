@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -221,34 +222,83 @@ public class TSLRepository {
 	void synchronize() {
 		if (trustedListsCertificateSource != null) {
 			Map<String, TSLValidationModel> allMapTSLValidationModels = getAllMapTSLValidationModels();
-			for (Entry<String, TSLValidationModel> entry : allMapTSLValidationModels.entrySet()) {
-				String countryCode = entry.getKey();
-				TSLValidationModel model = entry.getValue();
-				// Synchronize certpool
-				if (!model.isCertificateSourceSynchronized()) {
-					TSLParserResult parseResult = model.getParseResult();
-					if (parseResult != null) {
-						List<TSLServiceProvider> serviceProviders = parseResult.getServiceProviders();
-						for (TSLServiceProvider serviceProvider : serviceProviders) {
-							for (TSLService service : serviceProvider.getServices()) {
-								for (CertificateToken certificate : service.getCertificates()) {
-									// Update info
-									trustedListsCertificateSource.removeCertificate(certificate);
-									trustedListsCertificateSource.addCertificate(certificate, getServiceInfo(serviceProvider, service, countryCode));
-								}
-							}
-						}
-					}
+
+			// We (re)-synchronize all countries. There're cases with certificates in more
+			// than one TL (eg: First certification authority, a.s. in CZ/SK)
+			if (isRefreshRequired()) {
+				LOG.info("Synchronizing the trustedListsCertificateSource...");
+
+				Map<CertificateToken, List<ServiceInfo>> servicesByCertMap = getServicesByCert(allMapTSLValidationModels.values());
+
+				trustedListsCertificateSource.reinit();
+
+				for (Entry<CertificateToken, List<ServiceInfo>> servicesByCertEntry : servicesByCertMap.entrySet()) {
+					trustedListsCertificateSource.addCertificate(servicesByCertEntry.getKey(), servicesByCertEntry.getValue());
+				}
+
+				for (Entry<String, TSLValidationModel> entry : allMapTSLValidationModels.entrySet()) {
+					String countryCode = entry.getKey();
+					TSLValidationModel model = entry.getValue();
+
+					model.setCertificateSourceSynchronized(true);
+					// Synchronize tlInfos
+					trustedListsCertificateSource.updateTlInfo(countryCode, getTlInfo(countryCode, model));
+				}
+
+				for (TSLValidationModel model : pivots.values()) {
 					model.setCertificateSourceSynchronized(true);
 				}
 
-				// Synchronize tlInfos
-				trustedListsCertificateSource.updateTlInfo(countryCode, getTlInfo(countryCode, model));
-
+				LOG.info("Synchronization of the trustedListsCertificateSource : done");
 			}
-			LOG.info("Nb of loaded trusted lists : " + allMapTSLValidationModels.size());
-			LOG.info("Nb of trusted certificates : " + trustedListsCertificateSource.getNumberOfTrustedCertificates());
+
+			LOG.info("Nb of loaded trusted lists : {}", allMapTSLValidationModels.size());
+			LOG.info("Nb of trusted certificates : {}", trustedListsCertificateSource.getNumberOfTrustedCertificates());
+			LOG.info("Nb of trusted public keys : {}", trustedListsCertificateSource.getNumberOfTrustedPublicKeys());
 		}
+	}
+
+	private boolean isRefreshRequired() {
+		for (TSLValidationModel model : tsls.values()) {
+			if (!model.isCertificateSourceSynchronized()) {
+				return true;
+			}
+		}
+
+		for (TSLValidationModel model : pivots.values()) {
+			if (!model.isCertificateSourceSynchronized()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private Map<CertificateToken, List<ServiceInfo>> getServicesByCert(Collection<TSLValidationModel> models) {
+		Map<CertificateToken, List<ServiceInfo>> servicesByCert = new HashMap<CertificateToken, List<ServiceInfo>>();
+		for (TSLValidationModel model : models) {
+			TSLParserResult parseResult = model.getParseResult();
+			if (parseResult != null) {
+				List<TSLServiceProvider> serviceProviders = parseResult.getServiceProviders();
+				String countryCode = parseResult.getTerritory();
+				for (TSLServiceProvider serviceProvider : serviceProviders) {
+					for (TSLService service : serviceProvider.getServices()) {
+						ServiceInfo serviceInfo = getServiceInfo(serviceProvider, service, countryCode);
+						for (CertificateToken certificate : service.getCertificates()) {
+							List<ServiceInfo> currentCertServices = servicesByCert.get(certificate);
+							if (currentCertServices == null) {
+								currentCertServices = new ArrayList<ServiceInfo>();
+								servicesByCert.put(certificate, currentCertServices);
+							}
+							currentCertServices.add(serviceInfo);
+						}
+					}
+				}
+			} else {
+				LOG.warn("File {} is not synchronized", model.getFilepath());
+			}
+		}
+		return servicesByCert;
 	}
 
 	private TLInfo getTlInfo(String countryCode, TSLValidationModel model) {

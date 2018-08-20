@@ -20,6 +20,7 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
 
 /**
@@ -75,6 +76,14 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				List<String> coveredFilenames = tspValidator.getCoveredFilenames();
 
 				TimestampToken timestamp = tspValidator.getTimestamp();
+				// TODO temp fix
+				List<CertificateToken> certificates = timestamp.getCertificates();
+				for (CertificateToken candidate : certificates) {
+					if (timestamp.isSignedBy(candidate)) {
+						break;
+					}
+				}
+
 				if (timestamp.isSignatureValid()) {
 					for (AdvancedSignature advancedSignature : allSignatures) {
 						if (coveredFilenames.contains(advancedSignature.getSignatureFilename())) {

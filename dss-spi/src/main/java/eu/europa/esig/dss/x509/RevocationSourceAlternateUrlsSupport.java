@@ -20,19 +20,26 @@
  */
 package eu.europa.esig.dss.x509;
 
-/**
- * TODO
- *
- *
- *
- *
- *
- *
- */
-public enum TimestampValidity {
+import java.util.List;
 
-    VALID, // if the timestamp token is mathematically and structurally valid.
-    NOT_VALID_STRUCTURE, // if an exception occurs in processing the token.
-    NOT_VALID_SIGNATURE, // if the certificate or signature fail to be valid.
-    NO_SIGNING_CERTIFICATE // if the sigVerifierProvider has no associated certificate.
+public interface RevocationSourceAlternateUrlsSupport<T extends RevocationToken> extends RevocationSource<T> {
+
+	/**
+	 * Gets an {@code RevocationToken} for the given certificate / issuer's
+	 * certificate couple. The coherence between the response and the request is
+	 * checked.
+	 *
+	 * @param certificateToken
+	 *                               The {@code CertificateToken} for which the
+	 *                               request is made
+	 * @param issuerCertificateToken
+	 *                               The {@code CertificateToken} which is the
+	 *                               issuer of the certificateToken
+	 * @param alternativeUrls
+	 *                               The list of alternative urls to call
+	 * @return {@code RevocationToken} containing information about the validity of
+	 *         the cert
+	 */
+	T getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken, List<String> alternativeUrls);
+			
 }

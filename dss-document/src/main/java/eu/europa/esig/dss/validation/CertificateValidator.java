@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.validation;
 
 import java.util.Date;
+import java.util.Objects;
 
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.validation.executor.CertificateProcessExecutor;
@@ -17,6 +18,7 @@ public class CertificateValidator {
 	private CertificateVerifier certificateVerifier;
 
 	private CertificateValidator(CertificateToken token) {
+		Objects.requireNonNull(token, "The certificate is missing");
 		this.token = token;
 	}
 
@@ -46,11 +48,10 @@ public class CertificateValidator {
 		svc.setCurrentTime(validationTime);
 		svc.validate();
 
-		DiagnosticDataBuilder builder = new DiagnosticDataBuilder();
-		builder.usedCertificates(svc.getProcessedCertificates()).trustedListsCertificateSource(certificateVerifier.getTrustedCertSource())
-				.validationDate(svc.getCurrentTime());
-
-		DiagnosticData diagnosticData = builder.build();
+		final DiagnosticData diagnosticData = new DiagnosticDataBuilder().usedCertificates(svc.getProcessedCertificates())
+				.usedRevocations(svc.getProcessedRevocations()).certificateSourceTypes(svc.getCertificateSourceTypes())
+				.trustedCertificateSource(certificateVerifier.getTrustedCertSource())
+				.validationDate(svc.getCurrentTime()).build();
 
 		CertificateProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);

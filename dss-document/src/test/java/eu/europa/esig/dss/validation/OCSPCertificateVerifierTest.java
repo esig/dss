@@ -31,7 +31,7 @@ public class OCSPCertificateVerifierTest {
 		OCSPCertificateVerifier ocspVerifier = new OCSPCertificateVerifier(ocspSource, validationCertPool);
 		RevocationToken revocationToken = ocspVerifier.check(toCheckToken);
 		assertNotNull(revocationToken);
-		assertNotNull(revocationToken.getIssuerToken());
+		assertNotNull(revocationToken.getPublicKeyOfTheSigner());
 	}
 
 }

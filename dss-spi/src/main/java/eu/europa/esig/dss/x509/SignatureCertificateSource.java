@@ -55,7 +55,7 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 	public abstract List<CertificateToken> getKeyInfoCertificates();
 
 	@Override
-	protected CertificateSourceType getCertificateSourceType() {
+	public CertificateSourceType getCertificateSourceType() {
 		return CertificateSourceType.SIGNATURE;
 	}
 

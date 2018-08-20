@@ -293,12 +293,13 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		List<AdvancedSignature> allSignatureList = processSignaturesValidation(validationContext, structuralValidation);
 
-		DiagnosticDataBuilder builder = new DiagnosticDataBuilder();
-		builder.document(document).containerInfo(getContainerInfo()).foundSignatures(allSignatureList)
-				.usedCertificates(validationContext.getProcessedCertificates()).trustedListsCertificateSource(certificateVerifier.getTrustedCertSource())
-				.validationDate(validationContext.getCurrentTime());
+		final DiagnosticData diagnosticData = new DiagnosticDataBuilder().document(document).containerInfo(getContainerInfo()).foundSignatures(allSignatureList)
+				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
+				.certificateSourceTypes(validationContext.getCertificateSourceTypes())
+				.trustedCertificateSource(certificateVerifier.getTrustedCertSource())
+				.validationDate(validationContext.getCurrentTime()).build();
 
-		return processValidationPolicy(builder.build(), validationPolicy);
+		return processValidationPolicy(diagnosticData, validationPolicy);
 	}
 
 	@Override
@@ -440,7 +441,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	private void prepareCertificatesAndTimestamps(final List<AdvancedSignature> allSignatureList, final ValidationContext validationContext) {
 		for (final AdvancedSignature signature : allSignatureList) {
-			final List<CertificateToken> candidates = signature.getCertificateSource().getCertificates();
+			final List<CertificateToken> candidates = signature.getCertificates();
 			for (final CertificateToken certificateToken : candidates) {
 				validationContext.addCertificateTokenForVerification(certificateToken);
 			}

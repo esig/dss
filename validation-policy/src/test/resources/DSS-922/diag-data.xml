@@ -147,9 +147,6 @@
 	                </CertificateChain>
 	            </Revocation>
 	        </Revocations>
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-            </Info>
         </Certificate>
         <Certificate Id="7EF532D928F552651A05C70CB362C37F8E34F20DD263F0F38E3C6360F4625643">
             <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=test of esteid-sk 2011,o=as sertifitseerimiskeskus,c=ee</SubjectDistinguishedName>

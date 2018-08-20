@@ -291,7 +291,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 					CertificateToken certificate = DSSUtils.loadCertificate(digitalId.getX509Certificate());
 					certificates.add(certificate);
 				} catch (Exception e) {
-					LOG.warn("Unable to load certificate : " + e.getMessage(), e);
+					LOG.warn("Unable to load certificate '" + Utils.toBase64(digitalId.getX509Certificate()) + "' : ", e);
 				}
 			}
 		}
@@ -341,7 +341,11 @@ public class TSLParser implements Callable<TSLParserResult> {
 		if ((tspServices != null) && Utils.isCollectionNotEmpty(tspServices.getTSPService())) {
 			for (TSPServiceType tslService : tspServices.getTSPService()) {
 				if (tslService.getServiceInformation() != null) {
-					services.add(getService(tslService));
+					try {
+						services.add(getService(tslService));
+					} catch (IllegalArgumentException e) {
+						LOG.error("Unable to load service '{}' : {}", getEnglishOrFirst(tslService.getServiceInformation().getServiceName()), e.getMessage());
+					}
 				}
 			}
 		}

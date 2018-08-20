@@ -23,10 +23,9 @@ package eu.europa.esig.dss.x509;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.security.auth.x500.X500Principal;
-
-import eu.europa.esig.dss.tsl.ServiceInfo;
 
 /**
  * This source of certificates handles any non trusted certificates. (ex: intermediate certificates used in building
@@ -57,38 +56,29 @@ public class CommonCertificateSource implements CertificateSource {
 	 *            the certificate pool to use
 	 */
 	public CommonCertificateSource(final CertificatePool certPool) {
-		if (certPool == null) {
-			throw new NullPointerException();
-		}
+
+		Objects.requireNonNull(certPool, "Certificate pool is missing");
+
 		this.certPool = certPool;
 	}
 
-	/**
-	 * This method returns the certificate source type associated to the implementation class.
-	 *
-	 * @return the certificate origin
-	 */
-	protected CertificateSourceType getCertificateSourceType() {
+	@Override
+	public CertificateSourceType getCertificateSourceType() {
 		return CertificateSourceType.OTHER;
 	}
 
-	@Override
-	public CertificatePool getCertificatePool() {
-		return certPool;
-	}
-
 	/**
-	 * This method adds an external certificate to the encapsulated pool and to the source. If the certificate is
-	 * already present in the pool its
-	 * source type is associated to the token.
+	 * This method adds an external certificate to the encapsulated pool and to the
+	 * source. If the certificate is already present in the pool its source type is
+	 * associated to the token.
 	 *
-	 * @param x509Certificate
-	 *            the certificate to add
+	 * @param token
+	 *              the certificate to add
 	 * @return the corresponding certificate token
 	 */
 	@Override
-	public CertificateToken addCertificate(final CertificateToken x509Certificate) {
-		final CertificateToken certToken = certPool.getInstance(x509Certificate, getCertificateSourceType());
+	public CertificateToken addCertificate(final CertificateToken token) {
+		final CertificateToken certToken = certPool.getInstance(token, getCertificateSourceType());
 		if (certificateTokens != null) {
 			if (!certificateTokens.contains(certToken)) {
 				certificateTokens.add(certToken);
@@ -102,8 +92,13 @@ public class CommonCertificateSource implements CertificateSource {
 	 *
 	 * @return all certificates from this source
 	 */
+	@Override
 	public List<CertificateToken> getCertificates() {
-		return Collections.unmodifiableList(certificateTokens);
+		if (certificateTokens == null) {
+			return Collections.emptyList();
+		} else {
+			return Collections.unmodifiableList(certificateTokens);
+		}
 	}
 
 	/**
@@ -137,25 +132,6 @@ public class CommonCertificateSource implements CertificateSource {
 	}
 
 	/**
-	 * This method is used internally to prevent the addition of a certificate through the <code>CertificatePool</code>.
-	 *
-	 * @param certificate
-	 *            the certificate to be added
-	 * @param serviceInfo
-	 *            the related service info
-	 * @return the complete certificate instance
-	 */
-	protected CertificateToken addCertificate(final CertificateToken certificate, final ServiceInfo serviceInfo) {
-		final CertificateToken certToken = certPool.getInstance(certificate, getCertificateSourceType(), serviceInfo);
-		if (certificateTokens != null) {
-			if (!certificateTokens.contains(certToken)) {
-				certificateTokens.add(certToken);
-			}
-		}
-		return certToken;
-	}
-
-	/**
 	 * This method is used internally to remove a certificate from the <code>CertificatePool</code>.
 	 *
 	 * @param certificate
@@ -169,24 +145,6 @@ public class CommonCertificateSource implements CertificateSource {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * This method is used internally to remove a X500Principal from the <code>CertificatePool</code>.
-	 *
-	 * @param x500Principal
-	 *            the {@code X500Principal} to be removed
-	 * @return true if removed
-	 */
-	public boolean removeX500Principal(X500Principal x500Principal) {
-		boolean removed = false;
-		if (certificateTokens != null) {
-			List<CertificateToken> listToRemove = get(x500Principal);
-			for (CertificateToken certificateToken : listToRemove) {
-				removed |= removeCertificate(certificateToken);
-			}
-		}
-		return removed;
 	}
 
 }

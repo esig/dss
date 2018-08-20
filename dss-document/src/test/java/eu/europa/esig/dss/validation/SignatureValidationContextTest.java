@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -107,7 +108,8 @@ public class SignatureValidationContextTest {
 
 		Set<CertificateToken> processedCertificates = vc.getProcessedCertificates();
 		assertEquals(4, processedCertificates.size()); // cert chain only going up, if it wen't sideways it could get 60+ certs
-		assertNull(getRootCertificate(certificateToken)); // given that the root certificate has an issuer, it's not possible to determine the trust anchor
+		assertNull(getRootCertificate(certificateToken, processedCertificates)); // given that the root certificate has an issuer, it's not possible to
+																					// determine the trust anchor
 	}
 
 	@Test
@@ -133,21 +135,33 @@ public class SignatureValidationContextTest {
 
 		Set<CertificateToken> processedCertificates = vc.getProcessedCertificates();
 		assertEquals(4, processedCertificates.size()); // cert chain only going up, if it wen't sideways it could get 60+ certs
-		assertNotNull(getRootCertificate(certificateToken)); // given that the root certificate has an issuer, it's not possible to determine the trust anchor
+		assertNotNull(getRootCertificate(certificateToken, processedCertificates)); // given that the root certificate has an issuer, it's not possible to
+																					// determine the trust anchor
 	}
 	
-	public CertificateToken getRootCertificate(CertificateToken token) {
+	public CertificateToken getRootCertificate(CertificateToken token, Set<CertificateToken> allCerts) {
 		Set<CertificateToken> processed = new HashSet<>();
-		while(token.getIssuerToken() != null) {
+		while (token.getPublicKeyOfTheSigner() != null) {
 			if (processed.contains(token)) {
 				break;
 			}
-			if (token.getIssuerToken().isSelfSigned()) {
-				return token.getIssuerToken();
+			CertificateToken issuer = getCert(token.getPublicKeyOfTheSigner(), allCerts);
+			if (issuer.isSelfSigned()) {
+				return issuer;
 			}
 			processed.add(token);
-			token = token.getIssuerToken();
+			token = issuer;
 		}
 		return null;
 	}
+
+	private CertificateToken getCert(PublicKey pubKey, Set<CertificateToken> allCerts) {
+		for (CertificateToken token : allCerts) {
+			if (token.getPublicKey().equals(pubKey)) {
+				return token;
+			}
+		}
+		return null;
+	}
+
 }

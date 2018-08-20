@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.cms.Attribute;
@@ -39,7 +40,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
@@ -65,9 +65,9 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 	 */
 	public CAdESCertificateSource(final CMSSignedData cmsSignedData, final CertificatePool certPool) {
 		super(certPool);
-		if (cmsSignedData == null) {
-			throw new DSSException("CMS SignedData is null, it must be provided!");
-		}
+
+		Objects.requireNonNull(cmsSignedData, "CMS SignedData is null, it must be provided!");
+
 		if (certificateTokens == null) {
 			certificateTokens = new ArrayList<CertificateToken>();
 			keyInfoCerts = extractIdSignedDataCertificates(cmsSignedData);

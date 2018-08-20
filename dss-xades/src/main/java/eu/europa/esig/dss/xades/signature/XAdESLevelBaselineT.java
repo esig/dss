@@ -52,7 +52,6 @@ import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
@@ -130,9 +129,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 
 				continue;
 			}
-			final CertificatePool certPool = new CertificatePool();
-			// TODO-Bob (13/07/2014): The XPath query holder can be inherited from the xadesSignature: to be analysed
-			xadesSignature = new XAdESSignature(currentSignatureDom, certPool);
+			xadesSignature = new XAdESSignature(currentSignatureDom);
 			xadesSignature.setDetachedContents(params.getDetachedContents());
 			extendSignatureTag();
 		}

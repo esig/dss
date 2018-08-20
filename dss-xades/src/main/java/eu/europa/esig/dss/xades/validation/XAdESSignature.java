@@ -186,11 +186,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 *
 	 * @param signatureElement
 	 *            the signature DOM element
-	 * @param certPool
-	 *            the certificate pool (can be null)
 	 */
-	public XAdESSignature(final Element signatureElement, final CertificatePool certPool) {
-		this(signatureElement, Arrays.asList(new XPathQueryHolder()), certPool);
+	public XAdESSignature(final Element signatureElement) {
+		this(signatureElement, Arrays.asList(new XPathQueryHolder()), new CertificatePool());
 	}
 
 	/**
@@ -276,27 +274,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * This method returns the certificate pool used by this instance to handle encapsulated certificates.
-	 *
-	 * @return
-	 */
-	public CertificatePool getCertPool() {
-		return certPool;
-	}
-
-	/**
 	 * Returns the w3c.dom encapsulated signature element.
 	 *
 	 * @return the signatureElement
 	 */
 	public Element getSignatureElement() {
-
 		return signatureElement;
 	}
 
 	@Override
 	public SignatureForm getSignatureForm() {
-
 		return SignatureForm.XAdES;
 	}
 

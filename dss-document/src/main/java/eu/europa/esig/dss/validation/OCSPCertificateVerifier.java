@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.security.auth.x500.X500Principal;
@@ -72,27 +71,31 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 	@Override
 	public RevocationToken check(final CertificateToken toCheckToken) {
 		if (ocspSource == null) {
-			LOG.warn("OCSPSource null");
-			toCheckToken.extraInfo().infoOCSPSourceIsNull();
+			LOG.debug("OCSPSource null");
+			return null;
+		}
+
+		CertificateToken issuerToken = validationCertPool.getIssuer(toCheckToken);
+		if (issuerToken == null) {
+			LOG.debug("Issuer is null");
 			return null;
 		}
 
 		try {
-			final OCSPToken ocspToken = ocspSource.getOCSPToken(toCheckToken, toCheckToken.getIssuerToken());
+			final OCSPToken ocspToken = ocspSource.getRevocationToken(toCheckToken, issuerToken);
 			if (ocspToken == null) {
-				LOG.debug("No matching OCSP response found for " + toCheckToken.getDSSIdAsString());
+				LOG.debug("{} : No matching OCSP response found for {}", ocspSource.getClass().getSimpleName(), toCheckToken.getDSSIdAsString());
 			} else {
+				ocspToken.setRelatedCertificateID(toCheckToken.getDSSIdAsString());
 				ocspToken.extractInfo();
 				final boolean found = extractSigningCertificateFromResponse(ocspToken);
 				if (!found) {
 					extractSigningCertificateFormResponderId(ocspToken);
 				}
-				toCheckToken.addRevocationToken(ocspToken);
 			}
 			return ocspToken;
 		} catch (DSSException e) {
 			LOG.error("OCSP DSS Exception: " + e.getMessage(), e);
-			toCheckToken.extraInfo().infoOCSPException(e.getMessage());
 			return null;
 		}
 	}
@@ -104,6 +107,7 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 				CertificateToken certificateToken = DSSASN1Utils.getCertificate(x509CertificateHolder);
 				CertificateToken certToken = validationCertPool.getInstance(certificateToken, CertificateSourceType.OCSP_RESPONSE);
 				if (ocspToken.isSignedBy(certToken)) {
+					ocspToken.setIssuerX500Principal(certToken.getSubjectX500Principal());
 					return true;
 				}
 			}
@@ -125,16 +129,17 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 				final List<CertificateToken> certificateTokens = validationCertPool.get(x500Principal);
 				for (final CertificateToken issuerCertificateToken : certificateTokens) {
 					if (ocspToken.isSignedBy(issuerCertificateToken)) {
+						ocspToken.setIssuerX500Principal(issuerCertificateToken.getSubjectX500Principal());
 						break;
 					}
 				}
 			} else if (2 == derTaggedObject.getTagNo()) {
 				final ASN1OctetString hashOctetString = (ASN1OctetString) derTaggedObject.getObject();
 				final byte[] expectedHash = hashOctetString.getOctets();
-				final List<CertificateToken> certificateTokens = validationCertPool.getCertificateTokens();
+				final List<CertificateToken> certificateTokens = validationCertPool.getBySki(expectedHash);
 				for (CertificateToken issuerCertificateToken : certificateTokens) {
-					final byte[] ski = DSSASN1Utils.getSki(issuerCertificateToken, true);
-					if (Arrays.equals(expectedHash, ski) && ocspToken.isSignedBy(issuerCertificateToken)) {
+					if (ocspToken.isSignedBy(issuerCertificateToken)) {
+						ocspToken.setIssuerX500Principal(issuerCertificateToken.getSubjectX500Principal());
 						break;
 					}
 				}

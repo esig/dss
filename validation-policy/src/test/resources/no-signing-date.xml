@@ -121,7 +121,6 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
-            <Info/>
         </Certificate>
         <Certificate Id="A0DFB7938782C01EB6FE9BA9B3210CFCEDB8653B309B53654D427A02ABEFFE7D">
             <SubjectDistinguishedName Format="CANONICAL">cn=quovadis ocsp authority signature,ou=ocsp responder,o=quovadis limited,c=bm</SubjectDistinguishedName>
@@ -183,9 +182,6 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
-            <Info>
-                <Message Id="0">OCSP check not needed: id-pkix-ocsp-nocheck extension present.</Message>
-            </Info>
         </Certificate>
         <Certificate Id="EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74">
             <SubjectDistinguishedName Format="CANONICAL">cn=hans v egmond,2.5.4.4=#0c0a76616e2045676d6f6e64,2.5.4.42=#0c0b4a6f68616e6e6573204e2e,ou=qualified certificate,c=nl</SubjectDistinguishedName>
@@ -287,12 +283,8 @@
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
-                    <Info/>
                 </Revocation>
             </Revocations>
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-            </Info>
         </Certificate>
     </UsedCertificates>
     <TrustedLists>

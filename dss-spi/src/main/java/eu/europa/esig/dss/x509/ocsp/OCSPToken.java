@@ -22,10 +22,10 @@ package eu.europa.esig.dss.x509.ocsp;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.security.PublicKey;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.List;
+
+import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.isismtt.ISISMTTObjectIdentifiers;
@@ -53,7 +53,6 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.TokenValidationExtraInfo;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 
 /**
@@ -65,6 +64,8 @@ public class OCSPToken extends RevocationToken {
 	private static final Logger LOG = LoggerFactory.getLogger(OCSPToken.class);
 
 	private CertificateID certId;
+
+	private X500Principal issuerX500Principal;
 
 	/**
 	 * Status of the OCSP response
@@ -87,7 +88,6 @@ public class OCSPToken extends RevocationToken {
 	private BasicOCSPResp basicOCSPResp;
 
 	public OCSPToken() {
-		this.extraInfo = new TokenValidationExtraInfo();
 	}
 
 	public void extractInfo() {
@@ -128,7 +128,6 @@ public class OCSPToken extends RevocationToken {
 			responses = basicOCSPResp.getResponses();
 		} catch (Exception e) {
 			LOG.error("Unable to parse the responses object from OCSP", e);
-			extraInfo.infoOCSPException("Unable to parse the responses object from OCSP : " + e.getMessage());
 		}
 		return responses;
 	}
@@ -151,12 +150,12 @@ public class OCSPToken extends RevocationToken {
 			if (revokedStatus.hasRevocationReason()) {
 				reasonId = revokedStatus.getRevocationReason();
 			}
-			reason = CRLReasonEnum.fromInt(reasonId).name();
+			reason = CRLReasonEnum.fromInt(reasonId);
 		} else if (certStatus instanceof UnknownStatus) {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("OCSP status unknown");
 			}
-			reason = CRLReasonEnum.unknow.name();
+			reason = CRLReasonEnum.unknow;
 		} else {
 			LOG.info("OCSP certificate status: " + certStatus);
 		}
@@ -201,10 +200,7 @@ public class OCSPToken extends RevocationToken {
 	}
 
 	@Override
-	public boolean isSignedBy(final CertificateToken issuerToken) {
-		if (this.issuerToken != null) {
-			return this.issuerToken.equals(issuerToken);
-		}
+	protected boolean checkIsSignedBy(final CertificateToken candidate) {
 		if (basicOCSPResp == null) {
 			return false;
 		}
@@ -212,13 +208,8 @@ public class OCSPToken extends RevocationToken {
 			signatureInvalidityReason = "";
 			JcaContentVerifierProviderBuilder jcaContentVerifierProviderBuilder = new JcaContentVerifierProviderBuilder();
 			jcaContentVerifierProviderBuilder.setProvider(BouncyCastleProvider.PROVIDER_NAME);
-			final PublicKey publicKey = issuerToken.getCertificate().getPublicKey();
-			ContentVerifierProvider contentVerifierProvider = jcaContentVerifierProviderBuilder.build(publicKey);
+			ContentVerifierProvider contentVerifierProvider = jcaContentVerifierProviderBuilder.build(candidate.getPublicKey());
 			signatureValid = basicOCSPResp.isSignatureValid(contentVerifierProvider);
-			if (signatureValid) {
-				this.issuerToken = issuerToken;
-			}
-			issuerX500Principal = issuerToken.getSubjectX500Principal();
 		} catch (Exception e) {
 			signatureInvalidityReason = e.getClass().getSimpleName() + " - " + e.getMessage();
 			signatureValid = false;
@@ -279,7 +270,7 @@ public class OCSPToken extends RevocationToken {
 	@Override
 	public String getAbbreviation() {
 		return "OCSPToken[" + (basicOCSPResp == null ? "?" : DSSUtils.formatInternal(basicOCSPResp.getProducedAt())) + ", signedBy="
-				+ (issuerToken == null ? "?" : issuerToken.getDSSIdAsString()) + "]";
+				+ getIssuerX500Principal() + "]";
 	}
 
 	@Override
@@ -289,19 +280,9 @@ public class OCSPToken extends RevocationToken {
 		out.append("ProductionTime: ").append(DSSUtils.formatInternal(productionDate)).append("; ");
 		out.append("ThisUpdate: ").append(DSSUtils.formatInternal(thisUpdate)).append("; ");
 		out.append("NextUpdate: ").append(DSSUtils.formatInternal(nextUpdate)).append('\n');
-		out.append("SignedBy: ").append(issuerToken != null ? issuerToken.getDSSIdAsString() : null).append('\n');
+		out.append("SignedBy: ").append(getIssuerX500Principal().toString()).append('\n');
 		indentStr += "\t";
 		out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm.getJCEId()).append('\n');
-		out.append(issuerToken != null ? issuerToken.toString(indentStr) : null).append('\n');
-		final List<String> validationExtraInfo = extraInfo.getValidationInfo();
-		if (validationExtraInfo.size() > 0) {
-
-			for (final String info : validationExtraInfo) {
-
-				out.append('\n').append(indentStr).append("\t- ").append(info);
-			}
-			out.append('\n');
-		}
 		indentStr = indentStr.substring(1);
 		out.append(indentStr).append("]");
 		return out.toString();
@@ -319,6 +300,15 @@ public class OCSPToken extends RevocationToken {
 		} catch (IOException e) {
 			throw new DSSException("OCSP encoding error: " + e.getMessage(), e);
 		}
+	}
+
+	public void setIssuerX500Principal(X500Principal issuerX500Principal) {
+		this.issuerX500Principal = issuerX500Principal;
+	}
+
+	@Override
+	public X500Principal getIssuerX500Principal() {
+		return issuerX500Principal;
 	}
 
 }

@@ -35,4 +35,9 @@ public class BaseTimeDependent implements TimeDependent {
 		this.endDate = d;
 	}
 
+	@Override
+	public String toString() {
+		return "[startDate=" + startDate + ", endDate=" + endDate + "]";
+	}
+
 }

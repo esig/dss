@@ -47,7 +47,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.TimestampType;
@@ -193,28 +192,29 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/**
 	 * This method validates the signing certificate and all timestamps.
 	 *
-	 * @return signature validation context containing all certificates and revocation data used during the validation
-	 *         process.
+	 * @return signature validation context containing all certificates and
+	 *         revocation data used during the validation process.
 	 */
 	public ValidationContext getSignatureValidationContext(final CertificateVerifier certificateVerifier) {
 
-		final ValidationContext validationContext = new SignatureValidationContext();
+		final ValidationContext validationContext = new SignatureValidationContext(certPool);
+		certificateVerifier.setSignatureCRLSource(new ListCRLSource(getCRLSource()));
+		certificateVerifier.setSignatureOCSPSource(new ListOCSPSource(getOCSPSource()));
+		validationContext.initialize(certificateVerifier);
+
 		final List<CertificateToken> certificates = getCertificates();
 		for (final CertificateToken certificate : certificates) {
-
 			validationContext.addCertificateTokenForVerification(certificate);
 		}
 		prepareTimestamps(validationContext);
-		certificateVerifier.setSignatureCRLSource(new ListCRLSource(getCRLSource()));
-		certificateVerifier.setSignatureOCSPSource(new ListOCSPSource(getOCSPSource()));
-		// certificateVerifier.setAdjunctCertSource(getCertificateSource());
-		validationContext.initialize(certificateVerifier);
+
 		validationContext.validate();
 		return validationContext;
 	}
 
 	/**
-	 * Returns an unmodifiable list of all certificate tokens encapsulated in the signature
+	 * Returns an unmodifiable list of all certificate tokens encapsulated in the
+	 * signature
 	 * 
 	 * @see eu.europa.esig.dss.validation.AdvancedSignature#getCertificates()
 	 */
@@ -256,14 +256,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	public Map<String, List<CertificateToken>> getCertificatesWithinSignatureAndTimestamps(boolean skipLastArchiveTimestamp) {
 		Map<String, List<CertificateToken>> certificates = new HashMap<String, List<CertificateToken>>();
-		// We can have more than one chain in the signature : signing certificate, ocsp responder,...
-		List<CertificateToken> keyInfoCertificates = getCertificateSource().getKeyInfoCertificates();
-		if (Utils.isCollectionNotEmpty(keyInfoCertificates)) {
-			certificates.put(CertificateSourceType.SIGNATURE.name() + "KeyInfo", keyInfoCertificates);
-		}
-		List<CertificateToken> encapsulatedCertificates = getCertificateSource().getEncapsulatedCertificates();
-		if (Utils.isCollectionNotEmpty(encapsulatedCertificates)) {
-			certificates.put(CertificateSourceType.SIGNATURE.name() + "Encapsulated", encapsulatedCertificates);
+		// We can have more than one chain in the signature : signing certificate, ocsp
+		// responder,...
+		List<CertificateToken> certificatesSig = getCertificateSource().getCertificates();
+		if (Utils.isCollectionNotEmpty(certificatesSig)) {
+			certificates.put(CertificateSourceType.SIGNATURE.name(), certificatesSig);
 		}
 		int timestampCounter = 0;
 		for (final TimestampToken timestampToken : getContentTimestamps()) {
@@ -582,6 +579,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/* Defines the level LT */
 	public boolean hasLTProfile() {
 		Map<String, List<CertificateToken>> certificateChains = getCertificatesWithinSignatureAndTimestamps(true);
+		
 		boolean emptyOCSPs = Utils.isCollectionEmpty(getOCSPSource().getContainedOCSPResponses());
 		boolean emptyCRLs = Utils.isCollectionEmpty(getCRLSource().getContainedX509CRLs());
 
@@ -616,9 +614,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	private boolean isAllCertChainsHaveRevocationData(Map<String, List<CertificateToken>> certificateChains) {
+		CertificateStatusVerifier certificateStatusVerifier = new OCSPAndCRLCertificateVerifier(getCRLSource(), getOCSPSource(), certPool);
+
 		for (Entry<String, List<CertificateToken>> entryCertChain : certificateChains.entrySet()) {
 			LOG.debug("Testing revocation data presence for certificates chain {}", entryCertChain.getKey());
-			if (!isAllCertsHaveRevocationData(entryCertChain.getValue())) {
+			if (!isAllCertsHaveRevocationData(certificateStatusVerifier, entryCertChain.getValue())) {
 				LOG.debug("Revocation data missing in certificate chain {}", entryCertChain.getKey());
 				return false;
 			}
@@ -626,25 +626,18 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return true;
 	}
 
-	private boolean isAllCertsHaveRevocationData(List<CertificateToken> certificates) {
+	private boolean isAllCertsHaveRevocationData(CertificateStatusVerifier certificateStatusVerifier, List<CertificateToken> certificates) {
 		// we reorder the certificate list, the order is not guaranteed
-		List<CertificateToken> orderedCerts = order(certificates);
-		for (CertificateToken certificateToken : orderedCerts) {
-			if (!isRevocationRequired(certificateToken)) {
-				// It returns true to avoid checking upper levels than trusted certificates (cross certification)
-				return true;
-			}
-			Set<RevocationToken> revocationData = certificateToken.getRevocationTokens();
-			if (Utils.isCollectionEmpty(revocationData)) {
-				return false;
-			} else {
-				boolean foundInSignature = false;
-				for (RevocationToken revocationToken : revocationData) {
-					if (RevocationOrigin.SIGNATURE == revocationToken.getOrigin()) {
-						foundInSignature = true;
-					}
+		Map<CertificateToken, List<CertificateToken>> orderedCerts = order(certificates);
+		for (List<CertificateToken> chain : orderedCerts.values()) {
+			for (CertificateToken certificateToken : chain) {
+				if (!isRevocationRequired(certificateToken)) {
+					// Skip this loop to avoid checking upper levels than trusted certificates
+					// (cross certification)
+					break;
 				}
-				if (!foundInSignature) {
+				RevocationToken revocationData = certificateStatusVerifier.check(certificateToken);
+				if (revocationData == null) {
 					return false;
 				}
 			}
@@ -652,13 +645,13 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return true;
 	}
 
-	private List<CertificateToken> order(List<CertificateToken> certificates) {
+	private Map<CertificateToken, List<CertificateToken>> order(List<CertificateToken> certificates) {
 		CertificateReorderer reorderer = new CertificateReorderer(certificates);
-		return reorderer.getOrderedCertificates();
+		return reorderer.getOrderedCertificateChains();
 	}
 
 	private boolean isRevocationRequired(CertificateToken certificateToken) {
-		if (certificateToken.isTrusted() || certificateToken.isSelfSigned()) {
+		if (certPool.isTrusted(certificateToken) || certificateToken.isSelfSigned()) {
 			return false;
 		}
 

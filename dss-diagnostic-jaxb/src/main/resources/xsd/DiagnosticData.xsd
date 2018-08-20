@@ -270,7 +270,6 @@
 				</xs:complexType>
 			</xs:element>
 			
-			<xs:element name="Info" type="InfoType" minOccurs="0" />
 			<xs:element name="Base64Encoded" type="xs:base64Binary" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
@@ -335,20 +334,6 @@
 			<xs:element name="IssuerSerialMatch" type="xs:boolean" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
-	</xs:complexType>
-	
-	<xs:complexType name="InfoType">
-		<xs:sequence>
-			<xs:element name="Message" maxOccurs="unbounded" minOccurs="0">
-				<xs:complexType>
-					<xs:simpleContent>
-						<xs:extension base="xs:string">
-							<xs:attribute name="Id" type="xs:int" use="required" />
-						</xs:extension>
-					</xs:simpleContent>
-				</xs:complexType>
-			</xs:element>
-		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="TimestampedObjects">
@@ -466,8 +451,6 @@
 			<xs:element name="BasicSignature" type="BasicSignature" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
 			<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
-
-			<xs:element name="Info" type="InfoType" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 	</xs:complexType>

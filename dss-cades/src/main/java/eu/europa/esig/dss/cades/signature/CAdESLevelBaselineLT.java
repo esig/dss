@@ -36,6 +36,8 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.util.CollectionStore;
 import org.bouncycastle.util.Store;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
@@ -57,6 +59,8 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
  */
 
 public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBaselineLT.class);
 
 	private final CertificateVerifier certificateVerifier;
 	private final CAdESLevelBaselineT cadesProfileT;
@@ -86,6 +90,15 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 		cadesSignature.setDetachedContents(parameters.getDetachedContents());
 		final ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
+
+		if (!validationContext.isAllRequiredRevocationDataPresent()) {
+			String message = "Revocation data is missing";
+			if (certificateVerifier.isExceptionOnMissingRevocationData()) {
+				throw new DSSException(message);
+			} else {
+				LOG.warn(message);
+			}
+		}
 
 		Store<X509CertificateHolder> certificatesStore = cmsSignedData.getCertificates();
 		final Set<CertificateToken> certificates = cadesSignature.getCertificatesForInclusion(validationContext);

@@ -31,18 +31,18 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.EntityIdentifier;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.tsl.KeyUsageBit;
-import eu.europa.esig.dss.tsl.ServiceInfo;
 
 /**
  * Whenever the signature validation process encounters an {@link java.security.cert.X509Certificate} a certificateToken
@@ -56,41 +56,18 @@ public class CertificateToken extends Token {
 	/**
 	 * Encapsulated X509 certificate.
 	 */
-	private X509Certificate x509Certificate;
+	private final X509Certificate x509Certificate;
 
 	/**
-	 * This array contains the different sources for this certificate.
+	 * Digest of the public key (cross certificates have same public key)
 	 */
-	private Set<CertificateSourceType> sources = new HashSet<CertificateSourceType>();
-
-	/**
-	 * If the certificate is part of the trusted list then the the serviceInfo represents the associated trusted service
-	 * provider service. Same certificate can be a part of multiple services.
-	 */
-	private Set<ServiceInfo> associatedTSPS = new HashSet<ServiceInfo>();
-
-	/**
-	 * The default algorithm used to compute the digest value of this certificate
-	 */
-	private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
-
-	private EncryptionAlgorithm encryptionAlgorithm;
-
-	/**
-	 * OCSP or CRL revocation data for this token.
-	 */
-	private Set<RevocationToken> revocationTokens = new HashSet<RevocationToken>();
+	private final EntityIdentifier entityKey;
 
 	/**
 	 * Indicates if the certificate is self-signed. This attribute stays null till the first call to
 	 * {@link #isSelfSigned()} function.
 	 */
 	private Boolean selfSigned;
-
-	/**
-	 * In the case of the XML signature this is the Id associated with the certificate if any.
-	 */
-	private String xmlId;
 
 	/**
 	 * The key usage bits used in the certificate
@@ -115,42 +92,13 @@ public class CertificateToken extends Token {
 	 *            the X509Certificate object
 	 */
 	public CertificateToken(X509Certificate x509Certificate) {
-		if (x509Certificate == null) {
-			throw new NullPointerException("X509 certificate is missing");
-		}
+		Objects.requireNonNull(x509Certificate, "X509 certificate is missing");
 
 		this.x509Certificate = x509Certificate;
-		this.issuerX500Principal = x509Certificate.getIssuerX500Principal();
+		this.entityKey = new EntityIdentifier(x509Certificate.getPublicKey());
+
 		// The Algorithm OID is used and not the name {@code x509Certificate.getSigAlgName()}
 		this.signatureAlgorithm = SignatureAlgorithm.forOID(x509Certificate.getSigAlgOID());
-		this.digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
-		this.encryptionAlgorithm = signatureAlgorithm.getEncryptionAlgorithm();
-
-		this.extraInfo = new TokenValidationExtraInfo();
-	}
-
-	/**
-	 * This method adds the source type of the certificate (what is its origin). Each source is present only once.
-	 *
-	 * @param certSourceType
-	 *            the origin of the certificate
-	 */
-	public void addSourceType(final CertificateSourceType certSourceType) {
-		if (certSourceType != null) {
-			sources.add(certSourceType);
-		}
-	}
-
-	/**
-	 * This method adds the associated trusted service information.
-	 *
-	 * @param serviceInfo
-	 *            a trust service information
-	 */
-	public void addServiceInfo(final ServiceInfo serviceInfo) {
-		if (serviceInfo != null) {
-			associatedTSPS.add(serviceInfo);
-		}
 	}
 
 	@Override
@@ -159,23 +107,13 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * Adds a revocation data for the current certificate
+	 * Returns the digest of the current public key. Several certificate can have
+	 * the same public key (cross-certificates)
 	 * 
-	 * @param revocationToken
-	 *            This is the reference to the CertificateStatus. The object type is used because of the organisation
-	 *            of module.
+	 * @return
 	 */
-	public void addRevocationToken(RevocationToken revocationToken) {
-		this.revocationTokens.add(revocationToken);
-	}
-
-	/**
-	 * Returns the certificate revocation revocationToken object.
-	 * 
-	 * @return a Set of revocation data (OCSP responses and/or CRL)
-	 */
-	public Set<RevocationToken> getRevocationTokens() {
-		return revocationTokens;
+	public String getEntityKey() {
+		return entityKey.asXmlId();
 	}
 
 	/**
@@ -213,6 +151,11 @@ public class CertificateToken extends Token {
 		return x509Certificate.getNotBefore();
 	}
 
+	@Override
+	public Date getCreationDate() {
+		return getNotBefore();
+	}
+
 	/**
 	 * Checks if the certificate is expired on the given date.
 	 *
@@ -241,52 +184,9 @@ public class CertificateToken extends Token {
 		try {
 			x509Certificate.checkValidity(date);
 			return true;
-		} catch (CertificateExpiredException e) {
-			return false;
-		} catch (CertificateNotYetValidException e) {
+		} catch (CertificateExpiredException | CertificateNotYetValidException e) {
 			return false;
 		}
-	}
-
-	/**
-	 * This method indicates if the encapsulated certificate is revoked.
-	 *
-	 * @return null if the revocation data cannot be checked, or true or false
-	 */
-	public Boolean isRevoked() {
-		if (isTrusted()) {
-			return false;
-		}
-		RevocationToken latest = getLatestRevocationToken();
-		if (latest == null) {
-			return null;
-		}
-		Boolean status = latest.getStatus();
-		if (status == null) {
-			return null;
-		}
-		status = !status;
-		return status;
-	}
-
-	private RevocationToken getLatestRevocationToken() {
-		RevocationToken latest = null;
-		for (RevocationToken revocationToken : revocationTokens) {
-			if (latest == null || revocationToken.getProductionDate().after(latest.getProductionDate())) {
-				latest = revocationToken;
-			}
-		}
-		return latest;
-	}
-
-	/**
-	 * Checks if the certificate is provided by the trusted source.
-	 *
-	 * @return true if the certificate is trusted (from a Trusted List or a TrustStore)
-	 */
-	@Override
-	public boolean isTrusted() {
-		return sources.contains(CertificateSourceType.TRUSTED_LIST) || sources.contains(CertificateSourceType.TRUSTED_STORE);
 	}
 
 	/**
@@ -304,9 +204,9 @@ public class CertificateToken extends Token {
 			selfSigned = isSelfIssued();
 			if (selfSigned) {
 				try {
-					PublicKey publicKey = x509Certificate.getPublicKey();
-					x509Certificate.verify(publicKey);
+					x509Certificate.verify(x509Certificate.getPublicKey());
 					selfSigned = true;
+					signatureValid = true;
 				} catch (Exception e) {
 					selfSigned = false;
 				}
@@ -327,6 +227,19 @@ public class CertificateToken extends Token {
 		final String n1 = x509Certificate.getSubjectX500Principal().getName(X500Principal.CANONICAL);
 		final String n2 = x509Certificate.getIssuerX500Principal().getName(X500Principal.CANONICAL);
 		return n1.equals(n2);
+	}
+
+	/**
+	 * This method returns true if the given token is equivalent.
+	 * 
+	 * @param token
+	 *              the token to be compared
+	 * @return true if the given certificate has the same public key
+	 */
+	public boolean isEquivalent(CertificateToken token) {
+		PublicKey currentPublicKey = getPublicKey();
+		PublicKey tokenPublicKey = token.getPublicKey();
+		return Arrays.equals(currentPublicKey.getEncoded(), tokenPublicKey.getEncoded());
 	}
 
 	/**
@@ -353,30 +266,6 @@ public class CertificateToken extends Token {
 	}
 
 	/**
-	 * Gets information about the context in which this certificate token was created (TRUSTED_LIST, TRUSTED_STORE,
-	 * ...).
-	 * This method does not guarantee that the token is trusted or not.
-	 *
-	 * @return the different sources where the certificate is found
-	 */
-	public Set<CertificateSourceType> getSources() {
-		return sources;
-	}
-
-	/**
-	 * Gets information about the trusted context of the certificate. See {@link eu.europa.esig.dss.tsl.ServiceInfo} for
-	 * more information.
-	 *
-	 * @return the linked trusted service information
-	 */
-	public Set<ServiceInfo> getAssociatedTSPS() {
-		if (isTrusted()) {
-			return associatedTSPS;
-		}
-		return null;
-	}
-
-	/**
 	 * Gets the serialNumber value from the encapsulated certificate. The serial number is an integer assigned by the
 	 * certification authority to each certificate. It must be unique for each certificate issued by a given CA.
 	 *
@@ -396,18 +285,24 @@ public class CertificateToken extends Token {
 		return x509Certificate.getSubjectX500Principal();
 	}
 
+	/**
+	 * Returns the {@code X500Principal} of the certificate which was used to sign
+	 * this token.
+	 *
+	 * @return the issuer's {@code X500Principal}
+	 */
 	@Override
-	public boolean isSignedBy(final CertificateToken issuerToken) {
+	public X500Principal getIssuerX500Principal() {
+		return x509Certificate.getIssuerX500Principal();
+	}
+
+	@Override
+	protected boolean checkIsSignedBy(final CertificateToken candidate) {
 		signatureValid = false;
 		signatureInvalidityReason = "";
 		try {
-
-			final PublicKey publicKey = issuerToken.getCertificate().getPublicKey();
-			x509Certificate.verify(publicKey);
+			x509Certificate.verify(candidate.getPublicKey());
 			signatureValid = true;
-			if (!isSelfSigned() && !this.equals(issuerToken)) {
-				this.issuerToken = issuerToken;
-			}
 		} catch (InvalidKeyException e) {
 			signatureInvalidityReason = "InvalidKeyException - on incorrect key.";
 		} catch (CertificateException e) {
@@ -420,46 +315,6 @@ public class CertificateToken extends Token {
 			throw new DSSException(e);
 		}
 		return signatureValid;
-	}
-
-	/**
-	 * Returns the used digest algorithm when the certificate was signed
-	 * 
-	 * @return the used digest algorithm
-	 */
-	public DigestAlgorithm getDigestAlgorithm() {
-		return digestAlgorithm;
-	}
-
-	/**
-	 * Returns the used encryption algorithm when the certificate was signed (issuer private key algorithm)
-	 * 
-	 * @return the used encryption algorithm
-	 */
-	public EncryptionAlgorithm getEncryptionAlgorithm() {
-		return encryptionAlgorithm;
-	}
-
-	/**
-	 * Returns the trust anchor associated with the certificate. If it is the self-signed certificate then {@code this}
-	 * is returned.
-	 *
-	 * @return the linked trust anchor certificate
-	 */
-	public CertificateToken getTrustAnchor() {
-		if (isSelfSigned() && isTrusted()) {
-			return this;
-		}
-		Set<CertificateToken> processedTokens = new HashSet<CertificateToken>();
-		CertificateToken issuerCertToken = getIssuerToken();
-		while ((issuerCertToken != null) && (!processedTokens.contains(issuerCertToken))) {
-			processedTokens.add(issuerCertToken);
-			if (issuerCertToken.isTrusted()) {
-				return issuerCertToken;
-			}
-			issuerCertToken = issuerCertToken.getIssuerToken();
-		}
-		return null;
 	}
 
 	/**
@@ -476,99 +331,26 @@ public class CertificateToken extends Token {
 
 	@Override
 	public String toString(String indentStr) {
-		try {
-			final StringBuilder out = new StringBuilder();
-			out.append(indentStr).append("CertificateToken[\n");
-			indentStr += "\t";
+		final StringBuilder out = new StringBuilder();
+		out.append(indentStr).append("CertificateToken[\n");
+		indentStr += "\t";
 
-			String issuerAsString = "";
-			if (issuerToken == null) {
-				if (isSelfSigned()) {
-					issuerAsString = "[SELF-SIGNED]";
-				} else {
-					issuerAsString = getIssuerX500Principal().toString();
-				}
-			} else {
-				issuerAsString = issuerToken.getDSSIdAsString();
-			}
-			String certSource = "UNKNOWN";
-			if (sources.size() > 0) {
-				for (final CertificateSourceType source : sources) {
-					final String name = source.name();
-					if ("UNKNOWN".equals(certSource)) {
-						certSource = name;
-					} else {
-						certSource += "/" + name;
-					}
-				}
-			}
-			out.append(indentStr).append(getDSSIdAsString()).append("<--").append(issuerAsString).append(", source=").append(certSource);
-			out.append(", serial=" + x509Certificate.getSerialNumber()).append('\n');
-			// Validity period
-			out.append(indentStr).append("Validity period    : ").append(x509Certificate.getNotBefore()).append(" - ").append(x509Certificate.getNotAfter())
-					.append('\n');
-			out.append(indentStr).append("Subject name       : ").append(getSubjectX500Principal()).append('\n');
-			out.append(indentStr).append("Issuer subject name: ").append(getIssuerX500Principal()).append('\n');
-			if (sources.contains(CertificateSourceType.TRUSTED_LIST)) {
-				for (ServiceInfo si : associatedTSPS) {
-					out.append(indentStr).append("Service Info      :\n");
-					indentStr += "\t";
-					out.append(si.toString(indentStr));
-					indentStr = indentStr.substring(1);
-				}
-			}
-			out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');
-			if (isTrusted()) {
-				out.append(indentStr).append("Signature validity : Signature verification is not needed: trusted certificate\n");
-			} else {
-				if (signatureValid) {
-					out.append(indentStr).append("Signature validity : VALID").append('\n');
-				} else {
-					if (!signatureInvalidityReason.isEmpty()) {
-						out.append(indentStr).append("Signature validity : INVALID").append(" - ").append(signatureInvalidityReason).append('\n');
-					}
-				}
-			}
-			if (issuerToken != null) {
-				out.append(indentStr).append("Issuer certificate[\n");
-				indentStr += "\t";
-				if (issuerToken.isSelfSigned()) {
-					out.append(indentStr).append(issuerToken.getDSSIdAsString()).append(" SELF-SIGNED");
-				} else {
-					out.append(issuerToken.toString(indentStr));
-				}
-				out.append('\n');
-				indentStr = indentStr.substring(1);
-				out.append(indentStr).append("]\n");
-			}
-			for (String info : this.extraInfo.getValidationInfo()) {
-				out.append(indentStr).append("- ").append(info).append('\n');
-			}
-			indentStr = indentStr.substring(1);
-			out.append(indentStr).append(']');
-			return out.toString();
-		} catch (Exception e) {
-			return e.getMessage();
+		out.append(indentStr).append("DSS Id              : ").append(getDSSIdAsString()).append('\n');
+		out.append(indentStr).append("Identity Id         : ").append(getEntityKey()).append('\n');
+		out.append(indentStr).append("Validity period     : ").append(x509Certificate.getNotBefore()).append(" - ").append(x509Certificate.getNotAfter())
+				.append('\n');
+		out.append(indentStr).append("Subject name        : ").append(getSubjectX500Principal().getName(X500Principal.CANONICAL)).append('\n');
+		out.append(indentStr).append("Issuer subject name : ").append(getIssuerX500Principal().getName(X500Principal.CANONICAL)).append('\n');
+		out.append(indentStr).append("Serial Number       : ").append(getSerialNumber()).append('\n');
+		out.append(indentStr).append("Signature algorithm : ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');
+
+		if (isSelfSigned()) {
+			out.append(indentStr).append("[SELF-SIGNED]").append('\n');
 		}
-	}
 
-	/**
-	 * Returns a XML compliant ID
-	 * 
-	 * @return the id associated with the certificate in case of an XML signature, or null
-	 */
-	public String getXmlId() {
-		return xmlId;
-	}
-
-	/**
-	 * Sets the Id associated with the certificate in case of an XML signature.
-	 *
-	 * @param xmlId
-	 *            xml compliant id
-	 */
-	public void setXmlId(final String xmlId) {
-		this.xmlId = xmlId;
+		indentStr = indentStr.substring(1);
+		out.append(indentStr).append(']');
+		return out.toString();
 	}
 
 	/**

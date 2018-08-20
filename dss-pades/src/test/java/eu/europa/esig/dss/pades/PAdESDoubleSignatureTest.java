@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,9 +40,12 @@ import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 
 @RunWith(Parameterized.class)
 public class PAdESDoubleSignatureTest extends PKIFactoryAccess {
@@ -70,6 +74,13 @@ public class PAdESDoubleSignatureTest extends PKIFactoryAccess {
 		SignatureValue signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		Reports reports1 = validator.validateDocument();
+
+		DiagnosticData diagnosticData1 = reports1.getDiagnosticData();
+		assertEquals(SignatureLevel.PAdES_BASELINE_LTA.toString(), diagnosticData1.getSignatureFormat(diagnosticData1.getFirstSignatureId()));
+
 		params = new PAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		params.setSigningCertificate(getSigningCert());
@@ -79,20 +90,51 @@ public class PAdESDoubleSignatureTest extends PKIFactoryAccess {
 		signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, params, signatureValue);
 
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleSignedDocument);
+		validator = SignedDocumentValidator.fromDocument(doubleSignedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
-		Reports reports = validator.validateDocument();
-
-		// reports.print();
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		Reports reports2 = validator.validateDocument();
+		DiagnosticData diagnosticData2 = reports2.getDiagnosticData();
 
 		// Bug with 2 signatures which have the same ID
-		List<String> signatureIdList = diagnosticData.getSignatureIdList();
+		List<String> signatureIdList = diagnosticData2.getSignatureIdList();
 		assertEquals(2, signatureIdList.size());
 		for (String signatureId : signatureIdList) {
-			assertTrue(diagnosticData.isBLevelTechnicallyValid(signatureId));
+			assertTrue(diagnosticData2.isBLevelTechnicallyValid(signatureId));
+		}
+
+		assertEquals(3, diagnosticData2.getTimestampIdList(diagnosticData2.getFirstSignatureId()).size());
+
+		checkAllRevocationOnce(diagnosticData2);
+
+		checkAllPreviousRevocationDataInNewDiagnosticData(diagnosticData1, diagnosticData2);
+
+	}
+
+	private void checkAllPreviousRevocationDataInNewDiagnosticData(DiagnosticData diagnosticData1, DiagnosticData diagnosticData2) {
+
+		Set<RevocationWrapper> allRevocationData1 = diagnosticData1.getAllRevocationData();
+		Set<RevocationWrapper> allRevocationData2 = diagnosticData2.getAllRevocationData();
+
+		for (RevocationWrapper revocationWrapper : allRevocationData1) {
+			boolean found = false;
+			for (RevocationWrapper revocationWrapper2 : allRevocationData2) {
+				if (Utils.areStringsEqual(revocationWrapper.getId(), revocationWrapper2.getId())) {
+					found = true;
+				}
+			}
+			assertTrue(found);
+		}
+	}
+
+	private void checkAllRevocationOnce(DiagnosticData diagnosticData) {
+		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
+		for (CertificateWrapper certificateWrapper : usedCertificates) {
+			if (certificateWrapper.isTrusted() || certificateWrapper.isIdPkixOcspNoCheck()) {
+				continue;
+			}
+			int nbRevoc = certificateWrapper.getRevocationData().size();
+			assertEquals("Nb revoc for cert " + certificateWrapper.getCommonName() + " = " + nbRevoc, 1, nbRevoc);
 		}
 	}
 
