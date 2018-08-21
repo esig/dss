@@ -163,11 +163,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			pdDocument.addSignature(pdSignature, signatureInterface, options);
 
 			saveDocumentIncrementally(parameters, fileOutputStream, pdDocument);
-			final byte[] digestValue = digest.digest();
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Digest to be signed: " + Utils.toHex(digestValue));
-			}
-			return digestValue;
+			return digest.digest();
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}

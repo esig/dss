@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.pdf.openpdf;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -167,18 +164,10 @@ class ITextPDFSignatureService implements PDFSignatureService {
 	@Override
 	public byte[] digest(DSSDocument toSignDocument, PAdESSignatureParameters parameters, DigestAlgorithm digestAlgorithm) throws DSSException {
 		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-
 			PdfStamper stp = prepareStamper(is, baos, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
 
-			Utils.copy(sap.getRangeStream(), new FileOutputStream(new File("target/" + UUID.randomUUID().toString() + ".pdf")));
-
-//			byte[] byteArray = Utils.toByteArray(sap.getRangeStream());
-//			LOG.info(new String(byteArray));
-
-			final byte[] digest = DSSUtils.digest(digestAlgorithm, sap.getRangeStream());
-			LOG.info("Digest : {}", Utils.toBase64(digest));
-			return digest;
+			return DSSUtils.digest(digestAlgorithm, sap.getRangeStream());
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
@@ -188,9 +177,7 @@ class ITextPDFSignatureService implements PDFSignatureService {
 	public DSSDocument sign(DSSDocument toSignDocument, byte[] signatureValue, PAdESSignatureParameters parameters, DigestAlgorithm digestAlgorithm)
 			throws DSSException {
 
-		try (InputStream is = toSignDocument.openStream()) {
-
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			PdfStamper stp = prepareStamper(is, baos, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
 
@@ -206,8 +193,9 @@ class ITextPDFSignatureService implements PDFSignatureService {
 			dic.put(PdfName.CONTENTS, new PdfString(outc).setHexWriting(true));
 			sap.close(dic);
 
-			baos.close();
-			return new InMemoryDocument(baos.toByteArray(), "signed.pdf", MimeType.PDF);
+			DSSDocument signature = new InMemoryDocument(baos.toByteArray());
+			signature.setMimeType(MimeType.PDF);
+			return signature;
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
@@ -222,8 +210,7 @@ class ITextPDFSignatureService implements PDFSignatureService {
 	
 	@SuppressWarnings("unchecked")
 	private void validateSignatures(DSSDocument dssDocument, PdfDict outerCatalog, SignatureValidationCallback callback, List<String> alreadyLoadedRevisions) throws DSSException {
-		try (InputStream is = dssDocument.openStream()) {
-			PdfReader reader = new PdfReader(is);
+		try (InputStream is = dssDocument.openStream(); PdfReader reader = new PdfReader(is)) {
 			AcroFields af = reader.getAcroFields();
 
 			/*
