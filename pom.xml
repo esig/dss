@@ -53,6 +53,7 @@
 		<xmlsec.version>2.0.10</xmlsec.version>
 		<xalan.version>2.7.2</xalan.version>
 		<pdfbox.version>2.0.11</pdfbox.version>
+		<openpdf.version>1.2.0</openpdf.version>
 		<httpclient.version>4.5.5</httpclient.version>
 		<rs-api.version>2.0.1</rs-api.version>
 		
@@ -102,6 +103,8 @@
 		<module>dss-xades</module>
 		<module>dss-cades</module>
 		<module>dss-pades</module>
+		<module>dss-pades-pdfbox</module>
+		<module>dss-pades-openpdf</module>
 		<module>dss-asic-common</module>
 		<module>dss-asic-xades</module>
 		<module>dss-asic-cades</module>
@@ -424,6 +427,16 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-pades-pdfbox</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-pades-openpdf</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-xades</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -613,6 +626,12 @@
 			    <artifactId>preflight</artifactId>
 				<version>${pdfbox.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.github.librepdf</groupId>
+				<artifactId>openpdf</artifactId>
+				<version>${openpdf.version}</version>
+			</dependency>
+			
 			<dependency>
 				<groupId>org.apache.santuario</groupId>
 				<artifactId>xmlsec</artifactId>

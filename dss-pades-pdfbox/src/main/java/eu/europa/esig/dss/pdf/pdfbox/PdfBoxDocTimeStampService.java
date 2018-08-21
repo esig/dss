@@ -22,9 +22,7 @@ package eu.europa.esig.dss.pdf.pdfbox;
 
 import java.io.IOException;
 
-import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 import org.bouncycastle.tsp.TimeStampToken;
 
@@ -40,30 +38,25 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 class PdfBoxDocTimeStampService extends PdfBoxSignatureService implements PDFTimestampService {
 
-	/**
-	 * A timestamp sub-filter value.
-	 */
-	public static final COSName SUB_FILTER_ETSI_RFC3161 = COSName.getPDFName("ETSI.RFC3161");
-
 	@Override
-	protected COSName getType() {
-		return COSName.DOC_TIME_STAMP;
+	protected String getType() {
+		return TIMESTAMP_TYPE;
 	}
 
 	@Override
-	protected COSName getFilter(PAdESSignatureParameters parameters) {
+	protected String getFilter(PAdESSignatureParameters parameters) {
 		if (Utils.isStringNotEmpty(parameters.getTimestampFilter())) {
-			return COSName.getPDFName(parameters.getTimestampFilter());
+			return parameters.getTimestampFilter();
 		}
-		return PDSignature.FILTER_ADOBE_PPKLITE;
+		return TIMESTAMP_DEFAULT_FILTER;
 	}
 
 	@Override
-	protected COSName getSubFilter(PAdESSignatureParameters parameters) {
+	protected String getSubFilter(PAdESSignatureParameters parameters) {
 		if (Utils.isStringNotEmpty(parameters.getTimestampSubFilter())) {
-			return COSName.getPDFName(parameters.getTimestampSubFilter());
+			return parameters.getTimestampSubFilter();
 		}
-		return SUB_FILTER_ETSI_RFC3161;
+		return TIMESTAMP_DEFAULT_SUBFILTER;
 	}
 
 	@Override

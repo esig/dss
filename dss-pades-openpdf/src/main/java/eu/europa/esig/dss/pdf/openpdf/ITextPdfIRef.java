@@ -18,21 +18,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf;
+package eu.europa.esig.dss.pdf.openpdf;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
+import com.lowagie.text.pdf.PdfIndirectReference;
 
-public interface PDFTimestampService {
+class ITextPdfIRef {
 
-	String TIMESTAMP_TYPE = "DocTimeStamp";
+	PdfIndirectReference wrapped;
 
-	String TIMESTAMP_DEFAULT_FILTER = "Adobe.PPKLite";
-
-	String TIMESTAMP_DEFAULT_SUBFILTER = "ETSI.RFC3161";
-
-	DSSDocument timestamp(final DSSDocument document, final PAdESSignatureParameters parameters, final TSPSource tspSource) throws DSSException;
+	ITextPdfIRef(PdfIndirectReference wrapped) {
+		this.wrapped = wrapped;
+	}
 
 }

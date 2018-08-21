@@ -23,7 +23,7 @@ package eu.europa.esig.dss.pdf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.pdf.pdfbox.PdfBoxObjectFactory;
+import eu.europa.esig.dss.DSSException;
 
 /**
  * The usage of this interface permit the user to choose the underlying PDF
@@ -46,14 +46,11 @@ public abstract class PdfObjFactory {
 					Class<PdfObjFactory> factoryClass = (Class<PdfObjFactory>) Class.forName(factoryClassName);
 					INSTANCE = factoryClass.newInstance();
 				} catch (Exception ex) {
-					LOG.error("dss.pdf_obj_factory is '" + factoryClassName
-							+ "' but factory cannot be instantiated (fallback will be used)");
+					LOG.error("Unable to instantiate a PdfObjFactory (specified class:" + factoryClassName + ") :", ex);
 				}
 			}
 			if (INSTANCE == null) {
-				LOG.info("Fallback to '" + PdfBoxObjectFactory.class.getName()
-						+ "' as the PDF Object Factory Implementation");
-				INSTANCE = new PdfBoxObjectFactory();
+				throw new DSSException("No instance found for property dss.pdf_obj_factory : " + factoryClassName);
 			}
 		}
 		return INSTANCE;

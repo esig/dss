@@ -108,7 +108,12 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				PDDocument pdDocument = PDDocument.load(is)) {
 
 			PDSignature pdSignature = createSignatureDictionary(parameters, pdDocument);
-			return signDocumentAndReturnDigest(parameters, signatureValue, outputStream, pdDocument, pdSignature, digestAlgorithm);
+			final byte[] digest = signDocumentAndReturnDigest(parameters, signatureValue, outputStream, pdDocument, pdSignature, digestAlgorithm);
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Digest : {}", Utils.toBase64(digest));
+			}
+			return digest;
+
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
@@ -183,12 +188,13 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			signature = new PDSignature();
 		}
 
-		signature.setType(getType());
-		signature.setFilter(getFilter(parameters));
+		COSName currentType = COSName.getPDFName(getType());
+		signature.setType(currentType);
+		signature.setFilter(COSName.getPDFName(getFilter(parameters)));
 		// sub-filter for basic and PAdES Part 2 signatures
-		signature.setSubFilter(getSubFilter(parameters));
+		signature.setSubFilter(COSName.getPDFName(getSubFilter(parameters)));
 
-		if (COSName.SIG.equals(getType())) {
+		if (COSName.SIG.equals(currentType)) {
 
 			if (parameters.getSignatureName() != null) {
 				signature.setName(parameters.getSignatureName());
@@ -326,22 +332,22 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 	}
 
-	protected COSName getType() {
-		return COSName.SIG;
+	protected String getType() {
+		return COSName.SIG.getName();
 	}
 
-	protected COSName getFilter(PAdESSignatureParameters parameters) {
+	protected String getFilter(PAdESSignatureParameters parameters) {
 		if (Utils.isStringNotEmpty(parameters.getSignatureFilter())) {
-			return COSName.getPDFName(parameters.getSignatureFilter());
+			return parameters.getSignatureFilter();
 		}
-		return PDSignature.FILTER_ADOBE_PPKLITE;
+		return PDSignature.FILTER_ADOBE_PPKLITE.getName();
 	}
 
-	protected COSName getSubFilter(PAdESSignatureParameters parameters) {
+	protected String getSubFilter(PAdESSignatureParameters parameters) {
 		if (Utils.isStringNotEmpty(parameters.getSignatureSubFilter())) {
-			return COSName.getPDFName(parameters.getSignatureSubFilter());
+			return parameters.getSignatureSubFilter();
 		}
-		return PDSignature.SUBFILTER_ETSI_CADES_DETACHED;
+		return PDSignature.SUBFILTER_ETSI_CADES_DETACHED.getName();
 	}
 
 	@Override
@@ -402,7 +408,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 					PdfDict signatureDictionary = new PdfBoxDict(signature.getCOSObject(), doc);
 					PdfSignatureOrDocTimestampInfo signatureInfo = null;
-					if (PdfBoxDocTimeStampService.SUB_FILTER_ETSI_RFC3161.getName().equals(subFilter)) {
+					if (PdfBoxDocTimeStampService.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
 						boolean isArchiveTimestamp = false;
 
 						// LT or LTA

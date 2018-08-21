@@ -18,21 +18,30 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf;
+package eu.europa.esig.dss.pdf.openpdf;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
+import java.io.IOException;
 
-public interface PDFTimestampService {
+import com.lowagie.text.pdf.PRStream;
+import com.lowagie.text.pdf.PdfArray;
+import com.lowagie.text.pdf.PdfReader;
 
-	String TIMESTAMP_TYPE = "DocTimeStamp";
+class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 
-	String TIMESTAMP_DEFAULT_FILTER = "Adobe.PPKLite";
+	PdfArray wrapped;
 
-	String TIMESTAMP_DEFAULT_SUBFILTER = "ETSI.RFC3161";
+	ITextPdfArray(PdfArray wrapped) {
+		this.wrapped = wrapped;
+	}
 
-	DSSDocument timestamp(final DSSDocument document, final PAdESSignatureParameters parameters, final TSPSource tspSource) throws DSSException;
+	@Override
+	public byte[] getBytes(int i) throws IOException {
+		return PdfReader.getStreamBytes((PRStream) wrapped.getAsStream(i));
+	}
+
+	@Override
+	public int size() {
+		return wrapped.size();
+	}
 
 }

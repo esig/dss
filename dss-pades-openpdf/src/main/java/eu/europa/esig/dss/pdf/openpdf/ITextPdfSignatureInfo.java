@@ -18,21 +18,22 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf;
+package eu.europa.esig.dss.pdf.openpdf;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.x509.tsp.TSPSource;
+import java.security.cert.Certificate;
+import java.util.Calendar;
 
-public interface PDFTimestampService {
+import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfPKCS7;
 
-	String TIMESTAMP_TYPE = "DocTimeStamp";
+import eu.europa.esig.dss.pdf.PdfDict;
+import eu.europa.esig.dss.pdf.PdfSignatureInfo;
+import eu.europa.esig.dss.x509.CertificateToken;
 
-	String TIMESTAMP_DEFAULT_FILTER = "Adobe.PPKLite";
+class ITextPdfSignatureInfo extends ITextPdfSignatureOrDocTimestampInfo implements PdfSignatureInfo {
 
-	String TIMESTAMP_DEFAULT_SUBFILTER = "ETSI.RFC3161";
-
-	DSSDocument timestamp(final DSSDocument document, final PAdESSignatureParameters parameters, final TSPSource tspSource) throws DSSException;
+	public ITextPdfSignatureInfo(PdfPKCS7 pk, PdfDictionary signatureDictionary, CertificateToken signingCertificate, Calendar signingDate, Certificate[] chain, PdfDictionary documentDictionary, PdfDict outerCatalog, byte[] originalContent) {
+		super(pk, signatureDictionary, signingCertificate, signingDate, chain, documentDictionary, outerCatalog, originalContent);
+	}
 
 }
