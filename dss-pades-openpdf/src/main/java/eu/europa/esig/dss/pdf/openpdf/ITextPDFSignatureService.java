@@ -53,6 +53,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
@@ -105,7 +106,7 @@ class ITextPDFSignatureService implements PDFSignatureService {
 		if (Utils.isStringNotEmpty(parameters.getSignatureSubFilter())) {
 			return parameters.getSignatureSubFilter();
 		}
-		return "ETSI.CAdES.detached";
+		return SIGNATURE_DEFAULT_SUBFILTER;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -135,21 +136,29 @@ class ITextPDFSignatureService implements PDFSignatureService {
 		}
 
 		PdfSignature dic = new PdfSignature(new PdfName(getFilter(parameters)), new PdfName(getSubFilter(parameters)));
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(parameters.bLevel().getSigningDate());
-		sap.setSignDate(cal);
-		dic.setDate(new PdfDate(cal));
+		PdfName type = new PdfName(getType());
+		dic.put(PdfName.TYPE, type);
+		
+		if (PdfName.SIG.equals(type)) {
 
-		if (parameters.getReason() != null) {
-			dic.setReason(parameters.getReason());
-		}
-		if (parameters.getLocation() != null) {
-			dic.setLocation(parameters.getLocation());
-		}
-		if (parameters.getContactInfo() != null) {
-			dic.setContact(parameters.getContactInfo());
-		}
+			dic.setName(PAdESUtils.getSignatureName(parameters));
+			
+			if (parameters.getReason() != null) {
+				dic.setReason(parameters.getReason());
+			}
+			if (parameters.getLocation() != null) {
+				dic.setLocation(parameters.getLocation());
+			}
+			if (parameters.getContactInfo() != null) {
+				dic.setContact(parameters.getContactInfo());
+			}
 
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(parameters.bLevel().getSigningDate());
+			sap.setSignDate(cal);
+			dic.setDate(new PdfDate(cal));
+		}
+		
 		sap.setCryptoDictionary(dic);
 
 		int csize = getSignatureSize();

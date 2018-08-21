@@ -34,6 +34,8 @@ import eu.europa.esig.dss.x509.CertificatePool;
  *
  */
 public interface PDFSignatureService {
+	
+	String SIGNATURE_DEFAULT_SUBFILTER = "ETSI.CAdES.detached";
 
 	/**
 	 * Returns the digest value of a PDF document

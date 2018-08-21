@@ -64,6 +64,7 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
@@ -192,22 +193,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 		if (COSName.SIG.equals(currentType)) {
 
-			if (parameters.getSignatureName() != null) {
-				signature.setName(parameters.getSignatureName());
-			} else {
-
-				CertificateToken token = parameters.getSigningCertificate();
-				Date date = parameters.bLevel().getSigningDate();
-				String encodedDate = Utils
-						.toHex(DSSUtils.digest(DigestAlgorithm.SHA1, Long.toString(date.getTime()).getBytes()));
-
-				if (token == null) {
-					signature.setName("Unknown signer" + encodedDate);
-				} else {
-					String shortName = DSSASN1Utils.getHumanReadableName(token) + encodedDate;
-					signature.setName(shortName);
-				}
-			}
+			signature.setName(PAdESUtils.getSignatureName(parameters));
 
 			if (Utils.isStringNotEmpty(parameters.getContactInfo())) {
 				signature.setContactInfo(parameters.getContactInfo());
