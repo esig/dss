@@ -34,7 +34,7 @@ import com.lowagie.text.pdf.PdfString;
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
 
-public class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
+class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ITextPdfDict.class);
 
