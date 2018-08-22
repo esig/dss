@@ -95,17 +95,18 @@ public class DigestStabilityTest extends PKIFactoryAccess {
 	public void differentSigningDateGetDifferentDigest() throws Exception {
 		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.pdf"));
 
-		Date signingDate = new Date();
-		ToBeSigned dataToSign1 = getDataToSign(toBeSigned, privateKeyEntry, signingDate);
+		Date signingDate1 = new Date();
+		ToBeSigned dataToSign1 = getDataToSign(toBeSigned, privateKeyEntry, signingDate1);
 
-		signingDate = new Date();
-		ToBeSigned dataToSign2 = getDataToSign(toBeSigned, privateKeyEntry, signingDate);
+		Date signingDate2 = new Date();
+		ToBeSigned dataToSign2 = getDataToSign(toBeSigned, privateKeyEntry, signingDate2);
 
 		final MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA256.getOid());
 		byte[] digest1 = messageDigest.digest(dataToSign1.getBytes());
 		byte[] digest2 = messageDigest.digest(dataToSign2.getBytes());
 
-		assertNotEquals(Utils.toBase64(digest1), Utils.toBase64(digest2));
+		assertNotEquals("Digests must be different (Date1:" + signingDate1 + " / Date2:" + signingDate2 + ")", Utils.toBase64(digest1),
+				Utils.toBase64(digest2));
 	}
 
 	private ToBeSigned getDataToSign(DSSDocument toBeSigned, DSSPrivateKeyEntry privateKeyEntry, Date signingDate) {

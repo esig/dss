@@ -334,7 +334,6 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 	@Override
 	public void validateSignatures(CertificatePool validationCertPool, DSSDocument document, SignatureValidationCallback callback) throws DSSException {
-		// recursive search of signature
 		try (InputStream inputStream = document.openStream()) {
 			List<PdfSignatureOrDocTimestampInfo> signaturesFound = getSignatures(validationCertPool, Utils.toByteArray(inputStream));
 			for (PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo : signaturesFound) {

@@ -405,6 +405,12 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			assertTrue(timestampWrapper.isMessageImprintDataIntact());
 			assertTrue(timestampWrapper.isSignatureIntact());
 			assertTrue(timestampWrapper.isSignatureValid());
+
+			List<XmlDigestMatcher> digestMatchers = timestampWrapper.getDigestMatchers();
+			for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
+				assertTrue(xmlDigestMatcher.isDataFound());
+				assertTrue(xmlDigestMatcher.isDataIntact());
+			}
 		}
 	}
 

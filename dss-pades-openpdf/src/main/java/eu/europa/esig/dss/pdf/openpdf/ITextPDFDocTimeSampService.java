@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.pdf.openpdf;
 
 import org.bouncycastle.tsp.TimeStampToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -38,8 +36,6 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
  *
  */
 class ITextPDFDocTimeSampService extends ITextPDFSignatureService implements PDFTimestampService {
-
-	private static final Logger LOG = LoggerFactory.getLogger(ITextPDFDocTimeSampService.class);
 
 	ITextPDFDocTimeSampService() {
 	}

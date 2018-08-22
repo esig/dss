@@ -20,18 +20,17 @@
  */
 package eu.europa.esig.dss.pdf.openpdf;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,10 +59,14 @@ import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.pdf.PdfDict;
+import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSigDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
+import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
+import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
 import eu.europa.esig.dss.pdf.SignatureValidationCallback;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -76,24 +79,7 @@ class ITextPDFSignatureService implements PDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ITextPDFSignatureService.class);
 
-	private int signatureSize = 12000;
-
 	ITextPDFSignatureService() {
-	}
-
-	/**
-	 * @param signatureSize
-	 *                      the signatureSize to set
-	 */
-	public void setSignatureSize(int signatureSize) {
-		this.signatureSize = signatureSize;
-	}
-
-	/**
-	 * @return the signatureSize
-	 */
-	public int getSignatureSize() {
-		return signatureSize;
 	}
 
 	protected String getType() {
@@ -169,7 +155,7 @@ class ITextPDFSignatureService implements PDFSignatureService {
 
 		sap.setCryptoDictionary(dic);
 
-		int csize = getSignatureSize();
+		int csize = parameters.getSignatureSize();
 		HashMap exc = new HashMap();
 		exc.put(PdfName.CONTENTS, new Integer((csize * 2) + 2));
 
@@ -219,7 +205,7 @@ class ITextPDFSignatureService implements PDFSignatureService {
 
 			byte[] pk = signatureValue;
 
-			int csize = getSignatureSize();
+			int csize = parameters.getSignatureSize();
 			byte[] outc = new byte[csize];
 
 			PdfDictionary dic = new PdfDictionary();
@@ -238,119 +224,101 @@ class ITextPDFSignatureService implements PDFSignatureService {
 	}
 
 	@Override
-	public void validateSignatures(CertificatePool pool, DSSDocument document, SignatureValidationCallback callback) throws DSSException {
-		LOG.info("#### Start Signatures validations for document ");
-		validateSignatures(pool, document, null, callback, new ArrayList<String>());
-		LOG.info("#### End Signatures validations for document ");
+	public void validateSignatures(CertificatePool validationCertPool, DSSDocument document, SignatureValidationCallback callback) throws DSSException {
+		try (InputStream inputStream = document.openStream()) {
+			List<PdfSignatureOrDocTimestampInfo> signaturesFound = getSignatures(validationCertPool, document);
+			for (PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo : signaturesFound) {
+				callback.validate(pdfSignatureOrDocTimestampInfo);
+			}
+		} catch (IOException e) {
+			LOG.error("Cannot validate signatures : " + e.getMessage(), e);
+		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private void validateSignatures(CertificatePool pool, DSSDocument dssDocument, PdfDict outerCatalog, SignatureValidationCallback callback,
-			List<String> alreadyLoadedRevisions) throws DSSException {
-		try (InputStream is = dssDocument.openStream(); PdfReader reader = new PdfReader(is)) {
+	@SuppressWarnings({ "unchecked" })
+	private List<PdfSignatureOrDocTimestampInfo> getSignatures(CertificatePool validationCertPool, DSSDocument document) {
+		List<PdfSignatureOrDocTimestampInfo> result = new ArrayList<PdfSignatureOrDocTimestampInfo>();
+		try (InputStream is = document.openStream(); PdfReader reader = new PdfReader(is)) {
 			AcroFields af = reader.getAcroFields();
+			List<String> names = af.getSignatureNames();
 
 			PdfDict currentCatalog = new ITextPdfDict(reader.getCatalog());
 			PdfDssDict dssDictionary = PdfDssDict.extract(currentCatalog);
-			/*
-			 * Search the whole document of a signature
-			 */
-			List<String> names = af.getSignatureNames();
 
 			LOG.info(names.size() + " signature(s)");
-			// For every signature :
 			for (String name : names) {
-
-				LOG.info("Signature name: " + name);
-				LOG.info("Signature covers whole document: " + af.signatureCoversWholeDocument(name));
-				LOG.info("Document revision: " + af.getRevision(name) + " of " + af.getTotalRevisions());
-
-				/*
-				 * We are only interested in the validation of signature that covers the whole
-				 * document.
-				 */
-				if (af.signatureCoversWholeDocument(name)) {
+				try {
+					LOG.info("Signature name: " + name);
+					LOG.info("Document revision: " + af.getRevision(name) + " of " + af.getTotalRevisions());
 
 					PdfDict dictionary = new ITextPdfDict(af.getSignatureDictionary(name));
 					PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
 
-					String revisionName = Integer.toString(af.getRevision(name));
+					final byte[] cms = signatureDictionary.getContents();
+					final int[] byteRange = signatureDictionary.getByteRange();
+					final byte[] signedContent = getSignedContent(document, byteRange);
+					boolean signatureCoversWholeDocument = af.signatureCoversWholeDocument(name);
 
-					if (!alreadyLoadedRevisions.contains(revisionName)) {
-
-						final byte[] cms = signatureDictionary.getContents();
-						int[] byteRange = signatureDictionary.getByteRange();
-						final byte[] signedContent = getSignedContent(dssDocument, byteRange);
-
-						PdfSignatureInfo info = new PdfSignatureInfo(pool, signatureDictionary, dssDictionary, cms, signedContent, true);
-
-						callback.validate(info);
-						alreadyLoadedRevisions.add(revisionName);
+					final String subFilter = signatureDictionary.getSubFilter();
+					if (PDFTimestampService.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
+						result.add(new PdfDocTimestampInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
+								signatureCoversWholeDocument, false));
 					} else {
-						LOG.info("Signature " + name + " was already covered");
+						result.add(
+								new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent, signatureCoversWholeDocument));
 					}
 
-				} else {
-
-					PdfDict catalog = new ITextPdfDict(reader.getCatalog());
-
-					/*
-					 * We open the version of the document that was protected by the signature
-					 */
-					ByteArrayOutputStream out = new ByteArrayOutputStream();
-					InputStream ip = af.extractRevision(name);
-					IOUtils.copy(ip, out);
-					out.close();
-					ip.close();
-
-					/*
-					 * You can sign a PDF document with only one signature. So when we want multiple
-					 * signature, signatures are appended sequentially to the end of the document.
-					 * The recursive call help to get the signature from the original document.
-					 */
-					validateSignatures(pool, new InMemoryDocument(out.toByteArray()), catalog, callback, alreadyLoadedRevisions);
-
+				} catch (IOException e) {
+					LOG.error("Unable to parse signature '" + name + "' : ", e);
 				}
 			}
 
-		} catch (RuntimeException e) {
-			LOG.error(e.getMessage(), e);
-			throw e;
-		} catch (Exception e) {
-			LOG.error(e.getMessage(), e);
-			throw new DSSException(e);
-		}
+			Collections.sort(result, new PdfSignatureOrDocTimestampInfoComparator());
+			linkSignatures(result);
 
+		} catch (IOException e) {
+			throw new DSSException("Unable to analyze document", e);
+		}
+		return result;
 	}
 
-	private byte[] getSignedContent(DSSDocument dssDocument, int[] byteRange) {
+	/**
+	 * This method links previous signatures to the new one. This is useful to get
+	 * revision number and to know if a TSP is over the DSS dictionary
+	 */
+	private void linkSignatures(List<PdfSignatureOrDocTimestampInfo> signatures) {
+		List<PdfSignatureOrDocTimestampInfo> previousList = new ArrayList<PdfSignatureOrDocTimestampInfo>();
+		for (PdfSignatureOrDocTimestampInfo sig : signatures) {
+			if (Utils.isCollectionNotEmpty(previousList)) {
+				for (PdfSignatureOrDocTimestampInfo previous : previousList) {
+					previous.addOuterSignature(sig);
+				}
+			}
+			previousList.add(sig);
+		}
+	}
 
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); InputStream is = dssDocument.openStream()) {
+	private byte[] getSignedContent(DSSDocument dssDocument, int[] byteRange) throws IOException {
+
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); InputStream is = new BufferedInputStream(dssDocument.openStream())) {
 			// Adobe Digital Signatures in a PDF (p5): In Figure 4, the hash is calculated
 			// for bytes 0 through 839, and 960 through 1200. [0, 840, 960, 1200]
 
 			int begining = byteRange[0];
-			int startSigValueContent = byteRange[1] - 1;
+			int startSigValueContent = byteRange[1];
 			int endSigValueContent = byteRange[2];
 			int end = endSigValueContent + byteRange[3];
 
 			int counter = 0;
 			int b;
 			while ((b = is.read()) != -1) {
-				if (((counter >= begining) && (counter <= startSigValueContent)) || ((counter >= endSigValueContent) && (counter <= end))) {
+				if (((counter >= begining) && (counter < startSigValueContent)) || ((counter >= endSigValueContent) && (counter < end))) {
 					baos.write(b);
 				}
 				counter++;
 			}
 
-			byte[] byteArray = baos.toByteArray();
-			try (FileOutputStream fos = new FileOutputStream(new File("target/signedContent.pdf"))) {
-				Utils.write(byteArray, fos);
-			}
-			return byteArray;
-
-		} catch (IOException e) {
-			throw new DSSException("Unable to extract the signed data", e);
+			return baos.toByteArray();
 		}
 	}
 
