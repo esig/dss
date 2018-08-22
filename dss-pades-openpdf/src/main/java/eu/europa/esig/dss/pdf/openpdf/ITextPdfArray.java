@@ -24,11 +24,12 @@ import java.io.IOException;
 
 import com.lowagie.text.pdf.PRStream;
 import com.lowagie.text.pdf.PdfArray;
+import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfReader;
 
 class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 
-	PdfArray wrapped;
+	private PdfArray wrapped;
 
 	ITextPdfArray(PdfArray wrapped) {
 		this.wrapped = wrapped;
@@ -37,6 +38,15 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 	@Override
 	public byte[] getBytes(int i) throws IOException {
 		return PdfReader.getStreamBytes((PRStream) wrapped.getAsStream(i));
+	}
+
+	@Override
+	public int getInt(int i) throws IOException {
+		PdfNumber number = wrapped.getAsNumber(i);
+		if (number != null) {
+			return number.intValue();
+		}
+		return 0;
 	}
 
 	@Override

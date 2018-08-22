@@ -58,8 +58,6 @@ public interface PdfSignatureOrDocTimestampInfo {
 	 */
 	byte[] getOriginalBytes();
 
-	PdfDict getSignatureDictionary();
-
 	PdfDssDict getDssDictionary();
 
 	String uniqueId();

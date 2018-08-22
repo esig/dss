@@ -20,12 +20,16 @@
  */
 package eu.europa.esig.dss.pdf.openpdf;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.lowagie.text.pdf.PdfDate;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfObject;
+import com.lowagie.text.pdf.PdfString;
 
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
@@ -105,6 +109,36 @@ public class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 	public String[] list() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String getStringValue(String key) {
+		PdfString pdfString = wrapped.getAsString(new PdfName(key));
+		if (pdfString == null) {
+			return null;
+		} else {
+			return pdfString.toString();
+		}
+	}
+
+	@Override
+	public String getNameValue(String key) {
+		PdfName pdfName = wrapped.getAsName(new PdfName(key));
+		if (pdfName == null) {
+			return null;
+		} else {
+			return PdfName.decodeName(pdfName.toString());
+		}
+	}
+
+	@Override
+	public Date getDateValue(String name) {
+		PdfObject pdfObject = wrapped.get(new PdfName(name));
+		PdfString s = (PdfString) pdfObject;
+		if (s == null) {
+			return null;
+		}
+		return PdfDate.decode(s.toString()).getTime();
 	}
 
 }

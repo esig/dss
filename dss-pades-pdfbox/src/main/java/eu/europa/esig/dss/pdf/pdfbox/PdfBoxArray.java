@@ -55,6 +55,11 @@ class PdfBoxArray implements PdfArray {
 		return toBytes(val);
 	}
 
+	@Override
+	public int getInt(int i) throws IOException {
+		return wrapped.getInt(i);
+	}
+
 	private byte[] toBytes(COSBase val) throws IOException {
 		COSStream cosStream = null;
 		if (val instanceof COSObject) {

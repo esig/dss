@@ -18,22 +18,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.openpdf;
+package eu.europa.esig.dss.pades.extension;
 
-import java.security.cert.Certificate;
-import java.util.Calendar;
+import eu.europa.esig.dss.SignatureLevel;
 
-import com.lowagie.text.pdf.PdfDictionary;
-import com.lowagie.text.pdf.PdfPKCS7;
+public class PAdESExtensionBToTTest extends AbstractTestPAdESExtension {
 
-import eu.europa.esig.dss.pdf.PdfDict;
-import eu.europa.esig.dss.pdf.PdfSignatureInfo;
-import eu.europa.esig.dss.x509.CertificateToken;
+	@Override
+	protected SignatureLevel getOriginalSignatureLevel() {
+		return SignatureLevel.PAdES_BASELINE_B;
+	}
 
-class ITextPdfSignatureInfo extends ITextPdfSignatureOrDocTimestampInfo implements PdfSignatureInfo {
-
-	public ITextPdfSignatureInfo(PdfPKCS7 pk, PdfDictionary signatureDictionary, CertificateToken signingCertificate, Calendar signingDate, Certificate[] chain, PdfDictionary documentDictionary, PdfDict outerCatalog, byte[] originalContent) {
-		super(pk, signatureDictionary, signingCertificate, signingDate, chain, documentDictionary, outerCatalog, originalContent);
+	@Override
+	protected SignatureLevel getFinalSignatureLevel() {
+		return SignatureLevel.PAdES_BASELINE_T;
 	}
 
 }

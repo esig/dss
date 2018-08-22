@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pdf;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * The usage of this interface permit the user to choose the underlying PDF
@@ -46,5 +47,12 @@ public interface PdfDict {
 	byte[] get(String name) throws IOException;
 
 	String[] list();
+
+
+	String getStringValue(String name);
+
+	String getNameValue(String name);
+
+	Date getDateValue(String name);
 
 }

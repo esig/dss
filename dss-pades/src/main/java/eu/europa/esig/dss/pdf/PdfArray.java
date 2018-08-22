@@ -24,12 +24,34 @@ import java.io.IOException;
 
 /**
  * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
- *
  */
 public interface PdfArray {
 
+	/**
+	 * Retrieves the array size
+	 * 
+	 * @return the size of the current array
+	 */
 	int size();
 
+	/**
+	 * Retrieves the byte array at the position i
+	 * 
+	 * @param i
+	 *          the position
+	 * @return the found byte array
+	 * @throws IOException
+	 */
 	byte[] getBytes(int i) throws IOException;
+
+	/**
+	 * Retrieves the integer at the position i
+	 * 
+	 * @param i
+	 *          the position
+	 * @return the found integer
+	 * @throws IOException
+	 */
+	int getInt(int i) throws IOException;
 
 }

@@ -22,6 +22,8 @@ package eu.europa.esig.dss.pdf.pdfbox;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -110,6 +112,26 @@ class PdfBoxDict implements PdfDict {
 	@Override
 	public String toString() {
 		return wrapped.toString();
+	}
+
+	@Override
+	public String getStringValue(String name) {
+		return wrapped.getString(name);
+	}
+
+	@Override
+	public String getNameValue(String name) {
+		return wrapped.getNameAsString(name);
+	}
+
+	@Override
+	public Date getDateValue(String name) {
+		Calendar cal = wrapped.getDate(name);
+		if (cal != null) {
+			return cal.getTime();
+		}
+		return null;
+
 	}
 
 }

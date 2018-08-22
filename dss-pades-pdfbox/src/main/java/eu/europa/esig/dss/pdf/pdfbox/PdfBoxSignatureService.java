@@ -40,7 +40,6 @@ import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSStream;
-import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
@@ -55,7 +54,6 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -70,7 +68,9 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfDict;
+import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.pdf.PdfSigDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
@@ -360,11 +360,10 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				PdfDssDict dssDictionary = PdfDssDict.extract(catalog);
 
 				for (PDSignature signature : pdSignatures) {
-					String subFilter = signature.getSubFilter();
+					PdfDict dictionary = new PdfBoxDict(signature.getCOSObject(), doc);
+					PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
 
-					COSDictionary dict = signature.getCOSObject();
-					COSString item = (COSString) dict.getDictionaryObject(COSName.CONTENTS);
-					byte[] cms = item.getBytes();
+					final byte[] cms = signatureDictionary.getContents();
 
 					byte[] cmsWithByteRange = signature.getContents(originalBytes);
 
@@ -372,13 +371,14 @@ class PdfBoxSignatureService implements PDFSignatureService {
 						LOG.warn("The byte range doesn't match found /Content value!");
 					}
 
+					String subFilter = signatureDictionary.getSubFilter();
 					if (Utils.isStringEmpty(subFilter) || Utils.isArrayEmpty(cms)) {
 						LOG.warn("Wrong signature with empty subfilter or cms.");
 						continue;
 					}
 
 					byte[] signedContent = signature.getSignedContent(originalBytes);
-					int[] byteRange = signature.getByteRange();
+					int[] byteRange = signatureDictionary.getByteRange();
 
 					// /ByteRange [0 575649 632483 10206]
 					int beforeSignatureLength = byteRange[1] - byteRange[0];
@@ -388,7 +388,6 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 					boolean coverAllOriginalBytes = (originalBytesLength == totalCoveredByByteRange);
 
-					PdfDict signatureDictionary = new PdfBoxDict(signature.getCOSObject(), doc);
 					PdfSignatureOrDocTimestampInfo signatureInfo = null;
 					if (PdfBoxDocTimeStampService.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
 						boolean isArchiveTimestamp = false;
@@ -401,10 +400,10 @@ class PdfBoxSignatureService implements PDFSignatureService {
 							}
 						}
 
-						signatureInfo = new PdfBoxDocTimestampInfo(validationCertPool, signature, signatureDictionary, dssDictionary, cms, signedContent,
+						signatureInfo = new PdfDocTimestampInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
 								coverAllOriginalBytes, isArchiveTimestamp);
 					} else {
-						signatureInfo = new PdfBoxSignatureInfo(validationCertPool, signature, signatureDictionary, dssDictionary, cms, signedContent,
+						signatureInfo = new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
 								coverAllOriginalBytes);
 					}
 

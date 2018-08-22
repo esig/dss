@@ -167,9 +167,9 @@ public class PAdESSignature extends CAdESSignature {
 
 			if (outerSignature.isTimestamp() && (outerSignature instanceof PdfDocTimestampInfo)) {
 
-				final PdfDocTimestampInfo pdfBoxTimestampInfo = (PdfDocTimestampInfo) outerSignature;
+				final PdfDocTimestampInfo timestampInfo = (PdfDocTimestampInfo) outerSignature;
 				// do not return this timestamp if it's an archive timestamp
-				final TimestampToken timestampToken = pdfBoxTimestampInfo.getTimestampToken();
+				final TimestampToken timestampToken = timestampInfo.getTimestampToken();
 				if (timestampToken.getTimeStampType() == TimestampType.SIGNATURE_TIMESTAMP) {
 
 					timestampToken.setTimestampedReferences(getSignatureTimestampedReferences());
@@ -207,9 +207,9 @@ public class PAdESSignature extends CAdESSignature {
 
 			if (outerSignature.isTimestamp()) {
 
-				PdfDocTimestampInfo pdfBoxTimestampInfo = (PdfDocTimestampInfo) outerSignature;
+				PdfDocTimestampInfo timestampInfo = (PdfDocTimestampInfo) outerSignature;
 				// return this timestamp if it's an archive timestamp
-				final TimestampToken timestampToken = pdfBoxTimestampInfo.getTimestampToken();
+				final TimestampToken timestampToken = timestampInfo.getTimestampToken();
 				if (timestampToken.getTimeStampType() == TimestampType.ARCHIVE_TIMESTAMP) {
 					final List<TimestampReference> references = getSignatureTimestampedReferences();
 					for (final String timestampId : timestampedTimestamps) {
