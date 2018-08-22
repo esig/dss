@@ -22,7 +22,6 @@ package eu.europa.esig.dss.pdf.openpdf;
 
 import java.io.ByteArrayOutputStream;
 import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -68,8 +67,8 @@ public class ITextPdfSignatureOrDocTimestampInfo implements PdfSignatureOrDocTim
 
 	private Set<PdfSignatureOrDocTimestampInfo> outerSignatures = Collections.newSetFromMap(new ConcurrentHashMap<PdfSignatureOrDocTimestampInfo, Boolean>());
 
-	public ITextPdfSignatureOrDocTimestampInfo(PdfPKCS7 pk, PdfDictionary signatureDictionary, CertificateToken signingCertificate, Calendar signingDate, Certificate[] chain,
-			PdfDictionary documentDictionary, PdfDict outerCatalog, byte[] originalContent) {
+	public ITextPdfSignatureOrDocTimestampInfo(PdfPKCS7 pk, PdfDictionary signatureDictionary, CertificateToken signingCertificate, Calendar signingDate,
+			Certificate[] chain, PdfDictionary documentDictionary, PdfDict outerCatalog, byte[] originalContent) {
 		this.signatureDictionary = signatureDictionary;
 		this.documentDictionary = documentDictionary;
 		this.outerCatalog = outerCatalog;
@@ -84,9 +83,9 @@ public class ITextPdfSignatureOrDocTimestampInfo implements PdfSignatureOrDocTim
 			int[] range = getSignatureByteRange();
 			int c = range.length / 2;
 			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-			for(int i = 0 ; i < c ; i++) {
-				LOG.info("Range[] " + range[i*2] + " - " + range[(i*2)+1]);
-				buffer.write(getOriginalBytes(), range[i*2], range[(i*2)+1]);
+			for (int i = 0; i < c; i++) {
+				LOG.info("Range[] " + range[i * 2] + " - " + range[(i * 2) + 1]);
+				buffer.write(getOriginalBytes(), range[i * 2], range[(i * 2) + 1]);
 			}
 			signature.setDetachedContents(Arrays.<DSSDocument>asList(new InMemoryDocument(buffer.toByteArray())));
 			return signature;
@@ -100,7 +99,7 @@ public class ITextPdfSignatureOrDocTimestampInfo implements PdfSignatureOrDocTim
 	public int[] getSignatureByteRange() {
 		PdfArray array = (PdfArray) signatureDictionary.get(PdfName.BYTERANGE);
 		int[] range = new int[array.size()];
-		for(int i = 0 ; i < array.size() ; i++) {
+		for (int i = 0; i < array.size(); i++) {
 			PdfNumber o = (PdfNumber) array.getPdfObject(i);
 			range[i] = o.intValue();
 		}
@@ -114,27 +113,17 @@ public class ITextPdfSignatureOrDocTimestampInfo implements PdfSignatureOrDocTim
 
 	@Override
 	public String getLocation() {
-		PdfString pdfString = (PdfString)signatureDictionary.get(PdfName.LOCATION);
-		if(pdfString == null) {
-			return null;
-		} else {
-			return pdfString.toString();
-		}
+		return getStringValueFromSignatureDictionary(PdfName.LOCATION);
 	}
 
 	@Override
 	public Date getSigningDate() {
 		PdfObject pdfObject = signatureDictionary.get(PdfName.M);
 		PdfString s = (PdfString) pdfObject;
-		if(s == null) {
+		if (s == null) {
 			return null;
 		}
 		return PdfDate.decode(s.toString()).getTime();
-	}
-
-	public X509Certificate getSigningCertificate() {
-		LOG.error("Unsupported operation");
-		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -174,20 +163,22 @@ public class ITextPdfSignatureOrDocTimestampInfo implements PdfSignatureOrDocTim
 
 	@Override
 	public String getContactInfo() {
-		// TODO Auto-generated method stub
-		return null;
+		return getStringValueFromSignatureDictionary(PdfName.CONTACTINFO);
 	}
 
 	@Override
 	public String getReason() {
-		// TODO Auto-generated method stub
-		return null;
+		return getStringValueFromSignatureDictionary(PdfName.REASON);
+	}
+
+	@Override
+	public String getFilter() {
+		return getNameValueFromSignatureDictionary(PdfName.FILTER);
 	}
 
 	@Override
 	public String getSubFilter() {
-		// TODO Auto-generated method stub
-		return null;
+		return getNameValueFromSignatureDictionary(PdfName.SUBFILTER);
 	}
 
 	@Override
@@ -202,11 +193,6 @@ public class ITextPdfSignatureOrDocTimestampInfo implements PdfSignatureOrDocTim
 		return null;
 	}
 
-	@Override
-	public String getFilter() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public byte[] getContent() {
@@ -224,6 +210,24 @@ public class ITextPdfSignatureOrDocTimestampInfo implements PdfSignatureOrDocTim
 	public boolean isCoverAllOriginalBytes() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	private String getStringValueFromSignatureDictionary(PdfName key) {
+		PdfString pdfString = signatureDictionary.getAsString(key);
+		if (pdfString == null) {
+			return null;
+		} else {
+			return pdfString.toString();
+		}
+	}
+
+	private String getNameValueFromSignatureDictionary(PdfName key) {
+		PdfName pdfName = signatureDictionary.getAsName(key);
+		if (pdfName == null) {
+			return null;
+		} else {
+			return PdfName.decodeName(pdfName.toString());
+		}
 	}
 
 }

@@ -24,10 +24,10 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.utils.Utils;
@@ -70,7 +70,7 @@ class ITextPDFDocTimeSampService extends ITextPDFSignatureService implements PDF
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
 		final byte[] digest = digest(document, parameters, timestampDigestAlgorithm);
 		final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digest);
-		final byte[] encoded = DSSASN1Utils.getEncoded(timeStampToken);
+		final byte[] encoded = CMSUtils.getEncoded(timeStampToken.toCMSSignedData());
 		return sign(document, encoded, parameters, timestampDigestAlgorithm);
 	}
 

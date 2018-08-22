@@ -36,9 +36,12 @@ import org.slf4j.LoggerFactory;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.AcroFields;
+import com.lowagie.text.pdf.ByteBuffer;
 import com.lowagie.text.pdf.PdfDate;
 import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfLiteral;
 import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfPKCS7;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignature;
@@ -92,14 +95,14 @@ class ITextPDFSignatureService implements PDFSignatureService {
 	}
 
 	protected String getType() {
-		return new String(PdfName.SIG.getBytes());
+		return SIGNATURE_TYPE;
 	}
 
 	protected String getFilter(PAdESSignatureParameters parameters) {
 		if (Utils.isStringNotEmpty(parameters.getSignatureFilter())) {
 			return parameters.getSignatureFilter();
 		}
-		return new String(PdfName.ADOBE_PPKLITE.getBytes());
+		return SIGNATURE_DEFAULT_FILTER;
 	}
 
 	protected String getSubFilter(PAdESSignatureParameters parameters) {
@@ -114,6 +117,8 @@ class ITextPDFSignatureService implements PDFSignatureService {
 
 		PdfReader reader = new PdfReader(pdfData);
 		PdfStamper stp = PdfStamper.createSignature(reader, output, '\0', null, true);
+		stp.setIncludeFileID(true);
+		stp.setOverrideFileId(generateFileId(parameters));
 
 		PdfSignatureAppearance sap = stp.getSignatureAppearance();
 		sap.setAcro6Layers(true);
@@ -170,6 +175,25 @@ class ITextPDFSignatureService implements PDFSignatureService {
 		return stp;
 	}
 	
+	private PdfObject generateFileId(PAdESSignatureParameters parameters) {
+		try (ByteBuffer buf = new ByteBuffer(90)) {
+			String deterministicId = parameters.getDeterministicId();
+			byte[] id = deterministicId.getBytes();
+			buf.append('[').append('<');
+			for (int k = 0; k < 16; ++k) {
+				buf.appendHex(id[k]);
+			}
+			buf.append('>').append('<');
+			for (int k = 0; k < 16; ++k) {
+				buf.appendHex(id[k]);
+			}
+			buf.append('>').append(']');
+			return new PdfLiteral(buf.toByteArray());
+		} catch (IOException e) {
+			throw new DSSException("Unable to generate the fileId", e);
+		}
+	}
+
 	@Override
 	public byte[] digest(DSSDocument toSignDocument, PAdESSignatureParameters parameters, DigestAlgorithm digestAlgorithm) throws DSSException {
 		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {

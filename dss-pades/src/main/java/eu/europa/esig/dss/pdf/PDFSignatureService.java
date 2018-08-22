@@ -35,6 +35,10 @@ import eu.europa.esig.dss.x509.CertificatePool;
  */
 public interface PDFSignatureService {
 	
+	String SIGNATURE_TYPE = "Sig";
+
+	String SIGNATURE_DEFAULT_FILTER = "Adobe.PPKLite";
+
 	String SIGNATURE_DEFAULT_SUBFILTER = "ETSI.CAdES.detached";
 
 	/**
