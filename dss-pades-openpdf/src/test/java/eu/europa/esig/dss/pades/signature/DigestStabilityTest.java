@@ -98,6 +98,8 @@ public class DigestStabilityTest extends PKIFactoryAccess {
 		Date signingDate1 = new Date();
 		ToBeSigned dataToSign1 = getDataToSign(toBeSigned, privateKeyEntry, signingDate1);
 
+		Thread.sleep(1);
+
 		Date signingDate2 = new Date();
 		ToBeSigned dataToSign2 = getDataToSign(toBeSigned, privateKeyEntry, signingDate2);
 
@@ -105,7 +107,7 @@ public class DigestStabilityTest extends PKIFactoryAccess {
 		byte[] digest1 = messageDigest.digest(dataToSign1.getBytes());
 		byte[] digest2 = messageDigest.digest(dataToSign2.getBytes());
 
-		assertNotEquals("Digests must be different (Date1:" + signingDate1 + " / Date2:" + signingDate2 + ")", Utils.toBase64(digest1),
+		assertNotEquals("Digests must be different (Date1:" + signingDate1.getTime() + " / Date2:" + signingDate2.getTime() + ")", Utils.toBase64(digest1),
 				Utils.toBase64(digest2));
 	}
 

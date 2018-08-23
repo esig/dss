@@ -37,8 +37,10 @@ import org.slf4j.LoggerFactory;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.ByteBuffer;
+import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfDate;
 import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfIndirectReference;
 import com.lowagie.text.pdf.PdfLiteral;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfObject;
@@ -46,7 +48,9 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignature;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 import com.lowagie.text.pdf.PdfStamper;
+import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
+import com.lowagie.text.pdf.PdfWriter;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -57,7 +61,9 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
+import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
+import eu.europa.esig.dss.pdf.DssDictionaryConstants;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.pdf.PdfDict;
@@ -70,6 +76,9 @@ import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
 import eu.europa.esig.dss.pdf.SignatureValidationCallback;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
+import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.crl.CRLToken;
+import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 /**
  * Implementation of PDFSignatureService using iText
@@ -225,13 +234,9 @@ class ITextPDFSignatureService implements PDFSignatureService {
 
 	@Override
 	public void validateSignatures(CertificatePool validationCertPool, DSSDocument document, SignatureValidationCallback callback) throws DSSException {
-		try (InputStream inputStream = document.openStream()) {
-			List<PdfSignatureOrDocTimestampInfo> signaturesFound = getSignatures(validationCertPool, document);
-			for (PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo : signaturesFound) {
-				callback.validate(pdfSignatureOrDocTimestampInfo);
-			}
-		} catch (IOException e) {
-			LOG.error("Cannot validate signatures : " + e.getMessage(), e);
+		List<PdfSignatureOrDocTimestampInfo> signaturesFound = getSignatures(validationCertPool, document);
+		for (PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo : signaturesFound) {
+			callback.validate(pdfSignatureOrDocTimestampInfo);
 		}
 	}
 
@@ -324,8 +329,88 @@ class ITextPDFSignatureService implements PDFSignatureService {
 
 	@Override
 	public DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks) throws DSSException {
-		// TODO Auto-generated method stub
-		return null;
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); InputStream is = document.openStream(); PdfReader reader = new PdfReader(is)) {
+
+			PdfStamper stp = new PdfStamper(reader, baos, '\0', true);
+			PdfWriter writer = stp.getWriter();
+
+			if (Utils.isCollectionNotEmpty(callbacks)) {
+				PdfDictionary catalog = reader.getCatalog();
+
+				PdfDictionary dss = new PdfDictionary();
+				PdfDictionary vrim = new PdfDictionary();
+				PdfArray ocsps = new PdfArray();
+				PdfArray crls = new PdfArray();
+				PdfArray certs = new PdfArray();
+
+				for (DSSDictionaryCallback callback : callbacks) {
+					PdfArray ocsp = new PdfArray();
+					PdfArray crl = new PdfArray();
+					PdfArray cert = new PdfArray();
+					PdfDictionary vri = new PdfDictionary();
+					for (CRLToken crlToken : callback.getCrls()) {
+						PdfStream ps = new PdfStream(crlToken.getEncoded());
+						ps.flateCompress();
+						PdfIndirectReference iref = writer.addToBody(ps, false).getIndirectReference();
+						crl.add(iref);
+						crls.add(iref);
+					}
+					for (OCSPToken ocspToken : callback.getOcsps()) {
+						PdfStream ps = new PdfStream(ocspToken.getEncoded());
+						ps.flateCompress();
+						PdfIndirectReference iref = writer.addToBody(ps, false).getIndirectReference();
+						ocsp.add(iref);
+						ocsps.add(iref);
+					}
+					for (CertificateToken certToken : callback.getCertificates()) {
+						PdfStream ps = new PdfStream(certToken.getEncoded());
+						ps.flateCompress();
+						PdfIndirectReference iref = writer.addToBody(ps, false).getIndirectReference();
+						cert.add(iref);
+						certs.add(iref);
+					}
+					if (ocsp.size() > 0) {
+						vri.put(new PdfName(DssDictionaryConstants.OCSP_ARRAY_NAME_VRI), writer.addToBody(ocsp, false).getIndirectReference());
+					}
+					if (crl.size() > 0) {
+						vri.put(new PdfName(DssDictionaryConstants.CRL_ARRAY_NAME_VRI), writer.addToBody(crl, false).getIndirectReference());
+					}
+					if (cert.size() > 0) {
+						vri.put(new PdfName(DssDictionaryConstants.CERT_ARRAY_NAME_VRI), writer.addToBody(cert, false).getIndirectReference());
+					}
+					String vkey = getVRIKey(callback.getSignature());
+					vrim.put(new PdfName(vkey), writer.addToBody(vri, false).getIndirectReference());
+				}
+				dss.put(new PdfName(DssDictionaryConstants.VRI_DICTIONARY_NAME), writer.addToBody(vrim, false).getIndirectReference());
+				if (ocsps.size() > 0) {
+					dss.put(new PdfName(DssDictionaryConstants.OCSP_ARRAY_NAME_DSS), writer.addToBody(ocsps, false).getIndirectReference());
+				}
+				if (crls.size() > 0) {
+					dss.put(new PdfName(DssDictionaryConstants.CRL_ARRAY_NAME_DSS), writer.addToBody(crls, false).getIndirectReference());
+				}
+				if (certs.size() > 0) {
+					dss.put(new PdfName(DssDictionaryConstants.CERT_ARRAY_NAME_DSS), writer.addToBody(certs, false).getIndirectReference());
+				}
+				catalog.put(new PdfName(DssDictionaryConstants.DSS_DICTIONARY_NAME), writer.addToBody(dss, false).getIndirectReference());
+
+				stp.getWriter().addToBody(reader.getCatalog(), reader.getCatalog().getIndRef(), false);
+			}
+
+			stp.close();
+			baos.close();
+
+			DSSDocument signature = new InMemoryDocument(baos.toByteArray());
+			signature.setMimeType(MimeType.PDF);
+			return signature;
+		} catch (IOException e) {
+			throw new DSSException("Unable to add DSS dictionary", e);
+		}
+	}
+
+	private String getVRIKey(PAdESSignature signature) {
+		PdfSignatureInfo pdfSignatureInfo = signature.getPdfSignatureInfo();
+		final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, pdfSignatureInfo.getContent());
+		return Utils.toHex(digest).toUpperCase();
 	}
 
 	@Override

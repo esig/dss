@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotEquals;
 
 import java.io.FileInputStream;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -55,20 +56,31 @@ public class DeterministicIdGenerationTest {
 	@Test
 	public void testDifferentDeterministicId() throws InterruptedException {
 
+		Date date = new Date();
+
 		SignatureParameters params = new SignatureParameters();
 		params.setSigningCertificate(signingCert);
+		params.bLevel().setSigningDate(date);
 		String deterministicId1 = params.getDeterministicId();
+
+		params = new SignatureParameters();
+		params.bLevel().setSigningDate(date);
+		String deterministicId2 = params.getDeterministicId();
 
 		Thread.sleep(1); // 1 millisecond
 
+		Date differentDate = new Date();
+
 		params = new SignatureParameters();
 		params.setSigningCertificate(signingCert);
-		String deterministicId2 = params.getDeterministicId();
+		params.bLevel().setSigningDate(differentDate);
+		String deterministicId3 = params.getDeterministicId();
 
 		assertNotEquals(deterministicId1, deterministicId2);
-
+		assertNotEquals(deterministicId1, deterministicId3);
 	}
 
+	@SuppressWarnings("serial")
 	private class SignatureParameters extends AbstractSignatureParameters {
 
 	}

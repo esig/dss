@@ -66,6 +66,7 @@ import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
+import eu.europa.esig.dss.pdf.DssDictionaryConstants;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
@@ -109,12 +110,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 				PDDocument pdDocument = PDDocument.load(is)) {
 
 			PDSignature pdSignature = createSignatureDictionary(parameters, pdDocument);
-			final byte[] digest = signDocumentAndReturnDigest(parameters, signatureValue, outputStream, pdDocument, pdSignature, digestAlgorithm);
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Digest : {}", Utils.toBase64(digest));
-			}
-			return digest;
-
+			return signDocumentAndReturnDigest(parameters, signatureValue, outputStream, pdDocument, pdSignature, digestAlgorithm);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
@@ -334,20 +330,17 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 	@Override
 	public void validateSignatures(CertificatePool validationCertPool, DSSDocument document, SignatureValidationCallback callback) throws DSSException {
-		try (InputStream inputStream = document.openStream()) {
-			List<PdfSignatureOrDocTimestampInfo> signaturesFound = getSignatures(validationCertPool, Utils.toByteArray(inputStream));
-			for (PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo : signaturesFound) {
-				callback.validate(pdfSignatureOrDocTimestampInfo);
-			}
-		} catch (IOException e) {
-			LOG.error("Cannot validate signatures : " + e.getMessage(), e);
+		List<PdfSignatureOrDocTimestampInfo> signaturesFound = getSignatures(validationCertPool, document);
+		for (PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo : signaturesFound) {
+			callback.validate(pdfSignatureOrDocTimestampInfo);
 		}
 	}
 
-	private List<PdfSignatureOrDocTimestampInfo> getSignatures(CertificatePool validationCertPool, byte[] originalBytes) {
+	private List<PdfSignatureOrDocTimestampInfo> getSignatures(CertificatePool validationCertPool, DSSDocument document) {
 		List<PdfSignatureOrDocTimestampInfo> signatures = new ArrayList<PdfSignatureOrDocTimestampInfo>();
-		try (PDDocument doc = PDDocument.load(originalBytes)) {
+		try (InputStream is = document.openStream(); PDDocument doc = PDDocument.load(is)) {
 
+			byte[] originalBytes = DSSUtils.toByteArray(document);
 			int originalBytesLength = originalBytes.length;
 
 			List<PDSignature> pdSignatures = doc.getSignatureDictionaries();
@@ -470,7 +463,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 			if (Utils.isCollectionNotEmpty(callbacks)) {
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSObject();
-				cosDictionary.setItem("DSS", buildDSSDictionary(callbacks));
+				cosDictionary.setItem(DssDictionaryConstants.DSS_DICTIONARY_NAME, buildDSSDictionary(callbacks));
 				cosDictionary.setNeedToBeUpdated(true);
 			}
 
@@ -505,7 +498,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 					vriCertArray.add(getStream(streams, token));
 					allCertificates.add(token);
 				}
-				sigVriDictionary.setItem("Cert", vriCertArray);
+				sigVriDictionary.setItem(DssDictionaryConstants.CERT_ARRAY_NAME_VRI, vriCertArray);
 			}
 
 			if (Utils.isCollectionNotEmpty(callback.getOcsps())) {
@@ -514,7 +507,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 					vriOcspArray.add(getStream(streams, token));
 					allOcsps.add(token);
 				}
-				sigVriDictionary.setItem("OCSP", vriOcspArray);
+				sigVriDictionary.setItem(DssDictionaryConstants.OCSP_ARRAY_NAME_VRI, vriOcspArray);
 			}
 
 			if (Utils.isCollectionNotEmpty(callback.getCrls())) {
@@ -523,7 +516,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 					vriCrlArray.add(getStream(streams, token));
 					allCrls.add(token);
 				}
-				sigVriDictionary.setItem("CRL", vriCrlArray);
+				sigVriDictionary.setItem(DssDictionaryConstants.CRL_ARRAY_NAME_VRI, vriCrlArray);
 			}
 
 			// We can't use CMSSignedData, the pdSignature content is trimmed (000000)
@@ -533,14 +526,14 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 			vriDictionary.setItem(hexHash, sigVriDictionary);
 		}
-		dss.setItem("VRI", vriDictionary);
+		dss.setItem(DssDictionaryConstants.VRI_DICTIONARY_NAME, vriDictionary);
 
 		if (Utils.isCollectionNotEmpty(allCertificates)) {
 			COSArray arrayAllCerts = new COSArray();
 			for (CertificateToken token : allCertificates) {
 				arrayAllCerts.add(getStream(streams, token));
 			}
-			dss.setItem("Certs", arrayAllCerts);
+			dss.setItem(DssDictionaryConstants.CERT_ARRAY_NAME_DSS, arrayAllCerts);
 		}
 
 		if (Utils.isCollectionNotEmpty(allOcsps)) {
@@ -548,7 +541,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			for (OCSPToken token : allOcsps) {
 				arrayAllOcsps.add(getStream(streams, token));
 			}
-			dss.setItem("OCSPs", arrayAllOcsps);
+			dss.setItem(DssDictionaryConstants.OCSP_ARRAY_NAME_DSS, arrayAllOcsps);
 		}
 
 		if (Utils.isCollectionNotEmpty(allCrls)) {
@@ -556,7 +549,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 			for (CRLToken token : allCrls) {
 				arrayAllCrls.add(getStream(streams, token));
 			}
-			dss.setItem("CRLs", arrayAllCrls);
+			dss.setItem(DssDictionaryConstants.CRL_ARRAY_NAME_DSS, arrayAllCrls);
 		}
 
 		return dss;

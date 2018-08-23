@@ -48,6 +48,7 @@ import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.TimestampType;
@@ -95,8 +96,11 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	public TimestampToken getContentTimestamp(DSSDocument toSignDocument, PAdESSignatureParameters parameters) {
 		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
 		final DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
-		byte[] digest = pdfSignatureService.digest(toSignDocument, parameters, digestAlgorithm);
-		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, digest);
+		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters, digestAlgorithm);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Base64 messageDigest : {}", Utils.toBase64(messageDigest));
+		}
+		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, messageDigest);
 		final TimestampToken token = new TimestampToken(timeStampResponse, TimestampType.CONTENT_TIMESTAMP);
 		return token;
 	}
@@ -111,6 +115,9 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
 		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters, parameters.getDigestAlgorithm());
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Base64 messageDigest : {}", Utils.toBase64(messageDigest));
+		}
 
 		SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = padesCMSSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, messageDigest);
 
@@ -136,7 +143,9 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
 		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters, parameters.getDigestAlgorithm());
-
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Base64 messageDigest : {}", Utils.toBase64(messageDigest));
+		}
 		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = padesCMSSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, messageDigest);
 
 		final CMSSignedDataGenerator generator = padesCMSSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
