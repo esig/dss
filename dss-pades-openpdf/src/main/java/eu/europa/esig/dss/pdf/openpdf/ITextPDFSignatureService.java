@@ -142,6 +142,11 @@ class ITextPDFSignatureService implements PDFSignatureService {
 		PdfName type = new PdfName(getType());
 		dic.put(PdfName.TYPE, type);
 
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(parameters.bLevel().getSigningDate());
+
+		stp.setModificationDate(cal);
+
 		if (PdfName.SIG.equals(type)) {
 
 			dic.setName(PAdESUtils.getSignatureName(parameters));
@@ -156,10 +161,9 @@ class ITextPDFSignatureService implements PDFSignatureService {
 				dic.setContact(parameters.getContactInfo());
 			}
 
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(parameters.bLevel().getSigningDate());
 			sap.setSignDate(cal);
 			dic.setDate(new PdfDate(cal));
+
 		}
 
 		sap.setCryptoDictionary(dic);
