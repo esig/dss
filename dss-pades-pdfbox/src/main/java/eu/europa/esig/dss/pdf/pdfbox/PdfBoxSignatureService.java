@@ -62,12 +62,11 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.DssDictionaryConstants;
-import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfDssDict;
@@ -75,7 +74,6 @@ import eu.europa.esig.dss.pdf.PdfSigDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
-import eu.europa.esig.dss.pdf.SignatureValidationCallback;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -83,7 +81,7 @@ import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.crl.CRLToken;
 import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
-class PdfBoxSignatureService implements PDFSignatureService {
+class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxSignatureService.class);
 
@@ -189,7 +187,7 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 		if (COSName.SIG.equals(currentType)) {
 
-			signature.setName(PAdESUtils.getSignatureName(parameters));
+			signature.setName(getSignatureName(parameters));
 
 			if (Utils.isStringNotEmpty(parameters.getContactInfo())) {
 				signature.setContactInfo(parameters.getContactInfo());
@@ -310,46 +308,21 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 	}
 
-	protected String getType() {
-		return COSName.SIG.getName();
-	}
-
-	protected String getFilter(PAdESSignatureParameters parameters) {
-		if (Utils.isStringNotEmpty(parameters.getSignatureFilter())) {
-			return parameters.getSignatureFilter();
-		}
-		return PDSignature.FILTER_ADOBE_PPKLITE.getName();
-	}
-
-	protected String getSubFilter(PAdESSignatureParameters parameters) {
-		if (Utils.isStringNotEmpty(parameters.getSignatureSubFilter())) {
-			return parameters.getSignatureSubFilter();
-		}
-		return PDSignature.SUBFILTER_ETSI_CADES_DETACHED.getName();
-	}
-
 	@Override
-	public void validateSignatures(CertificatePool validationCertPool, DSSDocument document, SignatureValidationCallback callback) throws DSSException {
-		List<PdfSignatureOrDocTimestampInfo> signaturesFound = getSignatures(validationCertPool, document);
-		for (PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo : signaturesFound) {
-			callback.validate(pdfSignatureOrDocTimestampInfo);
-		}
-	}
-
-	private List<PdfSignatureOrDocTimestampInfo> getSignatures(CertificatePool validationCertPool, DSSDocument document) {
+	protected List<PdfSignatureOrDocTimestampInfo> getSignatures(CertificatePool validationCertPool, DSSDocument document) {
 		List<PdfSignatureOrDocTimestampInfo> signatures = new ArrayList<PdfSignatureOrDocTimestampInfo>();
 		try (InputStream is = document.openStream(); PDDocument doc = PDDocument.load(is)) {
 
 			byte[] originalBytes = DSSUtils.toByteArray(document);
 			int originalBytesLength = originalBytes.length;
 
+			PdfDssDict dssDictionary = getDSSDictionary(doc);
+
 			List<PDSignature> pdSignatures = doc.getSignatureDictionaries();
 
 			if (Utils.isCollectionNotEmpty(pdSignatures)) {
 				LOG.debug("{} signature(s) found", pdSignatures.size());
 
-				PdfDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSObject(), doc);
-				PdfDssDict dssDictionary = PdfDssDict.extract(catalog);
 
 				for (PDSignature signature : pdSignatures) {
 					PdfDict dictionary = new PdfBoxDict(signature.getCOSObject(), doc);
@@ -419,42 +392,18 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		return signatures;
 	}
 
-	/**
-	 * This method links previous signatures to the new one. This is useful to get revision number and to know if a TSP
-	 * is over the DSS dictionary
-	 */
-	private void linkSignatures(List<PdfSignatureOrDocTimestampInfo> signatures) {
-		List<PdfSignatureOrDocTimestampInfo> previousList = new ArrayList<PdfSignatureOrDocTimestampInfo>();
-		for (PdfSignatureOrDocTimestampInfo sig : signatures) {
-			if (Utils.isCollectionNotEmpty(previousList)) {
-				for (PdfSignatureOrDocTimestampInfo previous : previousList) {
-					previous.addOuterSignature(sig);
-				}
-			}
-			previousList.add(sig);
-		}
-	}
-
 	private boolean isDSSDictionaryPresentInPreviousRevision(byte[] originalBytes) {
-		PdfDssDict dssDictionary = null;
 		try (PDDocument doc = PDDocument.load(originalBytes)) {
-			List<PDSignature> pdSignatures = doc.getSignatureDictionaries();
-			if (Utils.isCollectionNotEmpty(pdSignatures)) {
-				PdfDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSObject(), doc);
-				dssDictionary = PdfDssDict.extract(catalog);
-			}
+			return getDSSDictionary(doc) != null;
 		} catch (Exception e) {
 			LOG.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
+			return false;
 		}
-
-		return dssDictionary != null;
 	}
 
-	private byte[] getOriginalBytes(int[] byteRange, byte[] signedContent) {
-		final int length = byteRange[1];
-		final byte[] result = new byte[length];
-		System.arraycopy(signedContent, 0, result, 0, length);
-		return result;
+	private PdfDssDict getDSSDictionary(PDDocument doc) {
+		PdfDict catalog = new PdfBoxDict(doc.getDocumentCatalog().getCOSObject(), doc);
+		return PdfDssDict.extract(catalog);
 	}
 
 	@Override

@@ -125,7 +125,6 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 		return Collections.unmodifiableSet(outerSignatures);
 	}
 
-
 	@Override
 	public String getContactInfo() {
 		return signatureDictionary.getContactInfo();

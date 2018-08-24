@@ -18,27 +18,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf;
+package eu.europa.esig.dss.pades.extension;
 
-/**
- * Use this callback to be called only for  Doc Timestamp, not for Signatures
- *
- *
- *
- *
- *
- *
- */
-public abstract class PdfDocTimestampValidationCallback implements SignatureValidationCallback {
+import eu.europa.esig.dss.SignatureLevel;
 
-    @Override
-    public void validate(PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo) {
-        if (pdfSignatureOrDocTimestampInfo instanceof PdfDocTimestampInfo) {
-            PdfDocTimestampInfo signatureInfo = (PdfDocTimestampInfo) pdfSignatureOrDocTimestampInfo;
-            validate(signatureInfo);
-        }
+public class PAdESExtensionBToLTATest extends AbstractTestPAdESExtension {
 
-    }
+	@Override
+	protected SignatureLevel getOriginalSignatureLevel() {
+		return SignatureLevel.PAdES_BASELINE_B;
+	}
 
-    public abstract void validate(PdfDocTimestampInfo pdfSignatureInfo);
+	@Override
+	protected SignatureLevel getFinalSignatureLevel() {
+		return SignatureLevel.PAdES_BASELINE_LTA;
+	}
+
 }

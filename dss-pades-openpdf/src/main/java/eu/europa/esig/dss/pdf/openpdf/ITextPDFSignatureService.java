@@ -59,12 +59,11 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
+import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.DssDictionaryConstants;
-import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
@@ -73,7 +72,6 @@ import eu.europa.esig.dss.pdf.PdfSigDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
-import eu.europa.esig.dss.pdf.SignatureValidationCallback;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -84,29 +82,11 @@ import eu.europa.esig.dss.x509.ocsp.OCSPToken;
  * Implementation of PDFSignatureService using iText
  *
  */
-class ITextPDFSignatureService implements PDFSignatureService {
+class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ITextPDFSignatureService.class);
 
 	ITextPDFSignatureService() {
-	}
-
-	protected String getType() {
-		return SIGNATURE_TYPE;
-	}
-
-	protected String getFilter(PAdESSignatureParameters parameters) {
-		if (Utils.isStringNotEmpty(parameters.getSignatureFilter())) {
-			return parameters.getSignatureFilter();
-		}
-		return SIGNATURE_DEFAULT_FILTER;
-	}
-
-	protected String getSubFilter(PAdESSignatureParameters parameters) {
-		if (Utils.isStringNotEmpty(parameters.getSignatureSubFilter())) {
-			return parameters.getSignatureSubFilter();
-		}
-		return SIGNATURE_DEFAULT_SUBFILTER;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -149,7 +129,7 @@ class ITextPDFSignatureService implements PDFSignatureService {
 
 		if (PdfName.SIG.equals(type)) {
 
-			dic.setName(PAdESUtils.getSignatureName(parameters));
+			dic.setName(getSignatureName(parameters));
 
 			if (parameters.getReason() != null) {
 				dic.setReason(parameters.getReason());
@@ -237,22 +217,14 @@ class ITextPDFSignatureService implements PDFSignatureService {
 	}
 
 	@Override
-	public void validateSignatures(CertificatePool validationCertPool, DSSDocument document, SignatureValidationCallback callback) throws DSSException {
-		List<PdfSignatureOrDocTimestampInfo> signaturesFound = getSignatures(validationCertPool, document);
-		for (PdfSignatureOrDocTimestampInfo pdfSignatureOrDocTimestampInfo : signaturesFound) {
-			callback.validate(pdfSignatureOrDocTimestampInfo);
-		}
-	}
-
 	@SuppressWarnings({ "unchecked" })
-	private List<PdfSignatureOrDocTimestampInfo> getSignatures(CertificatePool validationCertPool, DSSDocument document) {
+	protected List<PdfSignatureOrDocTimestampInfo> getSignatures(CertificatePool validationCertPool, DSSDocument document) {
 		List<PdfSignatureOrDocTimestampInfo> result = new ArrayList<PdfSignatureOrDocTimestampInfo>();
 		try (InputStream is = document.openStream(); PdfReader reader = new PdfReader(is)) {
 			AcroFields af = reader.getAcroFields();
 			List<String> names = af.getSignatureNames();
 
-			PdfDict currentCatalog = new ITextPdfDict(reader.getCatalog());
-			PdfDssDict dssDictionary = PdfDssDict.extract(currentCatalog);
+			PdfDssDict dssDictionary = getDSSDictionary(reader);
 
 			LOG.info(names.size() + " signature(s)");
 			for (String name : names) {
@@ -270,8 +242,19 @@ class ITextPDFSignatureService implements PDFSignatureService {
 
 					final String subFilter = signatureDictionary.getSubFilter();
 					if (PDFTimestampService.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
+
+						boolean isArchiveTimestamp = false;
+
+						// LT or LTA
+						if (dssDictionary != null) {
+							// check is DSS dictionary already exist
+							if (isDSSDictionaryPresentInPreviousRevision(getOriginalBytes(byteRange, signedContent))) {
+								isArchiveTimestamp = true;
+							}
+						}
+
 						result.add(new PdfDocTimestampInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
-								signatureCoversWholeDocument, false));
+								signatureCoversWholeDocument, isArchiveTimestamp));
 					} else {
 						result.add(
 								new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent, signatureCoversWholeDocument));
@@ -291,19 +274,17 @@ class ITextPDFSignatureService implements PDFSignatureService {
 		return result;
 	}
 
-	/**
-	 * This method links previous signatures to the new one. This is useful to get
-	 * revision number and to know if a TSP is over the DSS dictionary
-	 */
-	private void linkSignatures(List<PdfSignatureOrDocTimestampInfo> signatures) {
-		List<PdfSignatureOrDocTimestampInfo> previousList = new ArrayList<PdfSignatureOrDocTimestampInfo>();
-		for (PdfSignatureOrDocTimestampInfo sig : signatures) {
-			if (Utils.isCollectionNotEmpty(previousList)) {
-				for (PdfSignatureOrDocTimestampInfo previous : previousList) {
-					previous.addOuterSignature(sig);
-				}
-			}
-			previousList.add(sig);
+	private PdfDssDict getDSSDictionary(PdfReader reader) {
+		PdfDict currentCatalog = new ITextPdfDict(reader.getCatalog());
+		return PdfDssDict.extract(currentCatalog);
+	}
+
+	private boolean isDSSDictionaryPresentInPreviousRevision(byte[] originalBytes) {
+		try (PdfReader reader = new PdfReader(originalBytes)) {
+			return getDSSDictionary(reader) != null;
+		} catch (Exception e) {
+			LOG.warn("Cannot check in previous revisions if DSS dictionary already exist : " + e.getMessage(), e);
+			return false;
 		}
 	}
 
@@ -428,4 +409,5 @@ class ITextPDFSignatureService implements PDFSignatureService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }
