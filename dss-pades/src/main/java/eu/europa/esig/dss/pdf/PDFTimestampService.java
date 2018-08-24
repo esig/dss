@@ -27,12 +27,6 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public interface PDFTimestampService {
 
-	String TIMESTAMP_TYPE = "DocTimeStamp";
-
-	String TIMESTAMP_DEFAULT_FILTER = "Adobe.PPKLite";
-
-	String TIMESTAMP_DEFAULT_SUBFILTER = "ETSI.RFC3161";
-
 	DSSDocument timestamp(final DSSDocument document, final PAdESSignatureParameters parameters, final TSPSource tspSource) throws DSSException;
 
 }

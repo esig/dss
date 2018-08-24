@@ -3,7 +3,15 @@ package eu.europa.esig.dss.pdf;
 /**
  * This interface defines the DSS dictionary constants.
  */
-public interface DssDictionaryConstants {
+public interface PAdESConstants {
+
+	String SIGNATURE_TYPE = "Sig";
+	String SIGNATURE_DEFAULT_FILTER = "Adobe.PPKLite";
+	String SIGNATURE_DEFAULT_SUBFILTER = "ETSI.CAdES.detached";
+
+	String TIMESTAMP_TYPE = "DocTimeStamp";
+	String TIMESTAMP_DEFAULT_FILTER = "Adobe.PPKLite";
+	String TIMESTAMP_DEFAULT_SUBFILTER = "ETSI.RFC3161";
 
 	String DSS_DICTIONARY_NAME = "DSS";
 	String CERT_ARRAY_NAME_DSS = "Certs";

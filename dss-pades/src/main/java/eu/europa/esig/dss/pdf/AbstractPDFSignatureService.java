@@ -37,21 +37,21 @@ import eu.europa.esig.dss.x509.CertificateToken;
 public abstract class AbstractPDFSignatureService implements PDFSignatureService {
 
 	protected String getType() {
-		return SIGNATURE_TYPE;
+		return PAdESConstants.SIGNATURE_TYPE;
 	}
 
 	protected String getFilter(PAdESSignatureParameters parameters) {
 		if (Utils.isStringNotEmpty(parameters.getSignatureFilter())) {
 			return parameters.getSignatureFilter();
 		}
-		return SIGNATURE_DEFAULT_FILTER;
+		return PAdESConstants.SIGNATURE_DEFAULT_FILTER;
 	}
 
 	protected String getSubFilter(PAdESSignatureParameters parameters) {
 		if (Utils.isStringNotEmpty(parameters.getSignatureSubFilter())) {
 			return parameters.getSignatureSubFilter();
 		}
-		return SIGNATURE_DEFAULT_SUBFILTER;
+		return PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER;
 	}
 
 	protected String getSignatureName(PAdESSignatureParameters parameters) {

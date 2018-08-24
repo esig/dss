@@ -66,7 +66,7 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
-import eu.europa.esig.dss.pdf.DssDictionaryConstants;
+import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfDssDict;
@@ -354,7 +354,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					boolean coverAllOriginalBytes = (originalBytesLength == totalCoveredByByteRange);
 
 					PdfSignatureOrDocTimestampInfo signatureInfo = null;
-					if (PdfBoxDocTimeStampService.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
+					if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
 						boolean isArchiveTimestamp = false;
 
 						// LT or LTA
@@ -412,7 +412,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			if (Utils.isCollectionNotEmpty(callbacks)) {
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSObject();
-				cosDictionary.setItem(DssDictionaryConstants.DSS_DICTIONARY_NAME, buildDSSDictionary(callbacks));
+				cosDictionary.setItem(PAdESConstants.DSS_DICTIONARY_NAME, buildDSSDictionary(callbacks));
 				cosDictionary.setNeedToBeUpdated(true);
 			}
 
@@ -447,7 +447,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					vriCertArray.add(getStream(streams, token));
 					allCertificates.add(token);
 				}
-				sigVriDictionary.setItem(DssDictionaryConstants.CERT_ARRAY_NAME_VRI, vriCertArray);
+				sigVriDictionary.setItem(PAdESConstants.CERT_ARRAY_NAME_VRI, vriCertArray);
 			}
 
 			if (Utils.isCollectionNotEmpty(callback.getOcsps())) {
@@ -456,7 +456,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					vriOcspArray.add(getStream(streams, token));
 					allOcsps.add(token);
 				}
-				sigVriDictionary.setItem(DssDictionaryConstants.OCSP_ARRAY_NAME_VRI, vriOcspArray);
+				sigVriDictionary.setItem(PAdESConstants.OCSP_ARRAY_NAME_VRI, vriOcspArray);
 			}
 
 			if (Utils.isCollectionNotEmpty(callback.getCrls())) {
@@ -465,7 +465,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					vriCrlArray.add(getStream(streams, token));
 					allCrls.add(token);
 				}
-				sigVriDictionary.setItem(DssDictionaryConstants.CRL_ARRAY_NAME_VRI, vriCrlArray);
+				sigVriDictionary.setItem(PAdESConstants.CRL_ARRAY_NAME_VRI, vriCrlArray);
 			}
 
 			// We can't use CMSSignedData, the pdSignature content is trimmed (000000)
@@ -475,14 +475,14 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			vriDictionary.setItem(hexHash, sigVriDictionary);
 		}
-		dss.setItem(DssDictionaryConstants.VRI_DICTIONARY_NAME, vriDictionary);
+		dss.setItem(PAdESConstants.VRI_DICTIONARY_NAME, vriDictionary);
 
 		if (Utils.isCollectionNotEmpty(allCertificates)) {
 			COSArray arrayAllCerts = new COSArray();
 			for (CertificateToken token : allCertificates) {
 				arrayAllCerts.add(getStream(streams, token));
 			}
-			dss.setItem(DssDictionaryConstants.CERT_ARRAY_NAME_DSS, arrayAllCerts);
+			dss.setItem(PAdESConstants.CERT_ARRAY_NAME_DSS, arrayAllCerts);
 		}
 
 		if (Utils.isCollectionNotEmpty(allOcsps)) {
@@ -490,7 +490,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			for (OCSPToken token : allOcsps) {
 				arrayAllOcsps.add(getStream(streams, token));
 			}
-			dss.setItem(DssDictionaryConstants.OCSP_ARRAY_NAME_DSS, arrayAllOcsps);
+			dss.setItem(PAdESConstants.OCSP_ARRAY_NAME_DSS, arrayAllOcsps);
 		}
 
 		if (Utils.isCollectionNotEmpty(allCrls)) {
@@ -498,7 +498,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			for (CRLToken token : allCrls) {
 				arrayAllCrls.add(getStream(streams, token));
 			}
-			dss.setItem(DssDictionaryConstants.CRL_ARRAY_NAME_DSS, arrayAllCrls);
+			dss.setItem(PAdESConstants.CRL_ARRAY_NAME_DSS, arrayAllCrls);
 		}
 
 		return dss;

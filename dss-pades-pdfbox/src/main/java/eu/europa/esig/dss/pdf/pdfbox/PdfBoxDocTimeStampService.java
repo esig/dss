@@ -32,6 +32,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
@@ -40,7 +41,7 @@ class PdfBoxDocTimeStampService extends PdfBoxSignatureService implements PDFTim
 
 	@Override
 	protected String getType() {
-		return TIMESTAMP_TYPE;
+		return PAdESConstants.TIMESTAMP_TYPE;
 	}
 
 	@Override
@@ -48,7 +49,7 @@ class PdfBoxDocTimeStampService extends PdfBoxSignatureService implements PDFTim
 		if (Utils.isStringNotEmpty(parameters.getTimestampFilter())) {
 			return parameters.getTimestampFilter();
 		}
-		return TIMESTAMP_DEFAULT_FILTER;
+		return PAdESConstants.TIMESTAMP_DEFAULT_FILTER;
 	}
 
 	@Override
@@ -56,7 +57,7 @@ class PdfBoxDocTimeStampService extends PdfBoxSignatureService implements PDFTim
 		if (Utils.isStringNotEmpty(parameters.getTimestampSubFilter())) {
 			return parameters.getTimestampSubFilter();
 		}
-		return TIMESTAMP_DEFAULT_SUBFILTER;
+		return PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER;
 	}
 
 	@Override

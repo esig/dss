@@ -3,6 +3,7 @@ package eu.europa.esig.dss.pades;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.pdf.PAdESConstants;
 
 public class PAdESSignatureParameters extends CAdESSignatureParameters {
 
@@ -20,14 +21,14 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	 * 
 	 * Default value is Adobe.PPKLite
 	 */
-	private String signatureFilter;
+	private String signatureFilter = PAdESConstants.SIGNATURE_DEFAULT_FILTER;
 
 	/**
 	 * This attribute allows to override the used subFilter for a Signature.
 	 * 
 	 * Default value is ETSI.CAdES.detached
 	 */
-	private String signatureSubFilter;
+	private String signatureSubFilter = PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER;
 
 	/**
 	 * This attribute allows to explicitly specify the name for a Signature.
@@ -45,14 +46,14 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters {
 	 * 
 	 * Default value is Adobe.PPKLite
 	 */
-	private String timestampFilter;
+	private String timestampFilter = PAdESConstants.TIMESTAMP_DEFAULT_FILTER;
 
 	/**
 	 * This attribute allows to override the used subFilter for a Timestamp.
 	 * 
 	 * Default value is ETSI.RFC3161
 	 */
-	private String timestampSubFilter;
+	private String timestampSubFilter = PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER;
 
 	private SignatureImageParameters timestampImageParameters;
 

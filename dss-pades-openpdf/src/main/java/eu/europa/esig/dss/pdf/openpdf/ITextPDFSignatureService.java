@@ -63,8 +63,7 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
-import eu.europa.esig.dss.pdf.DssDictionaryConstants;
-import eu.europa.esig.dss.pdf.PDFTimestampService;
+import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfDssDict;
@@ -241,7 +240,7 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 					boolean signatureCoversWholeDocument = af.signatureCoversWholeDocument(name);
 
 					final String subFilter = signatureDictionary.getSubFilter();
-					if (PDFTimestampService.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
+					if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
 
 						boolean isArchiveTimestamp = false;
 
@@ -355,28 +354,28 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 						certs.add(iref);
 					}
 					if (ocsp.size() > 0) {
-						vri.put(new PdfName(DssDictionaryConstants.OCSP_ARRAY_NAME_VRI), writer.addToBody(ocsp, false).getIndirectReference());
+						vri.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_VRI), writer.addToBody(ocsp, false).getIndirectReference());
 					}
 					if (crl.size() > 0) {
-						vri.put(new PdfName(DssDictionaryConstants.CRL_ARRAY_NAME_VRI), writer.addToBody(crl, false).getIndirectReference());
+						vri.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_VRI), writer.addToBody(crl, false).getIndirectReference());
 					}
 					if (cert.size() > 0) {
-						vri.put(new PdfName(DssDictionaryConstants.CERT_ARRAY_NAME_VRI), writer.addToBody(cert, false).getIndirectReference());
+						vri.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_VRI), writer.addToBody(cert, false).getIndirectReference());
 					}
 					String vkey = getVRIKey(callback.getSignature());
 					vrim.put(new PdfName(vkey), writer.addToBody(vri, false).getIndirectReference());
 				}
-				dss.put(new PdfName(DssDictionaryConstants.VRI_DICTIONARY_NAME), writer.addToBody(vrim, false).getIndirectReference());
+				dss.put(new PdfName(PAdESConstants.VRI_DICTIONARY_NAME), writer.addToBody(vrim, false).getIndirectReference());
 				if (ocsps.size() > 0) {
-					dss.put(new PdfName(DssDictionaryConstants.OCSP_ARRAY_NAME_DSS), writer.addToBody(ocsps, false).getIndirectReference());
+					dss.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_DSS), writer.addToBody(ocsps, false).getIndirectReference());
 				}
 				if (crls.size() > 0) {
-					dss.put(new PdfName(DssDictionaryConstants.CRL_ARRAY_NAME_DSS), writer.addToBody(crls, false).getIndirectReference());
+					dss.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_DSS), writer.addToBody(crls, false).getIndirectReference());
 				}
 				if (certs.size() > 0) {
-					dss.put(new PdfName(DssDictionaryConstants.CERT_ARRAY_NAME_DSS), writer.addToBody(certs, false).getIndirectReference());
+					dss.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_DSS), writer.addToBody(certs, false).getIndirectReference());
 				}
-				catalog.put(new PdfName(DssDictionaryConstants.DSS_DICTIONARY_NAME), writer.addToBody(dss, false).getIndirectReference());
+				catalog.put(new PdfName(PAdESConstants.DSS_DICTIONARY_NAME), writer.addToBody(dss, false).getIndirectReference());
 
 				stp.getWriter().addToBody(reader.getCatalog(), reader.getCatalog().getIndRef(), false);
 			}

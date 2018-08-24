@@ -52,7 +52,7 @@ public class PdfDssDict {
 
 	public static PdfDssDict extract(PdfDict documentDict) {
 		if (documentDict != null) {
-			final PdfDict dssCatalog = documentDict.getAsDict(DssDictionaryConstants.DSS_DICTIONARY_NAME);
+			final PdfDict dssCatalog = documentDict.getAsDict(PAdESConstants.DSS_DICTIONARY_NAME);
 			if (dssCatalog != null) {
 				return new PdfDssDict(dssCatalog);
 			}
@@ -69,19 +69,19 @@ public class PdfDssDict {
 	}
 
 	private void readVRI(PdfDict dssDictionary) {
-		PdfDict vriDict = dssDictionary.getAsDict(DssDictionaryConstants.VRI_DICTIONARY_NAME);
+		PdfDict vriDict = dssDictionary.getAsDict(PAdESConstants.VRI_DICTIONARY_NAME);
 		if (vriDict != null) {
 			LOG.debug("There is a VRI dictionary in DSS dictionary");
 			try {
 				String[] names = vriDict.list();
 				if (Utils.isArrayNotEmpty(names)) {
 					for (String name : names) {
-						extractCertsFromArray(vriDict.getAsDict(name), DssDictionaryConstants.VRI_DICTIONARY_NAME + "/" + name,
-								DssDictionaryConstants.CERT_ARRAY_NAME_VRI);
-						extractOCSPsFromArray(vriDict.getAsDict(name), DssDictionaryConstants.VRI_DICTIONARY_NAME + "/" + name,
-								DssDictionaryConstants.OCSP_ARRAY_NAME_VRI);
-						extractCRLsFromArray(vriDict.getAsDict(name), DssDictionaryConstants.VRI_DICTIONARY_NAME + "/" + name,
-								DssDictionaryConstants.CRL_ARRAY_NAME_VRI);
+						extractCertsFromArray(vriDict.getAsDict(name), PAdESConstants.VRI_DICTIONARY_NAME + "/" + name,
+								PAdESConstants.CERT_ARRAY_NAME_VRI);
+						extractOCSPsFromArray(vriDict.getAsDict(name), PAdESConstants.VRI_DICTIONARY_NAME + "/" + name,
+								PAdESConstants.OCSP_ARRAY_NAME_VRI);
+						extractCRLsFromArray(vriDict.getAsDict(name), PAdESConstants.VRI_DICTIONARY_NAME + "/" + name,
+								PAdESConstants.CRL_ARRAY_NAME_VRI);
 					}
 				}
 			} catch (Exception e) {
@@ -93,15 +93,15 @@ public class PdfDssDict {
 	}
 
 	private void readCerts(PdfDict dssDictionary) {
-		extractCertsFromArray(dssDictionary, DssDictionaryConstants.DSS_DICTIONARY_NAME, DssDictionaryConstants.CERT_ARRAY_NAME_DSS);
+		extractCertsFromArray(dssDictionary, PAdESConstants.DSS_DICTIONARY_NAME, PAdESConstants.CERT_ARRAY_NAME_DSS);
 	}
 
 	private void readOcsps(PdfDict dssDictionary) {
-		extractOCSPsFromArray(dssDictionary, DssDictionaryConstants.DSS_DICTIONARY_NAME, DssDictionaryConstants.OCSP_ARRAY_NAME_DSS);
+		extractOCSPsFromArray(dssDictionary, PAdESConstants.DSS_DICTIONARY_NAME, PAdESConstants.OCSP_ARRAY_NAME_DSS);
 	}
 
 	private void readCrls(PdfDict dssDictionary) {
-		extractCRLsFromArray(dssDictionary, DssDictionaryConstants.DSS_DICTIONARY_NAME, DssDictionaryConstants.CRL_ARRAY_NAME_DSS);
+		extractCRLsFromArray(dssDictionary, PAdESConstants.DSS_DICTIONARY_NAME, PAdESConstants.CRL_ARRAY_NAME_DSS);
 	}
 
 	private void extractCRLsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
