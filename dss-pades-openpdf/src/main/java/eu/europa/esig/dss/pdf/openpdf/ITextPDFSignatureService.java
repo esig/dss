@@ -124,7 +124,7 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(parameters.bLevel().getSigningDate());
 
-		stp.setModificationDate(cal);
+		stp.setEnforcedModificationDate(cal);
 
 		if (PdfName.SIG.equals(type)) {
 
