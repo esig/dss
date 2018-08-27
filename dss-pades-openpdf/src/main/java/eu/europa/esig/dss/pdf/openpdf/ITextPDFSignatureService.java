@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.AcroFields;
+import com.lowagie.text.pdf.AcroFields.Item;
 import com.lowagie.text.pdf.ByteBuffer;
 import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfDate;
@@ -45,7 +46,6 @@ import com.lowagie.text.pdf.PdfLiteral;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfSignature;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfStream;
@@ -58,6 +58,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
@@ -85,7 +86,15 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ITextPDFSignatureService.class);
 
-	ITextPDFSignatureService() {
+	/**
+	 * Constructor for the ITextPDFSignatureService
+	 * 
+	 * @param timestamp
+	 *                  if true, the instance is used to generate DocumentTypestamp
+	 *                  if false, it is used to generate a signature layer
+	 */
+	ITextPDFSignatureService(boolean timestamp) {
+		super(timestamp);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -117,9 +126,16 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			 */
 		}
 
-		PdfSignature dic = new PdfSignature(new PdfName(getFilter(parameters)), new PdfName(getSubFilter(parameters)));
+		PdfDictionary dic = null;
+		if (Utils.isStringNotEmpty(parameters.getSignatureFieldId())) {
+			dic = findExistingSignature(reader, parameters.getSignatureFieldId());
+		} else {
+			dic = new PdfDictionary();
+		}
 		PdfName type = new PdfName(getType());
 		dic.put(PdfName.TYPE, type);
+		dic.put(PdfName.FILTER, new PdfName(getFilter(parameters)));
+		dic.put(PdfName.SUBFILTER, new PdfName(getSubFilter(parameters)));
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(parameters.bLevel().getSigningDate());
@@ -128,20 +144,28 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 		if (PdfName.SIG.equals(type)) {
 
-			dic.setName(getSignatureName(parameters));
+			dic.put(PdfName.NAME, new PdfString(getSignatureName(parameters), PdfObject.TEXT_UNICODE));
 
 			if (parameters.getReason() != null) {
-				dic.setReason(parameters.getReason());
+				dic.put(PdfName.REASON, new PdfString(parameters.getReason(), PdfObject.TEXT_UNICODE));
 			}
 			if (parameters.getLocation() != null) {
-				dic.setLocation(parameters.getLocation());
+				dic.put(PdfName.LOCATION, new PdfString(parameters.getLocation(), PdfObject.TEXT_UNICODE));
 			}
 			if (parameters.getContactInfo() != null) {
-				dic.setContact(parameters.getContactInfo());
+				dic.put(PdfName.CONTACTINFO, new PdfString(parameters.getContactInfo(), PdfObject.TEXT_UNICODE));
+			}
+
+			CertificationPermission permission = parameters.getPermission();
+			// A document can contain only one signature field that contains a DocMDP
+			// transform method;
+			// it shall be the first signed field in the document.
+			if (permission != null && !containsFilledSignature(reader)) {
+				sap.setCertificationLevel(permission.getCode());
 			}
 
 			sap.setSignDate(cal);
-			dic.setDate(new PdfDate(cal));
+			dic.put(PdfName.M, new PdfDate(cal));
 
 		}
 
@@ -154,6 +178,32 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		sap.preClose(exc);
 
 		return stp;
+	}
+
+	@SuppressWarnings("unchecked")
+	private PdfDictionary findExistingSignature(PdfReader reader, String signatureFieldId) {
+		AcroFields acroFields = reader.getAcroFields();
+		List<String> signatureNames = acroFields.getBlankSignatureNames();
+		if (signatureNames.contains(signatureFieldId)) {
+			Item item = acroFields.getFieldItem(signatureFieldId);
+			PdfDictionary merged = item.getMerged(0);
+			return merged;
+		}
+		throw new DSSException("The signature field '" + signatureFieldId + "' does not exist.");
+	}
+
+	@SuppressWarnings("unchecked")
+	private boolean containsFilledSignature(PdfReader reader) {
+		AcroFields acroFields = reader.getAcroFields();
+		List<String> signatureNames = acroFields.getSignatureNames();
+		for (String name : signatureNames) {
+			PdfDict dictionary = new ITextPdfDict(acroFields.getSignatureDictionary(name));
+			PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
+			if (Utils.isArrayNotEmpty(signatureDictionary.getContents())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private PdfObject generateFileId(PAdESSignatureParameters parameters) {
@@ -398,9 +448,14 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<String> getAvailableSignatureFields(DSSDocument document) {
-		// TODO Auto-generated method stub
-		return null;
+		try (InputStream is = document.openStream(); PdfReader reader = new PdfReader(is)) {
+			AcroFields acroFields = reader.getAcroFields();
+			return acroFields.getBlankSignatureNames();
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
 	}
 
 	@Override

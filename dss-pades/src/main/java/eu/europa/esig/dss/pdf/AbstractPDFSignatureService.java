@@ -24,34 +24,70 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.bouncycastle.tsp.TimeStampToken;
+
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.tsp.TSPSource;
 
-public abstract class AbstractPDFSignatureService implements PDFSignatureService {
+public abstract class AbstractPDFSignatureService implements PDFSignatureService, PDFTimestampService {
+
+	private final boolean timestamp;
+
+	/**
+	 * Constructor for the PDFSignatureService
+	 * 
+	 * @param timestamp
+	 *                  if true, the instance is used to generate DocumentTypestamp
+	 *                  if false, it is used to generate a signature layer
+	 */
+	protected AbstractPDFSignatureService(boolean timestamp) {
+		this.timestamp = timestamp;
+	}
 
 	protected String getType() {
-		return PAdESConstants.SIGNATURE_TYPE;
+		if (timestamp) {
+			return PAdESConstants.TIMESTAMP_TYPE;
+		} else {
+			return PAdESConstants.SIGNATURE_TYPE;
+		}
 	}
 
 	protected String getFilter(PAdESSignatureParameters parameters) {
-		if (Utils.isStringNotEmpty(parameters.getSignatureFilter())) {
-			return parameters.getSignatureFilter();
+		if (timestamp) {
+			if (Utils.isStringNotEmpty(parameters.getTimestampFilter())) {
+				return parameters.getTimestampFilter();
+			}
+			return PAdESConstants.TIMESTAMP_DEFAULT_FILTER;
+
+		} else {
+			if (Utils.isStringNotEmpty(parameters.getSignatureFilter())) {
+				return parameters.getSignatureFilter();
+			}
+			return PAdESConstants.SIGNATURE_DEFAULT_FILTER;
 		}
-		return PAdESConstants.SIGNATURE_DEFAULT_FILTER;
 	}
 
 	protected String getSubFilter(PAdESSignatureParameters parameters) {
-		if (Utils.isStringNotEmpty(parameters.getSignatureSubFilter())) {
-			return parameters.getSignatureSubFilter();
+		if (timestamp) {
+			if (Utils.isStringNotEmpty(parameters.getTimestampSubFilter())) {
+				return parameters.getTimestampSubFilter();
+			}
+			return PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER;
+		} else {
+			if (Utils.isStringNotEmpty(parameters.getSignatureSubFilter())) {
+				return parameters.getSignatureSubFilter();
+			}
+			return PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER;
 		}
-		return PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER;
 	}
 
 	protected String getSignatureName(PAdESSignatureParameters parameters) {
@@ -69,6 +105,15 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 				return DSSASN1Utils.getHumanReadableName(token) + encodedDate;
 			}
 		}
+	}
+
+	@Override
+	public DSSDocument timestamp(DSSDocument document, PAdESSignatureParameters parameters, TSPSource tspSource) throws DSSException {
+		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
+		final byte[] digest = digest(document, parameters, timestampDigestAlgorithm);
+		final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digest);
+		final byte[] encoded = CMSUtils.getEncoded(timeStampToken.toCMSSignedData());
+		return sign(document, encoded, parameters, timestampDigestAlgorithm);
 	}
 
 	@Override

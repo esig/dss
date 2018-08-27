@@ -96,7 +96,7 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 			}
 		}
 
-		final PDFSignatureService signatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
+		final PDFSignatureService signatureService = PdfObjFactory.newPAdESSignatureService();
 		return signatureService.addDssDictionary(document, callbacks);
 
 	}

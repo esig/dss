@@ -22,7 +22,8 @@ public class PDFTimestampServiceTest extends PKIFactoryAccess {
 
 	@Test
 	public void timestampAlone() throws IOException {
-		PDFTimestampService pdfTimestampService = PdfObjFactory.getInstance().newTimestampSignatureService();
+
+		PDFTimestampService pdfTimestampService = PdfObjFactory.newTimestampSignatureService();
 
 		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
 

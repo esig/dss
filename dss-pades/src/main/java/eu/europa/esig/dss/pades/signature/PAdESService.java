@@ -94,7 +94,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 	@Override
 	public TimestampToken getContentTimestamp(DSSDocument toSignDocument, PAdESSignatureParameters parameters) {
-		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
+		final PDFSignatureService pdfSignatureService = PdfObjFactory.newPAdESSignatureService();
 		final DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
 		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters, digestAlgorithm);
 		if (LOG.isDebugEnabled()) {
@@ -113,7 +113,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId());
 
-		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
+		final PDFSignatureService pdfSignatureService = PdfObjFactory.newPAdESSignatureService();
 		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters, parameters.getDigestAlgorithm());
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Base64 messageDigest : {}", Utils.toBase64(messageDigest));
@@ -141,7 +141,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
 
-		final PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
+		final PDFSignatureService pdfSignatureService = PdfObjFactory.newPAdESSignatureService();
 		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters, parameters.getDigestAlgorithm());
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Base64 messageDigest : {}", Utils.toBase64(messageDigest));
@@ -193,7 +193,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return the list of empty signature fields
 	 */
 	public List<String> getAvailableSignatureFields(DSSDocument document) {
-		PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
+		PDFSignatureService pdfSignatureService = PdfObjFactory.newPAdESSignatureService();
 		return pdfSignatureService.getAvailableSignatureFields(document);
 	}
 
@@ -207,7 +207,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return the pdf document with the new added signature field
 	 */
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
-		PDFSignatureService pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
+		PDFSignatureService pdfSignatureService = PdfObjFactory.newPAdESSignatureService();
 		return pdfSignatureService.addNewSignatureField(document, parameters);
 	}
 

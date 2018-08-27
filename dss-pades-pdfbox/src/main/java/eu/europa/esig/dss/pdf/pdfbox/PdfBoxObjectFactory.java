@@ -20,20 +20,20 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
 
-public class PdfBoxObjectFactory extends PdfObjFactory {
+public class PdfBoxObjectFactory implements IPdfObjFactory {
 
 	@Override
 	public PDFSignatureService newPAdESSignatureService() {
-		return new PdfBoxSignatureService();
+		return new PdfBoxSignatureService(false);
 	}
 
 	@Override
 	public PDFTimestampService newTimestampSignatureService() {
-		return new PdfBoxDocTimeStampService();
+		return new PdfBoxSignatureService(true);
 	}
 
 }

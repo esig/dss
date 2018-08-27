@@ -42,8 +42,7 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	@Override
 	public DSSDocument extendSignatures(final DSSDocument document, final PAdESSignatureParameters params) throws DSSException {
 		// Will add a DocumentTimeStamp. signature-timestamp (CMS) is impossible to add while extending
-		final PdfObjFactory factory = PdfObjFactory.getInstance();
-		final PDFTimestampService timestampService = factory.newTimestampSignatureService();
+		final PDFTimestampService timestampService = PdfObjFactory.newTimestampSignatureService();
 		return timestampService.timestamp(document, params, tspSource);
 	}
 

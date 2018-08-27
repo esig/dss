@@ -6,52 +6,42 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxObjectFactory;
 
-public class PdfObjFactoryTest {
+public class PdfBoxObjectFactoryTest {
 
 	private static final String PDFBOX_SIGNATURE_SERVICE = "PdfBoxSignatureService";
-	private static final String PDFBOX_TIMESTAMP_SERVICE = "PdfBoxDocTimeStampService";
-
-	@Test(expected = DSSException.class)
-	public void testFallback() {
-		PdfObjFactory.getInstance().newPAdESSignatureService();
-	}
 
 	@Test
 	public void testSystemProperty() {
-		System.setProperty("dss.pdf_obj_factory", "eu.europa.esig.dss.pdf.pdfbox.PdfBoxObjectFactory");
-		PDFSignatureService signatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
+		PDFSignatureService signatureService = PdfObjFactory.newPAdESSignatureService();
 		assertNotNull(signatureService);
 		assertEquals(PDFBOX_SIGNATURE_SERVICE, signatureService.getClass().getSimpleName());
-		PDFTimestampService timestampService = PdfObjFactory.getInstance().newTimestampSignatureService();
+		PDFTimestampService timestampService = PdfObjFactory.newTimestampSignatureService();
 		assertNotNull(timestampService);
-		assertEquals(PDFBOX_TIMESTAMP_SERVICE, timestampService.getClass().getSimpleName());
-		System.setProperty("dss.pdf_obj_factory", "");
+		assertEquals(PDFBOX_SIGNATURE_SERVICE, timestampService.getClass().getSimpleName());
 	}
 
 	@Test
 	public void testRuntimeChange() {
 		PdfObjFactory.setInstance(new EmptyPdfObjectFactory());
-		PDFSignatureService signatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
+		PDFSignatureService signatureService = PdfObjFactory.newPAdESSignatureService();
 		assertNull(signatureService);
-		PDFTimestampService timestampService = PdfObjFactory.getInstance().newTimestampSignatureService();
+		PDFTimestampService timestampService = PdfObjFactory.newTimestampSignatureService();
 		assertNull(timestampService);
 
 		PdfObjFactory.setInstance(new PdfBoxObjectFactory());
 
-		signatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
+		signatureService = PdfObjFactory.newPAdESSignatureService();
 		assertNotNull(signatureService);
 		assertEquals(PDFBOX_SIGNATURE_SERVICE, signatureService.getClass().getSimpleName());
-
-		PdfObjFactory.setInstance(null);
 	}
 
-	private class EmptyPdfObjectFactory extends PdfObjFactory {
+	private class EmptyPdfObjectFactory implements IPdfObjFactory {
 
 		@Override
 		public PDFSignatureService newPAdESSignatureService() {

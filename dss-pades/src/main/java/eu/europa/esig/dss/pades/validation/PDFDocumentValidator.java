@@ -63,7 +63,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 	public PDFDocumentValidator(final DSSDocument document) {
 		super(new PAdESSignatureScopeFinder());
 		this.document = document;
-		pdfSignatureService = PdfObjFactory.getInstance().newPAdESSignatureService();
+		pdfSignatureService = PdfObjFactory.newPAdESSignatureService();
 	}
 
 	@Override

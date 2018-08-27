@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.lowagie.text.pdf.AcroFields;
@@ -20,20 +19,14 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
-import eu.europa.esig.dss.pdf.openpdf.ITextPdfObjFactory;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 
 public class PDFTimestampServiceTest extends PKIFactoryAccess {
-	
-	@Before
-	public void init() {
-		PdfObjFactory.setInstance(new ITextPdfObjFactory());
-	}
 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void timestampAlone() throws IOException {
-		PDFTimestampService pdfTimestampService = PdfObjFactory.getInstance().newTimestampSignatureService();
+		PDFTimestampService pdfTimestampService = PdfObjFactory.newTimestampSignatureService();
 
 		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
 

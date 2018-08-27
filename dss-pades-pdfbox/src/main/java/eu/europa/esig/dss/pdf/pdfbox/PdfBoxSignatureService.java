@@ -88,6 +88,17 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	protected PdfBoxVisibleSignatureDrawer visibleSignatureDrawer = new DefaultPdfBoxVisibleSignatureDrawer();
 
 	/**
+	 * Constructor for the PdfBoxSignatureService
+	 * 
+	 * @param timestamp
+	 *                  if true, the instance is used to generate DocumentTypestamp
+	 *                  if false, it is used to generate a signature layer
+	 */
+	PdfBoxSignatureService(boolean timestamp) {
+		super(timestamp);
+	}
+
+	/**
 	 * This method allows to inject a custom {@Code PdfBoxVisibleSignatureDrawer}
 	 * 
 	 * @param visibleSignatureDrawer

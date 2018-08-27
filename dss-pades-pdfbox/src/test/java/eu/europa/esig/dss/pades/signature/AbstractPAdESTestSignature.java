@@ -30,10 +30,6 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<PAdESSignatureParameters> {
 
-	static {
-		PdfObjFactory.setInstance(new PdfBoxObjectFactory());
-	}
-
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 

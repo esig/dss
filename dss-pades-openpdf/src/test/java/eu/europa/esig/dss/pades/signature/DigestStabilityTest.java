@@ -36,8 +36,6 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
-import eu.europa.esig.dss.pdf.openpdf.ITextPdfObjFactory;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
@@ -55,7 +53,6 @@ public class DigestStabilityTest extends PKIFactoryAccess {
 	@Before
 	public void init() {
 		privateKeyEntry = getPrivateKeyEntry();
-		PdfObjFactory.setInstance(new ITextPdfObjFactory());
 	}
 
 	@Test

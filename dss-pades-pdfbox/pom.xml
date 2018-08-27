@@ -9,19 +9,6 @@
 	</parent>
 	<artifactId>dss-pades-pdfbox</artifactId>
 	<name>DSS PAdES using PDFBox</name>
-	
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<systemProperties>
-						<dss.pdf_obj_factory>eu.europa.esig.dss.pdf.pdfbox.PdfBoxObjectFactory</dss.pdf_obj_factory>
-					</systemProperties>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 
 	<dependencies>
 		<dependency>
