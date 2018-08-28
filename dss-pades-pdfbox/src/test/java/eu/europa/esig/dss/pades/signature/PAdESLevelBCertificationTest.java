@@ -23,8 +23,6 @@ package eu.europa.esig.dss.pades.signature;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.io.File;
-
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
@@ -32,7 +30,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
@@ -48,7 +46,7 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new FileDocument(new File("src/test/resources/pdf-two-fields.pdf"));
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-two-fields.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());

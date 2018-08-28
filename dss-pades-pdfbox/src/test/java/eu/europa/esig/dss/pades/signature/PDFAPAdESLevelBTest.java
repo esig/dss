@@ -22,13 +22,11 @@ package eu.europa.esig.dss.pades.signature;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.Date;
 
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
@@ -43,7 +41,7 @@ public class PDFAPAdESLevelBTest extends AbstractPAdESTestSignature {
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new FileDocument(new File("src/test/resources/not_signed_pdfa.pdf"));
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());

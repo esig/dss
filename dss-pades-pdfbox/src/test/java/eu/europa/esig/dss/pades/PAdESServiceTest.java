@@ -30,7 +30,7 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -41,12 +41,13 @@ public class PAdESServiceTest {
 
 	@Test
 	public void testGetSignatureFields() {
-		assertTrue(Utils.isCollectionNotEmpty(padesService.getAvailableSignatureFields(new FileDocument("src/test/resources/doc.pdf"))));
+		assertTrue(Utils
+				.isCollectionNotEmpty(padesService.getAvailableSignatureFields(new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf")))));
 	}
 
 	@Test
 	public void testAddSignatureField() throws IOException {
-		FileDocument document = new FileDocument("src/test/resources/sample.pdf");
+		DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 		assertTrue(Utils.isCollectionEmpty(padesService.getAvailableSignatureFields(document)));
 
 		SignatureFieldParameters parameters = new SignatureFieldParameters();
@@ -78,7 +79,7 @@ public class PAdESServiceTest {
 
 	@Test(expected = DSSException.class)
 	public void testAddSignatureFieldPageNotFound() throws IOException {
-		FileDocument document = new FileDocument("src/test/resources/sample.pdf");
+		DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 		assertTrue(Utils.isCollectionEmpty(padesService.getAvailableSignatureFields(document)));
 
 		SignatureFieldParameters parameters = new SignatureFieldParameters();

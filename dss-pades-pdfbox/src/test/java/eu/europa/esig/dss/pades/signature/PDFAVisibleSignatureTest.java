@@ -24,7 +24,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Color;
-import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
@@ -32,7 +31,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
@@ -54,7 +54,7 @@ public class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new FileDocument(new File("src/test/resources/not_signed_pdfa.pdf"));
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -92,7 +92,7 @@ public class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	@Test
 	public void testGeneratedImageOnly() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(new FileDocument(new File("src/test/resources/small-red.jpg")));
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
 		signatureParameters.setSignatureImageParameters(imageParameters);
@@ -103,7 +103,7 @@ public class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	@Test
 	public void testGeneratedImageOnlyPNG() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(new FileDocument(new File("src/test/resources/signature-image.png"))); // PNG with
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG)); // PNG with
 																										// ALPHA
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);

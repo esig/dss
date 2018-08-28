@@ -5,18 +5,18 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.InMemoryDocument;
 
 public class PDFAUtilsTest {
 
 	@Test
 	public void test() {
-		assertTrue(PDFAUtils.validatePDFAStructure(new FileDocument("src/test/resources/not_signed_pdfa.pdf")));
+		assertTrue(PDFAUtils.validatePDFAStructure(new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"))));
 	}
 
 	@Test
 	public void testNotPDFA() {
-		assertFalse(PDFAUtils.validatePDFAStructure(new FileDocument("src/test/resources/sample.pdf")));
+		assertFalse(PDFAUtils.validatePDFAStructure(new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"))));
 	}
 
 }

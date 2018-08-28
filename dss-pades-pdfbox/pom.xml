@@ -19,35 +19,41 @@
 			<groupId>org.apache.pdfbox</groupId>
 			<artifactId>pdfbox</artifactId>
 		</dependency>
-		
+
 		<!-- Allows to test PDF/A -->
 		<dependency>
-		    <groupId>org.apache.pdfbox</groupId>
-		    <artifactId>preflight</artifactId>
-		    <scope>test</scope>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>preflight</artifactId>
+			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-pades</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
-    <!-- PDFBox use DataSource -->
+
+	<!-- PDFBox use DataSource -->
 	<profiles>
 		<profile>
-            <id>jdk19-plus</id>
-            <activation>
-                <jdk>[9,)</jdk>
-            </activation>
-            
-            <dependencies>
-	            <dependency>
+			<id>jdk19-plus</id>
+			<activation>
+				<jdk>[9,)</jdk>
+			</activation>
+
+			<dependencies>
+				<dependency>
 					<groupId>com.sun.activation</groupId>
-			    	<artifactId>javax.activation</artifactId>
+					<artifactId>javax.activation</artifactId>
 				</dependency>
-            </dependencies>
-    	</profile>
-    </profiles>
+			</dependencies>
+		</profile>
+	</profiles>
 </project>

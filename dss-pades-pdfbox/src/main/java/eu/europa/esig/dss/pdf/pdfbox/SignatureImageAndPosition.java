@@ -1,9 +1,10 @@
 package eu.europa.esig.dss.pdf.pdfbox;
 
 public class SignatureImageAndPosition {
+
     private float x;
     private float y;
-    byte[] signatureImage;
+	private byte[] signatureImage;
 
     public SignatureImageAndPosition() {
     }

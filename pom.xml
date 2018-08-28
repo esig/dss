@@ -427,6 +427,12 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-pades</artifactId>
+				<type>test-jar</type>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-pades-pdfbox</artifactId>
 				<version>${project.version}</version>
 			</dependency>
