@@ -35,6 +35,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.Font;
+import com.lowagie.text.Image;
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.AcroFields.Item;
 import com.lowagie.text.pdf.ByteBuffer;
@@ -61,6 +64,8 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
@@ -107,24 +112,6 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 		PdfSignatureAppearance sap = stp.getSignatureAppearance();
 		sap.setAcro6Layers(true);
-		sap.setRender(PdfSignatureAppearance.SignatureRenderDescription);
-
-		if (parameters.getSignatureImageParameters() != null) {
-
-			/*
-			 * Rectangle rect = new Rectangle(parameters.getRepresentation().getImageX(),
-			 * parameters.getRepresentation().getImageY(),
-			 * parameters.getRepresentation().getImageX() +
-			 * parameters.getRepresentation().getImageWidth(),
-			 * parameters.getRepresentation().getImageY() +
-			 * parameters.getRepresentation().getImageHeight());
-			 * sap.setVisibleSignature(rect, parameters.getRepresentation().getPage(),
-			 * null);
-			 * 
-			 * Image image = Image.getInstance(parameters.getRepresentation().getImage());
-			 * sap.setImage(image);
-			 */
-		}
 
 		PdfDictionary dic = null;
 		if (Utils.isStringNotEmpty(parameters.getSignatureFieldId())) {
@@ -171,6 +158,11 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 		sap.setCryptoDictionary(dic);
 
+		SignatureImageParameters sip = getImageParameters(parameters);
+		if (sip != null) {
+			fillSignatureApparence(sap, sip, parameters.getSignatureFieldId());
+		}
+
 		int csize = parameters.getSignatureSize();
 		HashMap exc = new HashMap();
 		exc.put(PdfName.CONTENTS, new Integer((csize * 2) + 2));
@@ -178,6 +170,38 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		sap.preClose(exc);
 
 		return stp;
+	}
+
+	protected void fillSignatureApparence(PdfSignatureAppearance sap, SignatureImageParameters sip, String signatureFieldId)
+			throws DocumentException, IOException {
+		SignatureImageTextParameters sit = sip.getTextParameters();
+		if (sit != null) {
+			java.awt.Font font = sit.getFont();
+			Font itextFont = new Font();
+			itextFont.setColor(sit.getTextColor());
+			itextFont.setFamily(font.getFamily());
+			itextFont.setSize(font.getSize());
+			itextFont.setStyle(font.getStyle());
+
+			sap.setLayer2Font(itextFont);
+			sap.setLayer2Text(sit.getText());
+		}
+
+		if (Utils.isStringNotBlank(signatureFieldId)) {
+			sap.setVisibleSignature(signatureFieldId);
+		} else {
+			Rectangle rect = new Rectangle(sip.getxAxis(), sip.getyAxis(), sip.getxAxis() + sip.getWidth(), sip.getyAxis() + sip.getHeight());
+			sap.setVisibleSignature(rect, sip.getPage());
+		}
+
+		DSSDocument image = sip.getImage();
+		if (image != null) {
+			sap.setRender(PdfSignatureAppearance.SignatureRenderGraphicAndDescription);
+			sap.setSignatureGraphic(Image.getInstance(DSSUtils.toByteArray(image)));
+		}
+
+		int zoom = sip.getZoom();
+		sap.setImageScale((float) (zoom / 100.0));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -230,7 +254,6 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			PdfStamper stp = prepareStamper(is, baos, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
-
 			return DSSUtils.digest(digestAlgorithm, sap.getRangeStream());
 		} catch (Exception e) {
 			throw new DSSException(e);

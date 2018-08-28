@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pades.signature;
+package eu.europa.esig.dss.pades.signature.visible;
 
 import java.awt.Color;
 import java.util.Date;
@@ -7,14 +7,17 @@ import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters.SignerPosition;
+import eu.europa.esig.dss.pades.signature.AbstractPAdESTestSignature;
+import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class PAdESWithSignatureInvisibleAndTimestampVisible extends AbstractPAdESTestSignature {
+public class PAdESWithSignatureAndTimestampVisible extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters> service;
 	private PAdESSignatureParameters signatureParameters;
@@ -29,6 +32,12 @@ public class PAdESWithSignatureInvisibleAndTimestampVisible extends AbstractPAdE
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
+
+		SignatureImageParameters signatureImageParameters = new SignatureImageParameters();
+		signatureImageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+		signatureImageParameters.setxAxis(25);
+		signatureImageParameters.setyAxis(25);
+		signatureParameters.setSignatureImageParameters(signatureImageParameters);
 
 		SignatureImageParameters timestampImageParameters = new SignatureImageParameters();
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();

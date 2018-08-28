@@ -18,22 +18,29 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.signature;
+package eu.europa.esig.dss.pades.signature.visible;
 
-import java.awt.Color;
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
 
 import org.junit.Before;
 
+import com.lowagie.text.pdf.PdfReader;
+
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pades.signature.AbstractPAdESTestSignature;
+import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class PAdESFieldLevelB extends AbstractPAdESTestSignature {
+public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters> service;
 	private PAdESSignatureParameters signatureParameters;
@@ -41,7 +48,7 @@ public class PAdESFieldLevelB extends AbstractPAdESTestSignature {
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"), "doc.pdf", MimeType.PDF);
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-two-fields.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -50,18 +57,26 @@ public class PAdESFieldLevelB extends AbstractPAdESTestSignature {
 		signatureParameters.setLocation("Luxembourg");
 		signatureParameters.setReason("DSS testing");
 		signatureParameters.setContactInfo("Jira");
-		signatureParameters.setSignatureFieldId("Signature1");
-
-		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
-
+		signatureParameters.setPermission(CertificationPermission.MINIMAL_CHANGES_PERMITTED);
+		signatureParameters.setSignatureFieldId("signature-test");
+		SignatureImageParameters signatureImageParameters = new SignatureImageParameters();
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-		textParameters.setText("My signature");
-		textParameters.setTextColor(Color.GREEN);
-		imageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(imageParameters);
+		textParameters.setText("TEST FIELD");
+		signatureImageParameters.setTextParameters(textParameters);
+		signatureParameters.setSignatureImageParameters(signatureImageParameters);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
+	}
+
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
+
+		try (PdfReader reader = new PdfReader(byteArray)) {
+			assertEquals(CertificationPermission.MINIMAL_CHANGES_PERMITTED.getCode(), reader.getCertificationLevel());
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
 	}
 
 	@Override

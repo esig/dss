@@ -63,7 +63,6 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
-import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PAdESConstants;
@@ -177,8 +176,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	protected SignatureOptions createSignatureOptions(PDDocument pdDocument, PAdESSignatureParameters parameters)
 			throws IOException {
-		SignatureImageParameters signatureImageParameters = parameters.getSignatureImageParameters();
-		return visibleSignatureDrawer.createVisualSignature(pdDocument, signatureImageParameters);
+		return visibleSignatureDrawer.createVisualSignature(pdDocument, getImageParameters(parameters));
 	}
 
 	private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters, PDDocument pdDocument) {

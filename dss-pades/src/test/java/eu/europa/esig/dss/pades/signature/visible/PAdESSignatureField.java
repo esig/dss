@@ -18,13 +18,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.signature;
+package eu.europa.esig.dss.pades.signature.visible;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Color;
-import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
@@ -33,7 +32,6 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
@@ -42,6 +40,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -113,7 +112,7 @@ public class PAdESSignatureField extends PKIFactoryAccess {
 
 		signatureParameters.setSignatureFieldId("Signature1");
 
-		DSSDocument documentToSign = new FileDocument(new File("src/test/resources/doc.pdf"));
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
 		DSSDocument doc = signAndValidate(documentToSign);
 		assertNotNull(doc);
 
@@ -125,7 +124,7 @@ public class PAdESSignatureField extends PKIFactoryAccess {
 
 		signatureParameters.setSignatureFieldId("not-found");
 
-		DSSDocument documentToSign = new FileDocument(new File("src/test/resources/doc.pdf"));
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
 		signAndValidate(documentToSign);
 	}
 
@@ -134,7 +133,7 @@ public class PAdESSignatureField extends PKIFactoryAccess {
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
-		// signedDocument.save("target/test.pdf");
+		signedDocument.save("target/test.pdf");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());

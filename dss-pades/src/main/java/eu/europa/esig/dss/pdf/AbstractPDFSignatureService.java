@@ -33,6 +33,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -87,6 +88,14 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 				return parameters.getSignatureSubFilter();
 			}
 			return PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER;
+		}
+	}
+
+	protected SignatureImageParameters getImageParameters(PAdESSignatureParameters parameters) {
+		if (timestamp) {
+			return parameters.getTimestampImageParameters();
+		} else {
+			return parameters.getTimestampImageParameters();
 		}
 	}
 

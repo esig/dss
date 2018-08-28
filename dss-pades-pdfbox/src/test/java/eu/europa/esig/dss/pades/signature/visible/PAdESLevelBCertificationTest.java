@@ -18,24 +18,26 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.signature;
+package eu.europa.esig.dss.pades.signature.visible;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
-import java.io.IOException;
-
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.Before;
 
-import com.lowagie.text.pdf.PdfReader;
-
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pades.signature.AbstractPAdESTestSignature;
+import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
@@ -70,10 +72,17 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
 
-		try (PdfReader reader = new PdfReader(byteArray)) {
-			assertEquals(CertificationPermission.MINIMAL_CHANGES_PERMITTED.getCode(), reader.getCertificationLevel());
-		} catch (IOException e) {
-			throw new DSSException(e);
+		try {
+			PDDocument document = PDDocument.load(byteArray);
+			COSBase docMDP = null;
+			COSBase perms = document.getDocumentCatalog().getCOSObject().getDictionaryObject(COSName.PERMS);
+			if (perms instanceof COSDictionary) {
+				COSDictionary permsDict = (COSDictionary) perms;
+				docMDP = permsDict.getDictionaryObject(COSName.DOCMDP);
+			}
+			assertNotNull(docMDP);
+		} catch (Exception e) {
+			fail(e.getMessage());
 		}
 	}
 

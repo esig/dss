@@ -18,27 +18,24 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.signature;
+package eu.europa.esig.dss.pades.signature.visible;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import java.awt.Color;
 
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pades.signature.AbstractPAdESTestSignature;
+import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
+public class PAdESFieldLevelB extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters> service;
 	private PAdESSignatureParameters signatureParameters;
@@ -46,7 +43,7 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdf-two-fields.pdf"));
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"), "doc.pdf", MimeType.PDF);
 
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -55,33 +52,18 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 		signatureParameters.setLocation("Luxembourg");
 		signatureParameters.setReason("DSS testing");
 		signatureParameters.setContactInfo("Jira");
-		signatureParameters.setPermission(CertificationPermission.MINIMAL_CHANGES_PERMITTED);
-		signatureParameters.setSignatureFieldId("signature-test");
-		SignatureImageParameters signatureImageParameters = new SignatureImageParameters();
+		signatureParameters.setSignatureFieldId("Signature1");
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
+
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-		textParameters.setText("TEST FIELD");
-		signatureImageParameters.setTextParameters(textParameters);
-		signatureParameters.setSignatureImageParameters(signatureImageParameters);
+		textParameters.setText("My signature");
+		textParameters.setTextColor(Color.GREEN);
+		imageParameters.setTextParameters(textParameters);
+		signatureParameters.setSignatureImageParameters(imageParameters);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
-	}
-
-	@Override
-	protected void onDocumentSigned(byte[] byteArray) {
-		super.onDocumentSigned(byteArray);
-
-		try {
-			PDDocument document = PDDocument.load(byteArray);
-			COSBase docMDP = null;
-			COSBase perms = document.getDocumentCatalog().getCOSObject().getDictionaryObject(COSName.PERMS);
-			if (perms instanceof COSDictionary) {
-				COSDictionary permsDict = (COSDictionary) perms;
-				docMDP = permsDict.getDictionaryObject(COSName.DOCMDP);
-			}
-			assertNotNull(docMDP);
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
 	}
 
 	@Override
