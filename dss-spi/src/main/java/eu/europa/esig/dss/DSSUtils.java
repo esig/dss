@@ -36,7 +36,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
@@ -624,7 +623,7 @@ public final class DSSUtils {
 	 * @return an unique string
 	 */
 	public static String getDeterministicId(final Date signingTime, TokenIdentifier id) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); DataOutputStream dos = new DataOutputStream(baos);) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); DataOutputStream dos = new DataOutputStream(baos)) {
 			if (signingTime != null) {
 				dos.writeLong(signingTime.getTime());
 			}
@@ -648,15 +647,6 @@ public final class DSSUtils {
 	 */
 	public static String getMD5Digest(byte[] bytes) {
 		return Utils.toHex(digest(DigestAlgorithm.MD5, bytes));
-	}
-
-	public static long toLong(final byte[] bytes) {
-		// Long.valueOf(new String(bytes)).longValue();
-		ByteBuffer buffer = ByteBuffer.allocate(8);
-		buffer.put(bytes, 0, Long.SIZE / 8);
-		// TODO: (Bob: 2014 Jan 22) To be checked if it is not platform dependent?
-		buffer.flip();// need flip
-		return buffer.getLong();
 	}
 
 	/**

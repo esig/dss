@@ -113,12 +113,9 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			throws DSSException {
 
 		final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
-		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-				InputStream is = toSignDocument.openStream();
-				PDDocument pdDocument = PDDocument.load(is)) {
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); PDDocument pdDocument = PDDocument.load(toSignDocument.openStream())) {
 
-			PDSignature pdSignature = createSignatureDictionary(parameters, pdDocument);
-			return signDocumentAndReturnDigest(parameters, signatureValue, outputStream, pdDocument, pdSignature, digestAlgorithm);
+			return signDocumentAndReturnDigest(parameters, signatureValue, outputStream, pdDocument, digestAlgorithm);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
@@ -128,12 +125,9 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	public DSSDocument sign(final DSSDocument toSignDocument, final byte[] signatureValue, final PAdESSignatureParameters parameters,
 			final DigestAlgorithm digestAlgorithm) throws DSSException {
 
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				InputStream is = toSignDocument.openStream();
-				PDDocument pdDocument = PDDocument.load(is)) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); PDDocument pdDocument = PDDocument.load(toSignDocument.openStream())) {
 
-			final PDSignature pdSignature = createSignatureDictionary(parameters, pdDocument);
-			signDocumentAndReturnDigest(parameters, signatureValue, baos, pdDocument, pdSignature, digestAlgorithm);
+			signDocumentAndReturnDigest(parameters, signatureValue, baos, pdDocument, digestAlgorithm);
 
 			DSSDocument signature = new InMemoryDocument(baos.toByteArray());
 			signature.setMimeType(MimeType.PDF);
@@ -144,8 +138,9 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	private byte[] signDocumentAndReturnDigest(final PAdESSignatureParameters parameters, final byte[] signatureBytes, final OutputStream fileOutputStream,
-			final PDDocument pdDocument, final PDSignature pdSignature, final DigestAlgorithm digestAlgorithm) throws DSSException {
+			final PDDocument pdDocument, final DigestAlgorithm digestAlgorithm) throws DSSException {
 
+		final PDSignature pdSignature = createSignatureDictionary(parameters, pdDocument);
 		try (SignatureOptions options = createSignatureOptions(pdDocument, parameters)) {
 
 			final MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
@@ -307,9 +302,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			// the document needs to have an ID, if not a ID based on the current system time is used, and then the
 			// digest of the signed data is different
 			if (pdDocument.getDocumentId() == null) {
-
-				final byte[] documentIdBytes = DSSUtils.digest(DigestAlgorithm.SHA256, parameters.bLevel().getSigningDate().toString().getBytes());
-				pdDocument.setDocumentId(DSSUtils.toLong(documentIdBytes));
+				pdDocument.setDocumentId(parameters.bLevel().getSigningDate().getTime());
 			}
 			pdDocument.saveIncremental(outputStream);
 		} catch (IOException e) {

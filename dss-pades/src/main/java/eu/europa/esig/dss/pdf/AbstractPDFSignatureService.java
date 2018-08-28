@@ -95,7 +95,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		if (timestamp) {
 			return parameters.getTimestampImageParameters();
 		} else {
-			return parameters.getTimestampImageParameters();
+			return parameters.getSignatureImageParameters();
 		}
 	}
 

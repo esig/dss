@@ -185,6 +185,9 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 			sap.setLayer2Font(itextFont);
 			sap.setLayer2Text(sit.getText());
+		} else {
+			// Avoid text building from certs,...
+			sap.setLayer2Text("");
 		}
 
 		if (Utils.isStringNotBlank(signatureFieldId)) {
@@ -232,7 +235,7 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	private PdfObject generateFileId(PAdESSignatureParameters parameters) {
 		try (ByteBuffer buf = new ByteBuffer(90)) {
-			String deterministicId = parameters.getDeterministicId();
+			String deterministicId = DSSUtils.getDeterministicId(parameters.bLevel().getSigningDate(), null);
 			byte[] id = deterministicId.getBytes();
 			buf.append('[').append('<');
 			for (int k = 0; k < 16; ++k) {
