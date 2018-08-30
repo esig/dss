@@ -52,6 +52,7 @@
 		<bouncycastle.version>1.60</bouncycastle.version>
 		<xmlsec.version>2.0.10</xmlsec.version>
 		<xalan.version>2.7.2</xalan.version>
+		<xerces.version>2.12.0</xerces.version>
 		<pdfbox.version>2.0.11</pdfbox.version>
 		<openpdf.version>1.2.2</openpdf.version>
 		<httpclient.version>4.5.5</httpclient.version>
@@ -649,6 +650,11 @@
 				<version>${xalan.version}</version>
 			</dependency>
 			<dependency>
+			    <groupId>xerces</groupId>
+			    <artifactId>xercesImpl</artifactId>
+			    <version>${xerces.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.bouncycastle</groupId>
 				<artifactId>bcprov-jdk15on</artifactId>
 				<version>${bouncycastle.version}</version>
@@ -747,7 +753,7 @@
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
-						<version>3.1.1</version>
+						<version>3.3.1</version>
 <!-- 						<configuration> -->
 <!-- 							<failBuildOnCVSS>8</failBuildOnCVSS> -->
 <!-- 						</configuration> -->

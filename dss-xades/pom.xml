@@ -27,6 +27,10 @@
 			<groupId>xalan</groupId>
 			<artifactId>xalan</artifactId>
 		</dependency>
+		<dependency>
+		    <groupId>xerces</groupId>
+		    <artifactId>xercesImpl</artifactId>
+		</dependency>
         
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

@@ -46,10 +46,10 @@ public class DomUtilsTest {
 		assertNotNull(DomUtils.buildDOM(new FileInputStream("src/test/resources/xml_expansion.xml")));
 	}
 
-	@Test
+	@Test(expected = DSSException.class)
 	public void testEntityXml() throws Exception {
 		// Should ignore the URL embedded in the DTD
-		assertNotNull(DomUtils.buildDOM(new FileInputStream("src/test/resources/xml_entity.xml")));
+		DomUtils.buildDOM(new FileInputStream("src/test/resources/xml_entity.xml"));
 	}
 
 }

@@ -65,10 +65,10 @@ public final class DomUtils {
 		dbFactory = DocumentBuilderFactory.newInstance();
 		dbFactory.setNamespaceAware(true);
 		try {
-			// disable external entities
-			// details :
+			// disable external entities details :
 			// https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#Java
 
+			dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
 			dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
 			dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
 			dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
@@ -118,6 +118,8 @@ public final class DomUtils {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		try {
 			transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 		} catch (TransformerConfigurationException e) {
 			throw new DSSException(e);
 		}
