@@ -18,28 +18,44 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.pdfbox;
+package eu.europa.esig.dss.pdf.pdfbox.visible;
 
-import java.io.IOException;
+public class SignatureImageAndPosition {
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
+    private float x;
+    private float y;
+	private byte[] signatureImage;
 
-import eu.europa.esig.dss.pades.SignatureImageParameters;
+    public SignatureImageAndPosition() {
+    }
 
-public interface PdfBoxVisibleSignatureDrawer {
+    public SignatureImageAndPosition(float x, float y, byte[] signatureImage) {
+        this.x = x;
+        this.y = y;
+        this.signatureImage = signatureImage;
+    }
 
-	/**
-	 * This method creates the visual signature from the given parameters
-	 * 
-	 * @param doc
-	 *            the original PDFBox Document
-	 * @param params
-	 *            the visual signature parameters
-	 * @return a new instance of {@code SignatureOptions}
-	 * @throws IOException
-	 *             if any problem occurs
-	 */
-	SignatureOptions createVisualSignature(PDDocument doc, SignatureImageParameters params) throws IOException;
+    public float getX() {
+        return x;
+    }
 
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public byte[] getSignatureImage() {
+        return signatureImage;
+    }
+
+    public void setSignatureImage(byte[] signatureImage) {
+        this.signatureImage = signatureImage;
+    }
 }

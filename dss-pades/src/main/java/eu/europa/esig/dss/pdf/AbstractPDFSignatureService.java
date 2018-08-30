@@ -34,6 +34,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -42,16 +43,21 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
 public abstract class AbstractPDFSignatureService implements PDFSignatureService, PDFTimestampService {
 
 	private final boolean timestamp;
+	protected final SignatureDrawerFactory signatureDrawerFactory;
 
 	/**
 	 * Constructor for the PDFSignatureService
 	 * 
 	 * @param timestamp
-	 *                  if true, the instance is used to generate DocumentTypestamp
-	 *                  if false, it is used to generate a signature layer
+	 *                               if true, the instance is used to generate
+	 *                               DocumentTypestamp if false, it is used to
+	 *                               generate a signature layer
+	 * @param signatureDrawerFactory
+	 *                               the factory of {@code SignatureDrawer}
 	 */
-	protected AbstractPDFSignatureService(boolean timestamp) {
+	protected AbstractPDFSignatureService(boolean timestamp, SignatureDrawerFactory signatureDrawerFactory) {
 		this.timestamp = timestamp;
+		this.signatureDrawerFactory = signatureDrawerFactory;
 	}
 
 	protected String getType() {
@@ -109,9 +115,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			String encodedDate = Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA1, Long.toString(date.getTime()).getBytes()));
 
 			if (token == null) {
-				return "Unknown signer" + encodedDate;
+				return "Unknown signer " + encodedDate;
 			} else {
-				return DSSASN1Utils.getHumanReadableName(token) + encodedDate;
+				return DSSASN1Utils.getHumanReadableName(token) + " " + encodedDate;
 			}
 		}
 	}

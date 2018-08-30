@@ -18,23 +18,18 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.openpdf;
+package eu.europa.esig.dss.pdf.pdfbox.visible;
 
-import eu.europa.esig.dss.pdf.IPdfObjFactory;
-import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PDFTimestampService;
-import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawerFactory;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 
-public class ITextPdfObjFactory implements IPdfObjFactory {
+public class PdfBoxSignatureDrawerFactory implements SignatureDrawerFactory {
 
 	@Override
-	public PDFSignatureService newPAdESSignatureService() {
-		return new ITextPDFSignatureService(false, new ITextSignatureDrawerFactory());
-	}
-
-	@Override
-	public PDFTimestampService newTimestampSignatureService() {
-		return new ITextPDFSignatureService(true, new ITextSignatureDrawerFactory());
+	public PdfBoxSignatureDrawer getSignatureDrawer(SignatureImageParameters imageParameters) {
+		// Custom drawer(s) can be injected with a new Factory and a custom instance of
+		// IPdfObjFactory
+		return new DefaultPdfBoxVisibleSignatureDrawer();
 	}
 
 }

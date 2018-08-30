@@ -18,23 +18,24 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.openpdf;
+package eu.europa.esig.dss.pdf.openpdf.visible;
 
-import eu.europa.esig.dss.pdf.IPdfObjFactory;
-import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PDFTimestampService;
-import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawerFactory;
+import com.lowagie.text.pdf.PdfSignatureAppearance;
 
-public class ITextPdfObjFactory implements IPdfObjFactory {
+import eu.europa.esig.dss.pades.SignatureImageParameters;
 
-	@Override
-	public PDFSignatureService newPAdESSignatureService() {
-		return new ITextPDFSignatureService(false, new ITextSignatureDrawerFactory());
-	}
+public abstract class AbstractITextSignatureDrawer implements ITextSignatureDrawer {
+
+	protected String signatureFieldId;
+	protected SignatureImageParameters parameters;
+	protected PdfSignatureAppearance appearance;
 
 	@Override
-	public PDFTimestampService newTimestampSignatureService() {
-		return new ITextPDFSignatureService(true, new ITextSignatureDrawerFactory());
+	public void init(String signatureFieldId, SignatureImageParameters parameters, PdfSignatureAppearance appearance) {
+		this.signatureFieldId = signatureFieldId;
+		this.parameters = parameters;
+		this.appearance = appearance;
 	}
+
 
 }

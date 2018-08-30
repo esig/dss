@@ -1,8 +1,12 @@
-package eu.europa.esig.dss.pades.signature.visible;
+package eu.europa.esig.dss.pdf.visible;
 
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
+import eu.europa.esig.dss.pdf.visible.ImageTextWriter;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
+
 import org.junit.Assert;
 import org.junit.Test;
 

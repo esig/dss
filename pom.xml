@@ -53,7 +53,7 @@
 		<xmlsec.version>2.0.10</xmlsec.version>
 		<xalan.version>2.7.2</xalan.version>
 		<pdfbox.version>2.0.11</pdfbox.version>
-		<openpdf.version>1.2.1</openpdf.version>
+		<openpdf.version>1.2.2</openpdf.version>
 		<httpclient.version>4.5.5</httpclient.version>
 		<rs-api.version>2.0.1</rs-api.version>
 		

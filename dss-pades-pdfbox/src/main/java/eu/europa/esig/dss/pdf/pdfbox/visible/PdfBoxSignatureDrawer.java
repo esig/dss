@@ -18,23 +18,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.openpdf;
+package eu.europa.esig.dss.pdf.pdfbox.visible;
 
-import eu.europa.esig.dss.pdf.IPdfObjFactory;
-import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PDFTimestampService;
-import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawerFactory;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
 
-public class ITextPdfObjFactory implements IPdfObjFactory {
+import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 
-	@Override
-	public PDFSignatureService newPAdESSignatureService() {
-		return new ITextPDFSignatureService(false, new ITextSignatureDrawerFactory());
-	}
+public interface PdfBoxSignatureDrawer extends SignatureDrawer {
 
-	@Override
-	public PDFTimestampService newTimestampSignatureService() {
-		return new ITextPDFSignatureService(true, new ITextSignatureDrawerFactory());
-	}
+	void init(SignatureImageParameters parameters, PDDocument document, SignatureOptions signatureOptions);
 
 }

@@ -23,17 +23,18 @@ package eu.europa.esig.dss.pdf.pdfbox;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
+import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
 
 public class PdfBoxObjectFactory implements IPdfObjFactory {
 
 	@Override
 	public PDFSignatureService newPAdESSignatureService() {
-		return new PdfBoxSignatureService(false);
+		return new PdfBoxSignatureService(false, new PdfBoxSignatureDrawerFactory());
 	}
 
 	@Override
 	public PDFTimestampService newTimestampSignatureService() {
-		return new PdfBoxSignatureService(true);
+		return new PdfBoxSignatureService(true, new PdfBoxSignatureDrawerFactory());
 	}
 
 }

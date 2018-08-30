@@ -18,23 +18,24 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.openpdf;
+package eu.europa.esig.dss.pdf.visible;
 
-import eu.europa.esig.dss.pdf.IPdfObjFactory;
-import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.PDFTimestampService;
-import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawerFactory;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
 
-public class ITextPdfObjFactory implements IPdfObjFactory {
+/**
+ * Factory of {@code SignatureDrawer}
+ */
+public interface SignatureDrawerFactory {
 
-	@Override
-	public PDFSignatureService newPAdESSignatureService() {
-		return new ITextPDFSignatureService(false, new ITextSignatureDrawerFactory());
-	}
-
-	@Override
-	public PDFTimestampService newTimestampSignatureService() {
-		return new ITextPDFSignatureService(true, new ITextSignatureDrawerFactory());
-	}
+	/**
+	 * This method builds an instance of {@code SignatureDrawer} depending of the
+	 * given {@code SignatureImageParameters}
+	 * 
+	 * @param imageParameters
+	 *                        the parameters to follow to build the visible
+	 *                        signature
+	 * @return an instance of {@code SignatureDrawer}
+	 */
+	SignatureDrawer getSignatureDrawer(SignatureImageParameters imageParameters);
 
 }

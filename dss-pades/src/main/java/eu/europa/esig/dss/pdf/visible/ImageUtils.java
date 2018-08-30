@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pades.signature.visible;
+package eu.europa.esig.dss.pdf.visible;
 
 import java.awt.Dimension;
 import java.awt.Font;

@@ -35,9 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.Font;
-import com.lowagie.text.Image;
-import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.AcroFields.Item;
 import com.lowagie.text.pdf.ByteBuffer;
@@ -65,7 +62,6 @@ import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
@@ -77,6 +73,8 @@ import eu.europa.esig.dss.pdf.PdfSigDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
+import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawer;
+import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawerFactory;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -98,8 +96,8 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	 *                  if true, the instance is used to generate DocumentTypestamp
 	 *                  if false, it is used to generate a signature layer
 	 */
-	ITextPDFSignatureService(boolean timestamp) {
-		super(timestamp);
+	ITextPDFSignatureService(boolean timestamp, ITextSignatureDrawerFactory signatureDrawerFactory) {
+		super(timestamp, signatureDrawerFactory);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -151,7 +149,6 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				sap.setCertificationLevel(permission.getCode());
 			}
 
-			sap.setSignDate(cal);
 			dic.put(PdfName.M, new PdfDate(cal));
 
 		}
@@ -159,8 +156,10 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		sap.setCryptoDictionary(dic);
 
 		SignatureImageParameters sip = getImageParameters(parameters);
-		if (sip != null) {
-			fillSignatureApparence(sap, sip, parameters.getSignatureFieldId());
+		if (sip != null && signatureDrawerFactory != null) {
+			ITextSignatureDrawer signatureDrawer = (ITextSignatureDrawer) signatureDrawerFactory.getSignatureDrawer(sip);
+			signatureDrawer.init(parameters.getSignatureFieldId(), sip, sap);
+			signatureDrawer.draw();
 		}
 
 		int csize = parameters.getSignatureSize();
@@ -170,41 +169,6 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		sap.preClose(exc);
 
 		return stp;
-	}
-
-	protected void fillSignatureApparence(PdfSignatureAppearance sap, SignatureImageParameters sip, String signatureFieldId)
-			throws DocumentException, IOException {
-		SignatureImageTextParameters sit = sip.getTextParameters();
-		if (sit != null) {
-			java.awt.Font font = sit.getFont();
-			Font itextFont = new Font();
-			itextFont.setColor(sit.getTextColor());
-			itextFont.setFamily(font.getFamily());
-			itextFont.setSize(font.getSize());
-			itextFont.setStyle(font.getStyle());
-
-			sap.setLayer2Font(itextFont);
-			sap.setLayer2Text(sit.getText());
-		} else {
-			// Avoid text building from certs,...
-			sap.setLayer2Text("");
-		}
-
-		if (Utils.isStringNotBlank(signatureFieldId)) {
-			sap.setVisibleSignature(signatureFieldId);
-		} else {
-			Rectangle rect = new Rectangle(sip.getxAxis(), sip.getyAxis(), sip.getxAxis() + sip.getWidth(), sip.getyAxis() + sip.getHeight());
-			sap.setVisibleSignature(rect, sip.getPage());
-		}
-
-		DSSDocument image = sip.getImage();
-		if (image != null) {
-			sap.setRender(PdfSignatureAppearance.SignatureRenderGraphicAndDescription);
-			sap.setSignatureGraphic(Image.getInstance(DSSUtils.toByteArray(image)));
-		}
-
-		int zoom = sip.getZoom();
-		sap.setImageScale((float) (zoom / 100.0));
 	}
 
 	@SuppressWarnings("unchecked")

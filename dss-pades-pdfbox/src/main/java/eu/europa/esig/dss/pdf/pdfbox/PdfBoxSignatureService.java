@@ -63,6 +63,7 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PAdESConstants;
@@ -73,6 +74,8 @@ import eu.europa.esig.dss.pdf.PdfSigDict;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
+import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
+import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -84,8 +87,6 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxSignatureService.class);
 
-	protected PdfBoxVisibleSignatureDrawer visibleSignatureDrawer = new DefaultPdfBoxVisibleSignatureDrawer();
-
 	/**
 	 * Constructor for the PdfBoxSignatureService
 	 * 
@@ -93,19 +94,8 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	 *                  if true, the instance is used to generate DocumentTypestamp
 	 *                  if false, it is used to generate a signature layer
 	 */
-	PdfBoxSignatureService(boolean timestamp) {
-		super(timestamp);
-	}
-
-	/**
-	 * This method allows to inject a custom {@Code PdfBoxVisibleSignatureDrawer}
-	 * 
-	 * @param visibleSignatureDrawer
-	 *            an implementation of {@Code PdfBoxVisibleSignatureDrawer} which
-	 *            generates the visible signature
-	 */
-	public void setVisibleSignatureDrawer(PdfBoxVisibleSignatureDrawer visibleSignatureDrawer) {
-		this.visibleSignatureDrawer = visibleSignatureDrawer;
+	PdfBoxSignatureService(boolean timestamp, PdfBoxSignatureDrawerFactory signatureDrawerFactory) {
+		super(timestamp, signatureDrawerFactory);
 	}
 
 	@Override
@@ -140,26 +130,33 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	private byte[] signDocumentAndReturnDigest(final PAdESSignatureParameters parameters, final byte[] signatureBytes, final OutputStream fileOutputStream,
 			final PDDocument pdDocument, final DigestAlgorithm digestAlgorithm) throws DSSException {
 
-		final PDSignature pdSignature = createSignatureDictionary(parameters, pdDocument);
-		try (SignatureOptions options = createSignatureOptions(pdDocument, parameters)) {
+		final MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
+		SignatureInterface signatureInterface = new SignatureInterface() {
 
-			final MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
-			// register signature dictionary and sign interface
-			SignatureInterface signatureInterface = new SignatureInterface() {
+			@Override
+			public byte[] sign(InputStream content) throws IOException {
 
-				@Override
-				public byte[] sign(InputStream content) throws IOException {
-
-					byte[] b = new byte[4096];
-					int count;
-					while ((count = content.read(b)) > 0) {
-						digest.update(b, 0, count);
-					}
-					return signatureBytes;
+				byte[] b = new byte[4096];
+				int count;
+				while ((count = content.read(b)) > 0) {
+					digest.update(b, 0, count);
 				}
-			};
+				return signatureBytes;
+			}
+		};
 
+
+		final PDSignature pdSignature = createSignatureDictionary(parameters, pdDocument);
+		try (SignatureOptions options = new SignatureOptions()) {
 			options.setPreferredSignatureSize(parameters.getSignatureSize());
+
+			SignatureImageParameters imageParameters = getImageParameters(parameters);
+			if (imageParameters != null && signatureDrawerFactory != null) {
+				PdfBoxSignatureDrawer signatureDrawer = (PdfBoxSignatureDrawer) signatureDrawerFactory.getSignatureDrawer(imageParameters);
+				signatureDrawer.init(imageParameters, pdDocument, options);
+				signatureDrawer.draw();
+			}
+
 			pdDocument.addSignature(pdSignature, signatureInterface, options);
 
 			saveDocumentIncrementally(parameters, fileOutputStream, pdDocument);
@@ -167,11 +164,6 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
-	}
-
-	protected SignatureOptions createSignatureOptions(PDDocument pdDocument, PAdESSignatureParameters parameters)
-			throws IOException {
-		return visibleSignatureDrawer.createVisualSignature(pdDocument, getImageParameters(parameters));
 	}
 
 	private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters, PDDocument pdDocument) {
