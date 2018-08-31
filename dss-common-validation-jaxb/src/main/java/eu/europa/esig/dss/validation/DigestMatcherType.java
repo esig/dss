@@ -2,6 +2,13 @@ package eu.europa.esig.dss.validation;
 
 public enum DigestMatcherType {
 
-	REFERENCE, SIGNED_PROPERTIES, MESSAGE_DIGEST, MESSAGE_IMPRINT
+	/* XAdES */
+	REFERENCE, OBJECT, MANIFEST, SIGNED_PROPERTIES,
+
+	/* CAdES */
+	MESSAGE_DIGEST,
+
+	/* Timestamp */
+	MESSAGE_IMPRINT
 
 }

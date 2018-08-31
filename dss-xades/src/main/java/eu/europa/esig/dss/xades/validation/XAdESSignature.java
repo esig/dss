@@ -66,6 +66,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
+import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
@@ -671,8 +672,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getContentType() {
-
-		return "text/xml";
+		return MimeType.XML.getMimeTypeString();
 	}
 
 	@Override
@@ -1202,7 +1202,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 					if (xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType())) {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
-						signedPropertiesFound = true;
+						signedPropertiesFound = findSignedPropertiesById(reference.getURI());
+					} else if (Reference.OBJECT_URI.equals(reference.getType())) {
+						validation.setType(DigestMatcherType.OBJECT);
+						referenceFound = findObjectById(reference.getURI());
+					} else if (Reference.MANIFEST_URI.equals(reference.getType())) {
+						validation.setType(DigestMatcherType.MANIFEST);
+						referenceFound = findManifestById(reference.getURI());
 					} else {
 						validation.setType(DigestMatcherType.REFERENCE);
 						referenceFound = true;
@@ -1232,6 +1238,29 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		return referenceValidations;
+	}
+
+	private boolean findSignedPropertiesById(String uri) {
+		String signedPropertiesById = xPathQueryHolder.XPATH_SIGNED_PROPERTIES + "[@Id='" + getId(uri) + "']";
+		return DomUtils.getNode(signatureElement, signedPropertiesById) != null;
+	}
+
+	private boolean findObjectById(String uri) {
+		String objectById = XPathQueryHolder.XPATH_OBJECT + "[@Id='" + getId(uri) + "']";
+		return DomUtils.getNode(signatureElement, objectById) != null;
+	}
+
+	private boolean findManifestById(String uri) {
+		String manifestById = XPathQueryHolder.XPATH_MANIFEST + "[@Id='" + getId(uri) + "']";
+		return DomUtils.getNode(signatureElement, manifestById) != null;
+	}
+
+	private String getId(String uri) {
+		String id = uri;
+		if (uri.startsWith("#")) {
+			id = id.substring(1);
+		}
+		return id;
 	}
 
 	private ReferenceValidation notFound(DigestMatcherType type) {

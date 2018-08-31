@@ -405,6 +405,8 @@
 		<xs:restriction base="xs:string">
 			<!-- XAdES -->
 			<xs:enumeration value="REFERENCE" />
+			<xs:enumeration value="OBJECT" />
+			<xs:enumeration value="MANIFEST" />
 			<xs:enumeration value="SIGNED_PROPERTIES" />
 			
 			<!-- CAdES -->
