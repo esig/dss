@@ -10,7 +10,8 @@ import org.junit.runners.Suite.SuiteClasses;
 		PAdESLevelBOnlySigningCert.class, PAdESLevelBWithContentTimestamp.class, PAdESLevelBWithDSA.class, PAdESLevelBWithECDSA.class,
 		PAdESLevelBWithMoreThanOneSecondDelay.class, PAdESLevelBWithSHA256andMGF1.class, PAdESLevelImpossibleLTAException.class,
 		PAdESLevelImpossibleLTException.class, PAdESLevelLT.class, PAdESLevelLTA.class, PAdESLevelLTWrongAIA.class, PAdESLevelT.class,
-		PAdESLTACheckTimeStampedTimestampID.class, PAdESLTACheckTimeStampID.class, PDFOverrideFilters.class, TwoPAdESSigniatureMustHaveDifferentId.class })
+		PAdESLTACheckTimeStampedTimestampID.class, PAdESLTACheckTimeStampID.class, PDFOverrideFilters.class, TwoPAdESSigniatureMustHaveDifferentId.class,
+		PAdESLevelBHuge.class })
 public class PAdESSignatureSuite {
 
 }
