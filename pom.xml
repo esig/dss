@@ -51,8 +51,6 @@
 
 		<bouncycastle.version>1.60</bouncycastle.version>
 		<xmlsec.version>2.0.10</xmlsec.version>
-		<xalan.version>2.7.2</xalan.version>
-		<xerces.version>2.12.0</xerces.version>
 		<pdfbox.version>2.0.11</pdfbox.version>
 		<openpdf.version>1.2.2</openpdf.version>
 		<httpclient.version>4.5.5</httpclient.version>
@@ -643,16 +641,6 @@
 				<groupId>org.apache.santuario</groupId>
 				<artifactId>xmlsec</artifactId>
 				<version>${xmlsec.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>xalan</groupId>
-				<artifactId>xalan</artifactId>
-				<version>${xalan.version}</version>
-			</dependency>
-			<dependency>
-			    <groupId>xerces</groupId>
-			    <artifactId>xercesImpl</artifactId>
-			    <version>${xerces.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.bouncycastle</groupId>

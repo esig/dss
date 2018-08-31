@@ -37,7 +37,6 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -55,7 +54,7 @@ public final class DomUtils {
 	private static final XPathFactory factory = XPathFactory.newInstance();
 	private static NamespaceContextMap namespacePrefixMapper;
 
-	private static final Map<String, String> namespaces;
+	public static final Map<String, String> namespaces;
 
 	static {
 		namespacePrefixMapper = new NamespaceContextMap();
@@ -107,7 +106,6 @@ public final class DomUtils {
 		namespacePrefixMapper.registerNamespace(prefix, namespace);
 		return put == null;
 	}
-
 
 	/**
 	 * This method returns a new instance of TransformerFactory with secured features enabled
@@ -233,26 +231,6 @@ public final class DomUtils {
 		} catch (Exception e) {
 			throw new DSSException("Unable to parse content (XML expected)", e);
 		}
-	}
-
-	/**
-	 * Creates a DOM document without document element.
-	 *
-	 * @param namespaceURI
-	 *            the namespace URI of the document element to create or null
-	 * @param qualifiedName
-	 *            the qualified name of the document element to be created or null
-	 * @return {@link org.w3c.dom.Document}
-	 */
-	public static Document createDocument(final String namespaceURI, final String qualifiedName) {
-		DOMImplementation domImpl;
-		try {
-			domImpl = dbFactory.newDocumentBuilder().getDOMImplementation();
-		} catch (ParserConfigurationException e) {
-			throw new DSSException(e);
-		}
-
-		return domImpl.createDocument(namespaceURI, qualifiedName, null);
 	}
 
 	/**
@@ -520,14 +498,12 @@ public final class DomUtils {
 	 * @return a new instance of InMemoryDocument with the XML and the given filename
 	 */
 	public static DSSDocument createDssDocumentFromDomDocument(Document document, String name) {
-		DSSDocument dssDoc = null;
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			DomUtils.writeDocumentTo(document, baos);
-			dssDoc = new InMemoryDocument(baos.toByteArray(), name, MimeType.XML);
+			return new InMemoryDocument(baos.toByteArray(), name, MimeType.XML);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
-		return dssDoc;
 	}
 
 	/**

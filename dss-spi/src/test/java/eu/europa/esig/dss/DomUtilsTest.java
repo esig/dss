@@ -52,4 +52,9 @@ public class DomUtilsTest {
 		DomUtils.buildDOM(new FileInputStream("src/test/resources/xml_entity.xml"));
 	}
 
+	@Test
+	public void getSecureTransformer() {
+		assertNotNull(DomUtils.getSecureTransformer());
+	}
+
 }

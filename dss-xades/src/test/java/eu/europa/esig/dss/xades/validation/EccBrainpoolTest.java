@@ -1,10 +1,11 @@
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -22,7 +23,7 @@ public class EccBrainpoolTest {
 		Reports reports = sdv.validateDocument();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertTrue(signatureWrapper.isBLevelTechnicallyValid());
+		assertEquals(EncryptionAlgorithm.ECDSA, signatureWrapper.getEncryptionAlgorithm());
 	}
 
 }
