@@ -373,29 +373,22 @@ public class PAdESSignature extends CAdESSignature {
 		case PDF_NOT_ETSI:
 			break;
 		case PAdES_BASELINE_LTA:
-			dataForLevelPresent = hasLTAProfile();
-			// c &= fct() will process fct() all time ; c = c && fct() will process fct() only if c is true
-			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_LT);
+			dataForLevelPresent = hasLTAProfile() && hasLTProfile() && hasCAdESDetachedSubFilter();
 			break;
 		case PKCS7_LTA:
-			dataForLevelPresent = hasLTAProfile();
-			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_LT);
+			dataForLevelPresent = hasLTAProfile() && hasLTProfile() && hasPKCS7SubFilter();
 			break;
 		case PAdES_BASELINE_LT:
-			dataForLevelPresent = hasLTProfile();
-			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_T);
+			dataForLevelPresent = hasLTProfile() && (hasTProfile() || hasLTAProfile()) && hasCAdESDetachedSubFilter();
 			break;
 		case PKCS7_LT:
-			dataForLevelPresent = hasLTProfile();
-			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_T);
+			dataForLevelPresent = hasLTProfile() && (hasTProfile() || hasLTAProfile()) && hasPKCS7SubFilter();
 			break;
 		case PAdES_BASELINE_T:
-			dataForLevelPresent = hasTProfile();
-			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_B);
+			dataForLevelPresent = hasTProfile() && hasCAdESDetachedSubFilter();
 			break;
 		case PKCS7_T:
-			dataForLevelPresent = hasTProfile();
-			dataForLevelPresent = dataForLevelPresent && isDataForSignatureLevelPresent(SignatureLevel.PKCS7_B);
+			dataForLevelPresent = hasTProfile() && hasPKCS7SubFilter();
 			break;
 		case PAdES_BASELINE_B:
 			dataForLevelPresent = hasCAdESDetachedSubFilter();
