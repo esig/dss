@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -71,7 +70,7 @@ public class CertificatePoolTest {
 	}
 
 	@Test
-	public void test() throws InterruptedException, ExecutionException {
+	public void test() {
 
 		final ExecutorService threadPool = Executors.newFixedThreadPool(NB_THREADS);
 		List<Future<Boolean>> futures = new ArrayList<Future<Boolean>>();
@@ -100,8 +99,15 @@ public class CertificatePoolTest {
 		}
 
 		for (Future<Boolean> future : futures) {
-			assertTrue(future.get());
+			try {
+				assertTrue(future.get());
+			} catch (Exception e) {
+				LOG.error(e.getMessage(), e);
+			}
 		}
+
+		threadPool.shutdown();
+
 	}
 
 }
