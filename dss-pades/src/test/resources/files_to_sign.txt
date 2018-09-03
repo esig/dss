@@ -1,0 +1,6 @@
+/doc.pdf
+/EmptyPage.pdf
+/not_signed_pdfa.pdf
+/PDF.pdf
+/pdf-two-fields.pdf
+/sample.pdf

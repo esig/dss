@@ -20,8 +20,9 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import java.io.File;
-import java.io.FileFilter;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -31,7 +32,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -40,17 +42,18 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 public class PAdESLevelBLoop extends AbstractPAdESTestSignature {
 
 	@Parameters(name = "Signing {index} : {0}")
-	public static Collection<Object[]> data() {
-		File folder = new File("src/test/resources");
-		File[] listFiles = folder.listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				return pathname.getName().endsWith("pdf") && !pathname.getName().contains("corrupted");
-			}
-		});
+	public static Collection<Object[]> data() throws IOException {
+
+		// We use this file because File.listFiles() doesn't work from another jar
+		String listFiles = "/files_to_sign.txt";
+
 		Collection<Object[]> dataToRun = new ArrayList<Object[]>();
-		for (File file : listFiles) {
-			dataToRun.add(new Object[] { file });
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(PAdESLevelBLoop.class.getResourceAsStream(listFiles)))) {
+			String filepath;
+			while ((filepath = br.readLine()) != null) {
+				dataToRun.add(new Object[] { new InMemoryDocument(PAdESLevelBLoop.class.getResourceAsStream(filepath), "original.pdf", MimeType.PDF) });
+			}
+
 		}
 		return dataToRun;
 	}
@@ -59,16 +62,12 @@ public class PAdESLevelBLoop extends AbstractPAdESTestSignature {
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	private final File fileToSign;
-
-	public PAdESLevelBLoop(File fileToSign) {
-		this.fileToSign = fileToSign;
+	public PAdESLevelBLoop(DSSDocument documentToSign) {
+		this.documentToSign = documentToSign;
 	}
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new FileDocument(fileToSign);
-
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
