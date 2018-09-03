@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pdf.openpdf;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ITextPdfDict.class);
 
-	PdfDictionary wrapped;
+	private PdfDictionary wrapped;
 
 	public ITextPdfDict(PdfDictionary wrapped) {
 		if (wrapped == null) {
@@ -80,14 +81,13 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 	public boolean hasANameWithValue(String name, String value) {
 		PdfName asName = wrapped.getAsName(new PdfName(name));
 		if (asName == null) {
-			LOG.info("No value with name " + name);
+			LOG.info("No value with name {}", name);
 			return false;
 		}
 
 		PdfName asValue = new PdfName(value);
 		boolean r = asName.equals(asValue);
-		LOG.info("Comparison of " + asName + "(" + asName.getClass() + ")"
-				+ " and " + asValue + " : " + r);
+		LOG.info("Comparison of {} ({}) and {} : {}", asName, asName.getClass(), asValue, r);
 		return r;
 	}
 
@@ -106,9 +106,15 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public String[] list() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<PdfName> keyPdfNames = wrapped.getKeys();
+		String[] keys = new String[keyPdfNames.size()];
+		PdfName[] array = keyPdfNames.toArray(new PdfName[keyPdfNames.size()]);
+		for (int i = 0; i < array.length; i++) {
+			keys[i] = PdfName.decodeName(array[i].toString());
+		}
+		return keys;
 	}
 
 	@Override

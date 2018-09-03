@@ -323,10 +323,11 @@ public class DiagnosticDataBuilder {
 			signingCertificateToken = theCertificateValidity.getCertificateToken();
 		}
 
-		xmlSignature.setCertificateChain(getXmlForCertificateChain(signingCertificateToken.getPublicKey()));
-
+		if (signingCertificateToken != null) {
+			xmlSignature.setCertificateChain(getXmlForCertificateChain(signingCertificateToken.getPublicKey()));
+			xmlSignature.setBasicSignature(getXmlBasicSignature(signature, signingCertificateToken));
+		}
 		xmlSignature.setDigestMatchers(getXmlDigestMatchers(signature));
-		xmlSignature.setBasicSignature(getXmlBasicSignature(signature, signingCertificateToken));
 
 		xmlSignature.setPolicy(getXmlPolicy(signature));
 

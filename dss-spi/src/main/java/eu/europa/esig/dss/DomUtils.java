@@ -54,7 +54,7 @@ public final class DomUtils {
 	private static final XPathFactory factory = XPathFactory.newInstance();
 	private static NamespaceContextMap namespacePrefixMapper;
 
-	public static final Map<String, String> namespaces;
+	private static final Map<String, String> namespaces;
 
 	static {
 		namespacePrefixMapper = new NamespaceContextMap();
@@ -524,6 +524,15 @@ public final class DomUtils {
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
+	}
+
+	/**
+	 * This method returns stored namespace definitions
+	 * 
+	 * @return a map with the prefix and the related URI
+	 */
+	public static Map<String, String> getCurrentNamespaces() {
+		return new HashMap<String, String>(namespaces);
 	}
 
 }

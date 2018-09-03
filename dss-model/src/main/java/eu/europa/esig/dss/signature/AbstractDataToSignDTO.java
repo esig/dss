@@ -5,6 +5,10 @@ import eu.europa.esig.dss.RemoteSignatureParameters;
 public abstract class AbstractDataToSignDTO {
 
 	private RemoteSignatureParameters parameters;
+	
+	protected AbstractDataToSignDTO() {
+		super();
+	}
 
 	protected AbstractDataToSignDTO(RemoteSignatureParameters parameters) {
 		super();

@@ -99,8 +99,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public byte[] digest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm)
-			throws DSSException {
+	public byte[] digest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm) {
 
 		final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
 		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); PDDocument pdDocument = PDDocument.load(toSignDocument.openStream())) {
@@ -113,7 +112,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	public DSSDocument sign(final DSSDocument toSignDocument, final byte[] signatureValue, final PAdESSignatureParameters parameters,
-			final DigestAlgorithm digestAlgorithm) throws DSSException {
+			final DigestAlgorithm digestAlgorithm) {
 
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); PDDocument pdDocument = PDDocument.load(toSignDocument.openStream())) {
 
@@ -128,7 +127,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	private byte[] signDocumentAndReturnDigest(final PAdESSignatureParameters parameters, final byte[] signatureBytes, final OutputStream fileOutputStream,
-			final PDDocument pdDocument, final DigestAlgorithm digestAlgorithm) throws DSSException {
+			final PDDocument pdDocument, final DigestAlgorithm digestAlgorithm) {
 
 		final MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
 		SignatureInterface signatureInterface = new SignatureInterface() {
@@ -512,7 +511,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public List<String> getAvailableSignatureFields(DSSDocument document) throws DSSException {
+	public List<String> getAvailableSignatureFields(DSSDocument document) {
 		List<String> result = new ArrayList<String>();
 		try (InputStream is = document.openStream()) {
 			PDDocument pdfDoc = PDDocument.load(is);

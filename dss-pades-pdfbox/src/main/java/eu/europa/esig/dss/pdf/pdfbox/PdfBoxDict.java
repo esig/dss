@@ -68,10 +68,7 @@ class PdfBoxDict implements PdfDict {
 	@Override
 	public boolean hasAName(String name) {
 		COSBase dictionaryObject = wrapped.getDictionaryObject(name);
-		if (dictionaryObject == null) {
-			return false;
-		}
-		return true;
+		return dictionaryObject != null;
 	}
 
 	@Override
@@ -131,7 +128,6 @@ class PdfBoxDict implements PdfDict {
 			return cal.getTime();
 		}
 		return null;
-
 	}
 
 }

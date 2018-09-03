@@ -47,7 +47,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
  */
 public class PDFDocumentValidator extends SignedDocumentValidator {
 
-	final PDFSignatureService pdfSignatureService;
+	private final PDFSignatureService pdfSignatureService;
 
 	/**
 	 * Default constructor used with reflexion (see SignedDocumentValidator)
