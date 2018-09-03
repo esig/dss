@@ -2,6 +2,8 @@ package eu.europa.esig.dss.pades;
 
 import static org.junit.Assert.assertEquals;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -18,11 +20,14 @@ import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
 public class PdfSignatureOrDocTimestampInfoComparatorTest {
 
 	private MockPdfSignature mock0;
+	private MockPdfSignature mock0bis;
 	private MockPdfSignature mock1;
 	private MockPdfSignature mock2;
 
 	@Before
-	public void init() {
+	public void init() throws ParseException {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		/*
 		 * [0, 91747, 124517, 723]
@@ -30,9 +35,11 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		 * [0, 160367, 193137, 642]
 		 */
 
-		mock0 = new MockPdfSignature(new int[] { 0, 91747, 124517, 723 });
+		mock0 = new MockPdfSignature(new int[] { 0, 91747, 124517, 723 }, sdf.parse("2002-01-01"));
 		mock1 = new MockPdfSignature(new int[] { 0, 126092, 158862, 626 });
 		mock2 = new MockPdfSignature(new int[] { 0, 160367, 193137, 642 });
+
+		mock0bis = new MockPdfSignature(new int[] { 0, 91747, 124517, 723 }, sdf.parse("2004-01-01"));
 	}
 
 	@Test
@@ -81,12 +88,31 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		assertEquals(mock2, listToSort.get(2));
 	}
 
+	@Test
+	public void test4() {
+		List<PdfSignatureOrDocTimestampInfo> listToSort = new ArrayList<PdfSignatureOrDocTimestampInfo>();
+
+		listToSort.add(mock0bis);
+		listToSort.add(mock0);
+
+		Collections.sort(listToSort, new PdfSignatureOrDocTimestampInfoComparator());
+
+		assertEquals(mock0, listToSort.get(0));
+		assertEquals(mock0bis, listToSort.get(1));
+	}
+
 	private class MockPdfSignature implements PdfSignatureOrDocTimestampInfo {
 
 		private int[] byteRange;
+		private Date signingDate;
 
 		MockPdfSignature(int[] byteRange) {
+			this(byteRange, null);
+		}
+
+		MockPdfSignature(int[] byteRange, Date signingDate) {
 			this.byteRange = byteRange;
+			this.signingDate = signingDate;
 		}
 
 		@Override
@@ -120,7 +146,7 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 
 		@Override
 		public Date getSigningDate() {
-			return null;
+			return signingDate;
 		}
 
 		@Override

@@ -21,7 +21,11 @@
 package eu.europa.esig.dss.pdf;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Comparator;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This comparator is used to sort signatures by ByteRange
@@ -29,6 +33,8 @@ import java.util.Comparator;
 public class PdfSignatureOrDocTimestampInfoComparator implements Comparator<PdfSignatureOrDocTimestampInfo>, Serializable {
 
 	private static final long serialVersionUID = 1451660656464810618L;
+
+	private static final Logger LOG = LoggerFactory.getLogger(PdfSignatureOrDocTimestampInfoComparator.class);
 
 	@Override
 	public int compare(PdfSignatureOrDocTimestampInfo o1, PdfSignatureOrDocTimestampInfo o2) {
@@ -40,10 +46,13 @@ public class PdfSignatureOrDocTimestampInfoComparator implements Comparator<PdfS
 		int[] byteRange1 = o1.getSignatureByteRange();
 		int[] byteRange2 = o2.getSignatureByteRange();
 
-		int totalLenght1 = byteRange1[2] + byteRange1[3];
-		int signedContentPre = byteRange2[1] - byteRange2[0];
+		int diff = byteRange1[2] - byteRange2[2];
 
-		return totalLenght1 < signedContentPre ? -1 : totalLenght1 == signedContentPre ? 0 : 1;
+		if (diff == 0 && Arrays.equals(byteRange1, byteRange2)) {
+			LOG.warn("More than one signature with the same byte range !");
+			return o1.getSigningDate().compareTo(o2.getSigningDate());
+		}
+		return diff;
 	}
 
 }

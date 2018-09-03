@@ -308,7 +308,7 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			linkSignatures(result);
 
 		} catch (IOException e) {
-			throw new DSSException("Unable to analyze document", e);
+			LOG.warn("Unable to analyze document", e);
 		}
 		return result;
 	}
@@ -450,8 +450,21 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
-		// TODO Auto-generated method stub
-		return null;
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); InputStream is = document.openStream(); PdfReader reader = new PdfReader(is)) {
+
+			PdfStamper stp = new PdfStamper(reader, baos, '\0', true);
+			
+			stp.addSignature(parameters.getName(), parameters.getPage() + 1, parameters.getOriginX(), parameters.getOriginY(), parameters.getWidth(),
+					parameters.getHeight());
+
+			stp.close();
+
+			DSSDocument signature = new InMemoryDocument(baos.toByteArray());
+			signature.setMimeType(MimeType.PDF);
+			return signature;
+		} catch (IOException e) {
+			throw new DSSException("Unable to add a signature field", e);
+		}
 	}
 
 }

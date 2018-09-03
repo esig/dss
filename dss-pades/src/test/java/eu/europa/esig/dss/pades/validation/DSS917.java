@@ -31,8 +31,8 @@ public class DSS917 {
 		List<SignatureWrapper> allSignatures = diagnosticData.getSignatures();
 		assertEquals(2, allSignatures.size());
 
-		assertTrue(allSignatures.get(0).isBLevelTechnicallyValid());
-		assertFalse(allSignatures.get(1).isBLevelTechnicallyValid());
+		assertFalse(allSignatures.get(0).isBLevelTechnicallyValid());
+		assertTrue(allSignatures.get(1).isBLevelTechnicallyValid());
 	}
 
 	@Test

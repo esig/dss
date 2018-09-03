@@ -145,7 +145,6 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			}
 		};
 
-
 		final PDSignature pdSignature = createSignatureDictionary(parameters, pdDocument);
 		try (SignatureOptions options = new SignatureOptions()) {
 			options.setPreferredSignatureSize(parameters.getSignatureSize());
@@ -198,7 +197,8 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			}
 
 			CertificationPermission permission = parameters.getPermission();
-			// A document can contain only one signature field that contains a DocMDP transform method;
+			// A document can contain only one signature field that contains a DocMDP
+			// transform method;
 			// it shall be the first signed field in the document.
 			if (permission != null && !containsFilledSignature(pdDocument)) {
 				setMDPPermission(pdDocument, signature, permission.getCode());
@@ -230,16 +230,16 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	/**
-	 * Set the access permissions granted for this document in the DocMDP transform parameters
-	 * dictionary. Details are described in the table "Entries in the DocMDP transform parameters
-	 * dictionary" in the PDF specification.
+	 * Set the access permissions granted for this document in the DocMDP transform
+	 * parameters dictionary. Details are described in the table "Entries in the
+	 * DocMDP transform parameters dictionary" in the PDF specification.
 	 *
 	 * @param doc
-	 *            The document.
+	 *                          The document.
 	 * @param signature
-	 *            The signature object.
+	 *                          The signature object.
 	 * @param accessPermissions
-	 *            The permission value (1, 2 or 3).
+	 *                          The permission value (1, 2 or 3).
 	 */
 	public void setMDPPermission(PDDocument doc, PDSignature signature, int accessPermissions) {
 		COSDictionary sigDict = signature.getCOSObject();
@@ -291,7 +291,8 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	public void saveDocumentIncrementally(PAdESSignatureParameters parameters, OutputStream outputStream, PDDocument pdDocument) throws DSSException {
 		try {
-			// the document needs to have an ID, if not a ID based on the current system time is used, and then the
+			// the document needs to have an ID, if not a ID based on the current system
+			// time is used, and then the
 			// digest of the signed data is different
 			if (pdDocument.getDocumentId() == null) {
 				pdDocument.setDocumentId(parameters.bLevel().getSigningDate().getTime());
@@ -317,70 +318,67 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			if (Utils.isCollectionNotEmpty(pdSignatures)) {
 				LOG.debug("{} signature(s) found", pdSignatures.size());
 
-
 				for (PDSignature signature : pdSignatures) {
-					PdfDict dictionary = new PdfBoxDict(signature.getCOSObject(), doc);
-					PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
+					try {
+						PdfDict dictionary = new PdfBoxDict(signature.getCOSObject(), doc);
+						PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
 
-					final byte[] cms = signatureDictionary.getContents();
+						final byte[] cms = signatureDictionary.getContents();
 
-					byte[] cmsWithByteRange = signature.getContents(originalBytes);
+						byte[] cmsWithByteRange = signature.getContents(originalBytes);
 
-					if (!Arrays.equals(cmsWithByteRange, cms)) {
-						LOG.warn("The byte range doesn't match found /Content value!");
-					}
-
-					String subFilter = signatureDictionary.getSubFilter();
-					if (Utils.isStringEmpty(subFilter) || Utils.isArrayEmpty(cms)) {
-						LOG.warn("Wrong signature with empty subfilter or cms.");
-						continue;
-					}
-
-					byte[] signedContent = signature.getSignedContent(originalBytes);
-					int[] byteRange = signatureDictionary.getByteRange();
-
-					// /ByteRange [0 575649 632483 10206]
-					int beforeSignatureLength = byteRange[1] - byteRange[0];
-					int expectedCMSLength = byteRange[2] - byteRange[1];
-					int afterSignatureLength = byteRange[3];
-					int totalCoveredByByteRange = beforeSignatureLength + expectedCMSLength + afterSignatureLength;
-
-					boolean coverAllOriginalBytes = (originalBytesLength == totalCoveredByByteRange);
-
-					PdfSignatureOrDocTimestampInfo signatureInfo = null;
-					if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
-						boolean isArchiveTimestamp = false;
-
-						// LT or LTA
-						if (dssDictionary != null) {
-							// check is DSS dictionary already exist
-							if (isDSSDictionaryPresentInPreviousRevision(getOriginalBytes(byteRange, signedContent))) {
-								isArchiveTimestamp = true;
-							}
+						if (!Arrays.equals(cmsWithByteRange, cms)) {
+							LOG.warn("The byte range doesn't match found /Content value!");
 						}
 
-						signatureInfo = new PdfDocTimestampInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
-								coverAllOriginalBytes, isArchiveTimestamp);
-					} else {
-						signatureInfo = new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
-								coverAllOriginalBytes);
-					}
+						String subFilter = signatureDictionary.getSubFilter();
+						if (Utils.isStringEmpty(subFilter) || Utils.isArrayEmpty(cms)) {
+							LOG.warn("Wrong signature with empty subfilter or cms.");
+							continue;
+						}
 
-					if (signatureInfo != null) {
-						signatures.add(signatureInfo);
+						byte[] signedContent = signature.getSignedContent(originalBytes);
+						int[] byteRange = signatureDictionary.getByteRange();
+
+						// /ByteRange [0 575649 632483 10206]
+						int beforeSignatureLength = byteRange[1] - byteRange[0];
+						int expectedCMSLength = byteRange[2] - byteRange[1];
+						int afterSignatureLength = byteRange[3];
+						int totalCoveredByByteRange = beforeSignatureLength + expectedCMSLength + afterSignatureLength;
+
+						boolean coverAllOriginalBytes = (originalBytesLength == totalCoveredByByteRange);
+
+						PdfSignatureOrDocTimestampInfo signatureInfo = null;
+						if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
+							boolean isArchiveTimestamp = false;
+
+							// LT or LTA
+							if (dssDictionary != null) {
+								// check is DSS dictionary already exist
+								if (isDSSDictionaryPresentInPreviousRevision(getOriginalBytes(byteRange, signedContent))) {
+									isArchiveTimestamp = true;
+								}
+							}
+
+							signatureInfo = new PdfDocTimestampInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
+									coverAllOriginalBytes, isArchiveTimestamp);
+						} else {
+							signatureInfo = new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
+									coverAllOriginalBytes);
+						}
+
+						if (signatureInfo != null) {
+							signatures.add(signatureInfo);
+						}
+					} catch (Exception e) {
+						LOG.error("Unable to parse signature '" + signature.getName() + "' : ", e);
 					}
 				}
 				Collections.sort(signatures, new PdfSignatureOrDocTimestampInfoComparator());
 				linkSignatures(signatures);
-
-				for (PdfSignatureOrDocTimestampInfo sig : signatures) {
-					LOG.debug("Signature " + sig.uniqueId() + " found with byteRange " + Arrays.toString(sig.getSignatureByteRange()) + " ("
-							+ sig.getSubFilter() + ")");
-				}
 			}
-
 		} catch (Exception e) {
-			throw new DSSException("Cannot analyze signatures : " + e.getMessage(), e);
+			LOG.warn("Unable to analyze document", e);
 		}
 
 		return signatures;

@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
-import java.awt.Color;
-
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -30,7 +28,6 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -56,11 +53,6 @@ public class PAdESFieldLevelB extends AbstractPAdESTestSignature {
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
-
-		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-		textParameters.setText("My signature");
-		textParameters.setTextColor(Color.GREEN);
-		imageParameters.setTextParameters(textParameters);
 		signatureParameters.setSignatureImageParameters(imageParameters);
 
 		service = new PAdESService(getCompleteCertificateVerifier());

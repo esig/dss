@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
@@ -28,7 +29,6 @@ import java.io.InputStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.Test;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.InMemoryDocument;
 
 public class DSS1444Test {
@@ -56,11 +56,11 @@ public class DSS1444Test {
 		}
 	}
 
-	@Test(expected = DSSException.class)
+	@Test
 	public void test3bis() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/small-red.jpg")) {
 			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
-			val.getSignatures();
+			assertEquals(0, val.getSignatures().size());
 		}
 	}
 
