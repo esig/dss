@@ -6,12 +6,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -23,8 +24,10 @@ import eu.europa.esig.dss.x509.CertificateToken;
 
 public class MultiThreadsCertificateValidatorTest {
 
+	private static final Logger LOG = LoggerFactory.getLogger(MultiThreadsCertificateValidatorTest.class);
+
 	@Test
-	public void test() throws InterruptedException, ExecutionException {
+	public void test() {
 
 		ExecutorService executor = Executors.newFixedThreadPool(50);
 
@@ -35,7 +38,12 @@ public class MultiThreadsCertificateValidatorTest {
 		}
 
 		for (Future<CertificateReports> future : futures) {
-			CertificateReports certificateReports = future.get();
+			CertificateReports certificateReports = null;
+			try {
+				certificateReports = future.get();
+			} catch (Exception e) {
+				LOG.error("Cannot retrieve cert validation result", e);
+			}
 			assertNotNull(certificateReports);
 			DiagnosticData diagnosticData = certificateReports.getDiagnosticData();
 			assertNotNull(diagnosticData);
