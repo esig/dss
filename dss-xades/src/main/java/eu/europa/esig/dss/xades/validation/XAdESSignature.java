@@ -1284,8 +1284,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 			final XMLSignature santuarioSignature = new XMLSignature(signatureElement, "");
 			if (Utils.isCollectionNotEmpty(detachedContents)) {
-				santuarioSignature.addResourceResolver(
-						new OfflineResolver(detachedContents, getSignatureAlgorithm().getDigestAlgorithm()));
+				santuarioSignature.addResourceResolver(new DetachedSignatureResolver(detachedContents, getSignatureAlgorithm().getDigestAlgorithm()));
 			}
 			return santuarioSignature;
 		} catch (XMLSecurityException e) {

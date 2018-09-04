@@ -21,7 +21,7 @@ import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 
-public class OfflineResolverTest {
+public class DetachedSignatureResolverTest {
 
 	static {
 		Init.init();
@@ -29,13 +29,13 @@ public class OfflineResolverTest {
 
 	@Test(expected = ResourceResolverException.class)
 	public void nullAttribute() throws ResourceResolverException {
-		OfflineResolver resolver = new OfflineResolver(Collections.<DSSDocument> emptyList(), DigestAlgorithm.SHA256);
+		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.<DSSDocument>emptyList(), DigestAlgorithm.SHA256);
 
 		Attr attr = null;
 
 		// Empty
 		ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
-		assertFalse(resolver.engineCanResolveURI(context));
+		assertTrue(resolver.engineCanResolveURI(context));
 
 		// will throw ResourceResolverException
 		resolver.engineResolveURI(context);
@@ -43,13 +43,13 @@ public class OfflineResolverTest {
 
 	@Test(expected = ResourceResolverException.class)
 	public void nullListAndNullAttribute() throws ResourceResolverException {
-		OfflineResolver resolver = new OfflineResolver(null, DigestAlgorithm.SHA256);
+		DetachedSignatureResolver resolver = new DetachedSignatureResolver(null, DigestAlgorithm.SHA256);
 
 		Attr attr = null;
 
 		// Empty
 		ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
-		assertFalse(resolver.engineCanResolveURI(context));
+		assertTrue(resolver.engineCanResolveURI(context));
 
 		// will throw ResourceResolverException
 		resolver.engineResolveURI(context);
@@ -57,7 +57,8 @@ public class OfflineResolverTest {
 
 	@Test
 	public void nullAttributeOneDoc() throws ResourceResolverException {
-		OfflineResolver resolver = new OfflineResolver(Arrays.<DSSDocument> asList(new InMemoryDocument(new byte[] { 1, 2, 3 })), DigestAlgorithm.SHA256);
+		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Arrays.<DSSDocument>asList(new InMemoryDocument(new byte[] { 1, 2, 3 })),
+				DigestAlgorithm.SHA256);
 
 		Attr attr = null;
 
@@ -69,13 +70,13 @@ public class OfflineResolverTest {
 
 	@Test(expected = ResourceResolverException.class)
 	public void nullAttributeTwoDocs() throws ResourceResolverException {
-		OfflineResolver resolver = new OfflineResolver(
+		DetachedSignatureResolver resolver = new DetachedSignatureResolver(
 				Arrays.<DSSDocument> asList(new InMemoryDocument(new byte[] { 1, 2, 3 }), new InMemoryDocument(new byte[] { 2, 3 })), DigestAlgorithm.SHA256);
 
 		Attr attr = null;
 
 		ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
-		assertFalse(resolver.engineCanResolveURI(context));
+		assertTrue(resolver.engineCanResolveURI(context));
 
 		// 2 docs + no name -> exception
 		resolver.engineResolveURI(context);
@@ -83,7 +84,7 @@ public class OfflineResolverTest {
 
 	@Test(expected = ResourceResolverException.class)
 	public void emptyAttribute() throws ResourceResolverException {
-		OfflineResolver resolver = new OfflineResolver(Collections.<DSSDocument> emptyList(), DigestAlgorithm.SHA256);
+		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.<DSSDocument>emptyList(), DigestAlgorithm.SHA256);
 
 		Attr attr = mock(Attr.class);
 
@@ -98,7 +99,7 @@ public class OfflineResolverTest {
 
 	@Test
 	public void attributeIsAnchor() {
-		OfflineResolver resolver = new OfflineResolver(Collections.<DSSDocument> emptyList(), DigestAlgorithm.SHA256);
+		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.<DSSDocument>emptyList(), DigestAlgorithm.SHA256);
 
 		Attr attr = mock(Attr.class);
 
@@ -109,14 +110,14 @@ public class OfflineResolverTest {
 
 	@Test(expected = ResourceResolverException.class)
 	public void documentNameWithEmptyList() throws ResourceResolverException {
-		OfflineResolver resolver = new OfflineResolver(Collections.<DSSDocument> emptyList(), DigestAlgorithm.SHA256);
+		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.<DSSDocument>emptyList(), DigestAlgorithm.SHA256);
 
 		Attr attr = mock(Attr.class);
 
 		// document name + no document in the list
 		when(attr.getNodeValue()).thenReturn("sample.xml");
 		ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
-		assertFalse(resolver.engineCanResolveURI(context));
+		assertTrue(resolver.engineCanResolveURI(context));
 
 		// will throw ResourceResolverException
 		resolver.engineResolveURI(context);
@@ -124,7 +125,8 @@ public class OfflineResolverTest {
 
 	@Test(expected = ResourceResolverException.class)
 	public void engineCanResolveURIWithWrongDocumentNameInList() throws ResourceResolverException {
-		OfflineResolver resolver = new OfflineResolver(Arrays.<DSSDocument> asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "toto.xml", MimeType.XML)),
+		DetachedSignatureResolver resolver = new DetachedSignatureResolver(
+				Arrays.<DSSDocument>asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "toto.xml", MimeType.XML)),
 				DigestAlgorithm.SHA256);
 
 		Attr attr = mock(Attr.class);
@@ -132,7 +134,7 @@ public class OfflineResolverTest {
 		// document name + wrong document in the list
 		when(attr.getNodeValue()).thenReturn("sample.xml");
 		ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
-		assertFalse(resolver.engineCanResolveURI(context));
+		assertTrue(resolver.engineCanResolveURI(context));
 
 		// doc not found -> exception
 		resolver.engineResolveURI(context);
@@ -140,7 +142,8 @@ public class OfflineResolverTest {
 
 	@Test
 	public void engineCanResolveURIWithDocumentNoNameInList() throws ResourceResolverException {
-		OfflineResolver resolver = new OfflineResolver(Arrays.<DSSDocument> asList(new InMemoryDocument(new byte[] { 1, 2, 3 })), DigestAlgorithm.SHA256);
+		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Arrays.<DSSDocument>asList(new InMemoryDocument(new byte[] { 1, 2, 3 })),
+				DigestAlgorithm.SHA256);
 
 		Attr attr = mock(Attr.class);
 
@@ -154,7 +157,8 @@ public class OfflineResolverTest {
 
 	@Test
 	public void engineCanResolveURIWithDocumentNameInList() throws ResourceResolverException {
-		OfflineResolver resolver = new OfflineResolver(Arrays.<DSSDocument> asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "sample.xml", MimeType.XML)),
+		DetachedSignatureResolver resolver = new DetachedSignatureResolver(
+				Arrays.<DSSDocument>asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "sample.xml", MimeType.XML)),
 				DigestAlgorithm.SHA256);
 
 		Attr attr = mock(Attr.class);
@@ -168,7 +172,8 @@ public class OfflineResolverTest {
 
 	@Test
 	public void engineCanResolveURIWithDocumentNameInListOfMultiples() throws ResourceResolverException {
-		OfflineResolver resolver = new OfflineResolver(Arrays.<DSSDocument> asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "sample.xml", MimeType.XML),
+		DetachedSignatureResolver resolver = new DetachedSignatureResolver(
+				Arrays.<DSSDocument>asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "sample.xml", MimeType.XML),
 				new InMemoryDocument(new byte[] { 2, 3 }, "sample2.xml", MimeType.XML)), DigestAlgorithm.SHA256);
 
 		Attr attr = mock(Attr.class);
@@ -181,25 +186,11 @@ public class OfflineResolverTest {
 	}
 
 	@Test
-	public void engineCanResolveRelativeURIWithDocumentNameInList() throws ResourceResolverException {
-		OfflineResolver resolver = new OfflineResolver(Arrays.<DSSDocument> asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "sample.xml", MimeType.XML)),
-				DigestAlgorithm.SHA256);
-
-		Attr attr = mock(Attr.class);
-
-		when(attr.getNodeValue()).thenReturn("./sample.xml");
-		ResourceResolverContext context = new ResourceResolverContext(attr, null, false);
-		assertTrue(resolver.engineCanResolveURI(context));
-
-		assertNotNull(resolver.engineResolveURI(context));
-	}
-
-	@Test
 	public void engineCanResolveURIWithDigestDocument() throws ResourceResolverException {
 		DigestDocument doc = new DigestDocument();
 		doc.setName("sample.xml");
 		doc.addDigest(DigestAlgorithm.SHA256, "abcdef");
-		OfflineResolver resolver = new OfflineResolver(Arrays.<DSSDocument> asList(doc), DigestAlgorithm.SHA256);
+		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Arrays.<DSSDocument>asList(doc), DigestAlgorithm.SHA256);
 
 		Attr attr = mock(Attr.class);
 
@@ -215,7 +206,7 @@ public class OfflineResolverTest {
 		DigestDocument doc = new DigestDocument();
 		// doc.setName("sample.xml");
 		doc.addDigest(DigestAlgorithm.SHA256, "abcdef");
-		OfflineResolver resolver = new OfflineResolver(Arrays.<DSSDocument> asList(doc), DigestAlgorithm.SHA256);
+		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Arrays.<DSSDocument>asList(doc), DigestAlgorithm.SHA256);
 
 		Attr attr = mock(Attr.class);
 

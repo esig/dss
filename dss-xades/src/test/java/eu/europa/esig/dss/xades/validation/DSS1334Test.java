@@ -63,6 +63,25 @@ public class DSS1334Test extends PKIFactoryAccess {
 		assertFalse(signature.isBLevelTechnicallyValid());
 	}
 
+	@Test
+	public void testDSS1468() {
+		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1334/document-signed-xades-baseline-b--null-for-filename.xml");
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		FileDocument fileDocument = new FileDocument(ORIGINAL_FILE);
+		fileDocument.setName(null);
+		validator.setDetachedContents(Arrays.<DSSDocument>asList(fileDocument));
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
+
+		Reports reports = validator.validateDocument();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		// not valid : reference with empty URI -> not detached signature
+		assertFalse(signature.isBLevelTechnicallyValid());
+	}
+
 	@Test(expected = DSSException.class)
 	public void extendInvalidFile() {
 		DSSDocument doc = new FileDocument(
