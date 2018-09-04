@@ -46,6 +46,7 @@ import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.SignedInfo;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.signature.XMLSignatureException;
+import org.apache.xml.security.utils.XMLUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -1200,18 +1201,19 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						validation.setName(uri);
 					}
 
+					boolean noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(santuarioSignature.getDocument(), DomUtils.getId(uri));
 					if (xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType())) {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
-						signedPropertiesFound = findSignedPropertiesById(reference.getURI());
+						signedPropertiesFound = noDuplicateIdFound && findSignedPropertiesById(reference.getURI());
 					} else if (Reference.OBJECT_URI.equals(reference.getType())) {
 						validation.setType(DigestMatcherType.OBJECT);
-						referenceFound = findObjectById(reference.getURI());
+						referenceFound = noDuplicateIdFound && findObjectById(reference.getURI());
 					} else if (Reference.MANIFEST_URI.equals(reference.getType())) {
 						validation.setType(DigestMatcherType.MANIFEST);
-						referenceFound = findManifestById(reference.getURI());
+						referenceFound = noDuplicateIdFound && findManifestById(reference.getURI());
 					} else {
 						validation.setType(DigestMatcherType.REFERENCE);
-						referenceFound = true;
+						referenceFound = noDuplicateIdFound;
 					}
 
 					final Digest digest = new Digest();
@@ -1241,30 +1243,30 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private boolean findSignedPropertiesById(String uri) {
-		String signedPropertiesById = xPathQueryHolder.XPATH_SIGNED_PROPERTIES + getXPathByIdAttribute(uri);
-		return DomUtils.getNode(signatureElement, signedPropertiesById) != null;
+		return getSignedPropertiesById(uri) != null;
+	}
+
+	private Node getSignedPropertiesById(String uri) {
+		String signedPropertiesById = xPathQueryHolder.XPATH_SIGNED_PROPERTIES + DomUtils.getXPathByIdAttribute(uri);
+		return DomUtils.getNode(signatureElement, signedPropertiesById);
 	}
 
 	private boolean findObjectById(String uri) {
-		String objectById = XPathQueryHolder.XPATH_OBJECT + getXPathByIdAttribute(uri);
-		return DomUtils.getNode(signatureElement, objectById) != null;
+		return getObjectById(uri) != null;
+	}
+
+	public Node getObjectById(String uri) {
+		String objectById = XPathQueryHolder.XPATH_OBJECT + DomUtils.getXPathByIdAttribute(uri);
+		return DomUtils.getNode(signatureElement, objectById);
 	}
 
 	private boolean findManifestById(String uri) {
-		String manifestById = XPathQueryHolder.XPATH_MANIFEST + getXPathByIdAttribute(uri);
-		return DomUtils.getNode(signatureElement, manifestById) != null;
+		return getManifestById(uri) != null;
 	}
 
-	private String getXPathByIdAttribute(String uri) {
-		return "[@Id='" + getId(uri) + "']";
-	}
-	
-	private String getId(String uri) {
-		String id = uri;
-		if (uri.startsWith("#")) {
-			id = id.substring(1);
-		}
-		return id;
+	public Node getManifestById(String uri) {
+		String manifestById = XPathQueryHolder.XPATH_MANIFEST + DomUtils.getXPathByIdAttribute(uri);
+		return DomUtils.getNode(signatureElement, manifestById);
 	}
 
 	private ReferenceValidation notFound(DigestMatcherType type) {

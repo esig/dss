@@ -22,16 +22,16 @@ package eu.europa.esig.dss.xades.validation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.crypto.dsig.XMLSignature;
 
 import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSUtils;
@@ -42,7 +42,6 @@ import eu.europa.esig.dss.validation.FullSignatureScope;
 import eu.europa.esig.dss.validation.SignatureScope;
 import eu.europa.esig.dss.validation.SignatureScopeFinder;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
  *
@@ -81,11 +80,6 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 	public List<SignatureScope> findSignatureScope(final XAdESSignature xadesSignature) {
 
 		final List<SignatureScope> result = new ArrayList<SignatureScope>();
-
-		final Set<Element> unsignedObjects = new HashSet<Element>();
-		unsignedObjects.addAll(xadesSignature.getSignatureObjects());
-		final Set<Element> signedObjects = new HashSet<Element>();
-
 		final List<Element> signatureReferences = xadesSignature.getSignatureReferences();
 		for (final Element signatureReference : signatureReferences) {
 
@@ -102,28 +96,30 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 				// internal reference
 				final boolean xPointerQuery = isXPointerQuery(uri);
 				if (xPointerQuery) {
-
 					final String id = DSSXMLUtils.getIDIdentifier(signatureReference);
 					final XPointerSignatureScope xPointerSignatureScope = new XPointerSignatureScope(id, uri);
 					result.add(xPointerSignatureScope);
 					continue;
 				}
+
 				final String xmlIdOfSignedElement = uri.substring(1);
-				final String xPathString = XPathQueryHolder.XPATH_OBJECT + "[@Id=\"" + xmlIdOfSignedElement + "\"]";
-				Element signedElement = DomUtils.getElement(xadesSignature.getSignatureElement(), xPathString);
-				if (signedElement != null) {
-					if (unsignedObjects.remove(signedElement)) {
-						signedObjects.add(signedElement);
+				if (Reference.OBJECT_URI.equals(type)) {
+					Node objectById = xadesSignature.getObjectById(uri);
+					if (objectById != null) {
+						result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations));
+					}
+				} else if (Reference.MANIFEST_URI.equals(type)) {
+					Node manifestById = xadesSignature.getManifestById(uri);
+					if (manifestById != null) {
 						result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations));
 					}
 				} else {
-					signedElement = DomUtils.getElement(xadesSignature.getSignatureElement().getOwnerDocument().getDocumentElement(),
-							"//*" + "[@Id=\"" + xmlIdOfSignedElement + "\"]");
-					if (signedElement != null) {
-
+					NodeList nodeList = DomUtils.getNodeList(xadesSignature.getSignatureElement().getOwnerDocument().getDocumentElement(),
+							"//*" + DomUtils.getXPathByIdAttribute(uri));
+					if (nodeList != null && nodeList.getLength() == 1) {
+						Node signedElement = nodeList.item(0);
 						final String namespaceURI = signedElement.getNamespaceURI();
 						if ((namespaceURI == null) || (!XAdESNamespaces.exists(namespaceURI) && !namespaceURI.equals(XMLSignature.XMLNS))) {
-							signedObjects.add(signedElement);
 							result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations));
 						}
 					}

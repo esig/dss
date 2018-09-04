@@ -26,7 +26,7 @@ public class XMLSignatureWrappingTest {
 	@Test
 	public void testEnvelopedFakeSignedProperties() {
 		SignedDocumentValidator validator = SignedDocumentValidator
-				.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/XSW-envelopped-fake-signedProperties.xml")));
+				.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/XSW-enveloped-fake-signedProperties.xml")));
 
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setDataLoader(new IgnoreDataLoader());
@@ -37,6 +37,44 @@ public class XMLSignatureWrappingTest {
 		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertTrue(signatureById.isSignatureIntact());
 		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void testEnvelopedFakeContent() {
+		SignedDocumentValidator validator = SignedDocumentValidator
+				.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/XSW-enveloped-fake-content.xml")));
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
+
+		Reports reports = validator.validateDocument();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertTrue(signatureById.isSignatureIntact());
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void testEnvelopedFakeContentTwoSameIds() {
+		SignedDocumentValidator validator = SignedDocumentValidator
+				.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/XSW-enveloped-fake-content-two-same-id.xml")));
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
+
+		Reports reports = validator.validateDocument();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertTrue(signatureById.isSignatureIntact());
+
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
