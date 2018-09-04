@@ -59,7 +59,10 @@ public class NativeHTTPDataLoader implements DataLoader {
 		try {
 			Future<byte[]> result = executorService.submit(task);
 			return timeout > 0 ? result.get(timeout, TimeUnit.MILLISECONDS) : result.get();
-		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new DSSException(e);
+		} catch (ExecutionException | TimeoutException e) {
 			throw new DSSException(e);
 		} finally {
 			executorService.shutdown();

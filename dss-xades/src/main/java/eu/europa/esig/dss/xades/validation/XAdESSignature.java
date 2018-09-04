@@ -740,7 +740,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @return
 	 */
 	public NodeList getObjects() {
-		return DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_OBJECT);
+		return DomUtils.getNodeList(signatureElement, XPathQueryHolder.XPATH_OBJECT);
 	}
 
 	public Element getCompleteCertificateRefs() {
@@ -1241,20 +1241,24 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private boolean findSignedPropertiesById(String uri) {
-		String signedPropertiesById = xPathQueryHolder.XPATH_SIGNED_PROPERTIES + "[@Id='" + getId(uri) + "']";
+		String signedPropertiesById = xPathQueryHolder.XPATH_SIGNED_PROPERTIES + getXPathByIdAttribute(uri);
 		return DomUtils.getNode(signatureElement, signedPropertiesById) != null;
 	}
 
 	private boolean findObjectById(String uri) {
-		String objectById = XPathQueryHolder.XPATH_OBJECT + "[@Id='" + getId(uri) + "']";
+		String objectById = XPathQueryHolder.XPATH_OBJECT + getXPathByIdAttribute(uri);
 		return DomUtils.getNode(signatureElement, objectById) != null;
 	}
 
 	private boolean findManifestById(String uri) {
-		String manifestById = XPathQueryHolder.XPATH_MANIFEST + "[@Id='" + getId(uri) + "']";
+		String manifestById = XPathQueryHolder.XPATH_MANIFEST + getXPathByIdAttribute(uri);
 		return DomUtils.getNode(signatureElement, manifestById) != null;
 	}
 
+	private String getXPathByIdAttribute(String uri) {
+		return "[@Id='" + getId(uri) + "']";
+	}
+	
 	private String getId(String uri) {
 		String id = uri;
 		if (uri.startsWith("#")) {

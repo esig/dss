@@ -51,10 +51,10 @@ public class PdfDocTimestampInfo extends PdfCMSInfo implements PdfSignatureOrDoc
 	 *            true if the signature covers all bytes
 	 * @param isArchiveTimestamp
 	 *            true if the timestamp is an archive timestamp
-	 * @throws DSSException
 	 */
-	public PdfDocTimestampInfo(CertificatePool validationCertPool, PdfSigDict signatureDictionary, PdfDssDict dssDictionary, byte[] cms,
-			byte[] signedContent, boolean coverCompleteRevision, boolean isArchiveTimestamp) throws DSSException {
+	public PdfDocTimestampInfo(CertificatePool validationCertPool, PdfSigDict signatureDictionary,
+			PdfDssDict dssDictionary, byte[] cms, byte[] signedContent, boolean coverCompleteRevision,
+			boolean isArchiveTimestamp) {
 		super(signatureDictionary, dssDictionary, cms, signedContent, coverCompleteRevision);
 		try {
 			TimestampType timestampType = TimestampType.SIGNATURE_TIMESTAMP;
@@ -63,7 +63,9 @@ public class PdfDocTimestampInfo extends PdfCMSInfo implements PdfSignatureOrDoc
 			}
 			timestampToken = new TimestampToken(cms, timestampType, validationCertPool);
 			content = cms;
-			LOG.debug("Created PdfDocTimestampInfo {} : {}", timestampType, uniqueId());
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Created PdfDocTimestampInfo {} : {}", timestampType, uniqueId());
+			}
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}

@@ -34,6 +34,9 @@ import org.slf4j.LoggerFactory;
 public class PdfObjFactory {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfObjFactory.class.getName());
+	
+	private PdfObjFactory() {
+	}
 
 	private static IPdfObjFactory impl;
 

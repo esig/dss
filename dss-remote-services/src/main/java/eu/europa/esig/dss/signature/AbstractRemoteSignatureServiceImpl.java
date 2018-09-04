@@ -24,23 +24,20 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class AbstractRemoteSignatureServiceImpl {
 
-	protected AbstractSignatureParameters getASiCSignatureParameters(AbstractSignatureParameters parameters, ASiCContainerType asicContainerType,
+	protected AbstractSignatureParameters getASiCSignatureParameters(ASiCContainerType asicContainerType,
 			SignatureForm signatureForm) {
 		switch (signatureForm) {
 		case CAdES:
 			ASiCWithCAdESSignatureParameters asicWithCAdESParameters = new ASiCWithCAdESSignatureParameters();
 			asicWithCAdESParameters.aSiC().setContainerType(asicContainerType);
-			parameters = asicWithCAdESParameters;
-			break;
+			return asicWithCAdESParameters;
 		case XAdES:
 			ASiCWithXAdESSignatureParameters asicWithXAdESParameters = new ASiCWithXAdESSignatureParameters();
 			asicWithXAdESParameters.aSiC().setContainerType(asicContainerType);
-			parameters = asicWithXAdESParameters;
-			break;
+			return asicWithXAdESParameters;
 		default:
 			throw new DSSException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
 		}
-		return parameters;
 	}
 
 	protected AbstractSignatureParameters createParameters(RemoteSignatureParameters remoteParameters) {
@@ -48,7 +45,7 @@ public class AbstractRemoteSignatureServiceImpl {
 		ASiCContainerType asicContainerType = remoteParameters.getAsicContainerType();
 		SignatureForm signatureForm = remoteParameters.getSignatureLevel().getSignatureForm();
 		if (asicContainerType != null) {
-			parameters = getASiCSignatureParameters(parameters, asicContainerType, signatureForm);
+			parameters = getASiCSignatureParameters(asicContainerType, signatureForm);
 		} else {
 			switch (signatureForm) {
 			case CAdES:

@@ -63,7 +63,7 @@ class DSSTransformXPath {
 			final String dssTransformAlgorithm = dssTransform.getAlgorithm();
 			final NodeList childNodes = document.getFirstChild().getChildNodes();
 			final Transform transformObject = new Transform(document, dssTransformAlgorithm, childNodes);
-			for (Entry<String, String> namespace : DomUtils.namespaces.entrySet()) {
+			for (Entry<String, String> namespace : DomUtils.getCurrentNamespaces().entrySet()) {
 				transformObject.setXPathNamespaceContext(namespace.getKey(), namespace.getValue());
 			}
 
@@ -81,7 +81,7 @@ class DSSTransformXPath {
 			final String dssTransformAlgorithm = dssTransform.getAlgorithm();
 			final NodeList childNodes = document.getFirstChild().getChildNodes();
 			final Transform transformObject = new Transform(document, dssTransformAlgorithm, childNodes);
-			for (Entry<String, String> namespace : DomUtils.namespaces.entrySet()) {
+			for (Entry<String, String> namespace : DomUtils.getCurrentNamespaces().entrySet()) {
 				transformObject.setXPathNamespaceContext(namespace.getKey(), namespace.getValue());
 			}
 
