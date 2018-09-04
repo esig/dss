@@ -24,6 +24,8 @@ https://ec.europa.eu/cefdigital/artifact/#welcome
 
 The [documentation](dss-cookbook/src/main/asciidoc/dss-documentation.adoc) and samples are available in the dss-cookbook module. [SoapUI project](dss-cookbook/src/main/soapui) and [Postman project](dss-cookbook/src/main/postman) are also provided to illustrate SOAP/REST calls.
 
+The JavaDoc is available on https://ec.europa.eu/cefdigital/DSS/webapp-demo/apidocs/index.html
+
 # Demonstration
 
 The release is deployed on https://ec.europa.eu/cefdigital/DSS/webapp-demo 
