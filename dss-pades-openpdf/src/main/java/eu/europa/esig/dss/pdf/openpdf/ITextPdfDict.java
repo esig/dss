@@ -23,9 +23,6 @@ package eu.europa.esig.dss.pdf.openpdf;
 import java.util.Date;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.lowagie.text.pdf.PdfDate;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfName;
@@ -37,8 +34,6 @@ import eu.europa.esig.dss.pdf.PdfDict;
 
 class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ITextPdfDict.class);
-
 	private PdfDictionary wrapped;
 
 	public ITextPdfDict(PdfDictionary wrapped) {
@@ -46,14 +41,6 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 			throw new IllegalArgumentException();
 		}
 		this.wrapped = wrapped;
-	}
-
-	ITextPdfDict(String dictionaryType) {
-		if (dictionaryType != null) {
-			wrapped = new PdfDictionary(new PdfName(dictionaryType));
-		} else {
-			wrapped = new PdfDictionary();
-		}
 	}
 
 	@Override
@@ -78,31 +65,12 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 	}
 
 	@Override
-	public boolean hasANameWithValue(String name, String value) {
-		PdfName asName = wrapped.getAsName(new PdfName(name));
-		if (asName == null) {
-			LOG.info("No value with name {}", name);
-			return false;
-		}
-
-		PdfName asValue = new PdfName(value);
-		boolean r = asName.equals(asValue);
-		LOG.info("Comparison of {} ({}) and {} : {}", asName, asName.getClass(), asValue, r);
-		return r;
-	}
-
-	@Override
 	public byte[] get(String name) {
 		PdfObject val = wrapped.get(new PdfName(name));
 		if (val == null) {
 			return null;
 		}
 		return val.getBytes();
-	}
-
-	@Override
-	public boolean hasAName(String name) {
-		return wrapped.get(new PdfName(name)) != null;
 	}
 
 	@Override

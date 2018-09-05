@@ -335,10 +335,10 @@ public class ImageUtils {
 		int w = image.getWidth();
 		int h = image.getHeight();
 
-		int neww = (int) Math.floor(w * cos + h * sin);
-		int newh = (int) Math.floor(h * cos + w * sin);
+		double neww = Math.floor(w * cos + h * sin);
+		double newh = Math.floor(h * cos + w * sin);
 
-		BufferedImage result = new BufferedImage(neww, newh, image.getType());
+		BufferedImage result = new BufferedImage((int) neww, (int) newh, image.getType());
 		Graphics2D g = result.createGraphics();
 
 		g.translate((neww - w) / 2, (newh - h) / 2);

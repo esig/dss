@@ -93,15 +93,6 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	}
 
 	@Override
-	public byte[] getOriginalBytes() {
-		int[] signatureByteRange = getSignatureByteRange();
-		final int length = signatureByteRange[1];
-		final byte[] result = new byte[length];
-		System.arraycopy(signedBytes, 0, result, 0, length);
-		return result;
-	}
-
-	@Override
 	public PdfDssDict getDssDictionary() {
 		return dssDictionary;
 	}

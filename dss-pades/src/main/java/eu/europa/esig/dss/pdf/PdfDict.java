@@ -33,21 +33,9 @@ public interface PdfDict {
 
 	PdfArray getAsArray(String name);
 
-	boolean hasAName(String name);
-
-	/**
-	 * Check if the dictionary contains a name with a specific (PDF Name) value
-	 *
-	 * @param name
-	 * @param value
-	 * @return
-	 */
-	boolean hasANameWithValue(String name, String value);
-
 	byte[] get(String name) throws IOException;
 
 	String[] list();
-
 
 	String getStringValue(String name);
 

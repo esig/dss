@@ -155,11 +155,6 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		}
 
 		@Override
-		public byte[] getOriginalBytes() {
-			return null;
-		}
-
-		@Override
 		public PdfDssDict getDssDictionary() {
 			return null;
 		}

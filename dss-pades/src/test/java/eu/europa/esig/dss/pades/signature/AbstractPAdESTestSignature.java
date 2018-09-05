@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.pades.signature;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -22,6 +24,7 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
+import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -39,6 +42,20 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		assertEquals(1, signatures.size());
 
 		PAdESSignature padesSig = (PAdESSignature) signatures.get(0);
+
+		PdfSignatureInfo pdfSignatureInfo = padesSig.getPdfSignatureInfo();
+		assertEquals(getSignatureParameters().getSignatureFilter(), pdfSignatureInfo.getFilter());
+		assertEquals(getSignatureParameters().getSignatureSubFilter(), pdfSignatureInfo.getSubFilter());
+		assertEquals(getSignatureParameters().getReason(), pdfSignatureInfo.getReason());
+		assertEquals(getSignatureParameters().getContactInfo(), pdfSignatureInfo.getContactInfo());
+		assertEquals(getSignatureParameters().getLocation(), pdfSignatureInfo.getLocation());
+
+		if (padesSig.isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_LT)) {
+			assertNotNull(pdfSignatureInfo.getDssDictionary());
+		}
+
+		assertNotNull(pdfSignatureInfo.getSigningDate());
+		assertNull(pdfSignatureInfo.getCades().getSigningTime());
 
 		checkSignedAttributesOrder(padesSig);
 	}

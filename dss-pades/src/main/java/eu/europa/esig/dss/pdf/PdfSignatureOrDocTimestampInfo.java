@@ -51,13 +51,6 @@ public interface PdfSignatureOrDocTimestampInfo {
 	 */
 	byte[] getSignedDocumentBytes();
 
-	/**
-	 * This method return a few extra bytes (the header of the signature) but it's correctly ignored by PDF Box
-	 *
-	 * @return the byte of the originally signed document (without this signature)
-	 */
-	byte[] getOriginalBytes();
-
 	PdfDssDict getDssDictionary();
 
 	String uniqueId();

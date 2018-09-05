@@ -66,21 +66,6 @@ class PdfBoxDict implements PdfDict {
 	}
 
 	@Override
-	public boolean hasAName(String name) {
-		COSBase dictionaryObject = wrapped.getDictionaryObject(name);
-		return dictionaryObject != null;
-	}
-
-	@Override
-	public boolean hasANameWithValue(String name, String value) {
-		COSName pdfName = (COSName) wrapped.getDictionaryObject(name);
-		if (pdfName == null) {
-			return false;
-		}
-		return pdfName.getName().equals(value);
-	}
-
-	@Override
 	public byte[] get(String name) throws IOException {
 		COSBase val = wrapped.getDictionaryObject(name);
 		if (val == null) {
