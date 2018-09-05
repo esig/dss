@@ -1204,16 +1204,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					boolean noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(santuarioSignature.getDocument(), DomUtils.getId(uri));
 					if (xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType())) {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
-						signedPropertiesFound = noDuplicateIdFound && findSignedPropertiesById(reference.getURI());
+						signedPropertiesFound = noDuplicateIdFound && findSignedPropertiesById(uri);
 					} else if (Reference.OBJECT_URI.equals(reference.getType())) {
 						validation.setType(DigestMatcherType.OBJECT);
-						referenceFound = noDuplicateIdFound && findObjectById(reference.getURI());
+						referenceFound = noDuplicateIdFound && findObjectById(uri);
 					} else if (Reference.MANIFEST_URI.equals(reference.getType())) {
 						validation.setType(DigestMatcherType.MANIFEST);
-						referenceFound = noDuplicateIdFound && findManifestById(reference.getURI());
+						referenceFound = noDuplicateIdFound && findManifestById(uri);
 					} else {
 						validation.setType(DigestMatcherType.REFERENCE);
-						referenceFound = noDuplicateIdFound;
+						referenceFound = noDuplicateIdFound && notEmbeddedInSignature(uri);
 					}
 
 					final Digest digest = new Digest();
@@ -1240,6 +1240,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		return referenceValidations;
+	}
+
+	private boolean notEmbeddedInSignature(String uri) {
+		NodeList nodeList = DomUtils.getNodeList(signatureElement, ".//*" + DomUtils.getXPathByIdAttribute(uri));
+		return nodeList == null || nodeList.getLength() == 0;
 	}
 
 	private boolean findSignedPropertiesById(String uri) {

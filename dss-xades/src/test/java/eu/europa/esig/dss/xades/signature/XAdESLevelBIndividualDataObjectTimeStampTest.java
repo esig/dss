@@ -8,6 +8,7 @@ import java.util.List;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.Transform;
 
+import org.apache.xml.security.signature.Reference;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Before;
 
@@ -54,7 +55,7 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdEST
 		dssReference.setUri("#" + documentToSign.getName());
 		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA1);
 		dssReference.setTransforms(transforms);
-		dssReference.setType("text/xml");
+		dssReference.setType(Reference.OBJECT_URI);
 		references.add(dssReference);
 
 		signatureParameters = new XAdESSignatureParameters();

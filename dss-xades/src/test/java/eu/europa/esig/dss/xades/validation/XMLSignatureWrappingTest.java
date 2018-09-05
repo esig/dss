@@ -43,6 +43,21 @@ public class XMLSignatureWrappingTest {
 	}
 
 	@Test
+	public void testEnvelopedOriginal() {
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/original.xml")));
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
+
+		Reports reports = validator.validateDocument();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertTrue(signatureById.isSignatureIntact());
+		assertTrue(signatureById.isSignatureValid());
+	}
+
+	@Test
 	public void testEnvelopedFakeContent() {
 		SignedDocumentValidator validator = SignedDocumentValidator
 				.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/XSW-enveloped-fake-content.xml")));
