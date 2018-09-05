@@ -271,7 +271,7 @@ public final class DSSXMLUtils {
 		for (int jj = 0; jj < attributes.getLength(); jj++) {
 
 			final Node item = attributes.item(jj);
-			final String localName = item.getNodeName();
+			final String localName = item.getLocalName();
 			if (localName != null) {
 				final String id = localName.toLowerCase();
 				if (ID_ATTRIBUTE_NAME.equals(id)) {
@@ -295,12 +295,13 @@ public final class DSSXMLUtils {
 		for (int jj = 0; jj < attributes.getLength(); jj++) {
 
 			final Node item = attributes.item(jj);
-			final String localName = item.getNodeName();
+			final String localName = item.getLocalName();
+			final String nodeName = item.getNodeName();
 			if (localName != null) {
 				final String id = localName.toLowerCase();
 				if (ID_ATTRIBUTE_NAME.equals(id)) {
 
-					childElement.setIdAttribute(localName, true);
+					childElement.setIdAttribute(nodeName, true);
 					break;
 				}
 			}
