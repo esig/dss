@@ -535,4 +535,16 @@ public final class DomUtils {
 		return new HashMap<String, String>(namespaces);
 	}
 
+	public static String getXPathByIdAttribute(String uri) {
+		return "[@Id='" + getId(uri) + "']";
+	}
+
+	public static String getId(String uri) {
+		String id = uri;
+		if (uri.startsWith("#")) {
+			id = id.substring(1);
+		}
+		return id;
+	}
+
 }

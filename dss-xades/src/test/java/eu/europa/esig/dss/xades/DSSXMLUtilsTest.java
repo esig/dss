@@ -61,8 +61,7 @@ public class DSSXMLUtilsTest {
 		FileDocument document = new FileDocument("src/test/resources/ns-prefixes-sample.xml");
 		Document dom = DomUtils.buildDOM(document);
 		NodeList list = dom.getDocumentElement().getElementsByTagName("czip:initInstantPayment");
-
-		assertEquals("signedData", DSSXMLUtils.getIDIdentifier((Element) list.item(0)));
+		assertEquals("signedData", DSSXMLUtils.getIDIdentifier(list.item(0)));
 	}
 
 	@Test

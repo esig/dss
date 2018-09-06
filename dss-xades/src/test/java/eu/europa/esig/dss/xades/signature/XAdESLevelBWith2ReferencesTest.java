@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.transforms.Transforms;
 import org.junit.Test;
 
@@ -45,17 +46,17 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 
 		DSSReference ref1 = new DSSReference();
 		ref1.setContents(doc1);
-		ref1.setId(doc1.getName());
+		ref1.setId("r-" + doc1.getName());
 		ref1.setTransforms(transforms);
-		ref1.setType("text/xml");
+		ref1.setType(Reference.OBJECT_URI);
 		ref1.setUri('#' + doc1.getName());
 		ref1.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
 
 		DSSReference ref2 = new DSSReference();
 		ref2.setContents(doc2);
-		ref2.setId(doc2.getName());
+		ref2.setId("r-" + doc2.getName());
 		ref2.setTransforms(transforms);
-		ref2.setType("text/xml");
+		ref2.setType(Reference.OBJECT_URI);
 		ref2.setUri('#' + doc2.getName());
 		ref2.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
 
@@ -75,7 +76,7 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		ToBeSigned toSign1 = service.getDataToSign(new FileDocument("src/test/resources/empty.xml"), signatureParameters);
 		SignatureValue value = getToken().sign(toSign1, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument result = service.signDocument(doc1, signatureParameters, value);
-		// result.save("src/test/resources/test.xml");
+//		result.save("target/test.xml");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(result);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
