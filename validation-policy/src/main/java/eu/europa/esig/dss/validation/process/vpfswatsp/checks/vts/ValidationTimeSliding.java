@@ -117,7 +117,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 					}
 				}
 
-				if (firstItem == null) {
+				if (item == null) {
 					item = firstItem = satisfyingRevocationDataExists(latestCompliantRevocation);
 				} else {
 					item = item.setNextItem(satisfyingRevocationDataExists(latestCompliantRevocation));

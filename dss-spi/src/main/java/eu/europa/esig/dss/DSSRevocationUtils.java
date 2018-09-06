@@ -67,10 +67,8 @@ public final class DSSRevocationUtils {
 	 * @param ocspResp
 	 *            the {@code OCSPResp} to be converted to {@code BasicOCSPResp}
 	 * @return the conversion result
-	 * @throws DSSException
-	 *             if the conversion fails
 	 */
-	public static final BasicOCSPResp fromRespToBasic(OCSPResp ocspResp) throws DSSException {
+	public static BasicOCSPResp fromRespToBasic(OCSPResp ocspResp) {
 		try {
 			return (BasicOCSPResp) ocspResp.getResponseObject();
 		} catch (OCSPException e) {
@@ -85,14 +83,11 @@ public final class DSSRevocationUtils {
 	 * @param basicOCSPResp
 	 *            the {@code BasicOCSPResp} to be converted to {@code OCSPResp}
 	 * @return the result of the conversion
-	 * @throws DSSException
-	 *             if the conversion fails
 	 */
-	public static final OCSPResp fromBasicToResp(final BasicOCSPResp basicOCSPResp) throws DSSException {
+	public static OCSPResp fromBasicToResp(final BasicOCSPResp basicOCSPResp) {
 		try {
 			final byte[] encoded = basicOCSPResp.getEncoded();
-			final OCSPResp ocspResp = fromBasicToResp(encoded);
-			return ocspResp;
+			return fromBasicToResp(encoded);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
@@ -106,15 +101,14 @@ public final class DSSRevocationUtils {
 	 *            the binary of BasicOCSPResp
 	 * @return an instance of OCSPResp
 	 */
-	public static final OCSPResp fromBasicToResp(final byte[] basicOCSPRespBinary) {
+	public static OCSPResp fromBasicToResp(final byte[] basicOCSPRespBinary) {
 		final OCSPResponseStatus responseStatus = new OCSPResponseStatus(OCSPResponseStatus.SUCCESSFUL);
 		final DEROctetString derBasicOCSPResp = new DEROctetString(basicOCSPRespBinary);
 		final ResponseBytes responseBytes = new ResponseBytes(OCSPObjectIdentifiers.id_pkix_ocsp_basic, derBasicOCSPResp);
 		final OCSPResponse ocspResponse = new OCSPResponse(responseStatus, responseBytes);
-		final OCSPResp ocspResp = new OCSPResp(ocspResponse);
 		// !!! todo to be checked: System.out.println("===> RECREATED: " +
 		// ocspResp.hashCode());
-		return ocspResp;
+		return new OCSPResp(ocspResponse);
 	}
 
 	/**
@@ -155,10 +149,8 @@ public final class DSSRevocationUtils {
 	 * @param issuerCert
 	 *            {@code CertificateToken} issuer certificate of the {@code cert}
 	 * @return {@code CertificateID}
-	 * @throws DSSException
-	 *             if the CertificateID cannot be created
 	 */
-	public static CertificateID getOCSPCertificateID(final CertificateToken cert, final CertificateToken issuerCert) throws DSSException {
+	public static CertificateID getOCSPCertificateID(final CertificateToken cert, final CertificateToken issuerCert) {
 		try {
 			final BigInteger serialNumber = cert.getSerialNumber();
 			final DigestCalculator digestCalculator = getSHA1DigestCalculator();
@@ -169,11 +161,10 @@ public final class DSSRevocationUtils {
 		}
 	}
 
-	public static DigestCalculator getSHA1DigestCalculator() throws DSSException {
+	public static DigestCalculator getSHA1DigestCalculator() {
 		try {
 			final DigestCalculatorProvider digestCalculatorProvider = jcaDigestCalculatorProviderBuilder.build();
-			final DigestCalculator digestCalculator = digestCalculatorProvider.get(CertificateID.HASH_SHA1);
-			return digestCalculator;
+			return digestCalculatorProvider.get(CertificateID.HASH_SHA1);
 		} catch (OperatorCreationException e) {
 			throw new DSSException("Unable to create a DigestCalculator instance", e);
 		}
@@ -196,8 +187,7 @@ public final class DSSRevocationUtils {
 
 	public static byte[] getEncoded(OCSPResp ocspResp) {
 		try {
-			final byte[] encoded = ocspResp.getEncoded();
-			return encoded;
+			return ocspResp.getEncoded();
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}

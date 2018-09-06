@@ -342,7 +342,7 @@ public class ImageUtils {
 		Graphics2D g = result.createGraphics();
 
 		g.translate((neww - w) / 2, (newh - h) / 2);
-		g.rotate(Math.toRadians(angle), w / 2, h / 2);
+		g.rotate(Math.toRadians(angle), (double) w / 2, (double) h / 2);
 		g.drawRenderedImage(image, null);
 		g.dispose();
 

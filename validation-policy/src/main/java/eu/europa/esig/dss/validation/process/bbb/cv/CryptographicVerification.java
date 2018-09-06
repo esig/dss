@@ -65,7 +65,7 @@ public class CryptographicVerification extends Chain<XmlCV> {
 				 * indication INDETERMINATE with the sub-indication SIGNED_DATA_NOT_FOUND.
 				 */
 				ChainItem<XmlCV> referenceDataFound = referenceDataFound(digestMatcher);
-				if (firstItem == null) {
+				if (item == null) {
 					firstItem = item = referenceDataFound;
 				} else {
 					item = item.setNextItem(referenceDataFound);
@@ -90,7 +90,7 @@ public class CryptographicVerification extends Chain<XmlCV> {
 		 * SIG_CRYPTO_FAILURE.
 		 */
 		ChainItem<XmlCV> signatureIntact = signatureIntact();
-		if (firstItem == null) {
+		if (item == null) {
 			firstItem = item = signatureIntact;
 		} else {
 			item = item.setNextItem(signatureIntact);
