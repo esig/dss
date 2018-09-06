@@ -258,24 +258,22 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * If this method finds an attribute with names ID (case-insensitive) then it is returned. If there is more than one
-	 * ID attributes then the first one is returned.
+	 * If this method finds an attribute with names ID (case-insensitive) then it is
+	 * returned. If there is more than one ID attributes then the first one is
+	 * returned.
 	 *
-	 * @param element
-	 *            to be checked
+	 * @param node
+	 *             the node to be checked
 	 * @return the ID attribute value or null
 	 */
-	public static String getIDIdentifier(final Element element) {
-
-		final NamedNodeMap attributes = element.getAttributes();
+	public static String getIDIdentifier(final Node node) {
+		final NamedNodeMap attributes = node.getAttributes();
 		for (int jj = 0; jj < attributes.getLength(); jj++) {
-
 			final Node item = attributes.item(jj);
 			final String localName = item.getLocalName();
 			if (localName != null) {
 				final String id = localName.toLowerCase();
 				if (ID_ATTRIBUTE_NAME.equals(id)) {
-
 					return item.getTextContent();
 				}
 			}

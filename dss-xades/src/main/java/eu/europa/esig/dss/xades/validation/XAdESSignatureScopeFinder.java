@@ -22,14 +22,19 @@ package eu.europa.esig.dss.xades.validation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.crypto.dsig.XMLSignature;
 
 import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.transforms.Transforms;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -42,11 +47,14 @@ import eu.europa.esig.dss.validation.FullSignatureScope;
 import eu.europa.esig.dss.validation.SignatureScope;
 import eu.europa.esig.dss.validation.SignatureScopeFinder;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
  *
  */
 public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSignature> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(XAdESSignatureScopeFinder.class);
 
 	private static final String XP_OPEN = "xpointer(";
 
@@ -80,35 +88,36 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 	public List<SignatureScope> findSignatureScope(final XAdESSignature xadesSignature) {
 
 		final List<SignatureScope> result = new ArrayList<SignatureScope>();
-		final List<Element> signatureReferences = xadesSignature.getSignatureReferences();
-		for (final Element signatureReference : signatureReferences) {
 
-			final String type = DomUtils.getValue(signatureReference, "@Type");
-			if (xadesSignature.getXPathQueryHolder().XADES_SIGNED_PROPERTIES.equals(type)) {
+		final List<Reference> references = xadesSignature.getReferences();
+		boolean isEverythingCovered = isEverythingCovered(xadesSignature);
+
+		for (final Reference signatureReference : references) {
+			if (isSignedProperties(xadesSignature, signatureReference.getType())) {
 				continue;
 			}
-			final String uri = DomUtils.getValue(signatureReference, "@URI");
+			final String uri = signatureReference.getURI();
 			final List<String> transformations = getTransformationNames(signatureReference);
 			if (Utils.isStringBlank(uri)) {
 				// self contained document
-				result.add(new XmlRootSignatureScope(transformations));
+				if (isEverythingCovered) {
+					result.add(new XmlRootSignatureScope(transformations));
+				} else {
+					result.add(new XmlElementSignatureScope("", transformations));
+				}
 			} else if (uri.startsWith("#")) {
+				final String xmlIdOfSignedElement = uri.substring(1);
 				// internal reference
-				final boolean xPointerQuery = isXPointerQuery(uri);
-				if (xPointerQuery) {
-					final String id = DSSXMLUtils.getIDIdentifier(signatureReference);
+				if (isXPointerQuery(uri)) {
+					final String id = DSSXMLUtils.getIDIdentifier(signatureReference.getElement());
 					final XPointerSignatureScope xPointerSignatureScope = new XPointerSignatureScope(id, uri);
 					result.add(xPointerSignatureScope);
-					continue;
-				}
-
-				final String xmlIdOfSignedElement = uri.substring(1);
-				if (Reference.OBJECT_URI.equals(type)) {
+				} else if (signatureReference.typeIsReferenceToObject()) {
 					Node objectById = xadesSignature.getObjectById(uri);
 					if (objectById != null) {
 						result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations));
 					}
-				} else if (Reference.MANIFEST_URI.equals(type)) {
+				} else if (signatureReference.typeIsReferenceToManifest()) {
 					Node manifestById = xadesSignature.getManifestById(uri);
 					if (manifestById != null) {
 						result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations));
@@ -120,7 +129,11 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 						Node signedElement = nodeList.item(0);
 						final String namespaceURI = signedElement.getNamespaceURI();
 						if ((namespaceURI == null) || (!XAdESNamespaces.exists(namespaceURI) && !namespaceURI.equals(XMLSignature.XMLNS))) {
-							result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations));
+							if (isEverythingCovered) {
+								result.add(new XmlRootSignatureScope(transformations));
+							} else {
+								result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations));
+							}
 						}
 					}
 				}
@@ -132,22 +145,30 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 		return result;
 	}
 
-	private List<String> getTransformationNames(final Element signatureReference) {
-
-		final NodeList nodeList = DomUtils.getNodeList(signatureReference, "./ds:Transforms/ds:Transform");
-		final List<String> algorithms = new ArrayList<String>(nodeList.getLength());
-		for (int ii = 0; ii < nodeList.getLength(); ii++) {
-
-			final Element transformation = (Element) nodeList.item(ii);
-			final String algorithm = DomUtils.getValue(transformation, "@Algorithm");
-			if (transformationToIgnore.contains(algorithm)) {
-				continue;
+	private List<String> getTransformationNames(final Reference reference) {
+		final List<String> algorithms = new ArrayList<String>();
+		try {
+			Transforms transforms = reference.getTransforms();
+			if (transforms != null) {
+				Element transformsElement = transforms.getElement();
+				NodeList transfromChildNodes = transformsElement.getChildNodes();
+				if (transfromChildNodes != null && transfromChildNodes.getLength() > 0) {
+					for (int i = 0; i < transfromChildNodes.getLength(); i++) {
+						Node transformation = transfromChildNodes.item(i);
+						final String algorithm = DomUtils.getValue(transformation, "@Algorithm");
+						if (transformationToIgnore.contains(algorithm)) {
+							continue;
+						}
+						if (presentableTransformationNames.containsKey(algorithm)) {
+							algorithms.add(presentableTransformationNames.get(algorithm));
+						} else {
+							algorithms.add(algorithm);
+						}
+					}
+				}
 			}
-			if (presentableTransformationNames.containsKey(algorithm)) {
-				algorithms.add(presentableTransformationNames.get(algorithm));
-			} else {
-				algorithms.add(algorithm);
-			}
+		} catch (XMLSecurityException e) {
+			LOG.warn("Unable to analyze trasnformations", e);
 		}
 		return algorithms;
 	}
@@ -181,4 +202,53 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 		}
 		return true;
 	}
+
+	private boolean isSignedProperties(XAdESSignature signature, String type) {
+		return signature.getXPathQueryHolder().XADES_SIGNED_PROPERTIES.equals(type);
+	}
+
+	public boolean isEverythingCovered(XAdESSignature signature) {
+		Element parent = signature.getSignatureElement().getOwnerDocument().getDocumentElement();
+		return recursiveCheck(getIds(signature), parent);
+	}
+
+	private Set<String> getIds(XAdESSignature signature) {
+		List<Reference> references = signature.getReferences();
+		Set<String> result = new HashSet<String>();
+		for (Reference reference : references) {
+			if (!reference.typeIsReferenceToManifest() && !reference.typeIsReferenceToObject() && !isSignedProperties(signature, reference.getType())
+					&& !isXPointerQuery(reference.getURI())) {
+				result.add(DomUtils.getId(reference.getURI()));
+			}
+		}
+		return result;
+
+	}
+
+	private boolean recursiveCheck(Set<String> ids, Node currentNode) {
+		if (currentNode != null) {
+			if (XPathQueryHolder.XMLE_SIGNATURE.equals(currentNode.getLocalName()) || (isRelatedToUri(currentNode, ids))) {
+				return true;
+			} else {
+
+				NodeList childNodes = currentNode.getChildNodes();
+				for (int i = 0; i < childNodes.getLength(); i++) {
+					if (Node.ELEMENT_NODE == childNodes.item(i).getNodeType()) {
+						return recursiveCheck(ids, childNodes.item(i));
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	private boolean isRelatedToUri(Node currentNode, Set<String> ids) {
+		String idValue = DSSXMLUtils.getIDIdentifier(currentNode);
+		if (idValue == null) {
+			return Utils.collectionSize(ids) == 1 && Utils.isStringBlank(ids.iterator().next());
+		} else {
+			return ids.contains(idValue) || ids.contains("");
+		}
+	}
+
 }

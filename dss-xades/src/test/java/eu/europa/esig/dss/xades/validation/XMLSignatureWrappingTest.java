@@ -4,11 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.List;
 
 import org.junit.Test;
 
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -51,6 +53,7 @@ public class XMLSignatureWrappingTest {
 		validator.setCertificateVerifier(certificateVerifier);
 
 		Reports reports = validator.validateDocument();
+
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertTrue(signatureById.isSignatureIntact());
@@ -70,10 +73,72 @@ public class XMLSignatureWrappingTest {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertTrue(signatureById.isSignatureIntact());
+		assertTrue(signatureById.isSignatureValid());
 
-		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
-		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		List<XmlSignatureScope> signatureScopes = signatureById.getSignatureScopes();
+		assertEquals(1, signatureScopes.size());
+		assertEquals(XmlElementSignatureScope.class.getSimpleName(), signatureScopes.get(0).getScope());
+	}
+
+	@Test
+	public void testCY() {
+		SignedDocumentValidator validator = SignedDocumentValidator
+				.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/TSL-CY-sign.xml")));
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
+
+		Reports reports = validator.validateDocument();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertTrue(signatureById.isSignatureIntact());
+		assertTrue(signatureById.isSignatureValid());
+
+		List<XmlSignatureScope> signatureScopes = signatureById.getSignatureScopes();
+		assertEquals(1, signatureScopes.size());
+		assertEquals(XmlRootSignatureScope.class.getSimpleName(), signatureScopes.get(0).getScope());
+	}
+
+	@Test
+	public void testNoId() {
+		SignedDocumentValidator validator = SignedDocumentValidator
+				.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/TSL-noID.xml")));
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
+
+		Reports reports = validator.validateDocument();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertTrue(signatureById.isSignatureIntact());
+		assertTrue(signatureById.isSignatureValid());
+
+		List<XmlSignatureScope> signatureScopes = signatureById.getSignatureScopes();
+		assertEquals(1, signatureScopes.size());
+		assertEquals(XmlRootSignatureScope.class.getSimpleName(), signatureScopes.get(0).getScope());
+	}
+
+	@Test
+	public void testEnvelopedFakeContentMisplaced() {
+		SignedDocumentValidator validator = SignedDocumentValidator
+				.fromDocument(new FileDocument(new File("src/test/resources/validation/xsw/XSW-enveloped-fake-content-misplaced.xml")));
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
+
+		Reports reports = validator.validateDocument();
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertTrue(signatureById.isSignatureIntact());
+		assertTrue(signatureById.isSignatureValid());
+
+		List<XmlSignatureScope> signatureScopes = signatureById.getSignatureScopes();
+		assertEquals(1, signatureScopes.size());
+		assertEquals(XmlElementSignatureScope.class.getSimpleName(), signatureScopes.get(0).getScope());
 	}
 
 	@Test

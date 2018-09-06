@@ -1,0 +1,2046 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns4="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:ns6="http://uri.etsi.org/01903/v1.4.1#" TSLTag="http://uri.etsi.org/19612/TSLTag">
+    <SchemeInformation>
+        <TSLVersionIdentifier>5</TSLVersionIdentifier>
+        <TSLSequenceNumber>37</TSLSequenceNumber>
+        <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+        <SchemeOperatorName>
+            <Name xml:lang="en">Rundfunk und Telekom Regulierungs-GmbH</Name>
+            <Name xml:lang="de">Rundfunk und Telekom Regulierungs-GmbH</Name>
+        </SchemeOperatorName>
+        <SchemeOperatorAddress>
+            <PostalAddresses>
+                <PostalAddress xml:lang="en">
+                    <StreetAddress>Mariahilfer Straße 77-79</StreetAddress>
+                    <Locality>Wien</Locality>
+                    <PostalCode>1060</PostalCode>
+                    <CountryName>AT</CountryName>
+                </PostalAddress>
+                <PostalAddress xml:lang="de">
+                    <StreetAddress>Mariahilfer Straße 77-79</StreetAddress>
+                    <Locality>Wien</Locality>
+                    <PostalCode>1060</PostalCode>
+                    <CountryName>AT</CountryName>
+                </PostalAddress>
+            </PostalAddresses>
+            <ElectronicAddress>
+                <URI xml:lang="en">mailto:signatur@signatur.rtr.at</URI>
+                <URI xml:lang="en">https://www.signatur.rtr.at/en/</URI>
+                <URI xml:lang="de">https://www.signatur.rtr.at/de/</URI>
+            </ElectronicAddress>
+        </SchemeOperatorAddress>
+        <SchemeName>
+            <Name xml:lang="en">AT:Trusted list including information related to the qualified trust service providers which are supervised by the issuing Member State, together with information related to the qualified trust services provided by them, in accordance with the relevant provisions laid down in Regulation (EU) No 910/2014 of the European Parliament and of the Council of 23 July 2014 on electronic identification and trust services for electronic transactions in the internal market and repealing Directive 1999/93/EC.</Name>
+            <Name xml:lang="de">AT:Vertrauensliste mit Angaben zu den qualifizierten Vertrauensdiensteanbietern, die vom ausstellenden Mitgliedstaat beaufsichtigt werden, sowie Angaben zu den von ihnen angebotenen qualifizierten Vertrauensdiensten gemäß der Verordnung (EU) Nr. 910/2014 des Europäischen Parlaments und des Rates vom 23. Juli 2014 über die elektronische Identifizierung und Vertrauensdienste für elektronische Transaktionen im Binnenmarkt und zur Aufhebung der Richtlinie 1999/93/EG.</Name>
+        </SchemeName>
+        <SchemeInformationURI>
+            <URI xml:lang="en">https://www.signatur.rtr.at/en/vd/VertrListe</URI>
+            <URI xml:lang="de">https://www.signatur.rtr.at/de/vd/VertrListe</URI>
+        </SchemeInformationURI>
+        <StatusDeterminationApproach>http://uri.etsi.org/TrstSvc/TrustedList/StatusDetn/EUappropriate</StatusDeterminationApproach>
+        <SchemeTypeCommunityRules>
+            <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUcommon</URI>
+            <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/AT</URI>
+        </SchemeTypeCommunityRules>
+        <SchemeTerritory>AT</SchemeTerritory>
+        <PolicyOrLegalNotice>
+            <TSLLegalNotice xml:lang="en">The applicable legal framework for the present trusted list is Regulation (EU) No 910/2014 of the European Parliament and of the Council of 23 July 2014 on electronic identification and trust services for electronic transactions in the internal market and repealing Directive 1999/93/EC.</TSLLegalNotice>
+            <TSLLegalNotice xml:lang="de">Der für diese Vertrauenslisten geltende Rechtsrahmen ist die Verordnung (EU) Nr. 910/2014 des Europäischen Parlaments und des Rates vom 23. Juli 2014 über elektronische Identifizierung und Vertrauensdienste für elektronische Transaktionen im Binnenmarkt und zur Aufhebung der Richtlinie 1999/93/EG.</TSLLegalNotice>
+        </PolicyOrLegalNotice>
+        <HistoricalInformationPeriod>65535</HistoricalInformationPeriod>
+        <PointersToOtherTSL>
+            <OtherTSLPointer>
+                <ServiceDigitalIdentities>
+                    <ServiceDigitalIdentity>
+                        <DigitalId>
+                            <X509Certificate>MIID/DCCAuSgAwIBAgIQEAAAAAAAWgS4SGkJJUcHdzANBgkqhkiG9w0BAQUFADAzMQswCQYDVQQGEwJCRTETMBEGA1UEAxMKQ2l0aXplbiBDQTEPMA0GA1UEBRMGMjAxMzA2MB4XDTEzMDcxNzE3NDQwOFoXDTE4MDcxMzIzNTk1OVowbjELMAkGA1UEBhMCQkUxITAfBgNVBAMTGFBpZXJyZSBEYW1hcyAoU2lnbmF0dXJlKTEOMAwGA1UEBBMFRGFtYXMxFjAUBgNVBCoMDVBpZXJyZSBBbmRyw6kxFDASBgNVBAUTCzYwMDIxMjExOTE5MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCMv+7DvhzLwG3prirUDGaYRS2+jBZtN2cYXuloKSqAc5Q58FEmk0gsZRF+/4dkt8hgCvbBcpmG6FcvTfNxQbxPX88yYwpBYsWnJ3aD5P4QrN2+fZxwxfXxRRcX+t30IBpr+WYFv/GhJhoFo0LWUehC4eyvnMfP4J/MR4TGlQRrcwIDAQABo4IBUzCCAU8wHwYDVR0jBBgwFoAUww/Dck0/3rI43jkuR2RQ//KP88cwbgYIKwYBBQUHAQEEYjBgMDYGCCsGAQUFBzAChipodHRwOi8vY2VydHMuZWlkLmJlbGdpdW0uYmUvYmVsZ2l1bXJzMi5jcnQwJgYIKwYBBQUHMAGGGmh0dHA6Ly9vY3NwLmVpZC5iZWxnaXVtLmJlMEQGA1UdIAQ9MDswOQYHYDgJAQECATAuMCwGCCsGAQUFBwIBFiBodHRwOi8vcmVwb3NpdG9yeS5laWQuYmVsZ2l1bS5iZTA5BgNVHR8EMjAwMC6gLKAqhihodHRwOi8vY3JsLmVpZC5iZWxnaXVtLmJlL2VpZGMyMDEzMDYuY3JsMA4GA1UdDwEB/wQEAwIGQDARBglghkgBhvhCAQEEBAMCBSAwGAYIKwYBBQUHAQMEDDAKMAgGBgQAjkYBATANBgkqhkiG9w0BAQUFAAOCAQEAEE3KGmLX5XXqArQwIZQmQEE6orKSu3a1z8ey1txsZC4rMk1vpvC6MtsfDaU4N6ooprhcM/WAlcIGOPCNhvxV+xcY7gUBwa6myiClnK0CMSiGYHqWcJG8ns13B9f0+5PJqsoziPoksXb2A9VXkr5aEdEmBYLjh7wG7GwAuDgDT0v87qtphN02/MAlJcNqT3JUUAotD7yfEybmK245jKo+pTYeCHGh7r1HzVWhbUDcQ/e1PpQXjVqBmr4k1ACtuu4H19t6K1P5kf7ta5JFEJPFgy3Hxt6YqzoY07WTVEpS4gJqtleIdX1Fhse7jq83ltcCzlfysBRqY/okUzipo1rbQw==</X509Certificate>
+                        </DigitalId>
+                    </ServiceDigitalIdentity>
+                    <ServiceDigitalIdentity>
+                        <DigitalId>
+                            <X509Certificate>MIID/TCCAuWgAwIBAgIQEAAAAAAAWcxEUPr16SDrtzANBgkqhkiG9w0BAQUFADAzMQswCQYDVQQGEwJCRTETMBEGA1UEAxMKQ2l0aXplbiBDQTEPMA0GA1UEBRMGMjAxMzExMB4XDTEzMDcyNDAxNDUzMVoXDTE4MDcxODIzNTk1OVowbzELMAkGA1UEBhMCQkUxIjAgBgNVBAMTGU1hYXJ0ZW4gT3R0b3kgKFNpZ25hdHVyZSkxDjAMBgNVBAQTBU90dG95MRYwFAYDVQQqEw1NYWFydGVuIEpvcmlzMRQwEgYDVQQFEws4MzEyMTQyNDEwMjCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAjbr1T8USYkuh4X+Yi+coykq7mbF8PjgyjWQ28uODqRCkynuqJz468tCIYxsM/+/QdqEFq4Z5Z1YDbBYb5KsxfBmkzr9D+Gt49iWVt9Ig+FhngbOexwCW108t6Q/+NAo6gwl6IKkzv2wpEJIwtc51VFzvM+WkE1mNmclphYRTL5UCAwEAAaOCAVMwggFPMB8GA1UdIwQYMBaAFLws1Y0dT3YXfAzva5To9R51FmNhMG4GCCsGAQUFBwEBBGIwYDA2BggrBgEFBQcwAoYqaHR0cDovL2NlcnRzLmVpZC5iZWxnaXVtLmJlL2JlbGdpdW1yczIuY3J0MCYGCCsGAQUFBzABhhpodHRwOi8vb2NzcC5laWQuYmVsZ2l1bS5iZTBEBgNVHSAEPTA7MDkGB2A4CQEBAgEwLjAsBggrBgEFBQcCARYgaHR0cDovL3JlcG9zaXRvcnkuZWlkLmJlbGdpdW0uYmUwOQYDVR0fBDIwMDAuoCygKoYoaHR0cDovL2NybC5laWQuYmVsZ2l1bS5iZS9laWRjMjAxMzExLmNybDAOBgNVHQ8BAf8EBAMCBkAwEQYJYIZIAYb4QgEBBAQDAgUgMBgGCCsGAQUFBwEDBAwwCjAIBgYEAI5GAQEwDQYJKoZIhvcNAQEFBQADggEBAHNRipzOD4aXB7Oo4FgfBbWgPkmUGTqkz2jK9U2tEWUbyQrhirgqhxK6YMAHBvzL+7BHouMEAuxycZG3ozAfEDRZiznFWyqS8QlnHUe0ThaAvs8v5wYOUO7lJ6vnaNLLvQj7W3L5kCnEva5h0Jh9wMytlNp89dd02l7MD4BsidXoMN21AE8su39tBmNayLF6YrFLe3Zob4fQCuIEbx/pj3kYIVC4WM7uuDx+QpEJdNBtB41o2q2JJFqusRP7W0phkxX7sPtYkot6RXLdgaZNoB4YIRwGozIvcegydRVqpcYrvFSoppNHQqd8ZNzswjGzqBhlWYPsxdjjsxJiUyk7T1c=</X509Certificate>
+                        </DigitalId>
+                    </ServiceDigitalIdentity>
+                    <ServiceDigitalIdentity>
+                        <DigitalId>
+                            <X509Certificate>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</X509Certificate>
+                        </DigitalId>
+                    </ServiceDigitalIdentity>
+                    <ServiceDigitalIdentity>
+                        <DigitalId>
+                            <X509Certificate>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</X509Certificate>
+                        </DigitalId>
+                    </ServiceDigitalIdentity>
+                    <ServiceDigitalIdentity>
+                        <DigitalId>
+                            <X509Certificate>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</X509Certificate>
+                        </DigitalId>
+                    </ServiceDigitalIdentity>
+                </ServiceDigitalIdentities>
+                <TSLLocation>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</TSLLocation>
+                <AdditionalInformation>
+                    <OtherInformation>
+                        <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <SchemeTerritory>EU</SchemeTerritory>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <ns4:MimeType>application/vnd.etsi.tsl+xml</ns4:MimeType>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <SchemeOperatorName>
+                            <Name xml:lang="en">European Commission</Name>
+                            <Name xml:lang="de">Europäische Kommission</Name>
+                        </SchemeOperatorName>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <SchemeTypeCommunityRules>
+                            <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUlistofthelists</URI>
+                        </SchemeTypeCommunityRules>
+                    </OtherInformation>
+                </AdditionalInformation>
+            </OtherTSLPointer>
+        </PointersToOtherTSL>
+        <ListIssueDateTime>2018-09-03T01:00:00Z</ListIssueDateTime>
+        <NextUpdate>
+            <dateTime>2019-03-03T00:00:00Z</dateTime>
+        </NextUpdate>
+        <DistributionPoints>
+            <URI>https://www.signatur.rtr.at/currenttl.xml</URI>
+        </DistributionPoints>
+    </SchemeInformation>
+    <TrustServiceProviderList>
+        <TrustServiceProvider>
+            <TSPInformation>
+                <TSPName>
+                    <Name xml:lang="en">A-Trust Gesellschaft für Sicherheitssysteme im elektronischen Datenverkehr GmbH</Name>
+                    <Name xml:lang="de">A-Trust Gesellschaft für Sicherheitssysteme im elektronischen Datenverkehr GmbH</Name>
+                </TSPName>
+                <TSPTradeName>
+                    <Name xml:lang="en">A-Trust Ges. für Sicherheitssysteme im elektr. Datenverkehr GmbH</Name>
+                    <Name xml:lang="en">A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH</Name>
+                    <Name xml:lang="en">VATAT-U50272100</Name>
+                </TSPTradeName>
+                <TSPAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="en">
+                            <StreetAddress>Landstraßer Hauptstraße 1b, E02</StreetAddress>
+                            <Locality>Wien</Locality>
+                            <PostalCode>1030</PostalCode>
+                            <CountryName>AT</CountryName>
+                        </PostalAddress>
+                        <PostalAddress xml:lang="de">
+                            <StreetAddress>Landstraßer Hauptstraße 1b, E02</StreetAddress>
+                            <Locality>Wien</Locality>
+                            <PostalCode>1030</PostalCode>
+                            <CountryName>AT</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="en">mailto:office@a-trust.at</URI>
+                        <URI xml:lang="en">http://www.a-trust.at/docs/en/</URI>
+                        <URI xml:lang="de">http://www.a-trust.at/</URI>
+                    </ElectronicAddress>
+                </TSPAddress>
+                <TSPInformationURI>
+                    <URI xml:lang="en">http://www.a-trust.at/docs/en/</URI>
+                    <URI xml:lang="de">http://www.a-trust.at/docs/</URI>
+                </TSPInformationURI>
+            </TSPInformation>
+            <TSPServices>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">TrustSign-Sig-01 (key no. 1)</Name>
+                            <Name xml:lang="de">TrustSign-Sig-01 (Schlüssel Nr. 1)</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIE0TCCA7mgAwIBAgICApMwDQYJKoZIhvcNAQEFBQAwgc8xCzAJBgNVBAYTAkFUMYGLMIGIBgNVBAoegYAAQQAtAFQAcgB1AHMAdAAgAEcAZQBzAC4AIABmAPwAcgAgAFMAaQBjAGgAZQByAGgAZQBpAHQAcwBzAHkAcwB0AGUAbQBlACAAaQBtACAAZQBsAGUAawB0AHIALgAgAEQAYQB0AGUAbgB2AGUAcgBrAGUAaAByACAARwBtAGIASDEYMBYGA1UECxMPQS1UcnVzdC1RdWFsLTAxMRgwFgYDVQQDEw9BLVRydXN0LVF1YWwtMDEwHhcNMDIwMjA2MjMwMDAwWhcNMDUwMjA2MjMwMDAwWjCB0TELMAkGA1UEBhMCQVQxgYswgYgGA1UECh6BgABBAC0AVAByAHUAcwB0ACAARwBlAHMALgAgAGYA/AByACAAUwBpAGMAaABlAHIAaABlAGkAdABzAHMAeQBzAHQAZQBtAGUAIABpAG0AIABlAGwAZQBrAHQAcgAuACAARABhAHQAZQBuAHYAZQByAGsAZQBoAHIAIABHAG0AYgBIMRkwFwYDVQQLExBUcnVzdFNpZ24tU2lnLTAxMRkwFwYDVQQDExBUcnVzdFNpZ24tU2lnLTAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3vqE78j1NAlAT8GC1kqNk6qL+jn1dLTADCiQVIyct01vkO0zINkUg2x6k7E2xnmyDPg4ihayczDYcuzzQMMms63MFDlONMZ180CxFsZpOYK8SctdTWdH0tGJFJF0oBWI6ROykMxo3knPLMDMTS586MgPdKxmihk5OjyZvqiEH1SdmuFR4UTke81cisUkM6+hh4v/AYrPShXOlEmNmFILMw9iQST5aeylmgfWwixCZgnmS7fr3j65gezxhPN56qRyndgu97/9VsKMASYTsaD8pZEZ230TIopuwGb4AeO7CUrU22scpnreHLW1ZX4hldJYJXzFpBH2pAnHfiQgADs4CwIDAQABo4GyMIGvMA8GA1UdEwEB/wQFMAMBAf8wEQYDVR0OBAoECEeMFJHO+gwZMBMGA1UdIwQMMAqACEs8jB2F6W+tMA4GA1UdDwEB/wQEAwIBBjBkBgNVHR8EXTBbMFmgV6BVhlNsZGFwOi8vbGRhcC5hLXRydXN0LmF0L291PUEtVHJ1c3QtUXVhbC0wMSxvPUEtVHJ1c3QsYz1BVD9jZXJ0aWZpY2F0ZXJldm9jYXRpb25saXN0PzANBgkqhkiG9w0BAQUFAAOCAQEAS1Ch3C9IGqX4c/PCp0Hp93r+07ftu+A77EW7w5kDQ6QhuuXAJgVk4Vyp4D+wlJMxQpvDGkBnaSYcRyT5rT7ie/eImbHi+ep6AD/mcKs8D2XXDDEy/UxuvEe7pDqrAZc93LID8HnrMf2OFqXbmBggN/TvD20s2CBnEgP+QCm9asttMCg1FLIAIeDL/JstH3ddTlIQNPgUCCaUmATP8oOnh2eon7Fn5+dnKDUY4j6lRDPsDzu0wU0s9VWiyS9Lay0f7P9h3LcYHtAYZg2BPlEAqpOVNVXZ+4JdjRKvhHh9pgadnGNkunrenDiekHgbABop0s2yj5EDAkqYIosnp4bOCQ==</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509Certificate>MIIE0jCCA7qgAwIBAgIDAOKPMA0GCSqGSIb3DQEBBQUAMIHPMQswCQYDVQQGEwJBVDGBizCBiAYDVQQKHoGAAEEALQBUAHIAdQBzAHQAIABHAGUAcwAuACAAZgD8AHIAIABTAGkAYwBoAGUAcgBoAGUAaQB0AHMAcwB5AHMAdABlAG0AZQAgAGkAbQAgAGUAbABlAGsAdAByAC4AIABEAGEAdABlAG4AdgBlAHIAawBlAGgAcgAgAEcAbQBiAEgxGDAWBgNVBAsTD0EtVHJ1c3QtUXVhbC0wMTEYMBYGA1UEAxMPQS1UcnVzdC1RdWFsLTAxMB4XDTA0MTIwNTIzMDAwMFoXDTA4MTEzMDIzMDAwMFowgdExCzAJBgNVBAYTAkFUMYGLMIGIBgNVBAoegYAAQQAtAFQAcgB1AHMAdAAgAEcAZQBzAC4AIABmAPwAcgAgAFMAaQBjAGgAZQByAGgAZQBpAHQAcwBzAHkAcwB0AGUAbQBlACAAaQBtACAAZQBsAGUAawB0AHIALgAgAEQAYQB0AGUAbgB2AGUAcgBrAGUAaAByACAARwBtAGIASDEZMBcGA1UECxMQVHJ1c3RTaWduLVNpZy0wMTEZMBcGA1UEAxMQVHJ1c3RTaWduLVNpZy0wMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAN76hO/I9TQJQE/BgtZKjZOqi/o59XS0wAwokFSMnLdNb5DtMyDZFINsepOxNsZ5sgz4OIoWsnMw2HLs80DDJrOtzBQ5TjTGdfNAsRbGaTmCvEnLXU1nR9LRiRSRdKAViOkTspDMaN5JzyzAzE0ufOjID3SsZooZOTo8mb6ohB9UnZrhUeFE5HvNXIrFJDOvoYeL/wGKz0oVzpRJjZhSCzMPYkEk+WnspZoH1sIsQmYJ5ku3694+uYHs8YTzeeqkcp3YLve//VbCjAEmE7Gg/KWRGdt9EyKKbsBm+AHjuwlK1NtrHKZ63hy1tWV+IZXSWCV8xaQR9qQJx34kIAA7OAsCAwEAAaOBsjCBrzAPBgNVHRMBAf8EBTADAQH/MBEGA1UdDgQKBAhHjBSRzvoMGTATBgNVHSMEDDAKgAhLPIwdhelvrTAOBgNVHQ8BAf8EBAMCAQYwZAYDVR0fBF0wWzBZoFegVYZTbGRhcDovL2xkYXAuYS10cnVzdC5hdC9vdT1BLVRydXN0LVF1YWwtMDEsbz1BLVRydXN0LGM9QVQ/Y2VydGlmaWNhdGVyZXZvY2F0aW9ubGlzdD8wDQYJKoZIhvcNAQEFBQADggEBAFqLuJJaOUgocZvrTR/XFRtaZUv4qiv8R4dCJKqcgy6wSbz9kLngLPfQ9ExrD9rYvYZDRmEbdVHVXsmOALpeQbDf/eUaiUJTB4sjVBtZosgVwGLrbJoi6TcX/0dgJGzWZqp96Y2W/cNueF0Y48MDEznQ3dFlC0BFdIcoePqD+7ofZvfEeECczNxWeJwygxsn7AmqJFJJC0LP8+EpXgzJVmadWhTI2Ox4sWHnyE7OZiaPiMDBXHsOiFw9EyCWFQIxUJnqq6ViiKd8CkkHZpXtJCaMmkZ9fUSZrVsS8y7zZskukS3mIrSbJebWrkynHPGWJq1UAytBNn6Zv9khEdR3hoo=</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509Certificate>MIIE0jCCA7qgAwIBAgIDBMPJMA0GCSqGSIb3DQEBBQUAMIHPMQswCQYDVQQGEwJBVDGBizCBiAYDVQQKHoGAAEEALQBUAHIAdQBzAHQAIABHAGUAcwAuACAAZgD8AHIAIABTAGkAYwBoAGUAcgBoAGUAaQB0AHMAcwB5AHMAdABlAG0AZQAgAGkAbQAgAGUAbABlAGsAdAByAC4AIABEAGEAdABlAG4AdgBlAHIAawBlAGgAcgAgAEcAbQBiAEgxGDAWBgNVBAsTD0EtVHJ1c3QtUXVhbC0wMTEYMBYGA1UEAxMPQS1UcnVzdC1RdWFsLTAxMB4XDTA4MTEzMDIzMDAwMFoXDTEzMTEzMDIzMDAwMFowgdExCzAJBgNVBAYTAkFUMYGLMIGIBgNVBAoegYAAQQAtAFQAcgB1AHMAdAAgAEcAZQBzAC4AIABmAPwAcgAgAFMAaQBjAGgAZQByAGgAZQBpAHQAcwBzAHkAcwB0AGUAbQBlACAAaQBtACAAZQBsAGUAawB0AHIALgAgAEQAYQB0AGUAbgB2AGUAcgBrAGUAaAByACAARwBtAGIASDEZMBcGA1UECxMQVHJ1c3RTaWduLVNpZy0wMTEZMBcGA1UEAxMQVHJ1c3RTaWduLVNpZy0wMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAN76hO/I9TQJQE/BgtZKjZOqi/o59XS0wAwokFSMnLdNb5DtMyDZFINsepOxNsZ5sgz4OIoWsnMw2HLs80DDJrOtzBQ5TjTGdfNAsRbGaTmCvEnLXU1nR9LRiRSRdKAViOkTspDMaN5JzyzAzE0ufOjID3SsZooZOTo8mb6ohB9UnZrhUeFE5HvNXIrFJDOvoYeL/wGKz0oVzpRJjZhSCzMPYkEk+WnspZoH1sIsQmYJ5ku3694+uYHs8YTzeeqkcp3YLve//VbCjAEmE7Gg/KWRGdt9EyKKbsBm+AHjuwlK1NtrHKZ63hy1tWV+IZXSWCV8xaQR9qQJx34kIAA7OAsCAwEAAaOBsjCBrzAPBgNVHRMBAf8EBTADAQH/MBEGA1UdDgQKBAhHjBSRzvoMGTATBgNVHSMEDDAKgAhLPIwdhelvrTAOBgNVHQ8BAf8EBAMCAQYwZAYDVR0fBF0wWzBZoFegVYZTbGRhcDovL2xkYXAuYS10cnVzdC5hdC9vdT1BLVRydXN0LVF1YWwtMDEsbz1BLVRydXN0LGM9QVQ/Y2VydGlmaWNhdGVyZXZvY2F0aW9ubGlzdD8wDQYJKoZIhvcNAQEFBQADggEBAHwbg4LImK55PXD49E6Fku2eASYGIN/Dr441L5tFXT/ZWOoLRE77BXu4b3p8KR8dkNJM//CfFDWj/i2n/8iXXLXSpbFGDo9pj8VPkpJ42zfzR5eJp5AuMF7Tf9SihtaYi87fFJiLABxEzc4t0QENKerzBkkjvkcAsyA36pyvCQ9pAf6eTQCGEotoM8QK+s9Qxq/5cOJe5ZkKK/tzNcfE2a3O3j654sGzGNdREFQUS5wjsU8dFXSlE2vsBZ+OHgNtdAaIDwAfn5Nxb9p7J4XplPCSA6IOZKzMLEJkx68zdu/G90yMxnHvxUJ+MUg0La+ok63yD2MAzWN687NhwxFuXQA=</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=TrustSign-Sig-01, OU=TrustSign-Sig-01, O=A-Trust Ges. für Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2017-10-04T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">TrustSign-Sig-01 (key no. 1)</Name>
+<Name xml:lang="de">TrustSign-Sig-01 (Schlüssel Nr. 1)</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=TrustSign-Sig-01, OU=TrustSign-Sig-01, O=A-Trust Ges. für Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>R4wUkc76DBk=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">TrustSign-Sig-01 (key no. 1)</Name>
+<Name xml:lang="de">TrustSign-Sig-01 (Schlüssel Nr. 1)</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=TrustSign-Sig-01, OU=TrustSign-Sig-01, O=A-Trust Ges. für Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>R4wUkc76DBk=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2002-03-11T23:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">TrustSign-Sig-01 (key no. 1)</Name>
+<Name xml:lang="de">TrustSign-Sig-01 (Schlüssel Nr. 1)</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=TrustSign-Sig-01, OU=TrustSign-Sig-01, O=A-Trust Ges. für Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>R4wUkc76DBk=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2002-02-06T23:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">TrustSign-Sig-01 (key no. 2)</Name>
+                            <Name xml:lang="de">TrustSign-Sig-01 (Schlüssel Nr. 2)</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIFMTCCBBmgAwIBAgICIRQwDQYJKoZIhvcNAQEFBQAwgc8xCzAJBgNVBAYTAkFUMYGLMIGIBgNVBAoegYAAQQAtAFQAcgB1AHMAdAAgAEcAZQBzAC4AIABmAPwAcgAgAFMAaQBjAGgAZQByAGgAZQBpAHQAcwBzAHkAcwB0AGUAbQBlACAAaQBtACAAZQBsAGUAawB0AHIALgAgAEQAYQB0AGUAbgB2AGUAcgBrAGUAaAByACAARwBtAGIASDEYMBYGA1UECxMPQS1UcnVzdC1RdWFsLTAxMRgwFgYDVQQDEw9BLVRydXN0LVF1YWwtMDEwHhcNMDIwMjA2MjMwMDAwWhcNMDUwMjA2MjMwMDAwWjCB0TELMAkGA1UEBhMCQVQxgYswgYgGA1UECh6BgABBAC0AVAByAHUAcwB0ACAARwBlAHMALgAgAGYA/AByACAAUwBpAGMAaABlAHIAaABlAGkAdABzAHMAeQBzAHQAZQBtAGUAIABpAG0AIABlAGwAZQBrAHQAcgAuACAARABhAHQAZQBuAHYAZQByAGsAZQBoAHIAIABHAG0AYgBIMRkwFwYDVQQLExBUcnVzdFNpZ24tU2lnLTAxMRkwFwYDVQQDExBUcnVzdFNpZ24tU2lnLTAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvXGs18ynQG4eoI8y46olBYF1V32FB0Cbcx7ZWwRwJibNyG53RY6AspuUlx9UAv6ZzpjiuzEkE3oJN2p+OT/tfopmODdH8HER9lnMIcJOLFMZKn+1b+sauWHGgXo2diOOsOMCvTjQ/Lltobbfly0qF6DKb9D0GWCU260tkaMtFMyRyChlQh0nRE1araMBrnlTe2xY99ElPMPtdE4+EFNQjOx6QyoZ5hy1jZvr2eHKJlgoPFxaF1JlGB7oJxZ2fixnAyufJvg4ULyGLqwt0/2TohKQ3hq7eAaiT+Ln+/ninxTvg13uFtIVCREXvaDiSahB13HSkHS0bZvyBZs8HMDLKwIDAQABo4IBETCCAQ0wDwYDVR0TAQH/BAUwAwEB/zARBgNVHQ4ECgQIQthDjjorz3AwEwYDVR0jBAwwCoAIQdjJBmWZOIwwDgYDVR0PAQH/BAQDAgEGMIHBBgNVHR8EgbkwgbYwWaBXoFWGU2xkYXA6Ly9sZGFwLmEtdHJ1c3QuYXQvb3U9QS1UcnVzdC1RdWFsLTAxLG89QS1UcnVzdCxjPUFUP2NlcnRpZmljYXRlcmV2b2NhdGlvbmxpc3Q/MFmgV6BVhlNsZGFwOi8vbGRhcC5hLXRydXN0LmF0L291PUEtVHJ1c3QtUXVhbC0wMSxvPUEtVHJ1c3QsYz1BVD9jZXJ0aWZpY2F0ZXJldm9jYXRpb25saXN0PzANBgkqhkiG9w0BAQUFAAOCAQEAoPKCepGneGGgwkFC+wILtMdcwXq9JsZuOvRAghqF1DHDKAmxwkxhqSdjGwKjNyLwqlpSLiy2aELUKMek8ScjuaGtxvI5a+Dd4T04Z/yRpkA4S5JYNEa08l8urQjQ0CIekaY4kBaV6YJkHhHrmATYaQlJVO0Kk0Jj/tPs1tLOTFcn1eW+rO/suLMm3Em6RTbq/criQRreo9boLBe3VgBk+48teUVNveAkpODM9euVoobf8Vy6dAVdzB1lzzZD4tAr3o5mA0Qa3f6kK1x6zf+md4FZGWb6Vc66rlc8xA/fTZQcjgRr0BPqdjdw/io0wXJItdOfgyjCnsDvJMdvVJ65nw==</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=TrustSign-Sig-01, OU=TrustSign-Sig-01, O=A-Trust Ges. für Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2017-10-04T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">TrustSign-Sig-01 (key no. 2)</Name>
+<Name xml:lang="de">TrustSign-Sig-01 (Schlüssel Nr. 2)</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=TrustSign-Sig-01, OU=TrustSign-Sig-01, O=A-Trust Ges. für Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>QthDjjorz3A=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">TrustSign-Sig-01 (key no. 2)</Name>
+<Name xml:lang="de">TrustSign-Sig-01 (Schlüssel Nr. 2)</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=TrustSign-Sig-01, OU=TrustSign-Sig-01, O=A-Trust Ges. für Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>QthDjjorz3A=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2002-03-11T23:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">TrustSign-Sig-01 (key no. 2)</Name>
+<Name xml:lang="de">TrustSign-Sig-01 (Schlüssel Nr. 2)</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=TrustSign-Sig-01, OU=TrustSign-Sig-01, O=A-Trust Ges. für Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>QthDjjorz3A=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2002-02-06T23:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">TrustSign-Sig-01 (key no. 3)</Name>
+                            <Name xml:lang="de">TrustSign-Sig-01 (Schlüssel Nr. 3)</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIE0jCCA7qgAwIBAgIDAchVMA0GCSqGSIb3DQEBBQUAMIHPMQswCQYDVQQGEwJBVDGBizCBiAYDVQQKHoGAAEEALQBUAHIAdQBzAHQAIABHAGUAcwAuACAAZgD8AHIAIABTAGkAYwBoAGUAcgBoAGUAaQB0AHMAcwB5AHMAdABlAG0AZQAgAGkAbQAgAGUAbABlAGsAdAByAC4AIABEAGEAdABlAG4AdgBlAHIAawBlAGgAcgAgAEcAbQBiAEgxGDAWBgNVBAsTD0EtVHJ1c3QtUXVhbC0wMTEYMBYGA1UEAxMPQS1UcnVzdC1RdWFsLTAxMB4XDTA0MTIwNTIzMDAwMFoXDTA4MTEzMDIzMDAwMFowgdExCzAJBgNVBAYTAkFUMYGLMIGIBgNVBAoegYAAQQAtAFQAcgB1AHMAdAAgAEcAZQBzAC4AIABmAPwAcgAgAFMAaQBjAGgAZQByAGgAZQBpAHQAcwBzAHkAcwB0AGUAbQBlACAAaQBtACAAZQBsAGUAawB0AHIALgAgAEQAYQB0AGUAbgB2AGUAcgBrAGUAaAByACAARwBtAGIASDEZMBcGA1UECxMQVHJ1c3RTaWduLVNpZy0wMTEZMBcGA1UEAxMQVHJ1c3RTaWduLVNpZy0wMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALJxmKoLgguJcblqjsfqA3INNVD8qqt5bDfaEmFAMN+cfOM4fZEy2e3+CNavVWURp0tiXAsgecHh6yXq7osTCPxojiyAF3MUeUmXSZh6F6MuEjiQi+4BHaN+w9oEKjyA4DqcYLGsaIhLCo3mDsBmAOZxoAt1DpBKqyKvdfmdRWsx3nel6wB9CPE3VTTKQHcxV/QB++dJEtG9TdLEWxjUD2eZz3GFktP7RGxCRkozLDKG9k0mGIp8f7av5JyWG17yh7Oh5Nqrx7/BCDZR4Y/xVahx9mtFX4SIST1c2ZJsvw/TkiiQhKedJiHuognIqCasRHc2QBagGe5HdJ28n5Bp+t8CAwEAAaOBsjCBrzAPBgNVHRMBAf8EBTADAQH/MBEGA1UdDgQKBAhH7YK42XD6hjATBgNVHSMEDDAKgAhI+lv+ipVn5jAOBgNVHQ8BAf8EBAMCAQYwZAYDVR0fBF0wWzBZoFegVYZTbGRhcDovL2xkYXAuYS10cnVzdC5hdC9vdT1BLVRydXN0LVF1YWwtMDEsbz1BLVRydXN0LGM9QVQ/Y2VydGlmaWNhdGVyZXZvY2F0aW9ubGlzdD8wDQYJKoZIhvcNAQEFBQADggEBADMkGHUzoFmvW76PekzWbwDa63WyCECIEQh6samjF5MfKJYJIZQGucOhpsQUCA9sdRmgtjt4R1XkFkxhU8GQmIKKukqWGGxON+xKD3XxllQRRMdZTZruxXvctrW16xiswoBWmHP1pF9Ng99XX8du1d3/tlR9aSqffshwbDpzMmfG3xJInJaQKv/XWiSzHjy8LyU8Ja0a5Ww6BVzM5Ovsjy2OLXaIctkaUxVaMytyyztlSfWZnSv0n3Ipf5Bs3CXfxxGaaQUtat7bQSKmh62O4ZQi+XTKJL+r13PVEhevBL/I/OSzKiM97Id5BhJPgFoC0ovIE5zDuDMm8hRV7K821+0=</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=TrustSign-Sig-01, OU=TrustSign-Sig-01, O=A-Trust Ges. für Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2017-10-04T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">TrustSign-Sig-01 (key no. 3)</Name>
+<Name xml:lang="de">TrustSign-Sig-01 (Schlüssel Nr. 3)</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=TrustSign-Sig-01, OU=TrustSign-Sig-01, O=A-Trust Ges. für Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>R+2CuNlw+oY=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">TrustSign-Sig-01 (key no. 3)</Name>
+<Name xml:lang="de">TrustSign-Sig-01 (Schlüssel Nr. 3)</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=TrustSign-Sig-01, OU=TrustSign-Sig-01, O=A-Trust Ges. für Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>R+2CuNlw+oY=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2002-03-11T23:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">TrustSign-Sig-01 (key no. 3)</Name>
+<Name xml:lang="de">TrustSign-Sig-01 (Schlüssel Nr. 3)</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=TrustSign-Sig-01, OU=TrustSign-Sig-01, O=A-Trust Ges. für Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>R+2CuNlw+oY=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2002-02-06T23:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">a-sign uni</Name>
+                            <Name xml:lang="de">a-sign uni</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIDDjCCAnegAwIBAgIBATANBgkqhkiG9w0BAQUFADCBmjELMAkGA1UEBhMCQVQxSDBGBgNVBAoTP0EtVHJ1c3QgR2VzLiBmLiBTaWNoZXJoZWl0c3N5c3RlbWUgaW0gZWxla3RyLiBEYXRlbnZlcmtlaHIgR21iSDEXMBUGA1UECxMOd3d3LmEtdHJ1c3QuYXQxEzARBgNVBAsTCmEtc2lnbiB1bmkxEzARBgNVBAMTCmEtc2lnbiB1bmkwHhcNMDIwOTEzMTgzMjM4WhcNMzIwOTEzMTgzMjM4WjCBmjELMAkGA1UEBhMCQVQxSDBGBgNVBAoTP0EtVHJ1c3QgR2VzLiBmLiBTaWNoZXJoZWl0c3N5c3RlbWUgaW0gZWxla3RyLiBEYXRlbnZlcmtlaHIgR21iSDEXMBUGA1UECxMOd3d3LmEtdHJ1c3QuYXQxEzARBgNVBAsTCmEtc2lnbiB1bmkxEzARBgNVBAMTCmEtc2lnbiB1bmkwgZ4wCwYJKoZIhvcNAQEBA4GOADCBigKBgQCvBqGXYw0rNZyQR8YG+EQ4GeoQgMRdsYPhnuvkl6aEMWdMvDuvAPlLi4rXNNq3mb4yKKCswSp5SPiRo43uwrpfCjLxu9RT+Fi3wDE1Z5tBr7iQOnOCx5IKs2X94hcdsJClWHYoxT4f5Jnq86kNVYys+T8TUJCrsHm/8TCr3x7vuwIEAAAAA6NjMGEwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFBXzfvl2WIKcUwhZzt+1wC1ShQPBMB8GA1UdIwQYMBaAFBXzfvl2WIKcUwhZzt+1wC1ShQPBMA0GCSqGSIb3DQEBBQUAA4GBAALtJ7UT/H4ZwUAeKV1X1Gz+pIqVtCsECNKWHiZeXx0ly/insjh+vbNVNy2RyOimKWtms0GZ0Kj/oDK81efRL9YvHKMlCLlz6FBKaUTUztO1FYa2othUGsu8LsBtPPU6u0wMPGhE3DEdo5/4lA6gMbsOvKQ6jQyeCjqOB22EjbJd</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=a-sign uni, OU=a-sign uni, OU=www.a-trust.at, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2017-10-04T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">a-sign uni</Name>
+<Name xml:lang="de">a-sign uni</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=a-sign uni, OU=a-sign uni, OU=www.a-trust.at, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>FfN++XZYgpxTCFnO37XALVKFA8E=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">a-sign uni</Name>
+<Name xml:lang="de">a-sign uni</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=a-sign uni, OU=a-sign uni, OU=www.a-trust.at, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>FfN++XZYgpxTCFnO37XALVKFA8E=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2002-09-29T22:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">a-sign-Premium-Sig-01 (key no. 1)</Name>
+                            <Name xml:lang="de">a-sign-Premium-Sig-01 (Schlüssel Nr. 1)</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIEvTCCA6WgAwIBAgICGBQwDQYJKoZIhvcNAQEFBQAwgc8xCzAJBgNVBAYTAkFUMYGLMIGIBgNVBAoegYAAQQAtAFQAcgB1AHMAdAAgAEcAZQBzAC4AIABmAPwAcgAgAFMAaQBjAGgAZQByAGgAZQBpAHQAcwBzAHkAcwB0AGUAbQBlACAAaQBtACAAZQBsAGUAawB0AHIALgAgAEQAYQB0AGUAbgB2AGUAcgBrAGUAaAByACAARwBtAGIASDEYMBYGA1UECxMPQS1UcnVzdC1RdWFsLTAxMRgwFgYDVQQDEw9BLVRydXN0LVF1YWwtMDEwHhcNMDMwMTIyMjMwMDAwWhcNMDYwMTIyMjMwMDAwWjCBlzELMAkGA1UEBhMCQVQxSDBGBgNVBAoTP0EtVHJ1c3QgR2VzLiBmLiBTaWNoZXJoZWl0c3N5c3RlbWUgaW0gZWxla3RyLiBEYXRlbnZlcmtlaHIgR21iSDEeMBwGA1UECxMVYS1zaWduLVByZW1pdW0tU2lnLTAxMR4wHAYDVQQDExVhLXNpZ24tUHJlbWl1bS1TaWctMDEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDAlOjUod+36uDr17MyREqpilqx41bJsrt+IaqXBVuFi9G8p1efHY4XVkQ43aob0Pegt/+ZOWeCxPKnKwH3+D8nZMP3MylqoiDbPYL7u0BTiIP7/gtrinopPR4mNEvxuMb1bkPpeghH26eT/+14XvEgxZRS+fipheJGjCWRlOEWjZ2nu4aNWtQqz9nQToV76BMwuU4xqB2+xFdOgSbTNIvkxs0mKAzNwTb7OwYfjXp8c13+ppkUB4wWzsPkW1H1IBrpPUjGFEt+IdSlbyvWdaFb/WAymArclOPXos1erief5RDSXacw6AgJFxUzZHARqB3Wqki0uKznOqOOl4UZszl9AgMBAAGjgdgwgdUwDwYDVR0TAQH/BAUwAwEB/zARBgNVHQ4ECgQIQNfznhuHOswwEwYDVR0jBAwwCoAISzyMHYXpb60wJAYIKwYBBQUHAQMEGDAWMAgGBgQAjkYBATAKBggrBgEFBQcLATAOBgNVHQ8BAf8EBAMCAQYwZAYDVR0fBF0wWzBZoFegVYZTbGRhcDovL2xkYXAuYS10cnVzdC5hdC9vdT1BLVRydXN0LVF1YWwtMDEsbz1BLVRydXN0LGM9QVQ/Y2VydGlmaWNhdGVyZXZvY2F0aW9ubGlzdD8wDQYJKoZIhvcNAQEFBQADggEBACflLIJ51oBizo44aVKiC2BTL3uraHwNzmx0BI82NtSoC+l6K6jU5wir2oGMq50jb/645RHH6CiPcn9Z8/KzO+EAnwLSjsaupFMBRSTnyQesPoIRQ9UPFWecVZjjsfNmuydvNGr2aRJnaaoKR+8SLYdlEqrAG44IWBCvdHZuNvMxH7qh97Enr7oE6Ur6XuKIpRkRE6F1jGUEW1OzHbzYpp78N/HV2FEf37SslIRFycRwog/LGAAHVKr16BzfVJwa/uaGSLm3reXqe/6eJnI8PmXHqLkHPW5UEpBhAIdBHq2o0Mnrn3jrAE06h6kH34Zxrv7xBTnUjZsvIL9/bwGkMWY=</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509Certificate>MIIEvjCCA6agAwIBAgIDAOKOMA0GCSqGSIb3DQEBBQUAMIHPMQswCQYDVQQGEwJBVDGBizCBiAYDVQQKHoGAAEEALQBUAHIAdQBzAHQAIABHAGUAcwAuACAAZgD8AHIAIABTAGkAYwBoAGUAcgBoAGUAaQB0AHMAcwB5AHMAdABlAG0AZQAgAGkAbQAgAGUAbABlAGsAdAByAC4AIABEAGEAdABlAG4AdgBlAHIAawBlAGgAcgAgAEcAbQBiAEgxGDAWBgNVBAsTD0EtVHJ1c3QtUXVhbC0wMTEYMBYGA1UEAxMPQS1UcnVzdC1RdWFsLTAxMB4XDTA0MTIwNTIzMDAwMFoXDTA4MTEzMDIzMDAwMFowgZcxCzAJBgNVBAYTAkFUMUgwRgYDVQQKEz9BLVRydXN0IEdlcy4gZi4gU2ljaGVyaGVpdHNzeXN0ZW1lIGltIGVsZWt0ci4gRGF0ZW52ZXJrZWhyIEdtYkgxHjAcBgNVBAsTFWEtc2lnbi1QcmVtaXVtLVNpZy0wMTEeMBwGA1UEAxMVYS1zaWduLVByZW1pdW0tU2lnLTAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwJTo1KHft+rg69ezMkRKqYpaseNWybK7fiGqlwVbhYvRvKdXnx2OF1ZEON2qG9D3oLf/mTlngsTypysB9/g/J2TD9zMpaqIg2z2C+7tAU4iD+/4La4p6KT0eJjRL8bjG9W5D6XoIR9unk//teF7xIMWUUvn4qYXiRowlkZThFo2dp7uGjVrUKs/Z0E6Fe+gTMLlOMagdvsRXToEm0zSL5MbNJigMzcE2+zsGH416fHNd/qaZFAeMFs7D5FtR9SAa6T1IxhRLfiHUpW8r1nWhW/1gMpgK3JTj16LNXq4nn+UQ0l2nMOgICRcVM2RwEagd1qpItLis5zqjjpeFGbM5fQIDAQABo4HYMIHVMA8GA1UdEwEB/wQFMAMBAf8wEQYDVR0OBAoECEDX854bhzrMMBMGA1UdIwQMMAqACEs8jB2F6W+tMCQGCCsGAQUFBwEDBBgwFjAIBgYEAI5GAQEwCgYIKwYBBQUHCwEwDgYDVR0PAQH/BAQDAgEGMGQGA1UdHwRdMFswWaBXoFWGU2xkYXA6Ly9sZGFwLmEtdHJ1c3QuYXQvb3U9QS1UcnVzdC1RdWFsLTAxLG89QS1UcnVzdCxjPUFUP2NlcnRpZmljYXRlcmV2b2NhdGlvbmxpc3Q/MA0GCSqGSIb3DQEBBQUAA4IBAQBmvGBnx1KxgnfR4ALMuPEzpbIKPSHZ23Qc35dFM/PC0vJXNFDyuS37Gij/YhZiIwvK9s5YeX3bdmBGC5Hk//uY1iZ+BXWKoLV3rzPxiztQhUaLncnQLVvs26zNDTI51ewX5VAuH1Xf02G7KSAe61z8N0ldQNNODysSTB4ngUoq/QKq8Ec0ffHtYDXnYSdEWIb3VM/G4vKPi98zrAwaSJ96/3C4uVRCsf27SMbOgx5JqL0pQPfReUXbJLktUHf0mO1DDc0D++jWVb0RmiC7Tf8E+VvLPPe7Fm8c0rE17titEnTFkYJU6Y8Qg9DNyIe9ZiduhUTofob0+kf0gtxXmREJ</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509Certificate>MIIEvjCCA6agAwIBAgIDBK/cMA0GCSqGSIb3DQEBBQUAMIHPMQswCQYDVQQGEwJBVDGBizCBiAYDVQQKHoGAAEEALQBUAHIAdQBzAHQAIABHAGUAcwAuACAAZgD8AHIAIABTAGkAYwBoAGUAcgBoAGUAaQB0AHMAcwB5AHMAdABlAG0AZQAgAGkAbQAgAGUAbABlAGsAdAByAC4AIABEAGEAdABlAG4AdgBlAHIAawBlAGgAcgAgAEcAbQBiAEgxGDAWBgNVBAsTD0EtVHJ1c3QtUXVhbC0wMTEYMBYGA1UEAxMPQS1UcnVzdC1RdWFsLTAxMB4XDTA4MTEzMDIzMDAwMFoXDTEyMTEzMDIzMDAwMFowgZcxCzAJBgNVBAYTAkFUMUgwRgYDVQQKEz9BLVRydXN0IEdlcy4gZi4gU2ljaGVyaGVpdHNzeXN0ZW1lIGltIGVsZWt0ci4gRGF0ZW52ZXJrZWhyIEdtYkgxHjAcBgNVBAsTFWEtc2lnbi1QcmVtaXVtLVNpZy0wMTEeMBwGA1UEAxMVYS1zaWduLVByZW1pdW0tU2lnLTAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwJTo1KHft+rg69ezMkRKqYpaseNWybK7fiGqlwVbhYvRvKdXnx2OF1ZEON2qG9D3oLf/mTlngsTypysB9/g/J2TD9zMpaqIg2z2C+7tAU4iD+/4La4p6KT0eJjRL8bjG9W5D6XoIR9unk//teF7xIMWUUvn4qYXiRowlkZThFo2dp7uGjVrUKs/Z0E6Fe+gTMLlOMagdvsRXToEm0zSL5MbNJigMzcE2+zsGH416fHNd/qaZFAeMFs7D5FtR9SAa6T1IxhRLfiHUpW8r1nWhW/1gMpgK3JTj16LNXq4nn+UQ0l2nMOgICRcVM2RwEagd1qpItLis5zqjjpeFGbM5fQIDAQABo4HYMIHVMA8GA1UdEwEB/wQFMAMBAf8wEQYDVR0OBAoECEDX854bhzrMMBMGA1UdIwQMMAqACEs8jB2F6W+tMCQGCCsGAQUFBwEDBBgwFjAIBgYEAI5GAQEwCgYIKwYBBQUHCwEwDgYDVR0PAQH/BAQDAgEGMGQGA1UdHwRdMFswWaBXoFWGU2xkYXA6Ly9sZGFwLmEtdHJ1c3QuYXQvb3U9QS1UcnVzdC1RdWFsLTAxLG89QS1UcnVzdCxjPUFUP2NlcnRpZmljYXRlcmV2b2NhdGlvbmxpc3Q/MA0GCSqGSIb3DQEBBQUAA4IBAQAAuZgDHXaN4LHLGHHxE/6iu+IeSLoBqB3iW15f4n7z0wR4kVqxRvKE1kgouUvqfeP4Fbcsa9pDezUm+eBLWZTzntbOfefVMq8n73zlHckYGHOJ4vdVdMGZU1unhKe8XKICz5jejnrbyEMWoQqeaxRxexUwA/Kf/lXg498hQzUvGE05nonSQu6OnLRHlo6nFFLDQaWoBfPwQOvz13HKUSis+YhaAUUnEtWAIhIR2xL3MIsFjl0ziUKdhu9UgwNpcxyptg88Y6uW8D+XCdDPEk4noyHZOM2dVcMUIll7ZABi/+uDh+TnYTq5fAp+qUOlEXla/We24X/msiTt1I1FZBB7</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=a-sign-Premium-Sig-01, OU=a-sign-Premium-Sig-01, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">a-sign-Premium-Sig-01 (key no. 1)</Name>
+<Name xml:lang="de">a-sign-Premium-Sig-01 (Schlüssel Nr. 1)</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=a-sign-Premium-Sig-01, OU=a-sign-Premium-Sig-01, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>QNfznhuHOsw=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2003-01-24T15:57:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">a-sign-Premium-Sig-01 (key no. 2)</Name>
+                            <Name xml:lang="de">a-sign-Premium-Sig-01 (Schlüssel Nr. 2)</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIFHTCCBAWgAwIBAgICIRUwDQYJKoZIhvcNAQEFBQAwgc8xCzAJBgNVBAYTAkFUMYGLMIGIBgNVBAoegYAAQQAtAFQAcgB1AHMAdAAgAEcAZQBzAC4AIABmAPwAcgAgAFMAaQBjAGgAZQByAGgAZQBpAHQAcwBzAHkAcwB0AGUAbQBlACAAaQBtACAAZQBsAGUAawB0AHIALgAgAEQAYQB0AGUAbgB2AGUAcgBrAGUAaAByACAARwBtAGIASDEYMBYGA1UECxMPQS1UcnVzdC1RdWFsLTAxMRgwFgYDVQQDEw9BLVRydXN0LVF1YWwtMDEwHhcNMDMwMTIyMjMwMDAwWhcNMDYwMTIyMjMwMDAwWjCBlzELMAkGA1UEBhMCQVQxSDBGBgNVBAoTP0EtVHJ1c3QgR2VzLiBmLiBTaWNoZXJoZWl0c3N5c3RlbWUgaW0gZWxla3RyLiBEYXRlbnZlcmtlaHIgR21iSDEeMBwGA1UECxMVYS1zaWduLVByZW1pdW0tU2lnLTAxMR4wHAYDVQQDExVhLXNpZ24tUHJlbWl1bS1TaWctMDEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDB/M9q567Feg8xtHbYhMhg8LdbSfehOBIdrkSRdEC8e21tfFv4HCmzxoEZRoLHkq/ZMLnczI5Nd0JbE0LjLfUr54zKxPIbFfIcJmGT12hCo+zxVoZEyyAlV1SWXg/dxuz00XJv6Rz/J0gm05+tPI83/e0cQoHXOx8Wd+FKLdTTwQlxzbR5ykqY43RmV/MHP0ohHMDGnMsI7dze7AnF+JG/D1mophf5DrUHtKN+4IAghoN+xlPcshiQfn9ZMoGimATGSnpy0V5t7HHc1XcKTGlmk+2n2n3c6RhXd2fwTUCMo7Y0xwSZ18D/+JKQl8zwqUOd1aa7b13YlbnrbcqrPoAzAgMBAAGjggE3MIIBMzAPBgNVHRMBAf8EBTADAQH/MBEGA1UdDgQKBAhDedPwf3GasjATBgNVHSMEDDAKgAhB2MkGZZk4jDAkBggrBgEFBQcBAwQYMBYwCAYGBACORgEBMAoGCCsGAQUFBwsBMA4GA1UdDwEB/wQEAwIBBjCBwQYDVR0fBIG5MIG2MFmgV6BVhlNsZGFwOi8vbGRhcC5hLXRydXN0LmF0L291PUEtVHJ1c3QtUXVhbC0wMSxvPUEtVHJ1c3QsYz1BVD9jZXJ0aWZpY2F0ZXJldm9jYXRpb25saXN0PzBZoFegVYZTbGRhcDovL2xkYXAuYS10cnVzdC5hdC9vdT1BLVRydXN0LVF1YWwtMDEsbz1BLVRydXN0LGM9QVQ/Y2VydGlmaWNhdGVyZXZvY2F0aW9ubGlzdD8wDQYJKoZIhvcNAQEFBQADggEBAFgsBo9pZ+FoDCLnjwVbFnyyFk6odcS8VhmM9uaGeKYGq0TUNsRFdkiwuqpK0JtAj0m93/qQNGz7NFOEE8JG5/9Ai00uBwezj8e3BAarqyaM41jUuMQ9Zc1U+8zhlBGJHtLCV0dPs1zcve7NVnhAKR2xeRNu1RUanErXUDorybp4fUodAhRUrUe7KJAKVT9sLbSjTASjgtLcisCcyfvxixf7pZ8MF8xc9iwZiEQENwJaoYr3p79mf7oOZr26jG1m1OkYr+lS4j6PMGWIJ+zl7zwDYHz4chRAv/4Sprgxn81zd+cn67pl6cR5cncdIpaAJsVju3NdgKan9s7+beeXf1k=</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=a-sign-Premium-Sig-01, OU=a-sign-Premium-Sig-01, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">a-sign-Premium-Sig-01 (key no. 2)</Name>
+<Name xml:lang="de">a-sign-Premium-Sig-01 (Schlüssel Nr. 2)</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=a-sign-Premium-Sig-01, OU=a-sign-Premium-Sig-01, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>Q3nT8H9xmrI=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2003-01-24T15:57:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">a-sign-Premium-Sig-01 (key no. 3)</Name>
+                            <Name xml:lang="de">a-sign-Premium-Sig-01 (Schlüssel Nr. 3)</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIEvjCCA6agAwIBAgIDAchWMA0GCSqGSIb3DQEBBQUAMIHPMQswCQYDVQQGEwJBVDGBizCBiAYDVQQKHoGAAEEALQBUAHIAdQBzAHQAIABHAGUAcwAuACAAZgD8AHIAIABTAGkAYwBoAGUAcgBoAGUAaQB0AHMAcwB5AHMAdABlAG0AZQAgAGkAbQAgAGUAbABlAGsAdAByAC4AIABEAGEAdABlAG4AdgBlAHIAawBlAGgAcgAgAEcAbQBiAEgxGDAWBgNVBAsTD0EtVHJ1c3QtUXVhbC0wMTEYMBYGA1UEAxMPQS1UcnVzdC1RdWFsLTAxMB4XDTA0MTIwNTIzMDAwMFoXDTA4MTEzMDIzMDAwMFowgZcxCzAJBgNVBAYTAkFUMUgwRgYDVQQKEz9BLVRydXN0IEdlcy4gZi4gU2ljaGVyaGVpdHNzeXN0ZW1lIGltIGVsZWt0ci4gRGF0ZW52ZXJrZWhyIEdtYkgxHjAcBgNVBAsTFWEtc2lnbi1QcmVtaXVtLVNpZy0wMTEeMBwGA1UEAxMVYS1zaWduLVByZW1pdW0tU2lnLTAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5VnsvPtcIjM+D+5mN09Q+kvinrZZHsbum12TkYewGuqPVLImJ8ukSfKM1+TiungXkHMmsM8RouJ1NvdaBTLXSaRIe8MXBFgLWGQyRtb2/L/jxGfJdN44K7eU3iOTGmxui+P4PBiZGxVaoFJS3uvRrDxkR5RyrKi7ceuTjKnZC3sBcPLbrk0W42Gx1IXdS7JqmPNto87bejwmdfr9yj0OnMgMvesyMew5e6ItWCrkfWYwnj2q3k/32wi5Xb76gcOvlmwIP7GsDLp8CCeAyaxS/BNN2cFLYh0RmiywzjW694HtgJMvuT3tajyiytAsPQjSgAhis8lxIgaAoe7RkIhATwIDAQABo4HYMIHVMA8GA1UdEwEB/wQFMAMBAf8wEQYDVR0OBAoECEgpLpYM58twMBMGA1UdIwQMMAqACEj6W/6KlWfmMCQGCCsGAQUFBwEDBBgwFjAIBgYEAI5GAQEwCgYIKwYBBQUHCwEwDgYDVR0PAQH/BAQDAgEGMGQGA1UdHwRdMFswWaBXoFWGU2xkYXA6Ly9sZGFwLmEtdHJ1c3QuYXQvb3U9QS1UcnVzdC1RdWFsLTAxLG89QS1UcnVzdCxjPUFUP2NlcnRpZmljYXRlcmV2b2NhdGlvbmxpc3Q/MA0GCSqGSIb3DQEBBQUAA4IBAQBNBeLcDi2SaB0/ct5flyHLQV+MXICWHAqsKFGeH0cClpYL1iVyHIF7gBdkbNxDevz8H6+FFB7ZvfBCnQEdaB52FTIB9CHZdBKgZXV0WIjgSxHqXwNarOe7/nxWHhh9XFJWjjUviI01FAZnNeqO0Zf1V4GeC/N9nnBnwAe+ef5YvioOYqLiYE/DUvj4RejbbhUMdHB5tdiYOq9lk8zhp+bZL2yUZzk+QlkGks9WMDp6muOv2N77/TQdzOsgszdfPjS0RerZpBByu1CuPGxoFrLR7+FoOBb94jFDCGPv+FI6o9UmfA/Zsy6I7e4tPEGDcF3cpSYJwQo6HihAhmTKtBwa</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=a-sign-Premium-Sig-01, OU=a-sign-Premium-Sig-01, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">a-sign-Premium-Sig-01 (key no. 3)</Name>
+<Name xml:lang="de">a-sign-Premium-Sig-01 (Schlüssel Nr. 3)</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=a-sign-Premium-Sig-01, OU=a-sign-Premium-Sig-01, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>SCkulgzny3A=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2003-01-24T15:57:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">a-sign-Premium-Sig-02 (key no. 1)</Name>
+                            <Name xml:lang="de">a-sign-Premium-Sig-02 (Schlüssel Nr. 1)</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIEgzCCA2ugAwIBAgIDFE4QMA0GCSqGSIb3DQEBBQUAMIGLMQswCQYDVQQGEwJBVDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBpbSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMRgwFgYDVQQLDA9BLVRydXN0LVF1YWwtMDIxGDAWBgNVBAMMD0EtVHJ1c3QtUXVhbC0wMjAeFw0xNDA3MDExMTM3NTVaFw0yNDA3MDEwOTM3NTVaMIGXMQswCQYDVQQGEwJBVDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBpbSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMR4wHAYDVQQLDBVhLXNpZ24tUHJlbWl1bS1TaWctMDIxHjAcBgNVBAMMFWEtc2lnbi1QcmVtaXVtLVNpZy0wMjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANZZNjVoS1r6DchywTTX58dkZ4KJRSwt78fipFxGlf0KrniYB+v5Vr5wodgwQ6E6AZFtvIzjYUolN3PjlEAnVaeCeZCeadnH32+Tvl+7MGKkfH9D0XmwxkVcSYf4Rld/8H7JNFMyeyzefyCm1HMehpdgbhJ1+bO5P3Mbh2W8ca9qWfisdbj5VXu+niGWG0mXTbMtgPeiSsb9YAQ2UlvJjofZvnSaNv39Q3TRmIROXuhIHyD5wjcKA6qR2RD6eYpIG+yqZbGqxw65AIYHeD5li4jL0EsWxm6+eNBABA7GTcko4nxgKFv8wcqjiFBGKclznmHP0sSbxDxsrPK3gBj7Q8kCAwEAAaOB4TCB3jAPBgNVHRMBAf8EBTADAQH/MBEGA1UdDgQKBAhN3+H/S9nJ3zATBgNVHSMEDDAKgAhCPSskpsFFzjAOBgNVHQ8BAf8EBAMCAQYwgZIGA1UdHwSBijCBhzCBhKCBgaB/hn1sZGFwOi8vbGRhcC5hLXRydXN0LmF0L291PUEtVHJ1c3QtUXVhbC0wMixvPUEtVHJ1c3QsYz1BVD9jZXJ0aWZpY2F0ZXJldm9jYXRpb25saXN0P2Jhc2U/b2JqZWN0Y2xhc3M9ZWlkQ2VydGlmaWNhdGlvbkF1dGhvcml0eTANBgkqhkiG9w0BAQUFAAOCAQEAY6wF/ErpGbsMCwOkFH3MOvxYuxEAs2hpQOkz2KawDuocMRhZpESubzFSE3RxHxc7zgL60P6mOoT8G9IFlk/EOOFerBulJCyD3TR84MalgC3bj5hgC0H3/FJsVNRbbxlecbrroA+4S8DPU1F6mu9ImWGfuTWcV2Wa5pleJym5ICjTKL3v6tPLUdDlbcswkmxNf1uBZVsmta81BI1W9+33du1cVyymRZ2EfnL5kbAj6hdQ6qGfLjkZbZGXHWNNrfh/oGTzVALpmBwZq6rqYapWYU2T8z1WDz7fTNcpawM8Plxe8dNC6pCVeGQQApqYM4zm/4lC46V3ihjtcsETorSnVQ==</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=a-sign-Premium-Sig-02, OU=a-sign-Premium-Sig-02, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">a-sign-Premium-Sig-02 (key no. 1)</Name>
+<Name xml:lang="de">a-sign-Premium-Sig-02 (Schlüssel Nr. 1)</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=a-sign-Premium-Sig-02, OU=a-sign-Premium-Sig-02, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>Td/h/0vZyd8=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2004-12-14T23:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">a-sign-Premium-Sig-02 (key no. 2)</Name>
+                            <Name xml:lang="de">a-sign-Premium-Sig-02 (Schlüssel Nr. 2)</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIEgzCCA2ugAwIBAgIDAchZMA0GCSqGSIb3DQEBBQUAMIGLMQswCQYDVQQGEwJBVDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBpbSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMRgwFgYDVQQLDA9BLVRydXN0LVF1YWwtMDIxGDAWBgNVBAMMD0EtVHJ1c3QtUXVhbC0wMjAeFw0wNDEyMTQyMzAwMDBaFw0xNDEyMTMyMzAwMDBaMIGXMQswCQYDVQQGEwJBVDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBpbSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMR4wHAYDVQQLDBVhLXNpZ24tUHJlbWl1bS1TaWctMDIxHjAcBgNVBAMMFWEtc2lnbi1QcmVtaXVtLVNpZy0wMjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALoM/O8bjYvuo+6rbu1FRGKWrb9nTlVDtXao+DozZfdDNPi6m3LOxzV/PWgFkV35dqIbAupTKVt+3b66semFBo+srTzMCwFGR0foZUxrvIGQQnl5xmsCCiXuqcimymOjgI+7w1ogchsO4seFchOOGNqzNRWC1BtWe/FlL0EbKSQT3pjImj+GtSFBRpBuD9Q8VK+F+3R00wEp2XsWKlMwOUIbti4gVbTD3Zp9niygECzQaimHsUSYUtGLoFnagwxwOwv/hsV3FYNGSEENH4668yVmNg77X8VaTi0aUDuYtwsz3yCe18cxtCzItM3jc5yENygisxO0S/uyDR/QbSFIdu0CAwEAAaOB4TCB3jAPBgNVHRMBAf8EBTADAQH/MBEGA1UdDgQKBAhGaGVaqOsokzATBgNVHSMEDDAKgAhNwLGPxr/AujAOBgNVHQ8BAf8EBAMCAQYwgZIGA1UdHwSBijCBhzCBhKCBgaB/hn1sZGFwOi8vbGRhcC5hLXRydXN0LmF0L291PUEtVHJ1c3QtUXVhbC0wMixvPUEtVHJ1c3QsYz1BVD9jZXJ0aWZpY2F0ZXJldm9jYXRpb25saXN0P2Jhc2U/b2JqZWN0Y2xhc3M9ZWlkQ2VydGlmaWNhdGlvbkF1dGhvcml0eTANBgkqhkiG9w0BAQUFAAOCAQEAJCLi6UrdKKcmSM4v321es8nqmG8kzYhsDTKPpBZMlz/K1qDLFbZV6k4vw4VNQqlngm0DuBQDM/3nMBHe7vK1dB8+KIn/K2j7DcomO8pmOalLZEUunfTYbvfQNnN2TB8UHV7FHW+5AZ+xeQzQnSQ50/OFYtSuXq7xLOTMOZbrle6YV1pscLYr+A9nwPGdbFlzWIb8JCCse7SbpvY7jnn2jYge5eWs9ncFKDyU66HHmwP+8QIgIR9h6I638xmo7uuspXzwK2ZV+pryFTsgtsDzAA6HI7pw0SqXXrZ8GkR8nrlfwATdrWp2bbrPVl6QGhmHCv8aJWpgDZG2dL80B2InVQ==</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=a-sign-Premium-Sig-02, OU=a-sign-Premium-Sig-02, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">a-sign-Premium-Sig-02 (key no. 2)</Name>
+<Name xml:lang="de">a-sign-Premium-Sig-02 (Schlüssel Nr. 2)</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=a-sign-Premium-Sig-02, OU=a-sign-Premium-Sig-02, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>RmhlWqjrKJM=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2004-12-14T23:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">a-sign-Premium-Sig-03 (key no. 1)</Name>
+                            <Name xml:lang="de">a-sign-Premium-Sig-03 (Schlüssel Nr. 1)</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIEgzCCA2ugAwIBAgIDFE4TMA0GCSqGSIb3DQEBBQUAMIGLMQswCQYDVQQGEwJBVDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBpbSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMRgwFgYDVQQLDA9BLVRydXN0LVF1YWwtMDMxGDAWBgNVBAMMD0EtVHJ1c3QtUXVhbC0wMzAeFw0xNDA3MDExMTM4NDNaFw0yNDA3MDEwOTM4NDNaMIGXMQswCQYDVQQGEwJBVDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBpbSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMR4wHAYDVQQLDBVhLXNpZ24tUHJlbWl1bS1TaWctMDMxHjAcBgNVBAMMFWEtc2lnbi1QcmVtaXVtLVNpZy0wMzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALeNNE1C77TqwxAxdsIbp7QdIhW23SXBsVY89PNpMKpckFS12pjPbpHeCPB8RSo7+C0vpgXafnRBJd0vZBIehmzUf57qGd8Mbksx82Tf3S0NZ9FEwhU4qX0mok0s4oTsZTw9FD6jOqEI2vgcVhJfls7MLAFoD7o2oyUhuozEOxU1vtQj1dwElwIcMLxvkLvAbhqd3Zan5LQP4/WtW/Xhu+MXenxVUI2Sx8mYKxJxb71s7YOlX7iopU8W1fwdAcMu7eQyFl4RIGNDQFAZvHaF2UaS/YsVacLmB+pjeeLT+q8meSCHHgvXSGOjk3crNJRiW3XW8Be95IE3vDV1sZuNdmkCAwEAAaOB4TCB3jAPBgNVHRMBAf8EBTADAQH/MBEGA1UdDgQKBAhCJz4JfR5irjATBgNVHSMEDDAKgAhGBt838sI3EDAOBgNVHQ8BAf8EBAMCAQYwgZIGA1UdHwSBijCBhzCBhKCBgaB/hn1sZGFwOi8vbGRhcC5hLXRydXN0LmF0L291PUEtVHJ1c3QtUXVhbC0wMyxvPUEtVHJ1c3QsYz1BVD9jZXJ0aWZpY2F0ZXJldm9jYXRpb25saXN0P2Jhc2U/b2JqZWN0Y2xhc3M9ZWlkQ2VydGlmaWNhdGlvbkF1dGhvcml0eTANBgkqhkiG9w0BAQUFAAOCAQEAQ2kKwBteJOmJSnMct5U9IhMnqx6IE5Q4sv2tj1lNtIFTUHHZo9opBHM3wczHp6ZI8mXTlRZjM69b5FOuS7GMvLb0cs6PwWrdt64JX8dGu/n1INHocwxGM6sgDJn4ljWB2iKVV5tVa0fmK30qIfnYWMjh94uJWE6bVVJ+3x5TTJwBc2KhzwTVazJtwWjPDGJPsCUQGHx3S97TvvI3BMYorpRyh09c6mW6pZOTimeiZgqOzK5IST5zqoeT+kb4LITsQDCBYl1AutBnMoJUK3viYOnavbGH/3jKCPbO1v8J0CA80cxavtTrNbyVRIQoabcEIeOTvxXnsd3tC72U1uBArQ==</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=a-sign-Premium-Sig-03, OU=a-sign-Premium-Sig-03, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">a-sign-Premium-Sig-03 (key no. 1)</Name>
+<Name xml:lang="de">a-sign-Premium-Sig-03 (Schlüssel Nr. 1)</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=a-sign-Premium-Sig-03, OU=a-sign-Premium-Sig-03, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>Qic+CX0eYq4=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2008-04-28T22:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">a-sign-Premium-Sig-03 (key no. 2)</Name>
+                            <Name xml:lang="de">a-sign-Premium-Sig-03 (Schlüssel Nr. 2)</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIEgzCCA2ugAwIBAgIDBB0VMA0GCSqGSIb3DQEBBQUAMIGLMQswCQYDVQQGEwJBVDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBpbSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMRgwFgYDVQQLDA9BLVRydXN0LVF1YWwtMDMxGDAWBgNVBAMMD0EtVHJ1c3QtUXVhbC0wMzAeFw0wODA0MjgyMjAwMDBaFw0xODA0MjgyMjAwMDBaMIGXMQswCQYDVQQGEwJBVDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBpbSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMR4wHAYDVQQLDBVhLXNpZ24tUHJlbWl1bS1TaWctMDMxHjAcBgNVBAMMFWEtc2lnbi1QcmVtaXVtLVNpZy0wMzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMZZMDRI44+8O7+XWlx8GhzdR1oXpr5opd6/BNfcR2wGoYhJw0sxavzG0pctOtVdkqpkmzy29fEuNgvre0YtXfBfJrm8kS+ffLRbG00glOyvLPTfxrler312vObqs6ZNgZab01kPUYnByIpqN+Y1/xFamZJ2UfONbiy2YoE7xF3LhbrevO+T2lGDwObVMh7svmQlMcouKiQ5kkpmj5yYvfAClkD9m0ircDsaHC86sc8/egdnWWbdZFq4Tm5KoeQ2xIMpjNqmR8/HWiU3AtQHYMHB0Fu/7WUfE3BSA0my5UmFOh3mfTme301brNIoSGP2AYt3Zr3tZu5Oizyiq1Z6VJ8CAwEAAaOB4TCB3jAPBgNVHRMBAf8EBTADAQH/MBEGA1UdDgQKBAhNZ/2bimbxQDATBgNVHSMEDDAKgAhJgTHC/2IMJTAOBgNVHQ8BAf8EBAMCAQYwgZIGA1UdHwSBijCBhzCBhKCBgaB/hn1sZGFwOi8vbGRhcC5hLXRydXN0LmF0L291PUEtVHJ1c3QtUXVhbC0wMyxvPUEtVHJ1c3QsYz1BVD9jZXJ0aWZpY2F0ZXJldm9jYXRpb25saXN0P2Jhc2U/b2JqZWN0Y2xhc3M9ZWlkQ2VydGlmaWNhdGlvbkF1dGhvcml0eTANBgkqhkiG9w0BAQUFAAOCAQEAyBKAEd5RgEOMT2KMA6g3K1QzSGLJIB4dvQNRZTkU+bHdgXo0prdMSqhSrHsY/wlDPq39ZNF1lMKgprRmqxnCyg4ERPbu0el8UkH+i/zsmMbNc62sYEA3rmL9KbBE8NU2I7pKEAwfaoJeEz+VqjhWvYJWNoeqcWEdU9BviXaj4DSX92A3UOTnsv1g4upjwZyJpX3qNl5ogPLbrm8Rlu14XcTyUUDCG9J9onLR1rChnaOtFqaTPi+WfyjV2juQd1p3iLVGhJC4loU4M1uApZVy44AYxDrNhvnn11/unL2S6ZjtV+ZD283UFcfm0/Bmtj8lARlR3o7tXPvF8TC/PzHzIg==</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=a-sign-Premium-Sig-03, OU=a-sign-Premium-Sig-03, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">a-sign-Premium-Sig-03 (key no. 2)</Name>
+<Name xml:lang="de">a-sign-Premium-Sig-03 (Schlüssel Nr. 2)</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=a-sign-Premium-Sig-03, OU=a-sign-Premium-Sig-03, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>TWf9m4pm8UA=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2008-04-28T22:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">a-sign-Premium-Sig-05</Name>
+                            <Name xml:lang="de">a-sign-Premium-Sig-05</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIGKDCCBBCgAwIBAgIDD824MA0GCSqGSIb3DQEBCwUAMIGLMQswCQYDVQQGEwJBVDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBpbSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMRgwFgYDVQQLDA9BLVRydXN0LVJvb3QtMDUxGDAWBgNVBAMMD0EtVHJ1c3QtUm9vdC0wNTAeFw0xMzA5MjMxMzI4NThaFw0yMzA5MjAxMTI4NThaMIGXMQswCQYDVQQGEwJBVDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBpbSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMR4wHAYDVQQLDBVhLXNpZ24tUHJlbWl1bS1TaWctMDUxHjAcBgNVBAMMFWEtc2lnbi1QcmVtaXVtLVNpZy0wNTCCAiAwDQYJKoZIhvcNAQEBBQADggINADCCAggCggIBAKWkdHxXUo847W9MqYSOH8H0mulJ11qOPAwHISvZFVJ5jpklQE4Z7Eb+NKP/3tyGCE2IJPul0aKSBPjiMOwXlmD6FpDe2yoPxslu8/8nh28mo6Oyxnu/9WhnEv7u+P/VDUwI7avTRqj61m6mw39EfRMDrusJwa3MIZ1mmin+W6blUtOuuDUt6Oh1cGPTeZyNybZBPYgTibWaiYx8Od+zhQ40t6bC03U+DxxuNfCgOsieGeOc6JzJRtd7Tye8TAyVn9WDQyllvmO/Lst6oHpb50vKX5Hd5Xo5Ju2K3xWSx5sMrL8BUhAilpm4LM8YLTMKeaz5kaCdO8w0XKUJdFH9i/MEeAgSimZ0hIpvMpLSg25ySvMRS6Z7RsllA4xtnEG4Bu9P7FNeoyRm4Nd5UsIbug648wqXrf9PGsqPDjX7/3tSc67iJJ/wYgsOUIcrHsykhOIjVbpOeAKYwb1UAiXS2UjgDyVDX6atppHmAut1ig4ouJ27CUB7jhSVqoOxmxKpTzu+gHJo+cLb0ihVzvKu5EFI7b50KE8xPQCFHbe9YBdq3oGoq1M7OvBTVZ369d1yzwwK3U9lMUeysipVeSJeFCD057oJHJYxYmvv0LHQ1zX4DmW3HNHHU+A7+7aJnE1s9XNsCYbmUcY+14+WbTlUiCqMOAdCSzP8LHjRsf8a5DV/AgEDo4GIMIGFMDoGA1UdHwQzMDEwL6AtoCuGKWh0dHA6Ly9jcmwuYS10cnVzdC5hdC9jcmwvQS1UcnVzdC1Sb290LTA1MBMGA1UdIwQMMAqACED5uWe+A9IIMA8GA1UdEwEB/wQFMAMBAf8wEQYDVR0OBAoECEH4CDkbAegkMA4GA1UdDwEB/wQEAwIBBjANBgkqhkiG9w0BAQsFAAOCAgEAMqZmZqzadftaf6xB9WNWKnJixLBIVDjNUg3ypbmcwufqjmeAij2Qyer09oxr0n1xpsOwc7dSVp7brDTvSVJg33Ef9TGbCrKo9urJUypQn7HiCp1+y6Csvzi3jkx/V1Zvd9U5VF7hIHQrOQv1Id8egB845oestS+zUlqM+SxXO28EYIspiejWKWVi04nl+Ch85o1rZ9HBN6QxaoUU1Oo2+BaCyZqC+lWMv+wbCtM8YYLCME+tFiMfZC9WtBitt0TBE5LR7Gf1Wcalsaazgfcwr7gxVvXbS3j5y9IX0LsmUNUfgesdTTBPzZhQsryoZ3dpVbpdFj9ktBJkk2gzwYcVhXIGCGvOA96mm3b6uQrSuiWQJ9+NawWpiQI6C4GfPxkIt8idUyGbBzu5Nj613ekI/z5ZFYdQ3KGOqNxJRqQLVnjqOjO5YD1DY5L6Pjl341wwPFF5ZsEESlTn5qbPIfygf2swqfyuEPbV+jOvaR1HmuPunudaD42D5YJkpofIcvG9S4YsDJ6ZO6VvZ9f4cVxUiFDdfWc6tWQE3HEx6LDqZY5bjdieBwGqsS/623bdQyHgQOeZqMcC/kyUiKozTFPJwd92yx7oQda1k24U5qDC9xMi/s4cyHV2urDTvyVqphxKTw+64sW5z013vSBcQ2kKPxzwFkw/1MQF52upVhQqJ1c=</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=a-sign-Premium-Sig-05, OU=a-sign-Premium-Sig-05, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">a-sign-Premium-Sig-05</Name>
+<Name xml:lang="de">a-sign-Premium-Sig-05</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=a-sign-Premium-Sig-05, OU=a-sign-Premium-Sig-05, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>QfgIORsB6CQ=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2014-12-12T12:53:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">a-sign-premium-mobile-03</Name>
+                            <Name xml:lang="de">a-sign-premium-mobile-03</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIEiTCCA3GgAwIBAgIDFE4MMA0GCSqGSIb3DQEBBQUAMIGLMQswCQYDVQQGEwJBVDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBpbSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMRgwFgYDVQQLDA9BLVRydXN0LVF1YWwtMDMxGDAWBgNVBAMMD0EtVHJ1c3QtUXVhbC0wMzAeFw0xNDA3MDExMTM2MjFaFw0xOTA3MDEwOTM2MjFaMIGdMQswCQYDVQQGEwJBVDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBpbSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMSEwHwYDVQQLDBhhLXNpZ24tcHJlbWl1bS1tb2JpbGUtMDMxITAfBgNVBAMMGGEtc2lnbi1wcmVtaXVtLW1vYmlsZS0wMzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMNus72sFcXUDzUxKYiKBn+YwmePmRo7mB7H08BA4T+o/13tTNdEzZ/V4Ux/QKIe95+VvMfRPPex4Y7EStOw7Dx0e3TYh0K3FVZZowudsfIWfBnL5+EC24uODnyDhhkHOp+CIPnW3RqDJsagxSI0uti8ifASVliP1QlAYDRB9dDKgmrhwed/dnhNerlV2og8JmMDza/4+d+pQzueNkiecsIU+qXv/GIK45YZiOiHuBvz44G/u1Vzap60z9LSdyiaNbR8fpXRyd3nBDmGy4YvPGo4us6osagDtnqqJBgGX+WUvF4IAc+yn4317eUsl4GiTjEELLyI948TYfC4cxpwTasCAwEAAaOB4TCB3jAPBgNVHRMBAf8EBTADAQH/MBEGA1UdDgQKBAhLuGHXX9ZIYzATBgNVHSMEDDAKgAhGBt838sI3EDAOBgNVHQ8BAf8EBAMCAQYwgZIGA1UdHwSBijCBhzCBhKCBgaB/hn1sZGFwOi8vbGRhcC5hLXRydXN0LmF0L291PUEtVHJ1c3QtUXVhbC0wMyxvPUEtVHJ1c3QsYz1BVD9jZXJ0aWZpY2F0ZXJldm9jYXRpb25saXN0P2Jhc2U/b2JqZWN0Y2xhc3M9ZWlkQ2VydGlmaWNhdGlvbkF1dGhvcml0eTANBgkqhkiG9w0BAQUFAAOCAQEADYxImZuz/9ogGuwkoz/F4nQxaxefeFjd0FhZ5rjcfxn9znEo5CcssFjYAhfmXyOBPw6Xh8YCrbMrVQXt2lPC/iodm+dzsGCallT7DcPmEOyh/j2iMR+O69iP5wTwozM8AJ2wBKx6FRLUTkIBj/s1w8Gf28j90AEzztBkn6tmRqzyCD+KD2Lzlvyz4570Y6WM4dKnBGEkajWgGVLrWwRNuPx1DUMwgp6kZ7o+LAQB2uiUGmcjmHSN8FG6JLvg6A9aYUAXQ6ONNsQgrXrCMimfdDz9E802zgDSX1iDMn9tPZGplwHP+yGEq8g9GT/IEbjtjTTj3TdL336A1Mb2Z+kIbQ==</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=a-sign-premium-mobile-03, OU=a-sign-premium-mobile-03, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">a-sign-premium-mobile-03</Name>
+<Name xml:lang="de">a-sign-premium-mobile-03</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=a-sign-premium-mobile-03, OU=a-sign-premium-mobile-03, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>S7hh11/WSGM=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2009-09-21T12:37:33Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">a-sign-premium-mobile-05</Name>
+                            <Name xml:lang="de">a-sign-premium-mobile-05</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=a-sign-premium-mobile-05, OU=a-sign-premium-mobile-05, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">a-sign-premium-mobile-05</Name>
+<Name xml:lang="de">a-sign-premium-mobile-05</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=a-sign-premium-mobile-05, OU=a-sign-premium-mobile-05, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>SPP9nCMOh3c=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2014-12-12T12:53:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">OCSP Responder 03-1</Name>
+                            <Name xml:lang="de">OCSP Responder 03-1</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIEnTCCA4WgAwIBAgIDD6kCMA0GCSqGSIb3DQEBBQUAMIGHMQswCQYDVQQGEwJBVDFIMEYGA1UECgw/QS1UcnVzdCBHZXMuIGYuIFNpY2hlcmhlaXRzc3lzdGVtZSBpbSBlbGVrdHIuIERhdGVudmVya2VociBHbWJIMRYwFAYDVQQLDA1hLXNpZ24tU1NMLTAzMRYwFAYDVQQDDA1hLXNpZ24tU1NMLTAzMB4XDTEzMDkxMTE0MTQxOVoXDTE4MDkxMTEyMTQxOVowajELMAkGA1UEBhMCQVQxHDAaBgNVBAMME09DU1AgUmVzcG9uZGVyIDAzLTExFzAVBgNVBAQMDlJlc3BvbmRlciAwMy0xMQ0wCwYDVQQqDARPQ1NQMRUwEwYDVQQFEww4OTY5MjkxMzAzMjcwggEgMA0GCSqGSIb3DQEBAQUAA4IBDQAwggEIAoIBAQCID/DqVDp3RQiL2Luxth6/kAAXdxTXPb05Szlu6yYj8HJ1VltLxTLuEX2ViVkRxivbz4Gq8Ake6LXFOvgumsIfYE5XI5tHa8e3wFVV4yGXdv4b0uR2oOOZSjIH9z/xwnjc/ricaVoffPwquzj2FJBlqFfO0o4wlJEONzDoI4sdHyoTiedIf3PgWM3klBqg3TbzAOuzAWliPQYMmE2RFoA0UaJn8ShPN6TQPCjzlo44wQYV8IduXlC+6yhriaK2oja2A8E4VeOUmuUZm/CrxCtrughedJuT9nmwFDkCP044z7mVjzY0YvrIzH+2AAQYkvbiNcZ8NWkaDp+pFPNQ38xvAgERo4IBLjCCASowEQYDVR0OBAoECEcb9uRjpCoFMA4GA1UdDwEB/wQEAwIFoDATBgNVHSUEDDAKBggrBgEFBQcDCTATBgNVHSMEDDAKgAhAPqHTYrQD3TAJBgNVHRMEAjAAMEkGCCsGAQUFBwEBBD0wOzA5BggrBgEFBQcwAoYtaHR0cDovL3d3dy5hLXRydXN0LmF0L2NlcnRzL2Etc2lnbi1zc2wtMDMuY3J0MEsGA1UdIAREMEIwQAYGKigAEQEUMDYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93d3cuYS10cnVzdC5hdC9kb2NzL2NwL2Etc2lnbi1zc2wwOAYDVR0fBDEwLzAtoCugKYYnaHR0cDovL2NybC5hLXRydXN0LmF0L2NybC9hLXNpZ24tc3NsLTAzMA0GCSqGSIb3DQEBBQUAA4IBAQBytjyLWsfEsp7O2KuT9WhVp2ROxxFfP90p55SK8pNcQJqzzHTbq0GiAEzDfPUGd7zqlt/9HDWB2QQEC7B7zVk2oox06C8wHYjgt62+gmzJ2r/OJX6cF6peJveEuuJUV3LGbjMuZwOzjLvHdo0Z+p1WTnss+Nj8mw8kSBJvzPtI/KSdDFGx0FUqtnuxiS572PVYDSMEzuT/7SYu2KPvyS0fk7kZ73E/cthtn0B61qflaykixxbjN1tYW4jWpNTBZe24zNwOSgYp6+8tmfm5PbKmb6keMUViov6xBOKOYnAYV5TTbAAXXc/ws7N/cDVt8FabsH/DiPNtw0wmBwHVeSZL</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>serialNumber=896929130327, givenName=OCSP, surname=Responder 03-1, CN=OCSP Responder 03-1, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">OCSP Responder 03-1</Name>
+<Name xml:lang="de">OCSP Responder 03-1</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>SERIALNUMBER=896929130327, GIVENNAME=OCSP, SURNAME=Responder 03-1, CN=OCSP Responder 03-1, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>Rxv25GOkKgU=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2014-01-29T16:18:27Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">EU-Identity-mobile-05</Name>
+                            <Name xml:lang="de">EU-Identity-mobile-05</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=EU-Identity-mobile-05, OU=EU-Identity-mobile-05, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">EU-Identity-mobile-05</Name>
+<Name xml:lang="de">EU-Identity-mobile-05</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=EU-Identity-mobile-05, OU=EU-Identity-mobile-05, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>SJCdZfY8piw=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2016-04-19T00:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+            </TSPServices>
+        </TrustServiceProvider>
+        <TrustServiceProvider>
+            <TSPInformation>
+                <TSPName>
+                    <Name xml:lang="en">Bundesamt für Eich- und Vermessungswesen</Name>
+                    <Name xml:lang="de">Bundesamt für Eich- und Vermessungswesen</Name>
+                </TSPName>
+                <TSPTradeName>
+                    <Name xml:lang="en">VATAT-U38473200</Name>
+                </TSPTradeName>
+                <TSPAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="en">
+                            <StreetAddress>Schiffamtsgasse 1-3</StreetAddress>
+                            <Locality>Wien</Locality>
+                            <PostalCode>1025</PostalCode>
+                            <CountryName>AT</CountryName>
+                        </PostalAddress>
+                        <PostalAddress xml:lang="de">
+                            <StreetAddress>Schiffamtsgasse 1-3</StreetAddress>
+                            <Locality>Wien</Locality>
+                            <PostalCode>1025</PostalCode>
+                            <CountryName>AT</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="en">mailto:info@bev.gv.at</URI>
+                        <URI xml:lang="en">https://www.signatur.rtr.at/en/vd/Zertifizierungsdiensteanbieterdetails%3Fanbieter=bev.html</URI>
+                        <URI xml:lang="de">https://www.signatur.rtr.at/de/vd/Zertifizierungsdienstedetails%3Fzertifizierungsdienst=bev-szsd.html</URI>
+                    </ElectronicAddress>
+                </TSPAddress>
+                <TSPInformationURI>
+                    <URI xml:lang="en">https://www.signatur.rtr.at/en/vd/Zertifizierungsdienstedetails%3Fzertifizierungsdienst=bev-szsd.html</URI>
+                    <URI xml:lang="de">https://www.signatur.rtr.at/de/vd/Zertifizierungsdienstedetails%3Fzertifizierungsdienst=bev-szsd.html</URI>
+                </TSPInformationURI>
+            </TSPInformation>
+            <TSPServices>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Sicherer Zeitstempeldienst-01</Name>
+                            <Name xml:lang="de">Sicherer Zeitstempeldienst-01</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIE0TCCA7mgAwIBAgIBADANBgkqhkiG9w0BAQUFADBbMQswCQYDVQQGDAJBVDEjMCEGA1UECgwaVGVsZWtvbS1Db250cm9sLUtvbW1pc3Npb24xJzAlBgNVBAMMHlNlY3VyZSBUaW1lc3RhbXBpbmcgU2VydmljZXMgMTAeFw0wNjEyMTUxNTA0MDBaFw0xMTEyMTUxNTA0MDBaMGkxCzAJBgNVBAYMAkFUMTIwMAYDVQQKDClCdW5kZXNhbXQgZsO8ciBFaWNoLSB1bmQgVmVybWVzc3VuZ3N3ZXNlbjEmMCQGA1UEAwwdU2ljaGVyZXIgWmVpdHN0ZW1wZWxkaWVuc3QtMDEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDIlUc4wAWOIwXBMsYC/y7ok3cLQffAxHKk1PVmfCuO7IVZ1FGBLA2N4vQfSmJ3Qi2z9abVYABaQm1nrl2rbDQ76BtJzRqLQofw9QOxcsBpR0YzjLrpJ2l09E2MwETIL+IqyW2WQ32ARFzyWJIvXvOoIkSn5At7tQ4GmA+/e6Q2SGxVqt7Y8kecvxHLJkUbnq41RhFjWxZbI/cvNN2hu3lfzfVuBiY7QtzxkS7+XHkgKbJGoALWgXNIEA62I89kjq4OBEXecQOPBug/u1De48SlHmg+ZrhUdAqaE1Nj7JYAFse7OOBxjUlTkO3ihPZEnRN57aNRi8iRhauVffkcwyeZAgMA7lOjggGQMIIBjDAfBgNVHSMEGDAWgBS9r9+uTM+eljNmNtsJ7RcCA+Fe2TAdBgNVHQ4EFgQUSgShCrcsQbbvXyFGRVdKwVB6YBQwNwYDVR0fBDAwLjAsoCqgKIYmaHR0cDovL3d3dy5zaWduYXR1ci5ydHIuYXQvY3VycmVudC5jcmwwVgYDVR0gBE8wTTBLBgkqKAAVAAEAAQAwPjA8BggrBgEFBQcCARYwaHR0cDovL3d3dy5zaWduYXR1ci5ydHIuYXQvZGUvZGlyZWN0b3J5L2Nwcy5odG1sMHMGA1UdEQRsMGqkaDBmMSMwIQYDVQQDDBpTaWNoZXJlciBaZWl0c3RlbXBlbGRpZW5zdDEyMDAGA1UECgwpQnVuZGVzYW10IGZ1ZXIgRWljaC0gdW5kIFZlcm1lc3N1bmdzd2VzZW4xCzAJBgNVBAYMAkFUMAwGA1UdEwQFMAMBAQAwDgYDVR0PAQH/BAQDAgeAMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMIMA4GByooAAoBAQEEAwEB/zANBgkqhkiG9w0BAQUFAAOCAQEARX3z9+khVFJx8w2PYuqCyoPnQSosZZd3k6igkYxAk8TMop55gpzg+BdegbnX2F4xgLauOQHwuAiTOQw9GnEQPKLVxlN2LsTcu/9mZcIkJksiHt8sjBn9vEBD5Oi8FBWNwlymTVupadHrXG95L+byTSY8DvZDVP/vVAPGoucAu+6wxZEEXfEVPXT4HU2NLtt1pcmbHGWQKvWARnzFN+Ayeeuhz+hqvbsKhSwQqkJs47cbj7atgCOb7zgavI79StPQE1dc7R6EkOF+mqAX26cOVJMMlX/t01w2EmQeTV6BzwWSMww3YjwwVy2BrdJ2IHxY4xua8+cqp1Wl0bbaVB1HIQ==</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509Certificate>MIIE2jCCA8KgAwIBAgIBAjANBgkqhkiG9w0BAQUFADBbMQswCQYDVQQGDAJBVDEjMCEGA1UECgwaVGVsZWtvbS1Db250cm9sLUtvbW1pc3Npb24xJzAlBgNVBAMMHlNlY3VyZSBUaW1lc3RhbXBpbmcgU2VydmljZXMgMTAeFw0xMTEyMTMwOTIxMDBaFw0xNjEyMTMwOTIxMDBaMGkxCzAJBgNVBAYMAkFUMTIwMAYDVQQKDClCdW5kZXNhbXQgZsO8ciBFaWNoLSB1bmQgVmVybWVzc3VuZ3N3ZXNlbjEmMCQGA1UEAwwdU2ljaGVyZXIgWmVpdHN0ZW1wZWxkaWVuc3QtMDEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDIlUc4wAWOIwXBMsYC/y7ok3cLQffAxHKk1PVmfCuO7IVZ1FGBLA2N4vQfSmJ3Qi2z9abVYABaQm1nrl2rbDQ76BtJzRqLQofw9QOxcsBpR0YzjLrpJ2l09E2MwETIL+IqyW2WQ32ARFzyWJIvXvOoIkSn5At7tQ4GmA+/e6Q2SGxVqt7Y8kecvxHLJkUbnq41RhFjWxZbI/cvNN2hu3lfzfVuBiY7QtzxkS7+XHkgKbJGoALWgXNIEA62I89kjq4OBEXecQOPBug/u1De48SlHmg+ZrhUdAqaE1Nj7JYAFse7OOBxjUlTkO3ihPZEnRN57aNRi8iRhauVffkcwyeZAgMA7lOjggGZMIIBlTAfBgNVHSMEGDAWgBS9r9+uTM+eljNmNtsJ7RcCA+Fe2TAdBgNVHQ4EFgQUSgShCrcsQbbvXyFGRVdKwVB6YBQwNwYDVR0fBDAwLjAsoCqgKIYmaHR0cDovL3d3dy5zaWduYXR1ci5ydHIuYXQvY3VycmVudC5jcmwwVgYDVR0gBE8wTTBLBgkqKAAVAAEAAQEwPjA8BggrBgEFBQcCARYwaHR0cDovL3d3dy5zaWduYXR1ci5ydHIuYXQvZGUvZGlyZWN0b3J5L2Nwcy5odG1sMHwGA1UdEQR1MHOkcTBvMQswCQYDVQQGDAJBVDEyMDAGA1UECgwpQnVuZGVzYW10IGbDvHIgRWljaC0gdW5kIFZlcm1lc3N1bmdzd2VzZW4xLDAqBgNVBAMMI1F1YWxpZml6aWVydGVyIFplaXRzdGVtcGVsZGllbnN0LTAxMAwGA1UdEwQFMAMBAQAwDgYDVR0PAQH/BAQDAgeAMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMIMA4GByooAAoBAQEEAwEB/zANBgkqhkiG9w0BAQUFAAOCAQEABFTPQ5AY/PCM/OjksNKiYYX5kklOqeaUWs9tDDftg4YGua1GpwQdkPXF+r/55SH+JR5CgXy5yoy7Me60DSPEHLqxOsggPNo8OgUdmK4O0K0NMQMd4HatcwoQuC4+sWg2WXKnQSRP+ZWvWKXmhsTiaMbMkfH0p3w1Q55Y/Dy2tS/ybazFjBKeAOKcBJq6QwfTIrfS/1iUFBu2c4AUseyVeIJB0hwhGvRXJ0muVyw6Ml/IycAnAr73gu26Idm1LAeIcM3gKqc9P7BjSXT0mdFwoZNlajINHAZXKNNfCF1SVPSaudCPI10zDCrp05PHKf4W9uoypfBp3iGxgv4OqshEsQ==</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Sicherer Zeitstempeldienst-01, O=Bundesamt für Eich- und Vermessungswesen, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Sicherer Zeitstempeldienst-01</Name>
+<Name xml:lang="de">Sicherer Zeitstempeldienst-01</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Sicherer Zeitstempeldienst-01, O=Bundesamt für Eich- und Vermessungswesen, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>SgShCrcsQbbvXyFGRVdKwVB6YBQ=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased</ServiceStatus>
+                            <StatusStartingTime>2016-06-30T00:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Sicherer Zeitstempeldienst-01</Name>
+<Name xml:lang="de">Sicherer Zeitstempeldienst-01</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Sicherer Zeitstempeldienst-01, O=Bundesamt für Eich- und Vermessungswesen, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>SgShCrcsQbbvXyFGRVdKwVB6YBQ=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</ServiceStatus>
+                            <StatusStartingTime>2014-09-08T19:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Sicherer Zeitstempeldienst-01</Name>
+<Name xml:lang="de">Sicherer Zeitstempeldienst-01</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Sicherer Zeitstempeldienst-01, O=Bundesamt für Eich- und Vermessungswesen, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>SgShCrcsQbbvXyFGRVdKwVB6YBQ=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2007-01-01T23:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Sicherer Zeitstempeldienst-02</Name>
+                            <Name xml:lang="de">Sicherer Zeitstempeldienst-02</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIE0TCCA7mgAwIBAgIBATANBgkqhkiG9w0BAQUFADBbMQswCQYDVQQGDAJBVDEjMCEGA1UECgwaVGVsZWtvbS1Db250cm9sLUtvbW1pc3Npb24xJzAlBgNVBAMMHlNlY3VyZSBUaW1lc3RhbXBpbmcgU2VydmljZXMgMTAeFw0wNjEyMTUxNTA4MDBaFw0xMTEyMTUxNTA4MDBaMGkxCzAJBgNVBAYMAkFUMTIwMAYDVQQKDClCdW5kZXNhbXQgZsO8ciBFaWNoLSB1bmQgVmVybWVzc3VuZ3N3ZXNlbjEmMCQGA1UEAwwdU2ljaGVyZXIgWmVpdHN0ZW1wZWxkaWVuc3QtMDIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDWYdEd3BlIPXg7FbIYLvZn/itGZ89IdUmtMI1id4EDY9ioSqlFHwSUIM19n7Sk3Xz5ux64aiit92Zix8iSpgj1tsmZtut13i2XInDMy11PyTg55Bj8ai+I+9oDHGYFs2Q0ozGaE/RyYpOtkuC5PLGlABkICK203ZJJLWWzPxvztgbhSvDBoWK8hgjSKMiYeKNeer/tN4nMIRnhsaAzhpGSh8+UiUNtnsQDNJmM0ydYOCNwSHbfkXK4QMtastKfjSwxaTZtRzuU0Z4fMFMzLBSolCDVSSfA55LFqjm8vZMouALdtyaa3aMzuOE6k7ZdU25/9ESLXbV6BVSsf01euzV9AgMAgoWjggGQMIIBjDAfBgNVHSMEGDAWgBS9r9+uTM+eljNmNtsJ7RcCA+Fe2TAdBgNVHQ4EFgQUYg4zandOEMA+xKYddz/Fc7qy4VgwNwYDVR0fBDAwLjAsoCqgKIYmaHR0cDovL3d3dy5zaWduYXR1ci5ydHIuYXQvY3VycmVudC5jcmwwVgYDVR0gBE8wTTBLBgkqKAAVAAEAAQAwPjA8BggrBgEFBQcCARYwaHR0cDovL3d3dy5zaWduYXR1ci5ydHIuYXQvZGUvZGlyZWN0b3J5L2Nwcy5odG1sMHMGA1UdEQRsMGqkaDBmMSMwIQYDVQQDDBpTaWNoZXJlciBaZWl0c3RlbXBlbGRpZW5zdDEyMDAGA1UECgwpQnVuZGVzYW10IGZ1ZXIgRWljaC0gdW5kIFZlcm1lc3N1bmdzd2VzZW4xCzAJBgNVBAYMAkFUMAwGA1UdEwQFMAMBAQAwDgYDVR0PAQH/BAQDAgeAMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMIMA4GByooAAoBAQEEAwEB/zANBgkqhkiG9w0BAQUFAAOCAQEAv6q++kByPIH3W8KseIETmYSnJljcK6IYdl5GQ2OA9GOdVjRyMSH1ruucan2qDH6dNueF85YI7N+fwjNjWBfIWUkgyrUYNaQaONTLKW5PHRA4HvXyLPe/WrhjD83Uqs8vnOOEW33LjHKWt2RB3cOG6uWYy0ExT9ah/whUh8QGn2cTpcqcDsMfUi/QM+ap4oOQEDP6Xo1PQGaRgZv2Exfkt31QjiuPayUMtonFSj8dmwxMBrp/VUR30G1YQm4ygPbekPo68PllJSBTD3X3ghY/+d8ZV670FvWHFagHyYhezwEGwhwPU9trhyQ241j4sWE55o8gdyJhKTQm1xxl9A43HA==</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509Certificate>MIIE2jCCA8KgAwIBAgIBAzANBgkqhkiG9w0BAQUFADBbMQswCQYDVQQGDAJBVDEjMCEGA1UECgwaVGVsZWtvbS1Db250cm9sLUtvbW1pc3Npb24xJzAlBgNVBAMMHlNlY3VyZSBUaW1lc3RhbXBpbmcgU2VydmljZXMgMTAeFw0xMTEyMTMwOTI1MDBaFw0xNjEyMTMwOTI1MDBaMGkxCzAJBgNVBAYMAkFUMTIwMAYDVQQKDClCdW5kZXNhbXQgZsO8ciBFaWNoLSB1bmQgVmVybWVzc3VuZ3N3ZXNlbjEmMCQGA1UEAwwdU2ljaGVyZXIgWmVpdHN0ZW1wZWxkaWVuc3QtMDIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDWYdEd3BlIPXg7FbIYLvZn/itGZ89IdUmtMI1id4EDY9ioSqlFHwSUIM19n7Sk3Xz5ux64aiit92Zix8iSpgj1tsmZtut13i2XInDMy11PyTg55Bj8ai+I+9oDHGYFs2Q0ozGaE/RyYpOtkuC5PLGlABkICK203ZJJLWWzPxvztgbhSvDBoWK8hgjSKMiYeKNeer/tN4nMIRnhsaAzhpGSh8+UiUNtnsQDNJmM0ydYOCNwSHbfkXK4QMtastKfjSwxaTZtRzuU0Z4fMFMzLBSolCDVSSfA55LFqjm8vZMouALdtyaa3aMzuOE6k7ZdU25/9ESLXbV6BVSsf01euzV9AgMAgoWjggGZMIIBlTAfBgNVHSMEGDAWgBS9r9+uTM+eljNmNtsJ7RcCA+Fe2TAdBgNVHQ4EFgQUYg4zandOEMA+xKYddz/Fc7qy4VgwNwYDVR0fBDAwLjAsoCqgKIYmaHR0cDovL3d3dy5zaWduYXR1ci5ydHIuYXQvY3VycmVudC5jcmwwVgYDVR0gBE8wTTBLBgkqKAAVAAEAAQEwPjA8BggrBgEFBQcCARYwaHR0cDovL3d3dy5zaWduYXR1ci5ydHIuYXQvZGUvZGlyZWN0b3J5L2Nwcy5odG1sMHwGA1UdEQR1MHOkcTBvMQswCQYDVQQGDAJBVDEyMDAGA1UECgwpQnVuZGVzYW10IGbDvHIgRWljaC0gdW5kIFZlcm1lc3N1bmdzd2VzZW4xLDAqBgNVBAMMI1F1YWxpZml6aWVydGVyIFplaXRzdGVtcGVsZGllbnN0LTAyMAwGA1UdEwQFMAMBAQAwDgYDVR0PAQH/BAQDAgeAMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMIMA4GByooAAoBAQEEAwEB/zANBgkqhkiG9w0BAQUFAAOCAQEAiJJwEAkasK0363AJ2esy9Zx9R6apKtA+lxFJmzhnoV7ZJXASVmJWTiWVguPvGMfTWu0R5Pxm7vezyvNEPIjFMJ0s0rUTkN8r778AGmEzbWOUV79p+QqgbrVZbaUbpDn6WupHodS4ItuA9p43ldVYR38PFN17zVMYCw6mU6fV9nBceTve5r4EpMdi5s2BLZqWMXBLxYKnCQH26r9O4VImig5RrhlFTvVKMsBfhilQQQzGuat8FCkUn/n85f7oI6HFfDefGY5ORALi7uiLdaAYsnNCRNop10cjrE1k4Hfmi1r871zFIEFTys+v6kp929zsfeQLMetne+ibC51DUr6zOA==</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Sicherer Zeitstempeldienst-02, O=Bundesamt für Eich- und Vermessungswesen, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Sicherer Zeitstempeldienst-02</Name>
+<Name xml:lang="de">Sicherer Zeitstempeldienst-02</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Sicherer Zeitstempeldienst-02, O=Bundesamt für Eich- und Vermessungswesen, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>Yg4zandOEMA+xKYddz/Fc7qy4Vg=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased</ServiceStatus>
+                            <StatusStartingTime>2016-06-30T00:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Sicherer Zeitstempeldienst-02</Name>
+<Name xml:lang="de">Sicherer Zeitstempeldienst-02</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Sicherer Zeitstempeldienst-02, O=Bundesamt für Eich- und Vermessungswesen, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>Yg4zandOEMA+xKYddz/Fc7qy4Vg=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</ServiceStatus>
+                            <StatusStartingTime>2014-09-08T19:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Sicherer Zeitstempeldienst-02</Name>
+<Name xml:lang="de">Sicherer Zeitstempeldienst-02</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Sicherer Zeitstempeldienst-02, O=Bundesamt für Eich- und Vermessungswesen, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>Yg4zandOEMA+xKYddz/Fc7qy4Vg=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2007-01-01T23:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+            </TSPServices>
+        </TrustServiceProvider>
+        <TrustServiceProvider>
+            <TSPInformation>
+                <TSPName>
+                    <Name xml:lang="en">Datakom Austria GmbH</Name>
+                    <Name xml:lang="de">Datakom Austria GmbH</Name>
+                </TSPName>
+                <TSPTradeName>
+                    <Name xml:lang="en">A1 Telekom Austria AG (until 30.09.2002: Datakom Austria GmbH)</Name>
+                    <Name xml:lang="de">A1 Telekom Austria AG (bis 30.09.2002: Datakom Austria GmbH)</Name>
+                    <Name xml:lang="en">VATAT-U44837307</Name>
+                </TSPTradeName>
+                <TSPAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="en">
+                            <StreetAddress>Wiedner Hauptstraße 73</StreetAddress>
+                            <Locality>Wien</Locality>
+                            <PostalCode>1040</PostalCode>
+                            <CountryName>AT</CountryName>
+                        </PostalAddress>
+                        <PostalAddress xml:lang="de">
+                            <StreetAddress>Wiedner Hauptstraße 73</StreetAddress>
+                            <Locality>Wien</Locality>
+                            <PostalCode>1040</PostalCode>
+                            <CountryName>AT</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="en">mailto:support@a-sign.datakom.at</URI>
+                        <URI xml:lang="en">https://www.signatur.rtr.at/en/vd/Zertifizierungsdiensteanbieterdetails%3Fanbieter=datakom.html</URI>
+                        <URI xml:lang="de">https://www.signatur.rtr.at/de/vd/Zertifizierungsdiensteanbieterdetails%3Fanbieter=datakom.html</URI>
+                    </ElectronicAddress>
+                </TSPAddress>
+                <TSPInformationURI>
+                    <URI xml:lang="en">https://www.signatur.rtr.at/en/vd/Zertifizierungsdienstedetails%3Fzertifizierungsdienst=datakom-a-sign-premium.html</URI>
+                    <URI xml:lang="de">https://www.signatur.rtr.at/de/vd/Zertifizierungsdienstedetails%3Fzertifizierungsdienst=datakom-a-sign-premium.html</URI>
+                </TSPInformationURI>
+            </TSPInformation>
+            <TSPServices>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">a-sign Premium CA</Name>
+                            <Name xml:lang="de">a-sign Premium CA</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIC2jCCAkOgAwIBAgIBATANBgkqhkiG9w0BAQUFADCBgDELMAkGA1UEBhMCQVQxHTAbBgNVBAoTFERhdGFrb20gQXVzdHJpYSBHbWJIMRowGAYDVQQLExFhLXNpZ24uZGF0YWtvbS5hdDEaMBgGA1UECxMRYS1zaWduIFByZW1pdW0gQ0ExGjAYBgNVBAMTEWEtc2lnbiBQcmVtaXVtIENBMB4XDTAxMTEyMTE2MDk0NFoXDTMxMTEyMTE2MDk0NFowgYAxCzAJBgNVBAYTAkFUMR0wGwYDVQQKExREYXRha29tIEF1c3RyaWEgR21iSDEaMBgGA1UECxMRYS1zaWduLmRhdGFrb20uYXQxGjAYBgNVBAsTEWEtc2lnbiBQcmVtaXVtIENBMRowGAYDVQQDExFhLXNpZ24gUHJlbWl1bSBDQTCBnjALBgkqhkiG9w0BAQEDgY4AMIGKAoGBAKpdHrr/9I5zG2jGfpHeZpMkm58ZJBtXG73qH7+mTAkgWosabkMynNCayPiA1//ZHS2s2kTB5FYtXwmVFyqIIDQelt4IZwLDLdJQItxvYMV17DFO+ZebQe7bljUwwGOdguq9MuDBI2xYYE2z2JVDuOuDpKS+/YPC02OzTo/jWSb5AgQAAAADo2MwYTAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUoX0/IPOimGkJ9u1tRx6O0guPGNEwHwYDVR0jBBgwFoAUoX0/IPOimGkJ9u1tRx6O0guPGNEwDQYJKoZIhvcNAQEFBQADgYEAhUKQ8tg1IWl1w6uD0ylZ0RdFg5Fygd+KGLCOwaVIgpFieWDKBJMdavgu+uyWOWY2cQW5NiSG2jnqKfKJkX9znBcUUcjj4PfGfj9OLEiNAMa/zBPCgCrhGq07M4I2W6G39D8ExWscBFuQxKnpnLLsTVpS8GMe81lFge3O2VABiUo=</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=a-sign Premium CA, OU=a-sign Premium CA, OU=a-sign.datakom.at, O=Datakom Austria GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="false">
+<ns4:TakenOverBy>
+    <ns4:URI xml:lang="en">https://www.signatur.rtr.at/en/providers/providers/datakom.html</ns4:URI>
+    <ns4:TSPName>
+        <Name xml:lang="en">A-Trust Gesellschaft für Sicherheitssysteme im elektronischen Datenverkehr GmbH</Name>
+        <Name xml:lang="de">A-Trust Gesellschaft für Sicherheitssysteme im elektronischen Datenverkehr GmbH</Name>
+    </ns4:TSPName>
+    <SchemeOperatorName>
+        <Name xml:lang="en">Rundfunk und Telekom Regulierungs-GmbH</Name>
+        <Name xml:lang="de">Rundfunk und Telekom Regulierungs-GmbH</Name>
+    </SchemeOperatorName>
+    <SchemeTerritory>AT</SchemeTerritory>
+</ns4:TakenOverBy>
+                            </Extension>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">a-sign Premium CA</Name>
+<Name xml:lang="de">a-sign Premium CA</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=a-sign Premium CA, OU=a-sign Premium CA, OU=a-sign.datakom.at, O=Datakom Austria GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>oX0/IPOimGkJ9u1tRx6O0guPGNE=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased</ServiceStatus>
+                            <StatusStartingTime>2016-06-30T00:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="false">
+    <ns4:TakenOverBy>
+        <ns4:URI xml:lang="en">https://www.signatur.rtr.at/en/providers/providers/datakom.html</ns4:URI>
+        <ns4:TSPName>
+            <Name xml:lang="en">A-Trust Gesellschaft für Sicherheitssysteme im elektronischen Datenverkehr GmbH</Name>
+            <Name xml:lang="de">A-Trust Gesellschaft für Sicherheitssysteme im elektronischen Datenverkehr GmbH</Name>
+        </ns4:TSPName>
+        <SchemeOperatorName>
+            <Name xml:lang="en">Rundfunk und Telekom Regulierungs-GmbH</Name>
+            <Name xml:lang="de">Rundfunk und Telekom Regulierungs-GmbH</Name>
+        </SchemeOperatorName>
+        <SchemeTerritory>AT</SchemeTerritory>
+    </ns4:TakenOverBy>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">a-sign Premium CA</Name>
+<Name xml:lang="de">a-sign Premium CA</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=a-sign Premium CA, OU=a-sign Premium CA, OU=a-sign.datakom.at, O=Datakom Austria GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>oX0/IPOimGkJ9u1tRx6O0guPGNE=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</ServiceStatus>
+                            <StatusStartingTime>2008-05-27T14:50:02Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="false">
+    <ns4:TakenOverBy>
+        <ns4:URI xml:lang="en">https://www.signatur.rtr.at/en/providers/providers/datakom.html</ns4:URI>
+        <ns4:TSPName>
+            <Name xml:lang="en">A-Trust Gesellschaft für Sicherheitssysteme im elektronischen Datenverkehr GmbH</Name>
+            <Name xml:lang="de">A-Trust Gesellschaft für Sicherheitssysteme im elektronischen Datenverkehr GmbH</Name>
+        </ns4:TSPName>
+        <SchemeOperatorName>
+            <Name xml:lang="en">Rundfunk und Telekom Regulierungs-GmbH</Name>
+            <Name xml:lang="de">Rundfunk und Telekom Regulierungs-GmbH</Name>
+        </SchemeOperatorName>
+        <SchemeTerritory>AT</SchemeTerritory>
+    </ns4:TakenOverBy>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">a-sign Premium CA</Name>
+<Name xml:lang="de">a-sign Premium CA</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=a-sign Premium CA, OU=a-sign Premium CA, OU=a-sign.datakom.at, O=Datakom Austria GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>oX0/IPOimGkJ9u1tRx6O0guPGNE=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2008-05-27T14:50:01Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">a-sign Premium CA</Name>
+<Name xml:lang="de">a-sign Premium CA</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=a-sign Premium CA, OU=a-sign Premium CA, OU=a-sign.datakom.at, O=Datakom Austria GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>oX0/IPOimGkJ9u1tRx6O0guPGNE=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accreditationrevoked</ServiceStatus>
+                            <StatusStartingTime>2008-05-27T14:50:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">a-sign Premium CA</Name>
+<Name xml:lang="de">a-sign Premium CA</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=a-sign Premium CA, OU=a-sign Premium CA, OU=a-sign.datakom.at, O=Datakom Austria GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>oX0/IPOimGkJ9u1tRx6O0guPGNE=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2001-12-17T23:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+            </TSPServices>
+        </TrustServiceProvider>
+        <TrustServiceProvider>
+            <TSPInformation>
+                <TSPName>
+                    <Name xml:lang="en">Rundfunk und Telekom Regulierungs-GmbH</Name>
+                    <Name xml:lang="de">Rundfunk und Telekom Regulierungs-GmbH</Name>
+                </TSPName>
+                <TSPTradeName>
+                    <Name xml:lang="en">VATAT-U43773001</Name>
+                </TSPTradeName>
+                <TSPAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="en">
+                            <StreetAddress>Mariahilfer Straße 77-79</StreetAddress>
+                            <Locality>Wien</Locality>
+                            <PostalCode>1060</PostalCode>
+                            <CountryName>AT</CountryName>
+                        </PostalAddress>
+                        <PostalAddress xml:lang="de">
+                            <StreetAddress>Mariahilfer Straße 77-79</StreetAddress>
+                            <Locality>Wien</Locality>
+                            <PostalCode>1060</PostalCode>
+                            <CountryName>AT</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="en">mailto:signatur@signatur.rtr.at</URI>
+                        <URI xml:lang="en">https://www.signatur.rtr.at/en/</URI>
+                        <URI xml:lang="de">https://www.signatur.rtr.at/de/</URI>
+                    </ElectronicAddress>
+                </TSPAddress>
+                <TSPInformationURI>
+                    <URI xml:lang="en">https://www.signatur.rtr.at/en/directory/tsl.html</URI>
+                    <URI xml:lang="de">https://www.signatur.rtr.at/de/directory/tsl.html</URI>
+                </TSPInformationURI>
+            </TSPInformation>
+            <TSPServices>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Trusted List CA 1</Name>
+                            <Name xml:lang="de">Vertrauenswürdige Liste CA 1</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIDkTCCAnmgAwIBAgIJAL2n5O3KZGloMA0GCSqGSIb3DQEBCwUAMFoxCzAJBgNVBAYTAkFUMS8wLQYDVQQKEyZSdW5kZnVuayB1bmQgVGVsZWtvbSBSZWd1bGllcnVuZ3MtR21iSDEaMBgGA1UEAxMRVHJ1c3RlZCBMaXN0IENBIDEwHhcNMTQwMTI4MTcwMjIxWhcNMTkwMTI4MTcwMjIxWjBaMQswCQYDVQQGEwJBVDEvMC0GA1UEChMmUnVuZGZ1bmsgdW5kIFRlbGVrb20gUmVndWxpZXJ1bmdzLUdtYkgxGjAYBgNVBAMTEVRydXN0ZWQgTGlzdCBDQSAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwg0x1RDnY0iE+m251Nex3zL2qFCJJmAtLR50XvtmIJVHF+5XeiqC7sGbxQGod2ZXp+jw4rzB1aWVpXeVNx65JLeue0GeMp5xDtxR7piv05C6HUxiRjjgqG+PSbdX4DsNDGH/Lg/6MFkCRT6w893iA3aXdZLYEm9IahUTGFcUa1PLAsLzr/ezie8oJMUqVRptsXP1YAWtfusmBCIr4TePXjCkS2vO9Vw9gnZyV5ImBEGMko2gSEoMbZtc4Yy4r391Dm7J/hSf2GRn+xWF5g+6x4iRXKEuqyh+6CplixckivJBNZOHb2quQPNAeLBFIfLdbN00zqelrOx1sUjWLDjEFQIDAQABo1owWDAdBgNVHQ4EFgQUsJT0MPOFfU37Ha8aHJ6ELK/YXBkwDgYDVR0PAQH/BAQDAgEGMBYGA1UdIAQPMA0wCwYJKigADwABAQEAMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAKbm7Uqb897Q1ci8114MubVBswZMZ3YYs8m/O5XoYuJvZVp+wuPVaFGgZkXg+/0L7y11btNmAAeDdP8LgKDFCDqGJwZ5TdJrq2kF82+E6WegLFgEFIIfPr70DVshQbj2jcUF8BbHssgCtzadKsDZACdd6VO+OUm3hO9HD1Gmzx7cGRFOQQ2uvghJWp4AYsIJulhbzq2JV/XYPVHvm8zP5XmXAIJM/EKbprCq8ERypyx+muPdJBCMsH0hHRgG4ddunvCxv0hLCZ9BSZwLJHb+howc6cWfSMmP4ILAuPOji1HteoUwXez5dxAihWdtCWJ9MzKbRsWM+ZQ5iWbrd2XyHw8=</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Trusted List CA 1, O=Rundfunk und Telekom Regulierungs-GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Trusted List CA 1</Name>
+<Name xml:lang="de">Vertrauenswürdige Liste CA 1</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Trusted List CA 1, O=Rundfunk und Telekom Regulierungs-GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>sJT0MPOFfU37Ha8aHJ6ELK/YXBk=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2014-01-28T17:02:21Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">RTR Services 4</Name>
+                            <Name xml:lang="de">RTR Services 4</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIFczCCA1ugAwIBAgIJAJzqELfj2cWvMA0GCSqGSIb3DQEBCwUAMFcxCzAJBgNVBAYTAkFUMS8wLQYDVQQKDCZSdW5kZnVuayB1bmQgVGVsZWtvbSBSZWd1bGllcnVuZ3MtR21iSDEXMBUGA1UEAwwOUlRSIFNlcnZpY2VzIDQwHhcNMTcwMTE3MTY0ODEzWhcNMjcwMTE3MTY0ODEzWjBXMQswCQYDVQQGEwJBVDEvMC0GA1UECgwmUnVuZGZ1bmsgdW5kIFRlbGVrb20gUmVndWxpZXJ1bmdzLUdtYkgxFzAVBgNVBAMMDlJUUiBTZXJ2aWNlcyA0MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAphvCtYab8QE9svzLsCReE8EWOr9BUlnh1yfPEEyzbam72ikiqePCfC3iA9fDXQBJvA0gUzKUaYb61BjUjmaKBp7X10yEpPmX26ajMV/C10j7K9vXL7dvdM8zjGOW/M1z9UKc8LE1NTZHQUyc0LRTZ0D0Ae5n+E52i+eS/9oQ7Z5BYnSmG6eJk2DUEsFiDpFkSr0HhbuGt1LOdKO3nblk5+QNLAe9HM9FWCofMqdLt7jlWLWwKYQm6G7lnPh84zN9/swBv16Fm7L+egifWO/lcviHO3PwiUkPIqJEQBDx94ZnoXWA4YXyVjq8DiUqfEjUPFk2P/z/wgrgAvNxWzWVPM00iTYv8dmJXrMAuwbPuZrPujUq6li8kynM8Lo5iSTq4JmJYm1LFhS6D0E4hxIo8uKhBX1d+tyufPMpoiwIFxTL/dFbbPjuebQnT/bLMzFbTRNowTuJanw5WldaDPe9AYil6J+NtesR9nAjm/vUJh7Vr+2Nb0gyRoa1WhRmyTHz7ZcL35LLEV7MqHEIY8iTx9pXQodB/MUpuKIh6sg8w+RkrRdR/eJ3ORS02uVzQSf7EIfoADTg2hx4R96gzUfCZz4QQaRnjmt3bMVJMxOoFHS1Cs/hTOvXO6rhJt7pBDvS0/OfCZk2TI7nuAH/m1vxFVlvX/ZzH25K4gBx7rb3/nECAwEAAaNCMEAwHQYDVR0OBBYEFDLQJRQBjebrbL7t7+QenvkLa88IMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4ICAQBHqOPi8AqlR8M39OmZEs5Yy4xVZA5aBI8vfddUQKMOhXtMRdbPKrW4PorE9GrAGJpYxkdnHRntEBFEcSxZn98oj5764MyMCX857ZZ6nu2bgGdTExCx8jiaIvtzVSy4MkOKeW/htyZLnHZAIBjvN5y04S9p1vpRRqo3DZXg2Zo+j6jE3qkGFoNUuKtJm7LHlSmtmnfq+eYhhD5Yyql50GVkANrDxWIGjn7vJhGHG3E/JhWIMhfLEtswEXvLf32yf1U9yDFYMl0jgXDKHtTuKIhly9+mgxPf+nl/Hm6NIAk32HhMcqaI6zZcCfA5s2A8t7Cgln+nqOMIY3a8RRypOLMr/hSBeoABOLS3F3W0dLP3O3LsmOtusZoIkuWEX8uqUHIXNgAq0S7zFR7Q+wZvQUUFWIwYIgJYy7KjdaNTybOiMRUbAoO2FtgDpoeC9Cvw//x+3X7BIWaasjdJ7/EWEER8ZkH9Oi22BH7XofPda0fz9SFaaJqCtUuz+WFbVe82NgijNPuBN4tbYd4GBVla/rf+dVeL7wFxvVMF4nwROZWThmRK8H6dJ1RlEX7ZbyAk0plwS5gsh4daBJ8TIO8pnnZRmxfuEp/Au4/2ro8FTwzMkalWtk3Hvbw0kl9ZhWEedbBWK9oMZYgXryeaENLcoOP28x1NisF0hMTO2zMP8dwJ6w==</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=RTR Services 4, O=Rundfunk und Telekom Regulierungs-GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>MtAlFAGN5utsvu3v5B6e+Qtrzwg=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</ServiceStatus>
+                        <StatusStartingTime>2017-01-18T23:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                </TSPService>
+            </TSPServices>
+        </TrustServiceProvider>
+        <TrustServiceProvider>
+            <TSPInformation>
+                <TSPName>
+                    <Name xml:lang="en">e-commerce monitoring GmbH</Name>
+                    <Name xml:lang="de">e-commerce monitoring GmbH</Name>
+                </TSPName>
+                <TSPTradeName>
+                    <Name xml:lang="en">e-commerce monitoring GmbH</Name>
+                    <Name xml:lang="en">GLOBALTRUST</Name>
+                    <Name xml:lang="en">VATAT-U54992708</Name>
+                </TSPTradeName>
+                <TSPAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="en">
+                            <StreetAddress>Redtenbachergasse 20</StreetAddress>
+                            <Locality>Wien</Locality>
+                            <PostalCode>1160</PostalCode>
+                            <CountryName>AT</CountryName>
+                        </PostalAddress>
+                        <PostalAddress xml:lang="de">
+                            <StreetAddress>Redtenbachergasse 20</StreetAddress>
+                            <Locality>Wien</Locality>
+                            <PostalCode>1160</PostalCode>
+                            <CountryName>AT</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="en">mailto:info@e-monitoring.at</URI>
+                        <URI xml:lang="en">http://www.e-monitoring.at/</URI>
+                        <URI xml:lang="de">http://www.e-monitoring.at/</URI>
+                    </ElectronicAddress>
+                </TSPAddress>
+                <TSPInformationURI>
+                    <URI xml:lang="en">http://www.globaltrust.eu/</URI>
+                    <URI xml:lang="de">http://www.globaltrust.eu/</URI>
+                </TSPInformationURI>
+            </TSPInformation>
+            <TSPServices>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">GLOBALTRUST QUALIFIED 1</Name>
+                            <Name xml:lang="de">GLOBALTRUST QUALIFIED 1</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=GLOBALTRUST QUALIFIED 1, OU=GLOBALTRUST Certification Service, O=e-commerce monitoring GmbH, L=Wien, ST=Wien, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">GLOBALTRUST QUALIFIED 1</Name>
+<Name xml:lang="de">GLOBALTRUST QUALIFIED 1</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=GLOBALTRUST QUALIFIED 1, OU=GLOBALTRUST Certification Service, O=e-commerce monitoring GmbH, L=Wien, ST=Wien, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>I72cWaS5M791RN3QFEOE1iwQeKA=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2015-06-29T13:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">GLOBALTRUST 2015 QUALIFIED 1</Name>
+                            <Name xml:lang="de">GLOBALTRUST 2015 QUALIFIED 1</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=GLOBALTRUST 2015 QUALIFIED 1, OU=GLOBALTRUST Certification Service, O=e-commerce monitoring GmbH, L=Wien, ST=Wien, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">GLOBALTRUST 2015 QUALIFIED 1</Name>
+<Name xml:lang="de">GLOBALTRUST 2015 QUALIFIED 1</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=GLOBALTRUST 2015 QUALIFIED 1, OU=GLOBALTRUST Certification Service, O=e-commerce monitoring GmbH, L=Wien, ST=Wien, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>1ldhC3YuZnU8kfazVqBFZW8I3Kc=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2015-06-29T13:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">GLOBALTRUST QUALIFIED TIMESTAMP 1</Name>
+                            <Name xml:lang="de">GLOBALTRUST QUALIFIED TIMESTAMP 1</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=GLOBALTRUST QUALIFIED TIMESTAMP 1, OU=GLOBALTRUST Certification Service, O=e-commerce monitoring GmbH, L=Wien, ST=Wien, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">GLOBALTRUST QUALIFIED TIMESTAMP 1</Name>
+<Name xml:lang="de">GLOBALTRUST QUALIFIED TIMESTAMP 1</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=GLOBALTRUST QUALIFIED TIMESTAMP 1, OU=GLOBALTRUST Certification Service, O=e-commerce monitoring GmbH, L=Wien, ST=Wien, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>XaHMkVq9mGTdVF9sxkeiciSIXEk=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2015-06-29T13:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">GLOBALTRUST 2015 QUALIFIED TIMESTAMP 1</Name>
+                            <Name xml:lang="de">GLOBALTRUST 2015 QUALIFIED TIMESTAMP 1</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=GLOBALTRUST 2015 QUALIFIED TIMESTAMP 1, OU=GLOBALTRUST Certification Service, O=e-commerce monitoring GmbH, L=Wien, ST=Wien, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">GLOBALTRUST 2015 QUALIFIED TIMESTAMP 1</Name>
+<Name xml:lang="de">GLOBALTRUST 2015 QUALIFIED TIMESTAMP 1</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=GLOBALTRUST 2015 QUALIFIED TIMESTAMP 1, OU=GLOBALTRUST Certification Service, O=e-commerce monitoring GmbH, L=Wien, ST=Wien, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>8jsx5Q3SC9mBeVB1vWJQ5pHKg78=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</ServiceStatus>
+                            <StatusStartingTime>2015-06-29T13:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">GLOBALTRUST QUALIFIED TIMESTAMP 1</Name>
+                            <Name xml:lang="de">GLOBALTRUST QUALIFIED TIMESTAMP 1</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=GLOBALTRUST QUALIFIED TIMESTAMP 1, OU=GLOBALTRUST Certification Service, O=e-commerce monitoring GmbH, L=Wien, ST=Wien, C=AT</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>XaHMkVq9mGTdVF9sxkeiciSIXEk=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">GLOBALTRUST 2015 QUALIFIED TIMESTAMP 1</Name>
+                            <Name xml:lang="de">GLOBALTRUST 2015 QUALIFIED TIMESTAMP 1</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=GLOBALTRUST 2015 QUALIFIED TIMESTAMP 1, OU=GLOBALTRUST Certification Service, O=e-commerce monitoring GmbH, L=Wien, ST=Wien, C=AT</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>8jsx5Q3SC9mBeVB1vWJQ5pHKg78=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+            </TSPServices>
+        </TrustServiceProvider>
+        <TrustServiceProvider>
+            <TSPInformation>
+                <TSPName>
+                    <Name xml:lang="en">PrimeSign GmbH</Name>
+                    <Name xml:lang="de">PrimeSign GmbH</Name>
+                </TSPName>
+                <TSPTradeName>
+                    <Name xml:lang="en">PrimeSign GmbH</Name>
+                    <Name xml:lang="en">PrimeSign</Name>
+                    <Name xml:lang="en">VATAT-U68269919</Name>
+                </TSPTradeName>
+                <TSPAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="en">
+                            <StreetAddress>Wielandgasse 2</StreetAddress>
+                            <Locality>Graz</Locality>
+                            <PostalCode>8010</PostalCode>
+                            <CountryName>AT</CountryName>
+                        </PostalAddress>
+                        <PostalAddress xml:lang="de">
+                            <StreetAddress>Wielandgasse 2</StreetAddress>
+                            <Locality>Graz</Locality>
+                            <PostalCode>8010</PostalCode>
+                            <CountryName>AT</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="en">mailto:office@prime-sign.com</URI>
+                        <URI xml:lang="en">https://prime-sign.com/</URI>
+                        <URI xml:lang="de">https://prime-sign.com/</URI>
+                    </ElectronicAddress>
+                </TSPAddress>
+                <TSPInformationURI>
+                    <URI xml:lang="en">https://tc.prime-sign.com/</URI>
+                    <URI xml:lang="de">https://tc.prime-sign.com/</URI>
+                </TSPInformationURI>
+            </TSPInformation>
+            <TSPServices>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">CRYPTAS-PrimeSign Qualified Root CA</Name>
+                            <Name xml:lang="de">CRYPTAS-PrimeSign Qualified Root CA</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIFwTCCA6mgAwIBAgIUXoRXvq0tYdBDf2w70PCKL5BnHSwwDQYJKoZIhvcNAQELBQAwVDELMAkGA1UEBhMCQVQxFzAVBgNVBAoTDlByaW1lU2lnbiBHbWJIMSwwKgYDVQQDEyNDUllQVEFTLVByaW1lU2lnbiBRdWFsaWZpZWQgUm9vdCBDQTAeFw0xNjA2MjAxNDUxNDdaFw0zNjA2MjAxNDUxNDdaMFQxCzAJBgNVBAYTAkFUMRcwFQYDVQQKEw5QcmltZVNpZ24gR21iSDEsMCoGA1UEAxMjQ1JZUFRBUy1QcmltZVNpZ24gUXVhbGlmaWVkIFJvb3QgQ0EwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDBAS+qF4AG+HocSbXGNIr1iUerb7RZJhyC+BIDzDgOcG8Q0rbItfQbNeT/ZEpVBQY9S6j9/FGSZ8B+bgGhKA8ieGck5ngAlPsBWKnS/SpxUjb6o9UJIJw014yc0lu1lmZPrCzeh3okWJ0MiCvidfuHj8nWb3inLrd4mUHd6AGj4jaREcnIIVJz4/FJT3WqfNpD+u3B8SB36S6k6CjEAPEvmd28q8XoVOHz4ING4rnfTmzNU3fShK96cX5yipMPK4A1AOdZBqw2QrawaAJMx4X7a7N5RGGr7ByIzGLWJJZYwwUfOZo0Q6RK4ip8tUwBdXoYubpGVMcXC1TR6rOEeUdmPmkOpV7McioUh/6OnM5I5q0yJSEz7LZz0LCDcFskCS98F5hb0W6C7ABnEw2cv4tgPk0lnNZnghLCLrGOTjyF5EaMAe9CAGpJ7/1d1SxS2sTk52FlQ8fDE1cP1/c9XM3R7JCUuAFYF+Uk4t5H6xVKmPLmrnUNrD1gJ3PZWStGAuCXcHFPgfBaHOV7ETxbBJiNRIs67KVdohT0yrNAjTIQijyfiyv+EUXMzTbykbM7ZfUp7NJ486mXOxP0wTxQ7xxzz8LHqbwERkFYiycJPD7vouHTd6LQc/tt1lYfWWGi0+PeIU2iSkq8+SQLFqhP8EZt3LtuPLJ0yeediqzomPj9fwIDAQABo4GKMIGHMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMEUGA1UdIAQ+MDwwOgYKKigAJwEBAQEAADAsMCoGCCsGAQUFBwIBFh5odHRwczovL3RjLnByaW1lLXNpZ24uY29tL2Nwcy8wHQYDVR0OBBYEFBL7pPocKa+aH58k+vxypq+OfG7JMA0GCSqGSIb3DQEBCwUAA4ICAQByT85q5KnWZQZET/QQ0R6N/fQJk0KG+fdKJ52rNGbaHHRJSEewExtVNpjNNpT9dwjtq8MGSWlrZZ60i3m1SfAQwGLCoPxIbUVfl0jsmKbZzcvyomahSQNO/7zH3MUK2ny/QYjGis628GJu25NBWWYgSqwrS+6cDqdKHeIXs2ipIMxAIv7Qv24omfzsXmuI0+Wj7iugqAp6dFlz0YC2mc7hwOIFN/ZJcd4RHNaetzAHDAEIho0xntsafkOXkEuTCc5hz7kqgGjZDbsL/815ClnuQwqt3BbBdhDRK8KpbnhjsJta3YiJZPh8ws/8pIpILoBd0v6Y2AozGHNdLVxvnvJPoa/w7Q9/4R4KQ07uaZrA+rqNYcjW0FqvkieNsLOx+3lpNlcNW1Yv0dhjHT/tI3FjiY33x1TetMgTzegLD/FPwMhPxtFv8mpVit4yBpD8oru7oCPnZeORaFUspLU8h3kGQmHOboV7uUr4RJNESBdH7z9gV/q32aiUHkBl04wlQRs0bPYHrjaAoKDJEWqtC8+mqXSOhBbmSGpj7ZuFZklqi9ra9SmXYjazfr4BoVFGFLfAfXz3DYRzRcxsJT/FrKxf48Uq3MKDw7Kk/m4vLgol/eVckioPH+EBpOsjDp6JRCHnjDBIlKPvCVFJrtD8wY6zwMNOmIsUi3yIrZtNgOfbjg==</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=CRYPTAS-PrimeSign Qualified Root CA, O=PrimeSign GmbH, C=AT</X509SubjectName>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2018-05-06T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="false">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">CRYPTAS-PrimeSign Qualified Root CA</Name>
+<Name xml:lang="de">CRYPTAS-PrimeSign Qualified Root CA</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=CRYPTAS-PrimeSign Qualified Root CA, O=PrimeSign GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>Evuk+hwpr5ofnyT6/HKmr458bsk=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+<Extension Critical="false">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
+    </AdditionalServiceInformation>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">CRYPTAS-PrimeSign Qualified Root CA</Name>
+<Name xml:lang="de">CRYPTAS-PrimeSign Qualified Root CA</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=CRYPTAS-PrimeSign Qualified Root CA, O=PrimeSign GmbH, C=AT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>Evuk+hwpr5ofnyT6/HKmr458bsk=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2016-06-21T00:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+            </TSPServices>
+        </TrustServiceProvider>
+        <TrustServiceProvider>
+            <TSPInformation>
+                <TSPName>
+                    <Name xml:lang="en">Swisscom IT Services Finance S.E.</Name>
+                    <Name xml:lang="de">Swisscom IT Services Finance S.E.</Name>
+                </TSPName>
+                <TSPTradeName>
+                    <Name xml:lang="en">swisscom</Name>
+                    <Name xml:lang="en">VATAT-U64741248</Name>
+                </TSPTradeName>
+                <TSPAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="en">
+                            <StreetAddress>Modecenterstrasse 17/Unit 2</StreetAddress>
+                            <Locality>Wien</Locality>
+                            <PostalCode>1110</PostalCode>
+                            <CountryName>AT</CountryName>
+                        </PostalAddress>
+                        <PostalAddress xml:lang="de">
+                            <StreetAddress>Modecenterstrasse 17/Unit 2</StreetAddress>
+                            <Locality>Wien</Locality>
+                            <PostalCode>1110</PostalCode>
+                            <CountryName>AT</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="en">mailto:eIDAS.Vertrauensdienste@swisscom.com</URI>
+                        <URI xml:lang="en">https://www.swisscom.ch/en/business/enterprise/offer/security/identity-access-security/signing-service.html</URI>
+                        <URI xml:lang="de">https://www.swisscom.ch/signing-service</URI>
+                    </ElectronicAddress>
+                </TSPAddress>
+                <TSPInformationURI>
+                    <URI xml:lang="en">www.swissdigicert.ch/sdcs/portal/page?node=download_docs&amp;lang=en</URI>
+                    <URI xml:lang="de">www.swissdigicert.ch/sdcs/portal/page?node=download_docs&amp;lang=de</URI>
+                </TSPInformationURI>
+            </TSPInformation>
+            <TSPServices>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Swisscom Diamant EU CA 4</Name>
+                            <Name xml:lang="de">Swisscom Diamant EU CA 4</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Swisscom Diamant EU CA 4, OU=Digital Certificate Services, O=Swisscom IT Services Finance S.E., C=AT, OID.2.5.4.97=VATAT-U64741248</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>iwHX3seSsuRbJJ62j0k6r6nGct0=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2018-07-08T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Swisscom Saphir EU CA 4</Name>
+                            <Name xml:lang="de">Swisscom Saphir EU CA 4</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIFwjCCA6qgAwIBAgIRAKlfBVhGLb+ej8ZWR1PerBcwDQYJKoZIhvcNAQELBQAwZDELMAkGA1UEBhMCY2gxETAPBgNVBAoTCFN3aXNzY29tMSUwIwYDVQQLExxEaWdpdGFsIENlcnRpZmljYXRlIFNlcnZpY2VzMRswGQYDVQQDExJTd2lzc2NvbSBSb290IENBIDIwHhcNMTcwNTE4MDgyNzIyWhcNMjcwNTE4MDgyNzIyWjCBnDEYMBYGA1UEYRMPVkFUQVQtVTY0NzQxMjQ4MQswCQYDVQQGEwJBVDEqMCgGA1UEChMhU3dpc3Njb20gSVQgU2VydmljZXMgRmluYW5jZSBTLkUuMSUwIwYDVQQLExxEaWdpdGFsIENlcnRpZmljYXRlIFNlcnZpY2VzMSAwHgYDVQQDExdTd2lzc2NvbSBTYXBoaXIgRVUgQ0EgNDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK9Aa/fUEnfmbKygrVVzmg+L3T8t7GTwNGplz7XFBvawcFnRaYh0DSNx6/ncpzwl0rOafkni/dlPY7Y2sWMSsk0DxrtIFEosWKmGTpLqeJvjegKojXDNRFzXKVJz/aZOSrwhtpSLdbXC1CrAc3fOyj6q05FjjGeFIpwmAHaJZmKwSbRKQBab2yRvWd4OXMnSCrK93Ce57wgdO7FBe3vnjPALJPlLWYxY4BqaEBz4XM4r9lzvsHKKC0GkIJc/PyFmYFFcfGgccaSC8PrU8j0Yg+/7MOyZ2kZe70ZG9Q1VPMD4KaqXVe7DQpFTkDH0wA/2wi9vjsDan2utlRV8Yyt0/dMCAwEAAaOCATQwggEwMB8GA1UdIwQYMBaAFE0mICKJS9PVpAqhb97iEoHF8TwuMEYGCCsGAQUFBwEBBDowODA2BggrBgEFBQcwAoYqaHR0cDovL2FpYS5zd2lzc2RpZ2ljZXJ0LmNoL3NkY3Mtcm9vdDIuY3J0MBIGA1UdEwEB/wQIMAYBAf8CAQAwRQYDVR0gBD4wPDA6BghghXQBU2QEATAuMCwGCCsGAQUFBwIBFiBodHRwOi8vd3d3LnN3aXNzZGlnaWNlcnQuY2gvY3BzLzA7BgNVHR8ENDAyMDCgLqAshipodHRwOi8vY3JsLnN3aXNzZGlnaWNlcnQuY2gvc2Rjcy1yb290Mi5jcmwwDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBS6bpXatFwlvZum/vwU1xCuS5iZRTANBgkqhkiG9w0BAQsFAAOCAgEANMu7NwOu65oP/Ccr94bRLVffIQvrr+sbDWTJpFzOgtNoDKIs9Ey1COxxJEhRTg1EH8Zr0ZjropwiUXLazVQp7Hy2AAigUXYyvvm4l184Pxdh+Pyw6rQiWeDx9PV3Q3bRWoioO/ZM9v5rQ45lBvebieW0td6gWlHMlyVB47Gzr880PtcgXvTTSu9s81LRKegRKYEX6iXSPuGmNMt8F1DwGgeab9j8TrK+4r4fXpuKNXROQ8wEW+yngtii76Wuzj90VbwU6LJeyVX1SsSvyHvW1flm38B9oiQdM3ljCpf61wL407ckLZ62AQY2QUPyVokX9gQV8H6fS6ymb27juooXxNPhkxSI7LsJ0sS9j0OoNy55NinGwZjljlUxEXutxRfQJXhIHUrrykSER0HQif+wPR+YgIGODHUHzW3QQNeTCZUwDcDh1K4wy9t9vDFW5R20fEQps+snxw1eRoSsxKHhNmaoYJ8O72Gcn9m7L1ZzBKfgIA12Jhpt2ljSzwwsPlKYVNY8kYRmc/2oHxtFg4Byld29uPDaPVj9k0vynk5GUIrDwFUShH7E2Mw7PZEa9+UBXf28GjXHS6sgRCgunyMrglNS5ej0cCmh8R88Ewlwy651Q1jKzILcTylpXLpzzVaEa2RL6KbrIBdfvvbB4sTCjWec7kMVZuk8JQmvSRPGJn4=</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Swisscom Saphir EU CA 4, OU=Digital Certificate Services, O=Swisscom IT Services Finance S.E., C=AT, OID.2.5.4.97=VATAT-U64741248</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>um6V2rRcJb2bpv78FNcQrkuYmUU=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</ServiceStatus>
+                        <StatusStartingTime>2018-09-02T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                </TSPService>
+            </TSPServices>
+        </TrustServiceProvider>
+    </TrustServiceProviderList><dsig:Signature Id="Signature-e67c23d8-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo Id="SignedInfo-e67c23d8-1"><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><dsig:Reference Id="Reference-e67c23d8-1" URI=""><dsig:Transforms xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><dsig:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>NobnEkxuand5++k570ynv0kyGgXmVjuhguzvRAxUjdQ=</dsig:DigestValue></dsig:Reference><dsig:Reference Id="Reference-e67c23d8-2" Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-e67c23d8-1"><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>i922CRfKgUhX6+hkeKYmEI/G78sRpDtaNSk7Hk2WE3U=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue Id="SignatureValue-e67c23d8-1">q0LYSa4QGqXRX02upLnvldPlH4x+5mY/vQHcIXSPb08AlEHg1S7oeI43O58dbXb/
+7uOaif0p4yEbWt9C1jXSlMlWDAjfoSHh0VO5IYvfYMy2rk9qxFeGcktTofOiSJ1Y
+nCTxJaVZF6AhiuDLw5LiWiiGWabYG+Q2kj/8Gzemd3A4xGXN9L36krEeq53hL2U9
+J+J5vzZo4fZWKbCCmFfViIsnpQECdvDgn8wyP5daryVenoqOe/NOXgVBNZ7y6wcQ
+IUpVIZD8//obTzmrkyPXCa0afjMvNGxMP8NkEoforviEKOufs8OntDh9EeVWEuiO
+lZv0gJsrrX+blZeia+tbjg==</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIIFMzCCAxugAwIBAgIJAJzqELfj2cWyMA0GCSqGSIb3DQEBCwUAMFcxCzAJBgNV
+BAYTAkFUMS8wLQYDVQQKDCZSdW5kZnVuayB1bmQgVGVsZWtvbSBSZWd1bGllcnVu
+Z3MtR21iSDEXMBUGA1UEAwwOUlRSIFNlcnZpY2VzIDQwHhcNMTcwMTE5MTc1ODA4
+WhcNMjEwMTE5MTc1ODA4WjBXMQswCQYDVQQGEwJBVDEvMC0GA1UECgwmUnVuZGZ1
+bmsgdW5kIFRlbGVrb20gUmVndWxpZXJ1bmdzLUdtYkgxFzAVBgNVBAMMDlRydXN0
+ZWQgTGlzdCA2MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyVv8Q9Sw
+5HlU5/g4S0vOIH4FT0HOqLob9Loj8LA0DXhCUFxZUbZxl3zltAc72SdIUhOs16W7
+htYo6TKY1cRJqvpt6qm5l8P+B6o0Gt2evy1vgt/kvRvRVjk2Qsd9H1d2nIiyRr5z
+3ac3d2kiX0sIe2I02GHsJqEqahBdR2b5O8bMi5CVxh1ZgwQo+AieYtrrnBI9otyU
+iTyWZvk9DmOb28bdLGqOKArtub90EunCezUhKCOYmIEgAphS0KEE4SOURFreOGeJ
+ppd9OvkCN4mQkWdPxOoPpsAZmUu1KrwlAPNbpZR41MSNGNo3k7Y3jMxSLB2tP9nO
+cZI8HDFg+sy/4QIDAQABo4IBADCB/TAfBgNVHSMEGDAWgBQy0CUUAY3m62y+7e/k
+Hp75C2vPCDAdBgNVHQ4EFgQUD4/pY33/ttXb8YCK17ovsM9AXHMwDgYDVR0PAQH/
+BAQDAgeAMBQGA1UdIAQNMAswCQYHKigADwABAjAJBgNVHRMEAjAAMBEGA1UdJQQK
+MAgGBgQAkTcDADA1BgNVHR8ELjAsMCqgKKAmhiRodHRwczovL3d3dy5zaWduYXR1
+ci5ydHIuYXQvcnRyNC5jcmwwQAYIKwYBBQUHAQEENDAyMDAGCCsGAQUFBzAChiRo
+dHRwczovL3d3dy5zaWduYXR1ci5ydHIuYXQvcnRyNC5jZXIwDQYJKoZIhvcNAQEL
+BQADggIBAJgl406ah6pLX2efheBaENNLKzwvAPyevk+Ohpx0qbL3S4Rpq5a8XqWk
+Cnl2H7Cx6faED3xwQmYv62w3X5/wuqVkBnuyYO/L5lPvAK0mYjvATf86SHzf/yR1
+SxcFsbydVPPhTCvRagjbejgtnenfMSTIOam96opZh1FL1e2yWL9tZFn7DUHnVwN+
+d/LKjSIlkZVb4p7htGKOzps5Wc/ZkBUcgpWZ3zvLlIxAR0mlmShgI1MAkP9vzTvO
+94MUpoxpnZTN6le3svNv0D9zrkncqDtokr+JpAeYmqwy3sRxd3g5qmAAhuYfOr2o
+9rMVzqIVn7DmT2u454ZrDletEoVx6n1Go8kBqevslZi/U/udapXm2BVsX7HufG3P
+L7kDm9rY+npAjk2sCL6K0Mo4y+BiVe81ZGELplGFQdqEbC+Um19hVtZaUqw6pa9G
+GeYJJESimyKQzmE/5RuSwFPsOehK1MSqbEIczX9d+SM/HH5A8STMydI2Fx5y9r5v
+7sTRPVSLLU+s+WRuMpObM+Xi00iF4CihSwnWVTpFtVQlaBHHK9muUHGuW9fo9qoE
+xFS1nbUvbbjoa7A+qIhtDrrx6QmD9paCyjt18+TaxmTEzOYzOR6DPIY7LG4bMKk7
+L6ocF+HXjXiAovMig3cV9RF4Pg2dl5wOBItLVRUYIZlxBolo80AP</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo><dsig:Object Id="Object-e67c23d8-1"><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns3="http://uri.etsi.org/01903/v1.4.1#" Target="#Signature-e67c23d8-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:sl="http://www.buergerkarte.at/namespaces/securitylayer/1.2#"><xades:SignedProperties Id="SignedProperties-e67c23d8-1"><xades:SignedSignatureProperties><xades:SigningTime>2018-09-03T13:41:39Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>bYucmsV6nbBbn48CdtxPe4ruCOzslUDaPH8R1hnm9tw=</dsig:DigestValue></xades:CertDigest><xades:IssuerSerial><dsig:X509IssuerName>CN=RTR Services 4,O=Rundfunk und Telekom Regulierungs-GmbH,C=AT</dsig:X509IssuerName><dsig:X509SerialNumber>11306868196454811058</dsig:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate><xades:SignaturePolicyIdentifier><xades:SignaturePolicyImplied/></xades:SignaturePolicyIdentifier></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#Reference-e67c23d8-1"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></dsig:Object></dsig:Signature>
+</TrustServiceStatusList>
