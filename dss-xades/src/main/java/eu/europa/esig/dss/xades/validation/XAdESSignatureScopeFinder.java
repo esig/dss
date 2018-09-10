@@ -209,7 +209,12 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 
 	public boolean isEverythingCovered(XAdESSignature signature) {
 		Element parent = signature.getSignatureElement().getOwnerDocument().getDocumentElement();
-		return recursiveCheck(getIds(signature), parent);
+		if (parent != null) {
+			if (XPathQueryHolder.XMLE_SIGNATURE.equals(parent.getLocalName()) || (isRelatedToUri(parent, getIds(signature)))) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private Set<String> getIds(XAdESSignature signature) {
@@ -223,23 +228,6 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 		}
 		return result;
 
-	}
-
-	private boolean recursiveCheck(Set<String> ids, Node currentNode) {
-		if (currentNode != null) {
-			if (XPathQueryHolder.XMLE_SIGNATURE.equals(currentNode.getLocalName()) || (isRelatedToUri(currentNode, ids))) {
-				return true;
-			} else {
-
-				NodeList childNodes = currentNode.getChildNodes();
-				for (int i = 0; i < childNodes.getLength(); i++) {
-					if (Node.ELEMENT_NODE == childNodes.item(i).getNodeType()) {
-						return recursiveCheck(ids, childNodes.item(i));
-					}
-				}
-			}
-		}
-		return false;
 	}
 
 	private boolean isRelatedToUri(Node currentNode, Set<String> ids) {

@@ -30,8 +30,10 @@ import java.util.List;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
+import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -123,6 +125,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			return new EnvelopingSignatureBuilder(params, document, certificateVerifier);
 		case DETACHED:
 			return new DetachedSignatureBuilder(params, document, certificateVerifier);
+		case INTERNALLY_DETACHED:
+			return new InternallyDetachedSignatureBuilder(params, document, certificateVerifier);
 		default:
 			throw new DSSException("Unsupported packaging " + params.getSignaturePackaging());
 		}
@@ -183,6 +187,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			params.setReferences(defaultReferences);
 		}
 
+		incorporateFiles();
+
 		incorporateSignatureDom();
 
 		incorporateSignedInfo();
@@ -209,6 +215,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		}
 		built = true;
 		return canonicalizedSignedInfo;
+	}
+
+	protected void incorporateFiles() {
 	}
 
 	protected Document buildRootDocumentDom() {
@@ -1017,6 +1026,39 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		encapsulatedTimestampElement.setTextContent(Utils.toBase64(token.getEncoded()));
 
 		timestampElement.appendChild(encapsulatedTimestampElement);
+	}
+
+	protected byte[] applyTransformations(DSSDocument dssDocument, final List<DSSTransform> transforms, Node nodeToTransform) {
+		byte[] transformedReferenceBytes = null;
+		for (final DSSTransform transform : transforms) {
+
+			final String transformAlgorithm = transform.getAlgorithm();
+			if (Transforms.TRANSFORM_XPATH.equals(transformAlgorithm)) {
+
+				final DSSTransformXPath transformXPath = new DSSTransformXPath(transform);
+				// At the moment it is impossible to go through a medium other than byte array
+				// (Set<Node>, octet stream,
+				// Node). Further investigation is needed.
+				final byte[] transformedBytes = nodeToTransform == null ? transformXPath.transform(dssDocument) : transformXPath.transform(nodeToTransform);
+				dssDocument = new InMemoryDocument(transformedBytes);
+				nodeToTransform = DomUtils.buildDOM(dssDocument);
+			} else if (DSSXMLUtils.canCanonicalize(transformAlgorithm)) {
+
+				if (nodeToTransform == null) {
+					nodeToTransform = DomUtils.buildDOM(dssDocument);
+				}
+				transformedReferenceBytes = DSSXMLUtils.canonicalizeSubtree(transformAlgorithm, nodeToTransform);
+				// The supposition is made that the last transformation is the canonicalization
+				break;
+			} else if (CanonicalizationMethod.ENVELOPED.equals(transformAlgorithm)) {
+
+				// do nothing the new signature is not existing yet!
+				// removeExistingSignatures(document);
+			} else {
+				throw new DSSException("The transformation is not implemented yet, please transform the reference before signing!");
+			}
+		}
+		return transformedReferenceBytes;
 	}
 
 }

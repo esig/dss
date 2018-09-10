@@ -26,6 +26,6 @@ package eu.europa.esig.dss;
  */
 public enum SignaturePackaging {
 
-	ENVELOPED, ENVELOPING, DETACHED
+	ENVELOPED, ENVELOPING, DETACHED, INTERNALLY_DETACHED
 
 }

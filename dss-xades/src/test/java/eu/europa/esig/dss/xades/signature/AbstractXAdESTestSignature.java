@@ -30,8 +30,10 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
 
-		// In case of enveloped signature, we don't know the whole XML structure
-		if (!SignaturePackaging.ENVELOPED.equals(getSignatureParameters().getSignaturePackaging())) {
+		// In case of enveloped / internally detached signatures, we don't know the
+		// whole XML structure
+		if (!SignaturePackaging.ENVELOPED.equals(getSignatureParameters().getSignaturePackaging())
+				&& !SignaturePackaging.INTERNALLY_DETACHED.equals(getSignatureParameters().getSignaturePackaging())) {
 			try {
 				DSSXMLUtils.validateAgainstXSD(new InMemoryDocument(byteArray));
 			} catch (Exception e) {

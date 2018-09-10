@@ -20,8 +20,9 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,34 +30,38 @@ import org.junit.Before;
 
 import eu.europa.esig.dss.CommitmentType;
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignerLocation;
-import eu.europa.esig.dss.TimestampParameters;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
+import eu.europa.esig.dss.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
+import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBDetachedTest extends AbstractXAdESTestSignature {
+public class XAdESLevelBInternallyDetachedMultiFilesTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters> {
 
-	private DocumentSignatureService<XAdESSignatureParameters> service;
+	private XAdESService service;
 	private XAdESSignatureParameters signatureParameters;
-	private DSSDocument documentToSign;
+	private List<DSSDocument> documentsToSign;
 
 	@Before
 	public void init() throws Exception {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
-		documentToSign = new FileDocument(new File("src/test/resources/sample.png"));
+		FileDocument f1 = new FileDocument(new File("src/test/resources/sample-with-id.xml"));
+		FileDocument f2 = new FileDocument(new File("src/test/resources/sample-with-different-id.xml"));
+		documentsToSign = Arrays.<DSSDocument>asList(f1, f2);
 
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		signatureParameters.setSignaturePackaging(SignaturePackaging.INTERNALLY_DETACHED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 
 		SignerLocation signerLocation = new SignerLocation();
@@ -72,19 +77,15 @@ public class XAdESLevelBDetachedTest extends AbstractXAdESTestSignature {
 
 		signatureParameters.setAddX509SubjectName(true);
 
-		TimestampParameters contentTimestampParameters = new TimestampParameters();
-		contentTimestampParameters.setCanonicalizationMethod(null); // The file cannot be canonicalized
-		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
-		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
+		TimestampToken contentTimestamp = service.getContentTimestamp(documentsToSign, signatureParameters);
+		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
+	}
 
-		contentTimestampParameters = new TimestampParameters();
-		contentTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
-		contentTimestampParameters.setCanonicalizationMethod(null); // The file cannot be canonicalized
-		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
-		TimestampToken contentTimestamp2 = service.getContentTimestamp(documentToSign, signatureParameters);
-
-		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp, contentTimestamp2));
-
+	@Override
+	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlSignatureScope> signatureScopes = signatureWrapper.getSignatureScopes();
+		assertEquals(2, signatureScopes.size());
 	}
 
 	@Override
@@ -93,28 +94,33 @@ public class XAdESLevelBDetachedTest extends AbstractXAdESTestSignature {
 	}
 
 	@Override
-	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
-		detachedContents.add(documentToSign);
-		validator.setDetachedContents(detachedContents);
-		return validator;
+	protected MimeType getExpectedMime() {
+		return MimeType.XML;
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getService() {
+	protected boolean isBaselineT() {
+		return true;
+	}
+
+	@Override
+	protected boolean isBaselineLTA() {
+		return true;
+	}
+
+	@Override
+	protected List<DSSDocument> getDocumentsToSign() {
+		return documentsToSign;
+	}
+
+	@Override
+	protected MultipleDocumentsSignatureService<XAdESSignatureParameters> getService() {
 		return service;
 	}
 
 	@Override
 	protected XAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
-	}
-
-	@Override
-	protected DSSDocument getDocumentToSign() {
-		return documentToSign;
 	}
 
 }
