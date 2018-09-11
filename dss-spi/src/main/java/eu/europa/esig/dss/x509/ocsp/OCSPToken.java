@@ -157,7 +157,7 @@ public class OCSPToken extends RevocationToken {
 			}
 			reason = CRLReasonEnum.unknow;
 		} else {
-			LOG.info("OCSP certificate status: " + certStatus);
+			LOG.info("OCSP certificate status: {}", certStatus);
 		}
 	}
 

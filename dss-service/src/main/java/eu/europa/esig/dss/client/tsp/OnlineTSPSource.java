@@ -129,8 +129,8 @@ public class OnlineTSPSource implements TSPSource {
 	public TimeStampToken getTimeStampResponse(final DigestAlgorithm digestAlgorithm, final byte[] digest) throws DSSException {
 		try {
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("Timestamp digest algorithm: " + digestAlgorithm.getName());
-				LOG.trace("Timestamp digest value    : " + Utils.toHex(digest));
+				LOG.trace("Timestamp digest algorithm: {}", digestAlgorithm.getName());
+				LOG.trace("Timestamp digest value    : {}", Utils.toHex(digest));
 			}
 
 			// Setup the time stamp request
@@ -164,18 +164,18 @@ public class OnlineTSPSource implements TSPSource {
 
 			String statusString = timeStampResponse.getStatusString();
 			if (statusString != null) {
-				LOG.info("TSP Status: " + statusString);
+				LOG.info("TSP Status: {}", statusString);
 			}
 
 			PKIFailureInfo failInfo = timeStampResponse.getFailInfo();
 			if (failInfo != null) {
-				LOG.warn("TSP Failure info: " + failInfo.toString());
+				LOG.warn("TSP Failure info: {}", failInfo);
 			}
 
 			final TimeStampToken timeStampToken = timeStampResponse.getTimeStampToken();
 
 			if (timeStampToken != null) {
-				LOG.info("TSP SID : SN " + timeStampToken.getSID().getSerialNumber() + ", Issuer " + timeStampToken.getSID().getIssuer());
+				LOG.info("TSP SID : SN {}, Issuer {}", timeStampToken.getSID().getSerialNumber(), timeStampToken.getSID().getIssuer());
 			} else {
 				throw new DSSException("No retrieved timestamp token (TSP Status : " + statusString + " / " + failInfo + ")");
 			}

@@ -183,7 +183,7 @@ public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
 		final EncryptionAlgorithm encryptionAlgo = moccaKey.getEncryptionAlgorithm();
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgo, digestAlgorithm);
 
-		LOG.info("MOCCA>>>Signature algorithm: " + signatureAlgorithm.getJCEId());
+		LOG.info("MOCCA>>>Signature algorithm: {}", signatureAlgorithm.getJCEId());
 		try {
 
 			final KeyboxName keyboxName = moccaKey.getKeyboxName();

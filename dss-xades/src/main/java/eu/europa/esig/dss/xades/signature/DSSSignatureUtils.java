@@ -75,7 +75,7 @@ public final class DSSSignatureUtils {
 	 */
 	private static byte[] convertASN1toXMLDSIG(byte[] binaries) {
 
-		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream(); ASN1InputStream is = new ASN1InputStream(binaries);) {
+		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream(); ASN1InputStream is = new ASN1InputStream(binaries)) {
 
 			ASN1Sequence seq = (ASN1Sequence) is.readObject();
 			if (seq.size() != 2) {

@@ -26,7 +26,7 @@ public enum CertificationPermission {
 
 	private final int code;
 
-	private CertificationPermission(int code) {
+	CertificationPermission(int code) {
 		this.code = code;
 	}
 

@@ -332,9 +332,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		if (signingCertificateValidity == null) {
-			LOG.warn("Signing certificate not found: " + signerId.getIssuer() + " " + signerId.getSerialNumber());
+			LOG.warn("Signing certificate not found: {} {}", signerId.getIssuer(), signerId.getSerialNumber());
 		} else if (!verifySignedReferencesToSigningCertificate()) {
-			LOG.warn("There is no valid signed reference to the signing certificate: " + signingCertificateValidity.getCertificateToken().getAbbreviation());
+			LOG.warn("There is no valid signed reference to the signing certificate: {}", signingCertificateValidity.getCertificateToken().getAbbreviation());
 		}
 		return candidatesForSigningCertificate;
 	}
@@ -1121,7 +1121,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					final CertificateToken certificateToken = signingCertificateValidity.getCertificateToken();
 					final PublicKey publicKey = certificateToken.getPublicKey();
 					final SignerInformationVerifier signerInformationVerifier = verifier.build(publicKey);
-					LOG.debug(" - WITH SIGNING CERTIFICATE: " + certificateToken.getAbbreviation());
+					LOG.debug(" - WITH SIGNING CERTIFICATE: {}", certificateToken.getAbbreviation());
 					boolean signatureIntact = signerInformationToCheck.verify(signerInformationVerifier);
 					signatureCryptographicVerification.setSignatureIntact(signatureIntact);
 

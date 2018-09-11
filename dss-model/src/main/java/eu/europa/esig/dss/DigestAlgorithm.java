@@ -187,11 +187,11 @@ public enum DigestAlgorithm {
 		return algorithm;
 	}
 
-	private DigestAlgorithm(final String name, final String javaName, final String oid, final String xmlId) {
+	DigestAlgorithm(final String name, final String javaName, final String oid, final String xmlId) {
 		this(name, javaName, oid, xmlId, 0);
 	}
 
-	private DigestAlgorithm(final String name, final String javaName, final String oid, final String xmlId, final int saltLength) {
+	DigestAlgorithm(final String name, final String javaName, final String oid, final String xmlId, final int saltLength) {
 		this.name = name;
 		this.javaName = javaName;
 		this.oid = oid;

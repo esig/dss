@@ -164,7 +164,7 @@ public class ImageUtils {
 			try {
 				contentType = Files.probeContentType(Paths.get(image.getName()));
 			} catch (IOException e) {
-				LOG.warn("Unable to retrieve the content-type : " + e.getMessage());
+				LOG.warn("Unable to retrieve the content-type : {}", e.getMessage());
 			}
 			return Utils.areStringsEqual(expectedContentType.getMimeTypeString(), contentType);
 		}
@@ -202,7 +202,8 @@ public class ImageUtils {
 			// read metadata of first image
 			IIOMetadata metadata = reader.getImageMetadata(0);
 
-			int hdpi = 96, vdpi = 96;
+			int hdpi = 96;
+			int vdpi = 96;
 			double mm2inch = 25.4;
 
 			Element node = (Element) metadata.getAsTree("javax_imageio_1.0");
@@ -330,7 +331,8 @@ public class ImageUtils {
 	}
 
 	public static BufferedImage rotate(BufferedImage image, double angle) {
-		double sin = Math.abs(Math.sin(Math.toRadians(angle))), cos = Math.abs(Math.cos(Math.toRadians(angle)));
+		double sin = Math.abs(Math.sin(Math.toRadians(angle)));
+		double cos = Math.abs(Math.cos(Math.toRadians(angle)));
 
 		int w = image.getWidth();
 		int h = image.getHeight();

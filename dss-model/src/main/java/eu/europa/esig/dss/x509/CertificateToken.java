@@ -325,8 +325,8 @@ public class CertificateToken extends Token {
 	 * @return true if contains
 	 */
 	public boolean checkKeyUsage(final KeyUsageBit keyUsageBit) {
-		Set<KeyUsageBit> keyUsageBits = getKeyUsageBits();
-		return keyUsageBits.contains(keyUsageBit);
+		Set<KeyUsageBit> currentKUBs = getKeyUsageBits();
+		return currentKUBs.contains(keyUsageBit);
 	}
 
 	@Override

@@ -232,9 +232,7 @@ public class GoogleGuavaUtils implements IUtils {
 			throw new IllegalArgumentException("Not exists");
 		} else if (directory.isDirectory()) {
 			File[] listFiles = directory.listFiles();
-			if (listFiles == null) {
-				return;
-			} else {
+			if (listFiles != null) {
 				for (File file : listFiles) {
 					if (file.isDirectory()) {
 						cleanDirectory(file);

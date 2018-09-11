@@ -61,8 +61,7 @@ public class FileDocument extends CommonDocument {
 
 	@Override
 	public InputStream openStream() throws DSSException {
-		final InputStream inputStream = DSSUtils.toInputStream(file);
-		return inputStream;
+		return DSSUtils.toInputStream(file);
 	}
 
 	public boolean exists() {

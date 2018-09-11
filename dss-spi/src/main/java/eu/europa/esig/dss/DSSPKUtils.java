@@ -103,7 +103,7 @@ public final class DSSPKUtils {
 			DSAPublicKey dsaPublicKey = (DSAPublicKey) publicKey;
 			publicKeySize = dsaPublicKey.getParams().getP().bitLength();
 		} else {
-			LOG.error("Unknown public key infrastructure: " + publicKey.getClass().getName());
+			LOG.error("Unknown public key infrastructure: {}", publicKey.getClass().getName());
 		}
 		return publicKeySize;
 	}

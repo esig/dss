@@ -85,7 +85,7 @@ public class PdfDssDict {
 					}
 				}
 			} catch (Exception e) {
-				LOG.debug("Unable to analyse VRI dictionary : " + e.getMessage());
+				LOG.debug("Unable to analyse VRI dictionary : {}", e.getMessage());
 			}
 		} else {
 			LOG.debug("No VRI dictionary found in DSS dictionary");

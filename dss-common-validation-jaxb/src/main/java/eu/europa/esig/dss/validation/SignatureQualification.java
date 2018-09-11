@@ -131,7 +131,7 @@ public enum SignatureQualification {
 	private final String readable;
 	private final String label;
 
-	private SignatureQualification(String readable, String label) {
+	SignatureQualification(String readable, String label) {
 		this.readable = readable;
 		this.label = label;
 	}

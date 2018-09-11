@@ -74,7 +74,8 @@ public class MSCAPISignatureToken extends AbstractKeyStoreTokenConnection {
 					return;
 				} else if (entriesObject instanceof Collection<?>) {
 					Collection<?> entries = (Collection<?>) entriesObject;
-					String alias, hashCode;
+					String alias;
+					String hashCode;
 					X509Certificate[] certificates;
 
 					for (Object entry : entries) {
@@ -93,7 +94,7 @@ public class MSCAPISignatureToken extends AbstractKeyStoreTokenConnection {
 						}
 					}
 				} else {
-					LOG.warn("Unsupported entries type : " + entriesObject.getClass().getName());
+					LOG.warn("Unsupported entries type : {}", entriesObject.getClass().getName());
 				}
 			}
 		} catch (Exception exception) {

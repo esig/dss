@@ -296,10 +296,6 @@ public class CommonsDataLoader implements DataLoader {
 			final boolean proxyHTTPS = Protocol.isHttps(protocol) && proxyConfig.getHttpsProperties() != null;
 			final boolean proxyHTTP = Protocol.isHttp(protocol) && proxyConfig.getHttpProperties() != null;
 
-			if (!proxyHTTPS && !proxyHTTP) {
-				return httpClientBuilder;
-			}
-
 			ProxyProperties proxyProps = null;
 			if (proxyHTTPS) {
 				LOG.debug("Use proxy https parameters");
@@ -307,6 +303,8 @@ public class CommonsDataLoader implements DataLoader {
 			} else if (proxyHTTP) {
 				LOG.debug("Use proxy http parameters");
 				proxyProps = proxyConfig.getHttpProperties();
+			} else {
+				return httpClientBuilder;
 			}
 
 			String proxyHost = proxyProps.getHost();

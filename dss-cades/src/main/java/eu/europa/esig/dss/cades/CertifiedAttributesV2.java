@@ -68,7 +68,7 @@ public class CertifiedAttributesV2 extends ASN1Object {
 			if (values[i] instanceof AttributeCertificate) {
 				v.add(new DERTaggedObject(0, (AttributeCertificate) values[i]));
 			} else {
-				LOG.warn("Unsupported type " + values[i]);
+				LOG.warn("Unsupported type : {}", values[i]);
 			}
 		}
 		return new DERSequence(v);

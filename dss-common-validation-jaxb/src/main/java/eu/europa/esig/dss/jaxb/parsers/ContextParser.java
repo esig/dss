@@ -2,7 +2,10 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.validation.policy.Context;
 
-public class ContextParser {
+public final class ContextParser {
+
+	private ContextParser() {
+	}
 
 	public static Context parse(String v) {
 		if (v != null) {

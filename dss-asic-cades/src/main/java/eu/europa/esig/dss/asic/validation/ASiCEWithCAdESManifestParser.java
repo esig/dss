@@ -37,7 +37,7 @@ public class ASiCEWithCAdESManifestParser {
 			description.setEntries(getDataObjectReferenceUris(root));
 
 		} catch (Exception e) {
-			LOG.warn("Unable to analyze manifest file '" + manifestDocument.getName() + "' : " + e.getMessage());
+			LOG.warn("Unable to analyze manifest file '{}' : {}", manifestDocument.getName(), e.getMessage());
 		}
 
 		return description;

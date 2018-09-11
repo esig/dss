@@ -399,7 +399,7 @@ public class PAdESSignature extends CAdESSignature {
 		default:
 			throw new IllegalArgumentException("Unknown level " + signatureLevel);
 		}
-		LOG.debug("Level {} found on document {} = {}", new Object[] { signatureLevel, document.getName(), dataForLevelPresent });
+		LOG.debug("Level {} found on document {} = {}", signatureLevel, document.getName(), dataForLevelPresent);
 		return dataForLevelPresent;
 	}
 

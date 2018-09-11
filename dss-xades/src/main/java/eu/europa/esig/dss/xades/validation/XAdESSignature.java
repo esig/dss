@@ -543,17 +543,17 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final Element policyId = DomUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_ID);
 			if (policyId != null) {
 				// Explicit policy
+				String policyUrlString = null;
 				String policyIdString = policyId.getTextContent();
-				if (policyIdString != null && !policyIdString.isEmpty()) {
+				if (Utils.isStringNotEmpty(policyIdString)) {
 					policyIdString = policyIdString.replaceAll("\n", "");
 					policyIdString = policyIdString.trim();
-				}
-				String policyUrlString = null;
-				if (DSSXMLUtils.isOid(policyIdString)) {
-					// urn:oid:1.2.3 --> 1.2.3
-					policyIdString = policyIdString.substring(policyIdString.lastIndexOf(':') + 1);
-				} else {
-					policyUrlString = policyIdString;
+					if (DSSXMLUtils.isOid(policyIdString)) {
+						// urn:oid:1.2.3 --> 1.2.3
+						policyIdString = policyIdString.substring(policyIdString.lastIndexOf(':') + 1);
+					} else {
+						policyUrlString = policyIdString;
+					}
 				}
 				signaturePolicy = new SignaturePolicy(policyIdString);
 				final Node policyDigestMethod = DomUtils.getNode(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_METHOD);
@@ -1970,39 +1970,34 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * @return
 	 */
 	public Element getLastTimestampValidationData() {
-
 		final List<TimestampToken> archiveTimestamps = getArchiveTimestamps();
 		TimestampToken mostRecentTimestamp = null;
 		for (final TimestampToken archiveTimestamp : archiveTimestamps) {
-
 			if (mostRecentTimestamp == null) {
-
 				mostRecentTimestamp = archiveTimestamp;
 				continue;
 			}
 			final Date generationTime = archiveTimestamp.getGenerationTime();
 			final Date mostRecentGenerationTime = mostRecentTimestamp.getGenerationTime();
 			if (generationTime.after(mostRecentGenerationTime)) {
-
 				mostRecentTimestamp = archiveTimestamp;
 			}
 		}
-		final int timestampHashCode = mostRecentTimestamp.getHashCode();
-		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/*");
-		boolean found = false;
-		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 
-			final Element unsignedSignatureElement = (Element) nodeList.item(ii);
-			final int nodeHashCode = unsignedSignatureElement.hashCode();
-			if (nodeHashCode == timestampHashCode) {
-
-				found = true;
-			} else if (found) {
-
-				final String nodeName = unsignedSignatureElement.getLocalName();
-				if ("TimeStampValidationData".equals(nodeName)) {
-
-					return unsignedSignatureElement;
+		if (mostRecentTimestamp != null) {
+			final int timestampHashCode = mostRecentTimestamp.getHashCode();
+			final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/*");
+			boolean found = false;
+			for (int ii = 0; ii < nodeList.getLength(); ii++) {
+				final Element unsignedSignatureElement = (Element) nodeList.item(ii);
+				final int nodeHashCode = unsignedSignatureElement.hashCode();
+				if (nodeHashCode == timestampHashCode) {
+					found = true;
+				} else if (found) {
+					final String nodeName = unsignedSignatureElement.getLocalName();
+					if ("TimeStampValidationData".equals(nodeName)) {
+						return unsignedSignatureElement;
+					}
 				}
 			}
 		}

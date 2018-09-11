@@ -123,7 +123,9 @@ public class CertificateWrapper extends AbstractTokenProxy {
 			for (XmlTrustedServiceProvider trustedServiceProvider : trustedServiceProviders) {
 				List<XmlTrustedService> trustedServices = trustedServiceProvider.getTrustedServices();
 				for (XmlTrustedService xmlTrustedService : trustedServices) {
-					return xmlTrustedService.getExpiredCertsRevocationInfo(); // TODO improve
+					if (xmlTrustedService.getExpiredCertsRevocationInfo() != null) {
+						return xmlTrustedService.getExpiredCertsRevocationInfo(); // TODO improve
+					}
 				}
 			}
 		}

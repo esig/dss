@@ -47,25 +47,28 @@ public abstract class AbstractCRLUtils {
 			final boolean onlyUserCerts = issuingDistributionPoint.onlyContainsUserCerts();
 			final boolean indirectCrl = issuingDistributionPoint.isIndirectCRL();
 			ReasonFlags onlySomeReasons = issuingDistributionPoint.getOnlySomeReasons();
-			boolean urlFound = false;
-			DistributionPointName distributionPoint = issuingDistributionPoint.getDistributionPoint();
-			if ((distributionPoint != null) && (DistributionPointName.FULL_NAME == distributionPoint.getType())) {
-				final GeneralNames generalNames = (GeneralNames) distributionPoint.getName();
-				if ((generalNames != null) && (generalNames.getNames() != null && generalNames.getNames().length > 0)) {
-					for (GeneralName generalName : generalNames.getNames()) {
-						if (GeneralName.uniformResourceIdentifier == generalName.getTagNo()) {
-							ASN1String str = (ASN1String) ((DERTaggedObject) generalName.toASN1Primitive()).getObject();
-							validity.setUrl(str.getString());
-							urlFound = true;
-						}
-					}
-				}
-			}
-
+			final String url = getUrl(issuingDistributionPoint.getDistributionPoint());
+			validity.setUrl(url);
+			final boolean urlFound = url != null;
 			if (!(onlyAttributeCerts && onlyCaCerts && onlyUserCerts && indirectCrl) && (onlySomeReasons == null) && urlFound) {
 				validity.setUnknownCriticalExtension(false);
 			}
 		}
+	}
+
+	private String getUrl(DistributionPointName distributionPoint) {
+		if ((distributionPoint != null) && (DistributionPointName.FULL_NAME == distributionPoint.getType())) {
+			final GeneralNames generalNames = (GeneralNames) distributionPoint.getName();
+			if ((generalNames != null) && (generalNames.getNames() != null && generalNames.getNames().length > 0)) {
+				for (GeneralName generalName : generalNames.getNames()) {
+					if (GeneralName.uniformResourceIdentifier == generalName.getTagNo()) {
+						ASN1String str = (ASN1String) ((DERTaggedObject) generalName.toASN1Primitive()).getObject();
+						return str.getString();
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 }

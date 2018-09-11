@@ -127,7 +127,7 @@ public enum EncryptionAlgorithm {
 		}
 	}
 
-	private EncryptionAlgorithm(String name, String oid, String padding) {
+	EncryptionAlgorithm(String name, String oid, String padding) {
 		this.name = name;
 		this.oid = oid;
 		this.padding = padding;

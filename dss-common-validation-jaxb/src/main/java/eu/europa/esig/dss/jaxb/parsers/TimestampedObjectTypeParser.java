@@ -2,7 +2,10 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.validation.TimestampedObjectType;
 
-public class TimestampedObjectTypeParser {
+public final class TimestampedObjectTypeParser {
+
+	private TimestampedObjectTypeParser() {
+	}
 
 	public static TimestampedObjectType parse(String v) {
 		if (v != null) {

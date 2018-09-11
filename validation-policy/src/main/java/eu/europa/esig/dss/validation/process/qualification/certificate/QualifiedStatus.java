@@ -10,7 +10,7 @@ public enum QualifiedStatus {
 
 	private final String label;
 
-	private QualifiedStatus(String label) {
+	QualifiedStatus(String label) {
 		this.label = label;
 	}
 

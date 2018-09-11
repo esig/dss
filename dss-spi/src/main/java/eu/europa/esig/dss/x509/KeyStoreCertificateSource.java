@@ -211,7 +211,7 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 				Certificate certificate = keyStore.getCertificate(aliasToSearch);
 				return DSSUtils.loadCertificate(certificate.getEncoded());
 			} else {
-				LOG.warn("Certificate '" + aliasToSearch + "' not found in the keystore");
+				LOG.warn("Certificate '{}' not found in the keystore", aliasToSearch);
 				return null;
 			}
 		} catch (GeneralSecurityException e) {
@@ -276,9 +276,9 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 		try {
 			if (keyStore.containsAlias(alias)) {
 				keyStore.deleteEntry(alias);
-				LOG.info("Certificate '" + alias + "' successfuly removed from the keystore");
+				LOG.info("Certificate '{}' successfuly removed from the keystore", alias);
 			} else {
-				LOG.warn("Certificate '" + alias + "' not found in the keystore");
+				LOG.warn("Certificate '{}' not found in the keystore", alias);
 			}
 		} catch (GeneralSecurityException e) {
 			throw new DSSException("Unable to delete certificate from the keystore", e);

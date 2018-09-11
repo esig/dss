@@ -101,8 +101,7 @@ public final class DSSUtils {
 	 * @return the textual representation (a null date will result in "N/A")
 	 */
 	public static String formatInternal(final Date date) {
-		final String formatedDate = (date == null) ? "N/A" : new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT).format(date);
-		return formatedDate;
+		return (date == null) ? "N/A" : new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT).format(date);
 	}
 
 	/**
@@ -124,14 +123,12 @@ public final class DSSUtils {
 	 * @param cert
 	 *            the token to be converted to PEM
 	 * @return PEM encoded certificate
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
-	public static String convertToPEM(final CertificateToken cert) throws DSSException {
+	public static String convertToPEM(final CertificateToken cert) {
 		return convertToPEM(cert.getCertificate());
 	}
 
-	private static String convertToPEM(Object obj) throws DSSException {
+	private static String convertToPEM(Object obj) {
 		try (StringWriter out = new StringWriter(); PemWriter pemWriter = new PemWriter(out)) {
 			pemWriter.writeObject(new JcaMiscPEMGenerator(obj));
 			pemWriter.flush();
@@ -181,7 +178,7 @@ public final class DSSUtils {
 	 *            resource location.
 	 * @return the certificate token
 	 */
-	public static CertificateToken loadCertificate(final String path) throws DSSException {
+	public static CertificateToken loadCertificate(final String path) {
 		final InputStream inputStream = DSSUtils.class.getResourceAsStream(path);
 		return loadCertificate(inputStream);
 	}
@@ -196,13 +193,10 @@ public final class DSSUtils {
 	 * @param file
 	 *            the file with the certificate
 	 * @return the certificate token
-	 * @throws DSSException
-	 *             if the certificate cannot be loaded
 	 */
-	public static CertificateToken loadCertificate(final File file) throws DSSException {
+	public static CertificateToken loadCertificate(final File file) {
 		final InputStream inputStream = DSSUtils.toByteArrayInputStream(file);
-		final CertificateToken x509Certificate = loadCertificate(inputStream);
-		return x509Certificate;
+		return loadCertificate(inputStream);
 	}
 
 	/**
@@ -215,10 +209,8 @@ public final class DSSUtils {
 	 * @param inputStream
 	 *            input stream containing the certificate
 	 * @return the certificate token
-	 * @throws DSSException
-	 *             if the certificate cannot be loaded
 	 */
-	public static CertificateToken loadCertificate(final InputStream inputStream) throws DSSException {
+	public static CertificateToken loadCertificate(final InputStream inputStream) {
 		List<CertificateToken> certificates = loadCertificates(inputStream);
 		if (certificates.size() == 1) {
 			return certificates.get(0);
@@ -263,7 +255,7 @@ public final class DSSUtils {
 	 *            array of bytes containing the certificate
 	 * @return the certificate token
 	 */
-	public static CertificateToken loadCertificate(final byte[] input) throws DSSException {
+	public static CertificateToken loadCertificate(final byte[] input) {
 		if (input == null) {
 			throw new NullPointerException("X509 certificate");
 		}
@@ -313,11 +305,13 @@ public final class DSSUtils {
 			try {
 				bytes = loader.get(url);
 			} catch (Exception e) {
-				LOG.warn("Unable to download certificate from '" + url + "': ", e.getMessage());
+				LOG.warn("Unable to download certificate from '{}': {}", url, e.getMessage());
 				continue;
 			}
 			if (Utils.isArrayNotEmpty(bytes)) {
-				LOG.debug("Base64 content : {}", Utils.toBase64(bytes));
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("Base64 content : {}", Utils.toBase64(bytes));
+				}
 				try (InputStream is = new ByteArrayInputStream(bytes)) {
 					return loadCertificates(is);
 				} catch (Exception e) {
@@ -351,10 +345,9 @@ public final class DSSUtils {
 	 *            the data to digest
 	 * @return digested array of bytes
 	 */
-	public static byte[] digest(final DigestAlgorithm digestAlgorithm, final byte[] data) throws DSSException {
+	public static byte[] digest(final DigestAlgorithm digestAlgorithm, final byte[] data) {
 		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
-		final byte[] digestValue = messageDigest.digest(data);
-		return digestValue;
+		return messageDigest.digest(data);
 	}
 
 	/**
@@ -363,14 +356,11 @@ public final class DSSUtils {
 	 * @param digestAlgorithm
 	 *            the digest algoritm
 	 * @return a new instance of MessageDigest
-	 * @throws DSSException
-	 *             if the digest algorithm is not supported
 	 */
 	public static MessageDigest getMessageDigest(final DigestAlgorithm digestAlgorithm) {
 		try {
 			final String digestAlgorithmOid = digestAlgorithm.getOid();
-			final MessageDigest messageDigest = MessageDigest.getInstance(digestAlgorithmOid, BouncyCastleProvider.PROVIDER_NAME);
-			return messageDigest;
+			return MessageDigest.getInstance(digestAlgorithmOid, BouncyCastleProvider.PROVIDER_NAME);
 		} catch (GeneralSecurityException e) {
 			throw new DSSException("Digest algorithm '" + digestAlgorithm.getName() + "' error: " + e.getMessage(), e);
 		}
@@ -385,7 +375,7 @@ public final class DSSUtils {
 	 *            the data to digest
 	 * @return digested array of bytes
 	 */
-	public static byte[] digest(final DigestAlgorithm digestAlgo, final InputStream inputStream) throws DSSException {
+	public static byte[] digest(final DigestAlgorithm digestAlgo, final InputStream inputStream) {
 		try {
 
 			final MessageDigest messageDigest = getMessageDigest(digestAlgo);
@@ -394,8 +384,7 @@ public final class DSSUtils {
 			while ((count = inputStream.read(buffer)) > 0) {
 				messageDigest.update(buffer, 0, count);
 			}
-			final byte[] digestValue = messageDigest.digest();
-			return digestValue;
+			return messageDigest.digest();
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
@@ -412,29 +401,26 @@ public final class DSSUtils {
 	public static byte[] digest(DigestAlgorithm digestAlgorithm, byte[]... data) {
 		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
 		for (final byte[] bytes : data) {
-
 			messageDigest.update(bytes);
 		}
-		final byte[] digestValue = messageDigest.digest();
-		return digestValue;
+		return messageDigest.digest();
 	}
 
 	/**
-	 * This method returns an {@code InputStream} which needs to be closed, based on {@code FileInputStream}.
+	 * This method returns an {@code InputStream} which needs to be closed, based on
+	 * {@code FileInputStream}.
 	 *
 	 * @param file
-	 *            {@code File} to read.
-	 * @return an {@code InputStream} materialized by a {@code FileInputStream} representing the contents of the file
-	 * @throws DSSException
-	 *             if an I/O error occurred
+	 *             {@code File} to read.
+	 * @return an {@code InputStream} materialized by a {@code FileInputStream}
+	 *         representing the contents of the file @ if an I/O error occurred
 	 */
-	public static InputStream toInputStream(final File file) throws DSSException {
+	public static InputStream toInputStream(final File file) {
 		if (file == null) {
 			throw new NullPointerException();
 		}
 		try {
-			final FileInputStream fileInputStream = openInputStream(file);
-			return fileInputStream;
+			return openInputStream(file);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
@@ -449,37 +435,7 @@ public final class DSSUtils {
 	 * @return {@code InputStream} based on {@code ByteArrayInputStream}
 	 */
 	public static InputStream toByteArrayInputStream(final File file) {
-		if (file == null) {
-			throw new NullPointerException();
-		}
-		try {
-			final byte[] bytes = readFileToByteArray(file);
-			final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-			return byteArrayInputStream;
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	/**
-	 * This method returns the byte array representing the contents of the file.
-	 *
-	 * @param file
-	 *            {@code File} to read
-	 * @return an array of {@code byte}
-	 * @throws DSSException
-	 *             if an I/O error occurred
-	 */
-	public static byte[] toByteArray(final File file) throws DSSException {
-		if (file == null) {
-			throw new NullPointerException();
-		}
-		try {
-			final byte[] bytes = readFileToByteArray(file);
-			return bytes;
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
+		return new ByteArrayInputStream(toByteArray(file));
 	}
 
 	/**
@@ -490,12 +446,12 @@ public final class DSSUtils {
 	 * @param file
 	 *            the file to read, must not be {@code null}
 	 * @return the file contents, never {@code null}
-	 * @throws IOException
-	 *             in case of an I/O error
 	 */
-	private static byte[] readFileToByteArray(final File file) throws IOException {
+	public static byte[] toByteArray(final File file) {
 		try (InputStream is = openInputStream(file)) {
 			return toByteArray(is);
+		} catch (Exception e) {
+			throw new DSSException(e);
 		}
 	}
 
@@ -531,22 +487,26 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * FROM: Apache
-	 * Opens a {@link java.io.FileInputStream} for the specified file, providing better
-	 * error messages than simply calling {@code new FileInputStream(file)}.
-	 * At the end of the method either the stream will be successfully opened,
-	 * or an exception will have been thrown.
-	 * An exception is thrown if the file does not exist.
-	 * An exception is thrown if the file object exists but is a directory.
-	 * An exception is thrown if the file exists but cannot be read.
+	 * FROM: Apache Opens a {@link java.io.FileInputStream} for the specified file,
+	 * providing better error messages than simply calling
+	 * {@code new FileInputStream(file)}. At the end of the method either the stream
+	 * will be successfully opened, or an exception will have been thrown. An
+	 * exception is thrown if the file does not exist. An exception is thrown if the
+	 * file object exists but is a directory. An exception is thrown if the file
+	 * exists but cannot be read.
 	 *
 	 * @param file
-	 *            the file to open for input, must not be {@code null}
+	 *             the file to open for input, must not be {@code null}
 	 * @return a new {@link java.io.FileInputStream} for the specified file
+	 * @throws NullPointerException
+	 *                              if the file is null
 	 * @throws IOException
-	 *             if the file cannot be read
+	 *                              if the file cannot be read
 	 */
 	private static FileInputStream openInputStream(final File file) throws IOException {
+		if (file == null) {
+			throw new NullPointerException();
+		}
 		if (file.exists()) {
 			if (file.isDirectory()) {
 				throw new IOException("File '" + file + "' exists but is a directory");
@@ -587,8 +547,7 @@ public final class DSSUtils {
 			throw new NullPointerException();
 		}
 		try {
-			final byte[] bytes = Utils.toByteArray(inputStream);
-			return bytes;
+			return Utils.toByteArray(inputStream);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
@@ -601,10 +560,8 @@ public final class DSSUtils {
 	 *            the binary to save
 	 * @param file
 	 *            the file where to store
-	 * @throws DSSException
-	 *             if an I/O error occurred
 	 */
-	public static void saveToFile(final byte[] bytes, final File file) throws DSSException {
+	public static void saveToFile(final byte[] bytes, final File file) {
 		file.getParentFile().mkdirs();
 		try (InputStream is = new ByteArrayInputStream(bytes); OutputStream os = new FileOutputStream(file)) {
 			Utils.copy(is, os);
@@ -630,9 +587,8 @@ public final class DSSUtils {
 			if (id != null) {
 				dos.writeChars(id.asXmlId());
 			}
-			dos.close();
-			final String deterministicId = "id-" + getMD5Digest(baos.toByteArray());
-			return deterministicId;
+			dos.flush();
+			return "id-" + getMD5Digest(baos.toByteArray());
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
@@ -659,12 +615,11 @@ public final class DSSUtils {
 	 */
 	public static X500Principal getX500PrincipalOrNull(final String x500PrincipalString) {
 		try {
-			final X500Principal x500Principal = new X500Principal(x500PrincipalString);
-			return x500Principal;
+			return new X500Principal(x500PrincipalString);
 		} catch (Exception e) {
 			LOG.warn(e.getMessage());
+			return null;
 		}
-		return null;
 	}
 
 	/**
@@ -686,9 +641,7 @@ public final class DSSUtils {
 		}
 		final Map<String, String> firstStringStringHashMap = DSSASN1Utils.get(firstX500Principal);
 		final Map<String, String> secondStringStringHashMap = DSSASN1Utils.get(secondX500Principal);
-		final boolean containsAll = firstStringStringHashMap.entrySet().containsAll(secondStringStringHashMap.entrySet());
-
-		return containsAll;
+		return firstStringStringHashMap.entrySet().containsAll(secondStringStringHashMap.entrySet());
 	}
 
 	/**
@@ -700,8 +653,7 @@ public final class DSSUtils {
 	 */
 	public static X500Principal getNormalizedX500Principal(final X500Principal x500Principal) {
 		final String utf8Name = DSSASN1Utils.getUtf8String(x500Principal);
-		final X500Principal x500PrincipalNormalized = new X500Principal(utf8Name);
-		return x500PrincipalNormalized;
+		return new X500Principal(utf8Name);
 	}
 
 	/**
@@ -719,26 +671,7 @@ public final class DSSUtils {
 	public static Date getUtcDate(final int year, final int month, final int day) {
 		final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		calendar.set(year, month, day, 0, 0, 0);
-		final Date date = calendar.getTime();
-		return date;
-	}
-
-	/**
-	 * This method adds or subtract the given number of days from the date
-	 *
-	 * @param date
-	 *            {@code Date} to change
-	 * @param days
-	 *            number of days (can be negative)
-	 * @return new {@code Date}
-	 */
-	public static Date getDate(final Date date, int days) {
-
-		final Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date);
-		calendar.add(Calendar.DATE, days);
-		final Date newDate = calendar.getTime();
-		return newDate;
+		return calendar.getTime();
 	}
 
 	/**
@@ -769,8 +702,7 @@ public final class DSSUtils {
 	 */
 	public static int readToArray(final DSSDocument dssDocument, final int headerLength, final byte[] destinationByteArray) {
 		try (InputStream inputStream = dssDocument.openStream()) {
-			int read = inputStream.read(destinationByteArray, 0, headerLength);
-			return read;
+			return inputStream.read(destinationByteArray, 0, headerLength);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
@@ -782,10 +714,8 @@ public final class DSSUtils {
 	 * @param dssDocument
 	 *            the document
 	 * @return the first byte
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
-	public static byte readFirstByte(final DSSDocument dssDocument) throws DSSException {
+	public static byte readFirstByte(final DSSDocument dssDocument) {
 		byte[] result = new byte[1];
 		try (InputStream inputStream = dssDocument.openStream()) {
 			inputStream.read(result, 0, 1);

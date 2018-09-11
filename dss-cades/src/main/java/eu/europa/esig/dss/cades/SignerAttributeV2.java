@@ -108,7 +108,7 @@ public class SignerAttributeV2 extends ASN1Object {
 			} else if (values[i] instanceof CertifiedAttributesV2) {
 				v.add(new DERTaggedObject(1, (CertifiedAttributesV2) values[i]));
 			} else {
-				LOG.warn("Unsupported type " + values[i]);
+				LOG.warn("Unsupported type {}", values[i]);
 			}
 		}
 

@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
-import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureLevel;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureQualification;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -37,10 +36,10 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
  */
 public class SimpleReport {
 
-	private final eu.europa.esig.dss.jaxb.simplereport.SimpleReport simpleReport;
+	private final eu.europa.esig.dss.jaxb.simplereport.SimpleReport wrapped;
 
-	public SimpleReport(final eu.europa.esig.dss.jaxb.simplereport.SimpleReport simpleReport) {
-		this.simpleReport = simpleReport;
+	public SimpleReport(final eu.europa.esig.dss.jaxb.simplereport.SimpleReport wrapped) {
+		this.wrapped = wrapped;
 	}
 
 	/**
@@ -49,7 +48,7 @@ public class SimpleReport {
 	 * @return the validation time
 	 */
 	public Date getValidationTime() {
-		return simpleReport.getValidationTime();
+		return wrapped.getValidationTime();
 	}
 
 	/**
@@ -102,11 +101,10 @@ public class SimpleReport {
 	 * @return the {@code SignatureQualification} of the given signature
 	 */
 	public SignatureQualification getSignatureQualification(final String signatureId) {
-		XmlSignature signature = getSignatureById(signatureId);
-		XmlSignatureLevel signatureLevel = signature.getSignatureLevel();
 		SignatureQualification qualif = SignatureQualification.NA;
-		if (signatureLevel != null) {
-			qualif = signatureLevel.getValue();
+		XmlSignature signature = getSignatureById(signatureId);
+		if (signature != null && signature.getSignatureLevel() != null) {
+			qualif = signature.getSignatureLevel().getValue();
 		}
 		return qualif;
 	}
@@ -118,7 +116,7 @@ public class SimpleReport {
 	 */
 	public List<String> getSignatureIdList() {
 		final List<String> signatureIdList = new ArrayList<String>();
-		List<XmlSignature> signatures = simpleReport.getSignature();
+		List<XmlSignature> signatures = wrapped.getSignature();
 		if (Utils.isCollectionNotEmpty(signatures)) {
 			for (XmlSignature xmlSignature : signatures) {
 				signatureIdList.add(xmlSignature.getId());
@@ -236,7 +234,7 @@ public class SimpleReport {
 	 * @return the number of signatures
 	 */
 	public int getSignaturesCount() {
-		return simpleReport.getSignaturesCount();
+		return wrapped.getSignaturesCount();
 	}
 
 	/**
@@ -245,7 +243,7 @@ public class SimpleReport {
 	 * @return the number of valid signatures
 	 */
 	public int getValidSignaturesCount() {
-		return simpleReport.getValidSignaturesCount();
+		return wrapped.getValidSignaturesCount();
 	}
 
 	/**
@@ -256,7 +254,7 @@ public class SimpleReport {
 	 * @return the wrapper for the given signature id
 	 */
 	private XmlSignature getSignatureById(String signatureId) {
-		List<XmlSignature> signatures = simpleReport.getSignature();
+		List<XmlSignature> signatures = wrapped.getSignature();
 		if (Utils.isCollectionNotEmpty(signatures)) {
 			for (XmlSignature xmlSignature : signatures) {
 				if (Utils.areStringsEqual(signatureId, xmlSignature.getId())) {
@@ -273,7 +271,7 @@ public class SimpleReport {
 	 * @return the jaxb model
 	 */
 	public eu.europa.esig.dss.jaxb.simplereport.SimpleReport getJaxbModel() {
-		return simpleReport;
+		return wrapped;
 	}
 
 }

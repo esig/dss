@@ -147,9 +147,6 @@ public final class DomUtils {
 	 * Creates the new empty Document.
 	 *
 	 * @return a new empty Document
-	 * 
-	 * @throws DSSException
-	 *             in case of exceptions while the document creation
 	 */
 	public static Document buildDOM() {
 		try {
@@ -165,10 +162,8 @@ public final class DomUtils {
 	 * @param xmlString
 	 *            The string representing the dssDocument to be created.
 	 * @return a new {@link org.w3c.dom.Document} with the xmlString content
-	 * @throws DSSException
-	 *             if the xmlString cannot be parsed
 	 */
-	public static Document buildDOM(final String xmlString) throws DSSException {
+	public static Document buildDOM(final String xmlString) {
 		return buildDOM(xmlString.getBytes(StandardCharsets.UTF_8));
 	}
 
@@ -178,10 +173,8 @@ public final class DomUtils {
 	 * @param bytes
 	 *            The bytes array representing the dssDocument to be created.
 	 * @return a new {@link org.w3c.dom.Document} with the bytes content
-	 * @throws DSSException
-	 *             if the bytes cannot be parsed
 	 */
-	public static Document buildDOM(final byte[] bytes) throws DSSException {
+	public static Document buildDOM(final byte[] bytes) {
 		return buildDOM(new ByteArrayInputStream(bytes));
 	}
 
@@ -191,10 +184,8 @@ public final class DomUtils {
 	 * @param dssDocument
 	 *            The DSS representation of the document from which the dssDocument is created.
 	 * @return a new {@link org.w3c.dom.Document} from {@link eu.europa.esig.dss.DSSDocument}
-	 * @throws DSSException
-	 *             if the {@link eu.europa.esig.dss.DSSDocument} cannot be parsed
 	 */
-	public static Document buildDOM(final DSSDocument dssDocument) throws DSSException {
+	public static Document buildDOM(final DSSDocument dssDocument) {
 		return buildDOM(dssDocument.openStream());
 	}
 
@@ -216,18 +207,17 @@ public final class DomUtils {
 	}
 
 	/**
-	 * This method returns the {@link org.w3c.dom.Document} created based on the XML inputStream.
+	 * This method returns the {@link org.w3c.dom.Document} created based on the XML
+	 * inputStream.
 	 *
 	 * @param inputStream
-	 *            The inputStream stream representing the dssDocument to be created.
-	 * @return a new {@link org.w3c.dom.Document} from {@link java.io.InputStream}
-	 * @throws DSSException
-	 *             if the {@link java.io.InputStream} cannot be parsed
+	 *                    The inputStream stream representing the dssDocument to be
+	 *                    created.
+	 * @return a new {@link org.w3c.dom.Document} from {@link java.io.InputStream} @
 	 */
-	public static Document buildDOM(final InputStream inputStream) throws DSSException {
+	public static Document buildDOM(final InputStream inputStream) {
 		try (InputStream is = inputStream) {
-			final Document rootElement = dbFactory.newDocumentBuilder().parse(is);
-			return rootElement;
+			return dbFactory.newDocumentBuilder().parse(is);
 		} catch (Exception e) {
 			throw new DSSException("Unable to parse content (XML expected)", e);
 		}
@@ -253,20 +243,18 @@ public final class DomUtils {
 	}
 
 	/**
-	 * This method creates a new instance of XPathExpression with the given xpath expression
+	 * This method creates a new instance of XPathExpression with the given xpath
+	 * expression
 	 * 
 	 * @param xpathString
-	 *            XPath query string
-	 * @return an instance of {@code XPathExpression} for the given xpathString
-	 * @throws DSSException
-	 *             if the xpath expression cannot be compiled
+	 *                    XPath query string
+	 * @return an instance of {@code XPathExpression} for the given xpathString @ if
 	 */
-	private static XPathExpression createXPathExpression(final String xpathString) throws DSSException {
+	private static XPathExpression createXPathExpression(final String xpathString) {
 		final XPath xpath = factory.newXPath();
 		xpath.setNamespaceContext(namespacePrefixMapper);
 		try {
-			final XPathExpression expr = xpath.compile(xpathString);
-			return expr;
+			return xpath.compile(xpathString);
 		} catch (XPathExpressionException ex) {
 			throw new DSSException(ex);
 		}
@@ -276,14 +264,12 @@ public final class DomUtils {
 	 * Returns the String value of the corresponding to the XPath query.
 	 *
 	 * @param xmlNode
-	 *            The node where the search should be performed.
+	 *                    The node where the search should be performed.
 	 * @param xPathString
-	 *            XPath query string
+	 *                    XPath query string
 	 * @return string value of the XPath query
-	 * @throws DSSException
-	 *             if the xpath expression cannot be compiled/evaluated
 	 */
-	public static String getValue(final Node xmlNode, final String xPathString) throws DSSException {
+	public static String getValue(final Node xmlNode, final String xPathString) {
 		try {
 			final XPathExpression xPathExpression = createXPathExpression(xPathString);
 			final String string = (String) xPathExpression.evaluate(xmlNode, XPathConstants.STRING);
@@ -297,18 +283,15 @@ public final class DomUtils {
 	 * Returns the NodeList corresponding to the XPath query.
 	 *
 	 * @param xmlNode
-	 *            The node where the search should be performed.
+	 *                    The node where the search should be performed.
 	 * @param xPathString
-	 *            XPath query string
+	 *                    XPath query string
 	 * @return the NodeList corresponding to the XPath query
-	 * @throws DSSException
-	 *             if an error occurred
 	 */
-	public static NodeList getNodeList(final Node xmlNode, final String xPathString) throws DSSException {
+	public static NodeList getNodeList(final Node xmlNode, final String xPathString) {
 		try {
 			final XPathExpression expr = createXPathExpression(xPathString);
-			final NodeList evaluated = (NodeList) expr.evaluate(xmlNode, XPathConstants.NODESET);
-			return evaluated;
+			return (NodeList) expr.evaluate(xmlNode, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			throw new DSSException(e);
 		}
@@ -356,10 +339,7 @@ public final class DomUtils {
 	public static boolean isNotEmpty(final Node xmlNode, final String xPathString) {
 		// xpath suffix allows to skip text nodes and empty lines
 		NodeList nodeList = getNodeList(xmlNode, xPathString + "/child::node()[not(self::text())]");
-		if ((nodeList != null) && (nodeList.getLength() > 0)) {
-			return true;
-		}
-		return false;
+		return (nodeList != null) && (nodeList.getLength() > 0);
 	}
 
 	/**
@@ -419,8 +399,7 @@ public final class DomUtils {
 
 			XMLGregorianCalendar xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
 			xmlGregorianCalendar.setFractionalSecond(null);
-			xmlGregorianCalendar = xmlGregorianCalendar.normalize(); // to UTC = Zulu
-			return xmlGregorianCalendar;
+			return xmlGregorianCalendar.normalize(); // to UTC = Zulu
 		} catch (DatatypeConfigurationException e) {
 			LOG.warn("Unable to properly convert a Date to an XMLGregorianCalendar " + e.getMessage(), e);
 		}
@@ -468,16 +447,15 @@ public final class DomUtils {
 	}
 
 	/**
-	 * This method writes the {@link org.w3c.dom.Document} content to an outputStream
+	 * This method writes the {@link org.w3c.dom.Document} content to an
+	 * outputStream
 	 * 
 	 * @param dom
 	 *            the {@link org.w3c.dom.Document} to be writed
 	 * @param os
-	 *            the OutputStream
-	 * @throws DSSException
-	 *             if any error occurred
+	 *            the OutputStream @ if any error occurred
 	 */
-	public static void writeDocumentTo(final Document dom, final OutputStream os) throws DSSException {
+	public static void writeDocumentTo(final Document dom, final OutputStream os) {
 		try {
 			final DOMSource xmlSource = new DOMSource(dom);
 			final StreamResult outputTarget = new StreamResult(os);

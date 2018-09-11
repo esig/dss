@@ -15,7 +15,6 @@ public class CustomProcessExecutor implements ProcessExecutor<Reports> {
 	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
 
 	private eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData jaxbDiagnosticData;
-	private DiagnosticData diagnosticData;
 
 	private ValidationPolicy policy;
 
@@ -47,7 +46,7 @@ public class CustomProcessExecutor implements ProcessExecutor<Reports> {
 		Objects.requireNonNull(currentTime, "The current time is missing");
 		Objects.requireNonNull(validationLevel, "The validation level is missing");
 
-		diagnosticData = new DiagnosticData(jaxbDiagnosticData);
+		DiagnosticData diagnosticData = new DiagnosticData(jaxbDiagnosticData);
 
 		DetailedReportBuilder detailedReportBuilder = new DetailedReportBuilder(currentTime, policy, validationLevel, diagnosticData);
 		eu.europa.esig.dss.jaxb.detailedreport.DetailedReport jaxbDetailedReport = detailedReportBuilder.build();

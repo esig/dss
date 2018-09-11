@@ -55,7 +55,7 @@ public class TSLLoader implements Callable<TSLLoaderResult> {
 			byte[] byteArray = dataLoader.get(urlToLoad);
 			result.setContent(byteArray);
 		} catch (Exception e) {
-			LOG.warn("Unable to load '" + urlToLoad + "' : " + e.getMessage());
+			LOG.warn("Unable to load '{}' : {}", urlToLoad, e.getMessage());
 		}
 
 		return result;

@@ -1,6 +1,9 @@
 package eu.europa.esig.dss.validation.process;
 
-public class AdditionalInfo {
+public final class AdditionalInfo {
+
+	private AdditionalInfo() {
+	}
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 

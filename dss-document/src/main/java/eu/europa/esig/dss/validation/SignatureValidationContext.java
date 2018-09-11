@@ -268,8 +268,8 @@ public class SignatureValidationContext implements ValidationContext {
 				if (token.isSignedBy(candidate)) {
 					if (!token.getIssuerX500Principal().equals(candidate.getSubjectX500Principal())) {
 						LOG.info("There is AIA extension, but the issuer subject name and subject name does not match.");
-						LOG.info("CERT ISSUER    : " + token.getIssuerX500Principal().toString());
-						LOG.info("ISSUER SUBJECT : " + candidate.getSubjectX500Principal().toString());
+						LOG.info("CERT ISSUER    : {}", token.getIssuerX500Principal());
+						LOG.info("ISSUER SUBJECT : {}", candidate.getSubjectX500Principal());
 					}
 					return candidate;
 				}
@@ -334,14 +334,14 @@ public class SignatureValidationContext implements ValidationContext {
 			try {
 				if (tokensToProcess.containsKey(token)) {
 					if (traceEnabled) {
-						LOG.trace("Token was already in the list {}:{}", new Object[] { token.getClass().getSimpleName(), token.getAbbreviation() });
+						LOG.trace("Token was already in the list {}:{}", token.getClass().getSimpleName(), token.getAbbreviation());
 					}
 					return false;
 				}
 
 				tokensToProcess.put(token, null);
 				if (traceEnabled) {
-					LOG.trace("+ New {} to check: {}", new Object[] { token.getClass().getSimpleName(), token.getAbbreviation() });
+					LOG.trace("+ New {} to check: {}", token.getClass().getSimpleName(), token.getAbbreviation());
 				}
 				return true;
 			} finally {

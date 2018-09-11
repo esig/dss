@@ -37,8 +37,6 @@ import eu.europa.esig.dss.x509.CertificateToken;
  */
 public class PAdESCertificateSource extends CAdESCertificateSource {
 
-	private List<CertificateToken> certificationFromDSSDict;
-
 	/**
 	 * The default constructor for PAdESCertificateSource.
 	 *
@@ -64,10 +62,6 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 				}
 			}
 		}
-	}
-
-	public List<CertificateToken> getCertificationFromDSSDict() {
-		return certificationFromDSSDict;
 	}
 
 }

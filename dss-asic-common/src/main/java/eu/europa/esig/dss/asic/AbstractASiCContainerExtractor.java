@@ -58,11 +58,11 @@ public abstract class AbstractASiCContainerExtractor {
 			}
 
 			if (Utils.isCollectionNotEmpty(result.getUnsupportedDocuments())) {
-				LOG.warn("Unsupported files : " + result.getUnsupportedDocuments());
+				LOG.warn("Unsupported files : {}", result.getUnsupportedDocuments());
 			}
 
 		} catch (IOException e) {
-			LOG.warn("Unable to parse the container " + e.getMessage());
+			LOG.warn("Unable to parse the container {}", e.getMessage());
 		}
 
 		result.setZipComment(getZipComment());
@@ -90,14 +90,14 @@ public abstract class AbstractASiCContainerExtractor {
 					int commentLen = buffer[ii + 20] + buffer[ii + 21] * 256;
 					int realLen = len - ii - 22;
 					if (commentLen != realLen) {
-						LOG.warn("WARNING! ZIP comment size mismatch: directory says len is " + commentLen + ", but file ends after " + realLen + " bytes!");
+						LOG.warn("WARNING! ZIP comment size mismatch: directory says len is {}, but file ends after {} bytes!", commentLen, realLen);
 					}
 					return new String(buffer, ii + 22, realLen);
 
 				}
 			}
 		} catch (Exception e) {
-			LOG.warn("Unable to extract the ZIP comment : " + e.getMessage());
+			LOG.warn("Unable to extract the ZIP comment : {}", e.getMessage());
 		}
 		return null;
 	}

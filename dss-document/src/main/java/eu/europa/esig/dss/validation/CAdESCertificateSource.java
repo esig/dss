@@ -87,15 +87,15 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	private List<CertificateToken> extractEncapsulatedCertificates(CMSSignedData cmsSignedData) {
-		final List<CertificateToken> encapsulatedCerts = new ArrayList<CertificateToken>();
+		final List<CertificateToken> currentCerts = new ArrayList<CertificateToken>();
 		// Gets certificates from CAdES-XL certificate-values inside SignerInfo attribute if present
 		SignerInformation signerInformation = DSSASN1Utils.getFirstSignerInformation(cmsSignedData);
 		if ((signerInformation != null) && (signerInformation.getUnsignedAttributes() != null)) {
 			AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
-			extractCertificateFromUnsignedAttribute(encapsulatedCerts, unsignedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_certValues));
-			extractCertificateRefsFromUnsignedAttribute(encapsulatedCerts, unsignedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_certificateRefs));
+			extractCertificateFromUnsignedAttribute(currentCerts, unsignedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_certValues));
+			extractCertificateRefsFromUnsignedAttribute(currentCerts, unsignedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_certificateRefs));
 		}
-		return encapsulatedCerts;
+		return currentCerts;
 	}
 
 	private void extractCertificateFromUnsignedAttribute(List<CertificateToken> encapsulatedCerts, Attribute attribute) {
@@ -109,7 +109,7 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 						encapsulatedCerts.add(certToken);
 					}
 				} catch (Exception e) {
-					LOG.warn("Unable to parse encapsulated certificate : " + e.getMessage());
+					LOG.warn("Unable to parse encapsulated certificate : {}", e.getMessage());
 				}
 			}
 		}
@@ -141,7 +141,7 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 						LOG.warn("Certificate Ref (SN:{} / {}:{}) is not known", expectedSerialNumber, digestAlgo, Utils.toBase64(expectedCertHash));
 					}
 				} catch (Exception e) {
-					LOG.warn("Unable to parse encapsulated OtherCertID : " + e.getMessage());
+					LOG.warn("Unable to parse encapsulated OtherCertID : {}", e.getMessage());
 				}
 			}
 		}
@@ -182,7 +182,7 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 				}
 			}
 		} catch (Exception e) {
-			LOG.warn("Cannot extract certificates from CMS Signed Data : " + e.getMessage());
+			LOG.warn("Cannot extract certificates from CMS Signed Data : {}", e.getMessage());
 		}
 		return essCertIDCerts;
 	}

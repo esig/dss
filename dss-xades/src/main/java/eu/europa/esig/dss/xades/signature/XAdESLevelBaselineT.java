@@ -149,7 +149,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 */
 	protected void extendSignatureTag() throws DSSException {
 
-		assertExtendSignaturePossible();
+		assertExtendSignatureToTPossible();
 
 		// We ensure that all XML segments needed for the construction of the extension -T are present.
 		// If a segment does not exist then it is created.
@@ -173,11 +173,9 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	/**
 	 * Checks if the extension is possible.
 	 */
-	private void assertExtendSignaturePossible() throws DSSException {
-
+	private void assertExtendSignatureToTPossible() {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
 		if (XAdES_BASELINE_T.equals(signatureLevel) && (xadesSignature.hasLTProfile() || xadesSignature.hasLTAProfile())) {
-
 			final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
 			throw new DSSException(String.format(exceptionMessage, "XAdES LT"));
 		}

@@ -35,7 +35,10 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 
-public class SignatureImageAndPositionProcessor {
+public final class SignatureImageAndPositionProcessor {
+
+	private SignatureImageAndPositionProcessor() {
+	}
 
     private static final int ANGLE_360 = 360;
     private static final int ANGLE_90 = 90;

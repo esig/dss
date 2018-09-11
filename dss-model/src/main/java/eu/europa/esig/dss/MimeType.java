@@ -197,10 +197,8 @@ public class MimeType implements Serializable {
 	 * @return the extrapolated mime-type of the file
 	 */
 	public static MimeType fromFile(final File file) {
-
 		final String fileName = file.getName();
-		final MimeType mimeType = fromFileName(fileName);
-		return mimeType;
+		return fromFileName(fileName);
 	}
 
 	/**

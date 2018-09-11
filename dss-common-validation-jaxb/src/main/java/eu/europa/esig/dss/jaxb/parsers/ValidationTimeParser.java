@@ -2,7 +2,10 @@ package eu.europa.esig.dss.jaxb.parsers;
 
 import eu.europa.esig.dss.validation.ValidationTime;
 
-public class ValidationTimeParser {
+public final class ValidationTimeParser {
+
+	private ValidationTimeParser() {
+	}
 
 	public static ValidationTime parse(String v) {
 		if (v != null) {

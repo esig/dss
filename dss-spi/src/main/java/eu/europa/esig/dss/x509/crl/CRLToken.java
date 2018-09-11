@@ -159,20 +159,16 @@ public class CRLToken extends RevocationToken {
 
 	@Override
 	public String toString(String indentStr) {
-		try {
-			StringBuilder out = new StringBuilder();
-			out.append(indentStr).append("CRLToken[\n");
-			indentStr += "\t";
-			out.append(indentStr).append("Production time: ").append(productionDate == null ? "?" : DSSUtils.formatInternal(productionDate)).append('\n');
-			out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');
-			out.append(indentStr).append("Status: ").append(getStatus()).append('\n');
-			out.append(indentStr).append("Issuer's certificate: ").append(getIssuerX500Principal()).append('\n');
-			indentStr = indentStr.substring(1);
-			out.append(indentStr).append(']');
-			return out.toString();
-		} catch (Exception e) {
-			return ((Object) this).toString();
-		}
+		StringBuilder out = new StringBuilder();
+		out.append(indentStr).append("CRLToken[\n");
+		indentStr += "\t";
+		out.append(indentStr).append("Production time: ").append(productionDate == null ? "?" : DSSUtils.formatInternal(productionDate)).append('\n');
+		out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');
+		out.append(indentStr).append("Status: ").append(getStatus()).append('\n');
+		out.append(indentStr).append("Issuer's certificate: ").append(getIssuerX500Principal()).append('\n');
+		indentStr = indentStr.substring(1);
+		out.append(indentStr).append(']');
+		return out.toString();
 	}
 
 }

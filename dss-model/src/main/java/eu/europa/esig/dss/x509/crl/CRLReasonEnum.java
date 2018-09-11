@@ -67,7 +67,7 @@ public enum CRLReasonEnum {
 
 	private final int value;
 
-	private CRLReasonEnum(final int value) {
+	CRLReasonEnum(final int value) {
 		this.value = value;
 	}
 

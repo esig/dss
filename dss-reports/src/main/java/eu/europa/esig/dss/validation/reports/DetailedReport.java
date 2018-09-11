@@ -481,6 +481,6 @@ public class DetailedReport {
 
 	enum MessageType {
 		INFO, WARN, ERROR
-	};
+	}
 
 }

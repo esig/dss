@@ -14,7 +14,6 @@ public class CertificateProcessExecutor implements ProcessExecutor<CertificateRe
 	private Date currentTime;
 	private ValidationPolicy policy;
 	private eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData jaxbDiagnosticData;
-	private DiagnosticData diagnosticData;
 	private String certificateId;
 
 	@Override
@@ -57,7 +56,7 @@ public class CertificateProcessExecutor implements ProcessExecutor<CertificateRe
 		Objects.requireNonNull(policy, "The validation policy is missing");
 		Objects.requireNonNull(currentTime, "The current time is missing");
 
-		diagnosticData = new DiagnosticData(jaxbDiagnosticData);
+		DiagnosticData diagnosticData = new DiagnosticData(jaxbDiagnosticData);
 
 		DetailedReportForCertificateBuilder detailedReportBuilder = new DetailedReportForCertificateBuilder(diagnosticData, policy, currentTime, certificateId);
 		DetailedReport detailedReport = detailedReportBuilder.build();

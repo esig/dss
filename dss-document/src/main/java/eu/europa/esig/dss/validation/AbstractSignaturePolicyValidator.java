@@ -2,6 +2,7 @@ package eu.europa.esig.dss.validation;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import eu.europa.esig.dss.x509.SignaturePolicy;
 
@@ -72,8 +73,8 @@ public abstract class AbstractSignaturePolicyValidator implements SignaturePolic
 		StringBuilder stringBuilder = new StringBuilder();
 		if (!errors.isEmpty()) {
 			stringBuilder.append("The errors found on signature policy validation are:");
-			for (String key : errors.keySet()) {
-				stringBuilder.append(" at ").append(key).append(": ").append(errors.get(key)).append(",");
+			for (Entry<String, String> entry : errors.entrySet()) {
+				stringBuilder.append(" at ").append(entry.getKey()).append(": ").append(entry.getValue()).append(",");
 			}
 			stringBuilder.setLength(stringBuilder.length() - 1);
 		}

@@ -152,7 +152,7 @@ public class TSLRepository {
 		validationModel.setFilepath(storeOnFileSystem(resultLoader.getCountryCode(), resultLoader));
 		validationModel.setCertificateSourceSynchronized(false);
 		tsls.put(resultLoader.getCountryCode(), validationModel);
-		LOG.info("New version of " + resultLoader.getCountryCode() + " TSL is stored in cache");
+		LOG.info("New version of {} TSL is stored in cache", resultLoader.getCountryCode());
 		return validationModel;
 	}
 
@@ -165,7 +165,7 @@ public class TSLRepository {
 		filename = filename.replaceAll("\\W", "_");
 		validationModel.setFilepath(storeOnFileSystem(filename, resultLoader));
 		pivots.put(resultLoader.getUrl(), validationModel);
-		LOG.info("New version of the pivot LOTL '" + resultLoader.getUrl() + "' is stored in cache");
+		LOG.info("New version of the pivot LOTL '{}' is stored in cache", resultLoader.getUrl());
 		return validationModel;
 	}
 
@@ -178,7 +178,7 @@ public class TSLRepository {
 			byte[] data = Utils.toByteArray(fis);
 			validationModel.setSha256FileContent(getSHA256(data));
 		} catch (Exception e) {
-			LOG.error("Unable to read '" + filePath + "' : " + e.getMessage());
+			LOG.error("Unable to read '{}' : {}", filePath, e.getMessage());
 		}
 		validationModel.setParseResult(tslParserResult);
 		validationModel.setCertificateSourceSynchronized(false);

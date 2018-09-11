@@ -25,6 +25,9 @@ import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 
 public class OID {
 
+	private OID() {
+	}
+
 	/**
 	 * id-aa-ets-archiveTimestampV2 OBJECT IDENTIFIER ::= { iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1)
 	 * pkcs-9(9) smime(16) id-aa(2) 48}

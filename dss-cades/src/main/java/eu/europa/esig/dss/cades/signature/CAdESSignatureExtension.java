@@ -258,7 +258,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 			}
 			byte[] timestampDigest = DSSUtils.digest(timestampDigestAlgorithm, messageToTimestamp);
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Digested ({}) message to timestamp is {}", new Object[] { timestampDigestAlgorithm, Utils.toHex(timestampDigest) });
+				LOG.debug("Digested ({}) message to timestamp is {}", timestampDigestAlgorithm, Utils.toHex(timestampDigest));
 			}
 
 			final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, timestampDigest);

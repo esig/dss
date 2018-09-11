@@ -42,17 +42,17 @@ import eu.europa.esig.dss.utils.Utils;
  */
 public class DiagnosticData {
 
-	private final eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticData;
+	private final eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData wrapped;
 
 	private List<SignatureWrapper> foundSignatures;
 	private List<CertificateWrapper> usedCertificates;
 
-	public DiagnosticData(final eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticData) {
-		this.diagnosticData = diagnosticData;
+	public DiagnosticData(final eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData wrapped) {
+		this.wrapped = wrapped;
 	}
 
 	public String getDocumentName() {
-		return diagnosticData.getDocumentName();
+		return wrapped.getDocumentName();
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class DiagnosticData {
 	 */
 	public List<String> getSignatureIdList() {
 		List<String> signatureIds = new ArrayList<String>();
-		List<XmlSignature> signatures = diagnosticData.getSignatures();
+		List<XmlSignature> signatures = wrapped.getSignatures();
 		if (Utils.isCollectionNotEmpty(signatures)) {
 			for (XmlSignature xmlSignature : signatures) {
 				signatureIds.add(xmlSignature.getId());
@@ -585,7 +585,7 @@ public class DiagnosticData {
 	public List<SignatureWrapper> getSignatures() {
 		if (foundSignatures == null) {
 			foundSignatures = new ArrayList<SignatureWrapper>();
-			List<XmlSignature> xmlSignatures = diagnosticData.getSignatures();
+			List<XmlSignature> xmlSignatures = wrapped.getSignatures();
 			if (Utils.isCollectionNotEmpty(xmlSignatures)) {
 				for (XmlSignature xmlSignature : xmlSignatures) {
 					foundSignatures.add(new SignatureWrapper(xmlSignature));
@@ -603,7 +603,7 @@ public class DiagnosticData {
 	public List<CertificateWrapper> getUsedCertificates() {
 		if (usedCertificates == null) {
 			usedCertificates = new ArrayList<CertificateWrapper>();
-			List<XmlCertificate> xmlCertificates = diagnosticData.getUsedCertificates();
+			List<XmlCertificate> xmlCertificates = wrapped.getUsedCertificates();
 			if (Utils.isCollectionNotEmpty(xmlCertificates)) {
 				for (XmlCertificate certificate : xmlCertificates) {
 					usedCertificates.add(new CertificateWrapper(certificate));
@@ -686,7 +686,7 @@ public class DiagnosticData {
 	 * @return the jaxb model of the diagnostic data
 	 */
 	public eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData getJaxbModel() {
-		return diagnosticData;
+		return wrapped;
 	}
 
 	/**
@@ -695,7 +695,7 @@ public class DiagnosticData {
 	 * @return true if the document is a container
 	 */
 	public boolean isContainerInfoPresent() {
-		return diagnosticData.getContainerInfo() != null;
+		return wrapped.getContainerInfo() != null;
 	}
 
 	/**
@@ -704,7 +704,7 @@ public class DiagnosticData {
 	 * @return the container type (ASiC-S/E)
 	 */
 	public String getContainerType() {
-		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+		XmlContainerInfo containerInfo = wrapped.getContainerInfo();
 		if (containerInfo != null) {
 			return containerInfo.getContainerType();
 		}
@@ -717,7 +717,7 @@ public class DiagnosticData {
 	 * @return the zip comment for the current document (if container) or null
 	 */
 	public String getZipComment() {
-		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+		XmlContainerInfo containerInfo = wrapped.getContainerInfo();
 		if (containerInfo != null) {
 			return containerInfo.getZipComment();
 		}
@@ -730,7 +730,7 @@ public class DiagnosticData {
 	 * @return true if the mimetype file is present
 	 */
 	public boolean isMimetypeFilePresent() {
-		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+		XmlContainerInfo containerInfo = wrapped.getContainerInfo();
 		if (containerInfo != null) {
 			return containerInfo.isMimeTypeFilePresent();
 		}
@@ -743,7 +743,7 @@ public class DiagnosticData {
 	 * @return the content of the mimetype file
 	 */
 	public String getMimetypeFileContent() {
-		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+		XmlContainerInfo containerInfo = wrapped.getContainerInfo();
 		if (containerInfo != null) {
 			return containerInfo.getMimeTypeContent();
 		}
@@ -751,7 +751,7 @@ public class DiagnosticData {
 	}
 
 	public XmlContainerInfo getContainerInfo() {
-		return diagnosticData.getContainerInfo();
+		return wrapped.getContainerInfo();
 	}
 
 	/**
@@ -760,7 +760,7 @@ public class DiagnosticData {
 	 * @return the JAXB model of the used trusted lists
 	 */
 	public List<XmlTrustedList> getTrustedLists() {
-		return diagnosticData.getTrustedLists();
+		return wrapped.getTrustedLists();
 	}
 
 	/**
@@ -769,7 +769,7 @@ public class DiagnosticData {
 	 * @return the JAXB model of the LOTL
 	 */
 	public XmlTrustedList getListOfTrustedLists() {
-		return diagnosticData.getListOfTrustedLists();
+		return wrapped.getListOfTrustedLists();
 	}
 
 	/**
@@ -778,7 +778,7 @@ public class DiagnosticData {
 	 * @return the country code of the used LOTL
 	 */
 	public String getLOTLCountryCode() {
-		XmlTrustedList listOfTrustedLists = diagnosticData.getListOfTrustedLists();
+		XmlTrustedList listOfTrustedLists = wrapped.getListOfTrustedLists();
 		if (listOfTrustedLists != null) {
 			return listOfTrustedLists.getCountryCode();
 		}

@@ -199,7 +199,7 @@ public class FileCacheDataLoader implements DataLoader {
 
 			throw new DSSException("Part of urls to ignore.");
 		}
-		LOG.debug("Cached file: " + fileCacheDirectory + "/" + trimmedFileName);
+		LOG.debug("Cached file: {}/{}", fileCacheDirectory, trimmedFileName);
 		final File file = new File(fileCacheDirectory, trimmedFileName);
 		return file;
 	}

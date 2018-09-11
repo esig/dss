@@ -52,15 +52,14 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	}
 
 	@Override
-	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, ASiCWithXAdESSignatureParameters parameters) throws DSSException {
+	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, ASiCWithXAdESSignatureParameters parameters) {
 		GetDataToSignASiCWithXAdESHelper dataToSignHelper = ASiCWithXAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
 		XAdESSignatureParameters xadesParameters = getXAdESParameters(parameters, dataToSignHelper.getExistingSignature());
 		return getXAdESService().getDataToSign(dataToSignHelper.getToBeSigned(), xadesParameters);
 	}
 
 	@Override
-	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, ASiCWithXAdESSignatureParameters parameters, SignatureValue signatureValue)
-			throws DSSException {
+	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, ASiCWithXAdESSignatureParameters parameters, SignatureValue signatureValue) {
 		final ASiCParameters asicParameters = parameters.aSiC();
 		assertSigningDateInCertificateValidityRange(parameters);
 
@@ -93,7 +92,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	}
 
 	@Override
-	public DSSDocument extendDocument(DSSDocument toExtendDocument, ASiCWithXAdESSignatureParameters parameters) throws DSSException {
+	public DSSDocument extendDocument(DSSDocument toExtendDocument, ASiCWithXAdESSignatureParameters parameters) {
 		if (!ASiCUtils.isASiCContainer(toExtendDocument) || !ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(toExtendDocument, ".xml")) {
 			throw new DSSException("Unsupported file type");
 		}

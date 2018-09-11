@@ -24,10 +24,7 @@ public class TLNotExpiredCheck extends ChainItem<XmlTLAnalysis> {
 	@Override
 	protected boolean process() {
 		Date nextUpdate = currentTL.getNextUpdate();
-		if (nextUpdate != null && nextUpdate.after(currentTime)) {
-			return true;
-		}
-		return false;
+		return (nextUpdate != null) && (nextUpdate.after(currentTime));
 	}
 
 	@Override

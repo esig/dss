@@ -118,7 +118,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				timestampValidator.setTimestampedData(archiveManifest);
 				timestampValidators.add(timestampValidator);
 			} else {
-				LOG.warn("Timestamp " + timestamp.getName() + " is skipped (no linked archive manifest found)");
+				LOG.warn("Timestamp {} is skipped (no linked archive manifest found)", timestamp.getName());
 			}
 		}
 		return timestampValidators;

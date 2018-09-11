@@ -61,7 +61,7 @@ public class UniqueServiceFilter implements TrustedServiceFilter {
 			}
 
 			if (qualificationResults.size() > 1) {
-				LOG.warn("Unable to select the trust service ! Several possible conclusions " + qualificationResults);
+				LOG.warn("Unable to select the trust service ! Several possible conclusions {}", qualificationResults);
 			} else {
 				LOG.info("All trust services conclude with the same result");
 				selectedTrustedService = trustServices.get(0);

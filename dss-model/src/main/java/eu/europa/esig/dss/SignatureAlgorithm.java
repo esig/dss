@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -192,10 +193,8 @@ public enum SignatureAlgorithm {
 	}
 
 	private static Map<SignatureAlgorithm, String> registerXmlAlgorithmsForKey() {
-
-		Map<SignatureAlgorithm, String> xmlAlgorithms = new HashMap<SignatureAlgorithm, String>();
+		Map<SignatureAlgorithm, String> xmlAlgorithms = new EnumMap<SignatureAlgorithm, String>(SignatureAlgorithm.class);
 		for (Entry<String, SignatureAlgorithm> entry : XML_ALGORITHMS.entrySet()) {
-
 			xmlAlgorithms.put(entry.getValue(), entry.getKey());
 		}
 		return xmlAlgorithms;
@@ -354,7 +353,7 @@ public enum SignatureAlgorithm {
 	}
 
 	private static Map<SignatureAlgorithm, String> registerJavaAlgorithmsForKey() {
-		final Map<SignatureAlgorithm, String> javaAlgorithms = new HashMap<SignatureAlgorithm, String>();
+		final Map<SignatureAlgorithm, String> javaAlgorithms = new EnumMap<SignatureAlgorithm, String>(SignatureAlgorithm.class);
 		for (Entry<String, SignatureAlgorithm> entry : JAVA_ALGORITHMS.entrySet()) {
 			javaAlgorithms.put(entry.getValue(), entry.getKey());
 		}
@@ -491,7 +490,7 @@ public enum SignatureAlgorithm {
 	 * @param digestAlgorithm
 	 *            the digest algorithm
 	 */
-	private SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm) {
+	SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm) {
 		this.encryptionAlgo = encryptionAlgorithm;
 		this.digestAlgo = digestAlgorithm;
 		this.maskGenerationFunction = null;
@@ -507,7 +506,7 @@ public enum SignatureAlgorithm {
 	 * @param mgf
 	 *            the mask generation function
 	 */
-	private SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,
+	SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,
 			final MaskGenerationFunction maskGenerationFunction) {
 		this.encryptionAlgo = encryptionAlgorithm;
 		this.digestAlgo = digestAlgorithm;

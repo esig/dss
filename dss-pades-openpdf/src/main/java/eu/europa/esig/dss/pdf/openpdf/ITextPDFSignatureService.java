@@ -221,7 +221,11 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			PdfStamper stp = prepareStamper(is, baos, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
-			return DSSUtils.digest(digestAlgorithm, sap.getRangeStream());
+			final byte[] digest = DSSUtils.digest(digestAlgorithm, sap.getRangeStream());
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Base64 messageDigest : {}", Utils.toBase64(digest));
+			}
+			return digest;
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}

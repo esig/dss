@@ -360,7 +360,7 @@ public class CertificatePool implements Serializable {
 				CertificateToken equivalent = equivalentCertificates.iterator().next();
 				final byte[] skiEquivalent = DSSASN1Utils.computeSkiFromCert(equivalent);
 				// This should never happen
-				if (!Arrays.equals(newSKI, skiEquivalent)) {
+				if (!Arrays.equals(newSKI, skiEquivalent) && LOG.isWarnEnabled()) {
 
 					LOG.warn("{} \nCERT : {} \nSKI : {} \nPubKey : {}", token, Utils.toBase64(token.getEncoded()), Utils.toBase64(newSKI),
 							Utils.toBase64(token.getPublicKey().getEncoded()));

@@ -11,7 +11,7 @@ import eu.europa.esig.dss.SignatureLevel;
 
 public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
-	ProfileParameters context;
+	private ProfileParameters context;
 
 	/**
 	 * The digest method used to create the digest of the signer's certificate.

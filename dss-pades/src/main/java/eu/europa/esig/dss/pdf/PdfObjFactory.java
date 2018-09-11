@@ -59,7 +59,7 @@ public class PdfObjFactory {
 	 */
 	public static void setInstance(IPdfObjFactory instance) {
 		if (instance != null) {
-			LOG.info("Using '" + instance.getClass() + "' as the PDF Object Factory Implementation");
+			LOG.info("Using '{}' as the PDF Object Factory Implementation", instance.getClass());
 		} else {
 			LOG.info("Reseting the PDF Object Factory Implementation");
 		}

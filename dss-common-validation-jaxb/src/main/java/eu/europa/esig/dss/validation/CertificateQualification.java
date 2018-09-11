@@ -77,7 +77,7 @@ public enum CertificateQualification {
 	private final boolean forEsig;
 	private final boolean qscd;
 
-	private CertificateQualification(String readable, String label, boolean qc, boolean forEsig, boolean qscd) {
+	CertificateQualification(String readable, String label, boolean qc, boolean forEsig, boolean qscd) {
 		this.readable = readable;
 		this.label = label;
 		this.qc = qc;

@@ -31,6 +31,9 @@ import eu.europa.esig.dss.x509.CertificateToken;
 
 public class CRLUtils {
 
+	private CRLUtils() {
+	}
+
 	private static ICRLUtils impl;
 
 	static {

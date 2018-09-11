@@ -252,7 +252,7 @@ public class DiagnosticDataBuilder {
 			result.setWellSigned(tlInfo.isWellSigned());
 			return result;
 		} else {
-			LOG.warn("Not info found for country " + countryCode);
+			LOG.warn("Not info found for country {}", countryCode);
 			return null;
 		}
 	}
@@ -1002,10 +1002,10 @@ public class DiagnosticDataBuilder {
 		final Map<String, List<Condition>> qualifiersAndConditions = serviceInfoStatus.getQualifiersAndConditions();
 		for (Entry<String, List<Condition>> conditionEntry : qualifiersAndConditions.entrySet()) {
 			List<Condition> conditions = conditionEntry.getValue();
-			LOG.trace("  --> " + conditions);
+			LOG.trace("  --> {}", conditions);
 			for (final Condition condition : conditions) {
 				if (condition.check(certificateToken)) {
-					LOG.trace("    --> CONDITION TRUE / " + conditionEntry.getKey());
+					LOG.trace("    --> CONDITION TRUE / {}", conditionEntry.getKey());
 					list.add(conditionEntry.getKey());
 					break;
 				}

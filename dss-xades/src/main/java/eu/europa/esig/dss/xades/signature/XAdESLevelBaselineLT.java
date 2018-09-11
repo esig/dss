@@ -65,7 +65,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 	@Override
 	protected void extendSignatureTag() throws DSSException {
 
-		assertExtendSignaturePossible();
+		assertExtendSignatureToLTPossible();
 		super.extendSignatureTag();
 
 		if (xadesSignature.hasLTAProfile()) {
@@ -228,13 +228,12 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 	/**
 	 * Checks if the extension is possible.
 	 */
-	private void assertExtendSignaturePossible() throws DSSException {
-
+	private void assertExtendSignatureToLTPossible() {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
 		if (SignatureLevel.XAdES_BASELINE_LT.equals(signatureLevel) && xadesSignature.hasLTAProfile()) {
-
 			final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
 			throw new DSSException(String.format(exceptionMessage, "XAdES LTA"));
 		}
 	}
+
 }

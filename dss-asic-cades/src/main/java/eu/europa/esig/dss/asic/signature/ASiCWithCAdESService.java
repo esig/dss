@@ -55,7 +55,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	}
 
 	@Override
-	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, ASiCWithCAdESSignatureParameters parameters) throws DSSException {
+	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, ASiCWithCAdESSignatureParameters parameters) {
 		GetDataToSignASiCWithCAdESHelper dataToSignHelper = ASiCWithCAdESDataToSignHelperBuilder.getGetDataToSignHelper(toSignDocuments, parameters);
 		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
 		cadesParameters.setDetachedContents(dataToSignHelper.getDetachedContents());
@@ -63,9 +63,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	}
 
 	@Override
-	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, ASiCWithCAdESSignatureParameters parameters, SignatureValue signatureValue)
-			throws DSSException {
-
+	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, ASiCWithCAdESSignatureParameters parameters, SignatureValue signatureValue) {
 		final ASiCParameters asicParameters = parameters.aSiC();
 		assertSigningDateInCertificateValidityRange(parameters);
 
@@ -125,7 +123,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	}
 
 	@Override
-	public DSSDocument extendDocument(DSSDocument toExtendDocument, ASiCWithCAdESSignatureParameters parameters) throws DSSException {
+	public DSSDocument extendDocument(DSSDocument toExtendDocument, ASiCWithCAdESSignatureParameters parameters) {
 		if (!ASiCUtils.isASiCContainer(toExtendDocument) || !ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(toExtendDocument, ".p7s")) {
 			throw new DSSException("Unsupported file type");
 		}

@@ -134,7 +134,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 			return null;
 		}
 		final String crlUrl = crlUrls.get(0);
-		LOG.info("CRL's URL for " + certificateToken.getAbbreviation() + " : " + crlUrl);
+		LOG.info("CRL's URL for {} : {}", certificateToken.getAbbreviation(), crlUrl);
 		try {
 
 			final String key = DSSUtils.getSHA1Digest(crlUrl);

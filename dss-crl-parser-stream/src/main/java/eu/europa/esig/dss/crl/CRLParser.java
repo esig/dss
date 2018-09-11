@@ -208,7 +208,9 @@ class CRLParser {
 		// TBSCertList -> version (optional)
 		if (tagNo == BERTags.INTEGER) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("TBSCertList -> version : {}", Hex.toHexString(array));
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("TBSCertList -> version : {}", Hex.toHexString(array));
+			}
 			infos.setVersion(rebuildASN1Integer(array).getValue().intValue() + 1);
 
 			tag = DERUtil.readTag(s);
@@ -219,7 +221,9 @@ class CRLParser {
 		// TBSCertList -> signature
 		if (tagNo == BERTags.SEQUENCE) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("TBSCertList -> signatureAlgorithm : {}", Hex.toHexString(array));
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("TBSCertList -> signatureAlgorithm : {}", Hex.toHexString(array));
+			}
 			ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) rebuildASN1Sequence(array).getObjectAt(0);
 			infos.setCertificateListSignatureAlgorithmOid(oid.getId());
 
@@ -231,7 +235,9 @@ class CRLParser {
 		// TBSCertList -> issuer
 		if (tagNo == BERTags.SEQUENCE) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("TBSCertList -> issuer : {}", Hex.toHexString(array));
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("TBSCertList -> issuer : {}", Hex.toHexString(array));
+			}
 			ASN1Sequence sequence = rebuildASN1Sequence(array);
 			infos.setIssuer(new X500Principal(sequence.getEncoded()));
 
@@ -243,7 +249,9 @@ class CRLParser {
 		// TBSCertList -> thisUpdate
 		if (isDate(tagNo)) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("TBSCertList -> thisUpdate : {}", Hex.toHexString(array));
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("TBSCertList -> thisUpdate : {}", Hex.toHexString(array));
+			}
 			Time time = rebuildASN1Time(tagNo, array);
 			infos.setThisUpdate(time.getDate());
 
@@ -255,7 +263,9 @@ class CRLParser {
 		// TBSCertList -> nextUpdate (optional)
 		if (isDate(tagNo)) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("TBSCertList -> nextUpdate : {}", Hex.toHexString(array));
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("TBSCertList -> nextUpdate : {}", Hex.toHexString(array));
+			}
 			Time time = rebuildASN1Time(tagNo, array);
 			infos.setNextUpdate(time.getDate());
 
@@ -286,6 +296,7 @@ class CRLParser {
 					length = DERUtil.readLength(s);
 				}
 			} else {
+
 				LOG.debug("TBSCertList -> revokedCertificates : Empty sequence");
 				
 				// even if the sequence is empty we must prepare for the next sequence to be read
@@ -300,7 +311,9 @@ class CRLParser {
 		// TBSCertList -> crlExtensions
 		if (isTagged) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("TBSCertList -> crlExtensions : {}", Hex.toHexString(array));
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("TBSCertList -> crlExtensions : {}", Hex.toHexString(array));
+			}
 
 			ASN1Sequence sequenceExtensions = (ASN1Sequence) ASN1Sequence.fromByteArray(array);
 			extractExtensions(sequenceExtensions, infos);
@@ -313,7 +326,9 @@ class CRLParser {
 		// CertificateList -> signatureAlgorithm
 		if (BERTags.SEQUENCE == tagNo) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("CertificateList -> signatureAlgorithm : {}", Hex.toHexString(array));
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("CertificateList -> signatureAlgorithm : {}", Hex.toHexString(array));
+			}
 
 			ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) rebuildASN1Sequence(array).getObjectAt(0);
 			infos.setTbsSignatureAlgorithmOid(oid.getId());
@@ -326,7 +341,9 @@ class CRLParser {
 		// CertificateList -> signatureValue
 		if (BERTags.BIT_STRING == tagNo) {
 			byte[] array = readNbBytes(s, length);
-			LOG.debug("CertificateList -> signatureValue : {}", Hex.toHexString(array));
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("CertificateList -> signatureValue : {}", Hex.toHexString(array));
+			}
 			infos.setSignatureValue(rebuildASN1BitString(array).getOctets());
 		}
 
@@ -358,7 +375,7 @@ class CRLParser {
 		int skipped = 0;
 		// Loops because BufferedInputStream.skip only skips in its buffer
 		while (skipped < length) {
-			skipped += s.skip(length - skipped);
+			skipped += s.skip((long) length - skipped);
 		}
 	}
 
@@ -387,7 +404,7 @@ class CRLParser {
 					LOG.warn("Not supported format : {}", extension);
 				}
 			} catch (Exception e) {
-				LOG.warn("Cannot parse extension : {}", extension, e.getMessage());
+				LOG.warn("Cannot parse extension {} : {}", extension, e.getMessage());
 			}
 		}
 	}

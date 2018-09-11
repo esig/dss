@@ -45,10 +45,7 @@ public class TLVersionCheck extends ChainItem<XmlTLAnalysis> {
 		}
 
 		Integer tlVersion = currentTL.getVersion();
-		if (tlVersion != null && tlVersion.intValue() == version) {
-			return true;
-		}
-		return false;
+		return (tlVersion != null) && (tlVersion.intValue() == version);
 	}
 
 	@Override

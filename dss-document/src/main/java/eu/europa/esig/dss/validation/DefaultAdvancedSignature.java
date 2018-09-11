@@ -655,11 +655,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			return false;
 		}
 
-		if (DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certificateToken)) {
-			return false;
-		}
-
-		return true;
+		return !DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certificateToken);
 	}
 
 	/* Defines the level LTA */

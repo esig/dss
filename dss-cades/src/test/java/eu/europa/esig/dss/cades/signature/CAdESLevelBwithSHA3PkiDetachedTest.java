@@ -18,10 +18,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package known.issues;
+package eu.europa.esig.dss.cades.signature;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -31,8 +30,6 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.signature.AbstractCAdESTestSignature;
-import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
@@ -47,7 +44,6 @@ public class CAdESLevelBwithSHA3PkiDetachedTest extends AbstractCAdESTestSignatu
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
 		signatureParameters = new CAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);

@@ -132,11 +132,10 @@ public final class DSSASN1Utils {
 	 *            the expected return type
 	 * @return new {@code T extends ASN1Primitive}
 	 */
-	public static <T extends ASN1Primitive> T toASN1Primitive(final byte[] bytes) throws DSSException {
+	@SuppressWarnings("unchecked")
+	public static <T extends ASN1Primitive> T toASN1Primitive(final byte[] bytes) {
 		try {
-			@SuppressWarnings("unchecked")
-			final T asn1Primitive = (T) ASN1Primitive.fromByteArray(bytes);
-			return asn1Primitive;
+			return (T) ASN1Primitive.fromByteArray(bytes);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
@@ -206,7 +205,7 @@ public final class DSSASN1Utils {
 		}
 	}
 
-	public static Date toDate(final ASN1GeneralizedTime asn1Date) throws DSSException {
+	public static Date toDate(final ASN1GeneralizedTime asn1Date) {
 		try {
 			return asn1Date.getDate();
 		} catch (ParseException e) {
@@ -222,35 +221,32 @@ public final class DSSASN1Utils {
 	 * Returns an ASN.1 encoded bytes representing the {@code TimeStampToken}
 	 *
 	 * @param timeStampToken
-	 *            {@code TimeStampToken}
-	 * @return the binary of the {@code TimeStampToken}
-	 * @throws DSSException
-	 *             if the {@code TimeStampToken} encoding fails
+	 *                       {@code TimeStampToken}
+	 * @return the binary of the {@code TimeStampToken} @ if the {@code
+	 * TimeStampToken} encoding fails
 	 */
-	public static byte[] getEncoded(final TimeStampToken timeStampToken) throws DSSException {
+	public static byte[] getEncoded(final TimeStampToken timeStampToken) {
 		try {
-			final byte[] encoded = timeStampToken.getEncoded();
-			return encoded;
+			return timeStampToken.getEncoded();
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}
 
 	/**
-	 * This method returns the {@code ASN1Sequence} encapsulated in {@code DEROctetString}. The {@code DEROctetString}
-	 * is represented as {@code byte} array.
+	 * This method returns the {@code ASN1Sequence} encapsulated in
+	 * {@code DEROctetString}. The {@code DEROctetString} is represented as
+	 * {@code byte} array.
 	 *
 	 * @param bytes
-	 *            {@code byte} representation of {@code DEROctetString}
-	 * @return encapsulated {@code ASN1Sequence}
-	 * @throws DSSException
-	 *             in case of a decoding problem
+	 *              {@code byte} representation of {@code DEROctetString}
+	 * @return encapsulated {@code ASN1Sequence} @ in case of a decoding problem
 	 */
-	public static ASN1Sequence getAsn1SequenceFromDerOctetString(byte[] bytes) throws DSSException {
+	public static ASN1Sequence getAsn1SequenceFromDerOctetString(byte[] bytes) {
 		return getASN1Sequence(getDEROctetStringContent(bytes));
 	}
 
-	private static byte[] getDEROctetStringContent(byte[] bytes) throws DSSException {
+	private static byte[] getDEROctetStringContent(byte[] bytes) {
 		try (ASN1InputStream input = new ASN1InputStream(bytes)) {
 			final DEROctetString s = (DEROctetString) input.readObject();
 			return s.getOctets();
@@ -259,7 +255,7 @@ public final class DSSASN1Utils {
 		}
 	}
 
-	private static ASN1Sequence getASN1Sequence(byte[] bytes) throws DSSException {
+	private static ASN1Sequence getASN1Sequence(byte[] bytes) {
 		try (ASN1InputStream input = new ASN1InputStream(bytes)) {
 			return (ASN1Sequence) input.readObject();
 		} catch (IOException e) {
@@ -342,8 +338,7 @@ public final class DSSASN1Utils {
 		 * states that implementations SHOULD support it as well anyway
 		 */
 		final ASN1ObjectIdentifier asn1ObjectIdentifier = new ASN1ObjectIdentifier(digestAlgorithm.getOid());
-		final AlgorithmIdentifier algorithmIdentifier = new AlgorithmIdentifier(asn1ObjectIdentifier, DERNull.INSTANCE);
-		return algorithmIdentifier;
+		return new AlgorithmIdentifier(asn1ObjectIdentifier, DERNull.INSTANCE);
 	}
 
 	/**
@@ -476,10 +471,8 @@ public final class DSSASN1Utils {
 	 * @param certificateToken
 	 *            the {@code CertificateToken}
 	 * @return ski bytes from the given certificate or null if missing
-	 * @throws DSSException
-	 *             if encoding error occurred
 	 */
-	public static byte[] getSki(final CertificateToken certificateToken) throws DSSException {
+	public static byte[] getSki(final CertificateToken certificateToken) {
 		return getSki(certificateToken, false);
 	}
 
@@ -492,10 +485,8 @@ public final class DSSASN1Utils {
 	 *            if the extension is missing and computeIfMissing = true, it will compute the SKI value from the Public
 	 *            Key
 	 * @return ski bytes from the given certificate
-	 * @throws DSSException
-	 *             if encoding error occurred
 	 */
-	public static byte[] getSki(final CertificateToken certificateToken, boolean computeIfMissing) throws DSSException {
+	public static byte[] getSki(final CertificateToken certificateToken, boolean computeIfMissing) {
 		try {
 			byte[] sKI = certificateToken.getCertificate().getExtensionValue(Extension.subjectKeyIdentifier.getId());
 			if (Utils.isArrayNotEmpty(sKI)) {
@@ -687,8 +678,7 @@ public final class DSSASN1Utils {
 		final GeneralName generalName = new GeneralName(issuerX500Name);
 		final GeneralNames generalNames = new GeneralNames(generalName);
 		final BigInteger serialNumber = certToken.getCertificate().getSerialNumber();
-		final IssuerSerial issuerSerial = new IssuerSerial(generalNames, serialNumber);
-		return issuerSerial;
+		return new IssuerSerial(generalNames, serialNumber);
 	}
 
 	public static Map<String, String> get(final X500Principal x500Principal) {

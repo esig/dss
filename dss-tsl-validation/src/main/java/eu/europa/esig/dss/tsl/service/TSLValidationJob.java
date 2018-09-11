@@ -217,7 +217,7 @@ public class TSLValidationJob {
 
 			repository.synchronize();
 		}
-		LOG.info(loadedTSL + " loaded TSL from cached files in the repository");
+		LOG.info("{} loaded TSL from cached files in the repository", loadedTSL);
 	}
 
 	private OtherTrustedList getNonEUTrustedList(String countryCode) {
@@ -345,7 +345,7 @@ public class TSLValidationJob {
 						allowedLotlSigners.clear();
 						allowedLotlSigners.addAll(certs);
 					} else {
-						LOG.warn("Pivot '" + loaderResult.getUrl() + "' is not valid");
+						LOG.warn("Pivot '{}' is not valid", loaderResult.getUrl());
 					}
 
 				}
@@ -363,7 +363,7 @@ public class TSLValidationJob {
 				return tslPointer.getPotentialSigners();
 			}
 		}
-		LOG.warn("No LOTL pointer in pivot '" + loaderResult.getUrl() + "'");
+		LOG.warn("No LOTL pointer in pivot '{}'", loaderResult.getUrl());
 		return new ArrayList<CertificateToken>();
 	}
 

@@ -103,8 +103,11 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 		final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
 		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); PDDocument pdDocument = PDDocument.load(toSignDocument.openStream())) {
-
-			return signDocumentAndReturnDigest(parameters, signatureValue, outputStream, pdDocument, digestAlgorithm);
+			final byte[] digest = signDocumentAndReturnDigest(parameters, signatureValue, outputStream, pdDocument, digestAlgorithm);
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Base64 messageDigest : {}", Utils.toBase64(digest));
+			}
+			return digest;
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}

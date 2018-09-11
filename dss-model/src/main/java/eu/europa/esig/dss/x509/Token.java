@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.PublicKey;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import javax.security.auth.x500.X500Principal;
@@ -68,7 +68,7 @@ public abstract class Token implements Serializable {
 	 */
 	protected SignatureAlgorithm signatureAlgorithm;
 
-	private Map<DigestAlgorithm, byte[]> digests = new HashMap<DigestAlgorithm, byte[]>();
+	private Map<DigestAlgorithm, byte[]> digests = new EnumMap<DigestAlgorithm, byte[]>(DigestAlgorithm.class);
 
 	@Override
 	public boolean equals(Object obj) {
