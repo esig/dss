@@ -28,6 +28,7 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -406,7 +407,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			if (Utils.isCollectionNotEmpty(callbacks)) {
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSObject();
-				cosDictionary.setItem(PAdESConstants.DSS_DICTIONARY_NAME, buildDSSDictionary(callbacks));
+				cosDictionary.setItem(PAdESConstants.DSS_DICTIONARY_NAME, buildDSSDictionary(pdDocument, callbacks));
 				cosDictionary.setNeedToBeUpdated(true);
 			}
 
@@ -421,7 +422,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		}
 	}
 
-	private COSDictionary buildDSSDictionary(List<DSSDictionaryCallback> callbacks) throws Exception {
+	private COSDictionary buildDSSDictionary(PDDocument pdDocument, List<DSSDictionaryCallback> callbacks) throws Exception {
 		COSDictionary dss = new COSDictionary();
 
 		Map<String, COSStream> streams = new HashMap<String, COSStream>();
@@ -435,31 +436,22 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			COSDictionary sigVriDictionary = new COSDictionary();
 			sigVriDictionary.setDirect(true);
 
-			if (Utils.isCollectionNotEmpty(callback.getCertificates())) {
-				COSArray vriCertArray = new COSArray();
-				for (CertificateToken token : callback.getCertificates()) {
-					vriCertArray.add(getStream(streams, token));
-					allCertificates.add(token);
-				}
-				sigVriDictionary.setItem(PAdESConstants.CERT_ARRAY_NAME_VRI, vriCertArray);
+			Set<CertificateToken> currentCerts = callback.getCertificates();
+			if (Utils.isCollectionNotEmpty(currentCerts)) {
+				allCertificates.addAll(currentCerts);
+				sigVriDictionary.setItem(PAdESConstants.CERT_ARRAY_NAME_VRI, buildArray(pdDocument, streams, currentCerts));
 			}
 
-			if (Utils.isCollectionNotEmpty(callback.getOcsps())) {
-				COSArray vriOcspArray = new COSArray();
-				for (OCSPToken token : callback.getOcsps()) {
-					vriOcspArray.add(getStream(streams, token));
-					allOcsps.add(token);
-				}
-				sigVriDictionary.setItem(PAdESConstants.OCSP_ARRAY_NAME_VRI, vriOcspArray);
+			List<OCSPToken> currentOcsps = callback.getOcsps();
+			if (Utils.isCollectionNotEmpty(currentOcsps)) {
+				allOcsps.addAll(currentOcsps);
+				sigVriDictionary.setItem(PAdESConstants.OCSP_ARRAY_NAME_VRI, buildArray(pdDocument, streams, currentOcsps));
 			}
 
-			if (Utils.isCollectionNotEmpty(callback.getCrls())) {
-				COSArray vriCrlArray = new COSArray();
-				for (CRLToken token : callback.getCrls()) {
-					vriCrlArray.add(getStream(streams, token));
-					allCrls.add(token);
-				}
-				sigVriDictionary.setItem(PAdESConstants.CRL_ARRAY_NAME_VRI, vriCrlArray);
+			List<CRLToken> currentCrls = callback.getCrls();
+			if (Utils.isCollectionNotEmpty(currentCrls)) {
+				allCrls.addAll(currentCrls);
+				sigVriDictionary.setItem(PAdESConstants.CRL_ARRAY_NAME_VRI, buildArray(pdDocument, streams, currentCrls));
 			}
 
 			// We can't use CMSSignedData, the pdSignature content is trimmed (000000)
@@ -472,45 +464,42 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		dss.setItem(PAdESConstants.VRI_DICTIONARY_NAME, vriDictionary);
 
 		if (Utils.isCollectionNotEmpty(allCertificates)) {
-			COSArray arrayAllCerts = new COSArray();
-			for (CertificateToken token : allCertificates) {
-				arrayAllCerts.add(getStream(streams, token));
-			}
-			dss.setItem(PAdESConstants.CERT_ARRAY_NAME_DSS, arrayAllCerts);
+			dss.setItem(PAdESConstants.CERT_ARRAY_NAME_DSS, buildArray(pdDocument, streams, allCertificates));
 		}
 
 		if (Utils.isCollectionNotEmpty(allOcsps)) {
-			COSArray arrayAllOcsps = new COSArray();
-			for (OCSPToken token : allOcsps) {
-				arrayAllOcsps.add(getStream(streams, token));
-			}
-			dss.setItem(PAdESConstants.OCSP_ARRAY_NAME_DSS, arrayAllOcsps);
+			dss.setItem(PAdESConstants.OCSP_ARRAY_NAME_DSS, buildArray(pdDocument, streams, allOcsps));
 		}
 
 		if (Utils.isCollectionNotEmpty(allCrls)) {
-			COSArray arrayAllCrls = new COSArray();
-			for (CRLToken token : allCrls) {
-				arrayAllCrls.add(getStream(streams, token));
-			}
-			dss.setItem(PAdESConstants.CRL_ARRAY_NAME_DSS, arrayAllCrls);
+			dss.setItem(PAdESConstants.CRL_ARRAY_NAME_DSS, buildArray(pdDocument, streams, allCrls));
 		}
 
 		return dss;
 	}
 
-	private COSStream getStream(Map<String, COSStream> streams, Token token) throws IOException {
-		COSStream stream = streams.get(token.getDSSIdAsString());
-
-		if (stream == null) {
-			stream = new COSStream();
-
-			try (OutputStream unfilteredStream = stream.createOutputStream()) {
-				unfilteredStream.write(token.getEncoded());
-				unfilteredStream.flush();
+	private COSArray buildArray(PDDocument pdDocument, Map<String, COSStream> streams, Collection<? extends Token> tokens) throws IOException {
+		COSArray array = new COSArray();
+		// avoid duplicate CRLs
+		List<String> currentObjIds = new ArrayList<String>();
+		for (Token token : tokens) {
+			String digest = Utils.toBase64(token.getDigest(DigestAlgorithm.SHA256));
+			if (!currentObjIds.contains(digest)) {
+				COSStream stream = streams.get(digest);
+				if (stream == null) {
+					stream = pdDocument.getDocument().createCOSStream();
+					try (OutputStream unfilteredStream = stream.createOutputStream()) {
+						unfilteredStream.write(token.getEncoded());
+						unfilteredStream.flush();
+					}
+					streams.put(digest, stream);
+				} else {
+					array.add(stream);
+				}
+				currentObjIds.add(digest);
 			}
-			streams.put(token.getDSSIdAsString(), stream);
 		}
-		return stream;
+		return array;
 	}
 
 	@Override
