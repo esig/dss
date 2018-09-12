@@ -116,15 +116,12 @@ public class CommonsDataLoader implements DataLoader {
 
 	public static final String CONTENT_TYPE = "Content-Type";
 
+	public static final String DEFAULT_SSL_PROTOCOL = "TLSv1.2";
+
 	public static final List<Integer> ACCEPTED_HTTP_STATUS = Arrays.asList(HttpStatus.SC_OK);
 
 	protected String contentType;
 
-	// TODO: (Bob: 2014 Jan 28) It should be taken into account: Content-Transfer-Encoding if it is not the default
-	// value.
-	// TODO: (Bob: 2014 Jan 28) It is extracted from:
-	// https://joinup.ec.europa.eu/software/sd-dss/issue/dss-41-tsa-service-basic-auth
-	// tsaConnection.setRequestProperty("Content-Transfer-Encoding", "binary");
 	private ProxyConfig proxyConfig;
 
 	private int timeoutConnection = TIMEOUT_CONNECTION;
@@ -135,6 +132,11 @@ public class CommonsDataLoader implements DataLoader {
 	private List<Integer> acceptedHttpStatus = ACCEPTED_HTTP_STATUS;
 
 	private final Map<HttpHost, UsernamePasswordCredentials> authenticationMap = new HashMap<HttpHost, UsernamePasswordCredentials>();
+
+	/**
+	 * Used SSL protocol
+	 */
+	private String sslProtocol = DEFAULT_SSL_PROTOCOL;
 
 	/**
 	 * Path to the keystore.
@@ -225,7 +227,7 @@ public class CommonsDataLoader implements DataLoader {
 				keysManager = new KeyManager[] { dkm };
 			}
 
-			SSLContext sslContext = SSLContext.getInstance("TLS");
+			SSLContext sslContext = SSLContext.getInstance(sslProtocol);
 			sslContext.init(keysManager, new TrustManager[] { trustManager }, new SecureRandom());
 
 			SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext);
@@ -784,6 +786,16 @@ public class CommonsDataLoader implements DataLoader {
 	 */
 	public void setProxyConfig(final ProxyConfig proxyConfig) {
 		this.proxyConfig = proxyConfig;
+	}
+
+	/**
+	 * This method sets the SSL protocol to be used ('TLSv1.2' by default)
+	 * 
+	 * @param sslProtocol
+	 *                    the ssl protocol to be used
+	 */
+	public void setSslProtocol(String sslProtocol) {
+		this.sslProtocol = sslProtocol;
 	}
 
 	public void setSslKeystorePath(String sslKeystorePath) {
