@@ -65,10 +65,10 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 	private final CertificateVerifier certificateVerifier;
 	private final CAdESLevelBaselineT cadesProfileT;
 
-	public CAdESLevelBaselineLT(TSPSource signatureTsa, CertificateVerifier certificateVerifier, boolean onlyLastSigner) {
-		super(signatureTsa, onlyLastSigner);
+	public CAdESLevelBaselineLT(TSPSource tspSource, CertificateVerifier certificateVerifier, boolean onlyLastSigner) {
+		super(tspSource, onlyLastSigner);
 		this.certificateVerifier = certificateVerifier;
-		cadesProfileT = new CAdESLevelBaselineT(signatureTsa, onlyLastSigner);
+		cadesProfileT = new CAdESLevelBaselineT(tspSource, onlyLastSigner);
 	}
 
 	@Override

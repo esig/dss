@@ -480,6 +480,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 		final ASN1Encodable attrValue = attribute.getAttrValues().getObjectAt(0);
 		if (attrValue instanceof DERNull) {
+			signaturePolicy = new SignaturePolicy();
 			return;
 		}
 

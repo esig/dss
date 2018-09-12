@@ -374,6 +374,15 @@ public class CertificateToken extends Token {
 	}
 
 	/**
+	 * This method checks if the BasicConstaint is present
+	 * 
+	 * @return true if the certificate is defined as a CA
+	 */
+	public boolean isCA() {
+		return x509Certificate.getBasicConstraints() != -1;
+	}
+
+	/**
 	 * The signature value of the certificate
 	 * 
 	 * @return the signature value

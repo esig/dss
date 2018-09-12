@@ -104,6 +104,7 @@ public class DSSUtilsTest {
 	public void testLoadIssuerNoAIA() {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));
 		assertTrue(DSSUtils.loadPotentialIssuerCertificates(certificate, new NativeHTTPDataLoader()).isEmpty());
+		assertTrue(certificate.isCA());
 	}
 
 	@Test
@@ -185,6 +186,7 @@ public class DSSUtilsTest {
 		logger.info(rootCA2.toString());
 		logger.info(rootCA2.getCertificate().toString());
 		// assertFalse(rootCA2.isSelfSigned());
+		assertTrue(rootCA2.isCA());
 
 		X509Certificate certificate = rootCA2.getCertificate();
 		certificate.verify(certificate.getPublicKey());
@@ -208,6 +210,7 @@ public class DSSUtilsTest {
 		assertTrue(selfSign.isSelfSigned());
 		assertFalse(signed.isSelfSigned());
 
+		assertFalse(tsa.isCA());
 		assertTrue(tsa.isSignedBy(signed));
 		assertTrue(tsa.isSignedBy(selfSign));
 	}

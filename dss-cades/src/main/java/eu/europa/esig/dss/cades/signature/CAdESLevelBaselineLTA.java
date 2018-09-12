@@ -25,8 +25,6 @@ import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -46,20 +44,14 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
  * shall be added to the electronic signature prior to computing the archive time-stamp token." is the reason we extend
  * from the XL profile.
  *
- *
  */
-
 public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBaselineLTA.class);
-
 	private final CAdESLevelBaselineLT cadesProfileLT;
-	private final CertificateVerifier certificateVerifier;
 
-	public CAdESLevelBaselineLTA(TSPSource signatureTsa, CertificateVerifier certificateVerifier, boolean onlyLastSigner) {
-		super(signatureTsa, onlyLastSigner);
-		cadesProfileLT = new CAdESLevelBaselineLT(signatureTsa, certificateVerifier, onlyLastSigner);
-		this.certificateVerifier = certificateVerifier;
+	public CAdESLevelBaselineLTA(TSPSource tspSource, CertificateVerifier certificateVerifier, boolean onlyLastSigner) {
+		super(tspSource, onlyLastSigner);
+		cadesProfileLT = new CAdESLevelBaselineLT(tspSource, certificateVerifier, onlyLastSigner);
 	}
 
 	@Override
@@ -74,9 +66,8 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 		cadesSignature.setDetachedContents(parameters.getDetachedContents());
 		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
-		unsignedAttributes = addArchiveTimestampV3Attribute(cadesSignature, cmsSignedData, signerInformation, parameters, unsignedAttributes);
-		SignerInformation newSignerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
-		return newSignerInformation;
+		unsignedAttributes = addArchiveTimestampV3Attribute(cadesSignature, signerInformation, parameters, unsignedAttributes);
+		return SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
 	}
 
 	/**
@@ -102,10 +93,9 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 	 * @param signerInformation
 	 * @param parameters
 	 * @param unsignedAttributes
-	 * @throws eu.europa.esig.dss.DSSException
 	 */
-	private AttributeTable addArchiveTimestampV3Attribute(CAdESSignature cadesSignature, CMSSignedData cmsSignedData, SignerInformation signerInformation,
-			CAdESSignatureParameters parameters, AttributeTable unsignedAttributes) throws DSSException {
+	private AttributeTable addArchiveTimestampV3Attribute(CAdESSignature cadesSignature, SignerInformation signerInformation,
+			CAdESSignatureParameters parameters, AttributeTable unsignedAttributes) {
 
 		final CadesLevelBaselineLTATimestampExtractor timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(cadesSignature);
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
@@ -115,11 +105,10 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 
 		final byte[] encodedToTimestamp = timestampExtractor.getArchiveTimestampDataV3(signerInformation, atsHashIndexAttribute, originalDocumentDigest);
 
-		final ASN1Object timeStampAttributeValue = getTimeStampAttributeValue(signatureTsa, encodedToTimestamp, timestampDigestAlgorithm,
+		final ASN1Object timeStampAttributeValue = getTimeStampAttributeValue(encodedToTimestamp, timestampDigestAlgorithm,
 				atsHashIndexAttribute);
 
-		final AttributeTable newUnsignedAttributes = unsignedAttributes.add(OID.id_aa_ets_archiveTimestampV3, timeStampAttributeValue);
-		return newUnsignedAttributes;
+		return unsignedAttributes.add(OID.id_aa_ets_archiveTimestampV3, timeStampAttributeValue);
 	}
 
 }

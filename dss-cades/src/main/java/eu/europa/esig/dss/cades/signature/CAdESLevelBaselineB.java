@@ -61,7 +61,6 @@ import org.bouncycastle.asn1.x509.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.BLevelParameters;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.Policy;
@@ -171,19 +170,19 @@ public class CAdESLevelBaselineB {
 	}
 
 	private void addSigningTimeAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+		/*
+		 * In PAdES, we don't include the signing time : ETSI TS 102 778-3 V1.2.1
+		 * (2010-07): 4.5.3 signing-time Attribute
+		 */
+		if (padesUsage) {
+			return;
+		}
 
-		if (!padesUsage) {
-			/*
-			 * In PAdES, we don't include the signing time : ETSI TS 102 778-3 V1.2.1 (2010-07): 4.5.3 signing-time
-			 * Attribute
-			 */
-			final Date signingDate = parameters.bLevel().getSigningDate();
-			if (signingDate != null) {
-
-				final DERSet attrValues = new DERSet(new Time(signingDate));
-				final Attribute attribute = new Attribute(pkcs_9_at_signingTime, attrValues);
-				signedAttributes.add(attribute);
-			}
+		final Date signingDate = parameters.bLevel().getSigningDate();
+		if (signingDate != null) {
+			final DERSet attrValues = new DERSet(new Time(signingDate));
+			final Attribute attribute = new Attribute(pkcs_9_at_signingTime, attrValues);
+			signedAttributes.add(attribute);
 		}
 	}
 
@@ -201,29 +200,30 @@ public class CAdESLevelBaselineB {
 	 * @return
 	 */
 	private void addSignerLocation(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+		/*
+		 * In PAdES, the role is in the signature dictionary
+		 */
+		if (padesUsage) {
+			return;
+		}
 
-		if (!padesUsage) {
-			/*
-			 * In PAdES, the role is in the signature dictionary
-			 */
-			final eu.europa.esig.dss.SignerLocation signerLocationParameter = parameters.bLevel().getSignerLocation();
-			if (signerLocationParameter != null) {
+		final eu.europa.esig.dss.SignerLocation signerLocationParameter = parameters.bLevel().getSignerLocation();
+		if (signerLocationParameter != null) {
 
-				final DERUTF8String country = signerLocationParameter.getCountry() == null ? null : new DERUTF8String(signerLocationParameter.getCountry());
-				final DERUTF8String locality = signerLocationParameter.getLocality() == null ? null : new DERUTF8String(signerLocationParameter.getLocality());
-				final ASN1EncodableVector postalAddress = new ASN1EncodableVector();
-				final List<String> postalAddressParameter = signerLocationParameter.getPostalAddress();
-				if (postalAddressParameter != null) {
-					for (final String addressLine : postalAddressParameter) {
-						postalAddress.add(new DERUTF8String(addressLine));
-					}
+			final DERUTF8String country = signerLocationParameter.getCountry() == null ? null : new DERUTF8String(signerLocationParameter.getCountry());
+			final DERUTF8String locality = signerLocationParameter.getLocality() == null ? null : new DERUTF8String(signerLocationParameter.getLocality());
+			final ASN1EncodableVector postalAddress = new ASN1EncodableVector();
+			final List<String> postalAddressParameter = signerLocationParameter.getPostalAddress();
+			if (postalAddressParameter != null) {
+				for (final String addressLine : postalAddressParameter) {
+					postalAddress.add(new DERUTF8String(addressLine));
 				}
-				final DERSequence derSequencePostalAddress = new DERSequence(postalAddress);
-				final SignerLocation signerLocation = new SignerLocation(country, locality, derSequencePostalAddress);
-				final DERSet attrValues = new DERSet(signerLocation);
-				final Attribute attribute = new Attribute(id_aa_ets_signerLocation, attrValues);
-				signedAttributes.add(attribute);
 			}
+			final DERSequence derSequencePostalAddress = new DERSequence(postalAddress);
+			final SignerLocation signerLocation = new SignerLocation(country, locality, derSequencePostalAddress);
+			final DERSet attrValues = new DERSet(signerLocation);
+			final Attribute attribute = new Attribute(id_aa_ets_signerLocation, attrValues);
+			signedAttributes.add(attribute);
 		}
 	}
 
@@ -242,9 +242,7 @@ public class CAdESLevelBaselineB {
 	private void addCommitmentType(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 
 		// TODO (19/08/2014): commitmentTypeQualifier is not implemented
-		final BLevelParameters bLevelParameters = parameters.bLevel();
-
-		final List<String> commitmentTypeIndications = bLevelParameters.getCommitmentTypeIndications();
+		final List<String> commitmentTypeIndications = parameters.bLevel().getCommitmentTypeIndications();
 		if (Utils.isCollectionNotEmpty(commitmentTypeIndications)) {
 
 			final int size = commitmentTypeIndications.size();
@@ -370,30 +368,30 @@ public class CAdESLevelBaselineB {
 	 * @param signedAttributes
 	 */
 	private void addContentIdentifier(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
-
 		/* this attribute is prohibited in PAdES B */
-		if (!padesUsage) {
+		if (padesUsage) {
+			return;
+		}
 
-			final String contentIdentifierPrefix = parameters.getContentIdentifierPrefix();
-			if (Utils.isStringNotBlank(contentIdentifierPrefix)) {
+		final String contentIdentifierPrefix = parameters.getContentIdentifierPrefix();
+		if (Utils.isStringNotBlank(contentIdentifierPrefix)) {
 
-				final String contentIdentifierSuffix;
-				if (Utils.isStringBlank(parameters.getContentIdentifierSuffix())) {
+			final String contentIdentifierSuffix;
+			if (Utils.isStringBlank(parameters.getContentIdentifierSuffix())) {
 
-					final Date now = new Date();
-					final String asn1GeneralizedTimeString = new ASN1GeneralizedTime(now).getTimeString();
-					final long randomNumber = new Random(now.getTime()).nextLong();
-					contentIdentifierSuffix = asn1GeneralizedTimeString + randomNumber;
-					parameters.setContentIdentifierSuffix(contentIdentifierSuffix);
-				} else {
-					contentIdentifierSuffix = parameters.getContentIdentifierSuffix();
-				}
-				final String contentIdentifierString = contentIdentifierPrefix + contentIdentifierSuffix;
-				final ContentIdentifier contentIdentifier = new ContentIdentifier(contentIdentifierString.getBytes());
-				final DERSet attrValues = new DERSet(contentIdentifier);
-				final Attribute attribute = new Attribute(id_aa_contentIdentifier, attrValues);
-				signedAttributes.add(attribute);
+				final Date now = new Date();
+				final String asn1GeneralizedTimeString = new ASN1GeneralizedTime(now).getTimeString();
+				final long randomNumber = new Random(now.getTime()).nextLong();
+				contentIdentifierSuffix = asn1GeneralizedTimeString + randomNumber;
+				parameters.setContentIdentifierSuffix(contentIdentifierSuffix);
+			} else {
+				contentIdentifierSuffix = parameters.getContentIdentifierSuffix();
 			}
+			final String contentIdentifierString = contentIdentifierPrefix + contentIdentifierSuffix;
+			final ContentIdentifier contentIdentifier = new ContentIdentifier(contentIdentifierString.getBytes());
+			final DERSet attrValues = new DERSet(contentIdentifier);
+			final Attribute attribute = new Attribute(id_aa_contentIdentifier, attrValues);
+			signedAttributes.add(attribute);
 		}
 	}
 

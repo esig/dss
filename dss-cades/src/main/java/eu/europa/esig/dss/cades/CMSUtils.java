@@ -55,9 +55,8 @@ public final class CMSUtils {
 	 * @param data
 	 *             the CMSSignedData to be encoded
 	 * @return the DER encoded CMSSignedData
-	 * @throws DSSException
 	 */
-	public static byte[] getEncoded(final CMSSignedData data) throws DSSException {
+	public static byte[] getEncoded(final CMSSignedData data) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			DEROutputStream deros = new DEROutputStream(baos);
 			deros.writeObject(data.toASN1Structure());
@@ -76,13 +75,10 @@ public final class CMSUtils {
 	 * @param content
 	 * @param encapsulate
 	 * @return
-	 * @throws DSSException
 	 */
-	public static CMSSignedData generateCMSSignedData(final CMSSignedDataGenerator generator, final CMSTypedData content, final boolean encapsulate)
-			throws DSSException {
+	public static CMSSignedData generateCMSSignedData(final CMSSignedDataGenerator generator, final CMSTypedData content, final boolean encapsulate) {
 		try {
-			final CMSSignedData cmsSignedData = generator.generate(content, encapsulate);
-			return cmsSignedData;
+			return generator.generate(content, encapsulate);
 		} catch (CMSException e) {
 			throw new DSSException(e);
 		}
@@ -97,10 +93,8 @@ public final class CMSUtils {
 	 * @param signerInformation
 	 *            {@code SignerInformation}
 	 * @return {@code DERTaggedObject} representing the signed attributes
-	 * @throws DSSException
-	 *             in case of a decoding problem
 	 */
-	public static DERTaggedObject getDERSignedAttributes(final SignerInformation signerInformation) throws DSSException {
+	public static DERTaggedObject getDERSignedAttributes(final SignerInformation signerInformation) {
 		try {
 			final byte[] encodedSignedAttributes = signerInformation.getEncodedSignedAttributes();
 			if (encodedSignedAttributes == null) {
@@ -162,18 +156,15 @@ public final class CMSUtils {
 	 * @param encodedAttributes
 	 *            ASN.1 encoded AttributesTable
 	 * @return AttributeTable created from given encodedAttributes
-	 * @throws DSSException
-	 *             If error occured when parsing encodedAttributes
 	 */
-	public static AttributeTable getAttributesFromByteArray(final byte[] encodedAttributes) throws DSSException {
+	public static AttributeTable getAttributesFromByteArray(final byte[] encodedAttributes) {
 		DLSet dlSet;
 		try (ASN1InputStream asn1InputStream = new ASN1InputStream(new ByteArrayInputStream(encodedAttributes))) {
 			dlSet = (DLSet) asn1InputStream.readObject();
 		} catch (IOException e) {
 			throw new DSSException("Error while reading ASN.1 encoded attributes", e);
 		}
-		final AttributeTable attributesTable = new AttributeTable(dlSet);
-		return attributesTable;
+		return new AttributeTable(dlSet);
 	}
 
 	/**

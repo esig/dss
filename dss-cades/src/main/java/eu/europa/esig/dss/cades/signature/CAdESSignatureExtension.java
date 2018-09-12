@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Object;
@@ -61,7 +62,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignatureExtension.class);
 
-	protected final TSPSource signatureTsa;
+	protected final TSPSource tspSource;
 
 	/**
 	 * true if only the last signature must be extended
@@ -69,25 +70,14 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	private final boolean onlyLastCMSSignature;
 
 	/**
-	 * @param signatureTsa
+	 * @param tspSource
 	 * @param onlyLastCMSSignature
 	 *            true if only the last signature must be extended, otherwise all signatures are extended
 	 */
-	public CAdESSignatureExtension(final TSPSource signatureTsa, final boolean onlyLastCMSSignature) {
-
-		this.signatureTsa = signatureTsa;
+	public CAdESSignatureExtension(final TSPSource tspSource, final boolean onlyLastCMSSignature) {
+		Objects.requireNonNull(tspSource, "Missing TSPSource");
+		this.tspSource = tspSource;
 		this.onlyLastCMSSignature = onlyLastCMSSignature;
-		if (signatureTsa == null) {
-			throw new NullPointerException("Missing TSPSource");
-		}
-	}
-
-	/**
-	 * @return the TSA used for the signature-time-stamp attribute
-	 */
-	public TSPSource getSignatureTsa() {
-
-		return signatureTsa;
 	}
 
 	/**
@@ -96,17 +86,14 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	 * @param parameters
 	 *            of the extension
 	 * @return a new extended document
-	 * @throws eu.europa.esig.dss.DSSException
 	 */
 	@Override
-	public CMSSignedDocument extendSignatures(final DSSDocument signatureToExtend, final CAdESSignatureParameters parameters) throws DSSException {
-
+	public CMSSignedDocument extendSignatures(final DSSDocument signatureToExtend, final CAdESSignatureParameters parameters) {
 		LOG.info("EXTEND SIGNATURES.");
 		try (InputStream inputStream = signatureToExtend.openStream()) {
 			final CMSSignedData cmsSignedData = new CMSSignedData(inputStream);
 			final CMSSignedData extendCMSSignedData = extendCMSSignatures(cmsSignedData, parameters);
-			final CMSSignedDocument cmsSignedDocument = new CMSSignedDocument(extendCMSSignedData);
-			return cmsSignedDocument;
+			return new CMSSignedDocument(extendCMSSignedData);
 		} catch (IOException | CMSException e) {
 			throw new DSSException("Cannot parse CMS data", e);
 		}
@@ -185,8 +172,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 		cmsSignedData = CMSSignedData.replaceSigners(cmsSignedData, newSignerStore);
 
 		lastSignerInformation = getFirstSigner(cmsSignedData);
-		cmsSignedData = postExtendCMSSignedData(cmsSignedData, lastSignerInformation, parameters);
-		return cmsSignedData;
+		return postExtendCMSSignedData(cmsSignedData, lastSignerInformation, parameters);
 	}
 
 	private SignerInformation getFirstSigner(CMSSignedData cmsSignedData) {
@@ -195,12 +181,9 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	}
 
 	private void assertSignatureValid(final CAdESSignature cadesSignature, final CAdESSignatureParameters parameters) {
-
 		if (!SignatureForm.PAdES.equals(parameters.getSignatureLevel().getSignatureForm())) {
-
 			final SignatureCryptographicVerification signatureCryptographicVerification = cadesSignature.getSignatureCryptographicVerification();
 			if (!signatureCryptographicVerification.isSignatureIntact()) {
-
 				final String errorMessage = signatureCryptographicVerification.getErrorMessage();
 				throw new DSSException("Cryptographic signature verification has failed" + (errorMessage.isEmpty() ? "." : (" / " + errorMessage)));
 			}
@@ -214,10 +197,8 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	 * @param signerInformation
 	 * @param parameters
 	 * @return
-	 * @throws DSSException
 	 */
-	protected abstract SignerInformation extendCMSSignature(CMSSignedData signedData, SignerInformation signerInformation, CAdESSignatureParameters parameters)
-			throws DSSException;
+	protected abstract SignerInformation extendCMSSignature(CMSSignedData signedData, SignerInformation signerInformation, CAdESSignatureParameters parameters);
 
 	/**
 	 * Extends the root Signed Data. Nothing to do by default.
@@ -242,15 +223,13 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 		return cmsSignedData;
 	}
 
-	protected ASN1Object getTimeStampAttributeValue(TSPSource tspSource, byte[] message, CAdESSignatureParameters parameters) {
-
+	protected ASN1Object getTimeStampAttributeValue(byte[] message, CAdESSignatureParameters parameters) {
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
-		ASN1Object signatureTimeStampValue = getTimeStampAttributeValue(tspSource, message, timestampDigestAlgorithm);
-		return signatureTimeStampValue;
+		return getTimeStampAttributeValue(message, timestampDigestAlgorithm);
 	}
 
-	public static ASN1Object getTimeStampAttributeValue(final TSPSource tspSource, final byte[] messageToTimestamp,
-			final DigestAlgorithm timestampDigestAlgorithm, final Attribute... attributesForTimestampToken) {
+	public ASN1Object getTimeStampAttributeValue(final byte[] messageToTimestamp, final DigestAlgorithm timestampDigestAlgorithm,
+			final Attribute... attributesForTimestampToken) {
 		try {
 
 			if (LOG.isDebugEnabled()) {
