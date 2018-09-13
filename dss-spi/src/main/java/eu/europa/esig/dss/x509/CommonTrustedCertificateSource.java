@@ -68,7 +68,7 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource {
 	 */
 	@Override
 	public List<CertificateToken> getCertificates() {
-		return certPool.getCertificateTokens();
+		return Collections.unmodifiableList(certPool.getCertificateTokens());
 	}
 
 	/**

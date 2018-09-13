@@ -723,7 +723,7 @@ public class DiagnosticDataBuilder {
 		return xmlBasicSignatureType;
 	}
 
-	private List<String> getXmlKeyUsages(Set<KeyUsageBit> keyUsageBits) {
+	private List<String> getXmlKeyUsages(List<KeyUsageBit> keyUsageBits) {
 		final List<String> xmlKeyUsageBitItems = new ArrayList<String>();
 		if (Utils.isCollectionNotEmpty(keyUsageBits)) {
 			for (final KeyUsageBit keyUsageBit : keyUsageBits) {

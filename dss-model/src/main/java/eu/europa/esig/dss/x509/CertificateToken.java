@@ -31,11 +31,11 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -68,11 +68,6 @@ public class CertificateToken extends Token {
 	 * {@link #isSelfSigned()} function.
 	 */
 	private Boolean selfSigned;
-
-	/**
-	 * The key usage bits used in the certificate
-	 */
-	private Set<KeyUsageBit> keyUsageBits;
 
 	/**
 	 * This method returns an instance of {@link eu.europa.esig.dss.x509.CertificateToken}.
@@ -325,7 +320,7 @@ public class CertificateToken extends Token {
 	 * @return true if contains
 	 */
 	public boolean checkKeyUsage(final KeyUsageBit keyUsageBit) {
-		Set<KeyUsageBit> currentKUBs = getKeyUsageBits();
+		final List<KeyUsageBit> currentKUBs = getKeyUsageBits();
 		return currentKUBs.contains(keyUsageBit);
 	}
 
@@ -358,15 +353,13 @@ public class CertificateToken extends Token {
 	 *
 	 * @return {@code List} of {@code KeyUsageBit}s of different certificate's key usages
 	 */
-	public Set<KeyUsageBit> getKeyUsageBits() {
-		if (keyUsageBits == null) {
-			boolean[] keyUsageArray = x509Certificate.getKeyUsage();
-			keyUsageBits = new HashSet<KeyUsageBit>();
-			if (keyUsageArray != null) {
-				for (KeyUsageBit keyUsageBit : KeyUsageBit.values()) {
-					if (keyUsageArray[keyUsageBit.getIndex()]) {
-						keyUsageBits.add(keyUsageBit);
-					}
+	public List<KeyUsageBit> getKeyUsageBits() {
+		List<KeyUsageBit> keyUsageBits = new ArrayList<KeyUsageBit>();
+		final boolean[] keyUsageArray = x509Certificate.getKeyUsage();
+		if (keyUsageArray != null) {
+			for (KeyUsageBit keyUsageBit : KeyUsageBit.values()) {
+				if (keyUsageArray[keyUsageBit.getIndex()]) {
+					keyUsageBits.add(keyUsageBit);
 				}
 			}
 		}

@@ -296,7 +296,7 @@ public class CertificatePool implements Serializable {
 	 *                          copied
 	 */
 	public void importCerts(final CertificateSource certificateSource) {
-		final List<CertificateToken> unmodifiableList = Collections.unmodifiableList(certificateSource.getCertificates());
+		final List<CertificateToken> unmodifiableList = certificateSource.getCertificates();
 		final CertificateSourceType source = certificateSource.getCertificateSourceType();
 		for (CertificateToken certificateToImport : unmodifiableList) {
 			getInstance(certificateToImport, source);

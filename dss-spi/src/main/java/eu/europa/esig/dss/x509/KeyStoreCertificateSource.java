@@ -30,6 +30,7 @@ import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
@@ -237,7 +238,7 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 		} catch (GeneralSecurityException e) {
 			throw new DSSException("Unable to retrieve certificates from the keystore", e);
 		}
-		return list;
+		return Collections.unmodifiableList(list);
 	}
 
 	/**

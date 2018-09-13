@@ -23,6 +23,7 @@ package eu.europa.esig.dss.x509;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.PublicKey;
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.Map;
@@ -68,7 +69,7 @@ public abstract class Token implements Serializable {
 	 */
 	protected SignatureAlgorithm signatureAlgorithm;
 
-	private Map<DigestAlgorithm, byte[]> digests = new EnumMap<DigestAlgorithm, byte[]>(DigestAlgorithm.class);
+	private Map<DigestAlgorithm, byte[]> digests = Collections.synchronizedMap(new EnumMap<DigestAlgorithm, byte[]>(DigestAlgorithm.class));
 
 	@Override
 	public boolean equals(Object obj) {
