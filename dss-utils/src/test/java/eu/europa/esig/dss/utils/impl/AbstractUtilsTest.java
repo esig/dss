@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -16,11 +17,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractUtilsTest {
+
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
 
 	@Test
 	public void isStringEmpty() {
@@ -295,4 +301,16 @@ public abstract class AbstractUtilsTest {
 		listFiles = Utils.listFiles(folder, extensions, true);
 		assertTrue(Utils.isCollectionEmpty(listFiles));
 	}
+
+	@Test
+	public void clearDirectory() throws IOException {
+		File tempFolder = folder.newFolder("test");
+		Utils.cleanDirectory(tempFolder);
+	}
+
+	@Test(expected = FileNotFoundException.class)
+	public void clearDirectoryNotFound() throws IOException {
+		Utils.cleanDirectory(new File("wrong"));
+	}
+
 }

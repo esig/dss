@@ -2,6 +2,7 @@ package eu.europa.esig.dss.utils.impl;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -181,7 +182,12 @@ public class ApacheCommonsUtils implements IUtils {
 
 	@Override
 	public void cleanDirectory(File directory) throws IOException {
-		FileUtils.cleanDirectory(directory);
+		try {
+			FileUtils.cleanDirectory(directory);
+		} catch (IllegalArgumentException e) {
+			// Apache throws IllegalArgumentException
+			throw new FileNotFoundException(e.getMessage());
+		}
 	}
 
 	@Override

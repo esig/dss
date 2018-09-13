@@ -3,11 +3,13 @@ package eu.europa.esig.dss.utils.impl;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
 import com.google.common.base.Ascii;
 import com.google.common.base.CharMatcher;
@@ -228,8 +230,9 @@ public class GoogleGuavaUtils implements IUtils {
 
 	@Override
 	public void cleanDirectory(File directory) throws IOException {
-		if (directory == null || !directory.exists()) {
-			throw new IllegalArgumentException("Not exists");
+		Objects.requireNonNull(directory, "Directory cannot be null");
+		if (!directory.exists() || !directory.isDirectory()) {
+			throw new FileNotFoundException("Directory '" + directory.getAbsolutePath() + "' not found");
 		} else if (directory.isDirectory()) {
 			File[] listFiles = directory.listFiles();
 			if (listFiles != null) {

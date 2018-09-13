@@ -80,6 +80,10 @@ public class TSLRepository {
 		this.cacheDirectoryPath = cacheDirectoryPath;
 	}
 
+	public String getCacheDirectoryPath() {
+		return cacheDirectoryPath;
+	}
+
 	public void setTrustedListsCertificateSource(TrustedListsCertificateSource trustedListsCertificateSource) {
 		this.trustedListsCertificateSource = trustedListsCertificateSource;
 	}
@@ -96,13 +100,9 @@ public class TSLRepository {
 		return Collections.unmodifiableMap(new TreeMap<String, TSLValidationModel>(tsls));
 	}
 
-	public void clearRepository() {
-		try {
-			Utils.cleanDirectory(new File(cacheDirectoryPath));
-			tsls.clear();
-		} catch (IOException e) {
-			LOG.error("Unable to clean cache directory : " + e.getMessage(), e);
-		}
+	public void clearRepository() throws IOException {
+		Utils.cleanDirectory(new File(cacheDirectoryPath));
+		tsls.clear();
 	}
 
 	boolean isLastCountryVersion(TSLLoaderResult resultLoader) {
