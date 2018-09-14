@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+   <DocumentName></DocumentName>
+   <ValidationDate>2018-07-10T15:24:38</ValidationDate>
+   <Signatures>
+      <Signature Id="id-905d81dad601ccc48fd00277cfa4a9bc31c8f989b895969d1731eb7d46f0c5cb">
+         <SignatureFilename></SignatureFilename>
+         <DateTime>2017-07-21T17:52:11</DateTime>
+         <SignatureFormat>PAdES-BASELINE-B</SignatureFormat>
+         <StructuralValidation>
+            <Valid>true</Valid>
+         </StructuralValidation>
+         <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <SigningCertificate Id="96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
+            <AttributePresent>true</AttributePresent>
+            <DigestValuePresent>true</DigestValuePresent>
+            <DigestValueMatch>true</DigestValueMatch>
+            <IssuerSerialMatch>true</IssuerSerialMatch>
+         </SigningCertificate>
+         <CertificateChain>
+            <ChainItem Id="96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
+               <Source>UNKNOWN</Source>
+            </ChainItem>
+            <ChainItem Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
+               <Source>TRUSTED_LIST</Source>
+            </ChainItem>
+         </CertificateChain>
+         <ContentType>application/pdf</ContentType>
+         <CommitmentTypeIndication/>
+         <ClaimedRoles/>
+         <Timestamps/>
+         <SignatureScopes>
+            <SignatureScope name="Full PDF" scope="FullSignatureScope">Full document</SignatureScope>
+         </SignatureScopes>
+      </Signature>
+   </Signatures>
+   <UsedCertificates>
+      <Certificate Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
+         <SubjectDistinguishedName Format="CANONICAL">cn=C - 2,o=european commission</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">CN=C - 2,O=European Commission</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">cn=european commission root ca - 2</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">CN=European Commission Root CA - 2</IssuerDistinguishedName>
+         <SerialNumber>18</SerialNumber>
+         <CommonName>C - 2</CommonName>
+         <OrganizationName>European Commission</OrganizationName>
+         <AuthorityInformationAccessUrls>
+            <Url>http://hide.eu/info/aia/RootCA.crt</Url>
+         </AuthorityInformationAccessUrls>
+         <CRLDistributionPoints>
+            <Url>http://hide.eu/info/crl/RootCA.arl</Url>
+         </CRLDistributionPoints>
+         <OCSPAccessUrls/>
+         <DigestAlgoAndValues>
+            <DigestAlgoAndValue>
+               <DigestMethod>SHA1</DigestMethod>
+               <DigestValue>exi2JlxCfs6H1FbIo1RasWjB0Qs=</DigestValue>
+            </DigestAlgoAndValue>
+         </DigestAlgoAndValues>
+         <NotAfter>2026-10-04T12:58:02</NotAfter>
+         <NotBefore>2016-10-04T12:58:02</NotBefore>
+         <PublicKeySize>4096</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <KeyUsageBits>
+            <KeyUsage>keyCertSign</KeyUsage>
+            <KeyUsage>crlSign</KeyUsage>
+         </KeyUsageBits>
+         <ExtendedKeyUsages/>
+         <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <SigningCertificate Id="C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA"/>
+         <CertificateChain>
+            <ChainItem Id="C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA">
+               <Source>UNKNOWN</Source>
+            </ChainItem>
+         </CertificateChain>
+         <Trusted>true</Trusted>
+         <SelfSigned>false</SelfSigned>
+         <CertificatePolicies>
+            <certificatePolicy Description="normalized-certificate-policy">0.4.0.2042.1.1</certificatePolicy>
+            <certificatePolicy cpsUrl="https://hide.eu/info/cp/">1.3.130.2.1.1</certificatePolicy>
+         </CertificatePolicies>
+         <QCStatementIds/>
+         <QCTypes/>
+         <TrustedServiceProviders>
+            <TrustedServiceProvider>
+               <TSPName>C - European Commission Certification Authority</TSPName>
+               <TSPRegistrationIdentifier>NTRBE-0949.383.342 </TSPRegistrationIdentifier>
+               <CountryCode>EC</CountryCode>
+               <TrustedServices>
+                  <TrustedService>
+                     <ServiceName>C - 2</ServiceName>
+                     <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
+                     <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                     <StartDate>2016-10-03T22:00:00</StartDate>
+                  </TrustedService>
+               </TrustedServices>
+            </TrustedServiceProvider>
+         </TrustedServiceProviders>
+         <Revocations/>
+      </Certificate>
+      <Certificate Id="43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8">
+         <SubjectDistinguishedName Format="CANONICAL">cn=ocsp2-C-prod</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">CN=ocsp2-C-prod</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">cn=C - 2,o=european commission</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">CN=C - 2,O=European Commission</IssuerDistinguishedName>
+         <SerialNumber>1195</SerialNumber>
+         <CommonName>ocsp2-C-prod</CommonName>
+         <AuthorityInformationAccessUrls/>
+         <CRLDistributionPoints/>
+         <OCSPAccessUrls/>
+         <DigestAlgoAndValues>
+            <DigestAlgoAndValue>
+               <DigestMethod>SHA1</DigestMethod>
+               <DigestValue>ewC5U78HlNMPIzbA5GGnuwtGlOE=</DigestValue>
+            </DigestAlgoAndValue>
+         </DigestAlgoAndValues>
+         <NotAfter>2019-09-07T09:14:13</NotAfter>
+         <NotBefore>2017-09-07T09:14:13</NotBefore>
+         <PublicKeySize>2048</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <KeyUsageBits>
+            <KeyUsage>digitalSignature</KeyUsage>
+         </KeyUsageBits>
+         <ExtendedKeyUsages>
+            <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+         </ExtendedKeyUsages>
+         <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <SigningCertificate Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
+         <CertificateChain>
+            <ChainItem Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
+               <Source>TRUSTED_LIST</Source>
+            </ChainItem>
+         </CertificateChain>
+         <Trusted>false</Trusted>
+         <SelfSigned>false</SelfSigned>
+         <CertificatePolicies/>
+         <QCStatementIds/>
+         <QCTypes/>
+         <TrustedServiceProviders>
+            <TrustedServiceProvider>
+               <TSPName>C - European Commission Certification Authority</TSPName>
+               <TSPRegistrationIdentifier>NTRBE-0949.383.342 </TSPRegistrationIdentifier>
+               <CountryCode>EC</CountryCode>
+               <TrustedServices>
+                  <TrustedService>
+                     <ServiceName>C - 2</ServiceName>
+                     <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
+                     <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                     <StartDate>2016-10-03T22:00:00</StartDate>
+                     <CapturedQualifiers/>
+                     <AdditionalServiceInfoUris/>
+                  </TrustedService>
+               </TrustedServices>
+            </TrustedServiceProvider>
+         </TrustedServiceProviders>
+         <Revocations/>
+      </Certificate>
+      <Certificate Id="C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA">
+         <SubjectDistinguishedName Format="CANONICAL">cn=european commission root ca - 2</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">CN=European Commission Root CA - 2</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">cn=european commission root ca - 2</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">CN=European Commission Root CA - 2</IssuerDistinguishedName>
+         <SerialNumber>1</SerialNumber>
+         <CommonName>European Commission Root CA - 2</CommonName>
+         <AuthorityInformationAccessUrls/>
+         <CRLDistributionPoints/>
+         <OCSPAccessUrls/>
+         <DigestAlgoAndValues>
+            <DigestAlgoAndValue>
+               <DigestMethod>SHA1</DigestMethod>
+               <DigestValue>gjcTffdNpqyGKIdMlaZOH4lz//Q=</DigestValue>
+            </DigestAlgoAndValue>
+         </DigestAlgoAndValues>
+         <NotAfter>2046-10-04T11:21:17</NotAfter>
+         <NotBefore>2016-10-04T11:21:17</NotBefore>
+         <PublicKeySize>4096</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <KeyUsageBits>
+            <KeyUsage>keyCertSign</KeyUsage>
+            <KeyUsage>crlSign</KeyUsage>
+         </KeyUsageBits>
+         <ExtendedKeyUsages/>
+         <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <Trusted>false</Trusted>
+         <SelfSigned>true</SelfSigned>
+         <CertificatePolicies>
+            <certificatePolicy>2.5.29.32.0</certificatePolicy>
+         </CertificatePolicies>
+         <QCStatementIds/>
+         <QCTypes/>
+         <TrustedServiceProviders/>
+         <Revocations/>
+      </Certificate>
+      <Certificate Id="96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
+         <SubjectDistinguishedName Format="CANONICAL">cn=R A,o=european commission,1.2.840.113549.1.9.1=#1626416e64726561732e524549465343484e4549444552406578742e65632e6575726f70612e6575</SubjectDistinguishedName>
+         <SubjectDistinguishedName Format="RFC2253">CN=R A,O=European Commission,1.2.840.113549.1.9.1=#1626416e64726561732e524549465343484e4549444552406578742e65632e6575726f70612e6575</SubjectDistinguishedName>
+         <IssuerDistinguishedName Format="CANONICAL">cn=C - 2,o=european commission</IssuerDistinguishedName>
+         <IssuerDistinguishedName Format="RFC2253">CN=C - 2,O=European Commission</IssuerDistinguishedName>
+         <SerialNumber>470</SerialNumber>
+         <CommonName>R A</CommonName>
+         <OrganizationName>European Commission</OrganizationName>
+         <Email>A.R@ext.ec.europa.eu</Email>
+         <AuthorityInformationAccessUrls>
+            <Url>http://hide.eu/info/aia/onlineCA.crt</Url>
+         </AuthorityInformationAccessUrls>
+         <CRLDistributionPoints>
+            <Url>http://hide.eu/info/crl/onlineCA.crl</Url>
+         </CRLDistributionPoints>
+         <OCSPAccessUrls>
+            <Url>http://hide.eu/ocsp</Url>
+         </OCSPAccessUrls>
+         <DigestAlgoAndValues>
+            <DigestAlgoAndValue>
+               <DigestMethod>SHA1</DigestMethod>
+               <DigestValue>JLPakAqo5lg5j4MkLVYuX6QUbNk=</DigestValue>
+            </DigestAlgoAndValue>
+         </DigestAlgoAndValues>
+         <NotAfter>2021-04-18T13:11:25</NotAfter>
+         <NotBefore>2017-04-18T13:11:25</NotBefore>
+         <PublicKeySize>2048</PublicKeySize>
+         <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+         <KeyUsageBits>
+            <KeyUsage>nonRepudiation</KeyUsage>
+            <KeyUsage>digitalSignature</KeyUsage>
+         </KeyUsageBits>
+         <ExtendedKeyUsages>
+            <oid Description="emailProtection">1.3.6.1.5.5.7.3.4</oid>
+         </ExtendedKeyUsages>
+         <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <SigningCertificate Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
+         <CertificateChain>
+            <ChainItem Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
+               <Source>TRUSTED_LIST</Source>
+            </ChainItem>
+         </CertificateChain>
+         <Trusted>false</Trusted>
+         <SelfSigned>false</SelfSigned>
+         <CertificatePolicies/>
+         <QCStatementIds/>
+         <QCTypes/>
+         <TrustedServiceProviders>
+            <TrustedServiceProvider>
+               <TSPName>C - European Commission Certification Authority</TSPName>
+               <TSPRegistrationIdentifier>NTRBE-0949.383.342 </TSPRegistrationIdentifier>
+               <CountryCode>EC</CountryCode>
+               <TrustedServices>
+                  <TrustedService>
+                     <ServiceName>C - 2</ServiceName>
+                     <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
+                     <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                     <StartDate>2016-10-03T22:00:00</StartDate>
+                     <CapturedQualifiers/>
+                     <AdditionalServiceInfoUris/>
+                  </TrustedService>
+               </TrustedServices>
+            </TrustedServiceProvider>
+         </TrustedServiceProviders>
+         <Revocations>
+            <Revocation Id="96de975c5d625eb6b23007402a12f7edc7240e6fc22888b9e6a47a23587183ccd44b3bc2cbfca258343153ddc0197a58e747bc1153f83d0fbcd1617bb9724a95">
+               <Origin>EXTERNAL</Origin>
+               <Source>OCSPToken</Source>
+               <SourceAddress>http://hide.eu/ocsp</SourceAddress>
+               <Available>true</Available>
+               <Status>true</Status>
+               <ProductionDate>2018-07-10T15:24:39</ProductionDate>
+               <ThisUpdate>2018-07-10T07:55:03</ThisUpdate>
+               <NextUpdate>2018-07-16T07:55:03</NextUpdate>
+               <DigestAlgoAndValues>
+                  <DigestAlgoAndValue>
+                     <DigestMethod>SHA1</DigestMethod>
+                     <DigestValue>6Gy3VRznvktjj8L+mKoO68KKjVY=</DigestValue>
+                  </DigestAlgoAndValue>
+               </DigestAlgoAndValues>
+               <BasicSignature>
+                  <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                  <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                  <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                  <SignatureIntact>true</SignatureIntact>
+                  <SignatureValid>true</SignatureValid>
+               </BasicSignature>
+               <SigningCertificate Id="43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8"/>
+               <CertificateChain>
+                  <ChainItem Id="43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8">
+                     <Source>OCSP_RESPONSE</Source>
+                  </ChainItem>
+                  <ChainItem Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
+                     <Source>TRUSTED_LIST</Source>
+                  </ChainItem>
+               </CertificateChain>
+            </Revocation>
+         </Revocations>
+      </Certificate>
+   </UsedCertificates>
+   <TrustedLists>
+      <TrustedList>
+         <CountryCode>EC</CountryCode>
+         <Url>https://hide.eu/esig/TrustedList/EC_R/TSL.xml</Url>
+         <SequenceNumber>3</SequenceNumber>
+         <Version>5</Version>
+         <LastLoading>2018-07-10T15:22:32</LastLoading>
+         <IssueDate>2017-06-27T09:00:00</IssueDate>
+         <NextUpdate>2017-12-26T09:00:00</NextUpdate>
+         <WellSigned>true</WellSigned>
+      </TrustedList>
+   </TrustedLists>
+   <ListOfTrustedLists>
+      <CountryCode>EC</CountryCode>
+      <Url>https://hide.eu/esig/TrustedList/EC_R/TSL.xml</Url>
+      <SequenceNumber>3</SequenceNumber>
+      <Version>5</Version>
+      <LastLoading>2018-07-10T15:22:32</LastLoading>
+      <IssueDate>2017-06-27T09:00:00</IssueDate>
+      <NextUpdate>2017-12-26T09:00:00</NextUpdate>
+      <WellSigned>true</WellSigned>
+   </ListOfTrustedLists>
+</DiagnosticData>

@@ -861,6 +861,24 @@ public class CustomProcessExecutorTest {
 	}
 
 	@Test
+	public void commisign() throws Exception {
+
+		FileInputStream fis = new FileInputStream("src/test/resources/commisign.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureQualification.ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
 	public void testDSS1330() throws Exception {
 		FileInputStream fis = new FileInputStream("src/test/resources/DSS-1330-diag-data.xml");
 		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
