@@ -26,7 +26,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	protected List<DocumentValidator> validators;
 
-	private ASiCExtractResult extractResult;
+	protected ASiCExtractResult extractResult;
 
 	private ASiCContainerType containerType;
 
@@ -140,6 +140,10 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	protected List<DSSDocument> getArchiveManifestDocuments() {
 		return extractResult.getArchiveManifestDocuments();
+	}
+
+	protected DSSDocument getMimeTypeDocument() {
+		return extractResult.getMimeTypeDocument();
 	}
 
 	protected List<DSSDocument> getSignedDocumentsASiCS(List<DSSDocument> retrievedDocs) {

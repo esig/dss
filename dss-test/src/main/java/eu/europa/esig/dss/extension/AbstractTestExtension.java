@@ -82,6 +82,8 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		String extendedFilePath = "target/" + extendedDocument.getName();
 		extendedDocument.save(extendedFilePath);
 
+		compare(signedDocument, extendedDocument);
+
 		assertNotNull(extendedDocument);
 		assertNotNull(extendedDocument.getMimeType());
 		assertNotNull(Utils.toByteArray(extendedDocument.openStream()));
@@ -106,6 +108,9 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 
 		fileToBeDeleted = new File(extendedFilePath);
 		assertTrue("Cannot delete extended document (IO error)", fileToBeDeleted.delete());
+	}
+
+	protected void compare(DSSDocument signedDocument, DSSDocument extendedDocument) {
 	}
 
 	private DSSDocument extendSignature(DSSDocument signedDocument) throws Exception {

@@ -122,6 +122,11 @@ public final class ASiCUtils {
 		return isSignature(entryName) && (entryName.endsWith(".p7s"));
 	}
 
+	public static boolean isOpenDocument(final DSSDocument mimeTypeDocument) {
+		MimeType mimeType = ASiCUtils.getMimeType(mimeTypeDocument);
+		return MimeType.ODS == mimeType || MimeType.ODT == mimeType;
+	}
+
 	public static MimeType getMimeType(final DSSDocument mimeTypeDocument) throws DSSException {
 		try (InputStream is = mimeTypeDocument.openStream()) {
 			byte[] byteArray = Utils.toByteArray(is);

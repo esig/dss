@@ -24,6 +24,7 @@ import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.ManifestNamespace;
+import eu.europa.esig.dss.asic.OpenDocumentSupportUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampToken;
@@ -98,15 +99,19 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		}
 
 		extractCurrentArchive(toExtendDocument);
-		List<DSSDocument> signedDocuments = getEmbeddedSignedDocuments();
 		List<DSSDocument> signatureDocuments = getEmbeddedSignatures();
 
 		List<DSSDocument> extendedDocuments = new ArrayList<DSSDocument>();
 
 		for (DSSDocument signature : signatureDocuments) {
 			XAdESSignatureParameters xadesParameters = getXAdESParameters(parameters, null);
-			xadesParameters.setDetachedContents(signedDocuments);
+			if (ASiCUtils.isOpenDocument(getEmbeddedMimetype())) {
+				xadesParameters.setDetachedContents(OpenDocumentSupportUtils.getOpenDocumentCoverage(archiveContent));
+			} else {
+				xadesParameters.setDetachedContents(getEmbeddedSignedDocuments());
+			}
 			DSSDocument extendDocument = getXAdESService().extendDocument(signature, xadesParameters);
+			extendDocument.setName(signature.getName());
 			extendedDocuments.add(extendDocument);
 		}
 

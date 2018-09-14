@@ -9,6 +9,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.OpenDocumentSupportUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
@@ -48,7 +49,13 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 				xadesValidator.setProcessExecutor(processExecutor);
 				xadesValidator.setValidationCertPool(validationCertPool);
 				xadesValidator.setSignaturePolicyProvider(signaturePolicyProvider);
-				xadesValidator.setDetachedContents(getSignedDocuments());
+
+				if (ASiCUtils.isOpenDocument(getMimeTypeDocument())) {
+					xadesValidator.setDetachedContents(OpenDocumentSupportUtils.getOpenDocumentCoverage(extractResult));
+				} else {
+					xadesValidator.setDetachedContents(getSignedDocuments());
+				}
+
 				validators.add(xadesValidator);
 			}
 		}

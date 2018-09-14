@@ -52,8 +52,6 @@ public abstract class AbstractASiCContainerExtractor {
 					} else {
 						result.getSignedDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
 					}
-				} else {
-					result.getUnsupportedDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
 				}
 			}
 

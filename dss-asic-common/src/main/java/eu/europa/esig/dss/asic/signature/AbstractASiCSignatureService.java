@@ -34,7 +34,7 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 	private static final String ZIP_ENTRY_DETACHED_FILE = "detached-file";
 	private static final String ZIP_ENTRY_MIMETYPE = "mimetype";
 
-	private ASiCExtractResult archiveContent = new ASiCExtractResult();
+	protected ASiCExtractResult archiveContent = new ASiCExtractResult();
 
 	protected AbstractASiCSignatureService(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
