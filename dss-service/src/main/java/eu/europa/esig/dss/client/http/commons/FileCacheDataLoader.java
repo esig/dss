@@ -251,7 +251,9 @@ public class FileCacheDataLoader implements DataLoader {
 		final String digestHexEncoded = DSSUtils.toHex(digest);
 		final String cacheFileName = fileName + "." + digestHexEncoded;
 		final File file = getCacheFile(cacheFileName);
-		if (file.exists()) {
+		final boolean fileExists = file.exists();
+		final boolean isCacheExpired = isCacheExpired(file);
+		if (fileExists && !isCacheExpired) {
 
 			LOG.debug("Cached file was used");
 			final byte[] byteArray = DSSUtils.toByteArray(file);
