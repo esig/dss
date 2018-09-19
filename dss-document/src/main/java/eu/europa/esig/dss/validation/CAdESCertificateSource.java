@@ -68,11 +68,8 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 
 		Objects.requireNonNull(cmsSignedData, "CMS SignedData is null, it must be provided!");
 
-		if (certificateTokens == null) {
-			certificateTokens = new ArrayList<CertificateToken>();
-			keyInfoCerts = extractIdSignedDataCertificates(cmsSignedData);
-			encapsulatedCerts = extractEncapsulatedCertificates(cmsSignedData);
-		}
+		keyInfoCerts = extractIdSignedDataCertificates(cmsSignedData);
+		encapsulatedCerts = extractEncapsulatedCertificates(cmsSignedData);
 	}
 
 	/**

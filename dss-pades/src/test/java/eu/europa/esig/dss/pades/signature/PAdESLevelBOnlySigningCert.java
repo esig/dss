@@ -45,9 +45,10 @@ public class PAdESLevelBOnlySigningCert extends AbstractPAdESTestSignature {
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		// Cert chain omitted
-		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 	}
 
 	@Override

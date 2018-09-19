@@ -22,7 +22,6 @@ package eu.europa.esig.dss.pades.signature;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -121,8 +120,10 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 		validationCallback.setCrls(revocationsForInclusionInProfileLT.crlTokens);
 		validationCallback.setOcsps(revocationsForInclusionInProfileLT.ocspTokens);
 
-		Set<CertificateToken> certs = new HashSet<CertificateToken>(signature.getCertificates());
-		validationCallback.setCertificates(certs);
+		Set<CertificateToken> certificatesForInclusion = signature.getCertificatesForInclusion(validationContext);
+		certificatesForInclusion.addAll(signature.getCertificatesWithinSignatureAndTimestamps());
+		// DSS dictionary includes current certs + discovered with AIA,...
+		validationCallback.setCertificates(certificatesForInclusion);
 
 		return validationCallback;
 	}

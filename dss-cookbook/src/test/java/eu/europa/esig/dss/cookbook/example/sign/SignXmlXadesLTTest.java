@@ -25,7 +25,6 @@ import java.io.File;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
@@ -119,13 +118,13 @@ public class SignXmlXadesLTTest extends CookbookTools {
 			onlineOCSPSource.setDataLoader(ocspDataLoader);
 			commonCertificateVerifier.setOcspSource(onlineOCSPSource);
 
+			// For test purpose
+			// Will request unknown OCSP responder / download untrusted CRL
+			commonCertificateVerifier.setCheckRevocationForUntrustedChains(true);
+
 			// Create XAdES service for signature
 			XAdESService service = new XAdESService(commonCertificateVerifier);
-			try {
-				service.setTspSource(getOnlineTSPSource());
-			} catch (Exception e) {
-				throw new DSSException("Error during MockTspSource", e);
-			}
+			service.setTspSource(getOnlineTSPSource());
 
 			// Get the SignedInfo XML segment that need to be signed.
 			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);

@@ -65,7 +65,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		signedDocument.save(signedFilePath);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
 		// reports.print();
@@ -90,7 +90,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		assertNotNull(extendedDocument.getName());
 
 		validator = SignedDocumentValidator.fromDocument(extendedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		reports = validator.validateDocument();
 
 		// reports.print();

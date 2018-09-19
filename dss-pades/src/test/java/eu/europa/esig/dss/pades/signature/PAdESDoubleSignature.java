@@ -74,7 +74,7 @@ public class PAdESDoubleSignature extends PKIFactoryAccess {
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports1 = validator.validateDocument();
 
 		DiagnosticData diagnosticData1 = reports1.getDiagnosticData();
@@ -90,7 +90,7 @@ public class PAdESDoubleSignature extends PKIFactoryAccess {
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, params, signatureValue);
 
 		validator = SignedDocumentValidator.fromDocument(doubleSignedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		Reports reports2 = validator.validateDocument();
 		DiagnosticData diagnosticData2 = reports2.getDiagnosticData();
@@ -129,7 +129,7 @@ public class PAdESDoubleSignature extends PKIFactoryAccess {
 	private void checkAllRevocationOnce(DiagnosticData diagnosticData) {
 		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
 		for (CertificateWrapper certificateWrapper : usedCertificates) {
-			if (certificateWrapper.isTrusted() || certificateWrapper.isIdPkixOcspNoCheck()) {
+			if (certificateWrapper.isTrusted() || certificateWrapper.isSelfSigned() || certificateWrapper.isIdPkixOcspNoCheck()) {
 				continue;
 			}
 			int nbRevoc = certificateWrapper.getRevocationData().size();

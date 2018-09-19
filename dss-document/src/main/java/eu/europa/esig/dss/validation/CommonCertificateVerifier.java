@@ -93,6 +93,13 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private boolean exceptionOnMissingRevocationData = true;
 
 	/**
+	 * This variable set the behavior to follow for revocation retrieving in case of
+	 * untrusted certificate chains. Default : false (revocation are not checked in
+	 * case of certificates issued from an unsure source)
+	 */
+	private boolean checkRevocationForUntrustedChains = false;
+
+	/**
 	 * The default constructor. The {@code DataLoader} is created to allow the
 	 * retrieval of certificates through AIA.
 	 */
@@ -218,6 +225,16 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public boolean isExceptionOnMissingRevocationData() {
 		return exceptionOnMissingRevocationData;
+	}
+
+	@Override
+	public boolean isCheckRevocationForUntrustedChains() {
+		return checkRevocationForUntrustedChains;
+	}
+
+	@Override
+	public void setCheckRevocationForUntrustedChains(boolean checkRevocationForUntrustedChains) {
+		this.checkRevocationForUntrustedChains = checkRevocationForUntrustedChains;
 	}
 
 	@Override

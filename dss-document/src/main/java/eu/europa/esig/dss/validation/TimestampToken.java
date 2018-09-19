@@ -45,7 +45,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -153,7 +152,6 @@ public class TimestampToken extends Token {
 				timeStamp.validate(verifier);
 				signatureValid = true;
 
-				this.publicKeyOfTheSigner = candidate.getPublicKey();
 				this.tsaX500Principal = candidate.getSubjectX500Principal();
 				final String algorithm = candidate.getPublicKey().getAlgorithm();
 				final EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.forName(algorithm);

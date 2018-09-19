@@ -36,7 +36,7 @@ public class DetachedXmlMultiDocSignatureTest extends AbstractPkiFactoryTestMult
 	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setDetachedContents(documentToSigns);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		validator.setSignaturePolicyProvider(getSignaturePolicyProvider());
 		return validator;
 	}

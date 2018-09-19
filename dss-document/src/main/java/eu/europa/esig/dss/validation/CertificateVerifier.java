@@ -169,6 +169,25 @@ public interface CertificateVerifier {
 	boolean isExceptionOnMissingRevocationData();
 
 	/**
+	 * This method allows to enable revocation checking for untrusted certificate
+	 * chains (default : false)
+	 * 
+	 * @param enable
+	 *               true if revocation checking is allowed for untrusted
+	 *               certificate chains
+	 */
+	void setCheckRevocationForUntrustedChains(boolean enable);
+
+	/**
+	 * This method returns true if revocation check is enabled for untrusted
+	 * certificate chains.
+	 * 
+	 * @return true if external revocation check is done for untrusted certificate
+	 *         chains
+	 */
+	boolean isCheckRevocationForUntrustedChains();
+
+	/**
 	 * This method creates the validation pool of certificates which is used
 	 * during the validation process.
 	 */

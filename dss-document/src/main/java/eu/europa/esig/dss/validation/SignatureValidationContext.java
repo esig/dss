@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -97,6 +98,12 @@ public class SignatureValidationContext implements ValidationContext {
 	private CertificateSource trustedCertSource;
 
 	/**
+	 * This variable set the behavior to follow for revocation retrieving in case of
+	 * untrusted certificate chains.
+	 */
+	private boolean checkRevocationForUntrustedChains;
+
+	/**
 	 * This is the time at what the validation is carried out. It is used only for test purpose.
 	 */
 	protected Date currentTime = new Date();
@@ -115,9 +122,7 @@ public class SignatureValidationContext implements ValidationContext {
 	 *            The pool of certificates used during the validation process
 	 */
 	public SignatureValidationContext(final CertificatePool validationCertificatePool) {
-		if (validationCertificatePool == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(validationCertificatePool);
 		this.validationCertificatePool = validationCertificatePool;
 	}
 
@@ -127,12 +132,17 @@ public class SignatureValidationContext implements ValidationContext {
 	 */
 	@Override
 	public void initialize(final CertificateVerifier certificateVerifier) {
-		if (certificateVerifier == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(certificateVerifier);
 
 		if (validationCertificatePool == null) {
-			validationCertificatePool = certificateVerifier.createValidationPool();
+			validationCertificatePool = new CertificatePool();
+		}
+
+		if (certificateVerifier.getTrustedCertSource() != null) {
+			validationCertificatePool.importCerts(certificateVerifier.getTrustedCertSource());
+		}
+		if (certificateVerifier.getAdjunctCertSource() != null) {
+			validationCertificatePool.importCerts(certificateVerifier.getAdjunctCertSource());
 		}
 
 		this.crlSource = certificateVerifier.getCrlSource();
@@ -141,6 +151,7 @@ public class SignatureValidationContext implements ValidationContext {
 		this.signatureCRLSource = certificateVerifier.getSignatureCRLSource();
 		this.signatureOCSPSource = certificateVerifier.getSignatureOCSPSource();
 		this.trustedCertSource = certificateVerifier.getTrustedCertSource();
+		this.checkRevocationForUntrustedChains = certificateVerifier.isCheckRevocationForUntrustedChains();
 	}
 
 	@Override
@@ -150,9 +161,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@Override
 	public void setCurrentTime(final Date currentTime) {
-		if (currentTime == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(currentTime);
 		this.currentTime = currentTime;
 	}
 
@@ -184,16 +193,13 @@ public class SignatureValidationContext implements ValidationContext {
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
 	private List<Token> getCertChain(final Token token) throws DSSException {
-		if (isTrusted(token)) {
-			// When the token is trusted the check of the issuer token is not needed so null
-			// is returned. Only a certificate token can be trusted.
-			return null;
-		}
-
 		List<Token> chain = new LinkedList<Token>();
 		Token issuerCertificateToken = token;
 		do {
 			chain.add(issuerCertificateToken);
+			if (isTrusted(issuerCertificateToken)) {
+				break;
+			}
 
 			issuerCertificateToken = validationCertificatePool.getIssuer(issuerCertificateToken);
 
@@ -209,8 +215,7 @@ public class SignatureValidationContext implements ValidationContext {
 				addCertificateTokenForVerification((CertificateToken) issuerCertificateToken);
 			}
 
-		} while (issuerCertificateToken != null && !chain.contains(issuerCertificateToken) && !issuerCertificateToken.isSelfSigned()
-				&& !isTrusted(issuerCertificateToken));
+		} while (issuerCertificateToken != null && !chain.contains(issuerCertificateToken));
 
 		return chain;
 	}
@@ -453,21 +458,28 @@ public class SignatureValidationContext implements ValidationContext {
 				revocations.add(crlToken);
 			}
 		}
+		
 
 		if (revocations.isEmpty()) {
-			// Online resources (OCSP and CRL if OCSP doesn't reply)
-			OCSPAndCRLCertificateVerifier onlineVerifier = null;
 
-			if (trustedCertSource instanceof CommonTrustedCertificateSource) {
-				onlineVerifier = instantiateWithTrustServices((CommonTrustedCertificateSource) trustedCertSource, certToken, certChain);
+			if (checkRevocationForUntrustedChains || isTrustedChain(certChain)) {
+
+				// Online resources (OCSP and CRL if OCSP doesn't reply)
+				OCSPAndCRLCertificateVerifier onlineVerifier = null;
+
+				if (trustedCertSource instanceof CommonTrustedCertificateSource) {
+					onlineVerifier = instantiateWithTrustServices((CommonTrustedCertificateSource) trustedCertSource, certToken, certChain);
+				} else {
+					onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
+				}
+
+				final RevocationToken onlineRevocationToken = onlineVerifier.check(certToken);
+				// CRL can already exist in the signature
+				if (onlineRevocationToken != null && !revocations.contains(onlineRevocationToken)) {
+					revocations.add(onlineRevocationToken);
+				}
 			} else {
-				onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
-			}
-
-			final RevocationToken onlineRevocationToken = onlineVerifier.check(certToken);
-			// CRL can already exist in the signature
-			if (onlineRevocationToken != null && !revocations.contains(onlineRevocationToken)) {
-				revocations.add(onlineRevocationToken);
+				LOG.warn("External revocation check is skipped for untrusted certificate : {}", certChain.iterator().next().getDSSIdAsString());
 			}
 		}
 
@@ -476,6 +488,11 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 
 		return revocations;
+	}
+
+	private boolean isTrustedChain(List<Token> certChain) {
+		Token lastToken = certChain.get(certChain.size() - 1);
+		return isTrusted(lastToken);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

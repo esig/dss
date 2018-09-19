@@ -33,6 +33,7 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -56,6 +57,14 @@ public class XAdESLevelBOnlySigningCertTest extends AbstractXAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
 		service = new XAdESService(getCompleteCertificateVerifier());
+	}
+
+	@Override
+	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setSignaturePolicyProvider(getSignaturePolicyProvider());
+		return validator;
 	}
 
 	@Override

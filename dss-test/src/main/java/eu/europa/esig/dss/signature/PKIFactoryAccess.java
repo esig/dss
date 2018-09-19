@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import eu.europa.esig.dss.client.crl.OnlineCRLSource;
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.client.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.client.http.commons.OCSPDataLoader;
@@ -63,6 +64,7 @@ public abstract class PKIFactoryAccess {
 	private static final String TRUSTSTORE_TYPE = "JKS";
 
 	protected static final String GOOD_USER = "good-user";
+	protected static final String UNTRUSTED_USER = "untrusted-user";
 	protected static final String GOOD_USER_WRONG_AIA = "good-user-wrong-aia";
 	protected static final String GOOD_USER_OCSP_ERROR_500 = "good-user-ocsp-error-500";
 	protected static final String GOOD_USER_OCSP_FAIL = "good-user-ocsp-fail";
@@ -85,6 +87,13 @@ public abstract class PKIFactoryAccess {
 		cv.setDataLoader(getFileCacheDataLoader());
 		cv.setCrlSource(onlineCrlSource());
 		cv.setOcspSource(onlineOcspSource());
+		cv.setTrustedCertSource(getTrustedCertificateSource());
+		return cv;
+	}
+
+	protected CertificateVerifier getOfflineCertificateVerifier() {
+		CertificateVerifier cv = new CommonCertificateVerifier();
+		cv.setDataLoader(new IgnoreDataLoader());
 		cv.setTrustedCertSource(getTrustedCertificateSource());
 		return cv;
 	}

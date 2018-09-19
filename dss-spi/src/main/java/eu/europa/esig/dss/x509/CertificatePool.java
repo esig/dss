@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -63,7 +62,7 @@ public class CertificatePool implements Serializable {
 	/* Map of entries, the key is a hash of the public key */
 	private Map<String, CertificatePoolEntity> entriesByPublicKeyHash = new HashMap<String, CertificatePoolEntity>();
 
-	/* Map of entries, the key is th canonicalized SubjectX500Principal */
+	/* Map of entries, the key is the canonicalized SubjectX500Principal */
 	private Map<String, CertificatePoolEntity> entriesBySubject = new HashMap<String, CertificatePoolEntity>();
 
 	public CertificatePool() {
@@ -113,8 +112,8 @@ public class CertificatePool implements Serializable {
 	public Set<CertificateSourceType> getSources(CertificateToken certificateToken) {
 		final CertificatePoolEntity poolEntity = getPoolEntry(certificateToken);
 		if (poolEntity != null) {
-		return poolEntity.sources;
-		}else {
+			return poolEntity.getSources();
+		} else {
 			return Collections.emptySet();
 		}
 	}
@@ -281,6 +280,10 @@ public class CertificatePool implements Serializable {
 		return canonicalize(cert.getSubjectX500Principal());
 	}
 
+	private String getCanonicalizedIssuer(CertificateToken cert) {
+		return canonicalize(cert.getIssuerX500Principal());
+	}
+
 	private String canonicalize(final X500Principal x500Principal) {
 		return x500Principal.getName(X500Principal.CANONICAL);
 	}
@@ -321,7 +324,7 @@ public class CertificatePool implements Serializable {
 	public int getNumberOfCertificates() {
 		int i = 0;
 		for (CertificatePoolEntity entity : entriesByPublicKeyHash.values()) {
-			i += entity.equivalentCertificates.size();
+			i += entity.getEquivalentCertificates().size();
 		}
 		return i;
 	}
@@ -334,59 +337,7 @@ public class CertificatePool implements Serializable {
 		return certs;
 	}
 
-	private class CertificatePoolEntity {
 
-		/**
-		 * Equivalent certificates (which have the same public key)
-		 */
-		private List<CertificateToken> equivalentCertificates = new ArrayList<CertificateToken>();
 
-		/**
-		 * This Set contains the different sources for this certificate.
-		 */
-		private Set<CertificateSourceType> sources = new HashSet<CertificateSourceType>();
-
-		public CertificatePoolEntity(CertificateToken initialCert, CertificateSourceType source) {
-			equivalentCertificates.add(initialCert);
-			sources.add(source);
-		}
-
-		public void addEquivalentCertificate(CertificateToken token) {
-			if (!equivalentCertificates.contains(token)) {
-				LOG.debug("Certificate with same public key detected : {}", token.getAbbreviation());
-				// we manually recompute the SKI (we had cases with wrongly encoded value in the
-				// certificate)
-				final byte[] newSKI = DSSASN1Utils.computeSkiFromCert(token);
-				CertificateToken equivalent = equivalentCertificates.iterator().next();
-				final byte[] skiEquivalent = DSSASN1Utils.computeSkiFromCert(equivalent);
-				// This should never happen
-				if (!Arrays.equals(newSKI, skiEquivalent) && LOG.isWarnEnabled()) {
-
-					LOG.warn("{} \nCERT : {} \nSKI : {} \nPubKey : {}", token, Utils.toBase64(token.getEncoded()), Utils.toBase64(newSKI),
-							Utils.toBase64(token.getPublicKey().getEncoded()));
-
-					LOG.warn("is not equivalent to");
-
-					LOG.warn("{} \nCERT : {} \nSKI : {} \nPubKey : {}", equivalent, Utils.toBase64(equivalent.getEncoded()), Utils.toBase64(skiEquivalent),
-							Utils.toBase64(token.getPublicKey().getEncoded()));
-				} else {
-					equivalentCertificates.add(token);
-				}
-			}
-		}
-
-		public void addSource(CertificateSourceType source) {
-			sources.add(source);
-		}
-
-		public List<CertificateToken> getEquivalentCertificates() {
-			return Collections.unmodifiableList(equivalentCertificates);
-		}
-
-		public boolean isTrusted() {
-			return sources.contains(CertificateSourceType.TRUSTED_LIST) || sources.contains(CertificateSourceType.TRUSTED_STORE);
-		}
-
-	}
 
 }

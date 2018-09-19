@@ -46,10 +46,11 @@ public class CAdESLevelBOnlySigningCertTest extends AbstractCAdESTestSignature {
 		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		// Cert chain omitted
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 
 		service = new CAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 	}
 
 	@Override

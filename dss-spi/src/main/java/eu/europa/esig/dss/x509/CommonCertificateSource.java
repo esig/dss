@@ -36,16 +36,18 @@ public class CommonCertificateSource implements CertificateSource {
 	/**
 	 * This variable represents the certificate pool with all encapsulated certificates
 	 */
-	protected CertificatePool certPool;
+	private final CertificatePool certPool;
+
 	/**
-	 * The list of all encapsulated certificate tokens. It must be <code>null</code> when instantiating.
+	 * The list of all encapsulated certificate tokens for the current source.
 	 */
-	protected List<CertificateToken> certificateTokens;
+	private final List<CertificateToken> certificateTokens = new ArrayList<CertificateToken>();
 
 	/**
 	 * The default constructor to generate a certificates source with an independent certificates pool.
 	 */
 	public CommonCertificateSource() {
+		// TODO useless ?
 		certPool = new CertificatePool();
 	}
 
@@ -56,9 +58,7 @@ public class CommonCertificateSource implements CertificateSource {
 	 *            the certificate pool to use
 	 */
 	public CommonCertificateSource(final CertificatePool certPool) {
-
 		Objects.requireNonNull(certPool, "Certificate pool is missing");
-
 		this.certPool = certPool;
 	}
 
@@ -79,10 +79,8 @@ public class CommonCertificateSource implements CertificateSource {
 	@Override
 	public CertificateToken addCertificate(final CertificateToken token) {
 		final CertificateToken certToken = certPool.getInstance(token, getCertificateSourceType());
-		if (certificateTokens != null) {
-			if (!certificateTokens.contains(certToken)) {
-				certificateTokens.add(certToken);
-			}
+		if (!certificateTokens.contains(certToken)) {
+			certificateTokens.add(certToken);
 		}
 		return certToken;
 	}
@@ -94,11 +92,7 @@ public class CommonCertificateSource implements CertificateSource {
 	 */
 	@Override
 	public List<CertificateToken> getCertificates() {
-		if (certificateTokens == null) {
-			return Collections.emptyList();
-		} else {
-			return Collections.unmodifiableList(certificateTokens);
-		}
+		return Collections.unmodifiableList(certificateTokens);
 	}
 
 	/**
@@ -139,12 +133,16 @@ public class CommonCertificateSource implements CertificateSource {
 	 * @return true if removed
 	 */
 	public boolean removeCertificate(CertificateToken certificate) {
-		if (certificateTokens != null) {
-			if (certificateTokens.contains(certificate)) {
-				return certificateTokens.remove(certificate);
-			}
-		}
-		return false;
+		return certificateTokens.remove(certificate);
+	}
+
+	/**
+	 * This method returns the number of stored certificates in this source
+	 * 
+	 * @return number of certificates in this instance
+	 */
+	public int getNumberOfCertificates() {
+		return certificateTokens.size();
 	}
 
 }

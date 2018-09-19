@@ -13,8 +13,8 @@ import java.util.Set;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.client.MemoryDataLoader;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.client.http.MemoryDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSource;

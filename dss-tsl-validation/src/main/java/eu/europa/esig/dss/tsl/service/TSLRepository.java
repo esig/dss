@@ -253,7 +253,7 @@ public class TSLRepository {
 			}
 
 			LOG.info("Nb of loaded trusted lists : {}", allMapTSLValidationModels.size());
-			LOG.info("Nb of trusted certificates : {}", trustedListsCertificateSource.getNumberOfTrustedCertificates());
+			LOG.info("Nb of trusted certificates : {}", trustedListsCertificateSource.getNumberOfCertificates());
 			LOG.info("Nb of trusted public keys : {}", trustedListsCertificateSource.getNumberOfTrustedPublicKeys());
 		}
 	}

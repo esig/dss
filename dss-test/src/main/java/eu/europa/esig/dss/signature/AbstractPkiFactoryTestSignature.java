@@ -268,7 +268,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		validator.setSignaturePolicyProvider(getSignaturePolicyProvider());
 		return validator;
 	}

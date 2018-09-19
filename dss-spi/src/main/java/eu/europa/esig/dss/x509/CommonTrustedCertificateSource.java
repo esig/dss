@@ -24,8 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import javax.security.auth.x500.X500Principal;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,46 +46,17 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource {
 	}
 
 	/**
-	 * This method allows to declare all certificates from a given key store as
-	 * trusted.
+	 * This method allows to declare all certificates from a given certificate
+	 * source as trusted.
 	 *
-	 * @param keyStore
-	 *            the set of certificates you have to trust
+	 * @param certificateSource
+	 *                          the certificate source to be trusted
 	 */
-	public void importAsTrusted(final CommonCertificateSource keyStore) {
-		final List<CertificateToken> certTokenList = keyStore.getCertificates();
+	public void importAsTrusted(final CertificateSource certificateSource) {
+		final List<CertificateToken> certTokenList = certificateSource.getCertificates();
 		for (final CertificateToken certToken : certTokenList) {
-			certPool.getInstance(certToken, getCertificateSourceType());
+			addCertificate(certToken);
 		}
-	}
-
-	/**
-	 * Retrieves the list of all certificate tokens from this source.
-	 *
-	 * @return list of all certificate tokens from this source
-	 */
-	@Override
-	public List<CertificateToken> getCertificates() {
-		return Collections.unmodifiableList(certPool.getCertificateTokens());
-	}
-
-	/**
-	 * This method returns the {@code List} of {@code CertificateToken}(s)
-	 * corresponding to the given subject distinguished name. In the case of
-	 * {@code CommonTrustedCertificateSource} the content of the encapsulated
-	 * pool is equal to the content of the source.
-	 *
-	 * @param x500Principal
-	 *            subject distinguished names of the certificate to find
-	 * @return If no match is found then an empty list is returned.
-	 */
-	@Override
-	public List<CertificateToken> get(final X500Principal x500Principal) {
-		return certPool.get(x500Principal);
-	}
-
-	public int getNumberOfTrustedCertificates() {
-		return certPool.getNumberOfCertificates();
 	}
 
 	public Set<ServiceInfo> getTrustServices(CertificateToken trustAnchor) {

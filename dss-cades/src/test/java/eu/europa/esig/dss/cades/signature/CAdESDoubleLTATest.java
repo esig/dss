@@ -47,7 +47,7 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 		DSSDocument ltaDoc = service.signDocument(doc, params, signatureValue);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(ltaDoc);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
 		// reports.print();
@@ -66,7 +66,7 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 		DSSDocument doubleLtaDoc = service.extendDocument(ltaDoc, extendParams);
 
 		validator = SignedDocumentValidator.fromDocument(doubleLtaDoc);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		reports = validator.validateDocument();
 
 		// reports.print();
@@ -100,7 +100,7 @@ public class CAdESDoubleLTATest extends PKIFactoryAccess {
 	private void checkAllRevocationOnce(DiagnosticData diagnosticData) {
 		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
 		for (CertificateWrapper certificateWrapper : usedCertificates) {
-			if (certificateWrapper.isTrusted() || certificateWrapper.isIdPkixOcspNoCheck()) {
+			if (certificateWrapper.isTrusted() || certificateWrapper.isSelfSigned() || certificateWrapper.isIdPkixOcspNoCheck()) {
 				continue;
 			}
 			int nbRevoc = certificateWrapper.getRevocationData().size();

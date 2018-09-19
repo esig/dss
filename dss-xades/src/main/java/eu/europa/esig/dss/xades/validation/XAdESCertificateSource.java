@@ -69,12 +69,9 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 
 		this.signatureElement = signatureElement;
 
-		if (certificateTokens == null) {
-			certificateTokens = new ArrayList<CertificateToken>();
-			encapsulatedCerts = getCertificates(xPathQueryHolder.XPATH_ENCAPSULATED_X509_CERTIFICATE);
-			keyInfoCerts = getCertificates(xPathQueryHolder.XPATH_KEY_INFO_X509_CERTIFICATE);
-			timestampValidationDataCerts = getCertificates(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_X509_CERTIFICATE);
-		}
+		encapsulatedCerts = getCertificates(xPathQueryHolder.XPATH_ENCAPSULATED_X509_CERTIFICATE);
+		keyInfoCerts = getCertificates(xPathQueryHolder.XPATH_KEY_INFO_X509_CERTIFICATE);
+		timestampValidationDataCerts = getCertificates(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_X509_CERTIFICATE);
 
 		if (LOG.isInfoEnabled()) {
 			LOG.info("+XAdESCertificateSource");
