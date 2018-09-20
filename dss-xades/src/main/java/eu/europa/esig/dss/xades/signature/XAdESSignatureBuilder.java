@@ -271,6 +271,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final MaskGenerationFunction mgf = params.getMaskGenerationFunction();
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, mgf);
 		final String signatureAlgorithmXMLId = signatureAlgorithm.getXMLId();
+		if (Utils.isStringBlank(signatureAlgorithmXMLId)) {
+			throw new DSSException("Unsupported signature algorithm " + signatureAlgorithm);
+		}
 		signatureMethod.setAttribute(ALGORITHM, signatureAlgorithmXMLId);
 	}
 
