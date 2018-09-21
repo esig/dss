@@ -48,6 +48,8 @@ public interface TokenProxy {
 
 	List<XmlChainItem> getCertificateChain();
 
+	boolean isTrustedChain();
+
 	List<String> getCertificateChainIds();
 
 	List<XmlDigestMatcher> getDigestMatchers();

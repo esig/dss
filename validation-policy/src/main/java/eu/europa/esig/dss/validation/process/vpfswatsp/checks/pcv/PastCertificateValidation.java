@@ -171,7 +171,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 
 	private ChainItem<XmlPCV> prospectiveCertificateChain() {
 		LevelConstraint constraint = policy.getProspectiveCertificateChainConstraint(context);
-		return new ProspectiveCertificateChainCheck(result, token, diagnosticData, constraint);
+		return new ProspectiveCertificateChainCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlPCV> certificateSignatureValid(CertificateWrapper certificate, SubContext subContext) {

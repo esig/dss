@@ -12,6 +12,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.x509.CertificateSourceType;
 
 public abstract class AbstractTokenProxy implements TokenProxy {
 
@@ -170,6 +171,13 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 			return lastItem;
 		}
 		return null;
+	}
+
+	@Override
+	public boolean isTrustedChain() {
+		String lastCertificateSource = getLastChainCertificateSource();
+		return CertificateSourceType.TRUSTED_STORE.name().equals(lastCertificateSource)
+				|| CertificateSourceType.TRUSTED_LIST.name().equals(lastCertificateSource);
 	}
 
 	public XmlChainItem getFirstChainCertificate() {

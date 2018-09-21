@@ -60,45 +60,46 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 		ChainItem<XmlXCV> item = firstItem = prospectiveCertificateChain();
 
-		item = item.setNextItem(trustedServiceWithExpectedTypeIdentifier());
+		if (currentCertificate.isTrusted() || currentCertificate.isTrustedChain()) {
 
-		item = item.setNextItem(trustedServiceWithExpectedStatus());
+			item = item.setNextItem(trustedServiceWithExpectedTypeIdentifier());
 
-		SubX509CertificateValidation certificateValidation = new SubX509CertificateValidation(currentCertificate, validationDate, context,
-				SubContext.SIGNING_CERT, validationPolicy);
-		XmlSubXCV subXCV = certificateValidation.execute();
-		result.getSubXCV().add(subXCV);
+			item = item.setNextItem(trustedServiceWithExpectedStatus());
 
-		boolean trustAnchorReached = currentCertificate.isTrusted();
+			SubX509CertificateValidation certificateValidation = new SubX509CertificateValidation(currentCertificate, validationDate, context,
+					SubContext.SIGNING_CERT, validationPolicy);
+			XmlSubXCV subXCV = certificateValidation.execute();
+			result.getSubXCV().add(subXCV);
 
-		// Check CA_CERTIFICATEs
-		List<XmlChainItem> certificateChainList = currentCertificate.getCertificateChain();
-		if (Utils.isCollectionNotEmpty(certificateChainList)) {
-			for (XmlChainItem chainCertificate : certificateChainList) {
-				if (!trustAnchorReached) {
+			boolean trustAnchorReached = currentCertificate.isTrusted();
 
-					CertificateWrapper certificate = diagnosticData
-							.getUsedCertificateByIdNullSafe(chainCertificate.getId());
+			// Check CA_CERTIFICATEs
+			List<XmlChainItem> certificateChainList = currentCertificate.getCertificateChain();
+			if (Utils.isCollectionNotEmpty(certificateChainList)) {
+				for (XmlChainItem chainCertificate : certificateChainList) {
+					if (!trustAnchorReached) {
 
-					certificateValidation = new SubX509CertificateValidation(certificate, validationDate, context,
-							SubContext.CA_CERTIFICATE, validationPolicy);
-					subXCV = certificateValidation.execute();
-					result.getSubXCV().add(subXCV);
+						CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(chainCertificate.getId());
 
-					trustAnchorReached = certificate.isTrusted();
+						certificateValidation = new SubX509CertificateValidation(certificate, validationDate, context, SubContext.CA_CERTIFICATE,
+								validationPolicy);
+						subXCV = certificateValidation.execute();
+						result.getSubXCV().add(subXCV);
+
+						trustAnchorReached = certificate.isTrusted();
+					}
 				}
 			}
-		}
 
-		for (XmlSubXCV subXCVresult : result.getSubXCV()) {
-			item = item.setNextItem(checkSubXCVResult(subXCVresult));
+			for (XmlSubXCV subXCVresult : result.getSubXCV()) {
+				item = item.setNextItem(checkSubXCVResult(subXCVresult));
+			}
 		}
-
 	}
 
 	private ChainItem<XmlXCV> prospectiveCertificateChain() {
 		LevelConstraint constraint = validationPolicy.getProspectiveCertificateChainConstraint(context);
-		return new ProspectiveCertificateChainCheck(result, currentCertificate, diagnosticData, context, constraint);
+		return new ProspectiveCertificateChainCheck(result, currentCertificate, context, constraint);
 	}
 
 	private ChainItem<XmlXCV> trustedServiceWithExpectedTypeIdentifier() {
