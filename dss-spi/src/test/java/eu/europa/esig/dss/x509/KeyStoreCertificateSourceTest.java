@@ -45,6 +45,15 @@ public class KeyStoreCertificateSourceTest {
 	}
 
 	@Test
+	public void loadKeystoreAndTruststore() throws IOException {
+		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File("src/test/resources/good-user.p12"), "PKCS12", "ks-password");
+		assertTrue(kscs.getCertificates().size() > 0);
+
+		kscs = new KeyStoreCertificateSource(new File("src/test/resources/trust-anchors.jks"), "JKS", "ks-password");
+		assertTrue(kscs.getCertificates().size() > 0);
+	}
+
+	@Test
 	public void testCreateNewKeystore() throws IOException {
 		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(KEYSTORE_TYPE, KEYSTORE_PASSWORD);
 		CertificateToken token = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));

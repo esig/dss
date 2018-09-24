@@ -229,11 +229,8 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 		try {
 			Enumeration<String> aliases = keyStore.aliases();
 			while (aliases.hasMoreElements()) {
-				String alias = aliases.nextElement();
-				if (keyStore.isCertificateEntry(alias)) {
-					Certificate certificate = keyStore.getCertificate(alias);
-					list.add(DSSUtils.loadCertificate(certificate.getEncoded()));
-				}
+				Certificate certificate = keyStore.getCertificate(getKey(aliases.nextElement()));
+				list.add(DSSUtils.loadCertificate(certificate.getEncoded()));
 			}
 		} catch (GeneralSecurityException e) {
 			throw new DSSException("Unable to retrieve certificates from the keystore", e);
