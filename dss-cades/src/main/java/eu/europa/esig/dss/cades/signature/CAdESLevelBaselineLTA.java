@@ -89,7 +89,6 @@ public class CAdESLevelBaselineLTA extends CAdESSignatureExtension {
 	 * </ol>
 	 *
 	 * @param cadesSignature
-	 * @param cmsSignedData
 	 * @param signerInformation
 	 * @param parameters
 	 * @param unsignedAttributes
