@@ -896,6 +896,38 @@ public class CustomProcessExecutorTest {
 		validateBestSigningTimes(reports);
 	}
 
+	@Test
+	public void testTLOK() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/tl-ok.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadTLPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void testTLKO() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/tl-ko.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadTLPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
 	@Test(expected = NullPointerException.class)
 	public void diagDataNotNull() throws Exception {
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -972,6 +1004,13 @@ public class CustomProcessExecutorTest {
 
 	private EtsiValidationPolicy loadPolicy() throws Exception {
 		FileInputStream policyFis = new FileInputStream("src/main/resources/policy/constraint.xml");
+		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class, "/xsd/policy.xsd");
+		assertNotNull(policyJaxB);
+		return new EtsiValidationPolicy(policyJaxB);
+	}
+
+	private EtsiValidationPolicy loadTLPolicy() throws Exception {
+		FileInputStream policyFis = new FileInputStream("src/test/resources/tsl-constraint.xml");
 		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class, "/xsd/policy.xsd");
 		assertNotNull(policyJaxB);
 		return new EtsiValidationPolicy(policyJaxB);

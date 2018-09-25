@@ -699,6 +699,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getFullScopeConstraint() {
+		SignatureConstraints mainSignature = policy.getSignatureConstraints();
+		if (mainSignature != null) {
+			return mainSignature.getFullScope();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getContentTimestampConstraint() {
 		SignatureConstraints mainSignature = policy.getSignatureConstraints();
 		if (mainSignature != null) {

@@ -25,6 +25,9 @@ public enum MessageTag implements IMessageTag {
 	/* BBB -> FC */
 	BBB_FC_IEFF("Is the expected format found?"),
 	BBB_FC_IEFF_ANS("The expected format is not found!"),
+
+	BBB_FC_ICFD("Is the signature cover all document(s)?"),
+	BBB_FC_ICFD_ANS("The signature doesn't cover the whole document(s)!"),
 	
 	BBB_FC_IECTF("Is the expected container type found?"),
 	BBB_FC_IECTF_ANS("The expected container type is not found!"),

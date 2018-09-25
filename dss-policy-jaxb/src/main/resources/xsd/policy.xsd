@@ -38,6 +38,7 @@
 			<xs:element name="PolicyAvailable" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="PolicyHashMatch" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="AcceptableFormats" type="tns:MultiValuesConstraint" minOccurs="0" />
+			<xs:element name="FullScope" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="BasicSignatureConstraints" type="tns:BasicSignatureConstraints" minOccurs="0" />
 			<xs:element name="SignedAttributes" type="tns:SignedAttributesConstraints" minOccurs="0" />
 			<xs:element name="UnsignedAttributes" type="tns:UnsignedAttributesConstraints" minOccurs="0" />

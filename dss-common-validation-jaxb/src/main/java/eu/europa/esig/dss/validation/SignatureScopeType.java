@@ -2,6 +2,10 @@ package eu.europa.esig.dss.validation;
 
 public enum SignatureScopeType {
 
-	FULL, PARTIAL
+	/* The signature covers the complete document */
+	FULL,
+
+	/* The signature covers only a part of the document */
+	PARTIAL
 
 }

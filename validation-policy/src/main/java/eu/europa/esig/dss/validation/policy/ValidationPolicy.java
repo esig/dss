@@ -378,6 +378,8 @@ public interface ValidationPolicy {
 
 	LevelConstraint getManifestFilePresentConstraint();
 
+	LevelConstraint getFullScopeConstraint();
+
 	/* Article 32 */
 
 	boolean isEIDASConstraintPresent();
@@ -391,6 +393,5 @@ public interface ValidationPolicy {
 	ValueConstraint getTLVersionConstraint();
 
 	LevelConstraint getTLConsistencyConstraint();
-
 
 }
