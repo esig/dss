@@ -12,6 +12,7 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignatureScopeType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -77,7 +78,7 @@ public class XMLSignatureWrappingTest {
 
 		List<XmlSignatureScope> signatureScopes = signatureById.getSignatureScopes();
 		assertEquals(1, signatureScopes.size());
-		assertEquals(XmlElementSignatureScope.class.getSimpleName(), signatureScopes.get(0).getScope());
+		assertEquals(SignatureScopeType.PARTIAL, signatureScopes.get(0).getScope());
 	}
 
 	@Test
@@ -97,7 +98,7 @@ public class XMLSignatureWrappingTest {
 
 		List<XmlSignatureScope> signatureScopes = signatureById.getSignatureScopes();
 		assertEquals(1, signatureScopes.size());
-		assertEquals(XmlRootSignatureScope.class.getSimpleName(), signatureScopes.get(0).getScope());
+		assertEquals(SignatureScopeType.FULL, signatureScopes.get(0).getScope());
 	}
 
 	@Test
@@ -117,7 +118,7 @@ public class XMLSignatureWrappingTest {
 
 		List<XmlSignatureScope> signatureScopes = signatureById.getSignatureScopes();
 		assertEquals(1, signatureScopes.size());
-		assertEquals(XmlRootSignatureScope.class.getSimpleName(), signatureScopes.get(0).getScope());
+		assertEquals(SignatureScopeType.FULL, signatureScopes.get(0).getScope());
 	}
 
 	@Test
@@ -138,7 +139,7 @@ public class XMLSignatureWrappingTest {
 
 		List<XmlSignatureScope> signatureScopes = signatureById.getSignatureScopes();
 		assertEquals(1, signatureScopes.size());
-		assertEquals(XmlElementSignatureScope.class.getSimpleName(), signatureScopes.get(0).getScope());
+		assertEquals(SignatureScopeType.PARTIAL, signatureScopes.get(0).getScope());
 	}
 
 	@Test
