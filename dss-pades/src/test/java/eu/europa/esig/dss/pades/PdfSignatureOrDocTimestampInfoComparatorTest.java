@@ -13,6 +13,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
@@ -20,6 +21,7 @@ import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfoComparator;
 public class PdfSignatureOrDocTimestampInfoComparatorTest {
 
 	private MockPdfSignature mock0;
+	private MockPdfSignature strange;
 	private MockPdfSignature mock0bis;
 	private MockPdfSignature mock1;
 	private MockPdfSignature mock2;
@@ -36,6 +38,7 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 		 */
 
 		mock0 = new MockPdfSignature(new int[] { 0, 91747, 124517, 723 }, sdf.parse("2002-01-01"));
+		strange = new MockPdfSignature(new int[] { 40000, 120000, 140000, 500 }); // length = 100 500
 		mock1 = new MockPdfSignature(new int[] { 0, 126092, 158862, 626 });
 		mock2 = new MockPdfSignature(new int[] { 0, 160367, 193137, 642 });
 
@@ -99,6 +102,16 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 
 		assertEquals(mock0, listToSort.get(0));
 		assertEquals(mock0bis, listToSort.get(1));
+	}
+
+	@Test(expected = DSSException.class)
+	public void testStrange() {
+		List<PdfSignatureOrDocTimestampInfo> listToSort = new ArrayList<PdfSignatureOrDocTimestampInfo>();
+
+		listToSort.add(strange);
+		listToSort.add(mock0);
+
+		Collections.sort(listToSort, new PdfSignatureOrDocTimestampInfoComparator());
 	}
 
 	private class MockPdfSignature implements PdfSignatureOrDocTimestampInfo {
