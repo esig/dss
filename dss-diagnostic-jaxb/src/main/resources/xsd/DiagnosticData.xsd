@@ -303,10 +303,17 @@
 		<xs:simpleContent>
 			<xs:extension base="xs:string">
 				<xs:attribute name="name" type="xs:string" use="required" />
-				<xs:attribute name="scope" type="xs:string" use="required" />
+				<xs:attribute name="scope" type="ScopeType" use="required" />
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
+	
+	<xs:simpleType name="ScopeType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="FULL" />
+			<xs:enumeration value="PARTIAL" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="StructuralValidation">
 		<xs:sequence>

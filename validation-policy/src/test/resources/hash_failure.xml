@@ -44,7 +44,7 @@
 	        </CertificateChain>
 	        <ContentType>text/xml</ContentType>
 	        <SignatureScopes>
-	            <SignatureScope name="Full XML File" scope="XmlRootSignatureScope">The full XML file</SignatureScope>
+	            <SignatureScope name="Full XML File" scope="FULL">The full XML file</SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
 	    <Signature Id="Signature-1758282779">
@@ -88,7 +88,7 @@
 	        </CertificateChain>
 	        <ContentType>text/xml</ContentType>
 	        <SignatureScopes>
-	            <SignatureScope name="Full XML File" scope="XmlRootSignatureScope">The full XML file</SignatureScope>
+	            <SignatureScope name="Full XML File" scope="FULL">The full XML file</SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
     </Signatures>

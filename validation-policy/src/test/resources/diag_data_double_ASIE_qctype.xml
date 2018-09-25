@@ -36,7 +36,7 @@
             <ClaimedRoles/>
             <Timestamps/>
             <SignatureScopes>
-                <SignatureScope name="Full XML File" scope="XmlRootSignatureScope">The full XML file with transformations: XPath filtering; Exclusive Canonical XML (omits comments).</SignatureScope>
+                <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering; Exclusive Canonical XML (omits comments).</SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>

@@ -290,7 +290,7 @@
 	            </Timestamp>
 	        </Timestamps>
 	        <SignatureScopes>
-	            <SignatureScope name="PDF previous version #4" scope="PdfByteRangeSignatureScope">The document byte range: [0, 56223, 94117, 772]</SignatureScope>
+	            <SignatureScope name="PDF previous version #4" scope="PARTIAL">The document byte range: [0, 56223, 94117, 772]</SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
     </Signatures>

@@ -78,8 +78,8 @@
             <ClaimedRoles/>
             <Timestamps/>
             <SignatureScopes>
-                <SignatureScope name="old-detailed-report.pdf" scope="FullSignatureScope">Full document</SignatureScope>
-                <SignatureScope name="old-simple-report.pdf" scope="FullSignatureScope">Full document</SignatureScope>
+                <SignatureScope name="old-detailed-report.pdf" scope="FULL">Full document</SignatureScope>
+                <SignatureScope name="old-simple-report.pdf" scope="FULL">Full document</SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>

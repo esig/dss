@@ -193,7 +193,7 @@ public class SimpleReportBuilder {
 			for (eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope scopeType : signatureScopes) {
 				XmlSignatureScope scope = new XmlSignatureScope();
 				scope.setName(scopeType.getName());
-				scope.setScope(scopeType.getScope());
+				scope.setScope(scopeType.getScope().name());
 				scope.setValue(scopeType.getValue());
 				xmlSignature.getSignatureScope().add(scope);
 			}

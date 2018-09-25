@@ -8,20 +8,20 @@
 
 package eu.europa.esig.dss.jaxb.diagnostic;
 
-import java.util.Date;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import eu.europa.esig.dss.validation.DigestMatcherType;
 
-public class Adapter1
-    extends XmlAdapter<String, Date>
+public class Adapter4
+    extends XmlAdapter<String, DigestMatcherType>
 {
 
 
-    public Date unmarshal(String value) {
-        return (eu.europa.esig.dss.jaxb.parsers.DateParser.parse(value));
+    public DigestMatcherType unmarshal(String value) {
+        return (eu.europa.esig.dss.jaxb.parsers.DigestMatcherTypeParser.parse(value));
     }
 
-    public String marshal(Date value) {
-        return (eu.europa.esig.dss.jaxb.parsers.DateParser.print(value));
+    public String marshal(DigestMatcherType value) {
+        return (eu.europa.esig.dss.jaxb.parsers.DigestMatcherTypeParser.print(value));
     }
 
 }

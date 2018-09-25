@@ -32,7 +32,7 @@
 	        </CertificateChain>
 	        <ContentType>1.2.840.113549.1.7.1</ContentType>
 	        <SignatureScopes>
-	            <SignatureScope name="Full document" scope="FullSignatureScope">Full document</SignatureScope>
+	            <SignatureScope name="Full document" scope="FULL">Full document</SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
     </Signatures>

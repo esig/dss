@@ -57,7 +57,7 @@
             </Policy>
             <Timestamps/>
             <SignatureScopes>
-                <SignatureScope name="Full XML File" scope="XmlRootSignatureScope">The full XML file with transformations: XPath filtering.</SignatureScope>
+                <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering.</SignatureScope>
             </SignatureScopes>
         </Signature>
         <Signature Id="Signature-52abf6c0-67ec-40d4-b73d-08ab4f6691d0">
@@ -114,7 +114,7 @@
             </Policy>
             <Timestamps/>
             <SignatureScopes>
-                <SignatureScope name="Full XML File" scope="XmlRootSignatureScope">The full XML file with transformations: XPath filtering.</SignatureScope>
+                <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering.</SignatureScope>
             </SignatureScopes>
         </Signature>
         <Signature Id="ID-8b009720-f82c-11e6-ae9c-0050569a5ac0">
@@ -172,7 +172,7 @@
             </Policy>
             <Timestamps/>
             <SignatureScopes>
-                <SignatureScope name="Full XML File" scope="XmlRootSignatureScope">The full XML file with transformations: XPath filtering.</SignatureScope>
+                <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering.</SignatureScope>
             </SignatureScopes>
         </Signature>
         <Signature Id="ID-e5b77ba0-1b6a-11e7-a15a-0050569a0676">
@@ -230,7 +230,7 @@
             </Policy>
             <Timestamps/>
             <SignatureScopes>
-                <SignatureScope name="Full XML File" scope="XmlRootSignatureScope">The full XML file with transformations: XPath filtering.</SignatureScope>
+                <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering.</SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>

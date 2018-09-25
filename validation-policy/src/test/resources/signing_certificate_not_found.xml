@@ -38,7 +38,7 @@
 	        </CertificateChain>
 	        <ContentType>application/pdf</ContentType>
 	        <SignatureScopes>
-	            <SignatureScope name="Full PDF" scope="FullSignatureScope">Full document</SignatureScope>
+	            <SignatureScope name="Full PDF" scope="FULL">Full document</SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
     </Signatures>

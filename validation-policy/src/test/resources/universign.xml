@@ -79,7 +79,7 @@
                 </Timestamp>
             </Timestamps>
             <SignatureScopes>
-                <SignatureScope name="PDF previous version #1" scope="PdfByteRangeSignatureScope">The document byte range: [0, 311011, 341013, 856]</SignatureScope>
+                <SignatureScope name="PDF previous version #1" scope="PARTIAL">The document byte range: [0, 311011, 341013, 856]</SignatureScope>
             </SignatureScopes>
         </Signature>
         <Signature Id="id-752da48ccad668fcade0d92a1cd8def412feb7562591d1b2a442294d7219c336">
@@ -150,7 +150,7 @@
                 </Timestamp>
             </Timestamps>
             <SignatureScopes>
-                <SignatureScope name="Full PDF" scope="FullSignatureScope">Full document</SignatureScope>
+                <SignatureScope name="Full PDF" scope="FULL">Full document</SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>

@@ -62,7 +62,7 @@
             <ClaimedRoles/>
             <Timestamps/>
             <SignatureScopes>
-                <SignatureScope name="Hello world.pdf" scope="FullSignatureScope">Full document</SignatureScope>
+                <SignatureScope name="Hello world.pdf" scope="FULL">Full document</SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>

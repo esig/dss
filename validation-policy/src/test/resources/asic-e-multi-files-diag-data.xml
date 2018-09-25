@@ -103,7 +103,7 @@
                 </Timestamp>
             </Timestamps>
             <SignatureScopes>
-                <SignatureScope name="Full document" scope="FullSignatureScope">Full document</SignatureScope>
+                <SignatureScope name="Full document" scope="FULL">Full document</SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>

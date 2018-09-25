@@ -34,6 +34,7 @@ import eu.europa.esig.dss.tsl.TSLValidationResult;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignatureScopeType;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -44,7 +45,6 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
-import eu.europa.esig.dss.xades.validation.XmlRootSignatureScope;
 
 /**
  * This class allows to validate TSL or LOTL. It can be executed as a Callable.
@@ -97,7 +97,7 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 		List<XmlSignatureScope> signatureScopes = signatureWrapper.getSignatureScopes();
 		if (Utils.collectionSize(signatureScopes) == 1) {
 			XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
-			acceptableScope = XmlRootSignatureScope.class.getSimpleName().equals(xmlSignatureScope.getScope());
+			acceptableScope = (SignatureScopeType.FULL == xmlSignatureScope.getScope());
 		}
 
 		SimpleReport simpleReport = reports.getSimpleReport();

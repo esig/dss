@@ -44,7 +44,7 @@
 	        </CertificateChain>
 	        <ContentType>text/xml</ContentType>
 	        <SignatureScopes>
-	            <SignatureScope name="xmldsig-22bfe6ce-8d82-496a-9e97-e0f8e68403c2-object0" scope="XmlElementSignatureScope">The XML element with ID 'xmldsig-22bfe6ce-8d82-496a-9e97-e0f8e68403c2-object0'</SignatureScope>
+	            <SignatureScope name="xmldsig-22bfe6ce-8d82-496a-9e97-e0f8e68403c2-object0" scope="PARTIAL">The XML element with ID 'xmldsig-22bfe6ce-8d82-496a-9e97-e0f8e68403c2-object0'</SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
     </Signatures>

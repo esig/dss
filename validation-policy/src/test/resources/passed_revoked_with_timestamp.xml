@@ -80,7 +80,7 @@
 	            </Timestamp>
 	        </Timestamps>
 	        <SignatureScopes>
-	            <SignatureScope name="Full XML File" scope="XmlRootSignatureScope">The full XML file with transformations: XPath filtering.</SignatureScope>
+	            <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering.</SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
     </Signatures>

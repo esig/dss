@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.validation.SignatureScope;
+import eu.europa.esig.dss.validation.SignatureScopeType;
 
 /**
  *
@@ -46,4 +47,10 @@ public class XPointerSignatureScope extends SignatureScope {
 		sb.append("').");
 		return sb.toString();
 	}
+
+	@Override
+	public SignatureScopeType getType() {
+		return SignatureScopeType.PARTIAL;
+	}
+
 }

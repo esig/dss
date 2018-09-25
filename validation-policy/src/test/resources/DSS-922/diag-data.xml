@@ -40,7 +40,7 @@
 	            <Identified>true</Identified>
 	        </Policy>
 	        <SignatureScopes>
-	            <SignatureScope name="test.txt" scope="FullSignatureScope">Full document</SignatureScope>
+	            <SignatureScope name="test.txt" scope="FULL">Full document</SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
     </Signatures>
