@@ -31,8 +31,6 @@ public class LibreOfficeValidationTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		reports.print();
-
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}

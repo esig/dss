@@ -207,8 +207,36 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			validationContext.addCertificateTokenForVerification(certificate);
 		}
 		prepareTimestamps(validationContext);
-
 		validationContext.validate();
+
+		validateTimestamps();
+		if (!validationContext.isAllTimestampValid()) {
+			String message = "Broken timestamp detected";
+			if (certificateVerifier.isExceptionOnInvalidTimestamp()) {
+				throw new DSSException(message);
+			} else {
+				LOG.warn(message);
+			}
+		}
+
+		if (!validationContext.isAllRequiredRevocationDataPresent()) {
+			String message = "Revocation data is missing";
+			if (certificateVerifier.isExceptionOnMissingRevocationData()) {
+				throw new DSSException(message);
+			} else {
+				LOG.warn(message);
+			}
+		}
+
+		if (!validationContext.isAllCertificateValid()) {
+			String message = "Revoked certificate detected";
+			if (certificateVerifier.isExceptionOnRevokedCertificate()) {
+				throw new DSSException(message);
+			} else {
+				LOG.warn(message);
+			}
+		}
+
 		return validationContext;
 	}
 

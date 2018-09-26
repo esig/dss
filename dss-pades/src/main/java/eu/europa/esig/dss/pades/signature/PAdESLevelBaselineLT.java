@@ -104,15 +104,6 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 
 		ValidationContext validationContext = signature.getSignatureValidationContext(certificateVerifier);
 
-		if (!validationContext.isAllRequiredRevocationDataPresent()) {
-			String message = "Revocation data is missing";
-			if (certificateVerifier.isExceptionOnMissingRevocationData()) {
-				throw new DSSException(message);
-			} else {
-				LOG.warn(message);
-			}
-		}
-
 		DefaultAdvancedSignature.RevocationDataForInclusion revocationsForInclusionInProfileLT = signature.getRevocationDataForInclusion(validationContext);
 
 		DSSDictionaryCallback validationCallback = new DSSDictionaryCallback();

@@ -91,15 +91,6 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 		cadesSignature.setDetachedContents(parameters.getDetachedContents());
 		final ValidationContext validationContext = cadesSignature.getSignatureValidationContext(certificateVerifier);
 
-		if (!validationContext.isAllRequiredRevocationDataPresent()) {
-			String message = "Revocation data is missing";
-			if (certificateVerifier.isExceptionOnMissingRevocationData()) {
-				throw new DSSException(message);
-			} else {
-				LOG.warn(message);
-			}
-		}
-
 		Store<X509CertificateHolder> certificatesStore = cmsSignedData.getCertificates();
 		final Set<CertificateToken> certificates = cadesSignature.getCertificatesForInclusion(validationContext);
 		final Collection<X509CertificateHolder> newCertificateStore = new HashSet<X509CertificateHolder>(certificatesStore.getMatches(null));

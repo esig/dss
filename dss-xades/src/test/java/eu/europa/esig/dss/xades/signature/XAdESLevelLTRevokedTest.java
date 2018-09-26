@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
-import java.util.Date;
 
 import org.junit.Before;
 
@@ -30,6 +29,7 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESLevelLTRevokedTest extends AbstractXAdESTestSignature {
@@ -43,13 +43,14 @@ public class XAdESLevelLTRevokedTest extends AbstractXAdESTestSignature {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		CertificateVerifier completeCertificateVerifier = getCompleteCertificateVerifier();
+		completeCertificateVerifier.setExceptionOnRevokedCertificate(false);
+		service = new XAdESService(completeCertificateVerifier);
 		service.setTspSource(getGoodTsa());
 	}
 

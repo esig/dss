@@ -82,15 +82,6 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 
 		final ValidationContext validationContext = xadesSignature.getSignatureValidationContext(certificateVerifier);
 
-		if (!validationContext.isAllRequiredRevocationDataPresent()) {
-			String message = "Revocation data is missing";
-			if (certificateVerifier.isExceptionOnMissingRevocationData()) {
-				throw new DSSException(message);
-			} else {
-				LOG.warn(message);
-			}
-		}
-
 		removeOldCertificateValues();
 		removeOldRevocationValues();
 

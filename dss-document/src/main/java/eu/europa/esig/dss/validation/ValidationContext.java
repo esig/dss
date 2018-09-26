@@ -92,6 +92,20 @@ public interface ValidationContext {
 	boolean isAllRequiredRevocationDataPresent();
 
 	/**
+	 * This method allows to verify if all processed timestamps are valid and intact
+	 * 
+	 * @return true if all processed timestamps are valid
+	 */
+	boolean isAllTimestampValid();
+
+	/**
+	 * This method allows to verify if all processed certificates are not revoked
+	 * 
+	 * @return true if all processed certificates are still valid
+	 */
+	boolean isAllCertificateValid();
+
+	/**
 	 * Returns a read only list of all certificates used in the process of the validation of all signatures from the
 	 * given document. This list
 	 * includes the certificate to check, certification chain certificates, OCSP response certificate...

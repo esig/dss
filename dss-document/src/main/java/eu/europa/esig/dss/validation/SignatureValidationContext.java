@@ -543,6 +543,31 @@ public class SignatureValidationContext implements ValidationContext {
 		return true;
 	}
 
+	@Override
+	public boolean isAllTimestampValid() {
+		for (TimestampToken timestampToken : processedTimestamps) {
+			if (!timestampToken.isSignatureValid() || !timestampToken.isMessageImprintDataFound() || !timestampToken.isMessageImprintDataIntact()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public boolean isAllCertificateValid() {
+		for (CertificateToken certificateToken : processedCertificates) {
+			if (!isRevocationDataNotRequired(certificateToken)) {
+				for (RevocationToken revocationToken : processedRevocations) {
+					if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())
+							&& !Utils.isTrue(revocationToken.getStatus())) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
 	private boolean isRevocationDataNotRequired(CertificateToken certToken) {
 		return certToken.isSelfSigned() || isTrusted(certToken) || DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken);
 	}

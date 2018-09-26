@@ -86,11 +86,25 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private ListOCSPSource signatureOCSPSource;
 
 	/**
-	 * This variable set the bahavior to follow in case of missing revocation data
+	 * This variable set the behavior to follow in case of missing revocation data
 	 * (augmentation process). True : throw an exception / False : add a warning
 	 * message. Default : true
 	 */
 	private boolean exceptionOnMissingRevocationData = true;
+
+	/**
+	 * This variable set the behavior to follow in case of revoked certificate
+	 * (augmentation process). True : throw an exception / False : add a warning
+	 * message. Default : true
+	 */
+	private boolean exceptionOnRevokedCertificate = true;
+
+	/**
+	 * This variable set the behavior to follow in case of invalid timestamp
+	 * (augmentation process). True : throw an exception / False : add a warning
+	 * message. Default : true
+	 */
+	private boolean exceptionOnInvalidTimestamp = true;
 
 	/**
 	 * This variable set the behavior to follow for revocation retrieving in case of
@@ -219,12 +233,31 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public void setExceptionOnMissingRevocationData(boolean throwExceptionOnMissingRevocationData) {
 		this.exceptionOnMissingRevocationData = throwExceptionOnMissingRevocationData;
-
 	}
 
 	@Override
 	public boolean isExceptionOnMissingRevocationData() {
 		return exceptionOnMissingRevocationData;
+	}
+
+	@Override
+	public boolean isExceptionOnRevokedCertificate() {
+		return exceptionOnRevokedCertificate;
+	}
+
+	@Override
+	public void setExceptionOnRevokedCertificate(boolean exceptionOnRevokedCertificate) {
+		this.exceptionOnRevokedCertificate = exceptionOnRevokedCertificate;
+	}
+
+	@Override
+	public void setExceptionOnInvalidTimestamp(boolean throwExceptionOnInvalidTimestamp) {
+		this.exceptionOnInvalidTimestamp = throwExceptionOnInvalidTimestamp;
+	}
+
+	@Override
+	public boolean isExceptionOnInvalidTimestamp() {
+		return exceptionOnInvalidTimestamp;
 	}
 
 	@Override

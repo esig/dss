@@ -169,6 +169,44 @@ public interface CertificateVerifier {
 	boolean isExceptionOnMissingRevocationData();
 
 	/**
+	 * This method allows to change the behavior on invalid timestamp (LT/LTA
+	 * augmentation). (default : true)
+	 * 
+	 * @param throwExceptionOnInvalidTimestamp
+	 *                                         true if an exception is raised on
+	 *                                         invalid timestamp, false will only
+	 *                                         display a warning message
+	 */
+	void setExceptionOnInvalidTimestamp(boolean throwExceptionOnInvalidTimestamp);
+
+	/**
+	 * This method returns true if an exception needs to be thrown on invalid
+	 * timestamp.
+	 * 
+	 * @return true if an exception is thrown, false if a warning message is added
+	 */
+	boolean isExceptionOnInvalidTimestamp();
+
+	/**
+	 * This method allows to change the behavior on revoked certificates (LT/LTA
+	 * augmentation). (default : true)
+	 * 
+	 * @param throwExceptionOnRevokedCertificate
+	 *                                           true if an exception is raised on
+	 *                                           revoked certificate, false will
+	 *                                           only display a warning message
+	 */
+	void setExceptionOnRevokedCertificate(boolean throwExceptionOnRevokedCertificate);
+
+	/**
+	 * This method returns true if an exception needs to be thrown on revoked
+	 * certificate.
+	 * 
+	 * @return true if an exception is thrown, false if a warning message is added
+	 */
+	boolean isExceptionOnRevokedCertificate();
+
+	/**
 	 * This method allows to enable revocation checking for untrusted certificate
 	 * chains (default : false)
 	 * 
