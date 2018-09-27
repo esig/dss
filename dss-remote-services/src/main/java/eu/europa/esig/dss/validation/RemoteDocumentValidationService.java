@@ -3,6 +3,7 @@ package eu.europa.esig.dss.validation;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -43,6 +44,32 @@ public class RemoteDocumentValidationService {
 		}
 
 		return new ReportsDTO(reports.getDiagnosticDataJaxb(), reports.getSimpleReportJaxb(), reports.getDetailedReportJaxb());
+	}
+
+	public List<DSSDocument> getOriginalDocuments(RemoteDocument signedFile, String signatureId) {
+		List<DSSDocument> originalDocuments = null;
+
+		DSSDocument signedDocument = getDSSDocument(signedFile);
+		SignedDocumentValidator signedDocValidator = SignedDocumentValidator.fromDocument(signedDocument);
+		signedDocValidator.setCertificateVerifier(verifier);
+
+		if (signatureId == null) {
+			List<AdvancedSignature> signatures = null;
+			try {
+				signatures = signedDocValidator.getSignatures();
+			} catch (Exception e) {
+				throw new DSSException(e);
+			}
+			if (signatures.size() > 0) {
+				signatureId = signatures.get(0).getId();
+			}
+		}
+
+		if (signatureId != null) {
+			originalDocuments = signedDocValidator.getOriginalDocuments(signatureId);
+		}
+
+		return originalDocuments;
 	}
 
 	private DSSDocument getDSSDocument(RemoteDocument remoteDocument) {
