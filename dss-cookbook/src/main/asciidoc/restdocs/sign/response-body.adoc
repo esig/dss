@@ -1,0 +1,7 @@
+[source,options="nowrap"]
+----
+{
+  "algorithm" : "RSA_SHA256",
+  "value" : "AZgLVQQLPQkPgRlfTNfTg3QlcDa0JTb0lS6kSteHxHLvjTmtKnRfYTVPZ0bupdPMVQIfuBt4OQv2zVtTbor+kj1u7BaaeO50mXB8OMvo93F/ZmHPIff8VduPASOql7xc4TN73I6KoAn6ouYT0juxluQa9r79yvGo/qhoUwu9R/jGfOfGPKNHbGVDqnG1rHX0qEWPKIYxetiTLnaIZGxuZ9p2vDzZRoEaTs0UWcFu8Yln9Xk8fe6hSxAQOncBXwQX8LKAmZH4/QLsGuJwr+2FhsnC4slXi1TdXPzAlqLU38gmamK+QjqMTIPmQioLq2WLVhLye59dHvgvDChkTW3IZA=="
+}
+----

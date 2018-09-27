@@ -38,6 +38,7 @@
 			<xs:element name="PolicyAvailable" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="PolicyHashMatch" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="AcceptableFormats" type="tns:MultiValuesConstraint" minOccurs="0" />
+			<xs:element name="FullScope" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="BasicSignatureConstraints" type="tns:BasicSignatureConstraints" minOccurs="0" />
 			<xs:element name="SignedAttributes" type="tns:SignedAttributesConstraints" minOccurs="0" />
 			<xs:element name="UnsignedAttributes" type="tns:UnsignedAttributesConstraints" minOccurs="0" />
@@ -47,7 +48,6 @@
 	<xs:complexType name="SignedAttributesConstraints">
 		<xs:sequence>
 			<xs:element name="SigningCertificatePresent" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="SigningCertificateSigned" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="CertDigestPresent" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="CertDigestMatch" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="IssuerSerialMatch" type="tns:LevelConstraint" minOccurs="0" />
@@ -72,8 +72,6 @@
 	<xs:complexType name="TimestampConstraints">
 		<xs:sequence>
 			<xs:element name="TimestampDelay" type="tns:TimeConstraint" minOccurs="0" />
-			<xs:element name="MessageImprintDataFound" type="tns:LevelConstraint" minOccurs="0" />
-			<xs:element name="MessageImprintDataIntact" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="RevocationTimeAgainstBestSignatureTime" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="BestSignatureTimeBeforeIssuanceDateOfSigningCertificate" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="SigningCertificateValidityAtBestSignatureTime" type="tns:LevelConstraint" minOccurs="0" />
@@ -119,6 +117,7 @@
 			<xs:element name="RevocationDataAvailable" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="RevocationDataNextUpdatePresent" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="RevocationDataFreshness" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="RevocationCertHashMatch" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="KeyUsage" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="Surname" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="GivenName" type="tns:MultiValuesConstraint" minOccurs="0" />
@@ -130,6 +129,8 @@
 			<xs:element name="SerialNumberPresent" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="NotRevoked" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="NotOnHold" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="SelfSigned" type="tns:LevelConstraint" minOccurs="0" />
+			<xs:element name="NotSelfSigned" type="tns:LevelConstraint" minOccurs="0" />
 			<xs:element name="PolicyIds" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="QCStatementIds" type="tns:MultiValuesConstraint" minOccurs="0" />
 			<xs:element name="Qualification" type="tns:LevelConstraint" minOccurs="0" />

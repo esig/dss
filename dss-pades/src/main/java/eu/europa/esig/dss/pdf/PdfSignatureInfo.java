@@ -20,14 +20,62 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import java.io.IOException;
+import java.util.Arrays;
+
+import org.bouncycastle.cms.CMSException;
+
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.x509.CertificatePool;
 
-/**
- * TODO
- *
- */
-public interface PdfSignatureInfo extends PdfSignatureOrDocTimestampInfo {
+public class PdfSignatureInfo extends PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 
-	CAdESSignature getCades();
+	private final CAdESSignature cades;
+
+	private final byte[] content;
+
+	/**
+	 * @param validationCertPool
+	 * @param dssDictionary
+	 *            the DSS dictionary
+	 * @param cms
+	 *            the CMS (CAdES) bytes
+	 * @param originalBytes
+	 *            the original bytes of the whole signed document
+	 * @throws IOException
+	 */
+	public PdfSignatureInfo(CertificatePool validationCertPool, PdfSigDict signatureDictionary, PdfDssDict dssDictionary, byte[] cms,
+			byte[] originalBytes, boolean coverCompleteRevision) throws IOException {
+		super(signatureDictionary, dssDictionary, cms, originalBytes, coverCompleteRevision);
+		try {
+			cades = new CAdESSignature(cms, validationCertPool);
+			content = cms;
+			final DSSDocument detachedContent = new InMemoryDocument(getSignedDocumentBytes());
+			cades.setDetachedContents(Arrays.asList(detachedContent));
+		} catch (CMSException e) {
+			throw new IOException(e);
+		}
+	}
+
+	@Override
+	protected void checkIntegrityOnce() {
+		cades.checkSignatureIntegrity();
+	}
+
+	@Override
+	public boolean isTimestamp() {
+		return false;
+	}
+
+	public CAdESSignature getCades() {
+		return cades;
+	}
+
+	@Override
+	public byte[] getContent() {
+		return content;
+	}
 
 }

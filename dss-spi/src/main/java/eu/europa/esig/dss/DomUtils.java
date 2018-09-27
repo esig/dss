@@ -1,9 +1,12 @@
 package eu.europa.esig.dss;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -18,6 +21,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -33,14 +37,11 @@ import javax.xml.xpath.XPathFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
-
-import eu.europa.esig.dss.utils.Utils;
 
 public final class DomUtils {
 
@@ -59,6 +60,23 @@ public final class DomUtils {
 		namespacePrefixMapper = new NamespaceContextMap();
 		namespaces = new HashMap<String, String>();
 		registerDefaultNamespaces();
+
+		dbFactory = DocumentBuilderFactory.newInstance();
+		dbFactory.setNamespaceAware(true);
+		try {
+			// disable external entities details :
+			// https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#Java
+
+			dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+			dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
+			dbFactory.setXIncludeAware(false);
+			dbFactory.setExpandEntityReferences(false);
+		} catch (ParserConfigurationException e) {
+			throw new DSSException("Unable to initialize the DocumentBuilderFactory", e);
+		}
 	}
 
 	/**
@@ -90,31 +108,16 @@ public final class DomUtils {
 	}
 
 	/**
-	 * Guarantees that the xmlString builder has been created.
-	 *
-	 * @throws DSSException
+	 * This method returns a new instance of TransformerFactory with secured features enabled
+	 * 
+	 * @return an instance of TransformerFactory with enabled secure features
 	 */
-	private static void ensureDocumentBuilder() throws DSSException {
-		if (dbFactory != null) {
-			return;
-		}
-		dbFactory = DocumentBuilderFactory.newInstance();
-		dbFactory.setNamespaceAware(true);
-		try {
-			// disable external entities
-			dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-			dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-			dbFactory.setXIncludeAware(false);
-			dbFactory.setExpandEntityReferences(false);
-		} catch (ParserConfigurationException e) {
-			throw new DSSException(e);
-		}
-	}
-
 	public static TransformerFactory getSecureTransformerFactory() {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		try {
 			transformerFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 		} catch (TransformerConfigurationException e) {
 			throw new DSSException(e);
 		}
@@ -122,11 +125,17 @@ public final class DomUtils {
 		return transformerFactory;
 	}
 
+	/**
+	 * This method returns a new instance of Transformer with secured features enabled
+	 * 
+	 * @return an instance of Transformer with enabled secure features
+	 */
 	public static Transformer getSecureTransformer() {
 		TransformerFactory transformerFactory = getSecureTransformerFactory();
 		Transformer transformer = null;
 		try {
 			transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
 		} catch (TransformerConfigurationException e) {
 			throw new DSSException(e);
 		}
@@ -137,11 +146,9 @@ public final class DomUtils {
 	/**
 	 * Creates the new empty Document.
 	 *
-	 * @return
-	 * @throws DSSException
+	 * @return a new empty Document
 	 */
 	public static Document buildDOM() {
-		ensureDocumentBuilder();
 		try {
 			return dbFactory.newDocumentBuilder().newDocument();
 		} catch (ParserConfigurationException e) {
@@ -154,11 +161,10 @@ public final class DomUtils {
 	 *
 	 * @param xmlString
 	 *            The string representing the dssDocument to be created.
-	 * @return
-	 * @throws DSSException
+	 * @return a new {@link org.w3c.dom.Document} with the xmlString content
 	 */
-	public static Document buildDOM(final String xmlString) throws DSSException {
-		return buildDOM(DSSUtils.getUtf8Bytes(xmlString));
+	public static Document buildDOM(final String xmlString) {
+		return buildDOM(xmlString.getBytes(StandardCharsets.UTF_8));
 	}
 
 	/**
@@ -166,10 +172,9 @@ public final class DomUtils {
 	 *
 	 * @param bytes
 	 *            The bytes array representing the dssDocument to be created.
-	 * @return
-	 * @throws DSSException
+	 * @return a new {@link org.w3c.dom.Document} with the bytes content
 	 */
-	public static Document buildDOM(final byte[] bytes) throws DSSException {
+	public static Document buildDOM(final byte[] bytes) {
 		return buildDOM(new ByteArrayInputStream(bytes));
 	}
 
@@ -178,53 +183,44 @@ public final class DomUtils {
 	 *
 	 * @param dssDocument
 	 *            The DSS representation of the document from which the dssDocument is created.
-	 * @return
-	 * @throws DSSException
+	 * @return a new {@link org.w3c.dom.Document} from {@link eu.europa.esig.dss.DSSDocument}
 	 */
-	public static Document buildDOM(final DSSDocument dssDocument) throws DSSException {
+	public static Document buildDOM(final DSSDocument dssDocument) {
 		return buildDOM(dssDocument.openStream());
 	}
 
 	/**
-	 * This method returns the {@link org.w3c.dom.Document} created based on the XML inputStream.
-	 *
-	 * @param inputStream
-	 *            The inputStream stream representing the dssDocument to be created.
-	 * @return
-	 * @throws DSSException
+	 * This method returns true if the binaries contains a {@link org.w3c.dom.Document}
+	 * 
+	 * @param bytes
+	 *            the binaries to be tested
+	 * @return true if the binaries is a XML
 	 */
-	public static Document buildDOM(final InputStream inputStream) throws DSSException {
+	public static boolean isDOM(final byte[] bytes) {
 		try {
-			ensureDocumentBuilder();
-			final Document rootElement = dbFactory.newDocumentBuilder().parse(inputStream);
-			return rootElement;
-		} catch (Exception e) {
-			throw new DSSException(e);
-		} finally {
-			Utils.closeQuietly(inputStream);
+			final Document dom = buildDOM(bytes);
+			return dom != null;
+		} catch (DSSException e) {
+			// NOT DOM
+			return false;
 		}
 	}
 
 	/**
-	 * Creates a DOM document without document element.
+	 * This method returns the {@link org.w3c.dom.Document} created based on the XML
+	 * inputStream.
 	 *
-	 * @param namespaceURI
-	 *            the namespace URI of the document element to create or null
-	 * @param qualifiedName
-	 *            the qualified name of the document element to be created or null
-	 * @return {@code Document}
+	 * @param inputStream
+	 *                    The inputStream stream representing the dssDocument to be
+	 *                    created.
+	 * @return a new {@link org.w3c.dom.Document} from {@link java.io.InputStream} @
 	 */
-	public static Document createDocument(final String namespaceURI, final String qualifiedName) {
-		ensureDocumentBuilder();
-
-		DOMImplementation domImpl;
-		try {
-			domImpl = dbFactory.newDocumentBuilder().getDOMImplementation();
-		} catch (ParserConfigurationException e) {
-			throw new DSSException(e);
+	public static Document buildDOM(final InputStream inputStream) {
+		try (InputStream is = inputStream) {
+			return dbFactory.newDocumentBuilder().parse(is);
+		} catch (Exception e) {
+			throw new DSSException("Unable to parse content (XML expected)", e);
 		}
-
-		return domImpl.createDocument(namespaceURI, qualifiedName, null);
 	}
 
 	/**
@@ -247,16 +243,18 @@ public final class DomUtils {
 	}
 
 	/**
+	 * This method creates a new instance of XPathExpression with the given xpath
+	 * expression
+	 * 
 	 * @param xpathString
-	 *            XPath query string
-	 * @return
+	 *                    XPath query string
+	 * @return an instance of {@code XPathExpression} for the given xpathString @ if
 	 */
 	private static XPathExpression createXPathExpression(final String xpathString) {
 		final XPath xpath = factory.newXPath();
 		xpath.setNamespaceContext(namespacePrefixMapper);
 		try {
-			final XPathExpression expr = xpath.compile(xpathString);
-			return expr;
+			return xpath.compile(xpathString);
 		} catch (XPathExpressionException ex) {
 			throw new DSSException(ex);
 		}
@@ -266,11 +264,10 @@ public final class DomUtils {
 	 * Returns the String value of the corresponding to the XPath query.
 	 *
 	 * @param xmlNode
-	 *            The node where the search should be performed.
+	 *                    The node where the search should be performed.
 	 * @param xPathString
-	 *            XPath query string
+	 *                    XPath query string
 	 * @return string value of the XPath query
-	 * @throws XPathExpressionException
 	 */
 	public static String getValue(final Node xmlNode, final String xPathString) {
 		try {
@@ -286,30 +283,28 @@ public final class DomUtils {
 	 * Returns the NodeList corresponding to the XPath query.
 	 *
 	 * @param xmlNode
-	 *            The node where the search should be performed.
+	 *                    The node where the search should be performed.
 	 * @param xPathString
-	 *            XPath query string
-	 * @return
-	 * @throws XPathExpressionException
+	 *                    XPath query string
+	 * @return the NodeList corresponding to the XPath query
 	 */
 	public static NodeList getNodeList(final Node xmlNode, final String xPathString) {
 		try {
 			final XPathExpression expr = createXPathExpression(xPathString);
-			final NodeList evaluated = (NodeList) expr.evaluate(xmlNode, XPathConstants.NODESET);
-			return evaluated;
+			return (NodeList) expr.evaluate(xmlNode, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			throw new DSSException(e);
 		}
 	}
 
 	/**
-	 * Return the Node corresponding to the XPath query.
+	 * Returns the Node corresponding to the XPath query.
 	 *
 	 * @param xmlNode
 	 *            The node where the search should be performed.
 	 * @param xPathString
 	 *            XPath query string
-	 * @return
+	 * @return the Node corresponding to the XPath query.
 	 */
 	public static Node getNode(final Node xmlNode, final String xPathString) {
 		final NodeList list = getNodeList(xmlNode, xPathString);
@@ -320,13 +315,13 @@ public final class DomUtils {
 	}
 
 	/**
-	 * Return the Element corresponding to the XPath query.
+	 * Returns the Element corresponding to the XPath query.
 	 *
 	 * @param xmlNode
 	 *            The node where the search should be performed.
 	 * @param xPathString
 	 *            XPath query string
-	 * @return
+	 * @return the Element corresponding to the XPath query
 	 */
 	public static Element getElement(final Node xmlNode, final String xPathString) {
 		return (Element) getNode(xmlNode, xPathString);
@@ -336,16 +331,15 @@ public final class DomUtils {
 	 * Returns true if the xpath query contains something
 	 *
 	 * @param xmlNode
+	 *            the current node
 	 * @param xPathString
-	 * @return
+	 *            the expected child node
+	 * @return true if the current node has any filled child node
 	 */
 	public static boolean isNotEmpty(final Node xmlNode, final String xPathString) {
 		// xpath suffix allows to skip text nodes and empty lines
 		NodeList nodeList = getNodeList(xmlNode, xPathString + "/child::node()[not(self::text())]");
-		if ((nodeList != null) && (nodeList.getLength() > 0)) {
-			return true;
-		}
-		return false;
+		return (nodeList != null) && (nodeList.getLength() > 0);
 	}
 
 	/**
@@ -405,8 +399,7 @@ public final class DomUtils {
 
 			XMLGregorianCalendar xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
 			xmlGregorianCalendar.setFractionalSecond(null);
-			xmlGregorianCalendar = xmlGregorianCalendar.normalize(); // to UTC = Zulu
-			return xmlGregorianCalendar;
+			return xmlGregorianCalendar.normalize(); // to UTC = Zulu
 		} catch (DatatypeConfigurationException e) {
 			LOG.warn("Unable to properly convert a Date to an XMLGregorianCalendar " + e.getMessage(), e);
 		}
@@ -453,13 +446,40 @@ public final class DomUtils {
 		return childrenNames;
 	}
 
-	public static void writeDocumentTo(final Document dom, final OutputStream os) throws DSSException {
+	/**
+	 * This method writes the {@link org.w3c.dom.Document} content to an
+	 * outputStream
+	 * 
+	 * @param dom
+	 *            the {@link org.w3c.dom.Document} to be writed
+	 * @param os
+	 *            the OutputStream @ if any error occurred
+	 */
+	public static void writeDocumentTo(final Document dom, final OutputStream os) {
 		try {
 			final DOMSource xmlSource = new DOMSource(dom);
 			final StreamResult outputTarget = new StreamResult(os);
 			Transformer transformer = getSecureTransformer();
 			transformer.transform(xmlSource, outputTarget);
 		} catch (Exception e) {
+			throw new DSSException(e);
+		}
+	}
+
+	/**
+	 * This method creates a new InMemoryDocument with the {@link org.w3c.dom.Document} content and the given name
+	 * 
+	 * @param document
+	 *            the {@link org.w3c.dom.Document} to store
+	 * @param name
+	 *            the ouput filename
+	 * @return a new instance of InMemoryDocument with the XML and the given filename
+	 */
+	public static DSSDocument createDssDocumentFromDomDocument(Document document, String name) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			DomUtils.writeDocumentTo(document, baos);
+			return new InMemoryDocument(baos.toByteArray(), name, MimeType.XML);
+		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}
@@ -482,6 +502,27 @@ public final class DomUtils {
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
+	}
+
+	/**
+	 * This method returns stored namespace definitions
+	 * 
+	 * @return a map with the prefix and the related URI
+	 */
+	public static Map<String, String> getCurrentNamespaces() {
+		return new HashMap<String, String>(namespaces);
+	}
+
+	public static String getXPathByIdAttribute(String uri) {
+		return "[@Id='" + getId(uri) + "']";
+	}
+
+	public static String getId(String uri) {
+		String id = uri;
+		if (uri.startsWith("#")) {
+			id = id.substring(1);
+		}
+		return id;
 	}
 
 }

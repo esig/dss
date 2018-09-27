@@ -21,8 +21,6 @@
 package eu.europa.esig.dss;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import eu.europa.esig.dss.utils.Utils;
@@ -30,9 +28,7 @@ import eu.europa.esig.dss.utils.Utils;
 /**
  * In memory representation of a document
  *
- *
  */
-
 public class InMemoryDocument extends CommonDocument {
 
 	private byte[] bytes;
@@ -86,6 +82,7 @@ public class InMemoryDocument extends CommonDocument {
 	 * @param inputStream
 	 *            input stream representing the document
 	 * @throws DSSException
+	 *             if the inputstream cannot be read
 	 */
 	public InMemoryDocument(final InputStream inputStream) throws DSSException {
 		this(DSSUtils.toByteArray(inputStream), null, null);
@@ -98,7 +95,8 @@ public class InMemoryDocument extends CommonDocument {
 	 *            input stream representing the document
 	 * @param name
 	 *            the file name if the data originates from a file
-	 * @throws IOException
+	 * @throws DSSException
+	 *             if the inputstream cannot be read
 	 */
 	public InMemoryDocument(final InputStream inputStream, final String name) throws DSSException {
 		this(DSSUtils.toByteArray(inputStream), name);
@@ -113,7 +111,8 @@ public class InMemoryDocument extends CommonDocument {
 	 *            the file name if the data originates from a file
 	 * @param mimeType
 	 *            the mime type of the file if the data originates from a file
-	 * @throws IOException
+	 * @throws DSSException
+	 *             if the inputstream cannot be read
 	 */
 	public InMemoryDocument(final InputStream inputStream, final String name, final MimeType mimeType) throws DSSException {
 		this(DSSUtils.toByteArray(inputStream), name, mimeType);
@@ -131,36 +130,6 @@ public class InMemoryDocument extends CommonDocument {
 
 	public void setBytes(byte[] bytes) {
 		this.bytes = bytes;
-	}
-
-	@Override
-	public String getAbsolutePath() {
-		return absolutePath;
-	}
-
-	@Override
-	public void setAbsolutePath(final String absolutePath) {
-		this.absolutePath = absolutePath;
-	}
-
-	@Override
-	public void save(final String filePath) {
-		FileOutputStream fos = null;
-		try {
-			fos = new FileOutputStream(filePath);
-			Utils.write(getBytes(), fos);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		} finally {
-			Utils.closeQuietly(fos);
-		}
-	}
-
-	@Override
-	public String getDigest(final DigestAlgorithm digestAlgorithm) {
-		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, bytes);
-		final String base64Encode = Utils.toBase64(digestBytes);
-		return base64Encode;
 	}
 
 	public String getBase64Encoded() {

@@ -12,6 +12,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public abstract class AbstractGetDataToSignASiCS {
@@ -20,11 +21,7 @@ public abstract class AbstractGetDataToSignASiCS {
 
 	/* In case of multi-files and ASiC-S, we need to create a zip with all files to be signed */
 	protected DSSDocument createPackageZip(List<DSSDocument> documents, Date signingDate) {
-		ByteArrayOutputStream baos = null;
-		ZipOutputStream zos = null;
-		try {
-			baos = new ByteArrayOutputStream();
-			zos = new ZipOutputStream(baos);
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); ZipOutputStream zos = new ZipOutputStream(baos)) {
 
 			for (DSSDocument document : documents) {
 				final String documentName = document.getName();
@@ -42,13 +39,12 @@ public abstract class AbstractGetDataToSignASiCS {
 				Utils.write(byteArray, zos);
 			}
 
+			zos.finish();
+
+			return new InMemoryDocument(baos.toByteArray(), ASiCUtils.PACKAGE_ZIP);
 		} catch (IOException e) {
 			throw new DSSException("Unable to create package.zip file", e);
-		} finally {
-			Utils.closeQuietly(zos);
-			Utils.closeQuietly(baos);
 		}
-		return new InMemoryDocument(baos.toByteArray(), "package.zip");
 	}
 
 }

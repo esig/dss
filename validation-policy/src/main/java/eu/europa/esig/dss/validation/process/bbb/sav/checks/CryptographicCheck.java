@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ import eu.europa.esig.jaxb.policy.ListAlgo;
 
 public class CryptographicCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
-	private static final Logger logger = LoggerFactory.getLogger(CryptographicCheck.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CryptographicCheck.class);
 
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 
@@ -114,7 +115,7 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 				try {
 					result = dateFormat.parse(algo.getDate());
 				} catch (Exception e) {
-					logger.warn("Unable to parse date with pattern '" + dateFormat.toPattern() + "' : " + e.getMessage());
+					LOG.warn("Unable to parse date with pattern '" + dateFormat.toPattern() + "' : " + e.getMessage());
 				}
 			}
 		}
@@ -166,6 +167,7 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 	@Override
 	protected String getAdditionalInfo() {
 		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		Object[] params = new Object[] { sdf.format(validationDate) };
 		return MessageFormat.format(AdditionalInfo.VALIDATION_TIME, params);
 	}

@@ -82,11 +82,10 @@ public class TSLSParserTest {
 				List<TSLService> services = tslServiceProvider.getServices();
 				assertTrue(Utils.isCollectionNotEmpty(services));
 				for (TSLService tslService : services) {
-					assertTrue(Utils.isStringNotEmpty(tslService.getName()));
-
 					TimeDependentValues<TSLServiceStatusAndInformationExtensions> status = tslService.getStatusAndInformationExtensions();
 					int n = 0;
 					for (TSLServiceStatusAndInformationExtensions tslServiceStatus : status) {
+						assertTrue(Utils.isStringNotEmpty(tslServiceStatus.getName()));
 						assertTrue(Utils.isStringNotEmpty(tslServiceStatus.getStatus()));
 						assertTrue(Utils.isStringNotEmpty(tslServiceStatus.getType()));
 						assertNotNull(tslServiceStatus.getStartDate());

@@ -25,7 +25,8 @@ import java.io.Serializable;
 import eu.europa.esig.dss.util.TimeDependentValues;
 
 /**
- * From a validation point of view, a Service is a set of pair ("Qualification Statement", "Condition").
+ * From a validation point of view, a Service is a set of pair ("Qualification
+ * Statement", "Condition").
  *
  */
 public class ServiceInfo implements Serializable {
@@ -35,139 +36,188 @@ public class ServiceInfo implements Serializable {
 	private String tlCountryCode;
 
 	/**
-	 * <tsl:TrustServiceProvider><tsl:TSPInformation><tsl:TSPName>
+	 * <pre>
+	 * {@code
+	 * 	<tsl:TrustServiceProvider><tsl:TSPInformation><tsl:TSPName>
+	 * }
+	 * </pre>
 	 */
 	private String tspName;
 
 	/**
+	 * <pre>
+	 * {@code
 	 * <tsl:TrustServiceProvider><tsl:TSPInformation><tsl:TSPTradeName>
+	 * }
+	 * </pre>
 	 */
 	private String tspTradeName;
 
 	/**
+	 * VAT or NTR
+	 * 
+	 * <pre>
+	 * {@code
+	 * <tsl:TrustServiceProvider><tsl:TSPInformation><tsl:TSPTradeName><tsl:Name> 
+	 * }
+	 * </pre>
+	 */
+	private String tspRegistrationIdentifier;
+
+	/**
+	 * <pre>
+	 * {@code
 	 * <tsl:TrustServiceProvider><tsl:TSPInformation><tsl:TSPAddress><tsl:PostalAddresses>
+	 * }
+	 * </pre>
 	 */
 	private String tspPostalAddress;
 
 	/**
+	 * <pre>
+	 * {@code
 	 * <tsl:TrustServiceProvider><tsl:TSPInformation><tsl:TSPAddress><tsl:ElectronicAddress>
+	 * }
+	 * </pre>
 	 */
 	private String tspElectronicAddress;
 
-	/**
-	 * <tsl:TrustServiceProvider><tsl:TSPServices><tsl:TSPService><tsl:ServiceInformation><tsl:ServiceName>
-	 */
-	private String serviceName;
-
 	private TimeDependentValues<ServiceInfoStatus> status = new TimeDependentValues<ServiceInfoStatus>();
 
+	/**
+	 * Returns the trusted list country code
+	 * 
+	 * @return the country code
+	 */
 	public String getTlCountryCode() {
 		return tlCountryCode;
 	}
 
-	public void setTlCountryCode(String tlCountryCode) {
-		this.tlCountryCode = tlCountryCode;
-	}
-
 	/**
-	 * @return
+	 * Returns the status history
+	 * 
+	 * @return the trust service's status history
 	 */
-	public String getServiceName() {
-		return serviceName;
+	public TimeDependentValues<ServiceInfoStatus> getStatus() {
+		return status;
 	}
 
 	/**
-	 * @return
+	 * Returns the trust service provider's electronic address
+	 * 
+	 * @return the trust service provider's electronic address
 	 */
 	public String getTspElectronicAddress() {
 		return tspElectronicAddress;
 	}
 
 	/**
-	 * @return
+	 * Returns the trust service provider name
+	 * 
+	 * @return the trust service provider name
 	 */
 	public String getTspName() {
 		return tspName;
 	}
 
 	/**
-	 * @return
+	 * Returns the trust service VAT or NTR number
+	 * 
+	 * @return the trust service VAT or NTR number
+	 */
+	public String getTspRegistrationIdentifier() {
+		return tspRegistrationIdentifier;
+	}
+
+	/**
+	 * Returns the trust service provider's postal address
+	 * 
+	 * @return the trust service provider's postal address
 	 */
 	public String getTspPostalAddress() {
 		return tspPostalAddress;
 	}
 
 	/**
-	 * @return
+	 * Returns the trust service provider's trade name
+	 * 
+	 * @return the trust service provider's trade name
 	 */
 	public String getTspTradeName() {
 		return tspTradeName;
 	}
 
 	/**
-	 * @param serviceName
+	 * Sets the country code
+	 * 
+	 * @param tlCountryCode
+	 *            the trusted list country code
 	 */
-	public void setServiceName(String serviceName) {
-		this.serviceName = trim(serviceName);
+	public void setTlCountryCode(String tlCountryCode) {
+		this.tlCountryCode = tlCountryCode;
 	}
 
 	/**
+	 * Sets the electronic address
+	 * 
 	 * @param tspElectronicAddress
+	 *            the electronic address
 	 */
 	public void setTspElectronicAddress(String tspElectronicAddress) {
 		this.tspElectronicAddress = trim(tspElectronicAddress);
 	}
 
 	/**
+	 * Sets the trust service provider name
+	 * 
 	 * @param tspName
+	 *            the trust service provider's name
 	 */
 	public void setTspName(String tspName) {
 		this.tspName = trim(tspName);
 	}
 
 	/**
+	 * Sets the trust service VAT / NTR number
+	 * 
+	 * @param tspRegistrationIdentifier
+	 *            the trust service VAT / NTR number
+	 */
+	public void setTspRegistrationIdentifier(String tspRegistrationIdentifier) {
+		this.tspRegistrationIdentifier = tspRegistrationIdentifier;
+	}
+
+	/**
+	 * Sets the trust service provider's postal address
+	 * 
 	 * @param tspPostalAddress
+	 *            the postal address
 	 */
 	public void setTspPostalAddress(String tspPostalAddress) {
 		this.tspPostalAddress = trim(tspPostalAddress);
 	}
 
 	/**
+	 * Sets the trust service provider's trade name
+	 * 
 	 * @param tspTradeName
+	 *            the trade name
 	 */
 	public void setTspTradeName(String tspTradeName) {
 		this.tspTradeName = trim(tspTradeName);
 	}
 
-	public TimeDependentValues<ServiceInfoStatus> getStatus() {
-		return status;
-	}
-
+	/**
+	 * Sets the status history
+	 * 
+	 * @param status
+	 *            the status history
+	 */
 	public void setStatus(TimeDependentValues<ServiceInfoStatus> status) {
 		this.status = new TimeDependentValues<ServiceInfoStatus>(status);
 	}
 
-	/**
-	 * @param indent
-	 * @return
-	 */
-	public String toString(String indent) {
-		try {
-			StringBuffer buffer = new StringBuffer();
-			buffer.append(indent).append("TSPName                   \t= ").append(tspName).append('\n');
-			buffer.append(indent).append("ServiceName               \t= ").append(serviceName).append('\n');
-			buffer.append(indent).append("StatusAndExtensions       \t= ").append(status).append('\n');
-			buffer.append(indent).append("TSPTradeName              \t= ").append(tspTradeName).append('\n');
-			buffer.append(indent).append("TSPPostalAddress          \t= ").append(tspPostalAddress).append('\n');
-			buffer.append(indent).append("TSPElectronicAddress      \t= ").append(tspElectronicAddress).append("\n\n");
-			return buffer.toString();
-		} catch (Exception e) {
-			return super.toString();
-		}
-	}
-
 	private String trim(String str) {
-
 		if (str != null) {
 			return str.trim();
 		}
@@ -176,16 +226,27 @@ public class ServiceInfo implements Serializable {
 
 	@Override
 	public String toString() {
-
-		return toString("");
+		StringBuilder buffer = new StringBuilder();
+		buffer.append("TSPName                   \t= ").append(tspName).append('\n');
+		buffer.append("TSPTradeName              \t= ").append(tspTradeName).append('\n');
+		buffer.append("TSPRegistrationIdentifier \t= ").append(tspRegistrationIdentifier).append('\n');
+		buffer.append("TSPPostalAddress          \t= ").append(tspPostalAddress).append('\n');
+		buffer.append("TSPElectronicAddress      \t= ").append(tspElectronicAddress).append("\n\n");
+		buffer.append("StatusAndExtensions       \t= ").append(status).append('\n');
+		return buffer.toString();
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + ((serviceName == null) ? 0 : serviceName.hashCode());
-		result = (prime * result) + ((tspName == null) ? 0 : tspName.hashCode());
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + ((tlCountryCode == null) ? 0 : tlCountryCode.hashCode());
+		result = prime * result + ((tspElectronicAddress == null) ? 0 : tspElectronicAddress.hashCode());
+		result = prime * result + ((tspName == null) ? 0 : tspName.hashCode());
+		result = prime * result + ((tspPostalAddress == null) ? 0 : tspPostalAddress.hashCode());
+		result = prime * result + ((tspRegistrationIdentifier == null) ? 0 : tspRegistrationIdentifier.hashCode());
+		result = prime * result + ((tspTradeName == null) ? 0 : tspTradeName.hashCode());
 		return result;
 	}
 
@@ -201,11 +262,25 @@ public class ServiceInfo implements Serializable {
 			return false;
 		}
 		ServiceInfo other = (ServiceInfo) obj;
-		if (serviceName == null) {
-			if (other.serviceName != null) {
+		if (status == null) {
+			if (other.status != null) {
 				return false;
 			}
-		} else if (!serviceName.equals(other.serviceName)) {
+		} else if (!status.equals(other.status)) {
+			return false;
+		}
+		if (tlCountryCode == null) {
+			if (other.tlCountryCode != null) {
+				return false;
+			}
+		} else if (!tlCountryCode.equals(other.tlCountryCode)) {
+			return false;
+		}
+		if (tspElectronicAddress == null) {
+			if (other.tspElectronicAddress != null) {
+				return false;
+			}
+		} else if (!tspElectronicAddress.equals(other.tspElectronicAddress)) {
 			return false;
 		}
 		if (tspName == null) {
@@ -213,6 +288,27 @@ public class ServiceInfo implements Serializable {
 				return false;
 			}
 		} else if (!tspName.equals(other.tspName)) {
+			return false;
+		}
+		if (tspPostalAddress == null) {
+			if (other.tspPostalAddress != null) {
+				return false;
+			}
+		} else if (!tspPostalAddress.equals(other.tspPostalAddress)) {
+			return false;
+		}
+		if (tspRegistrationIdentifier == null) {
+			if (other.tspRegistrationIdentifier != null) {
+				return false;
+			}
+		} else if (!tspRegistrationIdentifier.equals(other.tspRegistrationIdentifier)) {
+			return false;
+		}
+		if (tspTradeName == null) {
+			if (other.tspTradeName != null) {
+				return false;
+			}
+		} else if (!tspTradeName.equals(other.tspTradeName)) {
 			return false;
 		}
 		return true;

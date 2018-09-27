@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.validation;
 import java.util.List;
 
 import eu.europa.esig.dss.validation.SignatureScope;
+import eu.europa.esig.dss.validation.SignatureScopeType;
 
 /**
  *
@@ -38,7 +39,6 @@ public class XmlElementSignatureScope extends SignatureScope {
 
 	@Override
 	public String getDescription() {
-
 		String description = "The XML element with ID '" + getName() + "'";
 		if (transformations.isEmpty()) {
 			return description;
@@ -48,7 +48,6 @@ public class XmlElementSignatureScope extends SignatureScope {
 	}
 
 	protected String addTransformationDescription(final String description) {
-
 		StringBuilder result = new StringBuilder();
 		result.append(description).append(" with transformations: ");
 		for (final String transformation : transformations) {
@@ -61,4 +60,10 @@ public class XmlElementSignatureScope extends SignatureScope {
 	protected List<String> getTransformations() {
 		return transformations;
 	}
+
+	@Override
+	public SignatureScopeType getType() {
+		return SignatureScopeType.PARTIAL;
+	}
+
 }

@@ -9,10 +9,9 @@ import org.junit.Test;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataExistenceCheck;
-import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
@@ -20,17 +19,15 @@ public class ReferenceDataExistenceCheckTest {
 
 	@Test
 	public void referenceDataExistenceCheck() throws Exception {
-		XmlBasicSignature basicsig = new XmlBasicSignature();
-		basicsig.setReferenceDataFound(true);
-
-		XmlSignature sig = new XmlSignature();
-		sig.setBasicSignature(basicsig);
+		XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
+		digestMatcher.setDataFound(true);
+		digestMatcher.setType(DigestMatcherType.MESSAGE_DIGEST);
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
 		XmlCV result = new XmlCV();
-		ReferenceDataExistenceCheck rdec = new ReferenceDataExistenceCheck(result, new SignatureWrapper(sig),
+		ReferenceDataExistenceCheck rdec = new ReferenceDataExistenceCheck(result, digestMatcher,
 				constraint);
 		rdec.execute();
 
@@ -41,17 +38,15 @@ public class ReferenceDataExistenceCheckTest {
 
 	@Test
 	public void referenceDataNotExistenceCheck() throws Exception {
-		XmlBasicSignature basicsig = new XmlBasicSignature();
-		basicsig.setReferenceDataFound(false);
-
-		XmlSignature sig = new XmlSignature();
-		sig.setBasicSignature(basicsig);
+		XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
+		digestMatcher.setDataFound(false);
+		digestMatcher.setType(DigestMatcherType.MESSAGE_DIGEST);
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
 		XmlCV result = new XmlCV();
-		ReferenceDataExistenceCheck rdec = new ReferenceDataExistenceCheck(result, new SignatureWrapper(sig),
+		ReferenceDataExistenceCheck rdec = new ReferenceDataExistenceCheck(result, digestMatcher,
 				constraint);
 		rdec.execute();
 

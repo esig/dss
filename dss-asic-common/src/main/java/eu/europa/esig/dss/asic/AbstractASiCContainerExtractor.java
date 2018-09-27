@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.asic;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
@@ -10,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -32,39 +30,37 @@ public abstract class AbstractASiCContainerExtractor {
 	public ASiCExtractResult extract() {
 		ASiCExtractResult result = new ASiCExtractResult();
 
-		ZipInputStream asicsInputStream = null;
-		try {
-			asicsInputStream = new ZipInputStream(asicContainer.openStream());
+		try (InputStream is = asicContainer.openStream(); ZipInputStream asicInputStream = new ZipInputStream(is)) {
 			ZipEntry entry;
-			while ((entry = asicsInputStream.getNextEntry()) != null) {
+			while ((entry = asicInputStream.getNextEntry()) != null) {
 				String entryName = entry.getName();
 				if (isMetaInfFolder(entryName)) {
 					if (isAllowedSignature(entryName)) {
-						result.getSignatureDocuments().add(getCurrentDocument(entryName, asicsInputStream));
+						result.getSignatureDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
 					} else if (isAllowedManifest(entryName)) {
-						result.getManifestDocuments().add(getCurrentDocument(entryName, asicsInputStream));
+						result.getManifestDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
+					} else if (isAllowedArchiveManifest(entryName)) {
+						result.getArchiveManifestDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
+					} else if (isAllowedTimestamp(entryName)) {
+						result.getTimestampDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
 					} else if (!isFolder(entryName)) {
-						result.getUnsupportedDocuments().add(getCurrentDocument(entryName, asicsInputStream));
+						result.getUnsupportedDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
 					}
 				} else if (!isFolder(entryName)) {
 					if (isMimetype(entryName)) {
-						result.setMimeTypeDocument(getCurrentDocument(entryName, asicsInputStream));
+						result.setMimeTypeDocument(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
 					} else {
-						result.getSignedDocuments().add(getCurrentDocument(entryName, asicsInputStream));
+						result.getSignedDocuments().add(ASiCUtils.getCurrentDocument(entryName, asicInputStream));
 					}
-				} else {
-					result.getUnsupportedDocuments().add(getCurrentDocument(entryName, asicsInputStream));
 				}
 			}
 
 			if (Utils.isCollectionNotEmpty(result.getUnsupportedDocuments())) {
-				LOG.warn("Unsupported files : " + result.getUnsupportedDocuments());
+				LOG.warn("Unsupported files : {}", result.getUnsupportedDocuments());
 			}
 
 		} catch (IOException e) {
-			LOG.warn("Unable to parse the container " + e.getMessage());
-		} finally {
-			Utils.closeQuietly(asicsInputStream);
+			LOG.warn("Unable to parse the container {}", e.getMessage());
 		}
 
 		result.setZipComment(getZipComment());
@@ -73,9 +69,7 @@ public abstract class AbstractASiCContainerExtractor {
 	}
 
 	public String getZipComment() {
-		InputStream is = null;
-		try {
-			is = asicContainer.openStream();
+		try (InputStream is = asicContainer.openStream()) {
 			byte[] buffer = Utils.toByteArray(is);
 			final int len = buffer.length;
 			final byte[] magicDirEnd = { 0x50, 0x4b, 0x05, 0x06 };
@@ -94,16 +88,14 @@ public abstract class AbstractASiCContainerExtractor {
 					int commentLen = buffer[ii + 20] + buffer[ii + 21] * 256;
 					int realLen = len - ii - 22;
 					if (commentLen != realLen) {
-						LOG.warn("WARNING! ZIP comment size mismatch: directory says len is " + commentLen + ", but file ends after " + realLen + " bytes!");
+						LOG.warn("WARNING! ZIP comment size mismatch: directory says len is {}, but file ends after {} bytes!", commentLen, realLen);
 					}
 					return new String(buffer, ii + 22, realLen);
 
 				}
 			}
 		} catch (Exception e) {
-			LOG.warn("Unable to extract the ZIP comment : " + e.getMessage());
-		} finally {
-			Utils.closeQuietly(is);
+			LOG.warn("Unable to extract the ZIP comment : {}", e.getMessage());
 		}
 		return null;
 	}
@@ -122,17 +114,10 @@ public abstract class AbstractASiCContainerExtractor {
 
 	abstract boolean isAllowedManifest(String entryName);
 
-	abstract boolean isAllowedSignature(String entryName);
+	abstract boolean isAllowedArchiveManifest(String entryName);
 
-	private DSSDocument getCurrentDocument(String filepath, ZipInputStream zis) throws IOException {
-		ByteArrayOutputStream baos = null;
-		try {
-			baos = new ByteArrayOutputStream();
-			Utils.copy(zis, baos);
-			return new InMemoryDocument(baos.toByteArray(), filepath);
-		} finally {
-			Utils.closeQuietly(baos);
-		}
-	}
+	abstract boolean isAllowedTimestamp(String entryName);
+
+	abstract boolean isAllowedSignature(String entryName);
 
 }

@@ -20,11 +20,14 @@
  */
 package eu.europa.esig.dss.validation.process;
 
-public enum MessageTag {
+public enum MessageTag implements IMessageTag {
 
 	/* BBB -> FC */
 	BBB_FC_IEFF("Is the expected format found?"),
 	BBB_FC_IEFF_ANS("The expected format is not found!"),
+
+	BBB_FC_ICFD("Is the signature cover all document(s)?"),
+	BBB_FC_ICFD_ANS("The signature doesn't cover the whole document(s)!"),
 	
 	BBB_FC_IECTF("Is the expected container type found?"),
 	BBB_FC_IECTF_ANS("The expected container type is not found!"),
@@ -48,10 +51,10 @@ public enum MessageTag {
 	BBB_FC_IMFP_ASICS_ANS("The manifest file is present!"),
 	
 	/* BBB -> CV */
-	BBB_CV_IRDOF("Is the reference data object(s) found?"),
-	BBB_CV_IRDOF_ANS("The reference data object(s) is not found!"),
-	BBB_CV_IRDOI("Is the reference data object(s) intact?"),
-	BBB_CV_IRDOI_ANS("The reference data object(s) is not intact!"),
+	BBB_CV_IRDOF("Is the reference data object found?"),
+	BBB_CV_IRDOF_ANS("The reference data object is not found!"),
+	BBB_CV_IRDOI("Is the reference data object intact?"),
+	BBB_CV_IRDOI_ANS("The reference data object is not intact!"),
 	BBB_CV_ISI("Is the signature intact?"),
 	BBB_CV_ISI_ANS("The signature is not intact!"),
 	BBB_CV_IAFS("Is all files signed?"),
@@ -60,8 +63,6 @@ public enum MessageTag {
 	/* BBB -> ICS */
 	BBB_ICS_ISCI("Is there an identified candidate for the signing certificate?"),
 	BBB_ICS_ISCI_ANS("There is no candidate for the signing certificate!"),
-	BBB_ICS_ISCS("Is the signing certificate signed?"),
-	BBB_ICS_ISCS_ANS("The signing certificate is not signed!"),
 	BBB_ICS_ISASCP("Is the signed attribute: 'signing-certificate' present?"),
 	BBB_ICS_ISASCP_ANS("The signed attribute: 'signing-certificate' is absent!"),
 	BBB_ICS_ISACDP("Is the signed attribute: 'cert-digest' of the certificate present?"),
@@ -189,6 +190,8 @@ public enum MessageTag {
 	BBB_XCV_AIA_PRES_ANS("Authority info access is not present!"),
 	BBB_XCV_REVOC_PRES("Is revocation info access present?"),
 	BBB_XCV_REVOC_PRES_ANS("Revocation info access is not present!"),
+	BBB_XCV_REVOC_CERT_HASH("Is the certHash from OCSP Response(s) match?"),
+	BBB_XCV_REVOC_CERT_HASH_ANS("The certHash content doesn't match the current certificate!"),
 
 	BBB_XCV_ISCGCOUN("Has the certificate given country-name?"),
 	BBB_XCV_ISCGCOUN_ANS("The certificate has not expected country-name!"),
@@ -204,6 +207,12 @@ public enum MessageTag {
 	BBB_XCV_ISCGPSEUDO_ANS("The certificate has not expected pseudonym!"),
 	BBB_XCV_ISCGCOMMONN("Has the certificate given common name?"),
 	BBB_XCV_ISCGCOMMONN_ANS("The certificate has not expected common name!"),
+
+	BBB_XCV_ISSSC("Is self-signed certificate?"),
+	BBB_XCV_ISSSC_ANS("The certificate is not self-signed!"),
+	
+	BBB_XCV_ISNSSC("Is not self-signed certificate?"),
+	BBB_XCV_ISNSSC_ANS("The certificate is self-signed!"),
 
 	XCV_IFCCIIPC_ANS("The interval ['%s', '%s'] for the certificate ['%s'] is inconsistent in the prospective chain."),
 
@@ -264,11 +273,12 @@ public enum MessageTag {
 	QUAL_TL_WS("Is the trusted list well signed ?"),
 	QUAL_TL_WS_ANS("The trusted list is not well signed!"),
 	
-	QUAL_TL_SERV_CONS("Are trust services consistent ?"),
+	QUAL_TL_SERV_CONS("Is the trust service consistent ?"),
 	QUAL_TL_SERV_CONS_ANS0("No CA/QC Trust service found"),
 	QUAL_TL_SERV_CONS_ANS1("Trust service not consistent! (QCStatement and NotQualified)"),
 	QUAL_TL_SERV_CONS_ANS2("Trust service not consistent! (QCForLegalPerson and QCForeSig)"),
 	QUAL_TL_SERV_CONS_ANS3("Trust service not consistent! (X_QSCD and NotQSCD)"),
+	QUAL_TL_SERV_CONS_ANS3A("Trust service not consistent! (QSCDStatusAsInCert and X_QSCD)"),
 	QUAL_TL_SERV_CONS_ANS4("Trust service not consistent! (incompatible usages of QCForeSig, QCForeSeal, QCForWSA)"),
 	QUAL_TL_SERV_CONS_ANS5("Trust service not consistent! (invalid additional service info / qualifier in service before 1/7/16)"),
 	QUAL_TL_SERV_CONS_ANS6("Trust service not consistent! (conflict between additional service info and qualifier)"),
@@ -278,27 +288,55 @@ public enum MessageTag {
 
 	QUAL_TRUSTED_LIST_ACCEPT("Is the trusted list acceptable?"),
 	QUAL_TRUSTED_LIST_ACCEPT_ANS("The trusted list is not acceptable!"),
-	QUAL_QC_AT_ST("Is the certificate qualifed at signing time?"),
-	QUAL_QC_AT_ST_ANS("The certificate is not qualified at signing time!"),
 
-	QUAL_FOR_SIGN_AT_ST("Is the certificate for eSig at signing time?"),
-	QUAL_FOR_SIGN_AT_ST_ANS("The certificate is not for eSig at signing time!"),
-	
-	QUAL_QC_AT_CC("Is the certificate qualifed at issuance time?"),
+	QUAL_FOR_SIGN_AT_ST("Is the certificate for eSig at (best) signing time?"),
+	QUAL_FOR_SIGN_AT_ST_ANS("The certificate is not for eSig at (best) signing time!"),
+	QUAL_FOR_SIGN_AT_CC("Is the certificate for eSig at issuance time?"),
+	QUAL_FOR_SIGN_AT_CC_ANS("The certificate is not for eSig at issuance time!"),
+	QUAL_FOR_SIGN_AT_VT("Is the certificate for eSig at validation time?"),
+	QUAL_FOR_SIGN_AT_VT_ANS("The certificate is not for eSig at validation time!"),
+
+	QUAL_QC_AT_ST("Is the certificate qualified at (best) signing time?"),
+	QUAL_QC_AT_ST_ANS("The certificate is not qualified at (best) signing time!"),
+	QUAL_QC_AT_CC("Is the certificate qualified at issuance time?"),
 	QUAL_QC_AT_CC_ANS("The certificate is not qualified at issuance time!"),
+	QUAL_QC_AT_VT("Is the certificate qualified at validation time?"),
+	QUAL_QC_AT_VT_ANS("The certificate is not qualified at validation time!"),
+
+	QUAL_QSCD_AT_ST("Is the private key on a QSCD at (best) signing time?"),
+	QUAL_QSCD_AT_ST_ANS("The private key is not on a QSCD at (best) signing time!"),
+	QUAL_QSCD_AT_CC("Is the private key on a QSCD at issuance time?"),
+	QUAL_QSCD_AT_CC_ANS("The private key is not on a QSCD at issuance time!"),
+	QUAL_QSCD_AT_VT("Is the private key on a QSCD at validation time?"),
+	QUAL_QSCD_AT_VT_ANS("The private key is not on a QSCD at validation time!"),
 
 	QUAL_UNIQUE_CERT("Is the certificate unique ?"),
 	QUAL_UNIQUE_CERT_ANS("The certificate cannot be defined as unique!"),
-	QUAL_QSCD_AT_ST("Is the signature/seal created by a QSCD?"),
-	QUAL_QSCD_AT_ST_ANS("The signature/seal is not created by a QSCD!"),
 	QUAL_IS_ADES("Is the signature/seal an acceptable AdES (ETSI EN 319 102-1) ?"),
 	QUAL_IS_ADES_IND("The signature/seal is an INDETERMINATE AdES!"),
 	QUAL_IS_ADES_INV("The signature/seal is not a valid AdES!"),
 	
-	QUAL_TL_CERT_CONS("Is the certificate consistent with the trusted list ?"),
-	QUAL_TL_CERT_CONS_ANS1("Inconsistency in TL - Cert claimed as QC for eSeal while Q status not granted for electronic Seal"),
-	QUAL_TL_CERT_CONS_ANS2("Inconsistency in TL - Cert claimed as QC for WSA while Q status not granted for WSA, digital signature generated with cert. for WSA considered as special case of AdESeal"),
-	QUAL_TL_CERT_CONS_ANS3("Inconsistency in TL - Cert claimed as QC for eSig while Q status not granted for electronic Sig"),
+	QUAL_HAS_CAQC("Is the certificate related to a CA/QC?"),
+	QUAL_HAS_CAQC_ANS("The certificate is not related to a CA/QC!"),
+	
+	QUAL_IS_TRUST_CERT_MATCH_SERVICE("Is the trusted certificate match the trust service ?"),
+	QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS1("Organization name is missing in the trusted certificate"),
+	QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS2("The trusted certificate doesn't match the trust service"),
+
+	QUAL_HAS_GRANTED("Is the certificate related to a trust service with a granted status?"),
+	QUAL_HAS_GRANTED_ANS("The certificate is not related to a granted status!"),
+
+	QUAL_HAS_CONSISTENT("Is the certificate related to a consistent trust service declaration?"),
+	QUAL_HAS_CONSISTENT_ANS("The certificate is not related to a consistent trust service declaration!"),
+
+	QUAL_HAS_CERT_TYPE_COVERAGE("Is the certificate type can be issued by a found trust service(s)?"),
+	QUAL_HAS_CERT_TYPE_COVERAGE_ANS("The certificate type cannot be issued by found trust service(s)!"),
+
+	QUAL_HAS_ONLY_ONE("Is the qualification conclusion certain?"),
+	QUAL_HAS_ONLY_ONE_ANS("There's a possible conflict between trust services!"),
+	
+	BBB_ACCEPT("Is the result of the Basic Building Block acceptable?"),
+	BBB_ACCEPT_ANS("The result of the Basic Building Block is not acceptable!"),
 	
 	EMPTY("");
 
@@ -309,10 +347,21 @@ public enum MessageTag {
 	}
 
 	/**
+	 * This method return the id code of the referred message.
+	 *
+	 * @return {@code String} message.
+	 */
+	@Override
+	public String getId() {
+		return name();
+	}
+
+	/**
 	 * This method return the message associated with the tag.
 	 *
 	 * @return {@code String} message.
 	 */
+	@Override
 	public String getMessage() {
 		return message;
 	}

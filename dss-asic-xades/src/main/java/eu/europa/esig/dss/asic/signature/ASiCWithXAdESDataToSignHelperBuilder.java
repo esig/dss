@@ -22,11 +22,11 @@ public class ASiCWithXAdESDataToSignHelperBuilder {
 
 		BLevelParameters bLevel = parameters.bLevel();
 		boolean asice = ASiCUtils.isASiCE(parameters.aSiC());
-		boolean archive = ASiCUtils.isArchive(documents);
+		boolean asic = ASiCUtils.isAsic(documents);
 
-		if (archive) {
+		if (asic) {
 			DSSDocument archiveDoc = documents.get(0);
-			if (!ASiCUtils.isArchiveContainsCorrectSignatureExtension(archiveDoc, ".xml")) {
+			if (!ASiCUtils.isArchiveContainsCorrectSignatureFileWithExtension(archiveDoc, ".xml")) {
 				throw new UnsupportedOperationException("Container type doesn't match");
 			}
 

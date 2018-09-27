@@ -36,25 +36,22 @@ public class ASiCEWithCAdESManifestValidator {
 	public DSSDocument getLinkedManifest() {
 		String expectedSignatureURI = signature.getName();
 		for (DSSDocument manifestDocument : manifestDocuments) {
-			InputStream is = null;
-			try {
-				is = manifestDocument.openStream();
+			try (InputStream is = manifestDocument.openStream()) {
 				Document manifestDom = DomUtils.buildDOM(is);
-				String signatureURI = DomUtils.getValue(manifestDom, ASiCNamespace.XPATH_ASIC_SIGREF_URL);
-				if (Utils.areStringsEqual(expectedSignatureURI, signatureURI) && checkManifestDigests(manifestDom)) {
+				Element root = DomUtils.getElement(manifestDom, ASiCNamespace.ASIC_MANIFEST);
+				String signatureURI = DomUtils.getValue(root, ASiCNamespace.SIG_REFERENCE_URI);
+				if (Utils.areStringsEqual(expectedSignatureURI, signatureURI) && checkManifestDigests(root)) {
 					return manifestDocument;
 				}
 			} catch (Exception e) {
-				LOG.warn("Unable to analyze manifest file '" + manifestDocument.getName() + "' : " + e.getMessage());
-			} finally {
-				Utils.closeQuietly(is);
+				LOG.warn("Unable to analyze manifest file '{}' : {}", manifestDocument.getName(), e.getMessage());
 			}
 		}
 		return null;
 	}
 
-	private boolean checkManifestDigests(Document manifestDom) {
-		NodeList dataObjectReferences = DomUtils.getNodeList(manifestDom, ASiCNamespace.XPATH_ASIC_DATA_OBJECT_REFERENCE);
+	private boolean checkManifestDigests(Element root) {
+		NodeList dataObjectReferences = DomUtils.getNodeList(root, ASiCNamespace.DATA_OBJECT_REFERENCE);
 		if (dataObjectReferences == null || dataObjectReferences.getLength() == 0) {
 			LOG.warn("No DataObjectReference found in manifest file");
 			return false;

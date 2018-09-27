@@ -8,6 +8,7 @@ import java.util.List;
  * 
  * @author jdvorak
  * @param <T>
+ *            sub type of TimeDependent
  */
 public class MutableTimeDependentValues<T extends TimeDependent> extends TimeDependentValues<T> {
 

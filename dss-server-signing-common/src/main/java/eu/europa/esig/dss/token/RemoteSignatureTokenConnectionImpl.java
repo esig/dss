@@ -5,6 +5,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.RemoteCertificate;
 import eu.europa.esig.dss.RemoteKeyEntry;
 import eu.europa.esig.dss.SignatureValue;
@@ -22,13 +23,7 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 	@Override
 	public List<RemoteKeyEntry> getKeys() throws DSSException {
 		List<RemoteKeyEntry> result = new ArrayList<RemoteKeyEntry>();
-		List<DSSPrivateKeyEntry> keys = new ArrayList<DSSPrivateKeyEntry>();
-		try {
-			keys = token.getKeys();
-		} finally {
-			token.close();
-		}
-
+		List<DSSPrivateKeyEntry> keys = token.getKeys();
 		for (DSSPrivateKeyEntry keyEntry : keys) {
 			result.add(convert((KSPrivateKeyEntry) keyEntry));
 		}
@@ -37,25 +32,19 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 
 	@Override
 	public RemoteKeyEntry getKey(String alias) throws DSSException {
-		KSPrivateKeyEntry key = null;
-		try {
-			key = token.getKey(alias);
-		} finally {
-			token.close();
-		}
+		KSPrivateKeyEntry key = (KSPrivateKeyEntry) token.getKey(alias);
 		return convert(key);
 	}
 
 	@Override
 	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, String alias) throws DSSException {
-		SignatureValue signatureValue = null;
-		try {
-			DSSPrivateKeyEntry key = token.getKey(alias);
-			signatureValue = token.sign(toBeSigned, digestAlgorithm, key);
-		} finally {
-			token.close();
-		}
-		return signatureValue;
+		return sign(toBeSigned, digestAlgorithm, null, alias);
+	}
+
+	@Override
+	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, String alias) throws DSSException {
+		DSSPrivateKeyEntry key = token.getKey(alias);
+		return token.sign(toBeSigned, digestAlgorithm, mgf, key);
 	}
 
 	private RemoteKeyEntry convert(KSPrivateKeyEntry key) {

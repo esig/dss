@@ -23,6 +23,7 @@ package eu.europa.esig.dss.client.ocsp;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.Security;
+import java.util.Collections;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1OctetString;
@@ -49,6 +50,7 @@ import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.x509.ocsp.OCSPRespStatus;
 import eu.europa.esig.dss.x509.ocsp.OCSPSource;
 import eu.europa.esig.dss.x509.ocsp.OCSPToken;
@@ -57,9 +59,9 @@ import eu.europa.esig.dss.x509.ocsp.OCSPToken;
  * Online OCSP repository. This implementation will contact the OCSP Responder to retrieve the OCSP response.
  */
 @SuppressWarnings("serial")
-public class OnlineOCSPSource implements OCSPSource {
+public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUrlsSupport<OCSPToken> {
 
-	private static final Logger logger = LoggerFactory.getLogger(OnlineOCSPSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(OnlineOCSPSource.class);
 
 	static {
 		Security.addProvider(new BouncyCastleProvider());
@@ -105,63 +107,74 @@ public class OnlineOCSPSource implements OCSPSource {
 	}
 
 	@Override
-	public OCSPToken getOCSPToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+		return getRevocationToken(certificateToken, issuerCertificateToken, Collections.<String>emptyList());
+	}
+
+	@Override
+	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken, List<String> alternativeUrls) {
 		if (dataLoader == null) {
 			throw new NullPointerException("DataLoader is not provided !");
 		}
 
-		try {
-			final String dssIdAsString = certificateToken.getDSSIdAsString();
-			logger.trace("--> OnlineOCSPSource queried for " + dssIdAsString);
-			final List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
-			if (Utils.isCollectionEmpty(ocspAccessLocations)) {
-				logger.debug("No OCSP location found for " + dssIdAsString);
-				certificateToken.extraInfo().infoNoOcspUriFoundInCertificate();
-				return null;
-			}
-
-			String ocspAccessLocation = ocspAccessLocations.get(0);
-
-			final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
-
-			BigInteger nonce = null;
-			if (nonceSource != null) {
-				nonce = nonceSource.getNonce();
-			}
-
-			final byte[] content = buildOCSPRequest(certId, nonce);
-
-			final byte[] ocspRespBytes = dataLoader.post(ocspAccessLocation, content);
-			if (Utils.isArrayEmpty(ocspRespBytes)) {
-				return null;
-			}
-
-			final OCSPResp ocspResp = new OCSPResp(ocspRespBytes);
-
-			OCSPRespStatus status = OCSPRespStatus.fromInt(ocspResp.getStatus());
-			if (OCSPRespStatus.SUCCESSFUL.equals(status)) {
-				OCSPToken ocspToken = new OCSPToken();
-				ocspToken.setResponseStatus(status);
-				ocspToken.setSourceURL(ocspAccessLocation);
-				ocspToken.setCertId(certId);
-				ocspToken.setAvailable(true);
-				final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
-				ocspToken.setBasicOCSPResp(basicOCSPResp);
-
-				if (nonceSource != null) {
-					ocspToken.setUseNonce(true);
-					ocspToken.setNonceMatch(isNonceMatch(basicOCSPResp, nonce));
-				}
-				return ocspToken;
-			} else {
-				certificateToken.extraInfo().infoOCSPException("OCSP Response status : " + status);
-				return null;
-			}
-		} catch (OCSPException e) {
-			throw new DSSException(e);
-		} catch (IOException e) {
-			throw new DSSException(e);
+		final String dssIdAsString = certificateToken.getDSSIdAsString();
+		LOG.trace("--> OnlineOCSPSource queried for {}", dssIdAsString);
+		if (Utils.isCollectionNotEmpty(alternativeUrls)) {
+			LOG.info("OCSP alternative urls : {}", alternativeUrls);
 		}
+
+		final List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
+		if (Utils.isCollectionEmpty(ocspAccessLocations) && Utils.isCollectionEmpty(alternativeUrls)) {
+			LOG.debug("No OCSP location found for {}", dssIdAsString);
+			return null;
+		}
+		ocspAccessLocations.addAll(alternativeUrls);
+
+		final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
+
+		BigInteger nonce = null;
+		if (nonceSource != null) {
+			nonce = nonceSource.getNonce();
+		}
+
+		final byte[] content = buildOCSPRequest(certId, nonce);
+
+		int nbTries = ocspAccessLocations.size();
+		for (String ocspAccessLocation : ocspAccessLocations) {
+			nbTries--;
+			try {
+				final byte[] ocspRespBytes = dataLoader.post(ocspAccessLocation, content);
+				if (!Utils.isArrayEmpty(ocspRespBytes)) {
+					final OCSPResp ocspResp = new OCSPResp(ocspRespBytes);
+					OCSPRespStatus status = OCSPRespStatus.fromInt(ocspResp.getStatus());
+					if (OCSPRespStatus.SUCCESSFUL.equals(status)) {
+						OCSPToken ocspToken = new OCSPToken();
+						ocspToken.setResponseStatus(status);
+						ocspToken.setSourceURL(ocspAccessLocation);
+						ocspToken.setCertId(certId);
+						ocspToken.setAvailable(true);
+						final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
+						ocspToken.setBasicOCSPResp(basicOCSPResp);
+
+						if (nonceSource != null) {
+							ocspToken.setUseNonce(true);
+							ocspToken.setNonceMatch(isNonceMatch(basicOCSPResp, nonce));
+						}
+						return ocspToken;
+					} else {
+						LOG.warn("OCSP Response status with URL '{}' : {}", ocspAccessLocation, status);
+					}
+				}
+			} catch (Exception e) {
+				if (nbTries == 0) {
+					throw new DSSException("Unable to retrieve OCSP response", e);
+				} else {
+					LOG.warn("Unable to retrieve OCSP response with URL '{}' : {}", ocspAccessLocation, e.getMessage());
+				}
+			}
+		}
+
+		return null;
 	}
 
 	private byte[] buildOCSPRequest(final CertificateID certId, BigInteger nonce) throws DSSException {
@@ -181,9 +194,7 @@ public class OnlineOCSPSource implements OCSPSource {
 			final OCSPReq ocspReq = ocspReqBuilder.build();
 			final byte[] ocspReqData = ocspReq.getEncoded();
 			return ocspReqData;
-		} catch (OCSPException e) {
-			throw new DSSException("Cannot build OCSP Request", e);
-		} catch (IOException e) {
+		} catch (OCSPException | IOException e) {
 			throw new DSSException("Cannot build OCSP Request", e);
 		}
 	}
@@ -195,14 +206,14 @@ public class OnlineOCSPSource implements OCSPSource {
 		try {
 			value = ASN1Primitive.fromByteArray(extnValue.getOctets());
 		} catch (IOException ex) {
-			logger.warn("Invalid encoding of nonce extension value in OCSP response", ex);
+			LOG.warn("Invalid encoding of nonce extension value in OCSP response", ex);
 			return false;
 		}
 		if (value instanceof DEROctetString) {
 			BigInteger receivedNonce = new BigInteger(((DEROctetString) value).getOctets());
 			return expectedNonceValue.equals(receivedNonce);
 		} else {
-			logger.warn("Nonce extension value in OCSP response is not an OCTET STRING");
+			LOG.warn("Nonce extension value in OCSP response is not an OCTET STRING");
 			return false;
 		}
 	}

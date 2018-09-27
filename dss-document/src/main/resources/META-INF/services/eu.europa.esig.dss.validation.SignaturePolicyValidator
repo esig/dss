@@ -1,0 +1,2 @@
+eu.europa.esig.dss.validation.NonASN1SignaturePolicyValidator
+eu.europa.esig.dss.validation.EmptySignaturePolicyValidator

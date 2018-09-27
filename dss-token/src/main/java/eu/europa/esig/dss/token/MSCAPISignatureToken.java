@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-import java.security.KeyStore.ProtectionParameter;
+import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStoreSpi;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
@@ -43,32 +43,9 @@ public class MSCAPISignatureToken extends AbstractKeyStoreTokenConnection {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MSCAPISignatureToken.class);
 
-	private static class CallbackPasswordProtection extends KeyStore.PasswordProtection {
-		PasswordInputCallback passwordCallback;
-
-		public CallbackPasswordProtection(PasswordInputCallback callback) {
-			super(null);
-			this.passwordCallback = callback;
-		}
-
-		@Override
-		public synchronized char[] getPassword() {
-			if (passwordCallback == null) {
-				throw new RuntimeException("MSCAPI: No callback provided for entering the PIN/password");
-			}
-			char[] password = passwordCallback.getPassword();
-			return password;
-		}
-	}
-
-	@Override
-	public void close() {
-	}
-
 	/**
 	 * This method is a workaround for scenarios when multiple entries have the same alias. Since the alias is the only
-	 * "official"
-	 * way of retrieving an entry, only the first entry with a given alias is accessible.
+	 * "official" way of retrieving an entry, only the first entry with a given alias is accessible.
 	 * See:
 	 * https://joinup.ec.europa.eu/software/sd-dss/issue/problem-possible-keystore-aliases-collision-when-using-mscapi
 	 *
@@ -97,7 +74,8 @@ public class MSCAPISignatureToken extends AbstractKeyStoreTokenConnection {
 					return;
 				} else if (entriesObject instanceof Collection<?>) {
 					Collection<?> entries = (Collection<?>) entriesObject;
-					String alias, hashCode;
+					String alias;
+					String hashCode;
 					X509Certificate[] certificates;
 
 					for (Object entry : entries) {
@@ -116,7 +94,7 @@ public class MSCAPISignatureToken extends AbstractKeyStoreTokenConnection {
 						}
 					}
 				} else {
-					LOG.warn("Unsupported entries type : " + entriesObject.getClass().getName());
+					LOG.warn("Unsupported entries type : {}", entriesObject.getClass().getName());
 				}
 			}
 		} catch (Exception exception) {
@@ -138,8 +116,12 @@ public class MSCAPISignatureToken extends AbstractKeyStoreTokenConnection {
 	}
 
 	@Override
-	ProtectionParameter getKeyProtectionParameter() {
-		return new CallbackPasswordProtection(new PrefilledPasswordCallback("nimp".toCharArray()));
+	PasswordProtection getKeyProtectionParameter() {
+		return new PasswordProtection("nimp".toCharArray());
+	}
+
+	@Override
+	public void close() {
 	}
 
 }

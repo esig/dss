@@ -1,0 +1,218 @@
+[source,xml]
+----
+<DetailedReport xmlns="http://dss.esig.europa.eu/validation/detailed-report">
+    <Signatures Id="id-2056753e8b67ab9c96a6fe80ec9f619f8e9b4505b66b078c7a2b6e151edc2bbb">
+        <ValidationProcessBasicSignatures BestSignatureTime="2018-02-23T05:50:46">
+            <Constraint Id="id-2056753e8b67ab9c96a6fe80ec9f619f8e9b4505b66b078c7a2b6e151edc2bbb">
+                <Name NameId="ADEST_ROBVPIIC">Is the result of the Basic Validation Process conclusive?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </ValidationProcessBasicSignatures>
+        <ValidationProcessTimestamps Id="F8B72B7574450E84664DE88950BC781CA2528CF5B39ABB3E1F93947B752BE79F" Type="SIGNATURE_TIMESTAMP" ProductionTime="2017-10-27T11:55:08">
+            <Constraint Id="F8B72B7574450E84664DE88950BC781CA2528CF5B39ABB3E1F93947B752BE79F">
+                <Name NameId="ADEST_ROTVPIIC">Is the result of the timestamps validation process conclusive?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </ValidationProcessTimestamps>
+        <ValidationProcessTimestamps Id="7F9B88A8161CC87905298FF8E0CD080516452FBA1480DD6AFAE38B7DD18E2A1B" Type="ARCHIVE_TIMESTAMP" ProductionTime="2017-10-27T11:55:08">
+            <Constraint Id="7F9B88A8161CC87905298FF8E0CD080516452FBA1480DD6AFAE38B7DD18E2A1B">
+                <Name NameId="ADEST_ROTVPIIC">Is the result of the timestamps validation process conclusive?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </ValidationProcessTimestamps>
+        <ValidationProcessLongTermData BestSignatureTime="2017-10-27T11:55:08">
+            <Constraint>
+                ...
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </ValidationProcessLongTermData>
+        <ValidationProcessArchivalData BestSignatureTime="2017-10-27T11:55:08">
+            <Constraint>
+                ...
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </ValidationProcessArchivalData>
+        <ValidationSignatureQualification SignatureQualification="QESig">
+            <Constraint>
+                ...
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+            <ValidationCertificateQualification DateTime="2017-05-15T16:19:53" ValidationTime="CERTIFICATE_ISSUANCE_TIME" CertificateQualification="QC Cert for ESig with QSCD">
+                <Constraint>
+                    ...
+                </Constraint>
+                <Conclusion>
+                    <Indication>PASSED</Indication>
+                </Conclusion>
+            </ValidationCertificateQualification>
+            <ValidationCertificateQualification DateTime="2017-10-27T11:55:08" ValidationTime="BEST_SIGNATURE_TIME" CertificateQualification="QC Cert for ESig with QSCD">
+                <Constraint>
+                    ...
+                </Constraint>
+                <Conclusion>
+                    <Indication>PASSED</Indication>
+                </Conclusion>
+            </ValidationCertificateQualification>
+        </ValidationSignatureQualification>
+    </Signatures>
+    <BasicBuildingBlocks Id="021ec5069eb8a903bd62b6769eddfe439dfa90a720c9a362d5fe76b9c31d0302bfc08d553a774d1f440ab36525a3290e2cc23b46d0ac954ea4d8201faff0d91a" Type="REVOCATION">
+        <ISC>
+            <Constraint>
+				...
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </ISC>
+        <CV>
+            <Constraint>
+                ...
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </CV>
+        <SAV>
+            <Constraint>
+                ...
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </SAV>
+        <XCV>
+            <Constraint>
+                ...
+            </Constraint>
+            <Conclusion>
+                <Indication>INDETERMINATE</Indication>
+                <SubIndication>OUT_OF_BOUNDS_NO_POE</SubIndication>
+                <Errors NameId="BBB_XCV_ICTIVRSC_ANS">The current time is not in the validity range of the signer's certificate.</Errors>
+            </Conclusion>
+            <SubXCV Id="CB217219BADFC13B4FEA3EFA43882E9FECE49E542DCDBA83428DC6854499A35F" TrustAnchor="false">
+                ...
+            </SubXCV>
+            <SubXCV Id="80AC352930875BA0AFE7F70DD389130C8E1E7BEFFDC96477356AD2A9E003AD2B" TrustAnchor="false">
+                ...
+            </SubXCV>
+            <SubXCV Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F" TrustAnchor="true">
+               ...
+            </SubXCV>
+        </XCV>
+        <CertificateChain>
+            ...
+        </CertificateChain>
+        <Conclusion>
+            <Indication>INDETERMINATE</Indication>
+            <SubIndication>OUT_OF_BOUNDS_NO_POE</SubIndication>
+            <Errors NameId="BBB_XCV_ICTIVRSC_ANS">The current time is not in the validity range of the signer's certificate.</Errors>
+        </Conclusion>
+    </BasicBuildingBlocks>
+    <BasicBuildingBlocks Id="id-2056753e8b67ab9c96a6fe80ec9f619f8e9b4505b66b078c7a2b6e151edc2bbb" Type="SIGNATURE">
+        <FC>
+            <Constraint>
+                ...
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </FC>
+        <ISC>
+            <Constraint>
+                ...
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+            <CertificateChain>
+                <ChainItem Id="021EC5069EB8A903BD62B6769EDDFE439DFA90A720C9A362D5FE76B9C31D0302">
+                    <Source>UNKNOWN</Source>
+                </ChainItem>
+                <ChainItem Id="80AC352930875BA0AFE7F70DD389130C8E1E7BEFFDC96477356AD2A9E003AD2B">
+                    <Source>UNKNOWN</Source>
+                </ChainItem>
+                <ChainItem Id="702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </ISC>
+        <VCI>
+            <Constraint>
+                <Name NameId="BBB_VCI_ISPK">Is the signature policy known?</Name>
+                <Status>OK</Status>
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </VCI>
+        <CV>
+            <Constraint>
+                ...
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </CV>
+        <SAV>
+            <Constraint>
+                ...
+            </Constraint>
+            <Conclusion>
+                <Indication>PASSED</Indication>
+            </Conclusion>
+        </SAV>
+        <XCV>
+            ...
+        </XCV>
+        <CertificateChain>
+            ...
+        </CertificateChain>
+        <Conclusion>
+            <Indication>PASSED</Indication>
+        </Conclusion>
+    </BasicBuildingBlocks>
+    <BasicBuildingBlocks Id="F8B72B7574450E84664DE88950BC781CA2528CF5B39ABB3E1F93947B752BE79F" Type="TIMESTAMP">
+        ...
+    </BasicBuildingBlocks>
+    <BasicBuildingBlocks Id="ee3c22e06087bfec213709ad3e7f2dda9ce9d19ce238dca81a6433e9070a9fbee7a38824e892663bfaa50ba2edf0f5bfb5437dbeb73af1c9fec79b6ce77df88d" Type="REVOCATION">
+        ...
+    </BasicBuildingBlocks>
+    <BasicBuildingBlocks Id="7F9B88A8161CC87905298FF8E0CD080516452FBA1480DD6AFAE38B7DD18E2A1B" Type="TIMESTAMP">
+        ...
+    </BasicBuildingBlocks>
+    <BasicBuildingBlocks Id="80ac352930875ba0afe7f70dd389130c8e1e7beffdc96477356ad2a9e003ad2be7a38824e892663bfaa50ba2edf0f5bfb5437dbeb73af1c9fec79b6ce77df88d" Type="REVOCATION">
+        ...
+    </BasicBuildingBlocks>
+    <TLAnalysis CountryCode="EU">
+        <Constraint>
+          	...
+        </Constraint>
+        <Conclusion>
+            <Indication>PASSED</Indication>
+        </Conclusion>
+    </TLAnalysis>
+    <TLAnalysis CountryCode="BE">
+        <Constraint>
+          	...
+        </Constraint>
+        <Conclusion>
+            <Indication>PASSED</Indication>
+        </Conclusion>
+    </TLAnalysis>
+</DetailedReport>
+----

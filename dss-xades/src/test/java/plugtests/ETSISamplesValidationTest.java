@@ -5,19 +5,23 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
 /**
@@ -47,13 +51,22 @@ public class ETSISamplesValidationTest {
 	@Test
 	public void testValidate() {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(new FileDocument(fileToTest));
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
 
 		Reports validateDocument = validator.validateDocument();
 		assertNotNull(validateDocument);
 
 		DiagnosticData diagnosticData = validateDocument.getDiagnosticData();
 		assertNotNull(diagnosticData);
+
+		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
+		for (CertificateWrapper certificateWrapper : usedCertificates) {
+			byte[] binaries = certificateWrapper.getBinaries();
+			assertNotNull(DSSUtils.loadCertificate(binaries));
+		}
 
 		SimpleReport simpleReport = validateDocument.getSimpleReport();
 		assertNotNull(simpleReport);

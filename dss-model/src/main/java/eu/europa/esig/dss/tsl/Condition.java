@@ -34,10 +34,19 @@ public abstract class Condition implements Serializable {
 	/**
 	 * Returns true if the condition is evaluated to true for the given certificate.
 	 *
-	 * @param certificateToken {@code CertificateToken} to be checked
-	 * @return
+	 * @param certificateToken
+	 *            {@code CertificateToken} to be checked
+	 * @return true if the condition is filled
 	 */
 	public abstract boolean check(final CertificateToken certificateToken);
 
+	/**
+	 * Returns a string representation of the condition
+	 * 
+	 * @param indent
+	 *            the indentation to be used
+	 * @return a human readable condition
+	 */
 	public abstract String toString(String indent);
+
 }

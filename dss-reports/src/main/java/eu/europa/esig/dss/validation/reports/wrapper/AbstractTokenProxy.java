@@ -1,14 +1,18 @@
 package eu.europa.esig.dss.validation.reports.wrapper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.x509.CertificateSourceType;
 
 public abstract class AbstractTokenProxy implements TokenProxy {
 
@@ -17,6 +21,11 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	protected abstract List<XmlChainItem> getCurrentCertificateChain();
 
 	protected abstract XmlSigningCertificate getCurrentSigningCertificate();
+
+	@Override
+	public List<XmlDigestMatcher> getDigestMatchers() {
+		return Collections.emptyList();
+	}
 
 	@Override
 	public List<XmlChainItem> getCertificateChain() {
@@ -36,18 +45,6 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 			}
 		}
 		return result;
-	}
-
-	@Override
-	public boolean isReferenceDataFound() {
-		XmlBasicSignature basicSignature = getCurrentBasicSignature();
-		return (basicSignature != null) && Utils.isTrue(basicSignature.isReferenceDataFound());
-	}
-
-	@Override
-	public boolean isReferenceDataIntact() {
-		XmlBasicSignature basicSignature = getCurrentBasicSignature();
-		return (basicSignature != null) && Utils.isTrue(basicSignature.isReferenceDataIntact());
 	}
 
 	@Override
@@ -84,6 +81,21 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 			return basicSignature.getEncryptionAlgoUsedToSignThisToken();
 		}
 		return Utils.EMPTY_STRING;
+	}
+
+	@Override
+	public String getMaskGenerationFunctionUsedToSignThisToken() {
+		XmlBasicSignature basicSignature = getCurrentBasicSignature();
+		if (basicSignature != null) {
+			return basicSignature.getMaskGenerationFunctionUsedToSignThisToken();
+		}
+		return Utils.EMPTY_STRING;
+	}
+
+	@Override
+	public MaskGenerationFunction getMaskGenerationFunction() {
+		String mgf = getMaskGenerationFunctionUsedToSignThisToken();
+		return MaskGenerationFunction.valueOf(mgf);
 	}
 
 	@Override
@@ -135,15 +147,6 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	}
 
 	@Override
-	public String getSigningCertificateSigned() {
-		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
-		if (currentSigningCertificate != null) {
-			return currentSigningCertificate.getSigned();
-		}
-		return Utils.EMPTY_STRING;
-	}
-
-	@Override
 	public String getLastChainCertificateId() {
 		XmlChainItem item = getLastChainCertificate();
 		return item == null ? Utils.EMPTY_STRING : item.getId();
@@ -168,6 +171,13 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 			return lastItem;
 		}
 		return null;
+	}
+
+	@Override
+	public boolean isTrustedChain() {
+		String lastCertificateSource = getLastChainCertificateSource();
+		return CertificateSourceType.TRUSTED_STORE.name().equals(lastCertificateSource)
+				|| CertificateSourceType.TRUSTED_LIST.name().equals(lastCertificateSource);
 	}
 
 	public XmlChainItem getFirstChainCertificate() {

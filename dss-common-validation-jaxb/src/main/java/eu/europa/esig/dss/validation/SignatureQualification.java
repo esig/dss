@@ -131,7 +131,7 @@ public enum SignatureQualification {
 	private final String readable;
 	private final String label;
 
-	private SignatureQualification(String readable, String label) {
+	SignatureQualification(String readable, String label) {
 		this.readable = readable;
 		this.label = label;
 	}
@@ -146,6 +146,10 @@ public enum SignatureQualification {
 
 	/**
 	 * SignatureQualification can be null
+	 * 
+	 * @param value
+	 *            the qualification name to be converted to the enum
+	 * @return the linked SignatureQualification or null
 	 */
 	public static SignatureQualification forName(String value) {
 		if ((value != null) && !value.isEmpty()) {
@@ -156,6 +160,10 @@ public enum SignatureQualification {
 
 	/**
 	 * SignatureQualification can be null
+	 * 
+	 * @param readable
+	 *            the readable description of the qualification to be converted to the enum
+	 * @return the linked SignatureQualification or null
 	 */
 	public static SignatureQualification fromReadable(String readable) {
 		if ((readable != null) && !readable.isEmpty()) {

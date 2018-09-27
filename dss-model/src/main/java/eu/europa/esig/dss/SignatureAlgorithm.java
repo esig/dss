@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,11 +35,37 @@ public enum SignatureAlgorithm {
 
 	RSA_SHA224(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA224),
 
-	RSA_SHA256(EncryptionAlgorithm.RSA,	DigestAlgorithm.SHA256),
+	RSA_SHA256(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA256),
 
 	RSA_SHA384(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA384),
 
 	RSA_SHA512(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA512),
+
+	RSA_SHA3_224(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_224),
+
+	RSA_SHA3_256(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_256),
+
+	RSA_SHA3_384(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_384),
+
+	RSA_SHA3_512(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_512),
+
+	RSA_SSA_PSS_SHA1_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1, MaskGenerationFunction.MGF1),
+
+	RSA_SSA_PSS_SHA224_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA224, MaskGenerationFunction.MGF1),
+
+	RSA_SSA_PSS_SHA256_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA256, MaskGenerationFunction.MGF1),
+
+	RSA_SSA_PSS_SHA384_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA384, MaskGenerationFunction.MGF1),
+
+	RSA_SSA_PSS_SHA512_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA512, MaskGenerationFunction.MGF1),
+
+	RSA_SSA_PSS_SHA3_224_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_224, MaskGenerationFunction.MGF1),
+
+	RSA_SSA_PSS_SHA3_256_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_256, MaskGenerationFunction.MGF1),
+
+	RSA_SSA_PSS_SHA3_384_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_384, MaskGenerationFunction.MGF1),
+
+	RSA_SSA_PSS_SHA3_512_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_512, MaskGenerationFunction.MGF1),
 
 	RSA_RIPEMD160(EncryptionAlgorithm.RSA, DigestAlgorithm.RIPEMD160),
 
@@ -46,23 +73,43 @@ public enum SignatureAlgorithm {
 
 	RSA_MD2(EncryptionAlgorithm.RSA, DigestAlgorithm.MD2),
 
-	RSA_SSA_PSS(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1),
-
 	ECDSA_SHA1(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA1),
 
 	ECDSA_SHA224(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA224),
 
-	ECDSA_SHA256(EncryptionAlgorithm.ECDSA,	DigestAlgorithm.SHA256),
+	ECDSA_SHA256(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA256),
 
 	ECDSA_SHA384(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA384),
 
-	ECDSA_SHA512(EncryptionAlgorithm.ECDSA,	DigestAlgorithm.SHA512),
+	ECDSA_SHA512(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA512),
+
+	ECDSA_SHA3_224(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_224),
+
+	ECDSA_SHA3_256(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_256),
+
+	ECDSA_SHA3_384(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_384),
+
+	ECDSA_SHA3_512(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_512),
 
 	ECDSA_RIPEMD160(EncryptionAlgorithm.ECDSA, DigestAlgorithm.RIPEMD160),
 
 	DSA_SHA1(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA1),
 
+	DSA_SHA224(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA224),
+
 	DSA_SHA256(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA256),
+
+	DSA_SHA384(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA384),
+
+	DSA_SHA512(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA512),
+
+	DSA_SHA3_224(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA3_224),
+
+	DSA_SHA3_256(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA3_256),
+
+	DSA_SHA3_384(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA3_384),
+
+	DSA_SHA3_512(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA3_512),
 
 	HMAC_SHA1(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA1),
 
@@ -74,16 +121,26 @@ public enum SignatureAlgorithm {
 
 	HMAC_SHA512(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA512),
 
+	HMAC_SHA3_224(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA3_224),
+
+	HMAC_SHA3_256(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA3_256),
+
+	HMAC_SHA3_384(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA3_384),
+
+	HMAC_SHA3_512(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA3_512),
+
 	HMAC_RIPEMD160(EncryptionAlgorithm.HMAC, DigestAlgorithm.RIPEMD160);
 
 	private final EncryptionAlgorithm encryptionAlgo;
 
 	private final DigestAlgorithm digestAlgo;
 
-	// http://www.w3.org/TR/2013/NOTE-xmlsec-algorithms-20130411/
-	private final static Map<String, SignatureAlgorithm> XML_ALGORITHMS = registerXmlAlgorithms();
+	private final MaskGenerationFunction maskGenerationFunction;
 
-	private final static Map<SignatureAlgorithm, String> XML_ALGORITHMS_FOR_KEY = registerXmlAlgorithmsForKey();
+	// http://www.w3.org/TR/2013/NOTE-xmlsec-algorithms-20130411/
+	private static final Map<String, SignatureAlgorithm> XML_ALGORITHMS = registerXmlAlgorithms();
+
+	private static final Map<SignatureAlgorithm, String> XML_ALGORITHMS_FOR_KEY = registerXmlAlgorithmsForKey();
 
 	private static Map<String, SignatureAlgorithm> registerXmlAlgorithms() {
 
@@ -93,6 +150,19 @@ public enum SignatureAlgorithm {
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256", RSA_SHA256);
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-sha384", RSA_SHA384);
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-sha512", RSA_SHA512);
+
+		// https://tools.ietf.org/html/rfc6931#section-2.3.10
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha1-rsa-MGF1", RSA_SSA_PSS_SHA1_MGF1);
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha224-rsa-MGF1", RSA_SSA_PSS_SHA224_MGF1);
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha256-rsa-MGF1", RSA_SSA_PSS_SHA256_MGF1);
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha384-rsa-MGF1", RSA_SSA_PSS_SHA384_MGF1);
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha512-rsa-MGF1", RSA_SSA_PSS_SHA512_MGF1);
+
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha3-224-rsa-MGF1", RSA_SSA_PSS_SHA3_224_MGF1);
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha3-256-rsa-MGF1", RSA_SSA_PSS_SHA3_256_MGF1);
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha3-384-rsa-MGF1", RSA_SSA_PSS_SHA3_384_MGF1);
+		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#sha3-512-rsa-MGF1", RSA_SSA_PSS_SHA3_512_MGF1);
+
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-ripemd160", RSA_RIPEMD160);
 		// Support of not standard AT algorithm name
 		// http://www.rfc-editor.org/rfc/rfc4051.txt --> http://www.rfc-editor.org/errata_search.php?rfc=4051
@@ -123,16 +193,14 @@ public enum SignatureAlgorithm {
 	}
 
 	private static Map<SignatureAlgorithm, String> registerXmlAlgorithmsForKey() {
-
-		Map<SignatureAlgorithm, String> xmlAlgorithms = new HashMap<SignatureAlgorithm, String>();
+		Map<SignatureAlgorithm, String> xmlAlgorithms = new EnumMap<SignatureAlgorithm, String>(SignatureAlgorithm.class);
 		for (Entry<String, SignatureAlgorithm> entry : XML_ALGORITHMS.entrySet()) {
-
 			xmlAlgorithms.put(entry.getValue(), entry.getKey());
 		}
 		return xmlAlgorithms;
 	}
 
-	private final static Map<String, SignatureAlgorithm> OID_ALGORITHMS = registerOIDAlgorithms();
+	private static final Map<String, SignatureAlgorithm> OID_ALGORITHMS = registerOIDAlgorithms();
 
 	private static Map<String, SignatureAlgorithm> registerOIDAlgorithms() {
 
@@ -145,6 +213,11 @@ public enum SignatureAlgorithm {
 		oidAlgorithms.put("1.2.840.113549.1.1.12", RSA_SHA384);
 		oidAlgorithms.put("1.2.840.113549.1.1.13", RSA_SHA512);
 		oidAlgorithms.put("1.3.36.3.3.1.2", RSA_RIPEMD160);
+
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.13", RSA_SHA3_224);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.14", RSA_SHA3_256);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.15", RSA_SHA3_384);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.16", RSA_SHA3_512);
 
 		oidAlgorithms.put("1.2.840.113549.1.1.4", RSA_MD5);
 		oidAlgorithms.put("1.2.840.113549.1.1.2", RSA_MD2);
@@ -162,9 +235,32 @@ public enum SignatureAlgorithm {
 		oidAlgorithms.put("1.2.840.10045.4.3.4", ECDSA_SHA512);
 		oidAlgorithms.put("0.4.0.127.0.7.1.1.4.1.6", ECDSA_RIPEMD160);
 
+		/*
+		 * id-ecdsa-with-sha3-256 {joint-iso-itu-t(2) country(16) us(840) organization(1) gov(101) csor(3)
+		 * nistAlgorithm(4) sigAlgs(3) 10}
+		 * NIST CSOR [18]
+		 * id-ecdsa-with-sha3-384 {joint-iso-itu-t(2) country(16) us(840) organization(1) gov(101) csor(3)
+		 * nistAlgorithm(4) sigAlgs(3) 11}
+		 * NIST CSOR [18]
+		 * id-ecdsa-with-sha3-512 {joint-iso-itu-t(2) country(16) us(840) organization(1) gov(101) csor(3)
+		 * nistAlgorithm(4) sigAlgs(3) 12}
+		 */
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.9", ECDSA_SHA3_224);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.10", ECDSA_SHA3_256);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.11", ECDSA_SHA3_384);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.12", ECDSA_SHA3_512);
+
 		oidAlgorithms.put("1.2.840.10040.4.3", DSA_SHA1);
 		oidAlgorithms.put("1.2.14888.3.0.1", DSA_SHA1);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.1", DSA_SHA224);
 		oidAlgorithms.put("2.16.840.1.101.3.4.3.2", DSA_SHA256);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.3", DSA_SHA384);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.4", DSA_SHA512);
+
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.5", DSA_SHA3_224);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.6", DSA_SHA3_256);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.7", DSA_SHA3_384);
+		oidAlgorithms.put("2.16.840.1.101.3.4.3.8", DSA_SHA3_512);
 
 		oidAlgorithms.put("1.2.840.113549.2.7", HMAC_SHA1);
 		oidAlgorithms.put("1.2.840.113549.2.8", HMAC_SHA224);
@@ -173,14 +269,19 @@ public enum SignatureAlgorithm {
 		oidAlgorithms.put("1.2.840.113549.2.11", HMAC_SHA512);
 		oidAlgorithms.put("1.3.6.1.5.5.8.1.4", HMAC_RIPEMD160);
 
-		oidAlgorithms.put("1.2.840.113549.1.1.10", RSA_SSA_PSS);
+		oidAlgorithms.put("2.16.840.1.101.3.4.2.13", HMAC_SHA3_224);
+		oidAlgorithms.put("2.16.840.1.101.3.4.2.14", HMAC_SHA3_256);
+		oidAlgorithms.put("2.16.840.1.101.3.4.2.15", HMAC_SHA3_384);
+		oidAlgorithms.put("2.16.840.1.101.3.4.2.16", HMAC_SHA3_512);
+
+		oidAlgorithms.put("1.2.840.113549.1.1.10", RSA_SSA_PSS_SHA1_MGF1);
 
 		return oidAlgorithms;
 	}
 
-	private final static Map<String, SignatureAlgorithm> JAVA_ALGORITHMS = registerJavaAlgorithms();
+	private static final Map<String, SignatureAlgorithm> JAVA_ALGORITHMS = registerJavaAlgorithms();
 
-	private final static Map<SignatureAlgorithm, String> JAVA_ALGORITHMS_FOR_KEY = registerJavaAlgorithmsForKey();
+	private static final Map<SignatureAlgorithm, String> JAVA_ALGORITHMS_FOR_KEY = registerJavaAlgorithmsForKey();
 
 	private static Map<String, SignatureAlgorithm> registerJavaAlgorithms() {
 
@@ -191,6 +292,23 @@ public enum SignatureAlgorithm {
 		javaAlgorithms.put("SHA256withRSA", RSA_SHA256);
 		javaAlgorithms.put("SHA384withRSA", RSA_SHA384);
 		javaAlgorithms.put("SHA512withRSA", RSA_SHA512);
+
+		javaAlgorithms.put("SHA3-224withRSA", RSA_SHA3_224);
+		javaAlgorithms.put("SHA3-256withRSA", RSA_SHA3_256);
+		javaAlgorithms.put("SHA3-384withRSA", RSA_SHA3_384);
+		javaAlgorithms.put("SHA3-512withRSA", RSA_SHA3_512);
+
+		javaAlgorithms.put("SHA1withRSAandMGF1", RSA_SSA_PSS_SHA1_MGF1);
+		javaAlgorithms.put("SHA224withRSAandMGF1", RSA_SSA_PSS_SHA224_MGF1);
+		javaAlgorithms.put("SHA256withRSAandMGF1", RSA_SSA_PSS_SHA256_MGF1);
+		javaAlgorithms.put("SHA384withRSAandMGF1", RSA_SSA_PSS_SHA384_MGF1);
+		javaAlgorithms.put("SHA512withRSAandMGF1", RSA_SSA_PSS_SHA512_MGF1);
+
+		javaAlgorithms.put("SHA3-224withRSAandMGF1", RSA_SSA_PSS_SHA3_224_MGF1);
+		javaAlgorithms.put("SHA3-256withRSAandMGF1", RSA_SSA_PSS_SHA3_256_MGF1);
+		javaAlgorithms.put("SHA3-384withRSAandMGF1", RSA_SSA_PSS_SHA3_384_MGF1);
+		javaAlgorithms.put("SHA3-512withRSAandMGF1", RSA_SSA_PSS_SHA3_512_MGF1);
+
 		javaAlgorithms.put("RIPEMD160withRSA", RSA_RIPEMD160);
 
 		javaAlgorithms.put("MD5withRSA", RSA_MD5);
@@ -203,20 +321,39 @@ public enum SignatureAlgorithm {
 		javaAlgorithms.put("SHA512withECDSA", ECDSA_SHA512);
 		javaAlgorithms.put("RIPEMD160withECDSA", ECDSA_RIPEMD160);
 
+		javaAlgorithms.put("SHA3-224withECDSA", ECDSA_SHA3_224);
+		javaAlgorithms.put("SHA3-256withECDSA", ECDSA_SHA3_256);
+		javaAlgorithms.put("SHA3-384withECDSA", ECDSA_SHA3_384);
+		javaAlgorithms.put("SHA3-512withECDSA", ECDSA_SHA3_512);
+
 		javaAlgorithms.put("SHA1withDSA", DSA_SHA1);
+		javaAlgorithms.put("SHA224withDSA", DSA_SHA224);
 		javaAlgorithms.put("SHA256withDSA", DSA_SHA256);
+		javaAlgorithms.put("SHA384withDSA", DSA_SHA384);
+		javaAlgorithms.put("SHA512withDSA", DSA_SHA512);
+
+		javaAlgorithms.put("SHA3-224withDSA", DSA_SHA3_224);
+		javaAlgorithms.put("SHA3-256withDSA", DSA_SHA3_256);
+		javaAlgorithms.put("SHA3-384withDSA", DSA_SHA3_384);
+		javaAlgorithms.put("SHA3-512withDSA", DSA_SHA3_512);
 
 		javaAlgorithms.put("SHA1withHMAC", HMAC_SHA1);
 		javaAlgorithms.put("SHA224withHMAC", HMAC_SHA224);
 		javaAlgorithms.put("SHA256withHMAC", HMAC_SHA256);
 		javaAlgorithms.put("SHA384withHMAC", HMAC_SHA384);
 		javaAlgorithms.put("SHA512withHMAC", HMAC_SHA512);
+
+		javaAlgorithms.put("SHA3-224withHMAC", HMAC_SHA3_224);
+		javaAlgorithms.put("SHA3-256withHMAC", HMAC_SHA3_256);
+		javaAlgorithms.put("SHA3-384withHMAC", HMAC_SHA3_384);
+		javaAlgorithms.put("SHA3-512withHMAC", HMAC_SHA3_512);
+
 		javaAlgorithms.put("RIPEMD160withHMAC", HMAC_RIPEMD160);
 		return javaAlgorithms;
 	}
 
 	private static Map<SignatureAlgorithm, String> registerJavaAlgorithmsForKey() {
-		final Map<SignatureAlgorithm, String> javaAlgorithms = new HashMap<SignatureAlgorithm, String>();
+		final Map<SignatureAlgorithm, String> javaAlgorithms = new EnumMap<SignatureAlgorithm, String>(SignatureAlgorithm.class);
 		for (Entry<String, SignatureAlgorithm> entry : JAVA_ALGORITHMS.entrySet()) {
 			javaAlgorithms.put(entry.getValue(), entry.getKey());
 		}
@@ -234,10 +371,10 @@ public enum SignatureAlgorithm {
 	/**
 	 * This method return the {@code SignatureAlgorithm} or the default value if the algorithm is unknown.
 	 *
-	 * TODO: (Bob: 2014 Feb 13) this method can return UNKNOWN ALGORITHM...
-	 *
-	 * @param xmlName      XML URI of the given algorithm
-	 * @param defaultValue the default value to be returned if not found
+	 * @param xmlName
+	 *            XML URI of the given algorithm
+	 * @param defaultValue
+	 *            the default value to be returned if not found
 	 * @return {@code SignatureAlgorithm} or default value
 	 */
 	public static SignatureAlgorithm forXML(final String xmlName, final SignatureAlgorithm defaultValue) {
@@ -257,35 +394,48 @@ public enum SignatureAlgorithm {
 	}
 
 	/**
-	 * For given signature algorithm & digest algorithm this function returns the Java form of the signature algorithm Signature Algorithms
+	 * For given signature algorithm and digest algorithm this function returns the Java form of the signature algorithm
+	 * Signature Algorithms
 	 *
 	 * The algorithm names in this section can be specified when generating an instance of Signature.
 	 *
-	 * NONEwithRSA - The RSA signature algorithm which does not use a digesting algorithm (e.g. MD5/SHA1) before performing the RSA operation. For more information about the RSA
+	 * NONEwithRSA - The RSA signature algorithm which does not use a digesting algorithm (e.g. MD5/SHA1) before
+	 * performing the RSA operation. For more information about the RSA
 	 * Signature algorithms, please see PKCS1.
 	 *
-	 * MD2withRSA MD5withRSA - The MD2/MD5 with RSA Encryption signature algorithm which uses the MD2/MD5 digest algorithm and RSA to create and verify RSA digital signatures as
+	 * MD2withRSA MD5withRSA - The MD2/MD5 with RSA Encryption signature algorithm which uses the MD2/MD5 digest
+	 * algorithm and RSA to create and verify RSA digital signatures as
 	 * defined in PKCS1.
 	 *
-	 * SHA1withRSA SHA256withRSA SHA384withRSA SHA512withRSA - The signature algorithm with SHA-* and the RSA encryption algorithm as defined in the OSI Interoperability Workshop,
+	 * SHA1withRSA SHA256withRSA SHA384withRSA SHA512withRSA - The signature algorithm with SHA-* and the RSA encryption
+	 * algorithm as defined in the OSI Interoperability Workshop,
 	 * using the padding conventions described in PKCS1.
 	 *
-	 * NONEwithDSA - The Digital Signature Algorithm as defined in FIPS PUB 186-2. The data must be exactly 20 bytes in length. This algorithms is also known under the alias name
+	 * NONEwithDSA - The Digital Signature Algorithm as defined in FIPS PUB 186-2. The data must be exactly 20 bytes in
+	 * length. This algorithms is also known under the alias name
 	 * of rawDSA.
 	 *
-	 * SHA1withDSA - The DSA with SHA-1 signature algorithm which uses the SHA-1 digest algorithm and DSA to create and verify DSA digital signatures as defined in FIPS PUB 186.
+	 * SHA1withDSA - The DSA with SHA-1 signature algorithm which uses the SHA-1 digest algorithm and DSA to create and
+	 * verify DSA digital signatures as defined in FIPS PUB 186.
 	 *
-	 * NONEwithECDSA SHA1withECDSA SHA256withECDSA SHA384withECDSA SHA512withECDSA (ECDSA) - The ECDSA signature algorithms as defined in ANSI X9.62. Note:"ECDSA" is an ambiguous
-	 * name for the "SHA1withECDSA" algorithm and should not be used. The formal name "SHA1withECDSA" should be used instead.
+	 * NONEwithECDSA SHA1withECDSA SHA256withECDSA SHA384withECDSA SHA512withECDSA (ECDSA) - The ECDSA signature
+	 * algorithms as defined in ANSI X9.62. Note:"ECDSA" is an ambiguous
+	 * name for the "SHA1withECDSA" algorithm and should not be used. The formal name "SHA1withECDSA" should be used
+	 * instead.
 	 *
-	 * <digest>with<encryption> - Use this to form a name for a signature algorithm with a particular message digest (such as MD2 or MD5) and algorithm (such as RSA or DSA), just
-	 * as was done for the explicitly-defined standard names in this section (MD2withRSA, etc.). For the new signature schemes defined in PKCS1 v 2.0, for which the
-	 * <digest>with<encryption> form is insufficient, <digest>with<encryption>and<mgf> can be used to form a name. Here, <mgf> should be replaced by a mask generation function
-	 * such
-	 * as MGF1. Example: MD5withRSAandMGF1.
+	 * {@code <digest>with<encryption>} - Use this to form a name for a signature algorithm with a particular message
+	 * digest
+	 * (such as MD2 or MD5) and algorithm (such as RSA or DSA), just
+	 * as was done for the explicitly-defined standard names in this section (MD2withRSA, etc.). For the new signature
+	 * schemes defined in PKCS1 v 2.0, for which the
+	 * {@code <digest>with<encryption>} form is insufficient, {@code <digest>with<encryption>and<mgf>} can be used to
+	 * form a name. Here,
+	 * {@code <mgf>} should be replaced by a mask generation function
+	 * such as MGF1. Example: MD5withRSAandMGF1.
 	 *
 	 * @param javaName
-	 * @return
+	 *            the java name
+	 * @return the corresponding SignatureAlgorithm
 	 */
 	public static SignatureAlgorithm forJAVA(final String javaName) {
 		final SignatureAlgorithm algorithm = JAVA_ALGORITHMS.get(javaName);
@@ -296,34 +446,77 @@ public enum SignatureAlgorithm {
 	}
 
 	/**
-	 * For given encryption algorithm & digest algorithm this function returns the signature algorithm.
+	 * For given encryption algorithm and digest algorithm this function returns the signature algorithm.
 	 *
 	 * @param encryptionAlgorithm
+	 *            the encryption algorithm
 	 * @param digestAlgorithm
-	 * @return
+	 *            the digest algorithm
+	 * @return the corresponding combination of both algorithms
 	 */
 	public static SignatureAlgorithm getAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm) {
-		String digestAlgorithm_ = digestAlgorithm.getName();
-		digestAlgorithm_ = digestAlgorithm_.replace("-", "");
-		final String javaName = digestAlgorithm_ + "with" + encryptionAlgorithm.getName();
-		return JAVA_ALGORITHMS.get(javaName);
+		return getAlgorithm(encryptionAlgorithm, digestAlgorithm, null);
+	}
+
+	/**
+	 * For given encryption algorithm and digest algorithm this function returns the signature algorithm.
+	 *
+	 * @param encryptionAlgorithm
+	 *            the encryption algorithm
+	 * @param digestAlgorithm
+	 *            the digest algorithm
+	 * @param mgf
+	 *            the mask generation function
+	 * @return the corresponding combination of both algorithms
+	 */
+	public static SignatureAlgorithm getAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,
+			final MaskGenerationFunction mgf) {
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(digestAlgorithm.getName());
+		sb.append("with");
+		sb.append(encryptionAlgorithm.getName());
+		if (mgf != null) {
+			sb.append("andMGF1");
+		}
+		return JAVA_ALGORITHMS.get(sb.toString());
 	}
 
 	/**
 	 * The default constructor.
 	 *
 	 * @param encryptionAlgorithm
+	 *            the encryption algorithm
 	 * @param digestAlgorithm
+	 *            the digest algorithm
 	 */
-	private SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm) {
+	SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm) {
 		this.encryptionAlgo = encryptionAlgorithm;
 		this.digestAlgo = digestAlgorithm;
+		this.maskGenerationFunction = null;
+	}
+
+	/**
+	 * The default constructor.
+	 *
+	 * @param encryptionAlgorithm
+	 *            the encryption algorithm
+	 * @param digestAlgorithm
+	 *            the digest algorithm
+	 * @param mgf
+	 *            the mask generation function
+	 */
+	SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,
+			final MaskGenerationFunction maskGenerationFunction) {
+		this.encryptionAlgo = encryptionAlgorithm;
+		this.digestAlgo = digestAlgorithm;
+		this.maskGenerationFunction = maskGenerationFunction;
 	}
 
 	/**
 	 * This method returns the encryption algorithm.
 	 *
-	 * @return
+	 * @return the encryption algorithm
 	 */
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
 		return encryptionAlgo;
@@ -332,16 +525,25 @@ public enum SignatureAlgorithm {
 	/**
 	 * This method returns the digest algorithm.
 	 *
-	 * @return
+	 * @return the digest algorithm
 	 */
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgo;
 	}
 
 	/**
+	 * This method returns the mask generation function.
+	 *
+	 * @return the mask generation function
+	 */
+	public MaskGenerationFunction getMaskGenerationFunction() {
+		return maskGenerationFunction;
+	}
+
+	/**
 	 * Returns the XML ID of the signature algorithm.
 	 *
-	 * @return
+	 * @return the XML URI for the current signature algorithm.
 	 */
 	public String getXMLId() {
 		return XML_ALGORITHMS_FOR_KEY.get(this);
@@ -350,7 +552,7 @@ public enum SignatureAlgorithm {
 	/**
 	 * Returns algorithm identifier corresponding to JAVA JCE class names.
 	 *
-	 * @return
+	 * @return the java name for the current signature algorithm.
 	 */
 	public String getJCEId() {
 		return JAVA_ALGORITHMS_FOR_KEY.get(this);

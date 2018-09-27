@@ -40,7 +40,7 @@
 	            <Identified>true</Identified>
 	        </Policy>
 	        <SignatureScopes>
-	            <SignatureScope name="test.txt" scope="FullSignatureScope">Full document</SignatureScope>
+	            <SignatureScope name="test.txt" scope="FULL">Full document</SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
     </Signatures>
@@ -59,7 +59,7 @@
             <NotBefore>2011-03-07T15:22:45</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
-            <IdKpOCSPSigning>true</IdKpOCSPSigning>
+            
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
@@ -71,9 +71,9 @@
             </BasicSignature>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>1.3.6.1.4.1.10015.3.1.1</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.6.1.4.1.10015.3.1.1</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
@@ -114,9 +114,9 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>1.3.6.1.4.1.10015.3.1.1</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.6.1.4.1.10015.3.1.1</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds>
                 <oid>0.4.0.1862.1.1</oid>
             </QCStatementIds>
@@ -147,9 +147,6 @@
 	                </CertificateChain>
 	            </Revocation>
 	        </Revocations>
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-            </Info>
         </Certificate>
         <Certificate Id="7EF532D928F552651A05C70CB362C37F8E34F20DD263F0F38E3C6360F4625643">
             <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=test of esteid-sk 2011,o=as sertifitseerimiskeskus,c=ee</SubjectDistinguishedName>
@@ -179,9 +176,9 @@
             </BasicSignature>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>1.3.6.1.4.1.10015.3.1.1</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.6.1.4.1.10015.3.1.1</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />

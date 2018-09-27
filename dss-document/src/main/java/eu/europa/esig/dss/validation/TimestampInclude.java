@@ -1,4 +1,3 @@
-// TODO-Vin (12/09/2014): CopyRight to be added!
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
@@ -22,44 +21,36 @@
 package eu.europa.esig.dss.validation;
 
 /**
- * This class represents
+ * This class represents XAdES Include tag in case of IndividualDataObjectsTimeStamp
  */
 public class TimestampInclude {
 
-    private String uri;
-	// TODO-Vin (12/09/2014): What does it mean?
+	private String uri;
+	/* The referencedData attribute shall be present in each and every Include element, and set to "true". */
 	private boolean referencedData;
 
-	// TODO-Vin (12/09/2014): Is this constructor useful? Does it make sens?
-	public TimestampInclude() {}
-
-	// TODO-Vin (12/09/2014): Comments!
-	public TimestampInclude(String uri, String referencedData) {
-		this.uri = uri;
-		this.referencedData = Boolean.parseBoolean(referencedData);
+	public TimestampInclude() {
 	}
 
-	// TODO-Vin (12/09/2014): Comments!
-    public TimestampInclude(String uri, boolean referencedData) {
-        this.uri = uri;
-        this.referencedData = referencedData;
-    }
+	public TimestampInclude(String uri, boolean referencedData) {
+		this.uri = uri;
+		this.referencedData = referencedData;
+	}
 
-    public String getURI() {
-        return uri;
-    }
+	public String getURI() {
+		return uri;
+	}
 
-    public void setURI(String uri) {
-        this.uri = uri;
-    }
+	public void setURI(String uri) {
+		this.uri = uri;
+	}
 
+	public boolean isReferencedData() {
+		return referencedData;
+	}
 
-    public boolean isReferencedData() {
-        return referencedData;
-    }
-
-	// TODO-Vin (12/09/2014): Never used???
 	public void setReferencedData(boolean referencedData) {
-        this.referencedData = referencedData;
-    }
+		this.referencedData = referencedData;
+	}
+
 }

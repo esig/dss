@@ -24,10 +24,7 @@ public class NextUpdateCheck extends ChainItem<XmlRFC> {
 	protected boolean process() {
 		if (revocationData != null) {
 			Date nextUpdate = revocationData.getNextUpdate();
-			if (nextUpdate == null) {
-				return false;
-			}
-			return true;
+			return nextUpdate != null;
 		}
 		return false;
 	}

@@ -23,6 +23,8 @@ package eu.europa.esig.dss.tsl.service;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.tsl.OtherTrustedList;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
 import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLPointer;
@@ -50,7 +53,7 @@ import eu.europa.esig.dss.x509.KeyStoreCertificateSource;
  */
 public class TSLValidationJob {
 
-	private static final Logger logger = LoggerFactory.getLogger(TSLValidationJob.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TSLValidationJob.class);
 
 	private ExecutorService executorService = Executors.newCachedThreadPool();
 
@@ -71,8 +74,10 @@ public class TSLValidationJob {
 	private boolean checkTSLSignatures = true;
 	private List<String> filterTerritories;
 
+	private List<OtherTrustedList> otherTrustedLists;
+
 	public void setExecutorService(ExecutorService executorService) {
-		if(this.executorService!=null && !this.executorService.isShutdown()){
+		if (this.executorService != null && !this.executorService.isShutdown()) {
 			this.executorService.shutdownNow();
 		}
 		this.executorService = executorService;
@@ -141,8 +146,18 @@ public class TSLValidationJob {
 		this.filterTerritories = filterTerritories;
 	}
 
+	/**
+	 * This parameter allows to add non EU trusted lists.
+	 * 
+	 * @param otherTrustedLists
+	 *            a list of additional trusted lists to be supported
+	 */
+	public void setOtherTrustedLists(List<OtherTrustedList> otherTrustedLists) {
+		this.otherTrustedLists = otherTrustedLists;
+	}
+
 	public void initRepository() {
-		logger.info("Initialization of the TSL repository ...");
+		LOG.info("Initialization of the TSL repository ...");
 		int loadedTSL = 0;
 		List<File> cachedFiles = repository.getStoredFiles();
 		if (Utils.isCollectionNotEmpty(cachedFiles)) {
@@ -151,7 +166,7 @@ public class TSLValidationJob {
 				try {
 					futureParseResults.add(executorService.submit(new TSLParser(file.getAbsolutePath())));
 				} catch (Exception e) {
-					logger.error("Unable to parse file '" + file.getAbsolutePath() + "' : " + e.getMessage(), e);
+					LOG.error("Unable to parse file '" + file.getAbsolutePath() + "' : " + e.getMessage(), e);
 				}
 			}
 
@@ -161,7 +176,7 @@ public class TSLValidationJob {
 					repository.addParsedResultFromCacheToMap(tslParserResult);
 					loadedTSL++;
 				} catch (Exception e) {
-					logger.error("Unable to get parsing result : " + e.getMessage(), e);
+					LOG.error("Unable to get parsing result : " + e.getMessage(), e);
 				}
 			}
 
@@ -172,20 +187,27 @@ public class TSLValidationJob {
 					TSLValidationResult europeanValidationResult = validateLOTL(europeanModel, ojContentKeyStore.getCertificates());
 					europeanModel.setValidationResult(europeanValidationResult);
 				} catch (Exception e) {
-					logger.error("Unable to validate the LOTL : " + e.getMessage(), e);
+					LOG.error("Unable to validate the LOTL : " + e.getMessage(), e);
 				}
 			}
 
 			if (checkTSLSignatures && ((europeanModel != null) && (europeanModel.getParseResult() != null))) {
-				List<TSLPointer> pointers = europeanModel.getParseResult().getPointers();
+				List<TSLPointer> lotlPointers = europeanModel.getParseResult().getPointers();
 				List<Future<TSLValidationResult>> futureValidationResults = new ArrayList<Future<TSLValidationResult>>();
 				Map<String, TSLValidationModel> map = repository.getAllMapTSLValidationModels();
 				for (Entry<String, TSLValidationModel> entry : map.entrySet()) {
 					String countryCode = entry.getKey();
+
 					if (!lotlCode.equals(countryCode)) {
 						TSLValidationModel countryModel = entry.getValue();
-						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), countryCode,
-								getPotentialSigners(pointers, countryCode));
+						OtherTrustedList otherTL = getNonEUTrustedList(countryCode);
+						List<CertificateToken> potentialSigners = null;
+						if (otherTL != null) {
+							potentialSigners = otherTL.getTrustStore().getCertificates();
+						} else {
+							potentialSigners = getPotentialSigners(lotlPointers, countryCode);
+						}
+						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), countryCode, potentialSigners);
 						futureValidationResults.add(executorService.submit(tslValidator));
 					}
 				}
@@ -195,21 +217,32 @@ public class TSLValidationJob {
 
 			repository.synchronize();
 		}
-		logger.info(loadedTSL + " loaded TSL from cached files in the repository");
+		LOG.info("{} loaded TSL from cached files in the repository", loadedTSL);
+	}
+
+	private OtherTrustedList getNonEUTrustedList(String countryCode) {
+		if (Utils.isCollectionNotEmpty(otherTrustedLists)) {
+			for (OtherTrustedList otherTrustedList : otherTrustedLists) {
+				if (Utils.areStringsEqual(countryCode, otherTrustedList.getCountryCode())) {
+					return otherTrustedList;
+				}
+			}
+		}
+		return null;
 	}
 
 	public void refresh() {
-		logger.debug("TSL Validation Job is starting ...");
+		LOG.debug("TSL Validation Job is starting ...");
 		TSLLoaderResult resultLoaderLOTL = null;
 		Future<TSLLoaderResult> result = executorService.submit(new TSLLoader(dataLoader, lotlCode, lotlUrl));
 		try {
 			resultLoaderLOTL = result.get();
 		} catch (Exception e) {
-			logger.error("Unable to load the LOTL : " + e.getMessage(), e);
-			throw new DSSException("Unable to load the LOTL : " + e.getMessage(),e);
+			LOG.error("Unable to load the LOTL : " + e.getMessage(), e);
+			throw new DSSException("Unable to load the LOTL : " + e.getMessage(), e);
 		}
 		if (resultLoaderLOTL.getContent() == null) {
-			logger.error("Unable to load the LOTL: content is empty");
+			LOG.error("Unable to load the LOTL: content is empty");
 			throw new DSSException("Unable to load the LOTL: content is empty");
 		}
 
@@ -227,14 +260,16 @@ public class TSLValidationJob {
 				parseResult = parseLOTL(europeanModel);
 				europeanModel.setParseResult(parseResult);
 			} catch (Exception e) {
-				logger.error("Unable to parse the LOTL : " + e.getMessage(), e);
+				LOG.error("Unable to parse the LOTL : " + e.getMessage(), e);
 				return;
 			}
 		}
 
 		if (!isLatestOjKeystore(parseResult)) {
-			logger.warn("OJ keystore is out-dated !");
+			LOG.warn("OJ keystore is out-dated !");
 		}
+
+		checkLOTLLocation(parseResult);
 
 		// Copy certificates from the OJ keystore
 		List<CertificateToken> allowedLotlSigners = new ArrayList<CertificateToken>();
@@ -244,24 +279,38 @@ public class TSLValidationJob {
 			extractAllowedLotlSignersFromPivots(parseResult, allowedLotlSigners);
 		}
 
-		if (checkLOTLSignature && (europeanModel.getValidationResult() == null)) {
+		if (checkLOTLSignature && ((europeanModel.getValidationResult() == null) || !europeanModel.getValidationResult().isValid())) {
 			try {
 				TSLValidationResult validationResult = validateLOTL(europeanModel, allowedLotlSigners);
 				europeanModel.setValidationResult(validationResult);
 			} catch (Exception e) {
-				logger.error("Unable to validate the LOTL : " + e.getMessage(), e);
+				LOG.error("Unable to validate the LOTL : " + e.getMessage(), e);
 			}
 		}
 
 		analyzeCountryPointers(parseResult.getPointers(), newLotl);
 
+		analyzeNonEUCountryPointers();
+
 		repository.synchronize();
 
-		logger.debug("TSL Validation Job is finishing ...");
+		LOG.debug("TSL Validation Job is finishing ...");
+	}
+
+	private void checkLOTLLocation(TSLParserResult parseResult) {
+		List<TSLPointer> pointers = parseResult.getPointers();
+		for (TSLPointer tslPointer : pointers) {
+			if (Utils.areStringsEqual(lotlCode, tslPointer.getTerritory())) {
+				if (!Utils.areStringsEqual(lotlUrl, tslPointer.getUrl())) {
+					LOG.warn("The LOTL URL has been changed ! Please update your properties (new value : {})", tslPointer.getUrl());
+				}
+				break;
+			}
+		}
 	}
 
 	private void extractAllowedLotlSignersFromPivots(TSLParserResult parseResult, List<CertificateToken> allowedLotlSigners) {
-		List<Future<TSLLoaderResult>> pivotLoaderResults = new ArrayList<Future<TSLLoaderResult>>();
+		List<Future<TSLLoaderResult>> pivotLoaderResults = new LinkedList<Future<TSLLoaderResult>>();
 		List<String> pivotUris = getPivotUris(parseResult);
 		for (String pivotUrl : pivotUris) {
 			pivotLoaderResults.add(executorService.submit(new TSLLoader(dataLoader, lotlCode, pivotUrl)));
@@ -296,12 +345,12 @@ public class TSLValidationJob {
 						allowedLotlSigners.clear();
 						allowedLotlSigners.addAll(certs);
 					} else {
-						logger.warn("Pivot '" + loaderResult.getUrl() + "' is not valid");
+						LOG.warn("Pivot '{}' is not valid", loaderResult.getUrl());
 					}
 
 				}
 			} catch (Exception e) {
-				logger.error("Unable to validate the pivot LOTL : " + e.getMessage(), e);
+				LOG.error("Unable to validate the pivot LOTL : " + e.getMessage(), e);
 			}
 
 		}
@@ -314,7 +363,7 @@ public class TSLValidationJob {
 				return tslPointer.getPotentialSigners();
 			}
 		}
-		logger.warn("No LOTL pointer in pivot '" + loaderResult.getUrl() + "'");
+		LOG.warn("No LOTL pointer in pivot '{}'", loaderResult.getUrl());
 		return new ArrayList<CertificateToken>();
 	}
 
@@ -335,9 +384,12 @@ public class TSLValidationJob {
 	}
 
 	private List<String> getPivotUris(TSLParserResult parseResult) {
-		List<String> pivotUris = new ArrayList<String>();
-		List<String> englishSchemeInformationURIs = parseResult.getEnglishSchemeInformationURIs();
-		for (String uri : englishSchemeInformationURIs) {
+		List<String> pivotUris = new LinkedList<String>();
+		LinkedList<String> englishSchemeInformationURIs = (LinkedList<String>) parseResult.getEnglishSchemeInformationURIs();
+		// Pivots order is current T, T-1, T-2,...
+		Iterator<String> itr = englishSchemeInformationURIs.descendingIterator();
+		while (itr.hasNext()) {
+			String uri = itr.next();
 			if (!Utils.areStringsEqual(ojUrl, uri) && !uri.startsWith(lotlRootSchemeInfoUri)) {
 				pivotUris.add(uri);
 			}
@@ -379,20 +431,37 @@ public class TSLValidationJob {
 					}
 				}
 			} catch (Exception e) {
-				logger.error("Unable to load/parse TSL : " + e.getMessage(), e);
+				LOG.error("Unable to load/parse TSL : " + e.getMessage(), e);
 			}
 		}
 
+		storeParseResults(futureParseResults);
+		storeValidationResults(futureValidationResults);
+	}
+
+	private void analyzeNonEUCountryPointers() {
+		if (Utils.isCollectionNotEmpty(otherTrustedLists)) {
+			List<TSLPointer> pointers = new ArrayList<TSLPointer>();
+			for (OtherTrustedList otherTrustedList : otherTrustedLists) {
+				TSLPointer customPointer = new TSLPointer();
+				customPointer.setTerritory(otherTrustedList.getCountryCode());
+				customPointer.setUrl(otherTrustedList.getUrl());
+				customPointer.setPotentialSigners(otherTrustedList.getTrustStore().getCertificates());
+				pointers.add(customPointer);
+			}
+			analyzeCountryPointers(pointers, false);
+		}
+	}
+
+	private void storeParseResults(List<Future<TSLParserResult>> futureParseResults) {
 		for (Future<TSLParserResult> futureParseResult : futureParseResults) {
 			try {
 				TSLParserResult tslParserResult = futureParseResult.get();
 				repository.updateParseResult(tslParserResult);
 			} catch (Exception e) {
-				logger.error("Unable to get parsing result : " + e.getMessage(), e);
+				LOG.error("Unable to get parsing result : " + e.getMessage(), e);
 			}
 		}
-
-		storeValidationResults(futureValidationResults);
 	}
 
 	private void storeValidationResults(List<Future<TSLValidationResult>> futureValidationResults) {
@@ -401,7 +470,7 @@ public class TSLValidationJob {
 				TSLValidationResult tslValidationResult = futureValidationResult.get();
 				repository.updateValidationResult(tslValidationResult);
 			} catch (Exception e) {
-				logger.error("Unable to get validation result : " + e.getMessage(), e);
+				LOG.error("Unable to get validation result : " + e.getMessage(), e);
 			}
 		}
 	}

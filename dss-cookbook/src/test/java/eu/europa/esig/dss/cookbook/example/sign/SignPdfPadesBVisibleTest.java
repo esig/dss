@@ -22,14 +22,12 @@ package eu.europa.esig.dss.cookbook.example.sign;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.io.IOException;
 
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
-import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
@@ -37,6 +35,8 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
 /**
@@ -45,7 +45,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 public class SignPdfPadesBVisibleTest extends CookbookTools {
 
 	@Test
-	public void signPAdESBaselineBWithVisibleSignature() throws IOException {
+	public void signPAdESBaselineBWithVisibleSignature() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -58,56 +58,57 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 
 		// and it's first private key entry from the PKCS12 store
 		// Return DSSPrivateKeyEntry privateKey *****
-		preparePKCS12TokenAndKey();
+		try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 
-		// tag::demo[]
+			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
-		// Preparing parameters for the PAdES signature
-		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
-		// We choose the level of the signature (-B, -T, -LT, -LTA).
-		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-		// We choose the type of the signature packaging (ENVELOPING, DETACHED).
-		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+			// tag::demo[]
 
-		// We set the signing certificate
-		parameters.setSigningCertificate(privateKey.getCertificate());
-		// We set the certificate chain
-		parameters.setCertificateChain(privateKey.getCertificateChain());
+			// Preparing parameters for the PAdES signature
+			PAdESSignatureParameters parameters = new PAdESSignatureParameters();
+			// We choose the level of the signature (-B, -T, -LT, -LTA).
+			parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
-		// Initialize visual signature
-		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		// the origin is the left and top corner of the page
-		imageParameters.setxAxis(200);
-		imageParameters.setyAxis(500);
+			// We set the signing certificate
+			parameters.setSigningCertificate(privateKey.getCertificate());
+			// We set the certificate chain
+			parameters.setCertificateChain(privateKey.getCertificateChain());
 
-		// Initialize text to generate for visual signature
-		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-		textParameters.setFont(new Font("serif", Font.PLAIN, 14));
-		textParameters.setTextColor(Color.BLUE);
-		textParameters.setText("My visual signature");
-		imageParameters.setTextParameters(textParameters);
+			// Initialize visual signature
+			SignatureImageParameters imageParameters = new SignatureImageParameters();
+			// the origin is the left and top corner of the page
+			imageParameters.setxAxis(200);
+			imageParameters.setyAxis(500);
 
-		parameters.setSignatureImageParameters(imageParameters);
+			// Initialize text to generate for visual signature
+			SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+			textParameters.setFont(new Font("serif", Font.PLAIN, 14));
+			textParameters.setTextColor(Color.BLUE);
+			textParameters.setText("My visual signature");
+			imageParameters.setTextParameters(textParameters);
 
-		// Create common certificate verifier
-		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
-		// Create PAdESService for signature
-		PAdESService service = new PAdESService(commonCertificateVerifier);
+			parameters.setSignatureImageParameters(imageParameters);
 
-		// Get the SignedInfo segment that need to be signed.
-		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
+			// Create common certificate verifier
+			CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
+			// Create PAdESService for signature
+			PAdESService service = new PAdESService(commonCertificateVerifier);
 
-		// This function obtains the signature value for signed information using the
-		// private key and specified algorithm
-		DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-		SignatureValue signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKey);
+			// Get the SignedInfo segment that need to be signed.
+			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
 
-		// We invoke the xadesService to sign the document with the signature value obtained in
-		// the previous step.
-		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+			// This function obtains the signature value for signed information using the
+			// private key and specified algorithm
+			DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
+			SignatureValue signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKey);
 
-		// end::demo[]
+			// We invoke the xadesService to sign the document with the signature value obtained in
+			// the previous step.
+			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
-		testFinalDocument(signedDocument);
+			// end::demo[]
+
+			testFinalDocument(signedDocument);
+		}
 	}
 }

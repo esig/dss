@@ -15,11 +15,13 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateCrypt
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateExpirationCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToLegalPersonCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToNaturalPersonCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotSelfSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateOnHoldCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyIdsCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQCStatementIdsCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQualifiedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateRevokedCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSelfSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSignatureValidCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSupportedByQSCDCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CommonNameCheck;
@@ -31,6 +33,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationName
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationUnitCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudoUsageCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudonymCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationCertHashMatchCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResult;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationInfoAccessPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.SerialNumberCheck;
@@ -79,6 +82,8 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(commonName(currentCertificate, subContext));
 
+		item = item.setNextItem(pseudoUsage(currentCertificate, subContext));
+
 		item = item.setNextItem(pseudonym(currentCertificate, subContext));
 
 		item = item.setNextItem(country(currentCertificate, subContext));
@@ -86,6 +91,22 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		item = item.setNextItem(organizationUnit(currentCertificate, subContext));
 
 		item = item.setNextItem(organizationName(currentCertificate, subContext));
+
+		item = item.setNextItem(selfSigned(currentCertificate, subContext));
+
+		item = item.setNextItem(notSelfSigned(currentCertificate, subContext));
+
+		item = item.setNextItem(certificatePolicyIds(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateQCStatementIds(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateQualified(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateSupportedByQSCD(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateIssuedToLegalPerson(currentCertificate, subContext));
+
+		item = item.setNextItem(certificateIssuedToNaturalPerson(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateSignatureValid(currentCertificate, subContext));
 
@@ -97,25 +118,12 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(revocationInfoAccessPresent(currentCertificate, subContext));
 
+		// MUST check expiration before revocation (ocsp-no-check is only usable within the certificate validity)
+		item = item.setNextItem(certificateExpiration(currentCertificate, subContext));
+
 		item = item.setNextItem(certificateRevoked(currentCertificate, subContext));
 
 		item = item.setNextItem(certificateOnHold(currentCertificate, subContext));
-
-		item = item.setNextItem(certificateExpiration(currentCertificate, subContext));
-
-		item = item.setNextItem(certificatePolicyIds(currentCertificate, subContext));
-
-		item = item.setNextItem(certificateQCStatementIds(currentCertificate, subContext));
-
-		item = item.setNextItem(certificateQualified(currentCertificate, subContext));
-
-		item = item.setNextItem(certificateSupportedByQSCD(currentCertificate, subContext));
-
-		item = item.setNextItem(pseudoUsage(currentCertificate, subContext));
-
-		item = item.setNextItem(certificateIssuedToLegalPerson(currentCertificate, subContext));
-
-		item = item.setNextItem(certificateIssuedToNaturalPerson(currentCertificate, subContext));
 
 		if (!isRevocationNoNeedCheck(currentCertificate)) {
 			RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(currentCertificate.getLatestRevocationData(), currentTime, context, subContext,
@@ -127,6 +135,8 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		} else {
 			item = item.setNextItem(idPkixOcspNoCheck());
 		}
+
+		item = item.setNextItem(revocationCertHashCheck());
 	}
 
 	/*
@@ -213,12 +223,22 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 	private ChainItem<XmlSubXCV> certificateRevoked(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotRevokedConstraint(context, subContext);
-		return new CertificateRevokedCheck(result, certificate, constraint, subContext);
+		return new CertificateRevokedCheck(result, certificate, currentTime, constraint, subContext);
 	}
 
 	private ChainItem<XmlSubXCV> certificateOnHold(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotOnHoldConstraint(context, subContext);
-		return new CertificateOnHoldCheck(result, certificate, constraint);
+		return new CertificateOnHoldCheck(result, certificate, currentTime, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> notSelfSigned(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateNotSelfSignedConstraint(context, subContext);
+		return new CertificateNotSelfSignedCheck(result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> selfSigned(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateSelfSignedConstraint(context, subContext);
+		return new CertificateSelfSignedCheck(result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificatePolicyIds(CertificateWrapper certificate, SubContext subContext) {
@@ -262,6 +282,11 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 	private ChainItem<XmlSubXCV> idPkixOcspNoCheck() {
 		return new IdPkixOcspNoCheck(result, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlSubXCV> revocationCertHashCheck() {
+		LevelConstraint constraint = validationPolicy.getRevocationCertHashMatchConstraint(context, subContext);
+		return new RevocationCertHashMatchCheck(result, currentCertificate, constraint);
 	}
 
 }

@@ -43,12 +43,11 @@ public class XAdESLevelX extends XAdESLevelC {
 	 * The default constructor for XAdESLevelX.
 	 */
 	public XAdESLevelX(CertificateVerifier certificateVerifier) {
-
 		super(certificateVerifier);
 	}
 
 	/**
-	 * Adds <SigAndRefsTimeStamp> segment to <UnsignedSignatureProperties><br>
+	 * Adds SigAndRefsTimeStamp segment to UnsignedSignatureProperties<br>
 	 * The time-stamp is placed on the the digital signature (ds:Signature element), the time-stamp(s) present in the
 	 * XAdES-T form, the certification path references and the revocation status references.
 	 *

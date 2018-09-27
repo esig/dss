@@ -47,7 +47,7 @@ import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
  */
 public class TSLValidator implements Callable<TSLValidationResult> {
 
-	private static final Logger logger = LoggerFactory.getLogger(TSLValidator.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TSLValidator.class);
 
 	private File file;
 	private String countryCode;
@@ -85,6 +85,7 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 		xPathQueryHolders.add(new XPathQueryHolder());
 
 		Reports reports = xmlDocumentValidator.validateDocument(TSLValidator.class.getResourceAsStream("/tsl-constraint.xml"));
+
 		SimpleReport simpleReport = reports.getSimpleReport();
 		Indication indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
 		boolean isValid = Indication.TOTAL_PASSED.equals(indication);
@@ -95,8 +96,7 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 		result.setSubIndication(simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
 		if (!isValid) {
-			logger.info("The TSL signature is not valid : \n");
-			reports.print();
+			LOG.info("The TSL signature is not valid : \n{}", reports.getXmlSimpleReport());
 		}
 
 		return result;

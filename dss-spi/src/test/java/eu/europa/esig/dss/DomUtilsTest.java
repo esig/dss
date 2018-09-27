@@ -3,13 +3,10 @@ package eu.europa.esig.dss;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.InputStream;
 
 import org.junit.Test;
-
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.InMemoryDocument;
 
 public class DomUtilsTest {
 
@@ -42,6 +39,22 @@ public class DomUtilsTest {
 	@Test(expected = DSSException.class)
 	public void testHeaderError() {
 		DomUtils.buildDOM(XML_HEADER + INCORRECT_XML_TEXT);
+	}
+
+	@Test(expected = DSSException.class)
+	public void testExpansionXml() throws Exception {
+		assertNotNull(DomUtils.buildDOM(new FileInputStream("src/test/resources/xml_expansion.xml")));
+	}
+
+	@Test(expected = DSSException.class)
+	public void testEntityXml() throws Exception {
+		// Should ignore the URL embedded in the DTD
+		DomUtils.buildDOM(new FileInputStream("src/test/resources/xml_entity.xml"));
+	}
+
+	@Test
+	public void getSecureTransformer() {
+		assertNotNull(DomUtils.getSecureTransformer());
 	}
 
 }

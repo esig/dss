@@ -12,6 +12,7 @@ import java.util.List;
  * 
  * @author jdvorak
  * @param <T>
+ *            sub type of TimeDependent
  */
 public class TimeDependentValues<T extends TimeDependent> implements Iterable<T> {
 
@@ -29,6 +30,7 @@ public class TimeDependentValues<T extends TimeDependent> implements Iterable<T>
 	 * Copy constructor.
 	 * 
 	 * @param srcList
+	 *            an iterable of TimeDependent
 	 */
 	public TimeDependentValues(final Iterable<T> srcList) {
 		for (final T x : srcList) {
@@ -66,6 +68,11 @@ public class TimeDependentValues<T extends TimeDependent> implements Iterable<T>
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public String toString() {
+		return list.toString();
 	}
 
 }

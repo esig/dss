@@ -22,90 +22,125 @@ package eu.europa.esig.dss.tsl;
 
 import java.util.ArrayList;
 import java.util.List;
+import static java.util.Collections.unmodifiableList;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
- * Checks if a certificate has a specific policy OID.<br>
- * Objects based on this class are instantiated from trusted list or by SignedDocumentValidator for QCP and QCPPlus
- *
- *
+ * Condition resulting of the matchingCriteriaIndicator of other Conditions
  */
-
 public class CompositeCondition extends Condition {
 
-    /**
-     * The list of child conditions
-     */
-    protected List<Condition> children;
+	private static final long serialVersionUID = -3756905347291887068L;
+
+	private MatchingCriteriaIndicator matchingCriteriaIndicator;
+
+	/**
+	 * The list of child conditions
+	 */
+	private List<Condition> children = new ArrayList<Condition>();
+
+	/**
+	 * The default constructor for CriteriaListCondition.
+	 * All conditions must match
+	 */
+	public CompositeCondition() {
+		this.matchingCriteriaIndicator = MatchingCriteriaIndicator.all;
+	}
+
+	/**
+	 * Constructor for CriteriaListCondition.
+	 *
+	 * @param matchingCriteriaIndicator
+	 *            matching criteria indicator: atLeastOne, all, none
+	 */
+	public CompositeCondition(final MatchingCriteriaIndicator matchingCriteriaIndicator) {
+		this.matchingCriteriaIndicator = matchingCriteriaIndicator;
+	}
 
     /**
-     * This method adds a child condition. This allows to handle embedded conditions.
-     *
-     * @param condition
-     * @return
+     * Returns the list of child conditions.
+     * 
+     * @return an unmodifiable list, possibly empty; never {@code null}
      */
-    public void addChild(final Condition condition) {
-
-        if (children == null) {
-
-            children = new ArrayList<Condition>();
-        }
-        children.add(condition);
+    public final List<Condition> getChildren() {
+        return unmodifiableList(children);
     }
 
-    /**
-     * Checks the condition for the given certificate.
-     *
-     * @param certificateToken certificate to be checked
-     * @return
-     */
-    @Override
-    public boolean check(final CertificateToken certificateToken) {
+	/**
+	 * This method adds a child condition. This allows to handle embedded conditions.
+	 *
+	 * @param condition
+	 *            the condition to add in the composite
+	 */
+	public void addChild(final Condition condition) {
+		children.add(condition);
+	}
 
-        if (children == null) {
+	/**
+	 * Returns the matching criteria indicator
+	 *
+	 * @return matching criteria indicator: atLeastOne, all, none
+	 */
+	public MatchingCriteriaIndicator getMatchingCriteriaIndicator() {
+		return matchingCriteriaIndicator;
+	}
 
-            return false;
-        }
-        for (final Condition condition : children) {
+	/**
+	 * Execute the composite condition of the given certificate
+	 * 
+	 * @param certificateToken
+	 *            certificate to be checked
+	 * @return true if the condition matches
+	 */
+	@Override
+	public boolean check(final CertificateToken certificateToken) {
+		switch (matchingCriteriaIndicator) {
+		case all:
+			for (final Condition condition : children) {
+				if (!condition.check(certificateToken)) {
+					return false;
+				}
+			}
+			return true;
+		case atLeastOne:
+			for (final Condition condition : children) {
+				if (condition.check(certificateToken)) {
+					return true;
+				}
+			}
+			return false;
+		case none:
+			for (final Condition condition : children) {
+				if (condition.check(certificateToken)) {
+					return false;
+				}
+			}
+			return true;
+		default:
+			throw new DSSException("Unsupported MatchingCriteriaIndicator : " + matchingCriteriaIndicator);
+		}
+	}
 
-            boolean checkResult = condition.check(certificateToken);
-            if (!checkResult) {
+	@Override
+	public String toString(String indent) {
+		if (indent == null) {
+			indent = "";
+		}
+		final StringBuilder builder = new StringBuilder();
+		builder.append(indent).append("CriteriaListCondition: ").append(matchingCriteriaIndicator.name()).append('\n');
+		if (children != null) {
+			indent += "\t";
+			for (final Condition condition : children) {
+				builder.append(condition.toString(indent));
+			}
+		}
+		return builder.toString();
+	}
 
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public String toString(String indent) {
-
-        try {
-
-            if (indent == null) {
-                indent = "";
-            }
-            StringBuilder builder = new StringBuilder();
-            builder.append(indent).append("CompositeCondition: ").append('\n');
-            if (children != null) {
-
-                indent += "\t";
-                for (final Condition condition : children) {
-
-                    builder.append(condition.toString(indent));
-                }
-            }
-            return builder.toString();
-        } catch (Exception e) {
-
-            return e.toString();
-        }
-    }
-
-    @Override
-    public String toString() {
-
-        return toString("");
-    }
+	@Override
+	public String toString() {
+		return toString("");
+	}
 }

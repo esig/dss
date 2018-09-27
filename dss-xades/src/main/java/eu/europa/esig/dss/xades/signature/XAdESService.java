@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.xml.security.Init;
@@ -39,6 +40,7 @@ import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.ProfileParameters;
 import eu.europa.esig.dss.xades.ProfileParameters.Operation;
@@ -67,6 +69,20 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	public XAdESService(final CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 		LOG.debug("+ XAdESService created");
+	}
+
+	@Override
+	public TimestampToken getContentTimestamp(DSSDocument toSignDocument, XAdESSignatureParameters parameters) {
+		return getContentTimestamp(Arrays.asList(toSignDocument), parameters);
+	}
+
+	@Override
+	public TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters) {
+		if (tspSource == null) {
+			throw new DSSException("A TSPSource is required !");
+		}
+		AllDataObjectsTimeStampBuilder builder = new AllDataObjectsTimeStampBuilder(tspSource, parameters.getContentTimestampParameters());
+		return builder.build(toSignDocuments);
 	}
 
 	@Override

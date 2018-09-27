@@ -43,11 +43,8 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.x509.CertificatePool;
-import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.xades.DSSReference;
@@ -74,9 +71,11 @@ public abstract class XAdESBuilder {
 	public static final String DS_TRANSFORMS = "ds:Transforms";
 	public static final String DS_X509_CERTIFICATE = "ds:X509Certificate";
 	public static final String DS_X509_DATA = "ds:X509Data";
+	public static final String DS_X509_SUBJECT_NAME = "ds:X509SubjectName";
 	public static final String DS_X509_ISSUER_NAME = "ds:X509IssuerName";
 	public static final String DS_X509_SERIAL_NUMBER = "ds:X509SerialNumber";
 	public static final String DS_XPATH = "ds:XPath";
+	public static final String DS_MANIFEST = "ds:Manifest";
 
 	public static final String XADES_ALL_DATA_OBJECTS_TIME_STAMP = "xades:AllDataObjectsTimeStamp";
 	public static final String XADES_ALL_SIGNED_DATA_OBJECTS = "xades:AllSignedDataObjects";
@@ -139,6 +138,7 @@ public abstract class XAdESBuilder {
 	public static final String TARGET = "Target";
 	public static final String TYPE = "Type";
 	public static final String URI = "URI";
+	public static final String MIMETYPE = "MimeType";
 
 	public static final String QUALIFIER = "Qualifier";
 
@@ -146,6 +146,9 @@ public abstract class XAdESBuilder {
 	public static final String XMLNS_XADES = "xmlns:xades";
 
 	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT = "http://www.w3.org/2000/09/xmldsig#Object";
+
+	public static final String HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST = "http://www.w3.org/2000/09/xmldsig#Manifest";
+
 	/**
 	 * This XPath filter allows to remove all ds:Signature elements from the XML
 	 */
@@ -184,29 +187,20 @@ public abstract class XAdESBuilder {
 	}
 
 	/**
-	 * This method allows to retrieve the {@code CertificatePool} containing trust anchors.
-	 *
-	 * @return {@code CertificatePool} or null
-	 */
-	protected CertificatePool getCertificatePool() {
-
-		final CertificateSource trustedCertSource = certificateVerifier.getTrustedCertSource();
-		if (trustedCertSource != null) {
-			return trustedCertSource.getCertificatePool();
-		}
-		return null;
-	}
-
-	/**
 	 * This method creates the ds:DigestMethod DOM object
+	 * 
+	 * <pre>
+	 * {@code
+	 * 		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+	 * }
+	 * </pre>
 	 *
 	 * @param parentDom
+	 *            the parent element
 	 * @param digestAlgorithm
-	 *            digest algorithm xml identifier
+	 *            the digest algorithm xml identifier
 	 */
 	protected void incorporateDigestMethod(final Element parentDom, final DigestAlgorithm digestAlgorithm) {
-
-		// <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
 		final Element digestMethodDom = documentDom.createElementNS(XMLNS, DS_DIGEST_METHOD);
 		final String digestAlgorithmXmlId = digestAlgorithm.getXmlId();
 		digestMethodDom.setAttribute(ALGORITHM, digestAlgorithmXmlId);
@@ -215,78 +209,86 @@ public abstract class XAdESBuilder {
 
 	/**
 	 * This method creates the ds:DigestValue DOM object.
+	 * 
+	 * <pre>
+	 * {@code
+	 * 		<ds:DigestValue>fj8SJujSXU4fi342bdtiKVbglA0=</ds:DigestValue>
+	 * }
+	 * </pre>
 	 *
 	 * @param parentDom
+	 *            the parent element
+	 * @param dssReference
+	 *            the current reference to incorporate
 	 * @param digestAlgorithm
-	 *            digest algorithm
+	 *            the digest algorithm to be used
 	 * @param originalDocument
-	 *            to digest array of bytes
+	 *            the document to be digested
 	 */
-	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm, final DSSDocument originalDocument) {
+	protected void incorporateDigestValue(final Element parentDom, DSSReference dssReference, final DigestAlgorithm digestAlgorithm,
+			final DSSDocument originalDocument) {
 
-		// <ds:DigestValue>b/JEDQH2S1Nfe4Z3GSVtObN34aVB1kMrEbVQZswThfQ=</ds:DigestValue>
 		final Element digestValueDom = documentDom.createElementNS(XMLNS, DS_DIGEST_VALUE);
 
-		if (originalDocument.getMimeType() == MimeType.XML && params.isEmbedXML()) {
+		String base64EncodedDigestBytes = null;
+		if (params.isManifestSignature()) {
+			DSSTransform dssTransform = getUniqueTransformation(dssReference);
+			Document doc = DomUtils.buildDOM(originalDocument);
+			byte[] bytes = DSSXMLUtils.canonicalizeSubtree(dssTransform.getAlgorithm(), doc);
+			base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
+		} else if (params.isEmbedXML()) {
+			DSSTransform dssTransform = getUniqueTransformation(dssReference);
 
-			try {
-				List<DSSReference> references = params.getReferences();
-				if (Utils.collectionSize(references) != 1) {
-					throw new DSSException("Unsupported operation");
-				}
-				DSSReference dssReference = references.get(0);
+			Document doc = DomUtils.buildDOM(originalDocument);
+			Element root = doc.getDocumentElement();
 
-				Document doc = DomUtils.buildDOM(originalDocument.openStream());
-				Element root = doc.getDocumentElement();
+			Document doc2 = DomUtils.buildDOM();
+			final Element dom = doc2.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
+			final Element dom2 = doc2.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
+			doc2.appendChild(dom2);
+			dom2.appendChild(dom);
+			dom.setAttribute(ID, dssReference.getUri().substring(1));
 
-				Document doc2 = DomUtils.buildDOM();
-				final Element dom = doc2.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
-				final Element dom2 = doc2.createElementNS(XMLSignature.XMLNS, DS_OBJECT);
-				doc2.appendChild(dom2);
-				dom2.appendChild(dom);
-				dom.setAttribute(ID, dssReference.getUri().substring(1));
+			Node adopted = doc2.adoptNode(root);
+			dom.appendChild(adopted);
 
-				Node adopted = doc2.adoptNode(root);
-				dom.appendChild(adopted);
-
-				List<DSSTransform> transforms = dssReference.getTransforms();
-				if (Utils.collectionSize(transforms) != 1) {
-					throw new DSSException("Unsupported operation");
-				}
-				DSSTransform dssTransform = transforms.get(0);
-
-				byte[] bytes = DSSXMLUtils.canonicalizeSubtree(dssTransform.getAlgorithm(), dom);
-
-				final String c14nDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
-				LOG.trace("C14n Digest value {} --> {}", parentDom.getNodeName(), c14nDigestBytes);
-				final Text textNode = documentDom.createTextNode(c14nDigestBytes);
-				digestValueDom.appendChild(textNode);
-			} catch (Exception e) {
-				throw new DSSException(e);
-			}
+			byte[] bytes = DSSXMLUtils.canonicalizeSubtree(dssTransform.getAlgorithm(), dom);
+			base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
 		} else {
-			final String base64EncodedDigestBytes = originalDocument.getDigest(digestAlgorithm);
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
-			}
-			final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
-			digestValueDom.appendChild(textNode);
+			base64EncodedDigestBytes = originalDocument.getDigest(digestAlgorithm);
 		}
 
+		LOG.trace("C14n Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);
+		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
+		digestValueDom.appendChild(textNode);
 		parentDom.appendChild(digestValueDom);
+	}
+
+	private DSSTransform getUniqueTransformation(DSSReference dssReference) {
+		List<DSSTransform> transforms = dssReference.getTransforms();
+		if (Utils.collectionSize(transforms) != 1) {
+			throw new DSSException("Only one transformation is supported");
+		}
+		return transforms.get(0);
 	}
 
 	/**
 	 * This method creates the ds:DigestValue DOM object.
+	 * 
+	 * <pre>
+	 * {@code
+	 * 		<ds:DigestValue>fj8SJujSXU4fi342bdtiKVbglA0=</ds:DigestValue>
+	 * }
+	 * </pre>
 	 *
 	 * @param parentDom
+	 *            the parent element
 	 * @param digestAlgorithm
-	 *            digest algorithm
+	 *            the digest algorithm to use
 	 * @param token
-	 *            to digest array of bytes
+	 *            the token to be digested
 	 */
 	protected void incorporateDigestValue(final Element parentDom, final DigestAlgorithm digestAlgorithm, final Token token) {
-		// <ds:DigestValue>b/JEDQH2S1Nfe4Z3GSVtObN34aVB1kMrEbVQZswThfQ=</ds:DigestValue>
 		final Element digestValueDom = documentDom.createElementNS(XMLNS, DS_DIGEST_VALUE);
 		final String base64EncodedDigestBytes = Utils.toBase64(token.getDigest(digestAlgorithm));
 		if (LOG.isTraceEnabled()) {
@@ -315,6 +317,29 @@ public abstract class XAdESBuilder {
 		}
 	}
 
+	/**
+	 * Creates Cert DOM object:
+	 * 
+	 * <pre>
+	 * {@code
+	 * 		<Cert>
+	 * 			<CertDigest>
+	 * 				<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+	 * 				<ds:DigestValue>fj8SJujSXU4fi342bdtiKVbglA0=</ds:DigestValue>
+	 * 			</CertDigest>
+	 * 			<IssuerSerial>
+	 * 				<ds:X509IssuerName>CN=ICA A,O=DSS,C=AA</ds:X509IssuerName>
+	 * 				<ds:X509SerialNumber>4</ds:X509SerialNumber>
+	 *			</IssuerSerial>
+	 *		</Cert>
+	 * }
+	 * </pre>
+	 * 
+	 * @param parentDom
+	 *            the parent element
+	 * @param certificate
+	 *            the certificate to be added
+	 */
 	protected Element incorporateCert(final Element parentDom, final CertificateToken certificate) {
 		final Element certDom = DomUtils.addElement(documentDom, parentDom, XAdES, XADES_CERT);
 
@@ -336,7 +361,7 @@ public abstract class XAdESBuilder {
 
 		final Element x509SerialNumberDom = DomUtils.addElement(documentDom, issuerSerialDom, XMLNS, DS_X509_SERIAL_NUMBER);
 		final BigInteger serialNumber = certificate.getSerialNumber();
-		final String serialNumberString = new String(serialNumber.toString());
+		final String serialNumberString = serialNumber.toString();
 		DomUtils.setTextNode(documentDom, x509SerialNumberDom, serialNumberString);
 	}
 

@@ -6,7 +6,7 @@ import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 
-import eu.europa.esig.dss.validation.reports.dto.DataToValidateDTO;
+import eu.europa.esig.dss.DataToValidateDTO;
 
 /**
  * The validation web service allow to validate the signature inside a signed file. In addition, the original file and a
@@ -21,7 +21,8 @@ public interface SoapDocumentValidationService extends Serializable {
 	 * simple report and a detailed report
 	 * 
 	 * @param dataToValidate
-	 * @return
+	 *            a DTO which contains the signature, the optional original document and the optional validation policy
+	 * @return a DTO with the 3 reports : the diagnostic data, the detailed report and the simple report
 	 */
 	@WebResult(name = "WSReportsDTO")
 	WSReportsDTO validateSignature(@WebParam(name = "dataToValidateDTO") DataToValidateDTO dataToValidate);

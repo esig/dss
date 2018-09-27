@@ -4,13 +4,11 @@ import java.util.List;
 
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 
 public interface TokenProxy {
-
-	boolean isReferenceDataFound();
-
-	boolean isReferenceDataIntact();
 
 	boolean isSignatureIntact();
 
@@ -20,9 +18,13 @@ public interface TokenProxy {
 
 	DigestAlgorithm getDigestAlgorithm();
 
+	String getEncryptionAlgoUsedToSignThisToken();
+
 	EncryptionAlgorithm getEncryptionAlgorithm();
 
-	String getEncryptionAlgoUsedToSignThisToken();
+	String getMaskGenerationFunctionUsedToSignThisToken();
+
+	MaskGenerationFunction getMaskGenerationFunction();
 
 	String getKeyLengthUsedToSignThisToken();
 
@@ -36,8 +38,6 @@ public interface TokenProxy {
 
 	String getSigningCertificateId();
 
-	String getSigningCertificateSigned();
-
 	String getLastChainCertificateId();
 
 	String getFirstChainCertificateId();
@@ -48,6 +48,10 @@ public interface TokenProxy {
 
 	List<XmlChainItem> getCertificateChain();
 
+	boolean isTrustedChain();
+
 	List<String> getCertificateChainIds();
+
+	List<XmlDigestMatcher> getDigestMatchers();
 
 }

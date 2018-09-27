@@ -75,7 +75,7 @@ public class MOCCAPrivateKeyEntry implements DSSPrivateKeyEntry {
 	private void initialise(final byte[] signingCertBinary, final KeyboxName keyboxName, final byte[] atr) {
 
 		this.signingCert = DSSUtils.loadCertificate(signingCertBinary);
-		LOG.info(">>>Signing certificate subject name/serial number: " + signingCert.getSubjectX500Principal().getName() + "/" + signingCert.getSerialNumber());
+		LOG.info(">>>Signing certificate subject name/serial number:  {} / {}", signingCert.getSubjectX500Principal().getName(), signingCert.getSerialNumber());
 		this.keyboxName = keyboxName;
 		if (keyboxName == null) {
 
@@ -84,7 +84,7 @@ public class MOCCAPrivateKeyEntry implements DSSPrivateKeyEntry {
 		this.atr = atr;
 		String encryptionAlgo = signingCert.getPublicKey().getAlgorithm(); // Can be: DH, DSA, RSA & EC
 		this.encryptionAlgorithm = EncryptionAlgorithm.forName(encryptionAlgo);
-		LOG.info("MOCCA>>>EncryptionAlgorithm from public key: " + this.encryptionAlgorithm.getName());
+		LOG.info("MOCCA>>>EncryptionAlgorithm from public key: {}", this.encryptionAlgorithm.getName());
 		this.certificateChain[0] = this.signingCert;
 	}
 

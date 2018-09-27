@@ -27,6 +27,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 
 public abstract class ExtensionBuilder extends XAdESBuilder {
@@ -73,7 +74,6 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	/**
 	 * Returns or creates (if it does not exist) the UnsignedPropertiesType DOM object.
 	 *
-	 * @return
 	 * @throws DSSException
 	 */
 	protected void ensureUnsignedProperties() throws DSSException {
@@ -103,7 +103,6 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	/**
 	 * Returns or creates (if it does not exist) the UnsignedSignaturePropertiesType DOM object.
 	 *
-	 * @return
 	 * @throws DSSException
 	 */
 	protected void ensureUnsignedSignatureProperties() throws DSSException {
@@ -136,6 +135,14 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			signedDataObjectPropertiesDom = (Element) signedDataObjectPropertiesNodeList.item(0);
 		} else if (length > 1) {
 			throw new DSSException("The signature contains more than one SignedDataObjectProperties element! Extension is not possible.");
+		}
+	}
+
+	protected void assertSignatureValid(final XAdESSignature xadesSignature) {
+		SignatureCryptographicVerification signatureCryptographicVerification = xadesSignature.getSignatureCryptographicVerification();
+		if (!signatureCryptographicVerification.isSignatureIntact()) {
+			final String errorMessage = signatureCryptographicVerification.getErrorMessage();
+			throw new DSSException("Cryptographic signature verification has failed" + (errorMessage.isEmpty() ? "." : (" / " + errorMessage)));
 		}
 	}
 }

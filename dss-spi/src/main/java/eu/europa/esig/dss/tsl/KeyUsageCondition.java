@@ -20,50 +20,64 @@
  */
 package eu.europa.esig.dss.tsl;
 
+import static java.util.Objects.requireNonNull;
+
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
- * Test if the certificate has a Key usage
+ * Condition based on the certificate key usage
  */
-@SuppressWarnings("serial")
 public class KeyUsageCondition extends Condition {
+
+	private static final long serialVersionUID = -5078159553328523044L;
 
 	private final KeyUsageBit bit;
 	private final boolean value;
 
 	/**
-	 * The default constructor for KeyUsageCondition.
+	 * Constructs a new KeyUsageCondition.
 	 *
 	 * @param bit
+	 *            the key usage
+	 * @param value
+	 *            the required value of the key usage bit
 	 */
 	public KeyUsageCondition(final KeyUsageBit bit, final boolean value) {
+        requireNonNull(bit, "key usage");
 		this.bit = bit;
 		this.value = value;
 	}
 
 	/**
-	 * The default constructor for KeyUsageCondition.
+	 * Constructs a new KeyUsageCondition.
 	 *
+	 * @param usage
+	 *            the key usage
 	 * @param value
+	 *            the required value of the key usage bit
 	 */
 	public KeyUsageCondition(final String usage, final boolean value) {
 		this(KeyUsageBit.valueOf(usage), value);
 	}
 
-	/**
-	 * @return the bit
-	 */
-	public KeyUsageBit getBit() {
-		return bit;
-	}
+    /**
+     * Returns the key usage to be checked.
+     * 
+     * @return never {@code null}
+     */
+    public final KeyUsageBit getBit() {
+        return bit;
+    }
+    
+    /**
+     * Returns the required bit value of the key usage to be checked.
+     * 
+     * @return the required bit value of the key usage to be checked
+     */
+    public final boolean getValue() {
+        return value;
+    }
 
-	/**
-	 * Checks the condition for the given certificate.
-	 *
-	 * @param certificateToken
-	 *            certificate to be checked
-	 * @return
-	 */
 	@Override
 	public boolean check(final CertificateToken certificateToken) {
 		final boolean keyUsage = certificateToken.checkKeyUsage(bit);
@@ -82,11 +96,7 @@ public class KeyUsageCondition extends Condition {
 
 	@Override
 	public String toString() {
-		try {
-			return toString("");
-		} catch (Exception e) {
-			return super.toString();
-		}
+		return toString("");
 	}
 
 }

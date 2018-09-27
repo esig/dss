@@ -26,30 +26,29 @@ import java.util.Date;
 import java.util.List;
 
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
-import eu.europa.esig.dss.jaxb.simplereport.XmlSignatureLevel;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureQualification;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 
 /**
- * A SimpleReport holder to fetch properties from a XmlDom simpleReport.
+ * A SimpleReport holder to fetch values from a JAXB SimpleReport.
  */
 public class SimpleReport {
 
-	private final eu.europa.esig.dss.jaxb.simplereport.SimpleReport simpleReport;
+	private final eu.europa.esig.dss.jaxb.simplereport.SimpleReport wrapped;
 
-	public SimpleReport(final eu.europa.esig.dss.jaxb.simplereport.SimpleReport simpleReport) {
-		this.simpleReport = simpleReport;
+	public SimpleReport(final eu.europa.esig.dss.jaxb.simplereport.SimpleReport wrapped) {
+		this.wrapped = wrapped;
 	}
 
 	/**
 	 * This method returns the validation time.
 	 *
-	 * @return
+	 * @return the validation time
 	 */
 	public Date getValidationTime() {
-		return simpleReport.getValidationTime();
+		return wrapped.getValidationTime();
 	}
 
 	/**
@@ -57,7 +56,7 @@ public class SimpleReport {
 	 *
 	 * @param signatureId
 	 *            DSS unique identifier of the signature
-	 * @return
+	 * @return the indication for the given signature Id
 	 */
 	public Indication getIndication(final String signatureId) {
 		XmlSignature signature = getSignatureById(signatureId);
@@ -72,7 +71,7 @@ public class SimpleReport {
 	 *
 	 * @param signatureId
 	 *            DSS unique identifier of the signature
-	 * @return
+	 * @return the sub-indication for the given signature Id
 	 */
 	public SubIndication getSubIndication(final String signatureId) {
 		XmlSignature signature = getSignatureById(signatureId);
@@ -83,6 +82,8 @@ public class SimpleReport {
 	}
 
 	/**
+	 * This method checks if the signature is valid (TOTAL_PASSED)
+	 * 
 	 * @param signatureId
 	 *            the signature id to test
 	 * @return true if the signature Indication element is equals to {@link Indication#TOTAL_PASSED}
@@ -96,24 +97,26 @@ public class SimpleReport {
 	 * Returns the signature type: QES, AdES, AdESqc, NA
 	 *
 	 * @param signatureId
-	 * @return {@code SignatureType}
+	 *            the signature id to test
+	 * @return the {@code SignatureQualification} of the given signature
 	 */
 	public SignatureQualification getSignatureQualification(final String signatureId) {
-		XmlSignature signature = getSignatureById(signatureId);
-		XmlSignatureLevel signatureLevel = signature.getSignatureLevel();
 		SignatureQualification qualif = SignatureQualification.NA;
-		if (signatureLevel != null) {
-			qualif = signatureLevel.getValue();
+		XmlSignature signature = getSignatureById(signatureId);
+		if (signature != null && signature.getSignatureLevel() != null) {
+			qualif = signature.getSignatureLevel().getValue();
 		}
 		return qualif;
 	}
 
 	/**
+	 * This method retrieves the signature ids
+	 * 
 	 * @return the {@code List} of signature id(s) contained in the simpleReport
 	 */
 	public List<String> getSignatureIdList() {
 		final List<String> signatureIdList = new ArrayList<String>();
-		List<XmlSignature> signatures = simpleReport.getSignature();
+		List<XmlSignature> signatures = wrapped.getSignature();
 		if (Utils.isCollectionNotEmpty(signatures)) {
 			for (XmlSignature xmlSignature : signatures) {
 				signatureIdList.add(xmlSignature.getId());
@@ -125,7 +128,7 @@ public class SimpleReport {
 	/**
 	 * This method returns the first signature id.
 	 *
-	 * @return
+	 * @return the first signature id
 	 */
 	public String getFirstSignatureId() {
 		final List<String> signatureIdList = getSignatureIdList();
@@ -135,6 +138,13 @@ public class SimpleReport {
 		return null;
 	}
 
+	/**
+	 * This method retrieve the information for a given signature id
+	 * 
+	 * @param signatureId
+	 *            the signature id
+	 * @return the linked information
+	 */
 	public List<String> getInfo(final String signatureId) {
 		XmlSignature signature = getSignatureById(signatureId);
 		if (signature != null) {
@@ -143,6 +153,13 @@ public class SimpleReport {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * This method retrieve the errors for a given signature id
+	 * 
+	 * @param signatureId
+	 *            the signature id
+	 * @return the linked errors
+	 */
 	public List<String> getErrors(final String signatureId) {
 		XmlSignature signature = getSignatureById(signatureId);
 		if (signature != null) {
@@ -151,6 +168,13 @@ public class SimpleReport {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * This method retrieve the warnings for a given signature id
+	 * 
+	 * @param signatureId
+	 *            the signature id
+	 * @return the linked warnings
+	 */
 	public List<String> getWarnings(final String signatureId) {
 		XmlSignature signature = getSignatureById(signatureId);
 		if (signature != null) {
@@ -163,7 +187,8 @@ public class SimpleReport {
 	 * This method returns the signature format (XAdES_BASELINE_B...)
 	 *
 	 * @param signatureId
-	 * @return
+	 *            the signature id
+	 * @return the linked signature format
 	 */
 	public String getSignatureFormat(final String signatureId) {
 		XmlSignature xmlSignature = getSignatureById(signatureId);
@@ -177,7 +202,8 @@ public class SimpleReport {
 	 * This method returns the signature time
 	 *
 	 * @param signatureId
-	 * @return
+	 *            the signature id
+	 * @return the signing time
 	 */
 	public Date getSigningTime(final String signatureId) {
 		XmlSignature xmlSignature = getSignatureById(signatureId);
@@ -191,7 +217,8 @@ public class SimpleReport {
 	 * This method returns the signedBy
 	 *
 	 * @param signatureId
-	 * @return
+	 *            the signature id
+	 * @return the signatory
 	 */
 	public String getSignedBy(final String signatureId) {
 		XmlSignature xmlSignature = getSignatureById(signatureId);
@@ -204,23 +231,30 @@ public class SimpleReport {
 	/**
 	 * This method returns the number of signatures
 	 * 
-	 * @return
+	 * @return the number of signatures
 	 */
 	public int getSignaturesCount() {
-		return simpleReport.getSignaturesCount();
+		return wrapped.getSignaturesCount();
 	}
 
 	/**
 	 * This method returns the number of valid signatures
 	 * 
-	 * @return
+	 * @return the number of valid signatures
 	 */
 	public int getValidSignaturesCount() {
-		return simpleReport.getValidSignaturesCount();
+		return wrapped.getValidSignaturesCount();
 	}
 
+	/**
+	 * This method returns a wrapper for the given signature
+	 * 
+	 * @param signatureId
+	 *            the signature id
+	 * @return the wrapper for the given signature id
+	 */
 	private XmlSignature getSignatureById(String signatureId) {
-		List<XmlSignature> signatures = simpleReport.getSignature();
+		List<XmlSignature> signatures = wrapped.getSignature();
 		if (Utils.isCollectionNotEmpty(signatures)) {
 			for (XmlSignature xmlSignature : signatures) {
 				if (Utils.areStringsEqual(signatureId, xmlSignature.getId())) {
@@ -231,8 +265,13 @@ public class SimpleReport {
 		return null;
 	}
 
+	/**
+	 * This methods returns the jaxb model of the simple report
+	 * 
+	 * @return the jaxb model
+	 */
 	public eu.europa.esig.dss.jaxb.simplereport.SimpleReport getJaxbModel() {
-		return simpleReport;
+		return wrapped;
 	}
 
 }

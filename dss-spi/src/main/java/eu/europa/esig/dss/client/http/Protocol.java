@@ -23,19 +23,14 @@ package eu.europa.esig.dss.client.http;
 /**
  * This enum lists all network protocols that can be used during the signature creation or validation: OCSP, CRL, AIA, TSL...
  *
- *
- *
- *
- *
  */
 public enum Protocol {
 
 	FILE("file"), HTTP("http"), HTTPS("https"), LDAP("ldap"), FTP("ftp");
 
-	private String name;
+	private final String name;
 
-	private Protocol(final String name) {
-
+	Protocol(final String name) {
 		this.name = name;
 	}
 
@@ -138,4 +133,5 @@ public enum Protocol {
 		}
 		return null;
 	}
+
 }

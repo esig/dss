@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.io.IOException;
-
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -32,6 +30,8 @@ import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.client.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -42,7 +42,7 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 public class SignXmlXadesTWithOnlineSourceTest extends CookbookTools {
 
 	@Test
-	public void signXAdESBaselineTWithOnlineTSP() throws IOException {
+	public void signXAdESBaselineTWithOnlineTSP() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -54,48 +54,52 @@ public class SignXmlXadesTWithOnlineSourceTest extends CookbookTools {
 		// Return AbstractSignatureTokenConnection signingToken
 		// and it's first private key entry from the PKCS12 store
 		// Return DSSPrivateKeyEntry privateKey *****
-		preparePKCS12TokenAndKey();
 
-		// tag::demo[]
+		try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 
-		// Preparing parameters for the XAdES signature
-		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
-		// We choose the level of the signature (-B, -T, -LT, -LTA).
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
-		// We choose the type of the signature packaging (ENVELOPED, ENVELOPING, DETACHED).
-		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-		// We set the digest algorithm to use with the signature algorithm. You must use the
-		// same parameter when you invoke the method sign on the token. The default value is SHA256
-		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
-		// We set the signing certificate
-		parameters.setSigningCertificate(privateKey.getCertificate());
-		// We set the certificate chain
-		parameters.setCertificateChain(privateKey.getCertificateChain());
+			// tag::demo[]
 
-		// Create common certificate verifier
-		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
-		// Create XAdES service for signature
-		XAdESService service = new XAdESService(commonCertificateVerifier);
+			// Preparing parameters for the XAdES signature
+			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
+			// We choose the level of the signature (-B, -T, -LT, -LTA).
+			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
+			// We choose the type of the signature packaging (ENVELOPED, ENVELOPING, DETACHED).
+			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+			// We set the digest algorithm to use with the signature algorithm. You must use the
+			// same parameter when you invoke the method sign on the token. The default value is SHA256
+			parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-		// Set the Timestamp source
-		String tspServer = "http://tsa.belgium.be/connect";
-		OnlineTSPSource onlineTSPSource = new OnlineTSPSource(tspServer);
-		service.setTspSource(onlineTSPSource);
+			// We set the signing certificate
+			parameters.setSigningCertificate(privateKey.getCertificate());
+			// We set the certificate chain
+			parameters.setCertificateChain(privateKey.getCertificateChain());
 
-		// Get the SignedInfo XML segment that need to be signed.
-		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
+			// Create common certificate verifier
+			CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
+			// Create XAdES service for signature
+			XAdESService service = new XAdESService(commonCertificateVerifier);
 
-		// This function obtains the signature value for signed information using the
-		// private key and specified algorithm
-		SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
+			// Set the Timestamp source
+			String tspServer = "http://tsa.belgium.be/connect";
+			OnlineTSPSource onlineTSPSource = new OnlineTSPSource(tspServer);
+			service.setTspSource(onlineTSPSource);
 
-		// We invoke the service to sign the document with the signature value obtained in
-		// the previous step.
-		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+			// Get the SignedInfo XML segment that need to be signed.
+			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
 
-		// end::demo[]
+			// This function obtains the signature value for signed information using the
+			// private key and specified algorithm
+			SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
 
-		testFinalDocument(signedDocument);
+			// We invoke the service to sign the document with the signature value obtained in
+			// the previous step.
+			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+
+			// end::demo[]
+
+			testFinalDocument(signedDocument);
+		}
 	}
 }

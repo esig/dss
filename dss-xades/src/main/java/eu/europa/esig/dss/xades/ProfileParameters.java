@@ -24,7 +24,7 @@ import java.io.Serializable;
 
 /**
  * This class manages the internal variables used in the process of creating of a signature and which allows to
- * accelerate the generation.<br>
+ * accelerate the generation.
  */
 public class ProfileParameters implements Serializable {
 
@@ -33,7 +33,7 @@ public class ProfileParameters implements Serializable {
 	/**
 	 * Returns the current Profile used to generate the signature or its extension
 	 *
-	 * @return
+	 * @return the SignatureProfile
 	 */
 	public SignatureProfile getProfile() {
 		return profile;
@@ -41,8 +41,9 @@ public class ProfileParameters implements Serializable {
 
 	/**
 	 * Sets the current Profile used to generate the signature or its extension
-	 *
-	 * @return
+	 * 
+	 * @param profile
+	 *            the SignatureProfile
 	 */
 	public void setProfile(SignatureProfile profile) {
 		this.profile = profile;

@@ -3,10 +3,11 @@ package eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
-import eu.europa.esig.dss.validation.TimestampReferenceCategory;
+import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
@@ -19,12 +20,12 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
 public class POEExistsAtOrBeforeControlTimeCheck extends ChainItem<XmlVTS> {
 
 	private final TokenProxy token;
-	private final TimestampReferenceCategory referenceCategory;
+	private final TimestampedObjectType referenceCategory;
 	private final Date controlTime;
 	private final POEExtraction poe;
 
-	public POEExistsAtOrBeforeControlTimeCheck(XmlVTS result, TokenProxy token, TimestampReferenceCategory referenceCategory, Date controlTime,
-			POEExtraction poe, LevelConstraint constraint) {
+	public POEExistsAtOrBeforeControlTimeCheck(XmlVTS result, TokenProxy token, TimestampedObjectType referenceCategory, Date controlTime, POEExtraction poe,
+			LevelConstraint constraint) {
 		super(result, constraint);
 
 		this.token = token;
@@ -41,18 +42,19 @@ public class POEExistsAtOrBeforeControlTimeCheck extends ChainItem<XmlVTS> {
 	@Override
 	protected String getAdditionalInfo() {
 		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		Object[] params = new Object[] { sdf.format(controlTime) };
 		return MessageFormat.format(AdditionalInfo.CONTROL_TIME, params);
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		if (TimestampReferenceCategory.CERTIFICATE.equals(referenceCategory)) {
+		if (TimestampedObjectType.CERTIFICATE.equals(referenceCategory)) {
 			return MessageTag.PSV_ITPOCOBCT;
-		} else if (TimestampReferenceCategory.REVOCATION.equals(referenceCategory)) {
+		} else if (TimestampedObjectType.REVOCATION.equals(referenceCategory)) {
 			return MessageTag.PSV_ITPORDAOBCT;
 		}
-		throw new DSSException("Probleme VTS");
+		throw new DSSException("Problem VTS");
 	}
 
 	@Override

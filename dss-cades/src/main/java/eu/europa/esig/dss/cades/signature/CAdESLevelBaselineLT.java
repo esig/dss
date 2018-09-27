@@ -20,22 +20,15 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import java.security.cert.CRLException;
-import java.security.cert.X509CRL;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.DERBitString;
-import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.CertificateList;
-import org.bouncycastle.asn1.x509.TBSCertList;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -43,6 +36,8 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.util.CollectionStore;
 import org.bouncycastle.util.Store;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
@@ -65,13 +60,15 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 
+	private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBaselineLT.class);
+
 	private final CertificateVerifier certificateVerifier;
 	private final CAdESLevelBaselineT cadesProfileT;
 
-	public CAdESLevelBaselineLT(TSPSource signatureTsa, CertificateVerifier certificateVerifier, boolean onlyLastSigner) {
-		super(signatureTsa, onlyLastSigner);
+	public CAdESLevelBaselineLT(TSPSource tspSource, CertificateVerifier certificateVerifier, boolean onlyLastSigner) {
+		super(tspSource, onlyLastSigner);
 		this.certificateVerifier = certificateVerifier;
-		cadesProfileT = new CAdESLevelBaselineT(signatureTsa, onlyLastSigner);
+		cadesProfileT = new CAdESLevelBaselineT(tspSource, onlyLastSigner);
 	}
 
 	@Override
@@ -135,19 +132,10 @@ public class CAdESLevelBaselineLT extends CAdESSignatureExtension {
 	 * @return the a copy of x509crl as a X509CRLHolder
 	 */
 	private X509CRLHolder getX509CrlHolder(CRLToken crlToken) {
-		try {
-			final X509CRL x509crl = crlToken.getX509crl();
-			final TBSCertList tbsCertList = TBSCertList.getInstance(x509crl.getTBSCertList());
-			final AlgorithmIdentifier sigAlgOID = new AlgorithmIdentifier(new ASN1ObjectIdentifier(x509crl.getSigAlgOID()));
-			final byte[] signature = x509crl.getSignature();
-			final DERSequence seq = new DERSequence(new ASN1Encodable[] { tbsCertList, sigAlgOID, new DERBitString(signature) });
-			final CertificateList x509CRL = new CertificateList(seq);
-			// final CertificateList x509CRL = new
-			// CertificateList.getInstance((Object)seq);
-			final X509CRLHolder x509crlHolder = new X509CRLHolder(x509CRL);
-			return x509crlHolder;
-		} catch (CRLException e) {
-			throw new DSSException(e);
+		try (InputStream is = crlToken.getCRLStream()) {
+			return new X509CRLHolder(is);
+		} catch (IOException e) {
+			throw new DSSException("Unable to convert X509CRL to X509CRLHolder", e);
 		}
 	}
 

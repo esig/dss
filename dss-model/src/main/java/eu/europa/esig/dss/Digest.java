@@ -22,8 +22,7 @@ package eu.europa.esig.dss;
 
 import java.io.Serializable;
 import java.util.Arrays;
-
-import javax.xml.bind.DatatypeConverter;
+import java.util.Formatter;
 
 /**
  * Container for a Digest and his algorithm
@@ -35,6 +34,8 @@ public final class Digest implements Serializable {
 
 	private byte[] value;
 
+	private String hex;
+
 	public Digest() {
 	}
 
@@ -43,9 +44,21 @@ public final class Digest implements Serializable {
 		this.value = value;
 	}
 
+	public String getHexValue() {
+		if (hex == null) {
+			try (Formatter formatter = new Formatter()) {
+				for (byte b : value) {
+					formatter.format("%02X", b);
+				}
+				hex = formatter.toString();
+			}
+		}
+		return hex;
+	}
+
 	@Override
 	public String toString() {
-		return algorithm.getName() + ":" + DatatypeConverter.printBase64Binary(value);
+		return algorithm.getName() + ":" + getHexValue();
 	}
 
 	@Override
@@ -87,7 +100,7 @@ public final class Digest implements Serializable {
 
 	/**
 	 * @param algorithm
-	 *            the algorithm to set
+	 *                  the algorithm to set
 	 */
 	public void setAlgorithm(DigestAlgorithm algorithm) {
 		this.algorithm = algorithm;
@@ -102,7 +115,7 @@ public final class Digest implements Serializable {
 
 	/**
 	 * @param value
-	 *            the value to set
+	 *              the value to set
 	 */
 	public void setValue(byte[] value) {
 		this.value = value;

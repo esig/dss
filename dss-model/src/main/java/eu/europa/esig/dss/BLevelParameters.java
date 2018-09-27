@@ -21,16 +21,10 @@
 package eu.europa.esig.dss;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 @SuppressWarnings("serial")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class BLevelParameters implements Serializable {
 
 	/**
@@ -38,22 +32,23 @@ public class BLevelParameters implements Serializable {
 	 * ETSI TS 103 171 V2.1.1 (2012-03)
 	 * 6.2.1 Placement of the signing certificate
 	 * ../..
-	 * it is advised to include at least the unavailable intermediary certificates up to but not including the CAs present in the TSLs,
+	 * it is advised to include at least the unavailable intermediary certificates up to but not including the CAs
+	 * present in the TSLs,
 	 * ../..
-	 * This rule applies as follows: when -B level is constructed the trust anchor is not included, when -LT level is constructed the trust anchor is included.
-	 * NOTE: when trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are included when -B level is constructed.
+	 * This rule applies as follows: when -B level is constructed the trust anchor is not included, when -LT level is
+	 * constructed the trust anchor is included.
+	 * NOTE: when trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are
+	 * included when -B level is constructed.
 	 */
 	private boolean trustAnchorBPPolicy = true;
 
-	@XmlJavaTypeAdapter(value = DateAdapter.class)
 	private Date signingDate = new Date();
 
 	private List<String> claimedSignerRoles;
-	private List<String> certifiedSignerRoles;
 
 	private Policy signaturePolicy;
 
-	private List<String> commitmentTypeIndication;
+	private List<String> commitmentTypeIndications;
 	private SignerLocation signerLocation;
 
 	public BLevelParameters() {
@@ -68,7 +63,8 @@ public class BLevelParameters implements Serializable {
 
 	/**
 	 * Allows to set the trust anchor policy to use when creating -B and -LT levels.
-	 * NOTE: when trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are included when building -B level.
+	 * NOTE: when trust anchor baseline profile policy is defined only the certificates previous to the trust anchor are
+	 * included when building -B level.
 	 *
 	 * @param trustAnchorBPPolicy
 	 *            {@code boolean}
@@ -78,6 +74,8 @@ public class BLevelParameters implements Serializable {
 	}
 
 	/**
+	 * Get the signature policy
+	 * 
 	 * @return the signature policy to use during the signature creation process
 	 */
 	public Policy getSignaturePolicy() {
@@ -97,7 +95,7 @@ public class BLevelParameters implements Serializable {
 	/**
 	 * Get the signing date
 	 *
-	 * @return the value
+	 * @return the signing date
 	 */
 	public Date getSigningDate() {
 		return signingDate;
@@ -107,84 +105,52 @@ public class BLevelParameters implements Serializable {
 	 * Set the signing date
 	 *
 	 * @param signingDate
-	 *            the value
+	 *            the signing date
 	 */
 	public void setSigningDate(final Date signingDate) {
 		this.signingDate = signingDate;
 	}
 
 	/**
-	 * Get claimed role
+	 * Set a list of claimed signer roles
+	 * 
+	 * @param claimedSignerRoles
+	 *            a list of claimed signer roles
+	 */
+	public void setClaimedSignerRoles(List<String> claimedSignerRoles) {
+		this.claimedSignerRoles = claimedSignerRoles;
+	}
+
+	/**
+	 * Get claimed roles
 	 *
-	 * @return the value
+	 * @return the list of claimed roles
 	 */
 	public List<String> getClaimedSignerRoles() {
 		return claimedSignerRoles;
 	}
 
 	/**
-	 * Adds a claimed signer role
-	 *
-	 * @param claimedSignerRole
-	 *            the value
-	 */
-	public void addClaimedSignerRole(final String claimedSignerRole) {
-		if ((claimedSignerRole == null) || (claimedSignerRole.length() == 0)) {
-			throw new NullPointerException("claimedSignerRole");
-		}
-		if (claimedSignerRoles == null) {
-			claimedSignerRoles = new ArrayList<String>();
-		}
-		claimedSignerRoles.add(claimedSignerRole);
-	}
-
-	public List<String> getCertifiedSignerRoles() {
-		return certifiedSignerRoles;
-	}
-
-	/**
-	 * Adds a certified signer role
-	 *
-	 * @param certifiedSignerRole
-	 *            the value
-	 */
-	public void addCertifiedSignerRole(final String certifiedSignerRole) {
-		throw new DSSException("eu.europa.esig.dss.BLevelParameters.addCertifiedSignerRole");
-	}
-
-	/**
-	 * ETSI TS 101 733 V2.2.1 (2013-04)
-	 * 5.11.1 commitment-type-indication Attribute
-	 * There may be situations where a signer wants to explicitly indicate to a verifier that by signing the data, it illustrates a
-	 * type of commitment on behalf of the signer. The commitment-type-indication attribute conveys such
-	 * information.
+	 * Get the commitment type indications
+	 * 
+	 * @return the list of commitment type indications
 	 */
 	public List<String> getCommitmentTypeIndications() {
-		return commitmentTypeIndication;
-	}
-
-	public void setCommitmentTypeIndications(List<String> commitmentTypeIndication) {
-		this.commitmentTypeIndication = commitmentTypeIndication;
+		return commitmentTypeIndications;
 	}
 
 	/**
-	 * ETSI TS 101 733 V2.2.1 (2013-04)
-	 * 5.11.2 signer-location Attribute
-	 * The signer-location attribute specifies a mnemonic for an address associated with the signer at a particular
-	 * geographical (e.g. city) location. The mnemonic is registered in the country in which the signer is located and is used in
-	 * the provision of the Public Telegram Service (according to Recommendation ITU-T F.1 [11]).
-	 * The signer-location attribute shall be a signed attribute.
-	 * The following object identifier identifies the signer-location attribute:
-	 * id-aa-ets-signerLocation OBJECT IDENTIFIER ::= { iso(1) member-body(2)
-	 * us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) id-aa(2) 17}
-	 * Signer-location attribute values have ASN.1 type SignerLocation:
-	 * SignerLocation ::= SEQUENCE { -- at least one of the following shall be present:
-	 * countryName [0] DirectoryString OPTIONAL,
-	 * -- As used to name a Country in X.500
-	 * localityName [1] DirectoryString OPTIONAL,
-	 * -- As used to name a locality in X.500
-	 * postalAdddress [2] PostalAddress OPTIONAL }
-	 * PostalAddress ::= SEQUENCE SIZE(1..6) OF DirectoryString
+	 * Set the commitment type indications (predefined values are available in {@code CommitmentType})
+	 * 
+	 * @param commitmentTypeIndications
+	 *            a list of commitment type indications
+	 */
+	public void setCommitmentTypeIndications(List<String> commitmentTypeIndications) {
+		this.commitmentTypeIndications = commitmentTypeIndications;
+	}
+
+	/**
+	 * Get the signer location
 	 *
 	 * @return the location
 	 */
@@ -193,6 +159,8 @@ public class BLevelParameters implements Serializable {
 	}
 
 	/**
+	 * Set the signer location
+	 * 
 	 * @param signerLocation
 	 *            the location to set
 	 */
@@ -204,9 +172,8 @@ public class BLevelParameters implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + ((certifiedSignerRoles == null) ? 0 : certifiedSignerRoles.hashCode());
 		result = (prime * result) + ((claimedSignerRoles == null) ? 0 : claimedSignerRoles.hashCode());
-		result = (prime * result) + ((commitmentTypeIndication == null) ? 0 : commitmentTypeIndication.hashCode());
+		result = (prime * result) + ((commitmentTypeIndications == null) ? 0 : commitmentTypeIndications.hashCode());
 		result = (prime * result) + ((signaturePolicy == null) ? 0 : signaturePolicy.hashCode());
 		result = (prime * result) + ((signerLocation == null) ? 0 : signerLocation.hashCode());
 		result = (prime * result) + ((signingDate == null) ? 0 : signingDate.hashCode());
@@ -226,13 +193,6 @@ public class BLevelParameters implements Serializable {
 			return false;
 		}
 		BLevelParameters other = (BLevelParameters) obj;
-		if (certifiedSignerRoles == null) {
-			if (other.certifiedSignerRoles != null) {
-				return false;
-			}
-		} else if (!certifiedSignerRoles.equals(other.certifiedSignerRoles)) {
-			return false;
-		}
 		if (claimedSignerRoles == null) {
 			if (other.claimedSignerRoles != null) {
 				return false;
@@ -240,11 +200,11 @@ public class BLevelParameters implements Serializable {
 		} else if (!claimedSignerRoles.equals(other.claimedSignerRoles)) {
 			return false;
 		}
-		if (commitmentTypeIndication == null) {
-			if (other.commitmentTypeIndication != null) {
+		if (commitmentTypeIndications == null) {
+			if (other.commitmentTypeIndications != null) {
 				return false;
 			}
-		} else if (!commitmentTypeIndication.equals(other.commitmentTypeIndication)) {
+		} else if (!commitmentTypeIndications.equals(other.commitmentTypeIndications)) {
 			return false;
 		}
 		if (signaturePolicy == null) {
@@ -276,8 +236,9 @@ public class BLevelParameters implements Serializable {
 
 	@Override
 	public String toString() {
-		return "BLevelParameters [trustAnchorBPPolicy=" + trustAnchorBPPolicy + ", signingDate=" + signingDate + ", claimedSignerRoles=" + claimedSignerRoles + ", certifiedSignerRoles=" + certifiedSignerRoles + ", signaturePolicy="
-				+ signaturePolicy + ", commitmentTypeIndication=" + commitmentTypeIndication + ", signerLocation=" + signerLocation + "]";
+		return "BLevelParameters [trustAnchorBPPolicy=" + trustAnchorBPPolicy + ", signingDate=" + signingDate + ", claimedSignerRoles=" + claimedSignerRoles
+				+ ", signaturePolicy=" + signaturePolicy + ", commitmentTypeIndication=" + commitmentTypeIndications + ", signerLocation=" + signerLocation
+				+ "]";
 	}
 
 }

@@ -17,7 +17,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
  */
 public class ValidationProcessForTimeStamps extends Chain<XmlValidationProcessTimestamps> {
 
-	private static final Logger logger = LoggerFactory.getLogger(ValidationProcessForTimeStamps.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ValidationProcessForTimeStamps.class);
 
 	private final TimestampWrapper timestamp;
 	private final Map<String, XmlBasicBuildingBlocks> bbbs;
@@ -35,8 +35,10 @@ public class ValidationProcessForTimeStamps extends Chain<XmlValidationProcessTi
 		if (tspBBB != null) {
 			firstItem = timestampBasicBuildingBlocksValid(tspBBB);
 		} else {
-			logger.error("Basic Building Blocks for timestamp " + timestamp.getId() + " not found!");
+			LOG.error("Basic Building Blocks for timestamp " + timestamp.getId() + " not found!");
 		}
+
+		result.setProductionTime(timestamp.getProductionTime());
 	}
 
 	@Override

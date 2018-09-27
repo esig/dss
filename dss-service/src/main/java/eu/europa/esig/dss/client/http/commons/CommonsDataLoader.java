@@ -31,6 +31,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.KeyStore;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -53,6 +54,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
@@ -88,18 +90,19 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.Protocol;
-import eu.europa.esig.dss.client.http.proxy.ProxyPreferenceManager;
+import eu.europa.esig.dss.client.http.proxy.ProxyConfig;
+import eu.europa.esig.dss.client.http.proxy.ProxyProperties;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Implementation of DataLoader for any protocol.
- * <p/>
- * HTTP & HTTPS: using HttpClient which is more flexible for HTTPS without
+ * <p>
+ * HTTP and HTTPS: using HttpClient which is more flexible for HTTPS without
  * having to add the certificate to the JVM TrustStore. It takes into account a
  * proxy management through {@code ProxyPreferenceManager}. The authentication
  * is also supported.
  */
-public class CommonsDataLoader implements DataLoader, DSSNotifier {
+public class CommonsDataLoader implements DataLoader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommonsDataLoader.class);
 
@@ -113,24 +116,27 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 
 	public static final String CONTENT_TYPE = "Content-Type";
 
+	public static final String DEFAULT_SSL_PROTOCOL = "TLSv1.2";
+
+	public static final List<Integer> ACCEPTED_HTTP_STATUS = Arrays.asList(HttpStatus.SC_OK);
+
 	protected String contentType;
 
-	// TODO: (Bob: 2014 Jan 28) It should be taken into account: Content-Transfer-Encoding if it is not the default
-	// value.
-	// TODO: (Bob: 2014 Jan 28) It is extracted from:
-	// https://joinup.ec.europa.eu/software/sd-dss/issue/dss-41-tsa-service-basic-auth
-	// tsaConnection.setRequestProperty("Content-Transfer-Encoding", "binary");
-	private ProxyPreferenceManager proxyPreferenceManager;
+	private ProxyConfig proxyConfig;
 
 	private int timeoutConnection = TIMEOUT_CONNECTION;
 	private int timeoutSocket = TIMEOUT_SOCKET;
 	private int connectionsMaxTotal = CONNECTIONS_MAX_TOTAL;
 	private int connectionsMaxPerRoute = CONNECTIONS_MAX_PER_ROUTE;
 	private boolean redirectsEnabled = true;
+	private List<Integer> acceptedHttpStatus = ACCEPTED_HTTP_STATUS;
 
 	private final Map<HttpHost, UsernamePasswordCredentials> authenticationMap = new HashMap<HttpHost, UsernamePasswordCredentials>();
 
-	private boolean updated;
+	/**
+	 * Used SSL protocol
+	 */
+	private String sslProtocol = DEFAULT_SSL_PROTOCOL;
 
 	/**
 	 * Path to the keystore.
@@ -186,8 +192,8 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		connectionManager.setMaxTotal(getConnectionsMaxTotal());
 		connectionManager.setDefaultMaxPerRoute(getConnectionsMaxPerRoute());
 
-		LOG.debug("PoolingHttpClientConnectionManager: max total: " + connectionManager.getMaxTotal());
-		LOG.debug("PoolingHttpClientConnectionManager: max per route: " + connectionManager.getDefaultMaxPerRoute());
+		LOG.debug("PoolingHttpClientConnectionManager: max total: {}", connectionManager.getMaxTotal());
+		LOG.debug("PoolingHttpClientConnectionManager: max per route: {}", connectionManager.getDefaultMaxPerRoute());
 
 		return connectionManager;
 	}
@@ -221,7 +227,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 				keysManager = new KeyManager[] { dkm };
 			}
 
-			SSLContext sslContext = SSLContext.getInstance("TLS");
+			SSLContext sslContext = SSLContext.getInstance(sslProtocol);
 			sslContext.init(keysManager, new TrustManager[] { trustManager }, new SecureRandom());
 
 			SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext);
@@ -235,10 +241,6 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	}
 
 	protected synchronized CloseableHttpClient getHttpClient(final String url) throws DSSException {
-
-		if (LOG.isTraceEnabled() && updated) {
-			LOG.trace(">>> Proxy preferences updated");
-		}
 		HttpClientBuilder httpClientBuilder = HttpClients.custom();
 
 		httpClientBuilder = configCredentials(httpClientBuilder, url);
@@ -287,53 +289,39 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	 * @return
 	 */
 	private HttpClientBuilder configureProxy(HttpClientBuilder httpClientBuilder, CredentialsProvider credentialsProvider, String url) throws DSSException {
-
-		if (proxyPreferenceManager == null) {
+		if (proxyConfig == null) {
 			return httpClientBuilder;
 		}
 		try {
 
 			final String protocol = new URL(url).getProtocol();
-			final boolean proxyHTTPS = Protocol.isHttps(protocol) && proxyPreferenceManager.isHttpsEnabled();
-			final boolean proxyHTTP = Protocol.isHttp(protocol) && proxyPreferenceManager.isHttpEnabled();
+			final boolean proxyHTTPS = Protocol.isHttps(protocol) && proxyConfig.getHttpsProperties() != null;
+			final boolean proxyHTTP = Protocol.isHttp(protocol) && proxyConfig.getHttpProperties() != null;
 
-			if (!proxyHTTPS && !proxyHTTP) {
+			ProxyProperties proxyProps = null;
+			if (proxyHTTPS) {
+				LOG.debug("Use proxy https parameters");
+				proxyProps = proxyConfig.getHttpsProperties();
+			} else if (proxyHTTP) {
+				LOG.debug("Use proxy http parameters");
+				proxyProps = proxyConfig.getHttpProperties();
+			} else {
 				return httpClientBuilder;
 			}
 
-			String proxyHost = null;
-			int proxyPort = 0;
-			String proxyUser = null;
-			String proxyPassword = null;
-			String proxyExcludedHosts = null;
+			String proxyHost = proxyProps.getHost();
+			int proxyPort = proxyProps.getPort();
+			String proxyUser = proxyProps.getUser();
+			String proxyPassword = proxyProps.getPassword();
+			String proxyExcludedHosts = proxyProps.getExcludedHosts();
 
-			if (proxyHTTPS) {
-
-				LOG.debug("Use proxy https parameters");
-				final Long port = proxyPreferenceManager.getHttpsPort();
-				proxyPort = port != null ? port.intValue() : 0;
-				proxyHost = proxyPreferenceManager.getHttpsHost();
-				proxyUser = proxyPreferenceManager.getHttpsUser();
-				proxyPassword = proxyPreferenceManager.getHttpsPassword();
-				proxyExcludedHosts = proxyPreferenceManager.getHttpsExcludedHosts();
-			} else if (proxyHTTP) { // noinspection ConstantConditions
-
-				LOG.debug("Use proxy http parameters");
-				final Long port = proxyPreferenceManager.getHttpPort();
-				proxyPort = port != null ? port.intValue() : 0;
-				proxyHost = proxyPreferenceManager.getHttpHost();
-				proxyUser = proxyPreferenceManager.getHttpUser();
-				proxyPassword = proxyPreferenceManager.getHttpPassword();
-				proxyExcludedHosts = proxyPreferenceManager.getHttpExcludedHosts();
-			}
 			if (Utils.isStringNotEmpty(proxyUser) && Utils.isStringNotEmpty(proxyPassword)) {
-
 				AuthScope proxyAuth = new AuthScope(proxyHost, proxyPort);
 				UsernamePasswordCredentials proxyCredentials = new UsernamePasswordCredentials(proxyUser, proxyPassword);
 				credentialsProvider.setCredentials(proxyAuth, proxyCredentials);
 			}
 
-			LOG.debug("proxy host/port: " + proxyHost + ":" + proxyPort);
+			LOG.debug("proxy host/port: {}:{}", proxyHost, proxyPort);
 			// TODO SSL peer shut down incorrectly when protocol is https
 			final HttpHost proxy = new HttpHost(proxyHost, proxyPort, Protocol.HTTP.getName());
 
@@ -362,7 +350,6 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 			}
 
 			final HttpClientBuilder httpClientBuilder1 = httpClientBuilder.setProxy(proxy);
-			updated = false;
 			return httpClientBuilder1;
 		} catch (MalformedURLException e) {
 			throw new DSSException(e);
@@ -428,15 +415,6 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 		return get(url);
 	}
 
-	private byte[] fileGet(String urlString) {
-		try {
-			return DSSUtils.toByteArray(new URL(urlString).openStream());
-		} catch (IOException e) {
-			LOG.warn("An IO error occured while reading url " + urlString, e);
-		}
-		return null;
-	}
-
 	/**
 	 * This method retrieves data using LDAP protocol. - CRL from given LDAP
 	 * url, e.g. ldap://ldap.infonotary.com/dc=identity-ca,dc=infonotary,dc=com
@@ -466,7 +444,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 			final DirContext ctx = new InitialDirContext(env);
 			final Attributes attributes = ctx.getAttributes(Utils.EMPTY_STRING, new String[] { attributeName });
 			if (attributes == null || attributes.size() < 1) {
-				LOG.warn("Cannot download CRL from: " + urlString + ", no attributes with name: " + attributeName + " returned");
+				LOG.warn("Cannot download binaries from: {}, no attributes with name: {} returned", urlString, attributeName);
 			} else {
 				final Attribute attribute = attributes.getAll().next();
 				final byte[] ldapBytes = (byte[]) attribute.get();
@@ -487,20 +465,25 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	 * @return
 	 */
 	protected byte[] ftpGet(final String urlString) {
-
-		InputStream inputStream = null;
-		try {
-
-			final URL url = new URL(urlString);
-			inputStream = url.openStream();
+		final URL url = getURL(urlString);
+		try (InputStream inputStream = url.openStream()) {
 			return DSSUtils.toByteArray(inputStream);
 		} catch (Exception e) {
-
-			LOG.warn(e.getMessage());
-		} finally {
-			Utils.closeQuietly(inputStream);
+			LOG.warn("Unable to retrieve URL {} content : {}", urlString, e.getMessage());
 		}
 		return null;
+	}
+
+	protected byte[] fileGet(final String urlString) {
+		return ftpGet(urlString);
+	}
+
+	private URL getURL(String urlString) {
+		try {
+			return new URL(urlString);
+		} catch (MalformedURLException e) {
+			throw new DSSException("Unable to create URL instance", e);
+		}
 	}
 
 	/**
@@ -550,7 +533,7 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	@Override
 	public byte[] post(final String url, final byte[] content) throws DSSException {
 
-		LOG.debug("Fetching data via POST from url " + url);
+		LOG.debug("Fetching data via POST from url {}", url);
 
 		HttpPost httpRequest = null;
 		HttpResponse httpResponse = null;
@@ -629,27 +612,24 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 			final HttpResponse response = client.execute(targetHost, httpRequest, localContext);
 			return response;
 		} catch (IOException e) {
-			throw new DSSException(e);
+			throw new DSSException("Unable to retrieve HttpResponse from url '" + url + "'", e);
 		}
 
 	}
 
 	protected byte[] readHttpResponse(final String url, final HttpResponse httpResponse) throws DSSException {
+		final StatusLine statusLine = httpResponse.getStatusLine();
+		final int statusCode = statusLine.getStatusCode();
+		final String reasonPhrase = statusLine.getReasonPhrase();
 
-		final int statusCode = httpResponse.getStatusLine().getStatusCode();
-		if (LOG.isDebugEnabled()) {
-			LOG.debug(url + " status code is " + statusCode + " - " + (statusCode == HttpStatus.SC_OK ? "OK" : "NOK"));
-		}
-
-		if (statusCode != HttpStatus.SC_OK) {
-			LOG.warn("No content available via url: " + url);
-			return null;
+		if (!acceptedHttpStatus.contains(statusCode)) {
+			String reason = Utils.isStringNotEmpty(reasonPhrase) ? " / reason : " + reasonPhrase : "";
+			throw new DSSException("Unable to request '" + url + "' (HTTP status code : " + statusCode + reason + ")");
 		}
 
 		final HttpEntity responseEntity = httpResponse.getEntity();
 		if (responseEntity == null) {
-			LOG.warn("No message entity for this response - will use nothing: " + url);
-			return null;
+			throw new DSSException("No message entity for this response - will use nothing: " + url);
 		}
 
 		final byte[] content = getContent(responseEntity);
@@ -657,15 +637,10 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	}
 
 	protected byte[] getContent(final HttpEntity responseEntity) throws DSSException {
-		InputStream content = null;
-		try {
-			content = responseEntity.getContent();
-			final byte[] bytes = DSSUtils.toByteArray(content);
-			return bytes;
+		try (InputStream content = responseEntity.getContent()) {
+			return DSSUtils.toByteArray(content);
 		} catch (IOException e) {
 			throw new DSSException(e);
-		} finally {
-			Utils.closeQuietly(content);
 		}
 	}
 
@@ -781,30 +756,46 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 	 */
 	@Override
 	public void setContentType(final String contentType) {
-
 		this.contentType = contentType;
 	}
 
-	/**
-	 * @return associated {@code ProxyPreferenceManager}
-	 */
-	public ProxyPreferenceManager getProxyPreferenceManager() {
-		return proxyPreferenceManager;
+	public List<Integer> getAcceptedHttpStatus() {
+		return acceptedHttpStatus;
 	}
 
 	/**
-	 * @param proxyPreferenceManager
-	 *            the proxyPreferenceManager to set
+	 * This allows to set a list of accepted http status. Example: 200 (OK)
+	 *
+	 * @param acceptedHttpStatus
+	 *            a list of integer which correspond to the http status code
 	 */
-	public void setProxyPreferenceManager(final ProxyPreferenceManager proxyPreferenceManager) {
+	public void setAcceptedHttpStatus(List<Integer> acceptedHttpStatus) {
+		this.acceptedHttpStatus = acceptedHttpStatus;
+	}
 
-		this.proxyPreferenceManager = proxyPreferenceManager;
-		if (proxyPreferenceManager != null) {
-			proxyPreferenceManager.addNotifier(this);
-			if (LOG.isTraceEnabled()) {
-				LOG.trace(">>> SET: " + proxyPreferenceManager);
-			}
-		}
+	/**
+	 * @return associated {@code ProxyConfig}
+	 */
+	public ProxyConfig getProxyConfig() {
+		return proxyConfig;
+	}
+
+	/**
+	 * @param proxyConfig
+	 *            the proxyConfig to set
+	 */
+	public void setProxyConfig(final ProxyConfig proxyConfig) {
+		this.proxyConfig = proxyConfig;
+	}
+
+	/**
+	 * This method sets the SSL protocol to be used ('TLSv1.2' by default)
+	 * 
+	 * @param sslProtocol
+	 *                    the ssl protocol to be used
+	 */
+	public void setSslProtocol(String sslProtocol) {
+		this.sslProtocol = sslProtocol;
 	}
 
 	public void setSslKeystorePath(String sslKeystorePath) {
@@ -870,11 +861,6 @@ public class CommonsDataLoader implements DataLoader, DSSNotifier {
 			commonsDataLoader.addAuthentication(httpHost.getHostName(), httpHost.getPort(), httpHost.getSchemeName(), credentials.getUserName(),
 					credentials.getPassword());
 		}
-	}
-
-	@Override
-	public void update() {
-		updated = true;
 	}
 
 }

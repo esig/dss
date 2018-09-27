@@ -11,7 +11,7 @@ import eu.europa.esig.dss.SignatureLevel;
 
 public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
-	ProfileParameters context;
+	private ProfileParameters context;
 
 	/**
 	 * The digest method used to create the digest of the signer's certificate.
@@ -32,6 +32,12 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
 	private String xPathLocationString;
 
+	/**
+	 * In case of ENVELOPING signature, this parameter allows to include the complete XML and not its base64 encoded
+	 * value
+	 */
+	private boolean embedXML;
+
 	private boolean en319132 = true;
 
 	/**
@@ -39,7 +45,22 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	 */
 	private Document rootDocument;
 
-	private boolean embedXML;
+	/**
+	 * This parameter allows to produce Manifest signature (https://www.w3.org/TR/xmldsig-core/#sec-o-Manifest).
+	 */
+	private boolean manifestSignature;
+
+	/**
+	 * This parameter allows to add optional X509SubjectName in the tag X509Data
+	 */
+	private boolean addX509SubjectName;
+
+	/**
+	 * Optional parameter that contains the canonicalized XML of the XAdES object that was digested,
+	 * referenced from the SigningInfo, and indirectly signed when the signature value was created.
+	 * If this parameter is specified it will be used in the signed XML document.
+	 */
+	private byte[] signedAdESObject;
 
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
@@ -62,7 +83,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	}
 
 	/**
-	 * See {@link #setSigningCertificateDigestMethod(DigestAlgorithm).
+	 * See {@link #setSigningCertificateDigestMethod(DigestAlgorithm)}.
 	 *
 	 * @return
 	 */
@@ -155,6 +176,30 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
 	public void setEmbedXML(boolean embedXML) {
 		this.embedXML = embedXML;
+	}
+
+	public boolean isManifestSignature() {
+		return manifestSignature;
+	}
+
+	public void setManifestSignature(boolean manifestSignature) {
+		this.manifestSignature = manifestSignature;
+	}
+
+	public boolean isAddX509SubjectName() {
+		return addX509SubjectName;
+	}
+
+	public void setAddX509SubjectName(boolean addX509SubjectName) {
+		this.addX509SubjectName = addX509SubjectName;
+	}
+
+	public byte[] getSignedAdESObject() {
+		return signedAdESObject;
+	}
+
+	public void setSignedAdESObject(byte[] signedAdESObject) {
+		this.signedAdESObject = signedAdESObject;
 	}
 
 }

@@ -3,12 +3,15 @@ package eu.europa.esig.dss.utils.impl;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
+import com.google.common.base.Ascii;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -187,6 +190,11 @@ public class GoogleGuavaUtils implements IUtils {
 	}
 
 	@Override
+	public byte[] fromHex(String hex) {
+		return BaseEncoding.base16().lowerCase().decode(Ascii.toLowerCase(hex));
+	}
+
+	@Override
 	public String toBase64(byte[] bytes) {
 		return BaseEncoding.base64().encode(bytes);
 	}
@@ -222,13 +230,12 @@ public class GoogleGuavaUtils implements IUtils {
 
 	@Override
 	public void cleanDirectory(File directory) throws IOException {
-		if (directory == null || !directory.exists()) {
-			throw new IllegalArgumentException("Not exists");
+		Objects.requireNonNull(directory, "Directory cannot be null");
+		if (!directory.exists() || !directory.isDirectory()) {
+			throw new FileNotFoundException("Directory '" + directory.getAbsolutePath() + "' not found");
 		} else if (directory.isDirectory()) {
 			File[] listFiles = directory.listFiles();
-			if (listFiles == null) {
-				return;
-			} else {
+			if (listFiles != null) {
 				for (File file : listFiles) {
 					if (file.isDirectory()) {
 						cleanDirectory(file);

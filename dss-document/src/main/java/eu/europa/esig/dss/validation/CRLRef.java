@@ -61,7 +61,6 @@ public final class CRLRef {
 	 * The default constructor for CRLRef.
 	 *
 	 * @param cmsRef
-	 * @throws ParseException
 	 */
 	public CRLRef(CrlValidatedID cmsRef) {
 		try {

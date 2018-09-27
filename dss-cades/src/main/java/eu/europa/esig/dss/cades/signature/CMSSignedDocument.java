@@ -22,7 +22,6 @@ package eu.europa.esig.dss.cades.signature;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -33,8 +32,6 @@ import org.bouncycastle.cms.CMSSignedData;
 import eu.europa.esig.dss.CommonDocument;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -49,12 +46,12 @@ public class CMSSignedDocument extends CommonDocument {
 	 * The default constructor for CMSSignedDocument.
 	 *
 	 * @param data
-	 * @throws IOException
+	 *            the CMSSignedData
 	 */
-	public CMSSignedDocument(final CMSSignedData data) throws DSSException {
+	public CMSSignedDocument(final CMSSignedData data) {
 		this.signedData = data;
 		if (data == null) {
-			throw new NullPointerException();
+			throw new NullPointerException("The CMSSignedData cannot be null");
 		}
 		mimeType = MimeType.PKCS7;
 	}
@@ -74,8 +71,7 @@ public class CMSSignedDocument extends CommonDocument {
 	}
 
 	public byte[] getBytes() throws DSSException {
-		try {
-			final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
 			final DEROutputStream derOutputStream = new DEROutputStream(output);
 			final byte[] encoded = signedData.getEncoded();
 			final ASN1Primitive asn1Primitive = DSSASN1Utils.toASN1Primitive(encoded);
@@ -85,26 +81,6 @@ public class CMSSignedDocument extends CommonDocument {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
-	}
-
-	@Override
-	public void save(final String filePath) {
-		FileOutputStream fos = null;
-		try {
-			fos = new FileOutputStream(filePath);
-			Utils.write(getBytes(), fos);
-		} catch (IOException e) {
-			throw new DSSException(e);
-		} finally {
-			Utils.closeQuietly(fos);
-		}
-	}
-
-	@Override
-	public String getDigest(final DigestAlgorithm digestAlgorithm) {
-		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, getBytes());
-		final String base64Encode = Utils.toBase64(digestBytes);
-		return base64Encode;
 	}
 
 	public String getBase64Encoded() {

@@ -1,15 +1,17 @@
 package eu.europa.esig.dss.validation;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Arrays;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.dto.ReportsDTO;
-import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 public class RemoteDocumentValidationService {
 
@@ -19,24 +21,40 @@ public class RemoteDocumentValidationService {
 		this.verifier = verifier;
 	}
 
-	public ReportsDTO validateDocument(RemoteDocument signedFile, RemoteDocument originalFile, ConstraintsParameters policy) {
+	public ReportsDTO validateDocument(RemoteDocument signedFile, RemoteDocument originalFile, RemoteDocument policy) {
 
-		DSSDocument signedDocument = new InMemoryDocument(signedFile.getBytes(), signedFile.getName(), signedFile.getMimeType());
+		DSSDocument signedDocument = getDSSDocument(signedFile);
 		SignedDocumentValidator signedDocValidator = SignedDocumentValidator.fromDocument(signedDocument);
 		signedDocValidator.setCertificateVerifier(verifier);
 
 		if (originalFile != null && Utils.isArrayNotEmpty(originalFile.getBytes())) {
-			List<DSSDocument> list = new ArrayList<DSSDocument>();
-			DSSDocument orignalDocument = new InMemoryDocument(originalFile.getBytes(), originalFile.getName(), originalFile.getMimeType());
-			list.add(orignalDocument);
-			signedDocValidator.setDetachedContents(list);
+			signedDocValidator.setDetachedContents(Arrays.asList(getDSSDocument(originalFile)));
 		}
 
-		Reports reports = policy != null ? signedDocValidator.validateDocument(policy) : signedDocValidator.validateDocument();
+		Reports reports = null;
+		if (policy == null) {
+			reports = signedDocValidator.validateDocument();
+		} else {
+			try (ByteArrayInputStream bais = new ByteArrayInputStream(policy.getBytes())) {
+				reports = signedDocValidator.validateDocument(bais);
+			} catch (IOException e) {
+				throw new DSSException(e);
+			}
+		}
 
-		ReportsDTO result = new ReportsDTO(reports.getDiagnosticDataJaxb(), reports.getSimpleReportJaxb(), reports.getDetailedReportJaxb());
+		return new ReportsDTO(reports.getDiagnosticDataJaxb(), reports.getSimpleReportJaxb(), reports.getDetailedReportJaxb());
+	}
 
-		return result;
+	private DSSDocument getDSSDocument(RemoteDocument remoteDocument) {
+		if (remoteDocument.getDigestAlgorithm() != null) {
+			DigestDocument digestDocument = new DigestDocument();
+			digestDocument.addDigest(remoteDocument.getDigestAlgorithm(), Utils.toBase64(remoteDocument.getBytes()));
+			digestDocument.setName(remoteDocument.getName());
+			digestDocument.setMimeType(remoteDocument.getMimeType());
+			return digestDocument;
+		} else {
+			return new InMemoryDocument(remoteDocument.getBytes(), remoteDocument.getName(), remoteDocument.getMimeType());
+		}
 	}
 
 }

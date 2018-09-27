@@ -1,20 +1,20 @@
 package eu.europa.esig.dss.validation.executor;
 
 import java.util.Date;
+import java.util.Objects;
 
-import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
+import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-public class CustomProcessExecutor implements ProcessExecutor {
+public class CustomProcessExecutor implements ProcessExecutor<Reports> {
 
 	private Date currentTime = new Date();
 	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
 
 	private eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData jaxbDiagnosticData;
-	private DiagnosticData diagnosticData;
 
 	private ValidationPolicy policy;
 
@@ -41,17 +41,22 @@ public class CustomProcessExecutor implements ProcessExecutor {
 	@Override
 	public Reports execute() {
 
-		assert jaxbDiagnosticData != null && policy != null && currentTime != null && validationLevel != null;
+		Objects.requireNonNull(jaxbDiagnosticData, "The diagnostic data is missing");
+		Objects.requireNonNull(policy, "The validation policy is missing");
+		Objects.requireNonNull(currentTime, "The current time is missing");
+		Objects.requireNonNull(validationLevel, "The validation level is missing");
 
-		diagnosticData = new DiagnosticData(jaxbDiagnosticData);
+		DiagnosticData diagnosticData = new DiagnosticData(jaxbDiagnosticData);
 
 		DetailedReportBuilder detailedReportBuilder = new DetailedReportBuilder(currentTime, policy, validationLevel, diagnosticData);
-		DetailedReport detailedReport = detailedReportBuilder.build();
+		eu.europa.esig.dss.jaxb.detailedreport.DetailedReport jaxbDetailedReport = detailedReportBuilder.build();
 
-		SimpleReportBuilder simpleReportBuilder = new SimpleReportBuilder(currentTime, policy, diagnosticData, validationLevel, detailedReport);
+		DetailedReport detailedReportWrapper = new DetailedReport(jaxbDetailedReport);
+
+		SimpleReportBuilder simpleReportBuilder = new SimpleReportBuilder(currentTime, policy, diagnosticData, detailedReportWrapper);
 		SimpleReport simpleReport = simpleReportBuilder.build();
 
-		return new Reports(jaxbDiagnosticData, detailedReport, simpleReport);
+		return new Reports(jaxbDiagnosticData, jaxbDetailedReport, simpleReport);
 	}
 
 	@Override

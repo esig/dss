@@ -21,10 +21,7 @@
 package eu.europa.esig.dss;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Document implementation stored on file-system.
@@ -64,8 +61,7 @@ public class FileDocument extends CommonDocument {
 
 	@Override
 	public InputStream openStream() throws DSSException {
-		final InputStream inputStream = DSSUtils.toInputStream(file);
-		return inputStream;
+		return DSSUtils.toInputStream(file);
 	}
 
 	public boolean exists() {
@@ -79,22 +75,6 @@ public class FileDocument extends CommonDocument {
 	@Override
 	public String getAbsolutePath() {
 		return file.getAbsolutePath();
-	}
-
-	@Override
-	public void save(final String path) throws IOException {
-		final InputStream inputStream = openStream();
-		DSSUtils.saveToFile(inputStream, path);
-		Utils.closeQuietly(inputStream);
-	}
-
-	@Override
-	public String getDigest(final DigestAlgorithm digestAlgorithm) {
-		final InputStream inputStream = openStream();
-		final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, inputStream);
-		Utils.closeQuietly(inputStream);
-		final String base64Encode = Utils.toBase64(digestBytes);
-		return base64Encode;
 	}
 
 }

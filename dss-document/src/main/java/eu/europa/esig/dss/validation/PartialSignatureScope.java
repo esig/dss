@@ -31,4 +31,9 @@ public class PartialSignatureScope extends SignatureScope {
         return "Partial content of the document";
     }
 
+	@Override
+	public SignatureScopeType getType() {
+		return SignatureScopeType.PARTIAL;
+	}
+
 }

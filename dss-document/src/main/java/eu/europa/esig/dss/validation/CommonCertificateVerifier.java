@@ -34,18 +34,16 @@ import eu.europa.esig.dss.x509.ocsp.OCSPSource;
 
 /**
  * This class provides the different sources used to verify the status of a certificate using the trust model. There are
- * four different types of sources to be defined:<br />
+ * four different types of sources to be defined:<br>
  * -
- * Trusted certificates source;<br />
- * - Adjunct certificates source (not trusted);<br />
- * - OCSP source;<br />
- * - CRL source.<br />
+ * Trusted certificates source;<br>
+ * - Adjunct certificates source (not trusted);<br>
+ * - OCSP source;<br>
+ * - CRL source.<br>
  *
  * The {@code DataLoader} should be provided to give access to the certificates through AIA.
  *
- *
  */
-
 public class CommonCertificateVerifier implements CertificateVerifier {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommonCertificateVerifier.class);
@@ -88,11 +86,39 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private ListOCSPSource signatureOCSPSource;
 
 	/**
-	 * The default constructor. The {@code DataLoader} is created to allow the retrieval of certificates through AIA.
+	 * This variable set the behavior to follow in case of missing revocation data
+	 * (augmentation process). True : throw an exception / False : add a warning
+	 * message. Default : true
+	 */
+	private boolean exceptionOnMissingRevocationData = true;
+
+	/**
+	 * This variable set the behavior to follow in case of revoked certificate
+	 * (augmentation process). True : throw an exception / False : add a warning
+	 * message. Default : true
+	 */
+	private boolean exceptionOnRevokedCertificate = true;
+
+	/**
+	 * This variable set the behavior to follow in case of invalid timestamp
+	 * (augmentation process). True : throw an exception / False : add a warning
+	 * message. Default : true
+	 */
+	private boolean exceptionOnInvalidTimestamp = true;
+
+	/**
+	 * This variable set the behavior to follow for revocation retrieving in case of
+	 * untrusted certificate chains. Default : false (revocation are not checked in
+	 * case of certificates issued from an unsure source)
+	 */
+	private boolean checkRevocationForUntrustedChains = false;
+
+	/**
+	 * The default constructor. The {@code DataLoader} is created to allow the
+	 * retrieval of certificates through AIA.
 	 */
 	public CommonCertificateVerifier() {
-		LOG.info("+ New CommonCertificateVerifier created.");
-		dataLoader = new NativeHTTPDataLoader();
+		this(false);
 	}
 
 	/**
@@ -103,6 +129,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 *            if true the {@code CommonCertificateVerifier} will not contain {@code DataLoader}.
 	 */
 	public CommonCertificateVerifier(final boolean simpleCreationOnly) {
+		LOG.info("+ New CommonCertificateVerifier created.");
 		if (!simpleCreationOnly) {
 			dataLoader = new NativeHTTPDataLoader();
 		}
@@ -133,85 +160,43 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 		}
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public CertificateSource getTrustedCertSource() {
-
 		return trustedCertSource;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public OCSPSource getOcspSource() {
-
 		return ocspSource;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public CRLSource getCrlSource() {
-
 		return crlSource;
 	}
 
-	/**
-	 * Defines the source of CRL used by this class
-	 *
-	 * @param crlSource
-	 *            the crlSource to set
-	 */
 	@Override
 	public void setCrlSource(final CRLSource crlSource) {
-
 		this.crlSource = crlSource;
 	}
 
-	/**
-	 * Defines the source of OCSP used by this class
-	 *
-	 * @param ocspSource
-	 *            the ocspSource to set
-	 */
 	@Override
 	public void setOcspSource(final OCSPSource ocspSource) {
-
 		this.ocspSource = ocspSource;
 	}
 
-	/**
-	 * Defines how the certificates from the Trusted Lists are retrieved. This source should provide trusted
-	 * certificates. These certificates are used as trust anchors.
-	 *
-	 * @param trustedCertSource
-	 *            The source of trusted certificates.
-	 */
 	@Override
 	public void setTrustedCertSource(final CertificateSource trustedCertSource) {
-
 		this.trustedCertSource = trustedCertSource;
 	}
 
-	/**
-	 * @return
-	 */
 	@Override
 	public CertificateSource getAdjunctCertSource() {
-
 		return adjunctCertSource;
 	}
 
-	/**
-	 * @param adjunctCertSource
-	 */
 	@Override
 	public void setAdjunctCertSource(final CertificateSource adjunctCertSource) {
-
 		this.adjunctCertSource = adjunctCertSource;
 	}
 
@@ -232,7 +217,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setSignatureCRLSource(final ListCRLSource signatureCRLSource) {
-
 		this.signatureCRLSource = signatureCRLSource;
 	}
 
@@ -243,19 +227,59 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setSignatureOCSPSource(final ListOCSPSource signatureOCSPSource) {
-
 		this.signatureOCSPSource = signatureOCSPSource;
+	}
+
+	@Override
+	public void setExceptionOnMissingRevocationData(boolean throwExceptionOnMissingRevocationData) {
+		this.exceptionOnMissingRevocationData = throwExceptionOnMissingRevocationData;
+	}
+
+	@Override
+	public boolean isExceptionOnMissingRevocationData() {
+		return exceptionOnMissingRevocationData;
+	}
+
+	@Override
+	public boolean isExceptionOnRevokedCertificate() {
+		return exceptionOnRevokedCertificate;
+	}
+
+	@Override
+	public void setExceptionOnRevokedCertificate(boolean exceptionOnRevokedCertificate) {
+		this.exceptionOnRevokedCertificate = exceptionOnRevokedCertificate;
+	}
+
+	@Override
+	public void setExceptionOnInvalidTimestamp(boolean throwExceptionOnInvalidTimestamp) {
+		this.exceptionOnInvalidTimestamp = throwExceptionOnInvalidTimestamp;
+	}
+
+	@Override
+	public boolean isExceptionOnInvalidTimestamp() {
+		return exceptionOnInvalidTimestamp;
+	}
+
+	@Override
+	public boolean isCheckRevocationForUntrustedChains() {
+		return checkRevocationForUntrustedChains;
+	}
+
+	@Override
+	public void setCheckRevocationForUntrustedChains(boolean checkRevocationForUntrustedChains) {
+		this.checkRevocationForUntrustedChains = checkRevocationForUntrustedChains;
 	}
 
 	@Override
 	public CertificatePool createValidationPool() {
 		final CertificatePool validationPool = new CertificatePool();
 		if (trustedCertSource != null) {
-			validationPool.merge(trustedCertSource.getCertificatePool());
+			validationPool.importCerts(trustedCertSource);
 		}
 		if (adjunctCertSource != null) {
-			validationPool.merge(adjunctCertSource.getCertificatePool());
+			validationPool.importCerts(adjunctCertSource);
 		}
 		return validationPool;
 	}
+
 }

@@ -13,7 +13,6 @@ import eu.europa.esig.dss.validation.process.bbb.isc.checks.DigestValuePresentCh
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.IssuerSerialMatchCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateAttributePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateRecognitionCheck;
-import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateSignedCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
@@ -79,7 +78,6 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 				return;
 			}
 
-			item = item.setNextItem(signingCertificateSigned());
 			item = item.setNextItem(signingCertificateAttributePresent());
 
 			/*
@@ -106,11 +104,6 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 	private ChainItem<XmlISC> signingCertificateRecognition() {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateRecognitionConstraint(context);
 		return new SigningCertificateRecognitionCheck(result, token, diagnosticData, constraint);
-	}
-
-	private ChainItem<XmlISC> signingCertificateSigned() {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateSignedConstraint(context);
-		return new SigningCertificateSignedCheck(result, token, constraint);
 	}
 
 	private ChainItem<XmlISC> signingCertificateAttributePresent() {

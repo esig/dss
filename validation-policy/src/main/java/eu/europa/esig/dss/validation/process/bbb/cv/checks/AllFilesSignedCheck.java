@@ -44,8 +44,8 @@ public class AllFilesSignedCheck extends ChainItem<XmlCV> {
 
 			// XAdES -> check signature scope
 			if (signature.getFormat().startsWith("XAdES")) {
-				List<String> coveredFilesFromScrope = getCoveredFilesFromScrope();
-				return sameContent(coveredFilesFromScrope, contentFiles);
+				List<String> coveredFilesFromScope = getCoveredFilesFromScope();
+				return sameContent(coveredFilesFromScope, contentFiles);
 			}
 
 			// CAdES -> manifest file is signed
@@ -84,7 +84,7 @@ public class AllFilesSignedCheck extends ChainItem<XmlCV> {
 		return new ArrayList<String>();
 	}
 
-	private List<String> getCoveredFilesFromScrope() {
+	private List<String> getCoveredFilesFromScope() {
 		List<String> result = new ArrayList<String>();
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		for (XmlSignatureScope xmlSignatureScope : signatureScopes) {

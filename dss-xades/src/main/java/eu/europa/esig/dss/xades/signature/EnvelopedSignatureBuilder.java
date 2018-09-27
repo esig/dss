@@ -33,7 +33,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
@@ -89,9 +89,14 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 
 		DSSReference dssReference = new DSSReference();
 		dssReference.setId("r-id-" + referenceIndex);
+		// XMLDSIG : 4.4.3.2
+		// URI=""
+		// Identifies the node-set (minus any comment nodes) of the XML resource
+		// containing the signature
 		dssReference.setUri("");
 		dssReference.setContents(document);
-		dssReference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
+		DigestAlgorithm digestAlgorithm = params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
+		dssReference.setDigestMethodAlgorithm(digestAlgorithm);
 
 		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
 
@@ -146,38 +151,6 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 		}
 		byte[] transformedReferenceBytes = applyTransformations(dssDocument, transforms, nodeToTransform);
 		return new InMemoryDocument(transformedReferenceBytes);
-	}
-
-	private byte[] applyTransformations(DSSDocument dssDocument, final List<DSSTransform> transforms, Node nodeToTransform) {
-		byte[] transformedReferenceBytes = null;
-		for (final DSSTransform transform : transforms) {
-
-			final String transformAlgorithm = transform.getAlgorithm();
-			if (Transforms.TRANSFORM_XPATH.equals(transformAlgorithm)) {
-
-				final DSSTransformXPath transformXPath = new DSSTransformXPath(transform);
-				// At the moment it is impossible to go through a medium other than byte array (Set<Node>, octet stream,
-				// Node). Further investigation is needed.
-				final byte[] transformedBytes = nodeToTransform == null ? transformXPath.transform(dssDocument) : transformXPath.transform(nodeToTransform);
-				dssDocument = new InMemoryDocument(transformedBytes);
-				nodeToTransform = DomUtils.buildDOM(dssDocument);
-			} else if (DSSXMLUtils.canCanonicalize(transformAlgorithm)) {
-
-				if (nodeToTransform == null) {
-					nodeToTransform = DomUtils.buildDOM(dssDocument);
-				}
-				transformedReferenceBytes = DSSXMLUtils.canonicalizeSubtree(transformAlgorithm, nodeToTransform);
-				// The supposition is made that the last transformation is the canonicalization
-				break;
-			} else if (CanonicalizationMethod.ENVELOPED.equals(transformAlgorithm)) {
-
-				// do nothing the new signature is not existing yet!
-				// removeExistingSignatures(document);
-			} else {
-				throw new DSSException("The transformation is not implemented yet, please transform the reference before signing!");
-			}
-		}
-		return transformedReferenceBytes;
 	}
 
 	private static boolean isXPointer(final String uri) {

@@ -22,8 +22,13 @@ package eu.europa.esig.dss.x509;
 
 import java.util.Date;
 
+import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
+
 @SuppressWarnings("serial")
 public abstract class RevocationToken extends Token {
+
+	private String relatedCertificateID;
 
 	/**
 	 * Origin of the revocation data (signature or external)
@@ -61,8 +66,8 @@ public abstract class RevocationToken extends Token {
 	protected Date nextUpdate;
 
 	/**
-	 * Represents the revocation date from an X509CRLEntry or from an BasicOCSPResp<br>
-	 * --> getResponses() --> ((RevokedStatus) singleResp.getCertStatus()).getRevocationTime()
+	 * Represents the revocation date from an X509CRLEntry or from an BasicOCSPResp (if the related certificate is
+	 * revoked)
 	 */
 	protected Date revocationDate;
 
@@ -71,10 +76,28 @@ public abstract class RevocationToken extends Token {
 	protected Date archiveCutOff;
 
 	/**
+	 * Represents the certHash extension from an OCSP Response (optional)
+	 */
+	protected Digest certHash;
+
+	/**
 	 * The reason of the revocation.
 	 */
-	protected String reason;
+	protected CRLReasonEnum reason;
 
+	public String getRelatedCertificateID() {
+		return relatedCertificateID;
+	}
+
+	public void setRelatedCertificateID(String relatedCertificateID) {
+		this.relatedCertificateID = relatedCertificateID;
+	}
+
+	/**
+	 * Returns the URL of the source (if available)
+	 * 
+	 * @return URL of the CRL/OCSP Server (if available)
+	 */
 	public String getSourceURL() {
 		return sourceURL;
 	}
@@ -90,6 +113,11 @@ public abstract class RevocationToken extends Token {
 		this.sourceURL = sourceURL;
 	}
 
+	/**
+	 * Returns the revocation origin (the signature itself or else)
+	 * 
+	 * @return the origin of this revocation data
+	 */
 	public RevocationOrigin getOrigin() {
 		return origin;
 	}
@@ -98,6 +126,11 @@ public abstract class RevocationToken extends Token {
 		this.origin = origin;
 	}
 
+	/**
+	 * Returns the online resource availability status
+	 * 
+	 * @return true if the online resource was available
+	 */
 	public boolean isAvailable() {
 		return available;
 	}
@@ -107,13 +140,25 @@ public abstract class RevocationToken extends Token {
 	}
 
 	/**
-	 * @return
+	 * Returns the revocation status
+	 * 
+	 * @return true if valid, false if revoked/onhold, null if not available
 	 */
 	public Boolean getStatus() {
 		return status;
 	}
 
+	/**
+	 * Returns the generation time of the current revocation data (when it was signed)
+	 * 
+	 * @return the production time of the current revocation data
+	 */
 	public Date getProductionDate() {
+		return productionDate;
+	}
+
+	@Override
+	public Date getCreationDate() {
 		return productionDate;
 	}
 
@@ -122,31 +167,56 @@ public abstract class RevocationToken extends Token {
 	}
 
 	/**
-	 * @return
+	 * Returns the date of the next update
+	 * 
+	 * @return the next update date
 	 */
 	public Date getNextUpdate() {
 		return nextUpdate;
 	}
 
 	/**
-	 * @return
+	 * Returns the revocation date (if the token has been revoked)
+	 * 
+	 * @return the revocation date or null
 	 */
 	public Date getRevocationDate() {
 		return revocationDate;
 	}
 
+	/**
+	 * Returns the expiredCertsOnCRL date (from CRL)
+	 * 
+	 * @return the expiredCertsOnCRL date value from a CRL or null
+	 */
 	public Date getExpiredCertsOnCRL() {
 		return expiredCertsOnCRL;
 	}
 
+	/**
+	 * Returns the archiveCutOff date (from an OCSP Response)
+	 * 
+	 * @return the archiveCutOff date or null
+	 */
 	public Date getArchiveCutOff() {
 		return archiveCutOff;
 	}
 
 	/**
-	 * @return
+	 * Returns the certHash extension (from an OCSP Response)
+	 * 
+	 * @return the certHash contains or null
 	 */
-	public String getReason() {
+	public Digest getCertHash() {
+		return certHash;
+	}
+
+	/**
+	 * Returns the revocation reason (if the token has been revoked)
+	 * 
+	 * @return the revocation reason or null
+	 */
+	public CRLReasonEnum getReason() {
 		return reason;
 	}
 
@@ -157,5 +227,43 @@ public abstract class RevocationToken extends Token {
 	 * @return {@code true} if the conditions are meet
 	 */
 	public abstract boolean isValid();
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((productionDate == null) ? 0 : productionDate.hashCode());
+		result = prime * result + ((relatedCertificateID == null) ? 0 : relatedCertificateID.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		RevocationToken other = (RevocationToken) obj;
+		if (productionDate == null) {
+			if (other.productionDate != null) {
+				return false;
+			}
+		} else if (!productionDate.equals(other.productionDate)) {
+			return false;
+		}
+		if (relatedCertificateID == null) {
+			if (other.relatedCertificateID != null) {
+				return false;
+			}
+		} else if (!relatedCertificateID.equals(other.relatedCertificateID)) {
+			return false;
+		}
+		return true;
+	}
 
 }

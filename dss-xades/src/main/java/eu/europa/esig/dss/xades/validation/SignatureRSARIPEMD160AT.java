@@ -26,26 +26,23 @@ import org.apache.xml.security.signature.XMLSignatureException;
 /**
  * Class SignatureECDSARIPEMD160
  *
- *
  */
 public class SignatureRSARIPEMD160AT extends SignatureBaseRSA {
 
-    public static final String XML_ID = "http://www.w3.org/2001/04/xmldsig-more/rsa-ripemd160";
+	public static final String XML_ID = "http://www.w3.org/2001/04/xmldsig-more/rsa-ripemd160";
 
-    /**
-     * Constructor SignatureECDSARIPEMD160
-     *
-     * @throws org.apache.xml.security.signature.XMLSignatureException
-     */
-    public SignatureRSARIPEMD160AT() throws XMLSignatureException {
-        super();
-    }
+	/**
+	 * Constructor SignatureECDSARIPEMD160
+	 *
+	 * @throws org.apache.xml.security.signature.XMLSignatureException
+	 */
+	public SignatureRSARIPEMD160AT() throws XMLSignatureException {
+		super();
+	}
 
-    /**
-     * @inheritDoc
-     */
-    public String engineGetURI() {
+	@Override
+	public String engineGetURI() {
+		return XML_ID;
+	}
 
-        return XML_ID;
-    }
 }

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Test;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.client.SecureRandomNonceSource;
@@ -65,6 +66,16 @@ public class OnlineTSPSourceTest {
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
 		TimeStampToken timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
 		assertNotNull(timeStampResponse);
+	}
+
+	@Test(expected = DSSException.class)
+	public void testNotTSA() {
+		OnlineTSPSource tspSource = new OnlineTSPSource();
+		tspSource.setDataLoader(new TimestampDataLoader());
+		tspSource.setTspServer("http://www.google.com");
+
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
+		tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
 	}
 
 }

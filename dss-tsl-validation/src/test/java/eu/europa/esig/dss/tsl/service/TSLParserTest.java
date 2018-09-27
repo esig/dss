@@ -20,6 +20,7 @@ import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLService;
 import eu.europa.esig.dss.tsl.TSLServiceProvider;
 import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.jaxb.ecc.CriteriaListType;
@@ -120,6 +121,12 @@ public class TSLParserTest {
 	}
 
 	@Test
+	public void tslWithDateOverlapping() throws Exception {
+		TSLParser parser = new TSLParser("src/test/resources/wrong-service-dates.xml");
+		parser.call();
+	}
+
+	@Test
 	public void serviceQualificationEE() throws Exception {
 		// ***************************** OLD VERSION OF TL
 		TSLParser parser = new TSLParser("src/test/resources/tsls/0A191C3E18CAB7B783E690D3E4431C354A068FF0.xml");
@@ -199,9 +206,13 @@ public class TSLParserTest {
 		for (TSLServiceProvider tslServiceProvider : serviceProviders) {
 			List<TSLService> services = tslServiceProvider.getServices();
 			for (TSLService tslService : services) {
-				if (serviceNameToFind.equals(tslService.getName())) {
-					service = tslService;
-					break;
+				TimeDependentValues<TSLServiceStatusAndInformationExtensions> statusAndInformationExtensions = tslService
+						.getStatusAndInformationExtensions();
+				for (TSLServiceStatusAndInformationExtensions tslServiceStatusAndInformationExtensions : statusAndInformationExtensions) {
+					if (serviceNameToFind.equals(tslServiceStatusAndInformationExtensions.getName())) {
+						service = tslService;
+						break;
+					}
 				}
 			}
 		}

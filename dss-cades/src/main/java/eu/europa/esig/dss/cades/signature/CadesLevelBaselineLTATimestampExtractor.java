@@ -24,7 +24,6 @@ import static eu.europa.esig.dss.OID.id_aa_ATSHashIndex;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certValues;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_revocationValues;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -56,7 +55,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.cades.CMSUtils;
@@ -120,7 +118,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * @param signerInformation
 	 * @return
 	 */
-	public Attribute getAtsHashIndex(SignerInformation signerInformation, DigestAlgorithm hashIndexDigestAlgorithm) throws DSSException {
+	public Attribute getAtsHashIndex(SignerInformation signerInformation, DigestAlgorithm hashIndexDigestAlgorithm) {
 
 		this.hashIndexDigestAlgorithm = hashIndexDigestAlgorithm;
 		final AlgorithmIdentifier algorithmIdentifier = getHashIndexDigestAlgorithmIdentifier();
@@ -137,7 +135,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * @param timestampToken
 	 * @return
 	 */
-	public Attribute getVerifiedAtsHashIndex(SignerInformation signerInformation, TimestampToken timestampToken) throws DSSException {
+	public Attribute getVerifiedAtsHashIndex(SignerInformation signerInformation, TimestampToken timestampToken) {
 
 		final AlgorithmIdentifier derObjectAlgorithmIdentifier = getAlgorithmIdentifier(timestampToken);
 		final ASN1Sequence certificatesHashIndex = getVerifiedCertificatesHashIndex(timestampToken);
@@ -168,7 +166,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * @return
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
-	private ASN1Sequence getCertificatesHashIndex() throws DSSException {
+	private ASN1Sequence getCertificatesHashIndex() {
 
 		final ASN1EncodableVector certificatesHashIndexVector = new ASN1EncodableVector();
 
@@ -194,7 +192,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
 	@SuppressWarnings("unchecked")
-	private ASN1Sequence getVerifiedCertificatesHashIndex(TimestampToken timestampToken) throws DSSException {
+	private ASN1Sequence getVerifiedCertificatesHashIndex(TimestampToken timestampToken) {
 
 		final ASN1Sequence certHashes = getCertificatesHashIndex(timestampToken);
 		final List<DEROctetString> certHashesList = new ArrayList<DEROctetString>();
@@ -231,7 +229,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
 	@SuppressWarnings("unchecked")
-	private ASN1Sequence getCRLsHashIndex() throws DSSException {
+	private ASN1Sequence getCRLsHashIndex() {
 
 		final ASN1EncodableVector crlsHashIndex = new ASN1EncodableVector();
 
@@ -269,7 +267,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * @throws eu.europa.esig.dss.DSSException
 	 */
 	@SuppressWarnings("unchecked")
-	private ASN1Sequence getVerifiedCRLsHashIndex(TimestampToken timestampToken) throws DSSException {
+	private ASN1Sequence getVerifiedCRLsHashIndex(TimestampToken timestampToken) {
 
 		final ASN1Sequence crlHashes = getCRLHashIndex(timestampToken);
 		final List<DEROctetString> crlHashesList = new ArrayList<DEROctetString>();
@@ -314,7 +312,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		}
 	}
 
-	private boolean handleCrlEncoded(ArrayList<DEROctetString> crlHashesList, byte[] crlHolderEncoded) {
+	private boolean handleCrlEncoded(List<DEROctetString> crlHashesList, byte[] crlHolderEncoded) {
 		final byte[] digest = DSSUtils.digest(hashIndexDigestAlgorithm, crlHolderEncoded);
 		final DEROctetString derOctetStringDigest = new DEROctetString(digest);
 
@@ -330,8 +328,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * @param signerInformation
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	private ASN1Sequence getUnsignedAttributesHashIndex(SignerInformation signerInformation) throws DSSException {
+	private ASN1Sequence getUnsignedAttributesHashIndex(SignerInformation signerInformation) {
 
 		final ASN1EncodableVector unsignedAttributesHashIndex = new ASN1EncodableVector();
 		AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
@@ -368,7 +365,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private ASN1Sequence getVerifiedUnsignedAttributesHashIndex(SignerInformation signerInformation, TimestampToken timestampToken) throws DSSException {
+	private ASN1Sequence getVerifiedUnsignedAttributesHashIndex(SignerInformation signerInformation, TimestampToken timestampToken) {
 		final ASN1Sequence unsignedAttributesHashes = getUnsignedAttributesHashIndex(timestampToken);
 		final List<DEROctetString> timestampUnsignedAttributesHashesList = new ArrayList<DEROctetString>();
 		if (unsignedAttributesHashes != null) {
@@ -398,7 +395,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		return unsignedAttributesHashes;
 	}
 
-	private DEROctetString getAttributeDerOctetStringHash(Attribute attribute) throws DSSException {
+	private DEROctetString getAttributeDerOctetStringHash(Attribute attribute) {
 
 		final byte[] attributeEncoded = DSSASN1Utils.getDEREncoded(attribute);
 		final byte[] digest = DSSUtils.digest(hashIndexDigestAlgorithm, attributeEncoded);
@@ -516,12 +513,12 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		}
 	}
 
-	public byte[] getArchiveTimestampDataV3(SignerInformation signerInformation, Attribute atsHashIndexAttribute, InputStream originalDocument,
-			DigestAlgorithm digestAlgorithm) throws DSSException {
+	public byte[] getArchiveTimestampDataV3(SignerInformation signerInformation, Attribute atsHashIndexAttribute, byte[] originalDocumentDigest)
+	{
 
 		final CMSSignedData cmsSignedData = cadesSignature.getCmsSignedData();
 		final byte[] encodedContentType = getEncodedContentType(cmsSignedData); // OID
-		final byte[] signedDataDigest = DSSUtils.digest(digestAlgorithm, originalDocument);
+		final byte[] signedDataDigest = originalDocumentDigest;
 		final byte[] encodedFields = getSignedFields(signerInformation);
 		final byte[] encodedAtsHashIndex = DSSASN1Utils.getDEREncoded(atsHashIndexAttribute.getAttrValues().getObjectAt(0));
 		/**

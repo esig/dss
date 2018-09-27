@@ -39,11 +39,11 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.crl.CRLSource;
 import eu.europa.esig.dss.x509.crl.CRLToken;
-import eu.europa.esig.dss.x509.crl.CRLValidity;
 
 /**
  * CRLSource that retrieve information from a JDBC datasource
@@ -60,7 +60,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 	/**
 	 * used in the init method to create the table, if not existing: ID (char40 = SHA1 length) and DATA (blob)
 	 */
-	private static final String SQL_INIT_CREATE_TABLE = "CREATE TABLE CACHED_CRL (ID CHAR(40), DATA LONGVARBINARY, SIGNATURE_ALGORITHM VARCHAR(20), THIS_UPDATE TIMESTAMP, NEXT_UPDATE TIMESTAMP, EXPIRED_CERTS_ON_CRL TIMESTAMP, ISSUER LONGVARBINARY, ISSUER_PRINCIPAL_MATCH BOOLEAN, SIGNATURE_INTACT BOOLEAN, CRL_SIGN_KEY_USAGE BOOLEAN, UNKNOWN_CRITICAL_EXTENSION BOOLEAN, SIGNATURE_INVALID_REASON VARCHAR(256))";
+	private static final String SQL_INIT_CREATE_TABLE = "CREATE TABLE CACHED_CRL (ID CHAR(40), DATA BLOB, SIGNATURE_ALGORITHM VARCHAR(20), THIS_UPDATE TIMESTAMP, NEXT_UPDATE TIMESTAMP, EXPIRED_CERTS_ON_CRL TIMESTAMP, ISSUER LONGVARBINARY, ISSUER_PRINCIPAL_MATCH BOOLEAN, SIGNATURE_INTACT BOOLEAN, CRL_SIGN_KEY_USAGE BOOLEAN, UNKNOWN_CRITICAL_EXTENSION BOOLEAN, SIGNATURE_INVALID_REASON VARCHAR(256))";
 
 	/**
 	 * used in the find method to select the crl via the id
@@ -122,11 +122,10 @@ public class JdbcCacheCRLSource implements CRLSource {
 	}
 
 	@Override
-	public CRLToken findCrl(final CertificateToken certificateToken) throws DSSException {
+	public CRLToken getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerToken) throws DSSException {
 		if (certificateToken == null) {
 			return null;
 		}
-		final CertificateToken issuerToken = certificateToken.getIssuerToken();
 		if (issuerToken == null) {
 			return null;
 		}
@@ -135,7 +134,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 			return null;
 		}
 		final String crlUrl = crlUrls.get(0);
-		LOG.info("CRL's URL for " + certificateToken.getAbbreviation() + " : " + crlUrl);
+		LOG.info("CRL's URL for {} : {}", certificateToken.getAbbreviation(), crlUrl);
 		try {
 
 			final String key = DSSUtils.getSHA1Digest(crlUrl);
@@ -150,7 +149,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 					}
 				}
 			}
-			final CRLToken crlToken = cachedSource.findCrl(certificateToken);
+			final CRLToken crlToken = cachedSource.getRevocationToken(certificateToken, issuerToken);
 			if ((crlToken != null) && crlToken.isValid()) {
 				if (storedValidity == null) {
 					LOG.info("CRL '{}' not in cache", crlUrl);

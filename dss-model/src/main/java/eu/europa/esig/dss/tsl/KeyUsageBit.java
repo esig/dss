@@ -60,7 +60,7 @@ public enum KeyUsageBit {
 	/**
 	 * The default constructor for KeyUsageBit.
 	 */
-	private KeyUsageBit(int index) {
+	KeyUsageBit(int index) {
 		this.index = index;
 	}
 

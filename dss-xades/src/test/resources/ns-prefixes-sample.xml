@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+               xmlns:czip="urn:czech-ba:instant-payments:v1:instantPayment"
+               xmlns:pacs="urn:czech-ba:instant-payments:v1:derivedpacs.008.001.02">
+    <soap:Body>
+        <czip:initInstantPayment czip:id="signedData">
+            <czip:xid>X01001000000000004</czip:xid>
+            <pacs:CdtTrfTxInf>
+                <pacs:PmtId>
+                    <pacs:TxId>20180530 1029384756748</pacs:TxId>
+                </pacs:PmtId>
+                <pacs:InstdAmt Ccy="CZK">13.37</pacs:InstdAmt>
+                <pacs:Dbtr>
+                    <pacs:Nm>Vendula</pacs:Nm>
+                    <pacs:NmLng>Vendula Křížečková</pacs:NmLng>
+                </pacs:Dbtr>
+                <pacs:DbtrAcct>
+                    <pacs:Id>
+                        <pacs:IBAN>CZ5830300000000000000019</pacs:IBAN>
+                    </pacs:Id>
+                </pacs:DbtrAcct>
+                <pacs:CdtrAcct>
+                    <pacs:Id>
+                        <pacs:IBAN>CZ5830300000000000000019</pacs:IBAN>
+                    </pacs:Id>
+                </pacs:CdtrAcct>
+                <pacs:RmtInf>
+                    <pacs:Ustrd>Thanks for the great party!</pacs:Ustrd>
+                    <pacs:Strd>
+                        <pacs:CdtrRefInf>
+                            <pacs:Ref>KS:12345</pacs:Ref>
+                        </pacs:CdtrRefInf>
+                    </pacs:Strd>
+                    <pacs:Strd>
+                        <pacs:CdtrRefInf>
+                            <pacs:Ref>VS:13579</pacs:Ref>
+                        </pacs:CdtrRefInf>
+                    </pacs:Strd>
+                    <pacs:Strd>
+                        <pacs:CdtrRefInf>
+                            <pacs:Ref>SS:54321</pacs:Ref>
+                        </pacs:CdtrRefInf>
+                    </pacs:Strd>
+                </pacs:RmtInf>
+            </pacs:CdtTrfTxInf>
+            <czip:timestamps>
+                <czip:T2>2018-08-31T16:02:18.647+02:00</czip:T2>
+            </czip:timestamps>
+        </czip:initInstantPayment>
+    </soap:Body>
+</soap:Envelope>

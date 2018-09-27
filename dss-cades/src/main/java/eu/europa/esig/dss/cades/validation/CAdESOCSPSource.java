@@ -36,7 +36,6 @@ import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
-import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.util.Store;
@@ -53,7 +52,7 @@ import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
  */
 public class CAdESOCSPSource extends OfflineOCSPSource {
 
-	private static final Logger logger = LoggerFactory.getLogger(CAdESOCSPSource.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CAdESOCSPSource.class);
 
 	private CMSSignedData cmsSignedData;
 	private SignerInformation signerInformation;
@@ -62,10 +61,11 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 	 * The default constructor for CAdESOCSPSource.
 	 *
 	 * @param cms
-	 * @throws CMSException
+	 *            the CMSSignedData
+	 * @param signerInformation
+	 *            the SignerInformation
 	 */
 	public CAdESOCSPSource(final CMSSignedData cms, final SignerInformation signerInformation) {
-
 		this.cmsSignedData = cms;
 		this.signerInformation = signerInformation;
 	}
@@ -150,11 +150,12 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 					basicOCSPResp = CMSUtils.getBasicOcspResp(otherRevocationInfoMatch);
 				} else {
 					final OCSPResp ocspResp = CMSUtils.getOcspResp(otherRevocationInfoMatch);
-					basicOCSPResp = CMSUtils.getBasicOCSPResp(ocspResp);
+					basicOCSPResp = CMSUtils.getBasicOcspResp(ocspResp);
 				}
 				addBasicOcspResp(basicOCSPResps, basicOCSPResp);
 			} else {
-				logger.warn("Unsupported object type for id_ri_ocsp_response (SHALL be DER encoding) : " + object.getClass().getSimpleName());
+				LOG.warn("Unsupported object type for id_ri_ocsp_response (SHALL be DER encoding) : {}",
+						object.getClass().getSimpleName());
 			}
 		}
 	}
@@ -168,7 +169,8 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 				final BasicOCSPResp basicOCSPResp = CMSUtils.getBasicOcspResp(otherRevocationInfoMatch);
 				addBasicOcspResp(basicOCSPResps, basicOCSPResp);
 			} else {
-				logger.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be DER encoding) : " + object.getClass().getSimpleName());
+				LOG.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be DER encoding) : {}",
+						object.getClass().getSimpleName());
 			}
 		}
 	}

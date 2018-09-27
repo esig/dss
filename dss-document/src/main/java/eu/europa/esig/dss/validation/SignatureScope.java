@@ -40,7 +40,6 @@ public abstract class SignatureScope {
 
 	public abstract String getDescription();
 
-	public String getType() {
-		return getClass().getSimpleName();
-	}
+	public abstract SignatureScopeType getType();
+
 }

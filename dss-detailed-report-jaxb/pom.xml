@@ -3,12 +3,32 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.1-SNAPSHOT</version>
+		<version>5.4-SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>dss-detailed-report-jaxb</artifactId>
 	<name>JAXB Detailed Report Data Model</name>
-	<description>Generated source from XSD for Detailed Report.</description>
+	<description>Generated source from XSD for Detailed Report and additional XSLT (for HTML/PDF renderings).</description>
+	
+	<build>
+		<!-- Inject version number in XSLT -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.xslt</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>**/*.xslt</exclude>
+				</excludes>
+			</resource>
+		</resources>
+	</build>
 	
 	<dependencies>
 		<dependency>
@@ -50,5 +70,26 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+            <id>jdk19-plus</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            
+            <dependencies>
+	            <dependency>
+				    <groupId>javax.xml.bind</groupId>
+				    <artifactId>jaxb-api</artifactId>
+				</dependency>
+				<dependency>
+				    <groupId>com.sun.xml.bind</groupId>
+				    <artifactId>jaxb-core</artifactId>
+				</dependency>
+				<dependency>
+				    <groupId>com.sun.xml.bind</groupId>
+				    <artifactId>jaxb-impl</artifactId>
+				</dependency>
+            </dependencies>
+    	</profile>
 	</profiles>
 </project>

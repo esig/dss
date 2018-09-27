@@ -9,6 +9,7 @@ import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableMimetypeFil
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableZipCommentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ContainerTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.FullScopeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ManifestFilePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.MimeTypeFilePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ZipCommentPresentCheck;
@@ -45,6 +46,8 @@ public class FormatChecking extends Chain<XmlFC> {
 	protected void initChain() {
 		ChainItem<XmlFC> item = firstItem = formatCheck();
 
+		item = item.setNextItem(fullScopeCheck());
+
 		if (diagnosticData.isContainerInfoPresent()) {
 
 			item = item.setNextItem(containerTypeCheck());
@@ -64,6 +67,11 @@ public class FormatChecking extends Chain<XmlFC> {
 	private ChainItem<XmlFC> formatCheck() {
 		MultiValuesConstraint constraint = policy.getSignatureFormatConstraint(context);
 		return new FormatCheck(result, signature, constraint);
+	}
+
+	private ChainItem<XmlFC> fullScopeCheck() {
+		LevelConstraint constraint = policy.getFullScopeConstraint();
+		return new FullScopeCheck(result, signature, constraint);
 	}
 
 	private ChainItem<XmlFC> containerTypeCheck() {

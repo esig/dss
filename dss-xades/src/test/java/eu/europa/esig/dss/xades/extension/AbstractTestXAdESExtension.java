@@ -24,51 +24,50 @@ import java.io.File;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.extension.AbstractTestExtension;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.test.mock.MockTSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.x509.tsp.TSPSource;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
 public abstract class AbstractTestXAdESExtension extends AbstractTestExtension<XAdESSignatureParameters> {
 
 	@Override
-	protected DSSDocument getSignedDocument() throws Exception {
-		CertificateService certificateService = new CertificateService();
-		MockPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+	protected TSPSource getUsedTSPSourceAtSignatureTime() {
+		return getGoodTsa();
+	}
 
+	@Override
+	protected TSPSource getUsedTSPSourceAtExtensionTime() {
+		return getAlternateGoodTsa();
+	}
+
+	@Override
+	protected DSSDocument getSignedDocument() throws Exception {
 		DSSDocument document = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		// Sign
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.setSigningCertificate(entryUserA.getCertificate());
-		signatureParameters.setCertificateChain(entryUserA.getCertificateChain());
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
 
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		XAdESService service = new XAdESService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
+		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getUsedTSPSourceAtSignatureTime());
 
 		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
-		SignatureValue signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
-		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
-		return signedDocument;
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
+		return service.signDocument(document, signatureParameters, signatureValue);
 	}
 
 	@Override
 	protected DocumentSignatureService<XAdESSignatureParameters> getSignatureServiceToExtend() throws Exception {
-		XAdESService service = new XAdESService(new CommonCertificateVerifier());
-		CertificateService certificateService = new CertificateService();
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
+		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;
 	}
 
@@ -79,4 +78,8 @@ public abstract class AbstractTestXAdESExtension extends AbstractTestExtension<X
 		return extensionParameters;
 	}
 
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
+	}
 }

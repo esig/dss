@@ -75,6 +75,8 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 */
 		if (controlTime != null && poe.isPOEExists(token.getId(), controlTime)) {
 
+			result.setControlTime(controlTime);
+
 			/*
 			 * If current time indication/sub-indication is INDETERMINATE/REVOKED_NO_POE or INDETERMINATE/
 			 * REVOKED_CA_NO_POE, the building block shall return PASSED.

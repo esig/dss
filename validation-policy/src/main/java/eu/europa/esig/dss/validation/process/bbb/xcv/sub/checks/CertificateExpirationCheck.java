@@ -3,6 +3,7 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -36,6 +37,7 @@ public class CertificateExpirationCheck extends ChainItem<XmlSubXCV> {
 	@Override
 	protected String getAdditionalInfo() {
 		SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		String notBeforeStr = certificate.getNotBefore() == null ? " ? " : sdf.format(certificate.getNotBefore());
 		String notAfterStr = certificate.getNotAfter() == null ? " ? " : sdf.format(certificate.getNotAfter());
 		Object[] params = new Object[] { notBeforeStr, notAfterStr };

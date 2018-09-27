@@ -1,6 +1,9 @@
 package eu.europa.esig.dss.validation.process;
 
-public class AdditionalInfo {
+public final class AdditionalInfo {
+
+	private AdditionalInfo() {
+	}
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
@@ -23,5 +26,9 @@ public class AdditionalInfo {
 	public static final String TRUSTED_SERVICE_TYPE = "Type : {0}";
 
 	public static final String PSEUDO = "Pseudo : {0}";
+
+	public static final String TRUSTED_LIST = "Trusted List : {0}";
+
+	public static final String TRUST_SERVICE_NAME = "Trust service name : {0}";
 
 }

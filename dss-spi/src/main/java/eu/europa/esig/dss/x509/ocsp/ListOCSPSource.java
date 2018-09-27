@@ -26,12 +26,7 @@ import java.util.List;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 /**
- * TODO
- *
- *
- *
- *
- *
+ * This class allows to handle a list OCSP source.
  *
  */
 public class ListOCSPSource extends OfflineOCSPSource {
@@ -39,7 +34,6 @@ public class ListOCSPSource extends OfflineOCSPSource {
 	protected List<BasicOCSPResp> basicOCSPRespList = null;
 
 	public ListOCSPSource() {
-
 		basicOCSPRespList = new ArrayList<BasicOCSPResp>();
 	}
 
@@ -47,9 +41,9 @@ public class ListOCSPSource extends OfflineOCSPSource {
 	 * This constructor allows to initialize the list of {@code BasicOCSPResp} from an {@code OfflineOCSPSource}.
 	 *
 	 * @param ocspSource
+	 *            an offline ocsp source
 	 */
 	public ListOCSPSource(final OfflineOCSPSource ocspSource) {
-
 		basicOCSPRespList = new ArrayList<BasicOCSPResp>(ocspSource.getContainedOCSPResponses());
 	}
 
@@ -59,10 +53,12 @@ public class ListOCSPSource extends OfflineOCSPSource {
 	}
 
 	/**
-	 * This method allows to add all {@code BasicOCSPResp} from one {@code OfflineOCSPSource} to this one. If the {@code BasicOCSPResp} exists already within the current source
+	 * This method allows to add all {@code BasicOCSPResp} from one {@code OfflineOCSPSource} to this one. If the
+	 * {@code BasicOCSPResp} exists already within the current source
 	 * then it is ignored.
 	 *
-	 * @param offlineOCSPSource the source to be added
+	 * @param offlineOCSPSource
+	 *            the source to be added
 	 */
 	public void addAll(final OfflineOCSPSource offlineOCSPSource) {
 

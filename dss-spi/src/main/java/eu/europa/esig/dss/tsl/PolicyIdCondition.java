@@ -22,6 +22,7 @@ package eu.europa.esig.dss.tsl;
 
 import java.util.List;
 
+import eu.europa.esig.dss.CertificatePolicy;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -42,6 +43,7 @@ public class PolicyIdCondition extends Condition {
 	 * The default constructor for PolicyIdCondition.
 	 *
 	 * @param policyId
+	 *            the policy oid to check
 	 */
 	public PolicyIdCondition(final String policyId) {
 		if (policyId == null) {
@@ -50,19 +52,15 @@ public class PolicyIdCondition extends Condition {
 		this.policyOid = policyId;
 	}
 
-	/**
-	 * @return the policyOid
-	 */
-	public String getPolicyOid() {
-		return policyOid;
-	}
+    /**
+     *  Returns the policy OID.
+     * 
+     *  @return never {@code null}
+     */
+    public final String getPolicyOid() {
+        return policyOid;
+    }
 
-	/**
-	 * Checks the condition for the given certificate.
-	 *
-	 * @param certificateToken certificate to be checked
-	 * @return
-	 */
 	@Override
 	public boolean check(final CertificateToken certificateToken) {
 		if (certificateToken == null) {
@@ -72,25 +70,23 @@ public class PolicyIdCondition extends Condition {
 		 * Certificate policies identifier: 2.5.29.32 (IETF RFC 3280)<br>
 		 * Gets all certificate's policies
 		 */
-		List<String> contextPolicyIdentifiers = DSSASN1Utils.getPolicyIdentifiers(certificateToken);
-		return contextPolicyIdentifiers.contains(policyOid);
+		List<CertificatePolicy> contextPolicyIdentifiers = DSSASN1Utils.getCertificatePolicies(certificateToken);
+		for (CertificatePolicy certificatePolicy : contextPolicyIdentifiers) {
+			if (policyOid.equals(certificatePolicy.getOid())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
 	public String toString(String indent) {
-
-		try {
-
-			if (indent == null) {
-				indent = "";
-			}
-			StringBuilder builder = new StringBuilder();
-			builder.append(indent).append("PolicyIdCondition: ").append(policyOid).append('\n');
-			return builder.toString();
-		} catch (Exception e) {
-
-			return e.toString();
+		if (indent == null) {
+			indent = "";
 		}
+		StringBuilder builder = new StringBuilder();
+		builder.append(indent).append("PolicyIdCondition: ").append(policyOid).append('\n');
+		return builder.toString();
 	}
 
 	@Override

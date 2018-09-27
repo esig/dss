@@ -42,8 +42,8 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 
-	public CAdESLevelBaselineT(TSPSource signatureTsa, boolean onlyLastCMSSignature) {
-		super(signatureTsa, onlyLastCMSSignature);
+	public CAdESLevelBaselineT(TSPSource tspSource, boolean onlyLastCMSSignature) {
+		super(tspSource, onlyLastCMSSignature);
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 
 	private AttributeTable addSignatureTimestampAttribute(SignerInformation signerInformation, AttributeTable unsignedAttributes,
 			CAdESSignatureParameters parameters) {
-		ASN1Object signatureTimeStamp = getTimeStampAttributeValue(signatureTsa, signerInformation.getSignature(), parameters);
+		ASN1Object signatureTimeStamp = getTimeStampAttributeValue(signerInformation.getSignature(), parameters);
 		return unsignedAttributes.add(PKCSObjectIdentifiers.id_aa_signatureTimeStampToken, signatureTimeStamp);
 	}
 

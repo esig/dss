@@ -33,4 +33,10 @@ public final class FullSignatureScope extends SignatureScope {
     public String getDescription() {
         return "Full document";
     }
+
+	@Override
+	public SignatureScopeType getType() {
+		return SignatureScopeType.FULL;
+	}
+
 }

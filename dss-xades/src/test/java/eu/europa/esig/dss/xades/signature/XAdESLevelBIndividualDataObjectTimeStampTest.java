@@ -2,108 +2,88 @@ package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
+import javax.xml.crypto.dsig.Transform;
 
-import org.apache.xml.security.transforms.Transforms;
+import org.apache.xml.security.signature.Reference;
+import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Before;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
-import eu.europa.esig.dss.TimestampParameters;
-import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.test.mock.MockTSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.TimestampInclude;
 import eu.europa.esig.dss.validation.TimestampToken;
-import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.DSSTransform;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractTestDocumentSignatureService<XAdESSignatureParameters> {
+public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-	private MockPrivateKeyEntry privateKeyEntry;
 
 	@Before
 	public void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
-		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+		String referenceId = "TOTO";
+
+		// Canonicalization is optional
+		String canonicalizationAlgo = CanonicalizationMethod.EXCLUSIVE;
 
 		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
 		DSSTransform dssTransform = new DSSTransform();
-		dssTransform.setAlgorithm(Transforms.TRANSFORM_BASE64_DECODE);
+		dssTransform.setAlgorithm(Transform.BASE64);
 		transforms.add(dssTransform);
 
 		List<DSSReference> references = new ArrayList<DSSReference>();
 		DSSReference dssReference = new DSSReference();
 		dssReference.setContents(documentToSign);
-		dssReference.setId(documentToSign.getName());
+		dssReference.setId(referenceId);
 		dssReference.setUri("#" + documentToSign.getName());
 		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA1);
 		dssReference.setTransforms(transforms);
-		dssReference.setType("text/xml");
+		dssReference.setType(Reference.OBJECT_URI);
 		references.add(dssReference);
 
 		signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
-		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		signatureParameters.setSignedInfoCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
-		signatureParameters.setSignedPropertiesCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
+		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		signatureParameters.setReferences(references);
 
-		TimestampParameters contentTimestampParameters = new TimestampParameters();
-		contentTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
-		contentTimestampParameters.setCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
-		signatureParameters.setContentTimestampParameters(contentTimestampParameters);
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSXMLUtils.canonicalize(canonicalizationAlgo, DSSUtils.toByteArray(documentToSign)));
+		TimeStampToken timeStampResponse = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA1, digest);
+		TimestampToken timestampToken = new TimestampToken(timeStampResponse, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
+		timestampToken.setTimestampIncludes(Arrays.asList(new TimestampInclude(referenceId, true)));
+		timestampToken.setCanonicalizationMethod(canonicalizationAlgo);
+		signatureParameters.setContentTimestamps(Arrays.asList(timestampToken));
 
-		try {
-			MockTSPSource mockTsp = new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA256));
-			TimestampService timestampService = new TimestampService(mockTsp, new CertificatePool());
-			TimestampToken timestampToken = timestampService.generateXAdESContentTimestampAsTimestampToken(documentToSign, signatureParameters,
-					TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
-			List<TimestampToken> contentTimestamps = new ArrayList<TimestampToken>();
-			contentTimestamps.add(timestampToken);
-			signatureParameters.setContentTimestamps(contentTimestamps);
-		} catch (Exception e) {
-			throw new DSSException("Error during MockTspSource", e);
-		}
-
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		service = new XAdESService(certificateVerifier);
+		service = new XAdESService(getCompleteCertificateVerifier());
 	}
 
 	@Override
-	protected Reports getValidationReport(final DSSDocument signedDocument) {
+	protected SignedDocumentValidator getValidator(final DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 		detachedContents.add(documentToSign);
 		validator.setDetachedContents(detachedContents);
-		Reports reports = validator.validateDocument();
-		return reports;
+		return validator;
 	}
 
 	@Override
@@ -117,27 +97,13 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractTestDo
 	}
 
 	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.XML;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return false;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
-	}
-
-	@Override
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
 	}
 
 	@Override
-	protected MockPrivateKeyEntry getPrivateKeyEntry() {
-		return privateKeyEntry;
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
+
 }

@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.utils.Utils;
@@ -15,9 +15,9 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcessLongTermData> {
 
-	private final Set<TimestampWrapper> timestamps;
+	private final List<TimestampWrapper> timestamps;
 
-	public TimestampCoherenceOrderCheck(XmlValidationProcessLongTermData result, Set<TimestampWrapper> timestamps, LevelConstraint constraint) {
+	public TimestampCoherenceOrderCheck(XmlValidationProcessLongTermData result, List<TimestampWrapper> timestamps, LevelConstraint constraint) {
 		super(result, constraint);
 		this.timestamps = timestamps;
 	}
@@ -52,27 +52,27 @@ public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcess
 
 		// Check content-timestamp against-signature timestamp
 		if ((latestContent != null) && (earliestSignature != null)) {
-			ok = ok && latestContent.before(earliestSignature);
+			ok = ok && !latestContent.after(earliestSignature); // before or equals
 		}
 
 		// Check signature-timestamp against validation-data and validation-data-refs-only timestamp
 		if ((latestSignature != null) && (earliestValidationData != null)) {
-			ok = ok && latestSignature.before(earliestValidationData);
+			ok = ok && !latestSignature.after(earliestValidationData);
 		}
 
 		// Check archive-timestamp
 		if ((latestSignature != null) && (earliestArchive != null)) {
-			ok = ok && earliestArchive.after(latestSignature);
+			ok = ok && !earliestArchive.before(latestSignature); // after or equals
 		}
 
 		if ((latestValidationData != null) && (earliestArchive != null)) {
-			ok = ok && earliestArchive.after(latestValidationData);
+			ok = ok && !earliestArchive.before(latestValidationData);
 		}
 
 		return ok;
 	}
 
-	private Date getLatestTimestampProductionDate(Set<TimestampWrapper> timestamps, TimestampType... selectedTimestampTypes) {
+	private Date getLatestTimestampProductionDate(List<TimestampWrapper> timestamps, TimestampType... selectedTimestampTypes) {
 		Date latestProductionTime = null;
 		for (TimestampWrapper timestamp : timestamps) {
 			if (isInSelectedTypes(selectedTimestampTypes, timestamp.getType())) {
@@ -85,7 +85,7 @@ public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcess
 		return latestProductionTime;
 	}
 
-	private Date getEarliestTimestampProductionTime(Set<TimestampWrapper> timestamps, TimestampType... selectedTimestampTypes) {
+	private Date getEarliestTimestampProductionTime(List<TimestampWrapper> timestamps, TimestampType... selectedTimestampTypes) {
 		Date earliestProductionTime = null;
 		for (TimestampWrapper timestamp : timestamps) {
 			if (isInSelectedTypes(selectedTimestampTypes, timestamp.getType())) {

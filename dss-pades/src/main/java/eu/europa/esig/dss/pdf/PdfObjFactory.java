@@ -20,45 +20,58 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import java.util.Iterator;
+import java.util.ServiceLoader;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.pdf.pdfbox.PdfBoxObjectFactory;
 
 /**
  * The usage of this interface permit the user to choose the underlying PDF
  * library use to created PDF signatures.
  *
  */
-public abstract class PdfObjFactory {
+public class PdfObjFactory {
 
-	private static final Logger logger = LoggerFactory.getLogger(PdfObjFactory.class.getName());
-
-	private static PdfObjFactory INSTANCE;
-
-	public static PdfObjFactory getInstance() {
-		if (INSTANCE == null) {
-			String factoryClassName = System.getProperty("dss.pdf_obj_factory");
-			if (factoryClassName != null) {
-				logger.info("Using '" + factoryClassName + "' as the PDF Object Factory Implementation");
-				try {
-					@SuppressWarnings("unchecked")
-					Class<PdfObjFactory> factoryClass = (Class<PdfObjFactory>) Class.forName(factoryClassName);
-					INSTANCE = factoryClass.newInstance();
-				} catch (Exception ex) {
-					logger.error("dss.pdf_obj_factory is '" + factoryClassName + "' but factory cannot be instantiated (fallback will be used)");
-				}
-			}
-			if (INSTANCE == null) {
-				logger.info("Fallback to '" + PdfBoxObjectFactory.class.getName() + "' as the PDF Object Factory Implementation");
-				INSTANCE = new PdfBoxObjectFactory();
-			}
-		}
-		return INSTANCE;
+	private static final Logger LOG = LoggerFactory.getLogger(PdfObjFactory.class.getName());
+	
+	private PdfObjFactory() {
 	}
 
-	public abstract PDFSignatureService newPAdESSignatureService();
+	private static IPdfObjFactory impl;
 
-	public abstract PDFTimestampService newTimestampSignatureService();
+	static {
+		ServiceLoader<IPdfObjFactory> loader = ServiceLoader.load(IPdfObjFactory.class);
+		Iterator<IPdfObjFactory> iterator = loader.iterator();
+		if (!iterator.hasNext()) {
+			throw new ExceptionInInitializerError(
+					"No implementation found for IPdfObjFactory in classpath, please choose between dss-pades-pdfbox or dss-pades-openpdf");
+		}
+		impl = iterator.next();
+	}
+
+	/**
+	 * This method allows to set a custom IPdfObjFactory (or null to reset to the
+	 * default behavior)
+	 * 
+	 * @param instance
+	 *                 the new instance to be used
+	 */
+	public static void setInstance(IPdfObjFactory instance) {
+		if (instance != null) {
+			LOG.info("Using '{}' as the PDF Object Factory Implementation", instance.getClass());
+		} else {
+			LOG.info("Reseting the PDF Object Factory Implementation");
+		}
+		impl = instance;
+	}
+
+	public static PDFSignatureService newPAdESSignatureService() {
+		return impl.newPAdESSignatureService();
+	}
+
+	public static PDFTimestampService newTimestampSignatureService() {
+		return impl.newTimestampSignatureService();
+	}
 
 }

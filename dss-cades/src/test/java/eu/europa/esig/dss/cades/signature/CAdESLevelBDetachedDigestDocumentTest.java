@@ -20,114 +20,131 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
+import java.util.Arrays;
+
+import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.SignatureValue;
+import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
+import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-public class CAdESLevelBDetachedDigestDocumentTest extends AbstractTestDocumentSignatureService<CAdESSignatureParameters> {
+public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 
-	private DocumentSignatureService<CAdESSignatureParameters> service;
-	private CAdESSignatureParameters signatureParameters;
-	private DSSDocument documentToSign;
-	private MockPrivateKeyEntry privateKeyEntry;
+	private static final String DOCUMENT_NAME = "test.text";
+	private static final DigestAlgorithm USED_DIGEST = DigestAlgorithm.SHA256;
 
-	@Before
-	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
+	@Test
+	public void testWithCompleteDocument() {
+		CAdESService service = getService();
+		CAdESSignatureParameters params = getParams();
+		DSSDocument completeDocument = getCompleteDocument();
 
-		CertificateService certificateService = new CertificateService();
-		privateKeyEntry = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+		ToBeSigned toBeSigned = service.getDataToSign(completeDocument, params);
+		SignatureValue signatureValue = getToken().sign(toBeSigned, params.getDigestAlgorithm(), getPrivateKeyEntry());
+		DSSDocument signedDoc = service.signDocument(completeDocument, params, signatureValue);
 
-		signatureParameters = new CAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setSigningCertificate(privateKeyEntry.getCertificate());
-		signatureParameters.setCertificateChain(privateKeyEntry.getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		validate(signedDoc, completeDocument);
+		validate(signedDoc, getDigestDocument());
+		validateWrong(signedDoc);
 
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		service = new CAdESService(certificateVerifier);
+		DSSDocument extendDocument = service.extendDocument(signedDoc, getExtendParams());
+		validate(extendDocument, completeDocument);
 	}
 
-	@Override
-	protected Reports getValidationReport(final DSSDocument signedDocument) {
+	@Test
+	public void testWithDigestDocument() {
+		CAdESService service = getService();
+		CAdESSignatureParameters params = getParams();
+		DSSDocument digestDocument = getDigestDocument();
+
+		ToBeSigned toBeSigned = service.getDataToSign(digestDocument, params);
+		SignatureValue signatureValue = getToken().sign(toBeSigned, params.getDigestAlgorithm(), getPrivateKeyEntry());
+		DSSDocument signedDoc = service.signDocument(digestDocument, params, signatureValue);
+
+		validate(signedDoc, digestDocument);
+		validate(signedDoc, getCompleteDocument());
+		validateWrong(signedDoc);
+
+		DSSDocument extendDocument = service.extendDocument(signedDoc, getExtendParams());
+		validate(extendDocument, digestDocument);
+	}
+
+	private void validate(DSSDocument signedDocument, DSSDocument original) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setDetachedContents(Arrays.asList(original));
+		Reports reports = validator.validateDocument();
 
-		InMemoryDocument inMemoryDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text");
-		byte[] bytes;
-		try {
-			bytes = Utils.toByteArray(inMemoryDocument.openStream());
-		} catch (Exception e) {
-			throw new DSSException(e);
-		}
-
-		DigestDocument digestDocument = new DigestDocument();
-		digestDocument.addDigest(DigestAlgorithm.SHA256, Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, bytes)));
-
-		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
-		detachedContents.add(digestDocument);
-		validator.setDetachedContents(detachedContents);
-
-		return validator.validateDocument();
+		DiagnosticData diagData = reports.getDiagnosticData();
+		assertTrue(diagData.isBLevelTechnicallyValid(diagData.getFirstSignatureId()));
 	}
 
-	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters> getService() {
+	private void validateWrong(DSSDocument signedDocument) {
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setDetachedContents(Arrays.asList(getWrongDocument()));
+		Reports reports = validator.validateDocument();
+
+		DiagnosticData diagData = reports.getDiagnosticData();
+		assertFalse(diagData.isBLevelTechnicallyValid(diagData.getFirstSignatureId()));
+	}
+
+	private CAdESService getService() {
+		CAdESService service = new CAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
 		return service;
 	}
 
-	@Override
-	protected CAdESSignatureParameters getSignatureParameters() {
+	private CAdESSignatureParameters getParams() {
+		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
+		signatureParameters.setDigestAlgorithm(USED_DIGEST);
+		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		return signatureParameters;
 	}
 
-	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.PKCS7;
+	private CAdESSignatureParameters getExtendParams() {
+		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
+		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
+		signatureParameters.setDetachedContents(Arrays.asList(getDigestDocument()));
+		return signatureParameters;
+	}
+
+	private DSSDocument getCompleteDocument() {
+		return new InMemoryDocument("Hello World !".getBytes(), DOCUMENT_NAME);
+	}
+
+	private DSSDocument getDigestDocument() {
+		DigestDocument digestDocument = new DigestDocument();
+		// digestDocument.setName(DOCUMENT_NAME);
+		digestDocument.addDigest(USED_DIGEST, Utils.toBase64(DSSUtils.digest(USED_DIGEST, getCompleteDocument())));
+		return digestDocument;
+	}
+
+	private DSSDocument getWrongDocument() {
+		return new InMemoryDocument("Bye World !".getBytes(), DOCUMENT_NAME);
 	}
 
 	@Override
-	protected boolean isBaselineT() {
-		return false;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
-	}
-
-	@Override
-	protected DSSDocument getDocumentToSign() {
-		return documentToSign;
-	}
-
-	@Override
-	protected MockPrivateKeyEntry getPrivateKeyEntry() {
-		return privateKeyEntry;
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 }

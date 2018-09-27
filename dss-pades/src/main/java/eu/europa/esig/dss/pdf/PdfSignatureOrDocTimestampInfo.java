@@ -38,6 +38,8 @@ public interface PdfSignatureOrDocTimestampInfo {
 
 	String getReason();
 
+	String getFilter();
+
 	String getSubFilter();
 
 	Date getSigningDate();
@@ -48,13 +50,6 @@ public interface PdfSignatureOrDocTimestampInfo {
 	 * @return the byte of what is signed (without signature, but with the placeholder)
 	 */
 	byte[] getSignedDocumentBytes();
-
-	/**
-	 * This method return a few extra bytes (the header of the signature) but it's correctly ignored by PDF Box
-	 *
-	 * @return the byte of the originally signed document (without this signature)
-	 */
-	byte[] getOriginalBytes();
 
 	PdfDssDict getDssDictionary();
 
@@ -68,4 +63,7 @@ public interface PdfSignatureOrDocTimestampInfo {
 	Set<PdfSignatureOrDocTimestampInfo> getOuterSignatures();
 
 	boolean isTimestamp();
+
+	boolean isCoverAllOriginalBytes();
+
 }

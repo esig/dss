@@ -7,6 +7,10 @@ public abstract class AbstractSignDocumentDTO {
 
 	private RemoteSignatureParameters parameters;
 	private SignatureValue signatureValue;
+	
+	public AbstractSignDocumentDTO() {
+		super();
+	}
 
 	public AbstractSignDocumentDTO(RemoteSignatureParameters parameters, SignatureValue signatureValue) {
 		super();

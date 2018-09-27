@@ -50,6 +50,7 @@ public interface SoapDocumentSignatureService extends Serializable {
 	 *            a DTO which contains the document to sign and parameters
 	 * @return the data to be signed
 	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	@WebResult(name = "response")
 	ToBeSigned getDataToSign(@WebParam(name = "dataToSignDTO") DataToSignOneDocumentDTO dataToSign) throws DSSException;
@@ -62,6 +63,7 @@ public interface SoapDocumentSignatureService extends Serializable {
 	 *            a DTO which contains the document to be signed, the parameters and the signature value
 	 * @return the signed document
 	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	@WebResult(name = "response")
 	RemoteDocument signDocument(@WebParam(name = "signDocumentDTO") SignOneDocumentDTO signDocument) throws DSSException;
@@ -74,6 +76,7 @@ public interface SoapDocumentSignatureService extends Serializable {
 	 *            a DTO which contains the document to be extented and the parameters
 	 * @return the document with an extended signature
 	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	@WebResult(name = "response")
 	RemoteDocument extendDocument(@WebParam(name = "extendDocumentDTO") ExtendDocumentDTO extendDocument) throws DSSException;

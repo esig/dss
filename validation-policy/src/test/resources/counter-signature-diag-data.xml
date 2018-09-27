@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>TEST_S1a_C1a_InTL_VALID.xml</DocumentName>
+    <ValidationDate>2017-09-25T05:59:01</ValidationDate>
+    <Signatures>
+        <Signature Id="XSIG1">
+            <SignatureFilename>TEST_S1a_C1a_InTL_VALID.xml</SignatureFilename>
+            <DateTime>2017-09-21T16:04:25</DateTime>
+            <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
+            <StructuralValidation>
+                <Valid>true</Valid>
+            </StructuralValidation>
+	        <DigestMatchers>
+                <DigestMatcher type="REFERENCE" name="ref1">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>cfwwLPkuUbNIaaaaaL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
+                <AttributePresent>true</AttributePresent>
+                <DigestValuePresent>true</DigestValuePresent>
+                <DigestValueMatch>true</DigestValueMatch>
+                <IssuerSerialMatch>true</IssuerSerialMatch>
+            </SigningCertificate>
+            <CertificateChain>
+                <ChainItem Id="A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
+                    <Source>UNKNOWN</Source>
+                </ChainItem>
+            </CertificateChain>
+            <ContentType>text/xml</ContentType>
+            <CommitmentTypeIndication/>
+            <ClaimedRoles/>
+            <Timestamps/>
+            <SignatureScopes>
+                <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering; Exclusive Canonical XML (omits comments).</SignatureScope>
+            </SignatureScopes>
+        </Signature>
+        <Signature Id="XSIG2" CounterSignature="true">
+            <SignatureFilename>TEST_S1a_C1a_InTL_VALID.xml</SignatureFilename>
+            <ParentId>XSIG1</ParentId>
+            <DateTime>2017-09-21T16:04:55</DateTime>
+            <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
+            <StructuralValidation>
+                <Valid>true</Valid>
+            </StructuralValidation>
+	        <DigestMatchers>
+                <DigestMatcher type="REFERENCE" name="ref1">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>cfwwLPkuUbNIaaaaaL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>false</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>false</SignatureIntact>
+                <SignatureValid>false</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
+                <AttributePresent>true</AttributePresent>
+                <DigestValuePresent>true</DigestValuePresent>
+                <DigestValueMatch>true</DigestValueMatch>
+                <IssuerSerialMatch>true</IssuerSerialMatch>
+            </SigningCertificate>
+            <CertificateChain>
+                <ChainItem Id="A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
+                    <Source>UNKNOWN</Source>
+                </ChainItem>
+            </CertificateChain>
+            <ContentType>text/xml</ContentType>
+            <CommitmentTypeIndication/>
+            <ClaimedRoles/>
+            <Timestamps/>
+            <SignatureScopes/>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.46=#13095a5a41413030303630,cn=D D de F,2.5.4.5=#131349543a44464c444e4437365431354c31303956,2.5.4.42=#0c0d44414d49414e4f20444945474f,2.5.4.4=#0c0944452046454c494345,ou=esercito italiano,o=ministero della difesa/97355240587,c=it</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.46=#13095a5a41413030303630,CN=D D DE F,2.5.4.5=#131349543a44464c444e4437365431354c31303956,2.5.4.42=#0c0d44414d49414e4f20444945474f,2.5.4.4=#0c0944452046454c494345,OU=Esercito Italiano,O=Ministero della Difesa/97355240587,C=IT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ministero della difesa - ca di firma digitale,2.5.4.5=#130b3937333535323430353837,ou=s.m.d. - c.do c4 difesa,o=ministero della difesa,c=it</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Ministero della Difesa - CA di Firma Digitale,2.5.4.5=#130b3937333535323430353837,OU=S.M.D. - C.do C4 Difesa,O=Ministero della Difesa,C=IT</IssuerDistinguishedName>
+            <SerialNumber>6366313205909069094</SerialNumber>
+            <CommonName>D D DE F</CommonName>
+            <CountryName>IT</CountryName>
+            <OrganizationName>Ministero della Difesa/97355240587</OrganizationName>
+            <GivenName>D D</GivenName>
+            <OrganizationalUnit>Esercito Italiano</OrganizationalUnit>
+            <Surname>DE F</Surname>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <Url>http://www.pki.difesa.it/cafirmadigitale.crl</Url>
+                <Url>ldap://ldappkiff.difesa.it:389/CN=Ministero%20della%20Difesa%20-%20CA%20di%20Firma%20Digitale,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</Url>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <Url>http://ocsppkiff.difesa.it/</Url>
+            </OCSPAccessUrls>
+            <DigestAlgoAndValues/>
+            <NotAfter>2023-12-15T22:59:00</NotAfter>
+            <NotBefore>2014-10-02T10:40:21</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>false</SignatureIntact>
+                <SignatureValid>false</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.6.1.4.1.14031.2.1.1.6</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds>
+                <oid>1.3.6.1.5.5.7.11.1</oid>
+                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
+                <oid>0.4.0.1862.1.3</oid>
+                <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
+            </QCStatementIds>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+        </Certificate>
+    </UsedCertificates>
+    <TrustedLists/>
+</DiagnosticData>

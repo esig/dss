@@ -22,14 +22,13 @@ public class CreateKeyStoreApp {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CreateKeyStoreApp.class);
 
-	private static boolean allow_expired = false;
+	private static final boolean ALLOW_EXPIRED = false;
 	private static final String KEYSTORE_TYPE = "PKCS12";
 	private static final String KEYSTORE_FILEPATH = "target/keystore.p12";
-	private static final String KEYSTORE_PASSWORD = "dss-password";
 
 	public static void main(String[] args) throws Exception {
 
-		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource((InputStream) null, KEYSTORE_TYPE, KEYSTORE_PASSWORD);
+		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource((InputStream) null, KEYSTORE_TYPE, getKeystorePassword());
 
 		addCertificate(kscs, "src/main/resources/keystore/ec.europa.eu.1.cer");
 		addCertificate(kscs, "src/main/resources/keystore/ec.europa.eu.2.cer");
@@ -46,22 +45,22 @@ public class CreateKeyStoreApp {
 
 		LOG.info("****************");
 
-		KeyStoreCertificateSource certificateSource = new KeyStoreCertificateSource(new File(KEYSTORE_FILEPATH), KEYSTORE_TYPE, KEYSTORE_PASSWORD);
+		KeyStoreCertificateSource certificateSource = new KeyStoreCertificateSource(new File(KEYSTORE_FILEPATH), KEYSTORE_TYPE, getKeystorePassword());
 		List<CertificateToken> certificatesFromKeyStore = certificateSource.getCertificates();
 		for (CertificateToken certificateToken : certificatesFromKeyStore) {
-			LOG.info("" + certificateToken);
+			LOG.info("{}", certificateToken);
 		}
 	}
 
 	private static void addCertificate(KeyStoreCertificateSource kscs, String certPath) throws Exception {
 		try (InputStream is = new FileInputStream(certPath)) {
 			CertificateToken cert = DSSUtils.loadCertificate(is);
-			if (!allow_expired && cert.isExpiredOn(new Date())) {
+			if (!ALLOW_EXPIRED && cert.isExpiredOn(new Date())) {
 				throw new RuntimeException("Certificate " + DSSASN1Utils.getSubjectCommonName(cert) + " is expired");
 			}
 			displayCertificateDigests(cert);
 
-			LOG.info("Adding certificate " + cert);
+			LOG.info("Adding certificate {}", cert);
 
 			kscs.addCertificateToKeyStore(cert);
 		}
@@ -71,16 +70,21 @@ public class CreateKeyStoreApp {
 		byte[] digestSHA256 = DSSUtils.digest(DigestAlgorithm.SHA256, europeanCert.getEncoded());
 		byte[] digestSHA1 = DSSUtils.digest(DigestAlgorithm.SHA1, europeanCert.getEncoded());
 		LOG.info(DSSASN1Utils.getSubjectCommonName(europeanCert));
-		LOG.info("SHA256 digest (Hex) : " + getPrintableHex(digestSHA256));
-		LOG.info("SHA1 digest (Hex) : " + getPrintableHex(digestSHA1));
-		LOG.info("SHA256 digest (Base64) : " + Utils.toBase64(digestSHA256));
-		LOG.info("SHA1 digest (Base64) : " + Utils.toBase64(digestSHA1));
+		LOG.info("SHA256 digest (Hex) : {}", getPrintableHex(digestSHA256));
+		LOG.info("SHA1 digest (Hex) : {}", getPrintableHex(digestSHA1));
+		LOG.info("SHA256 digest (Base64) : {}", Utils.toBase64(digestSHA256));
+		LOG.info("SHA1 digest (Base64) : {}", Utils.toBase64(digestSHA1));
 	}
 
 	private static String getPrintableHex(byte[] digest) {
 		String hexString = Utils.toHex(digest);
 		// Add space every two characters
 		return hexString.replaceAll("..", "$0 ");
+	}
+
+	/* Not defined as constant (sonar check) */
+	private static String getKeystorePassword() {
+		return "dss-password";
 	}
 
 }

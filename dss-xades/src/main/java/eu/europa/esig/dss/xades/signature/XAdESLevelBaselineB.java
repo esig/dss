@@ -37,12 +37,12 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 public class XAdESLevelBaselineB implements SignatureProfile {
 
 	static {
-
 		Init.init();
 	}
 
 	/**
-	 * the reference to the {@code CertificateVerifier} which provides information on the sources to be used in the validation process in the context of a signature.
+	 * The reference to the {@code CertificateVerifier} which provides information on the sources to be used in the
+	 * validation process in the context of a signature.
 	 */
 	private CertificateVerifier certificateVerifier;
 
@@ -50,18 +50,22 @@ public class XAdESLevelBaselineB implements SignatureProfile {
 	 * The default constructor for XAdESLevelBaselineB.
 	 *
 	 * @param certificateVerifier
+	 *            the certificate verifier
 	 */
 	public XAdESLevelBaselineB(final CertificateVerifier certificateVerifier) {
-
 		this.certificateVerifier = certificateVerifier;
 	}
 
 	/**
-	 * Returns the canonicalized <ds:SignedInfo> XML segment under the form of InputStream
+	 * Returns the canonicalized ds:SignedInfo XML segment under the form of InputStream
 	 *
-	 * @param dssDocument The original dssDocument to sign.
-	 * @param parameters  set of the driving signing parameters
-	 * @return bytes
+	 * @param dssDocument
+	 *            The original dssDocument to sign.
+	 * @param parameters
+	 *            set of the driving signing parameters
+	 * @return bytes the digest to signed
+	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	public byte[] getDataToSign(final DSSDocument dssDocument, final XAdESSignatureParameters parameters) throws DSSException {
 		final XAdESSignatureBuilder signatureBuilder = XAdESSignatureBuilder.getSignatureBuilder(parameters, dssDocument, certificateVerifier);
@@ -73,11 +77,15 @@ public class XAdESLevelBaselineB implements SignatureProfile {
 	/**
 	 * Adds the signature value to the signature.
 	 *
-	 * @param document       the original document to sign.
-	 * @param parameters     set of the driving signing parameters
-	 * @param signatureValue array of bytes representing the signature value.
-	 * @return
+	 * @param document
+	 *            the original document to sign.
+	 * @param parameters
+	 *            set of the driving signing parameters
+	 * @param signatureValue
+	 *            array of bytes representing the signature value.
+	 * @return the document with the signature
 	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	@Override
 	public DSSDocument signDocument(final DSSDocument document, final XAdESSignatureParameters parameters, final byte[] signatureValue) throws DSSException {

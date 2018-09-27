@@ -246,7 +246,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * contains the constraint file. If null or empty the default file is used.
 	 *
 	 * @param policyDataStream
-	 *            {@code InputStream}
+	 *            the {@code InputStream} with the validation policy
+	 * @return the validation reports
 	 */
 	@Override
 	public Reports validateDocument(final InputStream policyDataStream) {
@@ -259,9 +260,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * {@code validationPolicyDom} contains the constraint file. If null or
 	 * empty the default file is used.
 	 *
-	 * @param validationPolicyDom
-	 *            {@code Document}
-	 * @return
+	 * @param validationPolicyJaxb
+	 *            the {@code ConstraintsParameters} to use in the validation process
+	 * @return the validation reports
 	 */
 	@Override
 	public Reports validateDocument(final ConstraintsParameters validationPolicyJaxb) {
@@ -275,8 +276,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * empty the default file is used.
 	 *
 	 * @param validationPolicy
-	 *            {@code ValidationPolicy}
-	 * @return
+	 *            the {@code ValidationPolicy} to use in the validation process
+	 * @return the validation reports
 	 */
 	@Override
 	public Reports validateDocument(final ValidationPolicy validationPolicy) {
@@ -292,12 +293,13 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		List<AdvancedSignature> allSignatureList = processSignaturesValidation(validationContext, structuralValidation);
 
-		DiagnosticDataBuilder builder = new DiagnosticDataBuilder();
-		builder.document(document).containerInfo(getContainerInfo()).foundSignatures(allSignatureList)
-				.usedCertificates(validationContext.getProcessedCertificates()).trustedListsCertificateSource(certificateVerifier.getTrustedCertSource())
-				.validationDate(validationContext.getCurrentTime());
+		final DiagnosticData diagnosticData = new DiagnosticDataBuilder().document(document).containerInfo(getContainerInfo()).foundSignatures(allSignatureList)
+				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
+				.certificateSourceTypes(validationContext.getCertificateSourceTypes())
+				.trustedCertificateSource(certificateVerifier.getTrustedCertSource())
+				.validationDate(validationContext.getCurrentTime()).build();
 
-		return processValidationPolicy(builder.build(), validationPolicy);
+		return processValidationPolicy(diagnosticData, validationPolicy);
 	}
 
 	@Override
@@ -336,14 +338,14 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * This method allows to retrieve the container information (ASiC Container)
 	 * 
-	 * @return
+	 * @return the container information
 	 */
 	protected ContainerInfo getContainerInfo() {
 		return null;
 	}
 
 	protected Reports processValidationPolicy(DiagnosticData diagnosticData, ValidationPolicy validationPolicy) {
-		final ProcessExecutor executor = provideProcessExecutorInstance();
+		final ProcessExecutor<Reports> executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
 		executor.setValidationLevel(validationLevel);
 		executor.setDiagnosticData(diagnosticData);
@@ -374,7 +376,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *
 	 * @return {@code ProcessExecutor}
 	 */
-	public ProcessExecutor provideProcessExecutorInstance() {
+	public ProcessExecutor<Reports> provideProcessExecutorInstance() {
 		if (processExecutor == null) {
 			processExecutor = new CustomProcessExecutor();
 		}
@@ -439,7 +441,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	private void prepareCertificatesAndTimestamps(final List<AdvancedSignature> allSignatureList, final ValidationContext validationContext) {
 		for (final AdvancedSignature signature : allSignatureList) {
-			final List<CertificateToken> candidates = signature.getCertificateSource().getCertificates();
+			final List<CertificateToken> candidates = signature.getCertificates();
 			for (final CertificateToken certificateToken : candidates) {
 				validationContext.addCertificateTokenForVerification(certificateToken);
 			}

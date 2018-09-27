@@ -22,6 +22,7 @@ package eu.europa.esig.dss.signature;
 
 import eu.europa.esig.dss.AbstractSerializableSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 /**
@@ -38,5 +39,16 @@ public interface DocumentSignatureService<SP extends AbstractSerializableSignatu
 	 *            The time stamp source which is used when timestamping the signature.
 	 */
 	void setTspSource(final TSPSource tspSource);
+
+	/**
+	 * This method allows to compute a content-timestamp (which is added in the signed properties)
+	 * 
+	 * @param toSignDocument
+	 *            document to sign or the already existing signature
+	 * @param parameters
+	 *            set of the driving signing parameters
+	 * @return
+	 */
+	TimestampToken getContentTimestamp(final DSSDocument toSignDocument, final SP parameters);
 
 }

@@ -1,15 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" 
-	targetNamespace="http://dss.esig.europa.eu/validation/detailed-report" 
-	xmlns="http://dss.esig.europa.eu/validation/detailed-report"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://dss.esig.europa.eu/validation/detailed-report" 
+	xmlns="http://dss.esig.europa.eu/validation/detailed-report" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
 	<xs:element name="DetailedReport">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element type="Signature" name="Signatures" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element type="Certificate" name="Certificate" minOccurs="0" maxOccurs="1" />
 				<xs:element type="BasicBuildingBlocks" name="BasicBuildingBlocks" minOccurs="0" maxOccurs="unbounded" />
-				<xs:element type="QMatrixBlock" name="QMatrixBlock" minOccurs="0" />
+				<xs:element name="TLAnalysis" type="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -20,9 +19,20 @@
 			<xs:element type="ValidationProcessTimestamps" name="ValidationProcessTimestamps" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element type="ValidationProcessLongTermData" name="ValidationProcessLongTermData" minOccurs="0" />
 			<xs:element type="ValidationProcessArchivalData" name="ValidationProcessArchivalData" minOccurs="0" />
+			<xs:element type="ValidationSignatureQualification" name="ValidationSignatureQualification" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
-		<xs:attribute name="Type" type="xs:string" use="optional" />
+		<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
+	</xs:complexType>
+	
+	<xs:complexType name="Certificate">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+					<xs:element name="ValidationCertificateQualification" type="ValidationCertificateQualification" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="BasicBuildingBlocks">
@@ -40,14 +50,7 @@
 			<xs:element type="Conclusion" name="Conclusion" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
-		<xs:attribute name="Type" type="xs:string" use="required" />
-	</xs:complexType>
-	
-	<xs:complexType name="QMatrixBlock">
-		<xs:sequence>
-			<xs:element type="TLAnalysis" name="TLAnalysis" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element type="SignatureAnalysis" name="SignatureAnalysis" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
+		<xs:attribute name="Type" type="Context" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="TLAnalysis">
@@ -58,11 +61,25 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:complexType name="SignatureAnalysis">
+	<xs:complexType name="ValidationSignatureQualification">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+					<xs:element name="ValidationCertificateQualification" type="ValidationCertificateQualification" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+				<xs:attribute name="Id" type="xs:string" use="required" />
+				<xs:attribute name="SignatureQualification" type="SignatureQualification" use="optional" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="ValidationCertificateQualification">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
 				<xs:attribute name="Id" type="xs:string" use="required" />
-				<xs:attribute name="SignatureQualification" type="SignatureQualification" use="optional" />
+        		<xs:attribute name="DateTime" type="xs:dateTime" />
+        		<xs:attribute name="ValidationTime" type="ValidationTime" />
+				<xs:attribute name="CertificateQualification" type="CertificateQualification" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -74,9 +91,21 @@
 		</xs:sequence>
 	</xs:complexType>
 	
+	<xs:complexType name="ConstraintsConclusionWithControlTime">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+	       			<xs:element name="ControlTime" type="xs:dateTime" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
 	<xs:complexType name="ValidationProcessBasicSignatures">	
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion" />
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="BestSignatureTime" type="xs:dateTime" use="required" />
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 
@@ -85,19 +114,24 @@
 			<xs:extension base="ConstraintsConclusion">
 				<xs:attribute name="Id" type="xs:string" use="required" />
 				<xs:attribute name="Type" type="xs:string" use="required" />
+				<xs:attribute name="ProductionTime" type="xs:dateTime" use="required" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="ValidationProcessLongTermData">	
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion" />
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="BestSignatureTime" type="xs:dateTime" use="required" />
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="ValidationProcessArchivalData">	
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion" />
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="BestSignatureTime" type="xs:dateTime" use="required" />
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 
@@ -122,7 +156,9 @@
 	</xs:complexType>
 	<xs:complexType name="RFC">
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion" />
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="Id" type="xs:string" use="required" />
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="CV">
@@ -157,32 +193,25 @@
 	</xs:complexType>
 	<xs:complexType name="VTS">
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion">
-				<xs:sequence>
-        			<xs:element name="ControlTime" type="xs:dateTime" />
-				</xs:sequence>
-			</xs:extension>
+			<xs:extension base="ConstraintsConclusionWithControlTime" />
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="PCV">
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion">
-				<xs:sequence>
-        			<xs:element name="ControlTime" type="xs:dateTime" minOccurs="0" />
-				</xs:sequence>
-			</xs:extension>
+			<xs:extension base="ConstraintsConclusionWithControlTime" />
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="PSV">
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion" />
+			<xs:extension base="ConstraintsConclusionWithControlTime" />
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="ERV">
-		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion" />
-		</xs:complexContent>
-	</xs:complexType>
+<!-- 	Not supported -->
+<!-- 	<xs:complexType name="ERV"> -->
+<!-- 		<xs:complexContent> -->
+<!-- 			<xs:extension base="ConstraintsConclusion" /> -->
+<!-- 		</xs:complexContent> -->
+<!-- 	</xs:complexType> -->
 	
 	<xs:complexType name="Constraint">
 		<xs:sequence>
@@ -231,7 +260,7 @@
 			<xs:enumeration value="FAILED" />
 		</xs:restriction>
 	</xs:simpleType>
-
+	
 	<xs:simpleType name="SubIndication" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="NO_SIGNING_CERTIFICATE_FOUND" />
@@ -257,6 +286,25 @@
 			<xs:enumeration value="NO_POE" />
 			<xs:enumeration value="CERTIFICATE_CHAIN_GENERAL_FAILURE" />
 			<xs:enumeration value="UNEXPECTED_ERROR" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="CertificateQualification" final="restriction">
+		<xs:restriction base="xs:string">
+		
+			<xs:enumeration value="QC Cert for ESig with QSCD" />
+			<xs:enumeration value="QC Cert for ESeal with QSCD" />
+			<!-- non sense <xs:enumeration value="QC Cert for WSA with QSCD" /> -->
+			
+			<xs:enumeration value="QC Cert for ESig" />
+			<xs:enumeration value="QC Cert for ESeal" />
+			<xs:enumeration value="QC Cert for WSA" />
+			
+			<xs:enumeration value="Cert for ESig" />
+			<xs:enumeration value="Cert for ESeal" />
+			<xs:enumeration value="Cert for WSA" />
+			
+			<xs:enumeration value="N/A" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -288,6 +336,25 @@
 			<xs:enumeration value="Not AdES" />
 			
 			<xs:enumeration value="N/A" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="Context" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SIGNATURE" />
+			<xs:enumeration value="COUNTER_SIGNATURE" />
+			<xs:enumeration value="TIMESTAMP" />
+			<xs:enumeration value="REVOCATION" />
+			<!-- For Qualification -->
+			<xs:enumeration value="CERTIFICATE" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="ValidationTime" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CERTIFICATE_ISSUANCE_TIME" />
+			<xs:enumeration value="BEST_SIGNATURE_TIME" />
+			<xs:enumeration value="VALIDATION_TIME" />
 		</xs:restriction>
 	</xs:simpleType>
 	

@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.SignerInformation;
 
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.validation.CAdESCertificateSource;
@@ -34,37 +34,34 @@ import eu.europa.esig.dss.x509.CertificateToken;
 /**
  * CertificateSource that will retrieve the certificate from a PAdES Signature
  *
- *
  */
-
 public class PAdESCertificateSource extends CAdESCertificateSource {
 
 	/**
 	 * The default constructor for PAdESCertificateSource.
 	 *
 	 * @param dssCatalog
-	 * @param cadesCertSource
-	 * @param certPool        The pool of certificates to be used. Can be null.
+	 * @param cmsSignedData
+	 * @param certPool
+	 *            The pool of certificates to be used. Can be null.
 	 */
-	public PAdESCertificateSource(final PdfDssDict dssCatalog, final CMSSignedData cmsSignedData, final SignerInformation signerInfo, final CertificatePool certPool) {
+	public PAdESCertificateSource(final PdfDssDict dssCatalog, final CMSSignedData cmsSignedData, final CertificatePool certPool) {
+		super(cmsSignedData, certPool);
 
-		super(cmsSignedData, signerInfo, certPool);
+		extractFromDSSDict(dssCatalog);
+	}
 
+	private void extractFromDSSDict(PdfDssDict dssCatalog) {
+		List<CertificateToken> certificationFromDSSDict = new ArrayList<CertificateToken>();
 		if (dssCatalog != null) {
 			final Set<CertificateToken> certList = dssCatalog.getCertList();
 			for (final CertificateToken certToken : certList) {
-				addCertificate(certToken);
+				CertificateToken addedCertificate = addCertificate(certToken);
+				if (!certificationFromDSSDict.contains(addedCertificate)) {
+					certificationFromDSSDict.add(addedCertificate);
+				}
 			}
 		}
 	}
 
-	@Override
-	public List<CertificateToken> getEncapsulatedCertificates() {
-		return super.getEncapsulatedCertificates();
-	}
-
-	@Override
-	public List<CertificateToken> getKeyInfoCertificates() {
-		return super.getKeyInfoCertificates();
-	}
 }

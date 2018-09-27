@@ -3,12 +3,8 @@ package eu.europa.esig.dss.validation.process.bbb;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificateChain;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
@@ -43,8 +39,6 @@ import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
  */
 public class BasicBuildingBlocks {
 
-	private static final Logger logger = LoggerFactory.getLogger(BasicBuildingBlocks.class);
-
 	private final DiagnosticData diagnosticData;
 	private final TokenProxy token;
 	private final ValidationPolicy policy;
@@ -62,7 +56,7 @@ public class BasicBuildingBlocks {
 	public XmlBasicBuildingBlocks execute() {
 		XmlBasicBuildingBlocks result = new XmlBasicBuildingBlocks();
 		result.setId(token.getId());
-		result.setType(context.name());
+		result.setType(context);
 		result.setConclusion(new XmlConclusion());
 
 		/**
@@ -126,7 +120,7 @@ public class BasicBuildingBlocks {
 
 		return result;
 	}
-	
+
 	private void updateFinalConclusion(XmlBasicBuildingBlocks result, XmlConstraintsConclusion constraintsAndConclusion) {
 		XmlConclusion finalConclusion = result.getConclusion();
 
@@ -163,8 +157,12 @@ public class BasicBuildingBlocks {
 	}
 
 	private XmlISC executeIdentificationOfTheSigningCertificate() {
-		IdentificationOfTheSigningCertificate isc = new IdentificationOfTheSigningCertificate(diagnosticData, token, context, policy);
-		return isc.execute();
+		if (!Context.CERTIFICATE.equals(context)) {
+			IdentificationOfTheSigningCertificate isc = new IdentificationOfTheSigningCertificate(diagnosticData, token, context, policy);
+			return isc.execute();
+		} else {
+			return null;
+		}
 	}
 
 	private XmlVCI executeValidationContextInitialization() {
@@ -176,27 +174,36 @@ public class BasicBuildingBlocks {
 	}
 
 	private XmlCV executeCryptographicVerification() {
-		CryptographicVerification cv = new CryptographicVerification(diagnosticData, token, context, policy);
-		return cv.execute();
+		if (!Context.CERTIFICATE.equals(context)) {
+			CryptographicVerification cv = new CryptographicVerification(diagnosticData, token, context, policy);
+			return cv.execute();
+		} else {
+			return null;
+		}
 	}
 
 	private XmlXCV executeX509CertificateValidation() {
-		CertificateWrapper certificate = diagnosticData.getUsedCertificateById(token.getSigningCertificateId());
-		if (certificate != null) {
-			if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
-				X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime, certificate.getNotBefore(), context,
-						policy);
-				return xcv.execute();
-			} else if (Context.TIMESTAMP.equals(context)) {
-				X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
-						((TimestampWrapper) token).getProductionTime(), context, policy);
-				return xcv.execute();
-			} else if (Context.REVOCATION.equals(context)) {
-				X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
-						((RevocationWrapper) token).getProductionDate(), context, policy);
-				return xcv.execute();
-			} else {
-				logger.info("Unsupported context " + context);
+		if (Context.CERTIFICATE.equals(context)) {
+			CertificateWrapper certificate = (CertificateWrapper) token;
+			X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime, certificate.getNotBefore(), context,
+					policy);
+			return xcv.execute();
+		} else {
+			CertificateWrapper certificate = diagnosticData.getUsedCertificateById(token.getSigningCertificateId());
+			if (certificate != null) {
+				if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
+					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime, certificate.getNotBefore(), context,
+							policy);
+					return xcv.execute();
+				} else if (Context.TIMESTAMP.equals(context)) {
+					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
+							((TimestampWrapper) token).getProductionTime(), context, policy);
+					return xcv.execute();
+				} else if (Context.REVOCATION.equals(context)) {
+					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
+							((RevocationWrapper) token).getProductionDate(), context, policy);
+					return xcv.execute();
+				}
 			}
 		}
 		return null;
@@ -210,8 +217,6 @@ public class BasicBuildingBlocks {
 			aav = new TimestampAcceptanceValidation(diagnosticData, currentTime, (TimestampWrapper) token, policy);
 		} else if (Context.REVOCATION.equals(context)) {
 			aav = new RevocationAcceptanceValidation(diagnosticData, currentTime, (RevocationWrapper) token, policy);
-		} else {
-			logger.info("Unsupported context " + context);
 		}
 		return aav != null ? aav.execute() : null;
 	}

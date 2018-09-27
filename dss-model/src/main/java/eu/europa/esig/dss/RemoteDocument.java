@@ -30,28 +30,51 @@ import java.util.Arrays;
 public class RemoteDocument implements Serializable {
 
 	private byte[] bytes;
+	/* Allows to send only the digest of the document */
+	private DigestAlgorithm digestAlgorithm;
 	private String name = "RemoteDocument";
-	private String absolutePath = "RemoteDocument";
 	private MimeType mimeType;
 
 	public RemoteDocument() {
 	}
 
+	/**
+	 * This constructor allows to create a new instance of RemoteDocument with the whole document
+	 * 
+	 * @param bytes
+	 *            the full document binaries
+	 * @param mimeType
+	 *            the mimetype
+	 * @param name
+	 *            the document name
+	 */
 	public RemoteDocument(byte[] bytes, MimeType mimeType, String name) {
 		this.bytes = bytes;
 		this.mimeType = mimeType;
 		this.name = name;
 	}
 
-	public RemoteDocument(byte[] bytes, MimeType mimeType, String name, String absolutePath) {
+	/**
+	 * This constructor allows to create an instance of RemoteDocument with a digest document
+	 * 
+	 * @param bytes
+	 *            the result of the digest
+	 * @param digestAlgorithm
+	 *            the used digest algorithm
+	 * @param mimeType
+	 *            the mimetype
+	 * @param name
+	 *            the document name
+	 */
+	public RemoteDocument(byte[] bytes, DigestAlgorithm digestAlgorithm, MimeType mimeType, String name) {
 		this.bytes = bytes;
+		this.digestAlgorithm = digestAlgorithm;
 		this.mimeType = mimeType;
 		this.name = name;
-		this.absolutePath = absolutePath;
 	}
 
 	/**
-	 * Returns the array of bytes representing the document. Do not use this method with large files.
+	 * Returns the array of bytes representing the document or its digest value.
 	 *
 	 * @return array of {@code byte}
 	 */
@@ -63,20 +86,25 @@ public class RemoteDocument implements Serializable {
 		this.bytes = bytes;
 	}
 
+	/**
+	 * Returns the current used digest algorithm
+	 * 
+	 * @return
+	 */
+	public DigestAlgorithm getDigestAlgorithm() {
+		return digestAlgorithm;
+	}
+
+	public void setDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+		this.digestAlgorithm = digestAlgorithm;
+	}
+
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getAbsolutePath() {
-		return absolutePath;
-	}
-
-	public void setAbsolutePath(String absolutePath) {
-		this.absolutePath = absolutePath;
 	}
 
 	public MimeType getMimeType() {
@@ -91,55 +119,42 @@ public class RemoteDocument implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + ((absolutePath == null) ? 0 : absolutePath.hashCode());
-		result = (prime * result) + Arrays.hashCode(bytes);
-		result = (prime * result) + ((mimeType == null) ? 0 : mimeType.hashCode());
-		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + Arrays.hashCode(bytes);
+		result = prime * result + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
+		result = prime * result + ((mimeType == null) ? 0 : mimeType.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		if (obj == null) {
+		if (obj == null)
 			return false;
-		}
-		if (getClass() != obj.getClass()) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
 		RemoteDocument other = (RemoteDocument) obj;
-		if (absolutePath == null) {
-			if (other.absolutePath != null) {
-				return false;
-			}
-		} else if (!absolutePath.equals(other.absolutePath)) {
+		if (!Arrays.equals(bytes, other.bytes))
 			return false;
-		}
-		if (!Arrays.equals(bytes, other.bytes)) {
+		if (digestAlgorithm != other.digestAlgorithm)
 			return false;
-		}
 		if (mimeType == null) {
-			if (other.mimeType != null) {
+			if (other.mimeType != null)
 				return false;
-			}
-		} else if (!mimeType.equals(other.mimeType)) {
+		} else if (!mimeType.equals(other.mimeType))
 			return false;
-		}
 		if (name == null) {
-			if (other.name != null) {
+			if (other.name != null)
 				return false;
-			}
-		} else if (!name.equals(other.name)) {
+		} else if (!name.equals(other.name))
 			return false;
-		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "RemoteDocument [bytes=" + Arrays.toString(bytes) + ", name=" + name + ", absolutePath=" + absolutePath + ", mimeType=" + mimeType + "]";
+		return "RemoteDocument [bytes=" + Arrays.toString(bytes) + ", digestAlgorithm=" + digestAlgorithm + ", name=" + name + ", mimeType=" + mimeType + "]";
 	}
 
 }

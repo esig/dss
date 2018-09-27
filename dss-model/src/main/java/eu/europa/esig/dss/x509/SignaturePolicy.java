@@ -71,18 +71,26 @@ public class SignaturePolicy {
 	 * The default constructor for SignaturePolicy.
 	 *
 	 * @param identifier
+	 *            the policy identifier
 	 */
 	public SignaturePolicy(final String identifier) {
 		this.identifier = identifier;
 	}
 
 	/**
-	 * @return the identifier
+	 * Returns the signature policy identifier
+	 * 
+	 * @return the signature policy identifier
 	 */
 	public String getIdentifier() {
 		return identifier;
 	}
 
+	/**
+	 * Returns the used digest algorithm to digest the signature policy
+	 * 
+	 * @return the used digest algorithm (or null)
+	 */
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgorithm;
 	}
@@ -91,6 +99,11 @@ public class SignaturePolicy {
 		this.digestAlgorithm = digestAlgorithm;
 	}
 
+	/**
+	 * Returns the signature policy's digest value
+	 * 
+	 * @return the digest value of the signature policy (or null)
+	 */
 	public String getDigestValue() {
 		return digestValue;
 	}
@@ -99,6 +112,11 @@ public class SignaturePolicy {
 		this.digestValue = digestValue;
 	}
 
+	/**
+	 * Returns the signature policy url (if found)
+	 * 
+	 * @return the url of the signature policy (or null if not available information)
+	 */
 	public String getUrl() {
 		return url;
 	}
@@ -115,6 +133,11 @@ public class SignaturePolicy {
 		this.notice = notice;
 	}
 
+	/**
+	 * Returns a DSSDocument with the signature policy content
+	 * 
+	 * @return a DSSDocument which contains the signature policy
+	 */
 	public DSSDocument getPolicyContent() {
 		return policyContent;
 	}

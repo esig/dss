@@ -24,13 +24,13 @@ import java.math.BigInteger;
 
 /**
  * Interface which allows to produce Nonce value.
- * 
  */
 public interface NonceSource {
 
 	/**
-	 * This methods allows to retrieve an unique new value to be use as nonce
+	 * This methods allows to retrieve an unique new value to be use as nonce.
 	 * 
+	 * @return the unique value to use
 	 */
 	BigInteger getNonce();
 

@@ -1,9 +1,11 @@
 package eu.europa.esig.dss;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -12,9 +14,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.security.cert.X509CRL;
+import java.nio.charset.StandardCharsets;
+import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
+import java.util.Date;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -38,8 +42,25 @@ public class DSSUtilsTest {
 	}
 
 	@Test
+	public void digest() {
+		byte[] data = "Hello world!".getBytes(StandardCharsets.UTF_8);
+		assertEquals("d3486ae9136e7856bc42212385ea797094475802", Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA1, data)));
+		assertEquals("7e81ebe9e604a0c97fef0e4cfe71f9ba0ecba13332bde953ad1c66e4", Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA224, data)));
+		assertEquals("c0535e4be2b79ffd93291305436bf889314e4a3faec05ecffcbb7df31ad9e51a", Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA256, data)));
+		assertEquals("f6cde2a0f819314cdde55fc227d8d7dae3d28cc556222a0a8ad66d91ccad4aad6094f517a2182360c9aacf6a3dc323162cb6fd8cdffedb0fe038f55e85ffb5b6",
+				Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA512, data)));
+
+		assertEquals("d3ee9b1ba1990fecfd794d2f30e0207aaa7be5d37d463073096d86f8", Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA3_224, data)));
+		assertEquals("d6ea8f9a1f22e1298e5a9506bd066f23cc56001f5d36582344a628649df53ae8", Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA3_256, data)));
+		assertEquals("f9210511d0b2862bdcb672daa3f6a4284576ccb24d5b293b366b39c24c41a6918464035ec4466b12e22056bf559c7a49",
+				Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA3_384, data)));
+		assertEquals("95decc72f0a50ae4d9d5378e1b2252587cfc71977e43292c8f1b84648248509f1bc18bc6f0b0d0b8606a643eff61d611ae84e6fbd4a2683165706bd6fd48b334",
+				Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA3_512, data)));
+	}
+
+	@Test
 	public void testLoadIssuer() {
-		Collection<CertificateToken> issuers = DSSUtils.loadIssuerCertificates(certificateWithAIA, new NativeHTTPDataLoader());
+		Collection<CertificateToken> issuers = DSSUtils.loadPotentialIssuerCertificates(certificateWithAIA, new NativeHTTPDataLoader());
 		assertNotNull(issuers);
 		assertFalse(issuers.isEmpty());
 		boolean foundIssuer = false;
@@ -56,8 +77,8 @@ public class DSSUtilsTest {
 		try {
 			DSSUtils.loadCertificate(new FileInputStream("src/test/resources/certchain.p7c"));
 			fail("Should not load single certificate (first?)");
-		} catch(DSSException dssEx){
-			assertEquals(dssEx.getMessage(), "Could not parse certificate");
+		} catch (DSSException dssEx) {
+			assertEquals("Could not parse certificate", dssEx.getMessage());
 		}
 	}
 
@@ -76,13 +97,14 @@ public class DSSUtilsTest {
 
 	@Test
 	public void testLoadIssuerEmptyDataLoader() {
-		assertNull(DSSUtils.loadIssuerCertificates(certificateWithAIA, null));
+		assertTrue(DSSUtils.loadPotentialIssuerCertificates(certificateWithAIA, null).isEmpty());
 	}
 
 	@Test
 	public void testLoadIssuerNoAIA() {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));
-		assertNull(DSSUtils.loadIssuerCertificates(certificate, new NativeHTTPDataLoader()));
+		assertTrue(DSSUtils.loadPotentialIssuerCertificates(certificate, new NativeHTTPDataLoader()).isEmpty());
+		assertTrue(certificate.isCA());
 	}
 
 	@Test
@@ -124,44 +146,17 @@ public class DSSUtilsTest {
 	@Test
 	public void convertToPEM() {
 		String convertToPEM = DSSUtils.convertToPEM(certificateWithAIA);
-		assertTrue(convertToPEM.contains(DSSUtils.CERT_BEGIN));
-		assertTrue(convertToPEM.contains(DSSUtils.CERT_END));
 
-		assertTrue(DSSUtils.isPEM(new ByteArrayInputStream(convertToPEM.getBytes())));
+		assertFalse(DSSUtils.isStartWithASN1SequenceTag(new ByteArrayInputStream(convertToPEM.getBytes())));
 
 		CertificateToken certificate = DSSUtils.loadCertificate(convertToPEM.getBytes());
 		assertEquals(certificate, certificateWithAIA);
 
 		byte[] certDER = DSSUtils.convertToDER(convertToPEM);
-		assertFalse(DSSUtils.isPEM(new ByteArrayInputStream(certDER)));
+		assertTrue(DSSUtils.isStartWithASN1SequenceTag(new ByteArrayInputStream(certDER)));
 
 		CertificateToken certificate2 = DSSUtils.loadCertificate(certDER);
 		assertEquals(certificate2, certificateWithAIA);
-	}
-
-	@Test
-	public void loadCrl() throws Exception {
-		X509CRL crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/belgium2.crl"));
-		assertNotNull(crl);
-		assertFalse(DSSUtils.isPEM(new FileInputStream("src/test/resources/crl/belgium2.crl")));
-
-		String convertCRLToPEM = DSSUtils.convertCrlToPEM(crl);
-		assertTrue(DSSUtils.isPEM(new ByteArrayInputStream(convertCRLToPEM.getBytes())));
-		assertTrue(DSSUtils.isPEM(convertCRLToPEM.getBytes()));
-
-		X509CRL crl2 = DSSUtils.loadCRL(convertCRLToPEM.getBytes());
-		assertEquals(crl, crl2);
-
-		byte[] convertCRLToDER = DSSUtils.convertCRLToDER(convertCRLToPEM);
-		X509CRL crl3 = DSSUtils.loadCRL(convertCRLToDER);
-		assertEquals(crl, crl3);
-	}
-
-	@Test
-	public void loadPEMCrl() throws Exception {
-		X509CRL crl = DSSUtils.loadCRL(new FileInputStream("src/test/resources/crl/LTRCA.crl"));
-		assertNotNull(crl);
-		assertTrue(DSSUtils.isPEM(new FileInputStream("src/test/resources/crl/LTRCA.crl")));
 	}
 
 	@Test
@@ -191,6 +186,7 @@ public class DSSUtilsTest {
 		logger.info(rootCA2.toString());
 		logger.info(rootCA2.getCertificate().toString());
 		// assertFalse(rootCA2.isSelfSigned());
+		assertTrue(rootCA2.isCA());
 
 		X509Certificate certificate = rootCA2.getCertificate();
 		certificate.verify(certificate.getPublicKey());
@@ -214,6 +210,7 @@ public class DSSUtilsTest {
 		assertTrue(selfSign.isSelfSigned());
 		assertFalse(signed.isSelfSigned());
 
+		assertFalse(tsa.isCA());
 		assertTrue(tsa.isSignedBy(signed));
 		assertTrue(tsa.isSignedBy(selfSign));
 	}
@@ -222,4 +219,45 @@ public class DSSUtilsTest {
 	public void getMD5Digest() throws UnsupportedEncodingException {
 		assertEquals("3e25960a79dbc69b674cd4ec67a72c62", DSSUtils.getMD5Digest("Hello world".getBytes("UTF-8")));
 	}
+
+	@Test
+	public void getDeterministicId() throws InterruptedException {
+		Date d1 = new Date();
+		String deterministicId = DSSUtils.getDeterministicId(d1, certificateWithAIA.getDSSId());
+		assertNotNull(deterministicId);
+		String deterministicId2 = DSSUtils.getDeterministicId(d1, certificateWithAIA.getDSSId());
+		assertEquals(deterministicId, deterministicId2);
+		assertNotNull(DSSUtils.getDeterministicId(null, certificateWithAIA.getDSSId()));
+
+		Thread.sleep(1);
+		String deterministicId3 = DSSUtils.getDeterministicId(new Date(), certificateWithAIA.getDSSId());
+
+		assertThat(deterministicId2, not(equalTo(deterministicId3)));
+	}
+
+	@Test
+	public void isSelfSigned() {
+		CertificateToken selfSign = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrca2-self-sign.crt"));
+		assertTrue(selfSign.isSelfSigned());
+		assertTrue(selfSign.isSelfIssued());
+
+		CertificateToken cert = DSSUtils.loadCertificateFromBase64EncodedString(
+				"MIIB+jCCAWOgAwIBAgIGE3w6Wr8TMA0GCSqGSIb3DQEBBQUAMDYxITAfBgNVBAMMGFJvb3RJc3N1ZXJTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTUwMjE3MTYxMTM4WhcNMTUwMjI4MTYxMTM4WjA3MSIwIAYDVQQDDBlSb290U3ViamVjdFNlbGZTaWduZWRGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAqwNS7KYkSvJw8oDzUknI20lcuUWyaY3EBk83a8u3puluyw7C8PLjwScIwd6+sHm20OWgpS+h7RNOatP+6VEDxS2IbDtwKzGlii3SV1HbHWf+rqRnQFnhq7/5FIAEg7/+lK6Lhox/+n+zTq2hMEARU9rc1CHdbywh9JPwO6zkxbECAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgeAMA0GCSqGSIb3DQEBBQUAA4GBAASVNBDdoCRo/X6FiJMolH4+acjIbCcIMF5tlsIVf0TauTEsVQE4j+OlLSiY+SRnHlNRvSR7v+8V62QsFVne6Nx+OKs1blwTeOIYFP7g0RBHja8Vtl+Jx4LCC7JI7V3IWFYidCrZp8m70HBY8E4CTeQMgzUrH/ej5V0siL2NdUeh");
+		PublicKey publicKey = cert.getPublicKey();
+		boolean signedWithItsPublicKey = false;
+		try {
+			cert.getCertificate().verify(publicKey);
+			signedWithItsPublicKey = true;
+		} catch (Exception e) {
+		}
+		assertTrue(signedWithItsPublicKey);
+		assertFalse(cert.isSelfIssued());
+		assertFalse(cert.isSelfSigned());
+	}
+
+	@Test
+	public void printSecurityProviders() {
+		DSSUtils.printSecurityProviders();
+	}
+
 }

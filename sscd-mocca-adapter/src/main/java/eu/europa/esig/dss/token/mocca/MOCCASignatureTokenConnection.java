@@ -45,6 +45,7 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
@@ -182,7 +183,7 @@ public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
 		final EncryptionAlgorithm encryptionAlgo = moccaKey.getEncryptionAlgorithm();
 		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgo, digestAlgorithm);
 
-		LOG.info("MOCCA>>>Signature algorithm: " + signatureAlgorithm.getJCEId());
+		LOG.info("MOCCA>>>Signature algorithm: {}", signatureAlgorithm.getJCEId());
 		try {
 
 			final KeyboxName keyboxName = moccaKey.getKeyboxName();
@@ -200,7 +201,12 @@ public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
+	}
 
+	@Override
+	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry)
+			throws DSSException {
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -235,4 +241,5 @@ public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
 	public int getRetries() {
 		return callback.getRetries();
 	}
+
 }

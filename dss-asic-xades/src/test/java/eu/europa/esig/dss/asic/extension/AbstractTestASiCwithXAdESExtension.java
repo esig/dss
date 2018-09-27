@@ -20,46 +20,55 @@
  */
 package eu.europa.esig.dss.asic.extension;
 
+import static org.junit.Assert.assertTrue;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.extension.AbstractTestExtension;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.gen.CertificateService;
-import eu.europa.esig.dss.test.mock.MockPrivateKeyEntry;
-import eu.europa.esig.dss.test.mock.MockTSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public abstract class AbstractTestASiCwithXAdESExtension extends AbstractTestExtension<ASiCWithXAdESSignatureParameters> {
 
 	@Override
-	protected DSSDocument getSignedDocument() throws Exception {
-		CertificateService certificateService = new CertificateService();
-		MockPrivateKeyEntry entryUserA = certificateService.generateCertificateChain(SignatureAlgorithm.RSA_SHA256);
+	protected TSPSource getUsedTSPSourceAtSignatureTime() {
+		return getGoodTsa();
+	}
 
+	@Override
+	protected TSPSource getUsedTSPSourceAtExtensionTime() {
+		return getAlternateGoodTsa();
+	}
+
+	@Override
+	protected DSSDocument getSignedDocument() throws Exception {
 		DSSDocument document = new InMemoryDocument("Hello world!".getBytes(), "test.bin");
 
 		// Sign
 		ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();
-		signatureParameters.setSigningCertificate(entryUserA.getCertificate());
-		signatureParameters.setCertificateChain(entryUserA.getCertificateChain());
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
 		signatureParameters.aSiC().setContainerType(getContainerType());
 
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		ASiCWithXAdESService service = new ASiCWithXAdESService(certificateVerifier);
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
+		ASiCWithXAdESService service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getUsedTSPSourceAtSignatureTime());
 
 		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
-		SignatureValue signatureValue = sign(signatureParameters.getSignatureAlgorithm(), entryUserA, dataToSign);
-		final DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
-		return signedDocument;
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
+		return service.signDocument(document, signatureParameters, signatureValue);
 	}
 
 	@Override
@@ -74,10 +83,44 @@ public abstract class AbstractTestASiCwithXAdESExtension extends AbstractTestExt
 
 	@Override
 	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters> getSignatureServiceToExtend() throws Exception {
-		ASiCWithXAdESService service = new ASiCWithXAdESService(new CommonCertificateVerifier());
-		CertificateService certificateService = new CertificateService();
-		service.setTspSource(new MockTSPSource(certificateService.generateTspCertificate(SignatureAlgorithm.RSA_SHA1)));
+		ASiCWithXAdESService service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;
+	}
+
+	@Override
+	protected void compare(DSSDocument signedDocument, DSSDocument extendedDocument) {
+		// We check that all original files are present in the extended archive.
+		// (signature are not renamed,...)
+
+		List<String> filenames = getFilesNames(signedDocument);
+		List<String> extendedFilenames = getFilesNames(extendedDocument);
+
+		for (String name : extendedFilenames) {
+			assertTrue(filenames.contains(name));
+		}
+
+		for (String name : filenames) {
+			assertTrue(extendedFilenames.contains(name));
+		}
+	}
+
+	private List<String> getFilesNames(DSSDocument doc) {
+		List<String> filenames = new ArrayList<String>();
+		try (InputStream is = doc.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
+			ZipEntry entry;
+			while ((entry = zis.getNextEntry()) != null) {
+				filenames.add(entry.getName());
+			}
+		} catch (Exception e) {
+			throw new DSSException(e);
+		}
+		return filenames;
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 }

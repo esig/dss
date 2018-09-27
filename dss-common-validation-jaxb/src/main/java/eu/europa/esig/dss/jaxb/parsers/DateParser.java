@@ -7,13 +7,16 @@ import java.util.TimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DateParser {
+public final class DateParser {
 
-	private static final Logger logger = LoggerFactory.getLogger(DateParser.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DateParser.class);
 
 	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
 	private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
+
+	private DateParser() {
+	}
 
 	public static Date parse(String v) {
 		try {
@@ -22,7 +25,7 @@ public class DateParser {
 			sdf.setLenient(false);
 			return sdf.parse(v);
 		} catch (Exception e) {
-			logger.warn("Unable to parse '" + v + "'");
+			LOG.warn("Unable to parse '{}'", v);
 		}
 		return null;
 	}

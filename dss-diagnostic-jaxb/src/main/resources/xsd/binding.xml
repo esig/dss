@@ -6,6 +6,7 @@
 	version="2.1" jaxb:extensionBindingPrefixes="xjc">
 	
   <jaxb:globalBindings localScoping="toplevel">
+	<xjc:serializable uid="1" />
   	<jaxb:javaType name="java.util.Date" xmlType="xs:dateTime"
           parseMethod="eu.europa.esig.dss.jaxb.parsers.DateParser.parse"
           printMethod="eu.europa.esig.dss.jaxb.parsers.DateParser.print" />
@@ -18,6 +19,25 @@
         <jaxb:anonymousTypeName prefix="Xml"/>
       </jaxb:nameXmlTransform>
     </jaxb:schemaBindings>
+    
+    <jaxb:bindings node="//xs:simpleType[@name='TimestampedObjectType']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.TimestampedObjectType" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.TimestampedObjectTypeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.TimestampedObjectTypeParser.print" />
+		</jaxb:bindings>
+  
+  <jaxb:bindings node="//xs:simpleType[@name='DigestMatcherType']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.DigestMatcherType" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.DigestMatcherTypeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.DigestMatcherTypeParser.print" />
+		</jaxb:bindings>
+		
+		
+  <jaxb:bindings node="//xs:simpleType[@name='ScopeType']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.SignatureScopeType" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.SignatureScopeTypeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.SignatureScopeTypeParser.print" />
+		</jaxb:bindings>
   </jaxb:bindings>
   
 </jaxb:bindings>

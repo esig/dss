@@ -2,11 +2,13 @@ package eu.europa.esig.dss.utils.impl;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections4.CollectionUtils;
@@ -140,6 +142,15 @@ public class ApacheCommonsUtils implements IUtils {
 	}
 
 	@Override
+	public byte[] fromHex(String hex) {
+		try {
+			return Hex.decodeHex(hex.toCharArray());
+		} catch (DecoderException e) {
+			throw new IllegalArgumentException("Unable to extract binary from Hex", e);
+		}
+	}
+
+	@Override
 	public String toBase64(byte[] bytes) {
 		return Base64.encodeBase64String(bytes);
 	}
@@ -171,7 +182,12 @@ public class ApacheCommonsUtils implements IUtils {
 
 	@Override
 	public void cleanDirectory(File directory) throws IOException {
-		FileUtils.cleanDirectory(directory);
+		try {
+			FileUtils.cleanDirectory(directory);
+		} catch (IllegalArgumentException e) {
+			// Apache throws IllegalArgumentException
+			throw new FileNotFoundException(e.getMessage());
+		}
 	}
 
 	@Override

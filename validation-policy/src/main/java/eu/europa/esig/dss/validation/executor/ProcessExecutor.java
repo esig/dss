@@ -24,18 +24,19 @@ import java.util.Date;
 
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.AbstractReports;
 
 /**
  * This interface allows to define how the validation process should be carried out.
  */
-public interface ProcessExecutor {
+public interface ProcessExecutor<R extends AbstractReports> {
 
 	/**
 	 * This method allows to set the {@code Date} that is used
 	 * during the validation process execution.
 	 *
-	 * @param diagnosticData
+	 * @param currentDate
+	 *            the current time
 	 */
 	void setCurrentTime(Date currentDate);
 
@@ -45,6 +46,7 @@ public interface ProcessExecutor {
 	 * during the validation process execution.
 	 *
 	 * @param diagnosticData
+	 *            the JAXB diagnostic data
 	 */
 	void setDiagnosticData(DiagnosticData diagnosticData);
 
@@ -71,9 +73,9 @@ public interface ProcessExecutor {
 	/**
 	 * This method allows to run the validation process.
 	 *
-	 * @return {@code Reports}
+	 * @return the {@code Reports}
 	 */
-	Reports execute();
+	R execute();
 
 	Date getCurrentTime();
 

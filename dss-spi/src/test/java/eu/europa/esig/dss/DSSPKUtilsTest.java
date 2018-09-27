@@ -13,15 +13,13 @@ public class DSSPKUtilsTest {
 	@Test
 	public void getPublicKeyEncryptionAlgo() {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/BA-QC-Wurzel-CA-2_PN.txt"));
-		String publicKeyEncryptionAlgo = DSSPKUtils.getPublicKeyEncryptionAlgo(certificate.getPublicKey());
-		assertEquals("RSA", publicKeyEncryptionAlgo);
+		assertEquals(EncryptionAlgorithm.RSA, EncryptionAlgorithm.forKey(certificate.getPublicKey()));
 	}
 
 	@Test
 	public void getPublicKeyEncryptionAlgoECDSA() {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ecdsa.cer"));
-		String publicKeyEncryptionAlgo = DSSPKUtils.getPublicKeyEncryptionAlgo(certificate.getPublicKey());
-		assertEquals("ECDSA", publicKeyEncryptionAlgo);
+		assertEquals(EncryptionAlgorithm.ECDSA, EncryptionAlgorithm.forKey(certificate.getPublicKey()));
 	}
 
 	@Test

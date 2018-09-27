@@ -1,25 +1,26 @@
 package eu.europa.esig.dss.validation.process.bbb.cv.checks;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCV;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class ReferenceDataExistenceCheck extends ChainItem<XmlCV> {
 
-	private final TokenProxy token;
+	private final XmlDigestMatcher digestMatcher;
 
-	public ReferenceDataExistenceCheck(XmlCV result, TokenProxy token, LevelConstraint constraint) {
+	public ReferenceDataExistenceCheck(XmlCV result, XmlDigestMatcher digestMatcher, LevelConstraint constraint) {
 		super(result, constraint);
-		this.token = token;
+		this.digestMatcher = digestMatcher;
 	}
 
 	@Override
 	protected boolean process() {
-		return token.isReferenceDataFound();
+		return digestMatcher.isDataFound();
 	}
 
 	@Override
@@ -40,6 +41,15 @@ public class ReferenceDataExistenceCheck extends ChainItem<XmlCV> {
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return SubIndication.SIGNED_DATA_NOT_FOUND;
+	}
+
+	@Override
+	protected String getAdditionalInfo() {
+		if (Utils.isStringNotBlank(digestMatcher.getName())) {
+			return "Reference : " + digestMatcher.getName();
+		} else {
+			return digestMatcher.getType().name();
+		}
 	}
 
 }

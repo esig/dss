@@ -30,7 +30,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -40,7 +42,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
  */
 class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 
-	private static final Logger logger = LoggerFactory.getLogger(DetachedSignatureBuilder.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DetachedSignatureBuilder.class);
 
 	/**
 	 * The default constructor for DetachedSignatureBuilder.<br>
@@ -78,15 +80,19 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
 		final DSSReference reference = new DSSReference();
 		reference.setId("r-id-" + referenceIndex);
-		final String fileURI = document.getName() != null ? document.getName() : "";
-		try {
-			reference.setUri(URLEncoder.encode(fileURI, "UTF-8"));
-		} catch (Exception e) {
-			logger.warn("Unable to encode uri '" + fileURI + "' : " + e.getMessage());
-			reference.setUri(fileURI);
+		if (Utils.isStringNotEmpty(document.getName())) {
+			final String fileURI = document.getName();
+			try {
+				// MUST comply RFC 3896 (see DSS-1475 for details)
+				reference.setUri(URLEncoder.encode(fileURI, "UTF-8").replace("+", "%20"));
+			} catch (Exception e) {
+				LOG.warn("Unable to encode uri '" + fileURI + "' : " + e.getMessage());
+				reference.setUri(fileURI);
+			}
 		}
 		reference.setContents(document);
-		reference.setDigestMethodAlgorithm(params.getDigestAlgorithm());
+		DigestAlgorithm digestAlgorithm = params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
+		reference.setDigestMethodAlgorithm(digestAlgorithm);
 		return reference;
 	}
 

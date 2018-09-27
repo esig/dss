@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pdf;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * The usage of this interface permit the user to choose the underlying PDF
@@ -32,19 +33,14 @@ public interface PdfDict {
 
 	PdfArray getAsArray(String name);
 
-	boolean hasAName(String name);
-
-	/**
-	 * Check if the dictionary contains a name with a specific (PDF Name) value
-	 *
-	 * @param name
-	 * @param value
-	 * @return
-	 */
-	boolean hasANameWithValue(String name, String value);
-
 	byte[] get(String name) throws IOException;
 
 	String[] list();
+
+	String getStringValue(String name);
+
+	String getNameValue(String name);
+
+	Date getDateValue(String name);
 
 }

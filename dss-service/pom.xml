@@ -6,7 +6,7 @@
     <parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.1-SNAPSHOT</version>
+		<version>5.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>dss-service</artifactId>
@@ -22,22 +22,35 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <exclusions>
-            	<exclusion>
-            		<artifactId>commons-logging</artifactId>
-            		<groupId>commons-logging</groupId>
-            	</exclusion>
-            </exclusions>
+<!--		Exclusion with maven-surefire-plugin -->
+<!--		<exclusions> -->
+<!--        	<exclusion> -->
+<!--				<artifactId>commons-logging</artifactId> -->
+<!--				<groupId>commons-logging</groupId> -->
+<!--			</exclusion> -->
+<!--		</exclusions> -->
         </dependency>
+		
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId> <!-- replaces commons-logging -->
+			<scope>test</scope>
+		</dependency>
+ 		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-utils-google-guava</artifactId>
+			<scope>test</scope>
 		</dependency>
 		
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-test</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 </project>

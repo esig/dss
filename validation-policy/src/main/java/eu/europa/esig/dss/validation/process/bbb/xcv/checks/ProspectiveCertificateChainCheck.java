@@ -7,32 +7,24 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class ProspectiveCertificateChainCheck extends ChainItem<XmlXCV> {
 
 	private final CertificateWrapper certificate;
-	private final DiagnosticData diagnosticData;
 
 	private final Context context;
 
-	public ProspectiveCertificateChainCheck(XmlXCV result, CertificateWrapper certificate, DiagnosticData diagnosticData, Context context,
+	public ProspectiveCertificateChainCheck(XmlXCV result, CertificateWrapper certificate, Context context,
 			LevelConstraint constraint) {
 		super(result, constraint);
 		this.certificate = certificate;
-		this.diagnosticData = diagnosticData;
 		this.context = context;
 	}
 
 	@Override
 	protected boolean process() {
-		if (certificate.isTrusted()) {
-			return true;
-		}
-		String lastChainCertId = certificate.getLastChainCertificateId();
-		final CertificateWrapper lastChainCertificate = diagnosticData.getUsedCertificateByIdNullSafe(lastChainCertId);
-		return lastChainCertificate.isTrusted();
+		return certificate.isTrusted() || certificate.isTrustedChain();
 	}
 
 	@Override

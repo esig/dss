@@ -1,0 +1,50 @@
+[source,xml]
+----
+<xades:SignedProperties Id="xades-id-ea3e16770317bb1a3e97244292931644">
+	<xades:SignedSignatureProperties>
+		<xades:SigningTime>2018-03-20T08:17:35Z</xades:SigningTime>
+		<xades:SigningCertificateV2>
+			<xades:Cert>
+				<xades:CertDigest>
+					<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+					<ds:DigestValue>2FeANjXziO9x2877SfclRlRVjlE=</ds:DigestValue>
+				</xades:CertDigest>
+				<xades:IssuerSerialV2>MD4wNKQyMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QCBi7WFNe7Vw==</xades:IssuerSerialV2>
+			</xades:Cert>
+		</xades:SigningCertificateV2>
+		<xades:SignatureProductionPlaceV2>
+			<xades:City>SimCity</xades:City>
+			<xades:StateOrProvince>Luxembourg</xades:StateOrProvince>
+			<xades:PostalCode>1234</xades:PostalCode>
+			<xades:CountryName>BE</xades:CountryName>
+		</xades:SignatureProductionPlaceV2>
+		<xades:SignerRoleV2>
+			<xades:ClaimedRoles>
+				<xades:ClaimedRole>Manager</xades:ClaimedRole>
+			</xades:ClaimedRoles>
+		</xades:SignerRoleV2>
+	</xades:SignedSignatureProperties>
+	<xades:SignedDataObjectProperties>
+		<xades:DataObjectFormat ObjectReference="#r-id-1">
+			<xades:MimeType>text/xml</xades:MimeType>
+		</xades:DataObjectFormat>
+		<xades:CommitmentTypeIndication>
+			<xades:CommitmentTypeId>
+				<xades:Identifier>http://uri.etsi.org/01903/v1.2.2#ProofOfOrigin</xades:Identifier>
+			</xades:CommitmentTypeId>
+			<xades:AllSignedDataObjects />
+		</xades:CommitmentTypeIndication>
+		<xades:CommitmentTypeIndication>
+			<xades:CommitmentTypeId>
+				<xades:Identifier>http://uri.etsi.org/01903/v1.2.2#ProofOfApproval</xades:Identifier>
+			</xades:CommitmentTypeId>
+			<xades:AllSignedDataObjects />
+		</xades:CommitmentTypeIndication>
+		<xades:AllDataObjectsTimeStamp Id="TS-678B5861DBA1469B3AA3DD49DD54D7046BADA578C5561F8ABDA935CE0825279E">
+			<ds:CanonicalizationMethod
+				Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+			<xades:EncapsulatedTimeStamp>MIAGCSqGSIb3DQEHAq...aAAAAAA=</xades:EncapsulatedTimeStamp>
+		</xades:AllDataObjectsTimeStamp>
+	</xades:SignedDataObjectProperties>
+</xades:SignedProperties>
+----

@@ -25,13 +25,12 @@ import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.cookbook.example.Cookbook;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.MSCAPISignatureToken;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -41,54 +40,56 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 /**
  * How to sign using MS-CAPI.
  */
-public class SignXmlXadesBWithMSCAPI extends Cookbook {
+public class SignXmlXadesBWithMSCAPI {
 
 	public static void main(String[] args) throws DSSException, IOException {
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
-		prepareXmlDoc();
+		DSSDocument toSignDocument = new FileDocument("src/main/resources/xml_example.xml");
 
 		// Creation of MS-CAPI signature token
-		signingToken = new MSCAPISignatureToken();
-		List<DSSPrivateKeyEntry> list = signingToken.getKeys();
-		// Chose the right private key entry from store. The index will depend of the number of the certificates on your
-		// card.
-		System.out.println(list.size());
-		privateKey = list.get(0);
+		try (MSCAPISignatureToken signingToken = new MSCAPISignatureToken()) {
 
-		// Preparing parameters for the PAdES signature
-		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
-		// We choose the level of the signature (-B, -T, -LT, -LTA).
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		// We choose the type of the signature packaging (ENVELOPING, DETACHED).
-		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-		// We set the digest algorithm to use with the signature algorithm. You must use the
-		// same parameter when you invoke the method sign on the token.
-		parameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
+			List<DSSPrivateKeyEntry> list = signingToken.getKeys();
+			// Chose the right private key entry from store.
+			// The index will depend of the number of the certificates on your card.
+			System.out.println(list.size());
+			DSSPrivateKeyEntry privateKey = list.get(0);
 
-		// We set the signing certificate
-		parameters.setSigningCertificate(privateKey.getCertificate());
-		// We set the certificate chain
-		parameters.setCertificateChain(privateKey.getCertificateChain());
+			// Preparing parameters for the PAdES signature
+			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
+			// We choose the level of the signature (-B, -T, -LT, -LTA).
+			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+			// We choose the type of the signature packaging (ENVELOPING, DETACHED).
+			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+			// We set the digest algorithm to use with the signature algorithm. You must use the
+			// same parameter when you invoke the method sign on the token.
+			parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-		// Create common certificate verifier
-		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
-		// Create CAdES xadesService for signature
-		XAdESService xadesService = new XAdESService(commonCertificateVerifier);
+			// We set the signing certificate
+			parameters.setSigningCertificate(privateKey.getCertificate());
+			// We set the certificate chain
+			parameters.setCertificateChain(privateKey.getCertificateChain());
 
-		// Get the SignedInfo segment that need to be signed.
-		ToBeSigned dataToSign = xadesService.getDataToSign(toSignDocument, parameters);
+			// Create common certificate verifier
+			CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
+			// Create CAdES xadesService for signature
+			XAdESService xadesService = new XAdESService(commonCertificateVerifier);
 
-		// This function obtains the signature value for signed information using the
-		// private key and specified algorithm
-		DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-		SignatureValue signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKey);
+			// Get the SignedInfo segment that need to be signed.
+			ToBeSigned dataToSign = xadesService.getDataToSign(toSignDocument, parameters);
 
-		// We invoke the xadesService to sign the document with the signature value obtained in
-		// the previous step.
-		DSSDocument signedDocument = xadesService.signDocument(toSignDocument, parameters, signatureValue);
+			// This function obtains the signature value for signed information using the
+			// private key and specified algorithm
+			DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
+			SignatureValue signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKey);
 
-		// DSSUtils.copy(signedDocument.openStream(), System.out);
-		DSSUtils.saveToFile(signedDocument.openStream(), "target/signedXmlXadesMSCapi.xml");
+			// We invoke the xadesService to sign the document with the signature value obtained in
+			// the previous step.
+			DSSDocument signedDocument = xadesService.signDocument(toSignDocument, parameters, signatureValue);
+
+			// save the signed document on the filesystem
+			signedDocument.save("target/signedXmlXadesMSCapi.xml");
+		}
 	}
 }

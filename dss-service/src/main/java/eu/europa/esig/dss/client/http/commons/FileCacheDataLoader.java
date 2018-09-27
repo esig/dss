@@ -28,11 +28,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSCannotFetchDataException;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.ResourceLoader;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.Protocol;
 import eu.europa.esig.dss.utils.Utils;
@@ -55,13 +53,12 @@ public class FileCacheDataLoader implements DataLoader {
 	private List<String> toIgnored;
 
 	private Long cacheExpirationTime;
-	
+
 	private DataLoader dataLoader;
-	
+
 	public FileCacheDataLoader() {
-		dataLoader = new CommonsDataLoader();
 	}
-	
+
 	public FileCacheDataLoader(DataLoader dataLoader) {
 		this.dataLoader = dataLoader;
 	}
@@ -144,7 +141,7 @@ public class FileCacheDataLoader implements DataLoader {
 	}
 
 	@Override
-	public byte[] get(final String url, final boolean refresh) throws DSSCannotFetchDataException {
+	public byte[] get(final String url, final boolean refresh) {
 
 		if ((toBeLoaded != null) && !toBeLoaded.contains(url)) {
 			return null;
@@ -184,7 +181,7 @@ public class FileCacheDataLoader implements DataLoader {
 	}
 
 	@Override
-	public byte[] get(final String url) throws DSSCannotFetchDataException {
+	public byte[] get(final String url) {
 
 		return get(url, false);
 	}
@@ -202,7 +199,7 @@ public class FileCacheDataLoader implements DataLoader {
 
 			throw new DSSException("Part of urls to ignore.");
 		}
-		LOG.debug("Cached file: " + fileCacheDirectory + "/" + trimmedFileName);
+		LOG.debug("Cached file: {}/{}", fileCacheDirectory, trimmedFileName);
 		final File file = new File(fileCacheDirectory, trimmedFileName);
 		return file;
 	}
@@ -254,7 +251,9 @@ public class FileCacheDataLoader implements DataLoader {
 		final String digestHexEncoded = DSSUtils.toHex(digest);
 		final String cacheFileName = fileName + "." + digestHexEncoded;
 		final File file = getCacheFile(cacheFileName);
-		if (file.exists()) {
+		final boolean fileExists = file.exists();
+		final boolean isCacheExpired = isCacheExpired(file);
+		if (fileExists && !isCacheExpired) {
 
 			LOG.debug("Cached file was used");
 			final byte[] byteArray = DSSUtils.toByteArray(file);

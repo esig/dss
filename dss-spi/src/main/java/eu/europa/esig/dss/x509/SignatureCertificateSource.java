@@ -27,43 +27,36 @@ import java.util.List;
  * basic skeleton that is able to retrieve the needed certificate from a list. The child need to retrieve the list of
  * wrapped certificates.
  *
- *
  */
-
 public abstract class SignatureCertificateSource extends CommonCertificateSource {
 
-    /**
-     * The default constructor with mandatory certificates pool.
-     *
-     * @param certPool
-     */
-    protected SignatureCertificateSource(final CertificatePool certPool) {
+	/**
+	 * The default constructor with mandatory certificates pool.
+	 *
+	 * @param certPool
+	 *            the certificate pool
+	 */
+	protected SignatureCertificateSource(final CertificatePool certPool) {
+		super(certPool);
+	}
 
-        super(certPool);
-    }
+	/**
+	 * Retrieves the list of all encapsulated certificates (-XL extension) from this source.
+	 *
+	 * @return the list of all encapsulated certificates
+	 */
+	public abstract List<CertificateToken> getEncapsulatedCertificates();
 
-    /**
-     * Retrieves the list of all encapsulated certificates (-XL extension) from this source.
-     *
-     * @return
-     */
-    public abstract List<CertificateToken> getEncapsulatedCertificates();
+	/**
+	 * Retrieves the list of all certificates present in -BES level of the signature from this source.
+	 *
+	 * @return list of all certificates present in B level
+	 */
+	public abstract List<CertificateToken> getKeyInfoCertificates();
 
-    /**
-     * Retrieves the list of all certificates present in -BES level of the signature from this source.
-     *
-     * @return
-     */
-    public abstract List<CertificateToken> getKeyInfoCertificates();
+	@Override
+	public CertificateSourceType getCertificateSourceType() {
+		return CertificateSourceType.SIGNATURE;
+	}
 
-    /**
-     * This method returns the certificate source type associated to the implementation class.
-     *
-     * @return
-     */
-    protected CertificateSourceType getCertificateSourceType() {
-
-        return CertificateSourceType.SIGNATURE;
-    }
-    
 }

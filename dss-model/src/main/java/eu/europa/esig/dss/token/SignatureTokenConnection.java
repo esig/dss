@@ -24,6 +24,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 
@@ -31,15 +32,13 @@ import eu.europa.esig.dss.ToBeSigned;
  * Connection through available API to the QSCD (SmartCard, MSCAPI, PKCS#12)
  *
  */
-public interface SignatureTokenConnection {
+public interface SignatureTokenConnection extends AutoCloseable {
 
-	/**
-	 * Closes the connection to the QSCD.
-	 */
+	@Override
 	void close();
 
 	/**
-	 * Retrieves all the available keys (private keys entries) from the QSCD.
+	 * Retrieves all the available keys (private keys entries) from the token.
 	 *
 	 * @return List of encapsulated private keys
 	 * @throws DSSException
@@ -48,16 +47,38 @@ public interface SignatureTokenConnection {
 	List<DSSPrivateKeyEntry> getKeys() throws DSSException;
 
 	/**
+	 * 
+	 * This method signs the {@code toBeSigned} data with the digest {@code digestAlgorithm} and
+	 * the given {@code keyEntry}.
+	 * 
 	 * @param toBeSigned
 	 *            The data that need to be signed
 	 * @param digestAlgorithm
 	 *            The digest algorithm to be used before signing
 	 * @param keyEntry
 	 *            The private key to be used
-	 * @return The array of bytes representing the signature value
+	 * @return the signature value representation with the used algorithm and the binary value
 	 * @throws DSSException
 	 *             If there is any problem during the signature process
 	 */
 	SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException;
+
+	/**
+	 * This method signs the {@code toBeSigned} data with the digest {@code digestAlgorithm}, the mask {@code mgf} and
+	 * the given {@code keyEntry}.
+	 * 
+	 * @param toBeSigned
+	 *            The data that need to be signed
+	 * @param digestAlgorithm
+	 *            The digest algorithm to be used before signing
+	 * @param mgf
+	 *            the mask generation function
+	 * @param keyEntry
+	 *            The private key to be used
+	 * @return the signature value representation with the used algorithm and the binary value
+	 * @throws DSSException
+	 *             If there is any problem during the signature process
+	 */
+	SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry) throws DSSException;
 
 }

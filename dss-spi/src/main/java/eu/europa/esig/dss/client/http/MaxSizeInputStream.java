@@ -23,9 +23,6 @@ package eu.europa.esig.dss.client.http;
 import java.io.IOException;
 import java.io.InputStream;
 
-import eu.europa.esig.dss.DSSCannotFetchDataException;
-import eu.europa.esig.dss.DSSCannotFetchDataException.MSG;
-
 /**
  * Used to limit the size of fetched data.
  */
@@ -41,6 +38,13 @@ public class MaxSizeInputStream extends InputStream {
 
 	/**
 	 * The default constructor for NativeHTTPDataLoader.MaxSizeInputStream.
+	 * 
+	 * @param wrappedStream
+	 *            the wrapped stream
+	 * @param maxSize
+	 *            the maximum size to read
+	 * @param url
+	 *            the url source
 	 */
 	public MaxSizeInputStream(InputStream wrappedStream, long maxSize, String url) {
 		this.maxSize = maxSize;
@@ -53,7 +57,7 @@ public class MaxSizeInputStream extends InputStream {
 		if (maxSize != 0) {
 			count++;
 			if (count > maxSize) {
-				throw new DSSCannotFetchDataException(MSG.SIZE_LIMIT_EXCEPTION, url);
+				throw new IOException("Cannot fetch data limit=" + maxSize + ", url =" + url);
 			}
 		}
 		return wrappedStream.read();

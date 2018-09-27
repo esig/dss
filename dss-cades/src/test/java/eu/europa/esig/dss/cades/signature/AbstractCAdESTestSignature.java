@@ -3,6 +3,9 @@ package eu.europa.esig.dss.cades.signature;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -12,21 +15,27 @@ import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
 
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.signature.AbstractTestDocumentSignatureService;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureService;
 
-public abstract class AbstractCAdESTestSignature extends AbstractTestDocumentSignatureService<CAdESSignatureParameters> {
+public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<CAdESSignatureParameters> {
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		checkSignedAttributesOrder(byteArray);
+
+	}
+
+	@Override
+	protected List<DSSDocument> getOriginalDocuments() {
+		return Collections.singletonList(getDocumentToSign());
 	}
 
 	protected void checkSignedAttributesOrder(byte[] encoded) {
-		ASN1InputStream asn1sInput = null;
-		try {
-			asn1sInput = new ASN1InputStream(encoded);
+		try (ASN1InputStream asn1sInput = new ASN1InputStream(encoded)) {
 			ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
 			SignedData signedData = SignedData.getInstance(DERTaggedObject.getInstance(asn1Seq.getObjectAt(1)).getObject());
@@ -47,9 +56,24 @@ public abstract class AbstractCAdESTestSignature extends AbstractTestDocumentSig
 			}
 		} catch (Exception e) {
 			fail(e.getMessage());
-		} finally {
-			Utils.closeQuietly(asn1sInput);
 		}
+	}
+
+	@Override
+	protected MimeType getExpectedMime() {
+		return MimeType.PKCS7;
+	}
+
+	@Override
+	protected boolean isBaselineT() {
+		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
+		return SignatureLevel.CAdES_BASELINE_LTA.equals(signatureLevel) || SignatureLevel.CAdES_BASELINE_LT.equals(signatureLevel)
+				|| SignatureLevel.CAdES_BASELINE_T.equals(signatureLevel);
+	}
+
+	@Override
+	protected boolean isBaselineLTA() {
+		return SignatureLevel.CAdES_BASELINE_LTA.equals(getSignatureParameters().getSignatureLevel());
 	}
 
 }

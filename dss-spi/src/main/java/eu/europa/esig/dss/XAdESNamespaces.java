@@ -23,10 +23,6 @@ package eu.europa.esig.dss;
 /**
  * This enum contains all known XAdES version with their namespace.
  *
- *
- *
- *
- *
  */
 public final class XAdESNamespaces {
 
@@ -47,7 +43,8 @@ public final class XAdESNamespaces {
 	 * This setter allows to change the default XAdES namespace. It can be useful when dealing with old applications.
 	 * Note that there is no check on the value of the namespace. It's calling method responsibility.
 	 *
-	 * @param XAdES new default namespace
+	 * @param XAdES
+	 *            new default namespace
 	 */
 	public static void setXAdESDefaultNamespace(final String XAdES) {
 
@@ -60,10 +57,12 @@ public final class XAdESNamespaces {
 	}
 
 	/**
-	 * Checks if the url is related to XAdES namespace. XAdES141 is excluded from this test as it concerns only the archive timestamp.
+	 * Checks if the url is related to XAdES namespace. XAdES141 is excluded from this test as it concerns only the
+	 * archive timestamp.
 	 *
 	 * @param url
-	 * @return
+	 *            the url to be tested
+	 * @return true if the url is related to a XAdES namespace
 	 */
 	public static boolean exists(final String url) {
 
@@ -73,8 +72,9 @@ public final class XAdESNamespaces {
 	public static String getXADES_SIGNING_CERTIFICATE() {
 		return XADES_SIGNING_CERTIFICATE;
 	}
-	
+
 	public static String getXADES_SIGNING_CERTIFICATE_V2() {
 		return XADES_SIGNING_CERTIFICATE_V2;
 	}
+
 }

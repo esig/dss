@@ -51,21 +51,38 @@ import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 /**
  * Contains XAdES-C profile aspects
  *
- *
  */
-
 public class XAdESLevelC extends XAdESLevelBaselineT {
 
 	/**
 	 * The default constructor for XAdESLevelC.
-	 *
-	 * @throws javax.xml.datatype.DatatypeConfigurationException
 	 */
 	public XAdESLevelC(CertificateVerifier certificateVerifier) {
-
 		super(certificateVerifier);
 	}
 
+	/**
+	 * This method incorporates CRL References like
+	 * 
+	 * <pre>
+	 * {@code
+	 *	 <xades:CRLRefs>
+	 *	 	<xades:CRLRef>
+	 *			<xades:DigestAlgAndValue>
+	 *				<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+	 *				<ds:DigestValue>G+z+DaZ6X44wEOueVYvZGmTh4dBkjjctKxcJYEV4HmU=</ds:DigestValue>
+	 *			</xades:DigestAlgAndValue>
+	 *			<xades:CRLIdentifier URI="LevelACAOK.crl">
+	 *				<xades:Issuer>CN=LevelACAOK,OU=Plugtests_STF-428_2011-2012,O=ETSI,C=FR</xades:Issuer>
+	 *				<xades:IssueTime>2012-03-13T13:58:28.000-03:00</xades:IssueTime>
+	 *			<xades:Number>4415260066222</xades:Number>
+	 * }
+	 * </pre>
+	 * 
+	 * @param completeRevocationRefsDom
+	 * @param processedRevocationTokens
+	 * @throws DSSException
+	 */
 	private void incorporateCRLRefs(Element completeRevocationRefsDom, final Set<RevocationToken> processedRevocationTokens) throws DSSException {
 
 		if (processedRevocationTokens.isEmpty()) {
@@ -84,16 +101,6 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 		if (!containsCrlToken) {
 			return;
 		}
-		// <xades:CRLRefs>
-		// ...<xades:CRLRef>
-		// ......<xades:DigestAlgAndValue>
-		// .........<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-		// .........<ds:DigestValue>G+z+DaZ6X44wEOueVYvZGmTh4dBkjjctKxcJYEV4HmU=</ds:DigestValue>
-		// ......</xades:DigestAlgAndValue>
-		// ......<xades:CRLIdentifier URI="LevelACAOK.crl">
-		// ...<xades:Issuer>CN=LevelACAOK,OU=Plugtests_STF-428_2011-2012,O=ETSI,C=FR</xades:Issuer>
-		// ...<xades:IssueTime>2012-03-13T13:58:28.000-03:00</xades:IssueTime>
-		// ...<xades:Number>4415260066222</xades:Number>
 
 		final Element crlRefsDom = DomUtils.addElement(documentDom, completeRevocationRefsDom, XAdESNamespaces.XAdES, "xades:CRLRefs");
 
@@ -128,6 +135,26 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 	}
 
 	/**
+	 * This method adds OCSP References like :
+	 * 
+	 * <pre>
+	 * {@code
+	 * 	<xades:CRLRefs/>
+	 *	<xades:OCSPRefs>
+	 *		<xades:OCSPRef>
+	 *			<xades:OCSPIdentifier>
+	 *				<xades:ResponderID>
+	 *					<xades:ByName>C=AA,O=DSS,CN=OCSP A</xades:ByName>
+	 *				</xades:ResponderID>
+	 *				<xades:ProducedAt>2013-11-25T12:33:34.000+01:00</xades:ProducedAt>
+	 *			</xades:OCSPIdentifier>
+	 *			<xades:DigestAlgAndValue>
+	 *				<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+	 *				<ds:DigestValue>O1uHdchN+zFzbGrBg2FP3/idD0k=</ds:DigestValue>
+	 *				...
+	 *}
+	 * </pre>
+	 * 
 	 * @param completeRevocationRefsDom
 	 * @param processedRevocationTokens
 	 * @throws eu.europa.esig.dss.DSSException
@@ -150,19 +177,6 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 		if (!containsOCSPToken) {
 			return;
 		}
-
-		// ...<xades:CRLRefs/>
-		// ...<xades:OCSPRefs>
-		// ......<xades:OCSPRef>
-		// .........<xades:OCSPIdentifier>
-		// ............<xades:ResponderID>
-		// ...............<xades:ByName>C=AA,O=DSS,CN=OCSP A</xades:ByName>
-		// ............</xades:ResponderID>
-		// ............<xades:ProducedAt>2013-11-25T12:33:34.000+01:00</xades:ProducedAt>
-		// .........</xades:OCSPIdentifier>
-		// .........<xades:DigestAlgAndValue>
-		// ............<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-		// ............<ds:DigestValue>O1uHdchN+zFzbGrBg2FP3/idD0k=</ds:DigestValue>
 
 		final Element ocspRefsDom = DomUtils.addElement(documentDom, completeRevocationRefsDom, XAdESNamespaces.XAdES, "xades:OCSPRefs");
 
@@ -217,11 +231,11 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 	 * signature up to (but not including ) the signer's certificate.<br>
 	 * A full set of references to the revocation data that have been used in the validation of the signer and CA
 	 * certificates.<br>
-	 * Adds <CompleteCertificateRefs> and <CompleteRevocationRefs> segments into <UnsignedSignatureProperties> element.
+	 * Adds {@code <CompleteCertificateRefs>} and {@code <CompleteRevocationRefs>} segments into
+	 * {@code <UnsignedSignatureProperties>} element.
 	 *
-	 * There SHALL be at most <b>one occurrence of CompleteRevocationRefs & CompleteCertificateRefs</b> properties in
-	 * the
-	 * signature. Old references must be removed.
+	 * There SHALL be at most <b>one occurrence of CompleteRevocationRefs and CompleteCertificateRefs</b> properties in
+	 * the signature. Old references must be removed.
 	 *
 	 * @see XAdESLevelBaselineT#extendSignatureTag()
 	 */

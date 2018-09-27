@@ -9,10 +9,10 @@ import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.RemoteCertificate;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
+import eu.europa.esig.dss.RemoteConverter;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
@@ -24,23 +24,20 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class AbstractRemoteSignatureServiceImpl {
 
-	protected AbstractSignatureParameters getASiCSignatureParameters(AbstractSignatureParameters parameters, ASiCContainerType asicContainerType,
+	protected AbstractSignatureParameters getASiCSignatureParameters(ASiCContainerType asicContainerType,
 			SignatureForm signatureForm) {
 		switch (signatureForm) {
 		case CAdES:
 			ASiCWithCAdESSignatureParameters asicWithCAdESParameters = new ASiCWithCAdESSignatureParameters();
 			asicWithCAdESParameters.aSiC().setContainerType(asicContainerType);
-			parameters = asicWithCAdESParameters;
-			break;
+			return asicWithCAdESParameters;
 		case XAdES:
 			ASiCWithXAdESSignatureParameters asicWithXAdESParameters = new ASiCWithXAdESSignatureParameters();
 			asicWithXAdESParameters.aSiC().setContainerType(asicContainerType);
-			parameters = asicWithXAdESParameters;
-			break;
+			return asicWithXAdESParameters;
 		default:
 			throw new DSSException("Unrecognized format (XAdES or CAdES are allowed with ASiC) : " + signatureForm);
 		}
-		return parameters;
 	}
 
 	protected AbstractSignatureParameters createParameters(RemoteSignatureParameters remoteParameters) {
@@ -48,7 +45,7 @@ public class AbstractRemoteSignatureServiceImpl {
 		ASiCContainerType asicContainerType = remoteParameters.getAsicContainerType();
 		SignatureForm signatureForm = remoteParameters.getSignatureLevel().getSignatureForm();
 		if (asicContainerType != null) {
-			parameters = getASiCSignatureParameters(parameters, asicContainerType, signatureForm);
+			parameters = getASiCSignatureParameters(asicContainerType, signatureForm);
 		} else {
 			switch (signatureForm) {
 			case CAdES:
@@ -104,20 +101,9 @@ public class AbstractRemoteSignatureServiceImpl {
 		if (Utils.isCollectionNotEmpty(remoteDocuments)) {
 			List<DSSDocument> dssDocuments = new ArrayList<DSSDocument>();
 			for (RemoteDocument remoteDocument : remoteDocuments) {
-				dssDocuments.add(createDSSDocument(remoteDocument));
+				dssDocuments.add(RemoteConverter.toDSSDocument(remoteDocument));
 			}
 			return dssDocuments;
-		}
-		return null;
-	}
-
-	protected InMemoryDocument createDSSDocument(RemoteDocument remoteDocument) {
-		if (remoteDocument != null) {
-			InMemoryDocument dssDocument = new InMemoryDocument(remoteDocument.getBytes());
-			dssDocument.setMimeType(remoteDocument.getMimeType());
-			dssDocument.setAbsolutePath(remoteDocument.getAbsolutePath());
-			dssDocument.setName(remoteDocument.getName());
-			return dssDocument;
 		}
 		return null;
 	}

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
@@ -47,9 +48,9 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.ResourceLoader;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -61,11 +62,12 @@ public final class DSSXMLUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(DSSXMLUtils.class);
 
 	public static final String ID_ATTRIBUTE_NAME = "id";
-	public static final String XAD_ESV141_XSD = "/XAdESv141.xsd";
 
 	private static final Set<String> transforms;
 
 	private static final Set<String> canonicalizers;
+
+	private static Schema XADES_SCHEMA = null;
 
 	static {
 
@@ -77,8 +79,6 @@ public final class DSSXMLUtils {
 		canonicalizers = new HashSet<String>();
 		registerDefaultCanonicalizers();
 	}
-
-	private static Schema schema = null;
 
 	/**
 	 * This method registers the default transforms.
@@ -121,7 +121,6 @@ public final class DSSXMLUtils {
 	 * @return true if this set did not already contain the specified element
 	 */
 	public static boolean registerTransform(final String transformURI) {
-
 		final boolean added = transforms.add(transformURI);
 		return added;
 	}
@@ -134,7 +133,6 @@ public final class DSSXMLUtils {
 	 * @return true if this set did not already contain the specified element
 	 */
 	public static boolean registerCanonicalizer(final String c14nAlgorithmURI) {
-
 		final boolean added = canonicalizers.add(c14nAlgorithmURI);
 		return added;
 	}
@@ -144,10 +142,10 @@ public final class DSSXMLUtils {
 	 *
 	 * @param xmlNode
 	 *            The node to be serialized.
-	 * @return
+	 * @return the serialized bytes
 	 */
 	public static byte[] serializeNode(final Node xmlNode) {
-		try {
+		try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
 			Transformer transformer = DomUtils.getSecureTransformer();
 			Document document = null;
 			if (Node.DOCUMENT_NODE == xmlNode.getNodeType()) {
@@ -163,7 +161,6 @@ public final class DSSXMLUtils {
 				}
 			}
 
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			StreamResult result = new StreamResult(bos);
 			Source source = new DOMSource(xmlNode);
 			transformer.transform(source, result);
@@ -181,12 +178,7 @@ public final class DSSXMLUtils {
 	 * @return true if it is possible to canonicalize false otherwise
 	 */
 	public static boolean canCanonicalize(final String canonicalizationMethod) {
-
-		if (transforms.contains(canonicalizationMethod)) {
-			return false;
-		}
-		final boolean contains = canonicalizers.contains(canonicalizationMethod);
-		return contains;
+		return canonicalizers.contains(canonicalizationMethod);
 	}
 
 	/**
@@ -205,7 +197,7 @@ public final class DSSXMLUtils {
 			final Canonicalizer c14n = Canonicalizer.getInstance(canonicalizationMethod);
 			return c14n.canonicalize(toCanonicalizeBytes);
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException("Cannot canonicalize the binaries", e);
 		}
 	}
 
@@ -221,18 +213,33 @@ public final class DSSXMLUtils {
 	public static byte[] canonicalizeSubtree(final String canonicalizationMethod, final Node node) {
 		try {
 			final Canonicalizer c14n = Canonicalizer.getInstance(canonicalizationMethod);
-			final byte[] canonicalized = c14n.canonicalizeSubtree(node);
-			return canonicalized;
+			return c14n.canonicalizeSubtree(node);
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException("Cannot canonicalize the subtree", e);
+		}
+	}
+
+	/**
+	 * This methods canonicalizes or serializes the given node depending on the canonicalization method (can be null)
+	 * 
+	 * @param canonicalizationMethod
+	 *            the canonicalization method or null
+	 * @param node
+	 *            the node to be canonicalized/serialized
+	 * @return array of bytes
+	 */
+	public static byte[] canonicalizeOrSerializeSubtree(final String canonicalizationMethod, final Node node) {
+		if (canonicalizationMethod == null) {
+			return serializeNode(node);
+		} else {
+			return canonicalizeSubtree(canonicalizationMethod, node);
 		}
 	}
 
 	/**
 	 * An ID attribute can only be dereferenced if it is declared in the validation context. This behaviour is caused by
-	 * the fact that the attribute does not have attached type of
-	 * information. Another solution is to parse the XML against some DTD or XML schema. This process adds the necessary
-	 * type of information to each ID attribute.
+	 * the fact that the attribute does not have attached type of information. Another solution is to parse the XML
+	 * against some DTD or XML schema. This process adds the necessary type of information to each ID attribute.
 	 *
 	 * @param element
 	 */
@@ -251,24 +258,22 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * If this method finds an attribute with names ID (case-insensitive) then it is returned. If there is more than one
-	 * ID attributes then the first one is returned.
+	 * If this method finds an attribute with names ID (case-insensitive) then it is
+	 * returned. If there is more than one ID attributes then the first one is
+	 * returned.
 	 *
-	 * @param element
-	 *            to be checked
+	 * @param node
+	 *             the node to be checked
 	 * @return the ID attribute value or null
 	 */
-	public static String getIDIdentifier(final Element element) {
-
-		final NamedNodeMap attributes = element.getAttributes();
+	public static String getIDIdentifier(final Node node) {
+		final NamedNodeMap attributes = node.getAttributes();
 		for (int jj = 0; jj < attributes.getLength(); jj++) {
-
 			final Node item = attributes.item(jj);
-			final String localName = item.getNodeName();
+			final String localName = item.getLocalName();
 			if (localName != null) {
 				final String id = localName.toLowerCase();
 				if (ID_ATTRIBUTE_NAME.equals(id)) {
-
 					return item.getTextContent();
 				}
 			}
@@ -288,15 +293,46 @@ public final class DSSXMLUtils {
 		for (int jj = 0; jj < attributes.getLength(); jj++) {
 
 			final Node item = attributes.item(jj);
-			final String localName = item.getNodeName();
+			final String localName = item.getLocalName();
+			final String nodeName = item.getNodeName();
 			if (localName != null) {
 				final String id = localName.toLowerCase();
 				if (ID_ATTRIBUTE_NAME.equals(id)) {
 
-					childElement.setIdAttribute(localName, true);
+					childElement.setIdAttribute(nodeName, true);
 					break;
 				}
 			}
+		}
+	}
+
+	private static Schema getXAdESValidationSchema() {
+		if (XADES_SCHEMA == null) {
+			try (InputStream xsd1 = DSSXMLUtils.class.getResourceAsStream("/XAdES01903v132-201601.xsd");
+					InputStream xsd2 = DSSXMLUtils.class.getResourceAsStream("/XAdES01903v141-201601.xsd")) {
+				SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+				XADES_SCHEMA = sf.newSchema(new Source[] { new StreamSource(xsd1), new StreamSource(xsd2) });
+			} catch (Exception e) {
+				throw new DSSException("Unable to load the XSD files", e);
+			}
+		}
+		return XADES_SCHEMA;
+	}
+
+	/**
+	 * This method allows to validate a DSSDocument XML against the XAdES XSD schema.
+	 *
+	 * @param document
+	 *            {@code DSSDocument} document to validate
+	 * @throws SAXException
+	 *             if the document content is not valid
+	 */
+	public static void validateAgainstXSD(DSSDocument document) throws SAXException {
+		try (InputStream is = document.openStream()) {
+			final Validator validator = getXAdESValidationSchema().newValidator();
+			validator.validate(new StreamSource(is));
+		} catch (IOException e) {
+			throw new DSSException("Unable to read document", e);
 		}
 	}
 
@@ -309,23 +345,13 @@ public final class DSSXMLUtils {
 	 */
 	public static String validateAgainstXSD(final StreamSource streamSource) {
 		try {
-			if (schema == null) {
-				schema = getSchema();
-			}
-			final Validator validator = schema.newValidator();
+			final Validator validator = getXAdESValidationSchema().newValidator();
 			validator.validate(streamSource);
 			return Utils.EMPTY_STRING;
 		} catch (Exception e) {
 			LOG.warn("Error during the XML schema validation!", e);
 			return e.getMessage();
 		}
-	}
-
-	private static Schema getSchema() throws SAXException {
-		final ResourceLoader resourceLoader = new ResourceLoader();
-		final InputStream xadesXsd = resourceLoader.getResource(XAD_ESV141_XSD);
-		final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		return factory.newSchema(new StreamSource(xadesXsd));
 	}
 
 	public static boolean isOid(String policyId) {

@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss;
 
-import java.security.Key;
 import java.security.PublicKey;
 import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.ECPublicKey;
@@ -42,39 +41,17 @@ public final class DSSPKUtils {
 	}
 
 	/**
-	 * This method returns the public algorithm extracted from public key infrastructure. (ex: RSA)
-	 *
-	 * @param publicKey
-	 * @return
-	 */
-	public static String getPublicKeyEncryptionAlgo(final Key publicKey) {
-
-		String publicKeyAlgorithm = "?";
-		// (List of different public key implementations with instanceOf test removed)
-		publicKeyAlgorithm = publicKey.getAlgorithm();
-		if (!"?".equals(publicKeyAlgorithm)) {
-
-			try {
-
-				publicKeyAlgorithm = EncryptionAlgorithm.forName(publicKeyAlgorithm).getName();
-			} catch (DSSException e) {
-
-				LOG.error(e.getMessage());
-			}
-		}
-		return publicKeyAlgorithm;
-	}
-
-	/**
 	 * This method returns a key length used to sign this token.
 	 *
-	 * @return
+	 * @param token
+	 *            the token (certificate, crl,...) to be checked
+	 * @return the used key size to sign the given token
 	 */
 	public static String getPublicKeySize(Token token) {
 		String keyLength = "?";
 		PublicKey issuerPublicKey = null;
-		if (token.getIssuerToken() != null) {
-			issuerPublicKey = token.getIssuerToken().getPublicKey();
+		if (token.getPublicKeyOfTheSigner() != null) {
+			issuerPublicKey = token.getPublicKeyOfTheSigner();
 		} else if (token.isSelfSigned()) {
 			issuerPublicKey = ((CertificateToken) token).getPublicKey();
 		}
@@ -88,7 +65,8 @@ public final class DSSPKUtils {
 	 * This method returns the public key size extracted from public key infrastructure.
 	 *
 	 * @param publicKey
-	 * @return
+	 *            the public key
+	 * @return the key length
 	 */
 	public static int getPublicKeySize(final PublicKey publicKey) {
 
@@ -125,9 +103,9 @@ public final class DSSPKUtils {
 			DSAPublicKey dsaPublicKey = (DSAPublicKey) publicKey;
 			publicKeySize = dsaPublicKey.getParams().getP().bitLength();
 		} else {
-
-			LOG.error("Unknown public key infrastructure: " + publicKey.getClass().getName());
+			LOG.error("Unknown public key infrastructure: {}", publicKey.getClass().getName());
 		}
 		return publicKeySize;
 	}
+
 }

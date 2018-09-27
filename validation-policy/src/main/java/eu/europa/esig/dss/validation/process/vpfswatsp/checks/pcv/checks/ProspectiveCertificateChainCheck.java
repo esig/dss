@@ -5,27 +5,21 @@ import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class ProspectiveCertificateChainCheck extends ChainItem<XmlPCV> {
 
 	private final TokenProxy token;
-	private final DiagnosticData diagnosticData;
 
-	public ProspectiveCertificateChainCheck(XmlPCV result, TokenProxy token, DiagnosticData diagnosticData, LevelConstraint constraint) {
+	public ProspectiveCertificateChainCheck(XmlPCV result, TokenProxy token, LevelConstraint constraint) {
 		super(result, constraint);
 		this.token = token;
-		this.diagnosticData = diagnosticData;
 	}
 
 	@Override
 	protected boolean process() {
-		String lastChainCertId = token.getLastChainCertificateId();
-		final CertificateWrapper lastChainCertificate = diagnosticData.getUsedCertificateByIdNullSafe(lastChainCertId);
-		return lastChainCertificate.isTrusted();
+		return token.isTrustedChain();
 	}
 
 	@Override

@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss;
 
+import java.security.Key;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Supported signature encryption algorithms.
- *
  */
 public enum EncryptionAlgorithm {
 
@@ -58,23 +58,40 @@ public enum EncryptionAlgorithm {
 	 * Returns the encryption algorithm associated to the given OID.
 	 *
 	 * @param oid
-	 * @return
+	 *            the ASN1 algorithm OID
+	 * @return the linked encryption algorithm
+	 * @throws DSSException
+	 *             if the oid doesn't match any algorithm
 	 */
-	public static EncryptionAlgorithm forOID(String oid) {
+	public static EncryptionAlgorithm forOID(String oid) throws DSSException {
 		EncryptionAlgorithm algorithm = Registry.OID_ALGORITHMS.get(oid);
 		if (algorithm == null) {
-			throw new RuntimeException("Unsupported algorithm: " + oid);
+			throw new DSSException("Unsupported algorithm: " + oid);
 		}
 		return algorithm;
+	}
+
+	/**
+	 * Returns the encryption algorithm associated to the given key.
+	 *
+	 * @param key the key
+	 * @return the linked encryption algorithm
+	 * @throws DSSException if the key doesn't match any algorithm
+	 */
+	public static EncryptionAlgorithm forKey(Key key) {
+		return forName(key.getAlgorithm());
 	}
 
 	/**
 	 * Returns the encryption algorithm associated to the given JCE name.
 	 *
 	 * @param name
-	 * @return
+	 *            the encryption algorithm name
+	 * @return the linked encryption algorithm
+	 * @throws DSSException
+	 *             if the name doesn't match any algorithm
 	 */
-	public static EncryptionAlgorithm forName(final String name) {
+	public static EncryptionAlgorithm forName(final String name) throws DSSException {
 		// To be checked if ECC exists also .
 		if ("EC".equals(name) || "ECC".equals(name)) {
 			return ECDSA;
@@ -83,16 +100,18 @@ public enum EncryptionAlgorithm {
 		try {
 			return valueOf(name);
 		} catch (Exception e) {
+			throw new DSSException("Unsupported algorithm: " + name);
 		}
-		throw new DSSException("Unsupported algorithm: " + name);
 	}
 
 	/**
 	 * Returns the encryption algorithm associated to the given JCE name.
 	 *
 	 * @param name
+	 *            the encryption algorithm name
 	 * @param defaultValue
-	 * @return
+	 *            The default value for the {@code EncryptionAlgorithm}
+	 * @return the corresponding {@code EncryptionAlgorithm} or the default value
 	 */
 	public static EncryptionAlgorithm forName(final String name, final EncryptionAlgorithm defaultValue) {
 		// To be checked if ECC exists also .
@@ -108,13 +127,15 @@ public enum EncryptionAlgorithm {
 		}
 	}
 
-	private EncryptionAlgorithm(String name, String oid, String padding) {
+	EncryptionAlgorithm(String name, String oid, String padding) {
 		this.name = name;
 		this.oid = oid;
 		this.padding = padding;
 	}
 
 	/**
+	 * Get the algorithm name
+	 * 
 	 * @return the name
 	 */
 	public String getName() {
@@ -122,6 +143,8 @@ public enum EncryptionAlgorithm {
 	}
 
 	/**
+	 * Get the ASN1 algorithm OID
+	 * 
 	 * @return the OID
 	 */
 	public String getOid() {
@@ -129,6 +152,8 @@ public enum EncryptionAlgorithm {
 	}
 
 	/**
+	 * Get the algorithm padding
+	 * 
 	 * @return the padding
 	 */
 	public String getPadding() {

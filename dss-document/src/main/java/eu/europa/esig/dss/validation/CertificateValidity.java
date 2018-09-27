@@ -23,8 +23,6 @@ package eu.europa.esig.dss.validation;
 import java.io.Serializable;
 import java.security.PublicKey;
 
-import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
 /**
@@ -44,13 +42,6 @@ public class CertificateValidity implements Serializable {
 	private boolean attributePresent;
 	private boolean serialNumberEqual;
 	private boolean distinguishedNameEqual;
-
-	/**
-	 * Indicates what element encapsulating the signed certificate has been signed.
-	 */
-	private String signed;
-	private String digest;
-	private DigestAlgorithm digestAlgorithm;
 
 	/**
 	 * This constructor create an object containing all information concerning the validity of a candidate for the
@@ -143,49 +134,14 @@ public class CertificateValidity implements Serializable {
 	}
 
 	/**
-	 * @return returns the signed element: X509Certificate, X509Data or KeyInfo. {@code null} if there is no signed
-	 *         element
-	 */
-	public String getSigned() {
-		return signed;
-	}
-
-	/**
-	 * Allows to set the signed element: X509Certificate, X509Data or KeyInfo
-	 *
-	 * @param signed
-	 *            indicates the element which was signed
-	 */
-	public void setSigned(final String signed) {
-		this.signed = signed;
-	}
-
-	/**
-	 * This method returns {@code true} if the certificate digest or IssuerSerial/issuerAndSerialNumber match or the
-	 * certificate is signed. The signed reference is checked
-	 * following the validation policy.
+	 * This method returns {@code true} if the certificate digest or
+	 * IssuerSerial/issuerAndSerialNumber match or the certificate is signed.
 	 *
 	 * @return {@code true} if the certificate digest matches.
 	 */
 	public boolean isValid() {
-
-		final boolean valid = isDigestEqual() || (isDistinguishedNameEqual() && isSerialNumberEqual()) || Utils.isStringNotEmpty(getSigned());
+		final boolean valid = isDigestEqual() || (isDistinguishedNameEqual() && isSerialNumberEqual());
 		return valid;
 	}
 
-	public void setDigest(final String digest) {
-		this.digest = digest;
-	}
-
-	public String getDigest() {
-		return digest;
-	}
-
-	public DigestAlgorithm getDigestAlgorithm() {
-		return digestAlgorithm;
-	}
-
-	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
-		this.digestAlgorithm = digestAlgorithm;
-	}
 }

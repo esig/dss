@@ -32,7 +32,7 @@
 	        </CertificateChain>
 	        <ContentType>1.2.840.113549.1.7.1</ContentType>
 	        <SignatureScopes>
-	            <SignatureScope name="Full document" scope="FullSignatureScope">Full document</SignatureScope>
+	            <SignatureScope name="Full document" scope="FULL">Full document</SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
     </Signatures>
@@ -66,9 +66,9 @@
             </BasicSignature>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>1.3.76.38.1.1.1</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.76.38.1.1.1</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
@@ -90,7 +90,7 @@
             <KeyUsageBits>
                 <KeyUsage>digitalSignature</KeyUsage>
             </KeyUsageBits>
-            <IdKpOCSPSigning>true</IdKpOCSPSigning>
+            
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -108,23 +108,12 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>1.3.76.38.1.1.1</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.76.38.1.1.1</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-                <Message Id="0">OSCP Uri not found in certificate meta-data !</Message>
-                <Message Id="0">No CRL info found !</Message>
-                <Message Id="0">No CRL info found !</Message>
-                <Message Id="0">OSCP Uri not found in certificate meta-data !</Message>
-                <Message Id="0">No CRL info found !</Message>
-                <Message Id="0">No CRL info found !</Message>
-                <Message Id="0">OSCP Uri not found in certificate meta-data !</Message>
-                <Message Id="0">No CRL info found !</Message>
-            </Info>
         </Certificate>
         <Certificate Id="79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC">
             <SubjectDistinguishedName Format="CANONICAL">cn=g e+2.5.4.42=#0c0+2.5.4.46=#130432333838+2.5.4.4=#0c084741524749554c4f+2.5.4.5=#1313,o=banca d'italia,c=it</SubjectDistinguishedName>
@@ -161,9 +150,9 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicyIds>
-                <oid>1.3.76.38.1.1.1</oid>
-            </CertificatePolicyIds>
+            <CertificatePolicies>
+                <certificatePolicy>1.3.76.38.1.1.1</certificatePolicy>
+            </CertificatePolicies>
             <QCStatementIds>
                 <oid>0.4.0.1862.1.1</oid>
                 <oid>0.4.0.1862.1.3</oid>
@@ -257,9 +246,6 @@
 	                </CertificateChain>
 	            </Revocation>
 	        </Revocations>
-            <Info>
-                <Message Id="0">No CRL info found !</Message>
-            </Info>
         </Certificate>
     </UsedCertificates>
 </DiagnosticData>

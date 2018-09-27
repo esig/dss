@@ -31,7 +31,7 @@ public enum OCSPRespStatus {
 
 	private final int statusCode;
 
-	private OCSPRespStatus(int statusCode) {
+	OCSPRespStatus(int statusCode) {
 		this.statusCode = statusCode;
 	}
 

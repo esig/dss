@@ -22,9 +22,11 @@ package eu.europa.esig.dss.validation;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 
@@ -37,7 +39,7 @@ public interface ValidationContext {
 	 * This function sets the validation time.
 	 *
 	 * @param currentTime
-	 *            {@code Date}
+	 *            the current {@code Date}
 	 */
 	void setCurrentTime(final Date currentTime);
 
@@ -49,8 +51,8 @@ public interface ValidationContext {
 	 * Adds a list of new revocation tokens to the list of tokens to verify. If the revocation token has already been
 	 * added then it is ignored.
 	 *
-	 * @param revocationToken
-	 *            {@code RevocationToken} revocation token to verify
+	 * @param revocationTokens
+	 *            a list of {@code RevocationToken} revocation tokens to verify
 	 */
 	void addRevocationTokensForVerification(final List<RevocationToken> revocationTokens);
 
@@ -76,8 +78,32 @@ public interface ValidationContext {
 	 * Carries out the validation process in recursive manner for not yet checked tokens.
 	 *
 	 * @throws DSSException
+	 *             if an error occurred
 	 */
 	void validate() throws DSSException;
+
+	/**
+	 * This method allows to verify if all processed certificates have a revocation
+	 * data
+	 * 
+	 * @return true if at least one revocation data is present for each certificate
+	 * 
+	 */
+	boolean isAllRequiredRevocationDataPresent();
+
+	/**
+	 * This method allows to verify if all processed timestamps are valid and intact
+	 * 
+	 * @return true if all processed timestamps are valid
+	 */
+	boolean isAllTimestampValid();
+
+	/**
+	 * This method allows to verify if all processed certificates are not revoked
+	 * 
+	 * @return true if all processed certificates are still valid
+	 */
+	boolean isAllCertificateValid();
 
 	/**
 	 * Returns a read only list of all certificates used in the process of the validation of all signatures from the
@@ -87,6 +113,14 @@ public interface ValidationContext {
 	 * @return The list of CertificateToken(s)
 	 */
 	Set<CertificateToken> getProcessedCertificates();
+
+	/**
+	 * Returns a map of {@code CertificateSourceType} by {@code CertificateToken}
+	 * which contains the sources where the certificate was found.
+	 * 
+	 * @return a map of CertificateSourceType by CertificateToken
+	 */
+	Map<CertificateToken, Set<CertificateSourceType>> getCertificateSourceTypes();
 
 	/**
 	 * Returns a read only list of all revocations used in the process of the validation of all signatures from the

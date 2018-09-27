@@ -20,13 +20,82 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.TimestampToken;
+import eu.europa.esig.dss.x509.CertificatePool;
+import eu.europa.esig.dss.x509.TimestampType;
 
 /**
- * TODO
+ * Signature timestamp representation
+ * This class is only used in case of Document Timestamp (not signature-timestamp from CAdES/CMS)
  */
-public interface PdfDocTimestampInfo extends PdfSignatureOrDocTimestampInfo {
+public class PdfDocTimestampInfo extends PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 
-	TimestampToken getTimestampToken();
+	private static final Logger LOG = LoggerFactory.getLogger(PdfDocTimestampInfo.class);
+
+	private final TimestampToken timestampToken;
+
+	private final byte[] content;
+
+	/**
+	 * @param validationCertPool
+	 * @param dssDictionary
+	 *            the DSS dictionary
+	 * @param cms
+	 *            the CMS (CAdES) bytes
+	 * @param coverCompleteRevision
+	 *            true if the signature covers all bytes
+	 * @param isArchiveTimestamp
+	 *            true if the timestamp is an archive timestamp
+	 */
+	public PdfDocTimestampInfo(CertificatePool validationCertPool, PdfSigDict signatureDictionary,
+			PdfDssDict dssDictionary, byte[] cms, byte[] signedContent, boolean coverCompleteRevision,
+			boolean isArchiveTimestamp) {
+		super(signatureDictionary, dssDictionary, cms, signedContent, coverCompleteRevision);
+		try {
+			TimestampType timestampType = TimestampType.SIGNATURE_TIMESTAMP;
+			if (isArchiveTimestamp) {
+				timestampType = TimestampType.ARCHIVE_TIMESTAMP;
+			}
+			timestampToken = new TimestampToken(cms, timestampType, validationCertPool);
+			content = cms;
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Created PdfDocTimestampInfo {} : {}", timestampType, uniqueId());
+			}
+		} catch (Exception e) {
+			throw new DSSException(e);
+		}
+	}
+
+	@Override
+	public void checkIntegrityOnce() {
+		final SignatureCryptographicVerification signatureCryptographicVerification = new SignatureCryptographicVerification();
+		signatureCryptographicVerification.setReferenceDataFound(false);
+		signatureCryptographicVerification.setReferenceDataIntact(false);
+		signatureCryptographicVerification.setSignatureIntact(false);
+		if (getSignedDocumentBytes() != null) {
+			signatureCryptographicVerification.setReferenceDataFound(true);
+		}
+		signatureCryptographicVerification.setReferenceDataIntact(timestampToken.matchData(getSignedDocumentBytes()));
+		signatureCryptographicVerification.setSignatureIntact(timestampToken.isSignatureValid());
+	}
+
+	@Override
+	public boolean isTimestamp() {
+		return true;
+	}
+
+	public TimestampToken getTimestampToken() {
+		return timestampToken;
+	}
+
+	@Override
+	public byte[] getContent() {
+		return content;
+	}
 
 }

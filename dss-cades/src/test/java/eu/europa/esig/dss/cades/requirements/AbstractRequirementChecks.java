@@ -20,10 +20,11 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
-public abstract class AbstractRequirementChecks {
+public abstract class AbstractRequirementChecks extends PKIFactoryAccess {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractRequirementChecks.class);
 
@@ -126,16 +127,22 @@ public abstract class AbstractRequirementChecks {
 	public abstract void checkCompleteRevocationReferences();
 
 	/**
-	 * CAdES-C-timestamp shall not be present (B/T >= 0 ; LT/LTA 0)
+	 * CAdES-C-timestamp shall not be present (B/T 0+ ; LT/LTA 0)
 	 */
 	@Test
 	public abstract void checkCAdESCTimestamp();
 
 	/**
-	 * time-stamped-certs-crls-references shall not be present (B/T >= 0 ; LT/LTA 0)
+	 * time-stamped-certs-crls-references shall not be present (B/T 0+ ; LT/LTA 0)
 	 */
 	@Test
 	public abstract void checkTimestampedCertsCrlsReferences();
+
+	/**
+	 * archive-time-stamp-v3 (B/T/LT 0; LTA 1+)
+	 */
+	@Test
+	public abstract void checkArchiveTimeStampV3();
 
 	protected boolean isSignedAttributeFound(ASN1ObjectIdentifier oid) {
 		return countSignedAttribute(oid) > 0;
