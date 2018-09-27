@@ -1,18 +1,15 @@
 package eu.europa.esig.dss.signature;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.RemoteCertificate;
-import eu.europa.esig.dss.RemoteDocument;
-import eu.europa.esig.dss.RemoteSignatureParameters;
 import eu.europa.esig.dss.RemoteConverter;
+import eu.europa.esig.dss.RemoteSignatureParameters;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
@@ -71,7 +68,7 @@ public class AbstractRemoteSignatureServiceImpl {
 
 	protected void fillParameters(AbstractSignatureParameters parameters, RemoteSignatureParameters remoteParameters) {
 		parameters.setBLevelParams(remoteParameters.bLevel());
-		parameters.setDetachedContents(createDSSDocuments(remoteParameters.getDetachedContents()));
+		parameters.setDetachedContents(RemoteConverter.toDSSDocuments(remoteParameters.getDetachedContents()));
 		parameters.setDigestAlgorithm(remoteParameters.getDigestAlgorithm());
 		parameters.setEncryptionAlgorithm(remoteParameters.getEncryptionAlgorithm());
 		parameters.setSignatureLevel(remoteParameters.getSignatureLevel());
@@ -95,17 +92,6 @@ public class AbstractRemoteSignatureServiceImpl {
 			}
 			parameters.setCertificateChain(certificateChain);
 		}
-	}
-
-	protected List<DSSDocument> createDSSDocuments(List<RemoteDocument> remoteDocuments) {
-		if (Utils.isCollectionNotEmpty(remoteDocuments)) {
-			List<DSSDocument> dssDocuments = new ArrayList<DSSDocument>();
-			for (RemoteDocument remoteDocument : remoteDocuments) {
-				dssDocuments.add(RemoteConverter.toDSSDocument(remoteDocument));
-			}
-			return dssDocuments;
-		}
-		return null;
 	}
 
 }

@@ -10,6 +10,17 @@ public class RemoteConverter {
 	private RemoteConverter() {
 	}
 
+	public static List<DSSDocument> toDSSDocuments(List<RemoteDocument> remoteDocuments) {
+		if (Utils.isCollectionNotEmpty(remoteDocuments)) {
+			List<DSSDocument> dssDocuments = new ArrayList<DSSDocument>();
+			for (RemoteDocument remoteDocument : remoteDocuments) {
+				dssDocuments.add(toDSSDocument(remoteDocument));
+			}
+			return dssDocuments;
+		}
+		return null;
+	}
+
 	public static DSSDocument toDSSDocument(RemoteDocument remoteDocument) {
 		if (remoteDocument.getDigestAlgorithm() != null) {
 			DigestDocument digestDocument = new DigestDocument();
