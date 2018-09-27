@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.validation;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -8,6 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DataToValidateDTO;
 import eu.europa.esig.dss.validation.reports.dto.ReportsDTO;
 
@@ -29,5 +31,9 @@ public interface RestDocumentValidationService extends Serializable {
 	@POST
 	@Path("validateSignature")
 	ReportsDTO validateSignature(DataToValidateDTO dataToValidate);
+
+	@POST
+	@Path("getOriginalDocuments")
+	List<DSSDocument> getOriginalDocuments(DataToValidateDTO dataToValidate);
 
 }
