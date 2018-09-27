@@ -17,6 +17,11 @@ public class DataToValidateDTO {
 	 */
 	private RemoteDocument policy;
 
+	/**
+	 * The signature to operate on
+	 */
+	private String signatureId;
+
 	public DataToValidateDTO() {
 	}
 
@@ -24,6 +29,13 @@ public class DataToValidateDTO {
 		this.signedDocument = signedDocument;
 		this.originalDocument = originalDocument;
 		this.policy = policy;
+	}
+
+	public DataToValidateDTO(RemoteDocument signedDocument, RemoteDocument originalDocument, RemoteDocument policy, String signatureId) {
+		this.signedDocument = signedDocument;
+		this.originalDocument = originalDocument;
+		this.policy = policy;
+		this.signatureId = signatureId;
 	}
 
 	public RemoteDocument getSignedDocument() {
@@ -48,6 +60,14 @@ public class DataToValidateDTO {
 
 	public void setPolicy(RemoteDocument policy) {
 		this.policy = policy;
+	}
+
+	public String getSignatureId() {
+		return signatureId;
+	}
+
+	public void setSignatureId(String signatureId) {
+		this.signatureId = signatureId;
 	}
 
 }
