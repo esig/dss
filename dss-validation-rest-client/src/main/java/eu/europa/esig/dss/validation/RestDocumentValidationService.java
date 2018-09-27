@@ -9,8 +9,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DataToValidateDTO;
+import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.validation.reports.dto.ReportsDTO;
 
 /**
@@ -34,6 +34,6 @@ public interface RestDocumentValidationService extends Serializable {
 
 	@POST
 	@Path("getOriginalDocuments")
-	List<DSSDocument> getOriginalDocuments(DataToValidateDTO dataToValidate);
+	List<RemoteDocument> getOriginalDocuments(DataToValidateDTO dataToValidate);
 
 }

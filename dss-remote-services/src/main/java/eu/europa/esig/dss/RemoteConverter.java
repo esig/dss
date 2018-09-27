@@ -1,5 +1,8 @@
 package eu.europa.esig.dss;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import eu.europa.esig.dss.utils.Utils;
 
 public class RemoteConverter {
@@ -17,6 +20,18 @@ public class RemoteConverter {
 		} else {
 			return new InMemoryDocument(remoteDocument.getBytes(), remoteDocument.getName(), remoteDocument.getMimeType());
 		}
+	}
+
+	public static List<RemoteDocument> toRemoteDocuments(List<DSSDocument> originalDocuments) {
+		List<RemoteDocument> results = new ArrayList<RemoteDocument>();
+		for (DSSDocument originalDocument : originalDocuments) {
+			results.add(toRemoteDocument(originalDocument));
+		}
+		return results;
+	}
+
+	public static RemoteDocument toRemoteDocument(DSSDocument originalDocument) {
+		return new RemoteDocument(DSSUtils.toByteArray(originalDocument), originalDocument.getMimeType(), originalDocument.getName());
 	}
 
 }

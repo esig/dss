@@ -1,10 +1,10 @@
 package eu.europa.esig.dss.validation;
 
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DataToValidateDTO;
-import eu.europa.esig.dss.validation.reports.dto.ReportsDTO;
-
 import java.util.List;
+
+import eu.europa.esig.dss.DataToValidateDTO;
+import eu.europa.esig.dss.RemoteDocument;
+import eu.europa.esig.dss.validation.reports.dto.ReportsDTO;
 
 @SuppressWarnings("serial")
 public class RestDocumentValidationServiceImpl implements RestDocumentValidationService {
@@ -21,7 +21,8 @@ public class RestDocumentValidationServiceImpl implements RestDocumentValidation
 	}
 
 	@Override
-	public List<DSSDocument> getOriginalDocuments(DataToValidateDTO dataToValidate) {
-		return validationService.getOriginalDocuments(dataToValidate.getSignedDocument(), dataToValidate.getSignatureId());
+	public List<RemoteDocument> getOriginalDocuments(DataToValidateDTO dataToValidate) {
+		return validationService.getOriginalDocuments(dataToValidate.getSignedDocument(), dataToValidate.getOriginalDocument(),
+				dataToValidate.getSignatureId());
 	}
 }
