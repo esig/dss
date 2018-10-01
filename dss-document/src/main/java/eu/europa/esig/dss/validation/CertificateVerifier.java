@@ -167,6 +167,23 @@ public interface CertificateVerifier {
 	 * @return true if an exception is thrown, false if a warning message is added
 	 */
 	boolean isExceptionOnMissingRevocationData();
+	
+	/**
+	 * This method allows to change the behavior by including raw revocation data.
+	 * 
+	 * @param include
+	 * 					true if raw revocation data should be included (default: false)
+	 */
+	void setIncludeCertificateRevocationValues(boolean include);
+
+	/**
+	 * This method returns true if the revocation data need to be exported in the
+	 * diagnostic data report.
+	 * 
+	 * @return true if raw revocation data should be included in the diagnotic data
+	 *         report (default: false)
+	 */
+	boolean isIncludeCertificateRevocationValues();
 
 	/**
 	 * This method allows to change the behavior on invalid timestamp (LT/LTA

@@ -91,6 +91,12 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * message. Default : true
 	 */
 	private boolean exceptionOnMissingRevocationData = true;
+	
+	/**
+	 * This variable set the behavior to include raw revocation data into the diagnostic report.
+	 * (default: false) 
+	 */
+	private boolean includeRawRevocationData = false;
 
 	/**
 	 * This variable set the behavior to follow in case of revoked certificate
@@ -280,6 +286,16 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 			validationPool.importCerts(adjunctCertSource);
 		}
 		return validationPool;
+	}
+
+	@Override
+	public void setIncludeCertificateRevocationValues(boolean include) {
+		this.includeRawRevocationData = include;
+	}
+
+	@Override
+	public boolean isIncludeCertificateRevocationValues() {
+		return this.includeRawRevocationData;
 	}
 
 }

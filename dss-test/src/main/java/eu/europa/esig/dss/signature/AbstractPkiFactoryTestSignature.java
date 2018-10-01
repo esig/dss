@@ -89,6 +89,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		verifyDiagnosticData(diagnosticData);
 
+		verifyDiagnosticDataJaxb(reports.getDiagnosticDataJaxb());
+
 		SimpleReport simpleReport = reports.getSimpleReport();
 		verifySimpleReport(simpleReport);
 
@@ -194,6 +196,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		checkCommitmentTypeIndications(diagnosticData);
 		checkClaimedRoles(diagnosticData);
 		checkMessageDigestAlgorithm(diagnosticData);
+	}
+
+	protected void verifyDiagnosticDataJaxb(eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticDataJaxb) {
+
 	}
 
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
