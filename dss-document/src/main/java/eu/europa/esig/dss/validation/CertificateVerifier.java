@@ -173,5 +173,13 @@ public interface CertificateVerifier {
 	 * during the validation process.
 	 */
 	CertificatePool createValidationPool();
-
+	
+	/**
+	 * This method allows to change the behavior by including raw revocation data.
+	 * 
+	 * @param include
+	 * 					true if raw revocation data should be included (default: false)
+	 */
+	void setIncludeCertificateRevocationValues(boolean include);
+	boolean includeCertificateRevocationValues();
 }

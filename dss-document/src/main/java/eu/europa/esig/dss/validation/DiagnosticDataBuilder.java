@@ -403,6 +403,8 @@ public class DiagnosticDataBuilder {
 
 		xmlRevocation.setSigningCertificate(getXmlSigningCertificate(revocationToken.getPublicKeyOfTheSigner()));
 		xmlRevocation.setCertificateChain(getXmlForCertificateChain(revocationToken.getPublicKeyOfTheSigner()));
+		
+		xmlRevocation.setBase64Encoded( revocationToken.getEncoded() );
 
 		return xmlRevocation;
 	}

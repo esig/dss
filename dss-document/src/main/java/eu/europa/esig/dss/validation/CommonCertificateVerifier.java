@@ -86,11 +86,17 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private ListOCSPSource signatureOCSPSource;
 
 	/**
-	 * This variable set the bahavior to follow in case of missing revocation data
+	 * This variable set the behavior to follow in case of missing revocation data
 	 * (augmentation process). True : throw an exception / False : add a warning
 	 * message. Default : true
 	 */
 	private boolean exceptionOnMissingRevocationData = true;
+	
+	/**
+	 * This variable set the behavior to include raw revocation data into the diagnostic report.
+	 * (default: false) 
+	 */
+	private boolean includeRawRevocationData = false;
 
 	/**
 	 * The default constructor. The {@code DataLoader} is created to allow the
@@ -230,6 +236,16 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 			validationPool.importCerts(adjunctCertSource);
 		}
 		return validationPool;
+	}
+
+	@Override
+	public void setIncludeCertificateRevocationValues(boolean include) {
+		this.includeRawRevocationData = include;
+	}
+
+	@Override
+	public boolean includeCertificateRevocationValues() {
+		return this.includeRawRevocationData;
 	}
 
 }
