@@ -86,6 +86,7 @@ public class DiagnosticDataBuilder {
 	private Set<RevocationToken> usedRevocations;
 	private CommonTrustedCertificateSource trustedCertSource;
 	private Date validationDate;
+	private boolean includeRawRevocationData = false;
 
 	/**
 	 * This method allows to set the document which is analysed
@@ -156,6 +157,20 @@ public class DiagnosticDataBuilder {
 	 */
 	public DiagnosticDataBuilder usedRevocations(Set<RevocationToken> usedRevocations) {
 		this.usedRevocations = usedRevocations;
+		return this;
+	}
+
+	/**
+	 * This method allows set the behavior to include raw revocation data into the
+	 * diagnostic report. (default: false)
+	 * 
+	 * @param includeRawRevocationData
+	 *                                 true if the revocation data need to be
+	 *                                 exported in the diagnostic data
+	 * @return the builder
+	 */
+	public DiagnosticDataBuilder includeRawRevocationData(boolean includeRawRevocationData) {
+		this.includeRawRevocationData = includeRawRevocationData;
 		return this;
 	}
 
@@ -404,7 +419,9 @@ public class DiagnosticDataBuilder {
 		xmlRevocation.setSigningCertificate(getXmlSigningCertificate(revocationToken.getPublicKeyOfTheSigner()));
 		xmlRevocation.setCertificateChain(getXmlForCertificateChain(revocationToken.getPublicKeyOfTheSigner()));
 		
-		xmlRevocation.setBase64Encoded( revocationToken.getEncoded() );
+		if (includeRawRevocationData) {
+			xmlRevocation.setBase64Encoded(revocationToken.getEncoded());
+		}
 
 		return xmlRevocation;
 	}

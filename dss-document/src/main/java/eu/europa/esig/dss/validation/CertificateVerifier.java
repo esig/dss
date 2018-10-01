@@ -167,12 +167,6 @@ public interface CertificateVerifier {
 	 * @return true if an exception is thrown, false if a warning message is added
 	 */
 	boolean isExceptionOnMissingRevocationData();
-
-	/**
-	 * This method creates the validation pool of certificates which is used
-	 * during the validation process.
-	 */
-	CertificatePool createValidationPool();
 	
 	/**
 	 * This method allows to change the behavior by including raw revocation data.
@@ -181,5 +175,20 @@ public interface CertificateVerifier {
 	 * 					true if raw revocation data should be included (default: false)
 	 */
 	void setIncludeCertificateRevocationValues(boolean include);
-	boolean includeCertificateRevocationValues();
+
+	/**
+	 * This method returns true if the revocation data need to be exported in the
+	 * diagnostic data report.
+	 * 
+	 * @return true if raw revocation data should be included in the diagnotic data
+	 *         report (default: false)
+	 */
+	boolean isIncludeCertificateRevocationValues();
+
+	/**
+	 * This method creates the validation pool of certificates which is used during
+	 * the validation process.
+	 */
+	CertificatePool createValidationPool();
+
 }

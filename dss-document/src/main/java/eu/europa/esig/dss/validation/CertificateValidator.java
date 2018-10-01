@@ -49,7 +49,8 @@ public class CertificateValidator {
 		svc.validate();
 
 		final DiagnosticData diagnosticData = new DiagnosticDataBuilder().usedCertificates(svc.getProcessedCertificates())
-				.usedRevocations(svc.getProcessedRevocations()).certificateSourceTypes(svc.getCertificateSourceTypes())
+				.usedRevocations(svc.getProcessedRevocations()).includeRawRevocationData(certificateVerifier.isIncludeCertificateRevocationValues())
+				.certificateSourceTypes(svc.getCertificateSourceTypes())
 				.trustedCertificateSource(certificateVerifier.getTrustedCertSource())
 				.validationDate(svc.getCurrentTime()).build();
 

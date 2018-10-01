@@ -244,7 +244,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	public boolean includeCertificateRevocationValues() {
+	public boolean isIncludeCertificateRevocationValues() {
 		return this.includeRawRevocationData;
 	}
 

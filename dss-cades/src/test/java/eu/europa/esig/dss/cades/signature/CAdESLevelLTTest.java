@@ -20,7 +20,10 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import java.util.Date;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.junit.Before;
 
@@ -29,7 +32,11 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 
 public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 
@@ -42,7 +49,6 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
 		signatureParameters = new CAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -50,6 +56,30 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 
 		service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
+	}
+
+	@Override
+	protected CertificateVerifier getCompleteCertificateVerifier() {
+		CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
+		certificateVerifier.setIncludeCertificateRevocationValues(true);
+		return certificateVerifier;
+	}
+
+	@Override
+	protected void verifyDiagnosticDataJaxb(eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticDataJaxb) {
+		super.verifyDiagnosticDataJaxb(diagnosticDataJaxb);
+
+		List<XmlCertificate> usedCertificates = diagnosticDataJaxb.getUsedCertificates();
+		for (XmlCertificate xmlCertificate : usedCertificates) {
+			if (!xmlCertificate.isTrusted() && !xmlCertificate.isIdPkixOcspNoCheck() && !xmlCertificate.isSelfSigned()) {
+				List<XmlRevocation> revocations = xmlCertificate.getRevocations();
+				assertTrue(Utils.isCollectionNotEmpty(revocations));
+				for (XmlRevocation xmlRevocation : revocations) {
+					assertNotNull(xmlRevocation.getBase64Encoded());
+				}
+
+			}
+		}
 	}
 
 	@Override
