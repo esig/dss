@@ -50,6 +50,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *         &lt;element name="BasicSignature" type="{http://dss.esig.europa.eu/validation/diagnostic}BasicSignature" minOccurs="0"/&gt;
  *         &lt;element name="SigningCertificate" type="{http://dss.esig.europa.eu/validation/diagnostic}SigningCertificate" minOccurs="0"/&gt;
  *         &lt;element name="CertificateChain" type="{http://dss.esig.europa.eu/validation/diagnostic}CertificateChain" minOccurs="0"/&gt;
+ *         &lt;element name="Base64Encoded" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;attribute name="Id" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
  *     &lt;/restriction&gt;
@@ -78,7 +79,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "digestAlgoAndValues",
     "basicSignature",
     "signingCertificate",
-    "certificateChain"
+    "certificateChain",
+    "base64Encoded"
 })
 public class XmlRevocation implements Serializable
 {
@@ -134,6 +136,8 @@ public class XmlRevocation implements Serializable
     @XmlElementWrapper(name = "CertificateChain")
     @XmlElement(name = "ChainItem", namespace = "http://dss.esig.europa.eu/validation/diagnostic")
     protected List<XmlChainItem> certificateChain;
+    @XmlElement(name = "Base64Encoded")
+    protected byte[] base64Encoded;
     @XmlAttribute(name = "Id", required = true)
     protected String id;
 
@@ -513,6 +517,28 @@ public class XmlRevocation implements Serializable
         this.signingCertificate = value;
     }
 
+    /**
+     * Gets the value of the base64Encoded property.
+     * 
+     * @return
+     *     possible object is
+     *     byte[]
+     */
+    public byte[] getBase64Encoded() {
+        return base64Encoded;
+    }
+
+    /**
+     * Sets the value of the base64Encoded property.
+     * 
+     * @param value
+     *     allowed object is
+     *     byte[]
+     */
+    public void setBase64Encoded(byte[] value) {
+        this.base64Encoded = value;
+    }
+    
     /**
      * Gets the value of the id property.
      * 

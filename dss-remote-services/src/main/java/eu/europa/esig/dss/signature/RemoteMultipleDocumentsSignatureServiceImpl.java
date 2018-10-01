@@ -9,9 +9,9 @@ import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.RemoteConverter;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
-import eu.europa.esig.dss.RemoteConverter;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
@@ -50,7 +50,7 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 		LOG.info("GetDataToSign in process...");
 		AbstractSignatureParameters parameters = createParameters(remoteParameters);
 		MultipleDocumentsSignatureService service = getServiceForSignature(remoteParameters);
-		List<DSSDocument> dssDocuments = createDSSDocuments(toSignDocuments);
+		List<DSSDocument> dssDocuments = RemoteConverter.toDSSDocuments(toSignDocuments);
 		ToBeSigned dataToSign = service.getDataToSign(dssDocuments, parameters);
 		LOG.info("GetDataToSign is finished");
 		return dataToSign;
@@ -63,7 +63,7 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 		LOG.info("SignDocument in process...");
 		AbstractSignatureParameters parameters = createParameters(remoteParameters);
 		MultipleDocumentsSignatureService service = getServiceForSignature(remoteParameters);
-		List<DSSDocument> dssDocuments = createDSSDocuments(toSignDocuments);
+		List<DSSDocument> dssDocuments = RemoteConverter.toDSSDocuments(toSignDocuments);
 		DSSDocument signDocument = service.signDocument(dssDocuments, parameters, signatureValue);
 		LOG.info("SignDocument is finished");
 		return signDocument;
