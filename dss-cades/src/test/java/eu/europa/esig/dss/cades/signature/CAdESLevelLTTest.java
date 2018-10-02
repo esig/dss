@@ -66,6 +66,13 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 	}
 
 	@Override
+	protected CertificateVerifier getOfflineCertificateVerifier() {
+		CertificateVerifier certificateVerifier = super.getOfflineCertificateVerifier();
+		certificateVerifier.setIncludeCertificateRevocationValues(true);
+		return certificateVerifier;
+	}
+
+	@Override
 	protected void verifyDiagnosticDataJaxb(eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticDataJaxb) {
 		super.verifyDiagnosticDataJaxb(diagnosticDataJaxb);
 
