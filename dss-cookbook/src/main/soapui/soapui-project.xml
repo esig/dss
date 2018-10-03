@@ -458,8 +458,6 @@
           <xs:element minOccurs="0" name="MessageImprintDataIntact" type="tns:LevelConstraint"/>
           <xs:element minOccurs="0" name="RevocationTimeAgainstBestSignatureTime" type="tns:LevelConstraint"/>
           <xs:element minOccurs="0" name="BestSignatureTimeBeforeIssuanceDateOfSigningCertificate" type="tns:LevelConstraint"/>
-          <xs:element minOccurs="0" name="SigningCertificateValidityAtBestSignatureTime" type="tns:LevelConstraint"/>
-          <xs:element minOccurs="0" name="AlgorithmReliableAtBestSignatureTime" type="tns:LevelConstraint"/>
           <xs:element minOccurs="0" name="Coherence" type="tns:LevelConstraint"/>
           <xs:element minOccurs="0" name="BasicSignatureConstraints" type="tns:BasicSignatureConstraints"/>
         </xs:sequence>

@@ -23,7 +23,7 @@
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
 				<RevocationDataTrusted Level="FAIL" />
-				<RevocationDataFreshness Level="WARN" />
+				<RevocationDataFreshness Level="FAIL" />
 				<KeyUsage Level="WARN">
 					<Id>nonRepudiation</Id>
 				</KeyUsage>
@@ -61,7 +61,7 @@
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
 				<RevocationDataTrusted Level="FAIL" />
-				<RevocationDataFreshness Level="WARN" />
+				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked  Level="FAIL" />
 				<Cryptographic Level="FAIL">
 					<AcceptableEncryptionAlgo>
@@ -132,8 +132,6 @@
 		<MessageImprintDataIntact Level="FAIL" />
 		<RevocationTimeAgainstBestSignatureTime	Level="FAIL" />
 		<BestSignatureTimeBeforeIssuanceDateOfSigningCertificate Level="FAIL" />
-		<SigningCertificateValidityAtBestSignatureTime Level="FAIL" />
-		<AlgorithmReliableAtBestSignatureTime Level="FAIL" />
 		<Coherence Level="WARN" />
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
@@ -146,7 +144,7 @@
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
 				<RevocationDataTrusted Level="FAIL" />
-				<RevocationDataFreshness Level="WARN" />
+				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked  Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<TSLStatus Level="FAIL" />
@@ -176,7 +174,7 @@
 				<NotExpired Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
 				<RevocationDataTrusted Level="FAIL" />
-				<RevocationDataFreshness Level="WARN" />
+				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked  Level="FAIL" />
 				<Cryptographic Level="FAIL">
 					<AcceptableEncryptionAlgo>
