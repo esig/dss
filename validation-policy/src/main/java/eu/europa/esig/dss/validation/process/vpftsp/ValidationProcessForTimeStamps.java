@@ -35,16 +35,15 @@ public class ValidationProcessForTimeStamps extends Chain<XmlValidationProcessTi
 		if (tspBBB != null) {
 			firstItem = timestampBasicBuildingBlocksValid(tspBBB);
 		} else {
-			LOG.error("Basic Building Blocks for timestamp " + timestamp.getId() + " not found!");
+			LOG.error("Basic Building Blocks for timestamp '{}' not found!", timestamp.getId());
 		}
-
-		result.setProductionTime(timestamp.getProductionTime());
 	}
 
 	@Override
 	protected void addAdditionalInfo() {
 		result.setId(timestamp.getId());
 		result.setType(timestamp.getType());
+		result.setProductionTime(timestamp.getProductionTime());
 	}
 
 	private ChainItem<XmlValidationProcessTimestamps> timestampBasicBuildingBlocksValid(XmlBasicBuildingBlocks timestampBBB) {

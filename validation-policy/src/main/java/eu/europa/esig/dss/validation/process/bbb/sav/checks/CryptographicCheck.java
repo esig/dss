@@ -115,7 +115,7 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Chai
 				try {
 					result = dateFormat.parse(algo.getDate());
 				} catch (Exception e) {
-					LOG.warn("Unable to parse date with pattern '" + dateFormat.toPattern() + "' : " + e.getMessage());
+					LOG.warn("Unable to parse date with pattern '{}' : {}", dateFormat.toPattern(), e.getMessage());
 				}
 			}
 		}

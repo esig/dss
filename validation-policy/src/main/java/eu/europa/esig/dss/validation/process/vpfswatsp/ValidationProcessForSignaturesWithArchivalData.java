@@ -162,7 +162,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 					 */
 
 				} else { // timestampValidation is null
-					LOG.error("No timestamp validation found for timestamp " + newestTimestamp.getId());
+					LOG.error("No timestamp validation found for timestamp {}", newestTimestamp.getId());
 				}
 			}
 		}

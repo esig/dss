@@ -104,7 +104,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 				informOrWarn(constraint.getLevel());
 				break;
 			default:
-				LOG.warn("Unknown level : " + constraint.getLevel());
+				LOG.warn("Unknown level : {}", constraint.getLevel());
 				break;
 			}
 		}

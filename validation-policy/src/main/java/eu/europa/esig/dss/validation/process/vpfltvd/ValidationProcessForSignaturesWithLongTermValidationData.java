@@ -38,6 +38,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.TimestampType;
+import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 /**
  * 5.5 Validation process for Signatures with Time and Signatures with Long-Term Validation Data
@@ -102,7 +103,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				if (revocationBBB != null) {
 					item = item.setNextItem(revocationBasicBuildingBlocksValid(revocationBBB));
 				} else {
-					LOG.warn("No BBB found for revocation " + revocation.getId());
+					LOG.warn("No BBB found for revocation : {}", revocation.getId());
 				}
 			}
 		}
@@ -239,7 +240,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				}
 			}
 			if (!foundValidationTSP) {
-				LOG.warn("Cannot find tsp validation info for tsp " + timestampWrapper.getId());
+				LOG.warn("Cannot find tsp validation info for tsp {}", timestampWrapper.getId());
 			}
 		}
 		return result;
@@ -254,8 +255,9 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> revocationDateAfterBestSignatureDate(Date bestSignatureTime) {
+		LevelConstraint constraint = policy.getRevocationTimeAgainstBestSignatureTime();
 		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
-		return new RevocationDateAfterBestSignatureTimeCheck(result, signingCertificate, bestSignatureTime, getFailLevelConstraint());
+		return new RevocationDateAfterBestSignatureTimeCheck(result, signingCertificate, bestSignatureTime, constraint);
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime) {
@@ -273,7 +275,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> timestampDelay(Date bestSignatureTime) {
-		return new TimestampDelayCheck(result, currentSignature, bestSignatureTime, policy.getTimestampDelaySigningTimePropertyConstraint());
+		return new TimestampDelayCheck(result, currentSignature, bestSignatureTime, policy.getTimestampDelayConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> algorithmReliableAtBestSignatureTime(Date bestSignatureTime) {
