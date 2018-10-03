@@ -629,15 +629,14 @@
 		</xsd:annotation>
 		<xsd:attribute type="tns:level" name="Level">
 			<xsd:annotation>
-				<xsd:documentation>The level of criticality</xsd:documentation><
+				<xsd:documentation>The level of criticality</xsd:documentation>
 			</xsd:annotation>
 		</xsd:attribute>
 	</xsd:complexType>
 
 	<xsd:complexType name="MultiValuesConstraint">
 		<xsd:annotation>
-			<xsd:documentation>Multi-values check : follows the specified level behavior if the checked element is not present in the list</xsd:documentation>
-			<xsd:documentation>'*' can be used and means any value</xsd:documentation>
+			<xsd:documentation>Multi-values check : follows the specified level behavior if the checked element is not present in the list. '*' can be used and means any value.</xsd:documentation>
 		</xsd:annotation>
   		<xsd:complexContent>
 			<xsd:extension base="tns:LevelConstraint">
