@@ -16,7 +16,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	/**
 	 * The digest method used to create the digest of the signer's certificate.
 	 */
-	private DigestAlgorithm signingCertificateDigestMethod = DigestAlgorithm.SHA1;
+	private DigestAlgorithm signingCertificateDigestMethod = DigestAlgorithm.SHA512;
 
 	/**
 	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedInfo.
