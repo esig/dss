@@ -170,6 +170,11 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		LevelConstraint constraint = validationPolicy.getCertificateRevocationInfoAccessPresentConstraint(context, subContext);
 		return new RevocationInfoAccessPresentCheck(result, certificate, constraint);
 	}
+	
+	private ChainItem<XmlSubXCV> checkRevocationFreshnessCheckerResult(XmlRFC rfcResult) {
+		LevelConstraint constraint = validationPolicy.getCertificateRevocationFreshnessConstraint(context, subContext);
+		return new RevocationFreshnessCheckerResult(result, rfcResult, constraint);
+	}
 
 	private ChainItem<XmlSubXCV> surname(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificateSurnameConstraint(context, subContext);
@@ -274,10 +279,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> certificateIssuedToNaturalPerson(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateIssuedToNaturalPersonConstraint(context, subContext);
 		return new CertificateIssuedToNaturalPersonCheck(result, certificate, constraint);
-	}
-
-	private ChainItem<XmlSubXCV> checkRevocationFreshnessCheckerResult(XmlRFC rfcResult) {
-		return new RevocationFreshnessCheckerResult(result, rfcResult, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlSubXCV> idPkixOcspNoCheck() {

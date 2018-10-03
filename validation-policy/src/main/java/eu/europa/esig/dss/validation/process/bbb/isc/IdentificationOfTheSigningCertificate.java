@@ -52,17 +52,6 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 		 */
 		ChainItem<XmlISC> item = firstItem = signingCertificateRecognition();
 
-		XmlCertificateChain certificateChain = new XmlCertificateChain();
-		if(token.getCertificateChain() != null) {
-			for(eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem diagnosticChainItem : token.getCertificateChain()) {
-				XmlChainItem chainItem = new XmlChainItem();
-				chainItem.setId(diagnosticChainItem.getId());
-				chainItem.setSource(diagnosticChainItem.getSource());
-				certificateChain.getChainItem().add(chainItem);
-			}
-			result.setCertificateChain(certificateChain);
-		}
-		
 		if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
 			/*
 			 * 1) If the signature format used contains a way to directly identify the reference to the signers'
@@ -98,6 +87,22 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 			 * the signing certificate: if they do not match, an additional warning shall be returned with the output.
 			 */
 			item = item.setNextItem(issuerSerialMatch());
+		}
+	}
+
+	@Override
+	protected void addAdditionalInfo() {
+		super.addAdditionalInfo();
+
+		if (token.getCertificateChain() != null) {
+			XmlCertificateChain certificateChain = new XmlCertificateChain();
+			for (eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem diagnosticChainItem : token.getCertificateChain()) {
+				XmlChainItem chainItem = new XmlChainItem();
+				chainItem.setId(diagnosticChainItem.getId());
+				chainItem.setSource(diagnosticChainItem.getSource());
+				certificateChain.getChainItem().add(chainItem);
+			}
+			result.setCertificateChain(certificateChain);
 		}
 	}
 

@@ -29,9 +29,8 @@ public class CertificateExpirationCheck extends ChainItem<XmlSubXCV> {
 	protected boolean process() {
 		Date notBefore = certificate.getNotBefore();
 		Date notAfter = certificate.getNotAfter();
-		boolean certificateValidity = (notBefore != null && (currentTime.compareTo(notBefore) >= 0))
+		return (notBefore != null && (currentTime.compareTo(notBefore) >= 0))
 				&& (notAfter != null && (currentTime.compareTo(notAfter) <= 0));
-		return certificateValidity;
 	}
 
 	@Override

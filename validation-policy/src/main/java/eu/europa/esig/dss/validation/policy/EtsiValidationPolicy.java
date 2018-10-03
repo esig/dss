@@ -440,7 +440,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 			return certificateConstraints.getRevocationDataNextUpdatePresent();
 		}
 		return null;
+	}
 
+	@Override
+	public LevelConstraint getCertificateRevocationFreshnessConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getRevocationDataFreshness();
+		}
+		return null;
 	}
 
 	@Override
@@ -654,19 +662,10 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getSigningCertificateValidityAtBestSignatureTimeConstraint() {
-		TimestampConstraints timestamp = policy.getTimestamp();
-		if (timestamp != null) {
-			return timestamp.getSigningCertificateValidityAtBestSignatureTime();
-		}
-		return null;
-	}
-
-	@Override
-	public LevelConstraint getAlgorithmReliableAtBestSignatureTimeConstraint() {
-		TimestampConstraints timestamp = policy.getTimestamp();
-		if (timestamp != null) {
-			return timestamp.getAlgorithmReliableAtBestSignatureTime();
+	public LevelConstraint getRevocationTimeAgainstBestSignatureTime() {
+		TimestampConstraints timestampConstraints = policy.getTimestamp();
+		if (timestampConstraints != null) {
+			return timestampConstraints.getRevocationTimeAgainstBestSignatureTime();
 		}
 		return null;
 	}
@@ -681,7 +680,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public TimeConstraint getTimestampDelaySigningTimePropertyConstraint() {
+	public TimeConstraint getTimestampDelayConstraint() {
 		TimestampConstraints timestampConstraints = policy.getTimestamp();
 		if (timestampConstraints != null) {
 			return timestampConstraints.getTimestampDelay();

@@ -229,6 +229,8 @@ public interface ValidationPolicy {
 
 	LevelConstraint getRevocationDataNextUpdatePresentConstraint(Context context, SubContext subContext);
 
+	LevelConstraint getCertificateRevocationFreshnessConstraint(Context context, SubContext subContext);
+
 	/**
 	 * @return {@code LevelConstraint} if Revoked for a given context element is present in the constraint file, null
 	 *         otherwise.
@@ -320,13 +322,11 @@ public interface ValidationPolicy {
 
 	LevelConstraint getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint();
 
-	LevelConstraint getSigningCertificateValidityAtBestSignatureTimeConstraint();
-
-	LevelConstraint getAlgorithmReliableAtBestSignatureTimeConstraint();
-
 	LevelConstraint getTimestampCoherenceConstraint();
 
-	TimeConstraint getTimestampDelaySigningTimePropertyConstraint();
+	TimeConstraint getTimestampDelayConstraint();
+
+	LevelConstraint getRevocationTimeAgainstBestSignatureTime();
 
 	TimeConstraint getRevocationFreshnessConstraint();
 
