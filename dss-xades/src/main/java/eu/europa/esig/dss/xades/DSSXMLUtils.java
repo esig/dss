@@ -37,7 +37,6 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.apache.xml.security.Init;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
@@ -71,7 +70,7 @@ public final class DSSXMLUtils {
 
 	static {
 
-		Init.init();
+		SantuarioInitializer.init();
 
 		transforms = new HashSet<String>();
 		registerDefaultTransforms();

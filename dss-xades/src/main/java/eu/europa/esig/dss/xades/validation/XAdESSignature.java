@@ -37,7 +37,6 @@ import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xml.security.Init;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.KeyInfo;
@@ -100,6 +99,7 @@ import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
 import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
@@ -150,7 +150,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	static {
 
-		Init.init();
+		SantuarioInitializer.init();
+
 		JCEMapper.setProviderId(BouncyCastleProvider.PROVIDER_NAME);
 
 		/**
