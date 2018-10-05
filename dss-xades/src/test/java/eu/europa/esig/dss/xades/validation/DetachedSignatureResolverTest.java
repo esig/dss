@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.apache.xml.security.Init;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.junit.Test;
@@ -20,11 +19,12 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.xades.SantuarioInitializer;
 
 public class DetachedSignatureResolverTest {
 
 	static {
-		Init.init();
+		SantuarioInitializer.init();
 	}
 
 	@Test(expected = ResourceResolverException.class)
