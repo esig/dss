@@ -24,11 +24,11 @@ public final class DateUtils {
 	 * @throws DSSException
 	 *             if the conversion is not possible the {@code DSSException} is thrown.
 	 */
-	public static Date parseDate(final String format, final String dateString) throws DSSException {
+	public static Date parseDate(final String format, final String dateString) {
 		try {
 			final SimpleDateFormat sdf = new SimpleDateFormat(format);
-			final Date date = sdf.parse(dateString);
-			return date;
+			sdf.setLenient(false);
+			return sdf.parse(dateString);
 		} catch (ParseException e) {
 			throw new DSSException("Unable to parse date " + dateString + " (format:" + format + ")", e);
 		}

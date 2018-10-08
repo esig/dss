@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
@@ -173,7 +172,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	}
 
 	@Override
-	public List<DSSDocument> getOriginalDocuments(String signatureId) throws DSSException {
+	public List<DSSDocument> getOriginalDocuments(String signatureId) {
 		List<DSSDocument> result = new ArrayList<DSSDocument>();
 		List<AdvancedSignature> signatures = getSignatures();
 		for (AdvancedSignature signature : signatures) {

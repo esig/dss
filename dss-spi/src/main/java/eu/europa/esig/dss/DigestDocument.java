@@ -59,7 +59,7 @@ public class DigestDocument extends CommonDocument {
 	}
 
 	@Override
-	public InputStream openStream() throws DSSException {
+	public InputStream openStream() {
 		throw new DSSException("Digest document");
 	}
 

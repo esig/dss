@@ -48,12 +48,12 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 	}
 
 	@Override
-	public ToBeSigned getDataToSign(DSSDocument toSignDocument, SP parameters) throws DSSException {
+	public ToBeSigned getDataToSign(DSSDocument toSignDocument, SP parameters) {
 		return getDataToSign(Arrays.asList(toSignDocument), parameters);
 	}
 
 	@Override
-	public DSSDocument signDocument(DSSDocument toSignDocument, SP parameters, SignatureValue signatureValue) throws DSSException {
+	public DSSDocument signDocument(DSSDocument toSignDocument, SP parameters, SignatureValue signatureValue) {
 		return signDocument(Arrays.asList(toSignDocument), parameters, signatureValue);
 	}
 

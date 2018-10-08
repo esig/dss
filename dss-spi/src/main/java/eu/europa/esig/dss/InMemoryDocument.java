@@ -81,10 +81,8 @@ public class InMemoryDocument extends CommonDocument {
 	 *
 	 * @param inputStream
 	 *            input stream representing the document
-	 * @throws DSSException
-	 *             if the inputstream cannot be read
 	 */
-	public InMemoryDocument(final InputStream inputStream) throws DSSException {
+	public InMemoryDocument(final InputStream inputStream) {
 		this(DSSUtils.toByteArray(inputStream), null, null);
 	}
 
@@ -95,10 +93,8 @@ public class InMemoryDocument extends CommonDocument {
 	 *            input stream representing the document
 	 * @param name
 	 *            the file name if the data originates from a file
-	 * @throws DSSException
-	 *             if the inputstream cannot be read
 	 */
-	public InMemoryDocument(final InputStream inputStream, final String name) throws DSSException {
+	public InMemoryDocument(final InputStream inputStream, final String name) {
 		this(DSSUtils.toByteArray(inputStream), name);
 	}
 
@@ -111,20 +107,17 @@ public class InMemoryDocument extends CommonDocument {
 	 *            the file name if the data originates from a file
 	 * @param mimeType
 	 *            the mime type of the file if the data originates from a file
-	 * @throws DSSException
-	 *             if the inputstream cannot be read
 	 */
-	public InMemoryDocument(final InputStream inputStream, final String name, final MimeType mimeType) throws DSSException {
+	public InMemoryDocument(final InputStream inputStream, final String name, final MimeType mimeType) {
 		this(DSSUtils.toByteArray(inputStream), name, mimeType);
 	}
 
 	@Override
-	public InputStream openStream() throws DSSException {
-		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-		return byteArrayInputStream;
+	public InputStream openStream() {
+		return new ByteArrayInputStream(bytes);
 	}
 
-	public byte[] getBytes() throws DSSException {
+	public byte[] getBytes() {
 		return bytes;
 	}
 

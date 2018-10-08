@@ -127,7 +127,7 @@ public final class ASiCUtils {
 		return MimeType.ODS == mimeType || MimeType.ODT == mimeType;
 	}
 
-	public static MimeType getMimeType(final DSSDocument mimeTypeDocument) throws DSSException {
+	public static MimeType getMimeType(final DSSDocument mimeTypeDocument) {
 		try (InputStream is = mimeTypeDocument.openStream()) {
 			byte[] byteArray = Utils.toByteArray(is);
 			final String mimeTypeString = new String(byteArray, "UTF-8");
