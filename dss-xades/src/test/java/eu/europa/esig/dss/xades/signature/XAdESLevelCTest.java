@@ -20,7 +20,11 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
+import java.util.List;
 
 import org.junit.Before;
 
@@ -29,6 +33,11 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.CRLRef;
+import eu.europa.esig.dss.validation.CertificateRef;
+import eu.europa.esig.dss.validation.OCSPRef;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESLevelCTest extends AbstractXAdESTestSignature {
@@ -50,6 +59,42 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
+	}
+
+	@Override
+	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
+		super.checkAdvancedSignatures(signatures);
+
+		AdvancedSignature advancedSignature = signatures.get(0);
+
+		List<CertificateRef> certificateRefs = advancedSignature.getCertificateRefs();
+		assertTrue(Utils.isCollectionNotEmpty(certificateRefs));
+		for (CertificateRef certificateRef : certificateRefs) {
+			assertNotNull(certificateRef.getDigestAlgorithm());
+			assertNotNull(certificateRef.getIssuerName());
+			assertNotNull(certificateRef.getIssuerSerial());
+			assertNotNull(certificateRef.getDigestValue());
+		}
+
+		List<OCSPRef> ocspRefs = advancedSignature.getOCSPRefs();
+		List<CRLRef> crlRefs = advancedSignature.getCRLRefs();
+
+		assertTrue(Utils.isCollectionNotEmpty(ocspRefs) || Utils.isCollectionNotEmpty(crlRefs));
+
+		if (!ocspRefs.isEmpty()) {
+			for (OCSPRef ocspRef : ocspRefs) {
+				assertNotNull(ocspRef.getDigestAlgorithm());
+				assertNotNull(ocspRef.getDigestValue());
+			}
+		}
+
+		if (!crlRefs.isEmpty()) {
+			for (CRLRef crlRef : crlRefs) {
+				assertNotNull(crlRef.getDigestAlgorithm());
+				assertNotNull(crlRef.getDigestValue());
+			}
+		}
+
 	}
 
 	@Override

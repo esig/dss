@@ -1470,34 +1470,33 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<CRLRef> getCRLRefs() {
-		final List<CRLRef> certIds = new ArrayList<CRLRef>();
-		final Element signingCertEl = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_REVOCATION_CRL_REFS);
-		if (signingCertEl != null) {
+		final List<CRLRef> crlRefs = new ArrayList<CRLRef>();
+		final Element crlRefsElement = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_REVOCATION_CRL_REFS);
+		if (crlRefsElement != null) {
 
-			final NodeList crlRefNodes = DomUtils.getNodeList(signingCertEl, xPathQueryHolder.XPATH__CRL_REF);
+			final NodeList crlRefNodes = DomUtils.getNodeList(crlRefsElement, xPathQueryHolder.XPATH__CRL_REF);
 			for (int i = 0; i < crlRefNodes.getLength(); i++) {
 
-				final Element certId = (Element) crlRefNodes.item(i);
-				final Element digestAlgorithmEl = DomUtils.getElement(certId, xPathQueryHolder.XPATH__DAAV_DIGEST_METHOD);
-				final Element digestValueEl = DomUtils.getElement(certId, xPathQueryHolder.XPATH__DAAV_DIGEST_VALUE);
+				final Element crlRefNode = (Element) crlRefNodes.item(i);
+				final Element digestAlgorithmEl = DomUtils.getElement(crlRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_METHOD);
+				final Element digestValueEl = DomUtils.getElement(crlRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_VALUE);
 
 				final String xmlName = digestAlgorithmEl.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
 				final DigestAlgorithm digestAlgo = DigestAlgorithm.forXML(xmlName);
 
-				final CRLRef ref = new CRLRef(digestAlgo, Utils.fromBase64(digestValueEl.getTextContent()));
-				certIds.add(ref);
+				crlRefs.add(new CRLRef(digestAlgo, Utils.fromBase64(digestValueEl.getTextContent())));
 			}
 		}
-		return certIds;
+		return crlRefs;
 	}
 
 	@Override
 	public List<OCSPRef> getOCSPRefs() {
-		final List<OCSPRef> certIds = new ArrayList<OCSPRef>();
-		final Element signingCertEl = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_OCSP_REFS);
-		if (signingCertEl != null) {
+		final List<OCSPRef> ocspRefs = new ArrayList<OCSPRef>();
+		final Element ocspRefsElement = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_OCSP_REFS);
+		if (ocspRefsElement != null) {
 
-			final NodeList ocspRefNodes = DomUtils.getNodeList(signingCertEl, xPathQueryHolder.XPATH__OCSPREF);
+			final NodeList ocspRefNodes = DomUtils.getNodeList(ocspRefsElement, xPathQueryHolder.XPATH__OCSPREF);
 			for (int i = 0; i < ocspRefNodes.getLength(); i++) {
 
 				final Element certId = (Element) ocspRefNodes.item(i);
@@ -1509,11 +1508,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 				final String digestValue = digestValueEl.getTextContent();
 				final byte[] base64EncodedDigestValue = Utils.fromBase64(digestValue);
-				final OCSPRef ocspRef = new OCSPRef(digestAlgo, base64EncodedDigestValue, false);
-				certIds.add(ocspRef);
+				ocspRefs.add(new OCSPRef(digestAlgo, base64EncodedDigestValue, false));
 			}
 		}
-		return certIds;
+		return ocspRefs;
 	}
 
 	@Override
