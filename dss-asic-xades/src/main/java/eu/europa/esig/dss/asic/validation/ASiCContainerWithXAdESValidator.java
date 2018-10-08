@@ -5,7 +5,6 @@ import java.util.List;
 
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
@@ -78,7 +77,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	}
 
 	@Override
-	public List<DSSDocument> getOriginalDocuments(String signatureId) throws DSSException {
+	public List<DSSDocument> getOriginalDocuments(String signatureId) {
 		List<DSSDocument> result = new ArrayList<DSSDocument>();
 		List<DSSDocument> potentials = getSignedDocuments();
 		for (final DSSDocument signature : getSignatureDocuments()) {

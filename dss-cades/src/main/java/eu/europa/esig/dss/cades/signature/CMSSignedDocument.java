@@ -57,10 +57,8 @@ public class CMSSignedDocument extends CommonDocument {
 	}
 
 	@Override
-	public InputStream openStream() throws DSSException {
-		final byte[] bytes = getBytes();
-		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-		return byteArrayInputStream;
+	public InputStream openStream() {
+		return new ByteArrayInputStream(getBytes());
 	}
 
 	/**
@@ -70,7 +68,7 @@ public class CMSSignedDocument extends CommonDocument {
 		return signedData;
 	}
 
-	public byte[] getBytes() throws DSSException {
+	public byte[] getBytes() {
 		try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
 			final DEROutputStream derOutputStream = new DEROutputStream(output);
 			final byte[] encoded = signedData.getEncoded();

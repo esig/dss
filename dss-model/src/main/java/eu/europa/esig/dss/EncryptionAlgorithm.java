@@ -63,7 +63,7 @@ public enum EncryptionAlgorithm {
 	 * @throws DSSException
 	 *             if the oid doesn't match any algorithm
 	 */
-	public static EncryptionAlgorithm forOID(String oid) throws DSSException {
+	public static EncryptionAlgorithm forOID(String oid) {
 		EncryptionAlgorithm algorithm = Registry.OID_ALGORITHMS.get(oid);
 		if (algorithm == null) {
 			throw new DSSException("Unsupported algorithm: " + oid);
@@ -91,7 +91,7 @@ public enum EncryptionAlgorithm {
 	 * @throws DSSException
 	 *             if the name doesn't match any algorithm
 	 */
-	public static EncryptionAlgorithm forName(final String name) throws DSSException {
+	public static EncryptionAlgorithm forName(final String name) {
 		// To be checked if ECC exists also .
 		if ("EC".equals(name) || "ECC".equals(name)) {
 			return ECDSA;
@@ -120,8 +120,7 @@ public enum EncryptionAlgorithm {
 		}
 
 		try {
-			final EncryptionAlgorithm encryptionAlgorithm = valueOf(name);
-			return encryptionAlgorithm;
+			return valueOf(name);
 		} catch (Exception e) {
 			return defaultValue;
 		}

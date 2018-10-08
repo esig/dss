@@ -111,7 +111,7 @@ public enum DigestAlgorithm {
 	 * @throws DSSException
 	 *             if the given name doesn't match any algorithm
 	 */
-	public static DigestAlgorithm forName(final String name) throws DSSException {
+	public static DigestAlgorithm forName(final String name) {
 		final DigestAlgorithm algorithm = Registry.ALGORITHMS.get(name);
 		if (algorithm == null) {
 			throw new DSSException("Unsupported algorithm: " + name + "/" + name);
@@ -145,7 +145,7 @@ public enum DigestAlgorithm {
 	 * @throws DSSException
 	 *             if the oid doesn't match any digest algorithm
 	 */
-	public static DigestAlgorithm forOID(final String oid) throws DSSException {
+	public static DigestAlgorithm forOID(final String oid) {
 		final DigestAlgorithm algorithm = Registry.OID_ALGORITHMS.get(oid);
 		if (algorithm == null) {
 			throw new DSSException("Unsupported algorithm: " + oid);
@@ -162,7 +162,7 @@ public enum DigestAlgorithm {
 	 * @throws DSSException
 	 *             if the uri doesn't match any digest algorithm
 	 */
-	public static DigestAlgorithm forXML(final String xmlName) throws DSSException {
+	public static DigestAlgorithm forXML(final String xmlName) {
 		final DigestAlgorithm algorithm = Registry.XML_ALGORITHMS.get(xmlName);
 		if (algorithm == null) {
 			throw new DSSException("Unsupported algorithm: " + xmlName);

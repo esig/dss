@@ -59,13 +59,6 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 	}
 
 	@Override
-	protected CertificateVerifier getCompleteCertificateVerifier() {
-		CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
-		certificateVerifier.setIncludeCertificateRevocationValues(true);
-		return certificateVerifier;
-	}
-
-	@Override
 	protected CertificateVerifier getOfflineCertificateVerifier() {
 		CertificateVerifier certificateVerifier = super.getOfflineCertificateVerifier();
 		certificateVerifier.setIncludeCertificateRevocationValues(true);

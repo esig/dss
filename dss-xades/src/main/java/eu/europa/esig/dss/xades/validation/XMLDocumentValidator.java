@@ -82,9 +82,8 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	 *
 	 * @param dssDocument
 	 *            The instance of {@code DSSDocument} to validate
-	 * @throws DSSException
 	 */
-	public XMLDocumentValidator(final DSSDocument dssDocument) throws DSSException {
+	public XMLDocumentValidator(final DSSDocument dssDocument) {
 
 		super(new XAdESSignatureScopeFinder());
 		this.document = dssDocument;

@@ -60,7 +60,7 @@ public class FileDocument extends CommonDocument {
 	}
 
 	@Override
-	public InputStream openStream() throws DSSException {
+	public InputStream openStream() {
 		return DSSUtils.toInputStream(file);
 	}
 

@@ -23,7 +23,6 @@ package eu.europa.esig.dss.validation.executor;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
 import eu.europa.esig.dss.jaxb.simplereport.XmlCertificate;
 import eu.europa.esig.dss.jaxb.simplereport.XmlCertificateChain;
@@ -102,7 +101,7 @@ public class SimpleReportBuilder {
 		simpleReport.setContainerType(diagnosticData.getContainerType());
 	}
 
-	private void addSignatures(SimpleReport simpleReport, boolean container) throws DSSException {
+	private void addSignatures(SimpleReport simpleReport, boolean container) {
 		validSignatureCount = 0;
 		totalSignatureCount = 0;
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();

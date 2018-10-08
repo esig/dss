@@ -26,7 +26,6 @@ import java.net.URL;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.validation.executor.ProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
@@ -159,10 +158,8 @@ public interface DocumentValidator {
 	 *
 	 * @param signatureId
 	 *            the id of the signature to be removed.
-	 * @throws DSSException
-	 *             the exception is thrown when the removal is not possible.
 	 */
-	List<DSSDocument> getOriginalDocuments(final String signatureId) throws DSSException;
+	List<DSSDocument> getOriginalDocuments(final String signatureId);
 
 	List<AdvancedSignature> processSignaturesValidation(ValidationContext validationContext, boolean structuralValidation);
 

@@ -36,10 +36,8 @@ public interface DSSDocument extends Serializable {
 	 * the type of the {@code DSSDocument}.
 	 *
 	 * @return an {@code InputStream}
-	 * @throws DSSException
-	 *             if any error happens
 	 */
-	InputStream openStream() throws DSSException;
+	InputStream openStream();
 
 	/**
 	 * Writes the content of the document to the provided OutputStream
