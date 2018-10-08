@@ -80,7 +80,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		SignedDocumentValidator validator = getValidator(signedDocument);
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
-		assertTrue(Utils.isCollectionNotEmpty(signatures));
+		checkAdvancedSignatures(signatures);
 
 		Reports reports = validator.validateDocument();
 		// reports.setValidateXml(true);
@@ -98,6 +98,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		verifyDetailedReport(detailedReport);
 
 		getOriginalDocument(signedDocument, diagnosticData);
+	}
+
+	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
+		assertTrue(Utils.isCollectionNotEmpty(signatures));
 	}
 
 	protected void getOriginalDocument(DSSDocument signedDocument, DiagnosticData diagnosticData) {
