@@ -27,9 +27,9 @@ import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.RemoteConverter;
 import eu.europa.esig.dss.RemoteDocument;
 import eu.europa.esig.dss.RemoteSignatureParameters;
-import eu.europa.esig.dss.RemoteConverter;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
@@ -106,7 +106,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public ToBeSigned getDataToSign(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters) throws DSSException {
+	public ToBeSigned getDataToSign(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters) {
 		LOG.info("GetDataToSign in process...");
 		AbstractSignatureParameters parameters = createParameters(remoteParameters);
 		DocumentSignatureService service = getServiceForSignature(remoteParameters);
@@ -118,27 +118,26 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public DSSDocument signDocument(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters, SignatureValue signatureValue)
-			throws DSSException {
+	public RemoteDocument signDocument(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters, SignatureValue signatureValue) {
 		LOG.info("SignDocument in process...");
 		AbstractSignatureParameters parameters = createParameters(remoteParameters);
 		DocumentSignatureService service = getServiceForSignature(remoteParameters);
 		DSSDocument dssDocument = RemoteConverter.toDSSDocument(remoteDocument);
-		DSSDocument signDocument = service.signDocument(dssDocument, parameters, signatureValue);
+		DSSDocument signDocument = (DSSDocument) service.signDocument(dssDocument, parameters, signatureValue);
 		LOG.info("SignDocument is finished");
-		return signDocument;
+		return RemoteConverter.toRemoteDocument(signDocument);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public DSSDocument extendDocument(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters) throws DSSException {
+	public RemoteDocument extendDocument(RemoteDocument remoteDocument, RemoteSignatureParameters remoteParameters) {
 		LOG.info("ExtendDocument in process...");
 		AbstractSignatureParameters parameters = createParameters(remoteParameters);
 		DocumentSignatureService service = getServiceForSignature(remoteParameters);
 		DSSDocument dssDocument = RemoteConverter.toDSSDocument(remoteDocument);
-		DSSDocument extendDocument = service.extendDocument(dssDocument, parameters);
+		DSSDocument extendDocument = (DSSDocument) service.extendDocument(dssDocument, parameters);
 		LOG.info("ExtendDocument is finished");
-		return extendDocument;
+		return RemoteConverter.toRemoteDocument(extendDocument);
 	}
 
 }

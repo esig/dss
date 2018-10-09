@@ -46,7 +46,7 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public ToBeSigned getDataToSign(List<RemoteDocument> toSignDocuments, RemoteSignatureParameters remoteParameters) throws DSSException {
+	public ToBeSigned getDataToSign(List<RemoteDocument> toSignDocuments, RemoteSignatureParameters remoteParameters) {
 		LOG.info("GetDataToSign in process...");
 		AbstractSignatureParameters parameters = createParameters(remoteParameters);
 		MultipleDocumentsSignatureService service = getServiceForSignature(remoteParameters);
@@ -58,27 +58,26 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public DSSDocument signDocument(List<RemoteDocument> toSignDocuments, RemoteSignatureParameters remoteParameters, SignatureValue signatureValue)
-			throws DSSException {
+	public RemoteDocument signDocument(List<RemoteDocument> toSignDocuments, RemoteSignatureParameters remoteParameters, SignatureValue signatureValue) {
 		LOG.info("SignDocument in process...");
 		AbstractSignatureParameters parameters = createParameters(remoteParameters);
 		MultipleDocumentsSignatureService service = getServiceForSignature(remoteParameters);
 		List<DSSDocument> dssDocuments = RemoteConverter.toDSSDocuments(toSignDocuments);
-		DSSDocument signDocument = service.signDocument(dssDocuments, parameters, signatureValue);
+		DSSDocument signDocument = (DSSDocument) service.signDocument(dssDocuments, parameters, signatureValue);
 		LOG.info("SignDocument is finished");
-		return signDocument;
+		return RemoteConverter.toRemoteDocument(signDocument);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public DSSDocument extendDocument(RemoteDocument toExtendDocument, RemoteSignatureParameters remoteParameters) throws DSSException {
+	public RemoteDocument extendDocument(RemoteDocument toExtendDocument, RemoteSignatureParameters remoteParameters) {
 		LOG.info("ExtendDocument in process...");
 		AbstractSignatureParameters parameters = createParameters(remoteParameters);
 		MultipleDocumentsSignatureService service = getServiceForSignature(remoteParameters);
 		DSSDocument dssDocument = RemoteConverter.toDSSDocument(toExtendDocument);
-		DSSDocument extendDocument = service.extendDocument(dssDocument, parameters);
+		DSSDocument extendDocument = (DSSDocument) service.extendDocument(dssDocument, parameters);
 		LOG.info("ExtendDocument is finished");
-		return extendDocument;
+		return RemoteConverter.toRemoteDocument(extendDocument);
 	}
 
 	@SuppressWarnings("rawtypes")
