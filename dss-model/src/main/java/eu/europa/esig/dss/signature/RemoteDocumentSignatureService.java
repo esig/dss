@@ -23,7 +23,6 @@ package eu.europa.esig.dss.signature;
 import java.io.Serializable;
 
 import eu.europa.esig.dss.AbstractSerializableSignatureParameters;
-import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
@@ -80,7 +79,7 @@ public interface RemoteDocumentSignatureService<DOC, SP extends AbstractSerializ
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	DSSDocument signDocument(final DOC toSignDocument, final SP parameters, SignatureValue signatureValue) throws DSSException;
+	DOC signDocument(final DOC toSignDocument, final SP parameters, SignatureValue signatureValue) throws DSSException;
 
 	/**
 	 * Extends the level of the signatures in the {@code toExtendDocument}
@@ -93,6 +92,6 @@ public interface RemoteDocumentSignatureService<DOC, SP extends AbstractSerializ
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	DSSDocument extendDocument(final DOC toExtendDocument, final SP parameters) throws DSSException;
+	DOC extendDocument(final DOC toExtendDocument, final SP parameters) throws DSSException;
 
 }
