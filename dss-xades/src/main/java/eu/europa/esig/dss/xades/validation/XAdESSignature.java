@@ -1198,19 +1198,24 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						validation.setName(uri);
 					}
 
+					found = reference.getContentsBeforeTransformation() != null;
 					boolean noDuplicateIdFound = XMLUtils.protectAgainstWrappingAttack(santuarioSignature.getDocument(), DomUtils.getId(uri));
 					if (isSignedProperties(reference)) {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
-						signedPropertiesFound = noDuplicateIdFound && findSignedPropertiesById(uri);
+						found = found && (noDuplicateIdFound && findSignedPropertiesById(uri));
+						signedPropertiesFound = signedPropertiesFound || found;
 					} else if (reference.typeIsReferenceToObject()) {
 						validation.setType(DigestMatcherType.OBJECT);
-						referenceFound = noDuplicateIdFound && findObjectById(uri);
+						found = found &&  (noDuplicateIdFound && findObjectById(uri));
+						referenceFound = referenceFound || found;
 					} else if (reference.typeIsReferenceToManifest()) {
 						validation.setType(DigestMatcherType.MANIFEST);
-						referenceFound = noDuplicateIdFound && findManifestById(uri);
+						found = found && (noDuplicateIdFound && findManifestById(uri));
+						referenceFound = referenceFound || found;
 					} else {
 						validation.setType(DigestMatcherType.REFERENCE);
-						referenceFound = noDuplicateIdFound;
+						found = found && noDuplicateIdFound;
+						referenceFound = referenceFound || found;
 					}
 
 					final Digest digest = new Digest();
@@ -1218,8 +1223,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					digest.setAlgorithm(
 							DigestAlgorithm.forXML(reference.getMessageDigestAlgorithm().getAlgorithmURI()));
 					validation.setDigest(digest);
-
-					found = reference.getContentsBeforeTransformation() != null;
 
 					intact = reference.verify();
 				} catch (XMLSecurityException e) {
@@ -1229,9 +1232,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				validation.setIntact(intact);
 				referenceValidations.add(validation);
 			}
+
+			// If at least one signedProperties is not found, we add an empty
+			// referenceValidation
 			if (!signedPropertiesFound) {
 				referenceValidations.add(notFound(DigestMatcherType.SIGNED_PROPERTIES));
 			}
+			// If at least one reference is not found, we add an empty
+			// referenceValidation
 			if (!referenceFound) {
 				referenceValidations.add(notFound(DigestMatcherType.REFERENCE));
 			}
