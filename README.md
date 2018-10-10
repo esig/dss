@@ -35,3 +35,8 @@ Bundles which contain the above demonstration can be downloaded from the [Maven 
 The code of the demonstration can be found on https://ec.europa.eu/cefdigital/code/projects/ESIG/repos/dss-demos/browse
 
 [![License (LGPL version 2.1)](https://img.shields.io/badge/license-GNU%20LGPL%20version%202.1-blue.svg?style=flat-square)](https://www.gnu.org/licenses/lgpl-2.1.html)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fesig%2Fdss.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fesig%2Fdss?ref=badge_shield)
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fesig%2Fdss.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fesig%2Fdss?ref=badge_large)
