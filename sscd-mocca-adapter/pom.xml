@@ -9,6 +9,13 @@
 	</parent>
 
 	<artifactId>sscd-mocca-adapter</artifactId>
+
+	<licenses>
+		<license>
+      		<name>EUPL v1.1</name>
+      		<url>https://joinup.ec.europa.eu/collection/eupl/eupl-text-11-12</url>
+		</license>
+	</licenses>
 	
 	<repositories>
 		<repository>
