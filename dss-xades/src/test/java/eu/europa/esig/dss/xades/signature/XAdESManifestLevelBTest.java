@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.xades.signature;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -32,7 +31,6 @@ public class XAdESManifestLevelBTest extends AbstractXAdESTestSignature {
 		documentToSign = builder.build();
 
 		signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);

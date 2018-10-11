@@ -414,6 +414,7 @@
 			<xs:enumeration value="REFERENCE" />
 			<xs:enumeration value="OBJECT" />
 			<xs:enumeration value="MANIFEST" />
+			<xs:enumeration value="MANIFEST_ENTRY" />
 			<xs:enumeration value="SIGNED_PROPERTIES" />
 			
 			<!-- CAdES -->

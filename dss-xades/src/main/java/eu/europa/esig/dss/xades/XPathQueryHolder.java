@@ -151,6 +151,7 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH_REVOCATION_CRL_REFS = XPATH_COMPLETE_REVOCATION_REFS + "/xades:CRLRefs";
 
 	public final String XPATH__DIGEST_METHOD_ALGORITHM = "./ds:DigestMethod/@Algorithm";
+	public final String XPATH__DS_TRANSFORM = "./ds:Transforms/ds:Transform";
 
 	public String XPATH__CRL_REF = "./xades:CRLRef";
 	public String XPATH__COMPLETE_CERTIFICATE_REFS__CERT_DIGEST = "./xades:CertRefs/xades:Cert/xades:CertDigest";

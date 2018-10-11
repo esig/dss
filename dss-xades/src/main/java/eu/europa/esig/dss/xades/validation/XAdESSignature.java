@@ -1210,8 +1210,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						referenceFound = referenceFound || found;
 					} else if (reference.typeIsReferenceToManifest()) {
 						validation.setType(DigestMatcherType.MANIFEST);
-						found = found && (noDuplicateIdFound && findManifestById(uri));
+						Node manifestNode = getManifestById(uri);
+						found = found && (noDuplicateIdFound && (manifestNode != null));
 						referenceFound = referenceFound || found;
+						if (manifestNode != null && Utils.isCollectionNotEmpty(detachedContents)) {
+							ManifestValidator mv = new ManifestValidator(manifestNode, detachedContents, xPathQueryHolder);
+							referenceValidations.addAll(mv.validate());
+						}
 					} else {
 						validation.setType(DigestMatcherType.REFERENCE);
 						found = found && noDuplicateIdFound;
@@ -1267,10 +1272,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public Node getObjectById(String uri) {
 		String objectById = XPathQueryHolder.XPATH_OBJECT + DomUtils.getXPathByIdAttribute(uri);
 		return DomUtils.getNode(signatureElement, objectById);
-	}
-
-	private boolean findManifestById(String uri) {
-		return getManifestById(uri) != null;
 	}
 
 	public Node getManifestById(String uri) {

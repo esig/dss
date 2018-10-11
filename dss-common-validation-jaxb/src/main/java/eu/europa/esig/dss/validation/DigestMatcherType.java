@@ -3,7 +3,7 @@ package eu.europa.esig.dss.validation;
 public enum DigestMatcherType {
 
 	/* XAdES */
-	REFERENCE, OBJECT, MANIFEST, SIGNED_PROPERTIES,
+	REFERENCE, OBJECT, MANIFEST, MANIFEST_ENTRY, SIGNED_PROPERTIES,
 
 	/* CAdES */
 	MESSAGE_DIGEST,
