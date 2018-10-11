@@ -22,8 +22,6 @@ package eu.europa.esig.dss.xades.signature;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DSSException;
@@ -44,8 +42,6 @@ import eu.europa.esig.dss.x509.ocsp.OCSPToken;
  *
  */
 public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
-
-	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelBaselineLT.class);
 
 	/**
 	 * The default constructor for XAdESLevelBaselineLT.
