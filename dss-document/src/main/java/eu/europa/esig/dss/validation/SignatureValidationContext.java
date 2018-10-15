@@ -83,6 +83,8 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private final Map<Token, Boolean> tokensToProcess = new HashMap<Token, Boolean>();
 
+	private final Map<Token, Date> lastUsageDates = new HashMap<Token, Date>();
+
 	// External OCSP source.
 	private OCSPSource ocspSource;
 
@@ -396,6 +398,8 @@ public class SignatureValidationContext implements ValidationContext {
 	public void addTimestampTokenForVerification(final TimestampToken timestampToken) {
 		if (addTokenForVerification(timestampToken)) {
 
+			registerUsageDate(timestampToken.getCreationDate(), timestampToken.getCertificates());
+
 			final boolean added = processedTimestamps.add(timestampToken);
 			if (LOG.isTraceEnabled()) {
 				if (added) {
@@ -403,6 +407,15 @@ public class SignatureValidationContext implements ValidationContext {
 				} else {
 					LOG.trace("TimestampToken already present processedTimestamps: {} ", processedTimestamps);
 				}
+			}
+		}
+	}
+
+	private void registerUsageDate(Date usageDate, List<CertificateToken> certificates) {
+		for (CertificateToken cert : certificates) {
+			Date lastUsage = lastUsageDates.get(cert);
+			if (lastUsage == null || lastUsage.before(usageDate)) {
+				lastUsageDates.put(cert, usageDate);
 			}
 		}
 	}
@@ -460,7 +473,7 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 		
 
-		if (revocations.isEmpty()) {
+		if (revocations.isEmpty() || isRevocationDataRefreshNeeded(certToken, revocations)) {
 
 			if (checkRevocationForUntrustedChains || isTrustedChain(certChain)) {
 
@@ -570,6 +583,23 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private boolean isRevocationDataNotRequired(CertificateToken certToken) {
 		return certToken.isSelfSigned() || isTrusted(certToken) || DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken);
+	}
+
+	private boolean isRevocationDataRefreshNeeded(CertificateToken certToken, List<RevocationToken> revocations) {
+		Date lastUsageDate = lastUsageDates.get(certToken);
+		if (lastUsageDate != null) {
+			boolean isRevocationDataRefreshNeeded = true;
+			for (RevocationToken revocationToken : revocations) {
+				if ((lastUsageDate.compareTo(revocationToken.getProductionDate()) >= 0)
+						|| ((revocationToken.getNextUpdate() == null) || (lastUsageDate.compareTo(revocationToken.getNextUpdate()) <= 0))) {
+					LOG.debug("Revocation data refresh is needed");
+					isRevocationDataRefreshNeeded = false;
+					break;
+				}
+			}
+			return isRevocationDataRefreshNeeded;
+		}
+		return false;
 	}
 
 	@Override
