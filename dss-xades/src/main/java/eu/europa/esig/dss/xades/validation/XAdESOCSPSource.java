@@ -21,7 +21,10 @@
 package eu.europa.esig.dss.xades.validation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
@@ -57,6 +60,9 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 	 *            adapted {@code XPathQueryHolder}
 	 */
 	public XAdESOCSPSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder) {
+		Objects.requireNonNull(signatureElement, "Signature element cannot be null");
+		Objects.requireNonNull(xPathQueryHolder, "XPathQueryHolder cannot be null");
+
 		this.signatureElement = signatureElement;
 		this.xPathQueryHolder = xPathQueryHolder;
 	}
@@ -64,33 +70,44 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 	@Override
 	public List<BasicOCSPResp> getContainedOCSPResponses() {
 		if (containedOCSPResponses == null) {
-			containedOCSPResponses = new ArrayList<BasicOCSPResp>();
-			containedOCSPResponses.addAll(getEncapsulatedOCSPValues());
-			containedOCSPResponses.addAll(getTimestampEncapsulatedOCSPValues());
+			Set<String> base64OcspValues = new HashSet<String>();
+			collect(base64OcspValues, xPathQueryHolder.XPATH_OCSP_VALUES_ENCAPSULATED_OCSP);
+			collect(base64OcspValues, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUE);
+			containedOCSPResponses = convert(base64OcspValues);
 		}
 		return containedOCSPResponses;
 	}
 
+	private void collect(Set<String> base64OcspValues, String xPathQuery) {
+		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQuery);
+		for (int ii = 0; ii < nodeList.getLength(); ii++) {
+			final Element ocspValueEl = (Element) nodeList.item(ii);
+			base64OcspValues.add(ocspValueEl.getTextContent());
+		}
+	}
+
+	private List<BasicOCSPResp> convert(Set<String> base64OcspValues) {
+		List<BasicOCSPResp> result = new ArrayList<BasicOCSPResp>();
+		for (String base64OcspValue : base64OcspValues) {
+			try {
+				result.add(DSSRevocationUtils.loadOCSPBase64Encoded(base64OcspValue));
+			} catch (Exception e) {
+				LOG.warn("Cannot retrieve OCSP response from '" + base64OcspValue + "' : " + e.getMessage(), e);
+			}
+		}
+		return result;
+	}
+
 	public List<BasicOCSPResp> getEncapsulatedOCSPValues() {
-		return getOCSPValues(xPathQueryHolder.XPATH_OCSP_VALUES_ENCAPSULATED_OCSP);
+		Set<String> base64OCSPValues = new HashSet<String>();
+		collect(base64OCSPValues, xPathQueryHolder.XPATH_OCSP_VALUES_ENCAPSULATED_OCSP);
+		return convert(base64OCSPValues);
 	}
 
 	public List<BasicOCSPResp> getTimestampEncapsulatedOCSPValues() {
-		return getOCSPValues(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUE);
-	}
-
-	private List<BasicOCSPResp> getOCSPValues(final String xPathQuery) {
-		List<BasicOCSPResp> list = new ArrayList<BasicOCSPResp>();
-		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQuery);
-		for (int ii = 0; ii < nodeList.getLength(); ii++) {
-			final Element certEl = (Element) nodeList.item(ii);
-			try {
-				list.add(DSSRevocationUtils.loadOCSPBase64Encoded(certEl.getTextContent()));
-			} catch (Exception e) {
-				LOG.warn("Cannot retrieve OCSP response from '" + certEl.getTextContent() + "' : " + e.getMessage(), e);
-			}
-		}
-		return list;
+		Set<String> base64OCSPValues = new HashSet<String>();
+		collect(base64OCSPValues, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUE);
+		return convert(base64OCSPValues);
 	}
 
 }

@@ -20,6 +20,10 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -42,22 +46,23 @@ public class XAdESCRLSource extends OfflineCRLSource {
 	 *            adapted {@code XPathQueryHolder}
 	 */
 	public XAdESCRLSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder) {
-		if (signatureElement == null) {
-			throw new NullPointerException("signatureElement");
+		Objects.requireNonNull(signatureElement, "Signature element cannot be null");
+		Objects.requireNonNull(xPathQueryHolder, "XPathQueryHolder cannot be null");
+
+		Set<String> base64Crls = new HashSet<String>();
+		collect(base64Crls, signatureElement, xPathQueryHolder.XPATH_CRL_VALUES_ENCAPSULATED_CRL);
+		collect(base64Crls, signatureElement, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_CRL_VALUES);
+
+		for (String base64Crl : base64Crls) {
+			addCRLBinary(Utils.fromBase64(base64Crl));
 		}
-		if (xPathQueryHolder == null) {
-			throw new NullPointerException("xPathQueryHolder");
-		}
-		addCRLs(signatureElement, xPathQueryHolder.XPATH_CRL_VALUES_ENCAPSULATED_CRL);
-		addCRLs(signatureElement, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_CRL_VALUES);
 	}
 
-	private void addCRLs(Element signatureElement, final String xPathQuery) {
+	private void collect(Set<String> base64Crls, Element signatureElement, final String xPathQuery) {
 		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQuery);
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
-			final Element certEl = (Element) nodeList.item(ii);
-			final String textContent = certEl.getTextContent();
-			addCRLBinary(Utils.fromBase64(textContent));
+			final Element crlValueEl = (Element) nodeList.item(ii);
+			base64Crls.add(crlValueEl.getTextContent());
 		}
 	}
 

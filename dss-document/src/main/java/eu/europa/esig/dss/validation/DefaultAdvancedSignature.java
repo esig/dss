@@ -43,6 +43,7 @@ import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
@@ -337,15 +338,19 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		final Set<RevocationToken> revocationTokens = validationContext.getProcessedRevocations();
 		final List<CRLToken> crlTokens = new ArrayList<CRLToken>();
 		final List<OCSPToken> ocspTokens = new ArrayList<OCSPToken>();
+		final List<TokenIdentifier> revocationIds = new ArrayList<TokenIdentifier>(); // revocation equals : TokenId + certId + date
 		for (final RevocationToken revocationToken : revocationTokens) {
-			if (revocationToken instanceof CRLToken) {
-				final CRLToken crlToken = (CRLToken) revocationToken;
-				crlTokens.add(crlToken);
-			} else if (revocationToken instanceof OCSPToken) {
-				final OCSPToken ocspToken = (OCSPToken) revocationToken;
-				ocspTokens.add(ocspToken);
-			} else {
-				throw new DSSException("Unknown type for revocationToken: " + revocationToken.getClass().getName());
+			if (!revocationIds.contains(revocationToken.getDSSId())) {
+				revocationIds.add(revocationToken.getDSSId());
+				if (revocationToken instanceof CRLToken) {
+					final CRLToken crlToken = (CRLToken) revocationToken;
+					crlTokens.add(crlToken);
+				} else if (revocationToken instanceof OCSPToken) {
+					final OCSPToken ocspToken = (OCSPToken) revocationToken;
+					ocspTokens.add(ocspToken);
+				} else {
+					throw new DSSException("Unknown type for revocationToken: " + revocationToken.getClass().getName());
+				}
 			}
 		}
 		return new RevocationDataForInclusion(crlTokens, ocspTokens);
