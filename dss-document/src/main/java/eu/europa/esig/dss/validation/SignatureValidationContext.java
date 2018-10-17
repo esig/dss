@@ -51,6 +51,7 @@ import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.x509.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.Token;
+import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 import eu.europa.esig.dss.x509.crl.CRLSource;
 import eu.europa.esig.dss.x509.crl.CRLToken;
 import eu.europa.esig.dss.x509.ocsp.OCSPSource;
@@ -588,16 +589,18 @@ public class SignatureValidationContext implements ValidationContext {
 	private boolean isRevocationDataRefreshNeeded(CertificateToken certToken, List<RevocationToken> revocations) {
 		Date lastUsageDate = lastUsageDates.get(certToken);
 		if (lastUsageDate != null) {
-			boolean isRevocationDataRefreshNeeded = true;
+			boolean foundUpdatedRevocationData = false;
 			for (RevocationToken revocationToken : revocations) {
-				if ((lastUsageDate.compareTo(revocationToken.getProductionDate()) >= 0)
-						|| ((revocationToken.getNextUpdate() == null) || (lastUsageDate.compareTo(revocationToken.getNextUpdate()) <= 0))) {
-					LOG.debug("Revocation data refresh is needed");
-					isRevocationDataRefreshNeeded = false;
+				if ((lastUsageDate.compareTo(revocationToken.getProductionDate()) <= 0) && (CRLReasonEnum.certificateHold != revocationToken.getReason())) {
+					foundUpdatedRevocationData = true;
 					break;
 				}
 			}
-			return isRevocationDataRefreshNeeded;
+
+			if (!foundUpdatedRevocationData) {
+				LOG.debug("Revocation data refresh is needed");
+				return true;
+			}
 		}
 		return false;
 	}
