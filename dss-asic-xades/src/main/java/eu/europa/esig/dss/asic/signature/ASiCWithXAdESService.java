@@ -7,6 +7,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -22,6 +23,7 @@ import eu.europa.esig.dss.asic.ASiCUtils;
 import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.ManifestNamespace;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampToken;
@@ -35,6 +37,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 	static {
 		DomUtils.registerNamespace("asic", ASiCNamespace.NS);
+		DomUtils.registerNamespace("manifest", ManifestNamespace.NS);
 	}
 
 	public ASiCWithXAdESService(CertificateVerifier certificateVerifier) {
@@ -133,7 +136,9 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		if (existingXAdESSignatureASiCS != null) {
 			rootDocument = DomUtils.buildDOM(existingXAdESSignatureASiCS);
 		} else {
-			rootDocument = DomUtils.createDocument(ASiCNamespace.NS, ASiCNamespace.XADES_SIGNATURES);
+			rootDocument = DomUtils.buildDOM();
+			final Element xadesSignatures = rootDocument.createElementNS(ASiCNamespace.NS, ASiCNamespace.XADES_SIGNATURES);
+			rootDocument.appendChild(xadesSignatures);
 		}
 		xadesParameters.setRootDocument(rootDocument);
 		return xadesParameters;

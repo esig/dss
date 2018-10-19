@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -37,10 +38,13 @@ import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.xades.validation.XmlRootSignatureScope;
 
 /**
  * This class allows to validate TSL or LOTL. It can be executed as a Callable.
@@ -85,18 +89,32 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 		xPathQueryHolders.add(new XPathQueryHolder());
 
 		Reports reports = xmlDocumentValidator.validateDocument(TSLValidator.class.getResourceAsStream("/tsl-constraint.xml"));
+
+		// TODO improve with DSS-1487
+		boolean acceptableScope = false;
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlSignatureScope> signatureScopes = signatureWrapper.getSignatureScopes();
+		if (Utils.collectionSize(signatureScopes) == 1) {
+			XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
+			acceptableScope = XmlRootSignatureScope.class.getSimpleName().equals(xmlSignatureScope.getScope());
+		}
+
 		SimpleReport simpleReport = reports.getSimpleReport();
 		Indication indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
-		boolean isValid = Indication.TOTAL_PASSED.equals(indication);
+		boolean isValid = acceptableScope && Indication.TOTAL_PASSED.equals(indication);
 
 		TSLValidationResult result = new TSLValidationResult();
 		result.setCountryCode(countryCode);
-		result.setIndication(indication);
+		if (acceptableScope) {
+			result.setIndication(indication);
+		} else {
+			result.setIndication(Indication.TOTAL_FAILED);
+		}
 		result.setSubIndication(simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
 		if (!isValid) {
-			LOG.info("The TSL signature is not valid : \n");
-			reports.print();
+			LOG.info("The TSL signature is not valid : \n{}", reports.getXmlSimpleReport());
 		}
 
 		return result;

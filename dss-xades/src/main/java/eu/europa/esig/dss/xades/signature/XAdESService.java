@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.xml.security.Init;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +42,7 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.ProfileParameters;
+import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.SignatureProfile;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -53,7 +53,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 public class XAdESService extends AbstractSignatureService<XAdESSignatureParameters> implements MultipleDocumentsSignatureService<XAdESSignatureParameters> {
 
 	static {
-		Init.init();
+		SantuarioInitializer.init();
 	}
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESService.class);
