@@ -2,11 +2,11 @@ package known.issues;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 
+import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.transforms.Transforms;
 import org.junit.Before;
 
@@ -53,17 +53,17 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractPkiFac
 		dssReference.setUri("#" + documentToSign.getName());
 		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA1);
 		dssReference.setTransforms(transforms);
-		dssReference.setType("text/xml");
+		dssReference.setType(Reference.OBJECT_URI);
 		references.add(dssReference);
 
 		signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setSignedInfoCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
 		signatureParameters.setSignedPropertiesCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
+		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		signatureParameters.setReferences(references);
 
 		TimestampParameters contentTimestampParameters = new TimestampParameters();

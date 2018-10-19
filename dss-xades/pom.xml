@@ -23,10 +23,6 @@
 			<groupId>org.apache.santuario</groupId>
 			<artifactId>xmlsec</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>xalan</groupId>
-			<artifactId>xalan</artifactId>
-		</dependency>
         
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

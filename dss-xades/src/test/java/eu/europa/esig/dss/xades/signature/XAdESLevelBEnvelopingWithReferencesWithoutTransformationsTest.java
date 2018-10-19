@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -61,7 +60,6 @@ public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest exten
 		attachment2 = createDocument("src/test/resources/sample.png");
 
 		signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -85,7 +83,7 @@ public class XAdESLevelBEnvelopingWithReferencesWithoutTransformationsTest exten
 
 	private DSSReference createReference(DSSDocument fileDocument) {
 		DSSReference reference = new DSSReference();
-		reference.setId(fileDocument.getName());
+		reference.setId("r-" + fileDocument.getName());
 		reference.setUri(fileDocument.getName());
 		reference.setContents(fileDocument);
 		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA1);

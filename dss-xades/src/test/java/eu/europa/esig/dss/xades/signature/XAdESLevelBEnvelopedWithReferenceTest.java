@@ -35,7 +35,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.xml.security.Init;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Base64;
@@ -54,6 +53,7 @@ import eu.europa.esig.dss.signature.AbstractPkiFactoryTestDocumentSignatureServi
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.DSSTransform;
+import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters> {
@@ -64,6 +64,7 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractPkiFactoryTes
 
 	@Before
 	public void init() throws Exception {
+		SantuarioInitializer.init();
 		documentToSign = new FileDocument(new File("src/test/resources/sampleWithPlaceOfSignature.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
@@ -118,7 +119,6 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractPkiFactoryTes
 			xPath.setNamespaceContext(new Name());
 			Node node = (Node) xPath.evaluate("root/data[@id='data1']", doc, XPathConstants.NODE);
 
-			Init.init();
 			Canonicalizer c14n = Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#");
 			byte c14nBytes[] = c14n.canonicalizeSubtree(node);
 
@@ -126,7 +126,6 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractPkiFactoryTes
 
 			node = (Node) xPath.evaluate("root/data[@id='data2']", doc, XPathConstants.NODE);
 
-			Init.init();
 			c14n = Canonicalizer.getInstance("http://www.w3.org/2001/10/xml-exc-c14n#");
 			c14nBytes = c14n.canonicalizeSubtree(node);
 
