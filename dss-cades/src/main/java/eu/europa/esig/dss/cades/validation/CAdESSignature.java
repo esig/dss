@@ -205,7 +205,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * @throws org.bouncycastle.cms.CMSException
 	 */
 	public CAdESSignature(final byte[] data) throws CMSException {
-		this(new CMSSignedData(data), new CertificatePool());
+		this(data, new CertificatePool());
 	}
 
 	/**

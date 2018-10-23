@@ -278,9 +278,11 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 					PdfDict dictionary = new ITextPdfDict(af.getSignatureDictionary(name));
 					PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
+					final int[] byteRange = signatureDictionary.getByteRange();
+
+					validateByteRange(byteRange);
 
 					final byte[] cms = signatureDictionary.getContents();
-					final int[] byteRange = signatureDictionary.getByteRange();
 					final byte[] signedContent = getSignedContent(document, byteRange);
 					boolean signatureCoversWholeDocument = af.signatureCoversWholeDocument(name);
 

@@ -28,6 +28,7 @@ import org.bouncycastle.tsp.TimeStampToken;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.cades.CMSUtils;
@@ -162,6 +163,31 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		final byte[] result = new byte[length];
 		System.arraycopy(signedContent, 0, result, 0, length);
 		return result;
+	}
+
+	protected void validateByteRange(int[] byteRange) {
+
+		if (byteRange == null || byteRange.length != 4) {
+			throw new DSSException("Incorrect BytRange size");
+		}
+
+		final int a = byteRange[0];
+		final int b = byteRange[1];
+		final int c = byteRange[2];
+		final int d = byteRange[3];
+
+		if (a != 0) {
+			throw new DSSException("The BytRange must cover start of file");
+		}
+		if (b <= 0) {
+			throw new DSSException("The first hash part doesn't cover anything");
+		}
+		if (c <= b) {
+			throw new DSSException("The second hash part must start after the first hash part");
+		}
+		if (d <= 0) {
+			throw new DSSException("The second hash part doesn't cover anything");
+		}
 	}
 
 }

@@ -47,15 +47,20 @@ public class PdfSigDict {
 
 	public int[] getByteRange() {
 		PdfArray byteRangeArray = dictionay.getAsArray("ByteRange");
+		if (byteRangeArray == null) {
+			throw new DSSException("Unable to retrieve the ByteRange");
+		}
+		
 		int arraySize = byteRangeArray.size();
 		int[] result = new int[arraySize];
 		for (int i = 0; i < arraySize; i++) {
 			try {
 				result[i] = byteRangeArray.getInt(i);
 			} catch (IOException e) {
-				throw new DSSException("Unable to retrieve the byterange", e);
+				throw new DSSException("Unable to parse integer from the ByteRange", e);
 			}
 		}
 		return result;
 	}
+
 }

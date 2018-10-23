@@ -325,6 +325,9 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					try {
 						PdfDict dictionary = new PdfBoxDict(signature.getCOSObject(), doc);
 						PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
+						final int[] byteRange = signatureDictionary.getByteRange();
+
+						validateByteRange(byteRange);
 
 						final byte[] cms = signatureDictionary.getContents();
 
@@ -341,7 +344,6 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 						}
 
 						byte[] signedContent = signature.getSignedContent(originalBytes);
-						int[] byteRange = signatureDictionary.getByteRange();
 
 						// /ByteRange [0 575649 632483 10206]
 						int beforeSignatureLength = byteRange[1] - byteRange[0];
