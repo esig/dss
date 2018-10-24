@@ -5,7 +5,7 @@
 
 	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>sd-dss</artifactId>
-	<version>5.3.1</version>
+	<version>5.3.2</version>
 	<packaging>pom</packaging>
 	<name>Digital Signature Services</name>
 
@@ -51,8 +51,7 @@
 
 		<bouncycastle.version>1.59</bouncycastle.version>
 		<xmlsec.version>2.0.10</xmlsec.version>
-		<xalan.version>2.7.2</xalan.version>
-		<pdfbox.version>2.0.9</pdfbox.version>
+		<pdfbox.version>2.0.12</pdfbox.version>
 		<httpclient.version>4.5.5</httpclient.version>
 		<rs-api.version>2.0.1</rs-api.version>
 
@@ -337,7 +336,7 @@
 		<url>https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</url>
 		<connection>scm:git:https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</connection>
 		<developerConnection>scm:git:https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</developerConnection>
-		<tag>5.3.1</tag>
+		<tag>5.3.2</tag>
 	</scm>
 
 	<dependencyManagement>
@@ -604,11 +603,6 @@
 				<groupId>org.apache.santuario</groupId>
 				<artifactId>xmlsec</artifactId>
 				<version>${xmlsec.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>xalan</groupId>
-				<artifactId>xalan</artifactId>
-				<version>${xalan.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.bouncycastle</groupId>

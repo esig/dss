@@ -328,6 +328,9 @@ class PdfBoxSignatureService implements PDFSignatureService {
 
 				for (PDSignature signature : pdSignatures) {
 					String subFilter = signature.getSubFilter();
+					int[] byteRange = signature.getByteRange();
+
+					validateByteRange(byteRange);
 
 					COSDictionary dict = signature.getCOSObject();
 					COSString item = (COSString) dict.getDictionaryObject(COSName.CONTENTS);
@@ -345,7 +348,6 @@ class PdfBoxSignatureService implements PDFSignatureService {
 					}
 
 					byte[] signedContent = signature.getSignedContent(originalBytes);
-					int[] byteRange = signature.getByteRange();
 
 					// /ByteRange [0 575649 632483 10206]
 					int beforeSignatureLength = byteRange[1] - byteRange[0];
@@ -393,6 +395,31 @@ class PdfBoxSignatureService implements PDFSignatureService {
 		}
 
 		return signatures;
+	}
+
+	private void validateByteRange(int[] byteRange) {
+
+		if (byteRange == null || byteRange.length != 4) {
+			throw new DSSException("Incorrect BytRange size");
+		}
+
+		final int a = byteRange[0];
+		final int b = byteRange[1];
+		final int c = byteRange[2];
+		final int d = byteRange[3];
+
+		if (a != 0) {
+			throw new DSSException("The BytRange must cover start of file");
+		}
+		if (b <= 0) {
+			throw new DSSException("The first hash part doesn't cover anything");
+		}
+		if (c <= b) {
+			throw new DSSException("The second hash part must start after the first hash part");
+		}
+		if (d <= 0) {
+			throw new DSSException("The second hash part doesn't cover anything");
+		}
 	}
 
 	/**

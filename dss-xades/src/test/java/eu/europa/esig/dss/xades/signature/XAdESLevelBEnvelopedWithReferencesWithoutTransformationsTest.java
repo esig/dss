@@ -87,10 +87,10 @@ public class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extend
 
 	private DSSReference createReference(DSSDocument fileDocument) {
 		DSSReference reference = new DSSReference();
-		reference.setId(fileDocument.getName());
+		reference.setId("r-" + fileDocument.getName());
 		reference.setUri(fileDocument.getName());
 		reference.setContents(fileDocument);
-		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA1);
+		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
 		return reference;
 	}
 

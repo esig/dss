@@ -3,12 +3,12 @@ package eu.europa.esig.dss.xades.signature;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.Transform;
 
+import org.apache.xml.security.signature.Reference;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.Before;
 
@@ -55,15 +55,15 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdEST
 		dssReference.setUri("#" + documentToSign.getName());
 		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA1);
 		dssReference.setTransforms(transforms);
-		dssReference.setType("text/xml");
+		dssReference.setType(Reference.OBJECT_URI);
 		references.add(dssReference);
 
 		signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		signatureParameters.setReferences(references);
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSXMLUtils.canonicalize(canonicalizationAlgo, DSSUtils.toByteArray(documentToSign)));

@@ -38,19 +38,19 @@ public class ASiCEWithXAdESManifestBuilder {
 	public Document build() {
 		final Document documentDom = DomUtils.buildDOM();
 		final Element manifestDom = documentDom.createElementNS(ManifestNamespace.NS, ManifestNamespace.MANIFEST);
-		manifestDom.setAttribute(ManifestNamespace.VERSION, "1.2");
+		manifestDom.setAttributeNS(ManifestNamespace.NS, ManifestNamespace.VERSION, "1.2");
 		documentDom.appendChild(manifestDom);
 
 		final Element rootDom = DomUtils.addElement(documentDom, manifestDom, ManifestNamespace.NS, ManifestNamespace.FILE_ENTRY);
-		rootDom.setAttribute(ManifestNamespace.FULL_PATH, "/");
-		rootDom.setAttribute(ManifestNamespace.MEDIA_TYPE, MimeType.ASICE.getMimeTypeString());
+		rootDom.setAttributeNS(ManifestNamespace.NS, ManifestNamespace.FULL_PATH, "/");
+		rootDom.setAttributeNS(ManifestNamespace.NS, ManifestNamespace.MEDIA_TYPE, MimeType.ASICE.getMimeTypeString());
 
 		for (DSSDocument document : documents) {
 			Element fileDom = DomUtils.addElement(documentDom, manifestDom, ManifestNamespace.NS, ManifestNamespace.FILE_ENTRY);
-			fileDom.setAttribute(ManifestNamespace.FULL_PATH, document.getName());
+			fileDom.setAttributeNS(ManifestNamespace.NS, ManifestNamespace.FULL_PATH, document.getName());
 			MimeType mimeType = document.getMimeType();
 			if (mimeType != null) {
-				fileDom.setAttribute(ManifestNamespace.MEDIA_TYPE, mimeType.getMimeTypeString());
+				fileDom.setAttributeNS(ManifestNamespace.NS, ManifestNamespace.MEDIA_TYPE, mimeType.getMimeTypeString());
 			}
 		}
 

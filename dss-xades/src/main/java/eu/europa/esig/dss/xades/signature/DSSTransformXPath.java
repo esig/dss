@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import java.util.Map.Entry;
+
 import javax.xml.crypto.dsig.XMLSignature;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
@@ -61,7 +63,10 @@ class DSSTransformXPath {
 			final String dssTransformAlgorithm = dssTransform.getAlgorithm();
 			final NodeList childNodes = document.getFirstChild().getChildNodes();
 			final Transform transformObject = new Transform(document, dssTransformAlgorithm, childNodes);
-
+			for (Entry<String, String> namespace : DomUtils.getCurrentNamespaces().entrySet()) {
+				transformObject.setXPathNamespaceContext(namespace.getKey(), namespace.getValue());
+			}
+			
 			final byte[] bytes = DSSUtils.toByteArray(input);
 			final XMLSignatureInput xmlSignatureInput = new XMLSignatureInput(bytes);
 			final XMLSignatureInput xmlSignatureInputOut = transformObject.performTransform(xmlSignatureInput);
@@ -76,7 +81,10 @@ class DSSTransformXPath {
 			final String dssTransformAlgorithm = dssTransform.getAlgorithm();
 			final NodeList childNodes = document.getFirstChild().getChildNodes();
 			final Transform transformObject = new Transform(document, dssTransformAlgorithm, childNodes);
-
+			for (Entry<String, String> namespace : DomUtils.getCurrentNamespaces().entrySet()) {
+				transformObject.setXPathNamespaceContext(namespace.getKey(), namespace.getValue());
+			}
+			
 			final XMLSignatureInput xmlSignatureInput = new XMLSignatureInput(input);
 			final XMLSignatureInput xmlSignatureInputOut = transformObject.performTransform(xmlSignatureInput);
 			return xmlSignatureInputOut.getBytes();
