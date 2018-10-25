@@ -21,14 +21,19 @@
 package eu.europa.esig.dss.client.http.commons;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
+import eu.europa.esig.dss.client.http.MemoryDataLoader;
 
 public class FileCacheDataLoaderTest {
 
@@ -78,6 +83,21 @@ public class FileCacheDataLoaderTest {
 		waitOneSecond();
 		long newCacheCreationTime = getUrlAndReturnCacheCreationTime();
 		assertTrue(cacheCreationTime < newCacheCreationTime);
+	}
+
+	@Test
+	public void testNotNetworkProtocol() throws IOException {
+		cacheDirectory = testFolder.newFolder();
+
+		FileCacheDataLoader specificDataLoader = new FileCacheDataLoader();
+		specificDataLoader.setDataLoader(new MemoryDataLoader(new HashMap<String, byte[]>()));
+		specificDataLoader.setFileCacheDirectory(cacheDirectory);
+
+		assertNull(specificDataLoader.get("1.2.3.4.5"));
+		assertNull(specificDataLoader.post("1.2.3.4.5", new byte[] { 1, 2, 3 }));
+
+		specificDataLoader.setResourceLoader(new ResourceLoader(FileCacheDataLoaderTest.class));
+		assertNotNull(specificDataLoader.get("/logback.xml"));
 	}
 
 	private long getUrlAndReturnCacheCreationTime() {
