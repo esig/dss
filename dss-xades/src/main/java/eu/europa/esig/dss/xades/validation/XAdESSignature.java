@@ -1629,8 +1629,18 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final Set<String> referenceURIs = new HashSet<String>();
 			for (final Reference reference : references) {
 				referenceURIs.add(cleanURI(reference.getURI()));
-				buffer.write(reference.getReferencedBytes());
+				try {
+					final byte[] referencedBytes = reference.getReferencedBytes();
+					if (referencedBytes != null) {
+						buffer.write(referencedBytes);
+					} else {
+						LOG.warn("No binaries found for URI '{}'", reference.getURI());
+					}
+				} catch (XMLSecurityException e) {
+					LOG.warn("Unable to retrieve content for URI '{}' : {}", reference.getURI(), e.getMessage());
+				}
 			}
+
 			/**
 			 * 3) Take the following XMLDSIG elements in the order they are listed below, canonicalize each one and
 			 * concatenate each resulting octet stream to
@@ -1780,7 +1790,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				buffer.write(canonicalizedValue);
 			}
 			return buffer.toByteArray();
-		} catch (IOException | XMLSignatureException e) {
+		} catch (IOException e) {
 			throw new DSSException("Error when computing the archive data", e);
 		}
 	}
