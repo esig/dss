@@ -58,6 +58,8 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -164,6 +166,10 @@ public class CommonsDataLoader implements DataLoader {
 	 */
 	private String sslTruststorePassword = Utils.EMPTY_STRING;
 
+	private HttpRequestRetryHandler retryHandler;
+
+	private ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy;
+
 	/**
 	 * The default constructor for CommonsDataLoader.
 	 */
@@ -240,8 +246,12 @@ public class CommonsDataLoader implements DataLoader {
 		}
 	}
 
+	protected synchronized HttpClientBuilder getHttpClientBuilder() {
+		return HttpClients.custom();
+	}
+
 	protected synchronized CloseableHttpClient getHttpClient(final String url) {
-		HttpClientBuilder httpClientBuilder = HttpClients.custom();
+		HttpClientBuilder httpClientBuilder = getHttpClientBuilder();
 
 		httpClientBuilder = configCredentials(httpClientBuilder, url);
 
@@ -253,6 +263,9 @@ public class CommonsDataLoader implements DataLoader {
 		final RequestConfig requestConfig = custom.build();
 		httpClientBuilder = httpClientBuilder.setDefaultRequestConfig(requestConfig);
 		httpClientBuilder.setConnectionManager(getConnectionManager());
+
+		httpClientBuilder.setRetryHandler(retryHandler);
+		httpClientBuilder.setServiceUnavailableRetryStrategy(serviceUnavailableRetryStrategy);
 
 		return httpClientBuilder.build();
 	}
@@ -825,6 +838,14 @@ public class CommonsDataLoader implements DataLoader {
 			commonsDataLoader.addAuthentication(httpHost.getHostName(), httpHost.getPort(), httpHost.getSchemeName(), credentials.getUserName(),
 					credentials.getPassword());
 		}
+	}
+
+	public void setRetryHandler(final HttpRequestRetryHandler retryHandler) {
+		this.retryHandler = retryHandler;
+	}
+
+	public void setServiceUnavailableRetryStrategy(final ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy) {
+		this.serviceUnavailableRetryStrategy = serviceUnavailableRetryStrategy;
 	}
 
 }
