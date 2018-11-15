@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.tsl.TSLParserResult;
 import eu.europa.esig.dss.tsl.TSLPointer;
 import eu.europa.esig.dss.tsl.TSLService;
@@ -53,7 +54,7 @@ public class TSLSParserTest {
 
 	@Test
 	public void parseTSL() throws Exception {
-		TSLParser parser = new TSLParser(fileToTest.getAbsolutePath());
+		TSLParser parser = new TSLParser(new FileDocument(fileToTest.getAbsolutePath()));
 		TSLParserResult result = parser.call();
 		assertNotNull(result);
 		assertNotNull(result.getNextUpdateDate());

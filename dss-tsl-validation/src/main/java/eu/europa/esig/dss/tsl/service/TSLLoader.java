@@ -36,9 +36,9 @@ public class TSLLoader implements Callable<TSLLoaderResult> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TSLLoader.class);
 
-	private DataLoader dataLoader;
-	private String countryCode;
-	private String urlToLoad;
+	private final DataLoader dataLoader;
+	private final String countryCode;
+	private final String urlToLoad;
 
 	public TSLLoader(DataLoader dataLoader, String countryCode, String urlToLoad) {
 		this.dataLoader = dataLoader;

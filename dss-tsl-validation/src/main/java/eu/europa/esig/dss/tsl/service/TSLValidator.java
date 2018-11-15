@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.service;
 
-import java.io.File;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -28,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.tsl.TSLValidationResult;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -49,22 +47,22 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TSLValidator.class);
 
-	private File file;
-	private String countryCode;
-	private List<CertificateToken> potentialSigners;
+	private final DSSDocument trustedList;
+	private final String countryCode;
+	private final List<CertificateToken> potentialSigners;
 
 	/**
 	 * Constructor used to instantiate a validator for a TSL
 	 *
-	 * @param file
-	 *            the file to validate (a TSL file (not LOTL)
+	 * @param trustedList
+	 *                         the DSSDocument with a trusted list (not LOTL)
 	 * @param countryCode
-	 *            the country code
+	 *                         the country code
 	 * @param potentialSigners
-	 *            the list of certificates allowed to sign this TSL
+	 *                         the list of certificates allowed to sign this TSL
 	 */
-	public TSLValidator(File file, String countryCode, List<CertificateToken> potentialSigners) {
-		this.file = file;
+	public TSLValidator(DSSDocument trustedList, String countryCode, List<CertificateToken> potentialSigners) {
+		this.trustedList = trustedList;
 		this.countryCode = countryCode;
 		this.potentialSigners = potentialSigners;
 	}
@@ -74,8 +72,7 @@ public class TSLValidator implements Callable<TSLValidationResult> {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier(true);
 		certificateVerifier.setTrustedCertSource(buildTrustedCertificateSource(potentialSigners));
 
-		DSSDocument dssDocument = new FileDocument(file);
-		XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(dssDocument);
+		XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(trustedList);
 		xmlDocumentValidator.setCertificateVerifier(certificateVerifier);
 		xmlDocumentValidator.setValidationLevel(ValidationLevel.BASIC_SIGNATURES); // Timestamps,... are ignored
 		// To increase the security: the default {@code XPathQueryHolder} is

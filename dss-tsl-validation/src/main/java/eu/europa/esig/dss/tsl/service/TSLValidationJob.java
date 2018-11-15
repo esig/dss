@@ -35,7 +35,9 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.tsl.OtherTrustedList;
 import eu.europa.esig.dss.tsl.TSLLoaderResult;
@@ -164,7 +166,7 @@ public class TSLValidationJob {
 			List<Future<TSLParserResult>> futureParseResults = new ArrayList<Future<TSLParserResult>>();
 			for (File file : cachedFiles) {
 				try {
-					futureParseResults.add(executorService.submit(new TSLParser(file.getAbsolutePath())));
+					futureParseResults.add(executorService.submit(new TSLParser(new FileDocument(file))));
 				} catch (Exception e) {
 					LOG.error("Unable to parse file '" + file.getAbsolutePath() + "' : " + e.getMessage(), e);
 				}
@@ -207,7 +209,7 @@ public class TSLValidationJob {
 						} else {
 							potentialSigners = getPotentialSigners(lotlPointers, countryCode);
 						}
-						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), countryCode, potentialSigners);
+						TSLValidator tslValidator = new TSLValidator(new FileDocument(countryModel.getFilepath()), countryCode, potentialSigners);
 						futureValidationResults.add(executorService.submit(tslValidator));
 					}
 				}
@@ -327,15 +329,21 @@ public class TSLValidationJob {
 						pivotModel = repository.getPivotByUrl(loaderResult.getUrl());
 					}
 
+					if (pivotModel.getFilepath() == null) {
+						LOG.warn("No file found for url '{}'", loaderResult.getUrl());
+						continue;
+					}
+					DSSDocument trustedList = new FileDocument(pivotModel.getFilepath());
+
 					TSLParserResult pivotParseResult = pivotModel.getParseResult();
 					if (pivotParseResult == null) {
-						Future<TSLParserResult> parseResultFuture = executorService.submit(new TSLParser(pivotModel.getFilepath()));
+						Future<TSLParserResult> parseResultFuture = executorService.submit(new TSLParser(trustedList));
 						pivotParseResult = parseResultFuture.get();
 					}
 
 					TSLValidationResult pivotValidationResult = pivotModel.getValidationResult();
 					if (checkLOTLSignature && (pivotValidationResult == null)) {
-						TSLValidator tslValidator = new TSLValidator(new File(pivotModel.getFilepath()), loaderResult.getCountryCode(), allowedLotlSigners);
+						TSLValidator tslValidator = new TSLValidator(trustedList, loaderResult.getCountryCode(), allowedLotlSigners);
 						Future<TSLValidationResult> pivotValidationFuture = executorService.submit(tslValidator);
 						pivotValidationResult = pivotValidationFuture.get();
 					}
@@ -411,7 +419,7 @@ public class TSLValidationJob {
 		for (Future<TSLLoaderResult> futureLoaderResult : futureLoaderResults) {
 			try {
 				TSLLoaderResult loaderResult = futureLoaderResult.get();
-				if (loaderResult != null && loaderResult.getContent() != null) {
+				if (loaderResult != null) {
 					TSLValidationModel countryModel = null;
 					if (!repository.isLastCountryVersion(loaderResult)) {
 						countryModel = repository.storeInCache(loaderResult);
@@ -419,13 +427,20 @@ public class TSLValidationJob {
 						countryModel = repository.getByCountry(loaderResult.getCountryCode());
 					}
 
+
+					if (countryModel.getFilepath() == null) {
+						LOG.warn("No file found for url '{}'", loaderResult.getUrl());
+						continue;
+					}
+					DSSDocument trustedList = new FileDocument(countryModel.getFilepath());
+
 					TSLParserResult countryParseResult = countryModel.getParseResult();
 					if (countryParseResult == null) {
-						futureParseResults.add(executorService.submit(new TSLParser(countryModel.getFilepath())));
+						futureParseResults.add(executorService.submit(new TSLParser(trustedList)));
 					}
 
 					if (checkTSLSignatures && (countryModel.getValidationResult() == null || newLotl)) {
-						TSLValidator tslValidator = new TSLValidator(new File(countryModel.getFilepath()), loaderResult.getCountryCode(),
+						TSLValidator tslValidator = new TSLValidator(trustedList, loaderResult.getCountryCode(),
 								getPotentialSigners(pointers, loaderResult.getCountryCode()));
 						futureValidationResults.add(executorService.submit(tslValidator));
 					}
@@ -488,13 +503,13 @@ public class TSLValidationJob {
 
 	private TSLValidationResult validateLOTL(TSLValidationModel validationModel, List<CertificateToken> allowedSigners) throws Exception {
 		validationModel.setLotl(true);
-		TSLValidator tslValidator = new TSLValidator(new File(validationModel.getFilepath()), lotlCode, allowedSigners);
+		TSLValidator tslValidator = new TSLValidator(new FileDocument(validationModel.getFilepath()), lotlCode, allowedSigners);
 		Future<TSLValidationResult> future = executorService.submit(tslValidator);
 		return future.get();
 	}
 
 	private TSLParserResult parseLOTL(TSLValidationModel validationModel) throws Exception {
-		Future<TSLParserResult> future = executorService.submit(new TSLParser(validationModel.getFilepath()));
+		Future<TSLParserResult> future = executorService.submit(new TSLParser(new FileDocument(validationModel.getFilepath())));
 		return future.get();
 	}
 

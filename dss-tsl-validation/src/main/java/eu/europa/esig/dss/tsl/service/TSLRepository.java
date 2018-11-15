@@ -147,25 +147,29 @@ public class TSLRepository {
 	TSLValidationModel storeInCache(TSLLoaderResult resultLoader) {
 		TSLValidationModel validationModel = new TSLValidationModel();
 		validationModel.setUrl(resultLoader.getUrl());
-		validationModel.setSha256FileContent(getSHA256(resultLoader.getContent()));
-		validationModel.setLoadedDate(new Date());
-		validationModel.setFilepath(storeOnFileSystem(resultLoader.getCountryCode(), resultLoader));
-		validationModel.setCertificateSourceSynchronized(false);
+		if (Utils.isArrayNotEmpty(resultLoader.getContent())) {
+			validationModel.setCertificateSourceSynchronized(false);
+			validationModel.setLoadedDate(new Date());
+			validationModel.setSha256FileContent(getSHA256(resultLoader.getContent()));
+			validationModel.setFilepath(storeOnFileSystem(resultLoader.getCountryCode(), resultLoader));
+			LOG.info("New version of {} TSL is stored in cache", resultLoader.getCountryCode());
+		}
 		tsls.put(resultLoader.getCountryCode(), validationModel);
-		LOG.info("New version of {} TSL is stored in cache", resultLoader.getCountryCode());
 		return validationModel;
 	}
 
 	TSLValidationModel storePivotInCache(TSLLoaderResult resultLoader) {
 		TSLValidationModel validationModel = new TSLValidationModel();
 		validationModel.setUrl(resultLoader.getUrl());
-		validationModel.setSha256FileContent(getSHA256(resultLoader.getContent()));
-		validationModel.setLoadedDate(new Date());
-		String filename = resultLoader.getUrl();
-		filename = filename.replaceAll("\\W", "_");
-		validationModel.setFilepath(storeOnFileSystem(filename, resultLoader));
+		if (Utils.isArrayNotEmpty(resultLoader.getContent())) {
+			validationModel.setSha256FileContent(getSHA256(resultLoader.getContent()));
+			validationModel.setLoadedDate(new Date());
+			String filename = resultLoader.getUrl();
+			filename = filename.replaceAll("\\W", "_");
+			validationModel.setFilepath(storeOnFileSystem(filename, resultLoader));
+			LOG.info("New version of the pivot LOTL '{}' is stored in cache", resultLoader.getUrl());
+		}
 		pivots.put(resultLoader.getUrl(), validationModel);
-		LOG.info("New version of the pivot LOTL '{}' is stored in cache", resultLoader.getUrl());
 		return validationModel;
 	}
 
@@ -252,10 +256,20 @@ public class TSLRepository {
 				LOG.info("Synchronization of the trustedListsCertificateSource : done");
 			}
 
-			LOG.info("Nb of loaded trusted lists : {}", allMapTSLValidationModels.size());
+			LOG.info("Nb of loaded trusted lists : {}/{}", getNbParsed(allMapTSLValidationModels.values()), allMapTSLValidationModels.size());
 			LOG.info("Nb of trusted certificates : {}", trustedListsCertificateSource.getNumberOfCertificates());
 			LOG.info("Nb of trusted public keys : {}", trustedListsCertificateSource.getNumberOfTrustedPublicKeys());
 		}
+	}
+
+	private int getNbParsed(Collection<TSLValidationModel> models) {
+		int counter = 0;
+		for (TSLValidationModel model : models) {
+			if (model.getParseResult() != null) {
+				counter++;
+			}
+		}
+		return counter;
 	}
 
 	private boolean isRefreshRequired() {
@@ -295,7 +309,7 @@ public class TSLRepository {
 					}
 				}
 			} else {
-				LOG.warn("File {} is not synchronized", model.getFilepath());
+				LOG.warn("Url '{}' is not synchronized", model.getUrl());
 			}
 		}
 		return servicesByCert;
