@@ -120,7 +120,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 				final Date notBefore = certificateToken.getNotBefore();
 				boolean periodAreIntersecting = thisUpdate.before(notAfter) && (nextUpdate != null && nextUpdate.after(notBefore));
 				if (!periodAreIntersecting) {
-					LOG.warn("The CRL was not issued during the validity period of the certificate! Certificate: " + certificateToken.getDSSIdAsString());
+					LOG.warn("The CRL was not issued during the validity period of the certificate! Certificate: {}", certificateToken.getDSSIdAsString());
 					continue;
 				}
 

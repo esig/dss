@@ -24,8 +24,13 @@ import java.io.IOException;
 
 import com.lowagie.text.pdf.PRStream;
 import com.lowagie.text.pdf.PdfArray;
+import com.lowagie.text.pdf.PdfIndirectReference;
 import com.lowagie.text.pdf.PdfNumber;
+import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStream;
+
+import eu.europa.esig.dss.DSSException;
 
 class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 
@@ -38,6 +43,19 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 	@Override
 	public byte[] getBytes(int i) throws IOException {
 		return PdfReader.getStreamBytes((PRStream) wrapped.getAsStream(i));
+	}
+
+	@Override
+	public long getObjectNumber(int i) {
+		PdfObject pdfObject = wrapped.getPdfObject(i);
+		if (pdfObject.isStream()) {
+			PdfStream asStream = wrapped.getAsStream(i);
+			return asStream.getIndRef().getNumber();
+		} else if (pdfObject.isIndirect()) {
+			PdfIndirectReference asIndirectObject = wrapped.getAsIndirectObject(i);
+			return asIndirectObject.getNumber();
+		}
+		throw new DSSException("Not supported " + pdfObject);
 	}
 
 	@Override

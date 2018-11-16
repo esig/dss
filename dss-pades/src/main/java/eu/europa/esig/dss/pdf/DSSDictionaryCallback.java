@@ -21,8 +21,14 @@
 package eu.europa.esig.dss.pdf;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+
+import eu.europa.esig.dss.pades.validation.PAdESCRLSource;
+import eu.europa.esig.dss.pades.validation.PAdESCertificateSource;
+import eu.europa.esig.dss.pades.validation.PAdESOCSPSource;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.crl.CRLToken;
@@ -41,6 +47,21 @@ public class DSSDictionaryCallback {
 
 	public void setSignature(PAdESSignature signature) {
 		this.signature = signature;
+	}
+
+	public Map<Long, byte[]> getStoredCrls() {
+		PAdESCRLSource crlSource = (PAdESCRLSource) signature.getCRLSource();
+		return crlSource.getCrlMap();
+	}
+
+	public Map<Long, BasicOCSPResp> getStoredOcspResps() {
+		PAdESOCSPSource ocspSource = (PAdESOCSPSource) signature.getOCSPSource();
+		return ocspSource.getOcspMap();
+	}
+
+	public Map<Long, CertificateToken> getStoredCertificates() {
+		PAdESCertificateSource certSource = signature.getCertificateSource();
+		return certSource.getCertificateMap();
 	}
 
 	public List<CRLToken> getCrls() {

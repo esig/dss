@@ -27,7 +27,6 @@ import java.util.Set;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
@@ -35,9 +34,11 @@ import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.signature.SignatureExtension;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
+import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
@@ -70,7 +71,7 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 
 		List<AdvancedSignature> signatures = pdfDocumentValidator.getSignatures();
 		for (final AdvancedSignature signature : signatures) {
-			if (!signature.isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_T)) {
+			if (isRequireDocumentTimestamp(signature)) {
 				final PAdESLevelBaselineT padesLevelBaselineT = new PAdESLevelBaselineT(tspSource);
 				document = padesLevelBaselineT.extendSignatures(document, parameters);
 
@@ -93,6 +94,12 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 		final PDFSignatureService signatureService = PdfObjFactory.newPAdESSignatureService();
 		return signatureService.addDssDictionary(document, callbacks);
 
+	}
+
+	private boolean isRequireDocumentTimestamp(AdvancedSignature signature) {
+		List<TimestampToken> signatureTimestamps = signature.getSignatureTimestamps();
+		List<TimestampToken> archiveTimestamps = signature.getArchiveTimestamps();
+		return Utils.isCollectionEmpty(signatureTimestamps) && Utils.isCollectionEmpty(archiveTimestamps);
 	}
 
 	private DSSDictionaryCallback validate(PAdESSignature signature) {

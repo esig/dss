@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.pdf;
 
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
@@ -43,12 +43,10 @@ public class PdfDssDict {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfDssDict.class);
 
-
-	private Set<byte[]> crlList = new HashSet<byte[]>();
-
-	private Set<BasicOCSPResp> ocspList = new HashSet<BasicOCSPResp>();
-
-	private Set<CertificateToken> certList = new HashSet<CertificateToken>();
+	/* Maps with object number + value */
+	private Map<Long, byte[]> crlMap = new HashMap<Long, byte[]>();
+	private Map<Long, BasicOCSPResp> ocspMap = new HashMap<Long, BasicOCSPResp>();
+	private Map<Long, CertificateToken> certMap = new HashMap<Long, CertificateToken>();
 
 	public static PdfDssDict extract(PdfDict documentDict) {
 		if (documentDict != null) {
@@ -110,7 +108,7 @@ public class PdfDssDict {
 			LOG.debug("There are {} CRLs in {} dictionary", crlArray.size(), dictionaryName);
 			for (int ii = 0; ii < crlArray.size(); ii++) {
 				try {
-					crlList.add(crlArray.getBytes(ii));
+					crlMap.put(crlArray.getObjectNumber(ii), crlArray.getBytes(ii));
 				} catch (Exception e) {
 					LOG.debug("Unable to read CRL " + ii + " from " + dictionaryName + " dictionary : " + e.getMessage(), e);
 				}
@@ -128,7 +126,7 @@ public class PdfDssDict {
 				try {
 					final byte[] stream = certsArray.getBytes(ii);
 					final CertificateToken cert = DSSUtils.loadCertificate(stream);
-					certList.add(cert);
+					certMap.put(certsArray.getObjectNumber(ii), cert);
 				} catch (Exception e) {
 					LOG.debug("Unable to read Cert " + ii + " from " + dictionaryName + " dictionary : " + e.getMessage(), e);
 				}
@@ -147,7 +145,7 @@ public class PdfDssDict {
 					final byte[] stream = ocspArray.getBytes(ii);
 					final OCSPResp ocspResp = new OCSPResp(stream);
 					final BasicOCSPResp responseObject = (BasicOCSPResp) ocspResp.getResponseObject();
-					ocspList.add(responseObject);
+					ocspMap.put(ocspArray.getObjectNumber(ii), responseObject);
 				} catch (Exception e) {
 					LOG.debug("Unable to read OCSP " + ii + " from " + dictionaryName + " dictionary : " + e.getMessage(), e);
 				}
@@ -157,16 +155,16 @@ public class PdfDssDict {
 		}
 	}
 
-	public Set<byte[]> getCrlList() {
-		return Collections.unmodifiableSet(crlList);
+	public Map<Long, byte[]> getCrlMap() {
+		return Collections.unmodifiableMap(crlMap);
 	}
 
-	public Set<BasicOCSPResp> getOcspList() {
-		return Collections.unmodifiableSet(ocspList);
+	public Map<Long, BasicOCSPResp> getOcspMap() {
+		return Collections.unmodifiableMap(ocspMap);
 	}
 
-	public Set<CertificateToken> getCertList() {
-		return Collections.unmodifiableSet(certList);
+	public Map<Long, CertificateToken> getCertMap() {
+		return Collections.unmodifiableMap(certMap);
 	}
 
 }

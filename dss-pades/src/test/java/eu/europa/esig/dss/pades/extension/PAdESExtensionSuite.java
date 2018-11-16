@@ -8,7 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses(value = { PAdESExtensionBToLT.class, PAdESExtensionBToLTA.class, PAdESExtensionBToT.class, PAdESExtensionBToTWithCompositeTSA.class,
 		PAdESExtensionBToTWithError500Timestamp.class, PAdESExtensionBToTWithFailTimestamp.class, PAdESExtensionLTAToLTA.class, PAdESExtensionLTToLTA.class,
 		PAdESExtensionLTToLTAWithError500Timestamp.class, PAdESExtensionLTToLTAWithFailTimestamp.class, PAdESExtensionToLT.class,
-		PAdESExtensionTToLTA.class })
+		PAdESExtensionTToLTA.class, DSS1523.class })
 public class PAdESExtensionSuite {
 
 }

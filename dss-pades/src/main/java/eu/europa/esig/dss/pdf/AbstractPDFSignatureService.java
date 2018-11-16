@@ -22,13 +22,19 @@ package eu.europa.esig.dss.pdf;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.tsp.TimeStampToken;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.cades.CMSUtils;
@@ -38,6 +44,7 @@ import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public abstract class AbstractPDFSignatureService implements PDFSignatureService, PDFTimestampService {
@@ -188,6 +195,41 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		if (d <= 0) {
 			throw new DSSException("The second hash part doesn't cover anything");
 		}
+	}
+
+	/**
+	 * This method builds a Map of known Objects (extracted from previous DSS
+	 * Dictionaries). This map will be used to avoid duplicate the same objects
+	 * between layers.
+	 * 
+	 * @param callbacks
+	 * @return
+	 */
+	protected Map<String, Long> buildKnownObjects(List<DSSDictionaryCallback> callbacks) {
+		Map<String, Long> result = new HashMap<String, Long>();
+		for (DSSDictionaryCallback callback : callbacks) {
+
+			Map<Long, CertificateToken> storedCertificates = callback.getStoredCertificates();
+			for (Entry<Long, CertificateToken> certEntry : storedCertificates.entrySet()) {
+				result.put(getTokenDigest(certEntry.getValue()), certEntry.getKey());
+			}
+
+			Map<Long, BasicOCSPResp> storedOcspResps = callback.getStoredOcspResps();
+			for (Entry<Long, BasicOCSPResp> ocspEntry : storedOcspResps.entrySet()) {
+				final OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(ocspEntry.getValue());
+				result.put(Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, DSSRevocationUtils.getEncoded(ocspResp))), ocspEntry.getKey());
+			}
+
+			Map<Long, byte[]> storedCrls = callback.getStoredCrls();
+			for (Entry<Long, byte[]> crlEntry : storedCrls.entrySet()) {
+				result.put(Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, crlEntry.getValue())), crlEntry.getKey());
+			}
+		}
+		return result;
+	}
+
+	protected String getTokenDigest(Token token) {
+		return Utils.toBase64(token.getDigest(DigestAlgorithm.SHA256));
 	}
 
 }

@@ -20,9 +20,8 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.Collections;
+import java.util.Map;
 
 import org.bouncycastle.cms.CMSSignedData;
 
@@ -37,31 +36,37 @@ import eu.europa.esig.dss.x509.CertificateToken;
  */
 public class PAdESCertificateSource extends CAdESCertificateSource {
 
+	private final PdfDssDict dssDictionary;
+
 	/**
 	 * The default constructor for PAdESCertificateSource.
 	 *
-	 * @param dssCatalog
+	 * @param dssDictionary
+	 *                      the DSS dictionary
 	 * @param cmsSignedData
 	 * @param certPool
-	 *            The pool of certificates to be used. Can be null.
+	 *                      The pool of certificates to be used. Can be null.
 	 */
-	public PAdESCertificateSource(final PdfDssDict dssCatalog, final CMSSignedData cmsSignedData, final CertificatePool certPool) {
+	public PAdESCertificateSource(final PdfDssDict dssDictionary, final CMSSignedData cmsSignedData, final CertificatePool certPool) {
 		super(cmsSignedData, certPool);
 
-		extractFromDSSDict(dssCatalog);
+		this.dssDictionary = dssDictionary;
+
+		extractFromDSSDict();
 	}
 
-	private void extractFromDSSDict(PdfDssDict dssCatalog) {
-		List<CertificateToken> certificationFromDSSDict = new ArrayList<CertificateToken>();
-		if (dssCatalog != null) {
-			final Set<CertificateToken> certList = dssCatalog.getCertList();
-			for (final CertificateToken certToken : certList) {
-				CertificateToken addedCertificate = addCertificate(certToken);
-				if (!certificationFromDSSDict.contains(addedCertificate)) {
-					certificationFromDSSDict.add(addedCertificate);
-				}
-			}
+	private void extractFromDSSDict() {
+		Map<Long, CertificateToken> certificateMap = getCertificateMap();
+		for (CertificateToken certToken : certificateMap.values()) {
+			addCertificate(certToken);
 		}
+	}
+
+	public Map<Long, CertificateToken> getCertificateMap() {
+		if (dssDictionary != null) {
+			return dssDictionary.getCertMap();
+		}
+		return Collections.emptyMap();
 	}
 
 }

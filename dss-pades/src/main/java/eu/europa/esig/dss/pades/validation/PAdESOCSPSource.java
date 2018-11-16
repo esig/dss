@@ -21,7 +21,9 @@
 package eu.europa.esig.dss.pades.validation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
@@ -34,12 +36,13 @@ import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
  */
 public class PAdESOCSPSource extends OfflineOCSPSource {
 
-	private PdfDssDict dssDictionary;
+	private final PdfDssDict dssDictionary;
 
 	/**
 	 * The default constructor for PAdESOCSPSource.
 	 *
 	 * @param dssDictionary
+	 *                      the DSS dictionary
 	 */
 	public PAdESOCSPSource(PdfDssDict dssDictionary) {
 		this.dssDictionary = dssDictionary;
@@ -47,12 +50,19 @@ public class PAdESOCSPSource extends OfflineOCSPSource {
 
 	@Override
 	public List<BasicOCSPResp> getContainedOCSPResponses() {
-		List<BasicOCSPResp> result = new ArrayList<BasicOCSPResp>();
-
-		if (dssDictionary != null) {
-			result.addAll(dssDictionary.getOcspList());
-		}
-
-		return result;
+		return new ArrayList<BasicOCSPResp>(getOcspMap().values());
 	}
+
+	/**
+	 * This method returns a map with the object number and the ocsp response
+	 * 
+	 * @return a map with the object number and the ocsp response
+	 */
+	public Map<Long, BasicOCSPResp> getOcspMap() {
+		if (dssDictionary != null) {
+			return dssDictionary.getOcspMap();
+		}
+		return Collections.emptyMap();
+	}
+
 }

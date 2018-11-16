@@ -56,6 +56,12 @@ class PdfBoxArray implements PdfArray {
 	}
 
 	@Override
+	public long getObjectNumber(int i) {
+		COSObject cosObject = (COSObject) wrapped.get(i);
+		return cosObject.getObjectNumber();
+	}
+
+	@Override
 	public int getInt(int i) throws IOException {
 		return wrapped.getInt(i);
 	}
@@ -72,8 +78,7 @@ class PdfBoxArray implements PdfArray {
 		if (cosStream == null) {
 			throw new RuntimeException("Cannot find value for " + val + " of class " + val.getClass());
 		}
-		final byte[] bytes = DSSUtils.toByteArray(cosStream.createInputStream());
-		return bytes;
+		return DSSUtils.toByteArray(cosStream.createInputStream());
 	}
 
 	@Override

@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -265,8 +266,8 @@ public class PAdESSignature extends CAdESSignature {
 		List<CertificateToken> encapsulatedCertificates = getCAdESSignature().getCertificateSource().getKeyInfoCertificates();
 		addCertRefs(refs, encapsulatedCertificates);
 		if (dssDictionary != null) {
-			Set<CertificateToken> certList = dssDictionary.getCertList();
-			addCertRefs(refs, certList);
+			Map<Long, CertificateToken> certMap = dssDictionary.getCertMap();
+			addCertRefs(refs, certMap.values());
 		}
 		return refs;
 	}

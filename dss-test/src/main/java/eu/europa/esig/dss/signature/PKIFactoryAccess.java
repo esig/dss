@@ -127,7 +127,7 @@ public abstract class PKIFactoryAccess {
 		return dataLoader.get(keystoreUrl);
 	}
 
-	private CertificateSource getTrustedCertificateSource() {
+	protected CertificateSource getTrustedCertificateSource() {
 		CommonTrustedCertificateSource trusted = new CommonTrustedCertificateSource();
 		trusted.importAsTrusted(getTrustAnchors());
 		return trusted;

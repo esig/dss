@@ -30,6 +30,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +78,7 @@ import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawerFactory;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.crl.CRLToken;
 import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
@@ -370,6 +372,9 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			PdfWriter writer = stp.getWriter();
 
 			if (Utils.isCollectionNotEmpty(callbacks)) {
+
+				Map<String, Long> knownObjects = buildKnownObjects(callbacks);
+
 				PdfDictionary catalog = reader.getCatalog();
 
 				PdfDictionary dss = new PdfDictionary();
@@ -384,23 +389,17 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 					PdfArray cert = new PdfArray();
 					PdfDictionary vri = new PdfDictionary();
 					for (CRLToken crlToken : callback.getCrls()) {
-						PdfStream ps = new PdfStream(crlToken.getEncoded());
-						ps.flateCompress();
-						PdfIndirectReference iref = writer.addToBody(ps, false).getIndirectReference();
+						PdfIndirectReference iref = getPdfIndirectReferenceForToken(crlToken, knownObjects, reader, writer);
 						crl.add(iref);
 						crls.add(iref);
 					}
 					for (OCSPToken ocspToken : callback.getOcsps()) {
-						PdfStream ps = new PdfStream(ocspToken.getEncoded());
-						ps.flateCompress();
-						PdfIndirectReference iref = writer.addToBody(ps, false).getIndirectReference();
+						PdfIndirectReference iref = getPdfIndirectReferenceForToken(ocspToken, knownObjects, reader, writer);
 						ocsp.add(iref);
 						ocsps.add(iref);
 					}
 					for (CertificateToken certToken : callback.getCertificates()) {
-						PdfStream ps = new PdfStream(certToken.getEncoded());
-						ps.flateCompress();
-						PdfIndirectReference iref = writer.addToBody(ps, false).getIndirectReference();
+						PdfIndirectReference iref = getPdfIndirectReferenceForToken(certToken, knownObjects, reader, writer);
 						cert.add(iref);
 						certs.add(iref);
 					}
@@ -446,6 +445,26 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			return signature;
 		} catch (IOException e) {
 			throw new DSSException("Unable to add DSS dictionary", e);
+		}
+	}
+
+	private PdfIndirectReference getPdfIndirectReferenceForToken(Token token, Map<String, Long> knownObjects, PdfReader reader, PdfWriter writer)
+			throws IOException {
+		String digest = getTokenDigest(token);
+		Long objectNumber = knownObjects.get(digest);
+		if (objectNumber == null) {
+			PdfStream ps = new PdfStream(token.getEncoded());
+			ps.flateCompress();
+			return writer.addToBody(ps, false).getIndirectReference();
+		} else {
+			PdfObject pdfObject = reader.getPdfObject(objectNumber.intValue());
+			if (pdfObject.isStream()) {
+				PdfStream stream = (PdfStream) pdfObject;
+				return writer.addToBody(stream, false).getIndirectReference();
+			} else if (pdfObject.isIndirect()) {
+				return (PdfIndirectReference) pdfObject;
+			}
+			throw new DSSException("Not supported");
 		}
 	}
 

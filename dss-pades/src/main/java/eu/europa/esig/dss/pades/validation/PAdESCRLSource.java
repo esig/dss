@@ -20,7 +20,8 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import java.util.Set;
+import java.util.Collections;
+import java.util.Map;
 
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
@@ -30,12 +31,13 @@ import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
  */
 public class PAdESCRLSource extends OfflineCRLSource {
 
-	private PdfDssDict dssDictionary;
+	private final PdfDssDict dssDictionary;
 
 	/**
 	 * The default constructor for PAdESCRLSource.
 	 *
 	 * @param dssDictionary
+	 *                      the DSS dictionary
 	 */
 	public PAdESCRLSource(final PdfDssDict dssDictionary) {
 		this.dssDictionary = dssDictionary;
@@ -43,12 +45,16 @@ public class PAdESCRLSource extends OfflineCRLSource {
 	}
 
 	private void extract() {
-		if (dssDictionary != null) {
-			Set<byte[]> crlSet = dssDictionary.getCrlList();
-			for (byte[] crl : crlSet) {
-				super.addCRLBinary(crl);
-			}
+		for (byte[] crl : getCrlMap().values()) {
+			addCRLBinary(crl);
 		}
-
 	}
+
+	public Map<Long, byte[]> getCrlMap() {
+		if (dssDictionary != null) {
+			return dssDictionary.getCrlMap();
+		}
+		return Collections.emptyMap();
+	}
+
 }

@@ -45,6 +45,15 @@ public interface PdfArray {
 	byte[] getBytes(int i) throws IOException;
 
 	/**
+	 * Retrieves the Object Number for the position i
+	 * 
+	 * @param i
+	 *          the position
+	 * @return the object number
+	 */
+	long getObjectNumber(int i);
+
+	/**
 	 * Retrieves the integer at the position i
 	 * 
 	 * @param i

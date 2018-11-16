@@ -20,15 +20,11 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import java.util.List;
-
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.signature.SignatureExtension;
-import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
@@ -42,8 +38,8 @@ class PAdESLevelBaselineLTA implements SignatureExtension<PAdESSignatureParamete
 	private final CertificateVerifier certificateVerifier;
 
 	public PAdESLevelBaselineLTA(TSPSource tspSource, CertificateVerifier certificateVerifier) {
-		padesLevelBaselineLT = new PAdESLevelBaselineLT(tspSource, certificateVerifier);
-		padesLevelBaselineT = new PAdESLevelBaselineT(tspSource);
+		this.padesLevelBaselineLT = new PAdESLevelBaselineLT(tspSource, certificateVerifier);
+		this.padesLevelBaselineT = new PAdESLevelBaselineT(tspSource);
 		this.certificateVerifier = certificateVerifier;
 	}
 
@@ -54,13 +50,7 @@ class PAdESLevelBaselineLTA implements SignatureExtension<PAdESSignatureParamete
 		final PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
 		pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
 
-		List<AdvancedSignature> signatures = pdfDocumentValidator.getSignatures();
-		for (final AdvancedSignature signature : signatures) {
-			if (!signature.isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_LT)) {
-				document = padesLevelBaselineLT.extendSignatures(document, parameters);
-				break;
-			}
-		}
+		document = padesLevelBaselineLT.extendSignatures(document, parameters);
 
 		// Will add a Document TimeStamp (not CMS)
 		return padesLevelBaselineT.extendSignatures(document, parameters);

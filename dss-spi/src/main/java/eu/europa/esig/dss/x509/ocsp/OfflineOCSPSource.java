@@ -52,7 +52,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 
 		if (LOG.isTraceEnabled()) {
 			final String dssIdAsString = certificateToken.getDSSIdAsString();
-			LOG.trace("--> OfflineOCSPSource queried for " + dssIdAsString + " contains: " + containedOCSPResponses.size() + " element(s).");
+			LOG.trace("--> OfflineOCSPSource queried for {} contains: {} element(s).", dssIdAsString, containedOCSPResponses.size());
 		}
 
 		Date bestUpdate = null;
