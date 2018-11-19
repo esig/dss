@@ -17,12 +17,12 @@ public class RestDocumentValidationServiceImpl implements RestDocumentValidation
 	
 	@Override
 	public ReportsDTO validateSignature(DataToValidateDTO dataToValidate) {
-		return validationService.validateDocument(dataToValidate.getSignedDocument(), dataToValidate.getOriginalDocument(), dataToValidate.getPolicy());
+		return validationService.validateDocument(dataToValidate.getSignedDocument(), dataToValidate.getOriginalDocuments(), dataToValidate.getPolicy());
 	}
 
 	@Override
 	public List<RemoteDocument> getOriginalDocuments(DataToValidateDTO dataToValidate) {
-		return validationService.getOriginalDocuments(dataToValidate.getSignedDocument(), dataToValidate.getOriginalDocument(),
+		return validationService.getOriginalDocuments(dataToValidate.getSignedDocument(), dataToValidate.getOriginalDocuments(),
 				dataToValidate.getSignatureId());
 	}
 }

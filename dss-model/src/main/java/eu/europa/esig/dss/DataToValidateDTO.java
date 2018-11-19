@@ -1,5 +1,8 @@
 package eu.europa.esig.dss;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class DataToValidateDTO {
 
 	/**
@@ -8,9 +11,9 @@ public class DataToValidateDTO {
 	private RemoteDocument signedDocument;
 
 	/**
-	 * The original file in case of detached signature
+	 * The original file(s) in case of detached signature
 	 */
-	private RemoteDocument originalDocument;
+	private List<RemoteDocument> originalDocuments;
 
 	/**
 	 * The custom validation policy to use
@@ -26,14 +29,22 @@ public class DataToValidateDTO {
 	}
 
 	public DataToValidateDTO(RemoteDocument signedDocument, RemoteDocument originalDocument, RemoteDocument policy) {
+		this(signedDocument, Arrays.asList(originalDocument), policy);
+	}
+
+	public DataToValidateDTO(RemoteDocument signedDocument, List<RemoteDocument> originalDocuments, RemoteDocument policy) {
 		this.signedDocument = signedDocument;
-		this.originalDocument = originalDocument;
+		this.originalDocuments = originalDocuments;
 		this.policy = policy;
 	}
 
 	public DataToValidateDTO(RemoteDocument signedDocument, RemoteDocument originalDocument, RemoteDocument policy, String signatureId) {
+		this(signedDocument, Arrays.asList(originalDocument), policy, signatureId);
+	}
+
+	public DataToValidateDTO(RemoteDocument signedDocument, List<RemoteDocument> originalDocuments, RemoteDocument policy, String signatureId) {
 		this.signedDocument = signedDocument;
-		this.originalDocument = originalDocument;
+		this.originalDocuments = originalDocuments;
 		this.policy = policy;
 		this.signatureId = signatureId;
 	}
@@ -46,12 +57,12 @@ public class DataToValidateDTO {
 		this.signedDocument = signedDocument;
 	}
 
-	public RemoteDocument getOriginalDocument() {
-		return originalDocument;
+	public List<RemoteDocument> getOriginalDocuments() {
+		return originalDocuments;
 	}
 
-	public void setOriginalDocument(RemoteDocument originalDocument) {
-		this.originalDocument = originalDocument;
+	public void setOriginalDocuments(List<RemoteDocument> originalDocuments) {
+		this.originalDocuments = originalDocuments;
 	}
 
 	public RemoteDocument getPolicy() {

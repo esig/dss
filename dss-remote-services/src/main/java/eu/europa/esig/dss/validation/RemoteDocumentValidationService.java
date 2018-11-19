@@ -2,7 +2,6 @@ package eu.europa.esig.dss.validation;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -26,9 +25,9 @@ public class RemoteDocumentValidationService {
 		this.verifier = verifier;
 	}
 
-	public ReportsDTO validateDocument(RemoteDocument signedFile, RemoteDocument originalFile, RemoteDocument policy) {
+	public ReportsDTO validateDocument(RemoteDocument signedFile, List<RemoteDocument> originalFiles, RemoteDocument policy) {
 		LOG.info("ValidateDocument in process...");
-		DocumentValidator validator = initValidator(signedFile, originalFile);
+		DocumentValidator validator = initValidator(signedFile, originalFiles);
 
 		Reports reports = null;
 		if (policy == null) {
@@ -46,9 +45,9 @@ public class RemoteDocumentValidationService {
 		return reportsDTO;
 	}
 
-	public List<RemoteDocument> getOriginalDocuments(RemoteDocument signedFile, RemoteDocument originalFile, String signatureId) {
+	public List<RemoteDocument> getOriginalDocuments(RemoteDocument signedFile, List<RemoteDocument> originalFiles, String signatureId) {
 		LOG.info("GetOriginalDocuments in process...");
-		DocumentValidator validator = initValidator(signedFile, originalFile);
+		DocumentValidator validator = initValidator(signedFile, originalFiles);
 
 		if (signatureId == null) {
 			List<AdvancedSignature> signatures = validator.getSignatures();
@@ -64,12 +63,12 @@ public class RemoteDocumentValidationService {
 		return remoteDocuments;
 	}
 
-	private DocumentValidator initValidator(RemoteDocument signedFile, RemoteDocument originalFile) {
+	private DocumentValidator initValidator(RemoteDocument signedFile, List<RemoteDocument> originalFiles) {
 		DSSDocument signedDocument = RemoteConverter.toDSSDocument(signedFile);
 		SignedDocumentValidator signedDocValidator = SignedDocumentValidator.fromDocument(signedDocument);
 		signedDocValidator.setCertificateVerifier(verifier);
-		if (originalFile != null && Utils.isArrayNotEmpty(originalFile.getBytes())) {
-			signedDocValidator.setDetachedContents(Arrays.asList(RemoteConverter.toDSSDocument(originalFile)));
+		if (Utils.isCollectionNotEmpty(originalFiles)) {
+			signedDocValidator.setDetachedContents(RemoteConverter.toDSSDocuments(originalFiles));
 		}
 		return signedDocValidator;
 	}
