@@ -1,7 +1,13 @@
 package eu.europa.esig.dss.pades.extension;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -11,20 +17,46 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pades.validation.PAdESCRLSource;
+import eu.europa.esig.dss.pades.validation.PAdESCertificateSource;
+import eu.europa.esig.dss.pades.validation.PAdESOCSPSource;
+import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.x509.CertificateToken;
 
 public class DSS1523 extends PKIFactoryAccess {
 
 	@Test
 	public void validation() {
+		// <</Type /DSS/Certs [20 0 R]/CRLs [21 0 R]/OCSPs [22 0 R]>>
 		DSSDocument doc = new InMemoryDocument(DSS1523.class.getResourceAsStream("/validation/PAdES-LTA.pdf"), "PAdES-LTA.pdf", MimeType.PDF);
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		Reports validateDocument = validator.validateDocument();
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		assertEquals(1, signatures.size());
+		PAdESSignature signature = (PAdESSignature) signatures.get(0);
+
+		PAdESCertificateSource certificateSource = signature.getCertificateSource();
+		assertNotNull(certificateSource);
+		Map<Long, CertificateToken> certificateMap = certificateSource.getCertificateMap();
+		assertEquals(1, certificateMap.size());
+		assertNotNull(certificateMap.get(20L));
+
+		PAdESOCSPSource ocspSource = (PAdESOCSPSource) signature.getOCSPSource();
+		assertNotNull(ocspSource);
+		Map<Long, BasicOCSPResp> ocspMap = ocspSource.getOcspMap();
+		assertEquals(1, ocspMap.size());
+		assertNotNull(ocspMap.get(22L));
+
+		PAdESCRLSource crlSource = (PAdESCRLSource) signature.getCRLSource();
+		assertNotNull(crlSource);
+		Map<Long, byte[]> crlMap = crlSource.getCrlMap();
+		assertEquals(1, crlMap.size());
+		assertNotNull(crlMap.get(21L));
 	}
 
 	@Test
@@ -42,7 +74,33 @@ public class DSS1523 extends PKIFactoryAccess {
 		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		DSSDocument extendDocument = service.extendDocument(doc, parameters);
-		extendDocument.save("target/lta.pdf");
+
+//		extendDocument.save("target/extended.pdf");
+
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(extendDocument);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		List<AdvancedSignature> signatures = validator.getSignatures();
+
+		assertEquals(1, signatures.size());
+		PAdESSignature signature = (PAdESSignature) signatures.get(0);
+
+		PAdESCertificateSource certificateSource = signature.getCertificateSource();
+		assertNotNull(certificateSource);
+		Map<Long, CertificateToken> certificateMap = certificateSource.getCertificateMap();
+//		assertEquals(1, certificateMap.size());
+		assertNotNull(certificateMap.get(20L));
+
+		PAdESOCSPSource ocspSource = (PAdESOCSPSource) signature.getOCSPSource();
+		assertNotNull(ocspSource);
+		Map<Long, BasicOCSPResp> ocspMap = ocspSource.getOcspMap();
+//		assertEquals(1, ocspMap.size());
+		assertNotNull(ocspMap.get(22L));
+
+		PAdESCRLSource crlSource = (PAdESCRLSource) signature.getCRLSource();
+		assertNotNull(crlSource);
+		Map<Long, byte[]> crlMap = crlSource.getCrlMap();
+//		assertEquals(1, crlMap.size());
+		assertNotNull(crlMap.get(21L));
 	}
 
 	@Override

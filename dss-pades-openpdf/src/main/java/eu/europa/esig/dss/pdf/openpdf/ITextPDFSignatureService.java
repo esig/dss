@@ -38,10 +38,10 @@ import org.slf4j.LoggerFactory;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.AcroFields.Item;
 import com.lowagie.text.pdf.ByteBuffer;
+import com.lowagie.text.pdf.DSSIndirectReference;
 import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfDate;
 import com.lowagie.text.pdf.PdfDictionary;
-import com.lowagie.text.pdf.PdfIndirectReference;
 import com.lowagie.text.pdf.PdfLiteral;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfObject;
@@ -389,48 +389,42 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 					PdfArray cert = new PdfArray();
 					PdfDictionary vri = new PdfDictionary();
 					for (CRLToken crlToken : callback.getCrls()) {
-						PdfIndirectReference iref = getPdfIndirectReferenceForToken(crlToken, knownObjects, reader, writer);
+						PdfObject iref = getPdfObjectForToken(crlToken, knownObjects, reader, writer);
 						crl.add(iref);
 						crls.add(iref);
 					}
 					for (OCSPToken ocspToken : callback.getOcsps()) {
-						PdfIndirectReference iref = getPdfIndirectReferenceForToken(ocspToken, knownObjects, reader, writer);
+						PdfObject iref = getPdfObjectForToken(ocspToken, knownObjects, reader, writer);
 						ocsp.add(iref);
 						ocsps.add(iref);
 					}
 					for (CertificateToken certToken : callback.getCertificates()) {
-						PdfIndirectReference iref = getPdfIndirectReferenceForToken(certToken, knownObjects, reader, writer);
+						PdfObject iref = getPdfObjectForToken(certToken, knownObjects, reader, writer);
 						cert.add(iref);
 						certs.add(iref);
 					}
 					if (ocsp.size() > 0) {
-						vri.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_VRI),
-								writer.addToBody(ocsp, false).getIndirectReference());
+						vri.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_VRI), ocsp);
 					}
 					if (crl.size() > 0) {
-						vri.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_VRI),
-								writer.addToBody(crl, false).getIndirectReference());
+						vri.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_VRI), crl);
 					}
 					if (cert.size() > 0) {
-						vri.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_VRI),
-								writer.addToBody(cert, false).getIndirectReference());
+						vri.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_VRI), cert);
 					}
 					String vkey = getVRIKey(callback.getSignature());
-					vrim.put(new PdfName(vkey), writer.addToBody(vri, false).getIndirectReference());
+					vrim.put(new PdfName(vkey), vri);
 				}
 				dss.put(new PdfName(PAdESConstants.VRI_DICTIONARY_NAME),
 						writer.addToBody(vrim, false).getIndirectReference());
 				if (ocsps.size() > 0) {
-					dss.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_DSS),
-							writer.addToBody(ocsps, false).getIndirectReference());
+					dss.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_DSS), ocsps);
 				}
 				if (crls.size() > 0) {
-					dss.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_DSS),
-							writer.addToBody(crls, false).getIndirectReference());
+					dss.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_DSS), crls);
 				}
 				if (certs.size() > 0) {
-					dss.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_DSS),
-							writer.addToBody(certs, false).getIndirectReference());
+					dss.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_DSS), certs);
 				}
 				catalog.put(new PdfName(PAdESConstants.DSS_DICTIONARY_NAME),
 						writer.addToBody(dss, false).getIndirectReference());
@@ -448,23 +442,15 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		}
 	}
 
-	private PdfIndirectReference getPdfIndirectReferenceForToken(Token token, Map<String, Long> knownObjects, PdfReader reader, PdfWriter writer)
+	private PdfObject getPdfObjectForToken(Token token, Map<String, Long> knownObjects, PdfReader reader, PdfWriter writer)
 			throws IOException {
 		String digest = getTokenDigest(token);
 		Long objectNumber = knownObjects.get(digest);
 		if (objectNumber == null) {
 			PdfStream ps = new PdfStream(token.getEncoded());
-			ps.flateCompress();
 			return writer.addToBody(ps, false).getIndirectReference();
 		} else {
-			PdfObject pdfObject = reader.getPdfObject(objectNumber.intValue());
-			if (pdfObject.isStream()) {
-				PdfStream stream = (PdfStream) pdfObject;
-				return writer.addToBody(stream, false).getIndirectReference();
-			} else if (pdfObject.isIndirect()) {
-				return (PdfIndirectReference) pdfObject;
-			}
-			throw new DSSException("Not supported");
+			return new DSSIndirectReference(reader, objectNumber.intValue());
 		}
 	}
 
