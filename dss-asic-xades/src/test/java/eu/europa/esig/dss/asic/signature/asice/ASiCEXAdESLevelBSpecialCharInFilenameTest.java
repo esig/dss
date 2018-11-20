@@ -38,7 +38,7 @@ public class ASiCEXAdESLevelBSpecialCharInFilenameTest extends AbstractASiCEXAdE
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "012éù*34ä5µ£ 6789~#%&()+=`@{[]}'.txt");
+		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "012éù*34ä5µ£ 6789~#%&()+=` @{[]}'.txt");
 
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
