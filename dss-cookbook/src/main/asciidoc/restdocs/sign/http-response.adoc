@@ -1,7 +1,7 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Mon, 26 Mar 2018 08:12:08 GMT
+Date: Wed, 21 Nov 2018 09:55:06 GMT
 Content-Type: application/json
 Transfer-Encoding: chunked
 Content-Length: 395

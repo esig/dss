@@ -17,6 +17,7 @@ $ echo '{
     "signatureAlgorithm" : "RSA_SHA256",
     "encryptionAlgorithm" : "RSA",
     "digestAlgorithm" : "SHA256",
+    "referenceDigestAlgorithm" : null,
     "maskGenerationFunction" : null,
     "contentTimestampParameters" : {
       "digestAlgorithm" : "SHA256",
@@ -43,7 +44,7 @@ $ echo '{
     "asicContainerType" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1522051920760,
+      "signingDate" : 1542794104583,
       "claimedSignerRoles" : null,
       "signaturePolicy" : null,
       "commitmentTypeIndications" : null,

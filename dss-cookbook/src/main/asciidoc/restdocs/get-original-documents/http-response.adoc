@@ -1,0 +1,15 @@
+[source,http,options="nowrap"]
+----
+HTTP/1.1 200 OK
+Date: Wed, 21 Nov 2018 09:55:06 GMT
+Content-Type: application/json
+Transfer-Encoding: chunked
+Content-Length: 101
+
+[ {
+  "bytes" : "aGVsbG8=",
+  "digestAlgorithm" : null,
+  "name" : null,
+  "mimeType" : null
+} ]
+----

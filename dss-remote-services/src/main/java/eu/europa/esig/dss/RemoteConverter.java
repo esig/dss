@@ -14,7 +14,9 @@ public class RemoteConverter {
 		if (Utils.isCollectionNotEmpty(remoteDocuments)) {
 			List<DSSDocument> dssDocuments = new ArrayList<DSSDocument>();
 			for (RemoteDocument remoteDocument : remoteDocuments) {
-				dssDocuments.add(toDSSDocument(remoteDocument));
+				if (remoteDocument != null) {
+					dssDocuments.add(toDSSDocument(remoteDocument));
+				}
 			}
 			return dssDocuments;
 		}
