@@ -34,6 +34,8 @@
 				<xsl:when test="$indicationText='PASSED'">success</xsl:when>
 				<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
 				<xsl:when test="$indicationText='FAILED'">danger</xsl:when>
+				<!-- Cannot conclude (untrusted chain) -->
+				<xsl:otherwise>default</xsl:otherwise>
 			</xsl:choose>
         </xsl:variable>
     
@@ -97,26 +99,10 @@
 	        		<dt>Validity</dt>
 	        		<dd><xsl:value-of select="dss:notBefore"/> - <xsl:value-of select="dss:notAfter"/></dd>
 	        		
-       				<dt>Revocation</dt>
-	        		<xsl:choose>
-	        			<xsl:when test="dss:revocation">
-	        				<dd>
-		        				<span>
-									<xsl:attribute name="class">glyphicon glyphicon glyphicon-remove-sign text-danger</xsl:attribute>
-									<xsl:attribute name="title">Revoked</xsl:attribute>
-								</span>
-	        					Revoked (reason:<xsl:value-of select="dss:revocation/dss:revocationReason" /> @ <xsl:value-of select="dss:revocation/dss:revocationDate" />)
-	        				</dd>
-	        			</xsl:when>
-	        			<xsl:otherwise>
-	        				<dd>
-		        				<span>
-									<xsl:attribute name="class">glyphicon glyphicon-ok-sign text-success</xsl:attribute>
-									<xsl:attribute name="title">Not Revoked</xsl:attribute>
-								</span>
-	        				</dd>
-	        			</xsl:otherwise>
-	        		</xsl:choose>
+	        		<xsl:if test="not(dss:trustAnchors)">
+	       				<dt>Revocation</dt>
+	       				<dd><xsl:apply-templates select="dss:revocation"/></dd>
+       				</xsl:if>
 	        		
 					<xsl:apply-templates select="dss:ocspUrls"/>
 					<xsl:apply-templates select="dss:crlUrls"/>
@@ -208,6 +194,30 @@
 	
     <xsl:template match="dss:keyUsage">
     	<dd><xsl:value-of select="." /></dd>
+    </xsl:template>
+    
+    <xsl:template match="dss:revocation">
+    	<xsl:choose>
+			<xsl:when test="dss:revocationDate">
+				<span>
+					<xsl:attribute name="class">glyphicon glyphicon glyphicon-remove-sign text-danger</xsl:attribute>
+					<xsl:attribute name="title">Revoked</xsl:attribute>
+				</span>
+     			Revoked (reason:<xsl:value-of select="dss:revocationReason" /> @ <xsl:value-of select="dss:revocationDate" />)
+			</xsl:when>    	
+			<xsl:when test="dss:productionDate">
+      			<span>
+					<xsl:attribute name="class">glyphicon glyphicon-ok-sign text-success</xsl:attribute>
+					<xsl:attribute name="title">Not Revoked</xsl:attribute>
+				</span>
+			</xsl:when>
+			<xsl:otherwise>
+      			<span>
+					<xsl:attribute name="class">glyphicon glyphicon-question-sign text-muted</xsl:attribute>
+					<xsl:attribute name="title">No revocation data available</xsl:attribute>
+				</span>
+			</xsl:otherwise>
+    	</xsl:choose>
     </xsl:template>
     
     <xsl:template match="dss:ocspUrls">

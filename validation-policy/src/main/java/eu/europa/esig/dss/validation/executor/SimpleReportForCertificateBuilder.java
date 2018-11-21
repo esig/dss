@@ -72,13 +72,14 @@ public class SimpleReportForCertificateBuilder {
 		item.setCpsUrls(emptyToNull(certificate.getCpsUrls()));
 		item.setPdsUrls(null);
 
+		XmlRevocation revocation = new XmlRevocation();
 		RevocationWrapper revocationData = certificate.getLatestRevocationData();
-		if (revocationData != null && revocationData.getRevocationDate() != null) {
-			XmlRevocation revocation = new XmlRevocation();
+		if (revocationData != null) {
+			revocation.setProductionDate(revocationData.getProductionDate());
 			revocation.setRevocationDate(revocationData.getRevocationDate());
 			revocation.setRevocationReason(revocationData.getReason());
-			item.setRevocation(revocation);
 		}
+		item.setRevocation(revocation);
 
 		if (certificate.isTrusted()) {
 			List<XmlTrustedServiceProvider> trustServiceProviders = certificate.getTrustServiceProviders();
