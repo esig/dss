@@ -25,9 +25,10 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationSource;
 import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.crl.CRLSource;
-import eu.europa.esig.dss.x509.ocsp.OCSPSource;
+import eu.europa.esig.dss.x509.crl.CRLToken;
+import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 /**
  * Fetchs revocation data from a certificate by querying an OCSP server first and then a CRL server if no OCSP response
@@ -38,9 +39,9 @@ public class OCSPAndCRLCertificateVerifier implements CertificateStatusVerifier 
 
 	private static final Logger LOG = LoggerFactory.getLogger(OCSPAndCRLCertificateVerifier.class);
 
-	private final OCSPSource ocspSource;
+	private final RevocationSource<OCSPToken> ocspSource;
 
-	private final CRLSource crlSource;
+	private final RevocationSource<CRLToken> crlSource;
 
 	private final CertificatePool validationCertPool;
 
@@ -55,7 +56,8 @@ public class OCSPAndCRLCertificateVerifier implements CertificateStatusVerifier 
 	 * @param validationCertPool
 	 *                           the used Certificate pool
 	 */
-	public OCSPAndCRLCertificateVerifier(final CRLSource crlSource, final OCSPSource ocspSource, final CertificatePool validationCertPool) {
+	public OCSPAndCRLCertificateVerifier(final RevocationSource<CRLToken> crlSource, final RevocationSource<OCSPToken> ocspSource,
+			final CertificatePool validationCertPool) {
 		this.crlSource = crlSource;
 		this.ocspSource = ocspSource;
 		this.validationCertPool = validationCertPool;

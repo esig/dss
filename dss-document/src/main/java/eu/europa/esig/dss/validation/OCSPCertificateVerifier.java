@@ -40,8 +40,8 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationSource;
 import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.ocsp.OCSPSource;
 import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 /**
@@ -52,7 +52,7 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OCSPCertificateVerifier.class);
 
-	private final OCSPSource ocspSource;
+	private final RevocationSource<OCSPToken> ocspSource;
 
 	private final CertificatePool validationCertPool;
 
@@ -63,7 +63,7 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 	 * @param ocspSource
 	 * @param validationCertPool
 	 */
-	public OCSPCertificateVerifier(final OCSPSource ocspSource, final CertificatePool validationCertPool) {
+	public OCSPCertificateVerifier(final RevocationSource<OCSPToken> ocspSource, final CertificatePool validationCertPool) {
 		this.ocspSource = ocspSource;
 		this.validationCertPool = validationCertPool;
 	}

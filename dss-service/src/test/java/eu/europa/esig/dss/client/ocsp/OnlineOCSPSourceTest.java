@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +15,9 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.SecureRandomNonceSource;
 import eu.europa.esig.dss.client.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.client.http.commons.OCSPDataLoader;
+import eu.europa.esig.dss.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationSource;
 import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 public class OnlineOCSPSourceTest {
@@ -66,6 +70,19 @@ public class OnlineOCSPSourceTest {
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getBasicOCSPResp());
 		assertFalse(ocspToken.isUseNonce());
+	}
+
+	@Test
+	public void testInjectExternalUrls() {
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		ocspSource.setDataLoader(new OCSPDataLoader());
+		List<String> alternativeOCSPUrls = new ArrayList<String>();
+		alternativeOCSPUrls.add("http://wrong.url.com");
+
+		RevocationSource<OCSPToken> currentOCSPSource = new AlternateUrlsSourceAdapter<OCSPToken>(ocspSource,
+				alternativeOCSPUrls);
+		OCSPToken ocspToken = currentOCSPSource.getRevocationToken(certificateToken, rootToken);
+		assertNotNull(ocspToken);
 	}
 
 }

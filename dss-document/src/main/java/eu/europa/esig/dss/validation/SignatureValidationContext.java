@@ -48,6 +48,7 @@ import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.x509.RevocationSource;
 import eu.europa.esig.dss.x509.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.Token;
@@ -519,18 +520,18 @@ public class SignatureValidationContext implements ValidationContext {
 			trustAnchor = (CertificateToken) lastToken;
 		}
 
-		OCSPSource currentOCSPSource = null;
+		RevocationSource currentOCSPSource = null;
 		List<String> alternativeOCSPUrls = trustedCertSource.getAlternativeOCSPUrls(trustAnchor);
 		if (Utils.isCollectionNotEmpty(alternativeOCSPUrls) && ocspSource instanceof RevocationSourceAlternateUrlsSupport) {
-			currentOCSPSource = (OCSPSource) new AlternateUrlsSourceAdapter<OCSPToken>((RevocationSourceAlternateUrlsSupport) ocspSource, alternativeOCSPUrls);
+			currentOCSPSource = new AlternateUrlsSourceAdapter<OCSPToken>((RevocationSourceAlternateUrlsSupport) ocspSource, alternativeOCSPUrls);
 		} else {
 			currentOCSPSource = ocspSource;
 		}
 
-		CRLSource currentCRLSource = null;
+		RevocationSource currentCRLSource = null;
 		List<String> alternativeCRLUrls = trustedCertSource.getAlternativeCRLUrls(trustAnchor);
 		if (Utils.isCollectionNotEmpty(alternativeCRLUrls) && crlSource instanceof RevocationSourceAlternateUrlsSupport) {
-			currentCRLSource = (CRLSource) new AlternateUrlsSourceAdapter<CRLToken>((RevocationSourceAlternateUrlsSupport) crlSource, alternativeCRLUrls);
+			currentCRLSource = new AlternateUrlsSourceAdapter<CRLToken>((RevocationSourceAlternateUrlsSupport) crlSource, alternativeCRLUrls);
 		} else {
 			currentCRLSource = crlSource;
 		}

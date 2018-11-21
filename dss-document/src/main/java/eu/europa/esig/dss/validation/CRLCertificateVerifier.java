@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationSource;
 import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.crl.CRLSource;
 import eu.europa.esig.dss.x509.crl.CRLToken;
 
 /**
@@ -37,7 +37,7 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CRLCertificateVerifier.class);
 
-	private final CRLSource crlSource;
+	private final RevocationSource<CRLToken> crlSource;
 
 	private final CertificatePool validationCertPool;
 
@@ -48,7 +48,7 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
 	 *                           the CRL repository used by this CRL trust linker.
 	 * @param validationCertPool
 	 */
-	public CRLCertificateVerifier(final CRLSource crlSource, final CertificatePool validationCertPool) {
+	public CRLCertificateVerifier(final RevocationSource<CRLToken> crlSource, final CertificatePool validationCertPool) {
 		this.crlSource = crlSource;
 		this.validationCertPool = validationCertPool;
 	}
