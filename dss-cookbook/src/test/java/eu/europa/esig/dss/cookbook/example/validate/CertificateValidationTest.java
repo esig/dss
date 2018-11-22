@@ -31,28 +31,11 @@ public class CertificateValidationTest {
 
 		// tag::demo[]
 
-		// Firstly, we load the certificate to validated
+		// Firstly, we load the certificate to be validated
 		CertificateToken token = DSSUtils.loadCertificate(new File("src/main/resources/keystore/ec.europa.eu.1.cer"));
 
-		// We need a certificate verifier
+		// We need a certificate verifier and configure it  (see specific chapter about the CertificateVerifier configuration)
 		CertificateVerifier cv = new CommonCertificateVerifier();
-
-		// We can inject several sources. eg: OCSP, CRL, AIA, trusted lists
-
-		// Capability to download resources from AIA
-		cv.setDataLoader(new CommonsDataLoader());
-
-		// Capability to request OCSP Responders
-		cv.setOcspSource(new OnlineOCSPSource());
-
-		// Capability to download CRL
-		cv.setCrlSource(new OnlineCRLSource());
-
-		// We now add trust anchors (trusted list, keystore,...)
-		cv.setTrustedCertSource(trustedCertSource);
-
-		// We also can add missing certificates
-		cv.setAdjunctCertSource(adjunctCertSource);
 
 		// We create an instance of the CertificateValidator with the certificate
 		CertificateValidator validator = CertificateValidator.fromCertificate(token);
