@@ -52,7 +52,7 @@
 		<bouncycastle.version>1.60</bouncycastle.version>
 		<xmlsec.version>2.0.10</xmlsec.version>
 		<pdfbox.version>2.0.12</pdfbox.version>
-		<openpdf.version>1.2.2</openpdf.version>
+		<openpdf.version>1.2.5</openpdf.version>
 		<httpclient.version>4.5.6</httpclient.version>
 		<rs-api.version>2.0.1</rs-api.version>
 		
@@ -765,7 +765,7 @@
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
-						<version>3.3.1</version>
+						<version>3.3.4</version>
 <!-- 						<configuration> -->
 <!-- 							<failBuildOnCVSS>8</failBuildOnCVSS> -->
 <!-- 						</configuration> -->
