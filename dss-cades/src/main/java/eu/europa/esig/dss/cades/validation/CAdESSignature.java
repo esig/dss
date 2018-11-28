@@ -1051,14 +1051,20 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public MaskGenerationFunction getMaskGenerationFunction() {
 		try {
-			byte[] encryptionAlgParams = signerInformation.getEncryptionAlgParams();
-			if (Utils.isArrayNotEmpty(encryptionAlgParams) && !Arrays.equals(DERNull.INSTANCE.getEncoded(), encryptionAlgParams)) {
-				RSASSAPSSparams param = RSASSAPSSparams.getInstance(encryptionAlgParams);
-				AlgorithmIdentifier maskGenAlgorithm = param.getMaskGenAlgorithm();
-				if (PKCSObjectIdentifiers.id_mgf1.equals(maskGenAlgorithm.getAlgorithm())) {
-					return MaskGenerationFunction.MGF1;
-				} else {
-					LOG.warn("Unsupported mask algorithm : {}", maskGenAlgorithm.getAlgorithm());
+			final SignatureAlgorithm signatureAlgorithm = getEncryptedDigestAlgo();
+			if (signatureAlgorithm != null) {
+				if (SignatureAlgorithm.RSA_SSA_PSS_SHA1_MGF1.equals(signatureAlgorithm)) {
+
+					byte[] encryptionAlgParams = signerInformation.getEncryptionAlgParams();
+					if (Utils.isArrayNotEmpty(encryptionAlgParams) && !Arrays.equals(DERNull.INSTANCE.getEncoded(), encryptionAlgParams)) {
+						RSASSAPSSparams param = RSASSAPSSparams.getInstance(encryptionAlgParams);
+						AlgorithmIdentifier maskGenAlgorithm = param.getMaskGenAlgorithm();
+						if (PKCSObjectIdentifiers.id_mgf1.equals(maskGenAlgorithm.getAlgorithm())) {
+							return MaskGenerationFunction.MGF1;
+						} else {
+							LOG.warn("Unsupported mask algorithm : {}", maskGenAlgorithm.getAlgorithm());
+						}
+					}
 				}
 			}
 		} catch (IOException e) {

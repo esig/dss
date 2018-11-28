@@ -35,6 +35,8 @@ public enum EncryptionAlgorithm {
 
 	ECDSA("ECDSA", "1.2.840.10045.2.1", "ECDSA"),
 
+	PLAIN_ECDSA("PLAIN-ECDSA", "0.4.0.127.0.7.1.1.4.1", "PLAIN-ECDSA"),
+
 	HMAC("HMAC", "", "");
 
 	private String name;

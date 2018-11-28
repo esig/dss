@@ -93,6 +93,18 @@ public enum SignatureAlgorithm {
 
 	ECDSA_RIPEMD160(EncryptionAlgorithm.ECDSA, DigestAlgorithm.RIPEMD160),
 
+	PLAIN_ECDSA_SHA1(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA1),
+
+	PLAIN_ECDSA_SHA224(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA224),
+
+	PLAIN_ECDSA_SHA256(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA256),
+
+	PLAIN_ECDSA_SHA384(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA384),
+
+	PLAIN_ECDSA_SHA512(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA512),
+
+	PLAIN_ECDSA_RIPEMD160(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.RIPEMD160),
+
 	DSA_SHA1(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA1),
 
 	DSA_SHA224(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA224),
@@ -250,6 +262,13 @@ public enum SignatureAlgorithm {
 		oidAlgorithms.put("2.16.840.1.101.3.4.3.11", ECDSA_SHA3_384);
 		oidAlgorithms.put("2.16.840.1.101.3.4.3.12", ECDSA_SHA3_512);
 
+		oidAlgorithms.put("0.4.0.127.0.7.1.1.4.1.1", PLAIN_ECDSA_SHA1);
+		oidAlgorithms.put("0.4.0.127.0.7.1.1.4.1.2", PLAIN_ECDSA_SHA224);
+		oidAlgorithms.put("0.4.0.127.0.7.1.1.4.1.3", PLAIN_ECDSA_SHA256);
+		oidAlgorithms.put("0.4.0.127.0.7.1.1.4.1.4", PLAIN_ECDSA_SHA384);
+		oidAlgorithms.put("0.4.0.127.0.7.1.1.4.1.5", PLAIN_ECDSA_SHA512);
+		oidAlgorithms.put("0.4.0.127.0.7.1.1.4.1.6", PLAIN_ECDSA_RIPEMD160);
+
 		oidAlgorithms.put("1.2.840.10040.4.3", DSA_SHA1);
 		oidAlgorithms.put("1.2.14888.3.0.1", DSA_SHA1);
 		oidAlgorithms.put("2.16.840.1.101.3.4.3.1", DSA_SHA224);
@@ -320,6 +339,13 @@ public enum SignatureAlgorithm {
 		javaAlgorithms.put("SHA384withECDSA", ECDSA_SHA384);
 		javaAlgorithms.put("SHA512withECDSA", ECDSA_SHA512);
 		javaAlgorithms.put("RIPEMD160withECDSA", ECDSA_RIPEMD160);
+
+		javaAlgorithms.put("SHA1withPLAIN-ECDSA", PLAIN_ECDSA_SHA1);
+		javaAlgorithms.put("SHA224withPLAIN-ECDSA", PLAIN_ECDSA_SHA224);
+		javaAlgorithms.put("SHA256withPLAIN-ECDSA", PLAIN_ECDSA_SHA256);
+		javaAlgorithms.put("SHA384withPLAIN-ECDSA", PLAIN_ECDSA_SHA384);
+		javaAlgorithms.put("SHA512withPLAIN-ECDSA", PLAIN_ECDSA_SHA512);
+		javaAlgorithms.put("RIPEMD160withPLAIN-ECDSA", PLAIN_ECDSA_RIPEMD160);
 
 		javaAlgorithms.put("SHA3-224withECDSA", ECDSA_SHA3_224);
 		javaAlgorithms.put("SHA3-256withECDSA", ECDSA_SHA3_256);
