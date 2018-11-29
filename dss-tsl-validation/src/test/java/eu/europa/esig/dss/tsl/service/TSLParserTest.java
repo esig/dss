@@ -125,6 +125,15 @@ public class TSLParserTest {
 	}
 
 	@Test
+	public void brexitNextUpdateNull() throws Exception {
+		TSLParser parser = new TSLParser(new FileDocument("src/test/resources/brexit.xml"));
+		TSLParserResult model = parser.call();
+
+		assertNotNull(model);
+		assertNull(model.getNextUpdateDate());
+	}
+
+	@Test
 	public void countCertificatesDE() throws Exception {
 		int oldResult = 413;
 		TSLParser parser = new TSLParser(new FileDocument("src/test/resources/tsls/59F95095730A1809A027655246D6524959B191A8.xml"));

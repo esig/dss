@@ -56,12 +56,18 @@ public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 
 		ChainItem<XmlTLAnalysis> item = firstItem = tlFreshness();
 
-		item = item.setNextItem(tlNotExpired());
+		if (!isLastTL()) {
+			item = item.setNextItem(tlNotExpired());
+		}
 
 		item = item.setNextItem(tlVersion());
 
 		item = item.setNextItem(tlWellSigned());
 
+	}
+
+	private boolean isLastTL() {
+		return currentTL.getNextUpdate() == null;
 	}
 
 	@Override
