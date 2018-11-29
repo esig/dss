@@ -44,6 +44,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *       &lt;/sequence&gt;
  *       &lt;attribute name="Id" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
  *       &lt;attribute name="Type" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+ *       &lt;attribute name="Base64Encoded" use="required" type="{http://www.w3.org/2001/XMLSchema}base64Binary" /&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
@@ -62,7 +63,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "basicSignature",
     "signingCertificate",
     "certificateChain",
-    "timestampedObjects"
+    "timestampedObjects",
+    "base64Encoded"
 })
 public class XmlTimestamp {
 
@@ -94,6 +96,9 @@ public class XmlTimestamp {
     protected String id;
     @XmlAttribute(name = "Type", required = true)
     protected String type;
+
+    @XmlElement(name = "Base64Encoded")
+    protected byte[] base64Encoded;
 
     /**
      * Gets the value of the productionTime property.
@@ -317,6 +322,32 @@ public class XmlTimestamp {
      */
     public void setType(String value) {
         this.type = value;
+    }
+
+    /**
+     * Gets the value of the base64Encoded property.
+     *
+     * @return
+     *     possible object is
+     *     {@link byte[] }
+     *
+     */
+    public byte[] getBase64Encoded()
+    {
+        return base64Encoded;
+    }
+
+    /**
+     * Sets the value of the base64Encoded property.
+     *
+     * @param value
+     *     allowed object is
+     *     {@link byte[] }
+     *
+     */
+    public void setBase64Encoded(byte[] value)
+    {
+        this.base64Encoded = value;
     }
 
     public List<XmlChainItem> getCertificateChain() {

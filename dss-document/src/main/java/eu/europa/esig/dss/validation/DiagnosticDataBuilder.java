@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.validation;
 
+import java.io.IOException;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +18,8 @@ import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignedData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -347,6 +350,7 @@ public class DiagnosticDataBuilder {
 		if (Utils.isStringNotEmpty(sourceURL)) { // not empty = online
 			xmlRevocation.setSourceAddress(sourceURL);
 			xmlRevocation.setAvailable(revocationToken.isAvailable());
+			xmlRevocation.setBase64Encoded(revocationToken.getEncoded());
 		}
 
 		xmlRevocation.setBasicSignature(getXmlBasicSignature(revocationToken));
@@ -617,6 +621,12 @@ public class DiagnosticDataBuilder {
 		xmlTimestampToken.setCertificateChain(getXmlForCertificateChain(issuerToken));
 		xmlTimestampToken.setTimestampedObjects(getXmlTimestampedObjects(timestampToken.getTimestampedReferences()));
 
+		try
+		{
+			xmlTimestampToken.setBase64Encoded(new CMSSignedData(timestampToken.getEncoded()).toASN1Structure().getEncoded("DER"));
+		} catch (final IOException | CMSException e) {
+			xmlTimestampToken.setBase64Encoded(timestampToken.getEncoded());
+		}
 		return xmlTimestampToken;
 	}
 

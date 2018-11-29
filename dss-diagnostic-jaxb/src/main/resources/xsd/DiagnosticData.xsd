@@ -414,6 +414,7 @@
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 		<xs:attribute name="Type" type="xs:string" use="required" />
+		<xs:attribute name="Base64Encoded" type="xs:base64Binary" />
 	</xs:complexType>
 	
 	<xs:complexType name="Revocation">
@@ -438,6 +439,7 @@
 			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
 
 			<xs:element name="Info" type="InfoType" minOccurs="0" />
+			<xs:element name="Base64Encoded" type="xs:base64Binary" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 	</xs:complexType>
