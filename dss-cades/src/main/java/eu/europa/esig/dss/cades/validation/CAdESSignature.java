@@ -1111,7 +1111,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				referenceDataFound = referenceDataFound && referenceValidation.isFound();
 				referenceDataIntact = referenceDataIntact && referenceValidation.isIntact();
 			}
-			signatureCryptographicVerification.setReferenceDataFound(true);
+			signatureCryptographicVerification.setReferenceDataFound(referenceDataFound);
 			signatureCryptographicVerification.setReferenceDataIntact(referenceDataIntact);
 
 			LOG.debug("CHECK SIGNATURE VALIDITY: ");
@@ -1168,7 +1168,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				Digest messageDigest = new Digest();
 				messageDigest.setValue(expectedMessageDigestValue);
 
-				// try to math with found digest algorithm(s)
+				// try to match with found digest algorithm(s)
 				for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
 					String digest = originalDocument.getDigest(digestAlgorithm);
 					if (Arrays.equals(expectedMessageDigestValue, Utils.fromBase64(digest))) {
