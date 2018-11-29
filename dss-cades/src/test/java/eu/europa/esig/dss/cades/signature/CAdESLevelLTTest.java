@@ -34,6 +34,8 @@ import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -62,6 +64,7 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 	protected CertificateVerifier getOfflineCertificateVerifier() {
 		CertificateVerifier certificateVerifier = super.getOfflineCertificateVerifier();
 		certificateVerifier.setIncludeCertificateRevocationValues(true);
+		certificateVerifier.setIncludeTimestampTokenValues(true);
 		return certificateVerifier;
 	}
 
@@ -78,6 +81,14 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 					assertNotNull(xmlRevocation.getBase64Encoded());
 				}
 
+			}
+		}
+
+		List<XmlSignature> signatures = diagnosticDataJaxb.getSignatures();
+		for (XmlSignature xmlSignature : signatures) {
+			List<XmlTimestamp> timestamps = xmlSignature.getTimestamps();
+			for (XmlTimestamp xmlTimestamp : timestamps) {
+				assertNotNull(xmlTimestamp.getBase64Encoded());
 			}
 		}
 	}

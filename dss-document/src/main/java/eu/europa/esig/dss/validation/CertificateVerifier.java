@@ -169,10 +169,12 @@ public interface CertificateVerifier {
 	boolean isExceptionOnMissingRevocationData();
 	
 	/**
-	 * This method allows to change the behavior by including raw revocation data.
+	 * This method allows to change the behavior by including raw revocation data in
+	 * the diagnostic data report.
 	 * 
 	 * @param include
-	 * 					true if raw revocation data should be included (default: false)
+	 *                true if raw revocation data should be included (default:
+	 *                false)
 	 */
 	void setIncludeCertificateRevocationValues(boolean include);
 
@@ -184,6 +186,25 @@ public interface CertificateVerifier {
 	 *         report (default: false)
 	 */
 	boolean isIncludeCertificateRevocationValues();
+
+	/**
+	 * This method allows to change the behavior by including raw timestamp tokens
+	 * in the diagnostic data report.
+	 * 
+	 * @param include
+	 *                true if raw timestamp tokens should be included (default:
+	 *                false)
+	 */
+	void setIncludeTimestampTokenValues(boolean include);
+
+	/**
+	 * This method returns true if the timestamp tokens need to be exported in the
+	 * diagnostic data report.
+	 * 
+	 * @return true if raw timestamp tokens should be included in the diagnotic data
+	 *         report (default: false)
+	 */
+	boolean isIncludeTimestampTokenValues();
 
 	/**
 	 * This method allows to change the behavior on invalid timestamp (LT/LTA

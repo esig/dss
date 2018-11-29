@@ -107,6 +107,7 @@ public class DiagnosticDataBuilder {
 	private CommonTrustedCertificateSource trustedCertSource;
 	private Date validationDate;
 	private boolean includeRawRevocationData = false;
+	private boolean includeRawTimestampTokens = false;
 
 	/**
 	 * This method allows to set the document which is analysed
@@ -191,6 +192,20 @@ public class DiagnosticDataBuilder {
 	 */
 	public DiagnosticDataBuilder includeRawRevocationData(boolean includeRawRevocationData) {
 		this.includeRawRevocationData = includeRawRevocationData;
+		return this;
+	}
+
+	/**
+	 * This method allows set the behavior to include raw timestamp tokens into the
+	 * diagnostic report. (default: false)
+	 * 
+	 * @param includeRawTimestampTokens
+	 *                                  true if the timestamp tokens need to be
+	 *                                  exported in the diagnostic data
+	 * @return the builder
+	 */
+	public DiagnosticDataBuilder includeRawTimestampTokens(boolean includeRawTimestampTokens) {
+		this.includeRawTimestampTokens = includeRawTimestampTokens;
 		return this;
 	}
 
@@ -708,6 +723,10 @@ public class DiagnosticDataBuilder {
 		xmlTimestampToken.setSigningCertificate(getXmlSigningCertificate(timestampToken.getPublicKeyOfTheSigner()));
 		xmlTimestampToken.setCertificateChain(getXmlForCertificateChain(timestampToken.getPublicKeyOfTheSigner()));
 		xmlTimestampToken.setTimestampedObjects(getXmlTimestampedObjects(timestampToken.getTimestampedReferences()));
+
+		if (includeRawTimestampTokens) {
+			xmlTimestampToken.setBase64Encoded(timestampToken.getEncoded());
+		}
 
 		return xmlTimestampToken;
 	}

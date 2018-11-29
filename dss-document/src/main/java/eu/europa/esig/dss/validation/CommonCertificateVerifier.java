@@ -99,6 +99,12 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private boolean includeRawRevocationData = false;
 
 	/**
+	 * This variable set the behavior to include raw timestamp tokens into the
+	 * diagnostic report. (default: false)
+	 */
+	private boolean includeRawTimestampTokens = false;
+
+	/**
 	 * This variable set the behavior to follow in case of revoked certificate
 	 * (augmentation process). True : throw an exception / False : add a warning
 	 * message. Default : true
@@ -296,6 +302,16 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public boolean isIncludeCertificateRevocationValues() {
 		return this.includeRawRevocationData;
+	}
+
+	@Override
+	public void setIncludeTimestampTokenValues(boolean include) {
+		this.includeRawTimestampTokens = include;
+	}
+
+	@Override
+	public boolean isIncludeTimestampTokenValues() {
+		return this.includeRawTimestampTokens;
 	}
 
 }
