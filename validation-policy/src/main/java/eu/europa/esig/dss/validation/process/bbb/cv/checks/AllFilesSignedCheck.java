@@ -28,6 +28,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlManifestFile;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignatureScopeType;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -108,7 +109,9 @@ public class AllFilesSignedCheck extends ChainItem<XmlCV> {
 		List<String> result = new ArrayList<String>();
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		for (XmlSignatureScope xmlSignatureScope : signatureScopes) {
-			result.add(xmlSignatureScope.getName());
+			if (SignatureScopeType.FULL == xmlSignatureScope.getScope()) {
+				result.add(xmlSignatureScope.getName());
+			}
 		}
 		return result;
 	}

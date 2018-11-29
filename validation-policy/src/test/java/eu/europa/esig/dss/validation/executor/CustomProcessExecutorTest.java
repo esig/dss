@@ -100,6 +100,29 @@ public class CustomProcessExecutorTest {
 	}
 
 	@Test
+	public void testAllFilesCovered() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/all-files-present.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		List<String> warnings = simpleReport.getWarnings(simpleReport.getFirstSignatureId());
+		assertFalse(warnings.contains(MessageTag.BBB_CV_IAFS_ANS.getMessage()));
+		assertTrue(warnings.contains(MessageTag.BBB_ICS_AIDNASNE_ANS.getMessage()));
+
+		validateBestSigningTimes(reports);
+	}
+
+	@Test
 	public void testDSS1453() throws Exception {
 		FileInputStream fis = new FileInputStream("src/test/resources/DSS-1453/diag-data-lta-dss.xml");
 		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
