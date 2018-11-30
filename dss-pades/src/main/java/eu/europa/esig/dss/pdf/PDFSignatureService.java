@@ -48,7 +48,7 @@ public interface PDFSignatureService {
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	byte[] digest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm) throws DSSException;
+	byte[] digest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm);
 
 	/**
 	 * Signs a PDF document
@@ -64,8 +64,7 @@ public interface PDFSignatureService {
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	DSSDocument sign(final DSSDocument pdfData, final byte[] signatureValue, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm)
-			throws DSSException;
+	DSSDocument sign(final DSSDocument pdfData, final byte[] signatureValue, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm);
 
 	/**
 	 * Retrieves and triggers validation of the signatures from a PDF document
@@ -79,8 +78,7 @@ public interface PDFSignatureService {
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	void validateSignatures(final CertificatePool validationCertPool, final DSSDocument document, final SignatureValidationCallback callback)
-			throws DSSException;
+	void validateSignatures(final CertificatePool validationCertPool, final DSSDocument document, final SignatureValidationCallback callback);
 
 	/**
 	 * This method adds the DSS dictionary (Baseline-LT)
@@ -94,7 +92,7 @@ public interface PDFSignatureService {
 	 * @throws DSSException
 	 *             if an error occurred
 	 */
-	DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks) throws DSSException;
+	DSSDocument addDssDictionary(DSSDocument document, List<DSSDictionaryCallback> callbacks);
 
 	/**
 	 * This method returns not signed signature-fields
