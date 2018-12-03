@@ -38,6 +38,7 @@ public class XAdES122XPathQueryHolder extends XPathQueryHolder {
 		XADES_SIGNED_PROPERTIES = "http://uri.etsi.org/01903/v1.2.2#SignedProperties";
 
 		XPATH_QUALIFYING_PROPERTIES = XPATH_OBJECT + "/xades122:QualifyingProperties";
+		XPATH_QUALIFYING_PROPERTIES_REFERENCE = XPATH_OBJECT + "/xades122:QualifyingPropertiesReference";
 		XPATH__QUALIFYING_PROPERTIES = "./xades122:QualifyingProperties";
 
 		XPATH__QUALIFYING_PROPERTIES_SIGNED_PROPERTIES = XPATH__QUALIFYING_PROPERTIES + "/xades122:SignedProperties";
@@ -65,6 +66,9 @@ public class XAdES122XPathQueryHolder extends XPathQueryHolder {
 		XPATH__CERT_DIGEST_DIGEST_METHOD = "./xades122:CertDigest/ds:DigestMethod";
 		XPATH__CERT_DIGEST_DIGEST_VALUE = "./xades122:CertDigest/ds:DigestValue";
 
+		// For qualifying properties reference
+		XPATH___UNSIGNED_PROPERTIES = "./xades122:UnsignedProperties";
+		XPATH___UNSIGNED_SIGNATURE_PROPERTIES = XPATH___UNSIGNED_PROPERTIES + "/xades122:UnsignedSignatureProperties";
 	}
 
 	@Override

@@ -89,6 +89,7 @@ public class XPathQueryHolder implements Serializable {
 
 	public String XPATH_QUALIFYING_PROPERTIES = XPATH_OBJECT + "/xades:QualifyingProperties";
 	public String XPATH__QUALIFYING_PROPERTIES = "./xades:QualifyingProperties";
+	public String XPATH_QUALIFYING_PROPERTIES_REFERENCE = XPATH_OBJECT + "/xades:QualifyingPropertiesReference";
 	/**
 	 * This query is used to determinate {@code XPathQueryHolder} tu use if function of the namespace of QualifyingProperties. public final String
 	 * XPATH_QUALIFYING_PROPERTIES_NAMESPACE = "namespace-uri(./ds:Signature/ds:Object/*[local-name()='QualifyingProperties'])"; This is not used anymore. See
@@ -172,6 +173,11 @@ public class XPathQueryHolder implements Serializable {
 
 	public String XPATH_CRL_VALUES_ENCAPSULATED_CRL = XPATH_ENCAPSULATED_CRL_VALUES + XPATH_ECRLV;
 	public String XPATH_OCSP_VALUES_ENCAPSULATED_OCSP = XPATH_ENCAPSULATED_OCSP_VALUES + XPATH_EOCSPV;
+
+	// For qualifying properties reference
+	public String XPATH___UNSIGNED_PROPERTIES = "./xades:UnsignedProperties";
+	public String XPATH___UNSIGNED_SIGNATURE_PROPERTIES = XPATH___UNSIGNED_PROPERTIES + "/xades:UnsignedSignatureProperties";
+
 
 	/**
 	 * This method returns true if this implementation is able to deal with a specific namespace.

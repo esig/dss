@@ -20,45 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import java.math.BigInteger;
-import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.security.auth.x500.X500Principal;
-import javax.xml.transform.stream.StreamSource;
-
-import org.apache.xml.security.algorithms.JCEMapper;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.keys.KeyInfo;
-import org.apache.xml.security.keys.keyresolver.KeyResolverException;
-import org.apache.xml.security.signature.Reference;
-import org.apache.xml.security.signature.SignedInfo;
-import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.signature.XMLSignatureException;
-import org.apache.xml.security.utils.XMLUtils;
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1Integer;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.x509.GeneralName;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
@@ -100,6 +61,45 @@ import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
+import org.apache.xml.security.algorithms.JCEMapper;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.keys.keyresolver.KeyResolverException;
+import org.apache.xml.security.signature.Reference;
+import org.apache.xml.security.signature.SignedInfo;
+import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.signature.XMLSignatureException;
+import org.apache.xml.security.utils.XMLUtils;
+import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1Integer;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.security.auth.x500.X500Principal;
+import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringReader;
+import java.math.BigInteger;
+import java.net.URL;
+import java.net.URLConnection;
+import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Parse an XAdES signature structure. Note that for each signature to be validated a new instance of this object must
@@ -215,6 +215,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		this.signatureElement = signatureElement;
 		this.xPathQueryHolders = xPathQueryHolders;
 		initialiseSettings();
+
+		// Loading qualifying properties references
+		loadQualifyingPropertiesReferences();
 	}
 
 	/**
@@ -277,6 +280,85 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public XPathQueryHolder getXPathQueryHolder() {
 		return xPathQueryHolder;
+	}
+
+	/**
+	 * Loads qualifying properties references
+	 */
+	private void loadQualifyingPropertiesReferences() {
+		try {
+			Element qualifyingElement = DomUtils.getElement(
+					signatureElement,
+					xPathQueryHolder.XPATH_QUALIFYING_PROPERTIES
+			);
+
+			Element unsignedElement = DomUtils.getElement(
+					qualifyingElement,
+					xPathQueryHolder.XPATH___UNSIGNED_PROPERTIES
+			);
+			Element unsignedSignatureElement = unsignedSignatureElement = DomUtils.getElement(
+					qualifyingElement,
+					xPathQueryHolder.XPATH___UNSIGNED_SIGNATURE_PROPERTIES
+			);
+
+			NodeList childNodes = DomUtils.getNodeList(
+					signatureElement,
+					xPathQueryHolder.XPATH_QUALIFYING_PROPERTIES_REFERENCE
+			);
+
+			// References loop
+			for (int i = 0; i < childNodes.getLength(); i++) {
+				Node child = childNodes.item(i);
+
+				String uri = child.getAttributes().getNamedItem("URI").getTextContent();
+
+				// Loading reference data
+				URLConnection connection = new URL(uri).openConnection();
+				connection.setRequestProperty("User-Agent", "curl/7.54.0"); // Ugly fix
+				connection.connect();
+
+				Document ref = DomUtils.buildDOM(connection.getInputStream());
+
+				NodeList refUnsignedSignaturePropList = DomUtils.getNodeList(
+						ref.getDocumentElement(),
+						xPathQueryHolder.XPATH___UNSIGNED_SIGNATURE_PROPERTIES
+				);
+
+				// Reference data loop
+				for (int y = 0; y < refUnsignedSignaturePropList.getLength(); y++) {
+					Node refUnsignedNode = refUnsignedSignaturePropList.item(y);
+
+					// Create unsigned properties element in main if not exists
+					if (unsignedElement == null) {
+						unsignedElement = qualifyingElement.getOwnerDocument().createElement(
+								xPathQueryHolder.XMLE_UNSIGNED_PROPERTIES
+						);
+						qualifyingElement.appendChild(unsignedElement);
+					}
+					// Create unsigned signature properties element in main if not exists
+					if (unsignedSignatureElement == null) {
+						unsignedSignatureElement = unsignedElement.getOwnerDocument().createElement(
+								xPathQueryHolder.XMLE_UNSIGNED_SIGNATURE_PROPERTIES
+						);
+						unsignedElement.appendChild(unsignedSignatureElement);
+					}
+
+					NodeList childs = refUnsignedNode.getChildNodes();
+
+					for (int z = 0; z < childs.getLength(); z++) {
+						Element refUnsignedChild = (Element) childs.item(z);
+
+						Node newChild = unsignedSignatureElement.getOwnerDocument().importNode(refUnsignedChild, true);
+						unsignedSignatureElement.appendChild(newChild);
+					}
+				}
+			}
+		} catch (Throwable e) {
+			throw new RuntimeException(
+					"Unable to load " + xPathQueryHolder.XPATH_QUALIFYING_PROPERTIES + " - " + e.getMessage(),
+					e
+			);
+		}
 	}
 
 	/**
@@ -1390,7 +1472,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			throw new DSSException("Unable to initialize santuario XMLSignature", e);
 		}
 	}
-	
+
 	/**
 	 * This method returns a {@code List} of {@code SigningCertificateValidity} base on the certificates extracted from
 	 * the signature or on the
@@ -1693,7 +1775,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		 * have the same parent, this property uses
 		 * the Implicit mechanism for all the time-stamped data objects. The input to the computation of the digest
 		 * value MUST be built as follows:
-		 * 
+		 *
 		 * 1) Initialize the final octet stream as an empty octet stream.
 		 */
 		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
@@ -1873,7 +1955,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	/**
 	 * This methods removes the char '#' if present
-	 * 
+	 *
 	 * @param uri
 	 * @return cleaned uri
 	 */
