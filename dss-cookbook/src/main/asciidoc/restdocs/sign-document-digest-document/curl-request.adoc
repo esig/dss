@@ -12,6 +12,7 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/signDocument'
     "signatureAlgorithm" : "RSA_SHA256",
     "encryptionAlgorithm" : "RSA",
     "digestAlgorithm" : "SHA256",
+    "referenceDigestAlgorithm" : null,
     "maskGenerationFunction" : null,
     "contentTimestampParameters" : {
       "digestAlgorithm" : "SHA256",
@@ -33,7 +34,7 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/signDocument'
     "asicContainerType" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1522307824201,
+      "signingDate" : 1542794106712,
       "claimedSignerRoles" : null,
       "signaturePolicy" : null,
       "commitmentTypeIndications" : null,

@@ -1,0 +1,9 @@
+[source,options="nowrap"]
+----
+[ {
+  "bytes" : "aGVsbG8=",
+  "digestAlgorithm" : null,
+  "name" : null,
+  "mimeType" : null
+} ]
+----

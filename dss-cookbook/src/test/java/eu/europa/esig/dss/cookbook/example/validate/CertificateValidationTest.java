@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.cookbook.example.validate;
 
 import static org.junit.Assert.assertNotNull;
@@ -31,28 +51,11 @@ public class CertificateValidationTest {
 
 		// tag::demo[]
 
-		// Firstly, we load the certificate to validated
+		// Firstly, we load the certificate to be validated
 		CertificateToken token = DSSUtils.loadCertificate(new File("src/main/resources/keystore/ec.europa.eu.1.cer"));
 
-		// We need a certificate verifier
+		// We need a certificate verifier and configure it  (see specific chapter about the CertificateVerifier configuration)
 		CertificateVerifier cv = new CommonCertificateVerifier();
-
-		// We can inject several sources. eg: OCSP, CRL, AIA, trusted lists
-
-		// Capability to download resources from AIA
-		cv.setDataLoader(new CommonsDataLoader());
-
-		// Capability to request OCSP Responders
-		cv.setOcspSource(new OnlineOCSPSource());
-
-		// Capability to download CRL
-		cv.setCrlSource(new OnlineCRLSource());
-
-		// We now add trust anchors (trusted list, keystore,...)
-		cv.setTrustedCertSource(trustedCertSource);
-
-		// We also can add missing certificates
-		cv.setAdjunctCertSource(adjunctCertSource);
 
 		// We create an instance of the CertificateValidator with the certificate
 		CertificateValidator validator = CertificateValidator.fromCertificate(token);

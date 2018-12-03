@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation.executor;
 
 import static org.junit.Assert.assertEquals;
@@ -75,6 +95,29 @@ public class CustomProcessExecutorTest {
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
+	}
+
+	@Test
+	public void testAllFilesCovered() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/all-files-present.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		List<String> warnings = simpleReport.getWarnings(simpleReport.getFirstSignatureId());
+		assertFalse(warnings.contains(MessageTag.BBB_CV_IAFS_ANS.getMessage()));
+		assertTrue(warnings.contains(MessageTag.BBB_ICS_AIDNASNE_ANS.getMessage()));
 
 		validateBestSigningTimes(reports);
 	}
@@ -542,6 +585,25 @@ public class CustomProcessExecutorTest {
 	@Test
 	public void qualificationQESig() throws Exception {
 		FileInputStream fis = new FileInputStream("src/test/resources/qualifQESig.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
+	}
+
+	@Test
+	public void qualificationQESigBrexit() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/qualifQESigBrexit.xml");
 		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
 		assertNotNull(diagnosticData);
 

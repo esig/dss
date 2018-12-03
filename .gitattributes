@@ -2,13 +2,6 @@
 # and leave all files detected as binary untouched.
 * text=auto
 
-#
-# The above will handle all files NOT found below
-#
-# These files are text and should be normalized (Convert crlf => lf)
-*.java          text
-
-
-# These files are binary and should be left untouched
+# These files are binary and should be left untouched (carriage returns windows/linux)
 # (binary is a macro for -text -diff)
-*.xml         binary
+dss-xades/src/test/resources/validation/dss1334/simple-test.xml         binary

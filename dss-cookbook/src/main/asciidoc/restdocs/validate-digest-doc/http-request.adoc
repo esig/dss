@@ -4,7 +4,7 @@ POST /services/rest/validation/validateSignature HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
 Content-Type: application/json; charset=UTF-8
 Host: localhost:8080
-Content-Length: 7293
+Content-Length: 7323
 
 {
   "signedDocument" : {
@@ -15,14 +15,15 @@ Content-Length: 7293
       "mimeTypeString" : "text/xml"
     }
   },
-  "originalDocument" : {
+  "originalDocuments" : [ {
     "bytes" : "kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=",
     "digestAlgorithm" : "SHA256",
     "name" : "sample.xml",
     "mimeType" : {
       "mimeTypeString" : "text/xml"
     }
-  },
-  "policy" : null
+  } ],
+  "policy" : null,
+  "signatureId" : null
 }
 ----

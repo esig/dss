@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.client.http.commons;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,8 +28,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -43,10 +42,6 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
@@ -58,6 +53,8 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -82,6 +79,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,6 +162,10 @@ public class CommonsDataLoader implements DataLoader {
 	 */
 	private String sslTruststorePassword = Utils.EMPTY_STRING;
 
+	private HttpRequestRetryHandler retryHandler;
+
+	private ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy;
+
 	/**
 	 * The default constructor for CommonsDataLoader.
 	 */
@@ -204,44 +206,46 @@ public class CommonsDataLoader implements DataLoader {
 
 	private RegistryBuilder<ConnectionSocketFactory> setConnectionManagerSchemeHttps(
 			final RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder) {
-		FileInputStream fis = null;
-		FileInputStream trustStoreIs = null;
 		try {
 
-			X509TrustManager trustManager = null;
-			if (Utils.isStringEmpty(sslTruststorePath)) {
-				trustManager = new AcceptAllTrustManager();
-			} else {
-				trustStoreIs = new FileInputStream(new File(sslTruststorePath));
-				trustManager = new DefaultTrustManager(trustStoreIs, sslTruststoreType, sslTruststorePassword);
-			}
+			SSLContextBuilder sslContextBuilder = SSLContextBuilder.create();
+			sslContextBuilder.setProtocol(sslProtocol);
+			sslContextBuilder.loadTrustMaterial(getSSLTrustStore(), null);
 
-			KeyManager[] keysManager = null;
-			if (Utils.isStringEmpty(sslKeystorePath)) {
-				LOG.debug("Use default SSL configuration");
-				keysManager = new KeyManager[0];
-			} else {
+			if (Utils.isStringNotEmpty(sslKeystorePath)) {
 				LOG.debug("Use provided info for SSL");
-				fis = new FileInputStream(new File(sslKeystorePath));
-				DefaultKeyManager dkm = new DefaultKeyManager(fis, sslKeystoreType, sslKeystorePassword);
-				keysManager = new KeyManager[] { dkm };
+				try (InputStream is = new FileInputStream(sslKeystorePath)) {
+					KeyStore ks = KeyStore.getInstance(sslKeystoreType);
+					ks.load(is, sslKeystorePassword.toCharArray());
+					sslContextBuilder.loadKeyMaterial(ks, sslKeystorePassword.toCharArray());
+				}
 			}
 
-			SSLContext sslContext = SSLContext.getInstance(sslProtocol);
-			sslContext.init(keysManager, new TrustManager[] { trustManager }, new SecureRandom());
-
-			SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext);
+			SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContextBuilder.build());
 			return socketFactoryRegistryBuilder.register("https", sslConnectionSocketFactory);
 		} catch (final Exception e) {
-			throw new DSSException(e);
-		} finally {
-			Utils.closeQuietly(fis);
-			Utils.closeQuietly(trustStoreIs);
+			throw new DSSException("Unable to configure the SSLContext/SSLConnectionSocketFactory", e);
 		}
 	}
 
+	protected KeyStore getSSLTrustStore() throws IOException, GeneralSecurityException {
+		if (Utils.isStringNotEmpty(sslTruststorePath)) {
+			try (InputStream is = new FileInputStream(sslTruststorePath)) {
+				KeyStore ks = KeyStore.getInstance(sslTruststoreType);
+				ks.load(is, sslTruststorePassword.toCharArray());
+				return ks;
+			}
+		} else {
+			return null;
+		}
+	}
+
+	protected synchronized HttpClientBuilder getHttpClientBuilder() {
+		return HttpClients.custom();
+	}
+
 	protected synchronized CloseableHttpClient getHttpClient(final String url) {
-		HttpClientBuilder httpClientBuilder = HttpClients.custom();
+		HttpClientBuilder httpClientBuilder = getHttpClientBuilder();
 
 		httpClientBuilder = configCredentials(httpClientBuilder, url);
 
@@ -253,6 +257,9 @@ public class CommonsDataLoader implements DataLoader {
 		final RequestConfig requestConfig = custom.build();
 		httpClientBuilder = httpClientBuilder.setDefaultRequestConfig(requestConfig);
 		httpClientBuilder.setConnectionManager(getConnectionManager());
+
+		httpClientBuilder.setRetryHandler(retryHandler);
+		httpClientBuilder.setServiceUnavailableRetryStrategy(serviceUnavailableRetryStrategy);
 
 		return httpClientBuilder.build();
 	}
@@ -825,6 +832,14 @@ public class CommonsDataLoader implements DataLoader {
 			commonsDataLoader.addAuthentication(httpHost.getHostName(), httpHost.getPort(), httpHost.getSchemeName(), credentials.getUserName(),
 					credentials.getPassword());
 		}
+	}
+
+	public void setRetryHandler(final HttpRequestRetryHandler retryHandler) {
+		this.retryHandler = retryHandler;
+	}
+
+	public void setServiceUnavailableRetryStrategy(final ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy) {
+		this.serviceUnavailableRetryStrategy = serviceUnavailableRetryStrategy;
 	}
 
 }

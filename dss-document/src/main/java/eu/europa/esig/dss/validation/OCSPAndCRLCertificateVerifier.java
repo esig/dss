@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -25,9 +25,10 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationSource;
 import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.crl.CRLSource;
-import eu.europa.esig.dss.x509.ocsp.OCSPSource;
+import eu.europa.esig.dss.x509.crl.CRLToken;
+import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 /**
  * Fetchs revocation data from a certificate by querying an OCSP server first and then a CRL server if no OCSP response
@@ -38,9 +39,9 @@ public class OCSPAndCRLCertificateVerifier implements CertificateStatusVerifier 
 
 	private static final Logger LOG = LoggerFactory.getLogger(OCSPAndCRLCertificateVerifier.class);
 
-	private final OCSPSource ocspSource;
+	private final RevocationSource<OCSPToken> ocspSource;
 
-	private final CRLSource crlSource;
+	private final RevocationSource<CRLToken> crlSource;
 
 	private final CertificatePool validationCertPool;
 
@@ -55,7 +56,8 @@ public class OCSPAndCRLCertificateVerifier implements CertificateStatusVerifier 
 	 * @param validationCertPool
 	 *                           the used Certificate pool
 	 */
-	public OCSPAndCRLCertificateVerifier(final CRLSource crlSource, final OCSPSource ocspSource, final CertificatePool validationCertPool) {
+	public OCSPAndCRLCertificateVerifier(final RevocationSource<CRLToken> crlSource, final RevocationSource<OCSPToken> ocspSource,
+			final CertificatePool validationCertPool) {
 		this.crlSource = crlSource;
 		this.ocspSource = ocspSource;
 		this.validationCertPool = validationCertPool;

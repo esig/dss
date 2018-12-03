@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -30,6 +30,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +38,10 @@ import org.slf4j.LoggerFactory;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.AcroFields.Item;
 import com.lowagie.text.pdf.ByteBuffer;
+import com.lowagie.text.pdf.DSSIndirectReference;
 import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfDate;
 import com.lowagie.text.pdf.PdfDictionary;
-import com.lowagie.text.pdf.PdfIndirectReference;
 import com.lowagie.text.pdf.PdfLiteral;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfObject;
@@ -77,6 +78,7 @@ import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawerFactory;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.crl.CRLToken;
 import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
@@ -278,9 +280,11 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 					PdfDict dictionary = new ITextPdfDict(af.getSignatureDictionary(name));
 					PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
+					final int[] byteRange = signatureDictionary.getByteRange();
+
+					validateByteRange(byteRange);
 
 					final byte[] cms = signatureDictionary.getContents();
-					final int[] byteRange = signatureDictionary.getByteRange();
 					final byte[] signedContent = getSignedContent(document, byteRange);
 					boolean signatureCoversWholeDocument = af.signatureCoversWholeDocument(name);
 
@@ -368,6 +372,9 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			PdfWriter writer = stp.getWriter();
 
 			if (Utils.isCollectionNotEmpty(callbacks)) {
+
+				Map<String, Long> knownObjects = buildKnownObjects(callbacks);
+
 				PdfDictionary catalog = reader.getCatalog();
 
 				PdfDictionary dss = new PdfDictionary();
@@ -382,54 +389,42 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 					PdfArray cert = new PdfArray();
 					PdfDictionary vri = new PdfDictionary();
 					for (CRLToken crlToken : callback.getCrls()) {
-						PdfStream ps = new PdfStream(crlToken.getEncoded());
-						ps.flateCompress();
-						PdfIndirectReference iref = writer.addToBody(ps, false).getIndirectReference();
+						PdfObject iref = getPdfObjectForToken(crlToken, knownObjects, reader, writer);
 						crl.add(iref);
 						crls.add(iref);
 					}
 					for (OCSPToken ocspToken : callback.getOcsps()) {
-						PdfStream ps = new PdfStream(ocspToken.getEncoded());
-						ps.flateCompress();
-						PdfIndirectReference iref = writer.addToBody(ps, false).getIndirectReference();
+						PdfObject iref = getPdfObjectForToken(ocspToken, knownObjects, reader, writer);
 						ocsp.add(iref);
 						ocsps.add(iref);
 					}
 					for (CertificateToken certToken : callback.getCertificates()) {
-						PdfStream ps = new PdfStream(certToken.getEncoded());
-						ps.flateCompress();
-						PdfIndirectReference iref = writer.addToBody(ps, false).getIndirectReference();
+						PdfObject iref = getPdfObjectForToken(certToken, knownObjects, reader, writer);
 						cert.add(iref);
 						certs.add(iref);
 					}
 					if (ocsp.size() > 0) {
-						vri.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_VRI),
-								writer.addToBody(ocsp, false).getIndirectReference());
+						vri.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_VRI), ocsp);
 					}
 					if (crl.size() > 0) {
-						vri.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_VRI),
-								writer.addToBody(crl, false).getIndirectReference());
+						vri.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_VRI), crl);
 					}
 					if (cert.size() > 0) {
-						vri.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_VRI),
-								writer.addToBody(cert, false).getIndirectReference());
+						vri.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_VRI), cert);
 					}
 					String vkey = getVRIKey(callback.getSignature());
-					vrim.put(new PdfName(vkey), writer.addToBody(vri, false).getIndirectReference());
+					vrim.put(new PdfName(vkey), vri);
 				}
 				dss.put(new PdfName(PAdESConstants.VRI_DICTIONARY_NAME),
 						writer.addToBody(vrim, false).getIndirectReference());
 				if (ocsps.size() > 0) {
-					dss.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_DSS),
-							writer.addToBody(ocsps, false).getIndirectReference());
+					dss.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_DSS), ocsps);
 				}
 				if (crls.size() > 0) {
-					dss.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_DSS),
-							writer.addToBody(crls, false).getIndirectReference());
+					dss.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_DSS), crls);
 				}
 				if (certs.size() > 0) {
-					dss.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_DSS),
-							writer.addToBody(certs, false).getIndirectReference());
+					dss.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_DSS), certs);
 				}
 				catalog.put(new PdfName(PAdESConstants.DSS_DICTIONARY_NAME),
 						writer.addToBody(dss, false).getIndirectReference());
@@ -444,6 +439,18 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			return signature;
 		} catch (IOException e) {
 			throw new DSSException("Unable to add DSS dictionary", e);
+		}
+	}
+
+	private PdfObject getPdfObjectForToken(Token token, Map<String, Long> knownObjects, PdfReader reader, PdfWriter writer)
+			throws IOException {
+		String digest = getTokenDigest(token);
+		Long objectNumber = knownObjects.get(digest);
+		if (objectNumber == null) {
+			PdfStream ps = new PdfStream(token.getEncoded());
+			return writer.addToBody(ps, false).getIndirectReference();
+		} else {
+			return new DSSIndirectReference(reader, objectNumber.intValue());
 		}
 	}
 

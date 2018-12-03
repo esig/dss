@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation;
 
 import java.security.PublicKey;
@@ -87,6 +107,7 @@ public class DiagnosticDataBuilder {
 	private CommonTrustedCertificateSource trustedCertSource;
 	private Date validationDate;
 	private boolean includeRawRevocationData = false;
+	private boolean includeRawTimestampTokens = false;
 
 	/**
 	 * This method allows to set the document which is analysed
@@ -171,6 +192,20 @@ public class DiagnosticDataBuilder {
 	 */
 	public DiagnosticDataBuilder includeRawRevocationData(boolean includeRawRevocationData) {
 		this.includeRawRevocationData = includeRawRevocationData;
+		return this;
+	}
+
+	/**
+	 * This method allows set the behavior to include raw timestamp tokens into the
+	 * diagnostic report. (default: false)
+	 * 
+	 * @param includeRawTimestampTokens
+	 *                                  true if the timestamp tokens need to be
+	 *                                  exported in the diagnostic data
+	 * @return the builder
+	 */
+	public DiagnosticDataBuilder includeRawTimestampTokens(boolean includeRawTimestampTokens) {
+		this.includeRawTimestampTokens = includeRawTimestampTokens;
 		return this;
 	}
 
@@ -688,6 +723,10 @@ public class DiagnosticDataBuilder {
 		xmlTimestampToken.setSigningCertificate(getXmlSigningCertificate(timestampToken.getPublicKeyOfTheSigner()));
 		xmlTimestampToken.setCertificateChain(getXmlForCertificateChain(timestampToken.getPublicKeyOfTheSigner()));
 		xmlTimestampToken.setTimestampedObjects(getXmlTimestampedObjects(timestampToken.getTimestampedReferences()));
+
+		if (includeRawTimestampTokens) {
+			xmlTimestampToken.setBase64Encoded(timestampToken.getEncoded());
+		}
 
 		return xmlTimestampToken;
 	}

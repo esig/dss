@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -205,7 +205,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * @throws org.bouncycastle.cms.CMSException
 	 */
 	public CAdESSignature(final byte[] data) throws CMSException {
-		this(new CMSSignedData(data), new CertificatePool());
+		this(data, new CertificatePool());
 	}
 
 	/**
@@ -1051,14 +1051,20 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public MaskGenerationFunction getMaskGenerationFunction() {
 		try {
-			byte[] encryptionAlgParams = signerInformation.getEncryptionAlgParams();
-			if (Utils.isArrayNotEmpty(encryptionAlgParams) && !Arrays.equals(DERNull.INSTANCE.getEncoded(), encryptionAlgParams)) {
-				RSASSAPSSparams param = RSASSAPSSparams.getInstance(encryptionAlgParams);
-				AlgorithmIdentifier maskGenAlgorithm = param.getMaskGenAlgorithm();
-				if (PKCSObjectIdentifiers.id_mgf1.equals(maskGenAlgorithm.getAlgorithm())) {
-					return MaskGenerationFunction.MGF1;
-				} else {
-					LOG.warn("Unsupported mask algorithm : {}", maskGenAlgorithm.getAlgorithm());
+			final SignatureAlgorithm signatureAlgorithm = getEncryptedDigestAlgo();
+			if (signatureAlgorithm != null) {
+				if (SignatureAlgorithm.RSA_SSA_PSS_SHA1_MGF1.equals(signatureAlgorithm)) {
+
+					byte[] encryptionAlgParams = signerInformation.getEncryptionAlgParams();
+					if (Utils.isArrayNotEmpty(encryptionAlgParams) && !Arrays.equals(DERNull.INSTANCE.getEncoded(), encryptionAlgParams)) {
+						RSASSAPSSparams param = RSASSAPSSparams.getInstance(encryptionAlgParams);
+						AlgorithmIdentifier maskGenAlgorithm = param.getMaskGenAlgorithm();
+						if (PKCSObjectIdentifiers.id_mgf1.equals(maskGenAlgorithm.getAlgorithm())) {
+							return MaskGenerationFunction.MGF1;
+						} else {
+							LOG.warn("Unsupported mask algorithm : {}", maskGenAlgorithm.getAlgorithm());
+						}
+					}
 				}
 			}
 		} catch (IOException e) {
@@ -1105,7 +1111,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				referenceDataFound = referenceDataFound && referenceValidation.isFound();
 				referenceDataIntact = referenceDataIntact && referenceValidation.isIntact();
 			}
-			signatureCryptographicVerification.setReferenceDataFound(true);
+			signatureCryptographicVerification.setReferenceDataFound(referenceDataFound);
 			signatureCryptographicVerification.setReferenceDataIntact(referenceDataIntact);
 
 			LOG.debug("CHECK SIGNATURE VALIDITY: ");
@@ -1162,7 +1168,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				Digest messageDigest = new Digest();
 				messageDigest.setValue(expectedMessageDigestValue);
 
-				// try to math with found digest algorithm(s)
+				// try to match with found digest algorithm(s)
 				for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
 					String digest = originalDocument.getDigest(digestAlgorithm);
 					if (Arrays.equals(expectedMessageDigestValue, Utils.fromBase64(digest))) {

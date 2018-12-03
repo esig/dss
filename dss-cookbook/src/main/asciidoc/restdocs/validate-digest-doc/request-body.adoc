@@ -9,14 +9,15 @@
       "mimeTypeString" : "text/xml"
     }
   },
-  "originalDocument" : {
+  "originalDocuments" : [ {
     "bytes" : "kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=",
     "digestAlgorithm" : "SHA256",
     "name" : "sample.xml",
     "mimeType" : {
       "mimeTypeString" : "text/xml"
     }
-  },
-  "policy" : null
+  } ],
+  "policy" : null,
+  "signatureId" : null
 }
 ----

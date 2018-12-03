@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -1210,8 +1210,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						referenceFound = referenceFound || found;
 					} else if (reference.typeIsReferenceToManifest()) {
 						validation.setType(DigestMatcherType.MANIFEST);
-						found = found && (noDuplicateIdFound && findManifestById(uri));
+						Node manifestNode = getManifestById(uri);
+						found = found && (noDuplicateIdFound && (manifestNode != null));
 						referenceFound = referenceFound || found;
+						if (manifestNode != null && Utils.isCollectionNotEmpty(detachedContents)) {
+							ManifestValidator mv = new ManifestValidator(manifestNode, detachedContents, xPathQueryHolder);
+							referenceValidations.addAll(mv.validate());
+						}
 					} else {
 						validation.setType(DigestMatcherType.REFERENCE);
 						found = found && noDuplicateIdFound;
@@ -1267,10 +1272,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public Node getObjectById(String uri) {
 		String objectById = XPathQueryHolder.XPATH_OBJECT + DomUtils.getXPathByIdAttribute(uri);
 		return DomUtils.getNode(signatureElement, objectById);
-	}
-
-	private boolean findManifestById(String uri) {
-		return getManifestById(uri) != null;
 	}
 
 	public Node getManifestById(String uri) {
@@ -1628,8 +1629,18 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final Set<String> referenceURIs = new HashSet<String>();
 			for (final Reference reference : references) {
 				referenceURIs.add(cleanURI(reference.getURI()));
-				buffer.write(reference.getReferencedBytes());
+				try {
+					final byte[] referencedBytes = reference.getReferencedBytes();
+					if (referencedBytes != null) {
+						buffer.write(referencedBytes);
+					} else {
+						LOG.warn("No binaries found for URI '{}'", reference.getURI());
+					}
+				} catch (XMLSecurityException e) {
+					LOG.warn("Unable to retrieve content for URI '{}' : {}", reference.getURI(), e.getMessage());
+				}
 			}
+
 			/**
 			 * 3) Take the following XMLDSIG elements in the order they are listed below, canonicalize each one and
 			 * concatenate each resulting octet stream to
@@ -1779,7 +1790,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				buffer.write(canonicalizedValue);
 			}
 			return buffer.toByteArray();
-		} catch (IOException | XMLSignatureException e) {
+		} catch (IOException e) {
 			throw new DSSException("Error when computing the archive data", e);
 		}
 	}

@@ -36,5 +36,20 @@ Bundles which contain the above demonstration can be downloaded from the [Maven 
 
 The code of the demonstration can be found on https://ec.europa.eu/cefdigital/code/projects/ESIG/repos/dss-demos/browse
 
-[![License (LGPL version 2.1)](https://img.shields.io/badge/license-GNU%20LGPL%20version%202.1-blue.svg?style=flat-square)](https://www.gnu.org/licenses/lgpl-2.1.html)
+# Licenses
+
+The DSS project is delivered under dual-license : 
+
+- All modules, except 'sscd-mocca-adapter', are licensed under the terms of the Lesser General Public License (LPGL), version 2.1.
+
+- The module 'sscd-mocca-adapter' is licensed under the terms of the European Union Public License (EUPL), version 1.1.
+
+The terms of each license can be found in the main directory of the DSS source repository:
+
+- [![License (EUPL version 1.1)](https://img.shields.io/badge/license-EUPL%20version%201.1-blue.svg?style=flat-square)](https://opensource.org/licenses/EUPL-1.1)
+- [![License (LGPL version 2.1)](https://img.shields.io/badge/license-GNU%20LGPL%20version%202.1-blue.svg?style=flat-square)](https://opensource.org/licenses/LGPL-2.1)
+
+SPDX-License-Identifier : LGPL-2.1 OR EUPL-1.1
+
+
 [![SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=eu.europa.ec.joinup.sd-dss%3Asd-dss&metric=alert_status)](https://sonarcloud.io/dashboard?id=eu.europa.ec.joinup.sd-dss%3Asd-dss)

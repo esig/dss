@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationSource;
 import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.crl.CRLSource;
 import eu.europa.esig.dss.x509.crl.CRLToken;
 
 /**
@@ -37,7 +37,7 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CRLCertificateVerifier.class);
 
-	private final CRLSource crlSource;
+	private final RevocationSource<CRLToken> crlSource;
 
 	private final CertificatePool validationCertPool;
 
@@ -48,7 +48,7 @@ public class CRLCertificateVerifier implements CertificateStatusVerifier {
 	 *                           the CRL repository used by this CRL trust linker.
 	 * @param validationCertPool
 	 */
-	public CRLCertificateVerifier(final CRLSource crlSource, final CertificatePool validationCertPool) {
+	public CRLCertificateVerifier(final RevocationSource<CRLToken> crlSource, final CertificatePool validationCertPool) {
 		this.crlSource = crlSource;
 		this.validationCertPool = validationCertPool;
 	}

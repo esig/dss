@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -162,22 +162,29 @@ public class FileCacheDataLoader implements DataLoader {
 				LOG.debug("The refresh is forced!");
 			}
 		}
-		final byte[] bytes;
+		byte[] bytes = null;
 		if (!isNetworkProtocol(url)) {
-
-			final String resourcePath = resourceLoader.getAbsoluteResourceFolder(url.trim());
-			final File fileResource = new File(resourcePath);
-			bytes = DSSUtils.toByteArray(fileResource);
+			bytes = getLocalFileContent(url);
 		} else {
-
 			bytes = dataLoader.get(url);
 		}
-		if ((bytes != null) && (bytes.length != 0)) {
 
+		if (Utils.isArrayNotEmpty(bytes)) {
 			final File out = getCacheFile(fileName);
 			DSSUtils.saveToFile(bytes, out);
 		}
 		return bytes;
+	}
+
+	private byte[] getLocalFileContent(final String urlString) {
+		byte[] returnedBytes = null;
+		// TODO usage ??
+		final String resourcePath = resourceLoader.getAbsoluteResourceFolder(urlString.trim());
+		if (resourcePath != null) {
+			final File fileResource = new File(resourcePath);
+			returnedBytes = DSSUtils.toByteArray(fileResource);
+		}
+		return returnedBytes;
 	}
 
 	@Override
@@ -253,32 +260,25 @@ public class FileCacheDataLoader implements DataLoader {
 		final File file = getCacheFile(cacheFileName);
 		final boolean fileExists = file.exists();
 		final boolean isCacheExpired = isCacheExpired(file);
-		if (fileExists && !isCacheExpired) {
 
+		if (fileExists && !isCacheExpired) {
 			LOG.debug("Cached file was used");
 			final byte[] byteArray = DSSUtils.toByteArray(file);
 			return byteArray;
 		} else {
-
 			LOG.debug("There is no cached file!");
 		}
 
-		final byte[] returnedBytes;
-		if (!isNetworkProtocol(urlString)) {
-
-			final String resourcePath = resourceLoader.getAbsoluteResourceFolder(urlString.trim());
-			final File fileResource = new File(resourcePath);
-			returnedBytes = DSSUtils.toByteArray(fileResource);
-			return returnedBytes;
+		byte[] returnedBytes = null;
+		if (isNetworkProtocol(urlString)) {
+			returnedBytes = dataLoader.post(urlString, content);
 		}
 
-		returnedBytes = dataLoader.post(urlString, content);
-
-		if (returnedBytes.length != 0) {
-
+		if (Utils.isArrayNotEmpty(returnedBytes)) {
 			final File cacheFile = getCacheFile(cacheFileName);
 			DSSUtils.saveToFile(returnedBytes, cacheFile);
 		}
+
 		return returnedBytes;
 	}
 

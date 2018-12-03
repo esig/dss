@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -169,10 +169,12 @@ public interface CertificateVerifier {
 	boolean isExceptionOnMissingRevocationData();
 	
 	/**
-	 * This method allows to change the behavior by including raw revocation data.
+	 * This method allows to change the behavior by including raw revocation data in
+	 * the diagnostic data report.
 	 * 
 	 * @param include
-	 * 					true if raw revocation data should be included (default: false)
+	 *                true if raw revocation data should be included (default:
+	 *                false)
 	 */
 	void setIncludeCertificateRevocationValues(boolean include);
 
@@ -184,6 +186,25 @@ public interface CertificateVerifier {
 	 *         report (default: false)
 	 */
 	boolean isIncludeCertificateRevocationValues();
+
+	/**
+	 * This method allows to change the behavior by including raw timestamp tokens
+	 * in the diagnostic data report.
+	 * 
+	 * @param include
+	 *                true if raw timestamp tokens should be included (default:
+	 *                false)
+	 */
+	void setIncludeTimestampTokenValues(boolean include);
+
+	/**
+	 * This method returns true if the timestamp tokens need to be exported in the
+	 * diagnostic data report.
+	 * 
+	 * @return true if raw timestamp tokens should be included in the diagnotic data
+	 *         report (default: false)
+	 */
+	boolean isIncludeTimestampTokenValues();
 
 	/**
 	 * This method allows to change the behavior on invalid timestamp (LT/LTA

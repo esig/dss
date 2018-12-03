@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -258,6 +278,15 @@ public class DSSUtilsTest {
 	@Test
 	public void printSecurityProviders() {
 		DSSUtils.printSecurityProviders();
+	}
+
+	@Test
+	public void decodeUrl() {
+		assertEquals("012éù*34ä5µ£ 6789~#%&()+=`@{[]}'.txt",
+				DSSUtils.decodeUrl("012%C3%A9%C3%B9*34%C3%A45%C2%B5%C2%A3%206789%7E%23%25%26%28%29%2B%3D%60%40%7B%5B%5D%7D%27.txt"));
+
+		assertEquals("012éù*34ä5µ£ 6789~#%&()+=` @{[]}'.txt",
+				DSSUtils.decodeUrl("012%C3%A9%C3%B9*34%C3%A45%C2%B5%C2%A3%206789%7E%23%25%26%28%29%2B%3D%60%20%40%7B%5B%5D%7D%27.txt"));
 	}
 
 }

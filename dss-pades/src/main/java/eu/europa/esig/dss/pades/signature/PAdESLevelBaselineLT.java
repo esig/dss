@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -25,12 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
@@ -38,9 +34,11 @@ import eu.europa.esig.dss.pdf.DSSDictionaryCallback;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.signature.SignatureExtension;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
+import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
@@ -49,8 +47,6 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
  * PAdES Baseline LT signature
  */
 class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameters> {
-
-	private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBaselineLT.class);
 
 	private final CertificateVerifier certificateVerifier;
 	private final TSPSource tspSource;
@@ -75,7 +71,7 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 
 		List<AdvancedSignature> signatures = pdfDocumentValidator.getSignatures();
 		for (final AdvancedSignature signature : signatures) {
-			if (!signature.isDataForSignatureLevelPresent(SignatureLevel.PAdES_BASELINE_T)) {
+			if (isRequireDocumentTimestamp(signature)) {
 				final PAdESLevelBaselineT padesLevelBaselineT = new PAdESLevelBaselineT(tspSource);
 				document = padesLevelBaselineT.extendSignatures(document, parameters);
 
@@ -98,6 +94,12 @@ class PAdESLevelBaselineLT implements SignatureExtension<PAdESSignatureParameter
 		final PDFSignatureService signatureService = PdfObjFactory.newPAdESSignatureService();
 		return signatureService.addDssDictionary(document, callbacks);
 
+	}
+
+	private boolean isRequireDocumentTimestamp(AdvancedSignature signature) {
+		List<TimestampToken> signatureTimestamps = signature.getSignatureTimestamps();
+		List<TimestampToken> archiveTimestamps = signature.getArchiveTimestamps();
+		return Utils.isCollectionEmpty(signatureTimestamps) && Utils.isCollectionEmpty(archiveTimestamps);
 	}
 
 	private DSSDictionaryCallback validate(PAdESSignature signature) {

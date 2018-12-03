@@ -4,7 +4,7 @@ POST /services/rest/signature/one-document/extendDocument HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
 Content-Type: application/json; charset=UTF-8
 Host: localhost:8080
-Content-Length: 8637
+Content-Length: 8677
 
 {
   "toExtendDocument" : {
@@ -23,6 +23,7 @@ Content-Length: 8637
     "signatureAlgorithm" : "RSA_SHA256",
     "encryptionAlgorithm" : "RSA",
     "digestAlgorithm" : "SHA256",
+    "referenceDigestAlgorithm" : null,
     "maskGenerationFunction" : null,
     "contentTimestampParameters" : {
       "digestAlgorithm" : "SHA256",
@@ -49,7 +50,7 @@ Content-Length: 8637
     "asicContainerType" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1522051920760,
+      "signingDate" : 1542794104583,
       "claimedSignerRoles" : null,
       "signaturePolicy" : null,
       "commitmentTypeIndications" : null,

@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -48,9 +48,11 @@ import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.x509.RevocationSource;
 import eu.europa.esig.dss.x509.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.Token;
+import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 import eu.europa.esig.dss.x509.crl.CRLSource;
 import eu.europa.esig.dss.x509.crl.CRLToken;
 import eu.europa.esig.dss.x509.ocsp.OCSPSource;
@@ -82,6 +84,8 @@ public class SignatureValidationContext implements ValidationContext {
 	protected CertificatePool validationCertificatePool;
 
 	private final Map<Token, Boolean> tokensToProcess = new HashMap<Token, Boolean>();
+
+	private final Map<Token, Date> lastUsageDates = new HashMap<Token, Date>();
 
 	// External OCSP source.
 	private OCSPSource ocspSource;
@@ -396,6 +400,8 @@ public class SignatureValidationContext implements ValidationContext {
 	public void addTimestampTokenForVerification(final TimestampToken timestampToken) {
 		if (addTokenForVerification(timestampToken)) {
 
+			registerUsageDate(timestampToken.getCreationDate(), timestampToken.getCertificates());
+
 			final boolean added = processedTimestamps.add(timestampToken);
 			if (LOG.isTraceEnabled()) {
 				if (added) {
@@ -403,6 +409,15 @@ public class SignatureValidationContext implements ValidationContext {
 				} else {
 					LOG.trace("TimestampToken already present processedTimestamps: {} ", processedTimestamps);
 				}
+			}
+		}
+	}
+
+	private void registerUsageDate(Date usageDate, List<CertificateToken> certificates) {
+		for (CertificateToken cert : certificates) {
+			Date lastUsage = lastUsageDates.get(cert);
+			if (lastUsage == null || lastUsage.before(usageDate)) {
+				lastUsageDates.put(cert, usageDate);
 			}
 		}
 	}
@@ -460,7 +475,7 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 		
 
-		if (revocations.isEmpty()) {
+		if (revocations.isEmpty() || isRevocationDataRefreshNeeded(certToken, revocations)) {
 
 			if (checkRevocationForUntrustedChains || isTrustedChain(certChain)) {
 
@@ -505,18 +520,18 @@ public class SignatureValidationContext implements ValidationContext {
 			trustAnchor = (CertificateToken) lastToken;
 		}
 
-		OCSPSource currentOCSPSource = null;
+		RevocationSource currentOCSPSource = null;
 		List<String> alternativeOCSPUrls = trustedCertSource.getAlternativeOCSPUrls(trustAnchor);
 		if (Utils.isCollectionNotEmpty(alternativeOCSPUrls) && ocspSource instanceof RevocationSourceAlternateUrlsSupport) {
-			currentOCSPSource = (OCSPSource) new AlternateUrlsSourceAdapter<OCSPToken>((RevocationSourceAlternateUrlsSupport) ocspSource, alternativeOCSPUrls);
+			currentOCSPSource = new AlternateUrlsSourceAdapter<OCSPToken>((RevocationSourceAlternateUrlsSupport) ocspSource, alternativeOCSPUrls);
 		} else {
 			currentOCSPSource = ocspSource;
 		}
 
-		CRLSource currentCRLSource = null;
+		RevocationSource currentCRLSource = null;
 		List<String> alternativeCRLUrls = trustedCertSource.getAlternativeCRLUrls(trustAnchor);
 		if (Utils.isCollectionNotEmpty(alternativeCRLUrls) && crlSource instanceof RevocationSourceAlternateUrlsSupport) {
-			currentCRLSource = (CRLSource) new AlternateUrlsSourceAdapter<CRLToken>((RevocationSourceAlternateUrlsSupport) crlSource, alternativeCRLUrls);
+			currentCRLSource = new AlternateUrlsSourceAdapter<CRLToken>((RevocationSourceAlternateUrlsSupport) crlSource, alternativeCRLUrls);
 		} else {
 			currentCRLSource = crlSource;
 		}
@@ -570,6 +585,25 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private boolean isRevocationDataNotRequired(CertificateToken certToken) {
 		return certToken.isSelfSigned() || isTrusted(certToken) || DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken);
+	}
+
+	private boolean isRevocationDataRefreshNeeded(CertificateToken certToken, List<RevocationToken> revocations) {
+		Date lastUsageDate = lastUsageDates.get(certToken);
+		if (lastUsageDate != null) {
+			boolean foundUpdatedRevocationData = false;
+			for (RevocationToken revocationToken : revocations) {
+				if ((lastUsageDate.compareTo(revocationToken.getProductionDate()) <= 0) && (CRLReasonEnum.certificateHold != revocationToken.getReason())) {
+					foundUpdatedRevocationData = true;
+					break;
+				}
+			}
+
+			if (!foundUpdatedRevocationData) {
+				LOG.debug("Revocation data refresh is needed");
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

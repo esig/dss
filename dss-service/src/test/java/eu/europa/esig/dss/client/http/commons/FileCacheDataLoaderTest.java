@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -21,14 +21,20 @@
 package eu.europa.esig.dss.client.http.commons;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
+import eu.europa.esig.dss.client.http.MemoryDataLoader;
 
 public class FileCacheDataLoaderTest {
 
@@ -78,6 +84,21 @@ public class FileCacheDataLoaderTest {
 		waitOneSecond();
 		long newCacheCreationTime = getUrlAndReturnCacheCreationTime();
 		assertTrue(cacheCreationTime < newCacheCreationTime);
+	}
+
+	@Test
+	public void testNotNetworkProtocol() throws IOException {
+		cacheDirectory = testFolder.newFolder();
+
+		FileCacheDataLoader specificDataLoader = new FileCacheDataLoader();
+		specificDataLoader.setDataLoader(new MemoryDataLoader(new HashMap<String, byte[]>()));
+		specificDataLoader.setFileCacheDirectory(cacheDirectory);
+
+		assertNull(specificDataLoader.get("1.2.3.4.5"));
+		assertNull(specificDataLoader.post("1.2.3.4.5", new byte[] { 1, 2, 3 }));
+
+		specificDataLoader.setResourceLoader(new ResourceLoader(FileCacheDataLoaderTest.class));
+		assertNotNull(specificDataLoader.get("/logback.xml"));
 	}
 
 	private long getUrlAndReturnCacheCreationTime() {

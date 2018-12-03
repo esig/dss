@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -22,12 +22,19 @@ package eu.europa.esig.dss.pdf;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.tsp.TimeStampToken;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.cades.CMSUtils;
@@ -37,6 +44,7 @@ import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public abstract class AbstractPDFSignatureService implements PDFSignatureService, PDFTimestampService {
@@ -162,6 +170,66 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		final byte[] result = new byte[length];
 		System.arraycopy(signedContent, 0, result, 0, length);
 		return result;
+	}
+
+	protected void validateByteRange(int[] byteRange) {
+
+		if (byteRange == null || byteRange.length != 4) {
+			throw new DSSException("Incorrect BytRange size");
+		}
+
+		final int a = byteRange[0];
+		final int b = byteRange[1];
+		final int c = byteRange[2];
+		final int d = byteRange[3];
+
+		if (a != 0) {
+			throw new DSSException("The BytRange must cover start of file");
+		}
+		if (b <= 0) {
+			throw new DSSException("The first hash part doesn't cover anything");
+		}
+		if (c <= b) {
+			throw new DSSException("The second hash part must start after the first hash part");
+		}
+		if (d <= 0) {
+			throw new DSSException("The second hash part doesn't cover anything");
+		}
+	}
+
+	/**
+	 * This method builds a Map of known Objects (extracted from previous DSS
+	 * Dictionaries). This map will be used to avoid duplicate the same objects
+	 * between layers.
+	 * 
+	 * @param callbacks
+	 * @return
+	 */
+	protected Map<String, Long> buildKnownObjects(List<DSSDictionaryCallback> callbacks) {
+		Map<String, Long> result = new HashMap<String, Long>();
+		for (DSSDictionaryCallback callback : callbacks) {
+
+			Map<Long, CertificateToken> storedCertificates = callback.getStoredCertificates();
+			for (Entry<Long, CertificateToken> certEntry : storedCertificates.entrySet()) {
+				result.put(getTokenDigest(certEntry.getValue()), certEntry.getKey());
+			}
+
+			Map<Long, BasicOCSPResp> storedOcspResps = callback.getStoredOcspResps();
+			for (Entry<Long, BasicOCSPResp> ocspEntry : storedOcspResps.entrySet()) {
+				final OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(ocspEntry.getValue());
+				result.put(Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, DSSRevocationUtils.getEncoded(ocspResp))), ocspEntry.getKey());
+			}
+
+			Map<Long, byte[]> storedCrls = callback.getStoredCrls();
+			for (Entry<Long, byte[]> crlEntry : storedCrls.entrySet()) {
+				result.put(Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, crlEntry.getValue())), crlEntry.getKey());
+			}
+		}
+		return result;
+	}
+
+	protected String getTokenDigest(Token token) {
+		return Utils.toBase64(token.getDigest(DigestAlgorithm.SHA256));
 	}
 
 }

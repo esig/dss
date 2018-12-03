@@ -414,6 +414,7 @@
 			<xs:enumeration value="REFERENCE" />
 			<xs:enumeration value="OBJECT" />
 			<xs:enumeration value="MANIFEST" />
+			<xs:enumeration value="MANIFEST_ENTRY" />
 			<xs:enumeration value="SIGNED_PROPERTIES" />
 			
 			<!-- CAdES -->
@@ -433,6 +434,8 @@
 			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
 
 			<xs:element name="TimestampedObjects" type="TimestampedObjects" minOccurs="0" />
+
+			<xs:element name="Base64Encoded" type="xs:base64Binary" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 		<xs:attribute name="Type" type="xs:string" use="required" />
