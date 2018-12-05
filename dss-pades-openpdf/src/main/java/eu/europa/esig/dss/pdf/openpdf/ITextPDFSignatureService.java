@@ -113,7 +113,7 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		sap.setAcro6Layers(true);
 
 		PdfDictionary dic = null;
-		if (Utils.isStringNotEmpty(parameters.getSignatureFieldId())) {
+		if (!timestamp && Utils.isStringNotEmpty(parameters.getSignatureFieldId())) {
 			dic = findExistingSignature(reader, parameters.getSignatureFieldId());
 		} else {
 			dic = new PdfDictionary();

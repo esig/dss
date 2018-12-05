@@ -172,7 +172,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	private PDSignature createSignatureDictionary(final PAdESSignatureParameters parameters, PDDocument pdDocument) {
 
 		PDSignature signature;
-		if (Utils.isStringNotEmpty(parameters.getSignatureFieldId())) {
+		if (!timestamp && Utils.isStringNotEmpty(parameters.getSignatureFieldId())) {
 			signature = findExistingSignature(pdDocument, parameters.getSignatureFieldId());
 		} else {
 			signature = new PDSignature();

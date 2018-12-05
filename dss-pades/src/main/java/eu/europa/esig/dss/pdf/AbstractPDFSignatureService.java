@@ -49,7 +49,7 @@ import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public abstract class AbstractPDFSignatureService implements PDFSignatureService, PDFTimestampService {
 
-	private final boolean timestamp;
+	protected final boolean timestamp;
 	protected final SignatureDrawerFactory signatureDrawerFactory;
 
 	/**
