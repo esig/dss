@@ -77,6 +77,23 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		assertNotNull(pdfSignatureInfo.getSigningDate());
 		assertNull(pdfSignatureInfo.getCades().getSigningTime());
 
+		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
+		List<String> originalSignatureFields = service.getAvailableSignatureFields(getDocumentToSign());
+		int originalSignatureFieldsNumber = originalSignatureFields.size();
+
+		List<String> availableSignatureFields = service.getAvailableSignatureFields(dssDocument);
+		int availableSignatureFieldsNumber = availableSignatureFields.size();
+
+		if ((originalSignatureFieldsNumber > 0)) {
+			if (originalSignatureFields.contains(getSignatureParameters().getSignatureFieldId())) {
+				assertEquals(availableSignatureFieldsNumber, originalSignatureFieldsNumber - 1);
+			} else {
+				assertEquals(availableSignatureFieldsNumber, originalSignatureFieldsNumber);
+			}
+		} else {
+			assertEquals(0, availableSignatureFieldsNumber);
+		}
+
 		checkSignedAttributesOrder(padesSig);
 	}
 

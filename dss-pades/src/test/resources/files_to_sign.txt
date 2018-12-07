@@ -4,3 +4,4 @@
 /PDF.pdf
 /pdf-two-fields.pdf
 /sample.pdf
+/unsignedPDFWithSignatureFieldButInvisible.pdf

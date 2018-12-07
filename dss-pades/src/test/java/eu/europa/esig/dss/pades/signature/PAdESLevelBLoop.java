@@ -51,7 +51,7 @@ public class PAdESLevelBLoop extends AbstractPAdESTestSignature {
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(PAdESLevelBLoop.class.getResourceAsStream(listFiles)))) {
 			String filepath;
 			while ((filepath = br.readLine()) != null) {
-				dataToRun.add(new Object[] { new InMemoryDocument(PAdESLevelBLoop.class.getResourceAsStream(filepath), "original.pdf", MimeType.PDF) });
+				dataToRun.add(new Object[] { new InMemoryDocument(PAdESLevelBLoop.class.getResourceAsStream(filepath), filepath, MimeType.PDF) });
 			}
 
 		}

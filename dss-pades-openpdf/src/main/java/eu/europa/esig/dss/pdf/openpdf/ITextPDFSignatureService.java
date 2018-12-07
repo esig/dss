@@ -464,8 +464,16 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	@SuppressWarnings("unchecked")
 	public List<String> getAvailableSignatureFields(DSSDocument document) {
 		try (InputStream is = document.openStream(); PdfReader reader = new PdfReader(is)) {
+			List<String> result = new ArrayList<String>();
 			AcroFields acroFields = reader.getAcroFields();
-			return acroFields.getBlankSignatureNames();
+			List<String> names = acroFields.getSignatureNames();
+			for (String name : names) {
+				PdfDictionary dictionary = acroFields.getSignatureDictionary(name);
+				if (dictionary == null) {
+					result.add(name);
+				}
+			}
+			return result;
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
