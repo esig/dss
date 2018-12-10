@@ -474,15 +474,14 @@ public class DiagnosticDataBuilder {
 			final List<XmlChainItem> certChainTokens = new ArrayList<XmlChainItem>();
 			Set<CertificateToken> processedTokens = new HashSet<CertificateToken>();
 			CertificateToken issuerToken = getCertificateByPubKey(certPubKey);
-			while (issuerToken !=null) {
+			while (issuerToken != null) {
 				certChainTokens.add(getXmlChainItem(issuerToken));
-				if (issuerToken.isSelfSigned() || processedTokens.contains(issuerToken)
-						|| isTrusted(issuerToken)) {
+				if (issuerToken.isSelfSigned() || processedTokens.contains(issuerToken) || isTrusted(issuerToken)) {
 					break;
 				}
 				processedTokens.add(issuerToken);
-				issuerToken  = getCertificateByPubKey(issuerToken.getPublicKeyOfTheSigner());
-			} 
+				issuerToken = getCertificateByPubKey(issuerToken.getPublicKeyOfTheSigner());
+			}
 			return certChainTokens;
 		}
 		return null;
@@ -978,15 +977,15 @@ public class DiagnosticDataBuilder {
 	private Set<ServiceInfo> getRelatedTrustServices(CertificateToken certToken) {
 		if (trustedCertSource instanceof TrustedListsCertificateSource) {
 			Set<ServiceInfo> result = new HashSet<ServiceInfo>();
-			do {
+			Set<CertificateToken> processedTokens = new HashSet<CertificateToken>();
+			while (certToken != null) {
 				result.addAll(trustedCertSource.getTrustServices(certToken));
-				PublicKey issuerPublicKey = certToken.getPublicKeyOfTheSigner();
-				if (issuerPublicKey != null) {
-					certToken = getCertificateByPubKey(issuerPublicKey);
-				} else {
-					certToken = null;
+				if (certToken.isSelfSigned() || processedTokens.contains(certToken)) {
+					break;
 				}
-			} while (certToken != null);
+				processedTokens.add(certToken);
+				certToken = getCertificateByPubKey(certToken.getPublicKeyOfTheSigner());
+			}
 			return result;
 		} else {
 			return Collections.emptySet();
