@@ -87,5 +87,9 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	public List<XmlTimestampedObject> getTimestampedObjects() {
 		return timestamp.getTimestampedObjects();
 	}
+	
+	public byte[] getBinaries() {
+		return timestamp.getBase64Encoded();
+	}
 
 }

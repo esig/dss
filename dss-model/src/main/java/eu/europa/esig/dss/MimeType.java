@@ -47,6 +47,8 @@ public class MimeType implements Serializable {
 	public static final MimeType ODT = new MimeType("application/vnd.oasis.opendocument.text");
 	public static final MimeType ODS = new MimeType("application/vnd.oasis.opendocument.spreadsheet");
 	public static final MimeType TEXT = new MimeType("text/plain");
+	public static final MimeType CRL = new MimeType("application/pkix-crl");
+	public static final MimeType CER = new MimeType("application/pkix-cert");
 
 	public static final MimeType PNG = new MimeType("image/png");
 	public static final MimeType JPEG = new MimeType("image/jpeg");
