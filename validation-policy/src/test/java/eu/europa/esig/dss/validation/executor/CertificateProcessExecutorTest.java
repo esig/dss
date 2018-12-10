@@ -40,6 +40,8 @@ import javax.xml.validation.SchemaFactory;
 import org.junit.Test;
 
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificate;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlChainItem;
@@ -405,6 +407,30 @@ public class CertificateProcessExecutorTest {
 		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
+	}
+
+	@Test
+	public void twoSDIdiffentResults() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/2-sdi-different-results.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		String certificateId = "E4A94773CF7B28C2BDF25015BE6716E501E73AB82BF0A9788D0DF8AD14D6876D";
+
+		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		executor.setCertificateId(certificateId);
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		CertificateReports reports = executor.execute();
+
+		DetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
+		XmlCertificate certificate = detailedReportJaxb.getCertificate();
+		List<XmlValidationCertificateQualification> validationCertificateQualification = certificate.getValidationCertificateQualification();
+		for (XmlValidationCertificateQualification xmlValidationCertificateQualification : validationCertificateQualification) {
+			assertEquals(Indication.FAILED, xmlValidationCertificateQualification.getConclusion().getIndication());
+		}
 	}
 
 	private EtsiValidationPolicy loadPolicy() throws Exception {
