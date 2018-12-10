@@ -35,20 +35,28 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValidationCertificateQualification> {
 
-	private final CertificateWrapper trustedCert;
+	private final CertificateWrapper signingCertificate;
+	private final CertificateWrapper rootCertificate;
 	private final TrustedServiceWrapper trustService;
 	private MessageTag errorMessage = MessageTag.EMPTY;
 
-	public TrustedCertificateMatchTrustServiceCheck(XmlValidationCertificateQualification result, CertificateWrapper trustedCert,
-			TrustedServiceWrapper trustService, LevelConstraint constraint) {
+	public TrustedCertificateMatchTrustServiceCheck(XmlValidationCertificateQualification result, CertificateWrapper signingCertificate,
+			CertificateWrapper rootCertificate, TrustedServiceWrapper trustService, LevelConstraint constraint) {
 		super(result, constraint);
 
-		this.trustedCert = trustedCert;
+		this.signingCertificate = signingCertificate;
+		this.rootCertificate = rootCertificate;
 		this.trustService = trustService;
 	}
 
 	@Override
 	protected boolean process() {
+
+		CertificateWrapper trustedCert = getTrustedCert();
+		if (trustedCert == null) {
+			errorMessage = MessageTag.QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS0;
+			return false;
+		}
 
 		String organizationName = trustedCert.getOrganizationName();
 		if (Utils.isStringBlank(organizationName)) {
@@ -56,7 +64,7 @@ public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValid
 			return false;
 		}
 
-		if (!isMatch()) {
+		if (!isMatch(trustedCert)) {
 			errorMessage = MessageTag.QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS2;
 			return false;
 		}
@@ -64,7 +72,16 @@ public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValid
 		return true;
 	}
 
-	private boolean isMatch() {
+	private CertificateWrapper getTrustedCert() {
+		if (rootCertificate != null && rootCertificate.isTrusted()) {
+			return rootCertificate;
+		} else if (signingCertificate != null && signingCertificate.isTrusted()) {
+			return signingCertificate;
+		}
+		return null;
+	}
+
+	private boolean isMatch(CertificateWrapper trustedCert) {
 
 		List<String> candidates = Arrays.asList(trustedCert.getOrganizationName(), trustedCert.getCommonName(), trustedCert.getOrganizationalUnit(),
 				trustedCert.getCertificateDN());

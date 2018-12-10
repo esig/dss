@@ -135,9 +135,7 @@ public abstract class Token implements Serializable {
 		if (publicKeyOfTheSigner != null) {
 			return publicKeyOfTheSigner.equals(token.getPublicKey());
 		} else if (checkIsSignedBy(token)) {
-			if (!isSelfSigned()) {
-				this.publicKeyOfTheSigner = token.getPublicKey();
-			}
+			this.publicKeyOfTheSigner = token.getPublicKey();
 			return true;
 		}
 		return false;

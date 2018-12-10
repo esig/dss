@@ -189,7 +189,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isTrustedCertificateMatchTrustService(TrustedServiceWrapper selectedTrustService) {
-		return new TrustedCertificateMatchTrustServiceCheck(result, rootCertificate, selectedTrustService, getWarnLevelConstraint());
+		return new TrustedCertificateMatchTrustServiceCheck(result, signingCertificate, rootCertificate, selectedTrustService, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isQualified(QualifiedStatus qualifiedStatus) {

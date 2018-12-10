@@ -912,10 +912,8 @@ public class DiagnosticDataBuilder {
 		xmlCert.setTrusted(isTrusted(certToken));
 
 		final Set<RevocationToken> revocationTokens = getRevocationsForCert(certToken);
-		if (Utils.isCollectionNotEmpty(revocationTokens)) {
-			for (RevocationToken revocationToken : revocationTokens) {
-				xmlCert.getRevocations().add(getXmlRevocation(certToken, revocationToken, usedDigestAlgorithms));
-			}
+		for (RevocationToken revocationToken : revocationTokens) {
+			xmlCert.getRevocations().add(getXmlRevocation(certToken, revocationToken, usedDigestAlgorithms));
 		}
 
 		if (trustedCertSource != null) {
@@ -926,9 +924,11 @@ public class DiagnosticDataBuilder {
 
 	private Set<RevocationToken> getRevocationsForCert(CertificateToken certToken) {
 		Set<RevocationToken> revocations = new HashSet<RevocationToken>();
-		for (RevocationToken revocationToken : usedRevocations) {
-			if (Utils.areStringsEqual(certToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())) {
-				revocations.add(revocationToken);
+		if (Utils.isCollectionNotEmpty(usedRevocations)) {
+			for (RevocationToken revocationToken : usedRevocations) {
+				if (Utils.areStringsEqual(certToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())) {
+					revocations.add(revocationToken);
+				}
 			}
 		}
 		return revocations;

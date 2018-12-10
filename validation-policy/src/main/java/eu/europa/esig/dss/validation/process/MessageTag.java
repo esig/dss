@@ -320,6 +320,7 @@ public enum MessageTag implements IMessageTag {
 	QUAL_HAS_CAQC_ANS("The certificate is not related to a CA/QC!"),
 	
 	QUAL_IS_TRUST_CERT_MATCH_SERVICE("Is the trusted certificate match the trust service ?"),
+	QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS0("No trusted certificate found"),
 	QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS1("Organization name is missing in the trusted certificate"),
 	QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS2("The trusted certificate doesn't match the trust service"),
 

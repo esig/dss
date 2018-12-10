@@ -24,9 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.tsl.ServiceInfo;
 
 /**
@@ -34,8 +31,6 @@ import eu.europa.esig.dss.tsl.ServiceInfo;
  *
  */
 public class CommonTrustedCertificateSource extends CommonCertificateSource {
-
-	private static final Logger LOG = LoggerFactory.getLogger(CommonTrustedCertificateSource.class);
 
 	public CommonTrustedCertificateSource() {
 	}

@@ -433,6 +433,26 @@ public class CertificateProcessExecutorTest {
 		}
 	}
 
+	@Test
+	public void trustAnchor() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/cert-validation/trust-anchor.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		String certificateId = "702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F";
+
+		CertificateProcessExecutor executor = new CertificateProcessExecutor();
+		executor.setCertificateId(certificateId);
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		CertificateReports reports = executor.execute();
+		eu.europa.esig.dss.validation.reports.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtCertificateIssuance());
+		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtValidationTime());
+	}
+
 	private EtsiValidationPolicy loadPolicy() throws Exception {
 		FileInputStream policyFis = new FileInputStream("src/main/resources/policy/constraint.xml");
 		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class, "/xsd/policy.xsd");
