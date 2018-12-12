@@ -26,31 +26,32 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.Test;
+
+import com.lowagie.text.pdf.PdfReader;
 
 import eu.europa.esig.dss.InMemoryDocument;
 
 public class DSS1444Test {
 
-	@Test(expected = IOException.class)
+	@Test(expected = NullPointerException.class)
 	public void test() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
-			PDDocument.load(is);
+		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf"); PdfReader r = new PdfReader(is)) {
+			// nothing
 		}
 	}
 
-	@Test(expected = IOException.class)
+	@Test(expected = NullPointerException.class)
 	public void test2() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
-			PDDocument.load(is);
+		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf"); PdfReader r = new PdfReader(is)) {
+			// nothing
 		}
 	}
 
 	@Test(expected = IOException.class)
 	public void test3() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/small-red.jpg")) {
-			PDDocument.load(is);
+		try (InputStream is = getClass().getResourceAsStream("/small-red.jpg"); PdfReader r = new PdfReader(is)) {
+			// nothing
 		}
 	}
 
@@ -65,8 +66,8 @@ public class DSS1444Test {
 	@Test
 	public void test4() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/sample.pdf")) {
-			PDDocument document = PDDocument.load(is);
-			assertNotNull(document);
+			PdfReader pdfReader = new PdfReader(is);
+			assertNotNull(pdfReader);
 		}
 	}
 
