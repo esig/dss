@@ -1,22 +1,22 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.client.http.commons;
 
@@ -102,938 +102,812 @@ import eu.europa.esig.dss.utils.Utils;
  * proxy management through {@code ProxyPreferenceManager}. The authentication
  * is also supported.
  */
-public class CommonsDataLoader implements DataLoader
-{
+public class CommonsDataLoader implements DataLoader {
 
-  private static final Logger LOG = LoggerFactory.getLogger( CommonsDataLoader.class );
+	private static final Logger LOG = LoggerFactory.getLogger(CommonsDataLoader.class);
 
-  public static final int TIMEOUT_CONNECTION = 6000;
+	public static final int TIMEOUT_CONNECTION = 6000;
 
-  public static final int TIMEOUT_SOCKET = 6000;
+	public static final int TIMEOUT_SOCKET = 6000;
 
-  public static final int CONNECTIONS_MAX_TOTAL = 20;
+	public static final int CONNECTIONS_MAX_TOTAL = 20;
 
-  public static final int CONNECTIONS_MAX_PER_ROUTE = 2;
+	public static final int CONNECTIONS_MAX_PER_ROUTE = 2;
 
-  public static final String CONTENT_TYPE = "Content-Type";
+	public static final String CONTENT_TYPE = "Content-Type";
 
-  public static final String DEFAULT_SSL_PROTOCOL = "TLSv1.2";
+	public static final String DEFAULT_SSL_PROTOCOL = "TLSv1.2";
 
-  public static final List<Integer> ACCEPTED_HTTP_STATUS = Arrays.asList( HttpStatus.SC_OK );
+	public static final List<Integer> ACCEPTED_HTTP_STATUS = Arrays.asList(HttpStatus.SC_OK);
 
-  protected String contentType;
+	protected String contentType;
 
-  private ProxyConfig proxyConfig;
+	private ProxyConfig proxyConfig;
 
-  private int timeoutConnection = TIMEOUT_CONNECTION;
-  private int timeoutSocket = TIMEOUT_SOCKET;
-  private int connectionsMaxTotal = CONNECTIONS_MAX_TOTAL;
-  private int connectionsMaxPerRoute = CONNECTIONS_MAX_PER_ROUTE;
-  private boolean redirectsEnabled = true;
-  private List<Integer> acceptedHttpStatus = ACCEPTED_HTTP_STATUS;
+	private int timeoutConnection = TIMEOUT_CONNECTION;
+	private int timeoutSocket = TIMEOUT_SOCKET;
+	private int connectionsMaxTotal = CONNECTIONS_MAX_TOTAL;
+	private int connectionsMaxPerRoute = CONNECTIONS_MAX_PER_ROUTE;
+	private boolean redirectsEnabled = true;
+	private List<Integer> acceptedHttpStatus = ACCEPTED_HTTP_STATUS;
 
-  private final Map<HttpHost, UsernamePasswordCredentials> authenticationMap = new HashMap<HttpHost, UsernamePasswordCredentials>();
+	private final Map<HttpHost, UsernamePasswordCredentials> authenticationMap = new HashMap<HttpHost, UsernamePasswordCredentials>();
 
-  /**
-   * Used SSL protocol
-   */
-  private String sslProtocol = DEFAULT_SSL_PROTOCOL;
+	/**
+	 * Used SSL protocol
+	 */
+	private String sslProtocol = DEFAULT_SSL_PROTOCOL;
 
-  /**
-   * Path to the keystore.
-   */
-  private String sslKeystorePath;
-  /**
-   * Keystore.
-   */
-  private byte[] sslKeyStore;
-  /**
-   * Keystore's type.
-   */
-  private String sslKeystoreType = KeyStore.getDefaultType();
-  /**
-   * Keystore's password.
-   */
-  private String sslKeystorePassword = Utils.EMPTY_STRING;
-  /**
-   *
-   */
-  private boolean loadKeyStoreAsTrustMaterial = false;
+	/**
+	 * Path to the keystore.
+	 */
+	private String sslKeystorePath;
 
-  /**
-   * Path to the truststore.
-   */
-  private String sslTruststorePath;
-  /**
-   * Trust store's type
-   */
-  private String sslTruststoreType = KeyStore.getDefaultType();
-  /**
-   * Truststore's password.
-   */
-  private String sslTruststorePassword = Utils.EMPTY_STRING;
+	/**
+	 * Keystore's type.
+	 */
+	private String sslKeystoreType = KeyStore.getDefaultType();
+	/**
+	 * Keystore's password.
+	 */
+	private String sslKeystorePassword = Utils.EMPTY_STRING;
+	/**
+	 *
+	 */
+	private boolean loadKeyStoreAsTrustMaterial = false;
 
-  private HttpRequestRetryHandler retryHandler;
+	/**
+	 * Path to the truststore.
+	 */
+	private String sslTruststorePath;
+	/**
+	 * Trust store's type
+	 */
+	private String sslTruststoreType = KeyStore.getDefaultType();
+	/**
+	 * Truststore's password.
+	 */
+	private String sslTruststorePassword = Utils.EMPTY_STRING;
 
-  private ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy;
+	private TrustStrategy trustStrategy;
 
-  /**
-   * The default constructor for CommonsDataLoader.
-   */
-  public CommonsDataLoader()
-  {
-    this( null );
-  }
+	private String[] supportedSSLProtocols;
 
-  /**
-   * The constructor for CommonsDataLoader with defined content-type.
-   *
-   * @param contentType
-   *          The content type of each request
-   */
-  public CommonsDataLoader( final String contentType )
-  {
-    this.contentType = contentType;
-  }
+	private String[] supportedSSLCipherSuites;
 
-  private HttpClientConnectionManager getConnectionManager()
-  {
+	private HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
 
-    RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder = RegistryBuilder.create();
-    socketFactoryRegistryBuilder = setConnectionManagerSchemeHttp( socketFactoryRegistryBuilder );
-    socketFactoryRegistryBuilder = setConnectionManagerSchemeHttps( socketFactoryRegistryBuilder );
+	private HttpRequestRetryHandler retryHandler;
 
-    final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager( socketFactoryRegistryBuilder.build() );
+	private ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy;
 
-    connectionManager.setMaxTotal( getConnectionsMaxTotal() );
-    connectionManager.setDefaultMaxPerRoute( getConnectionsMaxPerRoute() );
-
-    LOG.debug( "PoolingHttpClientConnectionManager: max total: {}", connectionManager.getMaxTotal() );
-    LOG.debug( "PoolingHttpClientConnectionManager: max per route: {}", connectionManager.getDefaultMaxPerRoute() );
-
-    return connectionManager;
-  }
-
-  private RegistryBuilder<ConnectionSocketFactory> setConnectionManagerSchemeHttp( final RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder )
-  {
-    return socketFactoryRegistryBuilder.register( "http", PlainConnectionSocketFactory.getSocketFactory() );
-  }
-
-  private RegistryBuilder<ConnectionSocketFactory> setConnectionManagerSchemeHttps(
-      final RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder )
-  {
-    try
-    {
-
-      final SSLContextBuilder sslContextBuilder = SSLContextBuilder.create();
-      sslContextBuilder.setProtocol( sslProtocol );
-      sslContextBuilder.loadTrustMaterial( getSSLTrustStore(), null );
-
-      final char[] password = sslKeystorePassword != null ? sslKeystorePassword.trim().replaceAll( "\n", "" ).toCharArray() : null;
-
-      final KeyStore ks;
-      if( Utils.isStringNotEmpty( sslKeystorePath ) )
-      {
-	LOG.debug( "Use provided info for SSL by keystore path" );
-	try( InputStream is = new FileInputStream( sslKeystorePath ) )
-	{
-	  ks = KeyStore.getInstance( sslKeystoreType );
-	  ks.load( is, password );
+	/**
+	 * The default constructor for CommonsDataLoader.
+	 */
+	public CommonsDataLoader() {
+		this(null);
 	}
-      }
-      else if( Utils.isArrayNotEmpty( sslKeyStore ) )
-      {
-	LOG.debug( "Use provided info for SSL by keystore" );
-	try( InputStream is = new ByteArrayInputStream( sslKeyStore ) )
-	{
-	  ks = KeyStore.getInstance( sslKeystoreType );
-	  ks.load( is, sslKeystorePassword.toCharArray() );
+
+	/**
+	 * The constructor for CommonsDataLoader with defined content-type.
+	 *
+	 * @param contentType
+	 *            The content type of each request
+	 */
+	public CommonsDataLoader(final String contentType) {
+		this.contentType = contentType;
 	}
-      }
-      else
-      {
-	ks = null;
-      }
-      if( ks != null )
-      {
-	LOG.debug( "Load specified KeyStore into SSL Context" );
-	if( loadKeyStoreAsTrustMaterial )
-	{
-	  sslContextBuilder.loadTrustMaterial( ks, getTrustStrategy() );
+
+	private HttpClientConnectionManager getConnectionManager() {
+
+		RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder = RegistryBuilder.create();
+		socketFactoryRegistryBuilder = setConnectionManagerSchemeHttp(socketFactoryRegistryBuilder);
+		socketFactoryRegistryBuilder = setConnectionManagerSchemeHttps(socketFactoryRegistryBuilder);
+
+		final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistryBuilder.build());
+
+		connectionManager.setMaxTotal(getConnectionsMaxTotal());
+		connectionManager.setDefaultMaxPerRoute(getConnectionsMaxPerRoute());
+
+		LOG.debug("PoolingHttpClientConnectionManager: max total: {}", connectionManager.getMaxTotal());
+		LOG.debug("PoolingHttpClientConnectionManager: max per route: {}", connectionManager.getDefaultMaxPerRoute());
+
+		return connectionManager;
 	}
-	sslContextBuilder.loadKeyMaterial( ks, password );
-      }
 
-      final SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory( sslContextBuilder.build(), getSupportedSSLProtocols(),
-	  getSupportedSSLCipherSuits(), getHostnameVerifier() );
-      return socketFactoryRegistryBuilder.register( "https", sslConnectionSocketFactory );
-    }
-    catch( final Exception e )
-    {
-      throw new DSSException( "Unable to configure the SSLContext/SSLConnectionSocketFactory", e );
-    }
-  }
+	private RegistryBuilder<ConnectionSocketFactory> setConnectionManagerSchemeHttp(RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder) {
+		return socketFactoryRegistryBuilder.register("http", PlainConnectionSocketFactory.getSocketFactory());
+	}
 
-  protected KeyStore getSSLTrustStore() throws IOException, GeneralSecurityException
-  {
-    if( Utils.isStringNotEmpty( sslTruststorePath ) )
-    {
-      try( InputStream is = new FileInputStream( sslTruststorePath ) )
-      {
-	final KeyStore ks = KeyStore.getInstance( sslTruststoreType );
-	ks.load( is, sslTruststorePassword.toCharArray() );
-	return ks;
-      }
-    }
-    else
-    {
-      return null;
-    }
-  }
+	private RegistryBuilder<ConnectionSocketFactory> setConnectionManagerSchemeHttps(
+			final RegistryBuilder<ConnectionSocketFactory> socketFactoryRegistryBuilder) {
+		try {
 
-  protected synchronized HttpClientBuilder getHttpClientBuilder()
-  {
-    return HttpClients.custom();
-  }
+			SSLContextBuilder sslContextBuilder = SSLContextBuilder.create();
+			sslContextBuilder.setProtocol(sslProtocol);
 
-  protected synchronized CloseableHttpClient getHttpClient( final String url )
-  {
-    HttpClientBuilder httpClientBuilder = getHttpClientBuilder();
+			final KeyStore sslTrustStore = getSSLTrustStore();
+			if (sslTrustStore != null) {
+				LOG.debug("Set the SSL trust store as trust materials");
+				sslContextBuilder.loadTrustMaterial(sslTrustStore, getTrustStrategy());
+			}
 
-    httpClientBuilder = configCredentials( httpClientBuilder, url );
+			final KeyStore sslKeystore = getSSLKeyStore();
+			if (sslKeystore != null) {
+				LOG.debug("Set the SSL keystore as key materials");
+				final char[] password = sslKeystorePassword != null ? sslKeystorePassword.toCharArray() : null;
+				sslContextBuilder.loadKeyMaterial(sslKeystore, password);
+				if (loadKeyStoreAsTrustMaterial) {
+					LOG.debug("Set the SSL keystore as trust materials");
+					sslContextBuilder.loadTrustMaterial(sslKeystore, getTrustStrategy());
+				}
+			}
 
-    final RequestConfig.Builder custom = RequestConfig.custom();
-    custom.setSocketTimeout( timeoutSocket );
-    custom.setConnectTimeout( timeoutConnection );
-    custom.setRedirectsEnabled( redirectsEnabled );
+			SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContextBuilder.build(), getSupportedSSLProtocols(),
+					getSupportedSSLCipherSuites(), getHostnameVerifier());
+			return socketFactoryRegistryBuilder.register("https", sslConnectionSocketFactory);
+		} catch (final Exception e) {
+			throw new DSSException("Unable to configure the SSLContext/SSLConnectionSocketFactory", e);
+		}
+	}
 
-    final RequestConfig requestConfig = custom.build();
-    httpClientBuilder = httpClientBuilder.setDefaultRequestConfig( requestConfig );
-    httpClientBuilder.setConnectionManager( getConnectionManager() );
+	protected KeyStore getSSLKeyStore() throws IOException, GeneralSecurityException {
+		return loadKeyStore(sslKeystorePath, sslKeystoreType, sslKeystorePassword);
+	}
 
-    httpClientBuilder.setRetryHandler( retryHandler );
-    httpClientBuilder.setServiceUnavailableRetryStrategy( serviceUnavailableRetryStrategy );
+	protected KeyStore getSSLTrustStore() throws IOException, GeneralSecurityException {
+		return loadKeyStore(sslTruststorePath, sslTruststoreType, sslTruststorePassword);
+	}
 
-    return httpClientBuilder.build();
-  }
+	private KeyStore loadKeyStore(String path, String type, String passwordStr) throws IOException, GeneralSecurityException {
+		if (Utils.isStringNotEmpty(path)) {
+			try (InputStream is = new FileInputStream(path)) {
+				KeyStore ks = KeyStore.getInstance(type);
+				final char[] password = passwordStr != null ? passwordStr.toCharArray() : null;
+				ks.load(is, password);
+				return ks;
+			}
+		} else {
+			return null;
+		}
+	}
 
-  /**
-   * Define the Credentials
-   *
-   * @param httpClientBuilder
-   * @param url
-   * @return
-   */
-  private HttpClientBuilder configCredentials( HttpClientBuilder httpClientBuilder, final String url )
-  {
+	protected synchronized HttpClientBuilder getHttpClientBuilder() {
+		return HttpClients.custom();
+	}
 
-    final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-    for( final Map.Entry<HttpHost, UsernamePasswordCredentials> entry : authenticationMap.entrySet() )
-    {
+	protected synchronized CloseableHttpClient getHttpClient(final String url) {
+		HttpClientBuilder httpClientBuilder = getHttpClientBuilder();
 
-      final HttpHost httpHost = entry.getKey();
-      final UsernamePasswordCredentials usernamePasswordCredentials = entry.getValue();
-      final AuthScope authscope = new AuthScope( httpHost.getHostName(), httpHost.getPort() );
-      credentialsProvider.setCredentials( authscope, usernamePasswordCredentials );
-    }
-    httpClientBuilder = httpClientBuilder.setDefaultCredentialsProvider( credentialsProvider );
-    httpClientBuilder = configureProxy( httpClientBuilder, credentialsProvider, url );
-    return httpClientBuilder;
-  }
+		httpClientBuilder = configCredentials(httpClientBuilder, url);
 
-  /**
-   * Configure the proxy with the required credential if needed
-   *
-   * @param httpClientBuilder
-   * @param credentialsProvider
-   * @param url
-   * @return
-   */
-  private HttpClientBuilder configureProxy( final HttpClientBuilder httpClientBuilder, final CredentialsProvider credentialsProvider, final String url )
-  {
-    if( proxyConfig == null )
-    {
-      return httpClientBuilder;
-    }
+		final RequestConfig.Builder custom = RequestConfig.custom();
+		custom.setSocketTimeout(timeoutSocket);
+		custom.setConnectTimeout(timeoutConnection);
+		custom.setRedirectsEnabled(redirectsEnabled);
 
-    final String protocol = getURL( url ).getProtocol();
-    final boolean proxyHTTPS = Protocol.isHttps( protocol ) && ( proxyConfig.getHttpsProperties() != null );
-    final boolean proxyHTTP = Protocol.isHttp( protocol ) && ( proxyConfig.getHttpProperties() != null );
+		final RequestConfig requestConfig = custom.build();
+		httpClientBuilder = httpClientBuilder.setDefaultRequestConfig(requestConfig);
+		httpClientBuilder.setConnectionManager(getConnectionManager());
 
-    ProxyProperties proxyProps = null;
-    if( proxyHTTPS )
-    {
-      LOG.debug( "Use proxy https parameters" );
-      proxyProps = proxyConfig.getHttpsProperties();
-    }
-    else if( proxyHTTP )
-    {
-      LOG.debug( "Use proxy http parameters" );
-      proxyProps = proxyConfig.getHttpProperties();
-    }
-    else
-    {
-      return httpClientBuilder;
-    }
+		httpClientBuilder.setRetryHandler(retryHandler);
+		httpClientBuilder.setServiceUnavailableRetryStrategy(serviceUnavailableRetryStrategy);
 
-    final String proxyHost = proxyProps.getHost();
-    final int proxyPort = proxyProps.getPort();
-    final String proxyUser = proxyProps.getUser();
-    final String proxyPassword = proxyProps.getPassword();
-    final String proxyExcludedHosts = proxyProps.getExcludedHosts();
+		return httpClientBuilder.build();
+	}
 
-    if( Utils.isStringNotEmpty( proxyUser ) && Utils.isStringNotEmpty( proxyPassword ) )
-    {
-      final AuthScope proxyAuth = new AuthScope( proxyHost, proxyPort );
-      final UsernamePasswordCredentials proxyCredentials = new UsernamePasswordCredentials( proxyUser, proxyPassword );
-      credentialsProvider.setCredentials( proxyAuth, proxyCredentials );
-    }
+	/**
+	 * Define the Credentials
+	 *
+	 * @param httpClientBuilder
+	 * @param url
+	 * @return
+	 */
+	private HttpClientBuilder configCredentials(HttpClientBuilder httpClientBuilder, final String url) {
 
-    LOG.debug( "proxy host/port: {}:{}", proxyHost, proxyPort );
-    // TODO SSL peer shut down incorrectly when protocol is https
-    final HttpHost proxy = new HttpHost( proxyHost, proxyPort, Protocol.HTTP.getName() );
+		final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+		for (final Map.Entry<HttpHost, UsernamePasswordCredentials> entry : authenticationMap.entrySet()) {
 
-    if( Utils.isStringNotEmpty( proxyExcludedHosts ) )
-    {
-      final String[] hosts = proxyExcludedHosts.split( "[,; ]" );
+			final HttpHost httpHost = entry.getKey();
+			final UsernamePasswordCredentials usernamePasswordCredentials = entry.getValue();
+			final AuthScope authscope = new AuthScope(httpHost.getHostName(), httpHost.getPort());
+			credentialsProvider.setCredentials(authscope, usernamePasswordCredentials);
+		}
+		httpClientBuilder = httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+		httpClientBuilder = configureProxy(httpClientBuilder, credentialsProvider, url);
+		return httpClientBuilder;
+	}
 
-      final HttpRoutePlanner routePlanner = new DefaultProxyRoutePlanner( proxy )
-      {
+	/**
+	 * Configure the proxy with the required credential if needed
+	 *
+	 * @param httpClientBuilder
+	 * @param credentialsProvider
+	 * @param url
+	 * @return
+	 */
+	private HttpClientBuilder configureProxy(HttpClientBuilder httpClientBuilder, CredentialsProvider credentialsProvider, String url) {
+		if (proxyConfig == null) {
+			return httpClientBuilder;
+		}
+
+		final String protocol = getURL(url).getProtocol();
+		final boolean proxyHTTPS = Protocol.isHttps(protocol) && (proxyConfig.getHttpsProperties() != null);
+		final boolean proxyHTTP = Protocol.isHttp(protocol) && (proxyConfig.getHttpProperties() != null);
+
+		ProxyProperties proxyProps = null;
+		if (proxyHTTPS) {
+			LOG.debug("Use proxy https parameters");
+			proxyProps = proxyConfig.getHttpsProperties();
+		} else if (proxyHTTP) {
+			LOG.debug("Use proxy http parameters");
+			proxyProps = proxyConfig.getHttpProperties();
+		} else {
+			return httpClientBuilder;
+		}
+
+		String proxyHost = proxyProps.getHost();
+		int proxyPort = proxyProps.getPort();
+		String proxyUser = proxyProps.getUser();
+		String proxyPassword = proxyProps.getPassword();
+		String proxyExcludedHosts = proxyProps.getExcludedHosts();
+
+		if (Utils.isStringNotEmpty(proxyUser) && Utils.isStringNotEmpty(proxyPassword)) {
+			AuthScope proxyAuth = new AuthScope(proxyHost, proxyPort);
+			UsernamePasswordCredentials proxyCredentials = new UsernamePasswordCredentials(proxyUser, proxyPassword);
+			credentialsProvider.setCredentials(proxyAuth, proxyCredentials);
+		}
+
+		LOG.debug("proxy host/port: {}:{}", proxyHost, proxyPort);
+		// TODO SSL peer shut down incorrectly when protocol is https
+		final HttpHost proxy = new HttpHost(proxyHost, proxyPort, Protocol.HTTP.getName());
+
+		if (Utils.isStringNotEmpty(proxyExcludedHosts)) {
+			final String[] hosts = proxyExcludedHosts.split("[,; ]");
+
+			HttpRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy) {
+				@Override
+				public HttpRoute determineRoute(final HttpHost host, final HttpRequest request, final HttpContext context) throws HttpException {
+
+					String hostname = (host != null ? host.getHostName() : null);
+
+					if ((hosts != null) && (hostname != null)) {
+						for (String h : hosts) {
+							if (hostname.equalsIgnoreCase(h)) {
+								// bypass proxy for that hostname
+								return new HttpRoute(host);
+							}
+						}
+					}
+					return super.determineRoute(host, request, context);
+				}
+			};
+
+			httpClientBuilder.setRoutePlanner(routePlanner);
+		}
+
+		return httpClientBuilder.setProxy(proxy);
+	}
+
 	@Override
-	public HttpRoute determineRoute( final HttpHost host, final HttpRequest request, final HttpContext context ) throws HttpException
-	{
+	public byte[] get(final String urlString) {
 
-	  final String hostname = ( host != null ? host.getHostName() : null );
-
-	  if( ( hosts != null ) && ( hostname != null ) )
-	  {
-	    for( final String h : hosts )
-	    {
-	      if( hostname.equalsIgnoreCase( h ) )
-	      {
-		// bypass proxy for that hostname
-		return new HttpRoute( host );
-	      }
-	    }
-	  }
-	  return super.determineRoute( host, request, context );
+		if (Protocol.isFileUrl(urlString)) {
+			return fileGet(urlString);
+		} else if (Protocol.isHttpUrl(urlString)) {
+			return httpGet(urlString);
+		} else if (Protocol.isFtpUrl(urlString)) {
+			return ftpGet(urlString);
+		} else if (Protocol.isLdapUrl(urlString)) {
+			return ldapGet(urlString);
+		} else {
+			LOG.warn("DSS framework only supports FILE, HTTP, HTTPS, FTP and LDAP Urls.");
+		}
+		return httpGet(urlString);
 	}
-      };
 
-      httpClientBuilder.setRoutePlanner( routePlanner );
-    }
-
-    return httpClientBuilder.setProxy( proxy );
-  }
-
-  @Override
-  public byte[] get( final String urlString )
-  {
-
-    if( Protocol.isFileUrl( urlString ) )
-    {
-      return fileGet( urlString );
-    }
-    else if( Protocol.isHttpUrl( urlString ) )
-    {
-      return httpGet( urlString );
-    }
-    else if( Protocol.isFtpUrl( urlString ) )
-    {
-      return ftpGet( urlString );
-    }
-    else if( Protocol.isLdapUrl( urlString ) )
-    {
-      return ldapGet( urlString );
-    }
-    else
-    {
-      LOG.warn( "DSS framework only supports FILE, HTTP, HTTPS, FTP and LDAP Urls." );
-    }
-    return httpGet( urlString );
-  }
-
-  @Override
-  public DataAndUrl get( final List<String> urlStrings )
-  {
-    final int numberOfUrls = urlStrings.size();
-    int ii = 0;
-    for( final String urlString : urlStrings )
-    {
-      try
-      {
-	ii++;
-	final byte[] bytes = get( urlString );
-	if( bytes == null )
-	{
-	  continue;
+	@Override
+	public DataAndUrl get(final List<String> urlStrings) {
+		final int numberOfUrls = urlStrings.size();
+		int ii = 0;
+		for (final String urlString : urlStrings) {
+			try {
+				ii++;
+				final byte[] bytes = get(urlString);
+				if (bytes == null) {
+					continue;
+				}
+				return new DataAndUrl(bytes, urlString);
+			} catch (Exception e) {
+				if (ii == numberOfUrls) {
+					if (e instanceof DSSException) {
+						throw (DSSException) e;
+					}
+					throw new DSSException(e);
+				}
+				LOG.warn("Impossible to obtain data using '{}' : {}", urlString, e.getMessage());
+			}
+		}
+		return null;
 	}
-	return new DataAndUrl( bytes, urlString );
-      }
-      catch( final Exception e )
-      {
-	if( ii == numberOfUrls )
-	{
-	  if( e instanceof DSSException )
-	  {
-	    throw ( DSSException ) e;
-	  }
-	  throw new DSSException( e );
+
+	/**
+	 * This method is useful only with the cache handling implementation of the
+	 * {@code DataLoader}.
+	 *
+	 * @param url
+	 *            to access
+	 * @param refresh
+	 *            if true indicates that the cached data should be refreshed
+	 * @return {@code byte} array of obtained data
+	 */
+	@Override
+	public byte[] get(final String url, final boolean refresh) {
+		return get(url);
 	}
-	LOG.warn( "Impossible to obtain data using '{}' : {}", urlString, e.getMessage() );
-      }
-    }
-    return null;
-  }
 
-  /**
-   * This method is useful only with the cache handling implementation of the
-   * {@code DataLoader}.
-   *
-   * @param url
-   *          to access
-   * @param refresh
-   *          if true indicates that the cached data should be refreshed
-   * @return {@code byte} array of obtained data
-   */
-  @Override
-  public byte[] get( final String url, final boolean refresh )
-  {
-    return get( url );
-  }
+	/**
+	 * This method retrieves data using LDAP protocol. - CRL from given LDAP
+	 * url, e.g. ldap://ldap.infonotary.com/dc=identity-ca,dc=infonotary,dc=com
+	 * - ex URL from AIA
+	 * ldap://xadessrv.plugtests.net/CN=LevelBCAOK,OU=Plugtests_2015-2016,O=ETSI,C=FR?cACertificate;binary
+	 *
+	 * @param urlString
+	 * @return
+	 */
+	protected byte[] ldapGet(final String urlString) {
 
-  /**
-   * This method retrieves data using LDAP protocol. - CRL from given LDAP
-   * url, e.g. ldap://ldap.infonotary.com/dc=identity-ca,dc=infonotary,dc=com
-   * - ex URL from AIA
-   * ldap://xadessrv.plugtests.net/CN=LevelBCAOK,OU=Plugtests_2015-2016,O=ETSI,C=FR?cACertificate;binary
-   *
-   * @param urlString
-   * @return
-   */
-  protected byte[] ldapGet( final String urlString )
-  {
+		final Hashtable<String, String> env = new Hashtable<String, String>();
+		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+		env.put(Context.PROVIDER_URL, urlString);
+		try {
 
-    final Hashtable<String, String> env = new Hashtable<String, String>();
-    env.put( Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory" );
-    env.put( Context.PROVIDER_URL, urlString );
-    try
-    {
+			// parse URL according to the template: 'ldap://host:port/DN?attributes?scope?filter?extensions'
+			String ldapParams = Utils.substringAfter(urlString, "?");
+			StringTokenizer tokenizer = new StringTokenizer(ldapParams, "?");
+			String attributeName = (tokenizer.hasMoreTokens()) ? tokenizer.nextToken() : null;
 
-      // parse URL according to the template: 'ldap://host:port/DN?attributes?scope?filter?extensions'
-      final String ldapParams = Utils.substringAfter( urlString, "?" );
-      final StringTokenizer tokenizer = new StringTokenizer( ldapParams, "?" );
-      String attributeName = ( tokenizer.hasMoreTokens() ) ? tokenizer.nextToken() : null;
+			if (Utils.isStringEmpty(attributeName)) {
+				// default was CRL
+				attributeName = "certificateRevocationList;binary";
+			}
 
-      if( Utils.isStringEmpty( attributeName ) )
-      {
-	// default was CRL
-	attributeName = "certificateRevocationList;binary";
-      }
-
-      final DirContext ctx = new InitialDirContext( env );
-      final Attributes attributes = ctx.getAttributes( Utils.EMPTY_STRING, new String[] { attributeName } );
-      if( ( attributes == null ) || ( attributes.size() < 1 ) )
-      {
-	LOG.warn( "Cannot download binaries from: {}, no attributes with name: {} returned", urlString, attributeName );
-      }
-      else
-      {
-	final Attribute attribute = attributes.getAll().next();
-	final byte[] ldapBytes = ( byte[] ) attribute.get();
-	if( Utils.isArrayNotEmpty( ldapBytes ) )
-	{
-	  return ldapBytes;
+			final DirContext ctx = new InitialDirContext(env);
+			final Attributes attributes = ctx.getAttributes(Utils.EMPTY_STRING, new String[] { attributeName });
+			if ((attributes == null) || (attributes.size() < 1)) {
+				LOG.warn("Cannot download binaries from: {}, no attributes with name: {} returned", urlString, attributeName);
+			} else {
+				final Attribute attribute = attributes.getAll().next();
+				final byte[] ldapBytes = (byte[]) attribute.get();
+				if (Utils.isArrayNotEmpty(ldapBytes)) {
+					return ldapBytes;
+				}
+			}
+		} catch (Exception e) {
+			LOG.warn(e.getMessage(), e);
+		}
+		return null;
 	}
-      }
-    }
-    catch( final Exception e )
-    {
-      LOG.warn( e.getMessage(), e );
-    }
-    return null;
-  }
 
-  /**
-   * This method retrieves data using FTP protocol .
-   *
-   * @param urlString
-   * @return
-   */
-  protected byte[] ftpGet( final String urlString )
-  {
-    final URL url = getURL( urlString );
-    try( InputStream inputStream = url.openStream() )
-    {
-      return DSSUtils.toByteArray( inputStream );
-    }
-    catch( final IOException e )
-    {
-      LOG.warn( "Unable to retrieve URL {} content : {}", urlString, e.getMessage() );
-    }
-    return null;
-  }
-
-  protected byte[] fileGet( final String urlString )
-  {
-    return ftpGet( urlString );
-  }
-
-  private URL getURL( final String urlString )
-  {
-    try
-    {
-      return new URL( urlString );
-    }
-    catch( final MalformedURLException e )
-    {
-      throw new DSSException( "Unable to create URL instance", e );
-    }
-  }
-
-  /**
-   * This method retrieves data using HTTP or HTTPS protocol and 'get' method.
-   *
-   * @param url
-   *          to access
-   * @return {@code byte} array of obtained data or null
-   */
-  protected byte[] httpGet( final String url )
-  {
-
-    HttpGet httpRequest = null;
-    CloseableHttpResponse httpResponse = null;
-    CloseableHttpClient client = null;
-    try
-    {
-
-      final URI uri = new URI( url.trim() );
-      httpRequest = new HttpGet( uri );
-      if( contentType != null )
-      {
-	httpRequest.setHeader( CONTENT_TYPE, contentType );
-      }
-
-      client = getHttpClient( url );
-      httpResponse = getHttpResponse( client, httpRequest );
-
-      return readHttpResponse( httpResponse );
-
-    }
-    catch( URISyntaxException | IOException e )
-    {
-      throw new DSSException( "Unable to process GET call for url '" + url + "'", e );
-    }
-    finally
-    {
-      try
-      {
-	if( httpRequest != null )
-	{
-	  httpRequest.releaseConnection();
+	/**
+	 * This method retrieves data using FTP protocol .
+	 *
+	 * @param urlString
+	 * @return
+	 */
+	protected byte[] ftpGet(final String urlString) {
+		final URL url = getURL(urlString);
+		try (InputStream inputStream = url.openStream()) {
+			return DSSUtils.toByteArray(inputStream);
+		} catch (IOException e) {
+			LOG.warn("Unable to retrieve URL {} content : {}", urlString, e.getMessage());
+		}
+		return null;
 	}
-	if( httpResponse != null )
-	{
-	  EntityUtils.consumeQuietly( httpResponse.getEntity() );
-	  Utils.closeQuietly( httpResponse );
+
+	protected byte[] fileGet(final String urlString) {
+		return ftpGet(urlString);
 	}
-      }
-      finally
-      {
-	Utils.closeQuietly( client );
-      }
-    }
-  }
 
-  @Override
-  public byte[] post( final String url, final byte[] content )
-  {
-
-    LOG.debug( "Fetching data via POST from url {}", url );
-
-    HttpPost httpRequest = null;
-    CloseableHttpResponse httpResponse = null;
-    CloseableHttpClient client = null;
-    try
-    {
-      final URI uri = URI.create( url.trim() );
-      httpRequest = new HttpPost( uri );
-
-      // The length for the InputStreamEntity is needed, because some receivers (on the other side) need this
-      // information.
-      // To determine the length, we cannot read the content-stream up to the end and re-use it afterwards.
-      // This is because, it may not be possible to reset the stream (= go to position 0).
-      // So, the solution is to cache temporarily the complete content data (as we do not expect much here) in a
-      // byte-array.
-      final ByteArrayInputStream bis = new ByteArrayInputStream( content );
-
-      final HttpEntity httpEntity = new InputStreamEntity( bis, content.length );
-      final HttpEntity requestEntity = new BufferedHttpEntity( httpEntity );
-      httpRequest.setEntity( requestEntity );
-      if( contentType != null )
-      {
-	httpRequest.setHeader( CONTENT_TYPE, contentType );
-      }
-
-      client = getHttpClient( url );
-      httpResponse = getHttpResponse( client, httpRequest );
-
-      return readHttpResponse( httpResponse );
-    }
-    catch( final IOException e )
-    {
-      throw new DSSException( "Unable to process POST call for url '" + url + "'", e );
-    }
-    finally
-    {
-      try
-      {
-	if( httpRequest != null )
-	{
-	  httpRequest.releaseConnection();
+	private URL getURL(String urlString) {
+		try {
+			return new URL(urlString);
+		} catch (MalformedURLException e) {
+			throw new DSSException("Unable to create URL instance", e);
+		}
 	}
-	if( httpResponse != null )
-	{
-	  EntityUtils.consumeQuietly( httpResponse.getEntity() );
-	  Utils.closeQuietly( httpResponse );
+
+	/**
+	 * This method retrieves data using HTTP or HTTPS protocol and 'get' method.
+	 *
+	 * @param url
+	 *            to access
+	 * @return {@code byte} array of obtained data or null
+	 */
+	protected byte[] httpGet(final String url) {
+
+		HttpGet httpRequest = null;
+		CloseableHttpResponse httpResponse = null;
+		CloseableHttpClient client = null;
+		try {
+
+			final URI uri = new URI(url.trim());
+			httpRequest = new HttpGet(uri);
+			if (contentType != null) {
+				httpRequest.setHeader(CONTENT_TYPE, contentType);
+			}
+
+			client = getHttpClient(url);
+			httpResponse = getHttpResponse(client, httpRequest);
+
+			return readHttpResponse(httpResponse);
+
+		} catch (URISyntaxException | IOException e) {
+			throw new DSSException("Unable to process GET call for url '" + url + "'", e);
+		} finally {
+			try {
+				if (httpRequest != null) {
+					httpRequest.releaseConnection();
+				}
+				if (httpResponse != null) {
+					EntityUtils.consumeQuietly(httpResponse.getEntity());
+					Utils.closeQuietly(httpResponse);
+				}
+			} finally {
+				Utils.closeQuietly(client);
+			}
+		}
 	}
-      }
-      finally
-      {
-	Utils.closeQuietly( client );
-      }
-    }
-  }
 
-  protected CloseableHttpResponse getHttpResponse( final CloseableHttpClient client, final HttpUriRequest httpRequest ) throws IOException
-  {
-    final URI uri = httpRequest.getURI();
-    final HttpHost targetHost = new HttpHost( uri.getHost(), uri.getPort(), uri.getScheme() );
+	@Override
+	public byte[] post(final String url, final byte[] content) {
 
-    // Create AuthCache instance
-    final AuthCache authCache = new BasicAuthCache();
-    // Generate BASIC scheme object and add it to the local
-    // auth cache
-    final BasicScheme basicAuth = new BasicScheme();
-    authCache.put( targetHost, basicAuth );
+		LOG.debug("Fetching data via POST from url {}", url);
 
-    // Add AuthCache to the execution context
-    final HttpClientContext localContext = HttpClientContext.create();
-    localContext.setAuthCache( authCache );
+		HttpPost httpRequest = null;
+		CloseableHttpResponse httpResponse = null;
+		CloseableHttpClient client = null;
+		try {
+			final URI uri = URI.create(url.trim());
+			httpRequest = new HttpPost(uri);
 
-    return client.execute( targetHost, httpRequest, localContext );
-  }
+			// The length for the InputStreamEntity is needed, because some receivers (on the other side) need this
+			// information.
+			// To determine the length, we cannot read the content-stream up to the end and re-use it afterwards.
+			// This is because, it may not be possible to reset the stream (= go to position 0).
+			// So, the solution is to cache temporarily the complete content data (as we do not expect much here) in a
+			// byte-array.
+			final ByteArrayInputStream bis = new ByteArrayInputStream(content);
 
-  protected byte[] readHttpResponse( final CloseableHttpResponse httpResponse ) throws IOException
-  {
-    final StatusLine statusLine = httpResponse.getStatusLine();
-    final int statusCode = statusLine.getStatusCode();
-    final String reasonPhrase = statusLine.getReasonPhrase();
+			final HttpEntity httpEntity = new InputStreamEntity(bis, content.length);
+			final HttpEntity requestEntity = new BufferedHttpEntity(httpEntity);
+			httpRequest.setEntity(requestEntity);
+			if (contentType != null) {
+				httpRequest.setHeader(CONTENT_TYPE, contentType);
+			}
 
-    if( !acceptedHttpStatus.contains( statusCode ) )
-    {
-      final String reason = Utils.isStringNotEmpty( reasonPhrase ) ? " / reason : " + reasonPhrase : "";
-      throw new IOException( "Not acceptable HTTP Status (HTTP status code : " + statusCode + reason + ")" );
-    }
+			client = getHttpClient(url);
+			httpResponse = getHttpResponse(client, httpRequest);
 
-    final HttpEntity responseEntity = httpResponse.getEntity();
-    if( responseEntity == null )
-    {
-      throw new IOException( "No message entity for this response" );
-    }
+			return readHttpResponse(httpResponse);
+		} catch (IOException e) {
+			throw new DSSException("Unable to process POST call for url '" + url + "'", e);
+		} finally {
+			try {
+				if (httpRequest != null) {
+					httpRequest.releaseConnection();
+				}
+				if (httpResponse != null) {
+					EntityUtils.consumeQuietly(httpResponse.getEntity());
+					Utils.closeQuietly(httpResponse);
+				}
+			} finally {
+				Utils.closeQuietly(client);
+			}
+		}
+	}
 
-    return getContent( responseEntity );
-  }
+	protected CloseableHttpResponse getHttpResponse(final CloseableHttpClient client, final HttpUriRequest httpRequest) throws IOException {
+		final URI uri = httpRequest.getURI();
+		final HttpHost targetHost = new HttpHost(uri.getHost(), uri.getPort(), uri.getScheme());
 
-  protected byte[] getContent( final HttpEntity responseEntity ) throws IOException
-  {
-    try( InputStream content = responseEntity.getContent() )
-    {
-      return DSSUtils.toByteArray( content );
-    }
-  }
+		// Create AuthCache instance
+		AuthCache authCache = new BasicAuthCache();
+		// Generate BASIC scheme object and add it to the local
+		// auth cache
+		BasicScheme basicAuth = new BasicScheme();
+		authCache.put(targetHost, basicAuth);
 
-  /**
-   * Used when the {@code HttpClient} is created.
-   *
-   * @return the value (millis)
-   */
-  public int getTimeoutConnection()
-  {
-    return timeoutConnection;
-  }
+		// Add AuthCache to the execution context
+		HttpClientContext localContext = HttpClientContext.create();
+		localContext.setAuthCache(authCache);
 
-  /**
-   * Used when the {@code HttpClient} is created.
-   *
-   * @param timeoutConnection
-   *          the value (millis)
-   */
-  public void setTimeoutConnection( final int timeoutConnection )
-  {
-    this.timeoutConnection = timeoutConnection;
-  }
+		return client.execute(targetHost, httpRequest, localContext);
+	}
 
-  /**
-   * Used when the {@code HttpClient} is created.
-   *
-   * @return the value (millis)
-   */
-  public int getTimeoutSocket()
-  {
-    return timeoutSocket;
-  }
+	protected byte[] readHttpResponse(final CloseableHttpResponse httpResponse) throws IOException {
+		final StatusLine statusLine = httpResponse.getStatusLine();
+		final int statusCode = statusLine.getStatusCode();
+		final String reasonPhrase = statusLine.getReasonPhrase();
 
-  /**
-   * Used when the {@code HttpClient} is created.
-   *
-   * @param timeoutSocket
-   *          the value (millis)
-   */
-  public void setTimeoutSocket( final int timeoutSocket )
-  {
-    this.timeoutSocket = timeoutSocket;
-  }
+		if (!acceptedHttpStatus.contains(statusCode)) {
+			String reason = Utils.isStringNotEmpty(reasonPhrase) ? " / reason : " + reasonPhrase : "";
+			throw new IOException("Not acceptable HTTP Status (HTTP status code : " + statusCode + reason + ")");
+		}
 
-  /**
-   * Used when the {@code HttpClient} is created.
-   *
-   * @return maximum number of connections
-   */
-  public int getConnectionsMaxTotal()
-  {
-    return connectionsMaxTotal;
-  }
+		final HttpEntity responseEntity = httpResponse.getEntity();
+		if (responseEntity == null) {
+			throw new IOException("No message entity for this response");
+		}
 
-  /**
-   * Used when the {@code HttpClient} is created.
-   *
-   * @param connectionsMaxTotal
-   *          maximum number of connections
-   */
-  public void setConnectionsMaxTotal( final int connectionsMaxTotal )
-  {
-    this.connectionsMaxTotal = connectionsMaxTotal;
-  }
+		return getContent(responseEntity);
+	}
 
-  /**
-   * Used when the {@code HttpClient} is created.
-   *
-   * @return maximum number of connections per one route
-   */
-  public int getConnectionsMaxPerRoute()
-  {
-    return connectionsMaxPerRoute;
-  }
+	protected byte[] getContent(final HttpEntity responseEntity) throws IOException {
+		try (InputStream content = responseEntity.getContent()) {
+			return DSSUtils.toByteArray(content);
+		}
+	}
 
-  /**
-   * Used when the {@code HttpClient} is created.
-   *
-   * @param connectionsMaxPerRoute
-   *          maximum number of connections per one route
-   */
-  public void setConnectionsMaxPerRoute( final int connectionsMaxPerRoute )
-  {
-    this.connectionsMaxPerRoute = connectionsMaxPerRoute;
-  }
+	/**
+	 * Used when the {@code HttpClient} is created.
+	 *
+	 * @return the value (millis)
+	 */
+	public int getTimeoutConnection() {
+		return timeoutConnection;
+	}
 
-  /**
-   * Used when the {@code HttpClient} is created.
-   *
-   * @return true if http redirects are allowed
-   */
-  public boolean isRedirectsEnabled()
-  {
-    return redirectsEnabled;
-  }
+	/**
+	 * Used when the {@code HttpClient} is created.
+	 *
+	 * @param timeoutConnection
+	 *            the value (millis)
+	 */
+	public void setTimeoutConnection(final int timeoutConnection) {
+		this.timeoutConnection = timeoutConnection;
+	}
 
-  /**
-   * Used when the {@code HttpClient} is created.
-   *
-   * @param redirectsEnabled
-   *          true if http redirects are allowed
-   */
-  public void setRedirectsEnabled( final boolean redirectsEnabled )
-  {
-    this.redirectsEnabled = redirectsEnabled;
-  }
+	/**
+	 * Used when the {@code HttpClient} is created.
+	 *
+	 * @return the value (millis)
+	 */
+	public int getTimeoutSocket() {
+		return timeoutSocket;
+	}
 
-  /**
-   * @return the contentType
-   */
-  public String getContentType()
-  {
-    return contentType;
-  }
+	/**
+	 * Used when the {@code HttpClient} is created.
+	 *
+	 * @param timeoutSocket
+	 *            the value (millis)
+	 */
+	public void setTimeoutSocket(final int timeoutSocket) {
+		this.timeoutSocket = timeoutSocket;
+	}
 
-  /**
-   * This allows to set the content type. Example: Content-Type
-   * "application/ocsp-request"
-   *
-   * @param contentType
-   */
-  @Override
-  public void setContentType( final String contentType )
-  {
-    this.contentType = contentType;
-  }
+	/**
+	 * Used when the {@code HttpClient} is created.
+	 *
+	 * @return maximum number of connections
+	 */
+	public int getConnectionsMaxTotal() {
+		return connectionsMaxTotal;
+	}
 
-  public List<Integer> getAcceptedHttpStatus()
-  {
-    return acceptedHttpStatus;
-  }
+	/**
+	 * Used when the {@code HttpClient} is created.
+	 *
+	 * @param connectionsMaxTotal
+	 *            maximum number of connections
+	 */
+	public void setConnectionsMaxTotal(int connectionsMaxTotal) {
+		this.connectionsMaxTotal = connectionsMaxTotal;
+	}
 
-  /**
-   * This allows to set a list of accepted http status. Example: 200 (OK)
-   *
-   * @param acceptedHttpStatus
-   *          a list of integer which correspond to the http status code
-   */
-  public void setAcceptedHttpStatus( final List<Integer> acceptedHttpStatus )
-  {
-    this.acceptedHttpStatus = acceptedHttpStatus;
-  }
+	/**
+	 * Used when the {@code HttpClient} is created.
+	 *
+	 * @return maximum number of connections per one route
+	 */
+	public int getConnectionsMaxPerRoute() {
+		return connectionsMaxPerRoute;
+	}
 
-  /**
-   * @return associated {@code ProxyConfig}
-   */
-  public ProxyConfig getProxyConfig()
-  {
-    return proxyConfig;
-  }
+	/**
+	 * Used when the {@code HttpClient} is created.
+	 *
+	 * @param connectionsMaxPerRoute
+	 *            maximum number of connections per one route
+	 */
+	public void setConnectionsMaxPerRoute(int connectionsMaxPerRoute) {
+		this.connectionsMaxPerRoute = connectionsMaxPerRoute;
+	}
 
-  /**
-   * @param proxyConfig
-   *          the proxyConfig to set
-   */
-  public void setProxyConfig( final ProxyConfig proxyConfig )
-  {
-    this.proxyConfig = proxyConfig;
-  }
+	/**
+	 * Used when the {@code HttpClient} is created.
+	 *
+	 * @return true if http redirects are allowed
+	 */
+	public boolean isRedirectsEnabled() {
+		return redirectsEnabled;
+	}
 
-  /**
-   * This method sets the SSL protocol to be used ('TLSv1.2' by default)
-   *
-   * @param sslProtocol
-   *          the ssl protocol to be used
-   */
-  public void setSslProtocol( final String sslProtocol )
-  {
-    this.sslProtocol = sslProtocol;
-  }
+	/**
+	 * Used when the {@code HttpClient} is created.
+	 *
+	 * @param redirectsEnabled
+	 *            true if http redirects are allowed
+	 */
+	public void setRedirectsEnabled(boolean redirectsEnabled) {
+		this.redirectsEnabled = redirectsEnabled;
+	}
 
-  public void setSslKeystorePath( final String sslKeystorePath )
-  {
-    this.sslKeystorePath = sslKeystorePath;
-  }
+	/**
+	 * @return the contentType
+	 */
+	public String getContentType() {
+		return contentType;
+	}
 
-  public void setSslKeystore( final byte[] sslKeyStore )
-  {
-    this.sslKeyStore = sslKeyStore;
-  }
+	/**
+	 * This allows to set the content type. Example: Content-Type
+	 * "application/ocsp-request"
+	 *
+	 * @param contentType
+	 */
+	@Override
+	public void setContentType(final String contentType) {
+		this.contentType = contentType;
+	}
 
-  public void setKeyStoreAsTrustMaterial( final boolean loadKeyStoreAsTrustMaterial )
-  {
-    this.loadKeyStoreAsTrustMaterial = loadKeyStoreAsTrustMaterial;
-  }
+	public List<Integer> getAcceptedHttpStatus() {
+		return acceptedHttpStatus;
+	}
 
-  public void setSslKeystoreType( final String sslKeystoreType )
-  {
-    this.sslKeystoreType = sslKeystoreType;
-  }
+	/**
+	 * This allows to set a list of accepted http status. Example: 200 (OK)
+	 *
+	 * @param acceptedHttpStatus
+	 *            a list of integer which correspond to the http status code
+	 */
+	public void setAcceptedHttpStatus(List<Integer> acceptedHttpStatus) {
+		this.acceptedHttpStatus = acceptedHttpStatus;
+	}
 
-  public void setSslKeystorePassword( final String sslKeystorePassword )
-  {
-    this.sslKeystorePassword = sslKeystorePassword;
-  }
+	/**
+	 * @return associated {@code ProxyConfig}
+	 */
+	public ProxyConfig getProxyConfig() {
+		return proxyConfig;
+	}
 
-  public void setSslTruststorePath( final String sslTruststorePath )
-  {
-    this.sslTruststorePath = sslTruststorePath;
-  }
+	/**
+	 * @param proxyConfig
+	 *            the proxyConfig to set
+	 */
+	public void setProxyConfig(final ProxyConfig proxyConfig) {
+		this.proxyConfig = proxyConfig;
+	}
 
-  public void setSslTruststorePassword( final String sslTruststorePassword )
-  {
-    this.sslTruststorePassword = sslTruststorePassword;
-  }
+	/**
+	 * This method sets the SSL protocol to be used ('TLSv1.2' by default)
+	 * 
+	 * @param sslProtocol
+	 *                    the ssl protocol to be used
+	 */
+	public void setSslProtocol(String sslProtocol) {
+		this.sslProtocol = sslProtocol;
+	}
 
-  public void setSslTruststoreType( final String sslTruststoreType )
-  {
-    this.sslTruststoreType = sslTruststoreType;
-  }
+	public void setSslKeystorePath(String sslKeystorePath) {
+		this.sslKeystorePath = sslKeystorePath;
+	}
 
-  /**
-   * @param host
-   *          host
-   * @param port
-   *          port
-   * @param scheme
-   *          scheme
-   * @param login
-   *          login
-   * @param password
-   *          password
-   * @return this for fluent addAuthentication
-   */
-  public CommonsDataLoader addAuthentication( final String host, final int port, final String scheme, final String login, final String password )
-  {
+	public void setKeyStoreAsTrustMaterial(boolean loadKeyStoreAsTrustMaterial) {
+		this.loadKeyStoreAsTrustMaterial = loadKeyStoreAsTrustMaterial;
+	}
 
-    final HttpHost httpHost = new HttpHost( host, port, scheme );
-    final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials( login, password );
-    authenticationMap.put( httpHost, credentials );
+	public void setSslKeystoreType(String sslKeystoreType) {
+		this.sslKeystoreType = sslKeystoreType;
+	}
 
-    return this;
-  }
+	public void setSslKeystorePassword(String sslKeystorePassword) {
+		this.sslKeystorePassword = sslKeystorePassword;
+	}
 
-  /**
-   * This method allows to propagate the authentication information from the
-   * current object.
-   *
-   * @param commonsDataLoader
-   *          {@code CommonsDataLoader} to be initialized with
-   *          authentication information
-   */
-  public void propagateAuthentication( final CommonsDataLoader commonsDataLoader )
-  {
+	public void setSslTruststorePath(final String sslTruststorePath) {
+		this.sslTruststorePath = sslTruststorePath;
+	}
 
-    for( final Map.Entry<HttpHost, UsernamePasswordCredentials> credentialsEntry : authenticationMap.entrySet() )
-    {
+	public void setSslTruststorePassword(final String sslTruststorePassword) {
+		this.sslTruststorePassword = sslTruststorePassword;
+	}
 
-      final HttpHost httpHost = credentialsEntry.getKey();
-      final UsernamePasswordCredentials credentials = credentialsEntry.getValue();
-      commonsDataLoader.addAuthentication( httpHost.getHostName(), httpHost.getPort(), httpHost.getSchemeName(), credentials.getUserName(),
-	  credentials.getPassword() );
-    }
-  }
+	public void setSslTruststoreType(String sslTruststoreType) {
+		this.sslTruststoreType = sslTruststoreType;
+	}
 
-  public void setRetryHandler( final HttpRequestRetryHandler retryHandler )
-  {
-    this.retryHandler = retryHandler;
-  }
+	/**
+	 * @param host
+	 *            host
+	 * @param port
+	 *            port
+	 * @param scheme
+	 *            scheme
+	 * @param login
+	 *            login
+	 * @param password
+	 *            password
+	 * @return this for fluent addAuthentication
+	 */
+	public CommonsDataLoader addAuthentication(final String host, final int port, final String scheme, final String login, final String password) {
 
-  public void setServiceUnavailableRetryStrategy( final ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy )
-  {
-    this.serviceUnavailableRetryStrategy = serviceUnavailableRetryStrategy;
-  }
+		final HttpHost httpHost = new HttpHost(host, port, scheme);
+		final UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(login, password);
+		authenticationMap.put(httpHost, credentials);
 
-  public String[] getSupportedSSLProtocols()
-  {
-    return null;
-  }
+		return this;
+	}
 
-  public String[] getSupportedSSLCipherSuits()
-  {
-    return null;
-  }
+	/**
+	 * This method allows to propagate the authentication information from the
+	 * current object.
+	 *
+	 * @param commonsDataLoader
+	 *            {@code CommonsDataLoader} to be initialized with
+	 *            authentication information
+	 */
+	public void propagateAuthentication(final CommonsDataLoader commonsDataLoader) {
 
-  public HostnameVerifier getHostnameVerifier()
-  {
-    return SSLConnectionSocketFactory.getDefaultHostnameVerifier();
-  }
+		for (final Map.Entry<HttpHost, UsernamePasswordCredentials> credentialsEntry : authenticationMap.entrySet()) {
 
-  public TrustStrategy getTrustStrategy()
-  {
-    return null;
-  }
+			final HttpHost httpHost = credentialsEntry.getKey();
+			final UsernamePasswordCredentials credentials = credentialsEntry.getValue();
+			commonsDataLoader.addAuthentication(httpHost.getHostName(), httpHost.getPort(), httpHost.getSchemeName(), credentials.getUserName(),
+					credentials.getPassword());
+		}
+	}
+
+	public void setRetryHandler(final HttpRequestRetryHandler retryHandler) {
+		this.retryHandler = retryHandler;
+	}
+
+	public void setServiceUnavailableRetryStrategy(final ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy) {
+		this.serviceUnavailableRetryStrategy = serviceUnavailableRetryStrategy;
+	}
+
+	public String[] getSupportedSSLProtocols() {
+		return supportedSSLProtocols;
+	}
+
+	public void setSupportedSSLProtocols(String[] supportedSSLProtocols) {
+		this.supportedSSLProtocols = supportedSSLProtocols;
+	}
+
+	public String[] getSupportedSSLCipherSuites() {
+		return supportedSSLCipherSuites;
+	}
+
+	public void setSupportedSSLCipherSuites(String[] supportedSSLCipherSuites) {
+		this.supportedSSLCipherSuites = supportedSSLCipherSuites;
+	}
+
+	public HostnameVerifier getHostnameVerifier() {
+		return hostnameVerifier;
+	}
+
+	public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
+		this.hostnameVerifier = hostnameVerifier;
+	}
+
+	public TrustStrategy getTrustStrategy() {
+		return trustStrategy;
+	}
+
+	public void setTrustStrategy(TrustStrategy trustStrategy) {
+		this.trustStrategy = trustStrategy;
+	}
+
 }
-
