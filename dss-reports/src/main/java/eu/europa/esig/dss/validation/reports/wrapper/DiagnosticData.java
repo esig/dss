@@ -527,6 +527,21 @@ public class DiagnosticData {
 	}
 
 	private TimestampWrapper getTimestampByIdNullSafe(String id) {
+		TimestampWrapper timestamp = getTimestampById(id);
+		if(timestamp != null) {
+			return timestamp;
+		}
+		return new TimestampWrapper(new XmlTimestamp());
+	}
+	
+	/**
+	 * Returns the TimestampWrapper corresponding to the given id.
+	 *
+	 * @param id
+	 *            timestamp id
+	 * @return timestamp wrapper or null
+	 */
+	public TimestampWrapper getTimestampById(String id) {
 		List<SignatureWrapper> signatures = getSignatures();
 		for (SignatureWrapper signatureWrapper : signatures) {
 			List<TimestampWrapper> timestampList = signatureWrapper.getTimestampList();
@@ -536,7 +551,7 @@ public class DiagnosticData {
 				}
 			}
 		}
-		return new TimestampWrapper(new XmlTimestamp());
+		return null;
 	}
 
 	/**
@@ -547,13 +562,9 @@ public class DiagnosticData {
 	 * @return a certificate wrapper (or empty object)
 	 */
 	public CertificateWrapper getUsedCertificateByIdNullSafe(String id) {
-		List<CertificateWrapper> certificates = getUsedCertificates();
-		if (Utils.isCollectionNotEmpty(certificates)) {
-			for (CertificateWrapper certificate : certificates) {
-				if (Utils.areStringsEqual(id, certificate.getId())) {
-					return certificate;
-				}
-			}
+		CertificateWrapper cert = getUsedCertificateById(id);
+		if(cert != null) {
+			return cert;
 		}
 		return new CertificateWrapper(new XmlCertificate()); // TODO improve ?
 	}
@@ -572,6 +583,23 @@ public class DiagnosticData {
 				if (Utils.areStringsEqual(id, certificate.getId())) {
 					return certificate;
 				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * This method returns the RevocationWrapper corresponding to the id
+	 *
+	 * @param id
+	 *            id of the revocation data
+	 * @return revocation wrapper or null
+	 */
+	public RevocationWrapper getRevocationDataById(String id) {
+		Set<RevocationWrapper> revocationData = getAllRevocationData();
+		for(RevocationWrapper rd : revocationData) {
+			if(Utils.areStringsEqual(rd.getId(), id)) {
+				return rd;
 			}
 		}
 		return null;

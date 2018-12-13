@@ -39,6 +39,10 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 
 public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 
@@ -90,6 +94,18 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 			for (XmlTimestamp xmlTimestamp : timestamps) {
 				assertNotNull(xmlTimestamp.getBase64Encoded());
 			}
+		}
+		
+		
+		DiagnosticData dd = new DiagnosticData(diagnosticDataJaxb);
+		for(CertificateWrapper cert : dd.getUsedCertificates()) {
+			assertNotNull(dd.getUsedCertificateById(cert.getId()));
+		}
+		for(TimestampWrapper tst : dd.getAllTimestamps()) {
+			assertNotNull(dd.getTimestampById(tst.getId()));
+		}
+		for(RevocationWrapper revocation : dd.getAllRevocationData()) {
+			assertNotNull(dd.getRevocationDataById(revocation.getId()));
 		}
 	}
 
