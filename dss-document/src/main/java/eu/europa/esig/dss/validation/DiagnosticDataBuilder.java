@@ -106,6 +106,8 @@ public class DiagnosticDataBuilder {
 	private Set<RevocationToken> usedRevocations;
 	private CommonTrustedCertificateSource trustedCertSource;
 	private Date validationDate;
+
+	private boolean includeRawCertificateTokens = false;
 	private boolean includeRawRevocationData = false;
 	private boolean includeRawTimestampTokens = false;
 
@@ -178,6 +180,20 @@ public class DiagnosticDataBuilder {
 	 */
 	public DiagnosticDataBuilder usedRevocations(Set<RevocationToken> usedRevocations) {
 		this.usedRevocations = usedRevocations;
+		return this;
+	}
+
+	/**
+	 * This method allows set the behavior to include raw certificate tokens into
+	 * the diagnostic report. (default: false)
+	 * 
+	 * @param includeRawCertificateTokens
+	 *                                    true if the certificate tokens need to be
+	 *                                    exported in the diagnostic data
+	 * @return the builder
+	 */
+	public DiagnosticDataBuilder includeRawCertificateTokens(boolean includeRawCertificateTokens) {
+		this.includeRawCertificateTokens = includeRawCertificateTokens;
 		return this;
 	}
 
@@ -859,7 +875,10 @@ public class DiagnosticDataBuilder {
 		final XmlCertificate xmlCert = new XmlCertificate();
 
 		xmlCert.setId(certToken.getDSSIdAsString());
-		xmlCert.setBase64Encoded(certToken.getEncoded());
+
+		if (includeRawCertificateTokens) {
+			xmlCert.setBase64Encoded(certToken.getEncoded());
+		}
 
 		xmlCert.getSubjectDistinguishedName().add(getXmlDistinguishedName(X500Principal.CANONICAL, certToken.getSubjectX500Principal()));
 		xmlCert.getSubjectDistinguishedName().add(getXmlDistinguishedName(X500Principal.RFC2253, certToken.getSubjectX500Principal()));

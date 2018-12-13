@@ -295,6 +295,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		final DiagnosticData diagnosticData = new DiagnosticDataBuilder().document(document).containerInfo(getContainerInfo()).foundSignatures(allSignatureList)
 				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
+				.includeRawCertificateTokens(certificateVerifier.isIncludeCertificateTokenValues())
 				.includeRawRevocationData(certificateVerifier.isIncludeCertificateRevocationValues())
 				.includeRawTimestampTokens(certificateVerifier.isIncludeTimestampTokenValues())
 				.certificateSourceTypes(validationContext.getCertificateSourceTypes())

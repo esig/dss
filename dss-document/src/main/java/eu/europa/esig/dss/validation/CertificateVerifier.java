@@ -169,6 +169,25 @@ public interface CertificateVerifier {
 	boolean isExceptionOnMissingRevocationData();
 	
 	/**
+	 * This method allows to change the behavior by including raw certificate tokens
+	 * in the diagnostic data report.
+	 * 
+	 * @param include
+	 *                true if raw certificate tokens should be included (default:
+	 *                false)
+	 */
+	void setIncludeCertificateTokenValues(boolean include);
+
+	/**
+	 * This method returns true if the certificate tokens need to be exported in the
+	 * diagnostic data report.
+	 * 
+	 * @return true if raw certificate tokens should be included in the diagnotic
+	 *         data report (default: false)
+	 */
+	boolean isIncludeCertificateTokenValues();
+
+	/**
 	 * This method allows to change the behavior by including raw revocation data in
 	 * the diagnostic data report.
 	 * 
