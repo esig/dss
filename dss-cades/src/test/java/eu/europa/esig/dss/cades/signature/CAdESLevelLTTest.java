@@ -67,6 +67,7 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 	@Override
 	protected CertificateVerifier getOfflineCertificateVerifier() {
 		CertificateVerifier certificateVerifier = super.getOfflineCertificateVerifier();
+		certificateVerifier.setIncludeCertificateTokenValues(true);
 		certificateVerifier.setIncludeCertificateRevocationValues(true);
 		certificateVerifier.setIncludeTimestampTokenValues(true);
 		return certificateVerifier;
@@ -95,17 +96,22 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 				assertNotNull(xmlTimestamp.getBase64Encoded());
 			}
 		}
-		
-		
+
 		DiagnosticData dd = new DiagnosticData(diagnosticDataJaxb);
-		for(CertificateWrapper cert : dd.getUsedCertificates()) {
-			assertNotNull(dd.getUsedCertificateById(cert.getId()));
+		for (CertificateWrapper cert : dd.getUsedCertificates()) {
+			CertificateWrapper certificateWrapper = dd.getUsedCertificateById(cert.getId());
+			assertNotNull(certificateWrapper);
+			assertNotNull(certificateWrapper.getBinaries());
 		}
-		for(TimestampWrapper tst : dd.getAllTimestamps()) {
-			assertNotNull(dd.getTimestampById(tst.getId()));
+		for (TimestampWrapper tst : dd.getAllTimestamps()) {
+			TimestampWrapper timestampWrapper = dd.getTimestampById(tst.getId());
+			assertNotNull(timestampWrapper);
+			assertNotNull(timestampWrapper.getBinaries());
 		}
-		for(RevocationWrapper revocation : dd.getAllRevocationData()) {
-			assertNotNull(dd.getRevocationDataById(revocation.getId()));
+		for (RevocationWrapper revocation : dd.getAllRevocationData()) {
+			RevocationWrapper revocationWrapper = dd.getRevocationDataById(revocation.getId());
+			assertNotNull(revocationWrapper);
+			assertNotNull(revocationWrapper.getBinaries());
 		}
 	}
 
