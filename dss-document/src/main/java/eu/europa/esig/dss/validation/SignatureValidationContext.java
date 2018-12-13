@@ -37,6 +37,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CertificateReorderer;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -414,7 +415,12 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private void registerUsageDate(Date usageDate, List<CertificateToken> certificates) {
-		for (CertificateToken cert : certificates) {
+		CertificateReorderer certificateReorderer = new CertificateReorderer(certificates);
+		List<CertificateToken> orderedCertificates = certificateReorderer.getOrderedCertificates();
+		for (CertificateToken cert : orderedCertificates) {
+			if (cert.isSelfIssued() || isTrusted(cert)) {
+				return;
+			}
 			Date lastUsage = lastUsageDates.get(cert);
 			if (lastUsage == null || lastUsage.before(usageDate)) {
 				lastUsageDates.put(cert, usageDate);
