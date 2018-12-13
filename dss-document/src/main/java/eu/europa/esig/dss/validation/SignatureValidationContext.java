@@ -85,7 +85,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private final Map<Token, Boolean> tokensToProcess = new HashMap<Token, Boolean>();
 
-	private final Map<Token, Date> lastUsageDates = new HashMap<Token, Date>();
+	private final Map<CertificateToken, Date> lastUsageDates = new HashMap<CertificateToken, Date>();
 
 	// External OCSP source.
 	private OCSPSource ocspSource;
@@ -551,6 +551,32 @@ public class SignatureValidationContext implements ValidationContext {
 					}
 				}
 				if (!found) {
+					LOG.debug("No revocation data found for certificate : {}", certificateToken.getDSSIdAsString());
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public boolean isAllPOECoveredByRevocationData() {
+		for (Entry<CertificateToken, Date> entry : lastUsageDates.entrySet()) {
+			Date lastUsage = entry.getValue();
+			CertificateToken token = entry.getKey();
+			if (!isRevocationDataNotRequired(token)) {
+				boolean foundValidRevocationDataAfterLastUsage = false;
+				for (RevocationToken revocationToken : processedRevocations) {
+					if (Utils.areStringsEqual(token.getDSSIdAsString(), revocationToken.getRelatedCertificateID())) {
+						Date productionDate = revocationToken.getProductionDate();
+						if (productionDate.after(lastUsage)) {
+							foundValidRevocationDataAfterLastUsage = true;
+							break;
+						}
+					}
+				}
+				if (!foundValidRevocationDataAfterLastUsage) {
+					LOG.debug("POE {} not covered by a valid revocation data", token.getDSSIdAsString());
 					return false;
 				}
 			}
@@ -562,6 +588,7 @@ public class SignatureValidationContext implements ValidationContext {
 	public boolean isAllTimestampValid() {
 		for (TimestampToken timestampToken : processedTimestamps) {
 			if (!timestampToken.isSignatureValid() || !timestampToken.isMessageImprintDataFound() || !timestampToken.isMessageImprintDataIntact()) {
+				LOG.debug("Invalid timestamp detected : {}", timestampToken.getDSSIdAsString());
 				return false;
 			}
 		}
@@ -575,6 +602,7 @@ public class SignatureValidationContext implements ValidationContext {
 				for (RevocationToken revocationToken : processedRevocations) {
 					if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())
 							&& !Utils.isTrue(revocationToken.getStatus())) {
+						LOG.debug("Certificate {} is revoked", certificateToken.getDSSIdAsString());
 						return false;
 					}
 				}

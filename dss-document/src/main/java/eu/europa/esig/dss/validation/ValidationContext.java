@@ -92,6 +92,16 @@ public interface ValidationContext {
 	boolean isAllRequiredRevocationDataPresent();
 
 	/**
+	 * This method allows to verify if all POE (timestamp tokens) are covered by a
+	 * revocation data
+	 * 
+	 * @return true if all POE have at least one revocation data issued after the
+	 *         POE creation
+	 * 
+	 */
+	boolean isAllPOECoveredByRevocationData();
+
+	/**
 	 * This method allows to verify if all processed timestamps are valid and intact
 	 * 
 	 * @return true if all processed timestamps are valid

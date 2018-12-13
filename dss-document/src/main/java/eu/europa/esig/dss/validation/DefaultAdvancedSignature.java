@@ -211,24 +211,16 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		validationContext.validate();
 
 		validateTimestamps();
-		if (!validationContext.isAllTimestampValid()) {
-			String message = "Broken timestamp detected";
-			if (certificateVerifier.isExceptionOnInvalidTimestamp()) {
-				throw new DSSException(message);
-			} else {
-				LOG.warn(message);
-			}
-		}
 
-		if (!validationContext.isAllRequiredRevocationDataPresent()) {
-			String message = "Revocation data is missing";
-			if (certificateVerifier.isExceptionOnMissingRevocationData()) {
-				throw new DSSException(message);
-			} else {
-				LOG.warn(message);
-			}
-		}
+		checkTimestamp(certificateVerifier, validationContext);
+		checkAllRevocationDataPresent(certificateVerifier, validationContext);
+		checkAllTimestampCoveredByRevocationData(certificateVerifier, validationContext);
+		checkAllCertificateNotRevoked(certificateVerifier, validationContext);
 
+		return validationContext;
+	}
+
+	private void checkAllCertificateNotRevoked(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
 		if (!validationContext.isAllCertificateValid()) {
 			String message = "Revoked certificate detected";
 			if (certificateVerifier.isExceptionOnRevokedCertificate()) {
@@ -237,8 +229,39 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 				LOG.warn(message);
 			}
 		}
+	}
 
-		return validationContext;
+	private void checkAllTimestampCoveredByRevocationData(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
+		if (!validationContext.isAllPOECoveredByRevocationData()) {
+			String message = "A POE is not covered by an usable revocation data";
+			if (certificateVerifier.isExceptionOnUncoveredPOE()) {
+				throw new DSSException(message);
+			} else {
+				LOG.warn(message);
+			}
+		}
+	}
+
+	private void checkAllRevocationDataPresent(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
+		if (!validationContext.isAllRequiredRevocationDataPresent()) {
+			String message = "Revocation data is missing";
+			if (certificateVerifier.isExceptionOnMissingRevocationData()) {
+				throw new DSSException(message);
+			} else {
+				LOG.warn(message);
+			}
+		}
+	}
+
+	private void checkTimestamp(final CertificateVerifier certificateVerifier, final ValidationContext validationContext) {
+		if (!validationContext.isAllTimestampValid()) {
+			String message = "Broken timestamp detected";
+			if (certificateVerifier.isExceptionOnInvalidTimestamp()) {
+				throw new DSSException(message);
+			} else {
+				LOG.warn(message);
+			}
+		}
 	}
 
 	/**

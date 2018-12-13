@@ -93,6 +93,13 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private boolean exceptionOnMissingRevocationData = true;
 
 	/**
+	 * This variable set the behavior to follow in case of missing revocation data
+	 * for a POE. True : throw an exception / False : add a warning message. Default
+	 * : false
+	 */
+	private boolean exceptionOnUncoveredPOE = false;
+
+	/**
 	 * This variable set the behavior to include raw certificate tokens into the
 	 * diagnostic report. (default: false)
 	 */
@@ -256,6 +263,15 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public boolean isExceptionOnMissingRevocationData() {
 		return exceptionOnMissingRevocationData;
+	}
+
+	@Override
+	public boolean isExceptionOnUncoveredPOE() {
+		return exceptionOnUncoveredPOE;
+	}
+
+	public void setExceptionOnUncoveredPOE(boolean exceptionOnUncoveredPOE) {
+		this.exceptionOnUncoveredPOE = exceptionOnUncoveredPOE;
 	}
 
 	@Override

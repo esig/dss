@@ -263,6 +263,26 @@ public interface CertificateVerifier {
 	 */
 	boolean isExceptionOnRevokedCertificate();
 
+	
+	/**
+	 * This method allows to change the behavior on uncovered POE (timestamp).
+	 * (default : false)
+	 * 
+	 * @param throwExceptionOnUncoveredPOE
+	 *                                     true if an exception is raised on
+	 *                                     uncovered timestamp, false will only
+	 *                                     display a warning message
+	 */
+	void setExceptionOnUncoveredPOE(boolean throwExceptionOnUncoveredPOE);
+	
+	/**
+	 * This method returns true if an exception needs to be thrown on uncovered
+	 * POE(timestamp).
+	 * 
+	 * @return true if an exception is thrown, false if a warning message is added
+	 */
+	boolean isExceptionOnUncoveredPOE();
+
 	/**
 	 * This method allows to enable revocation checking for untrusted certificate
 	 * chains (default : false)
