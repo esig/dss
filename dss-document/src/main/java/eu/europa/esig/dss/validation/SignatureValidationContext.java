@@ -415,15 +415,24 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private void registerUsageDate(Date usageDate, List<CertificateToken> certificates) {
+		if (Utils.isCollectionEmpty(certificates)) {
+			LOG.warn("Empty certificate chain for timestamp");
+			return;
+		}
+
 		CertificateReorderer certificateReorderer = new CertificateReorderer(certificates);
-		List<CertificateToken> orderedCertificates = certificateReorderer.getOrderedCertificates();
-		for (CertificateToken cert : orderedCertificates) {
-			if (cert.isSelfIssued() || isTrusted(cert)) {
-				return;
-			}
-			Date lastUsage = lastUsageDates.get(cert);
-			if (lastUsage == null || lastUsage.before(usageDate)) {
-				lastUsageDates.put(cert, usageDate);
+		Map<CertificateToken, List<CertificateToken>> orderedCertificateChains = certificateReorderer.getOrderedCertificateChains();
+
+		for (Entry<CertificateToken, List<CertificateToken>> entry : orderedCertificateChains.entrySet()) {
+			List<CertificateToken> chain = entry.getValue();
+			for (CertificateToken cert : chain) {
+				if (cert.isSelfIssued() || isTrusted(cert)) {
+					return;
+				}
+				Date lastUsage = lastUsageDates.get(cert);
+				if (lastUsage == null || lastUsage.before(usageDate)) {
+					lastUsageDates.put(cert, usageDate);
+				}
 			}
 		}
 	}
