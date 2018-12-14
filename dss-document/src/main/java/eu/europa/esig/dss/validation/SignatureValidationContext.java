@@ -572,6 +572,7 @@ public class SignatureValidationContext implements ValidationContext {
 			CertificateToken token = entry.getKey();
 			if (!isRevocationDataNotRequired(token)) {
 				boolean foundValidRevocationDataAfterLastUsage = false;
+				Date nextUpdate = null;
 				for (RevocationToken revocationToken : processedRevocations) {
 					if (Utils.areStringsEqual(token.getDSSIdAsString(), revocationToken.getRelatedCertificateID())) {
 						Date productionDate = revocationToken.getProductionDate();
@@ -579,10 +580,15 @@ public class SignatureValidationContext implements ValidationContext {
 							foundValidRevocationDataAfterLastUsage = true;
 							break;
 						}
+
+						Date currentNextUpdate = revocationToken.getNextUpdate();
+						if (nextUpdate == null || (currentNextUpdate != null && nextUpdate.before(currentNextUpdate))) {
+							nextUpdate = currentNextUpdate;
+						}
 					}
 				}
 				if (!foundValidRevocationDataAfterLastUsage) {
-					LOG.debug("POE {} not covered by a valid revocation data", token.getDSSIdAsString());
+					LOG.debug("POE {} not covered by a valid revocation data (nextUpdate : {})", token.getDSSIdAsString(), nextUpdate);
 					return false;
 				}
 			}

@@ -53,6 +53,11 @@ public class CertificateVerifierSnippet {
 		// Default : true
 		cv.setExceptionOnMissingRevocationData(true);
 
+		// DSS throws an exception if a TSU certificate chain is not covered with a
+		// revocation data (timestamp generation time > CRL/OCSP production time).
+		// Default : false
+		cv.setExceptionOnUncoveredPOE(true);
+
 		// DSS interrupts by default the extension process if a revoked certificate is
 		// present
 		// Default : true
