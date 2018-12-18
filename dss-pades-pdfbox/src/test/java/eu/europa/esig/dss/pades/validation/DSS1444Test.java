@@ -22,14 +22,27 @@ package eu.europa.esig.dss.pades.validation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.Test;
 
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.DetailedReport;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 public class DSS1444Test {
 
@@ -70,4 +83,54 @@ public class DSS1444Test {
 		}
 	}
 
+	/**
+	 * Positive test with default policy with PLAIN-ECDSA constrains. 
+	 * @throws IOException
+	 */
+	@Test
+	public void test5() throws IOException {
+	  	DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-PLAIN-ECDSA/TeleSec_PKS_eIDAS_QES_CA_1-baseline-b.pdf"));
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		Reports reports = validator.validateDocument();
+		assertNotNull(reports);
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertNotNull(diagnosticData);
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertTrue( "PLAIN-ECDSA".equals( signature.getEncryptionAlgoUsedToSignThisToken() ) );
+	}
+	
+	/**
+	 * 
+	 * Negative test with policy without PLAIN-ECDSA constrains.
+	 * @throws IOException
+	 */
+	@Test
+	public void test6() throws IOException {
+	  	DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-PLAIN-ECDSA/TeleSec_PKS_eIDAS_QES_CA_1-baseline-b.pdf"));
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		Reports reports = validator.validateDocument(getClass().getResourceAsStream("/validation/dss-PLAIN-ECDSA/policy_without_PLAIN-ECDSA.xml"));
+		assertNotNull(reports);
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertNotNull(diagnosticData);
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertNotNull(detailedReport);
+		XmlBasicBuildingBlocks xmlBasicBuildingBlocks = detailedReport.getBasicBuildingBlockById(diagnosticData.getFirstSignatureId());
+		assertNotNull( xmlBasicBuildingBlocks );
+		XmlConclusion xmlConclusion = xmlBasicBuildingBlocks.getConclusion();
+		assertNotNull( xmlConclusion );
+		List<XmlName> xmlNames = xmlConclusion.getErrors();
+		assertNotNull( xmlNames );
+		for(int i = 0; i < xmlNames.size(); i++)
+		{
+		  if( "ASCCM_ANS_1".equals( xmlNames.get( i ).getNameId() ) )
+		  {
+		    assertTrue("The encryption algorithm not authorised!".equals( xmlNames.get(i).getValue() ) );
+		    return;
+		  }
+		}
+		fail( "NOT FOUND!" );
+	}
+	
 }
