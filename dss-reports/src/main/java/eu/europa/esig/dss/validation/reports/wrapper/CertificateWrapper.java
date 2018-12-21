@@ -154,7 +154,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public boolean isRevoked() {
 		RevocationWrapper latestRevocationData = getLatestRevocationData();
-		return latestRevocationData != null && latestRevocationData.isStatus() && latestRevocationData.getRevocationDate() != null;
+		return latestRevocationData != null && !latestRevocationData.isStatus() && latestRevocationData.getRevocationDate() != null;
 	}
 
 	public boolean isValidCertificate() {
