@@ -160,7 +160,7 @@ public class TSLValidationJobTest {
 		job.setCheckTSLSignatures(true);
 
 		Map<String, byte[]> dataMap = new HashMap<String, byte[]>();
-		dataMap.put("url-pe", DSSUtils.toByteArray(new FileDocument("src/test/resources/tsls/tsl-pe.xml")));
+		dataMap.put("url-pe", DSSUtils.toByteArray(new FileDocument("src/test/resources/tsl-pe.xml")));
 		job.setDataLoader(new MemoryDataLoader(dataMap));
 		job.setRepository(repository);
 
@@ -185,6 +185,8 @@ public class TSLValidationJobTest {
 		assertNotNull(parseResult.getIssueDate());
 		assertNotNull(parseResult.getNextUpdateDate());
 		assertNotNull(parseResult.getServiceProviders());
+
+		assertTrue(parseResult.getPointers().isEmpty());
 
 		TSLValidationResult validationResult = peru.getValidationResult();
 		assertNotNull(validationResult);
