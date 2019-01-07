@@ -20,7 +20,10 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -73,6 +76,11 @@ public class ExtendXAdESBWithoutSignedDataObjectPropertiesToTTest extends PKIFac
 		Reports reports = validator.validateDocument();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		String signatureId = diagnosticData.getFirstSignatureId();
+		List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
+		assertEquals(1, retrievedOriginalDocuments.size());
+		
 		Assert.assertEquals(SignatureLevel.XAdES_BASELINE_T.toString(), diagnosticData.getSignatureFormat(simpleReport.getFirstSignatureId()));
 	}
 
