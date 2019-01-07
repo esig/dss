@@ -20,9 +20,10 @@
  */
 package eu.europa.esig.dss.tsl;
 
+import static java.util.Collections.unmodifiableList;
+
 import java.util.ArrayList;
 import java.util.List;
-import static java.util.Collections.unmodifiableList;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.x509.CertificateToken;
