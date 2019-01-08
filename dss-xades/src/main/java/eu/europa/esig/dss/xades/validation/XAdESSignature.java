@@ -551,7 +551,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					policyIdString = policyIdString.trim();
 					if (DSSXMLUtils.isOid(policyIdString)) {
 						// urn:oid:1.2.3 --> 1.2.3
-						policyIdString = policyIdString.substring(policyIdString.lastIndexOf(':') + 1);
+						policyIdString = DSSXMLUtils.getOidCode(policyIdString);
 					} else {
 						policyUrlString = policyIdString;
 					}
@@ -569,6 +569,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final Element policyUrl = DomUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_SPURI);
 				if (policyUrl != null) {
 					policyUrlString = policyUrl.getTextContent().trim();
+				}
+				final Element policyDescription = DomUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DESCRIPTION);
+				if (policyDescription != null && Utils.isStringNotEmpty(policyDescription.getTextContent())) {
+					signaturePolicy.setDescription(policyDescription.getTextContent());
 				}
 				signaturePolicy.setUrl(policyUrlString);
 				signaturePolicy.setPolicyContent(signaturePolicyProvider.getSignaturePolicy(policyIdString, policyUrlString));

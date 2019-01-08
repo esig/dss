@@ -117,6 +117,7 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH_PRODUCTION_PLACE_V2 = XPATH_SIGNED_SIGNATURE_PROPERTIES + "/xades:SignatureProductionPlaceV2";
 	public String XPATH__SIGNATURE_POLICY_IMPLIED = "./xades:SignaturePolicyImplied";
 	public String XPATH__POLICY_ID = "./xades:SignaturePolicyId/xades:SigPolicyId/xades:Identifier";
+	public String XPATH__POLICY_DESCRIPTION = "./xades:SignaturePolicyId/xades:SigPolicyId/xades:Description";
 	public String XPATH__POLICY_DIGEST_METHOD = "./xades:SignaturePolicyId/xades:SigPolicyHash/ds:DigestMethod/@Algorithm";
 	public String XPATH__POLICY_DIGEST_VALUE = "./xades:SignaturePolicyId/xades:SigPolicyHash/ds:DigestValue";
 	public String XPATH__POLICY_SPURI = "./xades:SignaturePolicyId/xades:SigPolicyQualifiers/xades:SigPolicyQualifier/xades:SPURI";

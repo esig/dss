@@ -46,6 +46,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "Policy", propOrder = {
     "id",
     "url",
+    "description",
     "notice",
     "digestAlgoAndValue",
     "asn1Processable",
@@ -62,6 +63,8 @@ public class XmlPolicy implements Serializable
     protected String id;
     @XmlElement(name = "Url")
     protected String url;
+    @XmlElement(name = "Description")
+    protected String description;
     @XmlElement(name = "Notice")
     protected String notice;
     @XmlElement(name = "DigestAlgoAndValue")
@@ -123,6 +126,22 @@ public class XmlPolicy implements Serializable
      */
     public void setUrl(String value) {
         this.url = value;
+    }
+    
+    /**
+     * Returns the value of the description property
+     * @return description {@link String}
+     */
+    public String getDescription() {
+    	return description;
+    }
+    
+    /**
+     * Sets the value of description property
+     * @param description {@link String}
+     */
+    public void setDescription(String description) {
+    	this.description = description;
     }
 
     /**
