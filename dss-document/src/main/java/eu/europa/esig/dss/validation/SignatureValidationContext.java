@@ -556,8 +556,14 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@Override
 	public boolean isAllRequiredRevocationDataPresent() {
-		for (CertificateToken certificateToken : processedCertificates) {
-			if (!isRevocationDataNotRequired(certificateToken)) {
+		CertificateReorderer order = new CertificateReorderer(processedCertificates);
+		Map<CertificateToken, List<CertificateToken>> orderedCertificateChains = order.getOrderedCertificateChains();
+
+		for (List<CertificateToken> orderedCertChain : orderedCertificateChains.values()) {
+			for (CertificateToken certificateToken : orderedCertChain) {
+				if (isRevocationDataNotRequired(certificateToken)) {
+					break;
+				}
 				boolean found = false;
 				for (RevocationToken revocationToken : processedRevocations) {
 					if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateID())) {
