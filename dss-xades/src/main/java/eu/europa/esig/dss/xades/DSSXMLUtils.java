@@ -356,5 +356,15 @@ public final class DSSXMLUtils {
 	public static boolean isOid(String policyId) {
 		return policyId != null && policyId.matches("^(?i)urn:oid:.*$");
 	}
+	
+	/**
+	 * Keeps only code of the oid string
+	 * e.g. "urn:oid:1.2.3" to "1.2.3"
+	 * @param oid {@link String} Oid
+	 * @return Oid Code
+	 */
+	public static String getOidCode(String oid) {
+		return oid.substring(oid.lastIndexOf(':') + 1);
+	}
 
 }

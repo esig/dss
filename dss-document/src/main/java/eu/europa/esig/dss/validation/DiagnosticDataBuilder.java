@@ -667,6 +667,9 @@ public class DiagnosticDataBuilder {
 
 		final String policyUrl = signaturePolicy.getUrl();
 		xmlPolicy.setUrl(policyUrl);
+		
+		final String description = signaturePolicy.getDescription();
+		xmlPolicy.setDescription(description);
 
 		final String notice = signaturePolicy.getNotice();
 		xmlPolicy.setNotice(notice);
