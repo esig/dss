@@ -30,8 +30,6 @@ public final class ServiceQualification {
 	private ServiceQualification() {
 	}
 
-	public static final String CA_QC = "http://uri.etsi.org/TrstSvc/Svctype/CA/QC";
-
 	/**
 	 * QCStatement ("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"): to indicate that all certificates
 	 * identified by the applicable list of criteria are issued as qualified certificates.
@@ -124,10 +122,6 @@ public final class ServiceQualification {
 	 * web site authentication;
 	 */
 	public static final String QC_FOR_WSA = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForWSA";
-
-	public static boolean isCaQc(String serviceType) {
-		return CA_QC.equals(serviceType);
-	}
 
 	public static boolean isQcStatement(List<String> qualifiers) {
 		return listContains(qualifiers, QC_STATEMENT);

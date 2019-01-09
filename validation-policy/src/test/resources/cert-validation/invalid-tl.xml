@@ -44,6 +44,7 @@
                     <CountryCode>LU</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF</ServiceDigitalIdentifier>
                             <ServiceName>TS-21.1.1 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -117,6 +118,7 @@
                     <CountryCode>LU</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF</ServiceDigitalIdentifier>
                             <ServiceName>TS-21.1.1 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>

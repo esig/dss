@@ -202,9 +202,6 @@ public class SignatureValidationContext implements ValidationContext {
 		Token issuerCertificateToken = token;
 		do {
 			chain.add(issuerCertificateToken);
-			if (isTrusted(issuerCertificateToken)) {
-				break;
-			}
 
 			issuerCertificateToken = validationCertificatePool.getIssuer(issuerCertificateToken);
 

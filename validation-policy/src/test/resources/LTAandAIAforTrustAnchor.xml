@@ -238,6 +238,7 @@
                     <CountryCode>CZ</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                            <ServiceDigitalIdentifier>D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02</ServiceDigitalIdentifier>
                             <ServiceName>(105) PostSignum TSA - TSU 1</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -251,6 +252,7 @@
                     <CountryCode>CZ</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02</ServiceDigitalIdentifier>
                             <ServiceName>(57) PostSignum - issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -381,6 +383,7 @@
                     <CountryCode>CZ</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                            <ServiceDigitalIdentifier>D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02</ServiceDigitalIdentifier>
                             <ServiceName>(78) I.CA - issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -391,6 +394,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                            <ServiceDigitalIdentifier>D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02</ServiceDigitalIdentifier>
                             <ServiceName>(78) I.CA - issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -401,6 +405,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                            <ServiceDigitalIdentifier>D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02</ServiceDigitalIdentifier>
                             <ServiceName>(78) I.CA - issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -475,6 +480,7 @@
                     <CountryCode>CZ</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                            <ServiceDigitalIdentifier>D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02</ServiceDigitalIdentifier>
                             <ServiceName>(57) PostSignum - issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -486,6 +492,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                            <ServiceDigitalIdentifier>D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02</ServiceDigitalIdentifier>
                             <ServiceName>(57) PostSignum - issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -496,6 +503,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                            <ServiceDigitalIdentifier>D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02</ServiceDigitalIdentifier>
                             <ServiceName>(57) PostSignum - issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -576,6 +584,7 @@
                     <CountryCode>CZ</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                            <ServiceDigitalIdentifier>076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A</ServiceDigitalIdentifier>
                             <ServiceName>(78) I.CA - issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>

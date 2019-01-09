@@ -22,6 +22,7 @@ package eu.europa.esig.dss;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -71,9 +72,12 @@ public class CertificateTokenTest {
 		assertFalse(certificate1.isSelfIssued());
 		assertTrue(certificate3.isSelfIssued());
 
+		assertFalse(certificate1.isSignedBy(certificate3));
 		assertFalse(certificate1.isSelfSigned());
+		assertTrue(certificate3.isSignedBy(certificate3));
 		assertTrue(certificate3.isSelfSigned());
 		assertTrue(certificate3.isSignatureValid());
+		assertNull(certificate3.getPublicKeyOfTheSigner());
 
 		assertTrue(certificate1.equals(certificate1));
 		assertFalse(certificate1.equals(certificate2));
