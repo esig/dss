@@ -102,7 +102,7 @@ public class SimpleReportForCertificateBuilder {
 		item.setRevocation(revocation);
 
 		if (certificate.isTrusted()) {
-			List<XmlTrustedServiceProvider> trustServiceProviders = certificate.getTrustServiceProviders();
+			List<XmlTrustedServiceProvider> trustServiceProviders = filterByCertificateId(certificate.getTrustServiceProviders(), certificate.getId());
 			List<XmlTrustAnchor> trustAnchors = new ArrayList<XmlTrustAnchor>();
 			for (XmlTrustedServiceProvider xmlTrustedServiceProvider : trustServiceProviders) {
 				List<XmlTrustedService> trustedServices = xmlTrustedServiceProvider.getTrustedServices();
@@ -124,6 +124,24 @@ public class SimpleReportForCertificateBuilder {
 		item.setIndication(detailedReport.getCertificateXCVIndication(certificate.getId()));
 
 		return item;
+	}
+
+	private List<XmlTrustedServiceProvider> filterByCertificateId(List<XmlTrustedServiceProvider> trustServiceProviders, String certificateId) {
+		List<XmlTrustedServiceProvider> result = new ArrayList<XmlTrustedServiceProvider>();
+		for (XmlTrustedServiceProvider xmlTrustedServiceProvider : trustServiceProviders) {
+			List<XmlTrustedService> trustedServices = xmlTrustedServiceProvider.getTrustedServices();
+			boolean foundCertId = false;
+			for (XmlTrustedService xmlTrustedService : trustedServices) {
+				if (Utils.areStringsEqual(certificateId, xmlTrustedService.getServiceDigitalIdentifier())) {
+					foundCertId = true;
+					break;
+				}
+			}
+			if (foundCertId) {
+				result.add(xmlTrustedServiceProvider);
+			}
+		}
+		return result;
 	}
 
 	private List<String> getReadable(List<XmlOID> oids) {

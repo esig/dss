@@ -195,9 +195,14 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 
 	@Override
 	public boolean isTrustedChain() {
-		String lastCertificateSource = getLastChainCertificateSource();
-		return CertificateSourceType.TRUSTED_STORE.name().equals(lastCertificateSource)
-				|| CertificateSourceType.TRUSTED_LIST.name().equals(lastCertificateSource);
+		List<XmlChainItem> certificateChain = getCurrentCertificateChain();
+		for (XmlChainItem xmlChainItem : certificateChain) {
+			String currentCertSource = xmlChainItem.getSource();
+			if (CertificateSourceType.TRUSTED_STORE.name().equals(currentCertSource) || CertificateSourceType.TRUSTED_LIST.name().equals(currentCertSource)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public XmlChainItem getFirstChainCertificate() {

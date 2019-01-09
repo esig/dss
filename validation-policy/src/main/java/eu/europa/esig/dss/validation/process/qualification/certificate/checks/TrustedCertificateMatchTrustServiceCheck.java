@@ -35,17 +35,15 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValidationCertificateQualification> {
 
-	private final CertificateWrapper signingCertificate;
-	private final CertificateWrapper rootCertificate;
+	private final List<CertificateWrapper> usedCertificates;
 	private final TrustedServiceWrapper trustService;
 	private MessageTag errorMessage = MessageTag.EMPTY;
 
-	public TrustedCertificateMatchTrustServiceCheck(XmlValidationCertificateQualification result, CertificateWrapper signingCertificate,
-			CertificateWrapper rootCertificate, TrustedServiceWrapper trustService, LevelConstraint constraint) {
+	public TrustedCertificateMatchTrustServiceCheck(XmlValidationCertificateQualification result, List<CertificateWrapper> usedCertificates,
+			TrustedServiceWrapper trustService, LevelConstraint constraint) {
 		super(result, constraint);
 
-		this.signingCertificate = signingCertificate;
-		this.rootCertificate = rootCertificate;
+		this.usedCertificates = usedCertificates;
 		this.trustService = trustService;
 	}
 
@@ -73,10 +71,11 @@ public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValid
 	}
 
 	private CertificateWrapper getTrustedCert() {
-		if (rootCertificate != null && rootCertificate.isTrusted()) {
-			return rootCertificate;
-		} else if (signingCertificate != null && signingCertificate.isTrusted()) {
-			return signingCertificate;
+		String certId = trustService.getServiceDigitalIdentifier();
+		for (CertificateWrapper certificateWrapper : usedCertificates) {
+			if (Utils.areStringsEqual(certId, certificateWrapper.getId())) {
+				return certificateWrapper;
+			}
 		}
 		return null;
 	}

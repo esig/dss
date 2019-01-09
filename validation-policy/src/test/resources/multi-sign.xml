@@ -278,6 +278,7 @@
                     <CountryCode>PL</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86</ServiceDigitalIdentifier>
                     		<ServiceName>Certification authority issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -290,6 +291,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86</ServiceDigitalIdentifier>
                             <ServiceName>Certification authority issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -395,6 +397,7 @@
                     <CountryCode>PL</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86</ServiceDigitalIdentifier>
                         	<ServiceName>Certification authority issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -412,6 +415,7 @@
                             </ServiceSupplyPoints>
                         </TrustedService>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86</ServiceDigitalIdentifier>
                         	<ServiceName>Certification authority issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>

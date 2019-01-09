@@ -235,6 +235,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 					for (XmlTrustedService trustedService : trustedServices) {
 						TrustedServiceWrapper wrapper = new TrustedServiceWrapper();
 						wrapper.setTspName(tsp.getTSPName());
+						wrapper.setServiceDigitalIdentifier(trustedService.getServiceDigitalIdentifier());
 						wrapper.setServiceName(trustedService.getServiceName());
 						wrapper.setCountryCode(tsp.getCountryCode());
 						wrapper.setStatus(trustedService.getStatus());

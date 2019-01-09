@@ -97,10 +97,9 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 				try {
 					CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(signature.getSigningCertificateId());
 					if (signingCertificate != null) {
-						CertificateWrapper rootCertificate = diagnosticData.getUsedCertificateById(signingCertificate.getLastChainCertificateId());
 
 						SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(conlusion, bestSignatureTime, signingCertificate,
-								rootCertificate, detailedReport.getTLAnalysis(), diagnosticData.getLOTLCountryCode());
+								diagnosticData.getUsedCertificates(), detailedReport.getTLAnalysis(), diagnosticData.getLOTLCountryCode());
 						signatureAnalysis.setValidationSignatureQualification(qualificationBlock.execute());
 					}
 				} catch (Exception e) {

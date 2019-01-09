@@ -149,6 +149,7 @@
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -159,6 +160,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -289,6 +291,7 @@
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -299,6 +302,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -382,6 +386,7 @@
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -395,6 +400,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -542,6 +548,7 @@
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -552,6 +559,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -622,6 +630,7 @@
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -694,6 +703,7 @@
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -704,6 +714,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -839,6 +850,7 @@
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -849,6 +861,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
