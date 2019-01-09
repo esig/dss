@@ -386,7 +386,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		 */
 		final XAdESCertificateSource certSource = getCertificateSource();
 		for (final CertificateToken certificateToken : certSource.getKeyInfoCertificates()) {
-
 			final CertificateValidity certificateValidity = new CertificateValidity(certificateToken);
 			candidatesForSigningCertificate.add(certificateValidity);
 		}
@@ -1204,6 +1203,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
 						found = found && (noDuplicateIdFound && findSignedPropertiesById(uri));
 						signedPropertiesFound = signedPropertiesFound || found;
+					} else if (isKeyInfoReference(reference, santuarioSignature.getElement())) {
+						validation.setType(DigestMatcherType.KEY_INFO);
+						found = true; // we check it in prior inside "isKeyInfoReference" method
 					} else if (reference.typeIsReferenceToObject()) {
 						validation.setType(DigestMatcherType.OBJECT);
 						found = found &&  (noDuplicateIdFound && findObjectById(uri));
@@ -1263,6 +1265,22 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	private Node getSignedPropertiesById(String uri) {
 		String signedPropertiesById = xPathQueryHolder.XPATH_SIGNED_PROPERTIES + DomUtils.getXPathByIdAttribute(uri);
 		return DomUtils.getNode(signatureElement, signedPropertiesById);
+	}
+	
+	/**
+	 * Checks if the given {@value reference} is linked to a <KeyInfo> element
+	 * @param reference - {@link Reference} to check
+	 * @param signature - {@link Element} signature the given {@value reference} belongs to
+	 * @return - TRUE if the {@value reference} is a <KeyInfo> reference, FALSE otherwise
+	 */
+	private boolean isKeyInfoReference(final Reference reference, final Element signature) {
+		String uri = reference.getURI();
+		uri = DomUtils.getId(uri);
+		Element element = DomUtils.getElement(signature, "./" + xPathQueryHolder.XPATH_KEY_INFO + DomUtils.getXPathByIdAttribute(uri));
+		if (element != null) {
+			return true;
+		}
+		return false;
 	}
 
 	private boolean findObjectById(String uri) {

@@ -48,7 +48,7 @@ public class DSS1338Test {
 		String firstSignatureId = reports.getSimpleReport().getFirstSignatureId();
 
 		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(firstSignatureId);
-		assertEquals(2, originalDocuments.size());
+		assertEquals(1, originalDocuments.size());
 
 		boolean found = false;
 		for (DSSDocument dssDocument : originalDocuments) {

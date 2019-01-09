@@ -47,6 +47,7 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
+import eu.europa.esig.dss.xades.signature.XAdESBuilder;
 
 /**
  * Validator of XML Signed document
@@ -188,11 +189,10 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 					break;
 				}
 
-				XPathQueryHolder xPathQueryHolder = signature.getXPathQueryHolder();
 				List<Reference> references = signature.getReferences();
 				if (!references.isEmpty()) {
 					for (Reference reference : references) {
-						if (!xPathQueryHolder.XADES_SIGNED_PROPERTIES.equals(reference.getType())) {
+						if (isReferenceLinkedToDocument(reference, signature)) {
 							if (reference.typeIsReferenceToObject()) {
 								List<Element> signatureObjects = signature.getSignatureObjects();
 								for (Element sigObject : signatureObjects) {
@@ -212,12 +212,40 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 									LOG.warn("Unable to retrieve reference {}", reference.getId(), e);
 								}
 							}
+							
 						}
 					}
 				}
 			}
 		}
 		return result;
+	}
+	
+	/**
+	 * Checks if the given {@value reference} is an occurrence of signed object
+	 * @param reference - Reference to check
+	 * @param signature - Signature, containing the given {@value reference}
+	 * @return - TRUE if the given {@value reference} is a signed object, FALSE otherwise
+	 */
+	private boolean isReferenceLinkedToDocument(Reference reference, XAdESSignature signature) {
+		String referenceType = reference.getType();
+		// if type is not declared
+		if (Utils.isStringEmpty(referenceType)) {
+			String referenceUri = reference.getURI();
+			referenceUri = DomUtils.getId(referenceUri);
+			Element element = DomUtils.getElement(signature.getSignatureElement(), "./*" + DomUtils.getXPathByIdAttribute(referenceUri));
+			if (element == null) { // if element is out of the signature node, it is a document
+				return true;
+			} else { // otherwise not a document
+				return false;
+			}
+		// if type refers to object or manifest - it is a document
+		} else if (XAdESBuilder.HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT.equals(referenceType) || XAdESBuilder.HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST.equals(referenceType)) {
+			return true;
+		// otherwise not a document
+		} else {
+			return false;
+		}
 	}
 
 	/**
