@@ -31,7 +31,7 @@
      	<xsl:variable name="indicationText" select="dss:Indication/text()"/>
         <xsl:variable name="indicationCssClass">
         	<xsl:choose>
-				<xsl:when test="$indicationText='PASSED'">success</xsl:when>
+				<xsl:when test="$indicationText='PASSED' or dss:trustAnchors">success</xsl:when>
 				<xsl:when test="$indicationText='INDETERMINATE'">warning</xsl:when>
 				<xsl:when test="$indicationText='FAILED'">danger</xsl:when>
 				<!-- Cannot conclude (untrusted chain) -->

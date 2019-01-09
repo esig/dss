@@ -45,6 +45,7 @@
                     <CountryCode>IT</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A</ServiceDigitalIdentifier>
                             <ServiceName>TS-5.3.3 Name - A</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -54,6 +55,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                            <ServiceDigitalIdentifier>D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A</ServiceDigitalIdentifier>
                             <ServiceName>TS-5.3.3 Name - B</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -124,6 +126,7 @@
                     <CountryCode>IT</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A</ServiceDigitalIdentifier>
                             <ServiceName>TS-5.3.3 Name - A</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -134,6 +137,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A</ServiceDigitalIdentifier>
                             <ServiceName>TS-5.3.3 Name - B</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>

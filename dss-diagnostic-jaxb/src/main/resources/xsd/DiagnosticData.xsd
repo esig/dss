@@ -502,6 +502,7 @@
 	
 	<xs:complexType name="TrustedService">
 		<xs:sequence>
+			<xs:element name="ServiceDigitalIdentifier" type="xs:string" />
 			<xs:element name="ServiceName" type="xs:string" />
 			<xs:element name="ServiceType" type="xs:string" />
 			<xs:element name="Status" type="xs:string" />
