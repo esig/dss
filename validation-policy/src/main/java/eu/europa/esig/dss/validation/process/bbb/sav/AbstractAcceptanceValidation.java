@@ -35,16 +35,14 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
  */
 public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy> extends Chain<XmlSAV> {
 
-	protected final DiagnosticData diagnosticData;
 	protected final T token;
 	protected final Date currentTime;
 	protected final ValidationPolicy validationPolicy;
 
-	public AbstractAcceptanceValidation(DiagnosticData diagnosticData, T token, Date currentTime, ValidationPolicy validationPolicy) {
+	public AbstractAcceptanceValidation(T token, Date currentTime, ValidationPolicy validationPolicy) {
 		super(new XmlSAV());
 
 		this.token = token;
-		this.diagnosticData = diagnosticData;
 		this.currentTime = currentTime;
 		this.validationPolicy = validationPolicy;
 	}

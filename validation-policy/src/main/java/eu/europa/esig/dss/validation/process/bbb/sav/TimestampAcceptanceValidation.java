@@ -27,7 +27,6 @@ import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 
@@ -38,14 +37,13 @@ import eu.europa.esig.jaxb.policy.CryptographicConstraint;
  */
 public class TimestampAcceptanceValidation extends AbstractAcceptanceValidation<TimestampWrapper> {
 
-	public TimestampAcceptanceValidation(DiagnosticData diagnosticData, Date currentTime, TimestampWrapper timestamp, ValidationPolicy validationPolicy) {
-		super(diagnosticData, timestamp, currentTime, validationPolicy);
+	public TimestampAcceptanceValidation( Date currentTime, TimestampWrapper timestamp, ValidationPolicy validationPolicy) {
+		super( timestamp, currentTime, validationPolicy);
 	}
 
 	@Override
 	protected void initChain() {
 		firstItem = timestampCryptographic();
-
 	}
 
 	private ChainItem<XmlSAV> timestampCryptographic() {

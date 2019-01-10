@@ -234,9 +234,9 @@ public class BasicBuildingBlocks {
 		if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
 			aav = new SignatureAcceptanceValidation(diagnosticData, currentTime, (SignatureWrapper) token, context, policy);
 		} else if (Context.TIMESTAMP.equals(context)) {
-			aav = new TimestampAcceptanceValidation(diagnosticData, currentTime, (TimestampWrapper) token, policy);
+			aav = new TimestampAcceptanceValidation(currentTime, (TimestampWrapper) token, policy);
 		} else if (Context.REVOCATION.equals(context)) {
-			aav = new RevocationAcceptanceValidation(diagnosticData, currentTime, (RevocationWrapper) token, policy);
+			aav = new RevocationAcceptanceValidation(currentTime, (RevocationWrapper) token, policy);
 		}
 		return aav != null ? aav.execute() : null;
 	}

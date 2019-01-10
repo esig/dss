@@ -240,6 +240,8 @@ public enum MessageTag implements IMessageTag {
 	PSV_ITPOSVAOBCT("Is there a POE of the signature value at (or before) control-time?"),
 	PSV_ITPORDAOBCT("Is there a POE of the revocation data at (or before) control-time?"),
 	PSV_ITPOOBCT_ANS("No Proof Of Existence found at (or before) control-time!"),
+	
+	PSV_TSVPTE("Is there a POE of the timestamp at (or before) control-time?"),
 
 	TSV_ASTPTCT("Are timestamps in the right order?"),
 	TSV_ASTPTCT_ANS("The timestamps were not generated in the right order!"),

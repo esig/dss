@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -50,15 +51,19 @@ import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureQualification;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
+import eu.europa.esig.jaxb.policy.Algo;
+import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
+import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 
-public class CustomProcessExecutorTest {
+public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CustomProcessExecutorTest.class);
 
@@ -89,7 +94,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -107,7 +112,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -130,7 +135,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -147,7 +152,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -163,7 +168,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -181,7 +186,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -214,7 +219,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -231,7 +236,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -253,7 +258,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -286,7 +291,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -319,7 +324,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -354,7 +359,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -391,7 +396,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -428,7 +433,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -461,7 +466,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -494,7 +499,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		Date currentTime = sdf.parse("04/05/2016 15:55:00");
 		executor.setCurrentTime(currentTime);
@@ -547,7 +552,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		executor.setValidationLevel(ValidationLevel.BASIC_SIGNATURES);
@@ -571,7 +576,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -590,7 +595,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -609,7 +614,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -628,7 +633,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -656,7 +661,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -675,7 +680,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -695,7 +700,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -719,7 +724,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -740,7 +745,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -766,7 +771,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -793,7 +798,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -813,7 +818,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -833,7 +838,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -852,7 +857,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -872,7 +877,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -891,7 +896,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -911,7 +916,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -931,7 +936,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -948,7 +953,7 @@ public class CustomProcessExecutorTest {
 
 		CustomProcessExecutor executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy());
+		executor.setValidationPolicy(defaultLoadPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -1064,39 +1069,16 @@ public class CustomProcessExecutorTest {
 		}
 	}
 
-	private EtsiValidationPolicy loadPolicy() throws Exception {
-		FileInputStream policyFis = new FileInputStream("src/main/resources/policy/constraint.xml");
-		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class, "/xsd/policy.xsd");
-		assertNotNull(policyJaxB);
-		return new EtsiValidationPolicy(policyJaxB);
+	private EtsiValidationPolicy defaultLoadPolicy() throws Exception {
+		return loadPolicy("src/main/resources/policy/constraint.xml");
 	}
 
 	private EtsiValidationPolicy loadTLPolicy() throws Exception {
-		FileInputStream policyFis = new FileInputStream("src/test/resources/tsl-constraint.xml");
-		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class, "/xsd/policy.xsd");
-		assertNotNull(policyJaxB);
-		return new EtsiValidationPolicy(policyJaxB);
+		return loadPolicy("src/test/resources/tsl-constraint.xml");
 	}
 
 	private EtsiValidationPolicy loadPolicyNoRevoc() throws Exception {
-		FileInputStream policyFis = new FileInputStream("src/test/resources/constraint-no-revoc.xml");
-		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class, "/xsd/policy.xsd");
-		assertNotNull(policyJaxB);
-		return new EtsiValidationPolicy(policyJaxB);
-	}
-
-	@SuppressWarnings("unchecked")
-	private <T extends Object> T getJAXBObjectFromString(InputStream is, Class<T> clazz, String xsd) throws Exception {
-		JAXBContext context = JAXBContext.newInstance(clazz.getPackage().getName());
-		Unmarshaller unmarshaller = context.createUnmarshaller();
-		if (Utils.isStringNotEmpty(xsd)) {
-			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			InputStream inputStream = this.getClass().getResourceAsStream(xsd);
-			Source source = new StreamSource(inputStream);
-			Schema schema = sf.newSchema(source);
-			unmarshaller.setSchema(schema);
-		}
-		return (T) unmarshaller.unmarshal(is);
+		return loadPolicy("src/test/resources/constraint-no-revoc.xml");
 	}
 
 }

@@ -1038,8 +1038,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				}
 				references.addAll(getTimestampedReferences());
 				final List<CertificateToken> encapsulatedCertificates = getCertificateSource().getEncapsulatedCertificates();
+				//				final List<CertificateToken> encapsulatedCertificates = getCertificateSource().getCertificates();
 				for (final CertificateToken certificateToken : encapsulatedCertificates) {
-
 					final TimestampReference certificateTimestampReference = createCertificateTimestampReference(certificateToken);
 					if (!references.contains(certificateTimestampReference)) {
 						references.add(certificateTimestampReference);
