@@ -11,12 +11,12 @@
  * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 package eu.europa.esig.dss.client.crl;
 
@@ -57,7 +57,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 	private static final String SQL_INIT_CHECK_EXISTENCE = "SELECT COUNT(*) FROM CACHED_CRL";
 
 	/**
-	 * used in the init method to create the table, if not existing: ID (char40 = SHA1 length) and DATA (blob)
+	 * used in the init method to create the table, if not existing: ID (char40
+	 * = SHA1 length) and DATA (blob)
 	 */
 	private static final String SQL_INIT_CREATE_TABLE = "CREATE TABLE CACHED_CRL (ID CHAR(40), DATA BLOB, SIGNATURE_ALGORITHM VARCHAR(20), THIS_UPDATE TIMESTAMP, NEXT_UPDATE TIMESTAMP, EXPIRED_CERTS_ON_CRL TIMESTAMP, ISSUER LONGVARBINARY, ISSUER_PRINCIPAL_MATCH BOOLEAN, SIGNATURE_INTACT BOOLEAN, CRL_SIGN_KEY_USAGE BOOLEAN, UNKNOWN_CRITICAL_EXTENSION BOOLEAN, SIGNATURE_INVALID_REASON VARCHAR(256))";
 
@@ -67,18 +68,20 @@ public class JdbcCacheCRLSource implements CRLSource {
 	private static final String SQL_FIND_QUERY = "SELECT * FROM CACHED_CRL WHERE ID = ?";
 
 	/**
-	 * used in the find method when selecting the crl via the id to get the ID (char20) from the resultset
+	 * used in the find method when selecting the crl via the id to get the ID
+	 * (char20) from the resultset
 	 */
 	private static final String SQL_FIND_QUERY_ID = "ID";
 
 	/**
-	 * used in the find method when selecting the crl via the id to get the DATA (blob) from the resultset
+	 * used in the find method when selecting the crl via the id to get the DATA
+	 * (blob) from the resultset
 	 */
 	private static final String SQL_FIND_QUERY_DATA = "DATA";
 
 	/**
-	 * used in the find method when selecting the issuer certificate via the id to get the ISSUER (blob) from the
-	 * resultset
+	 * used in the find method when selecting the issuer certificate via the id
+	 * to get the ISSUER (blob) from the resultset
 	 */
 	private static final String SQL_FIND_QUERY_ISSUER = "ISSUER";
 
@@ -114,10 +117,25 @@ public class JdbcCacheCRLSource implements CRLSource {
 
 	private DataSource dataSource;
 
+	private Long cacheExpirationTime;
+
 	/**
 	 * The default constructor for JdbcCRLSource.
 	 */
 	public JdbcCacheCRLSource() {
+	}
+
+	/**
+	 * Sets the expiration time for the cached files in milliseconds. If more
+	 * time has passed from the cache file's last modified time, then a fresh
+	 * copy is downloaded and cached, otherwise a cached copy is used.
+	 *
+	 * If the expiration time is not set, then the cache does not expire.
+	 *
+	 * @param cacheExpirationTimeInMilliseconds
+	 */
+	public void setCacheExpirationTime(final long cacheExpirationTimeInMilliseconds) {
+		this.cacheExpirationTime = cacheExpirationTimeInMilliseconds;
 	}
 
 	@Override
@@ -138,7 +156,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 		final String key = DSSUtils.getSHA1Digest(crlUrl);
 		final CRLValidity storedValidity = findCrlInDB(key);
 		if (storedValidity != null) {
-			if (storedValidity.getNextUpdate().after(new Date())) {
+			final Date nextUpdate = storedValidity.getNextUpdate();
+			if ((nextUpdate != null) && nextUpdate.after(new Date())) {
 				LOG.debug("CRL in cache");
 				final CRLToken crlToken = new CRLToken(certificateToken, storedValidity);
 				crlToken.setSourceURL(crlUrl);
@@ -164,7 +183,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 * @param cachedSource
 	 *            the cachedSource to set
 	 */
-	public void setCachedSource(OnlineCRLSource cachedSource) {
+	public void setCachedSource(final OnlineCRLSource cachedSource) {
 		this.cachedSource = cachedSource;
 	}
 
@@ -193,7 +212,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 			s = c.createStatement();
 			s.executeQuery(SQL_INIT_CREATE_TABLE);
 			c.commit();
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			rollback(c);
 			throw e;
 		} finally {
@@ -215,7 +234,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 			s = c.createStatement();
 			s.executeQuery(SQL_INIT_CHECK_EXISTENCE);
 			tableExists = true;
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			tableExists = false;
 		} finally {
 			closeQuietly(c, s, null);
@@ -230,7 +249,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 *            the key of the CRL
 	 * @return the cached crl
 	 */
-	private CRLValidity findCrlInDB(String key) {
+	private CRLValidity findCrlInDB(final String key) {
 		Connection c = null;
 		PreparedStatement s = null;
 		ResultSet rs = null;
@@ -240,7 +259,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 			s.setString(1, key);
 			rs = s.executeQuery();
 			if (rs.next()) {
-				CRLValidity cached = new CRLValidity();
+				final CRLValidity cached = new CRLValidity();
 				cached.setKey(rs.getString(SQL_FIND_QUERY_ID));
 				cached.setCrlEncoded(rs.getBytes(SQL_FIND_QUERY_DATA));
 				cached.setSignatureAlgorithm(SignatureAlgorithm.valueOf(rs.getString(SQL_FIND_QUERY_SIGNATURE_ALGO)));
@@ -256,7 +275,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 				return cached;
 			}
 			c.commit();
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			LOG.error("Unable to select CRL from the DB", e);
 			rollback(c);
 		} finally {
@@ -274,10 +293,10 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 * @param encoded
 	 *            the encoded CRL
 	 */
-	private void insertCrlInDb(String key, CRLValidity token) {
+	private void insertCrlInDb(final String key, final CRLValidity token) {
 		Connection c = null;
 		PreparedStatement s = null;
-		ResultSet rs = null;
+		final ResultSet rs = null;
 		try {
 			c = getDataSource().getConnection();
 			s = c.prepareStatement(SQL_FIND_INSERT);
@@ -296,6 +315,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 
 			if (token.getNextUpdate() != null) {
 				s.setTimestamp(5, new Timestamp(token.getNextUpdate().getTime()));
+			} else if (cacheExpirationTime != null) {
+				s.setTimestamp(5, new Timestamp(System.currentTimeMillis() + cacheExpirationTime));
 			} else {
 				s.setNull(5, Types.TIMESTAMP);
 			}
@@ -314,7 +335,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 			s.setString(12, token.getSignatureInvalidityReason());
 			s.executeUpdate();
 			c.commit();
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			LOG.error("Unable to insert CRL in the DB", e);
 			rollback(c);
 		} finally {
@@ -330,10 +351,10 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 * @param encoded
 	 *            the encoded CRL
 	 */
-	private void updateCrlInDb(String key, CRLValidity token) {
+	private void updateCrlInDb(final String key, final CRLValidity token) {
 		Connection c = null;
 		PreparedStatement s = null;
-		ResultSet rs = null;
+		final ResultSet rs = null;
 		try {
 			c = getDataSource().getConnection();
 			s = c.prepareStatement(SQL_FIND_UPDATE);
@@ -349,6 +370,8 @@ public class JdbcCacheCRLSource implements CRLSource {
 
 			if (token.getNextUpdate() != null) {
 				s.setTimestamp(4, new Timestamp(token.getNextUpdate().getTime()));
+			} else if (cacheExpirationTime != null) {
+				s.setTimestamp(4, new Timestamp(System.currentTimeMillis() + cacheExpirationTime));
 			} else {
 				s.setNull(4, Types.TIMESTAMP);
 			}
@@ -369,7 +392,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 			s.setString(12, key);
 			s.executeUpdate();
 			c.commit();
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			LOG.error("Unable to update CRL in the DB", e);
 			rollback(c);
 		} finally {
@@ -389,24 +412,25 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 *            the dataSource to set
 	 * @throws Exception
 	 */
-	public void setDataSource(DataSource dataSource) throws Exception {
+	public void setDataSource(final DataSource dataSource) throws Exception {
 		this.dataSource = dataSource;
 		initDao();
 	}
 
-	private void rollback(Connection c) {
+	private void rollback(final Connection c) {
 		if (c != null) {
 			try {
 				LOG.warn("Transaction is being rolled back");
 				c.rollback();
-			} catch (SQLException e) {
+			} catch (final SQLException e) {
 				LOG.error("Unable to rollback", e);
 			}
 		}
 	}
 
 	/**
-	 * Close the statement and connection and resultset without throwing the exception
+	 * Close the statement and connection and resultset without throwing the
+	 * exception
 	 *
 	 * @param c
 	 *            the connection
@@ -415,7 +439,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 	 * @param rs
 	 *            the ResultSet
 	 */
-	private void closeQuietly(Connection c, Statement s, ResultSet rs) {
+	private void closeQuietly(final Connection c, final Statement s, final ResultSet rs) {
 		try {
 			if (rs != null) {
 				rs.close();
@@ -426,7 +450,7 @@ public class JdbcCacheCRLSource implements CRLSource {
 			if (c != null) {
 				c.close();
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			// purposely empty
 		}
 	}

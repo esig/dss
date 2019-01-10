@@ -47,6 +47,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.client.NonceSource;
 import eu.europa.esig.dss.client.http.DataLoader;
+import eu.europa.esig.dss.client.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.client.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -56,7 +57,8 @@ import eu.europa.esig.dss.x509.ocsp.OCSPSource;
 import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 
 /**
- * Online OCSP repository. This implementation will contact the OCSP Responder to retrieve the OCSP response.
+ * Online OCSP repository. This implementation will contact the OCSP Responder
+ * to retrieve the OCSP response.
  */
 @SuppressWarnings("serial")
 public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUrlsSupport<OCSPToken> {
@@ -78,8 +80,9 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	private DataLoader dataLoader;
 
 	/**
-	 * Create an OCSP source The default constructor for OnlineOCSPSource. The default {@code OCSPDataLoader} is set. It
-	 * is possible to change it with {@code
+	 * Create an OCSP source The default constructor for OnlineOCSPSource. The
+	 * default {@code OCSPDataLoader} is set. It is possible to change it with
+	 * {@code
 	 * #setDataLoader}.
 	 */
 	public OnlineOCSPSource() {
@@ -90,7 +93,8 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	 * Set the DataLoader to use for querying the OCSP server.
 	 *
 	 * @param dataLoader
-	 *            the component that allows to retrieve the OCSP response using HTTP.
+	 *            the component that allows to retrieve the OCSP response using
+	 *            HTTP.
 	 */
 	public void setDataLoader(final DataLoader dataLoader) {
 		this.dataLoader = dataLoader;
@@ -112,7 +116,8 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	}
 
 	@Override
-	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken, List<String> alternativeUrls) {
+	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken,
+			List<String> alternativeUrls) {
 		if (dataLoader == null) {
 			throw new NullPointerException("DataLoader is not provided !");
 		}
@@ -160,6 +165,14 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 							ocspToken.setUseNonce(true);
 							ocspToken.setNonceMatch(isNonceMatch(basicOCSPResp, nonce));
 						}
+
+						if (dataLoader instanceof FileCacheDataLoader) {
+							ocspToken.extractInfo();
+							final String fileName = ((FileCacheDataLoader) dataLoader)
+									.getCachFileName(ocspToken.getSourceURL(), content);
+							((FileCacheDataLoader) dataLoader).nextUpdate(fileName, ocspToken.getNextUpdate());
+						}
+
 						return ocspToken;
 					} else {
 						LOG.warn("OCSP Response status with URL '{}' : {}", ocspAccessLocation, status);
@@ -182,11 +195,13 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			final OCSPReqBuilder ocspReqBuilder = new OCSPReqBuilder();
 			ocspReqBuilder.addRequest(certId);
 			/*
-			 * The nonce extension is used to bind a request to a response to prevent replay attacks.
-			 * RFC 6960 (OCSP) section 4.1.2 such extensions SHOULD NOT be flagged as critical
+			 * The nonce extension is used to bind a request to a response to
+			 * prevent replay attacks. RFC 6960 (OCSP) section 4.1.2 such
+			 * extensions SHOULD NOT be flagged as critical
 			 */
 			if (nonce != null) {
-				DEROctetString encodedNonceValue = new DEROctetString(new DEROctetString(nonce.toByteArray()).getEncoded());
+				DEROctetString encodedNonceValue = new DEROctetString(
+						new DEROctetString(nonce.toByteArray()).getEncoded());
 				Extension extension = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, false, encodedNonceValue);
 				Extensions extensions = new Extensions(extension);
 				ocspReqBuilder.setRequestExtensions(extensions);

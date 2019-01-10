@@ -11,12 +11,12 @@
  * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 package eu.europa.esig.dss.client.http.commons;
 
@@ -36,11 +36,13 @@ import eu.europa.esig.dss.client.http.Protocol;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
- * This class provides some caching features to handle the resources. The default cache folder is set to
- * {@code java.io.tmpdir}. The urls of the resources is transformed to the
- * file name by replacing the special characters by {@code _}
+ * This class provides some caching features to handle the resources. The
+ * default cache folder is set to {@code java.io.tmpdir}. The urls of the
+ * resources is transformed to the file name by replacing the special characters
+ * by {@code _}
  */
 public class FileCacheDataLoader implements DataLoader {
+	private static final long serialVersionUID = 4772307264157955901L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(FileCacheDataLoader.class);
 
@@ -59,7 +61,7 @@ public class FileCacheDataLoader implements DataLoader {
 	public FileCacheDataLoader() {
 	}
 
-	public FileCacheDataLoader(DataLoader dataLoader) {
+	public FileCacheDataLoader(final DataLoader dataLoader) {
 		this.dataLoader = dataLoader;
 	}
 
@@ -67,12 +69,13 @@ public class FileCacheDataLoader implements DataLoader {
 		return dataLoader;
 	}
 
-	public void setDataLoader(DataLoader dataLoader) {
+	public void setDataLoader(final DataLoader dataLoader) {
 		this.dataLoader = dataLoader;
 	}
 
 	/**
-	 * This method allows to set the file cache directory. If the cache folder does not exists then it's created.
+	 * This method allows to set the file cache directory. If the cache folder
+	 * does not exists then it's created.
 	 *
 	 * @param fileCacheDirectory
 	 *            {@code File} pointing the cache folder to be used.
@@ -84,15 +87,15 @@ public class FileCacheDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Sets the expiration time for the cached files in milliseconds.
-	 * If more time has passed from the cache file's last modified time, then a fresh copy is downloaded and cached,
-	 * otherwise a cached copy is used.
+	 * Sets the expiration time for the cached files in milliseconds. If more
+	 * time has passed from the cache file's last modified time, then a fresh
+	 * copy is downloaded and cached, otherwise a cached copy is used.
 	 *
 	 * If the expiration time is not set, then the cache does not expire.
 	 *
 	 * @param cacheExpirationTimeInMilliseconds
 	 */
-	public void setCacheExpirationTime(long cacheExpirationTimeInMilliseconds) {
+	public void setCacheExpirationTime(final long cacheExpirationTimeInMilliseconds) {
 		this.cacheExpirationTime = cacheExpirationTimeInMilliseconds;
 	}
 
@@ -101,8 +104,8 @@ public class FileCacheDataLoader implements DataLoader {
 	}
 
 	/**
-	 * This methods allows to indicate if the resource must be obtained. If this method has been invoked then only the
-	 * provided URL will be processed.
+	 * This methods allows to indicate if the resource must be obtained. If this
+	 * method has been invoked then only the provided URL will be processed.
 	 *
 	 * @param url
 	 *            to be processed
@@ -120,12 +123,13 @@ public class FileCacheDataLoader implements DataLoader {
 	}
 
 	/**
-	 * This methods allows to indicate which resources must be ignored. It is useful in a test environment where some of
-	 * fake sources a not available. It prevents to wait for the
-	 * timeout.
+	 * This methods allows to indicate which resources must be ignored. It is
+	 * useful in a test environment where some of fake sources a not available.
+	 * It prevents to wait for the timeout.
 	 *
 	 * @param urlString
-	 *            to be ignored. It can be the original URL or the cache file name
+	 *            to be ignored. It can be the original URL or the cache file
+	 *            name
 	 */
 	public void addToBeIgnored(final String urlString) {
 
@@ -146,12 +150,12 @@ public class FileCacheDataLoader implements DataLoader {
 		if ((toBeLoaded != null) && !toBeLoaded.contains(url)) {
 			return null;
 		}
-		final String fileName = ResourceLoader.getNormalizedFileName(url);
+		final String fileName = getCachFileName(url, null);
 		final File file = getCacheFile(fileName);
-		final boolean fileExists = file.exists();
 		final boolean isCacheExpired = isCacheExpired(file);
-		if (fileExists && !refresh && !isCacheExpired) {
+		final boolean fileExists = file.exists();
 
+		if (fileExists && !refresh && !isCacheExpired) {
 			LOG.debug("Cached file was used");
 			final byte[] bytes = DSSUtils.toByteArray(file);
 			return bytes;
@@ -171,7 +175,7 @@ public class FileCacheDataLoader implements DataLoader {
 
 		if (Utils.isArrayNotEmpty(bytes)) {
 			final File out = getCacheFile(fileName);
-			DSSUtils.saveToFile(bytes, out);
+			saveToFile(bytes, out);
 		}
 		return bytes;
 	}
@@ -196,7 +200,8 @@ public class FileCacheDataLoader implements DataLoader {
 	protected boolean isNetworkProtocol(final String urlString) {
 
 		final String normalizedUrl = urlString.trim().toLowerCase();
-		return Protocol.isHttpUrl(normalizedUrl) || Protocol.isLdapUrl(normalizedUrl) || Protocol.isFtpUrl(normalizedUrl);
+		return Protocol.isHttpUrl(normalizedUrl) || Protocol.isLdapUrl(normalizedUrl)
+				|| Protocol.isFtpUrl(normalizedUrl);
 	}
 
 	private File getCacheFile(final String fileName) {
@@ -214,7 +219,8 @@ public class FileCacheDataLoader implements DataLoader {
 	/**
 	 * Allows to load the file for a given file name from the cache folder.
 	 *
-	 * @return the content of the file or {@code null} if the file does not exist
+	 * @return the content of the file or {@code null} if the file does not
+	 *         exist
 	 */
 	public byte[] loadFileFromCache(final String urlString) {
 
@@ -229,7 +235,8 @@ public class FileCacheDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Allows to add a given array of {@code byte} as a cache file representing by the {@code urlString}.
+	 * Allows to add a given array of {@code byte} as a cache file representing
+	 * by the {@code urlString}.
 	 *
 	 * @param urlString
 	 *            the URL to add to the cache
@@ -237,29 +244,25 @@ public class FileCacheDataLoader implements DataLoader {
 	 *            the content of the cache file
 	 */
 	public void saveBytesInCache(final String urlString, final byte[] bytes) {
-
 		final String fileName = ResourceLoader.getNormalizedFileName(urlString);
 		final File out = getCacheFile(fileName);
+		saveToFile(bytes, out);
+	}
+
+	private void saveToFile(final byte[] bytes, final File out) {
 		DSSUtils.saveToFile(bytes, out);
+		final long time = cacheExpirationTime != null ? System.currentTimeMillis() + cacheExpirationTime : 0;
+		if (time > 0) {
+			out.setLastModified(time);
+		}
 	}
 
 	@Override
 	public byte[] post(final String urlString, final byte[] content) throws DSSException {
-
-		final String fileName = ResourceLoader.getNormalizedFileName(urlString);
-
-		// The length for the InputStreamEntity is needed, because some receivers (on the other side) need this
-		// information.
-		// To determine the length, we cannot read the content-stream up to the end and re-use it afterwards.
-		// This is because, it may not be possible to reset the stream (= go to position 0).
-		// So, the solution is to cache temporarily the complete content data (as we do not expect much here) in a
-		// byte-array.
-		final byte[] digest = DSSUtils.digest(DigestAlgorithm.MD5, content);
-		final String digestHexEncoded = DSSUtils.toHex(digest);
-		final String cacheFileName = fileName + "." + digestHexEncoded;
+		final String cacheFileName = getCachFileName(urlString, content);
 		final File file = getCacheFile(cacheFileName);
-		final boolean fileExists = file.exists();
 		final boolean isCacheExpired = isCacheExpired(file);
+		final boolean fileExists = file.exists();
 
 		if (fileExists && !isCacheExpired) {
 			LOG.debug("Cached file was used");
@@ -276,22 +279,47 @@ public class FileCacheDataLoader implements DataLoader {
 
 		if (Utils.isArrayNotEmpty(returnedBytes)) {
 			final File cacheFile = getCacheFile(cacheFileName);
-			DSSUtils.saveToFile(returnedBytes, cacheFile);
+			saveToFile(returnedBytes, cacheFile);
 		}
 
 		return returnedBytes;
 	}
 
-	private boolean isCacheExpired(File file) {
+	public final String getCachFileName(final String urlString, final byte[] content) {
+		final String fileName = ResourceLoader.getNormalizedFileName(urlString);
+		if (content == null) {
+			return fileName;
+		}
+		// The length for the InputStreamEntity is needed, because some
+		// receivers (on the other side) need this
+		// information.
+		// To determine the length, we cannot read the content-stream up to the
+		// end and re-use it afterwards.
+		// This is because, it may not be possible to reset the stream (= go to
+		// position 0).
+		// So, the solution is to cache temporarily the complete content data
+		// (as we do not expect much here) in a
+		// byte-array.
+		final byte[] digest = DSSUtils.digest(DigestAlgorithm.MD5, content);
+		final String digestHexEncoded = DSSUtils.toHex(digest);
+		return fileName + "." + digestHexEncoded;
+	}
+
+	private boolean isCacheExpired(final File file) {
 		if (cacheExpirationTime == null) {
 			return false;
 		}
 		if (!file.exists()) {
 			return true;
 		}
-		long currentTime = new Date().getTime();
-		if (file.lastModified() + cacheExpirationTime < currentTime) {
+		final long currentTime = new Date().getTime();
+		if (file.exists() && (file.lastModified() < currentTime)) {
 			LOG.debug("Cache is expired");
+			try {
+				file.delete();
+			} catch (final Exception e1) {
+				// do nothing ...
+			}
 			return true;
 		}
 		return false;
@@ -299,7 +327,6 @@ public class FileCacheDataLoader implements DataLoader {
 
 	@Override
 	public DataAndUrl get(final List<String> urlStrings) {
-
 		final int numberOfUrls = urlStrings.size();
 		int ii = 0;
 		for (final String urlString : urlStrings) {
@@ -311,7 +338,7 @@ public class FileCacheDataLoader implements DataLoader {
 					continue;
 				}
 				return new DataAndUrl(bytes, urlString);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				if (ii == numberOfUrls) {
 					if (e instanceof DSSException) {
 						throw (DSSException) e;
@@ -325,7 +352,19 @@ public class FileCacheDataLoader implements DataLoader {
 	}
 
 	@Override
-	public void setContentType(String contentType) {
+	public void setContentType(final String contentType) {
 		dataLoader.setContentType(contentType);
+	}
+
+	public void nextUpdate(final String fileName, final Date nextUpdate) {
+		if ((fileName == null) || fileName.isEmpty()) {
+			return;
+		}
+
+		final File file = new File(fileCacheDirectory, fileName);
+		if (file.exists() && (nextUpdate != null)) {
+			final boolean changed = file.setLastModified(nextUpdate.getTime());
+			LOG.debug("-- nextUpdate {} ({}): {} ", new Date(file.lastModified()), changed, file.getAbsolutePath());
+		}
 	}
 }
