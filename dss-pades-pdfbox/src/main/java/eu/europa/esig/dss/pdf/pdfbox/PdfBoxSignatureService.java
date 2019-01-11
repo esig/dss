@@ -91,6 +91,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	private static final COSName COS_NAME_LOCK = COSName.getPDFName("Lock");
 	private static final COSName COS_NAME_ACTION = COSName.getPDFName("Action");
 	private static final COSName COS_NAME_ALL = COSName.getPDFName("All");
+	private static final int PERMISSION_NO_CHANGES = 1;
 
 	/**
 	 * Constructor for the PdfBoxSignatureService
@@ -400,7 +401,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		COSDictionary lockObj = fieldInfo == null? null: fieldInfo.getCOSDictionary(COS_NAME_LOCK);
 		if (lockObj != null && 
 			COS_NAME_ALL.equals(lockObj.getCOSName(COS_NAME_ACTION)) && 
-			lockObj.getInt(COSName.P) == 1) {
+			lockObj.getInt(COSName.P) == PERMISSION_NO_CHANGES) {
 			return true;
 		}
 		return false;

@@ -91,6 +91,7 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ITextPDFSignatureService.class);
 	private static final PdfName PDF_NAME_ALL = new PdfName("All");
+	private static final int PERMISSION_NO_CHANGES = 1;
 
 	/**
 	 * Constructor for the ITextPDFSignatureService
@@ -332,7 +333,7 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		if (lockObj != null) {
 			PdfNumber p = lockObj.getAsNumber(PdfName.P);
 			if (PDF_NAME_ALL.equals(lockObj.getAsName(PdfName.ACTION)) && 
-			p != null && p.intValue() == 1) {
+			p != null && p.intValue() == PERMISSION_NO_CHANGES) {
 				return true;
 			}
 		}
