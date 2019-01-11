@@ -57,8 +57,8 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 
 	public SignatureAcceptanceValidation(DiagnosticData diagnosticData, Date currentTime, SignatureWrapper signature, Context context,
 			ValidationPolicy validationPolicy) {
-		super( signature, currentTime, validationPolicy);
-		this.diagnosticData=diagnosticData;
+		super(signature, currentTime, validationPolicy);
+		this.diagnosticData = diagnosticData;
 		this.context = context;
 	}
 

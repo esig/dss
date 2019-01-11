@@ -19,6 +19,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.validation.policy.XmlUtils;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
@@ -543,7 +544,7 @@ public class CustomCryptographicConstraintsTest extends AbstractValidationExecut
 	
 	private void initializeExecutor(String diagnosticDataFile) throws Exception {
 		FileInputStream fis = new FileInputStream(diagnosticDataFile);
-		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
 		assertNotNull(diagnosticData);
 
 		executor = new CustomProcessExecutor();

@@ -38,7 +38,7 @@ import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 public class TimestampAcceptanceValidation extends AbstractAcceptanceValidation<TimestampWrapper> {
 
 	public TimestampAcceptanceValidation( Date currentTime, TimestampWrapper timestamp, ValidationPolicy validationPolicy) {
-		super( timestamp, currentTime, validationPolicy);
+		super(timestamp, currentTime, validationPolicy);
 	}
 
 	@Override

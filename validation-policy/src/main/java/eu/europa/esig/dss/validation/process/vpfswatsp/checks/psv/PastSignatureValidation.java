@@ -141,8 +141,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 */
 		if (Indication.INDETERMINATE.equals(currentTimeIndication) && SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(currentTimeSubIndication)) {
 			Date bestSignatureTime = poe.getLowestPOE(token.getId(), controlTime);
-			CryptographicConstraint cryptographicConstraint = policy.getSignatureCryptographicConstraint(context);
-			item = item.setNextItem(poeUsedAlgorithmInSecureTimeExistsForEachAlgorithmConcernedByFailure(bestSignatureTime, cryptographicConstraint));
+			item = item.setNextItem(poeUsedAlgorithmInSecureTimeExistsForEachAlgorithmConcernedByFailure(bestSignatureTime));
 			return;
 		}
 
@@ -176,8 +175,8 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 				getFailLevelConstraint());
 	}
 	
-	private ChainItem<XmlPSV> poeUsedAlgorithmInSecureTimeExistsForEachAlgorithmConcernedByFailure(Date bestSignatureTime, 
-			CryptographicConstraint cryptographicConstraint) {
+	private ChainItem<XmlPSV> poeUsedAlgorithmInSecureTimeExistsForEachAlgorithmConcernedByFailure(Date bestSignatureTime) {
+		CryptographicConstraint cryptographicConstraint = policy.getSignatureCryptographicConstraint(context);
 		return new CryptographicCheck<XmlPSV>(result, token, bestSignatureTime, cryptographicConstraint);
 	}
 

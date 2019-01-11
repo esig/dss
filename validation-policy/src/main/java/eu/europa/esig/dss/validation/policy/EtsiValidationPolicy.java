@@ -262,7 +262,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		BasicSignatureConstraints basicSignature = getBasicSignatureConstraintsByContext(context);
 		if (basicSignature != null) {
 			CryptographicConstraint sigCryptographic = basicSignature.getCryptographic();
-			initializeCriptographicConstraint(sigCryptographic);
+			initializeCryptographicConstraint(sigCryptographic);
 			return sigCryptographic;
 		}
 		return null;
@@ -273,7 +273,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			CryptographicConstraint certCryptographic = certificateConstraints.getCryptographic();
-			initializeCriptographicConstraint(certCryptographic);
+			initializeCryptographicConstraint(certCryptographic);
 			return certCryptographic;
 		}
 		return null;
@@ -283,7 +283,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	 * Overrides all empty fields for the given {@value cryptographicConstraint} by the default {@link CryptographicConstraint}
 	 * @param cryptographicConstraint {@link CryptographicConstraint}
 	 */
-	private void initializeCriptographicConstraint(CryptographicConstraint cryptographicConstraint) {
+	private void initializeCryptographicConstraint(CryptographicConstraint cryptographicConstraint) {
 		CryptographicConstraint defaultConstraint = getDefaultCryptographicConstraint();
 		if (defaultConstraint != null) {
 			if (cryptographicConstraint.getAcceptableDigestAlgo() == null)
