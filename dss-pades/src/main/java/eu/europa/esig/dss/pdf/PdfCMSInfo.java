@@ -47,6 +47,7 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	private final byte[] signedBytes;
 
 	private final boolean coverAllOriginalBytes;
+	private final boolean documentLocked;
 	private boolean verified;
 	private String uniqueId;
 
@@ -65,12 +66,13 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	 * @param coverAllOriginalBytes
 	 *                              true if the signature covers all original bytes
 	 */
-	protected PdfCMSInfo(PdfSigDict signatureDictionary, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent, boolean coverAllOriginalBytes) {
+	protected PdfCMSInfo(PdfSigDict signatureDictionary, PdfDssDict dssDictionary, byte[] cms, byte[] signedContent, boolean coverAllOriginalBytes, boolean documentLocked) {
 		this.cms = cms;
 		this.signatureDictionary = signatureDictionary;
 		this.dssDictionary = dssDictionary;
 		this.signedBytes = signedContent;
 		this.coverAllOriginalBytes = coverAllOriginalBytes;
+		this.documentLocked = documentLocked;
 	}
 
 	@Override
@@ -154,6 +156,10 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	@Override
 	public boolean isCoverAllOriginalBytes() {
 		return coverAllOriginalBytes;
+	}
+
+	public boolean isDocumentLocked() {
+		return documentLocked;
 	}
 
 }

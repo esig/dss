@@ -54,8 +54,8 @@ public class PdfDocTimestampInfo extends PdfCMSInfo implements PdfSignatureOrDoc
 	 */
 	public PdfDocTimestampInfo(CertificatePool validationCertPool, PdfSigDict signatureDictionary,
 			PdfDssDict dssDictionary, byte[] cms, byte[] signedContent, boolean coverCompleteRevision,
-			boolean isArchiveTimestamp) {
-		super(signatureDictionary, dssDictionary, cms, signedContent, coverCompleteRevision);
+			boolean isArchiveTimestamp, boolean documentLocked) {
+		super(signatureDictionary, dssDictionary, cms, signedContent, coverCompleteRevision, documentLocked);
 		try {
 			TimestampType timestampType = TimestampType.SIGNATURE_TIMESTAMP;
 			if (isArchiveTimestamp) {

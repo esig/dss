@@ -44,6 +44,7 @@ import com.lowagie.text.pdf.PdfDate;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfLiteral;
 import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
@@ -89,6 +90,7 @@ import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ITextPDFSignatureService.class);
+	private static final PdfName PDF_NAME_ALL = new PdfName("All");
 
 	/**
 	 * Constructor for the ITextPDFSignatureService
@@ -277,6 +279,7 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				try {
 					LOG.info("Signature name: {}", name);
 					LOG.info("Document revision: {} of {}", af.getRevision(name), af.getTotalRevisions());
+					boolean documentLocked = isDocumentLocked(af, name);
 
 					PdfDict dictionary = new ITextPdfDict(af.getSignatureDictionary(name));
 					PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
@@ -302,10 +305,10 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 						}
 
 						result.add(new PdfDocTimestampInfo(validationCertPool, signatureDictionary, dssDictionary, cms,
-								signedContent, signatureCoversWholeDocument, isArchiveTimestamp));
+								signedContent, signatureCoversWholeDocument, isArchiveTimestamp, documentLocked));
 					} else {
 						result.add(new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms,
-								signedContent, signatureCoversWholeDocument));
+								signedContent, signatureCoversWholeDocument, documentLocked));
 					}
 
 				} catch (IOException e) {
@@ -320,6 +323,20 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			LOG.warn("Unable to analyze document", e);
 		}
 		return result;
+	}
+
+	private boolean isDocumentLocked(AcroFields af, String name) {
+		Item fieldItem = af.getFieldItem(name);
+		PdfDictionary fieldInfo = fieldItem.size() == 0? null: fieldItem.getValue(0);
+		PdfDictionary lockObj = fieldInfo == null? null: fieldInfo.getAsDict(PdfName.LOCK);
+		if (lockObj != null) {
+			PdfNumber p = lockObj.getAsNumber(PdfName.P);
+			if (PDF_NAME_ALL.equals(lockObj.getAsName(PdfName.ACTION)) && 
+			p != null && p.intValue() == 1) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private PdfDssDict getDSSDictionary(PdfReader reader) {

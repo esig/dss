@@ -47,8 +47,8 @@ public class PdfSignatureInfo extends PdfCMSInfo implements PdfSignatureOrDocTim
 	 * @throws IOException
 	 */
 	public PdfSignatureInfo(CertificatePool validationCertPool, PdfSigDict signatureDictionary, PdfDssDict dssDictionary, byte[] cms,
-			byte[] originalBytes, boolean coverCompleteRevision) throws IOException {
-		super(signatureDictionary, dssDictionary, cms, originalBytes, coverCompleteRevision);
+			byte[] originalBytes, boolean coverCompleteRevision, boolean documentLocked) throws IOException {
+		super(signatureDictionary, dssDictionary, cms, originalBytes, coverCompleteRevision, documentLocked);
 		try {
 			cades = new CAdESSignature(cms, validationCertPool);
 			content = cms;

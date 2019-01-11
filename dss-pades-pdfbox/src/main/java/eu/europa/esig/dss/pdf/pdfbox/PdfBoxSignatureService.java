@@ -88,6 +88,9 @@ import eu.europa.esig.dss.x509.ocsp.OCSPToken;
 class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxSignatureService.class);
+	private static final COSName COS_NAME_LOCK = COSName.getPDFName("Lock");
+	private static final COSName COS_NAME_ACTION = COSName.getPDFName("Action");
+	private static final COSName COS_NAME_ALL = COSName.getPDFName("All");
 
 	/**
 	 * Constructor for the PdfBoxSignatureService
@@ -317,13 +320,15 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			PdfDssDict dssDictionary = getDSSDictionary(doc);
 
-			List<PDSignature> pdSignatures = doc.getSignatureDictionaries();
+			List<PDSignatureField> pdSignatures = doc.getSignatureFields();
 
 			if (Utils.isCollectionNotEmpty(pdSignatures)) {
 				LOG.debug("{} signature(s) found", pdSignatures.size());
 
-				for (PDSignature signature : pdSignatures) {
+				for (PDSignatureField signatureField : pdSignatures) {
+					PDSignature signature = signatureField.getSignature();
 					try {
+						boolean documentLocked = isDocumentLocked(signatureField);
 						PdfDict dictionary = new PdfBoxDict(signature.getCOSObject(), doc);
 						PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
 						final int[] byteRange = signatureDictionary.getByteRange();
@@ -367,10 +372,10 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 							}
 
 							signatureInfo = new PdfDocTimestampInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
-									coverAllOriginalBytes, isArchiveTimestamp);
+									coverAllOriginalBytes, isArchiveTimestamp, documentLocked);
 						} else {
 							signatureInfo = new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent,
-									coverAllOriginalBytes);
+									coverAllOriginalBytes, documentLocked);
 						}
 
 						if (signatureInfo != null) {
@@ -388,6 +393,17 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		}
 
 		return signatures;
+	}
+
+	private boolean isDocumentLocked(PDSignatureField signatureField) {
+		COSDictionary fieldInfo = signatureField == null? null: signatureField.getCOSObject();
+		COSDictionary lockObj = fieldInfo == null? null: fieldInfo.getCOSDictionary(COS_NAME_LOCK);
+		if (lockObj != null && 
+			COS_NAME_ALL.equals(lockObj.getCOSName(COS_NAME_ACTION)) && 
+			lockObj.getInt(COSName.P) == 1) {
+			return true;
+		}
+		return false;
 	}
 
 	private boolean isDSSDictionaryPresentInPreviousRevision(byte[] originalBytes) {

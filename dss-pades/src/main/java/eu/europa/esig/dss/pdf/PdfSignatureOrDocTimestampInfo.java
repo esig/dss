@@ -66,4 +66,5 @@ public interface PdfSignatureOrDocTimestampInfo {
 
 	boolean isCoverAllOriginalBytes();
 
+	boolean isDocumentLocked();
 }
