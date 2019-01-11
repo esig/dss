@@ -226,6 +226,11 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 			return false;
 		}
 
+		@Override
+		public boolean isDocumentLocked() {
+			return false;
+		}
+
 	}
 
 }
