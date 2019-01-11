@@ -262,11 +262,8 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		BasicSignatureConstraints basicSignature = getBasicSignatureConstraintsByContext(context);
 		if (basicSignature != null) {
 			CryptographicConstraint sigCryptographic = basicSignature.getCryptographic();
-			if (sigCryptographic == null) {
-				return getDefaultCryptographicConstraint();
-			} else {
-				return sigCryptographic;
-			}
+			initializeCryptographicConstraint(sigCryptographic);
+			return sigCryptographic;
 		}
 		return null;
 	}
@@ -276,16 +273,33 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			CryptographicConstraint certCryptographic = certificateConstraints.getCryptographic();
-			if (certCryptographic == null) {
-				return getDefaultCryptographicConstraint();
-			} else {
-				return certCryptographic;
-			}
+			initializeCryptographicConstraint(certCryptographic);
+			return certCryptographic;
 		}
 		return null;
 	}
+	
+	/**
+	 * Overrides all empty fields for the given {@value cryptographicConstraint} by the default {@link CryptographicConstraint}
+	 * @param cryptographicConstraint {@link CryptographicConstraint}
+	 */
+	private void initializeCryptographicConstraint(CryptographicConstraint cryptographicConstraint) {
+		CryptographicConstraint defaultConstraint = getDefaultCryptographicConstraint();
+		if (defaultConstraint != null) {
+			if (cryptographicConstraint.getAcceptableDigestAlgo() == null)
+				cryptographicConstraint.setAcceptableDigestAlgo(defaultConstraint.getAcceptableDigestAlgo());
+			if (cryptographicConstraint.getAcceptableEncryptionAlgo() == null)
+				cryptographicConstraint.setAcceptableEncryptionAlgo(defaultConstraint.getAcceptableEncryptionAlgo());
+			if (cryptographicConstraint.getAlgoExpirationDate() == null)
+				cryptographicConstraint.setAlgoExpirationDate(defaultConstraint.getAlgoExpirationDate());
+			if (cryptographicConstraint.getLevel() == null)
+				cryptographicConstraint.setLevel(defaultConstraint.getLevel());
+			if (cryptographicConstraint.getMiniPublicKeySize() == null)
+				cryptographicConstraint.setMiniPublicKeySize(defaultConstraint.getMiniPublicKeySize());
+		}
+	}
 
-	private CryptographicConstraint getDefaultCryptographicConstraint() {
+	public CryptographicConstraint getDefaultCryptographicConstraint() {
 		return policy.getCryptographic();
 	}
 
