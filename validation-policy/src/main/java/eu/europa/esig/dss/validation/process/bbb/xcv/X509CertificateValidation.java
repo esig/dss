@@ -40,6 +40,8 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.SubX509CertificateValid
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
+import eu.europa.esig.jaxb.policy.Model;
+import eu.europa.esig.jaxb.policy.ModelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
 /**
@@ -92,17 +94,19 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 			result.getSubXCV().add(subXCV);
 
 			boolean trustAnchorReached = currentCertificate.isTrusted();
-
+			
+			ModelConstraint modelConstraint = validationPolicy.getCertificateValidationModel(context, SubContext.SIGNING_CERT);
+			Model model = (modelConstraint == null) ? Model.SHELL : modelConstraint.getModel();
+			
 			// Check CA_CERTIFICATEs
 			List<XmlChainItem> certificateChainList = currentCertificate.getCertificateChain();
 			if (Utils.isCollectionNotEmpty(certificateChainList)) {
 				for (XmlChainItem chainCertificate : certificateChainList) {
 					if (!trustAnchorReached) {
-
 						CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(chainCertificate.getId());
-
-						certificateValidation = new SubX509CertificateValidation(certificate, validationDate, context, SubContext.CA_CERTIFICATE,
-								validationPolicy);
+						certificateValidation = new SubX509CertificateValidation(certificate, 
+								Model.CHAIN.equals(model) ? currentCertificate.getNotBefore() : validationDate,
+								context, SubContext.CA_CERTIFICATE, validationPolicy);
 						subXCV = certificateValidation.execute();
 						result.getSubXCV().add(subXCV);
 
