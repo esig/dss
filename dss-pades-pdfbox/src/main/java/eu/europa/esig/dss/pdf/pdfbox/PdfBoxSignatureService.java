@@ -104,7 +104,9 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	public byte[] digest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final DigestAlgorithm digestAlgorithm) {
 
 		final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
-		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); PDDocument pdDocument = PDDocument.load(toSignDocument.openStream())) {
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+				InputStream is = toSignDocument.openStream();
+				PDDocument pdDocument = PDDocument.load(is)) {
 			final byte[] digest = signDocumentAndReturnDigest(parameters, signatureValue, outputStream, pdDocument, digestAlgorithm);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Base64 messageDigest : {}", Utils.toBase64(digest));
@@ -119,7 +121,9 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	public DSSDocument sign(final DSSDocument toSignDocument, final byte[] signatureValue, final PAdESSignatureParameters parameters,
 			final DigestAlgorithm digestAlgorithm) {
 
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); PDDocument pdDocument = PDDocument.load(toSignDocument.openStream())) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				InputStream is = toSignDocument.openStream();
+				PDDocument pdDocument = PDDocument.load(is)) {
 
 			signDocumentAndReturnDigest(parameters, signatureValue, baos, pdDocument, digestAlgorithm);
 
@@ -523,8 +527,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public List<String> getAvailableSignatureFields(DSSDocument document) {
 		List<String> result = new ArrayList<String>();
-		try (InputStream is = document.openStream()) {
-			PDDocument pdfDoc = PDDocument.load(is);
+		try (InputStream is = document.openStream(); PDDocument pdfDoc = PDDocument.load(is)) {
 			List<PDSignatureField> signatureFields = pdfDoc.getSignatureFields();
 			for (PDSignatureField pdSignatureField : signatureFields) {
 				PDSignature signature = pdSignatureField.getSignature();
