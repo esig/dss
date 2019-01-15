@@ -29,7 +29,7 @@ import eu.europa.esig.dss.asic.extension.AbstractTestASiCwithXAdESExtension;
 public class LibreOfficeExtensionWithXAdESBToTTest extends AbstractTestASiCwithXAdESExtension {
 
 	@Override
-	protected DSSDocument getSignedDocument() throws Exception {
+	protected DSSDocument getSignedDocument(DSSDocument doc) {
 		return new FileDocument("src/test/resources/validation/sig-6_2.odt");
 	}
 

@@ -20,9 +20,15 @@
  */
 package eu.europa.esig.dss.asic.extension;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.UUID;
+
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCWithCAdESSignatureParameters;
@@ -44,10 +50,18 @@ public abstract class AbstractTestASiCwithCAdESExtension extends AbstractTestExt
 	}
 
 	@Override
-	protected DSSDocument getSignedDocument() throws Exception {
+	protected DSSDocument getOriginalDocument() {
+		File originalDoc = new File("target/original-" + UUID.randomUUID().toString() + ".bin");
+		try (FileOutputStream fos = new FileOutputStream(originalDoc)) {
+			fos.write("Hello world!".getBytes());
+		} catch (IOException e) {
+			throw new DSSException("Unable to create the original document", e);
+		}
+		return new FileDocument(originalDoc);
+	}
 
-		DSSDocument document = new InMemoryDocument("Hello world!".getBytes(), "test.bin");
-
+	@Override
+	protected DSSDocument getSignedDocument(DSSDocument doc) {
 		// Sign
 		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -58,9 +72,9 @@ public abstract class AbstractTestASiCwithCAdESExtension extends AbstractTestExt
 		ASiCWithCAdESService service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtSignatureTime());
 
-		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
+		ToBeSigned dataToSign = service.getDataToSign(doc, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		return service.signDocument(document, signatureParameters, signatureValue);
+		return service.signDocument(doc, signatureParameters, signatureValue);
 	}
 
 	@Override
@@ -74,7 +88,7 @@ public abstract class AbstractTestASiCwithCAdESExtension extends AbstractTestExt
 	protected abstract ASiCContainerType getContainerType();
 
 	@Override
-	protected DocumentSignatureService<ASiCWithCAdESSignatureParameters> getSignatureServiceToExtend() throws Exception {
+	protected DocumentSignatureService<ASiCWithCAdESSignatureParameters> getSignatureServiceToExtend() {
 		ASiCWithCAdESService service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;

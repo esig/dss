@@ -21,14 +21,20 @@
 package eu.europa.esig.dss.xades.extension;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.UUID;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.extension.AbstractTestExtension;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -46,9 +52,18 @@ public abstract class AbstractTestXAdESExtension extends AbstractTestExtension<X
 	}
 
 	@Override
-	protected DSSDocument getSignedDocument() throws Exception {
-		DSSDocument document = new FileDocument(new File("src/test/resources/sample.xml"));
+	protected DSSDocument getOriginalDocument() {
+		File originalDoc = new File("target/original-" + UUID.randomUUID().toString() + ".xml");
+		try (FileOutputStream fos = new FileOutputStream(originalDoc); FileInputStream fis = new FileInputStream(new File("src/test/resources/sample.xml"))) {
+			Utils.copy(fis, fos);
+		} catch (IOException e) {
+			throw new DSSException("Unable to create the original document", e);
+		}
+		return new FileDocument(originalDoc);
+	}
 
+	@Override
+	protected DSSDocument getSignedDocument(DSSDocument doc) {
 		// Sign
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -59,13 +74,13 @@ public abstract class AbstractTestXAdESExtension extends AbstractTestExtension<X
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtSignatureTime());
 
-		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
+		ToBeSigned dataToSign = service.getDataToSign(doc, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		return service.signDocument(document, signatureParameters, signatureValue);
+		return service.signDocument(doc, signatureParameters, signatureValue);
 	}
 
 	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters> getSignatureServiceToExtend() throws Exception {
+	protected DocumentSignatureService<XAdESSignatureParameters> getSignatureServiceToExtend() {
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;
@@ -82,4 +97,5 @@ public abstract class AbstractTestXAdESExtension extends AbstractTestExtension<X
 	protected String getSigningAlias() {
 		return GOOD_USER;
 	}
+
 }
