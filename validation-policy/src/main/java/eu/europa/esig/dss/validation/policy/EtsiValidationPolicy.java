@@ -898,6 +898,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public ModelConstraint getCertificateValidationModel(Context context, SubContext subContext) {
-		return getCertificateConstraints(context, subContext).getModel();
+		CertificateConstraints cc = getCertificateConstraints(context, subContext);
+		return cc == null ? null : cc.getModel();
 	}
 }
