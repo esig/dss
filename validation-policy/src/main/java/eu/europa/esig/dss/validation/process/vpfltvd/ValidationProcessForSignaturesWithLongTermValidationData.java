@@ -39,6 +39,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessTimestamps;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.Context;
+import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -184,7 +185,16 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 */
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication())
 				&& SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bsConclusion.getSubIndication())) {
+			
+			// check validity of Cryptographic Constraints for the Signature
 			item = item.setNextItem(algorithmReliableAtBestSignatureTime(bestSignatureTime));
+
+			// check validity of Cryptographic Constraints for the Signing Certificate
+			item = item.setNextItem(algorithmReliableAtBestSignatureTimeAndSigningToken(bestSignatureTime, SubContext.SIGNING_CERT));
+
+			// check validity of Cryptographic Constraints for the CA Certificate
+			item = item.setNextItem(algorithmReliableAtBestSignatureTimeAndSigningToken(bestSignatureTime, SubContext.CA_CERTIFICATE));
+			
 		}
 
 		if (Utils.isCollectionNotEmpty(allowedTimestamps)) {
@@ -303,4 +313,12 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				policy.getSignatureCryptographicConstraint(Context.SIGNATURE));
 	}
 
+	private ChainItem<XmlValidationProcessLongTermData> algorithmReliableAtBestSignatureTimeAndSigningToken(
+			Date bestSignatureTime, SubContext subContext) {
+		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
+		return new CryptographicCheck<XmlValidationProcessLongTermData>(result, signingCertificate, bestSignatureTime,
+				policy.getCertificateCryptographicConstraint(Context.SIGNATURE, subContext));
+		
+	}
+	
 }

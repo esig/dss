@@ -67,49 +67,49 @@
 <!-- 				<IssuedToNaturalPerson Level="INFORM" /> -->
 <!-- 				<IssuedToLegalPerson Level="INFORM" /> -->
 				<UsePseudonym Level="INFORM" />
-	<Cryptographic Level="FAIL">
-		<AcceptableEncryptionAlgo>
-			<Algo>RSA</Algo>
-			<Algo>DSA</Algo>
-			<Algo>ECDSA</Algo>
-			<Algo>PLAIN-ECDSA</Algo>
-		</AcceptableEncryptionAlgo>
-		<MiniPublicKeySize>
-			<Algo Size="128">DSA</Algo>
-			<Algo Size="1024">RSA</Algo>
-			<Algo Size="192">ECDSA</Algo>
-			<Algo Size="192">PLAIN-ECDSA</Algo>
-		</MiniPublicKeySize>
-		<AcceptableDigestAlgo>
-			<Algo>SHA1</Algo>
-			<Algo>SHA224</Algo>
-			<Algo>SHA256</Algo>
-			<Algo>SHA384</Algo>
-			<Algo>SHA512</Algo>
-			<Algo>SHA3-224</Algo>
-			<Algo>SHA3-256</Algo>
-			<Algo>SHA3-384</Algo>
-			<Algo>SHA3-512</Algo>
-			<Algo>RIPEMD160</Algo>
-		</AcceptableDigestAlgo>
-		<AlgoExpirationDate Format="yyyy-MM-dd">
-			<Algo Date="2017-02-24">SHA1</Algo>
-			<Algo Date="2035-02-24">SHA224</Algo>
-			<Algo Date="2035-02-24">SHA256</Algo>
-			<Algo Date="2035-02-24">SHA384</Algo>
-			<Algo Date="2035-02-24">SHA512</Algo>
-			<Algo Date="2017-02-24">RIPEMD160</Algo>
-			<Algo Date="2017-02-24">DSA128</Algo>
-			<Algo Date="2020-02-24">RSA1024</Algo>
-			<Algo Date="2020-02-24">RSA1536</Algo>
-			<Algo Date="2035-02-24">RSA2048</Algo>
-			<Algo Date="2035-02-24">RSA3072</Algo>
-			<Algo Date="2035-02-24">RSA4096</Algo>
-			<Algo Date="2035-02-24">ECDSA192</Algo>
-			<Algo Date="2035-02-24">ECDSA256</Algo>
-			<Algo Date="2035-02-24">ECDSA384</Algo>
-		</AlgoExpirationDate>
-	</Cryptographic> 
+				<Cryptographic Level="FAIL">
+					<AcceptableEncryptionAlgo>
+						<Algo>RSA</Algo>
+						<Algo>DSA</Algo>
+						<Algo>ECDSA</Algo>
+						<Algo>PLAIN-ECDSA</Algo>
+					</AcceptableEncryptionAlgo>
+					<MiniPublicKeySize>
+						<Algo Size="128">DSA</Algo>
+						<Algo Size="1024">RSA</Algo>
+						<Algo Size="192">ECDSA</Algo>
+						<Algo Size="192">PLAIN-ECDSA</Algo>
+					</MiniPublicKeySize>
+					<AcceptableDigestAlgo>
+						<Algo>SHA1</Algo>
+						<Algo>SHA224</Algo>
+						<Algo>SHA256</Algo>
+						<Algo>SHA384</Algo>
+						<Algo>SHA512</Algo>
+						<Algo>SHA3-224</Algo>
+						<Algo>SHA3-256</Algo>
+						<Algo>SHA3-384</Algo>
+						<Algo>SHA3-512</Algo>
+						<Algo>RIPEMD160</Algo>
+					</AcceptableDigestAlgo>
+					<AlgoExpirationDate Format="yyyy-MM-dd">
+						<Algo Date="2017-02-24">SHA1</Algo>
+						<Algo Date="2035-02-24">SHA224</Algo>
+						<Algo Date="2035-02-24">SHA256</Algo>
+						<Algo Date="2035-02-24">SHA384</Algo>
+						<Algo Date="2035-02-24">SHA512</Algo>
+						<Algo Date="2017-02-24">RIPEMD160</Algo>
+						<Algo Date="2017-02-24">DSA128</Algo>
+						<Algo Date="2020-02-24">RSA1024</Algo>
+						<Algo Date="2020-02-24">RSA1536</Algo>
+						<Algo Date="2035-02-24">RSA2048</Algo>
+						<Algo Date="2035-02-24">RSA3072</Algo>
+						<Algo Date="2035-02-24">RSA4096</Algo>
+						<Algo Date="2035-02-24">ECDSA192</Algo>
+						<Algo Date="2035-02-24">ECDSA256</Algo>
+						<Algo Date="2035-02-24">ECDSA384</Algo>
+					</AlgoExpirationDate>
+				</Cryptographic> 
 			</SigningCertificate>
 			<CACertificate>
 				<Signature Level="FAIL" />
@@ -119,93 +119,93 @@
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
-	<Cryptographic Level="FAIL">
-		<AcceptableEncryptionAlgo>
-			<Algo>RSA</Algo>
-			<Algo>DSA</Algo>
-			<Algo>ECDSA</Algo>
-			<Algo>PLAIN-ECDSA</Algo>
-		</AcceptableEncryptionAlgo>
-		<MiniPublicKeySize>
-			<Algo Size="128">DSA</Algo>
-			<Algo Size="1024">RSA</Algo>
-			<Algo Size="192">ECDSA</Algo>
-			<Algo Size="192">PLAIN-ECDSA</Algo>
-		</MiniPublicKeySize>
-		<AcceptableDigestAlgo>
-			<Algo>SHA1</Algo>
-			<Algo>SHA224</Algo>
-			<Algo>SHA256</Algo>
-			<Algo>SHA384</Algo>
-			<Algo>SHA512</Algo>
-			<Algo>SHA3-224</Algo>
-			<Algo>SHA3-256</Algo>
-			<Algo>SHA3-384</Algo>
-			<Algo>SHA3-512</Algo>
-			<Algo>RIPEMD160</Algo>
-		</AcceptableDigestAlgo>
-		<AlgoExpirationDate Format="yyyy-MM-dd">
-			<Algo Date="2017-02-24">SHA1</Algo>
-			<Algo Date="2035-02-24">SHA224</Algo>
-			<Algo Date="2035-02-24">SHA256</Algo>
-			<Algo Date="2035-02-24">SHA384</Algo>
-			<Algo Date="2035-02-24">SHA512</Algo>
-			<Algo Date="2017-02-24">RIPEMD160</Algo>
-			<Algo Date="2017-02-24">DSA128</Algo>
-			<Algo Date="2020-02-24">RSA1024</Algo>
-			<Algo Date="2020-02-24">RSA1536</Algo>
-			<Algo Date="2035-02-24">RSA2048</Algo>
-			<Algo Date="2035-02-24">RSA3072</Algo>
-			<Algo Date="2035-02-24">RSA4096</Algo>
-			<Algo Date="2035-02-24">ECDSA192</Algo>
-			<Algo Date="2035-02-24">ECDSA256</Algo>
-			<Algo Date="2035-02-24">ECDSA384</Algo>
-		</AlgoExpirationDate>
-	</Cryptographic> 
+				<Cryptographic Level="FAIL">
+					<AcceptableEncryptionAlgo>
+						<Algo>RSA</Algo>
+						<Algo>DSA</Algo>
+						<Algo>ECDSA</Algo>
+						<Algo>PLAIN-ECDSA</Algo>
+					</AcceptableEncryptionAlgo>
+					<MiniPublicKeySize>
+						<Algo Size="128">DSA</Algo>
+						<Algo Size="1024">RSA</Algo>
+						<Algo Size="192">ECDSA</Algo>
+						<Algo Size="192">PLAIN-ECDSA</Algo>
+					</MiniPublicKeySize>
+					<AcceptableDigestAlgo>
+						<Algo>SHA1</Algo>
+						<Algo>SHA224</Algo>
+						<Algo>SHA256</Algo>
+						<Algo>SHA384</Algo>
+						<Algo>SHA512</Algo>
+						<Algo>SHA3-224</Algo>
+						<Algo>SHA3-256</Algo>
+						<Algo>SHA3-384</Algo>
+						<Algo>SHA3-512</Algo>
+						<Algo>RIPEMD160</Algo>
+					</AcceptableDigestAlgo>
+					<AlgoExpirationDate Format="yyyy-MM-dd">
+						<Algo Date="2017-02-24">SHA1</Algo>
+						<Algo Date="2035-02-24">SHA224</Algo>
+						<Algo Date="2035-02-24">SHA256</Algo>
+						<Algo Date="2035-02-24">SHA384</Algo>
+						<Algo Date="2035-02-24">SHA512</Algo>
+						<Algo Date="2017-02-24">RIPEMD160</Algo>
+						<Algo Date="2017-02-24">DSA128</Algo>
+						<Algo Date="2020-02-24">RSA1024</Algo>
+						<Algo Date="2020-02-24">RSA1536</Algo>
+						<Algo Date="2035-02-24">RSA2048</Algo>
+						<Algo Date="2035-02-24">RSA3072</Algo>
+						<Algo Date="2035-02-24">RSA4096</Algo>
+						<Algo Date="2035-02-24">ECDSA192</Algo>
+						<Algo Date="2035-02-24">ECDSA256</Algo>
+						<Algo Date="2035-02-24">ECDSA384</Algo>
+					</AlgoExpirationDate>
+				</Cryptographic> 
 			</CACertificate>
-	<Cryptographic Level="FAIL">
-		<AcceptableEncryptionAlgo>
-			<Algo>RSA</Algo>
-			<Algo>DSA</Algo>
-			<Algo>ECDSA</Algo>
-			<Algo>PLAIN-ECDSA</Algo>
-		</AcceptableEncryptionAlgo>
-		<MiniPublicKeySize>
-			<Algo Size="128">DSA</Algo>
-			<Algo Size="1024">RSA</Algo>
-			<Algo Size="192">ECDSA</Algo>
-			<Algo Size="192">PLAIN-ECDSA</Algo>
-		</MiniPublicKeySize>
-		<AcceptableDigestAlgo>
-			<Algo>SHA1</Algo>
-			<Algo>SHA224</Algo>
-			<Algo>SHA256</Algo>
-			<Algo>SHA384</Algo>
-			<Algo>SHA512</Algo>
-			<Algo>SHA3-224</Algo>
-			<Algo>SHA3-256</Algo>
-			<Algo>SHA3-384</Algo>
-			<Algo>SHA3-512</Algo>
-			<Algo>RIPEMD160</Algo>
-		</AcceptableDigestAlgo>
-		<AlgoExpirationDate Format="yyyy-MM-dd">
-			<Algo Date="2017-02-24">SHA1</Algo>
-			<Algo Date="2035-02-24">SHA224</Algo>
-			<Algo Date="2035-02-24">SHA256</Algo>
-			<Algo Date="2035-02-24">SHA384</Algo>
-			<Algo Date="2035-02-24">SHA512</Algo>
-			<Algo Date="2017-02-24">RIPEMD160</Algo>
-			<Algo Date="2017-02-24">DSA128</Algo>
-			<Algo Date="2020-02-24">RSA1024</Algo>
-			<Algo Date="2020-02-24">RSA1536</Algo>
-			<Algo Date="2035-02-24">RSA2048</Algo>
-			<Algo Date="2035-02-24">RSA3072</Algo>
-			<Algo Date="2035-02-24">RSA4096</Algo>
-			<Algo Date="2035-02-24">ECDSA192</Algo>
-			<Algo Date="2035-02-24">ECDSA256</Algo>
-			<Algo Date="2035-02-24">ECDSA384</Algo>
-		</AlgoExpirationDate>
-	</Cryptographic> 
+			<Cryptographic Level="FAIL">
+				<AcceptableEncryptionAlgo>
+					<Algo>RSA</Algo>
+					<Algo>DSA</Algo>
+					<Algo>ECDSA</Algo>
+					<Algo>PLAIN-ECDSA</Algo>
+				</AcceptableEncryptionAlgo>
+				<MiniPublicKeySize>
+					<Algo Size="128">DSA</Algo>
+					<Algo Size="1024">RSA</Algo>
+					<Algo Size="192">ECDSA</Algo>
+					<Algo Size="192">PLAIN-ECDSA</Algo>
+				</MiniPublicKeySize>
+				<AcceptableDigestAlgo>
+					<Algo>SHA1</Algo>
+					<Algo>SHA224</Algo>
+					<Algo>SHA256</Algo>
+					<Algo>SHA384</Algo>
+					<Algo>SHA512</Algo>
+					<Algo>SHA3-224</Algo>
+					<Algo>SHA3-256</Algo>
+					<Algo>SHA3-384</Algo>
+					<Algo>SHA3-512</Algo>
+					<Algo>RIPEMD160</Algo>
+				</AcceptableDigestAlgo>
+				<AlgoExpirationDate Format="yyyy-MM-dd">
+					<Algo Date="2017-02-24">SHA1</Algo>
+					<Algo Date="2035-02-24">SHA224</Algo>
+					<Algo Date="2035-02-24">SHA256</Algo>
+					<Algo Date="2035-02-24">SHA384</Algo>
+					<Algo Date="2035-02-24">SHA512</Algo>
+					<Algo Date="2017-02-24">RIPEMD160</Algo>
+					<Algo Date="2017-02-24">DSA128</Algo>
+					<Algo Date="2020-02-24">RSA1024</Algo>
+					<Algo Date="2020-02-24">RSA1536</Algo>
+					<Algo Date="2035-02-24">RSA2048</Algo>
+					<Algo Date="2035-02-24">RSA3072</Algo>
+					<Algo Date="2035-02-24">RSA4096</Algo>
+					<Algo Date="2035-02-24">ECDSA192</Algo>
+					<Algo Date="2035-02-24">ECDSA256</Algo>
+					<Algo Date="2035-02-24">ECDSA384</Algo>
+				</AlgoExpirationDate>
+			</Cryptographic> 
 		</BasicSignatureConstraints>
 		<SignedAttributes>
 			<SigningCertificatePresent Level="FAIL" />
@@ -265,49 +265,49 @@
 <!-- 				<IssuedToNaturalPerson Level="INFORM" /> -->
 <!-- 				<IssuedToLegalPerson Level="INFORM" /> -->
 				<UsePseudonym Level="INFORM" />
-	<Cryptographic Level="FAIL">
-		<AcceptableEncryptionAlgo>
-			<Algo>RSA</Algo>
-			<Algo>DSA</Algo>
-			<Algo>ECDSA</Algo>
-			<Algo>PLAIN-ECDSA</Algo>
-		</AcceptableEncryptionAlgo>
-		<MiniPublicKeySize>
-			<Algo Size="128">DSA</Algo>
-			<Algo Size="1024">RSA</Algo>
-			<Algo Size="192">ECDSA</Algo>
-			<Algo Size="192">PLAIN-ECDSA</Algo>
-		</MiniPublicKeySize>
-		<AcceptableDigestAlgo>
-			<Algo>SHA1</Algo>
-			<Algo>SHA224</Algo>
-			<Algo>SHA256</Algo>
-			<Algo>SHA384</Algo>
-			<Algo>SHA512</Algo>
-			<Algo>SHA3-224</Algo>
-			<Algo>SHA3-256</Algo>
-			<Algo>SHA3-384</Algo>
-			<Algo>SHA3-512</Algo>
-			<Algo>RIPEMD160</Algo>
-		</AcceptableDigestAlgo>
-		<AlgoExpirationDate Format="yyyy-MM-dd">
-			<Algo Date="2017-02-24">SHA1</Algo>
-			<Algo Date="2035-02-24">SHA224</Algo>
-			<Algo Date="2035-02-24">SHA256</Algo>
-			<Algo Date="2035-02-24">SHA384</Algo>
-			<Algo Date="2035-02-24">SHA512</Algo>
-			<Algo Date="2017-02-24">RIPEMD160</Algo>
-			<Algo Date="2017-02-24">DSA128</Algo>
-			<Algo Date="2020-02-24">RSA1024</Algo>
-			<Algo Date="2020-02-24">RSA1536</Algo>
-			<Algo Date="2035-02-24">RSA2048</Algo>
-			<Algo Date="2035-02-24">RSA3072</Algo>
-			<Algo Date="2035-02-24">RSA4096</Algo>
-			<Algo Date="2035-02-24">ECDSA192</Algo>
-			<Algo Date="2035-02-24">ECDSA256</Algo>
-			<Algo Date="2035-02-24">ECDSA384</Algo>
-		</AlgoExpirationDate>
-	</Cryptographic> 
+				<Cryptographic Level="FAIL">
+					<AcceptableEncryptionAlgo>
+						<Algo>RSA</Algo>
+						<Algo>DSA</Algo>
+						<Algo>ECDSA</Algo>
+						<Algo>PLAIN-ECDSA</Algo>
+					</AcceptableEncryptionAlgo>
+					<MiniPublicKeySize>
+						<Algo Size="128">DSA</Algo>
+						<Algo Size="1024">RSA</Algo>
+						<Algo Size="192">ECDSA</Algo>
+						<Algo Size="192">PLAIN-ECDSA</Algo>
+					</MiniPublicKeySize>
+					<AcceptableDigestAlgo>
+						<Algo>SHA1</Algo>
+						<Algo>SHA224</Algo>
+						<Algo>SHA256</Algo>
+						<Algo>SHA384</Algo>
+						<Algo>SHA512</Algo>
+						<Algo>SHA3-224</Algo>
+						<Algo>SHA3-256</Algo>
+						<Algo>SHA3-384</Algo>
+						<Algo>SHA3-512</Algo>
+						<Algo>RIPEMD160</Algo>
+					</AcceptableDigestAlgo>
+					<AlgoExpirationDate Format="yyyy-MM-dd">
+						<Algo Date="2017-02-24">SHA1</Algo>
+						<Algo Date="2035-02-24">SHA224</Algo>
+						<Algo Date="2035-02-24">SHA256</Algo>
+						<Algo Date="2035-02-24">SHA384</Algo>
+						<Algo Date="2035-02-24">SHA512</Algo>
+						<Algo Date="2017-02-24">RIPEMD160</Algo>
+						<Algo Date="2017-02-24">DSA128</Algo>
+						<Algo Date="2020-02-24">RSA1024</Algo>
+						<Algo Date="2020-02-24">RSA1536</Algo>
+						<Algo Date="2035-02-24">RSA2048</Algo>
+						<Algo Date="2035-02-24">RSA3072</Algo>
+						<Algo Date="2035-02-24">RSA4096</Algo>
+						<Algo Date="2035-02-24">ECDSA192</Algo>
+						<Algo Date="2035-02-24">ECDSA256</Algo>
+						<Algo Date="2035-02-24">ECDSA384</Algo>
+					</AlgoExpirationDate>
+				</Cryptographic> 
 			</SigningCertificate>
 			<CACertificate>
 				<Signature Level="FAIL" />
@@ -317,93 +317,93 @@
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
-	<Cryptographic Level="FAIL">
-		<AcceptableEncryptionAlgo>
-			<Algo>RSA</Algo>
-			<Algo>DSA</Algo>
-			<Algo>ECDSA</Algo>
-			<Algo>PLAIN-ECDSA</Algo>
-		</AcceptableEncryptionAlgo>
-		<MiniPublicKeySize>
-			<Algo Size="128">DSA</Algo>
-			<Algo Size="1024">RSA</Algo>
-			<Algo Size="192">ECDSA</Algo>
-			<Algo Size="192">PLAIN-ECDSA</Algo>
-		</MiniPublicKeySize>
-		<AcceptableDigestAlgo>
-			<Algo>SHA1</Algo>
-			<Algo>SHA224</Algo>
-			<Algo>SHA256</Algo>
-			<Algo>SHA384</Algo>
-			<Algo>SHA512</Algo>
-			<Algo>SHA3-224</Algo>
-			<Algo>SHA3-256</Algo>
-			<Algo>SHA3-384</Algo>
-			<Algo>SHA3-512</Algo>
-			<Algo>RIPEMD160</Algo>
-		</AcceptableDigestAlgo>
-		<AlgoExpirationDate Format="yyyy-MM-dd">
-			<Algo Date="2017-02-24">SHA1</Algo>
-			<Algo Date="2035-02-24">SHA224</Algo>
-			<Algo Date="2035-02-24">SHA256</Algo>
-			<Algo Date="2035-02-24">SHA384</Algo>
-			<Algo Date="2035-02-24">SHA512</Algo>
-			<Algo Date="2017-02-24">RIPEMD160</Algo>
-			<Algo Date="2017-02-24">DSA128</Algo>
-			<Algo Date="2020-02-24">RSA1024</Algo>
-			<Algo Date="2020-02-24">RSA1536</Algo>
-			<Algo Date="2035-02-24">RSA2048</Algo>
-			<Algo Date="2035-02-24">RSA3072</Algo>
-			<Algo Date="2035-02-24">RSA4096</Algo>
-			<Algo Date="2035-02-24">ECDSA192</Algo>
-			<Algo Date="2035-02-24">ECDSA256</Algo>
-			<Algo Date="2035-02-24">ECDSA384</Algo>
-		</AlgoExpirationDate>
-	</Cryptographic> 
+				<Cryptographic Level="FAIL">
+					<AcceptableEncryptionAlgo>
+						<Algo>RSA</Algo>
+						<Algo>DSA</Algo>
+						<Algo>ECDSA</Algo>
+						<Algo>PLAIN-ECDSA</Algo>
+					</AcceptableEncryptionAlgo>
+					<MiniPublicKeySize>
+						<Algo Size="128">DSA</Algo>
+						<Algo Size="1024">RSA</Algo>
+						<Algo Size="192">ECDSA</Algo>
+						<Algo Size="192">PLAIN-ECDSA</Algo>
+					</MiniPublicKeySize>
+					<AcceptableDigestAlgo>
+						<Algo>SHA1</Algo>
+						<Algo>SHA224</Algo>
+						<Algo>SHA256</Algo>
+						<Algo>SHA384</Algo>
+						<Algo>SHA512</Algo>
+						<Algo>SHA3-224</Algo>
+						<Algo>SHA3-256</Algo>
+						<Algo>SHA3-384</Algo>
+						<Algo>SHA3-512</Algo>
+						<Algo>RIPEMD160</Algo>
+					</AcceptableDigestAlgo>
+					<AlgoExpirationDate Format="yyyy-MM-dd">
+						<Algo Date="2017-02-24">SHA1</Algo>
+						<Algo Date="2035-02-24">SHA224</Algo>
+						<Algo Date="2035-02-24">SHA256</Algo>
+						<Algo Date="2035-02-24">SHA384</Algo>
+						<Algo Date="2035-02-24">SHA512</Algo>
+						<Algo Date="2017-02-24">RIPEMD160</Algo>
+						<Algo Date="2017-02-24">DSA128</Algo>
+						<Algo Date="2020-02-24">RSA1024</Algo>
+						<Algo Date="2020-02-24">RSA1536</Algo>
+						<Algo Date="2035-02-24">RSA2048</Algo>
+						<Algo Date="2035-02-24">RSA3072</Algo>
+						<Algo Date="2035-02-24">RSA4096</Algo>
+						<Algo Date="2035-02-24">ECDSA192</Algo>
+						<Algo Date="2035-02-24">ECDSA256</Algo>
+						<Algo Date="2035-02-24">ECDSA384</Algo>
+					</AlgoExpirationDate>
+				</Cryptographic> 
 			</CACertificate>
-	<Cryptographic Level="FAIL">
-		<AcceptableEncryptionAlgo>
-			<Algo>RSA</Algo>
-			<Algo>DSA</Algo>
-			<Algo>ECDSA</Algo>
-			<Algo>PLAIN-ECDSA</Algo>
-		</AcceptableEncryptionAlgo>
-		<MiniPublicKeySize>
-			<Algo Size="128">DSA</Algo>
-			<Algo Size="1024">RSA</Algo>
-			<Algo Size="192">ECDSA</Algo>
-			<Algo Size="192">PLAIN-ECDSA</Algo>
-		</MiniPublicKeySize>
-		<AcceptableDigestAlgo>
-			<Algo>SHA1</Algo>
-			<Algo>SHA224</Algo>
-			<Algo>SHA256</Algo>
-			<Algo>SHA384</Algo>
-			<Algo>SHA512</Algo>
-			<Algo>SHA3-224</Algo>
-			<Algo>SHA3-256</Algo>
-			<Algo>SHA3-384</Algo>
-			<Algo>SHA3-512</Algo>
-			<Algo>RIPEMD160</Algo>
-		</AcceptableDigestAlgo>
-		<AlgoExpirationDate Format="yyyy-MM-dd">
-			<Algo Date="2017-02-24">SHA1</Algo>
-			<Algo Date="2035-02-24">SHA224</Algo>
-			<Algo Date="2035-02-24">SHA256</Algo>
-			<Algo Date="2035-02-24">SHA384</Algo>
-			<Algo Date="2035-02-24">SHA512</Algo>
-			<Algo Date="2017-02-24">RIPEMD160</Algo>
-			<Algo Date="2017-02-24">DSA128</Algo>
-			<Algo Date="2020-02-24">RSA1024</Algo>
-			<Algo Date="2020-02-24">RSA1536</Algo>
-			<Algo Date="2035-02-24">RSA2048</Algo>
-			<Algo Date="2035-02-24">RSA3072</Algo>
-			<Algo Date="2035-02-24">RSA4096</Algo>
-			<Algo Date="2035-02-24">ECDSA192</Algo>
-			<Algo Date="2035-02-24">ECDSA256</Algo>
-			<Algo Date="2035-02-24">ECDSA384</Algo>
-		</AlgoExpirationDate>
-	</Cryptographic> 
+			<Cryptographic Level="FAIL">
+				<AcceptableEncryptionAlgo>
+					<Algo>RSA</Algo>
+					<Algo>DSA</Algo>
+					<Algo>ECDSA</Algo>
+					<Algo>PLAIN-ECDSA</Algo>
+				</AcceptableEncryptionAlgo>
+				<MiniPublicKeySize>
+					<Algo Size="128">DSA</Algo>
+					<Algo Size="1024">RSA</Algo>
+					<Algo Size="192">ECDSA</Algo>
+					<Algo Size="192">PLAIN-ECDSA</Algo>
+				</MiniPublicKeySize>
+				<AcceptableDigestAlgo>
+					<Algo>SHA1</Algo>
+					<Algo>SHA224</Algo>
+					<Algo>SHA256</Algo>
+					<Algo>SHA384</Algo>
+					<Algo>SHA512</Algo>
+					<Algo>SHA3-224</Algo>
+					<Algo>SHA3-256</Algo>
+					<Algo>SHA3-384</Algo>
+					<Algo>SHA3-512</Algo>
+					<Algo>RIPEMD160</Algo>
+				</AcceptableDigestAlgo>
+				<AlgoExpirationDate Format="yyyy-MM-dd">
+					<Algo Date="2017-02-24">SHA1</Algo>
+					<Algo Date="2035-02-24">SHA224</Algo>
+					<Algo Date="2035-02-24">SHA256</Algo>
+					<Algo Date="2035-02-24">SHA384</Algo>
+					<Algo Date="2035-02-24">SHA512</Algo>
+					<Algo Date="2017-02-24">RIPEMD160</Algo>
+					<Algo Date="2017-02-24">DSA128</Algo>
+					<Algo Date="2020-02-24">RSA1024</Algo>
+					<Algo Date="2020-02-24">RSA1536</Algo>
+					<Algo Date="2035-02-24">RSA2048</Algo>
+					<Algo Date="2035-02-24">RSA3072</Algo>
+					<Algo Date="2035-02-24">RSA4096</Algo>
+					<Algo Date="2035-02-24">ECDSA192</Algo>
+					<Algo Date="2035-02-24">ECDSA256</Algo>
+					<Algo Date="2035-02-24">ECDSA384</Algo>
+				</AlgoExpirationDate>
+			</Cryptographic> 
 		</BasicSignatureConstraints>
 		<SignedAttributes>
 			<SigningCertificatePresent Level="FAIL" />
@@ -443,49 +443,49 @@
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<NotSelfSigned Level="WARN" />
-	<Cryptographic Level="FAIL">
-		<AcceptableEncryptionAlgo>
-			<Algo>RSA</Algo>
-			<Algo>DSA</Algo>
-			<Algo>ECDSA</Algo>
-			<Algo>PLAIN-ECDSA</Algo>
-		</AcceptableEncryptionAlgo>
-		<MiniPublicKeySize>
-			<Algo Size="128">DSA</Algo>
-			<Algo Size="1024">RSA</Algo>
-			<Algo Size="192">ECDSA</Algo>
-			<Algo Size="192">PLAIN-ECDSA</Algo>
-		</MiniPublicKeySize>
-		<AcceptableDigestAlgo>
-			<Algo>SHA1</Algo>
-			<Algo>SHA224</Algo>
-			<Algo>SHA256</Algo>
-			<Algo>SHA384</Algo>
-			<Algo>SHA512</Algo>
-			<Algo>SHA3-224</Algo>
-			<Algo>SHA3-256</Algo>
-			<Algo>SHA3-384</Algo>
-			<Algo>SHA3-512</Algo>
-			<Algo>RIPEMD160</Algo>
-		</AcceptableDigestAlgo>
-		<AlgoExpirationDate Format="yyyy-MM-dd">
-			<Algo Date="2017-02-24">SHA1</Algo>
-			<Algo Date="2035-02-24">SHA224</Algo>
-			<Algo Date="2035-02-24">SHA256</Algo>
-			<Algo Date="2035-02-24">SHA384</Algo>
-			<Algo Date="2035-02-24">SHA512</Algo>
-			<Algo Date="2017-02-24">RIPEMD160</Algo>
-			<Algo Date="2017-02-24">DSA128</Algo>
-			<Algo Date="2020-02-24">RSA1024</Algo>
-			<Algo Date="2020-02-24">RSA1536</Algo>
-			<Algo Date="2035-02-24">RSA2048</Algo>
-			<Algo Date="2035-02-24">RSA3072</Algo>
-			<Algo Date="2035-02-24">RSA4096</Algo>
-			<Algo Date="2035-02-24">ECDSA192</Algo>
-			<Algo Date="2035-02-24">ECDSA256</Algo>
-			<Algo Date="2035-02-24">ECDSA384</Algo>
-		</AlgoExpirationDate>
-	</Cryptographic> 
+				<Cryptographic Level="FAIL">
+					<AcceptableEncryptionAlgo>
+						<Algo>RSA</Algo>
+						<Algo>DSA</Algo>
+						<Algo>ECDSA</Algo>
+						<Algo>PLAIN-ECDSA</Algo>
+					</AcceptableEncryptionAlgo>
+					<MiniPublicKeySize>
+						<Algo Size="128">DSA</Algo>
+						<Algo Size="1024">RSA</Algo>
+						<Algo Size="192">ECDSA</Algo>
+						<Algo Size="192">PLAIN-ECDSA</Algo>
+					</MiniPublicKeySize>
+					<AcceptableDigestAlgo>
+						<Algo>SHA1</Algo>
+						<Algo>SHA224</Algo>
+						<Algo>SHA256</Algo>
+						<Algo>SHA384</Algo>
+						<Algo>SHA512</Algo>
+						<Algo>SHA3-224</Algo>
+						<Algo>SHA3-256</Algo>
+						<Algo>SHA3-384</Algo>
+						<Algo>SHA3-512</Algo>
+						<Algo>RIPEMD160</Algo>
+					</AcceptableDigestAlgo>
+					<AlgoExpirationDate Format="yyyy-MM-dd">
+						<Algo Date="2017-02-24">SHA1</Algo>
+						<Algo Date="2035-02-24">SHA224</Algo>
+						<Algo Date="2035-02-24">SHA256</Algo>
+						<Algo Date="2035-02-24">SHA384</Algo>
+						<Algo Date="2035-02-24">SHA512</Algo>
+						<Algo Date="2017-02-24">RIPEMD160</Algo>
+						<Algo Date="2017-02-24">DSA128</Algo>
+						<Algo Date="2020-02-24">RSA1024</Algo>
+						<Algo Date="2020-02-24">RSA1536</Algo>
+						<Algo Date="2035-02-24">RSA2048</Algo>
+						<Algo Date="2035-02-24">RSA3072</Algo>
+						<Algo Date="2035-02-24">RSA4096</Algo>
+						<Algo Date="2035-02-24">ECDSA192</Algo>
+						<Algo Date="2035-02-24">ECDSA256</Algo>
+						<Algo Date="2035-02-24">ECDSA384</Algo>
+					</AlgoExpirationDate>
+				</Cryptographic> 
 			</SigningCertificate>
 			<CACertificate>
 				<Signature Level="FAIL" />
@@ -495,93 +495,93 @@
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
-	<Cryptographic Level="FAIL">
-		<AcceptableEncryptionAlgo>
-			<Algo>RSA</Algo>
-			<Algo>DSA</Algo>
-			<Algo>ECDSA</Algo>
-			<Algo>PLAIN-ECDSA</Algo>
-		</AcceptableEncryptionAlgo>
-		<MiniPublicKeySize>
-			<Algo Size="128">DSA</Algo>
-			<Algo Size="1024">RSA</Algo>
-			<Algo Size="192">ECDSA</Algo>
-			<Algo Size="192">PLAIN-ECDSA</Algo>
-		</MiniPublicKeySize>
-		<AcceptableDigestAlgo>
-			<Algo>SHA1</Algo>
-			<Algo>SHA224</Algo>
-			<Algo>SHA256</Algo>
-			<Algo>SHA384</Algo>
-			<Algo>SHA512</Algo>
-			<Algo>SHA3-224</Algo>
-			<Algo>SHA3-256</Algo>
-			<Algo>SHA3-384</Algo>
-			<Algo>SHA3-512</Algo>
-			<Algo>RIPEMD160</Algo>
-		</AcceptableDigestAlgo>
-		<AlgoExpirationDate Format="yyyy-MM-dd">
-			<Algo Date="2017-02-24">SHA1</Algo>
-			<Algo Date="2035-02-24">SHA224</Algo>
-			<Algo Date="2035-02-24">SHA256</Algo>
-			<Algo Date="2035-02-24">SHA384</Algo>
-			<Algo Date="2035-02-24">SHA512</Algo>
-			<Algo Date="2017-02-24">RIPEMD160</Algo>
-			<Algo Date="2017-02-24">DSA128</Algo>
-			<Algo Date="2020-02-24">RSA1024</Algo>
-			<Algo Date="2020-02-24">RSA1536</Algo>
-			<Algo Date="2035-02-24">RSA2048</Algo>
-			<Algo Date="2035-02-24">RSA3072</Algo>
-			<Algo Date="2035-02-24">RSA4096</Algo>
-			<Algo Date="2035-02-24">ECDSA192</Algo>
-			<Algo Date="2035-02-24">ECDSA256</Algo>
-			<Algo Date="2035-02-24">ECDSA384</Algo>
-		</AlgoExpirationDate>
-	</Cryptographic> 
+				<Cryptographic Level="FAIL">
+					<AcceptableEncryptionAlgo>
+						<Algo>RSA</Algo>
+						<Algo>DSA</Algo>
+						<Algo>ECDSA</Algo>
+						<Algo>PLAIN-ECDSA</Algo>
+					</AcceptableEncryptionAlgo>
+					<MiniPublicKeySize>
+						<Algo Size="128">DSA</Algo>
+						<Algo Size="1024">RSA</Algo>
+						<Algo Size="192">ECDSA</Algo>
+						<Algo Size="192">PLAIN-ECDSA</Algo>
+					</MiniPublicKeySize>
+					<AcceptableDigestAlgo>
+						<Algo>SHA1</Algo>
+						<Algo>SHA224</Algo>
+						<Algo>SHA256</Algo>
+						<Algo>SHA384</Algo>
+						<Algo>SHA512</Algo>
+						<Algo>SHA3-224</Algo>
+						<Algo>SHA3-256</Algo>
+						<Algo>SHA3-384</Algo>
+						<Algo>SHA3-512</Algo>
+						<Algo>RIPEMD160</Algo>
+					</AcceptableDigestAlgo>
+					<AlgoExpirationDate Format="yyyy-MM-dd">
+						<Algo Date="2017-02-24">SHA1</Algo>
+						<Algo Date="2035-02-24">SHA224</Algo>
+						<Algo Date="2035-02-24">SHA256</Algo>
+						<Algo Date="2035-02-24">SHA384</Algo>
+						<Algo Date="2035-02-24">SHA512</Algo>
+						<Algo Date="2017-02-24">RIPEMD160</Algo>
+						<Algo Date="2017-02-24">DSA128</Algo>
+						<Algo Date="2020-02-24">RSA1024</Algo>
+						<Algo Date="2020-02-24">RSA1536</Algo>
+						<Algo Date="2035-02-24">RSA2048</Algo>
+						<Algo Date="2035-02-24">RSA3072</Algo>
+						<Algo Date="2035-02-24">RSA4096</Algo>
+						<Algo Date="2035-02-24">ECDSA192</Algo>
+						<Algo Date="2035-02-24">ECDSA256</Algo>
+						<Algo Date="2035-02-24">ECDSA384</Algo>
+					</AlgoExpirationDate>
+				</Cryptographic> 
 			</CACertificate>
-	<Cryptographic Level="FAIL">
-		<AcceptableEncryptionAlgo>
-			<Algo>RSA</Algo>
-			<Algo>DSA</Algo>
-			<Algo>ECDSA</Algo>
-			<Algo>PLAIN-ECDSA</Algo>
-		</AcceptableEncryptionAlgo>
-		<MiniPublicKeySize>
-			<Algo Size="128">DSA</Algo>
-			<Algo Size="1024">RSA</Algo>
-			<Algo Size="192">ECDSA</Algo>
-			<Algo Size="192">PLAIN-ECDSA</Algo>
-		</MiniPublicKeySize>
-		<AcceptableDigestAlgo>
-			<Algo>SHA1</Algo>
-			<Algo>SHA224</Algo>
-			<Algo>SHA256</Algo>
-			<Algo>SHA384</Algo>
-			<Algo>SHA512</Algo>
-			<Algo>SHA3-224</Algo>
-			<Algo>SHA3-256</Algo>
-			<Algo>SHA3-384</Algo>
-			<Algo>SHA3-512</Algo>
-			<Algo>RIPEMD160</Algo>
-		</AcceptableDigestAlgo>
-		<AlgoExpirationDate Format="yyyy-MM-dd">
-			<Algo Date="2017-02-24">SHA1</Algo>
-			<Algo Date="2035-02-24">SHA224</Algo>
-			<Algo Date="2035-02-24">SHA256</Algo>
-			<Algo Date="2035-02-24">SHA384</Algo>
-			<Algo Date="2035-02-24">SHA512</Algo>
-			<Algo Date="2017-02-24">RIPEMD160</Algo>
-			<Algo Date="2017-02-24">DSA128</Algo>
-			<Algo Date="2020-02-24">RSA1024</Algo>
-			<Algo Date="2020-02-24">RSA1536</Algo>
-			<Algo Date="2035-02-24">RSA2048</Algo>
-			<Algo Date="2035-02-24">RSA3072</Algo>
-			<Algo Date="2035-02-24">RSA4096</Algo>
-			<Algo Date="2035-02-24">ECDSA192</Algo>
-			<Algo Date="2035-02-24">ECDSA256</Algo>
-			<Algo Date="2035-02-24">ECDSA384</Algo>
-		</AlgoExpirationDate>
-	</Cryptographic> 
+			<Cryptographic Level="FAIL">
+				<AcceptableEncryptionAlgo>
+					<Algo>RSA</Algo>
+					<Algo>DSA</Algo>
+					<Algo>ECDSA</Algo>
+					<Algo>PLAIN-ECDSA</Algo>
+				</AcceptableEncryptionAlgo>
+				<MiniPublicKeySize>
+					<Algo Size="128">DSA</Algo>
+					<Algo Size="1024">RSA</Algo>
+					<Algo Size="192">ECDSA</Algo>
+					<Algo Size="192">PLAIN-ECDSA</Algo>
+				</MiniPublicKeySize>
+				<AcceptableDigestAlgo>
+					<Algo>SHA1</Algo>
+					<Algo>SHA224</Algo>
+					<Algo>SHA256</Algo>
+					<Algo>SHA384</Algo>
+					<Algo>SHA512</Algo>
+					<Algo>SHA3-224</Algo>
+					<Algo>SHA3-256</Algo>
+					<Algo>SHA3-384</Algo>
+					<Algo>SHA3-512</Algo>
+					<Algo>RIPEMD160</Algo>
+				</AcceptableDigestAlgo>
+				<AlgoExpirationDate Format="yyyy-MM-dd">
+					<Algo Date="2017-02-24">SHA1</Algo>
+					<Algo Date="2035-02-24">SHA224</Algo>
+					<Algo Date="2035-02-24">SHA256</Algo>
+					<Algo Date="2035-02-24">SHA384</Algo>
+					<Algo Date="2035-02-24">SHA512</Algo>
+					<Algo Date="2017-02-24">RIPEMD160</Algo>
+					<Algo Date="2017-02-24">DSA128</Algo>
+					<Algo Date="2020-02-24">RSA1024</Algo>
+					<Algo Date="2020-02-24">RSA1536</Algo>
+					<Algo Date="2035-02-24">RSA2048</Algo>
+					<Algo Date="2035-02-24">RSA3072</Algo>
+					<Algo Date="2035-02-24">RSA4096</Algo>
+					<Algo Date="2035-02-24">ECDSA192</Algo>
+					<Algo Date="2035-02-24">ECDSA256</Algo>
+					<Algo Date="2035-02-24">ECDSA384</Algo>
+				</AlgoExpirationDate>
+			</Cryptographic> 
 		</BasicSignatureConstraints>
 	</Timestamp>
 	<Revocation>
@@ -635,93 +635,93 @@
 				<RevocationDataFreshness Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
-	<Cryptographic Level="FAIL">
-		<AcceptableEncryptionAlgo>
-			<Algo>RSA</Algo>
-			<Algo>DSA</Algo>
-			<Algo>ECDSA</Algo>
-			<Algo>PLAIN-ECDSA</Algo>
-		</AcceptableEncryptionAlgo>
-		<MiniPublicKeySize>
-			<Algo Size="128">DSA</Algo>
-			<Algo Size="1024">RSA</Algo>
-			<Algo Size="192">ECDSA</Algo>
-			<Algo Size="192">PLAIN-ECDSA</Algo>
-		</MiniPublicKeySize>
-		<AcceptableDigestAlgo>
-			<Algo>SHA1</Algo>
-			<Algo>SHA224</Algo>
-			<Algo>SHA256</Algo>
-			<Algo>SHA384</Algo>
-			<Algo>SHA512</Algo>
-			<Algo>SHA3-224</Algo>
-			<Algo>SHA3-256</Algo>
-			<Algo>SHA3-384</Algo>
-			<Algo>SHA3-512</Algo>
-			<Algo>RIPEMD160</Algo>
-		</AcceptableDigestAlgo>
-		<AlgoExpirationDate Format="yyyy-MM-dd">
-			<Algo Date="2017-02-24">SHA1</Algo>
-			<Algo Date="2035-02-24">SHA224</Algo>
-			<Algo Date="2035-02-24">SHA256</Algo>
-			<Algo Date="2035-02-24">SHA384</Algo>
-			<Algo Date="2035-02-24">SHA512</Algo>
-			<Algo Date="2017-02-24">RIPEMD160</Algo>
-			<Algo Date="2017-02-24">DSA128</Algo>
-			<Algo Date="2020-02-24">RSA1024</Algo>
-			<Algo Date="2020-02-24">RSA1536</Algo>
-			<Algo Date="2035-02-24">RSA2048</Algo>
-			<Algo Date="2035-02-24">RSA3072</Algo>
-			<Algo Date="2035-02-24">RSA4096</Algo>
-			<Algo Date="2035-02-24">ECDSA192</Algo>
-			<Algo Date="2035-02-24">ECDSA256</Algo>
-			<Algo Date="2035-02-24">ECDSA384</Algo>
-		</AlgoExpirationDate>
-	</Cryptographic> 
+				<Cryptographic Level="FAIL">
+					<AcceptableEncryptionAlgo>
+						<Algo>RSA</Algo>
+						<Algo>DSA</Algo>
+						<Algo>ECDSA</Algo>
+						<Algo>PLAIN-ECDSA</Algo>
+					</AcceptableEncryptionAlgo>
+					<MiniPublicKeySize>
+						<Algo Size="128">DSA</Algo>
+						<Algo Size="1024">RSA</Algo>
+						<Algo Size="192">ECDSA</Algo>
+						<Algo Size="192">PLAIN-ECDSA</Algo>
+					</MiniPublicKeySize>
+					<AcceptableDigestAlgo>
+						<Algo>SHA1</Algo>
+						<Algo>SHA224</Algo>
+						<Algo>SHA256</Algo>
+						<Algo>SHA384</Algo>
+						<Algo>SHA512</Algo>
+						<Algo>SHA3-224</Algo>
+						<Algo>SHA3-256</Algo>
+						<Algo>SHA3-384</Algo>
+						<Algo>SHA3-512</Algo>
+						<Algo>RIPEMD160</Algo>
+					</AcceptableDigestAlgo>
+					<AlgoExpirationDate Format="yyyy-MM-dd">
+						<Algo Date="2017-02-24">SHA1</Algo>
+						<Algo Date="2035-02-24">SHA224</Algo>
+						<Algo Date="2035-02-24">SHA256</Algo>
+						<Algo Date="2035-02-24">SHA384</Algo>
+						<Algo Date="2035-02-24">SHA512</Algo>
+						<Algo Date="2017-02-24">RIPEMD160</Algo>
+						<Algo Date="2017-02-24">DSA128</Algo>
+						<Algo Date="2020-02-24">RSA1024</Algo>
+						<Algo Date="2020-02-24">RSA1536</Algo>
+						<Algo Date="2035-02-24">RSA2048</Algo>
+						<Algo Date="2035-02-24">RSA3072</Algo>
+						<Algo Date="2035-02-24">RSA4096</Algo>
+						<Algo Date="2035-02-24">ECDSA192</Algo>
+						<Algo Date="2035-02-24">ECDSA256</Algo>
+						<Algo Date="2035-02-24">ECDSA384</Algo>
+					</AlgoExpirationDate>
+				</Cryptographic> 
 			</CACertificate>
-	<Cryptographic Level="FAIL">
-		<AcceptableEncryptionAlgo>
-			<Algo>RSA</Algo>
-			<Algo>DSA</Algo>
-			<Algo>ECDSA</Algo>
-			<Algo>PLAIN-ECDSA</Algo>
-		</AcceptableEncryptionAlgo>
-		<MiniPublicKeySize>
-			<Algo Size="128">DSA</Algo>
-			<Algo Size="1024">RSA</Algo>
-			<Algo Size="192">ECDSA</Algo>
-			<Algo Size="192">PLAIN-ECDSA</Algo>
-		</MiniPublicKeySize>
-		<AcceptableDigestAlgo>
-			<Algo>SHA1</Algo>
-			<Algo>SHA224</Algo>
-			<Algo>SHA256</Algo>
-			<Algo>SHA384</Algo>
-			<Algo>SHA512</Algo>
-			<Algo>SHA3-224</Algo>
-			<Algo>SHA3-256</Algo>
-			<Algo>SHA3-384</Algo>
-			<Algo>SHA3-512</Algo>
-			<Algo>RIPEMD160</Algo>
-		</AcceptableDigestAlgo>
-		<AlgoExpirationDate Format="yyyy-MM-dd">
-			<Algo Date="2017-02-24">SHA1</Algo>
-			<Algo Date="2035-02-24">SHA224</Algo>
-			<Algo Date="2035-02-24">SHA256</Algo>
-			<Algo Date="2035-02-24">SHA384</Algo>
-			<Algo Date="2035-02-24">SHA512</Algo>
-			<Algo Date="2017-02-24">RIPEMD160</Algo>
-			<Algo Date="2017-02-24">DSA128</Algo>
-			<Algo Date="2020-02-24">RSA1024</Algo>
-			<Algo Date="2020-02-24">RSA1536</Algo>
-			<Algo Date="2035-02-24">RSA2048</Algo>
-			<Algo Date="2035-02-24">RSA3072</Algo>
-			<Algo Date="2035-02-24">RSA4096</Algo>
-			<Algo Date="2035-02-24">ECDSA192</Algo>
-			<Algo Date="2035-02-24">ECDSA256</Algo>
-			<Algo Date="2035-02-24">ECDSA384</Algo>
-		</AlgoExpirationDate>
-	</Cryptographic> 
+			<Cryptographic Level="FAIL">
+				<AcceptableEncryptionAlgo>
+					<Algo>RSA</Algo>
+					<Algo>DSA</Algo>
+					<Algo>ECDSA</Algo>
+					<Algo>PLAIN-ECDSA</Algo>
+				</AcceptableEncryptionAlgo>
+				<MiniPublicKeySize>
+					<Algo Size="128">DSA</Algo>
+					<Algo Size="1024">RSA</Algo>
+					<Algo Size="192">ECDSA</Algo>
+					<Algo Size="192">PLAIN-ECDSA</Algo>
+				</MiniPublicKeySize>
+				<AcceptableDigestAlgo>
+					<Algo>SHA1</Algo>
+					<Algo>SHA224</Algo>
+					<Algo>SHA256</Algo>
+					<Algo>SHA384</Algo>
+					<Algo>SHA512</Algo>
+					<Algo>SHA3-224</Algo>
+					<Algo>SHA3-256</Algo>
+					<Algo>SHA3-384</Algo>
+					<Algo>SHA3-512</Algo>
+					<Algo>RIPEMD160</Algo>
+				</AcceptableDigestAlgo>
+				<AlgoExpirationDate Format="yyyy-MM-dd">
+					<Algo Date="2017-02-24">SHA1</Algo>
+					<Algo Date="2035-02-24">SHA224</Algo>
+					<Algo Date="2035-02-24">SHA256</Algo>
+					<Algo Date="2035-02-24">SHA384</Algo>
+					<Algo Date="2035-02-24">SHA512</Algo>
+					<Algo Date="2017-02-24">RIPEMD160</Algo>
+					<Algo Date="2017-02-24">DSA128</Algo>
+					<Algo Date="2020-02-24">RSA1024</Algo>
+					<Algo Date="2020-02-24">RSA1536</Algo>
+					<Algo Date="2035-02-24">RSA2048</Algo>
+					<Algo Date="2035-02-24">RSA3072</Algo>
+					<Algo Date="2035-02-24">RSA4096</Algo>
+					<Algo Date="2035-02-24">ECDSA192</Algo>
+					<Algo Date="2035-02-24">ECDSA256</Algo>
+					<Algo Date="2035-02-24">ECDSA384</Algo>
+				</AlgoExpirationDate>
+			</Cryptographic> 
 		</BasicSignatureConstraints>
 	</Revocation>
 	<Cryptographic Level="FAIL">

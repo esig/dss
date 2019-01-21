@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPSV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
@@ -41,6 +42,7 @@ import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.sav.TimestampAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.LongTermValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.PastSignatureValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.PastSignatureValidation;
@@ -142,8 +144,12 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 					 * time-stamp and the cryptographic constraints as inputs. The long term validation process shall
 					 * add the returned POEs to the set of POEs.
 					 */
-					if (isValid(timestampValidation)/* TODO && crypto */) {
-						poe.extractPOE(newestTimestamp, diagnosticData);
+					if (isValid(timestampValidation)) {
+						TimestampAcceptanceValidation tav = new TimestampAcceptanceValidation(newestTimestamp.getProductionTime(), newestTimestamp, policy);
+						XmlSAV savResult = tav.execute();
+						if (isValid(savResult)) {
+							poe.extractPOE(newestTimestamp, diagnosticData);
+						}
 					}
 					/*
 					 * c) Otherwise, the long term validation process shall perform past signature validation process
@@ -165,8 +171,12 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 						 * continue with
 						 * step 4 using the next timestamp attribute.
 						 */
-						if (isValid(psvResult)/* TODO && crypto */) {
-							poe.extractPOE(newestTimestamp, diagnosticData);
+						if (isValid(psvResult)) {
+							TimestampAcceptanceValidation tav = new TimestampAcceptanceValidation(newestTimestamp.getProductionTime(), newestTimestamp, policy);
+							XmlSAV savResult = tav.execute();
+							if (isValid(savResult)) {
+								poe.extractPOE(newestTimestamp, diagnosticData);
+							}
 						}
 					}
 

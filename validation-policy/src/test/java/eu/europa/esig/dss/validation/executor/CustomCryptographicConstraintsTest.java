@@ -7,17 +7,12 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileInputStream;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.validation.policy.XmlUtils;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -28,6 +23,7 @@ import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
 import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;
+import eu.europa.esig.jaxb.policy.CertificateConstraints;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.Level;
@@ -35,24 +31,8 @@ import eu.europa.esig.jaxb.policy.ListAlgo;
 import eu.europa.esig.jaxb.policy.RevocationConstraints;
 import eu.europa.esig.jaxb.policy.SignatureConstraints;
 import eu.europa.esig.jaxb.policy.TimestampConstraints;
-import junit.framework.Assert;
 
-public class CustomCryptographicConstraintsTest extends AbstractValidationExecutorTest {
-	
-	private ConstraintsParameters constraintsParameters = null;
-	private CustomProcessExecutor executor = null;
-	private EtsiValidationPolicy validationPolicy = null;
-
-	private static final String ALGORITHM_DSA = "DSA";
-	private static final String ALGORITHM_RSA = "RSA";
-	private static final String ALGORITHM_RSA2048 = "RSA2048";
-	private static final String ALGORITHM_RSA4096 = "RSA4096";
-	private static final String ALGORITHM_SHA1 = "SHA1";
-	private static final String ALGORITHM_SHA256 = "SHA256";
-	
-	private static final String BIT_SIZE_4096 = "4096";
-	
-	private String validationPolicyFile = null; 
+public class CustomCryptographicConstraintsTest extends AbstractCryptographicConstraintsTest {
 
 	/**
 	 * Test for signature using SHA256 as the Digest algorithm and RSA 2048 as the Encryption Algorithm
@@ -366,6 +346,15 @@ public class CustomCryptographicConstraintsTest extends AbstractValidationExecut
 		defaultCryptographicConstraint.setLevel(level);
 		constraintsParameters.setCryptographic(defaultCryptographicConstraint);
 		setSignatureCryptographicConstraint(constraintsParameters, new CryptographicConstraint());
+		
+		CryptographicConstraint signCertCryptographicConstraint = getSigningCertificateConstraints(constraintsParameters).getCryptographic();
+		signCertCryptographicConstraint.setLevel(level);
+		setSigningCertificateConstraints(constraintsParameters, signCertCryptographicConstraint);
+		
+		CryptographicConstraint caCertCryptographicConstraint = getCACertificateConstraints(constraintsParameters).getCryptographic();
+		caCertCryptographicConstraint.setLevel(level);
+		setSigningCertificateConstraints(constraintsParameters, caCertCryptographicConstraint);
+		
 		setValidationPolicy(constraintsParameters);
 		SimpleReport simpleReport = createSimpleReport();
 		return simpleReport.getIndication(simpleReport.getFirstSignatureId());
@@ -540,80 +529,6 @@ public class CustomCryptographicConstraintsTest extends AbstractValidationExecut
 			}
 		}
 		return false;
-	}
-	
-	private void initializeExecutor(String diagnosticDataFile) throws Exception {
-		FileInputStream fis = new FileInputStream(diagnosticDataFile);
-		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
-		assertNotNull(diagnosticData);
-
-		executor = new CustomProcessExecutor();
-		executor.setDiagnosticData(diagnosticData);
-		executor.setCurrentTime(diagnosticData.getValidationDate());
-	}
-
-	private ConstraintsParameters loadConstraintsParameters() throws Exception {
-		ConstraintsParameters constraintsParameters = loadConstraintsParameters(validationPolicyFile);
-		this.constraintsParameters = constraintsParameters;
-		return constraintsParameters;
-	}
-	
-	private void setValidationPolicy(ConstraintsParameters constraintsParameters) {
-		validationPolicy = new EtsiValidationPolicy(constraintsParameters);
-	}
-	
-	private Reports createReports() {
-		executor.setValidationPolicy(validationPolicy);
-		return executor.execute();
-	}
-	
-	private SimpleReport createSimpleReport() {
-		Reports reports = createReports();
-		return reports.getSimpleReport();
-	}
-	
-	private DetailedReport createDetailedReport() {
-		Reports reports = createReports();
-		return reports.getDetailedReport();
-	}
-	
-	private void setAlgoExpirationDate(CryptographicConstraint cryptographicConstraint, String algorithmName, String expirationDate) {
-		
-		AlgoExpirationDate algoExpirationDate = cryptographicConstraint.getAlgoExpirationDate();
-		List<Algo> algorithms = algoExpirationDate.getAlgo();
-		boolean listContainsAlgorithms = false;
-		for (Algo algorithm : algorithms) {
-			if (algorithm.getValue().equals(algorithmName)) {
-				algorithm.setDate(expirationDate);
-				listContainsAlgorithms = true;
-			}
-		}
-		if (!listContainsAlgorithms) {
-			Algo algo = new Algo();
-			algo.setValue(algorithmName);
-			algo.setDate(expirationDate);
-			algorithms.add(algo);
-		}
-		
-	}
-	
-	private void removeAlgorithm(List<Algo> algorithms, String algorithmName) {
-		Iterator<Algo> iterator = algorithms.iterator();
-		while(iterator.hasNext()) {
-			Algo algo = iterator.next();
-			if (algo.getValue().equals(algorithmName)) {
-				iterator.remove();
-			}
-		}
-	}
-	
-	private void setAlgorithmSize(List<Algo> algorithms, String algorithm, String size) {
-		for (Algo algo : algorithms) {
-			if (algo.getValue().equals(algorithm)) {
-				algo.setSize(BIT_SIZE_4096);
-				return;
-			}
-		}
 	}
 
 }
