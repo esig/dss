@@ -36,7 +36,6 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.Context;
-import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.bbb.cv.CryptographicVerification;
@@ -54,8 +53,6 @@ import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
-import eu.europa.esig.jaxb.policy.Model;
-import eu.europa.esig.jaxb.policy.ModelConstraint;
 
 /**
  * 5.2 Basic building blocks
@@ -208,20 +205,15 @@ public class BasicBuildingBlocks {
 	private XmlXCV executeX509CertificateValidation() {
 		if (Context.CERTIFICATE.equals(context)) {
 			CertificateWrapper certificate = (CertificateWrapper) token;
-			
-			ModelConstraint modelConstraint = policy.getCertificateValidationModel(context, SubContext.SIGNING_CERT);
-			Model model = (modelConstraint == null) ? Model.SHELL : modelConstraint.getModel();
-			
-			X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, 
-					Model.SHELL.equals(model) ? currentTime : certificate.getNotBefore(),
+			X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
 					certificate.getNotBefore(), context, policy);
 			return xcv.execute();
 		} else {
 			CertificateWrapper certificate = diagnosticData.getUsedCertificateById(token.getSigningCertificateId());
 			if (certificate != null) {
 				if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
-					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime, certificate.getNotBefore(), context,
-							policy);
+					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
+							certificate.getNotBefore(), context, policy);
 					return xcv.execute();
 				} else if (Context.TIMESTAMP.equals(context)) {
 					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
@@ -248,5 +240,4 @@ public class BasicBuildingBlocks {
 		}
 		return aav != null ? aav.execute() : null;
 	}
-
 }

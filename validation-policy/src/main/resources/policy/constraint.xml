@@ -67,6 +67,7 @@
 <!-- 				<IssuedToNaturalPerson Level="INFORM" /> -->
 <!-- 				<IssuedToLegalPerson Level="INFORM" /> -->
 				<UsePseudonym Level="INFORM" />
+<!-- 				<Model Value="SHELL" /> -->
 				<Cryptographic Level="FAIL">
 					<AcceptableEncryptionAlgo>
 						<Algo>RSA</Algo>

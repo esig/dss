@@ -96,21 +96,21 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 			boolean trustAnchorReached = currentCertificate.isTrusted();
 			
 			ModelConstraint modelConstraint = validationPolicy.getCertificateValidationModel(context, SubContext.SIGNING_CERT);
-			Model model = (modelConstraint == null) ? Model.SHELL : modelConstraint.getModel();
+			Model model = (modelConstraint == null) ? Model.SHELL : modelConstraint.getValue();
 			
 			// Check CA_CERTIFICATEs
+			Date lastDate = !Model.SHELL.equals(model) ? currentCertificate.getNotBefore() : validationDate;
 			List<XmlChainItem> certificateChainList = currentCertificate.getCertificateChain();
 			if (Utils.isCollectionNotEmpty(certificateChainList)) {
 				for (XmlChainItem chainCertificate : certificateChainList) {
 					if (!trustAnchorReached) {
 						CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(chainCertificate.getId());
-						certificateValidation = new SubX509CertificateValidation(certificate, 
-								Model.CHAIN.equals(model) ? currentCertificate.getNotBefore() : validationDate,
-								context, SubContext.CA_CERTIFICATE, validationPolicy);
+						certificateValidation = new SubX509CertificateValidation(certificate, lastDate, context, SubContext.CA_CERTIFICATE, validationPolicy);
 						subXCV = certificateValidation.execute();
 						result.getSubXCV().add(subXCV);
 
 						trustAnchorReached = certificate.isTrusted();
+						lastDate = Model.HYBRID.equals(model) ? lastDate : ( Model.SHELL.equals(model) ? validationDate : certificate.getNotBefore() );
 					}
 				}
 			}
@@ -139,5 +139,5 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 	private ChainItem<XmlXCV> checkSubXCVResult(XmlSubXCV subXCVresult) {
 		return new CheckSubXCVResult(result, subXCVresult, getFailLevelConstraint());
 	}
-
+	
 }
