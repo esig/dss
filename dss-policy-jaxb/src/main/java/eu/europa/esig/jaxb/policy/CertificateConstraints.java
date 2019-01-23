@@ -97,8 +97,8 @@ import javax.xml.bind.annotation.XmlType;
     "issuedToNaturalPerson",
     "issuedToLegalPerson",
     "usePseudonym",
-    "cryptographic",
-    "model"
+    "model",
+    "cryptographic"
 })
 public class CertificateConstraints
     implements Serializable
@@ -163,10 +163,10 @@ public class CertificateConstraints
     protected LevelConstraint issuedToLegalPerson;
     @XmlElement(name = "UsePseudonym")
     protected LevelConstraint usePseudonym;
-    @XmlElement(name = "Cryptographic")
-    protected CryptographicConstraint cryptographic;
     @XmlElement(name = "Model")
     protected ModelConstraint model;
+    @XmlElement(name = "Cryptographic")
+    protected CryptographicConstraint cryptographic;
 
     /**
      * Gets the value of the recognition property.
