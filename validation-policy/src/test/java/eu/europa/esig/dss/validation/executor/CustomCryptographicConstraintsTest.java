@@ -1,20 +1,14 @@
 package eu.europa.esig.dss.validation.executor;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileInputStream;
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Test;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
-import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.validation.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.validation.policy.XmlUtils;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
@@ -22,15 +16,10 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
-import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;
-import eu.europa.esig.jaxb.policy.CertificateConstraints;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.Level;
 import eu.europa.esig.jaxb.policy.ListAlgo;
-import eu.europa.esig.jaxb.policy.RevocationConstraints;
-import eu.europa.esig.jaxb.policy.SignatureConstraints;
-import eu.europa.esig.jaxb.policy.TimestampConstraints;
 
 public class CustomCryptographicConstraintsTest extends AbstractCryptographicConstraintsTest {
 
@@ -442,47 +431,6 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		setValidationPolicy(constraintsParameters);
 		SimpleReport simpleReport = createSimpleReport();
 		return simpleReport.getIndication(simpleReport.getFirstSignatureId());
-	}
-	
-	private CryptographicConstraint getSignatureCryptographicConstraint(ConstraintsParameters constraintsParameters) {
-		SignatureConstraints sigConstraint = constraintsParameters.getSignatureConstraints();
-		return sigConstraint.getBasicSignatureConstraints().getCryptographic();
-	}
-	
-	private void setSignatureCryptographicConstraint(ConstraintsParameters constraintsParameters, CryptographicConstraint cryptographicConstraint) {
-		SignatureConstraints sigConstraint = constraintsParameters.getSignatureConstraints();
-		BasicSignatureConstraints basicSignatureConstraints = sigConstraint.getBasicSignatureConstraints();
-		basicSignatureConstraints.setCryptographic(cryptographicConstraint);
-		sigConstraint.setBasicSignatureConstraints(basicSignatureConstraints);
-		constraintsParameters.setSignatureConstraints(sigConstraint);
-	}
-	
-	private CryptographicConstraint getRevocationCryptographicConstraint(ConstraintsParameters constraintsParameters) {
-		RevocationConstraints revocationConstraints = constraintsParameters.getRevocation();
-		return revocationConstraints.getBasicSignatureConstraints().getCryptographic();
-	}
-	
-	private RevocationConstraints setRevocationCryptographicConstraint(ConstraintsParameters constraintsParameters, CryptographicConstraint cryptographicConstraint) {
-		RevocationConstraints revocationConstraints = constraintsParameters.getRevocation();
-		BasicSignatureConstraints basicSignatureConstraints = revocationConstraints.getBasicSignatureConstraints();
-		basicSignatureConstraints.setCryptographic(cryptographicConstraint);
-		revocationConstraints.setBasicSignatureConstraints(basicSignatureConstraints);
-		constraintsParameters.setRevocation(revocationConstraints);
-		return revocationConstraints;
-	}
-	
-	private CryptographicConstraint getTimestampCryptographicConstraint(ConstraintsParameters constraintsParameters) {
-		TimestampConstraints timestampConstraints = constraintsParameters.getTimestamp();
-		return timestampConstraints.getBasicSignatureConstraints().getCryptographic();
-	}
-	
-	private TimestampConstraints setTimestampCryptographicConstraints(ConstraintsParameters constraintsParameters, CryptographicConstraint cryptographicConstraint) {
-		TimestampConstraints timestampConstraints = constraintsParameters.getTimestamp();
-		BasicSignatureConstraints basicSignatureConstraints = timestampConstraints.getBasicSignatureConstraints();
-		basicSignatureConstraints.setCryptographic(cryptographicConstraint);
-		timestampConstraints.setBasicSignatureConstraints(basicSignatureConstraints);
-		constraintsParameters.setTimestamp(timestampConstraints);
-		return timestampConstraints;
 	}
 	
 	private void checkErrorMessageAbsence(MessageTag message) {

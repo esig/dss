@@ -45,12 +45,12 @@
             <Timestamps>
                 <Timestamp Id="478805477111202956F33117583157569FBFA250686FE98FBF5D7131AACC8A57" Type="SIGNATURE_TIMESTAMP">
                     <ProductionTime>2015-08-28T12:08:40</ProductionTime>
-                   <DigestMatcher type="MESSAGE_IMPRINT">
-		              <DigestMethod>SHA256</DigestMethod>
-		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
-		              <DataFound>true</DataFound>
-		              <DataIntact>true</DataIntact>
-		          </DigestMatcher>
+					<DigestMatcher type="MESSAGE_IMPRINT">
+					    <DigestMethod>SHA256</DigestMethod>
+					    <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
+					    <DataFound>true</DataFound>
+					    <DataIntact>true</DataIntact>
+					</DigestMatcher>
                     <BasicSignature>
                         <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                         <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -956,7 +956,7 @@
             <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
                 <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>

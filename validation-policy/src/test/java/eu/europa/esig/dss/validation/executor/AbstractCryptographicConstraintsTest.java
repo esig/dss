@@ -18,7 +18,9 @@ import eu.europa.esig.jaxb.policy.BasicSignatureConstraints;
 import eu.europa.esig.jaxb.policy.CertificateConstraints;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
+import eu.europa.esig.jaxb.policy.RevocationConstraints;
 import eu.europa.esig.jaxb.policy.SignatureConstraints;
+import eu.europa.esig.jaxb.policy.TimestampConstraints;
 
 public abstract class AbstractCryptographicConstraintsTest extends AbstractValidationExecutorTest {
 
@@ -63,6 +65,19 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractValid
 		return executor.execute();
 	}
 	
+	protected CryptographicConstraint getSignatureCryptographicConstraint(ConstraintsParameters constraintsParameters) {
+		SignatureConstraints sigConstraint = constraintsParameters.getSignatureConstraints();
+		return sigConstraint.getBasicSignatureConstraints().getCryptographic();
+	}
+	
+	protected void setSignatureCryptographicConstraint(ConstraintsParameters constraintsParameters, CryptographicConstraint cryptographicConstraint) {
+		SignatureConstraints sigConstraint = constraintsParameters.getSignatureConstraints();
+		BasicSignatureConstraints basicSignatureConstraints = sigConstraint.getBasicSignatureConstraints();
+		basicSignatureConstraints.setCryptographic(cryptographicConstraint);
+		sigConstraint.setBasicSignatureConstraints(basicSignatureConstraints);
+		constraintsParameters.setSignatureConstraints(sigConstraint);
+	}
+	
 	protected CertificateConstraints getSigningCertificateConstraints(ConstraintsParameters constraintsParameters) {
 		return constraintsParameters.getSignatureConstraints().getBasicSignatureConstraints().getSigningCertificate();
 	}
@@ -87,6 +102,34 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractValid
 		certificateConstraints.setCryptographic(cryptographicConstraint);
 		basicSignatureConstraints.setCACertificate(certificateConstraints);
 		signatureConstraints.setBasicSignatureConstraints(basicSignatureConstraints);
+	}
+	
+	protected CryptographicConstraint getRevocationCryptographicConstraint(ConstraintsParameters constraintsParameters) {
+		RevocationConstraints revocationConstraints = constraintsParameters.getRevocation();
+		return revocationConstraints.getBasicSignatureConstraints().getCryptographic();
+	}
+	
+	protected RevocationConstraints setRevocationCryptographicConstraint(ConstraintsParameters constraintsParameters, CryptographicConstraint cryptographicConstraint) {
+		RevocationConstraints revocationConstraints = constraintsParameters.getRevocation();
+		BasicSignatureConstraints basicSignatureConstraints = revocationConstraints.getBasicSignatureConstraints();
+		basicSignatureConstraints.setCryptographic(cryptographicConstraint);
+		revocationConstraints.setBasicSignatureConstraints(basicSignatureConstraints);
+		constraintsParameters.setRevocation(revocationConstraints);
+		return revocationConstraints;
+	}
+	
+	protected CryptographicConstraint getTimestampCryptographicConstraint(ConstraintsParameters constraintsParameters) {
+		TimestampConstraints timestampConstraints = constraintsParameters.getTimestamp();
+		return timestampConstraints.getBasicSignatureConstraints().getCryptographic();
+	}
+	
+	protected TimestampConstraints setTimestampCryptographicConstraints(ConstraintsParameters constraintsParameters, CryptographicConstraint cryptographicConstraint) {
+		TimestampConstraints timestampConstraints = constraintsParameters.getTimestamp();
+		BasicSignatureConstraints basicSignatureConstraints = timestampConstraints.getBasicSignatureConstraints();
+		basicSignatureConstraints.setCryptographic(cryptographicConstraint);
+		timestampConstraints.setBasicSignatureConstraints(basicSignatureConstraints);
+		constraintsParameters.setTimestamp(timestampConstraints);
+		return timestampConstraints;
 	}
 	
 	protected SimpleReport createSimpleReport() {

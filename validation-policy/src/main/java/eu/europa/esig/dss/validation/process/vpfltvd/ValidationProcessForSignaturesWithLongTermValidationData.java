@@ -189,11 +189,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			// check validity of Cryptographic Constraints for the Signature
 			item = item.setNextItem(algorithmReliableAtBestSignatureTime(bestSignatureTime));
 
-			// check validity of Cryptographic Constraints for the Signing Certificate
-			item = item.setNextItem(algorithmReliableAtBestSignatureTimeAndSigningToken(bestSignatureTime, SubContext.SIGNING_CERT));
-
-			// check validity of Cryptographic Constraints for the CA Certificate
-			item = item.setNextItem(algorithmReliableAtBestSignatureTimeAndSigningToken(bestSignatureTime, SubContext.CA_CERTIFICATE));
+			// check validity of Cryptographic Constraints for the Signing Certificate and CA Certificates
+			item = certificatesChainReliableAtBestSignatureTime(item, bestSignatureTime);
 			
 		}
 
@@ -312,13 +309,28 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		return new CryptographicCheck<XmlValidationProcessLongTermData>(result, currentSignature, bestSignatureTime,
 				policy.getSignatureCryptographicConstraint(Context.SIGNATURE));
 	}
-
-	private ChainItem<XmlValidationProcessLongTermData> algorithmReliableAtBestSignatureTimeAndSigningToken(
-			Date bestSignatureTime, SubContext subContext) {
-		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
-		return new CryptographicCheck<XmlValidationProcessLongTermData>(result, signingCertificate, bestSignatureTime,
-				policy.getCertificateCryptographicConstraint(Context.SIGNATURE, subContext));
-		
+	
+	/**
+	 * Set up cryptographic check for certificates used in the certificate chain of the signature
+	 * @param item - the last {@link ChainItem}
+	 * @param bestSignatureTime - {@link Date} to check cryptographic constraints validity
+	 * @return last established {@link ChainItem}
+	 */
+	private ChainItem<XmlValidationProcessLongTermData> certificatesChainReliableAtBestSignatureTime(ChainItem<XmlValidationProcessLongTermData> item, Date bestSignatureTime) {
+		List<String> certificateChainIds = currentSignature.getCertificateChainIds();
+		for (String certificateChainId : certificateChainIds) {
+			ChainItem<XmlValidationProcessLongTermData> cryptoCheck = null;
+			CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateChainId);
+			if (certificateChainId.equals(currentSignature.getSigningCertificateId())) {
+				cryptoCheck = new CryptographicCheck<XmlValidationProcessLongTermData>(result, certificate, bestSignatureTime, 
+						policy.getCertificateCryptographicConstraint(Context.SIGNATURE, SubContext.SIGNING_CERT));
+			} else {
+				cryptoCheck = new CryptographicCheck<XmlValidationProcessLongTermData>(result, certificate, bestSignatureTime, 
+						policy.getCertificateCryptographicConstraint(Context.SIGNATURE, SubContext.CA_CERTIFICATE));
+			} 
+			item = item.setNextItem(cryptoCheck);
+		}
+		return item;
 	}
 	
 }
