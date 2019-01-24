@@ -263,8 +263,7 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	@SuppressWarnings({ "unchecked" })
-	protected List<PdfSignatureOrDocTimestampInfo> getSignatures(CertificatePool validationCertPool,
-			DSSDocument document) {
+	protected List<PdfSignatureOrDocTimestampInfo> getSignatures(CertificatePool validationCertPool, DSSDocument document) {
 		List<PdfSignatureOrDocTimestampInfo> result = new ArrayList<PdfSignatureOrDocTimestampInfo>();
 		try (InputStream is = document.openStream(); PdfReader reader = new PdfReader(is)) {
 			AcroFields af = reader.getAcroFields();
@@ -274,50 +273,45 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 			LOG.info("{} signature(s)", names.size());
 			for (String name : names) {
-				try {
-					LOG.info("Signature name: {}", name);
-					LOG.info("Document revision: {} of {}", af.getRevision(name), af.getTotalRevisions());
+				LOG.info("Signature name: {}", name);
+				LOG.info("Document revision: {} of {}", af.getRevision(name), af.getTotalRevisions());
 
-					PdfDict dictionary = new ITextPdfDict(af.getSignatureDictionary(name));
-					PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
-					final int[] byteRange = signatureDictionary.getByteRange();
+				PdfDict dictionary = new ITextPdfDict(af.getSignatureDictionary(name));
+				PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
+				final int[] byteRange = signatureDictionary.getByteRange();
 
-					validateByteRange(byteRange);
+				validateByteRange(byteRange);
 
-					final byte[] cms = signatureDictionary.getContents();
-					final byte[] signedContent = getSignedContent(document, byteRange);
-					boolean signatureCoversWholeDocument = af.signatureCoversWholeDocument(name);
+				final byte[] cms = signatureDictionary.getContents();
+				final byte[] signedContent = getSignedContent(document, byteRange);
+				boolean signatureCoversWholeDocument = af.signatureCoversWholeDocument(name);
 
-					final String subFilter = signatureDictionary.getSubFilter();
-					if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
+				final String subFilter = signatureDictionary.getSubFilter();
+				if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
 
-						boolean isArchiveTimestamp = false;
+					boolean isArchiveTimestamp = false;
 
-						// LT or LTA
-						if (dssDictionary != null) {
-							// check is DSS dictionary already exist
-							if (isDSSDictionaryPresentInPreviousRevision(getOriginalBytes(byteRange, signedContent))) {
-								isArchiveTimestamp = true;
-							}
+					// LT or LTA
+					if (dssDictionary != null) {
+						// check is DSS dictionary already exist
+						if (isDSSDictionaryPresentInPreviousRevision(getOriginalBytes(byteRange, signedContent))) {
+							isArchiveTimestamp = true;
 						}
-
-						result.add(new PdfDocTimestampInfo(validationCertPool, signatureDictionary, dssDictionary, cms,
-								signedContent, signatureCoversWholeDocument, isArchiveTimestamp));
-					} else {
-						result.add(new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms,
-								signedContent, signatureCoversWholeDocument));
 					}
 
-				} catch (IOException e) {
-					LOG.error("Unable to parse signature '" + name + "' : ", e);
+					result.add(new PdfDocTimestampInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent, signatureCoversWholeDocument,
+							isArchiveTimestamp));
+				} else {
+					result.add(new PdfSignatureInfo(validationCertPool, signatureDictionary, dssDictionary, cms, signedContent, signatureCoversWholeDocument));
 				}
+
 			}
 
 			Collections.sort(result, new PdfSignatureOrDocTimestampInfoComparator());
 			linkSignatures(result);
 
-		} catch (IOException e) {
-			LOG.warn("Unable to analyze document", e);
+		} catch (Exception e) {
+			throw new DSSException("Cannot analyze signatures : " + e.getMessage(), e);
 		}
 		return result;
 	}

@@ -388,7 +388,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				linkSignatures(signatures);
 			}
 		} catch (Exception e) {
-			LOG.warn("Unable to analyze document", e);
+			throw new DSSException("Cannot analyze signatures : " + e.getMessage(), e);
 		}
 
 		return signatures;

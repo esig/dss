@@ -33,6 +33,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
@@ -54,10 +55,26 @@ public class DSS1444Test {
 		}
 	}
 
+	@Test(expected = DSSException.class)
+	public void testValidation() throws IOException {
+		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
+			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
+			val.getSignatures();
+		}
+	}
+
 	@Test(expected = IOException.class)
 	public void test2() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
 			PDDocument.load(is);
+		}
+	}
+
+	@Test(expected = DSSException.class)
+	public void test2Validation() throws IOException {
+		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
+			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
+			val.getSignatures();
 		}
 	}
 
@@ -68,11 +85,11 @@ public class DSS1444Test {
 		}
 	}
 
-	@Test
+	@Test(expected = DSSException.class)
 	public void test3bis() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/small-red.jpg")) {
 			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
-			assertEquals(0, val.getSignatures().size());
+			val.getSignatures();
 		}
 	}
 

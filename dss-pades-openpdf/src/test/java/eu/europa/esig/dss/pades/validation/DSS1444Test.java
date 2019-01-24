@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
@@ -30,6 +29,7 @@ import org.junit.Test;
 
 import com.lowagie.text.pdf.PdfReader;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.InMemoryDocument;
 
 public class DSS1444Test {
@@ -41,10 +41,26 @@ public class DSS1444Test {
 		}
 	}
 
+	@Test(expected = DSSException.class)
+	public void testValidation() throws IOException {
+		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
+			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
+			val.getSignatures();
+		}
+	}
+
 	@Test(expected = NullPointerException.class)
 	public void test2() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf"); PdfReader r = new PdfReader(is)) {
 			// nothing
+		}
+	}
+
+	@Test(expected = DSSException.class)
+	public void test2Validation() throws IOException {
+		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
+			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
+			val.getSignatures();
 		}
 	}
 
@@ -55,11 +71,11 @@ public class DSS1444Test {
 		}
 	}
 
-	@Test
+	@Test(expected = DSSException.class)
 	public void test3bis() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/small-red.jpg")) {
 			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
-			assertEquals(0, val.getSignatures().size());
+			val.getSignatures();
 		}
 	}
 
