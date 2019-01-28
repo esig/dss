@@ -40,7 +40,7 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractValid
 	
 	protected String validationPolicyFile = null; 
 	
-	protected void initializeExecutor(String diagnosticDataFile) throws Exception {
+	protected DiagnosticData initializeExecutor(String diagnosticDataFile) throws Exception {
 		FileInputStream fis = new FileInputStream(diagnosticDataFile);
 		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
 		assertNotNull(diagnosticData);
@@ -48,6 +48,7 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractValid
 		executor = new CustomProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setCurrentTime(diagnosticData.getValidationDate());
+		return diagnosticData;
 	}
 
 	protected ConstraintsParameters loadConstraintsParameters() throws Exception {

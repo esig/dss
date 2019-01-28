@@ -9,12 +9,14 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
+import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
+import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.AlgoExpirationDate;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
@@ -266,6 +268,31 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		checkBasicSignatureErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, true);
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_5, false);
 		
+	}
+	
+	@Test
+	public void signatureWithContentTimestampTest() throws Exception {
+		DiagnosticData diagnosticData = initializeExecutor("src/test/resources/diag_data_pastSigValidation.xml");
+		validationPolicyFile = "src/test/resources/policy/all-constraint-specified-policy.xml";
+		
+		Indication result = null;
+		DetailedReport detailedReport = null;
+		
+		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2018-01-01");
+		assertEquals(Indication.INDETERMINATE, result);
+		detailedReport = createDetailedReport();
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
+		
+		diagnosticData.getSignatures().get(0).getTimestamps().get(0).setType(TimestampType.CONTENT_TIMESTAMP.name());
+
+		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2020-01-01");
+		assertEquals(Indication.TOTAL_PASSED, result);
+		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2018-01-01");
+		assertEquals(Indication.INDETERMINATE, result);
+		detailedReport = createDetailedReport();
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
 	}
 	
 	private Indication defaultConstraintValidationDateIsBeforeExpirationDateTest(String algorithm) throws Exception {

@@ -980,6 +980,9 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.FAILED, detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, detailedReport.getArchiveDataValidationSubIndication(detailedReport.getFirstSignatureId()));
 	}
 
 	@Test(expected = NullPointerException.class)
