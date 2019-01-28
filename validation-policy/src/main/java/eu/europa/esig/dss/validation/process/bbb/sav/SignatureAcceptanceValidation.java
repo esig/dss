@@ -164,4 +164,9 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 		return new CryptographicCheck<XmlSAV>(result, token, currentTime, constraint);
 	}
 
+	@Override
+	protected void addAdditionalInfo() {
+		result.setValidationTime(currentTime);
+	}
+
 }

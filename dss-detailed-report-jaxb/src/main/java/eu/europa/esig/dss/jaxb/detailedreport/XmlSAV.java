@@ -9,9 +9,14 @@
 package eu.europa.esig.dss.jaxb.detailedreport;
 
 import java.io.Serializable;
+import java.util.Date;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
@@ -31,12 +36,42 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SAV")
+@XmlType(name = "SAV", propOrder = {
+	    "validationTime"
+})
 public class XmlSAV
     extends XmlConstraintsConclusion
     implements Serializable
 {
 
     private final static long serialVersionUID = 1L;
+    @XmlElement(name = "ValidationTime", type = String.class)
+    @XmlJavaTypeAdapter(Adapter1 .class)
+    @XmlSchemaType(name = "dateTime")
+    protected Date validationTime;
+
+    /**
+     * Gets the value of the validationTime property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public Date getValidationTime() {
+        return validationTime;
+    }
+
+    /**
+     * Sets the value of the validationTime property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setValidationTime(Date value) {
+        this.validationTime = value;
+    }
 
 }

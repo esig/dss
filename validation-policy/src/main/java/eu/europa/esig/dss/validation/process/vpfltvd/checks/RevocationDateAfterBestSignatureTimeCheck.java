@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessLongTermData;
+import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
@@ -39,13 +40,15 @@ public class RevocationDateAfterBestSignatureTimeCheck extends ChainItem<XmlVali
 
 	private final CertificateWrapper certificate;
 	private final Date bestSignatureTime;
+	private final SubContext subContext;
 
 	public RevocationDateAfterBestSignatureTimeCheck(XmlValidationProcessLongTermData result, CertificateWrapper certificate, Date bestSignatureTime,
-			LevelConstraint constraint) {
+			LevelConstraint constraint, SubContext subContext) {
 		super(result, constraint);
 
 		this.certificate = certificate;
 		this.bestSignatureTime = bestSignatureTime;
+		this.subContext = subContext;
 	}
 
 	@Override
@@ -81,7 +84,10 @@ public class RevocationDateAfterBestSignatureTimeCheck extends ChainItem<XmlVali
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.REVOKED_NO_POE;
+		if (SubContext.SIGNING_CERT.equals(subContext))
+			return SubIndication.REVOKED_NO_POE;
+		else
+			return SubIndication.REVOKED_CA_NO_POE;
 	}
 
 }
