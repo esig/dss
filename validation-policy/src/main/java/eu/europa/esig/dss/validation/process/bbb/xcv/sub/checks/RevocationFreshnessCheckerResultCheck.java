@@ -22,20 +22,20 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
 import java.util.List;
 
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
-public class RevocationFreshnessCheckerResult extends ChainItem<XmlSubXCV> {
+public class RevocationFreshnessCheckerResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	private final XmlRFC rfcResult;
 
-	public RevocationFreshnessCheckerResult(XmlSubXCV result, XmlRFC rfcResult, LevelConstraint constraint) {
+	public RevocationFreshnessCheckerResultCheck(T result, XmlRFC rfcResult, LevelConstraint constraint) {
 		super(result, constraint);
 		this.rfcResult = rfcResult;
 	}

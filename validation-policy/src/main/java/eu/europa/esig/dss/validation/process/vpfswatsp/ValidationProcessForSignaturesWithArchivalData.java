@@ -42,7 +42,9 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.DigestAlgorithmAcceptanceValidation;
+import eu.europa.esig.dss.validation.process.bbb.sav.MessageImprintDigestAlgorithmValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.LongTermValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.PastSignatureValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.PastSignatureValidation;
@@ -239,26 +241,20 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * not be rechecked.
 		 * If the signature acceptance validation process returns PASSED, the SVA shall go to the next step. 
 		 */
-		SignatureAcceptanceValidation sav = new SignatureAcceptanceValidation(diagnosticData, bestSignatureTime, signature, currentContext, policy);
-		XmlSAV savResult = sav.execute();
-		if (isValid(savResult)) {
+		item = item.setNextItem(signatureIsAcceptable(bestSignatureTime, currentContext));
 
-			/*
-			 * 9) Data extraction: the SVA shall return the success indication PASSED. In addition, the long term validation
-			 * process should return additional information extracted from the signature and/or used by the intermediate
-			 * steps. In particular, the long term validation process should return intermediate results such as the
-			 * validation results of any time-stamp token.
-			 * NOTE 7: What the DA does with this information is out of the scope of the present document.
-			 */
-			
-		}
+		/*
+		 * 9) Data extraction: the SVA shall return the success indication PASSED. In addition, the long term validation
+		 * process should return additional information extracted from the signature and/or used by the intermediate
+		 * steps. In particular, the long term validation process should return intermediate results such as the
+		 * validation results of any time-stamp token.
+		 * NOTE 7: What the DA does with this information is out of the scope of the present document.
+		 */
+		
 		/*
 		 * Otherwise,
 		 * the SVA shall return the indication and sub-indication returned by the Signature Acceptance Validation Process
 		 */
-		else {
-			result.setConclusion(savResult.getConclusion());
-		}
 
 	}
 
@@ -277,8 +273,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	}
 	
 	private DigestAlgorithmAcceptanceValidation timestampDigestAlgorithmValidation(TimestampWrapper newestTimestamp) {
-		return new DigestAlgorithmAcceptanceValidation(
-			newestTimestamp.getProductionTime(), newestTimestamp.getMessageImprint().getDigestMethod(), policy, Context.TIMESTAMP);
+		return new MessageImprintDigestAlgorithmValidation(newestTimestamp.getProductionTime(), newestTimestamp, policy);
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> longTermValidation() {
@@ -296,6 +291,12 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 					SubIndication.REVOKED_CA_NO_POE.equals(conclusion.getSubIndication()) ||
 					SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication()) ||
 					SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication()));
+	}
+	
+	private ChainItem<XmlValidationProcessArchivalData> signatureIsAcceptable(Date bestSignatureTime, Context context) {
+		SignatureAcceptanceValidation sav = new SignatureAcceptanceValidation(diagnosticData, bestSignatureTime, signature, context, policy);
+		XmlSAV savResult = sav.execute();
+		return new SignatureAcceptanceValidationResultCheck<XmlValidationProcessArchivalData>(result, savResult, getFailLevelConstraint());
 	}
 
 }

@@ -10,6 +10,7 @@ import org.junit.Test;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -181,6 +182,12 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		XmlBasicBuildingBlocks revocationBasicBuildingBlock = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0));
 		assertEquals(Indication.PASSED, revocationBasicBuildingBlock.getSAV().getConclusion().getIndication());
 		checkErrorMessageAbsence(detailedReport, MessageTag.ASCCM_ANS_2);
+		
+		result = revocationConstraintAcceptableEncryptionAlgorithmIsNotDefined(ALGORITHM_RSA);
+		detailedReport = createDetailedReport();
+		revocationBasicBuildingBlock = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0));
+		assertEquals(Indication.INDETERMINATE, revocationBasicBuildingBlock.getSAV().getConclusion().getIndication());
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, revocationBasicBuildingBlock.getSAV().getConclusion().getSubIndication());
 		
 		// Revocation data tests
 		result = revocationConstraintAcceptableDigestAlgorithmIsNotDefined(ALGORITHM_SHA256);
@@ -402,6 +409,19 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		List<Algo> algorithms = listAlgo.getAlgo();
 		setAlgorithmSize(algorithms, algorithm, BIT_SIZE_4096);
 		setSignatureCryptographicConstraint(constraintsParameters, sigCryptographicConstraint);
+		setValidationPolicy(constraintsParameters);
+		SimpleReport simpleReport = createSimpleReport();
+		return simpleReport.getIndication(simpleReport.getFirstSignatureId());
+	}
+
+	private Indication revocationConstraintAcceptableEncryptionAlgorithmIsNotDefined(String algorithm) throws Exception {
+		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
+		CryptographicConstraint revocationCryptographicConstraint = getRevocationCryptographicConstraint(constraintsParameters);
+		ListAlgo listAlgo = revocationCryptographicConstraint.getAcceptableEncryptionAlgo();
+		List<Algo> algorithms = listAlgo.getAlgo();
+		removeAlgorithm(algorithms, algorithm);
+		revocationCryptographicConstraint.setAcceptableEncryptionAlgo(listAlgo);
+		setRevocationCryptographicConstraint(constraintsParameters, revocationCryptographicConstraint);
 		setValidationPolicy(constraintsParameters);
 		SimpleReport simpleReport = createSimpleReport();
 		return simpleReport.getIndication(simpleReport.getFirstSignatureId());

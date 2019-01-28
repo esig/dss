@@ -81,6 +81,7 @@ public enum MessageTag implements IMessageTag {
 	/* BBB -> SAV -> TSP*/
 	BBB_SAV_TSP_IMIDF("Is message imprint data found?"),
 	BBB_SAV_TSP_IMIDF_ANS("The timestamp message imprint data is not found!"),
+	BBB_SAV_TSP_IMSDAV("Is the digest algorithm for timestamp message imprint valid?"),
 	BBB_SAV_TSP_IMIVC("Is message imprint verification conclusive?"),
 	BBB_SAV_TSP_IMIVC_ANS("The timestamp message imprint verification has failed!"),
 	
@@ -109,6 +110,8 @@ public enum MessageTag implements IMessageTag {
 	ASCCM_ANS_4("The algorithm expiration date not found!"),
 	ASCCM_ANS_5("The algorithm is expired!"),
 
+	BBB_SAV_ISVA("Is the signature accectable?"),
+	BBB_SAV_ISVA_ANS("The signature is not accectable!"),
 	BBB_SAV_ISSV("Is the structure of the signature valid?"),
 	BBB_SAV_ISSV_ANS("The structure of the signature is not valid!"),
 	BBB_SAV_ICERRM("Is the requested certified role present?"),
