@@ -15,6 +15,12 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-common-validation-jaxb</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<profiles>
