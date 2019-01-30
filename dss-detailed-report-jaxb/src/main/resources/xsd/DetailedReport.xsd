@@ -41,7 +41,7 @@
 			<xs:element type="ISC" name="ISC" minOccurs="0" />
 			<xs:element type="VCI" name="VCI" minOccurs="0" />
 			<xs:element type="CV"  name="CV"  minOccurs="0" />
-			<xs:element type="SAV" name="SAV" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element type="SAV" name="SAV" minOccurs="0" />
 			<xs:element type="XCV" name="XCV" minOccurs="0" />
 			<xs:element type="PSV" name="PSV" minOccurs="0" />
 			<xs:element type="PCV" name="PCV" minOccurs="0" />
@@ -169,9 +169,7 @@
 	<xs:complexType name="SAV">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
-				<xs:sequence>
-					<xs:attribute name="ValidationTime" type="xs:dateTime" minOccurs="0" />
-				</xs:sequence>
+				<xs:attribute name="ValidationTime" type="xs:dateTime" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
