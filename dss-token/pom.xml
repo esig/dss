@@ -5,6 +5,14 @@
 		<artifactId>sd-dss</artifactId>
 		<version>5.4</version>
 	</parent>
+	
+	<repositories>
+		<repository>
+			<id>cefdigital</id>
+			<name>cefdigital</name>
+			<url>https://ec.europa.eu/cefdigital/artifact/content/repositories/esignaturedss/</url>
+		</repository>
+	</repositories>
 
 	<artifactId>dss-token</artifactId>
 	<name>DSS Token</name>
