@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.x509.ocsp;
+package eu.europa.esig.dss.x509.revocation.ocsp;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
 	/**
 	 * This constructor loads the OCSP responses from a array of <code>String</code>s representing resources.
 	 *
-	 * @param paths
+	 * @param paths {@link String}(s)
 	 */
 	public ExternalResourcesOCSPSource(final String... paths) {
 		for (final String pathItem : paths) {
@@ -47,7 +47,7 @@ public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
 	/**
 	 * This constructor loads the OCSP responses from a array of <code>InputStream</code>s.
 	 *
-	 * @param inputStreams
+	 * @param inputStreams {@link InputStream}
 	 */
 	public ExternalResourcesOCSPSource(final InputStream... inputStreams) {
 		for (final InputStream inputStream : inputStreams) {

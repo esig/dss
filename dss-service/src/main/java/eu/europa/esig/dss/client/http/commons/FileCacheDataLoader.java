@@ -355,16 +355,5 @@ public class FileCacheDataLoader implements DataLoader {
 	public void setContentType(final String contentType) {
 		dataLoader.setContentType(contentType);
 	}
-
-	public void nextUpdate(final String fileName, final Date nextUpdate) {
-		if ((fileName == null) || fileName.isEmpty()) {
-			return;
-		}
-
-		final File file = new File(fileCacheDirectory, fileName);
-		if (file.exists() && (nextUpdate != null)) {
-			final boolean changed = file.setLastModified(nextUpdate.getTime());
-			LOG.debug("-- nextUpdate {} ({}): {} ", new Date(file.lastModified()), changed, file.getAbsolutePath());
-		}
-	}
+	
 }

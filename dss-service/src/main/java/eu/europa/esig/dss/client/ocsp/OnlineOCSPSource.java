@@ -47,21 +47,21 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.client.NonceSource;
 import eu.europa.esig.dss.client.http.DataLoader;
-import eu.europa.esig.dss.client.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.client.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationSourceAlternateUrlsSupport;
-import eu.europa.esig.dss.x509.ocsp.OCSPRespStatus;
-import eu.europa.esig.dss.x509.ocsp.OCSPSource;
-import eu.europa.esig.dss.x509.ocsp.OCSPToken;
+import eu.europa.esig.dss.x509.revocation.OnlineSource;
+import eu.europa.esig.dss.x509.revocation.RevocationSourceAlternateUrlsSupport;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRespStatus;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 
 /**
  * Online OCSP repository. This implementation will contact the OCSP Responder
  * to retrieve the OCSP response.
  */
 @SuppressWarnings("serial")
-public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUrlsSupport<OCSPToken> {
+public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUrlsSupport<OCSPToken>, OnlineSource<OCSPToken> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OnlineOCSPSource.class);
 
@@ -160,19 +160,10 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 						ocspToken.setAvailable(true);
 						final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
 						ocspToken.setBasicOCSPResp(basicOCSPResp);
-
 						if (nonceSource != null) {
 							ocspToken.setUseNonce(true);
 							ocspToken.setNonceMatch(isNonceMatch(basicOCSPResp, nonce));
 						}
-
-						if (dataLoader instanceof FileCacheDataLoader) {
-							ocspToken.extractInfo();
-							final String fileName = ((FileCacheDataLoader) dataLoader)
-									.getCachFileName(ocspToken.getSourceURL(), content);
-							((FileCacheDataLoader) dataLoader).nextUpdate(fileName, ocspToken.getNextUpdate());
-						}
-
 						return ocspToken;
 					} else {
 						LOG.warn("OCSP Response status with URL '{}' : {}", ocspAccessLocation, status);

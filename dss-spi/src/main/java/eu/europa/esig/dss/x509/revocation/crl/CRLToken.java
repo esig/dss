@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.x509.crl;
+package eu.europa.esig.dss.x509.revocation.crl;
 
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -36,11 +36,14 @@ import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
+import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 
 /**
  * This class represents a CRL and provides the information about its validity.
  */
 public class CRLToken extends RevocationToken {
+
+	private static final long serialVersionUID = 1934492191629483078L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(CRLToken.class);
 
@@ -64,12 +67,13 @@ public class CRLToken extends RevocationToken {
 			throw new NullPointerException();
 		}
 		this.crlValidity = crlValidity;
-		copyCommonValuesFromCRL();
+		initInfo();
 		setRevocationStatus(certificateToken);
 		LOG.debug("+CRLToken");
 	}
 
-	private void copyCommonValuesFromCRL() {
+	@Override
+	public void initInfo() {
 		this.signatureAlgorithm = crlValidity.getSignatureAlgorithm();
 		this.thisUpdate = crlValidity.getThisUpdate();
 		this.productionDate = crlValidity.getThisUpdate(); // dates are equals in case of CRL

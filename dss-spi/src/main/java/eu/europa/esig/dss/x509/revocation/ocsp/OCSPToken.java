@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.x509.ocsp;
+package eu.europa.esig.dss.x509.revocation.ocsp;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -90,7 +90,8 @@ public class OCSPToken extends RevocationToken {
 	public OCSPToken() {
 	}
 
-	public void extractInfo() {
+	@Override
+	public void initInfo() {
 		if (basicOCSPResp != null) {
 			this.productionDate = basicOCSPResp.getProducedAt();
 			this.signatureAlgorithm = SignatureAlgorithm.forOID(basicOCSPResp.getSignatureAlgOID().getId());
@@ -264,7 +265,7 @@ public class OCSPToken extends RevocationToken {
 	 */
 	@Override
 	public boolean isValid() {
-		return signatureValid;
+		return signatureValid || !isUseNonce() || isNonceMatch();
 	}
 
 	@Override
@@ -280,7 +281,9 @@ public class OCSPToken extends RevocationToken {
 		out.append("ProductionTime: ").append(DSSUtils.formatInternal(productionDate)).append("; ");
 		out.append("ThisUpdate: ").append(DSSUtils.formatInternal(thisUpdate)).append("; ");
 		out.append("NextUpdate: ").append(DSSUtils.formatInternal(nextUpdate)).append('\n');
-		out.append("SignedBy: ").append(getIssuerX500Principal().toString()).append('\n');
+		if (getIssuerX500Principal() != null) {
+			out.append("SignedBy: ").append(getIssuerX500Principal().toString()).append('\n');
+		}
 		indentStr += "\t";
 		out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm.getJCEId()).append('\n');
 		indentStr = indentStr.substring(1);

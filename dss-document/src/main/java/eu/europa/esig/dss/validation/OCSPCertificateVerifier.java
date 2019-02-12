@@ -40,9 +40,9 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationSource;
 import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.ocsp.OCSPToken;
+import eu.europa.esig.dss.x509.revocation.RevocationSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 
 /**
  * Check the status of the certificate using an OCSPSource
@@ -87,7 +87,7 @@ public class OCSPCertificateVerifier implements CertificateStatusVerifier {
 				LOG.debug("{} : No matching OCSP response found for {}", ocspSource.getClass().getSimpleName(), toCheckToken.getDSSIdAsString());
 			} else {
 				ocspToken.setRelatedCertificateID(toCheckToken.getDSSIdAsString());
-				ocspToken.extractInfo();
+				ocspToken.initInfo();
 				final boolean found = extractSigningCertificateFromResponse(ocspToken);
 				if (!found) {
 					extractSigningCertificateFormResponderId(ocspToken);

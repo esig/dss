@@ -28,7 +28,7 @@ import java.util.Map;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
 
 /**
  * OCSPSource that retrieves the OCSPResp from a PAdES Signature

@@ -32,8 +32,8 @@ import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
-import eu.europa.esig.dss.x509.ocsp.ExternalResourcesOCSPSource;
-import eu.europa.esig.dss.x509.ocsp.OCSPSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.ExternalResourcesOCSPSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
 
 public class OCSPCertificateVerifierTest {
 

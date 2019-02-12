@@ -192,5 +192,20 @@ public final class DSSRevocationUtils {
 			throw new DSSException(e);
 		}
 	}
+	
+	/**
+	 * Creates the identifier for a certain entry within jdbc.
+	 *
+	 * @param certificateToken
+	 *            {@link CertificateToken}
+	 * @param issuerCertificateToken
+	 *            {@link CertificateToken} of the issuer of the certificateToken
+	 * @return the identifier for jdbc
+	 */
+	public static String getJdbcKey(final CertificateToken certificateToken, final CertificateToken issuerCertificateToken) {
+		final StringBuilder buf = new StringBuilder(certificateToken.getEntityKey());
+		buf.append(":").append(issuerCertificateToken.getEntityKey());
+		return buf.toString();
+	}
 
 }
