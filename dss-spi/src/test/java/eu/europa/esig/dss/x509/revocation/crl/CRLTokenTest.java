@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.x509.crl;
+package eu.europa.esig.dss.x509.revocation.crl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -16,6 +16,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
+import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 
 public class CRLTokenTest {
 

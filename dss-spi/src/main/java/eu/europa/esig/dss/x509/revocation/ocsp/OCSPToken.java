@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.x509.ocsp;
+package eu.europa.esig.dss.x509.revocation.ocsp;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -90,15 +90,20 @@ public class OCSPToken extends RevocationToken {
 	public OCSPToken() {
 	}
 
-	public void extractInfo() {
+	@Override
+	public void initInfo() {
 		if (basicOCSPResp != null) {
 			this.productionDate = basicOCSPResp.getProducedAt();
 			this.signatureAlgorithm = SignatureAlgorithm.forOID(basicOCSPResp.getSignatureAlgOID().getId());
 
 			SingleResp bestSingleResp = getBestSingleResp(basicOCSPResp, certId);
 			if (bestSingleResp != null) {
-				this.thisUpdate = bestSingleResp.getThisUpdate();
-				this.nextUpdate = bestSingleResp.getNextUpdate();
+				if (this.thisUpdate == null) {
+					this.thisUpdate = bestSingleResp.getThisUpdate();
+				}
+				if (this.nextUpdate == null) {
+					this.nextUpdate = bestSingleResp.getNextUpdate();
+				}
 				extractStatusInfo(bestSingleResp);
 				extractArchiveCutOff(bestSingleResp);
 				extractCertHashExtension(bestSingleResp);
@@ -211,6 +216,7 @@ public class OCSPToken extends RevocationToken {
 			ContentVerifierProvider contentVerifierProvider = jcaContentVerifierProviderBuilder.build(candidate.getPublicKey());
 			signatureValid = basicOCSPResp.isSignatureValid(contentVerifierProvider);
 		} catch (Exception e) {
+			LOG.error("An error occurred during in attempt to check signature owner : ", e);
 			signatureInvalidityReason = e.getClass().getSimpleName() + " - " + e.getMessage();
 			signatureValid = false;
 		}
@@ -256,6 +262,22 @@ public class OCSPToken extends RevocationToken {
 	public void setCertId(CertificateID certId) {
 		this.certId = certId;
 	}
+	
+	/**
+	 * Sets the thisUpdate value
+	 * @param thisUpdate {@link Date}
+	 */
+	public void setThisUpdate(Date thisUpdate) {
+		this.thisUpdate = thisUpdate;
+	}
+	
+	/**
+	 * Sets the nextUpdate value
+	 * @param nextUpdate {@link Date}
+	 */
+	public void setNextUpdate(Date nextUpdate) {
+		this.nextUpdate = nextUpdate;
+	}
 
 	/**
 	 * Indicates if the token signature is intact.
@@ -280,7 +302,9 @@ public class OCSPToken extends RevocationToken {
 		out.append("ProductionTime: ").append(DSSUtils.formatInternal(productionDate)).append("; ");
 		out.append("ThisUpdate: ").append(DSSUtils.formatInternal(thisUpdate)).append("; ");
 		out.append("NextUpdate: ").append(DSSUtils.formatInternal(nextUpdate)).append('\n');
-		out.append("SignedBy: ").append(getIssuerX500Principal().toString()).append('\n');
+		if (getIssuerX500Principal() != null) {
+			out.append("SignedBy: ").append(getIssuerX500Principal().toString()).append('\n');
+		}
 		indentStr += "\t";
 		out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm.getJCEId()).append('\n');
 		indentStr = indentStr.substring(1);

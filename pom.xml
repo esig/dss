@@ -63,6 +63,7 @@
 
 		<junit.version>4.12</junit.version>
 		<mockito.version>2.12.0</mockito.version>
+		<h2database.version>1.4.197</h2database.version>
 		
 	    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 	    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -742,6 +743,13 @@
 				<artifactId>mockito-core</artifactId>
 				<version>${mockito.version}</version>
 			</dependency>
+			<dependency>
+			    <groupId>com.h2database</groupId>
+			    <artifactId>h2</artifactId>
+			    <version>${h2database.version}</version>
+			    <scope>test</scope>
+			</dependency>
+						
 		</dependencies>
 	</dependencyManagement>
 

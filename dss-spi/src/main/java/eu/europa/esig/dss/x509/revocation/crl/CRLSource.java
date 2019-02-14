@@ -18,17 +18,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.x509.ocsp;
+package eu.europa.esig.dss.x509.revocation.crl;
 
-import eu.europa.esig.dss.x509.RevocationSource;
+import eu.europa.esig.dss.x509.revocation.RevocationSource;
 
 /**
- * Typed sub-interface which allows to collect {@code OCSPToken}. The validation
- * of a certificate may require the use of OCSP information. Theses information
- * can be provided by multiple sources (the signature itself, online OCSP
- * server, ...). This interface provides an abstraction for a source of OCSPResp
+ * Typed sub-interface which allows to collect {@code CRLToken}. The validation
+ * of a certificate requires the access to some CRLs. This information can be
+ * found online, in a cache or even in the signature itself. This interface
+ * provides an abstraction of a CRL data source.
  *
  */
-public interface OCSPSource extends RevocationSource<OCSPToken> {
+public interface CRLSource extends RevocationSource<CRLToken> {
 
 }

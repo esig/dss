@@ -50,16 +50,20 @@ import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationSourceAlternateUrlsSupport;
-import eu.europa.esig.dss.x509.ocsp.OCSPRespStatus;
-import eu.europa.esig.dss.x509.ocsp.OCSPSource;
-import eu.europa.esig.dss.x509.ocsp.OCSPToken;
+import eu.europa.esig.dss.x509.revocation.OnlineSource;
+import eu.europa.esig.dss.x509.revocation.RevocationSourceAlternateUrlsSupport;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRespStatus;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPTokenBuilder;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPTokenUtils;
 
 /**
- * Online OCSP repository. This implementation will contact the OCSP Responder to retrieve the OCSP response.
+ * Online OCSP repository. This implementation will contact the OCSP Responder
+ * to retrieve the OCSP response.
  */
 @SuppressWarnings("serial")
-public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUrlsSupport<OCSPToken> {
+public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUrlsSupport<OCSPToken>, OnlineSource<OCSPToken> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OnlineOCSPSource.class);
 
@@ -78,20 +82,16 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	private DataLoader dataLoader;
 
 	/**
-	 * Create an OCSP source The default constructor for OnlineOCSPSource. The default {@code OCSPDataLoader} is set. It
-	 * is possible to change it with {@code
+	 * Create an OCSP source The default constructor for OnlineOCSPSource. The
+	 * default {@code OCSPDataLoader} is set. It is possible to change it with
+	 * {@code
 	 * #setDataLoader}.
 	 */
 	public OnlineOCSPSource() {
 		dataLoader = new OCSPDataLoader();
 	}
 
-	/**
-	 * Set the DataLoader to use for querying the OCSP server.
-	 *
-	 * @param dataLoader
-	 *            the component that allows to retrieve the OCSP response using HTTP.
-	 */
+	@Override
 	public void setDataLoader(final DataLoader dataLoader) {
 		this.dataLoader = dataLoader;
 	}
@@ -112,7 +112,8 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	}
 
 	@Override
-	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken, List<String> alternativeUrls) {
+	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken,
+			List<String> alternativeUrls) {
 		if (dataLoader == null) {
 			throw new NullPointerException("DataLoader is not provided !");
 		}
@@ -148,18 +149,18 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 					final OCSPResp ocspResp = new OCSPResp(ocspRespBytes);
 					OCSPRespStatus status = OCSPRespStatus.fromInt(ocspResp.getStatus());
 					if (OCSPRespStatus.SUCCESSFUL.equals(status)) {
-						OCSPToken ocspToken = new OCSPToken();
-						ocspToken.setResponseStatus(status);
-						ocspToken.setSourceURL(ocspAccessLocation);
-						ocspToken.setCertId(certId);
-						ocspToken.setAvailable(true);
 						final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
-						ocspToken.setBasicOCSPResp(basicOCSPResp);
-
-						if (nonceSource != null) {
-							ocspToken.setUseNonce(true);
-							ocspToken.setNonceMatch(isNonceMatch(basicOCSPResp, nonce));
+						OCSPTokenBuilder ocspTokenBuilder = new OCSPTokenBuilder(basicOCSPResp, certificateToken);
+						ocspTokenBuilder.setAvailable(true);
+						ocspTokenBuilder.setCertificateId(certId);
+						if (nonce != null) {
+							ocspTokenBuilder.setUseNonce(true);
+							ocspTokenBuilder.setNonceMatch(isNonceMatch(basicOCSPResp, nonce));
 						}
+						ocspTokenBuilder.setOcspRespStatus(status);
+						ocspTokenBuilder.setSourceURL(ocspAccessLocation);
+						OCSPToken ocspToken = ocspTokenBuilder.build();
+						OCSPTokenUtils.checkTokenValidity(ocspToken, certificateToken, issuerCertificateToken);
 						return ocspToken;
 					} else {
 						LOG.warn("OCSP Response status with URL '{}' : {}", ocspAccessLocation, status);
@@ -182,11 +183,13 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			final OCSPReqBuilder ocspReqBuilder = new OCSPReqBuilder();
 			ocspReqBuilder.addRequest(certId);
 			/*
-			 * The nonce extension is used to bind a request to a response to prevent replay attacks.
-			 * RFC 6960 (OCSP) section 4.1.2 such extensions SHOULD NOT be flagged as critical
+			 * The nonce extension is used to bind a request to a response to
+			 * prevent replay attacks. RFC 6960 (OCSP) section 4.1.2 such
+			 * extensions SHOULD NOT be flagged as critical
 			 */
 			if (nonce != null) {
-				DEROctetString encodedNonceValue = new DEROctetString(new DEROctetString(nonce.toByteArray()).getEncoded());
+				DEROctetString encodedNonceValue = new DEROctetString(
+						new DEROctetString(nonce.toByteArray()).getEncoded());
 				Extension extension = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, false, encodedNonceValue);
 				Extensions extensions = new Extensions(extension);
 				ocspReqBuilder.setRequestExtensions(extensions);

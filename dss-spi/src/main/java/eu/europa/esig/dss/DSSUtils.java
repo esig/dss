@@ -237,8 +237,10 @@ public final class DSSUtils {
 				throw new DSSException("Could not parse certificate(s)");
 			}
 			return certificates;
+		} catch (DSSException e) {
+		  	throw e;
 		} catch (Exception e) {
-			throw new DSSException("Unable to load certificates", e);
+			throw new DSSException("Unable to load certificates.", e);
 		}
 	}
 

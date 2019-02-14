@@ -84,6 +84,11 @@ public abstract class RevocationToken extends Token {
 	 * The reason of the revocation.
 	 */
 	protected CRLReasonEnum reason;
+	
+	/**
+	 * Revocation Token Key, used for {@link RevocationToken} identification (i.e. id in DB)
+	 */
+	protected String revocationTokenKey;
 
 	public String getRelatedCertificateID() {
 		return relatedCertificateID;
@@ -219,6 +224,27 @@ public abstract class RevocationToken extends Token {
 	public CRLReasonEnum getReason() {
 		return reason;
 	}
+	
+	/**
+	 * Returns compiled revocation token key
+	 * @return {@link String} key
+	 */
+	public String getRevocationTokenKey() {
+		return revocationTokenKey;
+	}
+	
+	/**
+	 * Sets the value for revocationTokenKey
+	 * @param key {@link String}
+	 */
+	public void setRevocationTokenKey(String key) {
+		this.revocationTokenKey = key;
+	}
+	
+	/**
+	 * Initialize inner attributes
+	 */
+	public abstract void initInfo();
 
 	/**
 	 * Indicates if the token signature is intact and the signing certificate matches with the signature and if the

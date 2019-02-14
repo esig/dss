@@ -51,6 +51,16 @@
 			<artifactId>dss-utils-google-guava</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
+		    <scope>test</scope>
+		</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-crl-parser-x509crl</artifactId>
+		    	<scope>test</scope>
+			</dependency>
 		
     </dependencies>
 </project>

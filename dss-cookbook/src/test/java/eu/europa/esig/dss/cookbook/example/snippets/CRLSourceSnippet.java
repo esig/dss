@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.cookbook.example.snippets;
 
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.crl.CRLSource;
-import eu.europa.esig.dss.x509.crl.CRLToken;
+import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
+import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 
 public class CRLSourceSnippet {
 

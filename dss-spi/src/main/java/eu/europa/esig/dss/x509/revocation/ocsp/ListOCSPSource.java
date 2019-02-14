@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.x509.ocsp;
+package eu.europa.esig.dss.x509.revocation.ocsp;
 
 import java.util.ArrayList;
 import java.util.List;

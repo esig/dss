@@ -4,8 +4,8 @@ import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.x509.CertificateSource;
-import eu.europa.esig.dss.x509.crl.CRLSource;
-import eu.europa.esig.dss.x509.ocsp.OCSPSource;
+import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
 
 public class CertificateVerifierSnippet {
 

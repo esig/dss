@@ -18,27 +18,31 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.x509;
+package eu.europa.esig.dss.x509.revocation;
 
-import java.io.Serializable;
+import java.util.List;
 
-/**
- * This interface allows to retrieve revocation data for a given certificate.
- * Several implementations are available based on CRL and OCSP.
- */
-public interface RevocationSource<T extends RevocationToken> extends Serializable {
+import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationToken;
+
+public interface RevocationSourceAlternateUrlsSupport<T extends RevocationToken> extends RevocationSource<T> {
 
 	/**
-	 * This method retrieves a {@code RevocationToken} for the certificateToken
-	 * 
+	 * Gets an {@code RevocationToken} for the given certificate / issuer's
+	 * certificate couple. The coherence between the response and the request is
+	 * checked.
+	 *
 	 * @param certificateToken
 	 *                               The {@code CertificateToken} for which the
 	 *                               request is made
 	 * @param issuerCertificateToken
 	 *                               The {@code CertificateToken} which is the
 	 *                               issuer of the certificateToken
-	 * @return an instance of {@code RevocationToken}
+	 * @param alternativeUrls
+	 *                               The list of alternative urls to call
+	 * @return {@code RevocationToken} containing information about the validity of
+	 *         the cert
 	 */
-	T getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken);
-
+	T getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken, List<String> alternativeUrls);
+			
 }

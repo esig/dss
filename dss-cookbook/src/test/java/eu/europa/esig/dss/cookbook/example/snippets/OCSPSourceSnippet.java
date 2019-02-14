@@ -1,8 +1,8 @@
 package eu.europa.esig.dss.cookbook.example.snippets;
 
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.ocsp.OCSPSource;
-import eu.europa.esig.dss.x509.ocsp.OCSPToken;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 
 public class OCSPSourceSnippet {
 
