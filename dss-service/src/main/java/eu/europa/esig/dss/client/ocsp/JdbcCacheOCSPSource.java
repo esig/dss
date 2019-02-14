@@ -224,8 +224,8 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSPToken> {
 
 			if (token.getNextUpdate() != null) {
 				s.setTimestamp(6, new Timestamp(token.getNextUpdate().getTime()));
-			} else if (cacheExpirationTime != null) {
-				s.setTimestamp(6, new Timestamp(System.currentTimeMillis() + cacheExpirationTime));
+			} else if (cacheExpirationTime != null && token.getThisUpdate() != null) {
+				s.setTimestamp(6, new Timestamp(token.getThisUpdate().getTime() + cacheExpirationTime));
 			} else {
 				s.setNull(6, Types.TIMESTAMP);
 			}
@@ -276,8 +276,8 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSPToken> {
 
 			if (token.getNextUpdate() != null) {
 				s.setTimestamp(5, new Timestamp(token.getNextUpdate().getTime()));
-			} else if (cacheExpirationTime != null) {
-				s.setTimestamp(5, new Timestamp(System.currentTimeMillis() + cacheExpirationTime));
+			} else if (cacheExpirationTime != null && token.getThisUpdate() != null) {
+				s.setTimestamp(5, new Timestamp(token.getThisUpdate().getTime() + cacheExpirationTime));
 			} else {
 				s.setNull(5, Types.TIMESTAMP);
 			}

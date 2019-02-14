@@ -72,10 +72,9 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 	
 	/**
 	 * Sets the expiration time for the cached files in milliseconds. If more
-	 * time has passed from the cache file's last modified time, then a fresh
-	 * copy is downloaded and cached, otherwise a cached copy is used.
-	 *
-	 * If the expiration time is not set, then the cache does not expire.
+	 * time has passed from the revocation token's thisUpdate and next update 
+	 * time is not specified, then a fresh copy is downloaded and cached,
+	 * otherwise a cached copy is used.
 	 *
 	 * @param cacheExpirationTimeInMilliseconds long value
 	 */

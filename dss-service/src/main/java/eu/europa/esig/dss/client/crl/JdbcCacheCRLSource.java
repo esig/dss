@@ -212,8 +212,8 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> {
 
 			if (crlValidity.getNextUpdate() != null) {
 				s.setTimestamp(5, new Timestamp(crlValidity.getNextUpdate().getTime()));
-			} else if (cacheExpirationTime != null) {
-				s.setTimestamp(5, new Timestamp(System.currentTimeMillis() + cacheExpirationTime));
+			} else if (cacheExpirationTime != null && crlValidity.getThisUpdate() != null) {
+				s.setTimestamp(5, new Timestamp(crlValidity.getThisUpdate().getTime() + cacheExpirationTime));
 			} else {
 				s.setNull(5, Types.TIMESTAMP);
 			}
@@ -267,8 +267,8 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> {
 
 			if (crlValidity.getNextUpdate() != null) {
 				s.setTimestamp(4, new Timestamp(crlValidity.getNextUpdate().getTime()));
-			} else if (cacheExpirationTime != null) {
-				s.setTimestamp(4, new Timestamp(System.currentTimeMillis() + cacheExpirationTime));
+			} else if (cacheExpirationTime != null && crlValidity.getThisUpdate() != null) {
+				s.setTimestamp(4, new Timestamp(crlValidity.getThisUpdate().getTime() + cacheExpirationTime));
 			} else {
 				s.setNull(4, Types.TIMESTAMP);
 			}
