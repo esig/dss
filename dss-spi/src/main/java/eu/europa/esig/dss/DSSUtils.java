@@ -240,7 +240,7 @@ public final class DSSUtils {
 		} catch (DSSException e) {
 		  	throw e;
 		} catch (Exception e) {
-			throw new DSSException("Unable to load certificates. Cause: " + e.getLocalizedMessage(), e);
+			throw new DSSException("Unable to load certificates.", e);
 		}
 	}
 

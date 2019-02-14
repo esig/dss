@@ -103,7 +103,6 @@ import eu.europa.esig.dss.utils.Utils;
  * is also supported.
  */
 public class CommonsDataLoader implements DataLoader {
-  	private static final long serialVersionUID = -805432648564425522L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommonsDataLoader.class);
 
@@ -248,7 +247,7 @@ public class CommonsDataLoader implements DataLoader {
 					getSupportedSSLCipherSuites(), getHostnameVerifier());
 			return socketFactoryRegistryBuilder.register("https", sslConnectionSocketFactory);
 		} catch (final Exception e) {
-			throw new DSSException("Unable to configure the SSLContext/SSLConnectionSocketFactory. Cause: " + e.getLocalizedMessage(), e);
+			throw new DSSException("Unable to configure the SSLContext/SSLConnectionSocketFactory", e);
 		}
 	}
 
@@ -514,7 +513,7 @@ public class CommonsDataLoader implements DataLoader {
 		try {
 			return new URL(urlString);
 		} catch (MalformedURLException e) {
-			throw new DSSException("Unable to create URL instance. Cause: " + e.getLocalizedMessage(), e);
+			throw new DSSException("Unable to create URL instance", e);
 		}
 	}
 
@@ -544,7 +543,7 @@ public class CommonsDataLoader implements DataLoader {
 			return readHttpResponse(httpResponse);
 
 		} catch (URISyntaxException | IOException e) {
-			throw new DSSException("Unable to process GET call for url '" + url + "'. Cause: " + e.getLocalizedMessage(), e);
+			throw new DSSException("Unable to process GET call for url '" + url + "'", e);
 		} finally {
 			try {
 				if (httpRequest != null) {
@@ -592,7 +591,7 @@ public class CommonsDataLoader implements DataLoader {
 
 			return readHttpResponse(httpResponse);
 		} catch (IOException e) {
-			throw new DSSException("Unable to process POST call for url '" + url + "'. Cause: " + e.getLocalizedMessage(), e);
+			throw new DSSException("Unable to process POST call for url '" + url + "'", e);
 		} finally {
 			try {
 				if (httpRequest != null) {
