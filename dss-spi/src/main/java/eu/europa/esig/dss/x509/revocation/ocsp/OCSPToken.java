@@ -98,8 +98,12 @@ public class OCSPToken extends RevocationToken {
 
 			SingleResp bestSingleResp = getBestSingleResp(basicOCSPResp, certId);
 			if (bestSingleResp != null) {
-				this.thisUpdate = bestSingleResp.getThisUpdate();
-				this.nextUpdate = bestSingleResp.getNextUpdate();
+				if (this.thisUpdate == null) {
+					this.thisUpdate = bestSingleResp.getThisUpdate();
+				}
+				if (this.nextUpdate == null) {
+					this.nextUpdate = bestSingleResp.getNextUpdate();
+				}
 				extractStatusInfo(bestSingleResp);
 				extractArchiveCutOff(bestSingleResp);
 				extractCertHashExtension(bestSingleResp);
@@ -212,6 +216,7 @@ public class OCSPToken extends RevocationToken {
 			ContentVerifierProvider contentVerifierProvider = jcaContentVerifierProviderBuilder.build(candidate.getPublicKey());
 			signatureValid = basicOCSPResp.isSignatureValid(contentVerifierProvider);
 		} catch (Exception e) {
+			LOG.error("An error occurred during in attempt to check signature owner : ", e);
 			signatureInvalidityReason = e.getClass().getSimpleName() + " - " + e.getMessage();
 			signatureValid = false;
 		}
@@ -257,6 +262,22 @@ public class OCSPToken extends RevocationToken {
 	public void setCertId(CertificateID certId) {
 		this.certId = certId;
 	}
+	
+	/**
+	 * Sets the thisUpdate value
+	 * @param thisUpdate {@link Date}
+	 */
+	public void setThisUpdate(Date thisUpdate) {
+		this.thisUpdate = thisUpdate;
+	}
+	
+	/**
+	 * Sets the nextUpdate value
+	 * @param nextUpdate {@link Date}
+	 */
+	public void setNextUpdate(Date nextUpdate) {
+		this.nextUpdate = nextUpdate;
+	}
 
 	/**
 	 * Indicates if the token signature is intact.
@@ -265,7 +286,7 @@ public class OCSPToken extends RevocationToken {
 	 */
 	@Override
 	public boolean isValid() {
-		return signatureValid || !isUseNonce() || isNonceMatch();
+		return signatureValid;
 	}
 
 	@Override

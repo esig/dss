@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.Protocol;
 import eu.europa.esig.dss.client.http.commons.CommonsDataLoader;
@@ -101,13 +102,7 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 		this.preferredProtocol = preferredProtocol;
 	}
 
-	/**
-	 * Set the DataLoader to use for querying the CRL server
-	 *
-	 * @param dataLoader
-	 *            the component that allows to retrieve the data using any
-	 *            protocol: HTTP, HTTPS, FTP, LDAP.
-	 */
+	@Override
 	public void setDataLoader(final DataLoader dataLoader) {
 		this.dataLoader = dataLoader;
 	}
@@ -145,12 +140,12 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 		if (dataAndUrl == null) {
 			return null;
 		}
-
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(dataAndUrl.data)) {
 			final CRLValidity crlValidity = CRLUtils.isValidCRL(bais, issuerToken);
 			final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
 			crlToken.setSourceURL(dataAndUrl.urlString);
 			crlToken.setAvailable(true);
+			crlToken.setRevocationTokenKey(DSSRevocationUtils.getCRLRevocationTokenKey(dataAndUrl.urlString));
 			return crlToken;
 		} catch (Exception e) {
 			LOG.warn("Unable to parse/validate the CRL (url:" + dataAndUrl.urlString + ") : " + e.getMessage(), e);

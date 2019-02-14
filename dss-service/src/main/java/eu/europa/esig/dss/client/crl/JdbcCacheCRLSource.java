@@ -31,11 +31,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSASN1Utils;
+import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.crl.CRLValidity;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.revocation.JdbcRevocationSource;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
@@ -112,6 +111,11 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> {
 	private static final String SQL_FIND_UPDATE = "UPDATE CACHED_CRL SET DATA = ?, SIGNATURE_ALGORITHM = ?, THIS_UPDATE = ?, NEXT_UPDATE = ?, EXPIRED_CERTS_ON_CRL = ?, ISSUER = ?, ISSUER_PRINCIPAL_MATCH = ?, SIGNATURE_INTACT = ?, CRL_SIGN_KEY_USAGE = ?, UNKNOWN_CRITICAL_EXTENSION = ?, SIGNATURE_INVALID_REASON = ?  WHERE ID = ?";
 
 	/**
+	 * Used via the find method to remove an existing record by the id
+	 */
+	private static final String SQL_FIND_REMOVE = "DELETE FROM CACHED_CRL WHERE ID = ?";
+	
+	/**
 	 * Used to drop the OCSP cache table
 	 */
 	private static final String SQL_DROP_TABLE = "DROP TABLE CACHED_CRL";
@@ -138,6 +142,11 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> {
 	}
 
 	@Override
+	protected String getRemoveRevocationTokenEntryQuery() {
+		return SQL_FIND_REMOVE;
+	}
+
+	@Override
 	protected String getDeleteTableQuery() {
 		return SQL_DROP_TABLE;
 	}
@@ -147,19 +156,9 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> {
 	 * @param certificateToken {@link CertificateToken}
 	 * @return revocation token key {@link String}
 	 */
-	public String initRevocationTokenKey(CertificateToken certificateToken) {
-		return initRevocationTokenKey(certificateToken, null);
-	}
-
 	@Override
-	public String initRevocationTokenKey(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
-		final List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificateToken);
-		if (Utils.isCollectionEmpty(crlUrls)) {
-			return null;
-		}
-		final String crlUrl = crlUrls.get(0);
-		LOG.debug("CRL's URL for {} : {}", certificateToken.getAbbreviation(), crlUrl);
-		return DSSUtils.getSHA1Digest(crlUrl);
+	public List<String> initRevocationTokenKey(CertificateToken certificateToken) {
+		return DSSRevocationUtils.getCRLRevocationTokenKeys(certificateToken);
 	}
 
 	@Override
@@ -187,22 +186,19 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> {
 	/**
 	 * Insert a new CRL into the cache
 	 *
-	 * @param key
-	 *            the key
 	 * @param token
 	 *            {@link CRLToken}
 	 */
 	@Override
-	protected void insertRevocation(final String key, final CRLToken token) {
+	protected void insertRevocation(final CRLToken token) {
 		Connection c = null;
 		PreparedStatement s = null;
-		final ResultSet rs = null;
 		CRLValidity crlValidity = token.getCrlValidity();
 		try {
 			c = dataSource.getConnection();
 			s = c.prepareStatement(SQL_FIND_INSERT);
 
-			s.setString(1, key);
+			s.setString(1, token.getRevocationTokenKey());
 
 			s.setBytes(2, crlValidity.getCrlEncoded());
 
@@ -236,27 +232,25 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> {
 			s.setString(12, crlValidity.getSignatureInvalidityReason());
 			s.executeUpdate();
 			c.commit();
+			LOG.debug("CRL token with key '{}' successfully inserted in DB", token.getRevocationTokenKey());
 		} catch (final SQLException e) {
 			LOG.error("Unable to insert CRL in the DB", e);
 			rollback(c);
 		} finally {
-			closeQuietly(c, s, rs);
+			closeQuietly(c, s, null);
 		}
 	}
 
 	/**
 	 * Update the cache with the CRL
 	 *
-	 * @param key
-	 *            the key
 	 * @param token
 	 *            {@link CRLToken}
 	 */
 	@Override
-	protected void updateRevocation(String key, CRLToken token) {
+	protected void updateRevocation(CRLToken token) {
 		Connection c = null;
 		PreparedStatement s = null;
-		final ResultSet rs = null;
 		CRLValidity crlValidity = token.getCrlValidity();
 		try {
 			c = dataSource.getConnection();
@@ -292,14 +286,15 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> {
 			s.setBoolean(10, crlValidity.isUnknownCriticalExtension());
 			s.setString(11, crlValidity.getSignatureInvalidityReason());
 
-			s.setString(12, key);
+			s.setString(12, token.getRevocationTokenKey());
 			s.executeUpdate();
 			c.commit();
+			LOG.debug("CRL token with key '{}' successfully updated in DB", token.getRevocationTokenKey());
 		} catch (final SQLException e) {
 			LOG.error("Unable to update CRL in the DB", e);
 			rollback(c);
 		} finally {
-			closeQuietly(c, s, rs);
+			closeQuietly(c, s, null);
 		}
 	}
 	

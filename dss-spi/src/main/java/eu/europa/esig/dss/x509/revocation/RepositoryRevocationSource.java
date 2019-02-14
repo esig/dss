@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.x509.revocation;
 
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,17 +16,21 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 
 	private static final long serialVersionUID = 8116937707098957391L;
 
-	protected RevocationSource<T> cachedSource;
+	protected OnlineSource<T> cachedSource;
 
 	protected Long cacheExpirationTime;
 	
 	/**
-	 * Initialize a revocation token key {@link String} from the given {@link CertificateToken}
-	 * @param certificateToken {@link CertificateToken}
-	 * @param issuerCertificateToken {@link CertificateToken} of CA
-	 * @return {@link String} revocation key
+	 * If true, removes revocation tokens from DB with nextUpdate before the current date
 	 */
-	public abstract String initRevocationTokenKey(CertificateToken certificateToken, CertificateToken issuerCertificateToken);
+	private boolean removeExpired = true;
+	
+	/**
+	 * Initialize a list of revocation token keys {@link String} from the given {@link CertificateToken}
+	 * @param certificateToken {@link CertificateToken}
+	 * @return list of {@link String} revocation keys
+	 */
+	public abstract List<String> initRevocationTokenKey(CertificateToken certificateToken);
 	
 	/**
 	 * Finds a RevocationToken in the cache
@@ -43,22 +49,26 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 	/**
 	 * Inserts a new RevocationToken into the cache
 	 *
-	 * @param key
-	 *            the key {@link String}
 	 * @param token
 	 *            {@link RevocationToken}
 	 */
-	protected abstract void insertRevocation(String key, T token);
+	protected abstract void insertRevocation(T token);
 	
 	/**
 	 * Updates the RevocationToken into cache
 	 *
-	 * @param key
-	 *            the key {@link String}
 	 * @param token
 	 *            {@link RevocationToken}
 	 */
-	protected abstract void updateRevocation(String key, T token);
+	protected abstract void updateRevocation(T token);
+
+	/**
+	 * Removes the RevocationToken from cache
+	 *
+	 * @param token
+	 *            {@link RevocationToken}
+	 */
+	protected abstract void removeRevocation(T token);
 	
 	/**
 	 * Sets the expiration time for the cached files in milliseconds. If more
@@ -82,6 +92,14 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 	}
 	
 	/**
+	 * @param removeExpired
+	 *            the removeExpired to set
+	 */
+	public void setRemoveExpired(boolean removeExpired) {
+		this.removeExpired = removeExpired;
+	}
+	
+	/**
 	 * Retrieves a revocation token for the given {@link CertificateToken}
 	 * @param certificateToken {@link CertificateToken}
 	 * @param issuerCertificateToken {@link CertificateToken} of the issuer of certificateToken
@@ -92,31 +110,39 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 			LOG.warn("Certificate token or issuer's certificate token is null. Cannot get a revocation token!");
 			return null;
 		}
-		final String key = initRevocationTokenKey(certificateToken, issuerCertificateToken);
-		final T revocationToken = findRevocation(key, certificateToken, issuerCertificateToken);
-		if (revocationToken != null) {
-			final Date nextUpdate = revocationToken.getNextUpdate();
-			if ((nextUpdate != null) && nextUpdate.after(new Date())) {
-				LOG.debug("Revocation token is in cache");
-				return revocationToken;
+		final List<String> keys = initRevocationTokenKey(certificateToken);
+		Iterator<String> keyIterator = keys.iterator();
+		while (keyIterator.hasNext()) {
+			String key = keyIterator.next();
+			final T revocationToken = findRevocation(key, certificateToken, issuerCertificateToken);
+			if (revocationToken != null) {
+				final Date nextUpdate = revocationToken.getNextUpdate();
+				if ((nextUpdate != null) && nextUpdate.after(new Date())) {
+					LOG.debug("Revocation token is in cache");
+					return revocationToken;
+				} else {
+					LOG.debug("Revocation token not valid, get new one...");
+					if (removeExpired) {
+						removeRevocation(revocationToken);
+						keyIterator.remove();
+					}
+				}
 			} else {
-				LOG.debug("Revocation token not valid, get new one...");
+				keyIterator.remove();
 			}
 		}
 
 		if (cachedSource == null) {
-			
 			LOG.warn("CachedSource is not initialized for the called RevocationSource!");
 			return null;
 		}
 		final T newToken = cachedSource.getRevocationToken(certificateToken, issuerCertificateToken);
 		if ((newToken != null) && newToken.isValid()) {
-			newToken.initInfo();
-			if (revocationToken == null) {
+			if (!keys.contains(newToken.getRevocationTokenKey())) {
 				LOG.info("RevocationToken '{}' is not in cache", newToken);
-				insertRevocation(key, newToken);
+				insertRevocation(newToken);
 			} else {
-				updateRevocation(key, newToken);
+				updateRevocation(newToken);
 			}
 		}
 		return newToken;

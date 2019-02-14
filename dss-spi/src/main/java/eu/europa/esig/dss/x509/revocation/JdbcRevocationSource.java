@@ -54,6 +54,12 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 	protected abstract String getDeleteTableQuery();
 	
 	/**
+	 * Returns an sql query to remove a record from DB
+	 * @return {@link String} sql query
+	 */
+	protected abstract String getRemoveRevocationTokenEntryQuery();
+	
+	/**
 	 * Build {@link RevocationToken} from the obtained {@link ResultSet}
 	 * @param rs {@link ResultSet} answer from DB
 	 * @param certificateToken {@link CertificateToken} of certificate to get revocation data for
@@ -80,11 +86,7 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 			s.setString(1, key);
 			rs = s.executeQuery();
 			if (rs.next()) {
-				T token = buildRevocationTokenFromResult(rs, certificateToken, issuerCertificateToken);
-				if (token != null) {
-					token.setRevocationTokenKey(key);
-				}
-				return token;
+				return buildRevocationTokenFromResult(rs, certificateToken, issuerCertificateToken);
 			}
 			c.commit();
 		} catch (final SQLException e) {
@@ -96,12 +98,31 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 		return null;
 	}
 
+	@Override
+	protected void removeRevocation(T token) {
+		Connection c = null;
+		PreparedStatement s = null;
+		try {
+			c = dataSource.getConnection();
+			s = c.prepareStatement(getRemoveRevocationTokenEntryQuery());
+			s.setString(1, token.getRevocationTokenKey());
+			s.executeUpdate();
+			c.commit();
+			LOG.debug("Revocation token with key '{}' successfully removed from DB", token.getRevocationTokenKey());
+		} catch (final SQLException e) {
+			LOG.error("Unable to remove Revocation token from the DB", e);
+			rollback(c);
+		} finally {
+			closeQuietly(c, s, null);
+		}
+	}
+
 	/**
-	 * Initialise the DAO by creating the table if it does not exist.
+	 * Initialize the revocation token table by creating the table if it does not exist.
 	 *
 	 * @throws SQLException in case of SQL connection error
 	 */
-	public void initDao() throws SQLException {
+	public void initTable() throws SQLException {
 		/* Create the table if it doesn't exist. */
 		if (!tableExists()) {
 			LOG.debug("Table is not exist. Creating a new table...");

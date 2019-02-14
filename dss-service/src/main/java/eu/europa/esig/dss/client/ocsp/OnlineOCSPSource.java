@@ -55,6 +55,8 @@ import eu.europa.esig.dss.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRespStatus;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPTokenBuilder;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPTokenUtils;
 
 /**
  * Online OCSP repository. This implementation will contact the OCSP Responder
@@ -89,13 +91,7 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 		dataLoader = new OCSPDataLoader();
 	}
 
-	/**
-	 * Set the DataLoader to use for querying the OCSP server.
-	 *
-	 * @param dataLoader
-	 *            the component that allows to retrieve the OCSP response using
-	 *            HTTP.
-	 */
+	@Override
 	public void setDataLoader(final DataLoader dataLoader) {
 		this.dataLoader = dataLoader;
 	}
@@ -153,17 +149,18 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 					final OCSPResp ocspResp = new OCSPResp(ocspRespBytes);
 					OCSPRespStatus status = OCSPRespStatus.fromInt(ocspResp.getStatus());
 					if (OCSPRespStatus.SUCCESSFUL.equals(status)) {
-						OCSPToken ocspToken = new OCSPToken();
-						ocspToken.setResponseStatus(status);
-						ocspToken.setSourceURL(ocspAccessLocation);
-						ocspToken.setCertId(certId);
-						ocspToken.setAvailable(true);
 						final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
-						ocspToken.setBasicOCSPResp(basicOCSPResp);
-						if (nonceSource != null) {
-							ocspToken.setUseNonce(true);
-							ocspToken.setNonceMatch(isNonceMatch(basicOCSPResp, nonce));
+						OCSPTokenBuilder ocspTokenBuilder = new OCSPTokenBuilder(basicOCSPResp, certificateToken);
+						ocspTokenBuilder.setAvailable(true);
+						ocspTokenBuilder.setCertificateId(certId);
+						if (nonce != null) {
+							ocspTokenBuilder.setUseNonce(true);
+							ocspTokenBuilder.setNonceMatch(isNonceMatch(basicOCSPResp, nonce));
 						}
+						ocspTokenBuilder.setOcspRespStatus(status);
+						ocspTokenBuilder.setSourceURL(ocspAccessLocation);
+						OCSPToken ocspToken = ocspTokenBuilder.build();
+						OCSPTokenUtils.checkTokenValidity(ocspToken, certificateToken, issuerCertificateToken);
 						return ocspToken;
 					} else {
 						LOG.warn("OCSP Response status with URL '{}' : {}", ocspAccessLocation, status);

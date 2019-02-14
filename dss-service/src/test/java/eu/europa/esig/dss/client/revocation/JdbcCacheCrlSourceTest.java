@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.client.revocation;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -33,7 +34,7 @@ public class JdbcCacheCrlSourceTest {
 		// webServer = Server.createWebServer("-web","-webAllowOthers","-webPort","8082").start();
 		dataSource.setUrl("jdbc:h2:mem:test;create=true;DB_CLOSE_DELAY=-1");
 		crlSource.setDataSource(dataSource);
-		crlSource.initDao();
+		crlSource.initTable();
 	}
 	
 	@Test
@@ -49,11 +50,11 @@ public class JdbcCacheCrlSourceTest {
 		crlSource.setProxySource(onlineCRLSource);
 		revocationToken = crlSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(revocationToken);
+		assertNotNull(revocationToken.getRevocationTokenKey());
 		
-		String key = crlSource.initRevocationTokenKey(certificateToken, rootToken);
-		assertNotNull(key);
-		revocationToken = crlSource.findRevocation(key, certificateToken, rootToken);
-		assertNotNull(revocationToken);
+		RevocationToken savedRevocationToken = crlSource.findRevocation(revocationToken.getRevocationTokenKey(), certificateToken, rootToken);
+		assertNotNull(savedRevocationToken);
+		assertEquals(revocationToken.getRevocationTokenKey(), savedRevocationToken.getRevocationTokenKey());
 	}
 	
 	@After

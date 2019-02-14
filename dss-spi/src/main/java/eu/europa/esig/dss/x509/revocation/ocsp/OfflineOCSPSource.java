@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateID;
+import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.SingleResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,11 +72,17 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 		}
 
 		if (bestBasicOCSPResp != null) {
-			OCSPToken ocspToken = new OCSPToken();
-			ocspToken.setCertId(certId);
-			ocspToken.setOrigin(RevocationOrigin.SIGNATURE);
-			ocspToken.setBasicOCSPResp(bestBasicOCSPResp);
-			return ocspToken;
+			OCSPTokenBuilder ocspTokenBuilder = new OCSPTokenBuilder(bestBasicOCSPResp, certificateToken);
+			ocspTokenBuilder.setCertificateId(certId);
+			ocspTokenBuilder.setOrigin(RevocationOrigin.SIGNATURE);
+			try {
+				OCSPToken ocspToken = ocspTokenBuilder.build();
+				OCSPTokenUtils.checkTokenValidity(ocspToken, certificateToken, issuerCertificateToken);
+				return ocspToken;
+			} catch (OCSPException e) {
+				LOG.error("An error occurred during an attempt to build OCSP Token. Return null", e);
+			}
+			return null;
 		}
 		return null;
 	}
