@@ -72,8 +72,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 		}
 
 		if (bestBasicOCSPResp != null) {
-			OCSPTokenBuilder ocspTokenBuilder = new OCSPTokenBuilder(bestBasicOCSPResp, certificateToken);
-			ocspTokenBuilder.setCertificateId(certId);
+			OCSPTokenBuilder ocspTokenBuilder = new OCSPTokenBuilder(bestBasicOCSPResp, certificateToken, issuerCertificateToken);
 			ocspTokenBuilder.setOrigin(RevocationOrigin.SIGNATURE);
 			try {
 				OCSPToken ocspToken = ocspTokenBuilder.build();

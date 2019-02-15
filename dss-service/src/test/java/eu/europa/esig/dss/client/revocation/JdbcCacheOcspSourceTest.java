@@ -18,6 +18,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.client.ocsp.JdbcCacheOCSPSource;
 import eu.europa.esig.dss.client.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.RevocationToken;
 
 public class JdbcCacheOcspSourceTest {
@@ -44,11 +45,12 @@ public class JdbcCacheOcspSourceTest {
 		
 		OnlineOCSPSource onlineOCSPSource = new OnlineOCSPSource();
 		ocspSource.setProxySource(onlineOCSPSource);
+		ocspSource.setCacheExpirationTime(180000); // cache expiration in 180 seconds
 		revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(revocationToken);
 		assertNotNull(revocationToken.getRevocationTokenKey());
-		
-		RevocationToken savedRevocationToken = ocspSource.findRevocation(revocationToken.getRevocationTokenKey(), certificateToken, rootToken);
+
+		RevocationToken savedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(savedRevocationToken);
 		assertEquals(revocationToken.getRevocationTokenKey(), savedRevocationToken.getRevocationTokenKey());
 		assertEquals(revocationToken.getAbbreviation(), savedRevocationToken.getAbbreviation());
@@ -57,7 +59,8 @@ public class JdbcCacheOcspSourceTest {
 		assertEquals(Hex.encodeHexString(revocationToken.getEncoded()), Hex.encodeHexString(savedRevocationToken.getEncoded()));
 		assertEquals(Hex.encodeHexString(revocationToken.getIssuerX500Principal().getEncoded()), Hex.encodeHexString(savedRevocationToken.getIssuerX500Principal().getEncoded()));
 		assertEquals(revocationToken.getNextUpdate(), savedRevocationToken.getNextUpdate());
-		assertEquals(revocationToken.getOrigin(), savedRevocationToken.getOrigin());
+		assertEquals(RevocationOrigin.CACHED, savedRevocationToken.getOrigin());
+		assertNotEquals(revocationToken.getOrigin(), savedRevocationToken.getOrigin());
 		assertEquals(revocationToken.getProductionDate(), savedRevocationToken.getProductionDate());
 		assertEquals(Hex.encodeHexString(revocationToken.getPublicKeyOfTheSigner().getEncoded()), Hex.encodeHexString(savedRevocationToken.getPublicKeyOfTheSigner().getEncoded()));
 		assertEquals(revocationToken.getReason(), savedRevocationToken.getReason());
@@ -67,13 +70,6 @@ public class JdbcCacheOcspSourceTest {
 		assertEquals(revocationToken.getSourceURL(), savedRevocationToken.getSourceURL());
 		assertEquals(revocationToken.getStatus(), savedRevocationToken.getStatus());
 		assertEquals(revocationToken.getThisUpdate(), savedRevocationToken.getThisUpdate());
-		
-		assertNull(savedRevocationToken.getNextUpdate()); // cache expiration time is not specified
-		ocspSource.setCacheExpirationTime(180000); // cache expiration in 180 seconds
-		revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
-		savedRevocationToken = ocspSource.findRevocation(revocationToken.getRevocationTokenKey(), certificateToken, rootToken);
-		assertNotNull(savedRevocationToken.getNextUpdate());
-		assertNotEquals(revocationToken.getNextUpdate(), savedRevocationToken.getNextUpdate());
 		
 	}
 	

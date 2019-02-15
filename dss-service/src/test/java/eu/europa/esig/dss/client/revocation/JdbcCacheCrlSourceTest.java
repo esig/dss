@@ -52,7 +52,7 @@ public class JdbcCacheCrlSourceTest {
 		assertNotNull(revocationToken);
 		assertNotNull(revocationToken.getRevocationTokenKey());
 		
-		RevocationToken savedRevocationToken = crlSource.findRevocation(revocationToken.getRevocationTokenKey(), certificateToken, rootToken);
+		RevocationToken savedRevocationToken = crlSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(savedRevocationToken);
 		assertEquals(revocationToken.getRevocationTokenKey(), savedRevocationToken.getRevocationTokenKey());
 		assertEquals(revocationToken.getNextUpdate(), savedRevocationToken.getNextUpdate());

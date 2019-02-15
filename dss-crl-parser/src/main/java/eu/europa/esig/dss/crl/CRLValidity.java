@@ -26,6 +26,7 @@ import java.util.Date;
 
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 
 /**
  * This class encapsulates all information related to the validity of a CRL. It
@@ -46,6 +47,7 @@ public class CRLValidity {
 	private CertificateToken issuerToken = null;
 	private String signatureInvalidityReason;
 	private String url;
+	private RevocationOrigin origin;
 
 	public String getKey() {
 		return key;
@@ -153,6 +155,14 @@ public class CRLValidity {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	
+	public RevocationOrigin getRevocationOrigin() {
+		return origin;
+	}
+	
+	public void setRevocationOrigin(RevocationOrigin origin) {
+		this.origin = origin;
 	}
 
 	/**

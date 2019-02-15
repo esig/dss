@@ -88,6 +88,9 @@ public class CRLToken extends RevocationToken {
 
 		this.signatureValid = crlValidity.isSignatureIntact();
 		this.signatureInvalidityReason = crlValidity.getSignatureInvalidityReason();
+		if (crlValidity.getRevocationOrigin() != null) {
+			this.origin = crlValidity.getRevocationOrigin();
+		}
 	}
 
 	/**
@@ -178,6 +181,7 @@ public class CRLToken extends RevocationToken {
 		out.append(indentStr).append("CRLToken[\n");
 		indentStr += "\t";
 		out.append(indentStr).append("Production time: ").append(productionDate == null ? "?" : DSSUtils.formatInternal(productionDate)).append('\n');
+		out.append(indentStr).append("NextUpdate time: ").append(nextUpdate == null ? "?" : DSSUtils.formatInternal(nextUpdate)).append('\n');
 		out.append(indentStr).append("Signature algorithm: ").append(signatureAlgorithm == null ? "?" : signatureAlgorithm).append('\n');
 		out.append(indentStr).append("Status: ").append(getStatus()).append('\n');
 		out.append(indentStr).append("Issuer's certificate: ").append(getIssuerX500Principal()).append('\n');

@@ -98,12 +98,8 @@ public class OCSPToken extends RevocationToken {
 
 			SingleResp bestSingleResp = getBestSingleResp(basicOCSPResp, certId);
 			if (bestSingleResp != null) {
-				if (this.thisUpdate == null) {
-					this.thisUpdate = bestSingleResp.getThisUpdate();
-				}
-				if (this.nextUpdate == null) {
-					this.nextUpdate = bestSingleResp.getNextUpdate();
-				}
+				this.thisUpdate = bestSingleResp.getThisUpdate();
+				this.nextUpdate = bestSingleResp.getNextUpdate();
 				extractStatusInfo(bestSingleResp);
 				extractArchiveCutOff(bestSingleResp);
 				extractCertHashExtension(bestSingleResp);
@@ -261,22 +257,6 @@ public class OCSPToken extends RevocationToken {
 
 	public void setCertId(CertificateID certId) {
 		this.certId = certId;
-	}
-	
-	/**
-	 * Sets the thisUpdate value
-	 * @param thisUpdate {@link Date}
-	 */
-	public void setThisUpdate(Date thisUpdate) {
-		this.thisUpdate = thisUpdate;
-	}
-	
-	/**
-	 * Sets the nextUpdate value
-	 * @param nextUpdate {@link Date}
-	 */
-	public void setNextUpdate(Date nextUpdate) {
-		this.nextUpdate = nextUpdate;
 	}
 
 	/**

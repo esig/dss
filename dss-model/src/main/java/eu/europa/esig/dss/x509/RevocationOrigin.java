@@ -30,6 +30,11 @@ public enum RevocationOrigin {
 	/**
 	 * The revocation data was provided by the user or online OCSP/CRL
 	 */
-	EXTERNAL
-
+	EXTERNAL,
+	
+	/**
+	 * The revocation data was obtained from a local DB or cache
+	 */
+	CACHED,
+	
 }

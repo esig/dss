@@ -76,7 +76,7 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 		this.dataSource = dataSource;
 	}
 	
-	public T findRevocation(final String key, final CertificateToken certificateToken, final CertificateToken issuerCertificateToken) {
+	protected T findRevocation(final String key, final CertificateToken certificateToken, final CertificateToken issuerCertificateToken) {
 		Connection c = null;
 		PreparedStatement s = null;
 		ResultSet rs = null;

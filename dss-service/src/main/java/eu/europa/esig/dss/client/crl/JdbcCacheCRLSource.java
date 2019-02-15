@@ -36,6 +36,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.JdbcRevocationSource;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.x509.revocation.exception.RevocationException;
@@ -177,6 +178,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> {
 			cached.setIssuerX509PrincipalMatches(rs.getBoolean(SQL_FIND_QUERY_ISSUER_PRINCIPAL_MATCH));
 			cached.setSignatureIntact(rs.getBoolean(SQL_FIND_QUERY_SIGNATURE_INTACT));
 			cached.setSignatureInvalidityReason(rs.getString(SQL_FIND_QUERY_SIGNATURE_INVALID_REASON));
+			cached.setRevocationOrigin(RevocationOrigin.CACHED);
 			return new CRLToken(certificateToken, cached);
 		} catch (SQLException e) {
 			throw new RevocationException("An error occurred during an attempt to get a revocation token");
@@ -212,8 +214,8 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> {
 
 			if (crlValidity.getNextUpdate() != null) {
 				s.setTimestamp(5, new Timestamp(crlValidity.getNextUpdate().getTime()));
-			} else if (cacheExpirationTime != null && crlValidity.getThisUpdate() != null) {
-				s.setTimestamp(5, new Timestamp(crlValidity.getThisUpdate().getTime() + cacheExpirationTime));
+			} else if (nextUpdateDelay != null && crlValidity.getThisUpdate() != null) {
+				s.setTimestamp(5, new Timestamp(crlValidity.getThisUpdate().getTime() + nextUpdateDelay));
 			} else {
 				s.setNull(5, Types.TIMESTAMP);
 			}
@@ -267,8 +269,8 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> {
 
 			if (crlValidity.getNextUpdate() != null) {
 				s.setTimestamp(4, new Timestamp(crlValidity.getNextUpdate().getTime()));
-			} else if (cacheExpirationTime != null && crlValidity.getThisUpdate() != null) {
-				s.setTimestamp(4, new Timestamp(crlValidity.getThisUpdate().getTime() + cacheExpirationTime));
+			} else if (nextUpdateDelay != null && crlValidity.getThisUpdate() != null) {
+				s.setTimestamp(4, new Timestamp(crlValidity.getThisUpdate().getTime() + nextUpdateDelay));
 			} else {
 				s.setNull(4, Types.TIMESTAMP);
 			}

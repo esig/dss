@@ -26,13 +26,10 @@ import java.security.Security;
 import java.util.Collections;
 import java.util.List;
 
-import org.bouncycastle.asn1.ASN1OctetString;
-import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.Extensions;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateID;
 import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPReq;
@@ -149,15 +146,8 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 					final OCSPResp ocspResp = new OCSPResp(ocspRespBytes);
 					OCSPRespStatus status = OCSPRespStatus.fromInt(ocspResp.getStatus());
 					if (OCSPRespStatus.SUCCESSFUL.equals(status)) {
-						final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
-						OCSPTokenBuilder ocspTokenBuilder = new OCSPTokenBuilder(basicOCSPResp, certificateToken);
-						ocspTokenBuilder.setAvailable(true);
-						ocspTokenBuilder.setCertificateId(certId);
-						if (nonce != null) {
-							ocspTokenBuilder.setUseNonce(true);
-							ocspTokenBuilder.setNonceMatch(isNonceMatch(basicOCSPResp, nonce));
-						}
-						ocspTokenBuilder.setOcspRespStatus(status);
+						OCSPTokenBuilder ocspTokenBuilder = new OCSPTokenBuilder(ocspResp, certificateToken, issuerCertificateToken);
+						ocspTokenBuilder.setNonce(nonce);
 						ocspTokenBuilder.setSourceURL(ocspAccessLocation);
 						OCSPToken ocspToken = ocspTokenBuilder.build();
 						OCSPTokenUtils.checkTokenValidity(ocspToken, certificateToken, issuerCertificateToken);
@@ -199,25 +189,6 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			return ocspReqData;
 		} catch (OCSPException | IOException e) {
 			throw new DSSException("Cannot build OCSP Request", e);
-		}
-	}
-
-	private boolean isNonceMatch(final BasicOCSPResp basicOCSPResp, BigInteger expectedNonceValue) {
-		Extension extension = basicOCSPResp.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
-		ASN1OctetString extnValue = extension.getExtnValue();
-		ASN1Primitive value;
-		try {
-			value = ASN1Primitive.fromByteArray(extnValue.getOctets());
-		} catch (IOException ex) {
-			LOG.warn("Invalid encoding of nonce extension value in OCSP response", ex);
-			return false;
-		}
-		if (value instanceof DEROctetString) {
-			BigInteger receivedNonce = new BigInteger(((DEROctetString) value).getOctets());
-			return expectedNonceValue.equals(receivedNonce);
-		} else {
-			LOG.warn("Nonce extension value in OCSP response is not an OCTET STRING");
-			return false;
 		}
 	}
 

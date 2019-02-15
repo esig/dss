@@ -1,17 +1,27 @@
 package eu.europa.esig.dss.x509.revocation.ocsp;
 
-import java.util.Date;
+import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Objects;
 
+import org.bouncycastle.asn1.ASN1OctetString;
+import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.DEROctetString;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cert.ocsp.CertificateID;
 import org.bouncycastle.cert.ocsp.OCSPException;
+import org.bouncycastle.cert.ocsp.OCSPResp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 
 public class OCSPTokenBuilder {
+
+	private static final Logger LOG = LoggerFactory.getLogger(OCSPTokenBuilder.class);
 	
 	/**
 	 * Basic OCSP Response received from a relevant OCSP authority
@@ -24,14 +34,14 @@ public class OCSPTokenBuilder {
 	private final CertificateToken certificateToken;
 	
 	/**
+	 * Issuer's certificate token of the used certificateToken
+	 */
+	private final CertificateToken issuerCertificateToken;
+	
+	/**
 	 * If the OCSP url is available
 	 */
 	private boolean available = false;
-	
-	/**
-	 * Certificate ID
-	 */
-	private CertificateID certificateID;
 	
 	/**
 	 * The URL which was used to obtain the revocation data (online).
@@ -41,7 +51,7 @@ public class OCSPTokenBuilder {
 	/**
 	 * Status of the OCSP response
 	 */
-	private OCSPRespStatus ocspRespStatus;
+	private OCSPRespStatus responseStatus;
 	
 	/**
 	 * Origin of the revocation data (signature or external)
@@ -49,28 +59,22 @@ public class OCSPTokenBuilder {
 	private RevocationOrigin origin;
 	
 	/**
-	 * Represents the next update date of the OCSP response.
+	 * This variable is used to prevent the replay attack.
 	 */
-	private Date nextUpdate;
+	private BigInteger nonce;
 	
-	/**
-	 * Represents the this update date of the OCSP.
-	 */
-	private Date thisUpdate;
-	
-	/**
-	 * The sent nonce matched with the received one
-	 */
-	private boolean nonceMatch;
+	public OCSPTokenBuilder(final OCSPResp ocspResp, final CertificateToken certificateToken, final CertificateToken issuerCertificateToken) throws OCSPException {
+		this((BasicOCSPResp) ocspResp.getResponseObject(), certificateToken, issuerCertificateToken);
+		this.responseStatus = OCSPRespStatus.fromInt(ocspResp.getStatus());
+		if (OCSPRespStatus.SUCCESSFUL.equals(this.responseStatus)) {
+			this.available = true;
+		}
+	}
 
-	/**
-	 * The OCSP request contained a nonce
-	 */
-	private boolean useNonce;
-
-	public OCSPTokenBuilder(final BasicOCSPResp basicOCSPResp, final CertificateToken certificateToken) {
+	public OCSPTokenBuilder(final BasicOCSPResp basicOCSPResp, final CertificateToken certificateToken, final CertificateToken issuerCertificateToken) {
 		this.basicOCSPResp = basicOCSPResp;
 		this.certificateToken = certificateToken;
+		this.issuerCertificateToken = issuerCertificateToken;
 	}
 
 	/**
@@ -84,32 +88,16 @@ public class OCSPTokenBuilder {
 		this.ocspAccessLocation = sourceURL;
 	}
 	
-	public void setCertificateId(CertificateID certificateID) {
-		this.certificateID = certificateID;
-	}
-	
-	public void setOcspRespStatus(OCSPRespStatus ocspRespStatus) {
-		this.ocspRespStatus = ocspRespStatus;
-	}
-	
 	public void setAvailable(boolean available) {
 		this.available = available;
 	}
 	
-	public void setUseNonce(boolean useNonce) {
-		this.useNonce = useNonce;
+	public void setOCSPResponseStatus(OCSPRespStatus respStatus) {
+		this.responseStatus = respStatus;
 	}
 	
-	public void setNonceMatch(boolean nonceMatch) {
-		this.nonceMatch = nonceMatch;
-	}
-	
-	public void setNextUpdate(Date nextUpdate) {
-		this.nextUpdate = nextUpdate;
-	}
-	
-	public void setThisUpdate(Date thisUpdate) {
-		this.thisUpdate = thisUpdate;
+	public void setNonce(BigInteger nonce) {
+		this.nonce = nonce;
 	}
 	
 	public void setOrigin(RevocationOrigin origin) {
@@ -125,31 +113,51 @@ public class OCSPTokenBuilder {
 		Objects.requireNonNull(basicOCSPResp, "The basic OCSP response must be filled");
 		Objects.requireNonNull(certificateToken, "The Certificate token must be filled");
 		OCSPToken ocspToken = new OCSPToken();
-		if (ocspRespStatus != null) {
-			ocspToken.setResponseStatus(ocspRespStatus);
-		}
 		if (ocspAccessLocation != null) {
 			ocspToken.setSourceURL(ocspAccessLocation);
 			ocspToken.setRevocationTokenKey(DSSRevocationUtils.getOcspRevocationKey(certificateToken, ocspAccessLocation));
 		}
-		if (certificateID != null) {
-			ocspToken.setCertId(certificateID);
-		}
+		ocspToken.setCertId(DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken));
 		if (origin != null) {
 			ocspToken.setOrigin(origin);
 		}
 		ocspToken.setAvailable(available);
+		ocspToken.setResponseStatus(responseStatus);
 		ocspToken.setRelatedCertificateID(certificateToken.getDSSIdAsString());
-
+		
 		ocspToken.setBasicOCSPResp(basicOCSPResp);
+		if (nonce != null) {
+			ocspToken.setUseNonce(true);
+			boolean nonceMatch = isNonceMatch(basicOCSPResp, nonce);
+			if (nonceMatch) {
+				ocspToken.setNonceMatch(true);
+			} else {
+				throw new OCSPException("Nonce received from OCSP response does not match a dispatched nonce.");
+			}
+		}
 		
-		ocspToken.setUseNonce(useNonce);
-		ocspToken.setNonceMatch(nonceMatch);
-		
-		ocspToken.setThisUpdate(thisUpdate);
-		ocspToken.setNextUpdate(nextUpdate);
 		ocspToken.initInfo();
 		
 		return ocspToken;
 	}
+
+	private boolean isNonceMatch(final BasicOCSPResp basicOCSPResp, BigInteger expectedNonceValue) {
+		Extension extension = basicOCSPResp.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
+		ASN1OctetString extnValue = extension.getExtnValue();
+		ASN1Primitive value;
+		try {
+			value = ASN1Primitive.fromByteArray(extnValue.getOctets());
+		} catch (IOException ex) {
+			LOG.warn("Invalid encoding of nonce extension value in OCSP response", ex);
+			return false;
+		}
+		if (value instanceof DEROctetString) {
+			BigInteger receivedNonce = new BigInteger(((DEROctetString) value).getOctets());
+			return expectedNonceValue.equals(receivedNonce);
+		} else {
+			LOG.warn("Nonce extension value in OCSP response is not an OCTET STRING");
+			return false;
+		}
+	}
+	
 }

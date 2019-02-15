@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
+import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 
 public abstract class RepositoryRevocationSource<T extends RevocationToken> implements RevocationSource<T> {
 
@@ -18,7 +19,11 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 
 	protected OnlineSource<T> cachedSource;
 
-	protected Long cacheExpirationTime;
+	/**
+	 * In case if the nextUpdate date is not specified in the response, this value used to compute the parameter,
+	 * based on the delay from thisUpdate
+	 */
+	protected Long nextUpdateDelay;
 	
 	/**
 	 * If true, removes revocation tokens from DB with nextUpdate before the current date
@@ -44,7 +49,7 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 	 * @return
 	 * 		  {@link RevocationToken} object
 	 */
-	public abstract T findRevocation(String key, CertificateToken certificateToken, CertificateToken issuerCertToken);
+	protected abstract T findRevocation(String key, CertificateToken certificateToken, CertificateToken issuerCertToken);
 	
 	/**
 	 * Inserts a new RevocationToken into the cache
@@ -79,7 +84,7 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 	 * @param cacheExpirationTimeInMilliseconds long value
 	 */
 	public void setCacheExpirationTime(final long cacheExpirationTimeInMilliseconds) {
-		this.cacheExpirationTime = cacheExpirationTimeInMilliseconds;
+		this.nextUpdateDelay = cacheExpirationTimeInMilliseconds;
 	}
 
 	/**
@@ -115,8 +120,7 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 			String key = keyIterator.next();
 			final T revocationToken = findRevocation(key, certificateToken, issuerCertificateToken);
 			if (revocationToken != null) {
-				final Date nextUpdate = revocationToken.getNextUpdate();
-				if ((nextUpdate != null) && nextUpdate.after(new Date())) {
+				if (isNotExpired(revocationToken)) {
 					LOG.debug("Revocation token is in cache");
 					return revocationToken;
 				} else {
@@ -136,7 +140,7 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 			return null;
 		}
 		final T newToken = cachedSource.getRevocationToken(certificateToken, issuerCertificateToken);
-		if ((newToken != null) && newToken.isValid()) {
+		if ((newToken != null) && newToken.isValid() && isNotExpired(newToken)) {
 			if (!keys.contains(newToken.getRevocationTokenKey())) {
 				LOG.info("RevocationToken '{}' is not in cache", newToken);
 				insertRevocation(newToken);
@@ -145,6 +149,23 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 			}
 		}
 		return newToken;
+	}
+	
+	/**
+	 * Checks if the nextUpdate date is currently valid with respect of nextUpdateDelay parameter
+	 * if token does not contain the nextUpdate date
+	 * @param token {@link CRLToken} or {@link OCSPToken}
+	 * @return TRUE if the token is still valid, FALSE otherwise
+	 */
+	private boolean isNotExpired(T token) {
+		Date nextUpdate = token.getNextUpdate();
+		if (nextUpdate == null && nextUpdateDelay != null) {
+			nextUpdate = new Date(token.getThisUpdate().getTime() + nextUpdateDelay);
+		}
+		if (nextUpdate != null) {
+			return nextUpdate.after(new Date());
+		}
+		return false;
 	}
 
 }
