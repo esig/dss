@@ -1088,7 +1088,7 @@ NOTE: SmartCards/HSMs don't allow to sign with all digest algorithms. Please ref
 | CAdES | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | icon:check-circle[] | |  |  
 |===
 
-== Multi-theading
+== Multi-threading
 
 DSS can be used in multi-threaded environments but some points need to be considered like resources sharing and caching. All operations are stateless and this fact requires to be maintained. Some resources can be shared, others are proper to an operation. 
 
