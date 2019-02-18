@@ -32,7 +32,7 @@ public class DigestAlgorithmAcceptanceValidation extends Chain<XmlSAV> {
 
 	protected ChainItem<XmlSAV> digestCryptographic() {
 		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(context);
-		return new DigestCryptographicCheck<XmlSAV>(result, digestAlgorithmName, currentTime, constraint);
+		return new DigestCryptographicCheck(result, digestAlgorithmName, currentTime, constraint);
 	}
 
 }

@@ -2,14 +2,14 @@ package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 
-public class DigestCryptographicCheck<T extends XmlConstraintsConclusion> extends AbstractCryptographicCheck<T> {
+public class DigestCryptographicCheck extends AbstractCryptographicCheck<XmlSAV> {
 	
-	String digestAlgorithmName;
+	private final String digestAlgorithmName;
 	
-	public DigestCryptographicCheck(T result, String digestAlgorithmName, Date currentTime, CryptographicConstraint constraint) {
+	public DigestCryptographicCheck(XmlSAV result, String digestAlgorithmName, Date currentTime, CryptographicConstraint constraint) {
 		super(result, currentTime, constraint);
 		this.digestAlgorithmName = digestAlgorithmName;
 	}

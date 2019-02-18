@@ -14,7 +14,7 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class SignatureAcceptanceValidationResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 	
-	XmlSAV savResult;
+	private final XmlSAV savResult;
 
 	public SignatureAcceptanceValidationResultCheck(T result, XmlSAV savResult, LevelConstraint constraint) {
 		super(result, constraint);

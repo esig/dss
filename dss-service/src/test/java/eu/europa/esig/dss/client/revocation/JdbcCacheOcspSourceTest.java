@@ -49,6 +49,7 @@ public class JdbcCacheOcspSourceTest {
 		revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(revocationToken);
 		assertNotNull(revocationToken.getRevocationTokenKey());
+		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getOrigin());
 
 		RevocationToken savedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(savedRevocationToken);
@@ -75,7 +76,7 @@ public class JdbcCacheOcspSourceTest {
 	
 	@After
 	public void cleanUp() throws SQLException {
-		ocspSource.destroyDao();
+		ocspSource.destroyTable();
 		dataSource.setUrl("jdbc:h2:mem:test;drop=true");
 	}
 	

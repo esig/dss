@@ -20,7 +20,7 @@ public class MessageImprintDigestAlgorithmValidation extends DigestAlgorithmAcce
 	@Override
 	protected ChainItem<XmlSAV> digestCryptographic() {
 		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(context);
-		return new DigestCryptographicCheck<XmlSAV>(result, digestAlgorithmName, currentTime, constraint) {
+		return new DigestCryptographicCheck(result, digestAlgorithmName, currentTime, constraint) {
 			@Override
 			protected MessageTag getMessageTag() { return MessageTag.BBB_SAV_TSP_IMSDAV; }
 		};

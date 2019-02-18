@@ -170,7 +170,7 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 	 * Removes table from DB
 	 * @throws SQLException in case of error
 	 */
-	public void destroyDao() throws SQLException {
+	public void destroyTable() throws SQLException {
 		/* Drop the table if it exists. */
 		if (tableExists()) {
 			dropTable();

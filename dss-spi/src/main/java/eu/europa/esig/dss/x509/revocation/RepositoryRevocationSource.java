@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 
 public abstract class RepositoryRevocationSource<T extends RevocationToken> implements RevocationSource<T> {
 
@@ -17,7 +18,7 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 
 	private static final long serialVersionUID = 8116937707098957391L;
 
-	protected OnlineSource<T> cachedSource;
+	protected OnlineSource<T> proxiedSource;
 
 	/**
 	 * In case if the nextUpdate date is not specified in the response, this value used to compute the parameter,
@@ -88,11 +89,14 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 	}
 
 	/**
-	 * @param cachedSource
-	 *            the cachedSource to set
+	 * The proxied revocation source to be called if the data is not available in
+	 * the cache
+	 * 
+	 * @param proxiedSource
+	 *                      the proxiedSource to set
 	 */
-	public void setProxySource(final OnlineSource<T> cachedSource) {
-		this.cachedSource = cachedSource;
+	public void setProxySource(final OnlineSource<T> proxiedSource) {
+		this.proxiedSource = proxiedSource;
 	}
 	
 	/**
@@ -124,7 +128,7 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 					LOG.debug("Revocation token is in cache");
 					return revocationToken;
 				} else {
-					LOG.debug("Revocation token not valid, get new one...");
+					LOG.debug("Revocation token is expired");
 					if (removeExpired) {
 						removeRevocation(revocationToken);
 						keyIterator.remove();
@@ -135,11 +139,11 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 			}
 		}
 
-		if (cachedSource == null) {
-			LOG.warn("CachedSource is not initialized for the called RevocationSource!");
+		if (proxiedSource == null) {
+			LOG.warn("Proxied revocation source is not initialized for the called RevocationSource!");
 			return null;
 		}
-		final T newToken = cachedSource.getRevocationToken(certificateToken, issuerCertificateToken);
+		final T newToken = proxiedSource.getRevocationToken(certificateToken, issuerCertificateToken);
 		if ((newToken != null) && newToken.isValid() && isNotExpired(newToken)) {
 			if (!keys.contains(newToken.getRevocationTokenKey())) {
 				LOG.info("RevocationToken '{}' is not in cache", newToken);
