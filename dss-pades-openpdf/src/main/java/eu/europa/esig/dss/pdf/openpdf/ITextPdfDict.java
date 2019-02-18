@@ -65,10 +65,13 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 	}
 
 	@Override
-	public byte[] get(String name) {
+	public byte[] getBinariesValue(String name) {
 		PdfObject val = wrapped.get(new PdfName(name));
 		if (val == null) {
 			return null;
+		} else if (val instanceof PdfString) {
+			PdfString pdfString = (PdfString) val;
+			return pdfString.getOriginalBytes();
 		}
 		return val.getBytes();
 	}
