@@ -8,7 +8,6 @@ import java.io.File;
 import java.sql.SQLException;
 
 import org.h2.jdbcx.JdbcDataSource;
-import org.h2.tools.Server;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +26,7 @@ public class JdbcCacheCrlSourceTest {
 	
 	private JdbcCacheCRLSource crlSource = new JdbcCacheCRLSource();
 	
-	private Server webServer;
+//	private Server webServer;
 	
 	@Before
 	public void setUp() throws SQLException {		
@@ -82,6 +81,10 @@ public class JdbcCacheCrlSourceTest {
 		assertEquals(revocationToken.getRevocationTokenKey(), savedRevocationToken.getRevocationTokenKey());
 		assertEquals(revocationToken.getNextUpdate(), savedRevocationToken.getNextUpdate());
 		assertEquals(RevocationOrigin.CACHED, savedRevocationToken.getOrigin());
+
+		RevocationToken forceRefresh = crlSource.getRevocationToken(certificateToken, caToken, true);
+		assertNotNull(forceRefresh);
+		assertEquals(RevocationOrigin.EXTERNAL, forceRefresh.getOrigin());
 	}
 
 	@After

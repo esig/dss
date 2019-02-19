@@ -109,33 +109,57 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 	
 	/**
 	 * Retrieves a revocation token for the given {@link CertificateToken}
-	 * @param certificateToken {@link CertificateToken}
-	 * @param issuerCertificateToken {@link CertificateToken} of the issuer of certificateToken
+	 * 
+	 * @param certificateToken
+	 *                               {@link CertificateToken}
+	 * @param issuerCertificateToken
+	 *                               {@link CertificateToken} of the issuer of
+	 *                               certificateToken
 	 */
 	@Override
 	public T getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerCertificateToken) {
+		return getRevocationToken(certificateToken, issuerCertificateToken, false);
+	}
+
+	/**
+	 * Retrieves a revocation token for the given {@link CertificateToken}
+	 * 
+	 * @param certificateToken
+	 *                               {@link CertificateToken}
+	 * @param issuerCertificateToken
+	 *                               {@link CertificateToken} of the issuer of
+	 *                               certificateToken
+	 * @param forceRefresh
+	 *                               if true, explicitly skips the cache
+	 */
+	public T getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerCertificateToken, boolean forceRefresh) {
 		if ((certificateToken == null) || (issuerCertificateToken == null)) {
 			LOG.warn("Certificate token or issuer's certificate token is null. Cannot get a revocation token!");
 			return null;
 		}
+
 		final List<String> keys = initRevocationTokenKey(certificateToken);
-		Iterator<String> keyIterator = keys.iterator();
-		while (keyIterator.hasNext()) {
-			String key = keyIterator.next();
-			final T revocationToken = findRevocation(key, certificateToken, issuerCertificateToken);
-			if (revocationToken != null) {
-				if (isNotExpired(revocationToken)) {
-					LOG.debug("Revocation token is in cache");
-					return revocationToken;
-				} else {
-					LOG.debug("Revocation token is expired");
-					if (removeExpired) {
-						removeRevocation(revocationToken);
-						keyIterator.remove();
+		if (forceRefresh) {
+			LOG.info("Cache is skipped to retrieve the revocation token for certificate '{}'", certificateToken.getDSSIdAsString());
+		} else {
+			Iterator<String> keyIterator = keys.iterator();
+			while (keyIterator.hasNext()) {
+				String key = keyIterator.next();
+				final T revocationToken = findRevocation(key, certificateToken, issuerCertificateToken);
+				if (revocationToken != null) {
+					if (isNotExpired(revocationToken)) {
+						LOG.info("Revocation token for certificate '{}' is in cache", certificateToken.getDSSIdAsString());
+						return revocationToken;
+					} else {
+						LOG.debug("Revocation token is expired");
+						if (removeExpired) {
+							removeRevocation(revocationToken);
+							keyIterator.remove();
+						}
 					}
+				} else {
+					keyIterator.remove();
 				}
-			} else {
-				keyIterator.remove();
 			}
 		}
 
@@ -145,8 +169,8 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 		}
 		final T newToken = proxiedSource.getRevocationToken(certificateToken, issuerCertificateToken);
 		if ((newToken != null) && newToken.isValid() && isNotExpired(newToken)) {
+			LOG.info("Revocation token for certificate '{}' is added/updated in the cache", certificateToken.getDSSIdAsString());
 			if (!keys.contains(newToken.getRevocationTokenKey())) {
-				LOG.info("RevocationToken '{}' is not in cache", newToken);
 				insertRevocation(newToken);
 			} else {
 				updateRevocation(newToken);
