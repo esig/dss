@@ -32,6 +32,7 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateID;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cert.ocsp.SingleResp;
+import org.bouncycastle.operator.DigestCalculator;
 import org.junit.Test;
 
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -73,6 +74,12 @@ public class DSSRevocationUtilsTest {
 	@Test(expected = IOException.class)
 	public void testWrongOCSP() throws IOException {
 		DSSRevocationUtils.loadOCSPBase64Encoded("MIIHOgoBAK");
+	}
+
+	@Test
+	public void getSHA1DigestCalculator() {
+		DigestCalculator digestCalculator = DSSRevocationUtils.getSHA1DigestCalculator();
+		assertNotNull(digestCalculator);
 	}
 
 }

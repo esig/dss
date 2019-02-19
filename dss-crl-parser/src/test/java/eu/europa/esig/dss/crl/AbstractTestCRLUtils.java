@@ -29,14 +29,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.security.NoSuchProviderException;
-import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRLEntry;
 import java.security.cert.X509Certificate;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSException;
@@ -45,18 +42,13 @@ import eu.europa.esig.dss.x509.CertificateToken;
 
 public abstract class AbstractTestCRLUtils {
 
-	private static final BouncyCastleProvider securityProvider = new BouncyCastleProvider();
-
 	private static final CertificateFactory certificateFactory;
 
 	static {
 		try {
-			Security.addProvider(securityProvider);
-			certificateFactory = CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME);
+			certificateFactory = CertificateFactory.getInstance("X.509");
 		} catch (CertificateException e) {
 			throw new DSSException("Platform does not support X509 certificate", e);
-		} catch (NoSuchProviderException e) {
-			throw new DSSException("Platform does not support BouncyCastle", e);
 		}
 	}
 
