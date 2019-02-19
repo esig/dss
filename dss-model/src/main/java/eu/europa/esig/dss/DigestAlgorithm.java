@@ -55,7 +55,9 @@ public enum DigestAlgorithm {
 
 	MD2("MD2", "MD2", "1.2.840.113549.2.2", "http://www.w3.org/2001/04/xmldsig-more#md2"),
 
-	MD5("MD5", "MD5", "1.2.840.113549.2.5", "http://www.w3.org/2001/04/xmldsig-more#md5");
+	MD5("MD5", "MD5", "1.2.840.113549.2.5", "http://www.w3.org/2001/04/xmldsig-more#md5"),
+
+	WHIRLPOOL("WHIRLPOOL", "WHIRLPOOL", "1.0.10118.3.0.55", "http://www.w3.org/2007/05/xmldsig-more#whirlpool");
 	/**
 	 * RFC 2313
 	 * "MD2", "1.2.840.113549.2.2"

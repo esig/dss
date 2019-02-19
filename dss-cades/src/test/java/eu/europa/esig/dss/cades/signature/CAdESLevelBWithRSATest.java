@@ -54,27 +54,42 @@ public class CAdESLevelBWithRSATest extends AbstractCAdESTestSignature {
 
 	@Parameters(name = "Combination {index} of message-digest algorithm {0} + digest algorithm {1} + MGF1 ? {2}")
 	public static Collection<Object[]> data() {
-		List<DigestAlgorithm> digestAlgos = Arrays.asList(DigestAlgorithm.SHA1, DigestAlgorithm.SHA224,
-				DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512, DigestAlgorithm.SHA3_224,
-				DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384, DigestAlgorithm.SHA3_512);
-
 
 		List<Object[]> digests = new ArrayList<Object[]>();
+		
+		List<DigestAlgorithm> digestAlgos = Arrays.asList(DigestAlgorithm.SHA224,
+				DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512, DigestAlgorithm.SHA3_224,
+				DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384, DigestAlgorithm.SHA3_512);
 		for (DigestAlgorithm digest1 : digestAlgos) {
 			for (DigestAlgorithm digest2 : digestAlgos) {
-				if (DigestAlgorithm.SHA1 == digest2) {
-					// Due to
-					// org.bouncycastle.cms.DefaultCMSSignatureEncryptionAlgorithmFinder.findEncryptionAlgorithm(AlgorithmIdentifier)
-					if (digest1 == digest2) {
-						digests.add(new Object[] { digest1, digest1, null });
-						digests.add(new Object[] { digest1, digest1, MaskGenerationFunction.MGF1 });
-					}
-				} else {
-					digests.add(new Object[] { digest1, digest2, null });
-					digests.add(new Object[] { digest1, digest2, MaskGenerationFunction.MGF1 });
-				}
+				digests.add(new Object[] { digest1, digest2, null });
+				digests.add(new Object[] { digest1, digest2, MaskGenerationFunction.MGF1 });
 			}
 		}
+		
+		List<DigestAlgorithm> messageDigestAlgos = Arrays.asList(DigestAlgorithm.RIPEMD160,
+				DigestAlgorithm.MD2, DigestAlgorithm.MD5);
+		for (DigestAlgorithm digest1 : messageDigestAlgos) {
+			digests.add(new Object[] { digest1, digest1, null });
+			for (DigestAlgorithm digest2 : digestAlgos) {
+				digests.add(new Object[] { digest1, digest2, null });
+			}
+		}
+		
+		// DigestAlgorithm.WHIRLPOOL
+		for (DigestAlgorithm digest : digestAlgos) {
+			digests.add(new Object[] { DigestAlgorithm.WHIRLPOOL, digest, null });
+		}
+
+		// Due to
+		// org.bouncycastle.cms.DefaultCMSSignatureEncryptionAlgorithmFinder.findEncryptionAlgorithm(AlgorithmIdentifier)
+		List<DigestAlgorithm> digestAlgosWithSha1 = new ArrayList<>(digestAlgos);
+		digestAlgosWithSha1.add(DigestAlgorithm.SHA1);
+		for (DigestAlgorithm digest : digestAlgosWithSha1) {
+			digests.add(new Object[] { DigestAlgorithm.SHA1, digest, null });
+			digests.add(new Object[] { DigestAlgorithm.SHA1, digest, MaskGenerationFunction.MGF1 });
+		}
+		
 		return digests;
 	}
 

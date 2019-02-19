@@ -22,4 +22,8 @@ public class AbstractValidationExecutorTest {
 		return new EtsiValidationPolicy(policyJaxB);
 	}
 
+	protected EtsiValidationPolicy loadDefaultPolicy() throws Exception {
+		return loadPolicy("src/main/resources/policy/constraint.xml");
+	}
+
 }
