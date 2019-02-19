@@ -47,7 +47,7 @@ import eu.europa.esig.dss.client.http.DataLoader;
 import eu.europa.esig.dss.client.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.revocation.OnlineSource;
+import eu.europa.esig.dss.x509.revocation.OnlineRevocationSource;
 import eu.europa.esig.dss.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRespStatus;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
@@ -60,7 +60,7 @@ import eu.europa.esig.dss.x509.revocation.ocsp.OCSPTokenUtils;
  * to retrieve the OCSP response.
  */
 @SuppressWarnings("serial")
-public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUrlsSupport<OCSPToken>, OnlineSource<OCSPToken> {
+public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUrlsSupport<OCSPToken>, OnlineRevocationSource<OCSPToken> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OnlineOCSPSource.class);
 

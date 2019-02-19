@@ -38,7 +38,7 @@ import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.revocation.OnlineSource;
+import eu.europa.esig.dss.x509.revocation.OnlineRevocationSource;
 import eu.europa.esig.dss.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
@@ -52,7 +52,7 @@ import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
  * apache-ldap-api is provided.
  *
  */
-public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrlsSupport<CRLToken>, OnlineSource<CRLToken> {
+public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrlsSupport<CRLToken>, OnlineRevocationSource<CRLToken> {
 	private static final long serialVersionUID = 6912729291417315212L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(OnlineCRLSource.class);

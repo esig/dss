@@ -18,7 +18,7 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 
 	private static final long serialVersionUID = 8116937707098957391L;
 
-	protected OnlineSource<T> proxiedSource;
+	protected OnlineRevocationSource<T> proxiedSource;
 
 	/**
 	 * In case if the nextUpdate date is not specified in the response, this value used to compute the parameter,
@@ -95,7 +95,7 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 	 * @param proxiedSource
 	 *                      the proxiedSource to set
 	 */
-	public void setProxySource(final OnlineSource<T> proxiedSource) {
+	public void setProxySource(final OnlineRevocationSource<T> proxiedSource) {
 		this.proxiedSource = proxiedSource;
 	}
 	
