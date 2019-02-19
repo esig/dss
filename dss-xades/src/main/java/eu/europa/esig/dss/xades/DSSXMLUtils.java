@@ -36,15 +36,20 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import eu.europa.esig.dss.DSSDocument;
@@ -365,6 +370,37 @@ public final class DSSXMLUtils {
 	 */
 	public static String getOidCode(String oid) {
 		return oid.substring(oid.lastIndexOf(':') + 1);
+	}
+
+	/**
+	 * This method is used to detect duplicate id values
+	 * 
+	 * @param doc
+	 *            the document to be analyzed
+	 * @return TRUE if a duplicate id is detected
+	 */
+	public static boolean isDuplicateIdsDetected(DSSDocument doc) {
+		try {
+			Document dom = DomUtils.buildDOM(doc);
+			Element root = dom.getDocumentElement();
+			recursiveIdBrowse(root);
+			XPathExpression xPathExpression = DomUtils.createXPathExpression("//*/@*");
+			NodeList nodeList = (NodeList) xPathExpression.evaluate(root, XPathConstants.NODESET);
+			for (int i = 0; i < nodeList.getLength(); i++) {
+				Attr attr = (Attr) nodeList.item(i);
+				if (Utils.areStringsEqualIgnoreCase("id", attr.getName())) {
+					XPathExpression xpathAllById = DomUtils.createXPathExpression("//*[@" + attr.getName() + "='" + attr.getValue() + "']");
+					NodeList nodeListById = (NodeList) xpathAllById.evaluate(root, XPathConstants.NODESET);
+					if (nodeListById.getLength() != 1) {
+						LOG.warn("Problem detected with Id '{}', nb occurences = {}", attr.getValue(), nodeListById.getLength());
+						return true;
+					}
+				}
+			}
+		} catch (XPathExpressionException e) {
+			throw new DSSException("Unable to check if duplicate ids are present", e);
+		}
+		return false;
 	}
 
 }

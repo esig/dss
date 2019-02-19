@@ -192,7 +192,7 @@ public class DSS1334Test extends PKIFactoryAccess {
 		DSSDocument signDocument = service.signDocument(fileDocument, parameters, signatureValue);
 
 		String stringContent = new String(DSSUtils.toByteArray(signDocument), "UTF-8");
-		assertTrue(stringContent.contains("<ds:Reference Id=\"r-id-1\">")); // no empty URI
+		assertTrue(stringContent.contains("<ds:Reference Id=\"r-id-")); // no empty URI
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signDocument);
 		validator.setDetachedContents(Arrays.<DSSDocument>asList(new FileDocument(ORIGINAL_FILE)));

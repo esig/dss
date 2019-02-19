@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.util.Collections;
@@ -61,6 +62,10 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 				fail(e.getMessage());
 			}
 		}
+
+		// Check for duplicate ids
+		assertFalse(DSSXMLUtils.isDuplicateIdsDetected(new InMemoryDocument(byteArray)));
+		
 	}
 
 	@Override

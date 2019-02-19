@@ -88,7 +88,7 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
 
 		DSSReference dssReference = new DSSReference();
-		dssReference.setId(REFERENCE_ID_SUFFIX + referenceIndex);
+		dssReference.setId(REFERENCE_ID_SUFFIX + deterministicId + "-" + referenceIndex);
 		// XMLDSIG : 4.4.3.2
 		// URI=""
 		// Identifies the node-set (minus any comment nodes) of the XML resource

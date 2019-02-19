@@ -33,7 +33,6 @@ import javax.security.auth.x500.X500Principal;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.xml.security.stax.impl.processor.output.FinalOutputProcessor;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,7 +89,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	protected String signedInfoCanonicalizationMethod;
 	protected String signedPropertiesCanonicalizationMethod;
 
-	protected String deterministicId;
+	protected final String deterministicId;
 
 	/*
 	 * This variable represents the current DOM signature object.
@@ -113,8 +112,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	protected static final String TIMESTAMP_SUFFIX = "TS-";
 	protected static final String VALUE_SUFFIX = "value-";
 	protected static final String XADES_SUFFIX = "xades-";
-	protected static final String OBJECT_ID_SUFFIX = "o-id-";
-	protected static final String REFERENCE_ID_SUFFIX = "r-id-";
+	protected static final String OBJECT_ID_SUFFIX = "o-";
+	protected static final String REFERENCE_ID_SUFFIX = "r-";
 
 	/**
 	 * Creates the signature according to the packaging
@@ -161,6 +160,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		super(certificateVerifier);
 		this.params = params;
 		this.detachedDocument = detachedDocument;
+
+		this.deterministicId = params.getDeterministicId();
 	}
 
 	protected void setCanonicalizationMethods(final XAdESSignatureParameters params, final String canonicalizationMethod) {
@@ -196,8 +197,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	public byte[] build() throws DSSException {
 
 		documentDom = buildRootDocumentDom();
-
-		deterministicId = params.getDeterministicId();
 
 		final List<DSSReference> references = params.getReferences();
 		if (Utils.isCollectionEmpty(references)) {
