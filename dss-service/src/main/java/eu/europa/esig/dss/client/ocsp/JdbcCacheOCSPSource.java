@@ -38,6 +38,7 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.JdbcRevocationSource;
 import eu.europa.esig.dss.x509.revocation.exception.RevocationException;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPTokenBuilder;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPTokenUtils;
@@ -50,7 +51,7 @@ import eu.europa.esig.dss.x509.revocation.ocsp.OCSPTokenUtils;
  * @author aleksandr.beliakov
  * @author pierrick.vanderbroucke
  */
-public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSPToken> {
+public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSPToken> implements OCSPSource {
 	
 	private static final long serialVersionUID = 10480458323923489L;
 

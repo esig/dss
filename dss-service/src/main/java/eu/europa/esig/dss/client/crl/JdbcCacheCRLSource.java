@@ -38,13 +38,14 @@ import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.JdbcRevocationSource;
+import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.x509.revocation.exception.RevocationException;
 
 /**
  * CRLSource that retrieve information from a JDBC datasource
  */
-public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> {
+public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implements CRLSource {
 
 	private static final long serialVersionUID = 3007740140330998336L;
 	
