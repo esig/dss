@@ -104,6 +104,8 @@ import eu.europa.esig.dss.utils.Utils;
  */
 public class CommonsDataLoader implements DataLoader {
 
+	private static final long serialVersionUID = -805432648564425522L;
+
 	private static final Logger LOG = LoggerFactory.getLogger(CommonsDataLoader.class);
 
 	public static final int TIMEOUT_CONNECTION = 6000;
@@ -455,7 +457,9 @@ public class CommonsDataLoader implements DataLoader {
 	 * @param urlString
 	 * @return
 	 */
-	protected byte[] ldapGet(final String urlString) {
+	protected byte[] ldapGet(String urlString) {
+		
+		urlString = LdapURLUtils.encode(urlString);
 
 		final Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
