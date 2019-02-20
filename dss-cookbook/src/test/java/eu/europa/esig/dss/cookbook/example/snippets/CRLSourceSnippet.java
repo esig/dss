@@ -20,7 +20,12 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
+import javax.sql.DataSource;
+
+import eu.europa.esig.dss.client.crl.JdbcCacheCRLSource;
+import eu.europa.esig.dss.client.crl.OnlineCRLSource;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 
@@ -36,6 +41,16 @@ public class CRLSourceSnippet {
 		// tag::demo[]
 		CRLToken crlToken = crlSource.getRevocationToken(certificateToken, issuerCertificateToken);
 		// end::demo[]
+
+		DataSource dataSource = null;
+		OnlineCRLSource onlineCRLSource = null;
+
+		// tag::demo-cached[]
+		JdbcCacheCRLSource cacheCRLSource = new JdbcCacheCRLSource();
+		cacheCRLSource.setDataSource(dataSource);
+		cacheCRLSource.setProxySource(onlineCRLSource);
+		RevocationToken crlRevocationToken = crlSource.getRevocationToken(certificateToken, certificateToken);
+		// end::demo-cached[]
 
 	}
 

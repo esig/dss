@@ -984,13 +984,39 @@ In general we can distinguish three main sources:
  * Offline sources;
  * Online sources;
  * Sources with the cache mechanism.
+ 
+=== Repository Revocation Source
+
+The above-mentioned class allows caching of CRL and OCSP responses to a user-chosen source. By default DSS provides a JDBC based implementation for this class, but other implementations also can be created. The class contains a complete set of functions to save revocation data to a database, extract, update and remove it. +
+Furthermore, the `Repository Revocation Source` allows to define a backup revocation source, for the case if the database does not contains the certificate's revocation data yet. +
+
+List of cached Revocation sources implemented in DSS:
+
+ * JdbcRevocationSource
+ ** JdbcCacheCRLSource
+ ** JdbcCacheOCSPSource
+
+An Example of usage `Repository Revocation Source` can be found below (CRL implementation):
+
+[source,java,indent=0]
+.JdbcCRLSource usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CRLSourceSnippet.java[tags=demo-cached]
+----
+
+In the next source code you can find an example of Spring Hibernate implementation of the `Repository Revocation Source`:
+
+[source,java,indent=0]
+.HibernateRevocation implementation example
+----
+include::samples/snippets/HibernateRevocationSourceJava[tags=demo]
+----
 
 === Other implementations of CRL and OCSP Sources
 
 Such sources find the status of a certificate either from a list stored locally or using the information contained in the advanced signature or online way. Here is the list of sources already implemented in the DSS framework:
 
  * CRL sources
- ** JdbcCacheCRLSource : Retrieves information from a JDBC datasource
  ** OfflineCRLSource : This class that implements in a generic way the findCrl method that operates on the different CRLs implemented in children classes.
  *** ListCRLSource : This source maintains a list of CRLToken. 
  *** SignatureCRLSource : The advanced signature contains a list of CRL that was needed to validate the signature. This class is a basic skeleton that is able to retrieve the needed CRL from a list. The child needs to retrieve the list of wrapped CRLs.
