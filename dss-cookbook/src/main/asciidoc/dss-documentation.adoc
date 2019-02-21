@@ -1004,6 +1004,8 @@ An Example of usage `Repository Revocation Source` can be found below (CRL imple
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CRLSourceSnippet.java[tags=demo-cached]
 ----
 
+Be aware that you have to initialize a table before start of working with the cached revocation repository. +
+
 In the next source code you can find an example of Spring Hibernate implementation of the `Repository Revocation Source`:
 
 [source,java,indent=0]
