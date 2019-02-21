@@ -39,6 +39,7 @@ public class LdapURLUtils {
 		
 		StringBuilder url = new StringBuilder();
 		char curChar;
+		boolean encoded = false;
 		
 		for (int i = 0; i < str.length(); i++) {
 			curChar = str.charAt(i);
@@ -46,7 +47,11 @@ public class LdapURLUtils {
 				url.append(curChar);
 			} else {
 				url.append(getEncodedChar(curChar));
+				encoded = true;
 			}
+		}
+		if (encoded) {
+			LOG.warn("The obtained ldap url [{}] contains illegal characters. Use encoded address instead : [{}]", str, url);
 		}
 		return url.toString();
 	}
