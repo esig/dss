@@ -367,6 +367,7 @@ public class DetailedReport {
 						return xmlSubXCV.getConclusion().getIndication();
 					}
 				}
+				return xcv.getConclusion().getIndication();
 			}
 		}
 		return null;
