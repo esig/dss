@@ -31,6 +31,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificate;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlChainItem;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
@@ -353,7 +354,7 @@ public class DetailedReport {
 		return CertificateQualification.NA;
 	}
 
-	public Indication getCertificateXCVIndication(String certificateId) {
+	public XmlConclusion getCertificateXCVConclusion(String certificateId) {
 		if (jaxbDetailedReport.getCertificate() == null) {
 			throw new DSSException("Only supported in report for certificate");
 		}
@@ -364,10 +365,12 @@ public class DetailedReport {
 				List<XmlSubXCV> subXCV = xcv.getSubXCV();
 				for (XmlSubXCV xmlSubXCV : subXCV) {
 					if (Utils.areStringsEqual(certificateId, xmlSubXCV.getId())) {
-						return xmlSubXCV.getConclusion().getIndication();
+						return xmlSubXCV.getConclusion();
 					}
 				}
-				return xcv.getConclusion().getIndication();
+				// if {@link SubX509CertificateValidation} is not executed, i.e. the certificate is in untrusted chain,
+				// return global XmlConclusion
+				return xcv.getConclusion();
 			}
 		}
 		return null;
