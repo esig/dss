@@ -33,7 +33,6 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 
 	@Override
 	public void draw() throws IOException {
-
 		// DSS-747. Using the DPI resolution to convert java size to dot
 		ImageAndResolution ires = ImageUtils.create(parameters);
 
@@ -53,13 +52,14 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 			visibleSig.height(ires.toYPoint(visibleSig.getHeight()));
 		}
 		visibleSig.zoom(((float) parameters.getZoom()) - 100); // pdfbox is 0 based
-
+		
 		PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
-		signatureProperties.visualSignEnabled(true).setPdVisibleSignature(visibleSig).buildSignature();
-
+		signatureProperties.visualSignEnabled(true);
+		signatureProperties.setPdVisibleSignature(visibleSig);
+		signatureProperties.buildSignature();
+		
 		signatureOptions.setVisualSignature(signatureProperties);
 		signatureOptions.setPage(parameters.getPage() - 1); // DSS-1138
 	}
-
 
 }

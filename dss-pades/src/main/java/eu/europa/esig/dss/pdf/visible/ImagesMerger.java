@@ -56,7 +56,7 @@ public final class ImagesMerger {
 		BufferedImage combined = new BufferedImage(newImageWidth, newImageHeigth, imageType);
 		Graphics2D g = combined.createGraphics();
 
-		ImageUtils.initRendering(g);
+		CommonDrawerUtils.initRendering(g);
 		fillBackground(g, newImageWidth, newImageHeigth, bgColor);
 
 		g.drawImage(top, (newImageWidth - top.getWidth()) / 2, 0, top.getWidth(), top.getHeight(), null);
@@ -80,7 +80,7 @@ public final class ImagesMerger {
 		BufferedImage combined = new BufferedImage(newImageWidth, newImageHeigth, imageType);
 		Graphics2D g = combined.createGraphics();
 
-		ImageUtils.initRendering(g);
+		CommonDrawerUtils.initRendering(g);
 		fillBackground(g, newImageWidth, newImageHeigth, bgColor);
 
 		switch (imageVerticalAlignment) {

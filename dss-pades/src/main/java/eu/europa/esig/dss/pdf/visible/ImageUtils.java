@@ -23,7 +23,6 @@ package eu.europa.esig.dss.pdf.visible;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -60,7 +59,7 @@ import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
- * A static utilities that helps in creating ImageAndResolution
+ * Static utilities that helps in creating ImageAndResolution
  * 
  * @author pakeyser
  *
@@ -68,8 +67,6 @@ import eu.europa.esig.dss.utils.Utils;
 public class ImageUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ImageUtils.class);
-
-	private static final int DPI = 300;
 
 	private static final int[] IMAGE_TRANSPARENT_TYPES;
 
@@ -88,8 +85,9 @@ public class ImageUtils {
 
 		DSSDocument image = imageParameters.getImage();
 		if ((textParamaters != null) && Utils.isStringNotEmpty(textParamaters.getText())) {
-			BufferedImage buffImg = ImageTextWriter.createTextImage(textParamaters.getText(), textParamaters.getFont(), textParamaters.getTextColor(),
-					textParamaters.getBackgroundColor(), getDpi(imageParameters.getDpi()), textParamaters.getSignerTextHorizontalAlignment());
+			BufferedImage buffImg = ImageTextWriter.createTextImage(textParamaters.getText(), textParamaters.getJavaFont(), textParamaters.getSize(), 
+					textParamaters.getTextColor(), textParamaters.getBackgroundColor(), textParamaters.getMargin(), imageParameters.getDpi(), 
+					textParamaters.getSignerTextHorizontalAlignment());
 
 			if (image != null) {
 				try (InputStream is = image.openStream()) {
@@ -115,11 +113,11 @@ public class ImageUtils {
 					}
 				}
 			}
-			return convertToInputStream(buffImg, getDpi(imageParameters.getDpi()));
+			return convertToInputStream(buffImg, CommonDrawerUtils.getDpi(imageParameters.getDpi()));
 		}
 
 		// Image only
-		return readAndDisplayMetadata(image);
+		return readDisplayMetadata(image);
 	}
 
 	/**
@@ -130,22 +128,15 @@ public class ImageUtils {
 	 * @return a Dimension object
 	 * @throws IOException
 	 */
-	static Dimension getOptimalSize(SignatureImageParameters imageParameters) throws IOException {
-		int width = 0;
-		int height = 0;
+	public static Dimension getOptimalSize(SignatureImageParameters imageParameters) throws IOException {
 
-		DSSDocument docImage = imageParameters.getImage();
-		if (docImage != null) {
-			try (InputStream is = docImage.openStream()) {
-				BufferedImage image = ImageIO.read(is);
-				width = image.getWidth();
-				height = image.getHeight();
-			}
-		}
+		Dimension dimension = getImageDimension(imageParameters);
+		double width = dimension.getWidth();
+		double height = dimension.getHeight();
 
 		SignatureImageTextParameters textParamaters = imageParameters.getTextParameters();
 		if ((textParamaters != null) && !textParamaters.getText().isEmpty()) {
-			Dimension textDimension = getTextDimension(textParamaters.getText(), textParamaters.getFont(), imageParameters.getDpi());
+			Dimension textDimension = getTextDimension(imageParameters);
 			switch (textParamaters.getSignerNamePosition()) {
 			case LEFT:
 			case RIGHT:
@@ -163,11 +154,11 @@ public class ImageUtils {
 
 		}
 
-		float ration = getRation(imageParameters.getDpi());
-		return new Dimension(Math.round(width / ration), Math.round(height / ration));
+		float ration = CommonDrawerUtils.getRation(imageParameters.getDpi());
+		return new Dimension(Math.round((int)width / ration), Math.round((int)height / ration));
 	}
 
-	private static ImageAndResolution readAndDisplayMetadata(DSSDocument image) throws IOException {
+	public static ImageAndResolution readDisplayMetadata(DSSDocument image) throws IOException {
 		if (isImageWithContentType(image, MimeType.JPEG)) {
 			return readAndDisplayMetadataJPEG(image);
 		} else if (isImageWithContentType(image, MimeType.PNG)) {
@@ -240,11 +231,29 @@ public class ImageUtils {
 			return new ImageAndResolution(image, hdpi, vdpi);
 		}
 	}
+	
+	public static Dimension getImageDimension(SignatureImageParameters imageParameters) {
+		int width = 0;
+		int height = 0;
+		try {
+			DSSDocument docImage = imageParameters.getImage();
+			if (docImage != null) {
+				try (InputStream is = docImage.openStream()) {
+					BufferedImage image = ImageIO.read(is);
+					width = image.getWidth();
+					height = image.getHeight();
+				}
+		}
+		} catch (IOException e) {
+			LOG.error("Cannot read the given image", e);
+		}
+		return new Dimension(width, height);
+	}
 
-	private static Dimension getTextDimension(String text, Font font, Integer dpi) {
-		float fontSize = Math.round((font.getSize() * getDpi(dpi)) / (float) ImageTextWriter.PDF_DEFAULT_DPI);
-		Font largerFont = font.deriveFont(fontSize);
-		return ImageTextWriter.computeSize(largerFont, text);
+	private static Dimension getTextDimension(SignatureImageParameters imageParameters) throws IOException {
+		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
+		Font properFont = ImageTextWriter.computeProperFont(textParameters.getJavaFont(), textParameters.getSize(), imageParameters.getDpi());
+		return ImageTextWriter.computeSize(properFont, textParameters.getText(), textParameters.getMargin());
 	}
 
 	private static ImageAndResolution convertToInputStream(BufferedImage buffImage, int dpi) throws IOException {
@@ -322,32 +331,10 @@ public class ImageUtils {
 		metadata.mergeTree("javax_imageio_1.0", root);
 	}
 
-	static int getDpi(Integer dpi) {
-		int result = DPI;
-		if (dpi != null && dpi.intValue() > 0) {
-			result = dpi.intValue();
-		}
-		return result;
-	}
-
-	private static float getRation(Integer dpi) {
-		float floatDpi = getDpi(dpi);
-		return floatDpi / ImageTextWriter.PDF_DEFAULT_DPI;
-	}
-
 	public static boolean isTransparent(BufferedImage bufferedImage) {
 		int type = bufferedImage.getType();
 
 		return Arrays.binarySearch(IMAGE_TRANSPARENT_TYPES, type) > -1;
-	}
-
-	public static void initRendering(Graphics2D g) {
-		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
 	}
 
 	public static BufferedImage rotate(BufferedImage image, double angle) {

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pades;
 import java.awt.Color;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 
 /**
  * Parameters for a visible signature creation
@@ -80,9 +81,9 @@ public class SignatureImageParameters {
 		 */
 		MIDDLE,
 		/**
-		 * y axis is the botton padding
+		 * y axis is the bottom padding
 		 */
-		BOTTON;
+		BOTTOM;
 	}
 
 	/**
@@ -230,7 +231,7 @@ public class SignatureImageParameters {
 		this.page = page;
 	}
         
-            public int getWidth() {
+    public int getWidth() {
         return width;
     }
 
@@ -256,7 +257,7 @@ public class SignatureImageParameters {
 	}
 
 	public Integer getDpi() {
-		return dpi;
+		return CommonDrawerUtils.getDpi(dpi);
 	}
 
 	public void setDpi(Integer dpi) {

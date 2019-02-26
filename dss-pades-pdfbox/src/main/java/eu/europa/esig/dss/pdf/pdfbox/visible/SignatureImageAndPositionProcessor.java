@@ -136,7 +136,7 @@ public final class SignatureImageAndPositionProcessor {
             case MIDDLE:
                 x = (mediaBox.getWidth() - ires.toXPoint(visualImageSignature.getWidth())) / 2;
                 break;
-            case BOTTON:
+            case BOTTOM:
                 x = signatureImageParameters.getyAxis();
                 break;
             default:
@@ -182,7 +182,7 @@ public final class SignatureImageAndPositionProcessor {
             case MIDDLE:
                 x = (mediaBox.getWidth() - ires.toXPoint(visualImageSignature.getWidth())) / 2;
                 break;
-            case BOTTON:
+            case BOTTOM:
                 x = mediaBox.getWidth() - ires.toXPoint(visualImageSignature.getWidth()) - signatureImageParameters.getyAxis();
                 break;
             default:
@@ -251,7 +251,7 @@ public final class SignatureImageAndPositionProcessor {
             case MIDDLE:
                 y = (mediaBox.getHeight() - ires.toYPoint(visualImageSignature.getHeight())) / 2;
                 break;
-            case BOTTON:
+            case BOTTOM:
                 y = signatureImageParameters.getyAxis();
                 break;
             default:
@@ -297,7 +297,7 @@ public final class SignatureImageAndPositionProcessor {
             case MIDDLE:
                 y = (mediaBox.getHeight() - ires.toYPoint(visualImageSignature.getHeight())) / 2;
                 break;
-            case BOTTON:
+            case BOTTOM:
                 y = mediaBox.getHeight() - ires.toYPoint(visualImageSignature.getHeight()) - signatureImageParameters.getyAxis();
                 break;
             default:

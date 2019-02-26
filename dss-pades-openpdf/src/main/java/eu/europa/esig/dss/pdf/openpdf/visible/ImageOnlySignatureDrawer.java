@@ -68,5 +68,4 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		ct.go();
 	}
 
-
 }

@@ -20,15 +20,27 @@
  */
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
-import java.io.IOException;
-
-import com.lowagie.text.pdf.PdfSignatureAppearance;
-
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 
-public interface ITextSignatureDrawer extends SignatureDrawer {
+public class ITextDefaultSignatureDrawerFactory implements ITextSignatureDrawerFactory {
 
-	void init(String signatureFieldId, SignatureImageParameters parameters, PdfSignatureAppearance appearance) throws IOException;
+	@Override
+	public ITextSignatureDrawer getSignatureDrawer(SignatureImageParameters imageParameters) {
+		final DSSDocument image = imageParameters.getImage();
+		final SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
+
+		if ((image == null) && (textParameters != null)) {
+			return new TextOnlySignatureDrawer();
+		} else if ((image != null) && (textParameters == null)) {
+			return new ImageOnlySignatureDrawer();
+		} else {
+			// Custom drawer(s) can be injected with a new Factory and a custom instance of
+			// IPdfObjFactory
+			throw new DSSException("Not implemented");
+		}
+	}
 
 }

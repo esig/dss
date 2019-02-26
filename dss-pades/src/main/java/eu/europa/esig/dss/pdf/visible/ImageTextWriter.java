@@ -41,22 +41,30 @@ public final class ImageTextWriter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ImageTextWriter.class);
 
-	private static final int DEFAULT_MARGIN = 10;
-	public static final int PDF_DEFAULT_DPI = 72;
-
 	private ImageTextWriter() {
 	}
 
-	public static BufferedImage createTextImage(final String text, final Font font, final Color textColor, final Color bgColor, final int dpi,
-			SignatureImageTextParameters.SignerTextHorizontalAlignment horizontalAlignment) {
-		// Computing image size depending of the font
-		float fontSize = Math.round((font.getSize() * dpi) / (float) PDF_DEFAULT_DPI);
-		Font largerFont = font.deriveFont(fontSize);
-		Dimension dimension = computeSize(largerFont, text);
-		return createTextImage(text, largerFont, textColor, bgColor, dimension.width, dimension.height, horizontalAlignment);
+	public static BufferedImage createTextImage(final String text, final Font font, final float size, final Color textColor, final Color bgColor,
+			final float margin, final int dpi, SignatureImageTextParameters.SignerTextHorizontalAlignment horizontalAlignment) {
+		// Computing image size depending on the font
+		Font properFont = computeProperFont(font, size, dpi);
+		Dimension dimension = computeSize(properFont, text, margin);
+		return createTextImage(text, properFont, textColor, bgColor, margin, dimension, horizontalAlignment);
+	}
+	
+	/**
+	 * Computes a new {@link Font} based on the given size and dpi
+	 * @param font {@link Font} original font
+	 * @param size of the target font
+	 * @param dpi used to compute a new font size
+	 * @return proper {@link Font}
+	 */
+	public static Font computeProperFont(Font font, float size, int dpi) {
+		float fontSize = CommonDrawerUtils.computeProperSize(size, dpi);
+		return font.deriveFont(fontSize);
 	}
 
-	public static Dimension computeSize(Font font, String text) {
+	public static Dimension computeSize(Font font, String text, float margin) {
 		BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
 		Graphics g = img.getGraphics();
 		g.setFont(font);
@@ -64,23 +72,26 @@ public final class ImageTextWriter {
 
 		String[] lines = text.split("\n");
 
-		int width = 0;
+		float width = 0;
 		for (String line : lines) {
-			int lineWidth = fontMetrics.stringWidth(line);
+			float lineWidth = fontMetrics.stringWidth(line);
 			if (lineWidth > width) {
 				width = lineWidth;
 			}
 		}
 
-		width += DEFAULT_MARGIN;
-		int height = (fontMetrics.getHeight() * lines.length) + DEFAULT_MARGIN;
+		float doubleMargin = margin*2;
+		width += doubleMargin;
+		float height = (fontMetrics.getHeight() * lines.length) + doubleMargin;
 		g.dispose();
-
-		return new Dimension(width, height);
+		
+		Dimension dimension = new Dimension();
+		dimension.setSize(width, height);
+		return dimension;
 	}
 
-	private static BufferedImage createTextImage(final String text, final Font font, final Color textColor, final Color bgColor, final int width,
-			final int height, SignatureImageTextParameters.SignerTextHorizontalAlignment horizontalAlignment) {
+	private static BufferedImage createTextImage(final String text, final Font font, final Color textColor, final Color bgColor, final float margin, 
+			final Dimension dimension, SignatureImageTextParameters.SignerTextHorizontalAlignment horizontalAlignment) {
 		String[] lines = text.split("\n");
 
 		int imageType;
@@ -91,20 +102,20 @@ public final class ImageTextWriter {
 			imageType = BufferedImage.TYPE_INT_RGB;
 		}
 
-		BufferedImage img = new BufferedImage(width, height, imageType);
+		BufferedImage img = new BufferedImage(dimension.width, dimension.height, imageType);
 		Graphics2D g = img.createGraphics();
 		g.setFont(font);
 		FontMetrics fm = g.getFontMetrics(font);
 
 		// Improve text rendering
-		ImageUtils.initRendering(g);
+		CommonDrawerUtils.initRendering(g);
 
 		if (bgColor == null) {
 			g.setColor(Color.WHITE);
 		} else {
 			g.setColor(bgColor);
 		}
-		g.fillRect(0, 0, width, height);
+		g.fillRect(0, 0, dimension.width, dimension.height);
 
 		if (textColor == null) {
 			g.setPaint(Color.BLACK);
@@ -113,10 +124,10 @@ public final class ImageTextWriter {
 		}
 
 		int lineHeight = fm.getHeight();
-		int y = fm.getMaxAscent() + DEFAULT_MARGIN / 2;
+		float y = fm.getMaxAscent() + margin;
 
 		for (String line : lines) {
-			int x = DEFAULT_MARGIN / 2; // left alignment
+			float x = margin; // left alignment
 			if (horizontalAlignment != null) {
 				switch (horizontalAlignment) {
 				case RIGHT:

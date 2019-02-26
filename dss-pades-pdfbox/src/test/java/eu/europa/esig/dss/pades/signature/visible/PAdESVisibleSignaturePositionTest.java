@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pades.signature.visible;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -361,9 +360,9 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		textParameters.setSignerNamePosition(SignatureImageTextParameters.SignerPosition.LEFT);
 		textParameters.setBackgroundColor(TRANSPARENT);
 		textParameters.setTextColor(Color.MAGENTA);
-		textParameters.setFont(new Font("Arial", Font.BOLD, 8));
+		textParameters.setFont(new InMemoryDocument(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf")));
+		textParameters.setSize(8);
 		imageParameters.setTextParameters(textParameters);
-
 		imageParameters.setBackgroundColor(TRANSPARENT);
 		imageParameters.setxAxis(10);
 		imageParameters.setyAxis(20);

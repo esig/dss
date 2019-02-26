@@ -24,7 +24,6 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
-import eu.europa.esig.dss.pdf.visible.ImageTextWriter;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 
 import org.junit.Assert;
@@ -47,7 +46,7 @@ public class ImageUtilsTest {
 
         BufferedImage image = ImageIO.read(imageAndResolution.getInputStream());
 
-        float ration = ImageUtils.getDpi(imageParameters.getDpi())/(float) ImageTextWriter.PDF_DEFAULT_DPI;
+        float ration = CommonDrawerUtils.getRation(imageParameters.getDpi());
 
         Assert.assertEquals((int)optimalSizeDimension.getWidth(), Math.round((float) image.getWidth() / ration));
         Assert.assertEquals((int)optimalSizeDimension.getHeight(), Math.round((float) image.getHeight() / ration));

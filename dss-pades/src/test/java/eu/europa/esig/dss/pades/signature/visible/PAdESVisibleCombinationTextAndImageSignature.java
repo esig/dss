@@ -23,7 +23,6 @@ package eu.europa.esig.dss.pades.signature.visible;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.io.IOException;
 import java.util.Date;
 
@@ -109,7 +108,8 @@ public class PAdESVisibleCombinationTextAndImageSignature extends PKIFactoryAcce
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.BLUE);
-		textParameters.setFont(new Font("Arial", Font.BOLD, 15));
+		textParameters.setFont(new InMemoryDocument(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf")));
+		textParameters.setSize(15);
 		textParameters.setSignerNamePosition(SignerPosition.TOP);
 		imageParameters.setTextParameters(textParameters);
 		signatureParameters.setSignatureImageParameters(imageParameters);
