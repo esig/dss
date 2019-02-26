@@ -109,8 +109,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId());
 
-		final PDFSignatureService pdfSignatureService = createPDFSignatureService();
-		final byte[] messageDigest = computeDocumentDigest(toSignDocument, parameters, pdfSignatureService);
+		final byte[] messageDigest = computeDocumentDigest(toSignDocument, parameters);
 
 		SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = padesCMSSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, messageDigest);
 
@@ -125,15 +124,9 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		return new ToBeSigned(dataToSign);
 	}
 
-	protected byte[] computeDocumentDigest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters,
-			final PDFSignatureService pdfSignatureService) {
-		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters, parameters.getDigestAlgorithm());
-		return messageDigest;
-	}
-
-	protected PDFSignatureService createPDFSignatureService() {
+	protected byte[] computeDocumentDigest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) {
 		final PDFSignatureService pdfSignatureService = PdfObjFactory.newPAdESSignatureService();
-		return pdfSignatureService;
+		return pdfSignatureService.digest(toSignDocument, parameters, parameters.getDigestAlgorithm());
 	}
 
 	@Override
@@ -142,10 +135,10 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 		assertSigningDateInCertificateValidityRange(parameters);
 
-		final PDFSignatureService pdfSignatureService = createPDFSignatureService();
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
-		final byte[] encodedData = generateCMSSignedData(toSignDocument, parameters, signatureValue,
-				pdfSignatureService);
+		final byte[] encodedData = generateCMSSignedData(toSignDocument, parameters, signatureValue);
+
+		final PDFSignatureService pdfSignatureService = PdfObjFactory.newPAdESSignatureService();
 		DSSDocument signature = pdfSignatureService.sign(toSignDocument, encodedData, parameters, parameters.getDigestAlgorithm());
 
 		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(signatureLevel);
@@ -158,13 +151,12 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		return signature;
 	}
 
-	protected byte[] generateCMSSignedData(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters,
-			final SignatureValue signatureValue, final PDFSignatureService pdfSignatureService) {
+	protected byte[] generateCMSSignedData(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, final SignatureValue signatureValue) {
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
 
-		final byte[] messageDigest = computeDocumentDigest(toSignDocument, parameters, pdfSignatureService);
+		final byte[] messageDigest = computeDocumentDigest(toSignDocument, parameters);
 		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = padesCMSSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, messageDigest);
 
 		final CMSSignedDataGenerator generator = padesCMSSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
@@ -179,8 +171,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 			data = cadesLevelBaselineT.extendCMSSignatures(data, parameters);
 		}
 
-		final byte[] encodedData = CMSUtils.getEncoded(data);
-		return encodedData;
+		return CMSUtils.getEncoded(data);
 	}
 
 	@Override
