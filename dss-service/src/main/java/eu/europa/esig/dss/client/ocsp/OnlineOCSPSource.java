@@ -22,7 +22,6 @@ package eu.europa.esig.dss.client.ocsp;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.Security;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,7 +34,6 @@ import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPReq;
 import org.bouncycastle.cert.ocsp.OCSPReqBuilder;
 import org.bouncycastle.cert.ocsp.OCSPResp;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,10 +61,6 @@ import eu.europa.esig.dss.x509.revocation.ocsp.OCSPTokenUtils;
 public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUrlsSupport<OCSPToken>, OnlineRevocationSource<OCSPToken> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OnlineOCSPSource.class);
-
-	static {
-		Security.addProvider(new BouncyCastleProvider());
-	}
 
 	/**
 	 * This variable is used to prevent the replay attack.

@@ -39,7 +39,6 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cert.ocsp.RevokedStatus;
 import org.bouncycastle.cert.ocsp.SingleResp;
 import org.bouncycastle.cert.ocsp.UnknownStatus;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentVerifierProvider;
 import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder;
 import org.slf4j.Logger;
@@ -47,6 +46,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
+import eu.europa.esig.dss.DSSSecurityProvider;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -208,7 +208,7 @@ public class OCSPToken extends RevocationToken {
 		try {
 			signatureInvalidityReason = "";
 			JcaContentVerifierProviderBuilder jcaContentVerifierProviderBuilder = new JcaContentVerifierProviderBuilder();
-			jcaContentVerifierProviderBuilder.setProvider(BouncyCastleProvider.PROVIDER_NAME);
+			jcaContentVerifierProviderBuilder.setProvider(DSSSecurityProvider.getSecurityProvider());
 			ContentVerifierProvider contentVerifierProvider = jcaContentVerifierProviderBuilder.build(candidate.getPublicKey());
 			signatureValid = basicOCSPResp.isSignatureValid(contentVerifierProvider);
 		} catch (Exception e) {

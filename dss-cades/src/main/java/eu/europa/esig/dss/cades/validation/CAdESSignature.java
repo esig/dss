@@ -113,7 +113,6 @@ import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationVerifier;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
@@ -122,6 +121,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSSecurityProvider;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -1123,7 +1123,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					candidatesForSigningCertificate.setTheCertificateValidity(signingCertificateValidity);
 
 					final JcaSimpleSignerInfoVerifierBuilder verifier = new JcaSimpleSignerInfoVerifierBuilder();
-					verifier.setProvider(BouncyCastleProvider.PROVIDER_NAME);
+					verifier.setProvider(DSSSecurityProvider.getSecurityProviderName());
 
 					final CertificateToken certificateToken = signingCertificateValidity.getCertificateToken();
 					final PublicKey publicKey = certificateToken.getPublicKey();

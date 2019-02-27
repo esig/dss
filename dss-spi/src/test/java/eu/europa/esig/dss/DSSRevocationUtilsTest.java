@@ -34,6 +34,7 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateID;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cert.ocsp.SingleResp;
+import org.bouncycastle.operator.DigestCalculator;
 import org.junit.Test;
 
 import eu.europa.esig.dss.utils.Utils;
@@ -110,6 +111,12 @@ public class DSSRevocationUtilsTest {
 		List<String> revocationKeys = DSSRevocationUtils.getOcspRevocationTokenKeys(certificate);
 		assertNotNull(revocationKeys);
 		assertTrue(CollectionUtils.isEmpty(revocationKeys));
+	}
+
+	@Test
+	public void getSHA1DigestCalculator() {
+		DigestCalculator digestCalculator = DSSRevocationUtils.getSHA1DigestCalculator();
+		assertNotNull(digestCalculator);
 	}
 
 }

@@ -92,7 +92,6 @@ import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,13 +107,11 @@ public final class DSSASN1Utils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSASN1Utils.class);
 
-	private static final String QC_TYPE_STATEMENT_OID = "0.4.0.1862.1.6";
-
-	private static final BouncyCastleProvider securityProvider = new BouncyCastleProvider();
-
 	static {
-		Security.addProvider(securityProvider);
+		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
 	}
+
+	private static final String QC_TYPE_STATEMENT_OID = "0.4.0.1862.1.6";
 
 	/**
 	 * This class is an utility class and cannot be instantiated.
@@ -658,7 +655,7 @@ public final class DSSASN1Utils {
 
 	public static CertificateToken getCertificate(final X509CertificateHolder x509CertificateHolder) {
 		try {
-			JcaX509CertificateConverter converter = new JcaX509CertificateConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME);
+			JcaX509CertificateConverter converter = new JcaX509CertificateConverter().setProvider(DSSSecurityProvider.getSecurityProviderName());
 			X509Certificate x509Certificate = converter.getCertificate(x509CertificateHolder);
 			return new CertificateToken(x509Certificate);
 		} catch (CertificateException e) {
