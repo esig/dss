@@ -177,13 +177,18 @@ public class ImageUtils {
 	 * @throws IOException in case of error
 	 */
 	private static BufferedImage getDpiScaledImage(DSSDocument image) throws IOException {
-		ImageAndResolution imageAndResolution = readDisplayMetadata(image);
 		try (InputStream is = image.openStream()) {
 			if (is != null) {
 				BufferedImage original = ImageIO.read(is);
-				float xScaleFactor = CommonDrawerUtils.getScaleFactor(imageAndResolution.getxDpi());
-				float yScaleFactor = CommonDrawerUtils.getScaleFactor(imageAndResolution.getyDpi());
-				return zoomImage(original, xScaleFactor, yScaleFactor);
+				try {
+					ImageAndResolution imageAndResolution = readDisplayMetadata(image);
+					float xScaleFactor = CommonDrawerUtils.getScaleFactor(imageAndResolution.getxDpi());
+					float yScaleFactor = CommonDrawerUtils.getScaleFactor(imageAndResolution.getyDpi());
+					return zoomImage(original, xScaleFactor, yScaleFactor);
+				} catch (DSSException e) {
+					LOG.warn("Cannot zoom image. Return the original : {}", e.getMessage());
+					return original;
+				}
 			}
 			return null;
 		}
@@ -219,6 +224,8 @@ public class ImageUtils {
 				contentType = Files.probeContentType(Paths.get(image.getName()));
 			} catch (IOException e) {
 				LOG.warn("Unable to retrieve the content-type : {}", e.getMessage());
+			} catch (Exception e) {
+				throw new DSSException("An error occurred during an attempt to read the image's content type", e);
 			}
 			return Utils.areStringsEqual(expectedContentType.getMimeTypeString(), contentType);
 		}
