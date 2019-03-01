@@ -37,6 +37,11 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	
+	/**
+	 * The degree of similarity between generated and original image
+	 */
+	private static final float SIMILARITY_LIMIT = 0.99f;
+	
 	private void initPdfATest() {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
 
@@ -63,6 +68,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
+		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
 	}
 	
 	@Test
@@ -79,6 +85,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
+		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
 	}
 	
 	@Test
@@ -95,6 +102,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
+		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
 		assertTrue(PdfScreenshotUtils.areVisuallyEqual(defaultDrawerPdf, nativeDrawerPdf));
 	}
 	
@@ -111,6 +119,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
+		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
 		assertTrue(PdfScreenshotUtils.areVisuallyEqual(defaultDrawerPdf, nativeDrawerPdf));
 	}
 	
@@ -127,6 +136,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
+		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
 		assertTrue(PdfScreenshotUtils.areVisuallyEqual(defaultDrawerPdf, nativeDrawerPdf));
 	}
 	
@@ -163,6 +173,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
+		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
 	}
 	
 	@Test
@@ -186,6 +197,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
+		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
 	}
 	
 	@Test
@@ -209,6 +221,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
+		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
 	}
 	
 	private SignatureImageParameters createSignatureImageParameters() {
@@ -234,6 +247,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
+		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
 	}
 	
 	@Test
@@ -247,6 +261,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
+		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
 	}
 	
 	@Test
@@ -266,13 +281,14 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
 		DSSDocument nativeDrawerPdf = sign("native");
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
+		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
 	}
 	
 	private DSSDocument sign(String docName) throws IOException {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument document = service.signDocument(documentToSign, signatureParameters, signatureValue);
-		 document.save("target/" + docName + ".pdf");
+		// document.save("target/" + docName + ".pdf");
 		return document;
 	}
 	
@@ -297,6 +313,14 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 					assertEquals(rect1.getUpperRightY(), rect2.getUpperRightY(), 0.5);
 				}
 			}
+		}
+	}
+	
+	private void compareVisualSimilarity(DSSDocument doc1, DSSDocument doc2) throws IOException {
+		try (InputStream is1 = doc1.openStream(); InputStream is2 = doc2.openStream()) {
+			PDDocument pdDoc1 = PDDocument.load(is1);
+			PDDocument pdDoc2 = PDDocument.load(is2);
+			PdfScreenshotUtils.checkPdfSimilarity(pdDoc1, pdDoc2, SIMILARITY_LIMIT);
 		}
 	}
 

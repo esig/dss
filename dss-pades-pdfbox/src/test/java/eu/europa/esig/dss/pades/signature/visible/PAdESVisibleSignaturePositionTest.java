@@ -30,11 +30,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
-
 import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.junit.Assert;
 import org.junit.Before;
@@ -49,6 +46,7 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PdfScreenshotUtils;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -157,7 +155,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		 * So we need the similarity of the sun.pdf and sun90.pdf.
 		 * After the signing the visual signature does not have to change the similarity.
 		 */
-		float sunSimilarity = checkImageSimilarity(pdfToBufferedImage(signablePdfs.get("minoltaScan").openStream()),
+		float sunSimilarity = PdfScreenshotUtils.checkImageSimilarity(pdfToBufferedImage(signablePdfs.get("minoltaScan").openStream()),
 				pdfToBufferedImage(signablePdfs.get("minoltaScan90").openStream()), CHECK_RESOLUTION) - 0.015f;
 		checkImageSimilarityPdf("minoltaScan90", "check_sun.pdf", sunSimilarity);
 	}
@@ -294,65 +292,11 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		DSSDocument document = sign(signablePdfs.get(samplePdf));
 		PDDocument sampleDocument = PDDocument.load(document.openStream());
 		PDDocument checkDocument = PDDocument.load(getClass().getResourceAsStream("/visualSignature/check/" + checkPdf));
-
-		PDPageTree samplePageTree = sampleDocument.getPages();
-		PDPageTree checkPageTree = checkDocument.getPages();
-
-		Assert.assertEquals(checkPageTree.getCount(), samplePageTree.getCount());
-
-		PDFRenderer sampleRenderer = new PDFRenderer(sampleDocument);
-		PDFRenderer checkRenderer = new PDFRenderer(checkDocument);
-
-		for (int pageNumber = 0; pageNumber < checkPageTree.getCount(); pageNumber++) {
-			BufferedImage sampleImage = sampleRenderer.renderImageWithDPI(pageNumber, DPI);
-			BufferedImage checkImage = checkRenderer.renderImageWithDPI(pageNumber, DPI);
-			
-			ImageIO.write(sampleImage, "png", new File("C:\\Users\\aleksandr.beliakov\\bitbucket\\esig-dss\\dss-pades-pdfbox\\target\\sampleImage.png"));
-			ImageIO.write(checkImage, "png", new File("C:\\Users\\aleksandr.beliakov\\bitbucket\\esig-dss\\dss-pades-pdfbox\\target\\checkImage.png"));
-
-			float checkSimilarity = checkImageSimilarity(sampleImage, checkImage, CHECK_RESOLUTION);
-			Assert.assertTrue(checkSimilarity >= similarity);
-		}
+		PdfScreenshotUtils.checkPdfSimilarity(sampleDocument, checkDocument, similarity);
 	}
 
 	private void checkImageSimilarityPdf(String samplePdf, String checkPdf) throws IOException {
 		checkImageSimilarityPdf(samplePdf, checkPdf, SIMILARITY_LIMIT);
-	}
-
-	private float checkImageSimilarity(BufferedImage sampleImage, BufferedImage checkImage, int resolution) {
-		try {
-			int width = sampleImage.getWidth();
-			int height = sampleImage.getHeight();
-			int checkWidth = checkImage.getWidth();
-			int checkHeight = checkImage.getHeight();
-			if (width == 0 || height == 0 || checkWidth == 0 || checkHeight == 0) {
-				Assert.fail(String.format("invalid image size: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
-			}
-			if (width != checkWidth || height != checkHeight) {
-				Assert.fail(String.format("images size not equal: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
-			}
-
-			int matchingPixels = 0;
-			int checkedPixels = 0;
-			for (int y = 0; y < height; y += resolution) {
-				for (int x = 0; x < width; x += resolution) {
-					int sampleRGB = sampleImage.getRGB(x, y);
-					int checkRGB = checkImage.getRGB(x, y);
-
-					if (sampleRGB == checkRGB) {
-						matchingPixels++;
-					} else {
-						checkImage.setRGB(x, y, Color.RED.getRGB());
-					}
-
-					checkedPixels++;
-				}
-			}
-
-			return (float) matchingPixels / checkedPixels;
-		} catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
 	}
 
 	private SignatureImageParameters createSignatureImageParameters() throws Exception {

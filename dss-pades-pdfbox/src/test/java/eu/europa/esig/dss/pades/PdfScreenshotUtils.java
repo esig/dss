@@ -1,11 +1,19 @@
 package eu.europa.esig.dss.pades;
 
+import static org.junit.Assert.assertTrue;
+
+import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.imageio.ImageIO;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.rendering.PDFRenderer;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +22,13 @@ import eu.europa.esig.dss.DSSDocument;
 public class PdfScreenshotUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfScreenshotUtils.class);
+	
+	/**
+	 * Comparison resolution: step in pixels in horizontal and vertical directions.
+	 */
+	private static final int CHECK_RESOLUTION = 1;
+	
+	private static final int DPI = 144;
 
 	// https://stackoverflow.com/questions/25022578/highlight-differences-between-images
 	public static BufferedImage getDifferenceImage(DSSDocument dssDoc1, DSSDocument dssDoc2) throws IOException {
@@ -81,6 +96,63 @@ public class PdfScreenshotUtils {
 			}
 		}
 		return diffAmount;
+	}
+	
+	public static void checkPdfSimilarity(PDDocument document1, PDDocument document2, float minSimilarity) throws IOException {
+		PDPageTree samplePageTree = document1.getPages();
+		PDPageTree checkPageTree = document2.getPages();
+
+		Assert.assertEquals(checkPageTree.getCount(), samplePageTree.getCount());
+
+		PDFRenderer sampleRenderer = new PDFRenderer(document1);
+		PDFRenderer checkRenderer = new PDFRenderer(document2);
+
+		for (int pageNumber = 0; pageNumber < checkPageTree.getCount(); pageNumber++) {
+			BufferedImage sampleImage = sampleRenderer.renderImageWithDPI(pageNumber, DPI);
+			BufferedImage checkImage = checkRenderer.renderImageWithDPI(pageNumber, DPI);
+			
+            // ImageIO.write(sampleImage, "png", new File("C:\\Users\\aleksandr.beliakov\\bitbucket\\esig-dss\\dss-pades-pdfbox\\target\\sampleImage.png"));
+            // ImageIO.write(checkImage, "png", new File("C:\\Users\\aleksandr.beliakov\\bitbucket\\esig-dss\\dss-pades-pdfbox\\target\\checkImage.png"));
+            
+			float checkSimilarity = checkImageSimilarity(sampleImage, checkImage, CHECK_RESOLUTION);
+			assertTrue(checkSimilarity >= minSimilarity);
+		}
+	}
+	
+	public static float checkImageSimilarity(BufferedImage sampleImage, BufferedImage checkImage, int resolution) {
+		try {
+			int width = sampleImage.getWidth();
+			int height = sampleImage.getHeight();
+			int checkWidth = checkImage.getWidth();
+			int checkHeight = checkImage.getHeight();
+			if (width == 0 || height == 0 || checkWidth == 0 || checkHeight == 0) {
+				Assert.fail(String.format("invalid image size: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
+			}
+			if (width != checkWidth || height != checkHeight) {
+				Assert.fail(String.format("images size not equal: sample(%dx%d) vs check(%dx%d)", width, height, checkWidth, checkHeight));
+			}
+
+			int matchingPixels = 0;
+			int checkedPixels = 0;
+			for (int y = 0; y < height; y += resolution) {
+				for (int x = 0; x < width; x += resolution) {
+					int sampleRGB = sampleImage.getRGB(x, y);
+					int checkRGB = checkImage.getRGB(x, y);
+
+					if (sampleRGB == checkRGB) {
+						matchingPixels++;
+					} else {
+						checkImage.setRGB(x, y, Color.RED.getRGB());
+					}
+
+					checkedPixels++;
+				}
+			}
+
+			return (float) matchingPixels / checkedPixels;
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
 	}
 	
 }

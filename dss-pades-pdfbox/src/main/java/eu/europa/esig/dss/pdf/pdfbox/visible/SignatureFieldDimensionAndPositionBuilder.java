@@ -6,16 +6,21 @@ import java.io.IOException;
 
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.pades.SignatureImageParameters.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
+import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
 import eu.europa.esig.dss.pdf.visible.ImageTextWriter;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 
 public class SignatureFieldDimensionAndPositionBuilder {
+
+	private static final Logger LOG = LoggerFactory.getLogger(SignatureFieldDimensionAndPositionBuilder.class);
 	
 	private SignatureFieldDimensionAndPosition dimensionAndPosition;
 	private final SignatureImageParameters imageParameters;
@@ -40,7 +45,14 @@ public class SignatureFieldDimensionAndPositionBuilder {
 	
 	private void initDpi() throws IOException {
 		if (imageParameters.getImage() != null) {
-			dimensionAndPosition.setImageAndResolution(ImageUtils.readDisplayMetadata(imageParameters.getImage()));
+			ImageAndResolution imageAndResolution;
+			try {
+				imageAndResolution = ImageUtils.readDisplayMetadata(imageParameters.getImage());
+			} catch (Exception e) {
+				LOG.warn("Cannot access the image metadata : {}. Returns default info.", e.getMessage());
+				imageAndResolution = new ImageAndResolution(imageParameters.getImage(), imageParameters.getDpi(), imageParameters.getDpi());
+			}
+			dimensionAndPosition.setImageAndResolution(imageAndResolution);
 		}
 	}
 	
