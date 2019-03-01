@@ -51,7 +51,10 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 			visibleSig.width(ires.toXPoint(visibleSig.getWidth()));
 			visibleSig.height(ires.toYPoint(visibleSig.getHeight()));
 		}
-		visibleSig.zoom(((float) parameters.getZoom()) - 100); // pdfbox is 0 based
+		// zoom image only when it does not have text parameters, in other case does zoom inside ImageUtils.create() method
+		if (parameters.getTextParameters() == null) {
+			visibleSig.zoom(((float) parameters.getZoom()) - 100); // pdfbox is 0 based
+		}
 		
 		PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
 		signatureProperties.visualSignEnabled(true);

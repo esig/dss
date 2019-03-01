@@ -63,15 +63,22 @@ public final class ImageTextWriter {
 		float fontSize = CommonDrawerUtils.computeProperSize(size, dpi);
 		return font.deriveFont(fontSize);
 	}
-
-	public static Dimension computeSize(Font font, String text, float margin) {
+	
+	public static FontMetrics getFontMetrics(Font font) {
 		BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
 		Graphics g = img.getGraphics();
 		g.setFont(font);
 		FontMetrics fontMetrics = g.getFontMetrics(font);
+		g.dispose();
+		return fontMetrics;
+	}
+	
+	public static Dimension computeSize(Font font, String text, float margin) {
+		return computeSize(getFontMetrics(font), text, margin);
+	}
 
-		String[] lines = text.split("\n");
-
+	public static Dimension computeSize(FontMetrics fontMetrics, String text, float margin) {
+		String[] lines = text.split("\\r?\\n");
 		float width = 0;
 		for (String line : lines) {
 			float lineWidth = fontMetrics.stringWidth(line);
@@ -79,11 +86,9 @@ public final class ImageTextWriter {
 				width = lineWidth;
 			}
 		}
-
 		float doubleMargin = margin*2;
 		width += doubleMargin;
 		float height = (fontMetrics.getHeight() * lines.length) + doubleMargin;
-		g.dispose();
 		
 		Dimension dimension = new Dimension();
 		dimension.setSize(width, height);
@@ -130,15 +135,16 @@ public final class ImageTextWriter {
 			float x = margin; // left alignment
 			if (horizontalAlignment != null) {
 				switch (horizontalAlignment) {
-				case RIGHT:
-					x = (img.getWidth() - fm.stringWidth(line)) / 2;
-					break;
-				case CENTER:
-					x = img.getWidth() / 2 - fm.stringWidth(line) / 2;
-					break;
-				default:
-					// nothing
-					break;
+					case RIGHT:
+						x = img.getWidth() - fm.stringWidth(line) - x; // -x because of margin
+						break;
+					case CENTER:
+						x = (img.getWidth() - fm.stringWidth(line)) / 2;
+						break;
+					case LEFT:
+					default:
+						// nothing
+						break;
 				}
 			}
 			g.drawString(line, x, y);

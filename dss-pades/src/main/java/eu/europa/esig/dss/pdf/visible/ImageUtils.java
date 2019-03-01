@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pdf.visible;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -90,26 +91,28 @@ public class ImageUtils {
 					textParamaters.getSignerTextHorizontalAlignment());
 
 			if (image != null) {
-				try (InputStream is = image.openStream()) {
-					if (is != null) {
-						switch (textParamaters.getSignerNamePosition()) {
+				// need to scale image due to usage default page 300 dpi instead of native image parameters
+				BufferedImage scaledImage = getDpiScaledImage(image);
+				if (scaledImage != null) {
+					float zoomFactor = imageParameters.getScaleFactor();
+					scaledImage = zoomImage(scaledImage, zoomFactor, zoomFactor);
+					switch (textParamaters.getSignerNamePosition()) {
 						case LEFT:
-							buffImg = ImagesMerger.mergeOnRight(ImageIO.read(is), buffImg, textParamaters.getBackgroundColor(),
+							buffImg = ImagesMerger.mergeOnRight(buffImg, scaledImage, textParamaters.getBackgroundColor(),
 									imageParameters.getSignerTextImageVerticalAlignment());
 							break;
 						case RIGHT:
-							buffImg = ImagesMerger.mergeOnRight(buffImg, ImageIO.read(is), textParamaters.getBackgroundColor(),
+							buffImg = ImagesMerger.mergeOnRight(scaledImage, buffImg, textParamaters.getBackgroundColor(),
 									imageParameters.getSignerTextImageVerticalAlignment());
 							break;
 						case TOP:
-							buffImg = ImagesMerger.mergeOnTop(ImageIO.read(is), buffImg, textParamaters.getBackgroundColor());
+							buffImg = ImagesMerger.mergeOnTop(scaledImage, buffImg, textParamaters.getBackgroundColor());
 							break;
 						case BOTTOM:
-							buffImg = ImagesMerger.mergeOnTop(buffImg, ImageIO.read(is), textParamaters.getBackgroundColor());
+							buffImg = ImagesMerger.mergeOnTop(buffImg, scaledImage, textParamaters.getBackgroundColor());
 							break;
 						default:
 							break;
-						}
 					}
 				}
 			}
@@ -165,6 +168,46 @@ public class ImageUtils {
 			return readAndDisplayMetadataPNG(image);
 		}
 		throw new DSSException("Unsupported image type");
+	}
+	
+	/**
+	 * Returns a scaled {@link BufferedImage} based on its dpi parameters relatively to page dpi
+	 * @param image {@link BufferedImage} to scale
+	 * @return scaled {@link BufferedImage}
+	 * @throws IOException in case of error
+	 */
+	private static BufferedImage getDpiScaledImage(DSSDocument image) throws IOException {
+		ImageAndResolution imageAndResolution = readDisplayMetadata(image);
+		try (InputStream is = image.openStream()) {
+			if (is != null) {
+				BufferedImage original = ImageIO.read(is);
+				float xScaleFactor = CommonDrawerUtils.getScaleFactor(imageAndResolution.getxDpi());
+				float yScaleFactor = CommonDrawerUtils.getScaleFactor(imageAndResolution.getyDpi());
+				return zoomImage(original, xScaleFactor, yScaleFactor);
+			}
+			return null;
+		}
+	}
+	
+	/**
+	 * Scale the original image according to given X and Y based scale factors
+	 * @param original {@link BufferedImage} to zoom
+	 * @param xScaleFactor zoom value by X axis
+	 * @param yScaleFactor zoom value by Y axis
+	 * @return resized original {@link BufferedImage)
+	 * @throws IOException in case of error
+	 */
+	private static BufferedImage zoomImage(BufferedImage original, float xScaleFactor, float yScaleFactor) throws IOException {
+		int newWidth = (int) (original.getWidth() * xScaleFactor);
+		int newHeight = (int) (original.getHeight() * yScaleFactor);
+		
+		BufferedImage resized = new BufferedImage(newWidth, newHeight, original.getType());
+		Graphics2D gr = resized.createGraphics();
+		gr.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		gr.drawImage(original, 0, 0, newWidth, newHeight, 0, 0, original.getWidth(), original.getHeight(), null);
+		gr.dispose();
+		
+		return resized;
 	}
 
 	private static boolean isImageWithContentType(DSSDocument image, MimeType expectedContentType) {
@@ -233,21 +276,24 @@ public class ImageUtils {
 	}
 	
 	public static Dimension getImageDimension(SignatureImageParameters imageParameters) {
-		int width = 0;
-		int height = 0;
+		float width = 0;
+		float height = 0;
+		float scaleFactor = imageParameters.getScaleFactor();
 		try {
 			DSSDocument docImage = imageParameters.getImage();
 			if (docImage != null) {
 				try (InputStream is = docImage.openStream()) {
 					BufferedImage image = ImageIO.read(is);
-					width = image.getWidth();
-					height = image.getHeight();
+					width = image.getWidth() * scaleFactor;
+					height = image.getHeight() * scaleFactor;
 				}
 		}
 		} catch (IOException e) {
 			LOG.error("Cannot read the given image", e);
 		}
-		return new Dimension(width, height);
+		Dimension dimension = new Dimension();
+		dimension.setSize(width, height);
+		return dimension;
 	}
 
 	private static Dimension getTextDimension(SignatureImageParameters imageParameters) throws IOException {

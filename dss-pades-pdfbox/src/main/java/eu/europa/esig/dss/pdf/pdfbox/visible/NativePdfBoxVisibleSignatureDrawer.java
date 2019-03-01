@@ -1,5 +1,8 @@
 package eu.europa.esig.dss.pdf.pdfbox.visible;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,6 +21,7 @@ import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
 import org.apache.pdfbox.pdmodel.font.encoding.WinAnsiEncoding;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
@@ -26,14 +30,23 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 import org.apache.pdfbox.util.Matrix;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
+import eu.europa.esig.dss.pdf.visible.ImageTextWriter;
 import eu.europa.esig.dss.utils.Utils;
 
 public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureDrawer {
+
+	private static final Logger LOG = LoggerFactory.getLogger(NativePdfBoxVisibleSignatureDrawer.class);
 	
 	private PDFont pdFont;
+	
+	private static final float OPAQUE_VALUE = 0xff;
 	
 	@Override
 	public void init(SignatureImageParameters parameters, PDDocument document, SignatureOptions signatureOptions) throws IOException {
@@ -43,6 +56,9 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		}
 	}
 	
+	/**
+	 * Method to initialize the specific for PdfBpx {@link PDFont}
+	 */
 	private PDFont initFont() throws IOException {
 		try (InputStream is = parameters.getTextParameters().getFont().openStream()) {
 			return PDTrueTypeFont.load(document, is, WinAnsiEncoding.INSTANCE);
@@ -87,37 +103,9 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
             
             try (PDPageContentStream cs = new PDPageContentStream(doc, appearanceStream);)
             {
-            	if (parameters.getBackgroundColor() != null) {
-                    cs.setNonStrokingColor(parameters.getBackgroundColor());
-                    // fill a whole box with the background color
-                    cs.addRect(-5000, -5000, 10000, 10000);
-                    cs.fill();
-            	}
-            	if (parameters.getImage() != null) {
-                    cs.saveGraphicsState();
-                    cs.transform(Matrix.getScaleInstance(dimensionAndPosition.getxDpiRatio(), dimensionAndPosition.getyDpiRatio()));
-            		InputStream image = parameters.getImage().openStream();
-            		byte[] bytes = IOUtils.toByteArray(image);
-            		PDImageXObject imageXObject = PDImageXObject.createFromByteArray(doc, bytes, parameters.getImage().getName());
-                	cs.drawImage(imageXObject, dimensionAndPosition.getImageX(), dimensionAndPosition.getImageY());
-                    cs.restoreGraphicsState();
-            	}
-            	SignatureImageTextParameters textParameters = parameters.getTextParameters();
-            	if (textParameters != null && Utils.isStringNotEmpty(textParameters.getText())) {
-                    float fontSize = textParameters.getSize();
-                    cs.beginText();
-                    cs.setFont(pdFont, fontSize);
-                    cs.setNonStrokingColor(textParameters.getTextColor());
-                    cs.newLineAtOffset(dimensionAndPosition.getTextX(), 
-                    		// align vertical position
-                    		dimensionAndPosition.getTextY() + dimensionAndPosition.getTextHeight() - fontSize);
-                    String[] strings = textParameters.getText().split(System.lineSeparator());
-                    for (String str : strings) {
-                        cs.showText(str);
-                        cs.newLine();
-                    }
-                    cs.endText();
-            	}
+            	setFieldBackground(cs, parameters.getBackgroundColor());
+            	setImage(cs, doc, dimensionAndPosition, parameters.getImage());
+            	setText(cs, dimensionAndPosition, parameters);
             }
             
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -130,10 +118,169 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		signatureOptions.setPage(parameters.getPage() - 1);
 	}
 	
+	/**
+	 * Fills a signature field background with the given color
+	 * @param cs 
+	 *		current {@link PDPageContentStream}
+	 * @param color 
+	 *		{@link Color} background color
+	 * @throws IOException
+	 *		in case of error
+	 */
+	private void setFieldBackground(PDPageContentStream cs, Color color) throws IOException {
+		setBackground(cs, color, new PDRectangle(-5000, -5000, 10000, 10000));
+	}
+	
+	private void setBackground(PDPageContentStream cs, Color color, PDRectangle rect) throws IOException {
+		if (color != null) {
+            setAlphaChannel(cs, color);
+            cs.setNonStrokingColor(color);
+            // fill a whole box with the background color
+            cs.addRect(rect.getLowerLeftX(), rect.getLowerLeftY(), rect.getWidth(), rect.getWidth());
+            cs.fill();
+            cleanTransparency(cs);
+    	}
+	}
+	
+	/**
+	 * Draws the given image with specified dimension and position
+	 * @param cs
+	 *		{@link PDPageContentStream} current stream
+	 * @param doc
+	 *		{@link PDDocument} to draw the picture on
+	 * @param dimensionAndPosition
+	 *		{@link SignatureFieldDimensionAndPosition} size and position to place the picture to
+	 * @param image
+	 *		{@link DSSDocument} image to draw
+	 * @throws IOException
+	 *		in case of error
+	 */
+	private void setImage(PDPageContentStream cs, PDDocument doc, SignatureFieldDimensionAndPosition dimensionAndPosition, 
+			DSSDocument image) throws IOException {
+		if (image != null) {
+			try (InputStream is = image.openStream()) {
+	            cs.saveGraphicsState();
+	            float scaleFactor = parameters.getScaleFactor();
+	            cs.transform(Matrix.getScaleInstance(dimensionAndPosition.getxDpiRatio() * scaleFactor, 
+	            		dimensionAndPosition.getyDpiRatio() * scaleFactor));
+	    		byte[] bytes = IOUtils.toByteArray(is);
+	    		PDImageXObject imageXObject = PDImageXObject.createFromByteArray(doc, bytes, parameters.getImage().getName());
+	    		// divide to scale factor, because PdfBox due to the matrix transformation also changes position parameters of the image
+	        	cs.drawImage(imageXObject, dimensionAndPosition.getImageX() / scaleFactor, dimensionAndPosition.getImageY() / scaleFactor);
+	            cs.restoreGraphicsState();
+			}
+    	}
+	}
+	
+	/**
+	 * Draws a custom text with the specified parameters
+	 * @param cs
+	 *		{@link PDPageContentStream} current stream
+	 * @param dimensionAndPosition
+	 *		{@link SignatureFieldDimensionAndPosition} size and position to place the text to
+	 * @param textParameters
+	 *		{@link SignatureImageTextParameters} text to place on the signature field
+	 * @throws IOException
+	 *		in case of error
+	 */
+	private void setText(PDPageContentStream cs, SignatureFieldDimensionAndPosition dimensionAndPosition, 
+			SignatureImageParameters parameters) throws IOException {
+		SignatureImageTextParameters textParameters = parameters.getTextParameters();
+    	if (textParameters != null && Utils.isStringNotEmpty(textParameters.getText())) {
+    		setTextBackground(cs, textParameters, dimensionAndPosition);
+            float fontSize = textParameters.getSize();
+            cs.beginText();
+            cs.setFont(pdFont, fontSize);
+            cs.setNonStrokingColor(textParameters.getTextColor());
+            setAlphaChannel(cs, textParameters.getTextColor());
+            
+            String[] strings = textParameters.getText().split("\\r?\\n");
+            
+			Font properFont = ImageTextWriter.computeProperFont(textParameters.getJavaFont(), textParameters.getSize(), parameters.getDpi());
+            FontMetrics fontMetrics = ImageTextWriter.getFontMetrics(properFont);
+            cs.setLeading(textSizeWithDpi(fontMetrics.getHeight(), dimensionAndPosition.getyDpi()));
+            
+            float previousOffset = dimensionAndPosition.getTextX();
+            cs.newLineAtOffset(previousOffset,
+            		// align vertical position
+            		dimensionAndPosition.getTextHeight() + dimensionAndPosition.getTextY() - fontSize);
+            
+            for (String str : strings) {
+                float stringWidth = textSizeWithDpi(fontMetrics.stringWidth(str), dimensionAndPosition.getxDpi());
+                float offsetX = 0;
+                switch (textParameters.getSignerTextHorizontalAlignment()) {
+					case RIGHT:
+						offsetX = (dimensionAndPosition.getTextWidth() - stringWidth - 
+								textSizeWithDpi(textParameters.getMargin(), dimensionAndPosition.getxDpi())) - previousOffset;
+						break;
+					case CENTER:
+						offsetX = (dimensionAndPosition.getTextWidth() - stringWidth) / 2 - previousOffset;
+						break;
+					default:
+						break;
+				}
+                previousOffset += offsetX;
+				cs.newLineAtOffset(offsetX, 0); // relative offset
+                cs.showText(str);
+                cs.newLine();
+            }
+            cs.endText();
+    	}
+	}
+	
+	private void setTextBackground(PDPageContentStream cs, SignatureImageTextParameters textParameters, 
+			SignatureFieldDimensionAndPosition dimensionAndPosition) throws IOException {
+		if (textParameters.getBackgroundColor() != null) {
+			PDRectangle rect = new PDRectangle(dimensionAndPosition.getTextX() - textSizeWithDpi(textParameters.getMargin(), dimensionAndPosition.getxDpi()), 
+					dimensionAndPosition.getTextY(), dimensionAndPosition.getTextWidth(), dimensionAndPosition.getTextHeight());
+			setBackground(cs, textParameters.getBackgroundColor(), rect);
+		}
+	}
+	
+	private float textSizeWithDpi(float size, int dpi) {
+		return CommonDrawerUtils.toDpiAxisPoint(size / CommonDrawerUtils.getScaleFactor(dpi), dpi);
+	}
+	
+	/**
+	 * Sets alpha channel if needed
+	 * @param cs
+	 *		{@link PDPageContentStream} current stream
+	 * @param color
+	 * 		{@link Color}
+	 * @throws IOException
+	 *		in case of error
+	 */
+	private void setAlphaChannel(PDPageContentStream cs, Color color) throws IOException {
+		// if alpha value is less then 255 (is transparent)
+		float alpha = color.getAlpha();
+		if (alpha < OPAQUE_VALUE) {
+			LOG.warn("Transparency detected and enabled (be careful not valid with PDF/A !)");
+			setAlpha(cs, alpha);
+		} 
+	}
+	
+	private void setAlpha(PDPageContentStream cs, float alpha) throws IOException {
+		PDExtendedGraphicsState gs = new PDExtendedGraphicsState();
+		gs.setNonStrokingAlphaConstant(alpha / OPAQUE_VALUE);
+		cs.setGraphicsStateParameters(gs);
+	}
+	
+	private void cleanTransparency(PDPageContentStream cs) throws IOException {
+		setAlpha(cs, OPAQUE_VALUE);
+	}
+	
+	/**
+	 * Returns {@link PDRectangle} of the widget to place on page
+	 * @param dimensionAndPosition
+	 * 		{@link SignatureFieldDimensionAndPosition} specifies widget size and position
+	 * @param page
+	 * 		{@link PDPage} to place the widget on
+	 * @return
+	 * 		{@link PDRectangle}
+	 */
 	private PDRectangle getPdRectangle(SignatureFieldDimensionAndPosition dimensionAndPosition, PDPage page) {
 		PDRectangle pageRect = page.getMediaBox();
 		PDRectangle pdRectangle = new PDRectangle();
-		
 		pdRectangle.setLowerLeftX(dimensionAndPosition.getBoxX());
 		pdRectangle.setLowerLeftY(pageRect.getHeight() - dimensionAndPosition.getBoxY() - dimensionAndPosition.getBoxHeight()); // because PDF starts to count from bottom
 		pdRectangle.setUpperRightX(dimensionAndPosition.getBoxX() + dimensionAndPosition.getBoxWidth());

@@ -148,7 +148,8 @@ public class SignatureImageParameters {
         
 
 	/**
-	 * This variable defines a percent to zoom (100% means no scaling).
+	 * This variable defines a percent to zoom the image (100% means no scaling).
+	 * Note: This do not touch zooming of the text representation.
 	 */
 	private int zoom = NO_SCALING;
 
@@ -221,6 +222,10 @@ public class SignatureImageParameters {
 
 	public void setZoom(int zoom) {
 		this.zoom = zoom;
+	}
+	
+	public float getScaleFactor() {
+		return zoom / 100f;
 	}
 
 	public int getPage() {

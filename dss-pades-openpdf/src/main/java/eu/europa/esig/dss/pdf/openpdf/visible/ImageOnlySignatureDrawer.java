@@ -37,7 +37,7 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 
 		Image image = Image.getInstance(DSSUtils.toByteArray(parameters.getImage()));
 
-		int zoom = parameters.getZoom();
+		float zoom = parameters.getScaleFactor();
 		int width = parameters.getWidth();
 		int height = parameters.getHeight();
 		if (width == 0) {
@@ -46,8 +46,8 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		if (height == 0) {
 			height = (int) image.getHeight();
 		}
-		width *= ((float) zoom / 100);
-		height *= ((float) zoom / 100);
+		width *= zoom;
+		height *= zoom;
 
 		if (Utils.isStringNotBlank(signatureFieldId)) {
 			appearance.setVisibleSignature(signatureFieldId);

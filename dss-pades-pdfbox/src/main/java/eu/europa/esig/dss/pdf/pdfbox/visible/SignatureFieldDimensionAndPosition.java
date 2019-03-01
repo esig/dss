@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.pdf.pdfbox.visible;
 
+import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
 
 public class SignatureFieldDimensionAndPosition {
@@ -20,6 +21,7 @@ public class SignatureFieldDimensionAndPosition {
 	private ImageAndResolution imageAndResolution;
 	
 	private static final int DEFAULT_DPI = 72;
+	private static final int DEFAULT_TEXT_DPI = 300;
 	
 	public float getBoxX() {
 		return boxX;
@@ -109,7 +111,7 @@ public class SignatureFieldDimensionAndPosition {
 		if (imageAndResolution != null) {
 			return imageAndResolution.getxDpi();
 		} else {
-			return DEFAULT_DPI;
+			return DEFAULT_TEXT_DPI;
 		}
 	}
 	
@@ -117,21 +119,21 @@ public class SignatureFieldDimensionAndPosition {
 		if (imageAndResolution != null) {
 			return imageAndResolution.getyDpi();
 		} else {
-			return DEFAULT_DPI;
+			return DEFAULT_TEXT_DPI;
 		}
 	}
 	
-	public int getxDpiRatio() {
-		return DEFAULT_DPI / getxDpi();
+	public float getxDpiRatio() {
+		return (float) DEFAULT_DPI / getxDpi();
 	}
 	
-	public int getyDpiRatio() {
-		return DEFAULT_DPI / getyDpi();
+	public float getyDpiRatio() {
+		return (float) DEFAULT_DPI / getyDpi();
 	}
 	
 	public void marginShift(float margin) {
-		this.textX += margin;
-		this.textY -= margin; // because PDF starts to count from bottom
+		this.textX += CommonDrawerUtils.toDpiAxisPoint(margin / CommonDrawerUtils.getScaleFactor(getxDpi()), getxDpi());
+		this.textY -= CommonDrawerUtils.toDpiAxisPoint(margin / CommonDrawerUtils.getScaleFactor(getyDpi()), getyDpi()); // because PDF starts to count from bottom
 	}
 	
 }

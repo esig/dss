@@ -84,25 +84,25 @@ public final class ImagesMerger {
 		fillBackground(g, newImageWidth, newImageHeigth, bgColor);
 
 		switch (imageVerticalAlignment) {
-		case TOP:
-			g.drawImage(left, 0, 0, left.getWidth(), left.getHeight(), null);
-			g.drawImage(right, left.getWidth(), 0, right.getWidth(), right.getHeight(), null);
-			break;
-		case MIDDLE:
-			g.drawImage(left, 0, (newImageHeigth - left.getHeight()) / 2, left.getWidth(), left.getHeight(), null);
-			g.drawImage(right, left.getWidth(), (newImageHeigth - right.getHeight()) / 2, right.getWidth(), right.getHeight(), null);
-			break;
-		case BOTTOM:
-			if (left.getHeight() > right.getHeight()) {
+			case TOP:
 				g.drawImage(left, 0, 0, left.getWidth(), left.getHeight(), null);
-				g.drawImage(right, left.getWidth(), newImageHeigth - right.getHeight(), right.getWidth(), right.getHeight(), null);
-			} else {
-				g.drawImage(left, 0, newImageHeigth - left.getHeight(), left.getWidth(), left.getHeight(), null);
 				g.drawImage(right, left.getWidth(), 0, right.getWidth(), right.getHeight(), null);
-			}
-			break;
-		default:
-			throw new DSSException("Unsupported SignerTextImageVerticalAlignment : " + imageVerticalAlignment);
+				break;
+			case MIDDLE:
+				g.drawImage(left, 0, (newImageHeigth - left.getHeight()) / 2, left.getWidth(), left.getHeight(), null);
+				g.drawImage(right, left.getWidth(), (newImageHeigth - right.getHeight()) / 2, right.getWidth(), right.getHeight(), null);
+				break;
+			case BOTTOM:
+				if (left.getHeight() > right.getHeight()) {
+					g.drawImage(left, 0, 0, left.getWidth(), left.getHeight(), null);
+					g.drawImage(right, left.getWidth(), newImageHeigth - right.getHeight(), right.getWidth(), right.getHeight(), null);
+				} else {
+					g.drawImage(left, 0, newImageHeigth - left.getHeight(), left.getWidth(), left.getHeight(), null);
+					g.drawImage(right, left.getWidth(), 0, right.getWidth(), right.getHeight(), null);
+				}
+				break;
+			default:
+				throw new DSSException("Unsupported SignerTextImageVerticalAlignment : " + imageVerticalAlignment);
 		}
 
 		return combined;

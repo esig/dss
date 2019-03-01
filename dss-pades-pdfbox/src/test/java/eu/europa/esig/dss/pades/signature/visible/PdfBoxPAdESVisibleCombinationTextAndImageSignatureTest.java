@@ -20,6 +20,18 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
+import org.junit.Before;
+
+import eu.europa.esig.dss.pdf.PdfObjFactory;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
+
 public class PdfBoxPAdESVisibleCombinationTextAndImageSignatureTest extends PAdESVisibleCombinationTextAndImageSignature {
+	
+	@Before
+	@Override
+	public void init() throws Exception {
+		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
+		super.init();
+	}
 
 }

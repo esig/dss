@@ -77,7 +77,7 @@ public class PAdESVisibleCombinationTextAndImageSignature extends PKIFactoryAcce
 		textParameters.setTextColor(Color.GREEN);
 		imageParameters.setTextParameters(textParameters);
 
-		imageParameters.setZoom(150); // augments 50%
+		imageParameters.setZoom(50); // reduces 50%
 		signatureParameters.setSignatureImageParameters(imageParameters);
 		signAndValidate();
 	}

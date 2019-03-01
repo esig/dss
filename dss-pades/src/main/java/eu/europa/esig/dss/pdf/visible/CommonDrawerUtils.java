@@ -28,6 +28,11 @@ public class CommonDrawerUtils {
 		float floatDpi = getDpi(dpi);
 		return floatDpi / PDF_DEFAULT_DPI;
 	}
+	
+	public static float getScaleFactor(Integer dpi) {
+		float floatDpi = getDpi(dpi);
+		return DPI / floatDpi;
+	}
 
 	public static void initRendering(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
