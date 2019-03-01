@@ -717,14 +717,14 @@
 		<xsd:annotation>
 			<xsd:documentation>Boolean check : follows the specified validation model</xsd:documentation>
 		</xsd:annotation>
-		<xsd:attribute type="tns:model" name="Value">
+		<xsd:attribute type="tns:Model" name="Value">
 			<xsd:annotation>
 				<xsd:documentation>The validation model</xsd:documentation>
 			</xsd:annotation>
 		</xsd:attribute>
 	</xsd:complexType>
 	
-	<xsd:simpleType name="model">
+	<xsd:simpleType name="Model">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="SHELL"/>
 			<xsd:enumeration value="CHAIN"/>
