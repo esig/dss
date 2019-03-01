@@ -118,6 +118,7 @@
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>B2A1ED94EDFD732D0EA08218B5899A8DDBE209C1FA8B3E29D5506799C44AEA6B</ServiceDigitalIdentifier>
                             <ServiceName>OpenLimit CryptoModule 2019 XCA ROOT 3</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -223,6 +224,7 @@
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>D823D1CB01C995262DAF465BEEDC1E170CA8568E8E28480E87369FB78AD53708</ServiceDigitalIdentifier>
                             <ServiceName>OpenLimit CryptoModule 2019 XCA ROOT 1</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -303,6 +305,7 @@
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>D823D1CB01C995262DAF465BEEDC1E170CA8568E8E28480E87369FB78AD53708</ServiceDigitalIdentifier>
                             <ServiceName>OpenLimit CryptoModule 2019 XCA ROOT 1</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -413,6 +416,7 @@
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>D823D1CB01C995262DAF465BEEDC1E170CA8568E8E28480E87369FB78AD53708</ServiceDigitalIdentifier>
                             <ServiceName>OpenLimit CryptoModule 2019 XCA ROOT 1</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -517,6 +521,7 @@
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>B2A1ED94EDFD732D0EA08218B5899A8DDBE209C1FA8B3E29D5506799C44AEA6B</ServiceDigitalIdentifier>
                             <ServiceName>OpenLimit CryptoModule 2019 XCA ROOT 3</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -599,6 +604,7 @@
                     <CountryCode>OL</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>D823D1CB01C995262DAF465BEEDC1E170CA8568E8E28480E87369FB78AD53708</ServiceDigitalIdentifier>
                             <ServiceName>OpenLimit CryptoModule 2019 XCA ROOT 1</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
