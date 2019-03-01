@@ -34,23 +34,11 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	private ProfileParameters context;
 
 	/**
-	 * The digest method used to create the digest of the signer's certificate.
+	 * This parameter allows to add optional X509SubjectName in the tag X509Data
 	 */
-	private DigestAlgorithm signingCertificateDigestMethod = DigestAlgorithm.SHA512;
-
-	/**
-	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedInfo.
-	 */
-	private String signedInfoCanonicalizationMethod;
-
-	/**
-	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedProperties.
-	 */
-	private String signedPropertiesCanonicalizationMethod;
+	private boolean addX509SubjectName;
 
 	private List<DSSReference> dssReferences;
-
-	private String xPathLocationString;
 
 	/**
 	 * In case of ENVELOPING signature, this parameter allows to include the complete XML and not its base64 encoded
@@ -61,9 +49,9 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	private boolean en319132 = true;
 
 	/**
-	 * This attribute is used to inject ASiC root (inclusive canonicalization)
+	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for KeyInfo.
 	 */
-	private Document rootDocument;
+	private String keyInfoCanonicalizationMethod;
 
 	/**
 	 * This parameter allows to produce Manifest signature (https://www.w3.org/TR/xmldsig-core/#sec-o-Manifest).
@@ -71,9 +59,9 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	private boolean manifestSignature;
 
 	/**
-	 * This parameter allows to add optional X509SubjectName in the tag X509Data
+	 * This attribute is used to inject ASiC root (inclusive canonicalization)
 	 */
-	private boolean addX509SubjectName;
+	private Document rootDocument;
 
 	/**
 	 * Optional parameter that contains the canonicalized XML of the XAdES object that was digested,
@@ -81,6 +69,30 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	 * If this parameter is specified it will be used in the signed XML document.
 	 */
 	private byte[] signedAdESObject;
+
+	/**
+	 * The digest method used to create the digest of the signer's certificate.
+	 */
+	private DigestAlgorithm signingCertificateDigestMethod = DigestAlgorithm.SHA512;
+
+	/**
+	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedInfo.
+	 */
+	private String signedInfoCanonicalizationMethod;
+	
+	/**
+	 * Optional parameter defining should the "KeyInfo" element be signed.
+	 * If the value of parameter is TRUE, reference of the "KeyInfo" element will be added to "SignedInfo".
+	 * FALSE by default.
+	 */
+	private boolean signKeyInfo = false;
+
+	/**
+	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedProperties.
+	 */
+	private String signedPropertiesCanonicalizationMethod;
+
+	private String xPathLocationString;
 
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
@@ -143,6 +155,40 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	 */
 	public void setSignedPropertiesCanonicalizationMethod(final String signedPropertiesCanonicalizationMethod) {
 		this.signedPropertiesCanonicalizationMethod = signedPropertiesCanonicalizationMethod;
+	}
+	
+	/**
+	 * Returns the canonicalization algorithm used for dealing with KeyInfo
+	 * @return - name of the canonicalization algorithm
+	 */
+	public String getKeyInfoCanonicalizationMethod() {
+		return keyInfoCanonicalizationMethod;
+	}
+	
+	/**
+	 * Set the canonicalization algorithm used for dealing with KeyInfo.
+	 * @param keyInfoCanonicalizationMethod - name of the canonicalization algorithm for dealing with KeyInfo.
+	 */
+	public void setKeyInfoCanonicalizationMethod(final String keyInfoCanonicalizationMethod) {
+		this.keyInfoCanonicalizationMethod = keyInfoCanonicalizationMethod;
+	}
+	
+	/**
+	 * Returns value value specifying if "KeyInfo" element should be signed.
+	 * @return TRUE if "KeyInfo" element must be signed, FALSE otherwise.
+	 */
+	public boolean isSignKeyInfo() {
+		return signKeyInfo;
+	}
+	
+	/**
+	 * Set the parameter SignKeyInfo defining if the "KeyInfo" element must be signed and
+	 * 		its reference must be included to "SignedInfo" element.
+	 * 		The value is FALSE by default.
+	 * @param signKeyInfo - if KeyInfo element should be signed
+	 */
+	public void setSignKeyInfo(boolean signKeyInfo) {
+		this.signKeyInfo = signKeyInfo;
 	}
 
 	public List<DSSReference> getReferences() {

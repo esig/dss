@@ -22,6 +22,7 @@ package eu.europa.esig.dss;
 
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -39,15 +40,16 @@ public class CertificateReorderer {
 	private static final Logger LOG = LoggerFactory.getLogger(CertificateReorderer.class);
 
 	private final CertificateToken signingCertificate;
-	private final List<CertificateToken> certificateChain;
+	private final Collection<CertificateToken> certificateChain;
 
 	/**
-	 * Constructor which takes a list of certificates where DSS needs to find the signing certificate
+	 * Constructor which takes a collection of certificates where DSS needs to find
+	 * the signing certificate
 	 * 
 	 * @param certificateChain
-	 *            a list of certificates
+	 *                         a collection of certificates
 	 */
-	public CertificateReorderer(List<CertificateToken> certificateChain) {
+	public CertificateReorderer(Collection<CertificateToken> certificateChain) {
 		this(null, certificateChain);
 	}
 
@@ -59,7 +61,7 @@ public class CertificateReorderer {
 	 * @param certificateChain
 	 *            the certificate chain
 	 */
-	public CertificateReorderer(CertificateToken signingCertificate, List<CertificateToken> certificateChain) {
+	public CertificateReorderer(CertificateToken signingCertificate, Collection<CertificateToken> certificateChain) {
 		this.signingCertificate = signingCertificate;
 		this.certificateChain = certificateChain;
 	}

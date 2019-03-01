@@ -37,8 +37,8 @@ import eu.europa.esig.dss.client.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.client.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.dss.x509.RevocationSource;
-import eu.europa.esig.dss.x509.ocsp.OCSPToken;
+import eu.europa.esig.dss.x509.revocation.RevocationSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 
 public class OnlineOCSPSourceTest {
 
@@ -54,7 +54,6 @@ public class OnlineOCSPSourceTest {
 	@Test
 	public void testOCSPWithoutNonce() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
-		ocspSource.setDataLoader(new OCSPDataLoader());
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getBasicOCSPResp());
@@ -64,7 +63,6 @@ public class OnlineOCSPSourceTest {
 	@Test
 	public void testOCSPWithNonce() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
-		ocspSource.setDataLoader(new OCSPDataLoader());
 		ocspSource.setNonceSource(new SecureRandomNonceSource());
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
@@ -95,7 +93,6 @@ public class OnlineOCSPSourceTest {
 	@Test
 	public void testInjectExternalUrls() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
-		ocspSource.setDataLoader(new OCSPDataLoader());
 		List<String> alternativeOCSPUrls = new ArrayList<String>();
 		alternativeOCSPUrls.add("http://wrong.url.com");
 

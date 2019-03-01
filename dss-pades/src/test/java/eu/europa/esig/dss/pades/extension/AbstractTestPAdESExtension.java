@@ -20,15 +20,22 @@
  */
 package eu.europa.esig.dss.pades.extension;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.UUID;
+
 import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.extension.AbstractTestExtension;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<PAdESSignatureParameters> {
@@ -45,9 +52,18 @@ public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<P
 	}
 
 	@Override
-	protected DSSDocument getSignedDocument() throws Exception {
+	protected DSSDocument getOriginalDocument() {
+		File originalDoc = new File("target/original-" + UUID.randomUUID().toString() + ".pdf");
+		try (FileOutputStream fos = new FileOutputStream(originalDoc); InputStream is = AbstractTestPAdESExtension.class.getResourceAsStream("/sample.pdf")) {
+			Utils.copy(is, fos);
+		} catch (IOException e) {
+			throw new DSSException("Unable to create the original document", e);
+		}
+		return new FileDocument(originalDoc);
+	}
 
-		DSSDocument document = new InMemoryDocument(AbstractTestPAdESExtension.class.getResourceAsStream("/sample.pdf"), "sample.pdf", MimeType.PDF);
+	@Override
+	protected DSSDocument getSignedDocument(DSSDocument doc) {
 
 		// Sign
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
@@ -58,13 +74,13 @@ public abstract class AbstractTestPAdESExtension extends AbstractTestExtension<P
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtSignatureTime());
 
-		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
+		ToBeSigned dataToSign = service.getDataToSign(doc, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		return service.signDocument(document, signatureParameters, signatureValue);
+		return service.signDocument(doc, signatureParameters, signatureValue);
 	}
 
 	@Override
-	protected DocumentSignatureService<PAdESSignatureParameters> getSignatureServiceToExtend() throws Exception {
+	protected DocumentSignatureService<PAdESSignatureParameters> getSignatureServiceToExtend() {
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;

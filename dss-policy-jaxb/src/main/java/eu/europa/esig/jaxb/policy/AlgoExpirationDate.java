@@ -82,6 +82,10 @@ public class AlgoExpirationDate
         }
         return this.algo;
     }
+    
+    public void setAlgo(List<Algo> algo) {
+    	this.algo = algo;
+    }
 
     /**
      * Gets the value of the format property.

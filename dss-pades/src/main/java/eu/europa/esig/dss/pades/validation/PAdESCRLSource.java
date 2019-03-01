@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
+import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
 
 /**
  * CRLSource that will retrieve the CRL from a PAdES Signature

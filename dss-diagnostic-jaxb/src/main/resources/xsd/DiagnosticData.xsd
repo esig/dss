@@ -154,6 +154,7 @@
 		<xs:sequence>
 			<xs:element name="Id" type="xs:string" />
 			<xs:element name="Url" type="xs:string" minOccurs="0" />
+			<xs:element name="Description" type="xs:string" minOccurs="0" />
 			<xs:element name="Notice" type="xs:string" minOccurs="0" />
 			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
 			<xs:element name="Asn1Processable" type="xs:boolean" minOccurs="0" />
@@ -413,6 +414,7 @@
 			<!-- XAdES -->
 			<xs:enumeration value="REFERENCE" />
 			<xs:enumeration value="OBJECT" />
+			<xs:enumeration value="KEY_INFO" />
 			<xs:enumeration value="MANIFEST" />
 			<xs:enumeration value="MANIFEST_ENTRY" />
 			<xs:enumeration value="SIGNED_PROPERTIES" />
@@ -500,6 +502,7 @@
 	
 	<xs:complexType name="TrustedService">
 		<xs:sequence>
+			<xs:element name="ServiceDigitalIdentifier" type="xs:string" />
 			<xs:element name="ServiceName" type="xs:string" />
 			<xs:element name="ServiceType" type="xs:string" />
 			<xs:element name="Status" type="xs:string" />

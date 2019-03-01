@@ -22,6 +22,8 @@ package eu.europa.esig.dss.x509;
 
 import java.util.List;
 
+import eu.europa.esig.dss.x509.revocation.RevocationSourceAlternateUrlsSupport;
+
 /**
  * This class allows to inject alternative urls to collect revocation data. This
  * is mainly used to collect revocations from discovered urls in the trusted

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.executor;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
@@ -47,7 +48,7 @@ public class DetailedReportForCertificateBuilder extends AbstractDetailedReportB
 		DetailedReport detailedReport = init();
 
 		CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateId);
-		CertificateWrapper rootCertificate = diagnosticData.getUsedCertificateById(certificate.getLastChainCertificateId());
+		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
 
 		Map<String, XmlBasicBuildingBlocks> bbbs = new HashMap<String, XmlBasicBuildingBlocks>();
 		process(Collections.singleton(certificate), Context.CERTIFICATE, bbbs);
@@ -55,7 +56,7 @@ public class DetailedReportForCertificateBuilder extends AbstractDetailedReportB
 
 		XmlBasicBuildingBlocks basicBuildingBlocks = bbbs.get(certificate.getId());
 
-		CertificateQualificationBlock cqb = new CertificateQualificationBlock(basicBuildingBlocks.getConclusion(), currentTime, certificate, rootCertificate,
+		CertificateQualificationBlock cqb = new CertificateQualificationBlock(basicBuildingBlocks.getConclusion(), currentTime, certificate, usedCertificates,
 				detailedReport.getTLAnalysis(), diagnosticData.getLOTLCountryCode());
 		detailedReport.setCertificate(cqb.execute());
 

@@ -23,7 +23,7 @@
             </DigestMatchers>
 	        <BasicSignature>
 	            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	            <KeyLengthUsedToSignThisToken>1024</KeyLengthUsedToSignThisToken>
+	            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
 	            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
 	            <SignatureIntact>true</SignatureIntact>
 	            <SignatureValid>true</SignatureValid>
@@ -54,7 +54,7 @@
 		          	</DigestMatcher>
 	                <BasicSignature>
 	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>1024</KeyLengthUsedToSignThisToken>
+	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
 	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
 	                    <SignatureIntact>true</SignatureIntact>
 	                    <SignatureValid>true</SignatureValid>
@@ -184,7 +184,7 @@
             </DigestAlgoAndValues>
             <NotAfter>2014-10-30T01:00:00</NotAfter>
             <NotBefore>2014-10-08T10:46:20</NotBefore>
-            <PublicKeySize>1024</PublicKeySize>
+            <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
                 <KeyUsage>nonRepudiation</KeyUsage>
@@ -382,7 +382,7 @@
 	        </DigestAlgoAndValues>
             <NotAfter>2018-10-13T02:00:00</NotAfter>
             <NotBefore>2014-10-13T10:07:05</NotBefore>
-            <PublicKeySize>1024</PublicKeySize>
+            <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <KeyUsageBits>
                 <KeyUsage>digitalSignature</KeyUsage>

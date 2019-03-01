@@ -171,6 +171,19 @@ public class DetailedReport {
 		return result;
 	}
 
+	/**
+	 * This method returns the first signature id.
+	 *
+	 * @return the first signature id
+	 */
+	public String getFirstSignatureId() {
+		List<String> result = getSignatureIds();
+		if (result.size() > 0) {
+			return result.get(0);
+		}
+		return null;
+	}
+
 	public List<String> getTimestampIds() {
 		List<String> result = new ArrayList<String>();
 		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();

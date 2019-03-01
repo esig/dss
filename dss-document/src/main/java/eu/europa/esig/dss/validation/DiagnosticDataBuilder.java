@@ -75,7 +75,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.tsl.Condition;
-import eu.europa.esig.dss.tsl.KeyUsageBit;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.tsl.ServiceInfoStatus;
 import eu.europa.esig.dss.tsl.TLInfo;
@@ -85,6 +84,7 @@ import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.x509.KeyUsageBit;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.Token;
@@ -492,7 +492,7 @@ public class DiagnosticDataBuilder {
 			CertificateToken issuerToken = getCertificateByPubKey(certPubKey);
 			while (issuerToken != null) {
 				certChainTokens.add(getXmlChainItem(issuerToken));
-				if (issuerToken.isSelfSigned() || processedTokens.contains(issuerToken) || isTrusted(issuerToken)) {
+				if (issuerToken.isSelfSigned() || processedTokens.contains(issuerToken)) {
 					break;
 				}
 				processedTokens.add(issuerToken);
@@ -667,6 +667,9 @@ public class DiagnosticDataBuilder {
 
 		final String policyUrl = signaturePolicy.getUrl();
 		xmlPolicy.setUrl(policyUrl);
+		
+		final String description = signaturePolicy.getDescription();
+		xmlPolicy.setDescription(description);
 
 		final String notice = signaturePolicy.getNotice();
 		xmlPolicy.setNotice(notice);
@@ -979,26 +982,34 @@ public class DiagnosticDataBuilder {
 
 	private List<XmlTrustedServiceProvider> getXmlTrustedServiceProviders(CertificateToken certToken) {
 		List<XmlTrustedServiceProvider> result = new ArrayList<XmlTrustedServiceProvider>();
-		Set<ServiceInfo> services = getRelatedTrustServices(certToken);
-		Map<String, List<ServiceInfo>> servicesByProviders = classifyByServiceProvider(services);
-		for (List<ServiceInfo> servicesByProvider : servicesByProviders.values()) {
-			ServiceInfo first = servicesByProvider.get(0);
-			XmlTrustedServiceProvider serviceProvider = new XmlTrustedServiceProvider();
-			serviceProvider.setCountryCode(first.getTlCountryCode());
-			serviceProvider.setTSPName(first.getTspName());
-			serviceProvider.setTSPRegistrationIdentifier(first.getTspRegistrationIdentifier());
-			serviceProvider.setTrustedServices(getXmlTrustedServices(servicesByProvider, certToken));
-			result.add(serviceProvider);
+		Map<CertificateToken, Set<ServiceInfo>> servicesByTrustedCert = getRelatedTrustServices(certToken);
+		for (Entry<CertificateToken, Set<ServiceInfo>> entry : servicesByTrustedCert.entrySet()) {
+			CertificateToken trustedCert = entry.getKey();
+			Set<ServiceInfo> services = entry.getValue();
+
+			Map<String, List<ServiceInfo>> servicesByProviders = classifyByServiceProvider(services);
+			for (List<ServiceInfo> servicesByProvider : servicesByProviders.values()) {
+				ServiceInfo first = servicesByProvider.get(0);
+				XmlTrustedServiceProvider serviceProvider = new XmlTrustedServiceProvider();
+				serviceProvider.setCountryCode(first.getTlCountryCode());
+				serviceProvider.setTSPName(first.getTspName());
+				serviceProvider.setTSPRegistrationIdentifier(first.getTspRegistrationIdentifier());
+				serviceProvider.setTrustedServices(getXmlTrustedServices(servicesByProvider, certToken, trustedCert));
+				result.add(serviceProvider);
+			}
 		}
 		return Collections.unmodifiableList(result);
 	}
 
-	private Set<ServiceInfo> getRelatedTrustServices(CertificateToken certToken) {
+	private Map<CertificateToken, Set<ServiceInfo>> getRelatedTrustServices(CertificateToken certToken) {
 		if (trustedCertSource instanceof TrustedListsCertificateSource) {
-			Set<ServiceInfo> result = new HashSet<ServiceInfo>();
+			Map<CertificateToken, Set<ServiceInfo>> result = new HashMap<CertificateToken, Set<ServiceInfo>>();
 			Set<CertificateToken> processedTokens = new HashSet<CertificateToken>();
 			while (certToken != null) {
-				result.addAll(trustedCertSource.getTrustServices(certToken));
+				Set<ServiceInfo> trustServices = trustedCertSource.getTrustServices(certToken);
+				if (!trustServices.isEmpty()) {
+					result.put(certToken, trustServices);
+				}
 				if (certToken.isSelfSigned() || processedTokens.contains(certToken)) {
 					break;
 				}
@@ -1007,11 +1018,11 @@ public class DiagnosticDataBuilder {
 			}
 			return result;
 		} else {
-			return Collections.emptySet();
+			return Collections.emptyMap();
 		}
 	}
 
-	private List<XmlTrustedService> getXmlTrustedServices(List<ServiceInfo> serviceInfos, CertificateToken certToken) {
+	private List<XmlTrustedService> getXmlTrustedServices(List<ServiceInfo> serviceInfos, CertificateToken certToken, CertificateToken trustedCert) {
 		List<XmlTrustedService> result = new ArrayList<XmlTrustedService>();
 		for (ServiceInfo serviceInfo : serviceInfos) {
 			List<ServiceInfoStatus> serviceStatusAfterOfEqualsCertIssuance = serviceInfo.getStatus().getAfter(certToken.getNotBefore());
@@ -1019,6 +1030,7 @@ public class DiagnosticDataBuilder {
 				for (ServiceInfoStatus serviceInfoStatus : serviceStatusAfterOfEqualsCertIssuance) {
 					XmlTrustedService trustedService = new XmlTrustedService();
 
+					trustedService.setServiceDigitalIdentifier(trustedCert.getDSSIdAsString());
 					trustedService.setServiceName(serviceInfoStatus.getServiceName());
 					trustedService.setServiceType(serviceInfoStatus.getType());
 					trustedService.setStatus(serviceInfoStatus.getStatus());

@@ -42,7 +42,6 @@ import javax.security.auth.x500.X500Principal;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.EntityIdentifier;
 import eu.europa.esig.dss.SignatureAlgorithm;
-import eu.europa.esig.dss.tsl.KeyUsageBit;
 
 /**
  * Whenever the signature validation process encounters an {@link java.security.cert.X509Certificate} a certificateToken

@@ -27,7 +27,6 @@ import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 
@@ -38,8 +37,9 @@ import eu.europa.esig.jaxb.policy.CryptographicConstraint;
  */
 public class RevocationAcceptanceValidation extends AbstractAcceptanceValidation<RevocationWrapper> {
 
-	public RevocationAcceptanceValidation(DiagnosticData diagnosticData, Date currentTime, RevocationWrapper timestamp, ValidationPolicy validationPolicy) {
-		super(diagnosticData, timestamp, currentTime, validationPolicy);
+	public RevocationAcceptanceValidation(Date currentTime, RevocationWrapper revocationWrapper,
+			ValidationPolicy validationPolicy) {
+		super(revocationWrapper, currentTime, validationPolicy);
 	}
 
 	@Override

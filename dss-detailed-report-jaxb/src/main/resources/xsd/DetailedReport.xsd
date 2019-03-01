@@ -168,7 +168,9 @@
 	</xs:complexType>
 	<xs:complexType name="SAV">
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion" />
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="ValidationTime" type="xs:dateTime" use="optional" />
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="XCV">

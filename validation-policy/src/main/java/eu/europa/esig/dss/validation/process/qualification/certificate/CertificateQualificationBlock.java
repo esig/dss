@@ -44,18 +44,18 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 	private final XmlConclusion buildingBlocksConclusion;
 	private final Date validationTime;
 	private final CertificateWrapper signingCertificate;
-	private final CertificateWrapper rootCertificate;
+	private final List<CertificateWrapper> usedCertificates;
 	private final List<XmlTLAnalysis> tlAnalysis;
 	private final String lotlCountryCode;
 
 	public CertificateQualificationBlock(XmlConclusion buildingBlocksConclusion, Date validationTime, CertificateWrapper signingCertificate,
-			CertificateWrapper rootCertificate, List<XmlTLAnalysis> tlAnalysis, String lotlCountryCode) {
+			List<CertificateWrapper> usedCertificates, List<XmlTLAnalysis> tlAnalysis, String lotlCountryCode) {
 		super(new XmlCertificate());
 
 		this.buildingBlocksConclusion = buildingBlocksConclusion;
 		this.validationTime = validationTime;
 		this.signingCertificate = signingCertificate;
-		this.rootCertificate = rootCertificate;
+		this.usedCertificates = usedCertificates;
 		this.tlAnalysis = tlAnalysis;
 		this.lotlCountryCode = lotlCountryCode;
 	}
@@ -96,11 +96,11 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 			List<TrustedServiceWrapper> caqcServices = filter.filter(acceptableServices);
 
 			CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(ValidationTime.CERTIFICATE_ISSUANCE_TIME,
-					signingCertificate, rootCertificate, caqcServices);
+					signingCertificate, usedCertificates, caqcServices);
 			result.getValidationCertificateQualification().add(certQualAtIssuanceBlock.execute());
 
 			CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(ValidationTime.VALIDATION_TIME, validationTime,
-					signingCertificate, rootCertificate, caqcServices);
+					signingCertificate, usedCertificates, caqcServices);
 			result.getValidationCertificateQualification().add(certQualAtSigningTimeBlock.execute());
 
 		}

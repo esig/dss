@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.client.http.commons;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -67,6 +68,34 @@ public class CommonsDataLoaderTest {
 	public void ldapTest3() {
 		String url = "ldap://acldap.nlb.si/o=ACNLB,c=SI?certificateRevocationList";
 		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+	}
+	
+	@Test
+	public void dss1583test() {
+		String url = "ldap://pks-ldap.telesec.de/o=T-Systems International GmbH,c=de";
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		url = "ldap://pks-ldap.telesec.de/o=T-Systems%20International%20GmbH,c=de";
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		url = "ldap://pks-ldap.telesec.de/o=T-Systems International%20GmbH,c=de";
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		url = "ldap://pks-ldap.telesec.de/o=T-Systems International%20GmbH%20,%20c=de%20";
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		url = "ldap://pks-ldap.telesec.de/o=T-Systems International%20GmbH , c=de";
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		url = "ldap://pks-ldap.telesec.de/o=T-Systems International GmbH,c=de?certificateRevocationList?base";
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+	}
+	
+	@Test
+	public void dss1583WarningTest() {
+		String url = "ldap://pks-ldap.telesec.de/o=T-Systems International GmbH,c=de%2";
+		assertFalse(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		url = "ldap://pks-ldap.telesec.de/o=T-Syste%ms International GmbH,c=de";
+		assertFalse(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		url = "ldap://pks-ldap.telesec.de/o=T-SystemsInternational GmbH,c=de";
+		assertFalse(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		url = "ldap://pks-ldap.telesec.de/o=T-Systems International GmbH,c=de?certificate";
+		assertFalse(Utils.isArrayNotEmpty(dataLoader.get(url)));
 	}
 
 }
