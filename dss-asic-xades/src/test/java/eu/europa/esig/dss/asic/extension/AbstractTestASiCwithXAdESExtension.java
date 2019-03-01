@@ -22,16 +22,20 @@ package eu.europa.esig.dss.asic.extension;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.asic.ASiCWithXAdESSignatureParameters;
@@ -53,9 +57,18 @@ public abstract class AbstractTestASiCwithXAdESExtension extends AbstractTestExt
 	}
 
 	@Override
-	protected DSSDocument getSignedDocument() throws Exception {
-		DSSDocument document = new InMemoryDocument("Hello world!".getBytes(), "test.bin");
+	protected DSSDocument getOriginalDocument() {
+		File originalDoc = new File("target/original-" + UUID.randomUUID().toString() + ".bin");
+		try (FileOutputStream fos = new FileOutputStream(originalDoc)) {
+			fos.write("Hello world!".getBytes());
+		} catch (IOException e) {
+			throw new DSSException("Unable to create the original document", e);
+		}
+		return new FileDocument(originalDoc);
+	}
 
+	@Override
+	protected DSSDocument getSignedDocument(DSSDocument doc) {
 		// Sign
 		ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -66,9 +79,9 @@ public abstract class AbstractTestASiCwithXAdESExtension extends AbstractTestExt
 		ASiCWithXAdESService service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtSignatureTime());
 
-		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
+		ToBeSigned dataToSign = service.getDataToSign(doc, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		return service.signDocument(document, signatureParameters, signatureValue);
+		return service.signDocument(doc, signatureParameters, signatureValue);
 	}
 
 	@Override
@@ -82,7 +95,7 @@ public abstract class AbstractTestASiCwithXAdESExtension extends AbstractTestExt
 	protected abstract ASiCContainerType getContainerType();
 
 	@Override
-	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters> getSignatureServiceToExtend() throws Exception {
+	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters> getSignatureServiceToExtend() {
 		ASiCWithXAdESService service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 		return service;

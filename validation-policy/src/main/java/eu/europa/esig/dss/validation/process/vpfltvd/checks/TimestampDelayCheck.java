@@ -74,7 +74,7 @@ public class TimestampDelayCheck extends ChainItem<XmlValidationProcessLongTermD
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.FAILED;
+		return Indication.INDETERMINATE;
 	}
 
 	@Override

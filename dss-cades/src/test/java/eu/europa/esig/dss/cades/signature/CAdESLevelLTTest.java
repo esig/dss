@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.cades.signature;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -85,7 +86,11 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 				for (XmlRevocation xmlRevocation : revocations) {
 					assertNotNull(xmlRevocation.getBase64Encoded());
 				}
+			}
 
+			if (xmlCertificate.isSelfSigned()) {
+				assertNull(xmlCertificate.getSigningCertificate());
+				assertTrue(xmlCertificate.getCertificateChain().isEmpty());
 			}
 		}
 

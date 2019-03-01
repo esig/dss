@@ -29,7 +29,7 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
+import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**

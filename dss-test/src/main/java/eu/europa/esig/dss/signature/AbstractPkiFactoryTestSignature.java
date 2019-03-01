@@ -47,6 +47,7 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
@@ -220,6 +221,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		checkCommitmentTypeIndications(diagnosticData);
 		checkClaimedRoles(diagnosticData);
 		checkMessageDigestAlgorithm(diagnosticData);
+		checkSignaturePolicyIdentifier(diagnosticData);
 	}
 
 	protected void verifyDiagnosticDataJaxb(eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticDataJaxb) {
@@ -483,6 +485,28 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
 		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
 			assertEquals(expectedDigestAlgorithm.getName(), xmlDigestMatcher.getDigestMethod());
+		}
+	}
+	
+	protected void checkSignaturePolicyIdentifier(DiagnosticData diagnosticData) {
+		Policy signaturePolicy = getSignatureParameters().bLevel().getSignaturePolicy();
+		if (signaturePolicy != null) {
+			SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+			assertTrue(signature.isPolicyPresent());
+			if (Utils.isStringNotEmpty(signaturePolicy.getId())) {
+				assertTrue(signaturePolicy.getId().contains(diagnosticData.getFirstPolicyId())); // initial Id can contain "urn:oid:"
+				// or IMPLICIT_POLICY by default if it is not specified
+			}
+			if (Utils.isStringNotEmpty(signaturePolicy.getDescription())) {
+				assertEquals(signaturePolicy.getDescription(), diagnosticData.getPolicyDescription(signature.getId()));
+			} else {
+				assertTrue(Utils.isStringEmpty(signature.getPolicyDescription()));
+			}
+			if (Utils.isStringNotEmpty(signaturePolicy.getSpuri())) {
+				assertEquals(signaturePolicy.getSpuri(), signature.getPolicyUrl());
+			} else {
+				assertTrue(Utils.isStringEmpty(signature.getPolicyUrl()));
+			}
 		}
 	}
 

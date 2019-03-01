@@ -154,6 +154,7 @@
                     <CountryCode>EE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
                             <ServiceName>ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -250,6 +251,7 @@
                     <CountryCode>EE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
                             <ServiceName>ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -262,6 +264,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
                             <ServiceName>ESTEID-SK 2015 qualified certificates for electronic signatures</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -338,6 +341,7 @@
                     <CountryCode>EE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
                             <ServiceName>ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -350,6 +354,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
                             <ServiceName>ESTEID-SK 2015 qualified certificates for electronic signatures</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -360,6 +365,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
                             <ServiceName>ESTEID-SK 2015: Qualified certificates for Estonian ID-card, the residence permit card, the digital identity card, the digital identity card in form of the Mobile-ID</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>

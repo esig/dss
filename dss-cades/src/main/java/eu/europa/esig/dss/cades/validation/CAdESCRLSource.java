@@ -36,7 +36,7 @@ import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.util.Store;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
+import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
 
 /**
  * CRLSource that retrieves information from a CAdES signature.

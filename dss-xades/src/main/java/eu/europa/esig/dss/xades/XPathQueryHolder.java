@@ -70,8 +70,12 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH__ECRLV = "." + XPATH_ECRLV;
 	public String XPATH_OCSPREF = "/xades:OCSPRef";
 	public String XPATH__OCSPREF = "." + XPATH_OCSPREF;
+	
+	public static final String ELEMENT_NAME_OBJECT = "ds:Object";
+	public static final String ELEMENT_NAME_MANIFEST = "ds:Manifest";
+	public final String ELEMENT_SIGNATURE = "ds:Signature";
 
-	public final String XPATH__SIGNATURE = "./ds:Signature";
+	public final String XPATH__SIGNATURE = "./" + ELEMENT_SIGNATURE;
 	public final String XPATH_SIGNED_INFO = "./ds:SignedInfo";
 	public final String XPATH_SIGNATURE_METHOD = XPATH_SIGNED_INFO + "/ds:SignatureMethod";
 	public final String XPATH_SIGNATURE_VALUE = "./ds:SignatureValue";
@@ -84,8 +88,8 @@ public class XPathQueryHolder implements Serializable {
 
 	public final String XPATH_KEY_INFO_X509_CERTIFICATE = XPATH_X509_DATA + "/ds:X509Certificate";
 
-	public static final String XPATH_OBJECT = "./ds:Object";
-	public static final String XPATH_MANIFEST = XPATH_OBJECT + "/ds:Manifest";
+	public static final String XPATH_OBJECT = "./" + ELEMENT_NAME_OBJECT;
+	public static final String XPATH_MANIFEST = XPATH_OBJECT + "/" + ELEMENT_NAME_MANIFEST;
 
 	public String XPATH_QUALIFYING_PROPERTIES = XPATH_OBJECT + "/xades:QualifyingProperties";
 	public String XPATH__QUALIFYING_PROPERTIES = "./xades:QualifyingProperties";
@@ -117,6 +121,7 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH_PRODUCTION_PLACE_V2 = XPATH_SIGNED_SIGNATURE_PROPERTIES + "/xades:SignatureProductionPlaceV2";
 	public String XPATH__SIGNATURE_POLICY_IMPLIED = "./xades:SignaturePolicyImplied";
 	public String XPATH__POLICY_ID = "./xades:SignaturePolicyId/xades:SigPolicyId/xades:Identifier";
+	public String XPATH__POLICY_DESCRIPTION = "./xades:SignaturePolicyId/xades:SigPolicyId/xades:Description";
 	public String XPATH__POLICY_DIGEST_METHOD = "./xades:SignaturePolicyId/xades:SigPolicyHash/ds:DigestMethod/@Algorithm";
 	public String XPATH__POLICY_DIGEST_VALUE = "./xades:SignaturePolicyId/xades:SigPolicyHash/ds:DigestValue";
 	public String XPATH__POLICY_SPURI = "./xades:SignaturePolicyId/xades:SigPolicyQualifiers/xades:SigPolicyQualifier/xades:SPURI";

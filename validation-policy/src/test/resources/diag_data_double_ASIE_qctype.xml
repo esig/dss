@@ -100,6 +100,7 @@
                     <CountryCode>IT</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619</ServiceDigitalIdentifier>
                             <ServiceName>TS-5.1.5 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -182,6 +183,7 @@
                     <CountryCode>IT</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619</ServiceDigitalIdentifier>
                             <ServiceName>TS-5.1.5 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>

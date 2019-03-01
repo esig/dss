@@ -54,7 +54,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationUnit
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudoUsageCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudonymCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationCertHashMatchCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResult;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationInfoAccessPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.SerialNumberCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.SurnameCheck;
@@ -193,7 +193,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	
 	private ChainItem<XmlSubXCV> checkRevocationFreshnessCheckerResult(XmlRFC rfcResult) {
 		LevelConstraint constraint = validationPolicy.getCertificateRevocationFreshnessConstraint(context, subContext);
-		return new RevocationFreshnessCheckerResult(result, rfcResult, constraint);
+		return new RevocationFreshnessCheckerResultCheck<XmlSubXCV>(result, rfcResult, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> surname(CertificateWrapper certificate, SubContext subContext) {

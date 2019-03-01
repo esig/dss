@@ -235,6 +235,22 @@ public class TSLValidationJob {
 
 	public void refresh() {
 		LOG.debug("TSL Validation Job is starting ...");
+
+		analyzeLOTLBasedModel();
+
+		analyzeOtherTrustedLists();
+
+		repository.synchronize();
+
+		LOG.debug("TSL Validation Job is finishing ...");
+	}
+
+	private void analyzeLOTLBasedModel() {
+		if (Utils.isStringEmpty(lotlUrl)) {
+			LOG.warn("The LOTL url is not defined ! LOTL model is skipped");
+			return;
+		}
+
 		TSLLoaderResult resultLoaderLOTL = null;
 		Future<TSLLoaderResult> result = executorService.submit(new TSLLoader(dataLoader, lotlCode, lotlUrl));
 		try {
@@ -291,12 +307,6 @@ public class TSLValidationJob {
 		}
 
 		analyzeCountryPointers(parseResult.getPointers(), newLotl);
-
-		analyzeNonEUCountryPointers();
-
-		repository.synchronize();
-
-		LOG.debug("TSL Validation Job is finishing ...");
 	}
 
 	private void checkLOTLLocation(TSLParserResult parseResult) {
@@ -454,7 +464,7 @@ public class TSLValidationJob {
 		storeValidationResults(futureValidationResults);
 	}
 
-	private void analyzeNonEUCountryPointers() {
+	private void analyzeOtherTrustedLists() {
 		if (Utils.isCollectionNotEmpty(otherTrustedLists)) {
 			List<TSLPointer> pointers = new ArrayList<TSLPointer>();
 			for (OtherTrustedList otherTrustedList : otherTrustedLists) {

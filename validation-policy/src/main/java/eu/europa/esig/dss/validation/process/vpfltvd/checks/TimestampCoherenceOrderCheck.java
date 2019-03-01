@@ -139,7 +139,7 @@ public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcess
 
 	@Override
 	protected Indication getFailedIndicationForConclusion() {
-		return Indication.FAILED;
+		return Indication.INDETERMINATE;
 	}
 
 	@Override

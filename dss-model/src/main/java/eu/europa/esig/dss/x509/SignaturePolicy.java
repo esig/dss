@@ -51,6 +51,9 @@ public class SignaturePolicy {
 	private String digestValue;
 
 	private DSSDocument policyContent;
+	
+	// optional parameter
+	private String description;
 
 	/**
 	 * Two qualifiers for the signature policy have been identified so far:
@@ -123,6 +126,21 @@ public class SignaturePolicy {
 
 	public void setUrl(final String url) {
 		this.url = url;
+	}
+	
+	/**
+	 * Gets description
+	 */
+	public String getDescription() {
+		return description;
+	}
+	
+	/**
+	 * Sets description (*optional)
+	 * @param description {@link String}
+	 */
+	public void setDescription(final String description) {
+		this.description = description;
 	}
 
 	public String getNotice() {

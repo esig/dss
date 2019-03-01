@@ -57,23 +57,23 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	private final ValidationTime validationTime;
 	private final Date date;
 	private final CertificateWrapper signingCertificate;
-	private final CertificateWrapper rootCertificate;
+	private final List<CertificateWrapper> usedCertificates;
 	private final List<TrustedServiceWrapper> caqcServices;
 
 	private CertificateQualification certificateQualification = CertificateQualification.NA;
 
-	public CertQualificationAtTimeBlock(ValidationTime validationTime, CertificateWrapper signingCertificate, CertificateWrapper rootCertificate,
+	public CertQualificationAtTimeBlock(ValidationTime validationTime, CertificateWrapper signingCertificate, List<CertificateWrapper> usedCertificates,
 			List<TrustedServiceWrapper> caqcServices) {
-		this(validationTime, null, signingCertificate, rootCertificate, caqcServices);
+		this(validationTime, null, signingCertificate, usedCertificates, caqcServices);
 	}
 
-	public CertQualificationAtTimeBlock(ValidationTime validationTime, Date date, CertificateWrapper signingCertificate, CertificateWrapper rootCertificate,
-			List<TrustedServiceWrapper> caqcServices) {
+	public CertQualificationAtTimeBlock(ValidationTime validationTime, Date date, CertificateWrapper signingCertificate,
+			List<CertificateWrapper> usedCertificates, List<TrustedServiceWrapper> caqcServices) {
 		super(new XmlValidationCertificateQualification());
 
 		this.validationTime = validationTime;
 		this.signingCertificate = signingCertificate;
-		this.rootCertificate = rootCertificate;
+		this.usedCertificates = usedCertificates;
 		this.caqcServices = new ArrayList<TrustedServiceWrapper>(caqcServices);
 
 		switch (validationTime) {
@@ -189,7 +189,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isTrustedCertificateMatchTrustService(TrustedServiceWrapper selectedTrustService) {
-		return new TrustedCertificateMatchTrustServiceCheck(result, signingCertificate, rootCertificate, selectedTrustService, getWarnLevelConstraint());
+		return new TrustedCertificateMatchTrustServiceCheck(result, usedCertificates, selectedTrustService, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isQualified(QualifiedStatus qualifiedStatus) {

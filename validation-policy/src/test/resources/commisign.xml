@@ -108,6 +108,7 @@
                <CountryCode>EC</CountryCode>
                <TrustedServices>
                   <TrustedService>
+					<ServiceDigitalIdentifier>E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672</ServiceDigitalIdentifier>
                      <ServiceName>C - 2</ServiceName>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -170,6 +171,7 @@
                <CountryCode>EC</CountryCode>
                <TrustedServices>
                   <TrustedService>
+                  		<ServiceDigitalIdentifier>E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672</ServiceDigitalIdentifier>
                      <ServiceName>C - 2</ServiceName>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -285,7 +287,7 @@
                <TSPRegistrationIdentifier>NTRBE-0949.383.342 </TSPRegistrationIdentifier>
                <CountryCode>EC</CountryCode>
                <TrustedServices>
-                  <TrustedService>
+                  <TrustedService><ServiceDigitalIdentifier>E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672</ServiceDigitalIdentifier>
                      <ServiceName>C - 2</ServiceName>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>

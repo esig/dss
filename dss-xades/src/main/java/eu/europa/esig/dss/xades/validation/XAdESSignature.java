@@ -96,8 +96,8 @@ import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.x509.crl.OfflineCRLSource;
-import eu.europa.esig.dss.x509.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
@@ -386,7 +386,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		 */
 		final XAdESCertificateSource certSource = getCertificateSource();
 		for (final CertificateToken certificateToken : certSource.getKeyInfoCertificates()) {
-
 			final CertificateValidity certificateValidity = new CertificateValidity(certificateToken);
 			candidatesForSigningCertificate.add(certificateValidity);
 		}
@@ -551,7 +550,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					policyIdString = policyIdString.trim();
 					if (DSSXMLUtils.isOid(policyIdString)) {
 						// urn:oid:1.2.3 --> 1.2.3
-						policyIdString = policyIdString.substring(policyIdString.lastIndexOf(':') + 1);
+						policyIdString = DSSXMLUtils.getOidCode(policyIdString);
 					} else {
 						policyUrlString = policyIdString;
 					}
@@ -569,6 +568,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final Element policyUrl = DomUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_SPURI);
 				if (policyUrl != null) {
 					policyUrlString = policyUrl.getTextContent().trim();
+				}
+				final Element policyDescription = DomUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DESCRIPTION);
+				if (policyDescription != null && Utils.isStringNotEmpty(policyDescription.getTextContent())) {
+					signaturePolicy.setDescription(policyDescription.getTextContent());
 				}
 				signaturePolicy.setUrl(policyUrlString);
 				signaturePolicy.setPolicyContent(signaturePolicyProvider.getSignaturePolicy(policyIdString, policyUrlString));
@@ -1039,7 +1042,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				references.addAll(getTimestampedReferences());
 				final List<CertificateToken> encapsulatedCertificates = getCertificateSource().getEncapsulatedCertificates();
 				for (final CertificateToken certificateToken : encapsulatedCertificates) {
-
+					
 					final TimestampReference certificateTimestampReference = createCertificateTimestampReference(certificateToken);
 					if (!references.contains(certificateTimestampReference)) {
 						references.add(certificateTimestampReference);
@@ -1204,6 +1207,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
 						found = found && (noDuplicateIdFound && findSignedPropertiesById(uri));
 						signedPropertiesFound = signedPropertiesFound || found;
+					} else if (isKeyInfoReference(reference, santuarioSignature.getElement())) {
+						validation.setType(DigestMatcherType.KEY_INFO);
+						found = true; // we check it in prior inside "isKeyInfoReference" method
 					} else if (reference.typeIsReferenceToObject()) {
 						validation.setType(DigestMatcherType.OBJECT);
 						found = found &&  (noDuplicateIdFound && findObjectById(uri));
@@ -1263,6 +1269,22 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	private Node getSignedPropertiesById(String uri) {
 		String signedPropertiesById = xPathQueryHolder.XPATH_SIGNED_PROPERTIES + DomUtils.getXPathByIdAttribute(uri);
 		return DomUtils.getNode(signatureElement, signedPropertiesById);
+	}
+	
+	/**
+	 * Checks if the given {@value reference} is linked to a <KeyInfo> element
+	 * @param reference - {@link Reference} to check
+	 * @param signature - {@link Element} signature the given {@value reference} belongs to
+	 * @return - TRUE if the {@value reference} is a <KeyInfo> reference, FALSE otherwise
+	 */
+	private boolean isKeyInfoReference(final Reference reference, final Element signature) {
+		String uri = reference.getURI();
+		uri = DomUtils.getId(uri);
+		Element element = DomUtils.getElement(signature, "./" + xPathQueryHolder.XPATH_KEY_INFO + DomUtils.getXPathByIdAttribute(uri));
+		if (element != null) {
+			return true;
+		}
+		return false;
 	}
 
 	private boolean findObjectById(String uri) {

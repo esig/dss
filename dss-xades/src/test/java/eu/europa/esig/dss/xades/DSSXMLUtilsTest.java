@@ -94,4 +94,10 @@ public class DSSXMLUtilsTest {
 		assertNotNull(dom.getElementById("signedData"));
 	}
 
+	@Test
+	public void isDuplicateIdsDetected() {
+		assertTrue(DSSXMLUtils.isDuplicateIdsDetected(new FileDocument("src/test/resources/sample-duplicate-ids.xml")));
+		assertFalse(DSSXMLUtils.isDuplicateIdsDetected(new FileDocument("src/test/resources/sample.xml")));
+	}
+
 }

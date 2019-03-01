@@ -88,14 +88,14 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
 
 		DSSReference dssReference = new DSSReference();
-		dssReference.setId("r-id-" + referenceIndex);
+		dssReference.setId(REFERENCE_ID_SUFFIX + deterministicId + "-" + referenceIndex);
 		// XMLDSIG : 4.4.3.2
 		// URI=""
 		// Identifies the node-set (minus any comment nodes) of the XML resource
 		// containing the signature
 		dssReference.setUri("");
 		dssReference.setContents(document);
-		DigestAlgorithm digestAlgorithm = params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
+		DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
 		dssReference.setDigestMethodAlgorithm(digestAlgorithm);
 
 		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();

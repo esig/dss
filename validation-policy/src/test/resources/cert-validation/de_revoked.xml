@@ -57,6 +57,7 @@
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5</ServiceDigitalIdentifier>
                             <ServiceName>D-TRUST qualified Signature ID card</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -122,6 +123,7 @@
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5</ServiceDigitalIdentifier>
                             <ServiceName>D-TRUST qualified Signature ID card</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -194,6 +196,7 @@
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9</ServiceDigitalIdentifier>
                             <ServiceName>D-TRUST Qualified CA 1 2008:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -206,6 +209,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9</ServiceDigitalIdentifier>
                             <ServiceName>D-TRUST Qualified CA 1 2008:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -302,6 +306,7 @@
                     <CountryCode>DE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9</ServiceDigitalIdentifier>
                             <ServiceName>D-TRUST Qualified CA 1 2008:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -311,6 +316,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
+                        	<ServiceDigitalIdentifier>A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9</ServiceDigitalIdentifier>
                             <ServiceName>D-TRUST Qualified CA 1 2008:PN</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>

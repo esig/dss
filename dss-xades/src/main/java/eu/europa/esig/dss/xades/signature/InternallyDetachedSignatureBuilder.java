@@ -86,7 +86,7 @@ class InternallyDetachedSignatureBuilder extends XAdESSignatureBuilder {
 	@Override
 	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
 		final DSSReference reference = new DSSReference();
-		reference.setId("r-id-" + referenceIndex);
+		reference.setId(REFERENCE_ID_SUFFIX + deterministicId + "-" + referenceIndex);
 
 		Document dom = DomUtils.buildDOM(document);
 		String identifier = DSSXMLUtils.getIDIdentifier(dom.getDocumentElement());
@@ -94,7 +94,7 @@ class InternallyDetachedSignatureBuilder extends XAdESSignatureBuilder {
 		reference.setUri("#" + identifier);
 
 		reference.setContents(document);
-		DigestAlgorithm digestAlgorithm = params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
+		DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
 		reference.setDigestMethodAlgorithm(digestAlgorithm);
 
 		List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
