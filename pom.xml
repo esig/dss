@@ -51,7 +51,7 @@
 
 		<bouncycastle.version>1.61</bouncycastle.version>
 		<xmlsec.version>2.0.10</xmlsec.version>
-		<pdfbox.version>2.0.13</pdfbox.version>
+		<pdfbox.version>2.0.14</pdfbox.version>
 		<openpdf.version>1.2.7</openpdf.version>
 		<httpclient.version>4.5.6</httpclient.version>
 		<rs-api.version>2.0.1</rs-api.version>
