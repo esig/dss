@@ -50,6 +50,11 @@
 						<xsd:documentation>Global constraints about cryptograhic usage (encryption, digest, key length, algorithm deprecation,...). If no specific constraints is added in Signature/Timestamp/... elements, this configuration will be used.</xsd:documentation>
 					</xsd:annotation>
 				</xsd:element>
+				<xsd:element name="Model" type="tns:ModelConstraint" minOccurs="0">
+					<xsd:annotation>
+						<xsd:documentation>Checks / Defines the validation model shell, chain or hybrid</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
 				<xsd:element name="eIDAS" type="tns:eIDAS" minOccurs="0">
 					<xsd:annotation>
 						<xsd:documentation>Constraints related to the European context (trusted list validity,...)</xsd:documentation>
@@ -507,11 +512,6 @@
 			<xsd:element name="UsePseudonym" type="tns:LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate use a pseudonym</xsd:documentation>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="Model" type="tns:ModelConstraint" minOccurs="0">
-				<xsd:annotation>
-					<xsd:documentation>Checks / Defines the validation model shell, chain or hybrid</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0">

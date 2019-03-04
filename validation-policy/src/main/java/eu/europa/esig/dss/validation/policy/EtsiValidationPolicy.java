@@ -36,6 +36,7 @@ import eu.europa.esig.jaxb.policy.ContainerConstraints;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.EIDAS;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
+import eu.europa.esig.jaxb.policy.Model;
 import eu.europa.esig.jaxb.policy.ModelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 import eu.europa.esig.jaxb.policy.RevocationConstraints;
@@ -54,6 +55,8 @@ import eu.europa.esig.jaxb.policy.ValueConstraint;
 public class EtsiValidationPolicy implements ValidationPolicy {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EtsiValidationPolicy.class);
+
+	private static final Model DEFAULT_VALIDATION_MODEL = Model.SHELL;
 
 	private ConstraintsParameters policy;
 
@@ -911,8 +914,12 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public ModelConstraint getCertificateValidationModel(Context context, SubContext subContext) {
-		CertificateConstraints cc = getCertificateConstraints(context, subContext);
-		return cc == null ? null : cc.getModel();
+	public Model getValidationModel() {
+		Model currentModel = DEFAULT_VALIDATION_MODEL;
+		ModelConstraint modelConstraint = policy.getModel();
+		if (modelConstraint != null && modelConstraint.getValue() != null) {
+			currentModel = modelConstraint.getValue();
+		}
+		return currentModel;
 	}
 }

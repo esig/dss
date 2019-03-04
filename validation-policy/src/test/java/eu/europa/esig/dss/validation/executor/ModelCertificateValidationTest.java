@@ -111,14 +111,10 @@ public class ModelCertificateValidationTest extends ModelAbstractlValidation {
 		
 		FileInputStream policyFis = new FileInputStream(testCase.getTestData().getPolicy());
 		ConstraintsParameters policyJaxB = getJAXBObjectFromString(policyFis, ConstraintsParameters.class, "/xsd/policy.xsd");
-		assertNotNull(policyJaxB);
-		assertNotNull(policyJaxB.getSignatureConstraints());
-		assertNotNull(policyJaxB.getSignatureConstraints().getBasicSignatureConstraints());
-		assertNotNull(policyJaxB.getSignatureConstraints().getBasicSignatureConstraints().getSigningCertificate());
 
 		ModelConstraint mc = new ModelConstraint();
 		mc.setValue(testCase.getModel());
-		policyJaxB.getSignatureConstraints().getBasicSignatureConstraints().getSigningCertificate().setModel(mc);
+		policyJaxB.setModel(mc);
 		policy = new EtsiValidationPolicy(policyJaxB);
 
 		FileInputStream fis = new FileInputStream(testCase.getTestData().getDiagnosticData());

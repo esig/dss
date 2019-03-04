@@ -41,7 +41,6 @@ import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 import eu.europa.esig.jaxb.policy.Model;
-import eu.europa.esig.jaxb.policy.ModelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
 /**
@@ -94,12 +93,11 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 			result.getSubXCV().add(subXCV);
 
 			boolean trustAnchorReached = currentCertificate.isTrusted();
-			
-			ModelConstraint modelConstraint = validationPolicy.getCertificateValidationModel(context, SubContext.SIGNING_CERT);
-			Model model = (modelConstraint == null) ? Model.SHELL : modelConstraint.getValue();
-			
+
+			final Model model = validationPolicy.getValidationModel();
+
 			// Check CA_CERTIFICATEs
-			Date lastDate = !Model.SHELL.equals(model) ? currentCertificate.getNotBefore() : validationDate;
+			Date lastDate = Model.SHELL.equals(model) ? validationDate : currentCertificate.getNotBefore();
 			List<XmlChainItem> certificateChainList = currentCertificate.getCertificateChain();
 			if (Utils.isCollectionNotEmpty(certificateChainList)) {
 				for (XmlChainItem chainCertificate : certificateChainList) {
@@ -110,7 +108,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 						result.getSubXCV().add(subXCV);
 
 						trustAnchorReached = certificate.isTrusted();
-						lastDate = Model.HYBRID.equals(model) ? lastDate : ( Model.SHELL.equals(model) ? validationDate : certificate.getNotBefore() );
+						lastDate = Model.HYBRID.equals(model) ? lastDate : (Model.SHELL.equals(model) ? validationDate : certificate.getNotBefore());
 					}
 				}
 			}

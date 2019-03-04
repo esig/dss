@@ -67,7 +67,6 @@
 <!-- 				<IssuedToNaturalPerson Level="INFORM" /> -->
 <!-- 				<IssuedToLegalPerson Level="INFORM" /> -->
 				<UsePseudonym Level="INFORM" />
-<!-- 				<Model Value="SHELL" /> -->
 				<Cryptographic />
 			</SigningCertificate>
 			<CACertificate>
@@ -357,6 +356,8 @@
 			<!-- end Encryption algorithms -->
 		</AlgoExpirationDate>
 	</Cryptographic> 
+	
+	<Model Value="SHELL" />
 	
 	<!-- eIDAS REGL 910/EU/2014 --> 
 	<eIDAS>

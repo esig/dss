@@ -47,7 +47,7 @@ public class JaxbPolicyTest {
 
 		ModelConstraint mc = new ModelConstraint();
 		mc.setValue(Model.SHELL);
-		constraintsParameters.getSignatureConstraints().getBasicSignatureConstraints().getSigningCertificate().setModel(mc);
+		constraintsParameters.setModel(mc);
 		
 		JAXBContext jc = JAXBContext.newInstance("eu.europa.esig.jaxb.policy");
 		Marshaller marshaller = jc.createMarshaller();
@@ -55,8 +55,8 @@ public class JaxbPolicyTest {
 		
 		ConstraintsParameters cp = unmarshal(new File("target/constraint.xml"));
 		assertNotNull(cp);
-		assertNotNull(cp.getSignatureConstraints().getBasicSignatureConstraints().getSigningCertificate().getModel());
-		assertEquals(mc.getValue(), cp.getSignatureConstraints().getBasicSignatureConstraints().getSigningCertificate().getModel().getValue());
+		assertNotNull(cp.getModel());
+		assertEquals(mc.getValue(), cp.getModel().getValue());
 	}
 
 	@Test

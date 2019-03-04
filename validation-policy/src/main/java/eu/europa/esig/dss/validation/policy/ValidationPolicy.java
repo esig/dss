@@ -24,7 +24,7 @@ import java.util.Date;
 
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
-import eu.europa.esig.jaxb.policy.ModelConstraint;
+import eu.europa.esig.jaxb.policy.Model;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 import eu.europa.esig.jaxb.policy.TimeConstraint;
 import eu.europa.esig.jaxb.policy.ValueConstraint;
@@ -395,5 +395,12 @@ public interface ValidationPolicy {
 
 	LevelConstraint getTLConsistencyConstraint();
 
-	ModelConstraint getCertificateValidationModel(Context context, SubContext subContext);
+	/**
+	 * Returns the used validation model (default is SHELL). Alternatives are CHAIN
+	 * and HYBRID
+	 * 
+	 * @return the validation model to be used
+	 */
+	Model getValidationModel();
+
 }
