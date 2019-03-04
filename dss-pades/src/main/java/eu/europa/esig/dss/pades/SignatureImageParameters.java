@@ -293,17 +293,25 @@ public class SignatureImageParameters {
 		this.rotation = rotation;
 	}
 
-	public VisualSignatureAlignmentHorizontal getAlignmentHorizontal() {
-		return alignmentHorizontal;
-	}
+    public SignatureImageParameters.VisualSignatureAlignmentHorizontal getVisualSignatureAlignmentHorizontal() {
+        if(alignmentHorizontal == null) {
+            alignmentHorizontal = VisualSignatureAlignmentHorizontal.NONE;
+        }
+
+        return alignmentHorizontal;
+    }
 
 	public void setAlignmentHorizontal(VisualSignatureAlignmentHorizontal alignmentHorizontal) {
 		this.alignmentHorizontal = alignmentHorizontal;
 	}
+	
+    public SignatureImageParameters.VisualSignatureAlignmentVertical getVisualSignatureAlignmentVertical() {
+        if(alignmentVertical == null) {
+            alignmentVertical = VisualSignatureAlignmentVertical.NONE;
+        }
 
-	public VisualSignatureAlignmentVertical getAlignmentVertical() {
-		return alignmentVertical;
-	}
+        return alignmentVertical;
+    }
 
 	public void setAlignmentVertical(VisualSignatureAlignmentVertical alignmentVertical) {
 		this.alignmentVertical = alignmentVertical;

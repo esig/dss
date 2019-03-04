@@ -24,6 +24,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 	
 	private SignatureFieldDimensionAndPosition dimensionAndPosition;
 	private final SignatureImageParameters imageParameters;
+	private final PDPage page;
 	private final PDRectangle pageMediaBox;
 	
     private static final String SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE = "not supported vertical alignment: ";
@@ -31,6 +32,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 	
     public SignatureFieldDimensionAndPositionBuilder(SignatureImageParameters imageParameters, PDPage page) {
 		this.imageParameters = imageParameters;
+		this.page = page;
 		this.pageMediaBox = page.getMediaBox();
 	}
 	
@@ -40,6 +42,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		assignImageBoxDimension();
 		alignHorizontally();
 		alignVertically();
+		rotateSignatureField();
 		return this.dimensionAndPosition;
 	}
 	
@@ -126,7 +129,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 	}
 	
 	private void alignHorizontally() {
-		VisualSignatureAlignmentHorizontal alignmentHorizontal = getVisualSignatureAlignmentHorizontal();
+		VisualSignatureAlignmentHorizontal alignmentHorizontal = imageParameters.getVisualSignatureAlignmentHorizontal();
 		float boxX;
 		switch (alignmentHorizontal) {
 			case LEFT:
@@ -148,7 +151,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 	}
 	
 	private void alignVertically() {
-		VisualSignatureAlignmentVertical alignmentVertical = getVisualSignatureAlignmentVertical();
+		VisualSignatureAlignmentVertical alignmentVertical = imageParameters.getVisualSignatureAlignmentVertical();
 		float boxY;
 		switch (alignmentVertical) {
 		case TOP:
@@ -168,24 +171,43 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		}
 		dimensionAndPosition.setBoxY(boxY);
 	}
-
-    private SignatureImageParameters.VisualSignatureAlignmentHorizontal getVisualSignatureAlignmentHorizontal() {
-        SignatureImageParameters.VisualSignatureAlignmentHorizontal alignmentHorizontal = imageParameters.getAlignmentHorizontal();
-        if(alignmentHorizontal == null) {
-            alignmentHorizontal = SignatureImageParameters.VisualSignatureAlignmentHorizontal.NONE;
-        }
-
-        return alignmentHorizontal;
-    }
 	
-    private SignatureImageParameters.VisualSignatureAlignmentVertical getVisualSignatureAlignmentVertical() {
-        SignatureImageParameters.VisualSignatureAlignmentVertical alignmentVertical = imageParameters.getAlignmentVertical();
-        if(alignmentVertical == null) {
-            alignmentVertical = SignatureImageParameters.VisualSignatureAlignmentVertical.NONE;
-        }
-
-        return alignmentVertical;
-    }
+	private void rotateSignatureField() {
+		int rotate = ImageRotationUtils.getRotation(imageParameters.getRotation(), page);
+		switch (rotate) {
+			case ImageRotationUtils.ANGLE_90:
+				swapDimension();
+				float boxX = dimensionAndPosition.getBoxX();
+				dimensionAndPosition.setBoxX(pageMediaBox.getWidth() - dimensionAndPosition.getBoxY() -
+						dimensionAndPosition.getBoxWidth());
+				dimensionAndPosition.setBoxY(boxX);
+				break;
+			case ImageRotationUtils.ANGLE_180:
+				dimensionAndPosition.setBoxX(pageMediaBox.getWidth() - dimensionAndPosition.getBoxX() -
+						dimensionAndPosition.getBoxWidth());
+				dimensionAndPosition.setBoxY(pageMediaBox.getHeight() - dimensionAndPosition.getBoxY() -
+						dimensionAndPosition.getBoxHeight());
+				break;
+			case ImageRotationUtils.ANGLE_270:
+				swapDimension();
+				boxX = dimensionAndPosition.getBoxX();
+				dimensionAndPosition.setBoxX(dimensionAndPosition.getBoxY());
+				dimensionAndPosition.setBoxY(pageMediaBox.getHeight() - boxX -
+						dimensionAndPosition.getBoxHeight());
+				break;
+			case ImageRotationUtils.ANGLE_360:
+				// do nothing
+				break;
+			default:
+	            throw new IllegalStateException(ImageRotationUtils.SUPPORTED_ANGLES_ERROR_MESSAGE);
+		}
+	}
+	
+	private void swapDimension() {
+		float temp = dimensionAndPosition.getBoxWidth();
+		dimensionAndPosition.setBoxWidth(dimensionAndPosition.getBoxHeight());
+		dimensionAndPosition.setBoxHeight(temp);
+	}
     
     private float toDpiPagePoint(double x, Integer dpi) {
     	return CommonDrawerUtils.toDpiAxisPoint((float)x, CommonDrawerUtils.getDpi(dpi));

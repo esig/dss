@@ -111,8 +111,8 @@ public class PdfScreenshotUtils {
 			BufferedImage sampleImage = sampleRenderer.renderImageWithDPI(pageNumber, DPI);
 			BufferedImage checkImage = checkRenderer.renderImageWithDPI(pageNumber, DPI);
 			
-            // ImageIO.write(sampleImage, "png", new File("C:\\Users\\aleksandr.beliakov\\bitbucket\\esig-dss\\dss-pades-pdfbox\\target\\sampleImage.png"));
-            // ImageIO.write(checkImage, "png", new File("C:\\Users\\aleksandr.beliakov\\bitbucket\\esig-dss\\dss-pades-pdfbox\\target\\checkImage.png"));
+            // ImageIO.write(sampleImage, "png", new File("target\\sampleImage.png"));
+            // ImageIO.write(checkImage, "png", new File("target\\checkImage.png"));
             
 			float checkSimilarity = checkImageSimilarity(sampleImage, checkImage, CHECK_RESOLUTION);
 			assertTrue(checkSimilarity >= minSimilarity);

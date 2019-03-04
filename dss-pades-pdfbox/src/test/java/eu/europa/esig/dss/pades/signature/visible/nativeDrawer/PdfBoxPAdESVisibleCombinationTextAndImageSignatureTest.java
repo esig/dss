@@ -18,10 +18,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.signature.visible;
+package eu.europa.esig.dss.pades.signature.visible.nativeDrawer;
 
 import org.junit.Before;
 
+import eu.europa.esig.dss.pades.signature.visible.PAdESVisibleCombinationTextAndImageSignature;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 

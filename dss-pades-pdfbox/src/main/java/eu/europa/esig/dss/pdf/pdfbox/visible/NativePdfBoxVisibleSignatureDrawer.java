@@ -70,9 +70,11 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		ByteArrayInputStream bais = null;
 		try (PDDocument doc = new PDDocument())
         {
-			PDPage page = new PDPage(document.getPage(parameters.getPage() - 1).getMediaBox());
-			SignatureFieldDimensionAndPositionBuilder dimensionAndPositionBuilder = new SignatureFieldDimensionAndPositionBuilder(parameters, page);
+			PDPage originalPage = document.getPage(parameters.getPage() - 1);
+			SignatureFieldDimensionAndPositionBuilder dimensionAndPositionBuilder = new SignatureFieldDimensionAndPositionBuilder(parameters, originalPage);
 			SignatureFieldDimensionAndPosition dimensionAndPosition = dimensionAndPositionBuilder.build();
+			// create a new page
+			PDPage page = new PDPage(originalPage.getMediaBox());
 			doc.addPage(page);
 			PDAcroForm acroForm = new PDAcroForm(doc);
             doc.getDocumentCatalog().setAcroForm(acroForm);
@@ -103,6 +105,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
             
             try (PDPageContentStream cs = new PDPageContentStream(doc, appearanceStream);)
             {
+            	rotateSignature(cs, originalPage, rectangle);
             	setFieldBackground(cs, parameters.getBackgroundColor());
             	setImage(cs, doc, dimensionAndPosition, parameters.getImage());
             	setText(cs, dimensionAndPosition, parameters);
@@ -116,6 +119,29 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		signatureOptions.setVisualSignature(bais);
 		bais.close();
 		signatureOptions.setPage(parameters.getPage() - 1);
+	}
+	
+	private void rotateSignature(PDPageContentStream cs, PDPage page, PDRectangle rectangle) throws IOException {
+    	switch (ImageRotationUtils.getRotation(parameters.getRotation(), page)) {
+			case ImageRotationUtils.ANGLE_90:
+				// pdfbox rotates in the opposite way
+		    	cs.transform(Matrix.getRotateInstance(Math.toRadians(ImageRotationUtils.ANGLE_270), 0, 0));
+		    	cs.transform(Matrix.getTranslateInstance(-rectangle.getHeight(), 0));
+				break;
+			case ImageRotationUtils.ANGLE_180:
+		    	cs.transform(Matrix.getRotateInstance(Math.toRadians(ImageRotationUtils.ANGLE_180), 0, 0));
+		    	cs.transform(Matrix.getTranslateInstance(-rectangle.getWidth(), -rectangle.getHeight()));
+				break;
+			case ImageRotationUtils.ANGLE_270:
+		    	cs.transform(Matrix.getRotateInstance(Math.toRadians(ImageRotationUtils.ANGLE_90), 0, 0));
+		    	cs.transform(Matrix.getTranslateInstance(0, -rectangle.getWidth()));
+				break;
+			case ImageRotationUtils.ANGLE_360:
+				// do nothing
+				break;
+			default:
+                throw new IllegalStateException(ImageRotationUtils.SUPPORTED_ANGLES_ERROR_MESSAGE);
+		}
 	}
 	
 	/**
@@ -200,21 +226,22 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
             FontMetrics fontMetrics = ImageTextWriter.getFontMetrics(properFont);
             cs.setLeading(textSizeWithDpi(fontMetrics.getHeight(), dimensionAndPosition.getyDpi()));
             
-            float previousOffset = dimensionAndPosition.getTextX();
-            cs.newLineAtOffset(previousOffset,
+            cs.newLineAtOffset(dimensionAndPosition.getTextX(),
             		// align vertical position
             		dimensionAndPosition.getTextHeight() + dimensionAndPosition.getTextY() - fontSize);
-            
+
+            float previousOffset = 0;
             for (String str : strings) {
                 float stringWidth = textSizeWithDpi(fontMetrics.stringWidth(str), dimensionAndPosition.getxDpi());
                 float offsetX = 0;
                 switch (textParameters.getSignerTextHorizontalAlignment()) {
 					case RIGHT:
 						offsetX = (dimensionAndPosition.getTextWidth() - stringWidth - 
-								textSizeWithDpi(textParameters.getMargin(), dimensionAndPosition.getxDpi())) - previousOffset;
+								textSizeWithDpi(textParameters.getMargin()*2, dimensionAndPosition.getxDpi())) - previousOffset;
 						break;
 					case CENTER:
-						offsetX = (dimensionAndPosition.getTextWidth() - stringWidth) / 2 - previousOffset;
+						offsetX = (dimensionAndPosition.getTextWidth() - stringWidth) / 2 - 
+								textSizeWithDpi(textParameters.getMargin(), dimensionAndPosition.getxDpi()) - previousOffset;
 						break;
 					default:
 						break;
