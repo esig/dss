@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.RemoteCertificate;
@@ -65,6 +66,12 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, String alias) throws DSSException {
 		DSSPrivateKeyEntry key = token.getKey(alias);
 		return token.sign(toBeSigned, digestAlgorithm, mgf, key);
+	}
+
+	@Override
+	public SignatureValue signDigest(Digest digest, String alias) throws DSSException {
+		DSSPrivateKeyEntry key = token.getKey(alias);
+		return token.signDigest(digest, key);
 	}
 
 	private RemoteKeyEntry convert(KSPrivateKeyEntry key) {
