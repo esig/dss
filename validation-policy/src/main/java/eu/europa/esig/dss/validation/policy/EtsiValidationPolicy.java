@@ -36,6 +36,7 @@ import eu.europa.esig.jaxb.policy.ContainerConstraints;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 import eu.europa.esig.jaxb.policy.EIDAS;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
+import eu.europa.esig.jaxb.policy.ModelConstraint;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 import eu.europa.esig.jaxb.policy.RevocationConstraints;
 import eu.europa.esig.jaxb.policy.SignatureConstraints;
@@ -909,4 +910,9 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		return null;
 	}
 
+	@Override
+	public ModelConstraint getCertificateValidationModel(Context context, SubContext subContext) {
+		CertificateConstraints cc = getCertificateConstraints(context, subContext);
+		return cc == null ? null : cc.getModel();
+	}
 }

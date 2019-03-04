@@ -509,6 +509,11 @@
 					<xsd:documentation>Checks if the certificate use a pseudonym</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="Model" type="tns:ModelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks / Defines the validation model shell, chain or hybrid</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="Cryptographic" type="tns:CryptographicConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Group of cryptographic checks to operate on the certificate</xsd:documentation>
@@ -708,4 +713,22 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 	
+	<xsd:complexType name="ModelConstraint">
+		<xsd:annotation>
+			<xsd:documentation>Boolean check : follows the specified validation model</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute type="tns:Model" name="Value">
+			<xsd:annotation>
+				<xsd:documentation>The validation model</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	
+	<xsd:simpleType name="Model">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="SHELL"/>
+			<xsd:enumeration value="CHAIN"/>
+			<xsd:enumeration value="HYBRID"/>
+		</xsd:restriction>
+	</xsd:simpleType>
 </xsd:schema>

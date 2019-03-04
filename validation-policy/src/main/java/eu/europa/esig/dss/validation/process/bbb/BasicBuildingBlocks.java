@@ -205,15 +205,15 @@ public class BasicBuildingBlocks {
 	private XmlXCV executeX509CertificateValidation() {
 		if (Context.CERTIFICATE.equals(context)) {
 			CertificateWrapper certificate = (CertificateWrapper) token;
-			X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime, certificate.getNotBefore(), context,
-					policy);
+			X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
+					certificate.getNotBefore(), context, policy);
 			return xcv.execute();
 		} else {
 			CertificateWrapper certificate = diagnosticData.getUsedCertificateById(token.getSigningCertificateId());
 			if (certificate != null) {
 				if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
-					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime, certificate.getNotBefore(), context,
-							policy);
+					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
+							certificate.getNotBefore(), context, policy);
 					return xcv.execute();
 				} else if (Context.TIMESTAMP.equals(context)) {
 					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,
@@ -240,5 +240,4 @@ public class BasicBuildingBlocks {
 		}
 		return aav != null ? aav.execute() : null;
 	}
-
 }
