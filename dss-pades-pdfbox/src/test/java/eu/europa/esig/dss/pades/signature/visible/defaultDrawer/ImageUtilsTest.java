@@ -35,6 +35,7 @@ import javax.imageio.ImageIO;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class ImageUtilsTest {
 
@@ -45,14 +46,14 @@ public class ImageUtilsTest {
         Dimension optimalSizeDimension = ImageUtils.getOptimalSize(imageParameters);
         ImageAndResolution imageAndResolution = DefaultDrawerImageUtils.create(imageParameters);
 
-        BufferedImage image = ImageIO.read(imageAndResolution.getInputStream());
-
-        float ration = CommonDrawerUtils.getRation(imageParameters.getDpi());
-
-        Assert.assertEquals((int)optimalSizeDimension.getWidth(), Math.round((float) image.getWidth() / ration));
-        Assert.assertEquals((int)optimalSizeDimension.getHeight(), Math.round((float) image.getHeight() / ration));
-        Assert.assertEquals((int)optimalSizeDimension.getWidth(), Math.round(imageAndResolution.toXPoint(image.getWidth())));
-        Assert.assertEquals((int)optimalSizeDimension.getHeight(), Math.round(imageAndResolution.toYPoint(image.getHeight())));
+        try (InputStream is = imageAndResolution.getInputStream()) {
+            BufferedImage image = ImageIO.read(is);
+            float ration = CommonDrawerUtils.getRation(imageParameters.getDpi());
+            Assert.assertEquals((int)optimalSizeDimension.getWidth(), Math.round((float) image.getWidth() / ration));
+            Assert.assertEquals((int)optimalSizeDimension.getHeight(), Math.round((float) image.getHeight() / ration));
+            Assert.assertEquals((int)optimalSizeDimension.getWidth(), Math.round(imageAndResolution.toXPoint(image.getWidth())));
+            Assert.assertEquals((int)optimalSizeDimension.getHeight(), Math.round(imageAndResolution.toYPoint(image.getHeight())));
+        }
     }
 
     private SignatureImageParameters createSignatureImageParameters() {

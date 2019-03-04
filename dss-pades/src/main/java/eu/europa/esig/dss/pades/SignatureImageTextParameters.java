@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.IOException;
+import java.io.InputStream;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -191,8 +192,8 @@ public class SignatureImageTextParameters {
 	}
 	
 	private void initJavaFont() throws DSSException {
-		try {
-			this.javaFont = Font.createFont(Font.TRUETYPE_FONT, dssFont.openStream());
+		try (InputStream is = dssFont.openStream()) {
+			this.javaFont = Font.createFont(Font.TRUETYPE_FONT, is);
 		} catch (IOException | FontFormatException e) {
 			throw new DSSException("The assigned font cannot be initialized", e);
 		}

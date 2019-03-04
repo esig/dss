@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -190,7 +191,9 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 						File checkPdfFile = new File(
 								"target/pdf/check_" + rotation.name() + "_" + pdf + "_" + horizontal.name() + "_" + vertical.name() + ".pdf");
 						checkPdfFile.getParentFile().mkdirs();
-						IOUtils.copy(document.openStream(), new FileOutputStream(checkPdfFile));
+						try (InputStream is = document.openStream(); OutputStream os = new FileOutputStream(checkPdfFile)) {
+							IOUtils.copy(is, os);
+						}
 					}
 				}
 			}
@@ -290,9 +293,12 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 
 	private void checkImageSimilarityPdf(String samplePdf, String checkPdf, float similarity) throws IOException {
 		DSSDocument document = sign(signablePdfs.get(samplePdf));
-		PDDocument sampleDocument = PDDocument.load(document.openStream());
-		PDDocument checkDocument = PDDocument.load(getClass().getResourceAsStream("/visualSignature/check/" + checkPdf));
-		PdfScreenshotUtils.checkPdfSimilarity(sampleDocument, checkDocument, similarity);
+		try (InputStream sampleDocIS = document.openStream(); 
+				InputStream docToCheckIS = getClass().getResourceAsStream("/visualSignature/check/" + checkPdf)) {
+			PDDocument sampleDocument = PDDocument.load(sampleDocIS);
+			PDDocument checkDocument = PDDocument.load(docToCheckIS);
+			PdfScreenshotUtils.checkPdfSimilarity(sampleDocument, checkDocument, similarity);
+		}
 	}
 
 	private void checkImageSimilarityPdf(String samplePdf, String checkPdf) throws IOException {
