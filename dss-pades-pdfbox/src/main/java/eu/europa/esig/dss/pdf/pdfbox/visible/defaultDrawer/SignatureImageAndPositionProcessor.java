@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.pdfbox.visible;
+package eu.europa.esig.dss.pdf.pdfbox.visible.defaultDrawer;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -32,8 +32,9 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
 import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
+import eu.europa.esig.dss.pdf.pdfbox.visible.ImageUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
-import eu.europa.esig.dss.pdf.visible.ImageUtils;
 
 public final class SignatureImageAndPositionProcessor {
 

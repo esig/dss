@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pdf.pdfbox.visible;
+package eu.europa.esig.dss.pdf.pdfbox.visible.nativeDrawer;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -36,8 +36,10 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
+import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
-import eu.europa.esig.dss.pdf.visible.ImageTextWriter;
+import eu.europa.esig.dss.pdf.visible.FontUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureDrawer {
@@ -222,8 +224,8 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
             
             String[] strings = textParameters.getText().split("\\r?\\n");
             
-			Font properFont = ImageTextWriter.computeProperFont(textParameters.getJavaFont(), textParameters.getSize(), parameters.getDpi());
-            FontMetrics fontMetrics = ImageTextWriter.getFontMetrics(properFont);
+			Font properFont = FontUtils.computeProperFont(textParameters.getJavaFont(), textParameters.getSize(), parameters.getDpi());
+            FontMetrics fontMetrics = FontUtils.getFontMetrics(properFont);
             cs.setLeading(textSizeWithDpi(fontMetrics.getHeight(), dimensionAndPosition.getyDpi()));
             
             cs.newLineAtOffset(dimensionAndPosition.getTextX(),

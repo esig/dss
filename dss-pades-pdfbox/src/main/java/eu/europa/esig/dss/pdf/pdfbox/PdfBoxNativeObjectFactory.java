@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pdf.pdfbox;
 
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
-import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeSignatureDrawerFactory;
+import eu.europa.esig.dss.pdf.pdfbox.visible.nativeDrawer.PdfBoxNativeSignatureDrawerFactory;
 
 public class PdfBoxNativeObjectFactory implements PdfBoxObjectFactory {
 

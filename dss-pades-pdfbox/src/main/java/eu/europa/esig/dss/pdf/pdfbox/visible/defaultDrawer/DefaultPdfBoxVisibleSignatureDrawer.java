@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.pdfbox.visible;
+package eu.europa.esig.dss.pdf.pdfbox.visible.defaultDrawer;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -26,15 +26,15 @@ import java.io.IOException;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSigProperties;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSignDesigner;
 
+import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
-import eu.europa.esig.dss.pdf.visible.ImageUtils;
 
 public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureDrawer {
 
 	@Override
 	public void draw() throws IOException {
 		// DSS-747. Using the DPI resolution to convert java size to dot
-		ImageAndResolution ires = ImageUtils.create(parameters);
+		ImageAndResolution ires = DefaultDrawerImageUtils.create(parameters);
 
 		SignatureImageAndPosition signatureImageAndPosition = SignatureImageAndPositionProcessor.process(parameters, document, ires);
 

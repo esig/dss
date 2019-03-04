@@ -32,7 +32,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
-import eu.europa.esig.dss.pdf.visible.ImageTextWriter;
+import eu.europa.esig.dss.pdf.visible.FontUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
@@ -61,7 +61,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			int height = parameters.getHeight();
 			if (width == 0 || height == 0) {
 				SignatureImageTextParameters textParameters = parameters.getTextParameters();
-				Dimension dimension = ImageTextWriter.computeSize(textParameters.getJavaFont(), text, textParameters.getMargin());
+				Dimension dimension = FontUtils.computeSize(textParameters.getJavaFont(), text, textParameters.getMargin());
 				width = dimension.width;
 				height = dimension.height;
 			}

@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.visible;
+package eu.europa.esig.dss.pdf.pdfbox.visible.defaultDrawer;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pdf.pdfbox.visible.ImageUtils;
+import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 
 /**
  * This class allows to merge two pictures together

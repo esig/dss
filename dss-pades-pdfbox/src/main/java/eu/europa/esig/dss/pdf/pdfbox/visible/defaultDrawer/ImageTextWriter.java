@@ -18,13 +18,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.visible;
+package eu.europa.esig.dss.pdf.pdfbox.visible.defaultDrawer;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -32,6 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
+import eu.europa.esig.dss.pdf.visible.FontUtils;
 
 /**
  * This class allows to generate image with text
@@ -47,52 +48,9 @@ public final class ImageTextWriter {
 	public static BufferedImage createTextImage(final String text, final Font font, final float size, final Color textColor, final Color bgColor,
 			final float margin, final int dpi, SignatureImageTextParameters.SignerTextHorizontalAlignment horizontalAlignment) {
 		// Computing image size depending on the font
-		Font properFont = computeProperFont(font, size, dpi);
-		Dimension dimension = computeSize(properFont, text, margin);
+		Font properFont = FontUtils.computeProperFont(font, size, dpi);
+		Dimension dimension = FontUtils.computeSize(properFont, text, margin);
 		return createTextImage(text, properFont, textColor, bgColor, margin, dimension, horizontalAlignment);
-	}
-	
-	/**
-	 * Computes a new {@link Font} based on the given size and dpi
-	 * @param font {@link Font} original font
-	 * @param size of the target font
-	 * @param dpi used to compute a new font size
-	 * @return proper {@link Font}
-	 */
-	public static Font computeProperFont(Font font, float size, int dpi) {
-		float fontSize = CommonDrawerUtils.computeProperSize(size, dpi);
-		return font.deriveFont(fontSize);
-	}
-	
-	public static FontMetrics getFontMetrics(Font font) {
-		BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
-		Graphics g = img.getGraphics();
-		g.setFont(font);
-		FontMetrics fontMetrics = g.getFontMetrics(font);
-		g.dispose();
-		return fontMetrics;
-	}
-	
-	public static Dimension computeSize(Font font, String text, float margin) {
-		return computeSize(getFontMetrics(font), text, margin);
-	}
-
-	public static Dimension computeSize(FontMetrics fontMetrics, String text, float margin) {
-		String[] lines = text.split("\\r?\\n");
-		float width = 0;
-		for (String line : lines) {
-			float lineWidth = fontMetrics.stringWidth(line);
-			if (lineWidth > width) {
-				width = lineWidth;
-			}
-		}
-		float doubleMargin = margin*2;
-		width += doubleMargin;
-		float height = (fontMetrics.getHeight() * lines.length) + doubleMargin;
-		
-		Dimension dimension = new Dimension();
-		dimension.setSize(width, height);
-		return dimension;
 	}
 
 	private static BufferedImage createTextImage(final String text, final Font font, final Color textColor, final Color bgColor, final float margin, 

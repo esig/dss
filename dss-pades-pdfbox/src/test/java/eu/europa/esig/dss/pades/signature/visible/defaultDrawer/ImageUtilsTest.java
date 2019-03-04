@@ -18,13 +18,15 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.visible;
+package eu.europa.esig.dss.pades.signature.visible.defaultDrawer;
 
-import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pdf.pdfbox.visible.ImageUtils;
+import eu.europa.esig.dss.pdf.pdfbox.visible.defaultDrawer.DefaultDrawerImageUtils;
+import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
-import eu.europa.esig.dss.pdf.visible.ImageUtils;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,7 +34,6 @@ import org.junit.Test;
 import javax.imageio.ImageIO;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 public class ImageUtilsTest {
@@ -42,7 +43,7 @@ public class ImageUtilsTest {
         SignatureImageParameters imageParameters = createSignatureImageParameters();
 
         Dimension optimalSizeDimension = ImageUtils.getOptimalSize(imageParameters);
-        ImageAndResolution imageAndResolution = ImageUtils.create(imageParameters);
+        ImageAndResolution imageAndResolution = DefaultDrawerImageUtils.create(imageParameters);
 
         BufferedImage image = ImageIO.read(imageAndResolution.getInputStream());
 
@@ -56,7 +57,7 @@ public class ImageUtilsTest {
 
     private SignatureImageParameters createSignatureImageParameters() {
         SignatureImageParameters imageParameters = new SignatureImageParameters();
-        imageParameters.setImage(new FileDocument(new File("src/test/resources/signature-image.png")));
+        imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png")));
         SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
         textParameters.setText("My signature\nsecond line\nlong line is very long line with long text example this");
         imageParameters.setTextParameters(textParameters);

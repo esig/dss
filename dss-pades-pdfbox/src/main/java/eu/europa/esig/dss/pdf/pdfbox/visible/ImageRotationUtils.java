@@ -7,12 +7,12 @@ import eu.europa.esig.dss.pades.SignatureImageParameters.VisualSignatureRotation
 
 public class ImageRotationUtils {
 	
-	protected static final String SUPPORTED_ANGLES_ERROR_MESSAGE = "rotation angle must be 90, 180, 270 or 360 (0)";
+	public static final String SUPPORTED_ANGLES_ERROR_MESSAGE = "rotation angle must be 90, 180, 270 or 360 (0)";
 
-	protected static final int ANGLE_360 = 360;
-	protected static final int ANGLE_90 = 90;
-	protected static final int ANGLE_180 = 180;
-	protected static final int ANGLE_270 = 270;
+	public static final int ANGLE_360 = 360;
+	public static final int ANGLE_90 = 90;
+	public static final int ANGLE_180 = 180;
+	public static final int ANGLE_270 = 270;
 	
     private static boolean needRotation(SignatureImageParameters.VisualSignatureRotation visualSignatureRotation) {
         return visualSignatureRotation != null && !SignatureImageParameters.VisualSignatureRotation.NONE.equals(visualSignatureRotation);

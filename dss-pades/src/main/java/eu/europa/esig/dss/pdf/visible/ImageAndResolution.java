@@ -26,9 +26,7 @@ import eu.europa.esig.dss.DSSDocument;
 
 /**
  * An InputStream wrapper for an image, and its horizontal and vertical resolution
- * 
  * @author pakeyser
- *
  */
 public class ImageAndResolution {
 

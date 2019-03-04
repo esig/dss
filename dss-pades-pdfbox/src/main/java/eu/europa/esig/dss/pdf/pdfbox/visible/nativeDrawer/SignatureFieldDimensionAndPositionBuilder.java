@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pdf.pdfbox.visible;
+package eu.europa.esig.dss.pdf.pdfbox.visible.nativeDrawer;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -13,10 +13,12 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.pades.SignatureImageParameters.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
+import eu.europa.esig.dss.pdf.pdfbox.visible.ImageUtils;
+import eu.europa.esig.dss.pdf.pdfbox.visible.defaultDrawer.ImageTextWriter;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
+import eu.europa.esig.dss.pdf.visible.FontUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
-import eu.europa.esig.dss.pdf.visible.ImageTextWriter;
-import eu.europa.esig.dss.pdf.visible.ImageUtils;
 
 public class SignatureFieldDimensionAndPositionBuilder {
 
@@ -68,8 +70,8 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
 		// if text is present
 		if (textParameters != null) {
-			Font properFont = ImageTextWriter.computeProperFont(textParameters.getJavaFont(), textParameters.getSize(), imageParameters.getDpi());
-			Dimension textBox = ImageTextWriter.computeSize(properFont, textParameters.getText(), textParameters.getMargin());
+			Font properFont = FontUtils.computeProperFont(textParameters.getJavaFont(), textParameters.getSize(), imageParameters.getDpi());
+			Dimension textBox = FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getMargin());
 			float textWidth = (float) textBox.getWidth() / CommonDrawerUtils.getScaleFactor(dimensionAndPosition.getxDpi());
 			float textHeight = (float) textBox.getHeight() / CommonDrawerUtils.getScaleFactor(dimensionAndPosition.getyDpi());
 			switch (imageParameters.getTextParameters().getSignerNamePosition()) {

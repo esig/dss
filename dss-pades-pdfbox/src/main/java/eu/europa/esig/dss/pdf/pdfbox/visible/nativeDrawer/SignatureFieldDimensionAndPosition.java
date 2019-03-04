@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pdf.pdfbox.visible;
+package eu.europa.esig.dss.pdf.pdfbox.visible.nativeDrawer;
 
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;
