@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pdf.pdfbox.visible.nativeDrawer;
+package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -15,7 +15,6 @@ import eu.europa.esig.dss.pades.SignatureImageParameters.VisualSignatureAlignmen
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.pdfbox.visible.ImageUtils;
-import eu.europa.esig.dss.pdf.pdfbox.visible.defaultDrawer.ImageTextWriter;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.FontUtils;
 import eu.europa.esig.dss.pdf.visible.ImageAndResolution;

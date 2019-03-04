@@ -51,6 +51,8 @@ import eu.europa.esig.dss.pades.PdfScreenshotUtils;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pdf.PdfObjFactory;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 
@@ -81,6 +83,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 	@Before
 	public void init() throws Exception {
 
+		PdfObjFactory.setInstance(new PdfBoxDefaultObjectFactory());
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
@@ -277,6 +280,7 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 		checkPdfFile = new File("target/pdf/check_normal_automatic.pdf");
 		checkPdfFile.getParentFile().mkdirs();
 		IOUtils.copy(document.openStream(), new FileOutputStream(checkPdfFile));
+		inputPDF.close();
 	}
 
 	private DSSDocument sign(DSSDocument document) {
@@ -286,17 +290,16 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 	}
 
 	private void checkRotation(InputStream inputStream, int rotate) throws IOException {
-		PDDocument document = PDDocument.load(inputStream);
-
-		Assert.assertEquals(rotate, document.getPages().get(0).getRotation());
+		try (PDDocument document = PDDocument.load(inputStream)) {
+			Assert.assertEquals(rotate, document.getPages().get(0).getRotation());
+		}
 	}
 
 	private void checkImageSimilarityPdf(String samplePdf, String checkPdf, float similarity) throws IOException {
 		DSSDocument document = sign(signablePdfs.get(samplePdf));
 		try (InputStream sampleDocIS = document.openStream(); 
-				InputStream docToCheckIS = getClass().getResourceAsStream("/visualSignature/check/" + checkPdf)) {
-			PDDocument sampleDocument = PDDocument.load(sampleDocIS);
-			PDDocument checkDocument = PDDocument.load(docToCheckIS);
+				InputStream docToCheckIS = getClass().getResourceAsStream("/visualSignature/check/" + checkPdf); 
+				PDDocument sampleDocument = PDDocument.load(sampleDocIS); PDDocument checkDocument = PDDocument.load(docToCheckIS);) {
 			PdfScreenshotUtils.checkPdfSimilarity(sampleDocument, checkDocument, similarity);
 		}
 	}
@@ -328,9 +331,10 @@ public class PAdESVisibleSignaturePositionTest extends PKIFactoryAccess {
 	}
 
 	private BufferedImage pdfToBufferedImage(InputStream inputStream) throws IOException {
-		PDDocument document = PDDocument.load(inputStream);
-		PDFRenderer renderer = new PDFRenderer(document);
-		return renderer.renderImageWithDPI(0, DPI);
+		try (PDDocument document = PDDocument.load(inputStream)) {
+			PDFRenderer renderer = new PDFRenderer(document);
+			return renderer.renderImageWithDPI(0, DPI);
+		}
 	}
 
 	@Override

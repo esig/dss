@@ -18,21 +18,44 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.signature.visible.nativeDrawer;
+package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
-import org.junit.Before;
+public class SignatureImageAndPosition {
 
-import eu.europa.esig.dss.pades.signature.visible.PAdESVisibleCombinationTextAndImageSignature;
-import eu.europa.esig.dss.pdf.PdfObjFactory;
-import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
+    private float x;
+    private float y;
+	private byte[] signatureImage;
 
-public class PdfBoxPAdESVisibleCombinationTextAndImageSignatureTest extends PAdESVisibleCombinationTextAndImageSignature {
-	
-	@Before
-	@Override
-	public void init() throws Exception {
-		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
-		super.init();
-	}
+    public SignatureImageAndPosition() {
+    }
 
+    public SignatureImageAndPosition(float x, float y, byte[] signatureImage) {
+        this.x = x;
+        this.y = y;
+        this.signatureImage = signatureImage;
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public byte[] getSignatureImage() {
+        return signatureImage;
+    }
+
+    public void setSignatureImage(byte[] signatureImage) {
+        this.signatureImage = signatureImage;
+    }
 }

@@ -320,9 +320,8 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 	}
 	
 	private void compareAnnotations(DSSDocument doc1, DSSDocument doc2) throws IOException {
-		try (InputStream is1 = doc1.openStream(); InputStream is2 = doc2.openStream()) {
-			PDDocument pdDoc1 = PDDocument.load(is1);
-			PDDocument pdDoc2 = PDDocument.load(is2);
+		try (InputStream is1 = doc1.openStream(); InputStream is2 = doc2.openStream(); 
+				PDDocument pdDoc1 = PDDocument.load(is1); PDDocument pdDoc2 = PDDocument.load(is2);) {
 			assertEquals(pdDoc1.getNumberOfPages(), pdDoc2.getNumberOfPages());
 			for (int i = 0; i < pdDoc1.getNumberOfPages(); i++) {
 				PDPage page1 = pdDoc1.getPage(i);
@@ -344,9 +343,8 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 	}
 	
 	private void compareVisualSimilarity(DSSDocument doc1, DSSDocument doc2) throws IOException {
-		try (InputStream is1 = doc1.openStream(); InputStream is2 = doc2.openStream()) {
-			PDDocument pdDoc1 = PDDocument.load(is1);
-			PDDocument pdDoc2 = PDDocument.load(is2);
+		try (InputStream is1 = doc1.openStream(); InputStream is2 = doc2.openStream();
+				PDDocument pdDoc1 = PDDocument.load(is1); PDDocument pdDoc2 = PDDocument.load(is2);) {
 			PdfScreenshotUtils.checkPdfSimilarity(pdDoc1, pdDoc2, SIMILARITY_LIMIT);
 		}
 	}

@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pades.signature.visible.defaultDrawer;
+package eu.europa.esig.dss.pades.signature.visible.defaultdrawer;
 
 import eu.europa.esig.dss.pades.signature.visible.AbstractPDFAVisibleSignatureTest;
 import eu.europa.esig.dss.pdf.PdfObjFactory;

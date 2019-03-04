@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pdf.pdfbox.visible.defaultDrawer;
+package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;

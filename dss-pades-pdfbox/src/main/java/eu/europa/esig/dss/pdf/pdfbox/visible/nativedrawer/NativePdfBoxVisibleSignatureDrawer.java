@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pdf.pdfbox.visible.nativeDrawer;
+package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
 import java.awt.Color;
 import java.awt.Font;
