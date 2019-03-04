@@ -98,18 +98,18 @@ public class ImageUtils {
 					scaledImage = zoomImage(scaledImage, zoomFactor, zoomFactor);
 					switch (textParamaters.getSignerNamePosition()) {
 						case LEFT:
-							buffImg = ImagesMerger.mergeOnRight(buffImg, scaledImage, textParamaters.getBackgroundColor(),
+							buffImg = ImagesMerger.mergeOnRight(buffImg, scaledImage, imageParameters.getBackgroundColor(),
 									imageParameters.getSignerTextImageVerticalAlignment());
 							break;
 						case RIGHT:
-							buffImg = ImagesMerger.mergeOnRight(scaledImage, buffImg, textParamaters.getBackgroundColor(),
+							buffImg = ImagesMerger.mergeOnRight(scaledImage, buffImg, imageParameters.getBackgroundColor(),
 									imageParameters.getSignerTextImageVerticalAlignment());
 							break;
 						case TOP:
-							buffImg = ImagesMerger.mergeOnTop(scaledImage, buffImg, textParamaters.getBackgroundColor());
+							buffImg = ImagesMerger.mergeOnTop(scaledImage, buffImg, imageParameters.getBackgroundColor());
 							break;
 						case BOTTOM:
-							buffImg = ImagesMerger.mergeOnTop(buffImg, scaledImage, textParamaters.getBackgroundColor());
+							buffImg = ImagesMerger.mergeOnTop(buffImg, scaledImage, imageParameters.getBackgroundColor());
 							break;
 						default:
 							break;
