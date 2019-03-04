@@ -13,6 +13,9 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateQualification;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -27,6 +30,8 @@ import eu.europa.esig.jaxb.policy.Model;
  * @version 1.0
  */
 public class ModelAbstractlValidation {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ModelAbstractlValidation.class);
 
 	@SuppressWarnings("unchecked")
 	protected final <T extends Object> T getJAXBObjectFromString(InputStream is, Class<T> clazz, String xsd)
@@ -43,7 +48,7 @@ public class ModelAbstractlValidation {
 			}
 			return (T) unmarshaller.unmarshal(is);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("Unable to unmarshall", e);
 			throw e;
 		}
 	}
