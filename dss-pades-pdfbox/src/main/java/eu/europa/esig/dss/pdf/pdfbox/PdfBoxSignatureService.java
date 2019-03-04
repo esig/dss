@@ -544,8 +544,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
 		DSSDocument newPdfDoc = null;
-		try (InputStream is = document.openStream()) {
-			PDDocument pdfDoc = PDDocument.load(is);
+		try (InputStream is = document.openStream(); PDDocument pdfDoc = PDDocument.load(is)) {
 			PDPage page = pdfDoc.getPage(parameters.getPage());
 
 			PDAcroForm acroForm = pdfDoc.getDocumentCatalog().getAcroForm();

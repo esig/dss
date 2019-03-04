@@ -18,17 +18,22 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.openpdf.visible;
+package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.io.IOException;
+import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.pdf.PDFTimestampService;
+import eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer.PdfBoxDefaultSignatureDrawerFactory;
 
-import com.lowagie.text.pdf.PdfSignatureAppearance;
+public class PdfBoxDefaultObjectFactory implements PdfBoxObjectFactory {
 
-import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
+	@Override
+	public PDFSignatureService newPAdESSignatureService() {
+		return new PdfBoxSignatureService(false, new PdfBoxDefaultSignatureDrawerFactory());
+	}
 
-public interface ITextSignatureDrawer extends SignatureDrawer {
-
-	void init(String signatureFieldId, SignatureImageParameters parameters, PdfSignatureAppearance appearance) throws IOException;
+	@Override
+	public PDFTimestampService newTimestampSignatureService() {
+		return new PdfBoxSignatureService(true, new PdfBoxDefaultSignatureDrawerFactory());
+	}
 
 }

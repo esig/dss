@@ -18,17 +18,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.openpdf.visible;
-
-import java.io.IOException;
-
-import com.lowagie.text.pdf.PdfSignatureAppearance;
+package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
 import eu.europa.esig.dss.pades.SignatureImageParameters;
-import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
+import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
+import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
 
-public interface ITextSignatureDrawer extends SignatureDrawer {
+public class PdfBoxDefaultSignatureDrawerFactory implements PdfBoxSignatureDrawerFactory {
 
-	void init(String signatureFieldId, SignatureImageParameters parameters, PdfSignatureAppearance appearance) throws IOException;
+	@Override
+	public PdfBoxSignatureDrawer getSignatureDrawer(SignatureImageParameters imageParameters) {
+		// Custom drawer(s) can be injected with a new Factory and a custom instance of
+		// IPdfObjFactory
+		return new DefaultPdfBoxVisibleSignatureDrawer();
+	}
 
 }

@@ -18,8 +18,22 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.signature.visible;
+package eu.europa.esig.dss.pdf.pdfbox;
 
-public class PdfBoxPAdESVisibleCombinationTextAndImageSignatureTest extends PAdESVisibleCombinationTextAndImageSignature {
+import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.pdf.PDFTimestampService;
+import eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer.PdfBoxNativeSignatureDrawerFactory;
+
+public class PdfBoxNativeObjectFactory implements PdfBoxObjectFactory {
+
+	@Override
+	public PDFSignatureService newPAdESSignatureService() {
+		return new PdfBoxSignatureService(false, new PdfBoxNativeSignatureDrawerFactory());
+	}
+
+	@Override
+	public PDFTimestampService newTimestampSignatureService() {
+		return new PdfBoxSignatureService(true, new PdfBoxNativeSignatureDrawerFactory());
+	}
 
 }

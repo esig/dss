@@ -47,14 +47,20 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 
-public class PDFAVisibleSignatureTest extends PKIFactoryAccess {
+public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess {
 
 	private DocumentSignatureService<PAdESSignatureParameters> service;
 	private PAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
+	
+	/**
+	 * Set a custom instance of {@link PdfObjFactory}
+	 */
+	protected abstract void setCustomFactory();
 
 	@Before
 	public void init() throws Exception {
+		setCustomFactory();
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
@@ -104,8 +110,8 @@ public class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	@Test
 	public void testGeneratedImageOnlyPNG() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG)); // PNG with
-																										// ALPHA
+		// PNG with ALPHA
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG));
 		imageParameters.setxAxis(100);
 		imageParameters.setyAxis(100);
 		signatureParameters.setSignatureImageParameters(imageParameters);
@@ -118,7 +124,7 @@ public class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
-		// signedDocument.save("target/test.pdf");
+		 signedDocument.save("target/test.pdf");
 
 		assertEquals(expectedValidPDFA, PDFAUtils.validatePDFAStructure(signedDocument));
 

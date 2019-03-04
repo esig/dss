@@ -21,12 +21,12 @@
 package eu.europa.esig.dss.cookbook.example.sign;
 
 import java.awt.Color;
-import java.awt.Font;
 
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
@@ -82,7 +82,8 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 
 			// Initialize text to generate for visual signature
 			SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-			textParameters.setFont(new Font("serif", Font.PLAIN, 14));
+			textParameters.setFont(new InMemoryDocument(getClass().getResourceAsStream("/fonts/OpenSansRegular.ttf")));
+			textParameters.setSize(14);
 			textParameters.setTextColor(Color.BLUE);
 			textParameters.setText("My visual signature");
 			imageParameters.setTextParameters(textParameters);

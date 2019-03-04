@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf.visible;
+package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pdf.pdfbox.visible.ImageUtils;
+import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 
 /**
  * This class allows to merge two pictures together
@@ -56,7 +58,7 @@ public final class ImagesMerger {
 		BufferedImage combined = new BufferedImage(newImageWidth, newImageHeigth, imageType);
 		Graphics2D g = combined.createGraphics();
 
-		ImageUtils.initRendering(g);
+		CommonDrawerUtils.initRendering(g);
 		fillBackground(g, newImageWidth, newImageHeigth, bgColor);
 
 		g.drawImage(top, (newImageWidth - top.getWidth()) / 2, 0, top.getWidth(), top.getHeight(), null);
@@ -80,29 +82,29 @@ public final class ImagesMerger {
 		BufferedImage combined = new BufferedImage(newImageWidth, newImageHeigth, imageType);
 		Graphics2D g = combined.createGraphics();
 
-		ImageUtils.initRendering(g);
+		CommonDrawerUtils.initRendering(g);
 		fillBackground(g, newImageWidth, newImageHeigth, bgColor);
 
 		switch (imageVerticalAlignment) {
-		case TOP:
-			g.drawImage(left, 0, 0, left.getWidth(), left.getHeight(), null);
-			g.drawImage(right, left.getWidth(), 0, right.getWidth(), right.getHeight(), null);
-			break;
-		case MIDDLE:
-			g.drawImage(left, 0, (newImageHeigth - left.getHeight()) / 2, left.getWidth(), left.getHeight(), null);
-			g.drawImage(right, left.getWidth(), (newImageHeigth - right.getHeight()) / 2, right.getWidth(), right.getHeight(), null);
-			break;
-		case BOTTOM:
-			if (left.getHeight() > right.getHeight()) {
+			case TOP:
 				g.drawImage(left, 0, 0, left.getWidth(), left.getHeight(), null);
-				g.drawImage(right, left.getWidth(), newImageHeigth - right.getHeight(), right.getWidth(), right.getHeight(), null);
-			} else {
-				g.drawImage(left, 0, newImageHeigth - left.getHeight(), left.getWidth(), left.getHeight(), null);
 				g.drawImage(right, left.getWidth(), 0, right.getWidth(), right.getHeight(), null);
-			}
-			break;
-		default:
-			throw new DSSException("Unsupported SignerTextImageVerticalAlignment : " + imageVerticalAlignment);
+				break;
+			case MIDDLE:
+				g.drawImage(left, 0, (newImageHeigth - left.getHeight()) / 2, left.getWidth(), left.getHeight(), null);
+				g.drawImage(right, left.getWidth(), (newImageHeigth - right.getHeight()) / 2, right.getWidth(), right.getHeight(), null);
+				break;
+			case BOTTOM:
+				if (left.getHeight() > right.getHeight()) {
+					g.drawImage(left, 0, 0, left.getWidth(), left.getHeight(), null);
+					g.drawImage(right, left.getWidth(), newImageHeigth - right.getHeight(), right.getWidth(), right.getHeight(), null);
+				} else {
+					g.drawImage(left, 0, newImageHeigth - left.getHeight(), left.getWidth(), left.getHeight(), null);
+					g.drawImage(right, left.getWidth(), 0, right.getWidth(), right.getHeight(), null);
+				}
+				break;
+			default:
+				throw new DSSException("Unsupported SignerTextImageVerticalAlignment : " + imageVerticalAlignment);
 		}
 
 		return combined;

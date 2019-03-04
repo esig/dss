@@ -26,9 +26,7 @@ import eu.europa.esig.dss.DSSDocument;
 
 /**
  * An InputStream wrapper for an image, and its horizontal and vertical resolution
- * 
  * @author pakeyser
- *
  */
 public class ImageAndResolution {
 
@@ -50,20 +48,12 @@ public class ImageAndResolution {
 		return yDpi;
 	}
 
-	public float toXInch(float x) {
-		return x / (xDpi);
-	}
-
 	public float toXPoint(float x) {
-		return toXInch(x) * 72f;
-	}
-
-	public float toYInch(float y) {
-		return y / (yDpi);
+		return CommonDrawerUtils.toDpiAxisPoint(x, xDpi);
 	}
 
 	public float toYPoint(float y) {
-		return toYInch(y) * 72f;
+		return CommonDrawerUtils.toDpiAxisPoint(y, yDpi);
 	}
 
 	@Override
