@@ -235,8 +235,8 @@ If your integration require dss-crl-parser, you will need to choose your impleme
 
 Since the version 5.4, DSS allows to generate/extend/validate PAdES signatures with two different frameworks : PDFBox and OpenPDF (fork of iText). The dss-pades module only contains the common code and requires an underlying implementation : 
  
- * dss-pades-pdfbox
- * dss-pades-openpdf
+ * dss-pades-pdfbox : Supports drawing of custom text, images, as well as text+image, in a signature field.
+ * dss-pades-openpdf : Supports drawing of custom text OR images in a signature field.
 
 DSS permits to override the visible signature generation with these interfaces : 
 
@@ -245,6 +245,21 @@ DSS permits to override the visible signature generation with these interfaces :
  * eu.europa.esig.dss.pdf.visible.SignatureDrawer
 
 A new instance of the IPdfObjFactory can be created with its own SignatureDrawerFactory and injected in the PdfObjFactory.setInstance(IPdfObjFactory).
+
+==== DSS PDFBox
+
+Since the version 5.5, DSS allows a switching between two implementations of the framework PDFBox : default (original) and native.
+
+ * Default Drawer : The original drawer implemented on the PDFBox framework, supports displaying of custom text, images, text+image combination in a signature field. The implementation does not include the provided custom text to the inner PDF structure, instead of it, the drawer creates an image representation of the provided text, which is added to the signature field (i.e. the text is not selectable and not searchable).
+ * Native Drawer : Since the version 5.5, DSS includes a new implementation of PDFBox Drawer, that allows to add a real custom text, image or combination of text and image to a visible signature field. The native implementation embeds the provided custom text to the inner PDF structure, that makes the text selectable and searchable, and also clearer and smoother in comparison with the original implementation.
+
+By default DSS uses "Default Drawer" as the PDFBox implementation. In order to switch the implementation, that DSS allows to perform in runtime, you have to set a new instance for PdfObjFactory as following:
+
+[source,java,indent=0]
+.Runtime PDF Object Factory changing
+----
+PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
+----
 
 == Available demonstrations
 
@@ -809,6 +824,16 @@ Additionally, DSS also allows to insert a visible signature in an existing field
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=select-pdf-signature-field]
 ----
+
+NOTE: Since version 5.5, DSS supports only physical fonts, that might be embedded to the produced PDF document where necessary. The custom font must be added as an instance of 'DSSDocument' interface to a 'SignatureImageTextParameters' object as following:
+
+[source,java,indent=0]
+.Add a custom font
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=font]
+----
+
+By default, DSS uses a Google font : 'PT Serif Regular'.
 
 == ASiC signature (containers)
 
