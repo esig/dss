@@ -109,8 +109,8 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
             {
             	rotateSignature(cs, originalPage, rectangle);
             	setFieldBackground(cs, parameters.getBackgroundColor());
-            	setImage(cs, doc, dimensionAndPosition, parameters.getImage());
             	setText(cs, dimensionAndPosition, parameters);
+            	setImage(cs, doc, dimensionAndPosition, parameters.getImage());
             }
             
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -164,7 +164,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
             setAlphaChannel(cs, color);
             cs.setNonStrokingColor(color);
             // fill a whole box with the background color
-            cs.addRect(rect.getLowerLeftX(), rect.getLowerLeftY(), rect.getWidth(), rect.getWidth());
+            cs.addRect(rect.getLowerLeftX(), rect.getLowerLeftY(), rect.getWidth(), rect.getHeight());
             cs.fill();
             cleanTransparency(cs);
     	}
@@ -192,7 +192,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	            cs.transform(Matrix.getScaleInstance(dimensionAndPosition.getxDpiRatio() * scaleFactor, 
 	            		dimensionAndPosition.getyDpiRatio() * scaleFactor));
 	    		byte[] bytes = IOUtils.toByteArray(is);
-	    		PDImageXObject imageXObject = PDImageXObject.createFromByteArray(doc, bytes, parameters.getImage().getName());
+	    		PDImageXObject imageXObject = PDImageXObject.createFromByteArray(doc, bytes, image.getName());
 	    		// divide to scale factor, because PdfBox due to the matrix transformation also changes position parameters of the image
 	        	cs.drawImage(imageXObject, dimensionAndPosition.getImageX() / scaleFactor, dimensionAndPosition.getImageY() / scaleFactor);
 	            cs.restoreGraphicsState();
@@ -254,14 +254,19 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
                 cs.newLine();
             }
             cs.endText();
+            cleanTransparency(cs);
     	}
 	}
 	
 	private void setTextBackground(PDPageContentStream cs, SignatureImageTextParameters textParameters, 
 			SignatureFieldDimensionAndPosition dimensionAndPosition) throws IOException {
 		if (textParameters.getBackgroundColor() != null) {
-			PDRectangle rect = new PDRectangle(dimensionAndPosition.getTextX() - textSizeWithDpi(textParameters.getMargin(), dimensionAndPosition.getxDpi()), 
-					dimensionAndPosition.getTextY(), dimensionAndPosition.getTextWidth(), dimensionAndPosition.getTextHeight());
+			PDRectangle rect = new PDRectangle(
+					dimensionAndPosition.getTextX() - textSizeWithDpi(textParameters.getMargin(), dimensionAndPosition.getxDpi()), 
+					dimensionAndPosition.getTextY() + textSizeWithDpi(textParameters.getMargin(), dimensionAndPosition.getyDpi()), 
+					dimensionAndPosition.getTextWidth(), 
+					dimensionAndPosition.getTextHeight()
+					);
 			setBackground(cs, textParameters.getBackgroundColor(), rect);
 		}
 	}

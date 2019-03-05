@@ -77,7 +77,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 				case LEFT:
 					width += textWidth;
 					height = Math.max(height, textHeight);
-					dimensionAndPosition.setImageX(textWidth);
+					dimensionAndPosition.setImageX((float)(width - imageWidth));
 					textImageVerticalAlignment((float)height, (float)imageHeight, textHeight);
 					break;
 				case RIGHT:
@@ -96,7 +96,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
 				case BOTTOM:
 					width = Math.max(width, textWidth);
 					height += textHeight;
-					dimensionAndPosition.setImageY(textHeight);
+					dimensionAndPosition.setImageY((float)(height - imageHeight));
 					dimensionAndPosition.setTextX(toDpiPagePoint((float)(width - textWidth)/2, dimensionAndPosition.getxDpi()));
 					dimensionAndPosition.setImageX((float)(width - imageWidth)/2);
 					break;
