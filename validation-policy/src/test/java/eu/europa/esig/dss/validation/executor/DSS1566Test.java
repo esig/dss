@@ -12,6 +12,7 @@ import org.junit.Test;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.validation.policy.XmlUtils;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.dss.validation.reports.SimpleCertificateReport;
 
@@ -37,6 +38,10 @@ public class DSS1566Test extends AbstractValidationExecutorTest {
 		for (String certId : certIds) {
 			Indication indication = simpleReport.getCertificateIndication(certId);
 			assertNotNull(indication);
+			if (!Indication.PASSED.equals(indication)) {
+				SubIndication subIndication = simpleReport.getCertificateSubIndication(certId);
+				assertNotNull(subIndication);
+			}
 		}
 	}
 
