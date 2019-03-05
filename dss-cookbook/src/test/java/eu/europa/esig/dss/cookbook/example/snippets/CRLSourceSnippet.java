@@ -52,7 +52,7 @@ public class CRLSourceSnippet {
 		cacheCRLSource.setDataSource(dataSource);
 		cacheCRLSource.setProxySource(onlineCRLSource);
 		cacheCRLSource.initTable();
-		RevocationToken crlRevocationToken = crlSource.getRevocationToken(certificateToken, certificateToken);
+		RevocationToken crlRevocationToken = cacheCRLSource.getRevocationToken(certificateToken, certificateToken);
 		// end::demo-cached[]
 
 	}
