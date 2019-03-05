@@ -23,6 +23,7 @@ package eu.europa.esig.dss.token;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureValue;
@@ -80,5 +81,20 @@ public interface SignatureTokenConnection extends AutoCloseable {
 	 *             If there is any problem during the signature process
 	 */
 	SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry) throws DSSException;
+
+	/**
+	 * 
+	 * This method signs the {@code digest} data with the given {@code keyEntry}.
+	 * 
+	 * @param digest
+	 *                 The digested data that need to be signed
+	 * @param keyEntry
+	 *                 The private key to be used
+	 * @return the signature value representation with the used algorithm and the
+	 *         binary value
+	 * @throws DSSException
+	 *                      If there is any problem during the signature process
+	 */
+	SignatureValue signDigest(Digest digest, DSSPrivateKeyEntry keyEntry) throws DSSException;
 
 }

@@ -56,6 +56,11 @@ import java.util.TimeZone;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.bouncycastle.asn1.ASN1Encoding;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.DERNull;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
@@ -347,6 +352,16 @@ public final class DSSUtils {
 	public static byte[] digest(final DigestAlgorithm digestAlgorithm, final byte[] data) {
 		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
 		return messageDigest.digest(data);
+	}
+
+	public static byte[] encodeDigest(final DigestAlgorithm digestAlgorithm, final byte[] digest) {
+		try {
+			AlgorithmIdentifier algId = new AlgorithmIdentifier(new ASN1ObjectIdentifier(digestAlgorithm.getOid()), DERNull.INSTANCE);
+			DigestInfo digestInfo = new DigestInfo(algId, digest);
+			return digestInfo.getEncoded(ASN1Encoding.DER);
+		} catch (IOException e) {
+			throw new DSSException("Unable to encode digest", e);
+		}
 	}
 
 	/**
