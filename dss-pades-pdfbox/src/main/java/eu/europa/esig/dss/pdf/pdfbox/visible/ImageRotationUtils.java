@@ -14,6 +14,9 @@ public class ImageRotationUtils {
 	public static final int ANGLE_180 = 180;
 	public static final int ANGLE_270 = 270;
 	
+	private ImageRotationUtils() {
+	}
+	
     private static boolean needRotation(SignatureImageParameters.VisualSignatureRotation visualSignatureRotation) {
         return visualSignatureRotation != null && !SignatureImageParameters.VisualSignatureRotation.NONE.equals(visualSignatureRotation);
     }

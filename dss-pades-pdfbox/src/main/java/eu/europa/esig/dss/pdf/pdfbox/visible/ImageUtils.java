@@ -68,7 +68,7 @@ public class ImageUtils {
 		IMAGE_TRANSPARENT_TYPES = imageAlphaTypes;
 	}
 	
-	public ImageUtils() {
+	private ImageUtils() {
 	}
 
 	/**
@@ -206,7 +206,7 @@ public class ImageUtils {
 		return dimension;
 	}
 
-	private static Dimension getTextDimension(SignatureImageParameters imageParameters) throws IOException {
+	private static Dimension getTextDimension(SignatureImageParameters imageParameters) {
 		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
 		Font properFont = FontUtils.computeProperFont(textParameters.getJavaFont(), textParameters.getSize(), imageParameters.getDpi());
 		return FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getMargin());

@@ -572,9 +572,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			pdfDoc.save(baos);
-			pdfDoc.close();
 			newPdfDoc = new InMemoryDocument(baos.toByteArray(), "new-document.pdf", MimeType.PDF);
-
 		} catch (Exception e) {
 			throw new DSSException("Unable to add a new signature fields", e);
 		}

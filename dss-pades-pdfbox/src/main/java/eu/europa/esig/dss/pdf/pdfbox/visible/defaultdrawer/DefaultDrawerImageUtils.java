@@ -45,9 +45,7 @@ public class DefaultDrawerImageUtils {
 
 		DSSDocument image = imageParameters.getImage();
 		if ((textParamaters != null) && Utils.isStringNotEmpty(textParamaters.getText())) {
-			BufferedImage buffImg = ImageTextWriter.createTextImage(textParamaters.getText(), textParamaters.getJavaFont(), textParamaters.getSize(), 
-					textParamaters.getTextColor(), textParamaters.getBackgroundColor(), textParamaters.getMargin(), imageParameters.getDpi(), 
-					textParamaters.getSignerTextHorizontalAlignment());
+			BufferedImage buffImg = ImageTextWriter.createTextImage(imageParameters);
 
 			if (image != null) {
 				// need to scale image due to usage default page 300 dpi instead of native image parameters
@@ -114,7 +112,7 @@ public class DefaultDrawerImageUtils {
 	 * @return resized original {@link BufferedImage)
 	 * @throws IOException in case of error
 	 */
-	private static BufferedImage zoomImage(BufferedImage original, float xScaleFactor, float yScaleFactor) throws IOException {
+	private static BufferedImage zoomImage(BufferedImage original, float xScaleFactor, float yScaleFactor) {
 		int newWidth = (int) (original.getWidth() * xScaleFactor);
 		int newHeight = (int) (original.getHeight() * yScaleFactor);
 		

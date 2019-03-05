@@ -105,7 +105,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
             appearance.setNormalAppearance(appearanceStream);
             widget.setAppearance(appearance);
             
-            try (PDPageContentStream cs = new PDPageContentStream(doc, appearanceStream);)
+            try (PDPageContentStream cs = new PDPageContentStream(doc, appearanceStream))
             {
             	rotateSignature(cs, originalPage, rectangle);
             	setFieldBackground(cs, parameters.getBackgroundColor());

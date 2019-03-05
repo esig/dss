@@ -8,6 +8,9 @@ import java.awt.image.BufferedImage;
 
 public class FontUtils {
 	
+	private FontUtils() {
+	}
+	
 	/**
 	 * Computes a new {@link Font} based on the given size and dpi
 	 * @param font {@link Font} original font

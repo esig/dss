@@ -7,6 +7,9 @@ public class CommonDrawerUtils {
 
 	private static final int DPI = 300;
 	protected static final int PDF_DEFAULT_DPI = 72;
+	
+	private CommonDrawerUtils() {
+	}
 
 	public static int getDpi(Integer dpi) {
 		int result = DPI;
