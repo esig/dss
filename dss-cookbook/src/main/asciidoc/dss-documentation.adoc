@@ -1009,13 +1009,39 @@ In general we can distinguish three main sources:
  * Offline sources;
  * Online sources;
  * Sources with the cache mechanism.
+ 
+=== Repository Revocation Source
+
+The above-mentioned class allows caching of CRL and OCSP responses to a user-chosen source. By default DSS provides a JDBC based implementation for this class, but other implementations also can be created. The class contains a complete set of functions to save revocation data to a database, extract, update and remove it. +
+Furthermore, the `Repository Revocation Source` allows to define a backup revocation source, for the case if the database does not contains the certificate's revocation data yet. +
+
+List of cached Revocation sources implemented in DSS:
+
+ * JdbcRevocationSource
+ ** JdbcCacheCRLSource
+ ** JdbcCacheOCSPSource
+
+Examples of usage `Repository Revocation Source` can be found below (for CRL and OCSP implementations):
+
+[source,java,indent=0]
+.JdbcCacheCRLSource usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CRLSourceSnippet.java[tags=demo-cached]
+----
+
+[source,java,indent=0]
+.JdbcCacheOCSPSource usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/OCSPSourceSnippet.java[tags=demo-cached]
+----
+
+Be aware that you have to initialize a table before start of working with the cached revocation repository.
 
 === Other implementations of CRL and OCSP Sources
 
 Such sources find the status of a certificate either from a list stored locally or using the information contained in the advanced signature or online way. Here is the list of sources already implemented in the DSS framework:
 
  * CRL sources
- ** JdbcCacheCRLSource : Retrieves information from a JDBC datasource
  ** OfflineCRLSource : This class that implements in a generic way the findCrl method that operates on the different CRLs implemented in children classes.
  *** ListCRLSource : This source maintains a list of CRLToken. 
  *** SignatureCRLSource : The advanced signature contains a list of CRL that was needed to validate the signature. This class is a basic skeleton that is able to retrieve the needed CRL from a list. The child needs to retrieve the list of wrapped CRLs.
@@ -1024,6 +1050,7 @@ Such sources find the status of a certificate either from a list stored locally 
  **** XAdESCRLSource : Retrieves information from a XAdES signature.
  **** ExternalResourcesCRLSource : A class that can instantiate a list of certificate revocation lists from a directory where should be the individual lists (each individual list file must end with the extension ".crl").
  ** OnlineCRLSource : This is a representation of an Online CRL repository. This implementation will contact using HTTP protocol the CRL Responder to download the CRLs from the given URI. Note that certificate"s Authority Information Access (AIA) extension is used to find issuer's resources location like CRT file and/or Online Certificate Status Protocol (OCSP). The URIs of CRL server will be extracted from this property (OID value: 1.3.6.1.5.5.7.48.1.3).
+ ** JdbcCacheCrlSource : Implementation of the 'JdbcRevocationSource'. This implementation allows to store valid CRL entries to a defined 'DataSource' and retrieve them locally.
  * OCSP sources
  ** OfflineOCSPSource : An abstract class that helps to implement OCSPSource with an already loaded list of OCSPToken. It implements in a generic way the getOCSPResponse method that operates on the different OCSP implementations in children classes.
  *** ListOCSPSource : Implements an OCSPSource from a list of OCSPToken.
@@ -1033,6 +1060,7 @@ Such sources find the status of a certificate either from a list stored locally 
  **** XAdESOCSPSource : Retrieves information from a XAdES signature.
  **** ExternalResourcesOCSPSource : A class that can instantiate a list of OCSPToken from a directory where should be the individual DER Encoded X509 certificates files (each individual file must end with the extension ".der").
  ** OnlineOCSPSource : This is a representation of an Online OCSP repository. This implementation will contact using HTTP protocol the OCSP Responder to retrieve the OCSP response. Note that certificate's Authority Information Access (AIA) extension is used to find issuer's resources location like CRT file and/or Online Certificate Status Protocol (OCSP). The URIs of OCSP server will be extracted from this property (OID value: 1.3.6.1.5.5.7.48.1). 
+ ** JdbcCacheOcspSource : Implementation of the 'JdbcRevocationSource'. This implementation allows to store valid OCSP entries to a defined 'DataSource' and retrieve them locally.
 
 == CertificateVerifier configuration
 

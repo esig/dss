@@ -20,14 +20,21 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
+import eu.europa.esig.dss.client.crl.JdbcCacheCRLSource;
+import eu.europa.esig.dss.client.crl.OnlineCRLSource;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 
 public class CRLSourceSnippet {
 
 	@SuppressWarnings({ "unused", "null" })
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 
 		CRLSource crlSource = null;
 		CertificateToken certificateToken = null;
@@ -36,6 +43,17 @@ public class CRLSourceSnippet {
 		// tag::demo[]
 		CRLToken crlToken = crlSource.getRevocationToken(certificateToken, issuerCertificateToken);
 		// end::demo[]
+
+		DataSource dataSource = null;
+		OnlineCRLSource onlineCRLSource = null;
+
+		// tag::demo-cached[]
+		JdbcCacheCRLSource cacheCRLSource = new JdbcCacheCRLSource();
+		cacheCRLSource.setDataSource(dataSource);
+		cacheCRLSource.setProxySource(onlineCRLSource);
+		cacheCRLSource.initTable();
+		RevocationToken crlRevocationToken = cacheCRLSource.getRevocationToken(certificateToken, certificateToken);
+		// end::demo-cached[]
 
 	}
 
