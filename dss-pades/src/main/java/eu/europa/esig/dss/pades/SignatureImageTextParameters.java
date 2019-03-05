@@ -191,7 +191,7 @@ public class SignatureImageTextParameters {
 		}
 	}
 	
-	private void initJavaFont() throws DSSException {
+	private void initJavaFont() {
 		try (InputStream is = dssFont.openStream()) {
 			this.javaFont = Font.createFont(Font.TRUETYPE_FONT, is);
 		} catch (IOException | FontFormatException e) {

@@ -30,6 +30,7 @@ import java.awt.image.BufferedImage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 import eu.europa.esig.dss.pdf.visible.FontUtils;
@@ -45,20 +46,19 @@ public final class ImageTextWriter {
 	private ImageTextWriter() {
 	}
 
-	public static BufferedImage createTextImage(final String text, final Font font, final float size, final Color textColor, final Color bgColor,
-			final float margin, final int dpi, SignatureImageTextParameters.SignerTextHorizontalAlignment horizontalAlignment) {
+	public static BufferedImage createTextImage(final SignatureImageParameters imageParameters) {
+		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
 		// Computing image size depending on the font
-		Font properFont = FontUtils.computeProperFont(font, size, dpi);
-		Dimension dimension = FontUtils.computeSize(properFont, text, margin);
-		return createTextImage(text, properFont, textColor, bgColor, margin, dimension, horizontalAlignment);
+		Font properFont = FontUtils.computeProperFont(textParameters.getJavaFont(), textParameters.getSize(), imageParameters.getDpi());
+		Dimension dimension = FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getMargin());
+		return createTextImage(textParameters, properFont, dimension);
 	}
 
-	private static BufferedImage createTextImage(final String text, final Font font, final Color textColor, final Color bgColor, final float margin, 
-			final Dimension dimension, SignatureImageTextParameters.SignerTextHorizontalAlignment horizontalAlignment) {
-		String[] lines = text.split("\n");
+	private static BufferedImage createTextImage(final SignatureImageTextParameters textParameters, final Font font, final Dimension dimension) {
+		String[] lines = textParameters.getText().split("\n");
 
 		int imageType;
-		if (isTransparent(textColor, bgColor)) {
+		if (isTransparent(textParameters.getTextColor(), textParameters.getBackgroundColor())) {
 			LOG.warn("Transparency detected and enabled (be careful not valid with PDF/A !)");
 			imageType = BufferedImage.TYPE_INT_ARGB;
 		} else {
@@ -73,31 +73,31 @@ public final class ImageTextWriter {
 		// Improve text rendering
 		CommonDrawerUtils.initRendering(g);
 
-		if (bgColor == null) {
+		if (textParameters.getBackgroundColor() == null) {
 			g.setColor(Color.WHITE);
 		} else {
-			g.setColor(bgColor);
+			g.setColor(textParameters.getBackgroundColor());
 		}
 		g.fillRect(0, 0, dimension.width, dimension.height);
 
-		if (textColor == null) {
+		if (textParameters.getTextColor() == null) {
 			g.setPaint(Color.BLACK);
 		} else {
-			g.setPaint(textColor);
+			g.setPaint(textParameters.getTextColor());
 		}
 
 		int lineHeight = fm.getHeight();
-		float y = fm.getMaxAscent() + margin;
+		float y = fm.getMaxAscent() + textParameters.getMargin();
 
 		for (String line : lines) {
-			float x = margin; // left alignment
-			if (horizontalAlignment != null) {
-				switch (horizontalAlignment) {
+			float x = textParameters.getMargin(); // left alignment
+			if (textParameters.getSignerTextHorizontalAlignment() != null) {
+				switch (textParameters.getSignerTextHorizontalAlignment()) {
 					case RIGHT:
 						x = img.getWidth() - fm.stringWidth(line) - x; // -x because of margin
 						break;
 					case CENTER:
-						x = (img.getWidth() - fm.stringWidth(line)) / 2;
+						x = (float)(img.getWidth() - fm.stringWidth(line)) / 2;
 						break;
 					case LEFT:
 					default:
