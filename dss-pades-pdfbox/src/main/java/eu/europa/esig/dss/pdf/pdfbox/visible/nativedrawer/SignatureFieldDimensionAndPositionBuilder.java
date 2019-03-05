@@ -138,12 +138,10 @@ public class SignatureFieldDimensionAndPositionBuilder {
 				boxX = imageParameters.getxAxis();
 				break;
 			case CENTER:
-				boxX = (pageMediaBox.getWidth() - CommonDrawerUtils.toDpiAxisPoint(dimensionAndPosition.getBoxWidth(), 
-						dimensionAndPosition.getxDpi())) / 2;
+				boxX = (pageMediaBox.getWidth() - dimensionAndPosition.getBoxWidth()) / 2;
 				break;
 			case RIGHT:
-				boxX = pageMediaBox.getWidth() - CommonDrawerUtils.toDpiAxisPoint(dimensionAndPosition.getBoxWidth(), 
-						dimensionAndPosition.getxDpi()) - imageParameters.getxAxis();
+				boxX = pageMediaBox.getWidth() - dimensionAndPosition.getBoxWidth() - imageParameters.getxAxis();
 				break;
 			default:
 				throw new IllegalStateException(SUPPORTED_HORIZONTAL_ALIGNMENT_ERROR_MESSAGE + alignmentHorizontal.name());
@@ -160,12 +158,10 @@ public class SignatureFieldDimensionAndPositionBuilder {
 			boxY = imageParameters.getyAxis();
 			break;
 		case MIDDLE:
-			boxY = (pageMediaBox.getHeight() - CommonDrawerUtils.toDpiAxisPoint(dimensionAndPosition.getBoxHeight(), 
-					dimensionAndPosition.getyDpi())) / 2;
+			boxY = (pageMediaBox.getHeight() - dimensionAndPosition.getBoxHeight()) / 2;
 			break;
 		case BOTTOM:
-			boxY = pageMediaBox.getHeight() - CommonDrawerUtils.toDpiAxisPoint(dimensionAndPosition.getBoxHeight(), 
-					dimensionAndPosition.getyDpi()) - imageParameters.getyAxis();
+			boxY = pageMediaBox.getHeight() - dimensionAndPosition.getBoxHeight() - imageParameters.getyAxis();
 			break;
 		default:
 			throw new IllegalStateException(SUPPORTED_VERTICAL_ALIGNMENT_ERROR_MESSAGE + alignmentVertical.name());
