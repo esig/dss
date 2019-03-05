@@ -80,12 +80,15 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 			imageParameters.setxAxis(200);
 			imageParameters.setyAxis(500);
 
+			// tag::font[]
 			// Initialize text to generate for visual signature
 			SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-			textParameters.setFont(new InMemoryDocument(getClass().getResourceAsStream("/fonts/OpenSansRegular.ttf")));
+			DSSDocument font = new InMemoryDocument(getClass().getResourceAsStream("/fonts/OpenSansRegular.ttf"));
+			textParameters.setFont(font);
 			textParameters.setSize(14);
 			textParameters.setTextColor(Color.BLUE);
 			textParameters.setText("My visual signature");
+			// end::font[]
 			imageParameters.setTextParameters(textParameters);
 
 			parameters.setSignatureImageParameters(imageParameters);
