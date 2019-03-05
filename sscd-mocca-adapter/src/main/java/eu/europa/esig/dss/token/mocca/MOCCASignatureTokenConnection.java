@@ -49,6 +49,7 @@ import at.gv.egiz.smcc.SignatureCardFactory;
 import at.gv.egiz.smcc.util.SmartCardIO;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
@@ -212,6 +213,11 @@ public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
 	@Override
 	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry)
 			throws DSSException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public SignatureValue signDigest(Digest digest, DSSPrivateKeyEntry keyEntry) throws DSSException {
 		throw new UnsupportedOperationException();
 	}
 

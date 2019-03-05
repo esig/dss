@@ -88,7 +88,8 @@ public class SignDigestECDSATest {
 				Assert.fail(e.getMessage());
 			}
 
-//			assertArrayEquals(signValue.getValue(), signDigestValue.getValue());
+			// Sig values are not equals like with RSA. (random number is generated on
+			// signature creation)
 		}
 	}
 }
