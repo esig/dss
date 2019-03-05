@@ -368,7 +368,7 @@ public class DefaultVsNativeDrawerComparatorTest extends PKIFactoryAccess {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument document = service.signDocument(documentToSign, signatureParameters, signatureValue);
-		 document.save("target/" + docName + ".pdf");
+		// document.save("target/" + docName + ".pdf");
 		return document;
 	}
 	

@@ -21,6 +21,9 @@ import eu.europa.esig.dss.x509.CertificateToken;
 
 public class OCSPTokenUtils {
 	
+	private OCSPTokenUtils() {
+	}
+	
 	public static void checkTokenValidity(OCSPToken ocspToken, CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		CertificatePool validationCertPool = new CertificatePool();
 		validationCertPool.getInstance(certificateToken, CertificateSourceType.OCSP_RESPONSE);
@@ -59,30 +62,27 @@ public class OCSPTokenUtils {
 			if (1 == derTaggedObject.getTagNo()) {
 				final ASN1Primitive derObject = derTaggedObject.getObject();
 				final byte[] derEncoded = DSSASN1Utils.getDEREncoded(derObject);
-				final X500Principal x500Principal_ = new X500Principal(derEncoded);
-				final X500Principal x500Principal = DSSUtils.getNormalizedX500Principal(x500Principal_);
+				final X500Principal x500Principal = DSSUtils.getNormalizedX500Principal(new X500Principal(derEncoded));
 				final List<CertificateToken> certificateTokens = validationCertPool.get(x500Principal);
-				for (final CertificateToken issuerCertificateToken : certificateTokens) {
-					if (ocspToken.isSignedBy(issuerCertificateToken)) {
-						ocspToken.setIssuerX500Principal(issuerCertificateToken.getSubjectX500Principal());
-						break;
-					}
-				}
+				setIssuerToOcspToken(ocspToken, certificateTokens);
 			} else if (2 == derTaggedObject.getTagNo()) {
 				final ASN1OctetString hashOctetString = (ASN1OctetString) derTaggedObject.getObject();
 				final byte[] expectedHash = hashOctetString.getOctets();
 				final List<CertificateToken> certificateTokens = validationCertPool.getBySki(expectedHash);
-				for (CertificateToken issuerCertificateToken : certificateTokens) {
-					if (ocspToken.isSignedBy(issuerCertificateToken)) {
-						ocspToken.setIssuerX500Principal(issuerCertificateToken.getSubjectX500Principal());
-						break;
-					}
-				}
+				setIssuerToOcspToken(ocspToken, certificateTokens);
 			} else {
 				throw new DSSException("Unsupported tag No " + derTaggedObject.getTagNo());
 			}
 		}
 	}
-
+	
+	private static void setIssuerToOcspToken(OCSPToken ocspToken, List<CertificateToken> issuerCandidateTokens) {
+		for (CertificateToken issuerCertificateToken : issuerCandidateTokens) {
+			if (ocspToken.isSignedBy(issuerCertificateToken)) {
+				ocspToken.setIssuerX500Principal(issuerCertificateToken.getSubjectX500Principal());
+				return;
+			}
+		}
+	}
 
 }

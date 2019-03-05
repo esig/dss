@@ -164,7 +164,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 	}
 
 	@Override
-	protected CRLToken buildRevocationTokenFromResult(ResultSet rs, CertificateToken certificateToken, CertificateToken issuerCert) throws RevocationException {
+	protected CRLToken buildRevocationTokenFromResult(ResultSet rs, CertificateToken certificateToken, CertificateToken issuerCert) {
 		try {
 			final CRLValidity cached = new CRLValidity();
 			cached.setKey(rs.getString(SQL_FIND_QUERY_ID));

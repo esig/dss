@@ -9,6 +9,9 @@ public class LdapURLUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LdapURLUtils.class);
 	
+	private LdapURLUtils() {
+	}
+	
 	/**
 	 * RFC 4516 Lightweight Directory Access Protocol (LDAP):
      * Uniform Resource Locator

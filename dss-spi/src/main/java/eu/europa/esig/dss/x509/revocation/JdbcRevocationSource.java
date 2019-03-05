@@ -27,7 +27,7 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 
 	private static final long serialVersionUID = 8752226611048306095L;
 
-	protected DataSource dataSource;
+	protected transient DataSource dataSource;
 	
 	/**
 	 * Returns CREATE_TABLE sql query
