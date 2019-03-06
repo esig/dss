@@ -51,7 +51,6 @@ import eu.europa.esig.dss.tsl.CompositeCondition;
 import eu.europa.esig.dss.tsl.Condition;
 import eu.europa.esig.dss.tsl.ExtendedKeyUsageCondition;
 import eu.europa.esig.dss.tsl.KeyUsageCondition;
-import eu.europa.esig.dss.tsl.MatchingCriteriaIndicator;
 import eu.europa.esig.dss.tsl.PolicyIdCondition;
 import eu.europa.esig.dss.tsl.TSLConditionsForQualifiers;
 import eu.europa.esig.dss.tsl.TSLParserResult;
@@ -63,42 +62,45 @@ import eu.europa.esig.dss.util.MutableTimeDependentValues;
 import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.jaxb.ecc.CriteriaListType;
-import eu.europa.esig.jaxb.ecc.KeyUsageBitType;
-import eu.europa.esig.jaxb.ecc.KeyUsageType;
-import eu.europa.esig.jaxb.ecc.PoliciesListType;
-import eu.europa.esig.jaxb.ecc.QualificationElementType;
-import eu.europa.esig.jaxb.ecc.QualificationsType;
-import eu.europa.esig.jaxb.ecc.QualifierType;
-import eu.europa.esig.jaxb.ecc.QualifiersType;
-import eu.europa.esig.jaxb.tsl.AdditionalServiceInformationType;
-import eu.europa.esig.jaxb.tsl.AnyType;
-import eu.europa.esig.jaxb.tsl.DigitalIdentityListType;
-import eu.europa.esig.jaxb.tsl.DigitalIdentityType;
-import eu.europa.esig.jaxb.tsl.ExtensionType;
-import eu.europa.esig.jaxb.tsl.ExtensionsListType;
-import eu.europa.esig.jaxb.tsl.InternationalNamesType;
-import eu.europa.esig.jaxb.tsl.MultiLangNormStringType;
-import eu.europa.esig.jaxb.tsl.NextUpdateType;
-import eu.europa.esig.jaxb.tsl.NonEmptyMultiLangURIListType;
-import eu.europa.esig.jaxb.tsl.NonEmptyMultiLangURIType;
-import eu.europa.esig.jaxb.tsl.NonEmptyURIListType;
-import eu.europa.esig.jaxb.tsl.ObjectFactory;
-import eu.europa.esig.jaxb.tsl.OtherTSLPointerType;
-import eu.europa.esig.jaxb.tsl.PostalAddressType;
-import eu.europa.esig.jaxb.tsl.ServiceHistoryInstanceType;
-import eu.europa.esig.jaxb.tsl.ServiceSupplyPointsType;
-import eu.europa.esig.jaxb.tsl.TSPInformationType;
-import eu.europa.esig.jaxb.tsl.TSPServiceInformationType;
-import eu.europa.esig.jaxb.tsl.TSPServiceType;
-import eu.europa.esig.jaxb.tsl.TSPServicesListType;
-import eu.europa.esig.jaxb.tsl.TSPType;
-import eu.europa.esig.jaxb.tsl.TrustServiceProviderListType;
-import eu.europa.esig.jaxb.tsl.TrustStatusListType;
-import eu.europa.esig.jaxb.tslx.CertSubjectDNAttributeType;
-import eu.europa.esig.jaxb.tslx.ExtendedKeyUsageType;
-import eu.europa.esig.jaxb.xades.IdentifierType;
-import eu.europa.esig.jaxb.xades.ObjectIdentifierType;
+import eu.europa.esig.dss.x509.KeyUsageBit;
+import eu.europa.esig.jaxb.trustedlist.ecc.CriteriaListType;
+import eu.europa.esig.jaxb.trustedlist.ecc.KeyUsageBitType;
+import eu.europa.esig.jaxb.trustedlist.ecc.KeyUsageType;
+import eu.europa.esig.jaxb.trustedlist.ecc.PoliciesListType;
+import eu.europa.esig.jaxb.trustedlist.ecc.QualificationElementType;
+import eu.europa.esig.jaxb.trustedlist.ecc.QualificationsType;
+import eu.europa.esig.jaxb.trustedlist.ecc.QualifierType;
+import eu.europa.esig.jaxb.trustedlist.ecc.QualifiersType;
+import eu.europa.esig.jaxb.trustedlist.ecc.enums.Assert;
+import eu.europa.esig.jaxb.trustedlist.tsl.AdditionalServiceInformationType;
+import eu.europa.esig.jaxb.trustedlist.tsl.AnyType;
+import eu.europa.esig.jaxb.trustedlist.tsl.AttributedNonEmptyURIType;
+import eu.europa.esig.jaxb.trustedlist.tsl.DigitalIdentityListType;
+import eu.europa.esig.jaxb.trustedlist.tsl.DigitalIdentityType;
+import eu.europa.esig.jaxb.trustedlist.tsl.ExtensionType;
+import eu.europa.esig.jaxb.trustedlist.tsl.ExtensionsListType;
+import eu.europa.esig.jaxb.trustedlist.tsl.InternationalNamesType;
+import eu.europa.esig.jaxb.trustedlist.tsl.MultiLangNormStringType;
+import eu.europa.esig.jaxb.trustedlist.tsl.NextUpdateType;
+import eu.europa.esig.jaxb.trustedlist.tsl.NonEmptyMultiLangURIListType;
+import eu.europa.esig.jaxb.trustedlist.tsl.NonEmptyMultiLangURIType;
+import eu.europa.esig.jaxb.trustedlist.tsl.NonEmptyURIListType;
+import eu.europa.esig.jaxb.trustedlist.tsl.ObjectFactory;
+import eu.europa.esig.jaxb.trustedlist.tsl.OtherTSLPointerType;
+import eu.europa.esig.jaxb.trustedlist.tsl.PostalAddressType;
+import eu.europa.esig.jaxb.trustedlist.tsl.ServiceHistoryInstanceType;
+import eu.europa.esig.jaxb.trustedlist.tsl.ServiceSupplyPointsType;
+import eu.europa.esig.jaxb.trustedlist.tsl.TSPInformationType;
+import eu.europa.esig.jaxb.trustedlist.tsl.TSPServiceInformationType;
+import eu.europa.esig.jaxb.trustedlist.tsl.TSPServiceType;
+import eu.europa.esig.jaxb.trustedlist.tsl.TSPServicesListType;
+import eu.europa.esig.jaxb.trustedlist.tsl.TSPType;
+import eu.europa.esig.jaxb.trustedlist.tsl.TrustServiceProviderListType;
+import eu.europa.esig.jaxb.trustedlist.tsl.TrustStatusListType;
+import eu.europa.esig.jaxb.trustedlist.tslx.CertSubjectDNAttributeType;
+import eu.europa.esig.jaxb.trustedlist.tslx.ExtendedKeyUsageType;
+import eu.europa.esig.jaxb.xades132.IdentifierType;
+import eu.europa.esig.jaxb.xades132.ObjectIdentifierType;
 
 /**
  * This class allows to parse a TSL from JAXB object to DTO's. It can be executed as a Callable
@@ -120,8 +122,8 @@ public class TSLParser implements Callable<TSLParserResult> {
 
 	static {
 		try {
-			jaxbContext = JAXBContext.newInstance(ObjectFactory.class, eu.europa.esig.jaxb.ecc.ObjectFactory.class,
-					eu.europa.esig.jaxb.tslx.ObjectFactory.class);
+			jaxbContext = JAXBContext.newInstance(ObjectFactory.class, eu.europa.esig.jaxb.trustedlist.ecc.ObjectFactory.class,
+					eu.europa.esig.jaxb.trustedlist.tslx.ObjectFactory.class);
 		} catch (JAXBException e) {
 			throw new DSSException("Unable to initialize JaxB : " + e.getMessage(), e);
 		}
@@ -361,10 +363,15 @@ public class TSLParser implements Callable<TSLParserResult> {
 	}
 
 	private List<String> getServiceSupplyPoints(ServiceSupplyPointsType serviceSupplyPoints) {
-		if (serviceSupplyPoints == null) {
+		if (serviceSupplyPoints == null || Utils.isCollectionEmpty(serviceSupplyPoints.getServiceSupplyPoint())) {
 			return Collections.emptyList();
 		}
-		return serviceSupplyPoints.getServiceSupplyPoint();
+		List<String> result = new ArrayList<String>();
+		List<AttributedNonEmptyURIType> serviceSupplyPointList = serviceSupplyPoints.getServiceSupplyPoint();
+		for (AttributedNonEmptyURIType nonEmptyURI : serviceSupplyPointList) {
+			result.add(nonEmptyURI.getValue());
+		}
+		return result;
 	}
 
 	private TimeDependentValues<TSLServiceStatusAndInformationExtensions> getStatusHistory(TSPServiceType tslService) {
@@ -498,7 +505,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 	}
 
 	protected Condition getCondition(CriteriaListType criteriaList) {
-		MatchingCriteriaIndicator matchingCriteriaIndicator = MatchingCriteriaIndicator.valueOf(criteriaList.getAssert());
+		Assert matchingCriteriaIndicator = criteriaList.getAssert();
 		CompositeCondition condition = new CompositeCondition(matchingCriteriaIndicator);
 
 		addKeyUsageConditionsIfPresent(criteriaList.getKeyUsage(), condition);
@@ -516,7 +523,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 	 * @param condition
 	 */
 	@SuppressWarnings("rawtypes")
-	private void addOtherCriteriaListConditionsIfPresent(eu.europa.esig.jaxb.xades.AnyType otherCriteriaList, CompositeCondition condition) {
+	private void addOtherCriteriaListConditionsIfPresent(eu.europa.esig.jaxb.xades132.AnyType otherCriteriaList, CompositeCondition condition) {
 		if (otherCriteriaList != null && Utils.isCollectionNotEmpty(otherCriteriaList.getContent())) {
 			for (Object content : otherCriteriaList.getContent()) {
 				if (content instanceof JAXBElement) {
@@ -571,7 +578,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 			for (KeyUsageType keyUsageType : keyUsages) {
 				CompositeCondition condition = new CompositeCondition();
 				for (KeyUsageBitType keyUsageBit : keyUsageType.getKeyUsageBit()) {
-					condition.addChild(new KeyUsageCondition(keyUsageBit.getName(), keyUsageBit.isValue()));
+					condition.addChild(new KeyUsageCondition(KeyUsageBit.fromString(keyUsageBit.getName().getValue()), keyUsageBit.isValue()));
 				}
 				criteriaCondition.addChild(condition);
 			}

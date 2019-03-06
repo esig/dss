@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jaxb.parsers;
+package eu.europa.esig.dss.jaxb.validationreport.parsers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

@@ -83,7 +83,6 @@
 	</licenses>
 	
 	<modules>
-		<module>specs-commons</module>
 		<module>specs-xmldsig</module>
 		<module>specs-xades</module>
 		<module>specs-trusted-list</module>
@@ -399,11 +398,6 @@
 	<dependencyManagement>
 		<dependencies>
 			<!-- Internal Dependencies -->
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>specs-commons</artifactId>
-				<version>${project.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>specs-xmldsig</artifactId>

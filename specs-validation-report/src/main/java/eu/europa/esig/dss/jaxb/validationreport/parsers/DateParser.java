@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jaxb.parsers;
+package eu.europa.esig.dss.jaxb.validationreport.parsers;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
