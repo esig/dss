@@ -83,6 +83,12 @@
 	</licenses>
 	
 	<modules>
+		<module>specs-commons</module>
+		<module>specs-xmldsig</module>
+		<module>specs-xades</module>
+		<module>specs-trusted-list</module>
+		<module>specs-validation-report</module>
+	
 		<module>dss-model</module>
 		<module>dss-token</module>
 		<module>dss-utils</module>
@@ -374,6 +380,11 @@
 					<artifactId>maven-project-info-reports-plugin</artifactId>
 					<version>2.9</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>1.8</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -388,6 +399,31 @@
 	<dependencyManagement>
 		<dependencies>
 			<!-- Internal Dependencies -->
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>specs-commons</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>specs-xmldsig</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>specs-xades</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>specs-trusted-list</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>specs-validation-report</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>sscd-mocca-adapter</artifactId>
