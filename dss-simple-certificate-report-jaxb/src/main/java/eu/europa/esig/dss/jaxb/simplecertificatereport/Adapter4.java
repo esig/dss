@@ -9,19 +9,19 @@
 package eu.europa.esig.dss.jaxb.simplecertificatereport;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import eu.europa.esig.dss.validation.CertificateQualification;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 
-public class Adapter2
-    extends XmlAdapter<String, CertificateQualification>
+public class Adapter4
+    extends XmlAdapter<String, SubIndication>
 {
 
 
-    public CertificateQualification unmarshal(String value) {
-        return (eu.europa.esig.dss.jaxb.parsers.CertificateQualificationParser.parse(value));
+    public SubIndication unmarshal(String value) {
+        return (eu.europa.esig.dss.jaxb.parsers.SubIndicationParser.parse(value));
     }
 
-    public String marshal(CertificateQualification value) {
-        return (eu.europa.esig.dss.jaxb.parsers.CertificateQualificationParser.print(value));
+    public String marshal(SubIndication value) {
+        return (eu.europa.esig.dss.jaxb.parsers.SubIndicationParser.print(value));
     }
 
 }

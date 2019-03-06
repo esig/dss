@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
@@ -121,7 +122,9 @@ public class SimpleReportForCertificateBuilder {
 			item.setTrustAnchors(null);
 		}
 
-		item.setIndication(detailedReport.getCertificateXCVIndication(certificate.getId()));
+		XmlConclusion conclusion = detailedReport.getCertificateXCVConclusion(certificate.getId());
+		item.setIndication(conclusion.getIndication());
+		item.setSubIndication(conclusion.getSubIndication());
 
 		return item;
 	}

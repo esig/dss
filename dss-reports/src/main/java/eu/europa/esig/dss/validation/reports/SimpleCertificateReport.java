@@ -33,6 +33,7 @@ import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlTrustAnchor;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateQualification;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 
 /**
  * A SimpleCertificateReport holder to fetch values from a JAXB SimpleCertificateReport.
@@ -324,16 +325,31 @@ public class SimpleCertificateReport {
 	}
 
 	/**
-	 * This method returns the indication (result of validation) for a given certificate
+	 * This method returns the {@link Indication} (result of validation) for a given certificate
 	 * 
 	 * @param certificateId
 	 *            the certificate id
-	 * @return the indication
+	 * @return the {@link Indication}
 	 */
 	public Indication getCertificateIndication(String certificateId) {
 		XmlChainItem cert = getCertificate(certificateId);
 		if (cert != null) {
 			return cert.getIndication();
+		}
+		return null;
+	}
+
+	/**
+	 * This method returns the {@link SubIndication} (result of validation) for a given certificate
+	 * 
+	 * @param certificateId
+	 *            the certificate id
+	 * @return the {@link SubIndication}
+	 */
+	public SubIndication getCertificateSubIndication(String certificateId) {
+		XmlChainItem cert = getCertificate(certificateId);
+		if (cert != null) {
+			return cert.getSubIndication();
 		}
 		return null;
 	}

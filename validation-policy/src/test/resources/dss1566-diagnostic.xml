@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <ValidationDate>2019-02-21T07:21:22</ValidationDate>
+    <UsedCertificates>
+        <Certificate Id="9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7">
+            <SubjectDistinguishedName Format="CANONICAL">cn=svk eid aca,ou=aca-307-2007-2,o=disig a.s.,l=bratislava,c=sk</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=SVK eID ACA,OU=ACA-307-2007-2,O=Disig a.s.,L=Bratislava,C=SK</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=kca nbu sr 3,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=KCA NBU SR 3,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</IssuerDistinguishedName>
+            <SerialNumber>1754</SerialNumber>
+            <CommonName>SVK eID ACA</CommonName>
+            <Locality>Bratislava</Locality>
+            <CountryName>SK</CountryName>
+            <OrganizationName>Disig a.s.</OrganizationName>
+            <OrganizationalUnit>ACA-307-2007-2</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <Url>http://ep.nbusr.sk/kca/certs/kca3/kcanbusr3_p7c.p7c</Url>
+                <Url>ldap://ep.nbusr.sk/cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</Url>
+                <Url>ldap:///cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</Url>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <Url>http://ep.nbusr.sk/kca/crls3/kcanbusr3.crl</Url>
+                <Url>ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</Url>
+                <Url>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</Url>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <DigestAlgoAndValues/>
+            <NotAfter>2025-11-01T10:13:27</NotAfter>
+            <NotBefore>2013-11-20T10:14:56</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F"/>
+            <CertificateChain>
+                <ChainItem Id="D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F">
+                    <Source>AIA</Source>
+                </ChainItem>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+        </Certificate>
+        <Certificate Id="D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F">
+            <SubjectDistinguishedName Format="CANONICAL">cn=kca nbu sr 3,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=KCA NBU SR 3,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=kca nbu sr 3,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=KCA NBU SR 3,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</IssuerDistinguishedName>
+            <SerialNumber>1</SerialNumber>
+            <CommonName>KCA NBU SR 3</CommonName>
+            <Locality>Bratislava</Locality>
+            <CountryName>SK</CountryName>
+            <OrganizationName>Narodny bezpecnostny urad</OrganizationName>
+            <OrganizationalUnit>SIBEP</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <Url>http://ep.nbusr.sk/kca/crls3/kcanbusr3.crl</Url>
+                <Url>ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</Url>
+                <Url>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</Url>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <DigestAlgoAndValues/>
+            <NotAfter>2025-11-06T07:29:09</NotAfter>
+            <NotBefore>2009-11-06T09:59:39</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F"/>
+            <CertificateChain>
+                <ChainItem Id="D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F">
+                    <Source>AIA</Source>
+                </ChainItem>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+        </Certificate>
+        <Certificate Id="D04D16660A6BA5FDD2C3A519DAD8877B64D1D2C56BF91316208A0AE2FB76D368">
+            <SubjectDistinguishedName Format="CANONICAL">c=sk,l=trnava,2.5.4.4=#0c0a50726f6368c3a1736b61,2.5.4.5=#1310504e4f534b2d37393131303537333139,cn=ján procháska,2.5.4.42=#0c044ac3a16e,street=ulica čajkovského 6325/25</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=SK,L=Trnava,2.5.4.4=#0c0a50726f6368c3a1736b61,2.5.4.5=#1310504e4f534b2d37393131303537333139,CN=Ján Procháska,2.5.4.42=#0c044ac3a16e,STREET=Ulica Čajkovského 6325/25</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=svk eid aca,ou=aca-307-2007-2,o=disig a.s.,l=bratislava,c=sk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=SVK eID ACA,OU=ACA-307-2007-2,O=Disig a.s.,L=Bratislava,C=SK</IssuerDistinguishedName>
+            <SerialNumber>19963697004471826068402</SerialNumber>
+            <CommonName>Ján Procháska</CommonName>
+            <Locality>Trnava</Locality>
+            <CountryName>SK</CountryName>
+            <GivenName>Ján</GivenName>
+            <Surname>Procháska</Surname>
+            <AuthorityInformationAccessUrls>
+                <Url>http://eidrep1.disig.sk/svkeidaca/cert/svkeidaca.p7c</Url>
+                <Url>http://eidrep2.disig.sk/svkeidaca/cert/svkeidaca.p7c</Url>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <Url>http://eidrep1.disig.sk/svkeidaca/crl/svkeidaca.crl</Url>
+                <Url>http://eidrep2.disig.sk/svkeidaca/crl/svkeidaca.crl</Url>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <Url>http://svkeidaca-ocsp.disig.sk/ocsp/svkeidaca</Url>
+            </OCSPAccessUrls>
+            <DigestAlgoAndValues/>
+            <NotAfter>2023-11-30T09:36:32</NotAfter>
+            <NotBefore>2018-10-31T09:36:32</NotBefore>
+            <PublicKeySize>3072</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7"/>
+            <CertificateChain>
+                <ChainItem Id="9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7">
+                    <Source>AIA</Source>
+                </ChainItem>
+                <ChainItem Id="D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F">
+                    <Source>AIA</Source>
+                </ChainItem>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+                <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+                <certificatePolicy cpsUrl="http://www.disig.sk/_pdf/cp_svk_eid.pdf">1.3.158.35975946.0.0.1.1.9</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds>
+                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
+                <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
+                <oid>0.4.0.1862.1.6</oid>
+                <oid Description="qc-pds">0.4.0.1862.1.5</oid>
+            </QCStatementIds>
+            <QCTypes>
+                <oid Description="qc-type-esign">0.4.0.1862.1.6.1</oid>
+            </QCTypes>
+            <TrustedServiceProviders/>
+            <Revocations/>
+        </Certificate>
+    </UsedCertificates>
+    <TrustedLists/>
+</DiagnosticData>
