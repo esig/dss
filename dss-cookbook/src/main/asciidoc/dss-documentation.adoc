@@ -258,7 +258,7 @@ By default DSS uses "Default Drawer" as the PDFBox implementation. In order to s
 [source,java,indent=0]
 .Runtime PDF Object Factory changing
 ----
-PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=custom-factory]
 ----
 
 == Available demonstrations

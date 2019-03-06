@@ -35,6 +35,8 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pdf.PdfObjFactory;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -46,6 +48,10 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 
 	@Test
 	public void signPAdESBaselineBWithVisibleSignature() throws Exception {
+		
+		// tag::custom-factory[]
+		PdfObjFactory.setInstance(new PdfBoxNativeObjectFactory());
+		// end::custom-factory[]
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument

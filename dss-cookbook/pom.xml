@@ -42,14 +42,14 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-cades</artifactId>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
-<!-- 			<artifactId>dss-pades-pdfbox</artifactId> -->
-<!-- 		</dependency> -->
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-pades-openpdf</artifactId>
+			<artifactId>dss-pades-pdfbox</artifactId>
 		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
+<!-- 			<artifactId>dss-pades-openpdf</artifactId> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-xades</artifactId>
