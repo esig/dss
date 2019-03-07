@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.token;
 
+import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
 import java.security.spec.AlgorithmParameterSpec;
@@ -51,27 +52,20 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 	}
 
 	@Override
-	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry)
-			throws DSSException {
-		if (!(keyEntry instanceof KSPrivateKeyEntry)) {
-			throw new IllegalArgumentException("Only KSPrivateKeyEntry are supported");
+	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf,
+			DSSPrivateKeyEntry keyEntry) throws DSSException {
+		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
+		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm,
+				digestAlgorithm, mgf);
+		final String javaSignatureAlgorithm = signatureAlgorithm.getJCEId();
+		final byte[] bytes = toBeSigned.getBytes();
+		AlgorithmParameterSpec param = null;
+		if (mgf != null) {
+			param = createPSSParam(digestAlgorithm);
 		}
 
-		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, mgf);
-		final String javaSignatureAlgorithm = signatureAlgorithm.getJCEId();
-		LOG.info("Signature algorithm : {}", javaSignatureAlgorithm);
-
 		try {
-			final Signature signature = getSignatureInstance(javaSignatureAlgorithm);
-			signature.initSign(((KSPrivateKeyEntry) keyEntry).getPrivateKey());
-
-			if (mgf != null) {
-				signature.setParameter(createPSSParam(digestAlgorithm));
-			}
-
-			signature.update(toBeSigned.getBytes());
-			final byte[] signatureValue = signature.sign();
+			final byte[] signatureValue = sign(bytes, javaSignatureAlgorithm, param, keyEntry);
 			SignatureValue value = new SignatureValue();
 			value.setAlgorithm(signatureAlgorithm);
 			value.setValue(signatureValue);
@@ -79,22 +73,30 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
-
 	}
 
 	@Override
 	public SignatureValue signDigest(Digest digest, DSSPrivateKeyEntry keyEntry) throws DSSException {
+		return signDigest(digest, null, keyEntry);
+	}
+
+	@Override
+	public SignatureValue signDigest(Digest digest, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry)
+			throws DSSException {
 		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		final String javaSignatureAlgorithm = "NONEwith" + encryptionAlgorithm.getName();
-		LOG.info("Signature algorithm : {}", javaSignatureAlgorithm);
+		final SignatureAlgorithm signatureAlgorithmNONE = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, null,
+				mgf);
+		final String javaSignatureAlgorithm = signatureAlgorithmNONE.getJCEId();
+		final byte[] digestedBytes = digest.getValue();
+		AlgorithmParameterSpec param = null;
+		if (mgf != null) {
+			param = createPSSParam(digest.getAlgorithm());
+		}
 
 		try {
-			final Signature signature = getSignatureInstance(javaSignatureAlgorithm);
-			signature.initSign(((KSPrivateKeyEntry) keyEntry).getPrivateKey());
-			signature.update(digest.getValue());
-			final byte[] signatureValue = signature.sign();
+			final byte[] signatureValue = sign(digestedBytes, javaSignatureAlgorithm, param, keyEntry);
 			SignatureValue value = new SignatureValue();
-			value.setAlgorithm(SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digest.getAlgorithm()));
+			value.setAlgorithm(SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digest.getAlgorithm(), mgf));
 			value.setValue(signatureValue);
 			return value;
 		} catch (Exception e) {
@@ -106,6 +108,21 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 		return Signature.getInstance(javaSignatureAlgorithm);
 	}
 
+	private byte[] sign(final byte[] bytes, final String javaSignatureAlgorithm, final AlgorithmParameterSpec param,
+			final DSSPrivateKeyEntry keyEntry) throws GeneralSecurityException {
+		if (!(keyEntry instanceof KSPrivateKeyEntry)) {
+			throw new IllegalArgumentException("Only KSPrivateKeyEntry are supported");
+		}
+		LOG.info("Signature algorithm : {}", javaSignatureAlgorithm);
+		final Signature signature = getSignatureInstance(javaSignatureAlgorithm);
+		signature.initSign(((KSPrivateKeyEntry) keyEntry).getPrivateKey());
+		if (param != null) {
+			signature.setParameter(param);
+		}
+		signature.update(bytes);
+		return signature.sign();
+	}
+	
 	protected AlgorithmParameterSpec createPSSParam(DigestAlgorithm digestAlgo) {
 		String digestJavaName = digestAlgo.getJavaName();
 		return new PSSParameterSpec(digestJavaName, "MGF1", new MGF1ParameterSpec(digestJavaName), digestAlgo.getSaltLength(), 1);

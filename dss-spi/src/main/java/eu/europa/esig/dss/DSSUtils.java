@@ -56,9 +56,13 @@ import java.util.TimeZone;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Encoding;
+import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DERNull;
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
+import org.bouncycastle.asn1.pkcs.RSASSAPSSparams;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
@@ -354,9 +358,21 @@ public final class DSSUtils {
 		return messageDigest.digest(data);
 	}
 
-	public static byte[] encodeDigest(final DigestAlgorithm digestAlgorithm, final byte[] digest) {
+	public static byte[] encodeRSADigest(final DigestAlgorithm digestAlgorithm, final MaskGenerationFunction mgf, final byte[] digest) {
 		try {
-			AlgorithmIdentifier algId = new AlgorithmIdentifier(new ASN1ObjectIdentifier(digestAlgorithm.getOid()), DERNull.INSTANCE);
+			ASN1Encodable param = null;
+			if (mgf == null) {
+				param = DERNull.INSTANCE;
+			} else {
+				AlgorithmIdentifier hashAlgId = new AlgorithmIdentifier(new ASN1ObjectIdentifier(digestAlgorithm.getOid()), DERNull.INSTANCE);
+				param = new RSASSAPSSparams(
+			            hashAlgId,
+			            new AlgorithmIdentifier(PKCSObjectIdentifiers.id_mgf1, hashAlgId),
+			            new ASN1Integer(digestAlgorithm.getSaltLength()),
+			            new ASN1Integer(1));
+			}
+			
+			AlgorithmIdentifier algId = new AlgorithmIdentifier(new ASN1ObjectIdentifier(digestAlgorithm.getOid()), param);
 			DigestInfo digestInfo = new DigestInfo(algId, digest);
 			return digestInfo.getEncoded(ASN1Encoding.DER);
 		} catch (IOException e) {

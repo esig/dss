@@ -82,7 +82,7 @@ public class XAdESLevelBEnvelopedNONEWithRSATest extends AbstractXAdESTestSignat
 
 		// Compute the digest before the signature + encode (specific RSA)
 		byte[] originalDigest = DSSUtils.digest(signatureParameters.getDigestAlgorithm(), dataToSign.getBytes());
-		Digest digest = new Digest(signatureParameters.getDigestAlgorithm(), DSSUtils.encodeDigest(signatureParameters.getDigestAlgorithm(), originalDigest));
+		Digest digest = new Digest(signatureParameters.getDigestAlgorithm(), DSSUtils.encodeRSADigest(signatureParameters.getDigestAlgorithm(), null, originalDigest));
 
 		SignatureValue signatureValue = getToken().signDigest(digest, getPrivateKeyEntry());
 		return service.signDocument(documentToSign, signatureParameters, signatureValue);

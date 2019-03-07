@@ -220,6 +220,12 @@ public class MOCCASignatureTokenConnection implements SignatureTokenConnection {
 	public SignatureValue signDigest(Digest digest, DSSPrivateKeyEntry keyEntry) throws DSSException {
 		throw new UnsupportedOperationException();
 	}
+	
+	@Override
+	public SignatureValue signDigest(Digest digest, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry)
+			throws DSSException {
+		throw new UnsupportedOperationException();
+	}
 
 	/**
 	 * The ECDSA_SIG structure consists of two BIGNUMs for the r and s value of a ECDSA signature (see X9.62 or FIPS
