@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.token;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -29,18 +30,19 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 
 @RunWith(Parameterized.class)
-public class SignDigestRSATest {
+public class SignDigestRSASSAPSSTest {
 
 	static {
 		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
 	}
 
-	private static final Logger LOG = LoggerFactory.getLogger(SignDigestRSATest.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SignDigestRSASSAPSSTest.class);
 
 	private final DigestAlgorithm digestAlgo;
 
@@ -48,19 +50,19 @@ public class SignDigestRSATest {
 	public static Collection<DigestAlgorithm> data() {
 		Collection<DigestAlgorithm> rsaCombinations = new ArrayList<DigestAlgorithm>();
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
-			if (SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSA, digestAlgorithm) != null) {
+			if (SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSA, digestAlgorithm, MaskGenerationFunction.MGF1) != null) {
 				rsaCombinations.add(digestAlgorithm);
 			}
 		}
 		return rsaCombinations;
 	}
 
-	public SignDigestRSATest(DigestAlgorithm digestAlgo) {
+	public SignDigestRSASSAPSSTest(DigestAlgorithm digestAlgo) {
 		this.digestAlgo = digestAlgo;
 	}
 
 	@Test
-	public void testPkcs12() throws IOException {
+	public void testPkcs12PSS() throws IOException {
 		try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/user_a_rsa.p12",
 				new PasswordProtection("password".toCharArray()))) {
 
@@ -69,7 +71,7 @@ public class SignDigestRSATest {
 
 			ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes("UTF-8"));
 
-			SignatureValue signValue = signatureToken.sign(toBeSigned, digestAlgo, entry);
+			SignatureValue signValue = signatureToken.sign(toBeSigned, digestAlgo, MaskGenerationFunction.MGF1, entry);
 			assertNotNull(signValue.getAlgorithm());
 			LOG.info("Sig value : {}", Base64.getEncoder().encodeToString(signValue.getValue()));
 			try {
@@ -82,21 +84,21 @@ public class SignDigestRSATest {
 			}
 
 			try {
-				Cipher cipher = Cipher.getInstance(entry.getEncryptionAlgorithm().getName());
-				cipher.init(Cipher.DECRYPT_MODE, entry.getCertificate().getCertificate());
+				Cipher cipher = Cipher.getInstance(entry.getEncryptionAlgorithm().getName(),
+						DSSSecurityProvider.getSecurityProviderName());
+				cipher.init(Cipher.DECRYPT_MODE, entry.getCertificate().getPublicKey());
 				byte[] decrypted = cipher.doFinal(signValue.getValue());
 				LOG.info("Decrypted : {}", Base64.getEncoder().encodeToString(decrypted));
 			} catch (GeneralSecurityException e) {
 				Assert.fail(e.getMessage());
 			}
 
-			// Important step with RSA without PSS
 			final byte[] digestBinaries = DSSUtils.digest(digestAlgo, toBeSigned.getBytes());
-			final byte[] encodedDigest = DSSUtils.encodeRSADigest(digestAlgo, digestBinaries);
-			Digest digest = new Digest(digestAlgo, encodedDigest);
+			Digest digest = new Digest(digestAlgo, digestBinaries);
 
-			SignatureValue signDigestValue = signatureToken.signDigest(digest, entry);
+			SignatureValue signDigestValue = signatureToken.signDigest(digest, MaskGenerationFunction.MGF1, entry);
 			assertNotNull(signDigestValue.getAlgorithm());
+			assertEquals(signValue.getAlgorithm(), signDigestValue.getAlgorithm());
 			LOG.info("Sig value : {}", Base64.getEncoder().encodeToString(signDigestValue.getValue()));
 
 			try {
@@ -109,15 +111,17 @@ public class SignDigestRSATest {
 			}
 
 			try {
-				Cipher cipher = Cipher.getInstance(entry.getEncryptionAlgorithm().getName());
-				cipher.init(Cipher.DECRYPT_MODE, entry.getCertificate().getCertificate());
+				Cipher cipher = Cipher.getInstance(entry.getEncryptionAlgorithm().getName(),
+						DSSSecurityProvider.getSecurityProviderName());
+				cipher.init(Cipher.DECRYPT_MODE, entry.getCertificate().getPublicKey());
 				byte[] decrypted = cipher.doFinal(signDigestValue.getValue());
 				LOG.info("Decrypted : {}", Base64.getEncoder().encodeToString(decrypted));
 			} catch (GeneralSecurityException e) {
 				Assert.fail(e.getMessage());
 			}
 
-			assertArrayEquals(signValue.getValue(), signDigestValue.getValue());
+			// should not be equals
+			assertNotEquals(Base64.getEncoder().encodeToString(signValue.getValue()), Base64.getEncoder().encodeToString(signDigestValue.getValue()));
 		}
 	}
 

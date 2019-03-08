@@ -35,17 +35,17 @@ import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 @RunWith(Parameterized.class)
-public class XAdESLevelBEnvelopedNONEWithRSATest extends AbstractXAdESTestSignature {
+public class XAdESLevelBEnvelopedNONEWithRSAandMGF1Test extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -57,15 +57,14 @@ public class XAdESLevelBEnvelopedNONEWithRSATest extends AbstractXAdESTestSignat
 	public static Collection<DigestAlgorithm> data() {
 		Collection<DigestAlgorithm> rsaCombinations = new ArrayList<DigestAlgorithm>();
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
-			SignatureAlgorithm algorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSA, digestAlgorithm);
-			if (algorithm != null && Utils.isStringNotEmpty(algorithm.getXMLId())) {
+			if (SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSA, digestAlgorithm, MaskGenerationFunction.MGF1) != null) {
 				rsaCombinations.add(digestAlgorithm);
 			}
 		}
 		return rsaCombinations;
 	}
 
-	public XAdESLevelBEnvelopedNONEWithRSATest(DigestAlgorithm digestAlgo) {
+	public XAdESLevelBEnvelopedNONEWithRSAandMGF1Test(DigestAlgorithm digestAlgo) {
 		this.digestAlgo = digestAlgo;
 	}
 
@@ -79,6 +78,7 @@ public class XAdESLevelBEnvelopedNONEWithRSATest extends AbstractXAdESTestSignat
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setDigestAlgorithm(digestAlgo);
+		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
 		service = new XAdESService(getCompleteCertificateVerifier());
 	}
@@ -87,12 +87,10 @@ public class XAdESLevelBEnvelopedNONEWithRSATest extends AbstractXAdESTestSignat
 	protected DSSDocument sign() {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 
-		// Compute the digest before the signature + encode (specific RSA without PSS)
 		byte[] originalDigest = DSSUtils.digest(signatureParameters.getDigestAlgorithm(), dataToSign.getBytes());
-		Digest digest = new Digest(signatureParameters.getDigestAlgorithm(),
-				DSSUtils.encodeRSADigest(signatureParameters.getDigestAlgorithm(), originalDigest));
+		Digest digest = new Digest(signatureParameters.getDigestAlgorithm(), originalDigest);
 
-		SignatureValue signatureValue = getToken().signDigest(digest, getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().signDigest(digest, MaskGenerationFunction.MGF1, getPrivateKeyEntry());
 		return service.signDocument(documentToSign, signatureParameters, signatureValue);
 	}
 

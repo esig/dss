@@ -70,8 +70,13 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 
 	@Override
 	public SignatureValue signDigest(Digest digest, String alias) throws DSSException {
+		return signDigest(digest, null, alias);
+	}
+
+	@Override
+	public SignatureValue signDigest(Digest digest, MaskGenerationFunction mgf, String alias) throws DSSException {
 		DSSPrivateKeyEntry key = token.getKey(alias);
-		return token.signDigest(digest, key);
+		return token.signDigest(digest, mgf, key);
 	}
 
 	private RemoteKeyEntry convert(KSPrivateKeyEntry key) {

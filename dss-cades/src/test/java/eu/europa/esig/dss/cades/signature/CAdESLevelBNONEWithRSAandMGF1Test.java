@@ -21,9 +21,7 @@
 package eu.europa.esig.dss.cades.signature;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -34,7 +32,10 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.MaskGenerationFunction;
+import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
@@ -43,7 +44,7 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 @RunWith(Parameterized.class)
-public class CAdESLevelBNONEWithRSATest extends AbstractCAdESTestSignature {
+public class CAdESLevelBNONEWithRSAandMGF1Test extends AbstractCAdESTestSignature {
 
 	private static final String HELLO_WORLD = "Hello World";
 
@@ -51,65 +52,34 @@ public class CAdESLevelBNONEWithRSATest extends AbstractCAdESTestSignature {
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
-	private final DigestAlgorithm messageDigestAlgo;
 	private final DigestAlgorithm digestAlgo;
 
-	@Parameters(name = "Combination {index} of message-digest algorithm {0} + digest algorithm {1}")
-	public static Collection<Object[]> data() {
-
-		List<Object[]> digests = new ArrayList<Object[]>();
-		
-		List<DigestAlgorithm> digestAlgos = Arrays.asList(DigestAlgorithm.SHA224,
-				DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512, DigestAlgorithm.SHA3_224,
-				DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384, DigestAlgorithm.SHA3_512);
-		for (DigestAlgorithm digest1 : digestAlgos) {
-			for (DigestAlgorithm digest2 : digestAlgos) {
-				digests.add(new Object[] { digest1, digest2 });
+	@Parameters(name = "Combination {index} of NONEwithRSAandMGF1 + precomputed digest algorithm {0}")
+	public static Collection<DigestAlgorithm> data() {
+		Collection<DigestAlgorithm> rsaCombinations = new ArrayList<DigestAlgorithm>();
+		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
+			if (SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSA, digestAlgorithm, MaskGenerationFunction.MGF1) != null) {
+				rsaCombinations.add(digestAlgorithm);
 			}
 		}
-		
-		List<DigestAlgorithm> messageDigestAlgos = Arrays.asList(DigestAlgorithm.RIPEMD160,
-				DigestAlgorithm.MD2, DigestAlgorithm.MD5);
-		for (DigestAlgorithm digest1 : messageDigestAlgos) {
-			digests.add(new Object[] { digest1, digest1 });
-			for (DigestAlgorithm digest2 : digestAlgos) {
-				digests.add(new Object[] { digest1, digest2 });
-			}
-		}
-		
-		// DigestAlgorithm.WHIRLPOOL
-		for (DigestAlgorithm digest : digestAlgos) {
-			digests.add(new Object[] { DigestAlgorithm.WHIRLPOOL, digest });
-		}
-
-		// Due to
-		// org.bouncycastle.cms.DefaultCMSSignatureEncryptionAlgorithmFinder.findEncryptionAlgorithm(AlgorithmIdentifier)
-		List<DigestAlgorithm> digestAlgosWithSha1 = new ArrayList<DigestAlgorithm>(digestAlgos);
-		digestAlgosWithSha1.add(DigestAlgorithm.SHA1);
-		for (DigestAlgorithm digest : digestAlgosWithSha1) {
-			digests.add(new Object[] { DigestAlgorithm.SHA1, digest });
-		}
-		
-		return digests;
+		return rsaCombinations;
 	}
 
-	public CAdESLevelBNONEWithRSATest(DigestAlgorithm messageDigestAlgo, DigestAlgorithm digestAlgo) {
-		this.messageDigestAlgo = messageDigestAlgo;
+	public CAdESLevelBNONEWithRSAandMGF1Test(DigestAlgorithm digestAlgo) {
 		this.digestAlgo = digestAlgo;
 	}
 
 	@Before
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes(),
-				"BC-CAdES-BpB-att-" + messageDigestAlgo.name() + "-" + digestAlgo.name() + "withRSA.p7m");
+		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
 		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		signatureParameters.setReferenceDigestAlgorithm(messageDigestAlgo);
 		signatureParameters.setDigestAlgorithm(digestAlgo);
+		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
 		service = new CAdESService(getCompleteCertificateVerifier());
 	}
@@ -118,12 +88,11 @@ public class CAdESLevelBNONEWithRSATest extends AbstractCAdESTestSignature {
 	protected DSSDocument sign() {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 
-		// Compute the digest before the signature + encode (specific RSA without PSS)
 		byte[] originalDigest = DSSUtils.digest(signatureParameters.getDigestAlgorithm(), dataToSign.getBytes());
 		Digest digest = new Digest(signatureParameters.getDigestAlgorithm(),
-				DSSUtils.encodeRSADigest(signatureParameters.getDigestAlgorithm(), originalDigest));
+				originalDigest);
 
-		SignatureValue signatureValue = getToken().signDigest(digest, getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().signDigest(digest, MaskGenerationFunction.MGF1, getPrivateKeyEntry());
 		return service.signDocument(documentToSign, signatureParameters, signatureValue);
 	}
 

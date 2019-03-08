@@ -65,4 +65,10 @@ public interface SoapSignatureTokenConnection extends RemoteSignatureTokenConnec
 	@WebResult(name = "response")
 	SignatureValue signDigest(@WebParam(name = "digest") Digest digest, @WebParam(name = "alias") String alias) throws DSSException;
 
+	@Override
+	@WebMethod(operationName = "signDigestWithMask")
+	@WebResult(name = "response")
+	SignatureValue signDigest(@WebParam(name = "digest") Digest digest, @WebParam(name = "maskGenerationFunction") MaskGenerationFunction mgf,
+			@WebParam(name = "alias") String alias) throws DSSException;
+
 }

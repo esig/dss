@@ -63,4 +63,9 @@ public class RestSignatureTokenConnectionImpl implements RestSignatureTokenConne
 		return token.signDigest(digest, alias);
 	}
 
+	@Override
+	public SignatureValue signDigest(Digest digest, MaskGenerationFunction mgf, String alias) throws DSSException {
+		return token.signDigest(digest, mgf, alias);
+	}
+
 }

@@ -69,4 +69,9 @@ public interface RestSignatureTokenConnection extends RemoteSignatureTokenConnec
 	@Path("sign-digest/{alias}")
 	SignatureValue signDigest(Digest digest, @PathParam("alias") String alias) throws DSSException;
 
+	@Override
+	@POST
+	@Path("sign-digest/{alias}/{mask}")
+	SignatureValue signDigest(Digest digest, @PathParam("mask") MaskGenerationFunction mgf, @PathParam("alias") String alias) throws DSSException;
+
 }

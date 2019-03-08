@@ -104,10 +104,6 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 		}
 	}
 
-	protected Signature getSignatureInstance(final String javaSignatureAlgorithm) throws NoSuchAlgorithmException {
-		return Signature.getInstance(javaSignatureAlgorithm);
-	}
-
 	private byte[] sign(final byte[] bytes, final String javaSignatureAlgorithm, final AlgorithmParameterSpec param,
 			final DSSPrivateKeyEntry keyEntry) throws GeneralSecurityException {
 		if (!(keyEntry instanceof KSPrivateKeyEntry)) {
@@ -115,14 +111,18 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 		}
 		LOG.info("Signature algorithm : {}", javaSignatureAlgorithm);
 		final Signature signature = getSignatureInstance(javaSignatureAlgorithm);
-		signature.initSign(((KSPrivateKeyEntry) keyEntry).getPrivateKey());
 		if (param != null) {
 			signature.setParameter(param);
 		}
+		signature.initSign(((KSPrivateKeyEntry) keyEntry).getPrivateKey());
 		signature.update(bytes);
 		return signature.sign();
 	}
 	
+	protected Signature getSignatureInstance(final String javaSignatureAlgorithm) throws NoSuchAlgorithmException {
+		return Signature.getInstance(javaSignatureAlgorithm);
+	}
+
 	protected AlgorithmParameterSpec createPSSParam(DigestAlgorithm digestAlgo) {
 		String digestJavaName = digestAlgo.getJavaName();
 		return new PSSParameterSpec(digestJavaName, "MGF1", new MGF1ParameterSpec(digestJavaName), digestAlgo.getSaltLength(), 1);

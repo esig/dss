@@ -190,7 +190,7 @@ public enum SignatureAlgorithm {
 
 		// Following algorithms are not in ETSI TS 102 176-1 V2.0.0:
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-md5", RSA_MD5);
-		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-md2", RSA_MD2);
+//		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#rsa-md2", RSA_MD2);
 		// Following end.
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1", ECDSA_SHA1);
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha224", ECDSA_SHA224);
