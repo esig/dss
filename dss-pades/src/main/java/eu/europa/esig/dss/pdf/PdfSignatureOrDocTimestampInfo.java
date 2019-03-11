@@ -32,6 +32,8 @@ public interface PdfSignatureOrDocTimestampInfo {
 
 	void checkIntegrity();
 
+	String getSignatureName();
+
 	String getLocation();
 
 	String getContactInfo();

@@ -33,6 +33,10 @@ public class PdfSigDict {
 		this.dictionay = dictionay;
 	}
 
+	public String getSignatureName() {
+		return dictionay.getStringValue("Name");
+	}
+
 	public String getContactInfo() {
 		return dictionay.getStringValue("ContactInfo");
 	}

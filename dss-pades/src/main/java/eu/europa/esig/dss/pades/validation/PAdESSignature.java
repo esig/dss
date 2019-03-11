@@ -427,4 +427,29 @@ public class PAdESSignature extends CAdESSignature {
 		return pdfSignatureInfo;
 	}
 
+	@Override
+	public String getSignatureName() {
+		return pdfSignatureInfo.getSignatureName();
+	}
+
+	@Override
+	public String getFilter() {
+		return pdfSignatureInfo.getFilter();
+	}
+
+	@Override
+	public String getSubFilter() {
+		return pdfSignatureInfo.getSubFilter();
+	}
+
+	@Override
+	public String getContactInfo() {
+		return pdfSignatureInfo.getContactInfo();
+	}
+
+	@Override
+	public String getReason() {
+		return pdfSignatureInfo.getReason();
+	}
+
 }

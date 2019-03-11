@@ -118,6 +118,7 @@
 			</xs:element>
 			<xs:element name="CertifiedRoles" type="CertifiedRole" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="Policy" type="Policy" minOccurs="0" />
+			<xs:element name="PDFSignatureDictionary" type="PDFSignatureDictionary" minOccurs="0" />
 			
 			<xs:element name="Timestamps" minOccurs="0">
 				<xs:complexType>
@@ -162,6 +163,16 @@
 			<xs:element name="Status" type="xs:boolean" minOccurs="0" />
 			<xs:element name="ProcessingError" type="xs:string" minOccurs="0" />
 			<xs:element name="DigestAlgorithmsEqual" type="xs:boolean" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="PDFSignatureDictionary">
+		<xs:sequence>
+			<xs:element name="SignatureName" type="xs:string" minOccurs="0" />
+			<xs:element name="Filter" type="xs:string" minOccurs="0" />
+			<xs:element name="SubFilter" type="xs:string" minOccurs="0" />
+			<xs:element name="ContactInfo" type="xs:string" minOccurs="0" />
+			<xs:element name="Reason" type="xs:string" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	

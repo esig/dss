@@ -49,6 +49,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
@@ -62,6 +63,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlManifestFile;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
@@ -397,11 +399,27 @@ public class DiagnosticDataBuilder {
 
 		xmlSignature.setPolicy(getXmlPolicy(signature));
 
+		xmlSignature.setPDFSignatureDictionary(getXmlPDFSignatureDictionary(signature));
+
 		xmlSignature.setTimestamps(getXmlTimestamps(signature));
 
 		xmlSignature.setSignatureScopes(getXmlSignatureScopes(signature.getSignatureScopes()));
 
 		return xmlSignature;
+	}
+
+	private XmlPDFSignatureDictionary getXmlPDFSignatureDictionary(AdvancedSignature signature) {
+		SignatureForm signatureForm = signature.getSignatureForm();
+		if (SignatureForm.PAdES == signatureForm || SignatureForm.PKCS7 == signatureForm) {
+			XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
+			pdfSignatureDictionary.setSignatureName(signature.getSignatureName());
+			pdfSignatureDictionary.setFilter(signature.getFilter());
+			pdfSignatureDictionary.setSubFilter(signature.getSubFilter());
+			pdfSignatureDictionary.setContactInfo(signature.getContactInfo());
+			pdfSignatureDictionary.setReason(signature.getReason());
+			return pdfSignatureDictionary;
+		}
+		return null;
 	}
 
 	private XmlStructuralValidation getXmlStructuralValidation(AdvancedSignature signature) {

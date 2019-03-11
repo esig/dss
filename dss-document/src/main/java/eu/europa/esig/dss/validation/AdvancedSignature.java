@@ -438,4 +438,16 @@ public interface AdvancedSignature extends Serializable {
 	 */
 	List<ReferenceValidation> getReferenceValidations();
 
+	// ------------------------ PDF Specifics for TS 119 102-2
+
+	String getSignatureName();
+
+	String getFilter();
+
+	String getSubFilter();
+
+	String getContactInfo();
+
+	String getReason();
+
 }

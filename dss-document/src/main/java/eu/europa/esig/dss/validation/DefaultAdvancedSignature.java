@@ -719,4 +719,34 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return Utils.isCollectionNotEmpty(getArchiveTimestamps());
 	}
 
+	@Override
+	public String getSignatureName() {
+		// Not applicable by default (PDF only)
+		return null;
+	}
+
+	@Override
+	public String getFilter() {
+		// Not applicable by default (PDF only)
+		return null;
+	}
+
+	@Override
+	public String getSubFilter() {
+		// Not applicable by default (PDF only)
+		return null;
+	}
+
+	@Override
+	public String getContactInfo() {
+		// Not applicable by default (PDF only)
+		return null;
+	}
+
+	@Override
+	public String getReason() {
+		// Not applicable by default (PDF only)
+		return null;
+	}
+
 }

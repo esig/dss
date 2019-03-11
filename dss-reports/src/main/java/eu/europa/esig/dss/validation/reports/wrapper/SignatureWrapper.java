@@ -31,6 +31,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
@@ -368,6 +369,46 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	public String getFormat() {
 		return signature.getSignatureFormat();
+	}
+
+	public String getSignatureName() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getSignatureName();
+		}
+		return null;
+	}
+
+	public String getFilter() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getFilter();
+		}
+		return null;
+	}
+
+	public String getSubFilter() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getSubFilter();
+		}
+		return null;
+	}
+
+	public String getContactInfo() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getContactInfo();
+		}
+		return null;
+	}
+
+	public String getReason() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getReason();
+		}
+		return null;
 	}
 
 }

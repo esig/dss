@@ -117,6 +117,11 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	}
 
 	@Override
+	public String getSignatureName() {
+		return signatureDictionary.getSignatureName();
+	}
+
+	@Override
 	public String getContactInfo() {
 		return signatureDictionary.getContactInfo();
 	}
