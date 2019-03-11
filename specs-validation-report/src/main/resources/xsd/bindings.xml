@@ -57,6 +57,14 @@
 				parseMethod="eu.europa.esig.dss.jaxb.validationreport.parsers.UriBasedEnumParser.parseSubIndication"
 				printMethod="eu.europa.esig.dss.jaxb.validationreport.parsers.UriBasedEnumParser.print" />
 		</jaxb:bindings>
+		
+		
+		<jaxb:bindings node="//xs:element[@name='EndorsementType']">
+			<jaxb:javaType
+				name="eu.europa.esig.dss.jaxb.validationreport.enums.EndorsementType"
+				parseMethod="eu.europa.esig.dss.jaxb.validationreport.parsers.EndorsementParser.parse"
+				printMethod="eu.europa.esig.dss.jaxb.validationreport.parsers.EndorsementParser.print" />
+		</jaxb:bindings>
 
 	</jaxb:bindings>
 
