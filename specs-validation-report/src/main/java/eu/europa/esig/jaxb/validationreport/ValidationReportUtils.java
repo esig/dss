@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jaxb.validationreport;
+package eu.europa.esig.jaxb.validationreport;
 
 import java.io.File;
 

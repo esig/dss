@@ -1,15 +1,15 @@
-package eu.europa.esig.dss.jaxb.validationreport.parsers;
+package eu.europa.esig.jaxb.validationreport.parsers;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.europa.esig.dss.jaxb.validationreport.enums.MainIndication;
-import eu.europa.esig.dss.jaxb.validationreport.enums.ObjectType;
-import eu.europa.esig.dss.jaxb.validationreport.enums.RevocationReason;
-import eu.europa.esig.dss.jaxb.validationreport.enums.SignatureValidationProcessID;
-import eu.europa.esig.dss.jaxb.validationreport.enums.SubIndication;
-import eu.europa.esig.dss.jaxb.validationreport.enums.TypeOfProof;
-import eu.europa.esig.dss.jaxb.validationreport.enums.UriBasedEnum;
+import eu.europa.esig.jaxb.validationreport.enums.MainIndication;
+import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
+import eu.europa.esig.jaxb.validationreport.enums.RevocationReason;
+import eu.europa.esig.jaxb.validationreport.enums.SignatureValidationProcessID;
+import eu.europa.esig.jaxb.validationreport.enums.SubIndication;
+import eu.europa.esig.jaxb.validationreport.enums.TypeOfProof;
+import eu.europa.esig.jaxb.validationreport.enums.UriBasedEnum;
 
 public final class UriBasedEnumParser {
 

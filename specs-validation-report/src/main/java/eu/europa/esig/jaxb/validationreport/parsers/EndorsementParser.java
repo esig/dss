@@ -1,6 +1,6 @@
-package eu.europa.esig.dss.jaxb.validationreport.parsers;
+package eu.europa.esig.jaxb.validationreport.parsers;
 
-import eu.europa.esig.dss.jaxb.validationreport.enums.EndorsementType;
+import eu.europa.esig.jaxb.validationreport.enums.EndorsementType;
 
 public class EndorsementParser {
 

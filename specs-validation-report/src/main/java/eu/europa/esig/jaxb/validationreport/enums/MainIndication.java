@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jaxb.validationreport.enums;
+package eu.europa.esig.jaxb.validationreport.enums;
 
 public enum MainIndication implements UriBasedEnum {
 

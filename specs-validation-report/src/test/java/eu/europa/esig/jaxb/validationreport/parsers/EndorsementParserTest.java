@@ -1,11 +1,12 @@
-package eu.europa.esig.dss.jaxb.validationreport.parsers;
+package eu.europa.esig.jaxb.validationreport.parsers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
-import eu.europa.esig.dss.jaxb.validationreport.enums.EndorsementType;
+import eu.europa.esig.jaxb.validationreport.enums.EndorsementType;
+import eu.europa.esig.jaxb.validationreport.parsers.EndorsementParser;
 
 public class EndorsementParserTest {
 

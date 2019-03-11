@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jaxb.validationreport.parsers;
+package eu.europa.esig.jaxb.validationreport.parsers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -7,6 +7,8 @@ import static org.junit.Assert.assertNull;
 import java.util.Date;
 
 import org.junit.Test;
+
+import eu.europa.esig.jaxb.validationreport.parsers.DateParser;
 
 public class DateParserTest {
 

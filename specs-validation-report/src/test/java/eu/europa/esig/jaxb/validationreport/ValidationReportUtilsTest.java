@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.jaxb.validationreport;
+package eu.europa.esig.jaxb.validationreport;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -6,6 +6,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.validation.Schema;
 
 import org.junit.Test;
+
+import eu.europa.esig.jaxb.validationreport.ValidationReportUtils;
 
 public class ValidationReportUtilsTest {
 
