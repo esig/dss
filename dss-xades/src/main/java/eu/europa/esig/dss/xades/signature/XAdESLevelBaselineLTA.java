@@ -113,6 +113,7 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	 * This method incorporate timestamp type object.
 	 */
 	private void incorporateArchiveTimestamp() {
+		indentSignaturePropertiesToSign();
 
 		final TimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
 		final String canonicalizationMethod = archiveTimestampParameters.getCanonicalizationMethod();

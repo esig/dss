@@ -28,6 +28,7 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 
 public abstract class ExtensionBuilder extends XAdESBuilder {
@@ -134,6 +135,12 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		if (!signatureCryptographicVerification.isSignatureIntact()) {
 			final String errorMessage = signatureCryptographicVerification.getErrorMessage();
 			throw new DSSException("Cryptographic signature verification has failed" + (errorMessage.isEmpty() ? "." : (" / " + errorMessage)));
+		}
+	}
+	
+	protected void indentSignaturePropertiesToSign() {
+		if (params.isPrettyPrint()) {
+			unsignedSignaturePropertiesDom = (Element) DSSXMLUtils.indentAndReplace(documentDom, unsignedSignaturePropertiesDom);
 		}
 	}
 

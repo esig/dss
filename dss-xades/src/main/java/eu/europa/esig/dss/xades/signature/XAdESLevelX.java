@@ -74,6 +74,7 @@ public class XAdESLevelX extends XAdESLevelC {
 					unsignedSignaturePropertiesDom.removeChild(item);
 				}
 			}
+			indentSignaturePropertiesToSign();
 
 			final TimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 			final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();

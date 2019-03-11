@@ -73,7 +73,7 @@ public class XPathQueryHolder implements Serializable {
 	
 	public static final String ELEMENT_NAME_OBJECT = "ds:Object";
 	public static final String ELEMENT_NAME_MANIFEST = "ds:Manifest";
-	public final String ELEMENT_SIGNATURE = "ds:Signature";
+	public static final String ELEMENT_SIGNATURE = "ds:Signature";
 
 	public final String XPATH__SIGNATURE = "./" + ELEMENT_SIGNATURE;
 	public final String XPATH_SIGNED_INFO = "./ds:SignedInfo";

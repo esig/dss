@@ -55,6 +55,8 @@ public class XAdESLevelA extends XAdESLevelXL {
 		super.extendSignatureTag();
 
 		xadesSignature.checkSignatureIntegrity();
+		
+		indentSignaturePropertiesToSign();
 
 		final TimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
 		final String canonicalizationMethod = archiveTimestampParameters.getCanonicalizationMethod();

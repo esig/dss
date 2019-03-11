@@ -24,6 +24,7 @@ import static eu.europa.esig.dss.XAdESNamespaces.XAdES;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -43,6 +44,8 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -234,6 +237,7 @@ public abstract class XAdESBuilder {
 		if (params.isManifestSignature()) {
 			DSSTransform dssTransform = getUniqueTransformation(dssReference);
 			Document doc = DomUtils.buildDOM(originalDocument);
+			
 			byte[] bytes = DSSXMLUtils.canonicalizeSubtree(dssTransform.getAlgorithm(), doc);
 			base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
 		} else if (params.isEmbedXML()) {
@@ -371,6 +375,41 @@ public abstract class XAdESBuilder {
 		IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(certificate);
 		String issuerBase64 = Utils.toBase64(DSSASN1Utils.getDEREncoded(issuerSerial));
 		DomUtils.setTextNode(documentDom, issuerSerialDom, issuerBase64);
+	}
+	
+	/**
+	 * Returns list of object ids that must not be indented in any case
+	 * @return list of object ids to no indent
+	 */
+	private List<String> getNotIndentedObjectIds() {
+		List<String> ids = new ArrayList<String>();
+		List<DSSReference> dssReferences = params.getReferences();
+		if (dssReferences != null) {
+			for (DSSReference reference : dssReferences) {
+				// do not change external objects or manifests
+				if (HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT.equals(reference.getType()) ||
+						HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST.equals(reference.getType())) {
+					ids.add(DomUtils.getId(reference.getUri()));
+				}
+			}
+		}
+		return ids;
+	}
+	
+	/**
+	 * Creates {@link InMemoryDocument} from the current documentDom
+	 * @return {@link InMemoryDocument}
+	 */
+	protected InMemoryDocument createXmlDocument() {
+		byte[] bytes;
+		if (params.isPrettyPrint()) {
+			bytes = DSSXMLUtils.serializeNode(DSSXMLUtils.getDocWithIndentedSignatures(documentDom, params.getDeterministicId(), getNotIndentedObjectIds()));
+		} else {
+			bytes =  DSSXMLUtils.serializeNode(documentDom);
+		}
+		final InMemoryDocument inMemoryDocument = new InMemoryDocument(bytes);
+		inMemoryDocument.setMimeType(MimeType.XML);
+		return inMemoryDocument;
 	}
 
 }

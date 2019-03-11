@@ -228,7 +228,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		}
 
 		// Preparation of SignedInfo
-		byte[] canonicalizedSignedInfo = DSSXMLUtils.canonicalizeSubtree(signedInfoCanonicalizationMethod, signedInfoDom);
+		byte[] canonicalizedSignedInfo = DSSXMLUtils.canonicalizeSubtree(signedInfoCanonicalizationMethod, getNodeToCanonicalize(signedInfoDom));
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Canonicalized SignedInfo         --> {}", new String(canonicalizedSignedInfo));
 			final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, canonicalizedSignedInfo);
@@ -501,7 +501,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
 		incorporateDigestMethod(reference, digestAlgorithm);
 
-		final byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(signedPropertiesCanonicalizationMethod, signedPropertiesDom);
+		final byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(signedPropertiesCanonicalizationMethod, getNodeToCanonicalize(signedPropertiesDom));
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Canonicalization method  --> {}", signedPropertiesCanonicalizationMethod);
 			LOG.trace("Canonicalised REF_2      --> {}", new String(canonicalizedBytes));
@@ -541,7 +541,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
 		incorporateDigestMethod(reference, digestAlgorithm);
 		
-		final byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(keyInfoCanonicalizationMethod, keyInfoDom);
+		final byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(keyInfoCanonicalizationMethod, getNodeToCanonicalize(keyInfoDom));
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Canonicalization method   --> {}", keyInfoCanonicalizationMethod);
 			LOG.trace("Canonicalised REF_KeyInfo --> {}", new String(canonicalizedBytes));
@@ -686,7 +686,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * </pre>
 	 */
 	protected void incorporateSignedProperties() {
-		signedPropertiesDom = DomUtils.addElement(documentDom, qualifyingPropertiesDom, XAdES, XADES_SIGNED_PROPERTIES);
+		signedPropertiesDom = DomUtils.addElement(documentDom, qualifyingPropertiesDom, XAdES, XADES_SIGNED_PROPERTIES);		
 		signedPropertiesDom.setAttribute(ID, XADES_SUFFIX + deterministicId);
 
 		incorporateSignedSignatureProperties();
@@ -1048,7 +1048,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * Adds signature value to the signature and returns XML signature (InMemoryDocument)
 	 *
 	 * @param signatureValue
-	 * @return
+	 * @return {@link DSSDocument} representing the signature
 	 * @throws DSSException
 	 */
 	@Override
@@ -1062,11 +1062,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final String signatureValueBase64Encoded = Utils.toBase64(signatureValueBytes);
 		final Text signatureValueNode = documentDom.createTextNode(signatureValueBase64Encoded);
 		signatureValueDom.appendChild(signatureValueNode);
-
-		byte[] documentBytes = DSSXMLUtils.serializeNode(documentDom);
-		final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
-		inMemoryDocument.setMimeType(MimeType.XML);
-		return inMemoryDocument;
+		return createXmlDocument();
 	}
 
 	/**
@@ -1128,6 +1124,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				if (nodeToTransform == null) {
 					nodeToTransform = DomUtils.buildDOM(dssDocument);
 				}
+
 				transformedReferenceBytes = DSSXMLUtils.canonicalizeSubtree(transformAlgorithm, nodeToTransform);
 				// The supposition is made that the last transformation is the canonicalization
 				break;
@@ -1140,6 +1137,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			}
 		}
 		return transformedReferenceBytes;
+	}
+	
+	protected Node getNodeToCanonicalize(Node node) {
+		if (params.isPrettyPrint()) {
+			return DSSXMLUtils.getIndentedNode(documentDom, node);
+		}
+		return node;
 	}
 
 }

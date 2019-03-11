@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.XMLConstants;
@@ -140,9 +141,109 @@ public final class DSSXMLUtils {
 		final boolean added = canonicalizers.add(c14nAlgorithmURI);
 		return added;
 	}
+	
+	/**
+	 * Indents the given node and replaces it with a new one on the document
+	 * @param document {@link Document} to indent the node in
+	 * @param node {@link Node} to be indented
+	 * @return the indented {@link Node}
+	 */
+	public static Node indentAndReplace(final Document document, Node node) {
+		Node indentedNode = DSSXMLUtils.getIndentedNode(document, node);
+		Node importedNode = document.importNode(indentedNode, true);
+		node.getParentNode().replaceChild(importedNode, node);
+		return importedNode;
+	}
+	
+	public static Document getDocWithIndentedSignatures(final Document documentDom, String signatureId, List<String> noIndentObjectIds) {
+		NodeList signatures = DomUtils.getNodeList(documentDom, "//" + XPathQueryHolder.ELEMENT_SIGNATURE);
+		for (int i = 0; i < signatures.getLength(); i++) {
+			Element signature = (Element) signatures.item(i);
+			if (signature.getAttribute("Id").contains(signatureId)) {
+				Node indentedSignature = getIndentedSignature(signature, noIndentObjectIds);
+				Node importedSignature = documentDom.importNode(indentedSignature, true);
+				signature.getParentNode().replaceChild(importedSignature, signature);
+			}
+		}
+		return documentDom;
+	}
+	
+	private static Node getIndentedSignature(final Node signature, List<String> noIndentObjectIds) {
+		Node indentedSignature = getIndentedNode(signature);
+		NodeList sigChilds = signature.getChildNodes();
+		for (int i = 0; i < sigChilds.getLength(); i++) {
+			Node childNode = sigChilds.item(i);
+			if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+				Element sigChild = (Element) childNode;
+				String idAttribute = sigChild.getAttribute("Id");
+				if (noIndentObjectIds.contains(idAttribute)) {
+					Node nodeToReplace = DomUtils.getNode(indentedSignature, "//*" + DomUtils.getXPathByIdAttribute(idAttribute));
+					Node importedNode = indentedSignature.getOwnerDocument().importNode(sigChild, true);
+					indentedSignature.replaceChild(importedNode, nodeToReplace);
+				}
+			}
+		}
+		return indentedSignature;
+	}
+	
+	/**
+	 * Returns an indented xmlNode
+	 * @param documentDom is an owner {@link Document} of the xmlNode
+	 * @param xmlNode {@link Node} to indent
+	 * @return an indented {@link Node} xmlNode
+	 */
+	public static Node getIndentedNode(final Node documentDom, final Node xmlNode) {
+		NodeList signatures = DomUtils.getNodeList(documentDom, "//" + XPathQueryHolder.ELEMENT_SIGNATURE);
+		for (int i = 0; i < signatures.getLength(); i++) {
+			Node signature = signatures.item(i);
+			NodeList candidateList;
+			Node idAttribute = xmlNode.getAttributes().getNamedItem("Id");
+			if (idAttribute != null) {
+				candidateList = DomUtils.getNodeList(signature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute.getTextContent()));
+			} else {
+				candidateList = DomUtils.getNodeList(signature, ".//" +  xmlNode.getNodeName());
+			}
+			if (isNodeListContains(candidateList, xmlNode)) {
+				Node indentedSignature = getIndentedNode(signature);
+				Node indentedXmlNode;
+				if (idAttribute != null) {
+					indentedXmlNode = DomUtils.getNode(indentedSignature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute.getTextContent()));
+				} else {
+					indentedXmlNode = DomUtils.getNode(indentedSignature, ".//" +  xmlNode.getNodeName());
+				}
+				if (indentedXmlNode != null) {
+					return indentedXmlNode;
+				}
+			}
+		}
+		return xmlNode;
+	}
+	
+	private static Node getIndentedNode(final Node xmlNode) {
+		try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+			Transformer transformer = DomUtils.getPrettyPrintTransformer();
+			Source source = new DOMSource(xmlNode);
+			StreamResult result = new StreamResult(bos);
+			transformer.transform(source, result);
+			byte[] bytes = bos.toByteArray();
+			return DomUtils.buildDOM(bytes).getFirstChild();
+		} catch (Exception e) {
+			throw new DSSException("Cannot pretty print the node", e);
+		}
+	}
+	
+	private static boolean isNodeListContains(final NodeList nodeList, final Node node) {
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			Node child = nodeList.item(i);
+			if (child == node) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
-	 * This method is used to serialize a given node
+	 * This method performs the serialization of the given node
 	 *
 	 * @param xmlNode
 	 *            The node to be serialized.
@@ -168,9 +269,10 @@ public final class DSSXMLUtils {
 			StreamResult result = new StreamResult(bos);
 			Source source = new DOMSource(xmlNode);
 			transformer.transform(source, result);
+			
 			return bos.toByteArray();
 		} catch (Exception e) {
-			throw new DSSException(e);
+			throw new DSSException("An error occurred during a node serialization.", e);
 		}
 	}
 

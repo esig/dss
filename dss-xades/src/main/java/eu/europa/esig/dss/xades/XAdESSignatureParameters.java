@@ -93,6 +93,11 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 	private String signedPropertiesCanonicalizationMethod;
 
 	private String xPathLocationString;
+	
+	/**
+	 * If true, prints each signature's tag to a new line with a relevant indent
+	 */
+	private boolean prettyPrint = false;
 
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
@@ -266,6 +271,14 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
 	public void setSignedAdESObject(byte[] signedAdESObject) {
 		this.signedAdESObject = signedAdESObject;
+	}
+	
+	public boolean isPrettyPrint() {
+		return prettyPrint;
+	}
+	
+	public void setPrettyPrint(boolean prettyPrint) {
+		this.prettyPrint = prettyPrint;
 	}
 
 }
