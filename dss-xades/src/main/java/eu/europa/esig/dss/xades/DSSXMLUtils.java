@@ -159,7 +159,7 @@ public final class DSSXMLUtils {
 		NodeList signatures = DomUtils.getNodeList(documentDom, "//" + XPathQueryHolder.ELEMENT_SIGNATURE);
 		for (int i = 0; i < signatures.getLength(); i++) {
 			Element signature = (Element) signatures.item(i);
-			if (signature.getAttribute("Id").contains(signatureId)) {
+			if (getIDIdentifier(signature).contains(signatureId)) {
 				Node indentedSignature = getIndentedSignature(signature, noIndentObjectIds);
 				Node importedSignature = documentDom.importNode(indentedSignature, true);
 				signature.getParentNode().replaceChild(importedSignature, signature);
@@ -175,7 +175,7 @@ public final class DSSXMLUtils {
 			Node childNode = sigChilds.item(i);
 			if (childNode.getNodeType() == Node.ELEMENT_NODE) {
 				Element sigChild = (Element) childNode;
-				String idAttribute = sigChild.getAttribute("Id");
+				String idAttribute = getIDIdentifier(sigChild);
 				if (noIndentObjectIds.contains(idAttribute)) {
 					Node nodeToReplace = DomUtils.getNode(indentedSignature, "//*" + DomUtils.getXPathByIdAttribute(idAttribute));
 					Node importedNode = indentedSignature.getOwnerDocument().importNode(sigChild, true);
@@ -197,9 +197,9 @@ public final class DSSXMLUtils {
 		for (int i = 0; i < signatures.getLength(); i++) {
 			Node signature = signatures.item(i);
 			NodeList candidateList;
-			Node idAttribute = xmlNode.getAttributes().getNamedItem("Id");
+			String idAttribute = getIDIdentifier(xmlNode);
 			if (idAttribute != null) {
-				candidateList = DomUtils.getNodeList(signature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute.getTextContent()));
+				candidateList = DomUtils.getNodeList(signature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute));
 			} else {
 				candidateList = DomUtils.getNodeList(signature, ".//" +  xmlNode.getNodeName());
 			}
@@ -207,7 +207,7 @@ public final class DSSXMLUtils {
 				Node indentedSignature = getIndentedNode(signature);
 				Node indentedXmlNode;
 				if (idAttribute != null) {
-					indentedXmlNode = DomUtils.getNode(indentedSignature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute.getTextContent()));
+					indentedXmlNode = DomUtils.getNode(indentedSignature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute));
 				} else {
 					indentedXmlNode = DomUtils.getNode(indentedSignature, ".//" +  xmlNode.getNodeName());
 				}
@@ -376,10 +376,9 @@ public final class DSSXMLUtils {
 		final NamedNodeMap attributes = node.getAttributes();
 		for (int jj = 0; jj < attributes.getLength(); jj++) {
 			final Node item = attributes.item(jj);
-			final String localName = item.getLocalName();
+			final String localName = item.getLocalName() != null ? item.getLocalName() : item.getNodeName();
 			if (localName != null) {
-				final String id = localName.toLowerCase();
-				if (ID_ATTRIBUTE_NAME.equals(id)) {
+				if (Utils.areStringsEqualIgnoreCase(ID_ATTRIBUTE_NAME, localName)) {
 					return item.getTextContent();
 				}
 			}
@@ -402,9 +401,7 @@ public final class DSSXMLUtils {
 			final String localName = item.getLocalName();
 			final String nodeName = item.getNodeName();
 			if (localName != null) {
-				final String id = localName.toLowerCase();
-				if (ID_ATTRIBUTE_NAME.equals(id)) {
-
+				if (Utils.areStringsEqualIgnoreCase(ID_ATTRIBUTE_NAME, localName)) {
 					childElement.setIdAttribute(nodeName, true);
 					break;
 				}
@@ -490,7 +487,7 @@ public final class DSSXMLUtils {
 			NodeList nodeList = (NodeList) xPathExpression.evaluate(root, XPathConstants.NODESET);
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				Attr attr = (Attr) nodeList.item(i);
-				if (Utils.areStringsEqualIgnoreCase("id", attr.getName())) {
+				if (Utils.areStringsEqualIgnoreCase(ID_ATTRIBUTE_NAME, attr.getName())) {
 					XPathExpression xpathAllById = DomUtils.createXPathExpression("//*[@" + attr.getName() + "='" + attr.getValue() + "']");
 					NodeList nodeListById = (NodeList) xpathAllById.evaluate(root, XPathConstants.NODESET);
 					if (nodeListById.getLength() != 1) {
