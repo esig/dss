@@ -338,4 +338,26 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return certificate.getExtendedKeyUsages();
 	}
 
+	public String getReadableCertificateName() {
+		if (Utils.isStringNotEmpty(certificate.getCommonName())) {
+			return certificate.getCommonName();
+		}
+		if (Utils.isStringNotEmpty(certificate.getGivenName())) {
+			return certificate.getGivenName();
+		}
+		if (Utils.isStringNotEmpty(certificate.getSurname())) {
+			return certificate.getSurname();
+		}
+		if (Utils.isStringNotEmpty(certificate.getPseudonym())) {
+			return certificate.getPseudonym();
+		}
+		if (Utils.isStringNotEmpty(certificate.getOrganizationName())) {
+			return certificate.getOrganizationName();
+		}
+		if (Utils.isStringNotEmpty(certificate.getOrganizationalUnit())) {
+			return certificate.getOrganizationalUnit();
+		}
+		return "?";
+	}
+
 }

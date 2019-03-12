@@ -137,7 +137,7 @@ public class SimpleReportBuilder {
 		addBestSignatureTime(signature, xmlSignature);
 		addSignatureFormat(signature, xmlSignature);
 
-		xmlSignature.setSignedBy(getSignedBy(signature));
+		xmlSignature.setSignedBy(signature.getSigningCertificateId());
 
 		xmlSignature.getErrors().addAll(detailedReport.getErrors(signatureId));
 		xmlSignature.getWarnings().addAll(detailedReport.getWarnings(signatureId));
@@ -207,33 +207,9 @@ public class SimpleReportBuilder {
 		xmlSignature.setSignatureFormat(signature.getSignatureFormat());
 	}
 
-	private String getSignedBy(final SignatureWrapper signature) {
-		return getReadableCertificateName(signature.getSigningCertificateId());
-	}
-
-	private String getReadableCertificateName(String certId) {
-		CertificateWrapper signingCert = diagnosticData.getUsedCertificateById(certId);
-		if (signingCert != null) {
-			if (Utils.isStringNotEmpty(signingCert.getCommonName())) {
-				return signingCert.getCommonName();
-			}
-			if (Utils.isStringNotEmpty(signingCert.getGivenName())) {
-				return signingCert.getGivenName();
-			}
-			if (Utils.isStringNotEmpty(signingCert.getSurname())) {
-				return signingCert.getSurname();
-			}
-			if (Utils.isStringNotEmpty(signingCert.getPseudo())) {
-				return signingCert.getPseudo();
-			}
-			if (Utils.isStringNotEmpty(signingCert.getOrganizationName())) {
-				return signingCert.getOrganizationName();
-			}
-			if (Utils.isStringNotEmpty(signingCert.getOrganizationalUnit())) {
-				return signingCert.getOrganizationalUnit();
-			}
-		}
-		return "?";
+	private String getReadableCertificateName(final String certId) {
+		CertificateWrapper certificateWrapper = diagnosticData.getUsedCertificateByIdNullSafe(certId);
+		return certificateWrapper.getReadableCertificateName();
 	}
 
 	private void addSignatureProfile(final XmlSignature xmlSignature) {
