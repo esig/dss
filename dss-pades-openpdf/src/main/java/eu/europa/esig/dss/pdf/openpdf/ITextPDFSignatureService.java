@@ -86,7 +86,7 @@ import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
  * Implementation of PDFSignatureService using iText
  *
  */
-class ITextPDFSignatureService extends AbstractPDFSignatureService {
+public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ITextPDFSignatureService.class);
 

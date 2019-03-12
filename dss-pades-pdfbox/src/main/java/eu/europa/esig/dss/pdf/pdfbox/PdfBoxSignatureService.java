@@ -85,7 +85,7 @@ import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 
-class PdfBoxSignatureService extends AbstractPDFSignatureService {
+public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxSignatureService.class);
 
