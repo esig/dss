@@ -102,7 +102,7 @@ public class SignDigestRSASSAPSSTest {
 			LOG.info("Sig value : {}", Base64.getEncoder().encodeToString(signDigestValue.getValue()));
 
 			try {
-				Signature sig = Signature.getInstance(signValue.getAlgorithm().getJCEId());
+				Signature sig = Signature.getInstance(signDigestValue.getAlgorithm().getJCEId());
 				sig.initVerify(entry.getCertificate().getPublicKey());
 				sig.update(toBeSigned.getBytes());
 				assertTrue(sig.verify(signDigestValue.getValue()));

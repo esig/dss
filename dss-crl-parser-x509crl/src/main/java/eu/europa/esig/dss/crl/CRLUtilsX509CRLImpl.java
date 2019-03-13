@@ -86,7 +86,8 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 		}
 
 		final String sigAlgOID = x509CRL.getSigAlgOID();
-		crlValidity.setSignatureAlgorithm(SignatureAlgorithm.forOID(sigAlgOID));
+		final byte[] sigAlgParams = x509CRL.getSigAlgParams();
+		crlValidity.setSignatureAlgorithm(SignatureAlgorithm.forOidAndParams(sigAlgOID, sigAlgParams));
 		crlValidity.setThisUpdate(x509CRL.getThisUpdate());
 		crlValidity.setNextUpdate(x509CRL.getNextUpdate());
 
