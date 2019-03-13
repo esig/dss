@@ -1111,7 +1111,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 			final String transformAlgorithm = transform.getAlgorithm();
 			if (Transforms.TRANSFORM_XPATH.equals(transformAlgorithm)) {
-
 				final DSSTransformXPath transformXPath = new DSSTransformXPath(transform);
 				// At the moment it is impossible to go through a medium other than byte array
 				// (Set<Node>, octet stream,
@@ -1120,16 +1119,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				dssDocument = new InMemoryDocument(transformedBytes);
 				nodeToTransform = DomUtils.buildDOM(dssDocument);
 			} else if (DSSXMLUtils.canCanonicalize(transformAlgorithm)) {
-
 				if (nodeToTransform == null) {
 					nodeToTransform = DomUtils.buildDOM(dssDocument);
 				}
-
 				transformedReferenceBytes = DSSXMLUtils.canonicalizeSubtree(transformAlgorithm, nodeToTransform);
 				// The supposition is made that the last transformation is the canonicalization
 				break;
 			} else if (CanonicalizationMethod.ENVELOPED.equals(transformAlgorithm)) {
-
 				// do nothing the new signature is not existing yet!
 				// removeExistingSignatures(document);
 			} else {
@@ -1144,6 +1140,15 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			return DSSXMLUtils.getIndentedNode(documentDom, node);
 		}
 		return node;
+	}
+	
+	protected void alignNodes() {
+		if (unsignedSignaturePropertiesDom != null) {
+			DSSXMLUtils.alignChildrenIndents(unsignedSignaturePropertiesDom);
+		}
+		if (qualifyingPropertiesDom != null) {
+			DSSXMLUtils.alignChildrenIndents(qualifyingPropertiesDom);
+		}
 	}
 
 }

@@ -69,7 +69,8 @@ public final class DomUtils {
 	
 	// values used to pretty print xades signature
 	private static final String TRANSFORMER_INDENT_AMOUNT_ATTRIBUTE = "{http://xml.apache.org/xslt}indent-amount";
-	private static final String TRANSFORMER_INDENT_NUMBER_VALUE = "4";
+	public static final int TRANSFORMER_INDENT_NUMBER = 4;
+	private static final String TRANSFORMER_INDENT_NUMBER_VALUE = String.valueOf(TRANSFORMER_INDENT_NUMBER);
 	private static final String TRANSFORMER_METHOD_VALUE = "xml";
 	private static final String TRANSFORMER_VALUE_YES = "yes";
 

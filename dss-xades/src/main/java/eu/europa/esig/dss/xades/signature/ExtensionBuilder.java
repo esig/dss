@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSException;
@@ -92,6 +93,10 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			unsignedPropertiesDom = (Element) qualifyingPropertiesNodeList.item(0);
 		} else if (length == 0) {
 			unsignedPropertiesDom = DomUtils.addElement(documentDom, qualifyingPropertiesDom, XAdESNamespaces.XAdES, "xades:UnsignedProperties");
+			if (params.isPrettyPrint()) {
+				qualifyingPropertiesDom = (Element) DSSXMLUtils.alignChildrenIndents(qualifyingPropertiesDom);
+				unsignedPropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xPathQueryHolder.XPATH_UNSIGNED_PROPERTIES);
+			}
 		} else {
 			throw new DSSException("The signature contains more then one UnsignedProperties element! Extension is not possible.");
 		}
@@ -110,6 +115,10 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		} else if (length == 0) {
 			unsignedSignaturePropertiesDom = DomUtils.addElement(documentDom, unsignedPropertiesDom, XAdESNamespaces.XAdES,
 					"xades:UnsignedSignatureProperties");
+			if (params.isPrettyPrint()) {
+				unsignedPropertiesDom = (Element) DSSXMLUtils.indentAndReplace(documentDom, unsignedPropertiesDom);
+				unsignedSignaturePropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES);
+			}
 		} else {
 			throw new DSSException("The signature contains more then one UnsignedSignatureProperties element! Extension is not possible.");
 		}
@@ -138,10 +147,39 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		}
 	}
 	
-	protected void indentSignaturePropertiesToSign() {
+	protected Element indentIfPrettyPrint(Element nodeToIndent, Element oldNode) {
 		if (params.isPrettyPrint()) {
-			unsignedSignaturePropertiesDom = (Element) DSSXMLUtils.indentAndReplace(documentDom, unsignedSignaturePropertiesDom);
+			nodeToIndent = (Element) DSSXMLUtils.indentAndExtend(documentDom, nodeToIndent, oldNode);
 		}
+		return nodeToIndent;
+	}
+	
+	protected void alignNodes() {
+		if (unsignedSignaturePropertiesDom != null) {
+			DSSXMLUtils.alignChildrenIndents(unsignedSignaturePropertiesDom);
+		}
+		if (qualifyingPropertiesDom != null) {
+			DSSXMLUtils.alignChildrenIndents(qualifyingPropertiesDom);
+		}
+	}
+	
+	/**
+	 * Removes the given nodeToRemove from its parentNode
+	 * @param parentNode owner {@link Node} of the nodeToRemove
+	 * @param nodeToRemove {@link Node} to remove
+	 * @return String of the next TEXT sibling of the removed node (can be NULL if the TEXT sibling does not exist)
+	 */
+	protected String removeChild(Node parentNode, Node nodeToRemove) {
+		String text = null;
+		if (nodeToRemove != null) {
+			Node nextSibling = nodeToRemove.getNextSibling();
+			if (nextSibling != null && Node.TEXT_NODE == nextSibling.getNodeType()) {
+				text = nextSibling.getNodeValue();
+				unsignedSignaturePropertiesDom.removeChild(nextSibling);
+			}
+			unsignedSignaturePropertiesDom.removeChild(nodeToRemove);
+		}
+		return text;
 	}
 
 }

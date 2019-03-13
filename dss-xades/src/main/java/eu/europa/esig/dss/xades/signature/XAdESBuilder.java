@@ -53,6 +53,7 @@ import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
@@ -402,14 +403,17 @@ public abstract class XAdESBuilder {
 	 */
 	protected InMemoryDocument createXmlDocument() {
 		byte[] bytes;
-		if (params.isPrettyPrint()) {
+		if (Operation.SIGNING.equals(params.getContext().getOperationKind()) && params.isPrettyPrint()) {
+			alignNodes();
 			bytes = DSSXMLUtils.serializeNode(DSSXMLUtils.getDocWithIndentedSignatures(documentDom, params.getDeterministicId(), getNotIndentedObjectIds()));
 		} else {
-			bytes =  DSSXMLUtils.serializeNode(documentDom);
+			bytes = DSSXMLUtils.serializeNode(documentDom);
 		}
 		final InMemoryDocument inMemoryDocument = new InMemoryDocument(bytes);
 		inMemoryDocument.setMimeType(MimeType.XML);
 		return inMemoryDocument;
 	}
+	
+	protected abstract void alignNodes();
 
 }

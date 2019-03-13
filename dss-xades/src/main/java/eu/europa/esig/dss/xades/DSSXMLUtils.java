@@ -149,10 +149,90 @@ public final class DSSXMLUtils {
 	 * @return the indented {@link Node}
 	 */
 	public static Node indentAndReplace(final Document document, Node node) {
-		Node indentedNode = DSSXMLUtils.getIndentedNode(document, node);
+		Node indentedNode = getIndentedNode(document, node);
 		Node importedNode = document.importNode(indentedNode, true);
 		node.getParentNode().replaceChild(importedNode, node);
 		return importedNode;
+	}
+	
+	/**
+	 * Extends the given oldNode by appending new indented childs from the given newNode
+	 * @param document owner {@link Document} of the node
+	 * @param newNode new {@link Node} to indent
+	 * @param oldNode old {@link Node} to extend with new indented elements
+	 * @return the extended {@link Node}
+	 */
+	public static Node indentAndExtend(final Document document, Node newNode, Node oldNode) {
+		Node indentedNode = getIndentedNode(document, newNode);
+		indentedNode = alignChildrenIndents(indentedNode);
+		Node importedNode = document.importNode(indentedNode, true);
+		NodeList nodeList = importedNode.getChildNodes();
+		for (int i = getPositionToStartExtention(oldNode, importedNode); i < nodeList.getLength(); i++) {
+			Node nodeToAppend = nodeList.item(i).cloneNode(true);
+			if (Node.ELEMENT_NODE != nodeToAppend.getNodeType() || !checkIfExists(oldNode, nodeToAppend)) {
+				oldNode.appendChild(nodeToAppend);
+			}
+		}
+		newNode.getParentNode().replaceChild(oldNode, newNode);
+		return oldNode;
+	}
+	
+	private static int getPositionToStartExtention(Node oldNode, Node indentedNode) {
+		NodeList nodeList = oldNode.getChildNodes();
+		int startPosition = nodeList.getLength();
+		Node child = null;
+		while(oldNode.hasChildNodes()) {
+			child = oldNode.getLastChild();
+			if (Node.TEXT_NODE == child.getNodeType()) {
+				oldNode.removeChild(child);
+			} else {
+				break;
+			}
+		}
+		Integer position = getPosition(indentedNode, child);
+		if (position != null) {
+			return position;
+		}
+		return startPosition;
+	}
+	
+	private static boolean checkIfExists(Node parentNode, Node childToCheck) {
+		return getPosition(parentNode, childToCheck) != null;
+	}
+	
+	private static Integer getPosition(Node parentNode, Node childToCheck) {
+		if (parentNode != null && childToCheck != null) {
+			String nodeName = childToCheck.getLocalName();
+			NodeList newNodeChildList = parentNode.getChildNodes();
+			for (int i = 0; i < newNodeChildList.getLength(); i++) {
+				Node newChildNode = newNodeChildList.item(i);
+				if (nodeName.equals(newChildNode.getLocalName())) {
+					String idIdentifier = getIDIdentifier(childToCheck);
+					if (idIdentifier == null || idIdentifier.equals(getIDIdentifier(newChildNode))) {
+						return i + 1;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns first {@link Element} child from the given parentNode
+	 * @param parentNode {@link Node} to get first {@link Element} child from
+	 * @return {@link Element} child
+	 */
+	public static Element getFirstElementChildNode(Node parentNode) {
+		if (parentNode.hasChildNodes()) {
+			NodeList nodeList = parentNode.getChildNodes();
+			for (int i = 0; i < nodeList.getLength(); i++) {
+				Node child = nodeList.item(i);
+				if (Node.ELEMENT_NODE == child.getNodeType()) {
+					return (Element) child;
+				}
+			}
+		}
+		return null;
 	}
 	
 	public static Document getDocWithIndentedSignatures(final Document documentDom, String signatureId, List<String> noIndentObjectIds) {
@@ -160,9 +240,14 @@ public final class DSSXMLUtils {
 		for (int i = 0; i < signatures.getLength(); i++) {
 			Element signature = (Element) signatures.item(i);
 			if (getIDIdentifier(signature).contains(signatureId)) {
+				Node unsignedSignatureProperties = DomUtils.getNode(signature, ".//" + "xades:UnsignedSignatureProperties");
 				Node indentedSignature = getIndentedSignature(signature, noIndentObjectIds);
 				Node importedSignature = documentDom.importNode(indentedSignature, true);
 				signature.getParentNode().replaceChild(importedSignature, signature);
+				if (unsignedSignatureProperties != null) {
+					Node newUnsignedSignatureProperties = DomUtils.getNode(signature, ".//" + "xades:UnsignedSignatureProperties");
+					newUnsignedSignatureProperties.getParentNode().replaceChild(unsignedSignatureProperties, newUnsignedSignatureProperties);
+				}
 			}
 		}
 		return documentDom;
@@ -170,9 +255,9 @@ public final class DSSXMLUtils {
 	
 	private static Node getIndentedSignature(final Node signature, List<String> noIndentObjectIds) {
 		Node indentedSignature = getIndentedNode(signature);
-		NodeList sigChilds = signature.getChildNodes();
-		for (int i = 0; i < sigChilds.getLength(); i++) {
-			Node childNode = sigChilds.item(i);
+		NodeList sigChildNodes = signature.getChildNodes();
+		for (int i = 0; i < sigChildNodes.getLength(); i++) {
+			Node childNode = sigChildNodes.item(i);
 			if (childNode.getNodeType() == Node.ELEMENT_NODE) {
 				Element sigChild = (Element) childNode;
 				String idAttribute = getIDIdentifier(sigChild);
@@ -240,6 +325,48 @@ public final class DSSXMLUtils {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Aligns indents for all children of the given node
+	 * @param parentNode {@link Node} to align children into
+	 * @return the given {@link Node} with aligned children
+	 */
+	public static Node alignChildrenIndents(Node parentNode) {
+		if (parentNode.hasChildNodes()) {
+			NodeList nodeChildren = parentNode.getChildNodes();
+			String targetIndent = getTargetIndent(nodeChildren);
+			if (targetIndent != null) {
+				for (int i = 0; i < nodeChildren.getLength() - 1; i++) {
+					Node node = nodeChildren.item(i);
+					if (Node.TEXT_NODE == node.getNodeType()) {
+						node.setNodeValue(targetIndent);
+					}
+				}
+				Node lastChild = parentNode.getLastChild();
+				targetIndent = targetIndent.substring(0, targetIndent.length() - DomUtils.TRANSFORMER_INDENT_NUMBER);
+				switch (lastChild.getNodeType()) {
+					case Node.ELEMENT_NODE:
+						DomUtils.setTextNode(parentNode.getOwnerDocument(), (Element)parentNode, targetIndent);
+						break;
+					case Node.TEXT_NODE:
+						lastChild.setNodeValue(targetIndent);
+					default:
+						break;
+				}
+			}
+		}
+		return parentNode;
+	}
+	
+	private static String getTargetIndent(NodeList nodeChildren) {
+		for (int i = 0; i < nodeChildren.getLength() - 1; i++) {
+			Node node = nodeChildren.item(i);
+			if (Node.TEXT_NODE == node.getNodeType()) {
+				return node.getNodeValue();
+			}
+		}
+		return null;
 	}
 
 	/**

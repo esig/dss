@@ -243,6 +243,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 	protected void extendSignatureTag() throws DSSException {
 
 		super.extendSignatureTag();
+		Element levelTUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
 		// for XAdES_XL the development is not conform with the standard
@@ -258,9 +259,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 			// XAdES-C: complete revocation references
 			Element toRemove = xadesSignature.getCompleteCertificateRefs();
-			if (toRemove != null) {
-				unsignedSignaturePropertiesDom.removeChild(toRemove);
-			}
+			removeChild(unsignedSignaturePropertiesDom, toRemove);
 
 			final Element completeCertificateRefsDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES,
 					"xades:CompleteCertificateRefs");
@@ -276,15 +275,15 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 			incorporateCertificateRef(certRefsDom, x509CertificateProcessedList);
 
 			toRemove = xadesSignature.getCompleteRevocationRefs();
-			if (toRemove != null) {
-				unsignedSignaturePropertiesDom.removeChild(toRemove);
-			}
+			removeChild(unsignedSignaturePropertiesDom, toRemove);
 
 			// <xades:CompleteRevocationRefs>
 			final Element completeRevocationRefsDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES,
 					"xades:CompleteRevocationRefs");
 			incorporateCRLRefs(completeRevocationRefsDom, validationContext.getProcessedRevocations());
 			incorporateOCSPRefs(completeRevocationRefsDom, validationContext.getProcessedRevocations());
+			
+			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelTUnsignedProperties);
 		}
 	}
 }
