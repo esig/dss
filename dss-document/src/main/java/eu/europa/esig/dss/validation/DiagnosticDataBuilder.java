@@ -790,6 +790,10 @@ public class DiagnosticDataBuilder {
 		if (signatureAlgorithm != null) {
 			xmlBasicSignatureType.setEncryptionAlgoUsedToSignThisToken(signatureAlgorithm.getEncryptionAlgorithm().getName());
 			xmlBasicSignatureType.setDigestAlgoUsedToSignThisToken(signatureAlgorithm.getDigestAlgorithm().getName());
+			MaskGenerationFunction maskGenerationFunction = signatureAlgorithm.getMaskGenerationFunction();
+			if (maskGenerationFunction != null) {
+				xmlBasicSignatureType.setMaskGenerationFunctionUsedToSignThisToken(maskGenerationFunction.name());
+			}
 		}
 		xmlBasicSignatureType.setKeyLengthUsedToSignThisToken(DSSPKUtils.getPublicKeySize(token));
 
