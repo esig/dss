@@ -150,8 +150,8 @@ public enum DigestAlgorithm {
 	/**
 	 * Returns the digest algorithm associated to the given JCE name.
 	 *
-	 * @param name
-	 *             the algorithm name
+	 * @param javaName
+	 *                 the JCE algorithm name
 	 * @return the digest algorithm linked to the given name
 	 * @throws DSSException
 	 *                      if the given name doesn't match any algorithm
