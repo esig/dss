@@ -20,23 +20,30 @@
  */
 package eu.europa.esig.dss.x509;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.security.Security;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.SignatureAlgorithm;
 
 public class CertificateTokenTest {
 
@@ -88,8 +95,23 @@ public class CertificateTokenTest {
 		assertTrue(certificate1.isEquivalent(certificate3));
 	}
 
+	@Test
+	public void pss() throws IOException {
+		Security.addProvider(new BouncyCastleProvider());
+		File certFile = new File("src/test/resources/D-TRUST_CA_3-1_2016.cer");
+		try (FileInputStream fis = new FileInputStream(certFile)) {
+			CertificateToken certificate = getCertificate(fis);
+			assertNotNull(certificate);
+			assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA512_MGF1, certificate.getSignatureAlgorithm());
+		}
+	}
+
 	private CertificateToken getCertificate(String base64) {
-		try (InputStream is = new ByteArrayInputStream(Base64.getDecoder().decode(base64))) {
+		return getCertificate(new ByteArrayInputStream(Base64.getDecoder().decode(base64)));
+	}
+
+	private CertificateToken getCertificate(InputStream isOrigin) {
+		try (InputStream is = isOrigin) {
 			CertificateFactory factory = CertificateFactory.getInstance("X.509");
 			return new CertificateToken((X509Certificate) factory.generateCertificate(is));
 		} catch (Exception e) {

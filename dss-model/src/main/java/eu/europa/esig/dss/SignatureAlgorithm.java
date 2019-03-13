@@ -20,6 +20,10 @@
  */
 package eu.europa.esig.dss;
 
+import java.io.IOException;
+import java.security.AlgorithmParameters;
+import java.security.GeneralSecurityException;
+import java.security.spec.PSSParameterSpec;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -428,10 +432,27 @@ public enum SignatureAlgorithm {
 	}
 
 	public static SignatureAlgorithm forOID(final String oid) {
-		final SignatureAlgorithm algorithm = OID_ALGORITHMS.get(oid);
+		return forOidAndParams(oid, null);
+	}
+
+	public static SignatureAlgorithm forOidAndParams(String oid, byte[] sigAlgParams) {
+		SignatureAlgorithm algorithm = OID_ALGORITHMS.get(oid);
 		if (algorithm == null) {
 			throw new DSSException("Unsupported algorithm: " + oid);
 		}
+
+		if (sigAlgParams != null && algorithm.getMaskGenerationFunction() != null) {
+			try {
+				AlgorithmParameters algoParams = AlgorithmParameters.getInstance("PSS");
+				algoParams.init(sigAlgParams);
+				PSSParameterSpec pssParam = algoParams.getParameterSpec(PSSParameterSpec.class);
+				DigestAlgorithm digestAlgorithm = DigestAlgorithm.forJavaName(pssParam.getDigestAlgorithm());
+				algorithm = getAlgorithm(algorithm.getEncryptionAlgorithm(), digestAlgorithm, algorithm.getMaskGenerationFunction());
+			} catch (GeneralSecurityException | IOException e) {
+				throw new DSSException("Unable to initialize PSS", e);
+			}
+		}
+
 		return algorithm;
 	}
 

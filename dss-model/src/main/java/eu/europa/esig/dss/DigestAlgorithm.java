@@ -78,6 +78,7 @@ public enum DigestAlgorithm {
 		private static final Map<String, DigestAlgorithm> OID_ALGORITHMS = registerOIDAlgorithms();
 		private static final Map<String, DigestAlgorithm> XML_ALGORITHMS = registerXMLAlgorithms();
 		private static final Map<String, DigestAlgorithm> ALGORITHMS = registerAlgorithms();
+		private static final Map<String, DigestAlgorithm> JAVA_ALGORITHMS = registerJavaAlgorithms();
 
 		private static Map<String, DigestAlgorithm> registerOIDAlgorithms() {
 			final Map<String, DigestAlgorithm> map = new HashMap<String, DigestAlgorithm>();
@@ -102,21 +103,46 @@ public enum DigestAlgorithm {
 			}
 			return map;
 		}
+
+		private static Map<String, DigestAlgorithm> registerJavaAlgorithms() {
+			final Map<String, DigestAlgorithm> map = new HashMap<String, DigestAlgorithm>();
+			for (final DigestAlgorithm digestAlgorithm : values()) {
+				map.put(digestAlgorithm.javaName, digestAlgorithm);
+			}
+			return map;
+		}
 	}
 
 	/**
-	 * Returns the digest algorithm associated to the given JCE name.
+	 * Returns the digest algorithm associated to the given name.
 	 *
 	 * @param name
-	 *            the algorithm name
+	 *             the algorithm name
 	 * @return the digest algorithm linked to the given name
 	 * @throws DSSException
-	 *             if the given name doesn't match any algorithm
+	 *                      if the given name doesn't match any algorithm
 	 */
 	public static DigestAlgorithm forName(final String name) {
 		final DigestAlgorithm algorithm = Registry.ALGORITHMS.get(name);
 		if (algorithm == null) {
-			throw new DSSException("Unsupported algorithm: " + name + "/" + name);
+			throw new DSSException("Unsupported algorithm: " + name);
+		}
+		return algorithm;
+	}
+
+	/**
+	 * Returns the digest algorithm associated to the given name.
+	 *
+	 * @param name
+	 *                     the algorithm name
+	 * @param defaultValue
+	 *                     The default value for the {@code DigestAlgorithm}
+	 * @return the corresponding {@code DigestAlgorithm} or the default value
+	 */
+	public static DigestAlgorithm forName(final String name, final DigestAlgorithm defaultValue) {
+		final DigestAlgorithm algorithm = Registry.ALGORITHMS.get(name);
+		if (algorithm == null) {
+			return defaultValue;
 		}
 		return algorithm;
 	}
@@ -125,15 +151,15 @@ public enum DigestAlgorithm {
 	 * Returns the digest algorithm associated to the given JCE name.
 	 *
 	 * @param name
-	 *            the algorithm name
-	 * @param defaultValue
-	 *            The default value for the {@code DigestAlgorithm}
-	 * @return the corresponding {@code DigestAlgorithm} or the default value
+	 *             the algorithm name
+	 * @return the digest algorithm linked to the given name
+	 * @throws DSSException
+	 *                      if the given name doesn't match any algorithm
 	 */
-	public static DigestAlgorithm forName(final String name, final DigestAlgorithm defaultValue) {
-		final DigestAlgorithm algorithm = Registry.ALGORITHMS.get(name);
+	public static DigestAlgorithm forJavaName(final String javaName) {
+		final DigestAlgorithm algorithm = Registry.JAVA_ALGORITHMS.get(javaName);
 		if (algorithm == null) {
-			return defaultValue;
+			throw new DSSException("Unsupported algorithm: " + javaName);
 		}
 		return algorithm;
 	}
