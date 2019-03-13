@@ -544,8 +544,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
 		DSSDocument newPdfDoc = null;
-		try (InputStream is = document.openStream()) {
-			PDDocument pdfDoc = PDDocument.load(is);
+		try (InputStream is = document.openStream(); PDDocument pdfDoc = PDDocument.load(is)) {
 			PDPage page = pdfDoc.getPage(parameters.getPage());
 
 			PDAcroForm acroForm = pdfDoc.getDocumentCatalog().getAcroForm();
@@ -573,9 +572,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			pdfDoc.save(baos);
-			pdfDoc.close();
 			newPdfDoc = new InMemoryDocument(baos.toByteArray(), "new-document.pdf", MimeType.PDF);
-
 		} catch (Exception e) {
 			throw new DSSException("Unable to add a new signature fields", e);
 		}

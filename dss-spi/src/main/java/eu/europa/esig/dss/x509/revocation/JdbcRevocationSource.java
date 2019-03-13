@@ -27,7 +27,7 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 
 	private static final long serialVersionUID = 8752226611048306095L;
 
-	protected DataSource dataSource;
+	protected transient DataSource dataSource;
 	
 	/**
 	 * Returns CREATE_TABLE sql query
@@ -125,11 +125,11 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 	public void initTable() throws SQLException {
 		/* Create the table if it doesn't exist. */
 		if (!tableExists()) {
-			LOG.debug("Table is not exist. Creating a new table...");
+			LOG.debug("Table does not exist. Creating a new table...");
 			createTable();
 			LOG.info("Table was created.");
 		} else {
-			LOG.debug("Table is exist");
+			LOG.info("Table already exists.");
 		}
 	}
 	
@@ -173,7 +173,11 @@ public abstract class JdbcRevocationSource<T extends RevocationToken> extends Re
 	public void destroyTable() throws SQLException {
 		/* Drop the table if it exists. */
 		if (tableExists()) {
+			LOG.debug("Table exists. Removing the table...");
 			dropTable();
+			LOG.info("Table was destroyed.");
+		} else {
+			LOG.warn("Cannot drop the table. Table does not exist.");
 		}
 	}
 	

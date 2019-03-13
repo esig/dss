@@ -142,27 +142,54 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 		if (forceRefresh) {
 			LOG.info("Cache is skipped to retrieve the revocation token for certificate '{}'", certificateToken.getDSSIdAsString());
 		} else {
-			Iterator<String> keyIterator = keys.iterator();
-			while (keyIterator.hasNext()) {
-				String key = keyIterator.next();
-				final T revocationToken = findRevocation(key, certificateToken, issuerCertificateToken);
-				if (revocationToken != null) {
-					if (isNotExpired(revocationToken)) {
-						LOG.info("Revocation token for certificate '{}' is in cache", certificateToken.getDSSIdAsString());
-						return revocationToken;
-					} else {
-						LOG.debug("Revocation token is expired");
-						if (removeExpired) {
-							removeRevocation(revocationToken);
-							keyIterator.remove();
-						}
-					}
-				} else {
-					keyIterator.remove();
-				}
+			T cachedRevocationToken = extractRevocationFromCacheSource(certificateToken, issuerCertificateToken, keys);
+			if (cachedRevocationToken != null) {
+				return cachedRevocationToken;
 			}
 		}
-
+		return extractAndInsertRevocationTokenFromProxiedSource(certificateToken, issuerCertificateToken, keys);
+	}
+	
+	/**
+	 * Extracts a {@link RevocationToken} from Cache Source if the relevant entry is stored, null otherwise
+	 * @param certificateToken {@link CertificateToken} to extract the revocation token for
+	 * @param issuerCertificateToken {@link CertificateToken} of the issuer
+	 * @param keys - list of keys, that can be used as unique identifications of the revocation entry
+	 * @return {@link RevocationToken}
+	 */
+	private T extractRevocationFromCacheSource(final CertificateToken certificateToken, final CertificateToken issuerCertificateToken, 
+			List<String> keys) {
+		Iterator<String> keyIterator = keys.iterator();
+		while (keyIterator.hasNext()) {
+			String key = keyIterator.next();
+			final T revocationToken = findRevocation(key, certificateToken, issuerCertificateToken);
+			if (revocationToken != null) {
+				if (isNotExpired(revocationToken)) {
+					LOG.info("Revocation token for certificate '{}' is in cache", certificateToken.getDSSIdAsString());
+					return revocationToken;
+				} else {
+					LOG.debug("Revocation token is expired");
+					if (removeExpired) {
+						removeRevocation(revocationToken);
+						keyIterator.remove();
+					}
+				}
+			} else {
+				keyIterator.remove();
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Extracts a {@link RevocationToken} from the defined proxiedSource and inserts/updates its in the cache Source if needed
+	 * @param certificateToken {@link CertificateToken} to extract the revocation token for
+	 * @param issuerCertificateToken {@link CertificateToken} of the issuer
+	 * @param keys - list of keys, that can be used as unique identifications of the revocation entry
+	 * @return {@link RevocationToken}
+	 */
+	private T extractAndInsertRevocationTokenFromProxiedSource(final CertificateToken certificateToken, final CertificateToken issuerCertificateToken, 
+			List<String> keys) {
 		if (proxiedSource == null) {
 			LOG.warn("Proxied revocation source is not initialized for the called RevocationSource!");
 			return null;

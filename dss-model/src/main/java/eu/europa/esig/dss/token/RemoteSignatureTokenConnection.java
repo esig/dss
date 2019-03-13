@@ -23,6 +23,7 @@ package eu.europa.esig.dss.token;
 import java.util.List;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.RemoteKeyEntry;
@@ -84,5 +85,38 @@ public interface RemoteSignatureTokenConnection {
 	 *                      If there is any problem during the signature process
 	 */
 	SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, String alias) throws DSSException;
+
+	/**
+	 * 
+	 * This method signs the {@code digest} data with the given {@code alias}.
+	 * 
+	 * @param digest
+	 *               The digested data that need to be signed
+	 * @param alias
+	 *               The key alias to be used
+	 * @return the signature value representation with the used algorithm and the
+	 *         binary value
+	 * @throws DSSException
+	 *                      If there is any problem during the signature process
+	 */
+	SignatureValue signDigest(Digest digest, String alias) throws DSSException;
+
+	/**
+	 * 
+	 * This method signs the {@code digest} data with a mask {@code mgf} and the
+	 * given {@code alias}.
+	 * 
+	 * @param digest
+	 *               The digested data that need to be signed
+	 * @param mgf
+	 *               the mask generation function
+	 * @param alias
+	 *               The key alias to be used
+	 * @return the signature value representation with the used algorithm and the
+	 *         binary value
+	 * @throws DSSException
+	 *                      If there is any problem during the signature process
+	 */
+	SignatureValue signDigest(Digest digest, MaskGenerationFunction mgf, String alias) throws DSSException;
 
 }

@@ -72,8 +72,7 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
 
-		try {
-			PDDocument document = PDDocument.load(byteArray);
+		try (PDDocument document = PDDocument.load(byteArray);) {
 			COSBase docMDP = null;
 			COSBase perms = document.getDocumentCatalog().getCOSObject().getDictionaryObject(COSName.PERMS);
 			if (perms instanceof COSDictionary) {

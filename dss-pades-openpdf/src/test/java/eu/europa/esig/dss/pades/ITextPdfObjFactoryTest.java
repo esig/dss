@@ -30,7 +30,7 @@ import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PDFTimestampService;
 import eu.europa.esig.dss.pdf.PdfObjFactory;
-import eu.europa.esig.dss.pdf.openpdf.ITextPdfObjFactory;
+import eu.europa.esig.dss.pdf.openpdf.ITextDefaultPdfObjFactory;
 
 public class ITextPdfObjFactoryTest {
 
@@ -54,7 +54,7 @@ public class ITextPdfObjFactoryTest {
 		PDFTimestampService timestampService = PdfObjFactory.newTimestampSignatureService();
 		assertNull(timestampService);
 
-		PdfObjFactory.setInstance(new ITextPdfObjFactory());
+		PdfObjFactory.setInstance(new ITextDefaultPdfObjFactory());
 
 		signatureService = PdfObjFactory.newPAdESSignatureService();
 		assertNotNull(signatureService);

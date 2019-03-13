@@ -18,6 +18,8 @@ import org.junit.Test;
 import eu.europa.esig.jaxb.policy.Algo;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 import eu.europa.esig.jaxb.policy.Level;
+import eu.europa.esig.jaxb.policy.Model;
+import eu.europa.esig.jaxb.policy.ModelConstraint;
 import eu.europa.esig.jaxb.policy.RevocationConstraints;
 import eu.europa.esig.jaxb.policy.TimeConstraint;
 import eu.europa.esig.jaxb.policy.TimeUnit;
@@ -37,6 +39,24 @@ public class JaxbPolicyTest {
 		JAXBContext jc = JAXBContext.newInstance("eu.europa.esig.jaxb.policy");
 		Marshaller marshaller = jc.createMarshaller();
 		marshaller.marshal(constraintsParameters, new FileOutputStream("target/constraint.xml"));
+	}
+	
+	@Test
+	public void testUnmarshallingWithModel() throws Exception {
+		ConstraintsParameters constraintsParameters = unmarshal(new File("src/test/resources/constraint.xml"));
+
+		ModelConstraint mc = new ModelConstraint();
+		mc.setValue(Model.SHELL);
+		constraintsParameters.setModel(mc);
+		
+		JAXBContext jc = JAXBContext.newInstance("eu.europa.esig.jaxb.policy");
+		Marshaller marshaller = jc.createMarshaller();
+		marshaller.marshal(constraintsParameters, new FileOutputStream("target/constraint.xml"));
+		
+		ConstraintsParameters cp = unmarshal(new File("target/constraint.xml"));
+		assertNotNull(cp);
+		assertNotNull(cp.getModel());
+		assertEquals(mc.getValue(), cp.getModel().getValue());
 	}
 
 	@Test
@@ -74,5 +94,4 @@ public class JaxbPolicyTest {
 		assertNotNull(constraintsParamaters);
 		return constraintsParamaters;
 	}
-
 }

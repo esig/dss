@@ -39,6 +39,7 @@
 			<xs:element name="revocation" type="Revocation" minOccurs="0" />
 			<xs:element name="trustAnchors" type="TrustAnchors" minOccurs="0" />
 			<xs:element name="Indication" type="Indication" />
+			<xs:element name="SubIndication" type="SubIndication" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -116,6 +117,34 @@
 			<xs:enumeration value="PASSED" />
 			<xs:enumeration value="INDETERMINATE" />
 			<xs:enumeration value="FAILED" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="SubIndication" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NO_SIGNING_CERTIFICATE_FOUND" />
+			<xs:enumeration value="FORMAT_FAILURE" />
+			<xs:enumeration value="SIGNATURE_POLICY_NOT_AVAILABLE" />
+			<xs:enumeration value="POLICY_PROCESSING_ERROR" />
+			<xs:enumeration value="OUT_OF_BOUNDS_NO_POE" />
+			<xs:enumeration value="NO_CERTIFICATE_CHAIN_FOUND" />
+			<xs:enumeration value="TRY_LATER" />
+			<xs:enumeration value="REVOKED_NO_POE" />
+			<xs:enumeration value="REVOKED_CA_NO_POE" />
+			<xs:enumeration value="CHAIN_CONSTRAINTS_FAILURE" />
+			<xs:enumeration value="CRYPTO_CONSTRAINTS_FAILURE" />
+			<xs:enumeration value="CRYPTO_CONSTRAINTS_FAILURE_NO_POE" />
+			<xs:enumeration value="SIGNED_DATA_NOT_FOUND" />
+			<xs:enumeration value="HASH_FAILURE" />
+			<xs:enumeration value="SIG_CRYPTO_FAILURE" />
+			<xs:enumeration value="SIG_CONSTRAINTS_FAILURE" />
+			<xs:enumeration value="NOT_YET_VALID" />
+			<xs:enumeration value="TIMESTAMP_ORDER_FAILURE" />
+			<xs:enumeration value="REVOKED" />
+			<xs:enumeration value="EXPIRED" />
+			<xs:enumeration value="NO_POE" />
+			<xs:enumeration value="CERTIFICATE_CHAIN_GENERAL_FAILURE" />
+			<xs:enumeration value="UNEXPECTED_ERROR" />
 		</xs:restriction>
 	</xs:simpleType>
 

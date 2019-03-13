@@ -140,7 +140,7 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSPToken> impleme
 	}
 
 	@Override
-	protected OCSPToken buildRevocationTokenFromResult(ResultSet rs, CertificateToken certificateToken, CertificateToken issuerCert) throws RevocationException {
+	protected OCSPToken buildRevocationTokenFromResult(ResultSet rs, CertificateToken certificateToken, CertificateToken issuerCert) {
 		try {
 			final byte[] data = rs.getBytes(SQL_FIND_QUERY_DATA);
 			final String url = rs.getString(SQL_FIND_QUERY_LOC);

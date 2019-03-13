@@ -92,7 +92,7 @@ public class CertificateToken extends Token {
 		this.entityKey = new EntityIdentifier(x509Certificate.getPublicKey());
 
 		// The Algorithm OID is used and not the name {@code x509Certificate.getSigAlgName()}
-		this.signatureAlgorithm = SignatureAlgorithm.forOID(x509Certificate.getSigAlgOID());
+		this.signatureAlgorithm = SignatureAlgorithm.forOidAndParams(x509Certificate.getSigAlgOID(), x509Certificate.getSigAlgParams());
 	}
 
 	@Override

@@ -46,13 +46,13 @@
 		<project.target.version>1.7</project.target.version>
 		<project.encoding>UTF-8</project.encoding>
 
-		<slf4j.version>1.7.25</slf4j.version>
+		<slf4j.version>1.7.26</slf4j.version>
 		<logback-classic.version>1.2.3</logback-classic.version>
 
 		<bouncycastle.version>1.61</bouncycastle.version>
 		<xmlsec.version>2.0.10</xmlsec.version>
-		<pdfbox.version>2.0.13</pdfbox.version>
-		<openpdf.version>1.2.7</openpdf.version>
+		<pdfbox.version>2.0.14</pdfbox.version>
+		<openpdf.version>1.2.11</openpdf.version>
 		<httpclient.version>4.5.6</httpclient.version>
 		<rs-api.version>2.0.1</rs-api.version>
 		

@@ -46,18 +46,37 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 
 	@Override
 	public final OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+		
 		final List<BasicOCSPResp> containedOCSPResponses = getContainedOCSPResponses();
 		if (Utils.isCollectionEmpty(containedOCSPResponses)) {
 			return null;
 		}
-
+		
 		if (LOG.isTraceEnabled()) {
 			final String dssIdAsString = certificateToken.getDSSIdAsString();
 			LOG.trace("--> OfflineOCSPSource queried for {} contains: {} element(s).", dssIdAsString, containedOCSPResponses.size());
 		}
 
-		Date bestUpdate = null;
+		BasicOCSPResp bestBasicOCSPResp = findBestOcspResponse(containedOCSPResponses, certificateToken, issuerCertificateToken);
+		if (bestBasicOCSPResp != null) {
+			OCSPTokenBuilder ocspTokenBuilder = new OCSPTokenBuilder(bestBasicOCSPResp, certificateToken, issuerCertificateToken);
+			ocspTokenBuilder.setOrigin(RevocationOrigin.SIGNATURE);
+			try {
+				OCSPToken ocspToken = ocspTokenBuilder.build();
+				OCSPTokenUtils.checkTokenValidity(ocspToken, certificateToken, issuerCertificateToken);
+				return ocspToken;
+			} catch (OCSPException e) {
+				LOG.error("An error occurred during an attempt to build OCSP Token. Return null", e);
+				return null;
+			}
+		}
+		return null;
+	}
+	
+	private BasicOCSPResp findBestOcspResponse(List<BasicOCSPResp> containedOCSPResponses, CertificateToken certificateToken, 
+			CertificateToken issuerCertificateToken) {
 		BasicOCSPResp bestBasicOCSPResp = null;
+		Date bestUpdate = null;
 		final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
 		for (final BasicOCSPResp basicOCSPResp : containedOCSPResponses) {
 			for (final SingleResp singleResp : basicOCSPResp.getResponses()) {
@@ -70,20 +89,7 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 				}
 			}
 		}
-
-		if (bestBasicOCSPResp != null) {
-			OCSPTokenBuilder ocspTokenBuilder = new OCSPTokenBuilder(bestBasicOCSPResp, certificateToken, issuerCertificateToken);
-			ocspTokenBuilder.setOrigin(RevocationOrigin.SIGNATURE);
-			try {
-				OCSPToken ocspToken = ocspTokenBuilder.build();
-				OCSPTokenUtils.checkTokenValidity(ocspToken, certificateToken, issuerCertificateToken);
-				return ocspToken;
-			} catch (OCSPException e) {
-				LOG.error("An error occurred during an attempt to build OCSP Token. Return null", e);
-			}
-			return null;
-		}
-		return null;
+		return bestBasicOCSPResp;
 	}
 
 	/**

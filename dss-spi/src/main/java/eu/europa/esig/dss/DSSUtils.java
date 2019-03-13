@@ -56,7 +56,11 @@ import java.util.TimeZone;
 
 import javax.security.auth.x500.X500Principal;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.asn1.ASN1Encoding;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.DERNull;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
@@ -72,7 +76,9 @@ public final class DSSUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSUtils.class);
 
-	private static final BouncyCastleProvider securityProvider = new BouncyCastleProvider();
+	static {
+		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
+	}
 
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
@@ -82,10 +88,6 @@ public final class DSSUtils {
 	 * The default date pattern: "yyyy-MM-dd"
 	 */
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
-
-	static {
-		Security.addProvider(securityProvider);
-	}
 
 	/**
 	 * This class is an utility class and cannot be instantiated.
@@ -227,7 +229,7 @@ public final class DSSUtils {
 		try {
 			@SuppressWarnings("unchecked")
 			final Collection<X509Certificate> certificatesCollection = (Collection<X509Certificate>) CertificateFactory
-					.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME).generateCertificates(is);
+					.getInstance("X.509", DSSSecurityProvider.getSecurityProviderName()).generateCertificates(is);
 			if (certificatesCollection != null) {
 				for (X509Certificate cert : certificatesCollection) {
 					certificates.add(new CertificateToken(cert));
@@ -353,6 +355,27 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * This method wraps the digest value in a DigestInfo (combination of digest
+	 * algorithm and value). This encapsulation is required to operate NONEwithRSA
+	 * signatures.
+	 * 
+	 * @param digestAlgorithm
+	 *                        the used digest algorithm
+	 * @param digest
+	 *                        the digest value
+	 * @return DER encoded binaries of the related digest info
+	 */
+	public static byte[] encodeRSADigest(final DigestAlgorithm digestAlgorithm, final byte[] digest) {
+		try {
+			AlgorithmIdentifier algId = new AlgorithmIdentifier(new ASN1ObjectIdentifier(digestAlgorithm.getOid()), DERNull.INSTANCE);
+			DigestInfo digestInfo = new DigestInfo(algId, digest);
+			return digestInfo.getEncoded(ASN1Encoding.DER);
+		} catch (IOException e) {
+			throw new DSSException("Unable to encode digest", e);
+		}
+	}
+
+	/**
 	 * Returns a new instance of MessageDigest for a given digest algorithm
 	 * 
 	 * @param digestAlgorithm
@@ -362,7 +385,7 @@ public final class DSSUtils {
 	public static MessageDigest getMessageDigest(final DigestAlgorithm digestAlgorithm) {
 		try {
 			final String digestAlgorithmOid = digestAlgorithm.getOid();
-			return MessageDigest.getInstance(digestAlgorithmOid, BouncyCastleProvider.PROVIDER_NAME);
+			return MessageDigest.getInstance(digestAlgorithmOid);
 		} catch (GeneralSecurityException e) {
 			throw new DSSException("Digest algorithm '" + digestAlgorithm.getName() + "' error: " + e.getMessage(), e);
 		}

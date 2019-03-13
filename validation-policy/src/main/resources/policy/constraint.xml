@@ -357,6 +357,8 @@
 		</AlgoExpirationDate>
 	</Cryptographic> 
 	
+	<Model Value="SHELL" />
+	
 	<!-- eIDAS REGL 910/EU/2014 --> 
 	<eIDAS>
 		<TLFreshness Level="WARN" Unit="HOURS" Value="6" />

@@ -42,7 +42,6 @@ import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.BERTags;
 import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +91,7 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 
 	private MessageDigest getMessageDigest(DigestAlgorithm digestAlgorithm) {
 		try {
-			return MessageDigest.getInstance(digestAlgorithm.getOid(), BouncyCastleProvider.PROVIDER_NAME);
+			return MessageDigest.getInstance(digestAlgorithm.getOid());
 		} catch (GeneralSecurityException e) {
 			throw new DSSException("Cannot generate a MessageDigest", e);
 		}

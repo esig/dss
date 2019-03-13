@@ -28,6 +28,7 @@ import javax.jws.WebResult;
 import javax.jws.WebService;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.RemoteKeyEntry;
@@ -58,5 +59,16 @@ public interface SoapSignatureTokenConnection extends RemoteSignatureTokenConnec
 	@WebResult(name = "response")
 	SignatureValue sign(@WebParam(name = "toBeSigned") ToBeSigned toBeSigned, @WebParam(name = "digestAlgorithm") DigestAlgorithm digestAlgorithm,
 			@WebParam(name = "maskGenerationFunction") MaskGenerationFunction mgf, @WebParam(name = "alias") String alias) throws DSSException;
+
+	@Override
+	@WebMethod(operationName = "signDigest")
+	@WebResult(name = "response")
+	SignatureValue signDigest(@WebParam(name = "digest") Digest digest, @WebParam(name = "alias") String alias) throws DSSException;
+
+	@Override
+	@WebMethod(operationName = "signDigestWithMask")
+	@WebResult(name = "response")
+	SignatureValue signDigest(@WebParam(name = "digest") Digest digest, @WebParam(name = "maskGenerationFunction") MaskGenerationFunction mgf,
+			@WebParam(name = "alias") String alias) throws DSSException;
 
 }

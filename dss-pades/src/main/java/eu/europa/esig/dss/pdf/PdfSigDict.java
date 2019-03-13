@@ -59,7 +59,7 @@ public class PdfSigDict {
 
 	public byte[] getContents() {
 		try {
-			return dictionay.get("Contents");
+			return dictionay.getBinariesValue("Contents");
 		} catch (IOException e) {
 			throw new DSSException("Unable to retrieve the signature content", e);
 		}

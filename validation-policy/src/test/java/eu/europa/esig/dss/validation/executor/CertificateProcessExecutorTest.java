@@ -48,6 +48,7 @@ import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlChainItem;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateQualification;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
+import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
 public class CertificateProcessExecutorTest extends AbstractValidationExecutorTest {
@@ -88,6 +89,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		assertNotNull(simpleReport.getValidationTime());
 		assertNotNull(simpleReport.getJaxbModel());
 		assertEquals(Indication.INDETERMINATE, simpleReport.getCertificateIndication(certificateId));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, simpleReport.getCertificateSubIndication(certificateId));
 		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getCertificateCrlUrls(certificateId)));
 		assertNotNull(simpleReport.getCertificateRevocationDate(certificateId));
 		assertEquals("unspecified", simpleReport.getCertificateRevocationReason(certificateId));

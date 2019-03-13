@@ -50,6 +50,11 @@
 						<xsd:documentation>Global constraints about cryptograhic usage (encryption, digest, key length, algorithm deprecation,...). If no specific constraints is added in Signature/Timestamp/... elements, this configuration will be used.</xsd:documentation>
 					</xsd:annotation>
 				</xsd:element>
+				<xsd:element name="Model" type="tns:ModelConstraint" minOccurs="0">
+					<xsd:annotation>
+						<xsd:documentation>Checks / Defines the validation model shell, chain or hybrid</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
 				<xsd:element name="eIDAS" type="tns:eIDAS" minOccurs="0">
 					<xsd:annotation>
 						<xsd:documentation>Constraints related to the European context (trusted list validity,...)</xsd:documentation>
@@ -708,4 +713,22 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 	
+	<xsd:complexType name="ModelConstraint">
+		<xsd:annotation>
+			<xsd:documentation>Boolean check : follows the specified validation model</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute type="tns:Model" name="Value">
+			<xsd:annotation>
+				<xsd:documentation>The validation model</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	
+	<xsd:simpleType name="Model">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="SHELL"/>
+			<xsd:enumeration value="CHAIN"/>
+			<xsd:enumeration value="HYBRID"/>
+		</xsd:restriction>
+	</xsd:simpleType>
 </xsd:schema>

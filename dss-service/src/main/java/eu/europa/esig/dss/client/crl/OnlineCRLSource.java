@@ -108,14 +108,13 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 	}
 
 	@Override
-	public CRLToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken)
-			throws DSSException {
+	public CRLToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		return getRevocationToken(certificateToken, issuerCertificateToken, Collections.<String>emptyList());
 	}
 
 	@Override
 	public CRLToken getRevocationToken(final CertificateToken certificateToken, final CertificateToken issuerToken,
-			List<String> alternativeUrls) throws DSSException {
+			List<String> alternativeUrls) {
 		if (certificateToken == null) {
 			return null;
 		}

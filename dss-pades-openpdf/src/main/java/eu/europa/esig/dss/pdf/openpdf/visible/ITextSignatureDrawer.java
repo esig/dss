@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pdf.openpdf.visible;
 
+import java.io.IOException;
+
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -27,6 +29,6 @@ import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 
 public interface ITextSignatureDrawer extends SignatureDrawer {
 
-	void init(String signatureFieldId, SignatureImageParameters parameters, PdfSignatureAppearance appearance);
+	void init(String signatureFieldId, SignatureImageParameters parameters, PdfSignatureAppearance appearance) throws IOException;
 
 }

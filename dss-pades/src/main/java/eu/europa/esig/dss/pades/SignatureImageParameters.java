@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pades;
 import java.awt.Color;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
 
 /**
  * Parameters for a visible signature creation
@@ -80,9 +81,9 @@ public class SignatureImageParameters {
 		 */
 		MIDDLE,
 		/**
-		 * y axis is the botton padding
+		 * y axis is the bottom padding
 		 */
-		BOTTON;
+		BOTTOM;
 	}
 
 	/**
@@ -147,7 +148,8 @@ public class SignatureImageParameters {
         
 
 	/**
-	 * This variable defines a percent to zoom (100% means no scaling).
+	 * This variable defines a percent to zoom the image (100% means no scaling).
+	 * Note: This do not touch zooming of the text representation.
 	 */
 	private int zoom = NO_SCALING;
 
@@ -221,6 +223,10 @@ public class SignatureImageParameters {
 	public void setZoom(int zoom) {
 		this.zoom = zoom;
 	}
+	
+	public float getScaleFactor() {
+		return zoom / 100f;
+	}
 
 	public int getPage() {
 		return page;
@@ -230,7 +236,7 @@ public class SignatureImageParameters {
 		this.page = page;
 	}
         
-            public int getWidth() {
+    public int getWidth() {
         return width;
     }
 
@@ -256,7 +262,7 @@ public class SignatureImageParameters {
 	}
 
 	public Integer getDpi() {
-		return dpi;
+		return CommonDrawerUtils.getDpi(dpi);
 	}
 
 	public void setDpi(Integer dpi) {
@@ -287,17 +293,25 @@ public class SignatureImageParameters {
 		this.rotation = rotation;
 	}
 
-	public VisualSignatureAlignmentHorizontal getAlignmentHorizontal() {
-		return alignmentHorizontal;
-	}
+    public SignatureImageParameters.VisualSignatureAlignmentHorizontal getVisualSignatureAlignmentHorizontal() {
+        if(alignmentHorizontal == null) {
+            alignmentHorizontal = VisualSignatureAlignmentHorizontal.NONE;
+        }
+
+        return alignmentHorizontal;
+    }
 
 	public void setAlignmentHorizontal(VisualSignatureAlignmentHorizontal alignmentHorizontal) {
 		this.alignmentHorizontal = alignmentHorizontal;
 	}
+	
+    public SignatureImageParameters.VisualSignatureAlignmentVertical getVisualSignatureAlignmentVertical() {
+        if(alignmentVertical == null) {
+            alignmentVertical = VisualSignatureAlignmentVertical.NONE;
+        }
 
-	public VisualSignatureAlignmentVertical getAlignmentVertical() {
-		return alignmentVertical;
-	}
+        return alignmentVertical;
+    }
 
 	public void setAlignmentVertical(VisualSignatureAlignmentVertical alignmentVertical) {
 		this.alignmentVertical = alignmentVertical;
