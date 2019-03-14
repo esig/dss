@@ -825,15 +825,33 @@ Additionally, DSS also allows to insert a visible signature in an existing field
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=select-pdf-signature-field]
 ----
 
-NOTE: Since version 5.5, DSS supports only physical fonts, that might be embedded to the produced PDF document where necessary. The custom font must be added as an instance of 'DSSDocument' interface to a 'SignatureImageTextParameters' object as following:
+==== Fonts usage
+
+Since version 5.5, DSS supports two types of fonts. The custom font must be added as an instance of 'DSSFont' interface to a 'SignatureImageTextParameters' object.
+'DSSFont' interface has two implementations:
+
+ * 'DSSFileFont' for using of physical fonts, which must be embedded to the produced PDF document. To create an instance of the class, you must pass to a 'DSSFileFont' constructor an object of 'DSSDocument' type or InputStream of the font file;
+ * 'DSSJavaFont' for using of logical fonts (default Java fonts). The logical Java fonts allow to significantly reduce the document size, because these fonts cannot be embedded to the final PDF document. Be aware, because of the fact, using of logical fonts does not allow to produce PDF documents satisfying the PDF/A standard. To create an instance of this class, you should pass as an input a java.awt.Font object or target font parameters (name, style, size).
+
+You can create a custom font as following (for a physical font):
 
 [source,java,indent=0]
-.Add a custom font
+.Add a custom font as a file
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=font]
 ----
 
-By default, DSS uses a Google font : 'PT Serif Regular'.
+or for a logical font:
+
+[source,java,indent=0]
+.Java font usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleExistingTest.java[tags=font]
+----
+
+By default, DSS uses a Google font : 'PT Serif Regular' (its physical implementation).
+
+NOTE: 'Native PDFBox Drawer' implementation supports only one of the following fonts: SERIF, SANS-SERIF, MONOSPACED, DIALOG and DIALOG_INPUT.
 
 == ASiC signature (containers)
 

@@ -44,6 +44,7 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.MimeType;
+import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
@@ -206,9 +207,15 @@ public class ImageUtils {
 		return dimension;
 	}
 
+	/**
+	 * Computes {@link Dimension} of the text box to create
+	 * @param imageParameters {@link SignatureImageParameters} to use
+	 * @return {@link Dimension} of the text box
+	 */
 	private static Dimension getTextDimension(SignatureImageParameters imageParameters) {
 		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
-		Font properFont = FontUtils.computeProperFont(textParameters.getJavaFont(), textParameters.getSize(), imageParameters.getDpi());
+		DSSFont dssFont = textParameters.getFont();
+		Font properFont = FontUtils.computeProperFont(dssFont.getJavaFont(), dssFont.getSize(), imageParameters.getDpi());
 		return FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getMargin());
 	}
 

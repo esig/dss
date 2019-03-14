@@ -6,6 +6,8 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
+import eu.europa.esig.dss.pades.DSSFont;
+
 public class FontUtils {
 	
 	private FontUtils() {
@@ -30,6 +32,10 @@ public class FontUtils {
 		FontMetrics fontMetrics = g.getFontMetrics(font);
 		g.dispose();
 		return fontMetrics;
+	}
+	
+	public static Dimension computeSize(DSSFont dssFont, String text, float margin) {
+		return computeSize(dssFont.getJavaFont(), text, margin);
 	}
 	
 	public static Dimension computeSize(Font font, String text, float margin) {
