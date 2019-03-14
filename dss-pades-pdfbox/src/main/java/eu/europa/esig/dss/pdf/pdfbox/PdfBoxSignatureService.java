@@ -96,7 +96,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	 *                  if true, the instance is used to generate DocumentTypestamp
 	 *                  if false, it is used to generate a signature layer
 	 */
-	PdfBoxSignatureService(boolean timestamp, PdfBoxSignatureDrawerFactory signatureDrawerFactory) {
+	public PdfBoxSignatureService(boolean timestamp, PdfBoxSignatureDrawerFactory signatureDrawerFactory) {
 		super(timestamp, signatureDrawerFactory);
 	}
 

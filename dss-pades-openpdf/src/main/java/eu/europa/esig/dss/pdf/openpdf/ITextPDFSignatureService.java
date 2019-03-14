@@ -96,7 +96,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	 * @param timestamp if true, the instance is used to generate DocumentTypestamp
 	 *                  if false, it is used to generate a signature layer
 	 */
-	ITextPDFSignatureService(boolean timestamp, ITextSignatureDrawerFactory signatureDrawerFactory) {
+	public ITextPDFSignatureService(boolean timestamp, ITextSignatureDrawerFactory signatureDrawerFactory) {
 		super(timestamp, signatureDrawerFactory);
 	}
 
