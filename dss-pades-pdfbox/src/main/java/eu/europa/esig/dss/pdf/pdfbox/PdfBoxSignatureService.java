@@ -85,7 +85,7 @@ import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 
-class PdfBoxSignatureService extends AbstractPDFSignatureService {
+public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxSignatureService.class);
 
@@ -96,7 +96,7 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	 *                  if true, the instance is used to generate DocumentTypestamp
 	 *                  if false, it is used to generate a signature layer
 	 */
-	PdfBoxSignatureService(boolean timestamp, PdfBoxSignatureDrawerFactory signatureDrawerFactory) {
+	public PdfBoxSignatureService(boolean timestamp, PdfBoxSignatureDrawerFactory signatureDrawerFactory) {
 		super(timestamp, signatureDrawerFactory);
 	}
 
