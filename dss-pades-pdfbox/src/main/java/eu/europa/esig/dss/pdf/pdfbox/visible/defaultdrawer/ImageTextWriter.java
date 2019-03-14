@@ -30,6 +30,7 @@ import java.awt.image.BufferedImage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.visible.CommonDrawerUtils;
@@ -46,10 +47,16 @@ public final class ImageTextWriter {
 	private ImageTextWriter() {
 	}
 
+	/**
+	 * Creates an image representing the specified text
+	 * @param imageParameters {@link SignatureImageParameters} to use
+	 * @return {@link BufferedImage} of the text picture
+	 */
 	public static BufferedImage createTextImage(final SignatureImageParameters imageParameters) {
-		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
 		// Computing image size depending on the font
-		Font properFont = FontUtils.computeProperFont(textParameters.getJavaFont(), textParameters.getSize(), imageParameters.getDpi());
+		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
+		DSSFont dssFont = textParameters.getFont();
+		Font properFont = FontUtils.computeProperFont(dssFont.getJavaFont(), dssFont.getSize(), imageParameters.getDpi());
 		Dimension dimension = FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getMargin());
 		return createTextImage(textParameters, properFont, dimension);
 	}

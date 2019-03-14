@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
@@ -62,8 +63,13 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	 * Method to initialize the specific for PdfBpx {@link PDFont}
 	 */
 	private PDFont initFont() throws IOException {
-		try (InputStream is = parameters.getTextParameters().getFont().openStream()) {
-			return PDTrueTypeFont.load(document, is, WinAnsiEncoding.INSTANCE);
+		DSSFont dssFont = parameters.getTextParameters().getFont();
+		if (dssFont.isLogicalFont()) {
+			return PdfBoxFontMapper.getPDFont(dssFont.getJavaFont());
+		} else {
+			try (InputStream is = dssFont.getInputStream()) {
+				return PDTrueTypeFont.load(document, is, WinAnsiEncoding.INSTANCE);
+			}
 		}
 	}
 	
@@ -216,7 +222,8 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		SignatureImageTextParameters textParameters = parameters.getTextParameters();
     	if (textParameters != null && Utils.isStringNotEmpty(textParameters.getText())) {
     		setTextBackground(cs, textParameters, dimensionAndPosition);
-            float fontSize = textParameters.getSize();
+    		DSSFont dssFont = textParameters.getFont();
+            float fontSize = dssFont.getSize();
             cs.beginText();
             cs.setFont(pdFont, fontSize);
             cs.setNonStrokingColor(textParameters.getTextColor());
@@ -224,7 +231,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
             
             String[] strings = textParameters.getText().split("\\r?\\n");
             
-			Font properFont = FontUtils.computeProperFont(textParameters.getJavaFont(), textParameters.getSize(), parameters.getDpi());
+			Font properFont = FontUtils.computeProperFont(dssFont.getJavaFont(), dssFont.getSize(), parameters.getDpi());
             FontMetrics fontMetrics = FontUtils.getFontMetrics(properFont);
             cs.setLeading(textSizeWithDpi(fontMetrics.getHeight(), dimensionAndPosition.getyDpi()));
             
