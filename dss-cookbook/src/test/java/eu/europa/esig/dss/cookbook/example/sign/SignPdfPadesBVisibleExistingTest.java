@@ -21,16 +21,18 @@
 package eu.europa.esig.dss.cookbook.example.sign;
 
 import java.awt.Color;
+import java.awt.Font;
 
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
+import eu.europa.esig.dss.pades.DSSFileFont;
+import eu.europa.esig.dss.pades.DSSJavaFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
@@ -83,12 +85,14 @@ public class SignPdfPadesBVisibleExistingTest extends CookbookTools {
 			imageParameters.setxAxis(200);
 			imageParameters.setyAxis(500);
 			// Initialize text to generate for visual signature
+			// tag::font[]
 			SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
-			textParameters.setFont(new InMemoryDocument(getClass().getResourceAsStream("/fonts/OpenSansRegular.ttf")));
-			textParameters.setSize(14);
+			DSSJavaFont font = new DSSJavaFont(new Font(Font.SERIF, Font.PLAIN, 16));
+			textParameters.setFont(font);
 			textParameters.setTextColor(Color.BLUE);
 			textParameters.setText("My visual signature");
 			imageParameters.setTextParameters(textParameters);
+			// end::font[]
 			parameters.setSignatureImageParameters(imageParameters);
 
 			parameters.setSignatureFieldId("ExistingSignatureField");

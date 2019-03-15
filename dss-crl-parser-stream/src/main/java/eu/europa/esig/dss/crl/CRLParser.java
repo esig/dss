@@ -25,7 +25,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.security.DigestInputStream;
 import java.security.cert.X509CRLEntry;
 import java.util.Enumeration;
 
@@ -33,11 +32,15 @@ import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.asn1.ASN1BitString;
 import org.bouncycastle.asn1.ASN1Boolean;
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.BERTags;
+import org.bouncycastle.asn1.DERNull;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.TBSCertList.CRLEntry;
 import org.bouncycastle.asn1.x509.Time;
 import org.bouncycastle.jce.provider.X509CRLEntryObject;
@@ -85,33 +88,32 @@ class CRLParser {
 	private static final Logger LOG = LoggerFactory.getLogger(CRLParser.class);
 
 	/**
-	 * This method allows to compute the digest of the TBSCertList
+	 * This method extracts the signed data (TBSCertList)
 	 * 
 	 * @param s
-	 *            an initialized DigestInputStream
+	 *          an initialized CRLSignedDataInputStream
 	 * @throws IOException
 	 */
-	public void processDigest(DigestInputStream s) throws IOException {
-
+	public void getSignedData(BinaryFilteringInputStream is) throws IOException {
 		// We don't digest the beginning (not part of TBS)
-		s.on(false);
+		is.on(false);
 
 		// Skip CertificateList Sequence info
-		consumeTagIntro(s);
+		consumeTagIntro(is);
 
 		// Start to digest TBS
-		s.on(true);
+		is.on(true);
 
 		// Strip the tag and length of the TBSCertList sequence
-		int tag = DERUtil.readTag(s);
-		DERUtil.readTagNumber(s, tag);
-		int tbsLength = DERUtil.readLength(s);
+		int tag = DERUtil.readTag(is);
+		DERUtil.readTagNumber(is, tag);
+		int tbsLength = DERUtil.readLength(is);
 
 		// Read TBSCertList Content
-		readNbBytes(s, tbsLength);
+		readNbBytes(is, tbsLength);
 
 		// End digest TBS
-		s.on(false);
+		is.on(false);
 	}
 
 	/**
@@ -244,8 +246,13 @@ class CRLParser {
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("TBSCertList -> signatureAlgorithm : {}", Hex.toHexString(array));
 			}
-			ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) rebuildASN1Sequence(array).getObjectAt(0);
+			AlgorithmIdentifier algoId = AlgorithmIdentifier.getInstance(rebuildASN1Sequence(array));
+			ASN1ObjectIdentifier oid = algoId.getAlgorithm();
 			infos.setCertificateListSignatureAlgorithmOid(oid.getId());
+			ASN1Encodable parameters = algoId.getParameters();
+			if (parameters != null && !DERNull.INSTANCE.equals(parameters)) {
+				infos.setCertificateListSignatureAlgorithmParams(parameters.toASN1Primitive().getEncoded(ASN1Encoding.DER));
+			}
 
 			tag = DERUtil.readTag(s);
 			tagNo = DERUtil.readTagNumber(s, tag);
@@ -350,8 +357,8 @@ class CRLParser {
 				LOG.debug("CertificateList -> signatureAlgorithm : {}", Hex.toHexString(array));
 			}
 
-			ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) rebuildASN1Sequence(array).getObjectAt(0);
-			infos.setTbsSignatureAlgorithmOid(oid.getId());
+			AlgorithmIdentifier algoId = AlgorithmIdentifier.getInstance(rebuildASN1Sequence(array));
+			infos.setTbsSignatureAlgorithmOid(algoId.getAlgorithm().getId());
 
 			tag = DERUtil.readTag(s);
 			tagNo = DERUtil.readTagNumber(s, tag);

@@ -86,7 +86,7 @@ import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
  * Implementation of PDFSignatureService using iText
  *
  */
-class ITextPDFSignatureService extends AbstractPDFSignatureService {
+public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ITextPDFSignatureService.class);
 
@@ -96,7 +96,7 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	 * @param timestamp if true, the instance is used to generate DocumentTypestamp
 	 *                  if false, it is used to generate a signature layer
 	 */
-	ITextPDFSignatureService(boolean timestamp, ITextSignatureDrawerFactory signatureDrawerFactory) {
+	public ITextPDFSignatureService(boolean timestamp, ITextSignatureDrawerFactory signatureDrawerFactory) {
 		super(timestamp, signatureDrawerFactory);
 	}
 

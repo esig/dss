@@ -18,15 +18,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.signature.visible;
+package eu.europa.esig.dss.crl;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses(value = { PAdESSignatureField.class, PAdESVisibleSignature.class, PAdESFieldLevelB.class, PAdESWithSignatureAndTimestampVisible.class,
-		PAdESWithSignatureInvisibleAndTimestampVisible.class, PAdESVisibleSignatureWithJavaFont.class })
-public class PAdESVisibleSignatureSuite {
+public class CRLUtilsStreamImplWithBCTest extends AbstractTestCRLUtils {
 
 }

@@ -31,6 +31,7 @@ import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.isismtt.ISISMTTObjectIdentifiers;
 import org.bouncycastle.asn1.isismtt.ocsp.CertHash;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateID;
@@ -44,6 +45,7 @@ import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSSecurityProvider;
@@ -94,7 +96,12 @@ public class OCSPToken extends RevocationToken {
 	public void initInfo() {
 		if (basicOCSPResp != null) {
 			this.productionDate = basicOCSPResp.getProducedAt();
-			this.signatureAlgorithm = SignatureAlgorithm.forOID(basicOCSPResp.getSignatureAlgOID().getId());
+
+			AlgorithmIdentifier signatureAlgorithmID = basicOCSPResp.getSignatureAlgorithmID();
+			String oid = signatureAlgorithmID.getAlgorithm().getId();
+			byte[] sigAlgParams = signatureAlgorithmID.getParameters() == null ? null : DSSASN1Utils.getDEREncoded(signatureAlgorithmID.getParameters());
+
+			this.signatureAlgorithm = SignatureAlgorithm.forOidAndParams(oid, sigAlgParams);
 
 			SingleResp bestSingleResp = getBestSingleResp(basicOCSPResp, certId);
 			if (bestSingleResp != null) {
@@ -169,7 +176,7 @@ public class OCSPToken extends RevocationToken {
 			try {
 				archiveCutOff = archiveCutOffAsn1.getDate();
 			} catch (ParseException e) {
-				LOG.warn("Unable to extract id_pkix_ocsp_archive_cutoff : " + e.getMessage());
+				LOG.warn("Unable to extract id_pkix_ocsp_archive_cutoff : {}", e.getMessage());
 			}
 		}
 	}
@@ -195,7 +202,7 @@ public class OCSPToken extends RevocationToken {
 				DigestAlgorithm digestAlgo = DigestAlgorithm.forOID(asn1CertHash.getHashAlgorithm().getAlgorithm().getId());
 				certHash = new Digest(digestAlgo, asn1CertHash.getCertificateHash());
 			} catch (Exception e) {
-				LOG.warn("Unable to extract id_isismtt_at_certHash : " + e.getMessage());
+				LOG.warn("Unable to extract id_isismtt_at_certHash : {}", e.getMessage());
 			}
 		}
 	}

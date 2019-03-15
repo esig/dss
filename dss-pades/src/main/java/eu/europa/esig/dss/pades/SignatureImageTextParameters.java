@@ -21,32 +21,16 @@
 package eu.europa.esig.dss.pades;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.io.IOException;
-import java.io.InputStream;
-
-import eu.europa.esig.dss.DSSDocument;
-import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This class allows to custom text generation in the PAdES visible signature
  *
  */
 public class SignatureImageTextParameters {
-	
-	private static final String DEFAULT_FONT_EXTENSION = ".ttf";
-	private static final String DEFAULT_FONT_NAME = "PTSerifRegular.ttf";
 
 	private static final Color DEFAULT_BACKGROUND_COLOR = Color.WHITE;
-	private static final DSSDocument DEFAULT_FONT = new InMemoryDocument(
-			SignatureImageTextParameters.class.getResourceAsStream("/fonts/" + DEFAULT_FONT_NAME), DEFAULT_FONT_NAME);
 	private static final float DEFAULT_MARGIN = 5f;
 	private static final Color DEFAULT_TEXT_COLOR = Color.BLACK;
-	private static final float DEFAULT_TEXT_SIZE = 12f;
 
 	/**
 	 * Enum to define where to add the signer name on the image
@@ -81,12 +65,7 @@ public class SignatureImageTextParameters {
 	 * This variable defines the font to use
 	 * (default is PTSerifRegular)
 	 */
-	private DSSDocument dssFont = DEFAULT_FONT;
-	
-	/**
-	 * This variable defines a {@link java.awt.Font} to use
-	 */
-	private Font javaFont;
+	private DSSFont dssFont = DSSFileFont.initializeDefault();
 	
 	/**
 	 * This variable defines a margin in pixels to bound text around
@@ -99,12 +78,6 @@ public class SignatureImageTextParameters {
      * (default is BLACK)
 	 */
 	private Color textColor = DEFAULT_TEXT_COLOR;
-	
-	/**
-	 * This variable defines the text size to use
-	 * (default is 12)
-	 */
-	private float textSize = DEFAULT_TEXT_SIZE;
 
 	/**
 	 * This variable defines the text color to use when the signerNamePosition
@@ -128,21 +101,12 @@ public class SignatureImageTextParameters {
         this.signerTextHorizontalAlignment = signerTextHorizontalAlignment;
     }
 
-	public DSSDocument getFont() {
+	public DSSFont getFont() {
 		return dssFont;
 	}
-
-	public void setFont(DSSDocument font) {
-		this.dssFont = font;
-		initFontName();
-		initJavaFont();
-	}
 	
-	public Font getJavaFont() {
-		if (javaFont == null) {
-			initJavaFont();
-		}
-		return javaFont;
+	public void setFont(DSSFont dssFont) {
+		this.dssFont = dssFont;
 	}
 	
 	public float getMargin() {
@@ -159,14 +123,6 @@ public class SignatureImageTextParameters {
 
 	public void setTextColor(Color textColor) {
 		this.textColor = textColor;
-	}
-	
-	public float getSize() {
-		return textSize;
-	}
-	
-	public void setSize(float textSize) {
-		this.textSize = textSize;
 	}
 
 	public Color getBackgroundColor() {
@@ -185,18 +141,8 @@ public class SignatureImageTextParameters {
 		this.text = text;
 	}
 	
-	private void initFontName() {
-		if (Utils.isStringBlank(dssFont.getName())) {
-			dssFont.setName(DSSUtils.getMD5Digest(DSSUtils.toByteArray(dssFont)) + DEFAULT_FONT_EXTENSION);
-		}
-	}
-	
-	private void initJavaFont() {
-		try (InputStream is = dssFont.openStream()) {
-			this.javaFont = Font.createFont(Font.TRUETYPE_FONT, is);
-		} catch (IOException | FontFormatException e) {
-			throw new DSSException("The assigned font cannot be initialized", e);
-		}
+	public void setSize(int size) {
+		dssFont.setSize(size);
 	}
 
 }

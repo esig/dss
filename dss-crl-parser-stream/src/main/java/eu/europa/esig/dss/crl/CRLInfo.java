@@ -30,6 +30,7 @@ class CRLInfo {
 
 	private Integer version;
 	private String certificateListSignatureAlgorithmOid;
+	private byte[] certificateListSignatureAlgorithmParams;
 	private X500Principal issuer;
 	private Date thisUpdate;
 	private Date nextUpdate;
@@ -52,6 +53,14 @@ class CRLInfo {
 
 	void setCertificateListSignatureAlgorithmOid(String certificateListSignatureAlgorithmOid) {
 		this.certificateListSignatureAlgorithmOid = certificateListSignatureAlgorithmOid;
+	}
+
+	byte[] getCertificateListSignatureAlgorithmParams() {
+		return certificateListSignatureAlgorithmParams;
+	}
+
+	void setCertificateListSignatureAlgorithmParams(byte[] certificateListSignatureAlgorithmParams) {
+		this.certificateListSignatureAlgorithmParams = certificateListSignatureAlgorithmParams;
 	}
 
 	public X500Principal getIssuer() {

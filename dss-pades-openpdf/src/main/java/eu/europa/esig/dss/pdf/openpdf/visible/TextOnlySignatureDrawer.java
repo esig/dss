@@ -22,14 +22,17 @@ package eu.europa.esig.dss.pdf.openpdf.visible;
 
 import java.awt.Dimension;
 import java.io.IOException;
+import java.io.InputStream;
 
 import com.lowagie.text.Font;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.DefaultFontMapper;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 
-import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.visible.FontUtils;
@@ -61,7 +64,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			int height = parameters.getHeight();
 			if (width == 0 || height == 0) {
 				SignatureImageTextParameters textParameters = parameters.getTextParameters();
-				Dimension dimension = FontUtils.computeSize(textParameters.getJavaFont(), text, textParameters.getMargin());
+				Dimension dimension = FontUtils.computeSize(textParameters.getFont(), text, textParameters.getMargin());
 				width = dimension.width;
 				height = dimension.height;
 			}
@@ -80,18 +83,24 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 	}
 
 	private Font initFont() throws IOException {
-		try {
-			SignatureImageTextParameters textParameters = parameters.getTextParameters();
-			DSSDocument dssFont = textParameters.getFont();
-			byte[] fontBytes = DSSUtils.toByteArray(dssFont);
-			BaseFont baseFont = BaseFont.createFont(dssFont.getName(), BaseFont.WINANSI, BaseFont.EMBEDDED, true, fontBytes, null);
-			baseFont.setSubset(false);
-			Font font = new Font(baseFont, textParameters.getSize());
-			font.setColor(textParameters.getTextColor());
-			return font;
-		} catch (IOException e) {
-			throw new IOException("The iText font cannot be initialized", e);
+		SignatureImageTextParameters textParameters = parameters.getTextParameters();
+		DSSFont dssFont = textParameters.getFont();
+		BaseFont baseFont;
+		if (dssFont.isLogicalFont()) {
+			DefaultFontMapper fontMapper = new DefaultFontMapper();
+			baseFont = fontMapper.awtToPdf(dssFont.getJavaFont());
+		} else {
+			try (InputStream iStream = dssFont.getInputStream()) {
+				byte[] fontBytes = DSSUtils.toByteArray(iStream);
+				baseFont = BaseFont.createFont(dssFont.getName(), BaseFont.WINANSI, BaseFont.EMBEDDED, true, fontBytes, null);
+				baseFont.setSubset(false);
+			} catch (IOException e) {
+				throw new DSSException("The iText font cannot be initialized", e);
+			}
 		}
+		Font font = new Font(baseFont, dssFont.getSize());
+		font.setColor(textParameters.getTextColor());
+		return font;
 	}
 
 }

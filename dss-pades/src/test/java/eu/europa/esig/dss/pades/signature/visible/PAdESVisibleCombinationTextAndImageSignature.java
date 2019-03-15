@@ -35,6 +35,7 @@ import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
@@ -108,7 +109,7 @@ public class PAdESVisibleCombinationTextAndImageSignature extends PKIFactoryAcce
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
 		textParameters.setTextColor(Color.BLUE);
-		textParameters.setFont(new InMemoryDocument(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf")));
+		textParameters.setFont(new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf")));
 		textParameters.setSize(15);
 		textParameters.setSignerNamePosition(SignerPosition.TOP);
 		imageParameters.setTextParameters(textParameters);

@@ -9,6 +9,7 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.pades.SignatureImageParameters.VisualSignatureAlignmentVertical;
@@ -69,7 +70,8 @@ public class SignatureFieldDimensionAndPositionBuilder {
 		SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
 		// if text is present
 		if (textParameters != null) {
-			Font properFont = FontUtils.computeProperFont(textParameters.getJavaFont(), textParameters.getSize(), imageParameters.getDpi());
+			DSSFont dssFont = textParameters.getFont();
+			Font properFont = FontUtils.computeProperFont(dssFont.getJavaFont(), dssFont.getSize(), imageParameters.getDpi());
 			Dimension textBox = FontUtils.computeSize(properFont, textParameters.getText(), textParameters.getMargin());
 			float textWidth = (float) textBox.getWidth() / CommonDrawerUtils.getScaleFactor(dimensionAndPosition.getxDpi());
 			float textHeight = (float) textBox.getHeight() / CommonDrawerUtils.getScaleFactor(dimensionAndPosition.getyDpi());
