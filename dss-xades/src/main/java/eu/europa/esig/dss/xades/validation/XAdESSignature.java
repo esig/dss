@@ -1616,7 +1616,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public byte[] getArchiveTimestampData(final TimestampToken timestampToken, String canonicalizationMethod) {
 
 		if (LOG.isTraceEnabled()) {
-			LOG.trace("--->Get archive timestamp data:" + (timestampToken == null ? "--> CREATION" : "--> VALIDATION"));
+			LOG.trace("--->Get archive timestamp data : {}", (timestampToken == null ? "--> CREATION" : "--> VALIDATION"));
 		}
 		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
 		/**
@@ -1757,7 +1757,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					canonicalizedValue = DSSXMLUtils.canonicalizeOrSerializeSubtree(canonicalizationMethod, node);
 				}
 				if (LOG.isTraceEnabled()) {
-					LOG.trace("{}: Canonicalization: {} : \n", localName, canonicalizationMethod,
+					LOG.trace("{}: Canonicalization: {} : \n{}", localName, canonicalizationMethod,
 							new String(canonicalizedValue));
 				}
 				buffer.write(canonicalizedValue);

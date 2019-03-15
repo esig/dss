@@ -103,7 +103,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		this.params = params;
 		final ProfileParameters context = params.getContext();
 		if (LOG.isInfoEnabled()) {
-			LOG.info("====> Extending: " + (dssDocument.getName() == null ? "IN MEMORY DOCUMENT" : dssDocument.getName()));
+			LOG.info("====> Extending: {}", (dssDocument.getName() == null ? "IN MEMORY DOCUMENT" : dssDocument.getName()));
 		}
 		documentDom = DomUtils.buildDOM(dssDocument);
 

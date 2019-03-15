@@ -176,7 +176,7 @@ public class OCSPToken extends RevocationToken {
 			try {
 				archiveCutOff = archiveCutOffAsn1.getDate();
 			} catch (ParseException e) {
-				LOG.warn("Unable to extract id_pkix_ocsp_archive_cutoff : " + e.getMessage());
+				LOG.warn("Unable to extract id_pkix_ocsp_archive_cutoff : {}", e.getMessage());
 			}
 		}
 	}
@@ -202,7 +202,7 @@ public class OCSPToken extends RevocationToken {
 				DigestAlgorithm digestAlgo = DigestAlgorithm.forOID(asn1CertHash.getHashAlgorithm().getAlgorithm().getId());
 				certHash = new Digest(digestAlgo, asn1CertHash.getCertificateHash());
 			} catch (Exception e) {
-				LOG.warn("Unable to extract id_isismtt_at_certHash : " + e.getMessage());
+				LOG.warn("Unable to extract id_isismtt_at_certHash : {}", e.getMessage());
 			}
 		}
 	}

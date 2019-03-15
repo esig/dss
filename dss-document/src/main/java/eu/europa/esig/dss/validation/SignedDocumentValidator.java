@@ -128,9 +128,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			@SuppressWarnings("unchecked")
 			Class<SignedDocumentValidator> documentValidator = (Class<SignedDocumentValidator>) Class.forName(clazzToFind);
 			registredDocumentValidators.add(documentValidator);
-			LOG.info("Validator '" + documentValidator.getName() + "' is registred");
+			LOG.info("Validator '{}' is registred", documentValidator.getName());
 		} catch (ClassNotFoundException e) {
-			LOG.warn("Validator not found for signature type " + type);
+			LOG.warn("Validator not found for signature type : {}", type);
 		}
 	}
 

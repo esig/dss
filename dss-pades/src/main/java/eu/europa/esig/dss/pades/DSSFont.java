@@ -5,16 +5,16 @@ import java.io.InputStream;
 
 public interface DSSFont {
 	
-	public Font getJavaFont();
+	Font getJavaFont();
 	
-	public float getSize();
+	float getSize();
 	
-	public void setSize(float size);
+	void setSize(float size);
 	
-	public boolean isLogicalFont();
+	boolean isLogicalFont();
 	
-	public InputStream getInputStream();
+	InputStream getInputStream();
 	
-	public String getName();
+	String getName();
 
 }

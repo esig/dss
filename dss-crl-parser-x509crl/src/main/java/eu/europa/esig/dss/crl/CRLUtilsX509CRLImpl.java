@@ -157,7 +157,7 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 			try {
 				return CertificateFactory.getInstance("X.509");
 			} catch (CertificateException e1) {
-				throw new DSSException("Unable to create CertificateFactory", e);
+				throw new DSSException("Unable to create CertificateFactory", e1);
 			}
 		}
 	}

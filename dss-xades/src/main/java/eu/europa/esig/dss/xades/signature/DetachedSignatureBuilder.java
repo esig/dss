@@ -86,7 +86,7 @@ class DetachedSignatureBuilder extends XAdESSignatureBuilder {
 				// MUST comply RFC 3896 (see DSS-1475 for details)
 				reference.setUri(URLEncoder.encode(fileURI, "UTF-8").replace("+", "%20"));
 			} catch (Exception e) {
-				LOG.warn("Unable to encode uri '" + fileURI + "' : " + e.getMessage());
+				LOG.warn("Unable to encode uri '{}' : {}", fileURI, e.getMessage());
 				reference.setUri(fileURI);
 			}
 		}
