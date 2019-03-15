@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.reports.wrapper;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -407,6 +408,14 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
 		if (pdfSignatureDictionary != null) {
 			return pdfSignatureDictionary.getReason();
+		}
+		return null;
+	}
+	
+	public List<BigInteger> getSignatureByteRange() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getSignatureByteRange();
 		}
 		return null;
 	}

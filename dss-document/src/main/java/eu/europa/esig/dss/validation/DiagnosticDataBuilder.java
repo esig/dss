@@ -40,6 +40,7 @@ import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.AdapterUtils;
 import eu.europa.esig.dss.CertificatePolicy;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
@@ -417,6 +418,8 @@ public class DiagnosticDataBuilder {
 			pdfSignatureDictionary.setSubFilter(signature.getSubFilter());
 			pdfSignatureDictionary.setContactInfo(signature.getContactInfo());
 			pdfSignatureDictionary.setReason(signature.getReason());
+			pdfSignatureDictionary.getSignatureByteRange().addAll(
+					AdapterUtils.intArrayToBigIntegerList(signature.getSignatureByteRange()));
 			return pdfSignatureDictionary;
 		}
 		return null;

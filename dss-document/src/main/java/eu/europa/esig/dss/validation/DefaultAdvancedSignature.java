@@ -749,4 +749,10 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return null;
 	}
 
+	@Override
+	public int[] getSignatureByteRange() {
+		// Not applicable by default (PDF only)
+		return null;
+	}
+
 }

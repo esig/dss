@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.validation.executor;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -246,7 +247,7 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="SubFilter" type="{http://uri.etsi.org/19102/v1.2.1#}SASubFilterType"/&gt;
 		addSubFilter(sigAttributes, sigWrapper);
 		// &lt;element name="ByteRange" type="{http://uri.etsi.org/19102/v1.2.1#}SAListOfIntegersType"/&gt;
-//		sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(byteRange(sigWrapper));
+		addSignatureByteRange(sigAttributes, sigWrapper);
 		// &lt;element name="Filter" type="{http://uri.etsi.org/19102/v1.2.1#}SAFilterType"/&gt;
 		addFilter(sigAttributes, sigWrapper);
 		return sigAttributes;
@@ -383,11 +384,14 @@ public class ETSIValidationReportBuilder {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(reasonType);
 		}
 	}
-
-//	private SAListOfIntegersType byteRange(SignatureWrapper sigWrapper) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	
+	private void addSignatureByteRange(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		List<BigInteger> signatureByteRange = sigWrapper.getSignatureByteRange();
+		if (Utils.isCollectionNotEmpty(signatureByteRange)) {
+			JAXBElement<List<BigInteger>> byteRangeObject = objectFactory.createSignatureAttributesTypeByteRange(signatureByteRange);
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(byteRangeObject);
+		}
+	}
 
 	private void addSigningTime(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
 		SASigningTimeType saSigningTimeType = objectFactory.createSASigningTimeType();

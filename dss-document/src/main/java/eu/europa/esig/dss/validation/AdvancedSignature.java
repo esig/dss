@@ -449,5 +449,7 @@ public interface AdvancedSignature extends Serializable {
 	String getContactInfo();
 
 	String getReason();
+	
+	int[] getSignatureByteRange();
 
 }
