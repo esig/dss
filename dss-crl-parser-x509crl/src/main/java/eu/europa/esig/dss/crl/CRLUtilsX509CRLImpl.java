@@ -35,6 +35,7 @@ import java.security.cert.X509CRLEntry;
 import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,17 +47,6 @@ import eu.europa.esig.dss.x509.KeyUsageBit;
 public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CRLUtilsX509CRLImpl.class);
-
-	private static final CertificateFactory CERT_FACTORY;
-
-	static {
-		try {
-			CERT_FACTORY = CertificateFactory.getInstance("X.509");
-		} catch (CertificateException e) {
-			LOG.error(e.getMessage(), e);
-			throw new DSSException("Platform does not support X509 certificate", e);
-		}
-	}
 
 	/**
 	 * This method verifies: the signature of the CRL, the key usage of its signing certificate and the coherence
@@ -146,13 +136,29 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 	 */
 	private X509CRL loadCRL(final InputStream inputStream) {
 		try {
-			X509CRL crl = (X509CRL) CERT_FACTORY.generateCRL(inputStream);
+			X509CRL crl = (X509CRL) getCertificateFactory().generateCRL(inputStream);
 			if (crl == null) {
 				throw new DSSException("Unable to parse the CRL");
 			}
 			return crl;
 		} catch (CRLException e) {
 			throw new DSSException(e);
+		}
+	}
+
+	private CertificateFactory getCertificateFactory() {
+		try {
+			// TODO extract BC
+			CertificateFactory cf = CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME);
+			LOG.debug("CertificateFactory instantiated with BouncyCastle");
+			return cf;
+		} catch (CertificateException | NoSuchProviderException e) {
+			LOG.debug("Unable to instantiate with BouncyCastle (not registered ?), trying with default CertificateFactory");
+			try {
+				return CertificateFactory.getInstance("X.509");
+			} catch (CertificateException e1) {
+				throw new DSSException("Unable to create CertificateFactory", e);
+			}
 		}
 	}
 

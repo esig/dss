@@ -306,6 +306,17 @@ public abstract class AbstractTestCRLUtils {
 		}
 	}
 
+	@Test(expected = DSSException.class)
+	public void testPSSwithoutBouncyCastle() throws Exception {
+		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/d-trust_root_ca_1_2017.crl");
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/D-TRUST_Root_CA_1_2017.crt")) {
+
+			CertificateToken certificateToken = loadCert(isCer);
+
+			CRLUtils.isValidCRL(is, certificateToken);
+		}
+	}
+
 	protected CertificateToken loadCert(InputStream is) throws CertificateException {
 		X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(is);
 		return new CertificateToken(certificate);
