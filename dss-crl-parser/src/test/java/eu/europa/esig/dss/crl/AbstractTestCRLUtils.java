@@ -317,6 +317,15 @@ public abstract class AbstractTestCRLUtils {
 		}
 	}
 
+	@Test(expected = DSSException.class)
+	public void incompleteCRL() throws Exception {
+		try (InputStream is = new ByteArrayInputStream(new byte[] { 1, 2, 3 });
+				InputStream isCer = AbstractTestCRLUtils.class.getResourceAsStream("/belgiumrs2.crt")) {
+			CertificateToken certificateToken = loadCert(isCer);
+			CRLUtils.isValidCRL(is, certificateToken);
+		}
+	}
+
 	protected CertificateToken loadCert(InputStream is) throws CertificateException {
 		X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(is);
 		return new CertificateToken(certificate);
