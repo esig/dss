@@ -208,6 +208,8 @@ public class ETSIValidationReportBuilder {
 		addCommitmentTypeIndications(sigAttributes, sigWrapper);
 		// &lt;element name="AllDataObjectsTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
 		addTimestamps(sigAttributes, sigWrapper, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
+		// see TS 119 102-2 - V1.2.1 A.6.3 CAdES
+		addTimestamps(sigAttributes, sigWrapper, TimestampType.CONTENT_TIMESTAMP);
 		// &lt;element name="IndividualDataObjectsTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
 		addTimestamps(sigAttributes, sigWrapper, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 		// &lt;element name="SigPolicyIdentifier" type="{http://uri.etsi.org/19102/v1.2.1#}SASigPolicyIdentifierType"/&gt;
@@ -269,6 +271,7 @@ public class ETSIValidationReportBuilder {
 		case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
 			return objectFactory.createSignatureAttributesTypeIndividualDataObjectsTimeStamp(timestamp);
 		case ALL_DATA_OBJECTS_TIMESTAMP:
+		case CONTENT_TIMESTAMP:
 			return objectFactory.createSignatureAttributesTypeAllDataObjectsTimeStamp(timestamp);
 		case VALIDATION_DATA_REFSONLY_TIMESTAMP:
 			return objectFactory.createSignatureAttributesTypeRefsOnlyTimeStamp(timestamp);
