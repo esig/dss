@@ -468,7 +468,7 @@ public class DiagnosticDataBuilder {
 		if (reason != null) {
 			xmlRevocation.setReason(reason.name());
 		}
-		xmlRevocation.setSource(revocationToken.getClass().getSimpleName());
+		xmlRevocation.setSource(RevocationSourceType.valueOf(revocationToken.getRevocationSourceType().name()));
 
 		String sourceURL = revocationToken.getSourceURL();
 		if (Utils.isStringNotEmpty(sourceURL)) { // not empty = online

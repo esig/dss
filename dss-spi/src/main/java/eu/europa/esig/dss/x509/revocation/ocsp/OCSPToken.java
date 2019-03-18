@@ -54,6 +54,7 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
+import eu.europa.esig.dss.x509.revocation.RevocationSourceType;
 
 /**
  * OCSP Signed Token which encapsulate BasicOCSPResp (BC).
@@ -88,6 +89,7 @@ public class OCSPToken extends RevocationToken {
 	private BasicOCSPResp basicOCSPResp;
 
 	public OCSPToken() {
+		this.revocationSourceType = RevocationSourceType.OCSP;
 	}
 
 	@Override

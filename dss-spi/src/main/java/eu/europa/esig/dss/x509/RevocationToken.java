@@ -24,11 +24,17 @@ import java.util.Date;
 
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
+import eu.europa.esig.dss.x509.revocation.RevocationSourceType;
 
 @SuppressWarnings("serial")
 public abstract class RevocationToken extends Token {
 
 	private String relatedCertificateID;
+	
+	/**
+	 * An identifier referencing a CRL or OCSP response has been used for determining the revocation status.
+	 */
+	protected RevocationSourceType revocationSourceType;
 
 	/**
 	 * Origin of the revocation data (signature or external)
@@ -89,6 +95,10 @@ public abstract class RevocationToken extends Token {
 	 * Revocation Token Key, used for {@link RevocationToken} identification (i.e. id in DB)
 	 */
 	protected String revocationTokenKey;
+	
+	public RevocationSourceType getRevocationSourceType() {
+		return revocationSourceType;
+	}
 
 	public String getRelatedCertificateID() {
 		return relatedCertificateID;

@@ -462,7 +462,7 @@
 	<xs:complexType name="Revocation">
 		<xs:sequence>
 			<xs:element name="Origin" type="xs:string" />
-			<xs:element name="Source" type="xs:string" />
+			<xs:element name="Source" type="RevocationSourceType" />
 			<xs:element name="SourceAddress" type="xs:string" minOccurs="0" />
 			<xs:element name="Available" type="xs:boolean" minOccurs="0" />
 			<xs:element name="Status" type="xs:boolean" />
@@ -486,6 +486,13 @@
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 	</xs:complexType>
+	
+	<xs:simpleType name="RevocationSourceType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CRL" />
+			<xs:enumeration value="OCSP" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="TrustedList">
 		<xs:sequence>

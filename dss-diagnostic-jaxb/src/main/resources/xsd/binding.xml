@@ -32,11 +32,16 @@
 				printMethod="eu.europa.esig.dss.jaxb.parsers.DigestMatcherTypeParser.print" />
 		</jaxb:bindings>
 		
-		
   <jaxb:bindings node="//xs:simpleType[@name='ScopeType']">
 			<jaxb:javaType name="eu.europa.esig.dss.validation.SignatureScopeType" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.SignatureScopeTypeParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.SignatureScopeTypeParser.print" />
+		</jaxb:bindings>
+		
+  <jaxb:bindings node="//xs:simpleType[@name='RevocationSourceType']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.RevocationSourceType" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.RevocationSourceTypeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationSourceTypeParser.print" />
 		</jaxb:bindings>
   </jaxb:bindings>
   

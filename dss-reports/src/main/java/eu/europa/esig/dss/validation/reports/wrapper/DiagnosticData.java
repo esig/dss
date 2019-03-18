@@ -35,6 +35,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.RevocationSourceType;
 
 /**
  * This class represents all static data extracted by the process analysing the signature. They are independent from the
@@ -450,12 +451,12 @@ public class DiagnosticData {
 	 *            DSS certificate identifier to be checked
 	 * @return revocation source
 	 */
-	public String getCertificateRevocationSource(final String dssCertificateId) {
+	public RevocationSourceType getCertificateRevocationSource(final String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
 		if (certificate.isRevocationDataAvailable()) {
 			return certificate.getLatestRevocationData().getSource();
 		}
-		return Utils.EMPTY_STRING;
+		return null;
 	}
 
 	/**
