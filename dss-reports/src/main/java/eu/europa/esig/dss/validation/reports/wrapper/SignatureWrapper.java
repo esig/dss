@@ -40,6 +40,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.x509.TimestampType;
 
 public class SignatureWrapper extends AbstractTokenProxy {
@@ -58,6 +59,16 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	@Override
 	public List<XmlDigestMatcher> getDigestMatchers() {
 		return signature.getDigestMatchers();
+	}
+
+	public XmlDigestMatcher getMessageDigest() {
+		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
+		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
+			if (DigestMatcherType.MESSAGE_DIGEST == xmlDigestMatcher.getType()) {
+				return xmlDigestMatcher;
+			}
+		}
+		return null;
 	}
 
 	@Override

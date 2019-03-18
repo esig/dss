@@ -438,6 +438,10 @@ public interface AdvancedSignature extends Serializable {
 	 */
 	List<ReferenceValidation> getReferenceValidations();
 
+	// ------------------------ CAdES Specifics for TS 119 102-2
+
+	byte[] getMessageDigestValue();
+
 	// ------------------------ PDF Specifics for TS 119 102-2
 
 	String getSignatureName();

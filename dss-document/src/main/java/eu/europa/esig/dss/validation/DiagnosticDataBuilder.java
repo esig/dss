@@ -501,7 +501,7 @@ public class DiagnosticDataBuilder {
 	private List<XmlDigestAlgoAndValue> getXmlDigestAlgoAndValues(Set<DigestAlgorithm> usedDigestAlgorithms, Token token) {
 		List<XmlDigestAlgoAndValue> result = new ArrayList<XmlDigestAlgoAndValue>();
 		for (final DigestAlgorithm digestAlgorithm : usedDigestAlgorithms) {
-			result.add(getXmlDigestAlgoAndValue(digestAlgorithm, Utils.toBase64(token.getDigest(digestAlgorithm))));
+			result.add(getXmlDigestAlgoAndValue(digestAlgorithm, token.getDigest(digestAlgorithm)));
 		}
 		return result;
 	}
@@ -695,10 +695,10 @@ public class DiagnosticDataBuilder {
 		final String notice = signaturePolicy.getNotice();
 		xmlPolicy.setNotice(notice);
 
-		final String digestValue = signaturePolicy.getDigestValue();
+		final byte[] digestValue = signaturePolicy.getDigestValue();
 		final DigestAlgorithm signPolicyHashAlgFromSignature = signaturePolicy.getDigestAlgorithm();
 
-		if (Utils.isStringNotEmpty(digestValue)) {
+		if (Utils.isArrayNotEmpty(digestValue)) {
 			xmlPolicy.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(signPolicyHashAlgFromSignature, digestValue));
 		}
 
@@ -775,7 +775,7 @@ public class DiagnosticDataBuilder {
 		digestMatcher.setType(DigestMatcherType.MESSAGE_IMPRINT);
 		DigestAlgorithm digestAlgo = timestampToken.getSignedDataDigestAlgo();
 		digestMatcher.setDigestMethod(digestAlgo == null ? "" : digestAlgo.getName());
-		digestMatcher.setDigestValue(timestampToken.getEncodedSignedDataDigestValue());
+		digestMatcher.setDigestValue(timestampToken.getMessageImprintDigest());
 		digestMatcher.setDataFound(timestampToken.isMessageImprintDataFound());
 		digestMatcher.setDataIntact(timestampToken.isMessageImprintDataIntact());
 		return digestMatcher;
@@ -868,7 +868,7 @@ public class DiagnosticDataBuilder {
 		ref.setName(referenceValidation.getName());
 		Digest digest = referenceValidation.getDigest();
 		if (digest != null) {
-			ref.setDigestValue(Utils.toBase64(digest.getValue()));
+			ref.setDigestValue(digest.getValue());
 			DigestAlgorithm algorithm = digest.getAlgorithm();
 			ref.setDigestMethod(algorithm != null ? algorithm.getName() : "?");
 		}
@@ -1124,7 +1124,7 @@ public class DiagnosticDataBuilder {
 
 	}
 
-	private XmlDigestAlgoAndValue getXmlDigestAlgoAndValue(DigestAlgorithm digestAlgo, String digestValue) {
+	private XmlDigestAlgoAndValue getXmlDigestAlgoAndValue(DigestAlgorithm digestAlgo, byte[] digestValue) {
 		XmlDigestAlgoAndValue xmlDigestAlgAndValue = new XmlDigestAlgoAndValue();
 		xmlDigestAlgAndValue.setDigestMethod(digestAlgo == null ? "" : digestAlgo.getName());
 		xmlDigestAlgAndValue.setDigestValue(digestValue);

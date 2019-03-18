@@ -267,13 +267,12 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * Retrieves the encoded signed data digest value.
+	 * Retrieves the message-imprint digest value.
 	 *
-	 * @return base 64 encoded {@code String}
+	 * @return the byte array with the message-imprint digest value
 	 */
-	public String getEncodedSignedDataDigestValue() {
-		final byte[] messageImprintDigest = timeStamp.getTimeStampInfo().getMessageImprintDigest();
-		return Utils.toBase64(messageImprintDigest);
+	public byte[] getMessageImprintDigest() {
+		return timeStamp.getTimeStampInfo().getMessageImprintDigest();
 	}
 
 	/**

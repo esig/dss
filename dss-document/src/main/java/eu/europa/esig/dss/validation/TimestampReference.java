@@ -24,7 +24,6 @@ import java.io.Serializable;
 
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * This class stocks the timestamp reference, which is composed of:
@@ -38,7 +37,7 @@ public class TimestampReference implements Serializable {
 	private String signatureId;
 
 	private DigestAlgorithm digestAlgorithm;
-	private String digestValue;
+	private byte[] digestValue;
 	private TimestampedObjectType category;
 
 	public TimestampReference(final String signatureId) {
@@ -48,7 +47,7 @@ public class TimestampReference implements Serializable {
 		}
 		this.signatureId = signatureId;
 		this.digestAlgorithm = DigestAlgorithm.SHA1;
-		this.digestValue = Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA1, signatureId.getBytes()));
+		this.digestValue = DSSUtils.digest(DigestAlgorithm.SHA1, signatureId.getBytes());
 		this.category = TimestampedObjectType.SIGNATURE;
 	}
 
@@ -57,7 +56,7 @@ public class TimestampReference implements Serializable {
 		this.category = category;
 	}
 
-	public TimestampReference(final DigestAlgorithm digestAlgorithm, final String digestValue) {
+	public TimestampReference(final DigestAlgorithm digestAlgorithm, final byte[] digestValue) {
 
 		if (digestAlgorithm == null) {
 			throw new NullPointerException("digestAlgorithm");
@@ -70,7 +69,7 @@ public class TimestampReference implements Serializable {
 		this.category = TimestampedObjectType.CERTIFICATE;
 	}
 
-	public TimestampReference(final DigestAlgorithm digestAlgorithm, final String digestValue, final TimestampedObjectType category) {
+	public TimestampReference(final DigestAlgorithm digestAlgorithm, final byte[] digestValue, final TimestampedObjectType category) {
 
 		this(digestAlgorithm, digestValue);
 		this.category = category;
@@ -80,7 +79,7 @@ public class TimestampReference implements Serializable {
 		return digestAlgorithm;
 	}
 
-	public String getDigestValue() {
+	public byte[] getDigestValue() {
 		return digestValue;
 	}
 

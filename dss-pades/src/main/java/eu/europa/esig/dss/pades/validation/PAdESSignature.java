@@ -250,7 +250,7 @@ public class PAdESSignature extends CAdESSignature {
 
 	private TimestampReference createCertificateTimestampReference(CertificateRef ref) {
 		usedCertificatesDigestAlgorithms.add(ref.getDigestAlgorithm());
-		return new TimestampReference(ref.getDigestAlgorithm(), Utils.toBase64(ref.getDigestValue()), TimestampedObjectType.CERTIFICATE);
+		return new TimestampReference(ref.getDigestAlgorithm(), ref.getDigestValue(), TimestampedObjectType.CERTIFICATE);
 	}
 
 	@Override
@@ -357,6 +357,7 @@ public class PAdESSignature extends CAdESSignature {
 		return DSSUtils.getMD5Digest(baos.toByteArray());
 	}
 
+	@Override
 	public int[] getSignatureByteRange() {
 		return pdfSignatureInfo.getSignatureByteRange();
 	}

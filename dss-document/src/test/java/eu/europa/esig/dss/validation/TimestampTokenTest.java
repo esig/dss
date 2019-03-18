@@ -74,7 +74,7 @@ public class TimestampTokenTest {
 			assertTrue(Utils.isCollectionNotEmpty(token.getCertificates()));
 			assertEquals(TimestampType.ARCHIVE_TIMESTAMP, token.getTimeStampType());
 			assertEquals(DigestAlgorithm.SHA256, token.getSignedDataDigestAlgo());
-			assertTrue(Utils.isStringNotBlank(token.getEncodedSignedDataDigestValue()));
+			assertTrue(Utils.isArrayNotEmpty(token.getMessageImprintDigest()));
 			assertNull(token.getSignatureAlgorithm());
 
 			List<CertificateToken> tstCerts = token.getCertificates();

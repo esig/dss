@@ -45,10 +45,7 @@ public class SignaturePolicy {
 
 	private DigestAlgorithm digestAlgorithm;
 
-	/*
-	 * Base64 encoded digest value
-	 */
-	private String digestValue;
+	private byte[] digestValue;
 
 	private DSSDocument policyContent;
 	
@@ -107,11 +104,11 @@ public class SignaturePolicy {
 	 * 
 	 * @return the digest value of the signature policy (or null)
 	 */
-	public String getDigestValue() {
+	public byte[] getDigestValue() {
 		return digestValue;
 	}
 
-	public void setDigestValue(final String digestValue) {
+	public void setDigestValue(final byte[] digestValue) {
 		this.digestValue = digestValue;
 	}
 

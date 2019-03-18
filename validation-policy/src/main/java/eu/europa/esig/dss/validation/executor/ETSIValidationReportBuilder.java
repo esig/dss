@@ -7,6 +7,7 @@ import java.util.List;
 import javax.xml.bind.JAXBElement;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -22,6 +23,7 @@ import eu.europa.esig.jaxb.validationreport.ObjectFactory;
 import eu.europa.esig.jaxb.validationreport.SACommitmentTypeIndicationType;
 import eu.europa.esig.jaxb.validationreport.SAContactInfoType;
 import eu.europa.esig.jaxb.validationreport.SAFilterType;
+import eu.europa.esig.jaxb.validationreport.SAMessageDigestType;
 import eu.europa.esig.jaxb.validationreport.SANameType;
 import eu.europa.esig.jaxb.validationreport.SAOneSignerRoleType;
 import eu.europa.esig.jaxb.validationreport.SAReasonType;
@@ -237,6 +239,7 @@ public class ETSIValidationReportBuilder {
 		addTimestamps(sigAttributes, sigWrapper, TimestampType.ARCHIVE_TIMESTAMP);
 		// &lt;element name="RenewedDigests" type="{http://uri.etsi.org/19102/v1.2.1#}SAListOfIntegersType"/&gt;
 		// &lt;element name="MessageDigest" type="{http://uri.etsi.org/19102/v1.2.1#}SAMessageDigestType"/&gt;
+		addMessageDigest(sigAttributes, sigWrapper);
 		// &lt;element name="DSS" type="{http://uri.etsi.org/19102/v1.2.1#}SADSSType"/&gt;
 		// &lt;element name="VRI" type="{http://uri.etsi.org/19102/v1.2.1#}SAVRIType"/&gt;
 		// &lt;element name="DocTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
@@ -253,6 +256,15 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="Filter" type="{http://uri.etsi.org/19102/v1.2.1#}SAFilterType"/&gt;
 		addFilter(sigAttributes, sigWrapper);
 		return sigAttributes;
+	}
+
+	private void addMessageDigest(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		XmlDigestMatcher messageDigest = sigWrapper.getMessageDigest();
+		if (messageDigest != null) {
+			SAMessageDigestType messageDigestType = objectFactory.createSAMessageDigestType();
+			messageDigestType.setDigest(messageDigest.getDigestValue());
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(messageDigestType);
+		}
 	}
 
 	private void addTimestamps(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper, TimestampType timestampType) {

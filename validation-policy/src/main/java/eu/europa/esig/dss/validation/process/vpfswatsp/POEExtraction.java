@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -119,7 +120,7 @@ public class POEExtraction {
 				if (Utils.isCollectionNotEmpty(digestAlgAndValues)) {
 					for (XmlDigestAlgoAndValue certificateDigestAndValue : digestAlgAndValues) {
 						if (Utils.areStringsEqual(certificateDigestAndValue.getDigestMethod(), digestAlgoValue.getDigestMethod())
-								&& Utils.areStringsEqual(certificateDigestAndValue.getDigestValue(), digestAlgoValue.getDigestValue())) {
+								&& Arrays.equals(certificateDigestAndValue.getDigestValue(), digestAlgoValue.getDigestValue())) {
 							return certificate.getId();
 						}
 					}
@@ -139,7 +140,7 @@ public class POEExtraction {
 						List<XmlDigestAlgoAndValue> digestAlgAndValues = revocationData.getDigestAlgoAndValues();
 						for (XmlDigestAlgoAndValue revocDigestAndValue : digestAlgAndValues) {
 							if (Utils.areStringsEqual(revocDigestAndValue.getDigestMethod(), digestAlgoValue.getDigestMethod())
-									&& Utils.areStringsEqual(revocDigestAndValue.getDigestValue(), digestAlgoValue.getDigestValue())) {
+									&& Arrays.equals(revocDigestAndValue.getDigestValue(), digestAlgoValue.getDigestValue())) {
 								return revocationData.getId();
 							}
 						}
