@@ -21,11 +21,15 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 	protected OnlineRevocationSource<T> proxiedSource;
 
 	/**
-	 * In case if the nextUpdate date is not specified in the response, this value used to compute the parameter,
-	 * based on the delay from thisUpdate
+	 * Default cache delay in case of null nextUpdate in the revocation data
 	 */
-	protected Long nextUpdateDelay;
+	private Long defaultNextUpdateDelay;
 	
+	/**
+	 * Maximum cache delay for the revocation data
+	 */
+	private Long maxNexUpdateDelay;
+
 	/**
 	 * If true, removes revocation tokens from DB with nextUpdate before the current date
 	 */
@@ -77,15 +81,36 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 	protected abstract void removeRevocation(T token);
 	
 	/**
-	 * Sets the expiration time for the cached files in milliseconds. If more
-	 * time has passed from the revocation token's thisUpdate and next update 
-	 * time is not specified, then a fresh copy is downloaded and cached,
-	 * otherwise a cached copy is used.
-	 *
-	 * @param cacheExpirationTimeInMilliseconds long value
+	 * Sets the default next update delay for the cached files in milliseconds. If
+	 * more time has passed from the revocation token's thisUpdate and next update
+	 * time is not specified, then a fresh copy is downloaded and cached, otherwise
+	 * a cached copy is used.
+	 * 
+	 * {@code
+	 *  If revocation.nextUpdate = null, then nextUpdate = revocation.thisUpdate + defaultNextUpdateDelay
+	 *}
+	 * 
+	 * @param defaultNextUpdateDelay
+	 *                               long value (milli seconds)
 	 */
-	public void setCacheExpirationTime(final long cacheExpirationTimeInMilliseconds) {
-		this.nextUpdateDelay = cacheExpirationTimeInMilliseconds;
+	public void setDefaultNextUpdateDelay(final Long defaultNextUpdateDelay) {
+		this.defaultNextUpdateDelay = defaultNextUpdateDelay;
+	}
+
+	/**
+	 * Sets the maximum allowed nextUpdate delay for cached files in milliseconds.
+	 * Allows to force refresh in case of long periods between revocation
+	 * publication (eg : 6 months for ARL).
+	 * 
+	 * {@code
+	 *  If revocation.nextUpdate > revocation.thisUpdate + maxNexUpdateDelay, then nextUpdate = revocation.thisUpdate + maxNexUpdateDelay
+	 *}
+	 * 
+	 * @param maxNexUpdateDelay
+	 *                          long value (milli seconds)
+	 */
+	public void setMaxNexUpdateDelay(final Long maxNexUpdateDelay) {
+		this.maxNexUpdateDelay = maxNexUpdateDelay;
 	}
 
 	/**
@@ -165,7 +190,7 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 			final T revocationToken = findRevocation(key, certificateToken, issuerCertificateToken);
 			if (revocationToken != null) {
 				if (isNotExpired(revocationToken)) {
-					LOG.info("Revocation token for certificate '{}' is in cache", certificateToken.getDSSIdAsString());
+					LOG.info("Revocation token for certificate '{}' is loaded from the cache", certificateToken.getDSSIdAsString());
 					return revocationToken;
 				} else {
 					LOG.debug("Revocation token is expired");
@@ -195,29 +220,41 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 			return null;
 		}
 		final T newToken = proxiedSource.getRevocationToken(certificateToken, issuerCertificateToken);
-		if ((newToken != null) && newToken.isValid() && isNotExpired(newToken)) {
-			LOG.info("Revocation token for certificate '{}' is added/updated in the cache", certificateToken.getDSSIdAsString());
+		if ((newToken != null) && newToken.isValid()) {
 			if (!keys.contains(newToken.getRevocationTokenKey())) {
+				LOG.info("Revocation token for certificate '{}' is added in the cache", certificateToken.getDSSIdAsString());
 				insertRevocation(newToken);
 			} else {
+				LOG.info("Revocation token for certificate '{}' is updated in the cache", certificateToken.getDSSIdAsString());
 				updateRevocation(newToken);
 			}
 		}
 		return newToken;
 	}
-	
+
 	/**
-	 * Checks if the nextUpdate date is currently valid with respect of nextUpdateDelay parameter
-	 * if token does not contain the nextUpdate date
-	 * @param token {@link CRLToken} or {@link OCSPToken}
+	 * Checks if the nextUpdate date is currently valid with respect of
+	 * nextUpdateDelay and maxNexUpdateDelay parameters.
+	 * 
+	 * @param token
+	 *              {@link CRLToken} or {@link OCSPToken}
 	 * @return TRUE if the token is still valid, FALSE otherwise
 	 */
 	private boolean isNotExpired(T token) {
+		final Date thisUpdate = token.getThisUpdate();
 		Date nextUpdate = token.getNextUpdate();
-		if (nextUpdate == null && nextUpdateDelay != null) {
-			nextUpdate = new Date(token.getThisUpdate().getTime() + nextUpdateDelay);
+		if (nextUpdate == null && defaultNextUpdateDelay != null) {
+			nextUpdate = new Date(thisUpdate.getTime() + defaultNextUpdateDelay);
 		}
 		if (nextUpdate != null) {
+
+			if (maxNexUpdateDelay != null) {
+				Date maxNextUpdate = new Date(thisUpdate.getTime() + maxNexUpdateDelay);
+				if (nextUpdate.after(maxNextUpdate)) {
+					nextUpdate = maxNextUpdate;
+				}
+			}
+
 			return nextUpdate.after(new Date());
 		}
 		return false;
