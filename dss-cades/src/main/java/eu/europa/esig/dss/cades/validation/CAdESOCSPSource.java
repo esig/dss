@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Set;
@@ -43,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
 
 /**
@@ -50,6 +51,7 @@ import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
  *
  *
  */
+@SuppressWarnings("serial")
 public class CAdESOCSPSource extends OfflineOCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESOCSPSource.class);
@@ -71,9 +73,9 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 	}
 
 	@Override
-	public List<BasicOCSPResp> getContainedOCSPResponses() {
+	public Map<BasicOCSPResp, RevocationOrigin> getContainedOCSPResponses() {
 
-		final List<BasicOCSPResp> basicOCSPResps = new ArrayList<BasicOCSPResp>();
+		final Map<BasicOCSPResp, RevocationOrigin> basicOCSPResps = new HashMap<BasicOCSPResp, RevocationOrigin>();
 		// Add OCSPs from SignedData
 		addBasicOcspRespFrom_id_pkix_ocsp_basic(basicOCSPResps);
 		addBasicOcspRespFrom_id_ri_ocsp_response(basicOCSPResps);
@@ -107,7 +109,7 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 					for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
 
 						final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
-						addBasicOcspResp(basicOCSPResps, basicOCSPResp);
+						addBasicOcspResp(basicOCSPResps, basicOCSPResp, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
 					}
 					/* TODO: should add also OtherRevVals, but:
 					 "The syntax and semantics of the other revocation values (OtherRevVals) are outside the scope of the present
@@ -139,7 +141,7 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 		return basicOCSPResps;
 	}
 
-	private void addBasicOcspRespFrom_id_ri_ocsp_response(final List<BasicOCSPResp> basicOCSPResps) {
+	private void addBasicOcspRespFrom_id_ri_ocsp_response(final Map<BasicOCSPResp, RevocationOrigin> basicOCSPResps) {
 		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
 		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
 		for (final Object object : otherRevocationInfoMatches) {
@@ -152,7 +154,7 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 					final OCSPResp ocspResp = CMSUtils.getOcspResp(otherRevocationInfoMatch);
 					basicOCSPResp = CMSUtils.getBasicOcspResp(ocspResp);
 				}
-				addBasicOcspResp(basicOCSPResps, basicOCSPResp);
+				addBasicOcspResp(basicOCSPResps, basicOCSPResp, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
 			} else {
 				LOG.warn("Unsupported object type for id_ri_ocsp_response (SHALL be DER encoding) : {}",
 						object.getClass().getSimpleName());
@@ -160,14 +162,14 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 		}
 	}
 
-	private void addBasicOcspRespFrom_id_pkix_ocsp_basic(final List<BasicOCSPResp> basicOCSPResps) {
+	private void addBasicOcspRespFrom_id_pkix_ocsp_basic(final Map<BasicOCSPResp, RevocationOrigin> basicOCSPResps) {
 		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
 		for (final Object object : otherRevocationInfoMatches) {
 			if (object instanceof DERSequence) {
 				final DERSequence otherRevocationInfoMatch = (DERSequence) object;
 				final BasicOCSPResp basicOCSPResp = CMSUtils.getBasicOcspResp(otherRevocationInfoMatch);
-				addBasicOcspResp(basicOCSPResps, basicOCSPResp);
+				addBasicOcspResp(basicOCSPResps, basicOCSPResp, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
 			} else {
 				LOG.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be DER encoding) : {}",
 						object.getClass().getSimpleName());
@@ -175,9 +177,10 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 		}
 	}
 
-	private void addBasicOcspResp(final List<BasicOCSPResp> basicOCSPResps, final BasicOCSPResp basicOCSPResp) {
+	private void addBasicOcspResp(final Map<BasicOCSPResp, RevocationOrigin> basicOCSPRespsMap, final BasicOCSPResp basicOCSPResp,
+			RevocationOrigin origin) {
 		if (basicOCSPResp != null) {
-			basicOCSPResps.add(basicOCSPResp);
+			basicOCSPRespsMap.put(basicOCSPResp, origin);
 		}
 	}
 

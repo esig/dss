@@ -20,15 +20,14 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
@@ -49,20 +48,15 @@ public class XAdESCRLSource extends OfflineCRLSource {
 		Objects.requireNonNull(signatureElement, "Signature element cannot be null");
 		Objects.requireNonNull(xPathQueryHolder, "XPathQueryHolder cannot be null");
 
-		Set<String> base64Crls = new HashSet<String>();
-		collect(base64Crls, signatureElement, xPathQueryHolder.XPATH_CRL_VALUES_ENCAPSULATED_CRL);
-		collect(base64Crls, signatureElement, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_CRL_VALUES);
-
-		for (String base64Crl : base64Crls) {
-			addCRLBinary(Utils.fromBase64(base64Crl));
-		}
+		collect(signatureElement, xPathQueryHolder.XPATH_CRL_VALUES_ENCAPSULATED_CRL, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
+		collect(signatureElement, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_CRL_VALUES, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
 	}
 
-	private void collect(Set<String> base64Crls, Element signatureElement, final String xPathQuery) {
+	private void collect(Element signatureElement, final String xPathQuery, RevocationOrigin revocationOrigin) {
 		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQuery);
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 			final Element crlValueEl = (Element) nodeList.item(ii);
-			base64Crls.add(crlValueEl.getTextContent());
+			addCRLBinary(Utils.fromBase64(crlValueEl.getTextContent()), revocationOrigin);
 		}
 	}
 

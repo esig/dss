@@ -20,11 +20,13 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -40,6 +42,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -83,6 +86,12 @@ public class XAdESLTACheckTimeStampedTimestampIDTest extends PKIFactoryAccess {
 				}
 				assertTrue(coverPreviousTsp);
 			}
+		}
+		
+		Set<RevocationWrapper> revocationData = diagnostic.getAllRevocationData();
+		for (RevocationWrapper revocationWrapper : revocationData) {
+			assertNotNull(revocationWrapper.getOrigin());
+			assertNotNull(revocationWrapper.getSource());
 		}
 	}
 

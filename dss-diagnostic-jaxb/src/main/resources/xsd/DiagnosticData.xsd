@@ -461,7 +461,7 @@
 	
 	<xs:complexType name="Revocation">
 		<xs:sequence>
-			<xs:element name="Origin" type="xs:string" />
+			<xs:element name="Origin" type="RevocationOriginType" />
 			<xs:element name="Source" type="RevocationSourceType" />
 			<xs:element name="SourceAddress" type="xs:string" minOccurs="0" />
 			<xs:element name="Available" type="xs:boolean" minOccurs="0" />
@@ -486,6 +486,19 @@
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 	</xs:complexType>
+	
+	<xs:simpleType name="RevocationOriginType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="INTERNAL_REVOCATION_VALUES" />
+			<xs:enumeration value="INTERNAL_ATTRIBUTE_REVOCATION_VALUES" />
+			<xs:enumeration value="INTERNAL_TIMESTAMP_REVOCATION_VALUES" />
+			<xs:enumeration value="INTERNAL_DSS" />
+			<xs:enumeration value="INTERNAL_VRI" />
+			<xs:enumeration value="SIGNATURE" /> <!-- To support old diagnostic data origin -->
+			<xs:enumeration value="EXTERNAL" />
+			<xs:enumeration value="CACHED" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:simpleType name="RevocationSourceType" final="restriction">
 		<xs:restriction base="xs:string">

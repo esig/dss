@@ -20,10 +20,13 @@
  */
 package eu.europa.esig.dss.x509.revocation.ocsp;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+
+import eu.europa.esig.dss.x509.RevocationOrigin;
 
 /**
  * This class allows to handle a list OCSP source.
@@ -31,10 +34,10 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
  */
 public class ListOCSPSource extends OfflineOCSPSource {
 
-	protected List<BasicOCSPResp> basicOCSPRespList = null;
+	protected Map<BasicOCSPResp, RevocationOrigin> basicOCSPRespList = null;
 
 	public ListOCSPSource() {
-		basicOCSPRespList = new ArrayList<BasicOCSPResp>();
+		basicOCSPRespList = new HashMap<BasicOCSPResp, RevocationOrigin>();
 	}
 
 	/**
@@ -44,11 +47,14 @@ public class ListOCSPSource extends OfflineOCSPSource {
 	 *            an offline ocsp source
 	 */
 	public ListOCSPSource(final OfflineOCSPSource ocspSource) {
-		basicOCSPRespList = new ArrayList<BasicOCSPResp>(ocspSource.getContainedOCSPResponses());
+		basicOCSPRespList = new HashMap<BasicOCSPResp, RevocationOrigin>();
+		if (ocspSource.getContainedOCSPResponses() != null) {
+			basicOCSPRespList = new HashMap<BasicOCSPResp, RevocationOrigin>(ocspSource.getContainedOCSPResponses());
+		}
 	}
 
 	@Override
-	public List<BasicOCSPResp> getContainedOCSPResponses() {
+	public Map<BasicOCSPResp, RevocationOrigin> getContainedOCSPResponses() {
 		return basicOCSPRespList;
 	}
 
@@ -61,11 +67,9 @@ public class ListOCSPSource extends OfflineOCSPSource {
 	 *            the source to be added
 	 */
 	public void addAll(final OfflineOCSPSource offlineOCSPSource) {
-
-		for (BasicOCSPResp basicOCSPResp : offlineOCSPSource.getContainedOCSPResponses()) {
-
-			if (!basicOCSPRespList.contains(basicOCSPResp)) {
-				basicOCSPRespList.add(basicOCSPResp);
+		for (Entry<BasicOCSPResp, RevocationOrigin> basicOCSPRespEntry : offlineOCSPSource.getContainedOCSPResponses().entrySet()) {
+			if (!basicOCSPRespList.containsKey(basicOCSPRespEntry.getKey())) {
+				basicOCSPRespList.put(basicOCSPRespEntry.getKey(), basicOCSPRespEntry.getValue());
 			}
 		}
 	}

@@ -20,11 +20,9 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
@@ -34,6 +32,7 @@ import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
@@ -41,6 +40,7 @@ import eu.europa.esig.dss.xades.XPathQueryHolder;
  * Retrieves OCSP values from an XAdES (XL/LT) signature.
  *
  */
+@SuppressWarnings("serial")
 public class XAdESOCSPSource extends OfflineOCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESOCSPSource.class);
@@ -49,7 +49,7 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 
 	private final XPathQueryHolder xPathQueryHolder;
 
-	private List<BasicOCSPResp> containedOCSPResponses;
+	private Map<BasicOCSPResp, RevocationOrigin> containedOCSPResponses = new HashMap<BasicOCSPResp, RevocationOrigin>();
 
 	/**
 	 * The default constructor for XAdESOCSPSource.
@@ -68,46 +68,40 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 	}
 
 	@Override
-	public List<BasicOCSPResp> getContainedOCSPResponses() {
-		if (containedOCSPResponses == null) {
-			Set<String> base64OcspValues = new HashSet<String>();
-			collect(base64OcspValues, xPathQueryHolder.XPATH_OCSP_VALUES_ENCAPSULATED_OCSP);
-			collect(base64OcspValues, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUE);
-			containedOCSPResponses = convert(base64OcspValues);
+	public Map<BasicOCSPResp, RevocationOrigin> getContainedOCSPResponses() {
+		if (containedOCSPResponses.isEmpty()) {
+			collect(xPathQueryHolder.XPATH_OCSP_VALUES_ENCAPSULATED_OCSP, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
+			collect(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUE, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
 		}
 		return containedOCSPResponses;
 	}
 
-	private void collect(Set<String> base64OcspValues, String xPathQuery) {
+	private void collect(String xPathQuery, RevocationOrigin origin) {
 		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQuery);
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 			final Element ocspValueEl = (Element) nodeList.item(ii);
-			base64OcspValues.add(ocspValueEl.getTextContent());
+			convertAndAppend(ocspValueEl.getTextContent(), origin);
 		}
 	}
 
-	private List<BasicOCSPResp> convert(Set<String> base64OcspValues) {
-		List<BasicOCSPResp> result = new ArrayList<BasicOCSPResp>();
-		for (String base64OcspValue : base64OcspValues) {
-			try {
-				result.add(DSSRevocationUtils.loadOCSPBase64Encoded(base64OcspValue));
-			} catch (Exception e) {
-				LOG.warn("Cannot retrieve OCSP response from '" + base64OcspValue + "' : " + e.getMessage(), e);
-			}
+	private void convertAndAppend(String ocspValue, RevocationOrigin origin) {
+		try {
+			containedOCSPResponses.put(DSSRevocationUtils.loadOCSPBase64Encoded(ocspValue), origin);
+		} catch (Exception e) {
+			LOG.warn("Cannot retrieve OCSP response from '" + ocspValue + "' : " + e.getMessage(), e);
 		}
-		return result;
 	}
 
-	public List<BasicOCSPResp> getEncapsulatedOCSPValues() {
-		Set<String> base64OCSPValues = new HashSet<String>();
-		collect(base64OCSPValues, xPathQueryHolder.XPATH_OCSP_VALUES_ENCAPSULATED_OCSP);
-		return convert(base64OCSPValues);
+	public Map<BasicOCSPResp, RevocationOrigin> getEncapsulatedOCSPValues() {
+		containedOCSPResponses = new HashMap<BasicOCSPResp, RevocationOrigin>();
+		collect(xPathQueryHolder.XPATH_OCSP_VALUES_ENCAPSULATED_OCSP, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
+		return containedOCSPResponses;
 	}
 
-	public List<BasicOCSPResp> getTimestampEncapsulatedOCSPValues() {
-		Set<String> base64OCSPValues = new HashSet<String>();
-		collect(base64OCSPValues, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUE);
-		return convert(base64OCSPValues);
+	public Map<BasicOCSPResp, RevocationOrigin> getTimestampEncapsulatedOCSPValues() {
+		containedOCSPResponses = new HashMap<BasicOCSPResp, RevocationOrigin>();
+		collect(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUE, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
+		return containedOCSPResponses;
 	}
 
 }

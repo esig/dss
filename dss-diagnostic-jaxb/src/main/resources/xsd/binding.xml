@@ -38,6 +38,12 @@
 				printMethod="eu.europa.esig.dss.jaxb.parsers.SignatureScopeTypeParser.print" />
 		</jaxb:bindings>
 		
+  <jaxb:bindings node="//xs:simpleType[@name='RevocationOriginType']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.RevocationOriginType" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.RevocationOriginTypeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationOriginTypeParser.print" />
+		</jaxb:bindings>
+		
   <jaxb:bindings node="//xs:simpleType[@name='RevocationSourceType']">
 			<jaxb:javaType name="eu.europa.esig.dss.validation.RevocationSourceType" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.RevocationSourceTypeParser.parse" 

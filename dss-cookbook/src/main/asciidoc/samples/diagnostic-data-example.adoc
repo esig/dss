@@ -176,7 +176,7 @@
             <Revocations>
                 <Revocation Id="021ec5069eb8a903bd62b6769eddfe439dfa90a720c9a362d5fe76b9c31d0302bfc08d553a774d1f440ab36525a3290e2cc23b46d0ac954ea4d8201faff0d91a">
                     <Origin>SIGNATURE</Origin>
-                    <Source>OCSPToken</Source>
+                    <Source>OCSP</Source>
                     <Status>true</Status>
                     <ProductionDate>2017-10-27T11:55:08</ProductionDate>
                     <ThisUpdate>2017-10-27T11:55:08</ThisUpdate>

@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.x509.revocation.crl;
 
-import java.util.Map.Entry;
-
 /**
  * This class allows to handle a list CRL source.
  *
@@ -53,8 +51,8 @@ public class ListCRLSource extends OfflineCRLSource {
 	 *            the source to be added
 	 */
 	public void addAll(final OfflineCRLSource offlineCRLSource) {
-		for (Entry<String, byte[]> entry : offlineCRLSource.crlsMap.entrySet()) {
-			super.addCRLBinary(entry.getKey(), entry.getValue());
+		for (CRLBinary crlBinary : offlineCRLSource.crlsBinaryList) {
+			super.addCRLBinary(crlBinary);
 		}
 	}
 

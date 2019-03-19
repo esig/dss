@@ -36,6 +36,7 @@ import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.util.Store;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
 
 /**
@@ -131,7 +132,7 @@ public class CAdESCRLSource extends OfflineCRLSource {
 
 	private void addX509CRLHolder(X509CRLHolder crlHolder) {
 		try {
-			addCRLBinary(crlHolder.getEncoded());
+			addCRLBinary(crlHolder.getEncoded(), RevocationOrigin.INTERNAL_REVOCATION_VALUES);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}

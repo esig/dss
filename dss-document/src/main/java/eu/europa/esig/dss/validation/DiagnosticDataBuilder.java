@@ -453,7 +453,7 @@ public class DiagnosticDataBuilder {
 		String xmlId = Utils.toHex(certToken.getDigest(DigestAlgorithm.SHA256)) + Utils.toHex(revocationToken.getDigest(DigestAlgorithm.SHA256));
 		xmlRevocation.setId(xmlId);
 
-		xmlRevocation.setOrigin(revocationToken.getOrigin().name());
+		xmlRevocation.setOrigin(RevocationOriginType.valueOf(revocationToken.getOrigin().name()));
 		final Boolean revocationTokenStatus = revocationToken.getStatus();
 		// revocationTokenStatus can be null when OCSP return Unknown. In
 		// this case we set status to false.

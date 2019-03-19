@@ -36,7 +36,6 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
-import eu.europa.esig.dss.x509.RevocationOrigin;
 
 /**
  * 5.6.2.3 POE extraction
@@ -76,7 +75,7 @@ public class POEExtraction {
 			Set<RevocationWrapper> revocations = certificate.getRevocationData();
 			if (Utils.isCollectionNotEmpty(revocations)) {
 				for (RevocationWrapper revocation : revocations) {
-					if (RevocationOrigin.SIGNATURE.name().equals(revocation.getOrigin())) {
+					if (revocation.isInternalRevocationOrigin()) {
 						addPOE(revocation.getId(), currentTime);
 					}
 				}

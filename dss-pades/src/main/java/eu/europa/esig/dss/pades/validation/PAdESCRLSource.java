@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
 
 /**
@@ -46,7 +47,7 @@ public class PAdESCRLSource extends OfflineCRLSource {
 
 	private void extract() {
 		for (byte[] crl : getCrlMap().values()) {
-			addCRLBinary(crl);
+			addCRLBinary(crl, RevocationOrigin.INTERNAL_DSS);
 		}
 	}
 

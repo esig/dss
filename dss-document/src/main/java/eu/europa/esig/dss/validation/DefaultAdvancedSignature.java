@@ -555,7 +555,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	protected void addReferencesFromOfflineOCSPSource(List<TimestampReference> references) {
 		OfflineOCSPSource ocspSource = getOCSPSource();
 		if (ocspSource != null) {
-			List<BasicOCSPResp> containedOCSPResponses = ocspSource.getContainedOCSPResponses();
+			Set<BasicOCSPResp> containedOCSPResponses = ocspSource.getContainedOCSPResponses().keySet();
 			if (Utils.isCollectionNotEmpty(containedOCSPResponses)) {
 				usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
 				for (BasicOCSPResp basicOCSPResp : containedOCSPResponses) {
@@ -636,7 +636,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public boolean hasLTProfile() {
 		Map<String, List<CertificateToken>> certificateChains = getCertificatesWithinSignatureAndTimestamps(true);
 		
-		boolean emptyOCSPs = Utils.isCollectionEmpty(getOCSPSource().getContainedOCSPResponses());
+		boolean emptyOCSPs = getOCSPSource().getContainedOCSPResponses().isEmpty();
 		boolean emptyCRLs = Utils.isCollectionEmpty(getCRLSource().getContainedX509CRLs());
 
 		if (certificateChains.isEmpty() && (emptyOCSPs || emptyCRLs)) {

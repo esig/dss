@@ -29,6 +29,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.RevocationOriginType;
 import eu.europa.esig.dss.validation.RevocationSourceType;
 
 public class RevocationWrapper extends AbstractTokenProxy {
@@ -107,8 +108,20 @@ public class RevocationWrapper extends AbstractTokenProxy {
 		return revocation.getSource();
 	}
 
-	public String getOrigin() {
+	public RevocationOriginType getOrigin() {
 		return revocation.getOrigin();
+	}
+	
+	/**
+	 * Returns true if the Revocation data was obtained from a signature container
+	 * @return true if the revocation origin is internal, false otherwise
+	 */
+	public boolean isInternalRevocationOrigin() {
+		return RevocationOriginType.INTERNAL_ATTRIBUTE_REVOCATION_VALUES.equals(getOrigin()) || 
+				RevocationOriginType.INTERNAL_REVOCATION_VALUES.equals(getOrigin()) || 
+				RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES.equals(getOrigin()) || 
+				RevocationOriginType.INTERNAL_DSS.equals(getOrigin()) || 
+				RevocationOriginType.INTERNAL_VRI.equals(getOrigin());
 	}
 
 	public List<XmlDigestAlgoAndValue> getDigestAlgoAndValues() {

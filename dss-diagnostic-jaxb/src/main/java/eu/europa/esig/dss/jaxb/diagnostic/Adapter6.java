@@ -9,19 +9,19 @@
 package eu.europa.esig.dss.jaxb.diagnostic;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import eu.europa.esig.dss.validation.RevocationOriginType;
+import eu.europa.esig.dss.validation.RevocationSourceType;
 
-public class Adapter5
-    extends XmlAdapter<String, RevocationOriginType>
+public class Adapter6
+    extends XmlAdapter<String, RevocationSourceType>
 {
 
 
-    public RevocationOriginType unmarshal(String value) {
-        return (eu.europa.esig.dss.jaxb.parsers.RevocationOriginTypeParser.parse(value));
+    public RevocationSourceType unmarshal(String value) {
+        return (eu.europa.esig.dss.jaxb.parsers.RevocationSourceTypeParser.parse(value));
     }
 
-    public String marshal(RevocationOriginType value) {
-        return (eu.europa.esig.dss.jaxb.parsers.RevocationOriginTypeParser.print(value));
+    public String marshal(RevocationSourceType value) {
+        return (eu.europa.esig.dss.jaxb.parsers.RevocationSourceTypeParser.print(value));
     }
 
 }

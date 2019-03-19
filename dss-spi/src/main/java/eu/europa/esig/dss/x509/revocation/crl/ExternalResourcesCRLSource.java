@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 
 /**
  * This class allows to provide a CRL source based on the list of external CRL(s);
@@ -70,7 +71,7 @@ public class ExternalResourcesCRLSource extends OfflineCRLSource {
 
 	private void addCRLToken(final InputStream inputStream) {
 		try (InputStream is = inputStream) {
-			addCRLBinary(Utils.toByteArray(is));
+			addCRLBinary(Utils.toByteArray(is), RevocationOrigin.EXTERNAL);
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}

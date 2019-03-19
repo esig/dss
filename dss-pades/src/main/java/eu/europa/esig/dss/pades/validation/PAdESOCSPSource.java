@@ -20,20 +20,21 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
 
 /**
  * OCSPSource that retrieves the OCSPResp from a PAdES Signature
  *
  */
+@SuppressWarnings("serial")
 public class PAdESOCSPSource extends OfflineOCSPSource {
 
 	private final PdfDssDict dssDictionary;
@@ -49,8 +50,12 @@ public class PAdESOCSPSource extends OfflineOCSPSource {
 	}
 
 	@Override
-	public List<BasicOCSPResp> getContainedOCSPResponses() {
-		return new ArrayList<BasicOCSPResp>(getOcspMap().values());
+	public Map<BasicOCSPResp, RevocationOrigin> getContainedOCSPResponses() {
+		Map<BasicOCSPResp, RevocationOrigin> ocspRespMap = new HashMap<BasicOCSPResp, RevocationOrigin>();
+		for (BasicOCSPResp basicOCSPResp : getOcspMap().values()) {
+			ocspRespMap.put(basicOCSPResp, RevocationOrigin.INTERNAL_DSS);
+		}
+		return ocspRespMap;
 	}
 
 	/**
