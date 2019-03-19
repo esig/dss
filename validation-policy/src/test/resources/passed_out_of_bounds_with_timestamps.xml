@@ -388,7 +388,7 @@
 			<Revocations>
 	            <Revocation Id="1808F9FD864971AD1CD004B9A8694D2EBF4C34983D74EBBDEE97C09C9510BEBB">
 	                <Origin>EXTERNAL</Origin>
-	                <Source>CRLToken</Source>
+	                <Source>CRL</Source>
 	                <SourceAddress>http://crl.pki.belgium.be/belgium2.crl</SourceAddress>
 	                <Available>true</Available>
 	                <Status>true</Status>
@@ -421,7 +421,7 @@
 	            </Revocation>
 	            <Revocation Id="9C1BA09764DA4D96D84DEEF36D58599A6C0C7509A5200A729350E2AA1E8EB0CC">
 	                <Origin>SIGNATURE</Origin>
-	                <Source>CRLToken</Source>
+	                <Source>CRL</Source>
 	                <Status>true</Status>
 	                <ProductionDate>2014-01-01T12:00:00</ProductionDate>
 	                <ThisUpdate>2014-01-01T12:00:00</ThisUpdate>
@@ -554,7 +554,7 @@
 			<Revocations>
 	            <Revocation Id="854DE5E0440BBCA79F5F458FC1CE9A2B02B8691F70A3DC143FACC3A326AFADDB">
 	                <Origin>EXTERNAL</Origin>
-	                <Source>CRLToken</Source>
+	                <Source>CRL</Source>
 	                <SourceAddress>http://www.acaeid.cz/aca2/crl/actual.crl</SourceAddress>
 	                <Available>true</Available>
 	                <Status>true</Status>
@@ -587,7 +587,7 @@
 	            </Revocation>
 	            <Revocation Id="6C13D713EA83632818CB6064EBEECCE5C71E00F6B5EBEFE4154C583322236A84">
 	                <Origin>SIGNATURE</Origin>
-	                <Source>CRLToken</Source>
+	                <Source>CRL</Source>
 	                <Status>true</Status>
 	                <ProductionDate>2014-04-29T06:50:05</ProductionDate>
 	                <ThisUpdate>2014-04-29T06:50:05</ThisUpdate>

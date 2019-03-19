@@ -90,7 +90,7 @@
 			<Revocations>
 	            <Revocation Id="6FA33A27510825642B995F3A377396F43DE6C34204EA08EBD080D6AE935F6E91">
 	                <Origin>EXTERNAL</Origin>
-	                <Source>OCSPToken</Source>
+	                <Source>OCSP</Source>
 	                <SourceAddress>http://ocsp.stampit.org/</SourceAddress>
 	                <Available>true</Available>
 	                <Status>true</Status>
@@ -213,7 +213,7 @@
 			<Revocations>
 	            <Revocation Id="47DB90134AA46D1F36475B286BECB476FE6CED6AE5D74E39D4C623AF8FC9F499">
 	                <Origin>EXTERNAL</Origin>
-	                <Source>OCSPToken</Source>
+	                <Source>OCSP</Source>
 	                <SourceAddress>http://ocsp.stampit.org/</SourceAddress>
 	                <Available>true</Available>
 	                <Status>true</Status>

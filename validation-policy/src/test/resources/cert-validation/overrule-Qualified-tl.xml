@@ -135,7 +135,7 @@
             <Revocations>
                 <Revocation Id="86ca5ddddcb6ca73c77511dff3c94961bd675ca15111810103942ca7d96dce1b4fd467c5bfd626dd6a8fb05d515e8d1f57a819aa454f3e96f2dc113b4adebe9a">
                     <Origin>EXTERNAL</Origin>
-                    <Source>OCSPToken</Source>
+                    <Source>OCSP</Source>
                     <SourceAddress>http://localhost:8080/qes-validation-web/ocsp/SDI-21.1.1</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>

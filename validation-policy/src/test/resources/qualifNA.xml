@@ -196,7 +196,7 @@
             <Revocations>
                 <Revocation Id="1bcf2b72c91c013c824ae6bd2c01358475118ed7e50d920ef78d7870f51513eeca921613208aaacbbbc6798e54b76546fca9d3437749f414ff57473b6d2f44ba">
                     <Origin>EXTERNAL</Origin>
-                    <Source>CRLToken</Source>
+                    <Source>CRL</Source>
                     <SourceAddress>http://crl.certification.tn/TunPersonalCA1.crl</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>
@@ -228,7 +228,7 @@
                 </Revocation>
                 <Revocation Id="1bcf2b72c91c013c824ae6bd2c01358475118ed7e50d920ef78d7870f51513eee4d28fb520311e9a6a81279b408300874eecd3ca35f4f7462d78f4bf0514aae8">
                     <Origin>EXTERNAL</Origin>
-                    <Source>OCSPToken</Source>
+                    <Source>OCSP</Source>
                     <SourceAddress>http://ocsp.certification.tn</SourceAddress>
                     <Available>true</Available>
                     <Status>false</Status>
@@ -314,7 +314,7 @@
             <Revocations>
                 <Revocation Id="355e634464029b58fc89189da20cb1f3499373af91d8fa34b57b66775aa73686b671e62088b3f75a75ecee64dd3c5331cbf7045be28221c7fad8cbf2c4894f6d">
                     <Origin>EXTERNAL</Origin>
-                    <Source>OCSPToken</Source>
+                    <Source>OCSP</Source>
                     <SourceAddress>http://ocsp.certification.tn</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>

@@ -155,7 +155,7 @@
             <Revocations>
                 <Revocation Id="d74af393cf3b506da33b46bc52b49cd6fac12b2bdaa9ce1fba25c0c1e4ebbe19410c957281b50386f63c4978969c803a40006d7f5457941e7ac2f6de11daed84">
                     <Origin>EXTERNAL</Origin>
-                    <Source>CRLToken</Source>
+                    <Source>CRL</Source>
                     <SourceAddress>http://crl.pki.belgium.be/belgium2.crl</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>

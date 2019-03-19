@@ -638,7 +638,7 @@
             <Revocations>
                 <Revocation Id="06c99b755d2dc3811704a651abbca247b213191675a55637971ffefe838ed4c997201d837e31c5699502758f772f168dcb30826580b0de3668c3b4c6092c7d12">
                     <Origin>SIGNATURE</Origin>
-                    <Source>CRLToken</Source>
+                    <Source>CRL</Source>
                     <Status>true</Status>
                     <ProductionDate>2014-11-07T12:50:44</ProductionDate>
                     <ThisUpdate>2014-11-07T12:50:44</ThisUpdate>
@@ -674,7 +674,7 @@
                 </Revocation>
                 <Revocation Id="06c99b755d2dc3811704a651abbca247b213191675a55637971ffefe838ed4c96c2cc98417928f607074e31dcfce367b3d5b004ce3f4cff3d8698a78951f192c">
                     <Origin>SIGNATURE</Origin>
-                    <Source>OCSPToken</Source>
+                    <Source>OCSP</Source>
                     <Status>true</Status>
                     <ProductionDate>2014-11-07T13:11:33</ProductionDate>
                     <ThisUpdate>2014-11-07T13:11:33</ThisUpdate>

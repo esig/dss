@@ -140,7 +140,7 @@
             <Revocations>
                 <Revocation Id="452027db8aba14cdd1f484a86227b8fd19b576181d01b47b892ef76a2c44881b41437955ec545002fae44675dbbc51a8396d32450ed8733a53ef79e215c258b2">
                     <Origin>EXTERNAL</Origin>
-                    <Source>CRLToken</Source>
+                    <Source>CRL</Source>
                     <SourceAddress>http://www.postsignum.cz/crl/psqualifiedca2.crl</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>

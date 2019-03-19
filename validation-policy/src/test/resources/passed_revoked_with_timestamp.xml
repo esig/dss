@@ -218,7 +218,7 @@
 			<Revocations>
 	            <Revocation Id="69674FCADB3AF99EAB7E9700EEB220216D7E423B3C2FF3B79EF4FC1B1954D26E">
 	                <Origin>EXTERNAL</Origin>
-	                <Source>OCSPToken</Source>
+	                <Source>OCSP</Source>
 	                <SourceAddress>http://ocsp.sc.infocert.it/</SourceAddress>
 	                <Available>true</Available>
 	                <Status>false</Status>
@@ -252,7 +252,7 @@
 	            </Revocation>
 	            <Revocation Id="0574F0CFD174789DDCB57C5F2EC6EC43DD341BF7789708E28E87AF9A2696CA56">
 	                <Origin>EXTERNAL</Origin>
-	                <Source>OCSPToken</Source>
+	                <Source>OCSP</Source>
 	                <SourceAddress>http://ocsp.sc.infocert.it/</SourceAddress>
 	                <Available>true</Available>
 	                <Status>false</Status>
@@ -286,7 +286,7 @@
 	            </Revocation>
 	            <Revocation Id="55F56C98A1A43A431C6DD59F46D921DDE91F9FFE23FB1E4CC53A372CD38B4495">
 	                <Origin>EXTERNAL</Origin>
-	                <Source>OCSPToken</Source>
+	                <Source>OCSP</Source>
 	                <SourceAddress>http://ocsp.sc.infocert.it/</SourceAddress>
 	                <Available>true</Available>
 	                <Status>false</Status>
@@ -411,7 +411,7 @@
 			<Revocations>
 	            <Revocation Id="E3338F7F9E1963241C750B0FABA972C18C401EF51A1FF049CB3CD1EAD069C29F">
 	                <Origin>EXTERNAL</Origin>
-	                <Source>OCSPToken</Source>
+	                <Source>OCSP</Source>
 	                <SourceAddress>http://ocsp.sc.infocert.it/</SourceAddress>
 	                <Available>true</Available>
 	                <Status>true</Status>

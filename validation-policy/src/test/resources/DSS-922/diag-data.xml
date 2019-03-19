@@ -125,7 +125,7 @@
 			<Revocations>
 	            <Revocation Id="DC0E71B7A59FAE435C3F3A8B10A7CB4BDC42973BD93D139B352D439B0F071ECD">
 	                <Origin>SIGNATURE</Origin>
-	                <Source>OCSPToken</Source>
+	                <Source>OCSP</Source>
 	                <Status>false</Status>
 	                <Reason>OCSP status: unknown</Reason>
 	                <ProductionDate>2013-10-11T14:27:58</ProductionDate>
