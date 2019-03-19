@@ -560,7 +560,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					signaturePolicy.setDigestAlgorithm(digestAlgorithm);
 				}
 				final Element policyDigestValue = DomUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_DIGEST_VALUE);
-				final String digestValue = policyDigestValue.getTextContent().trim();
+				final byte[] digestValue = Utils.fromBase64(policyDigestValue.getTextContent().trim());
 				signaturePolicy.setDigestValue(digestValue);
 				final Element policyUrl = DomUtils.getElement(policyIdentifier, xPathQueryHolder.XPATH__POLICY_SPURI);
 				if (policyUrl != null) {
@@ -1887,7 +1887,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		String digestAlgorithmStr = DomUtils.getNode(element, xPathQueryHolder.XPATH__DIGEST_METHOD_ALGORITHM).getTextContent();
 		DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(digestAlgorithmStr);
 		final String digestValue = DomUtils.getElement(element, xPathQueryHolder.XPATH__DIGEST_VALUE).getTextContent();
-		final TimestampReference revocationReference = new TimestampReference(digestAlgorithm, digestValue);
+		final TimestampReference revocationReference = new TimestampReference(digestAlgorithm, Utils.fromBase64(digestValue));
 		return revocationReference;
 	}
 
@@ -1940,7 +1940,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		usedCertificatesDigestAlgorithms.add(digestAlgorithm);
 		final Element digestValueElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__DIGEST_VALUE);
 		final String digestValue = (digestValueElement == null) ? "" : digestValueElement.getTextContent();
-		final TimestampReference reference = new TimestampReference(digestAlgorithm, digestValue);
+		final TimestampReference reference = new TimestampReference(digestAlgorithm, Utils.fromBase64(digestValue));
 		return reference;
 	}
 
@@ -1948,7 +1948,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
 
-		final TimestampReference reference = new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(certificateToken.getDigest(DigestAlgorithm.SHA1)));
+		final TimestampReference reference = new TimestampReference(DigestAlgorithm.SHA1, certificateToken.getDigest(DigestAlgorithm.SHA1));
 		return reference;
 	}
 

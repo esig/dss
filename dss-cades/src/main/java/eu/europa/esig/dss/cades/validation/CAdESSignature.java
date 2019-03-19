@@ -502,7 +502,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 		final ASN1OctetString digestValue = hashAlgAndValue.getHashValue();
 		final byte[] digestValueBytes = digestValue.getOctets();
-		signaturePolicy.setDigestValue(Utils.toBase64(digestValueBytes));
+		signaturePolicy.setDigestValue(digestValueBytes);
 
 		final SigPolicyQualifiers sigPolicyQualifiers = sigPolicy.getSigPolicyQualifiers();
 		if (sigPolicyQualifiers == null) {
@@ -985,7 +985,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private TimestampReference createCertificateTimestampReference(final DigestAlgorithm digestAlgorithm, final byte[] certHash) {
-		final TimestampReference reference = new TimestampReference(digestAlgorithm, Utils.toBase64(certHash));
+		final TimestampReference reference = new TimestampReference(digestAlgorithm, certHash);
 		return reference;
 	}
 
@@ -1250,6 +1250,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		return result;
 	}
 
+	@Override
 	public byte[] getMessageDigestValue() {
 		final Attribute messageDigestAttribute = getSignedAttribute(PKCSObjectIdentifiers.pkcs_9_at_messageDigest);
 		if (messageDigestAttribute == null) {
@@ -1774,11 +1775,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final List<TimestampReference> references = new ArrayList<TimestampReference>();
 		final List<CertificateRef> certRefs = getCertificateRefs();
 		for (final CertificateRef certificateRef : certRefs) {
-
-			final String digestValue = Utils.toBase64(certificateRef.getDigestValue());
 			final DigestAlgorithm digestAlgorithm = certificateRef.getDigestAlgorithm();
 			usedCertificatesDigestAlgorithms.add(digestAlgorithm);
-			final TimestampReference reference = new TimestampReference(digestAlgorithm, digestValue);
+			final TimestampReference reference = new TimestampReference(digestAlgorithm, certificateRef.getDigestValue());
 			references.add(reference);
 		}
 

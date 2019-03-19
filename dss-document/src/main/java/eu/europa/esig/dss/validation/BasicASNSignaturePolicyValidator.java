@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.util.Arrays;
+
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -51,7 +53,7 @@ public class BasicASNSignaturePolicyValidator extends AbstractSignaturePolicyVal
 
 		final DSSDocument policyContent = signaturePolicy.getPolicyContent();
 		byte[] policyBytes = DSSUtils.toByteArray(policyContent);
-		final String digestValue = signaturePolicy.getDigestValue();
+		final byte[] digestValue = signaturePolicy.getDigestValue();
 		final DigestAlgorithm signPolicyHashAlgFromSignature = signaturePolicy.getDigestAlgorithm();
 
 		setStatus(true);
@@ -99,23 +101,24 @@ public class BasicASNSignaturePolicyValidator extends AbstractSignaturePolicyVal
 					setDigestAlgorithmsEqual(true);
 				}
 
-				String recalculatedDigestValue = Utils.toBase64(DSSASN1Utils.getAsn1SignaturePolicyDigest(signPolicyHashAlgFromPolicy, policyBytes));
+				byte[] recalculatedDigestValue = DSSASN1Utils.getAsn1SignaturePolicyDigest(signPolicyHashAlgFromPolicy, policyBytes);
 
-				boolean equal = Utils.areStringsEqual(digestValue, recalculatedDigestValue);
+				boolean equal = Arrays.equals(digestValue, recalculatedDigestValue);
 				setStatus(equal);
 				if (!equal) {
 					addError("general",
-							"The policy digest value (" + digestValue + ") does not match the re-calculated digest value (" + recalculatedDigestValue + ").");
+							"The policy digest value (" + Utils.toBase64(digestValue) + ") does not match the re-calculated digest value ("
+									+ Utils.toBase64(recalculatedDigestValue) + ").");
 					return;
 				}
 
 				final ASN1OctetString signPolicyHash = (ASN1OctetString) asn1Sequence.getObjectAt(2);
-				final String policyDigestValueFromPolicy = Utils.toBase64(signPolicyHash.getOctets());
-				equal = Utils.areStringsEqual(digestValue, policyDigestValueFromPolicy);
+				final byte[] policyDigestValueFromPolicy = signPolicyHash.getOctets();
+				equal = Arrays.equals(digestValue, policyDigestValueFromPolicy);
 				setStatus(equal);
 				if (!equal) {
-					addError("general", "The policy digest value (" + digestValue + ") does not match the digest value from the policy file ("
-							+ policyDigestValueFromPolicy + ").");
+					addError("general", "The policy digest value (" + Utils.toBase64(digestValue) + ") does not match the digest value from the policy file ("
+							+ Utils.toBase64(policyDigestValueFromPolicy) + ").");
 				}
 			}
 

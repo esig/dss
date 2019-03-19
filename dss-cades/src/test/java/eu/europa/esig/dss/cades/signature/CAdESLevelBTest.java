@@ -131,6 +131,7 @@ public class CAdESLevelBTest extends AbstractPkiFactoryTestDocumentSignatureServ
 
 			CAdESSignature signature = new CAdESSignature(byteArray);
 			assertNotNull(signature.getCmsSignedData());
+			assertTrue(Utils.isArrayNotEmpty(signature.getMessageDigestValue()));
 
 			ASN1InputStream asn1sInput = new ASN1InputStream(byteArray);
 			ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
