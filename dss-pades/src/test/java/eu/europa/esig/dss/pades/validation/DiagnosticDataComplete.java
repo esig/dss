@@ -20,7 +20,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
-public class DiagnosticDataTest extends PKIFactoryAccess {
+public class DiagnosticDataComplete extends PKIFactoryAccess {
 
 	@Test
 	public void pdfSignatureDictionaryTest() {
