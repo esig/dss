@@ -32,9 +32,11 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureForm;
@@ -47,7 +49,6 @@ import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CRLRef;
-import eu.europa.esig.dss.validation.CertificateRef;
 import eu.europa.esig.dss.validation.CertifiedRole;
 import eu.europa.esig.dss.validation.OCSPRef;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
@@ -218,7 +219,10 @@ public class PAdESSignature extends CAdESSignature {
 					}
 					final List<CertificateRef> certRefs = getCertificateRefs();
 					for (final CertificateRef certRef : certRefs) {
-						references.add(createCertificateTimestampReference(certRef));
+						Digest certDigest = certRef.getCertDigest();
+						if (certDigest != null) {
+							references.add(createCertificateTimestampReference(certDigest));
+						}
 					}
 
 					addReferencesFromOfflineCRLSource(references);
@@ -248,9 +252,9 @@ public class PAdESSignature extends CAdESSignature {
 		return references;
 	}
 
-	private TimestampReference createCertificateTimestampReference(CertificateRef ref) {
-		usedCertificatesDigestAlgorithms.add(ref.getDigestAlgorithm());
-		return new TimestampReference(ref.getDigestAlgorithm(), ref.getDigestValue(), TimestampedObjectType.CERTIFICATE);
+	private TimestampReference createCertificateTimestampReference(Digest certDigest) {
+		usedCertificatesDigestAlgorithms.add(certDigest.getAlgorithm());
+		return new TimestampReference(certDigest.getAlgorithm(), certDigest.getValue(), TimestampedObjectType.CERTIFICATE);
 	}
 
 	@Override
@@ -266,7 +270,7 @@ public class PAdESSignature extends CAdESSignature {
 		List<CertificateToken> encapsulatedCertificates = getCAdESSignature().getCertificateSource().getKeyInfoCertificates();
 		addCertRefs(refs, encapsulatedCertificates);
 		if (dssDictionary != null) {
-			Map<Long, CertificateToken> certMap = dssDictionary.getCertMap();
+			Map<Long, CertificateToken> certMap = dssDictionary.getCERTs();
 			addCertRefs(refs, certMap.values());
 		}
 		return refs;
@@ -275,8 +279,7 @@ public class PAdESSignature extends CAdESSignature {
 	private void addCertRefs(List<CertificateRef> refs, Collection<CertificateToken> encapsulatedCertificates) {
 		for (CertificateToken certificateToken : encapsulatedCertificates) {
 			CertificateRef ref = new CertificateRef();
-			ref.setDigestAlgorithm(DigestAlgorithm.SHA1);
-			ref.setDigestValue(certificateToken.getDigest(DigestAlgorithm.SHA1));
+			ref.setCertDigest(new Digest(DigestAlgorithm.SHA1, certificateToken.getDigest(DigestAlgorithm.SHA1)));
 			refs.add(ref);
 		}
 	}

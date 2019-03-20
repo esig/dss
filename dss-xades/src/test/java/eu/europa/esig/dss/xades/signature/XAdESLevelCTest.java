@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.junit.Before;
 
+import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
@@ -36,7 +37,6 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CRLRef;
-import eu.europa.esig.dss.validation.CertificateRef;
 import eu.europa.esig.dss.validation.OCSPRef;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
@@ -70,10 +70,8 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 		List<CertificateRef> certificateRefs = advancedSignature.getCertificateRefs();
 		assertTrue(Utils.isCollectionNotEmpty(certificateRefs));
 		for (CertificateRef certificateRef : certificateRefs) {
-			assertNotNull(certificateRef.getDigestAlgorithm());
-			assertNotNull(certificateRef.getIssuerName());
-			assertNotNull(certificateRef.getIssuerSerial());
-			assertNotNull(certificateRef.getDigestValue());
+			assertNotNull(certificateRef.getCertDigest());
+			assertNotNull(certificateRef.getIssuerInfo());
 		}
 
 		List<OCSPRef> ocspRefs = advancedSignature.getOCSPRefs();

@@ -20,7 +20,10 @@
  */
 package eu.europa.esig.dss.x509;
 
+import java.util.Collections;
 import java.util.List;
+
+import eu.europa.esig.dss.CertificateRef;
 
 /**
  * The advanced signature contains a list of certificate that was needed to validate the signature. This class is a
@@ -41,18 +44,78 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 	}
 
 	/**
-	 * Retrieves the list of all encapsulated certificates (-XL extension) from this source.
-	 *
-	 * @return the list of all encapsulated certificates
-	 */
-	public abstract List<CertificateToken> getEncapsulatedCertificates();
-
-	/**
-	 * Retrieves the list of all certificates present in -BES level of the signature from this source.
+	 * Retrieves the list of all certificates present in the KeyInfos
 	 *
 	 * @return list of all certificates present in B level
 	 */
 	public abstract List<CertificateToken> getKeyInfoCertificates();
+
+	/**
+	 * Retrieves the list of all certificates from CertificateValues (XAdES/CAdES)
+	 * 
+	 * @return the list of all certificates present in the CertificateValues
+	 */
+	public abstract List<CertificateToken> getCertificateValues();
+
+	/**
+	 * Retrieves the list of all certificates from the AttrAuthoritiesCertValues
+	 * (XAdES)
+	 * 
+	 * @return the list of all certificates present in the AttrAuthoritiesCertValues
+	 */
+	public abstract List<CertificateToken> getAttrAuthoritiesCertValues();
+
+	/**
+	 * Retrieves the list of all certificates from the TimeStampValidationData
+	 * (XAdES)
+	 * 
+	 * @return the list of all certificates present in the TimeStampValidationData
+	 */
+	public abstract List<CertificateToken> getTimeStampValidationDataCertValues();
+
+	/**
+	 * Retrieves the list of all certificates from the DSS dictionary (PAdES)
+	 * 
+	 * @return the list of all certificates present in the DSS dictionary
+	 */
+	public List<CertificateToken> getDSSDictionaryCertValues() {
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Retrieves the list of all certificates from the VRI dictionary (PAdES)
+	 * 
+	 * @return the list of all certificates present in the VRI dictionary
+	 */
+	public List<CertificateToken> getVRIDictionaryCertValues() {
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Retrieves the list of certificate references for the signing certificate
+	 * (V1/v2)
+	 * 
+	 * @return the list of references to the signing certificate
+	 */
+	public abstract List<CertificateRef> getSigningCertificateValues();
+
+	/**
+	 * Retrieves the list of certificate references included in the attribute
+	 * complete-certificate-references (CAdES) or the
+	 * CompleteCertificateRefs/CompleteCertificateRefsV2 (XAdES)
+	 * 
+	 * @return the list of certificate references
+	 */
+	public abstract List<CertificateRef> getCompleteCertificateRefs();
+
+	/**
+	 * Retrieves the list of certificate references included in the attribute
+	 * attribute-certificate-references (CAdES) or the
+	 * AttributeCertificateRefs/AttributeCertificateRefsV2 (XAdES)
+	 * 
+	 * @return the list of certificate references
+	 */
+	public abstract List<CertificateRef> getAttributeCertificateRefs();
 
 	@Override
 	public CertificateSourceType getCertificateSourceType() {

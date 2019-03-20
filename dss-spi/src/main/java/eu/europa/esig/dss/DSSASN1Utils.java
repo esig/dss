@@ -47,6 +47,7 @@ import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -864,6 +865,44 @@ public final class DSSASN1Utils {
 		} catch (CertificateParsingException e) {
 			LOG.warn("Unable to retrieve ExtendedKeyUsage : {}", e.getMessage());
 			return Collections.emptyList();
+		}
+	}
+
+	public static IssuerSerialInfo getIssuerInfo(byte[] binaries) {
+		try (ASN1InputStream is = new ASN1InputStream(binaries)) {
+			ASN1Sequence seq = (ASN1Sequence) is.readObject();
+
+			IssuerSerial issuerAndSerial = IssuerSerial.getInstance(seq);
+
+			return getIssuerInfo(issuerAndSerial);
+		} catch (Exception e) {
+			LOG.error("Unable to decode IssuerSerialV2 textContent '" + Utils.toBase64(binaries) + "' : " + e.getMessage(), e);
+			return null;
+		}
+	}
+
+	public static IssuerSerialInfo getIssuerInfo(IssuerSerial issuerAndSerial) {
+		try {
+			IssuerSerialInfo issuerInfo = new IssuerSerialInfo();
+			GeneralNames gnames = issuerAndSerial.getIssuer();
+			if (gnames != null) {
+				GeneralName[] names = gnames.getNames();
+				if (names.length == 1) {
+					issuerInfo.setIssuerName(new X500Principal(names[0].getName().toASN1Primitive().getEncoded(ASN1Encoding.DER)));
+				} else {
+					LOG.warn("More than one GeneralName");
+				}
+			}
+
+			ASN1Integer serialNumber = issuerAndSerial.getSerial();
+			if (serialNumber != null) {
+				issuerInfo.setSerialNumber(serialNumber.getValue());
+			}
+
+			return issuerInfo;
+		} catch (Exception e) {
+			LOG.error("Unable to read the IssuerSerial object", e);
+			return null;
 		}
 	}
 

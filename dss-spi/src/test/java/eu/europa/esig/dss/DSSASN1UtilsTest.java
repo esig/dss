@@ -236,4 +236,14 @@ public class DSSASN1UtilsTest {
 		List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(caTokenA);
 		assertNotNull(ocspAccessLocations);
 	}
+	
+	@Test
+	public void getIssuerInfo() {
+		String issuerV2base64 = "MFYwUaRPME0xEDAOBgNVBAMMB2dvb2QtY2ExGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVQIBCg==";
+		IssuerSerialInfo issuerInfo = DSSASN1Utils.getIssuerInfo(Utils.fromBase64(issuerV2base64));
+		assertNotNull(issuerInfo);
+		assertNotNull(issuerInfo.getIssuerName());
+		assertNotNull(issuerInfo.getSerialNumber());
+	}
+
 }

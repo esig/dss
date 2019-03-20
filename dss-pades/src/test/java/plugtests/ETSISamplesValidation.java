@@ -21,12 +21,14 @@
 package plugtests;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,12 +38,14 @@ import org.junit.runners.Parameterized.Parameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.x509.SignatureCertificateSource;
 
 /**
  * This test is only to ensure that we don't have exception with valid? files
@@ -93,7 +97,24 @@ public class ETSISamplesValidation {
 		DetailedReport detailedReport = validateDocument.getDetailedReport();
 		assertNotNull(detailedReport);
 
-		// validateDocument.print();
+
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		for (AdvancedSignature advancedSignature : signatures) {
+			assertNotNull(advancedSignature);
+			SignatureCertificateSource certificateSource = advancedSignature.getCertificateSource();
+			assertNotNull(certificateSource);
+
+			assertNotNull(certificateSource.getKeyInfoCertificates());
+			assertNotNull(certificateSource.getSigningCertificateValues());
+			assertTrue(certificateSource.getCertificateValues().isEmpty());
+			assertTrue(certificateSource.getAttributeCertificateRefs().isEmpty());
+			assertTrue(certificateSource.getTimeStampValidationDataCertValues().isEmpty());
+			assertNotNull(certificateSource.getDSSDictionaryCertValues());
+			assertNotNull(certificateSource.getVRIDictionaryCertValues());
+
+			assertNotNull(advancedSignature.getCRLSource());
+			assertNotNull(advancedSignature.getOCSPSource());
+		}
 	}
 
 }
