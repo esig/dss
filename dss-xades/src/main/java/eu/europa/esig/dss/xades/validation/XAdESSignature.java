@@ -789,26 +789,26 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private List<TimestampReference> getSignatureTimestampedReferences() {
-
 		final List<TimestampReference> references = new ArrayList<TimestampReference>();
-		final TimestampReference signatureReference = getSignatureTimestampReference();
-		references.add(signatureReference);
-		final List<TimestampReference> signingCertificateTimestampReferences = getSigningCertificateTimestampReferences();
-		references.addAll(signingCertificateTimestampReferences);
+		references.add(getSignatureTimestampReference());
+		references.addAll(getSigningCertificateTimestampReferences());
 		return references;
 	}
 
 	private List<TimestampReference> getSigningCertificateTimestampReferences() {
-
 		if (signingCertificateTimestampReferences == null) {
-
 			signingCertificateTimestampReferences = new ArrayList<TimestampReference>();
-			final NodeList list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CERT_DIGEST);
-			for (int jj = 0; jj < list.getLength(); jj++) {
+			List<CertificateRef> signingCertificateValues = getCertificateSource().getSigningCertificateValues();
+			for (CertificateRef certificateRef : signingCertificateValues) {
+				Digest certDigest = certificateRef.getCertDigest();
+				signingCertificateTimestampReferences.add(new TimestampReference(certDigest.getAlgorithm(), certDigest.getValue()));
+			}
 
-				final Element element = (Element) list.item(jj);
-				final TimestampReference signingCertReference = createCertificateTimestampReference(element);
-				signingCertificateTimestampReferences.add(signingCertReference);
+			if (isKeyInfoCovered()) {
+				List<CertificateToken> keyInfoCerts = getCertificateSource().getKeyInfoCertificates();
+				for (CertificateToken cert : keyInfoCerts) {
+					signingCertificateTimestampReferences.add(new TimestampReference(DigestAlgorithm.SHA256, cert.getDigest(DigestAlgorithm.SHA256)));
+				}
 			}
 		}
 		return signingCertificateTimestampReferences;
@@ -844,7 +844,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<TimestampToken> getSignatureTimestamps() {
-
 		if (signatureTimestamps == null) {
 			makeTimestampTokens();
 		}
@@ -853,7 +852,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<TimestampToken> getTimestampsX1() {
-
 		if (sigAndRefsTimestamps == null) {
 			makeTimestampTokens();
 		}
@@ -862,7 +860,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<TimestampToken> getTimestampsX2() {
-
 		if (refsOnlyTimestamps == null) {
 			makeTimestampTokens();
 		}
@@ -871,7 +868,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<TimestampToken> getArchiveTimestamps() {
-
 		if (archiveTimestamps == null) {
 			makeTimestampTokens();
 		}
@@ -1080,6 +1076,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 			signatureCryptographicVerification.setErrorMessage(e.getMessage() + "/ XAdESSignature/Line number/" + lineNumber);
 		}
+	}
+
+	public boolean isKeyInfoCovered() {
+		List<ReferenceValidation> refValidations = getReferenceValidations();
+		for (ReferenceValidation referenceValidation : refValidations) {
+			if (DigestMatcherType.KEY_INFO.equals(referenceValidation.getType()) && referenceValidation.isFound() && referenceValidation.isIntact()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

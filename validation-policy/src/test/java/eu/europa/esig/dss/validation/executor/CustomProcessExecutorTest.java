@@ -989,6 +989,27 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 	}
 
 	@Test
+	public void LTAandAIAforTrustAnchor() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/LTAandAIAforTrustAnchor.xml");
+		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, detailedReport.getLongTermValidationSubIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(Indication.PASSED, detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
+	}
+
+	@Test
 	public void testPdfSignatureDictionary() throws Exception {
 		FileInputStream fis = new FileInputStream("src/test/resources/diag_data_pdfsigdict.xml");
 		DiagnosticData xmlDiagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
