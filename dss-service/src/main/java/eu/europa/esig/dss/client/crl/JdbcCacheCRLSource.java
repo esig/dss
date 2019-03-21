@@ -215,8 +215,6 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 
 			if (crlValidity.getNextUpdate() != null) {
 				s.setTimestamp(5, new Timestamp(crlValidity.getNextUpdate().getTime()));
-			} else if (nextUpdateDelay != null && crlValidity.getThisUpdate() != null) {
-				s.setTimestamp(5, new Timestamp(crlValidity.getThisUpdate().getTime() + nextUpdateDelay));
 			} else {
 				s.setNull(5, Types.TIMESTAMP);
 			}
@@ -270,8 +268,6 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRLToken> implement
 
 			if (crlValidity.getNextUpdate() != null) {
 				s.setTimestamp(4, new Timestamp(crlValidity.getNextUpdate().getTime()));
-			} else if (nextUpdateDelay != null && crlValidity.getThisUpdate() != null) {
-				s.setTimestamp(4, new Timestamp(crlValidity.getThisUpdate().getTime() + nextUpdateDelay));
 			} else {
 				s.setNull(4, Types.TIMESTAMP);
 			}

@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.x509;
 
 import java.io.Serializable;
-import java.security.MessageDigest;
 import java.security.PublicKey;
 import java.util.Collections;
 import java.util.Date;
@@ -30,7 +29,6 @@ import java.util.Map;
 
 import javax.security.auth.x500.X500Principal;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.TokenIdentifier;
@@ -234,19 +232,10 @@ public abstract class Token implements Serializable {
 	public byte[] getDigest(DigestAlgorithm digestAlgorithm) {
 		byte[] digestValue = digests.get(digestAlgorithm);
 		if (digestValue == null) {
-			digestValue = getDigest(digestAlgorithm, getEncoded());
+			digestValue = digestAlgorithm.getMessageDigest().digest(getEncoded());
 			digests.put(digestAlgorithm, digestValue);
 		}
 		return digestValue;
-	}
-
-	protected byte[] getDigest(DigestAlgorithm digestAlgorithm, byte[] toBeDigested) {
-		try {
-			MessageDigest md = MessageDigest.getInstance(digestAlgorithm.getJavaName());
-			return md.digest(toBeDigested);
-		} catch (Exception e) {
-			throw new DSSException("Unable to compute digest with algo " + digestAlgorithm, e);
-		}
 	}
 
 }

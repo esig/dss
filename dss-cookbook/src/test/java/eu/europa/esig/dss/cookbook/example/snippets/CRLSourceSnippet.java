@@ -51,6 +51,8 @@ public class CRLSourceSnippet {
 		JdbcCacheCRLSource cacheCRLSource = new JdbcCacheCRLSource();
 		cacheCRLSource.setDataSource(dataSource);
 		cacheCRLSource.setProxySource(onlineCRLSource);
+		Long oneWeek = (long) (1000 * 60 * 60 * 24 * 7);
+		cacheCRLSource.setMaxNexUpdateDelay(oneWeek); // force refresh every week (eg : ARL)
 		cacheCRLSource.initTable();
 		RevocationToken crlRevocationToken = cacheCRLSource.getRevocationToken(certificateToken, certificateToken);
 		// end::demo-cached[]

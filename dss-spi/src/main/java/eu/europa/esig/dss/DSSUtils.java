@@ -37,7 +37,6 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.Provider;
 import java.security.Security;
@@ -350,7 +349,7 @@ public final class DSSUtils {
 	 * @return digested array of bytes
 	 */
 	public static byte[] digest(final DigestAlgorithm digestAlgorithm, final byte[] data) {
-		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
+		final MessageDigest messageDigest = digestAlgorithm.getMessageDigest();
 		return messageDigest.digest(data);
 	}
 
@@ -376,22 +375,6 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Returns a new instance of MessageDigest for a given digest algorithm
-	 * 
-	 * @param digestAlgorithm
-	 *            the digest algoritm
-	 * @return a new instance of MessageDigest
-	 */
-	public static MessageDigest getMessageDigest(final DigestAlgorithm digestAlgorithm) {
-		try {
-			final String digestAlgorithmOid = digestAlgorithm.getOid();
-			return MessageDigest.getInstance(digestAlgorithmOid);
-		} catch (GeneralSecurityException e) {
-			throw new DSSException("Digest algorithm '" + digestAlgorithm.getName() + "' error: " + e.getMessage(), e);
-		}
-	}
-
-	/**
 	 * This method allows to digest the data in the {@code InputStream} with the given algorithm.
 	 *
 	 * @param digestAlgo
@@ -403,7 +386,7 @@ public final class DSSUtils {
 	public static byte[] digest(final DigestAlgorithm digestAlgo, final InputStream inputStream) {
 		try {
 
-			final MessageDigest messageDigest = getMessageDigest(digestAlgo);
+			final MessageDigest messageDigest = digestAlgo.getMessageDigest();
 			final byte[] buffer = new byte[4096];
 			int count = 0;
 			while ((count = inputStream.read(buffer)) > 0) {
@@ -424,7 +407,7 @@ public final class DSSUtils {
 	}
 
 	public static byte[] digest(DigestAlgorithm digestAlgorithm, byte[]... data) {
-		final MessageDigest messageDigest = getMessageDigest(digestAlgorithm);
+		final MessageDigest messageDigest = digestAlgorithm.getMessageDigest();
 		for (final byte[] bytes : data) {
 			messageDigest.update(bytes);
 		}

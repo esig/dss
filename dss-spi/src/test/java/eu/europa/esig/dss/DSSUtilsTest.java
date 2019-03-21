@@ -289,11 +289,4 @@ public class DSSUtilsTest {
 				DSSUtils.decodeUrl("012%C3%A9%C3%B9*34%C3%A45%C2%B5%C2%A3%206789%7E%23%25%26%28%29%2B%3D%60%20%40%7B%5B%5D%7D%27.txt"));
 	}
 
-	@Test
-	public void getMessageDigest() {
-		for (DigestAlgorithm digestAlgo : DigestAlgorithm.values()) {
-			assertNotNull(DSSUtils.getMessageDigest(digestAlgo));
-		}
-	}
-
 }

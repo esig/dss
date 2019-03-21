@@ -23,28 +23,39 @@ package eu.europa.esig.dss;
 import static org.junit.Assert.assertNotNull;
 
 import java.security.MessageDigest;
+import java.security.Security;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class DigestAlgorithmParameterizedTest {
+public class DigestAlgorithmParameterizedBouncyCastleTest {
 
 	private final DigestAlgorithm digestAlgo;
 
-	@Parameters(name = "Digest {index} : {0}")
-	public static Collection<DigestAlgorithm> data() {
-		// digest algorithms which are supported by the JVM
-		// other algorithms require BC,...
-		return Arrays.asList(DigestAlgorithm.SHA1, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512, DigestAlgorithm.MD2,
-				DigestAlgorithm.MD5);
+	@BeforeClass
+	public static void init() {
+		Security.addProvider(new BouncyCastleProvider());
 	}
 
-	public DigestAlgorithmParameterizedTest(DigestAlgorithm digestAlgo) {
+	@AfterClass
+	public static void reset() {
+		Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
+	}
+
+	@Parameters(name = "Digest {index} : {0}")
+	public static Collection<DigestAlgorithm> data() {
+		return Arrays.asList(DigestAlgorithm.values());
+	}
+
+	public DigestAlgorithmParameterizedBouncyCastleTest(DigestAlgorithm digestAlgo) {
 		this.digestAlgo = digestAlgo;
 	}
 
