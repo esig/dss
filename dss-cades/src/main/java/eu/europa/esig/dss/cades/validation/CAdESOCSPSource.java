@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.cades.validation;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Set;
@@ -44,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
-import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
  * OCSPSource that retrieves information from a CAdESSignature.
@@ -52,7 +50,7 @@ import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
  *
  */
 @SuppressWarnings("serial")
-public class CAdESOCSPSource extends OfflineOCSPSource {
+public class CAdESOCSPSource extends SignatureOCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESOCSPSource.class);
 
@@ -73,12 +71,11 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 	}
 
 	@Override
-	public Map<BasicOCSPResp, RevocationOrigin> getContainedOCSPResponses() {
-
-		final Map<BasicOCSPResp, RevocationOrigin> basicOCSPResps = new HashMap<BasicOCSPResp, RevocationOrigin>();
+	public void appendContainedOCSPResponses() {
+		
 		// Add OCSPs from SignedData
-		addBasicOcspRespFrom_id_pkix_ocsp_basic(basicOCSPResps);
-		addBasicOcspRespFrom_id_ri_ocsp_response(basicOCSPResps);
+		addBasicOcspRespFrom_id_pkix_ocsp_basic();
+		addBasicOcspRespFrom_id_ri_ocsp_response();
 		// Adds OCSP responses in -XL id_aa_ets_revocationValues inside SignerInfo attribute if present
 		if (signerInformation != null) {
 
@@ -109,7 +106,7 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 					for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
 
 						final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
-						addBasicOcspResp(basicOCSPResps, basicOCSPResp, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
+						addBasicOcspResp(basicOCSPResp, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
 					}
 					/* TODO: should add also OtherRevVals, but:
 					 "The syntax and semantics of the other revocation values (OtherRevVals) are outside the scope of the present
@@ -138,10 +135,9 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
             Value OCTET STRING
           }
 		 */
-		return basicOCSPResps;
 	}
 
-	private void addBasicOcspRespFrom_id_ri_ocsp_response(final Map<BasicOCSPResp, RevocationOrigin> basicOCSPResps) {
+	private void addBasicOcspRespFrom_id_ri_ocsp_response() {
 		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
 		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
 		for (final Object object : otherRevocationInfoMatches) {
@@ -154,7 +150,7 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 					final OCSPResp ocspResp = CMSUtils.getOcspResp(otherRevocationInfoMatch);
 					basicOCSPResp = CMSUtils.getBasicOcspResp(ocspResp);
 				}
-				addBasicOcspResp(basicOCSPResps, basicOCSPResp, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
+				addBasicOcspResp(basicOCSPResp, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
 			} else {
 				LOG.warn("Unsupported object type for id_ri_ocsp_response (SHALL be DER encoding) : {}",
 						object.getClass().getSimpleName());
@@ -162,14 +158,14 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 		}
 	}
 
-	private void addBasicOcspRespFrom_id_pkix_ocsp_basic(final Map<BasicOCSPResp, RevocationOrigin> basicOCSPResps) {
+	private void addBasicOcspRespFrom_id_pkix_ocsp_basic() {
 		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
 		for (final Object object : otherRevocationInfoMatches) {
 			if (object instanceof DERSequence) {
 				final DERSequence otherRevocationInfoMatch = (DERSequence) object;
 				final BasicOCSPResp basicOCSPResp = CMSUtils.getBasicOcspResp(otherRevocationInfoMatch);
-				addBasicOcspResp(basicOCSPResps, basicOCSPResp, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
+				addBasicOcspResp(basicOCSPResp, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
 			} else {
 				LOG.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be DER encoding) : {}",
 						object.getClass().getSimpleName());
@@ -177,10 +173,9 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 		}
 	}
 
-	private void addBasicOcspResp(final Map<BasicOCSPResp, RevocationOrigin> basicOCSPRespsMap, final BasicOCSPResp basicOCSPResp,
-			RevocationOrigin origin) {
+	private void addBasicOcspResp(final BasicOCSPResp basicOCSPResp, RevocationOrigin origin) {
 		if (basicOCSPResp != null) {
-			basicOCSPRespsMap.put(basicOCSPResp, origin);
+			ocspResponses.put(basicOCSPResp, origin);
 		}
 	}
 

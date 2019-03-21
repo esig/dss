@@ -31,7 +31,7 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 		int dssDictionatyOriginCounter = 0;
 		Set<RevocationWrapper> revocationData = diagnosticData.getAllRevocationData();
 		for (RevocationWrapper revocation : revocationData) {
-			assertNotNull(revocation.getSource());
+			assertNotNull(revocation.getRevocationType());
 			assertNotNull(revocation.getOrigin());
 			if (RevocationOriginType.INTERNAL_REVOCATION_VALUES.equals(revocation.getOrigin())) {
 				revocationValuesOriginCounter++;

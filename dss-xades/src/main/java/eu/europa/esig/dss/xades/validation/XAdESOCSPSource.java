@@ -20,11 +20,8 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -33,7 +30,7 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
-import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
@@ -41,15 +38,13 @@ import eu.europa.esig.dss.xades.XPathQueryHolder;
  *
  */
 @SuppressWarnings("serial")
-public class XAdESOCSPSource extends OfflineOCSPSource {
+public class XAdESOCSPSource extends SignatureOCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESOCSPSource.class);
 
 	private final Element signatureElement;
 
 	private final XPathQueryHolder xPathQueryHolder;
-
-	private Map<BasicOCSPResp, RevocationOrigin> containedOCSPResponses = new HashMap<BasicOCSPResp, RevocationOrigin>();
 
 	/**
 	 * The default constructor for XAdESOCSPSource.
@@ -59,21 +54,21 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 	 * @param xPathQueryHolder
 	 *            adapted {@code XPathQueryHolder}
 	 */
-	public XAdESOCSPSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder) {
+	public XAdESOCSPSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder) {		
 		Objects.requireNonNull(signatureElement, "Signature element cannot be null");
 		Objects.requireNonNull(xPathQueryHolder, "XPathQueryHolder cannot be null");
 
 		this.signatureElement = signatureElement;
 		this.xPathQueryHolder = xPathQueryHolder;
 	}
+	
+	
 
 	@Override
-	public Map<BasicOCSPResp, RevocationOrigin> getContainedOCSPResponses() {
-		if (containedOCSPResponses.isEmpty()) {
-			collect(xPathQueryHolder.XPATH_OCSP_VALUES_ENCAPSULATED_OCSP, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
-			collect(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUE, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
-		}
-		return containedOCSPResponses;
+	public void appendContainedOCSPResponses() {
+		collect(xPathQueryHolder.XPATH_OCSP_VALUES_ENCAPSULATED_OCSP, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
+		// TODO: collect INTERNAL_ATTRIBUTE_REVOCATION_VALUES
+		collect(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUE, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
 	}
 
 	private void collect(String xPathQuery, RevocationOrigin origin) {
@@ -86,22 +81,10 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 
 	private void convertAndAppend(String ocspValue, RevocationOrigin origin) {
 		try {
-			containedOCSPResponses.put(DSSRevocationUtils.loadOCSPBase64Encoded(ocspValue), origin);
+			ocspResponses.put(DSSRevocationUtils.loadOCSPBase64Encoded(ocspValue), origin);
 		} catch (Exception e) {
 			LOG.warn("Cannot retrieve OCSP response from '" + ocspValue + "' : " + e.getMessage(), e);
 		}
-	}
-
-	public Map<BasicOCSPResp, RevocationOrigin> getEncapsulatedOCSPValues() {
-		containedOCSPResponses = new HashMap<BasicOCSPResp, RevocationOrigin>();
-		collect(xPathQueryHolder.XPATH_OCSP_VALUES_ENCAPSULATED_OCSP, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
-		return containedOCSPResponses;
-	}
-
-	public Map<BasicOCSPResp, RevocationOrigin> getTimestampEncapsulatedOCSPValues() {
-		containedOCSPResponses = new HashMap<BasicOCSPResp, RevocationOrigin>();
-		collect(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUE, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
-		return containedOCSPResponses;
 	}
 
 }

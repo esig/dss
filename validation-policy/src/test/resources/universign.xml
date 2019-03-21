@@ -257,7 +257,7 @@
             <Revocations>
                 <Revocation Id="f43d5e9d13f33da1113595d755c7946d0db74961b469cb139f03eda1cfd77bb21a69421eeca0415425d70ea02078a6a732a7ac5b7e4a00a8bdab1035e6fd41c5">
                     <Origin>EXTERNAL</Origin>
-                    <Source>CRL</Source>
+                    <Type>CRL</Type>
                     <SourceAddress>http://crl.universign.eu/universign_tsa_root_2015.crl</SourceAddress>
                     <Available>false</Available>
                     <Status>true</Status>
@@ -381,7 +381,7 @@
             <Revocations>
                 <Revocation Id="38860679fab0e6d8490335aa94f3968c97098c9d206512f2335106090eb865243bfb691278ec85174c63a76d10731f08af4c43e05681ff999a0048caf0c5bcb7">
                     <Origin>EXTERNAL</Origin>
-                    <Source>OCSP</Source>
+                    <Type>OCSP</Type>
                     <SourceAddress>http://scah.ocsp.universign.eu/</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>
@@ -520,7 +520,7 @@
             <Revocations>
                 <Revocation Id="5a2f7f6fc616cb7fcc1084819f0d1b91cf9f1caf18c8808aab6779001dbf2cad1a69421eeca0415425d70ea02078a6a732a7ac5b7e4a00a8bdab1035e6fd41c5">
                     <Origin>EXTERNAL</Origin>
-                    <Source>CRL</Source>
+                    <Type>CRL</Type>
                     <SourceAddress>http://crl.universign.eu/universign_tsa_root_2015.crl</SourceAddress>
                     <Available>false</Available>
                     <Status>true</Status>
@@ -813,7 +813,7 @@
             <Revocations>
                 <Revocation Id="b500d1a6a280c57c5433dccd8924b5517e6aa08b18d4687e6a5820780d3fa2504354fe72336123fb5365e8851f1f27a9224553108c51199fb0f3086255904d86">
                     <Origin>EXTERNAL</Origin>
-                    <Source>OCSP</Source>
+                    <Type>OCSP</Type>
                     <SourceAddress>http://scah.ocsp.universign.eu/</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>

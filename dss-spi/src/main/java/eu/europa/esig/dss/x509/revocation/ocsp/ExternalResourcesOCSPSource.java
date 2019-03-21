@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.x509.revocation.ocsp;
 
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
@@ -31,8 +29,6 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 
 public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
-
-	protected Map<BasicOCSPResp, RevocationOrigin> ocspResponses = new HashMap<BasicOCSPResp, RevocationOrigin>();
 
 	/**
 	 * This constructor loads the OCSP responses from a array of <code>String</code>s representing resources.
@@ -72,8 +68,8 @@ public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
 	}
 
 	@Override
-	public Map<BasicOCSPResp, RevocationOrigin> getContainedOCSPResponses() {
-		return ocspResponses;
+	public void appendContainedOCSPResponses() {
+		// do nothing
 	}
 
 }

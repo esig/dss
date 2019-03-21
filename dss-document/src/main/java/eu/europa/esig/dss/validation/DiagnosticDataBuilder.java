@@ -67,6 +67,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
@@ -403,6 +404,7 @@ public class DiagnosticDataBuilder {
 		xmlSignature.setPDFSignatureDictionary(getXmlPDFSignatureDictionary(signature));
 
 		xmlSignature.setTimestamps(getXmlTimestamps(signature));
+		xmlSignature.setRevocationRefs(getXmlRevocationRefs(signature));
 
 		xmlSignature.setSignatureScopes(getXmlSignatureScopes(signature.getSignatureScopes()));
 
@@ -450,8 +452,7 @@ public class DiagnosticDataBuilder {
 		final XmlRevocation xmlRevocation = new XmlRevocation();
 
 		// In case of CRL, the X509CRL can be the same for different certificates
-		String xmlId = Utils.toHex(certToken.getDigest(DigestAlgorithm.SHA256)) + Utils.toHex(revocationToken.getDigest(DigestAlgorithm.SHA256));
-		xmlRevocation.setId(xmlId);
+		xmlRevocation.setId(getXmlRevocationId(revocationToken));
 
 		xmlRevocation.setOrigin(RevocationOriginType.valueOf(revocationToken.getOrigin().name()));
 		final Boolean revocationTokenStatus = revocationToken.getStatus();
@@ -468,7 +469,7 @@ public class DiagnosticDataBuilder {
 		if (reason != null) {
 			xmlRevocation.setReason(reason.name());
 		}
-		xmlRevocation.setSource(RevocationSourceType.valueOf(revocationToken.getRevocationSourceType().name()));
+		xmlRevocation.setType(RevocationType.valueOf(revocationToken.getRevocationSourceType().name()));
 
 		String sourceURL = revocationToken.getSourceURL();
 		if (Utils.isStringNotEmpty(sourceURL)) { // not empty = online
@@ -496,6 +497,10 @@ public class DiagnosticDataBuilder {
 		}
 
 		return xmlRevocation;
+	}
+	
+	private String getXmlRevocationId(RevocationToken revocationToken) {
+		return revocationToken.getRelatedCertificateID() + Utils.toHex(revocationToken.getDigest(DigestAlgorithm.SHA256));
 	}
 
 	private List<XmlDigestAlgoAndValue> getXmlDigestAlgoAndValues(Set<DigestAlgorithm> usedDigestAlgorithms, Token token) {
@@ -665,6 +670,28 @@ public class DiagnosticDataBuilder {
 		xmlTimestamps.addAll(getXmlTimestamps(signature.getTimestampsX2()));
 		xmlTimestamps.addAll(getXmlTimestamps(signature.getArchiveTimestamps()));
 		return xmlTimestamps;
+	}
+	
+	private List<XmlRevocationRef> getXmlRevocationRefs(AdvancedSignature signature) {
+		List<RevocationToken> revocationTokens = new ArrayList<>();
+		revocationTokens.addAll(signature.getRevocationValuesTokens());
+		revocationTokens.addAll(signature.getAttributeRevocationValuesTokens());
+		revocationTokens.addAll(signature.getTimestampRevocationValuesTokens());
+		revocationTokens.addAll(signature.getDSSDictionaryRevocationTokens());
+		revocationTokens.addAll(signature.getVRIDictionaryRevocationTokens());
+		List<XmlRevocationRef> xmlRevocationRefs = new ArrayList<XmlRevocationRef>();
+		for (RevocationToken revocationToken : revocationTokens) {
+			xmlRevocationRefs.add(getXmlRevocationRef(revocationToken));
+		}
+		return xmlRevocationRefs;
+	}
+	
+	private XmlRevocationRef getXmlRevocationRef(RevocationToken revocationToken) {
+		XmlRevocationRef xmlRevocationRef = new XmlRevocationRef();
+		xmlRevocationRef.setId(getXmlRevocationId(revocationToken));
+		xmlRevocationRef.setType(RevocationType.valueOf(revocationToken.getRevocationSourceType().name()));
+		xmlRevocationRef.setOrigin(RevocationOriginType.valueOf(revocationToken.getOrigin().name()));
+		return xmlRevocationRef;
 	}
 
 	/**

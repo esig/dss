@@ -35,7 +35,8 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.RevocationSourceType;
+import eu.europa.esig.dss.validation.RevocationOriginType;
+import eu.europa.esig.dss.validation.RevocationType;
 
 /**
  * This class represents all static data extracted by the process analysing the signature. They are independent from the
@@ -451,10 +452,10 @@ public class DiagnosticData {
 	 *            DSS certificate identifier to be checked
 	 * @return revocation source
 	 */
-	public RevocationSourceType getCertificateRevocationSource(final String dssCertificateId) {
+	public RevocationType getCertificateRevocationSource(final String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
 		if (certificate.isRevocationDataAvailable()) {
-			return certificate.getLatestRevocationData().getSource();
+			return certificate.getLatestRevocationData().getRevocationType();
 		}
 		return null;
 	}
@@ -617,6 +618,48 @@ public class DiagnosticData {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns list of {@link RevocationWrapper}s for the given signature by {@code signatureId}
+	 * @param signatureId {@link String} id of the relevant signature
+	 * @return list of {@link RevocationWrapper}s
+	 */
+	public List<RevocationWrapper> getAllRevocationForSignature(String signatureId) {
+		return getAllRevocationForSignatureByType(signatureId, null);
+	}
+	
+	/**
+	 * Returns list of {@link RevocationWrapper}s for the given signature by {@code signatureId} and specified {@link RevocationType}
+	 * @param signatureId {@link String} id of the relevant signature
+	 * @param revocationType {@link RevocationType} type to get revocation data of. If NULL returns revocations of all revocation types
+	 * @return list of {@link RevocationWrapper}s
+	 */
+	public List<RevocationWrapper> getAllRevocationForSignatureByType(String signatureId, RevocationType revocationType) {
+		return getAllRevocationForSignatureByTypeAndOrigin(signatureId, revocationType, null);
+	}
+	
+	/**
+	 * Returns list of {@link RevocationWrapper}s for the given signature by {@code signatureId}, specified {@link RevocationType}
+	 * and specified {@link RevocationOriginType}
+	 * @param signatureId {@link String} id of the relevant signature
+	 * @param type {@link RevocationType} type to get revocation data of. If NULL returns revocations of all types
+	 * @param originType {@link RevocationOriginType} origin type to get revocation data of. If NULL returns revocations of all origin types
+	 * @return list of {@link RevocationWrapper}s
+	 */
+	public List<RevocationWrapper> getAllRevocationForSignatureByTypeAndOrigin(String signatureId, RevocationType revocationType, 
+			RevocationOriginType originType) {
+		SignatureWrapper signature = getSignatureById(signatureId);
+		List<RevocationWrapper> revocations = new ArrayList<RevocationWrapper>();
+		List<String> revocationIds = signature.getRevocationIds();
+		for (String revocationId : revocationIds) {
+			RevocationWrapper revocationWrapper = getRevocationDataById(revocationId);
+			if ((originType == null || revocationWrapper.getOrigin().equals(originType)) &&
+					(revocationType == null || revocationWrapper.getRevocationType().equals(revocationType))) {
+				revocations.add(getRevocationDataById(revocationId));
+			}
+		}
+		return revocations;
 	}
 
 	/**

@@ -173,7 +173,7 @@
             <Revocations>
 	            <Revocation Id="79ADAE6C275B8805AF16746D43CEA07C1E1102C6476C9E9C4B2B4F30230B4F74">
 	                <Origin>EXTERNAL</Origin>
-	                <Source>OCSP</Source>
+	                <Type>OCSP</Type>
 	                <SourceAddress>http://ocsp.s-trust.de</SourceAddress>
 	                <Available>true</Available>
 	                <Status>true</Status>
@@ -251,7 +251,7 @@
             <Revocations>
 	            <Revocation Id="44E8F4F581737AD1B43EA4562D51AB3F3EB458C3A0E91979EF35F133EE31797E">
 	                <Origin>EXTERNAL</Origin>
-	                <Source>OCSP</Source>
+	                <Type>OCSP</Type>
 	                <SourceAddress>http://subca.ocsp-certum.com</SourceAddress>
 	                <Available>true</Available>
 	                <Status>true</Status>

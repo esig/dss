@@ -134,7 +134,7 @@
             <Revocations>
                 <Revocation Id="2c5c347e50b7dca9f83dc218fba379c09e2afe4d43c80169bceb151d48f80493339d4b790f8675e4438e6d8d224d34b54d115dfbf7bfc87dbaddf906b34ef2c1">
                     <Origin>EXTERNAL</Origin>
-                    <Source>OCSP</Source>
+                    <Type>OCSP</Type>
                     <SourceAddress>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>
@@ -320,7 +320,7 @@
             <Revocations>
                 <Revocation Id="a4247099ed92021fb0ce6717ca52b10aba75f7212810b79c169e59bdd24305042448ac819769604fec7c5224b89fe21198c27a8430ae2bb5d9c55471e643fc97">
                     <Origin>EXTERNAL</Origin>
-                    <Source>OCSP</Source>
+                    <Type>OCSP</Type>
                     <SourceAddress>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>
@@ -431,7 +431,7 @@
             <Revocations>
                 <Revocation Id="dd5dc14d30100268ee31671fdbe3f92c37bd97f7bd4e2b2d6fd00af3afedba852524d79debd85b9fa355714686a7dc4eb689f12f1741fc4cea2b47685868dbd5">
                     <Origin>EXTERNAL</Origin>
-                    <Source>OCSP</Source>
+                    <Type>OCSP</Type>
                     <SourceAddress>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>
@@ -620,7 +620,7 @@
             <Revocations>
                 <Revocation Id="10065bca3329ff0813ff6254448c6c9281f36c0630c71e9446f109fc1b5cdbcf2ae1c3293e764f07c7e688c9b9d791d178b7d1a062f923281b5f872f23c35653">
                     <Origin>EXTERNAL</Origin>
-                    <Source>OCSP</Source>
+                    <Type>OCSP</Type>
                     <SourceAddress>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>

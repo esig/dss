@@ -155,7 +155,7 @@
             <Revocations>
                 <Revocation Id="e4a94773cf7b28c2bdf25015be6716e501e73ab82bf0a9788d0df8ad14d6876d1113ca4e946c23557f42043c15ccb567d952fa13b5dea850d5fcef23cacbfca9">
                     <Origin>EXTERNAL</Origin>
-                    <Source>CRL</Source>
+                    <Type>CRL</Type>
                     <SourceAddress>http://46.101.246.130:8080/esig-validation-tests/crl/SDI-5.3.3.crl</SourceAddress>
                     <Available>false</Available>
                     <Status>true</Status>

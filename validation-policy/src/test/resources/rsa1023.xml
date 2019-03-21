@@ -133,7 +133,7 @@
             <Revocations>
                 <Revocation Id="293d0ba3a31e5d82a8e3fae12709932ffdda44423e0f733fb01ef123e73eb4da6d76fbf942ea268c1708007834acae5369d5d36f5f7e33a153419d3ce923b30b">
                     <Origin>EXTERNAL</Origin>
-                    <Source>CRL</Source>
+                    <Type>CRL</Type>
                     <SourceAddress>http://crl.eid.belgium.be/belgium4.crl</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>
@@ -321,7 +321,7 @@
             <Revocations>
                 <Revocation Id="4fab29027727e58e4518ed0b6ae554d055f05b3d9197e0d16b20028d227d1a9f5317c6de53411851d8bed36db85c70fa33c29407951fb943fd4fe9120d441cd9">
                     <Origin>EXTERNAL</Origin>
-                    <Source>OCSP</Source>
+                    <Type>OCSP</Type>
                     <SourceAddress>http://ocsp.eid.belgium.be/2</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>

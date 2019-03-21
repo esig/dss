@@ -28,13 +28,14 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
-import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
+import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
  * Retrieves CRL values from an XAdES (-XL) signature.
  */
-public class XAdESCRLSource extends OfflineCRLSource {
+@SuppressWarnings("serial")
+public class XAdESCRLSource extends SignatureCRLSource {
 
 	/**
 	 * The default constructor for XAdESCRLSource.
@@ -44,11 +45,12 @@ public class XAdESCRLSource extends OfflineCRLSource {
 	 * @param xPathQueryHolder
 	 *            adapted {@code XPathQueryHolder}
 	 */
-	public XAdESCRLSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder) {
+	public XAdESCRLSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder) {		
 		Objects.requireNonNull(signatureElement, "Signature element cannot be null");
 		Objects.requireNonNull(xPathQueryHolder, "XPathQueryHolder cannot be null");
 
 		collect(signatureElement, xPathQueryHolder.XPATH_CRL_VALUES_ENCAPSULATED_CRL, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
+		// TODO: collect INTERNAL_ATTRIBUTE_REVOCATION_VALUES
 		collect(signatureElement, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_CRL_VALUES, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
 	}
 

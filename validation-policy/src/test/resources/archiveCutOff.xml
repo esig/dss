@@ -292,7 +292,7 @@
 				<Revocation
 					Id="38860679fab0e6d8490335aa94f3968c97098c9d206512f2335106090eb86524bd06eaf32a5fb9ef10cdd61b2cddcde88f27d9a7684e9fcea1bbb19faf681720">
 					<Origin>EXTERNAL</Origin>
-					<Source>OCSP</Source>
+					<Type>OCSP</Type>
 					<SourceAddress>http://scah.ocsp.universign.eu/</SourceAddress>
 					<Available>true</Available>
 					<Status>true</Status>
@@ -458,7 +458,7 @@
 				<Revocation
 					Id="f43d5e9d13f33da1113595d755c7946d0db74961b469cb139f03eda1cfd77bb2e5be2256b23b2514fd2858c1d6b0d9615ae72b728f3f380b226a14de6725596e">
 					<Origin>EXTERNAL</Origin>
-					<Source>CRL</Source>
+					<Type>CRL</Type>
 					<SourceAddress>http://crl.universign.eu/universign_tsa_root_2015.crl
 					</SourceAddress>
 					<Available>false</Available>
@@ -734,7 +734,7 @@
 				<Revocation
 					Id="5a2f7f6fc616cb7fcc1084819f0d1b91cf9f1caf18c8808aab6779001dbf2cade5be2256b23b2514fd2858c1d6b0d9615ae72b728f3f380b226a14de6725596e">
 					<Origin>EXTERNAL</Origin>
-					<Source>CRL</Source>
+					<Type>CRL</Type>
 					<SourceAddress>http://crl.universign.eu/universign_tsa_root_2015.crl
 					</SourceAddress>
 					<Available>false</Available>
@@ -886,7 +886,7 @@
 				<Revocation
 					Id="b500d1a6a280c57c5433dccd8924b5517e6aa08b18d4687e6a5820780d3fa2500d0191b6441a638ac2dfd67f34a53b1cbffbbb955691a3b3dab21ee93d419b1b">
 					<Origin>EXTERNAL</Origin>
-					<Source>OCSP</Source>
+					<Type>OCSP</Type>
 					<SourceAddress>http://scah.ocsp.universign.eu/</SourceAddress>
 					<Available>true</Available>
 					<Status>true</Status>

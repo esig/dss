@@ -33,10 +33,13 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.SignaturePolicy;
-import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
  * Provides an abstraction for an Advanced Electronic Signature. This ease the validation process. Every signature
@@ -134,16 +137,16 @@ public interface AdvancedSignature extends Serializable {
 	/**
 	 * Gets a CRL source which contains ALL CRLs embedded in the signature.
 	 *
-	 * @return
+	 * @return {@code SignatureCRLSource}
 	 */
-	OfflineCRLSource getCRLSource();
+	SignatureCRLSource getCRLSource();
 
 	/**
 	 * Gets an OCSP source which contains ALL OCSP responses embedded in the signature.
 	 *
-	 * @return
+	 * @return {@code SignatureOCSPSource}
 	 */
-	OfflineOCSPSource getOCSPSource();
+	SignatureOCSPSource getOCSPSource();
 
 	/**
 	 * Gets an object containing the signing certificate or information indicating why it is impossible to extract it
@@ -421,6 +424,16 @@ public interface AdvancedSignature extends Serializable {
 	 * This method allows the structure validation of the signature.
 	 */
 	void validateStructure();
+	
+	/**
+	 * Fills all the missing {@link CRLToken}s from the given {@code signatureCRLSource}
+	 */
+	void populateCRLTokenLists(SignatureCRLSource signatureCRLSource);
+	
+	/**
+	 * Fills all the missing {@link OCSPToken}s from the given {@code signatureOCSPSource}
+	 */
+	void populateOCSPTokenLists(SignatureOCSPSource signatureOCSPSource);
 
 	String getStructureValidationResult();
 
@@ -437,6 +450,43 @@ public interface AdvancedSignature extends Serializable {
 	 * @return a list with one or more {@code ReferenceValidation}
 	 */
 	List<ReferenceValidation> getReferenceValidations();
+	
+	// ------------------------ TS 119 102-2 Specifics
+	
+	/**
+	 * Retrieves the list of all {@link RevocationToken}s present in 'RevocationValues' element
+	 * NOTE: Applicable only for CAdES and XAdES revocation sources
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getRevocationValuesTokens();
+
+	/**
+	 * Retrieves the list of all {@link RevocationToken}s present in 'AttributeRevocationValues' element
+	 * NOTE: Applicable only for XAdES revocation source
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getAttributeRevocationValuesTokens();
+
+	/**
+	 * Retrieves the list of all {@link RevocationToken}s present in 'TimestampValidationData/RevocationValues' element
+	 * NOTE: Applicable only for XAdES revocation source
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getTimestampRevocationValuesTokens();
+
+	/**
+	 * Retrieves the list of all {@link RevocationToken}s present in 'DSS' dictionary
+	 * NOTE: Applicable only for PAdES revocation source
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getDSSDictionaryRevocationTokens();
+
+	/**
+	 * Retrieves the list of all {@link RevocationToken}s present in 'VRI' dictionary
+	 * NOTE: Applicable only for PAdES revocation source
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getVRIDictionaryRevocationTokens();
 
 	// ------------------------ CAdES Specifics for TS 119 102-2
 

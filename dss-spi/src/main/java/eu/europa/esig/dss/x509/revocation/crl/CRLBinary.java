@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.x509.revocation.crl;
 
+import java.util.Objects;
+
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
@@ -37,6 +39,29 @@ public class CRLBinary {
 	
 	public void setOrigin(RevocationOrigin origin) {
 		this.origin = origin;
+	}
+	
+	@Override
+	public String toString() {
+		return getBase64Digest();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof CRLBinary)) {
+			return false;
+		}
+		// TODO compare Digest
+		CRLBinary c = (CRLBinary)obj;
+		return hashCode() == c.hashCode();
+	}
+
+	@Override
+	public int hashCode() {
+		return binaries.hashCode();
 	}
 
 }

@@ -161,8 +161,8 @@ import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
  * CAdES Signature class helper
@@ -276,7 +276,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public OfflineCRLSource getCRLSource() {
+	public SignatureCRLSource getCRLSource() {
 		if (offlineCRLSource == null) {
 			try {
 				offlineCRLSource = new CAdESCRLSource(cmsSignedData, signerInformation);
@@ -290,7 +290,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public OfflineOCSPSource getOCSPSource() {
+	public SignatureOCSPSource getOCSPSource() {
 		if (offlineOCSPSource == null) {
 			offlineOCSPSource = new CAdESOCSPSource(cmsSignedData, signerInformation);
 		}
@@ -571,7 +571,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 * @return the cmsSignedData
 	 */
 	public CMSSignedData getCmsSignedData() {
-
 		return cmsSignedData;
 	}
 

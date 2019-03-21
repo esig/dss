@@ -57,8 +57,8 @@ import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
  * Implementation of AdvancedSignature for PAdES
@@ -106,7 +106,7 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public OfflineCRLSource getCRLSource() {
+	public SignatureCRLSource getCRLSource() {
 		if (offlineCRLSource == null) {
 			offlineCRLSource = new PAdESCRLSource(dssDictionary);
 		}
@@ -114,7 +114,7 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public OfflineOCSPSource getOCSPSource() {
+	public SignatureOCSPSource getOCSPSource() {
 		if (offlineOCSPSource == null) {
 			offlineOCSPSource = new PAdESOCSPSource(dssDictionary);
 		}

@@ -128,6 +128,14 @@
 				</xs:complexType>
 			</xs:element>
 			
+			<xs:element name="RevocationRefs" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="RevocationRef" type="RevocationRef" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
 			<xs:element name="SignatureScopes" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
@@ -462,7 +470,7 @@
 	<xs:complexType name="Revocation">
 		<xs:sequence>
 			<xs:element name="Origin" type="RevocationOriginType" />
-			<xs:element name="Source" type="RevocationSourceType" />
+			<xs:element name="Type" type="RevocationType" />
 			<xs:element name="SourceAddress" type="xs:string" minOccurs="0" />
 			<xs:element name="Available" type="xs:boolean" minOccurs="0" />
 			<xs:element name="Status" type="xs:boolean" />
@@ -487,6 +495,14 @@
 		<xs:attribute name="Id" type="xs:string" use="required" />
 	</xs:complexType>
 	
+	<xs:complexType name="RevocationRef">
+		<xs:sequence>
+			<xs:element name="Origin" type="RevocationOriginType" />
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="required" />
+		<xs:attribute name="Type" type="RevocationType" use="required" />
+	</xs:complexType>
+	
 	<xs:simpleType name="RevocationOriginType" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="INTERNAL_REVOCATION_VALUES" />
@@ -500,7 +516,7 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:simpleType name="RevocationSourceType" final="restriction">
+	<xs:simpleType name="RevocationType" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="CRL" />
 			<xs:enumeration value="OCSP" />

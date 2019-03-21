@@ -340,6 +340,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			if (signatureScopeFinder != null) {
 				signature.findSignatureScope(signatureScopeFinder);
 			}
+			signature.populateCRLTokenLists(signatureCRLSource);
+			signature.populateOCSPTokenLists(signatureOCSPSource);
 		}
 		return allSignatureList;
 	}

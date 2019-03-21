@@ -34,6 +34,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
@@ -429,6 +430,14 @@ public class SignatureWrapper extends AbstractTokenProxy {
 			return pdfSignatureDictionary.getSignatureByteRange();
 		}
 		return null;
+	}
+	
+	public List<String> getRevocationIds() {
+		List<String> revocationIds = new ArrayList<String>();
+		for (XmlRevocationRef revocationRef : signature.getRevocationRefs()) {
+			revocationIds.add(revocationRef.getId());
+		}
+		return revocationIds;
 	}
 
 }

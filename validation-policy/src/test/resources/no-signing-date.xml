@@ -263,7 +263,7 @@
             <Revocations>
                 <Revocation Id="efdf173dd8b570a0587980070ef0efc8c79dd4f4ef1a206511967a7f7532fc74e36f8862bbd580f5dcc4d07819d43045738d9921b691a7a3562f498239ae8f5a">
                     <Origin>EXTERNAL</Origin>
-                    <Source>OCSP</Source>
+                    <Type>OCSP</Type>
                     <SourceAddress>http://ocsp.quovadisglobal.com</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>

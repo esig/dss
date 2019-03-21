@@ -23,6 +23,7 @@ package eu.europa.esig.dss.x509.revocation.crl;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,6 +31,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,13 +79,14 @@ public abstract class OfflineCRLSource implements CRLSource {
 			return null;
 		}
 
-		final CRLValidity bestCRLValidity = getBestCrlValidity(certificateToken, issuerToken);
+		final Entry<CRLBinary, CRLValidity> bestCRLValidity = getBestCrlValidityEntry(certificateToken, issuerToken);
 		if (bestCRLValidity == null) {
 			return null;
 		}
 
-		final CRLToken crlToken = new CRLToken(certificateToken, bestCRLValidity);
+		final CRLToken crlToken = new CRLToken(certificateToken, bestCRLValidity.getValue());
 		validCRLTokenList.put(certificateToken, crlToken);
+		storeCRLToken(bestCRLValidity.getKey(), crlToken);
 		return crlToken;
 	}
 
@@ -98,9 +101,9 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 *            of the CRL
 	 * @return {@code CRLValidity}
 	 */
-	private CRLValidity getBestCrlValidity(final CertificateToken certificateToken, final CertificateToken issuerToken) {
+	private Entry<CRLBinary, CRLValidity> getBestCrlValidityEntry(final CertificateToken certificateToken, final CertificateToken issuerToken) {
 
-		CRLValidity bestCRLValidity = null;
+		Entry<CRLBinary, CRLValidity> bestCRLValidityEntry = null;
 		Date bestX509UpdateDate = null;
 
 		for (CRLBinary crlEntry : crlsBinaryList) {
@@ -122,12 +125,12 @@ public abstract class OfflineCRLSource implements CRLSource {
 				}
 
 				if ((bestX509UpdateDate == null) || thisUpdate.after(bestX509UpdateDate)) {
-					bestCRLValidity = crlValidity;
+					bestCRLValidityEntry = new AbstractMap.SimpleEntry<CRLBinary, CRLValidity>(crlEntry, crlValidity);
 					bestX509UpdateDate = thisUpdate;
 				}
 			}
 		}
-		return bestCRLValidity;
+		return bestCRLValidityEntry;
 	}
 
 	/**
@@ -178,18 +181,13 @@ public abstract class OfflineCRLSource implements CRLSource {
 	}
 
 	protected void addCRLBinary(CRLBinary crlBinary) {
-		if (!isCRLBinaryListContains(crlBinary.getBase64Digest()) && !crlValidityMap.containsKey(crlBinary.getBase64Digest())) {
+		if (!crlsBinaryList.contains(crlBinary) && !crlValidityMap.containsKey(crlBinary.getBase64Digest())) {
 			crlsBinaryList.add(crlBinary);
 		}
 	}
 	
-	private boolean isCRLBinaryListContains(String base64Digest) {
-		for (CRLBinary crlBinary : crlsBinaryList) {
-			if (crlBinary.getBase64Digest().equals(base64Digest)) {
-				return true;
-			}
-		}
-		return false;
+	protected void storeCRLToken(final CRLBinary crlBinary, final CRLToken crlToken) {
+		// do nothing
 	}
 
 }

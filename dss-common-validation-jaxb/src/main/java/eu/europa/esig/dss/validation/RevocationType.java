@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.validation;
 
-public enum RevocationSourceType {
+public enum RevocationType {
 	
 	CRL, OCSP,
 

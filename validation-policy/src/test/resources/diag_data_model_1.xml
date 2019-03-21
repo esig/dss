@@ -206,7 +206,7 @@
             <Revocations>
                 <Revocation Id="3967083a1b9ce00484905529e22c64bbf622ee356088d62371b8069a84fe47f7ce5b5ad67683a8a2ae283364782aa32e718ab9b80ae030215e575716d4d58673">
                     <Origin>EXTERNAL</Origin>
-                    <Source>OCSP</Source>
+                    <Type>OCSP</Type>
                     <SourceAddress>http://qual.ocsp.d-trust.net</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>
@@ -451,7 +451,7 @@
             <Revocations>
                 <Revocation Id="3967083a1b9ce00484905529e22c64bbf622ee356088d62371b8069a84fe47f7ce5b5ad67683a8a2ae283364782aa32e718ab9b80ae030215e575716d4d52222">
                     <Origin>EXTERNAL</Origin>
-                    <Source>OCSP</Source>
+                    <Type>OCSP</Type>
                     <SourceAddress>http://qual.ocsp.d-trust.net</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>

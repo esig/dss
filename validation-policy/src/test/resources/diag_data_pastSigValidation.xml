@@ -470,7 +470,7 @@
             <Revocations>
                 <Revocation Id="49fc84b2cefb368e43a731e5362a78b31877f0100fb8ba6c8c0c72748d486db38e9dcd8a374ad8cce7869cc5c2ed4d68d1b30ad7d6dba093acb85f5373efd999">
                     <Origin>SIGNATURE</Origin>
-                    <Source>OCSP</Source>
+                    <Type>OCSP</Type>
                     <Status>true</Status>
                     <ProductionDate>2018-12-06T13:04:17</ProductionDate>
                     <ThisUpdate>2018-12-06T13:01:48</ThisUpdate>
@@ -500,7 +500,7 @@
                 </Revocation>
                 <Revocation Id="49fc84b2cefb368e43a731e5362a78b31877f0100fb8ba6c8c0c72748d486db30e21432ced54f9e0b01dfaa2eacf1bf635a7b6c79f1ced934bb5256fc0459cac">
                     <Origin>SIGNATURE</Origin>
-                    <Source>CRL</Source>
+                    <Type>CRL</Type>
                     <Status>true</Status>
                     <ProductionDate>2018-12-06T12:49:19</ProductionDate>
                     <ThisUpdate>2018-12-06T12:49:19</ThisUpdate>
@@ -604,7 +604,7 @@
             <Revocations>
                 <Revocation Id="ee3c22e06087bfec213709ad3e7f2dda9ce9d19ce238dca81a6433e9070a9fbe039d9d40d1f446ff3d1a56fbb46eda6ca5bfd9eb2b19c58365e0dd0a54b0d0e3">
                     <Origin>SIGNATURE</Origin>
-                    <Source>CRL</Source>
+                    <Type>CRL</Type>
                     <Status>true</Status>
                     <ProductionDate>2018-07-01T11:00:00</ProductionDate>
                     <ThisUpdate>2018-07-01T11:00:00</ThisUpdate>
@@ -632,7 +632,7 @@
                 </Revocation>
                 <Revocation Id="ee3c22e06087bfec213709ad3e7f2dda9ce9d19ce238dca81a6433e9070a9fbe40ca829466dd3a48d3ccde6feadc4dc9e8afba3412fc102e9ffec7c03803a6c8">
                     <Origin>EXTERNAL</Origin>
-                    <Source>CRL</Source>
+                    <Type>CRL</Type>
                     <SourceAddress>http://crl.pki.belgium.be/belgium4.crl</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>
@@ -743,7 +743,7 @@
             <Revocations>
                 <Revocation Id="3478bb8f616a268841f5cf0c7b71cf0d87b998172fd3da7fa3b2df741d6b7e660e21432ced54f9e0b01dfaa2eacf1bf635a7b6c79f1ced934bb5256fc0459cac">
                     <Origin>SIGNATURE</Origin>
-                    <Source>CRL</Source>
+                    <Type>CRL</Type>
                     <Status>true</Status>
                     <ProductionDate>2018-12-06T12:49:19</ProductionDate>
                     <ThisUpdate>2018-12-06T12:49:19</ThisUpdate>

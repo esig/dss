@@ -25,12 +25,13 @@ import java.util.Map;
 
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.x509.RevocationOrigin;
-import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
+import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 
 /**
  * CRLSource that will retrieve the CRL from a PAdES Signature
  */
-public class PAdESCRLSource extends OfflineCRLSource {
+@SuppressWarnings("serial")
+public class PAdESCRLSource extends SignatureCRLSource {
 
 	private final PdfDssDict dssDictionary;
 

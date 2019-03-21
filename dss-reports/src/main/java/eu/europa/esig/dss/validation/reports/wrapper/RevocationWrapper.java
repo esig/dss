@@ -30,7 +30,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.RevocationOriginType;
-import eu.europa.esig.dss.validation.RevocationSourceType;
+import eu.europa.esig.dss.validation.RevocationType;
 
 public class RevocationWrapper extends AbstractTokenProxy {
 
@@ -104,8 +104,8 @@ public class RevocationWrapper extends AbstractTokenProxy {
 		return Utils.isTrue(revocation.isCertHashExtensionMatch());
 	}
 
-	public RevocationSourceType getSource() {
-		return revocation.getSource();
+	public RevocationType getRevocationType() {
+		return revocation.getType();
 	}
 
 	public RevocationOriginType getOrigin() {

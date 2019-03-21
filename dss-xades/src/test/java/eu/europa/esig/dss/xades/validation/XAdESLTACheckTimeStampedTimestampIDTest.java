@@ -91,7 +91,7 @@ public class XAdESLTACheckTimeStampedTimestampIDTest extends PKIFactoryAccess {
 		Set<RevocationWrapper> revocationData = diagnostic.getAllRevocationData();
 		for (RevocationWrapper revocationWrapper : revocationData) {
 			assertNotNull(revocationWrapper.getOrigin());
-			assertNotNull(revocationWrapper.getSource());
+			assertNotNull(revocationWrapper.getRevocationType());
 		}
 	}
 

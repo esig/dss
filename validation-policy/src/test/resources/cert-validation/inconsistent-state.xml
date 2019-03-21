@@ -283,7 +283,7 @@
             <Revocations>
                 <Revocation Id="a1e2d4ca9c521332369fa3224f0b7282ad2596e8a7416cbc0df087e05d8f5502ee61c3ce61699e2ba6898ae5d8dce78dc246bf1a07590adf78c44e00f59d4fab">
                     <Origin>EXTERNAL</Origin>
-                    <Source>OCSP</Source>
+                    <Type>OCSP</Type>
                     <SourceAddress>http://ocsp.f.hr</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>

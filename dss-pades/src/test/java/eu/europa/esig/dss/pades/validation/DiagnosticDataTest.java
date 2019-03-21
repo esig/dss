@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.math.BigInteger;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.RevocationOriginType;
+import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
@@ -57,7 +59,7 @@ public class DiagnosticDataTest extends PKIFactoryAccess {
 		int dssDictionatyOriginCounter = 0;
 		Set<RevocationWrapper> revocationData = diagnosticData.getAllRevocationData();
 		for (RevocationWrapper revocation : revocationData) {
-			assertNotNull(revocation.getSource());
+			assertNotNull(revocation.getRevocationType());
 			assertNotNull(revocation.getOrigin());
 			if (RevocationOriginType.INTERNAL_REVOCATION_VALUES.equals(revocation.getOrigin())) {
 				xmlRevocationValuesOriginCounter++;
@@ -72,6 +74,45 @@ public class DiagnosticDataTest extends PKIFactoryAccess {
 		assertEquals(0, xmlRevocationValuesOriginCounter);
 		assertEquals(0, xmlTimestampRevocationDataOriginCounter);
 		assertEquals(7, dssDictionatyOriginCounter);
+	}
+	
+	@Test
+	public void multiSignedDocRevocationRefTest() throws Exception {
+		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/plugtest/esig2014/ESIG-PAdES/SK/Signature-P-SK-6.pdf"));
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		Reports report = validator.validateDocument();
+		report.print();
+		DiagnosticData diagnosticData = report.getDiagnosticData();
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		assertNotNull(signatures);
+		Set<RevocationWrapper> differentRevocationData = new HashSet<RevocationWrapper>();
+		for (SignatureWrapper signature : signatures) {
+			List<RevocationWrapper> signatureRevocations = diagnosticData.getAllRevocationForSignature(signature.getId());
+			differentRevocationData.addAll(signatureRevocations);
+			assertEquals(2, signatureRevocations.size());
+		}
+		assertEquals(diagnosticData.getAllRevocationData().size(), differentRevocationData.size());
+		
+		SignatureWrapper signatureOne = signatures.get(0);
+		assertEquals(3, diagnosticData.getAllRevocationForSignatureByType(signatureOne.getId(), RevocationType.CRL).size());
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(signatureOne.getId(), RevocationType.OCSP).size());
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureOne.getId(), 
+				RevocationType.CRL, RevocationOriginType.INTERNAL_REVOCATION_VALUES).size());
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureOne.getId(), 
+				RevocationType.CRL, RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+		assertEquals(3, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureOne.getId(), 
+				RevocationType.CRL, RevocationOriginType.INTERNAL_DSS).size());
+		
+		SignatureWrapper signatureTwo = signatures.get(1);
+		assertEquals(1, diagnosticData.getAllRevocationForSignatureByType(signatureTwo.getId(), RevocationType.CRL).size());
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(signatureTwo.getId(), RevocationType.OCSP).size());
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureTwo.getId(), 
+				RevocationType.CRL, RevocationOriginType.INTERNAL_REVOCATION_VALUES).size());
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureTwo.getId(), 
+				RevocationType.CRL, RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+		assertEquals(1, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureTwo.getId(), 
+				RevocationType.CRL, RevocationOriginType.INTERNAL_DSS).size());
 	}
 
 	@Override

@@ -132,7 +132,7 @@
 			<Revocations>
 	            <Revocation Id="0574F0CFD174789DDCB57C5F2EC6EC43DD341BF7789708E28E87AF9A2696CA56">
 	                <Origin>EXTERNAL</Origin>
-	                <Source>OCSP</Source>
+	                <Type>OCSP</Type>
 	                <SourceAddress>http://ocsp.sc.infocert.it/</SourceAddress>
 	                <Available>true</Available>
 	                <Status>false</Status>

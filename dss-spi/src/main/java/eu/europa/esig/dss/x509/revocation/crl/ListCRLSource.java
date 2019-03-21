@@ -24,7 +24,8 @@ package eu.europa.esig.dss.x509.revocation.crl;
  * This class allows to handle a list CRL source.
  *
  */
-public class ListCRLSource extends OfflineCRLSource {
+@SuppressWarnings("serial")
+public class ListCRLSource extends SignatureCRLSource {
 
 	/**
 	 * This is the constructor for this class, it allows to instantiate the list which will contain all {@code X509CRL}.

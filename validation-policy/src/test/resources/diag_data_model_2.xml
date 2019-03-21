@@ -222,7 +222,7 @@
             <Revocations>
                 <Revocation Id="c01fc833d83eaf08f4031a1915a72be6602a63587c5b65227d37461e35019532a089b92ca229216ae9b9f8bd39a8b3ef699a47371a5222f18b4a39995cca222b">
                     <Origin>EXTERNAL</Origin>
-                    <Source>OCSP</Source>
+                    <Type>OCSP</Type>
                     <SourceAddress>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>
@@ -339,7 +339,7 @@
             <Revocations>
                 <Revocation Id="24abe927f4c70fb2371fa5463a31acbda662e791d0aa081bbbbad36b2bf52b2b05cec01ec463a560fe91afd35a34ef0013b00a1ae3c683d6221da519f914f596">
                     <Origin>EXTERNAL</Origin>
-                    <Source>OCSP</Source>
+                    <Type>OCSP</Type>
                     <SourceAddress>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>
@@ -458,7 +458,7 @@
             <Revocations>
                 <Revocation Id="f4703e9ef1a4f93a57eb9cd2e63738870838fbb59f6de9c07d4adabe2255b7290522d1b953212894552cc55819e3ace59011930fca14e38f65c67fc15e4adca9">
                     <Origin>EXTERNAL</Origin>
-                    <Source>OCSP</Source>
+                    <Type>OCSP</Type>
                     <SourceAddress>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</SourceAddress>
                     <Available>true</Available>
                     <Status>true</Status>

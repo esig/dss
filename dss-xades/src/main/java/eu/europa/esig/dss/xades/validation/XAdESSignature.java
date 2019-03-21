@@ -95,8 +95,8 @@ import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
-import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
@@ -337,7 +337,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public OfflineCRLSource getCRLSource() {
+	public SignatureCRLSource getCRLSource() {
 		if (offlineCRLSource == null) {
 			offlineCRLSource = new XAdESCRLSource(signatureElement, xPathQueryHolder);
 		}
@@ -345,7 +345,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public OfflineOCSPSource getOCSPSource() {
+	public SignatureOCSPSource getOCSPSource() {
 		if (offlineOCSPSource == null) {
 			offlineOCSPSource = new XAdESOCSPSource(signatureElement, xPathQueryHolder);
 		}
