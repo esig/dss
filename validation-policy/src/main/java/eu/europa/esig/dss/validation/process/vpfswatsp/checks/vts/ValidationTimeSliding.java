@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -90,6 +91,8 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 		List<String> certificateChainIds = token.getCertificateChainIds();
 		if (Utils.isCollectionNotEmpty(certificateChainIds)) {
+
+			certificateChainIds = reduceChainUntilFirstTrustAnchor(certificateChainIds);
 
 			/*
 			 * 2) For each certificate in the chain starting from the first
@@ -200,6 +203,18 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 			}
 		}
+	}
+
+	private List<String> reduceChainUntilFirstTrustAnchor(List<String> originalCertificateIdsChain) {
+		List<String> result = new ArrayList<String>();
+		for (String certId : originalCertificateIdsChain) {
+			result.add(certId);
+			CertificateWrapper currentCert = diagnosticData.getUsedCertificateByIdNullSafe(certId);
+			if (currentCert.isTrusted()) {
+				break;
+			}
+		}
+		return result;
 	}
 
 	@Override

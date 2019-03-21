@@ -21,11 +21,14 @@
 package eu.europa.esig.dss.pades.validation;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.pdf.PdfVRIDict;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
@@ -62,7 +65,14 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 	 */
 	public Map<Long, BasicOCSPResp> getOcspMap() {
 		if (dssDictionary != null) {
-			return dssDictionary.getOcspMap();
+			Map<Long, BasicOCSPResp> dssOcsps = dssDictionary.getOCSPs();
+			List<PdfVRIDict> vriDicts = dssDictionary.getVRIs();
+			if (Utils.isCollectionNotEmpty(vriDicts)) {
+				for (PdfVRIDict vriDict : vriDicts) {
+					dssOcsps.putAll(vriDict.getOcspMap());
+				}
+			}
+			return dssOcsps;
 		}
 		return Collections.emptyMap();
 	}

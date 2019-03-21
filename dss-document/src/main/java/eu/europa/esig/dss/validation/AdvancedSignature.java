@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
