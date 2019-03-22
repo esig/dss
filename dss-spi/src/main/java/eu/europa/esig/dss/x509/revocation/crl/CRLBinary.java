@@ -43,7 +43,7 @@ public class CRLBinary {
 	
 	@Override
 	public String toString() {
-		return getBase64Digest();
+		return "Binaries: [" + base64Digest + "], Origin : [" + origin.name() + "]";
 	}
 	
 	@Override
@@ -54,14 +54,13 @@ public class CRLBinary {
 		if (!(obj instanceof CRLBinary)) {
 			return false;
 		}
-		// TODO compare Digest
-		CRLBinary c = (CRLBinary)obj;
-		return hashCode() == c.hashCode();
+		CRLBinary c = (CRLBinary) obj;
+		return (base64Digest+origin.name()).equals(c.getBase64Digest()+c.getOrigin().name());
 	}
 
 	@Override
 	public int hashCode() {
-		return binaries.hashCode();
+		return Objects.hash(binaries, origin.name());
 	}
 
 }

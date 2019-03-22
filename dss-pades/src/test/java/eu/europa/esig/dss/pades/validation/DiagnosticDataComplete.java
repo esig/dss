@@ -108,6 +108,32 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		assertEquals(3, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureTwo.getId(), 
 				RevocationType.CRL, RevocationOriginType.INTERNAL_DSS).size());
 	}
+	
+	@Test
+	public void dssAndVriTest() {
+		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/plugtest/esig2014/ESIG-PAdES/BG_BOR/Signature-P-BG_BOR-2.pdf"));
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		Reports report = validator.validateDocument();
+		// report.print();
+		System.out.println(report.getXmlDiagnosticData().replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", ""));
+		DiagnosticData diagnosticData = report.getDiagnosticData();
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		assertNotNull(signatures);
+		
+		SignatureWrapper signature = signatures.get(0);
+		assertEquals(2, diagnosticData.getAllRevocationForSignature(signature.getId()).size());
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(signature.getId(), RevocationType.CRL).size());
+		assertEquals(2, diagnosticData.getAllRevocationForSignatureByType(signature.getId(), RevocationType.OCSP).size());
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signature.getId(), 
+				RevocationType.OCSP, RevocationOriginType.INTERNAL_REVOCATION_VALUES).size());
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signature.getId(), 
+				RevocationType.OCSP, RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+		assertEquals(1, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signature.getId(), 
+				RevocationType.OCSP, RevocationOriginType.INTERNAL_DSS).size());
+		assertEquals(1, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signature.getId(), 
+				RevocationType.OCSP, RevocationOriginType.INTERNAL_VRI).size());
+	}
 
 	@Override
 	protected String getSigningAlias() {

@@ -31,6 +31,7 @@ import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
@@ -651,12 +652,11 @@ public class DiagnosticData {
 			RevocationOriginType originType) {
 		SignatureWrapper signature = getSignatureById(signatureId);
 		List<RevocationWrapper> revocations = new ArrayList<RevocationWrapper>();
-		List<String> revocationIds = signature.getRevocationIds();
-		for (String revocationId : revocationIds) {
-			RevocationWrapper revocationWrapper = getRevocationDataById(revocationId);
-			if ((originType == null || revocationWrapper.getOrigin().equals(originType)) &&
-					(revocationType == null || revocationWrapper.getRevocationType().equals(revocationType))) {
-				revocations.add(getRevocationDataById(revocationId));
+		List<XmlRevocationRef> revocationRefList = signature.getRevocationRefs();
+		for (XmlRevocationRef revocationRef : revocationRefList) {
+			if ((revocationType == null || revocationRef.getType().equals(revocationType)) && 
+					(originType == null || revocationRef.getOrigin().equals(originType))) {
+				revocations.add(getRevocationDataById(revocationRef.getId()));
 			}
 		}
 		return revocations;

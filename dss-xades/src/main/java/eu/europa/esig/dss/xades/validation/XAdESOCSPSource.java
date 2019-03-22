@@ -30,6 +30,7 @@ import org.w3c.dom.NodeList;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponse;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
@@ -81,7 +82,7 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 
 	private void convertAndAppend(String ocspValue, RevocationOrigin origin) {
 		try {
-			ocspResponses.put(DSSRevocationUtils.loadOCSPBase64Encoded(ocspValue), origin);
+			ocspResponses.add(new OCSPResponse(DSSRevocationUtils.loadOCSPBase64Encoded(ocspValue), origin));
 		} catch (Exception e) {
 			LOG.warn("Cannot retrieve OCSP response from '" + ocspValue + "' : " + e.getMessage(), e);
 		}

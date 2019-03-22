@@ -1,7 +1,6 @@
 package eu.europa.esig.dss.x509.revocation.crl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import eu.europa.esig.dss.x509.RevocationToken;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.SignatureRevocationSource;
 
 @SuppressWarnings("serial")
@@ -75,16 +74,16 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		if (crlsBinaryList.contains(crlBinary)) {
 			if (!crlTokenMap.containsKey(crlBinary)) {
 				crlTokenMap.put(crlBinary, new ArrayList<CRLToken>(Collections.singletonList(crlToken)));
-				addToRelevantList(crlToken);
+				addToRelevantList(crlBinary.getOrigin(), crlToken);
 			} else if (!crlTokenMap.get(crlBinary).contains(crlToken)) {
 				crlTokenMap.get(crlBinary).add(crlToken);
-				addToRelevantList(crlToken);
+				addToRelevantList(crlBinary.getOrigin(), crlToken);
 			}
 		}
 	}
 	
-	private void addToRelevantList(CRLToken crlToken) {
-		switch (crlToken.getOrigin()) {
+	private void addToRelevantList(RevocationOrigin origin, CRLToken crlToken) {
+		switch (origin) {
 			case INTERNAL_REVOCATION_VALUES:
 				revocationValuesCRLs.add(crlToken);
 				break;

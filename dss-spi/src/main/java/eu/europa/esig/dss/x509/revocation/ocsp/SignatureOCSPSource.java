@@ -6,14 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-
 import eu.europa.esig.dss.x509.revocation.SignatureRevocationSource;
 
 @SuppressWarnings("serial")
 public abstract class SignatureOCSPSource extends OfflineOCSPSource implements SignatureRevocationSource<OCSPToken> {
 	
-	private Map<BasicOCSPResp, OCSPToken> ocspTokenMap = new HashMap<BasicOCSPResp, OCSPToken>();
+	private Map<OCSPResponse, OCSPToken> ocspTokenMap = new HashMap<OCSPResponse, OCSPToken>();
 	
 	private final List<OCSPToken> revocationValuesOCSPs = new ArrayList<OCSPToken>();
 	private final List<OCSPToken> attributeRevocationValuesOCSPs = new ArrayList<OCSPToken>();
@@ -46,7 +44,7 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 		return vriDictionaryOCSPs;
 	}
 	
-	public Map<BasicOCSPResp, OCSPToken> getOCSPTokenMap() {
+	public Map<OCSPResponse, OCSPToken> getOCSPTokenMap() {
 		return ocspTokenMap;
 	}
 	
@@ -55,21 +53,21 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	 * @param signatureOCSPSource {@link SignatureOCSPSource} to populate values from
 	 */
 	public void populateOCSPRevocationTokenLists(SignatureOCSPSource signatureOCSPSource) {
-		Map<BasicOCSPResp, OCSPToken> mapToPopulateFrom = signatureOCSPSource.getOCSPTokenMap();
-		for (Entry<BasicOCSPResp, OCSPToken> entry : mapToPopulateFrom.entrySet()) {
+		Map<OCSPResponse, OCSPToken> mapToPopulateFrom = signatureOCSPSource.getOCSPTokenMap();
+		for (Entry<OCSPResponse, OCSPToken> entry : mapToPopulateFrom.entrySet()) {
 			storeOCSPToken(entry);
 		}
 	}
 	
-	private void storeOCSPToken(Entry<BasicOCSPResp, OCSPToken> responseTokenEntry) {
+	private void storeOCSPToken(Entry<OCSPResponse, OCSPToken> responseTokenEntry) {
 		storeOCSPToken(responseTokenEntry.getKey(), responseTokenEntry.getValue());
 	}
 
 	@Override
-	protected void storeOCSPToken(BasicOCSPResp basicOCSPResp, OCSPToken ocspToken) {
-		if (ocspResponses.containsKey(basicOCSPResp) && !ocspTokenMap.containsKey(basicOCSPResp)) {
-			ocspTokenMap.put(basicOCSPResp, ocspToken);
-			switch (ocspToken.getOrigin()) {
+	protected void storeOCSPToken(OCSPResponse ocspResponse, OCSPToken ocspToken) {
+		if (ocspResponses.contains(ocspResponse) && !ocspTokenMap.containsKey(ocspResponse)) {
+			ocspTokenMap.put(ocspResponse, ocspToken);
+			switch (ocspResponse.getOrigin()) {
 				case INTERNAL_REVOCATION_VALUES:
 					revocationValuesOCSPs.add(ocspToken);
 					break;

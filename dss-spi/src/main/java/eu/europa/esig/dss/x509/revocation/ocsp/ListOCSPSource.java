@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.x509.revocation.ocsp;
 
-import java.util.Map.Entry;
-
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-
-import eu.europa.esig.dss.x509.RevocationOrigin;
-
 /**
  * This class allows to handle a list OCSP source.
  *
@@ -45,7 +39,7 @@ public class ListOCSPSource extends SignatureOCSPSource {
 	 */
 	public ListOCSPSource(final OfflineOCSPSource ocspSource) {
 		if (!ocspSource.getBasicOCSPResponses().isEmpty()) {
-			ocspResponses.putAll(ocspSource.getOCSPResponsesMap());
+			ocspResponses.addAll(ocspSource.getOCSPResponsesList());
 		}
 	}
 
@@ -63,9 +57,9 @@ public class ListOCSPSource extends SignatureOCSPSource {
 	 *            the source to be added
 	 */
 	public void addAll(final OfflineOCSPSource offlineOCSPSource) {
-		for (Entry<BasicOCSPResp, RevocationOrigin> basicOCSPRespEntry : offlineOCSPSource.getOCSPResponsesMap().entrySet()) {
-			if (!ocspResponses.containsKey(basicOCSPRespEntry.getKey())) {
-				ocspResponses.put(basicOCSPRespEntry.getKey(), basicOCSPRespEntry.getValue());
+		for (OCSPResponse ocspResponse : offlineOCSPSource.getOCSPResponsesList()) {
+			if (!ocspResponses.contains(ocspResponse)) {
+				ocspResponses.add(ocspResponse);
 			}
 		}
 	}

@@ -672,25 +672,34 @@ public class DiagnosticDataBuilder {
 		return xmlTimestamps;
 	}
 	
-	private List<XmlRevocationRef> getXmlRevocationRefs(AdvancedSignature signature) {
-		List<RevocationToken> revocationTokens = new ArrayList<>();
-		revocationTokens.addAll(signature.getRevocationValuesTokens());
-		revocationTokens.addAll(signature.getAttributeRevocationValuesTokens());
-		revocationTokens.addAll(signature.getTimestampRevocationValuesTokens());
-		revocationTokens.addAll(signature.getDSSDictionaryRevocationTokens());
-		revocationTokens.addAll(signature.getVRIDictionaryRevocationTokens());
+	private List<XmlRevocationRef> getXmlRevocationRefs(AdvancedSignature signature) {		
+		List<XmlRevocationRef> xmlRevocationRefs = new ArrayList<XmlRevocationRef>();
+		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature.getRevocationValuesTokens(), 
+				RevocationOriginType.INTERNAL_REVOCATION_VALUES));
+		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature.getAttributeRevocationValuesTokens(), 
+				RevocationOriginType.INTERNAL_ATTRIBUTE_REVOCATION_VALUES));
+		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature.getTimestampRevocationValuesTokens(), 
+				RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES));
+		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature.getDSSDictionaryRevocationTokens(), 
+				RevocationOriginType.INTERNAL_DSS));
+		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature.getVRIDictionaryRevocationTokens(), 
+				RevocationOriginType.INTERNAL_VRI));
+		return xmlRevocationRefs;
+	}
+	
+	private List<XmlRevocationRef> getXmlRevocationsRefsByType(List<RevocationToken> revocationTokens, RevocationOriginType originType) {
 		List<XmlRevocationRef> xmlRevocationRefs = new ArrayList<XmlRevocationRef>();
 		for (RevocationToken revocationToken : revocationTokens) {
-			xmlRevocationRefs.add(getXmlRevocationRef(revocationToken));
+			xmlRevocationRefs.add(getXmlRevocationRef(revocationToken, originType));
 		}
 		return xmlRevocationRefs;
 	}
 	
-	private XmlRevocationRef getXmlRevocationRef(RevocationToken revocationToken) {
+	private XmlRevocationRef getXmlRevocationRef(RevocationToken revocationToken, RevocationOriginType originType) {
 		XmlRevocationRef xmlRevocationRef = new XmlRevocationRef();
 		xmlRevocationRef.setId(getXmlRevocationId(revocationToken));
 		xmlRevocationRef.setType(RevocationType.valueOf(revocationToken.getRevocationSourceType().name()));
-		xmlRevocationRef.setOrigin(RevocationOriginType.valueOf(revocationToken.getOrigin().name()));
+		xmlRevocationRef.setOrigin(originType);
 		return xmlRevocationRef;
 	}
 

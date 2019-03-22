@@ -432,9 +432,13 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 	
+	public List<XmlRevocationRef> getRevocationRefs() {
+		return signature.getRevocationRefs();
+	}
+	
 	public List<String> getRevocationIds() {
 		List<String> revocationIds = new ArrayList<String>();
-		for (XmlRevocationRef revocationRef : signature.getRevocationRefs()) {
+		for (XmlRevocationRef revocationRef : getRevocationRefs()) {
 			revocationIds.add(revocationRef.getId());
 		}
 		return revocationIds;
