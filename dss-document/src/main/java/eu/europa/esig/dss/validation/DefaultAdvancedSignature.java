@@ -324,10 +324,12 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	public Map<String, List<CertificateToken>> getCertificatesWithinSignatureAndTimestamps(boolean skipLastArchiveTimestamp) {
-		Map<String, List<CertificateToken>> certificates = new HashMap<String, List<CertificateToken>>();
 		// We can have more than one chain in the signature : signing certificate, ocsp
-		// responder,...
+		// responder, ...
+		Map<String, List<CertificateToken>> certificates = new HashMap<String, List<CertificateToken>>();
+		
 		List<CertificateToken> certificatesSig = getCertificateSource().getCertificates();
+		
 		if (Utils.isCollectionNotEmpty(certificatesSig)) {
 			certificates.put(CertificateSourceType.SIGNATURE.name(), certificatesSig);
 		}

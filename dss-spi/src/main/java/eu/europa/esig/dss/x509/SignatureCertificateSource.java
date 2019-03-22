@@ -20,10 +20,18 @@
  */
 package eu.europa.esig.dss.x509;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.CertificateRef;
+import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.IssuerSerialInfo;
 
 /**
  * The advanced signature contains a list of certificate that was needed to validate the signature. This class is a
@@ -32,6 +40,8 @@ import eu.europa.esig.dss.CertificateRef;
  *
  */
 public abstract class SignatureCertificateSource extends CommonCertificateSource {
+
+	private static final Logger LOG = LoggerFactory.getLogger(SignatureCertificateSource.class);
 
 	/**
 	 * The default constructor with mandatory certificates pool.
@@ -92,34 +102,98 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 	}
 
 	/**
-	 * Retrieves the list of certificate references for the signing certificate
-	 * (V1/v2)
+	 * Retrieves the list of {@link CertificateRef}s for the signing certificate
+	 * (V1/V2)
 	 * 
 	 * @return the list of references to the signing certificate
 	 */
 	public abstract List<CertificateRef> getSigningCertificateValues();
+	
+	/**
+	 * Retrieves the list of {@link CertificateToken}s for the signing certificate (V1/V2)
+	 * 
+	 * @return list of {@link CertificateToken}s
+	 */
+	public List<CertificateToken> getSigningCertificates() {
+		return findTokensFromRefs(getSigningCertificateValues(), getCertificates());
+	}
 
 	/**
-	 * Retrieves the list of certificate references included in the attribute
+	 * Retrieves the list of {@link CertificateRef}s included in the attribute
 	 * complete-certificate-references (CAdES) or the
 	 * CompleteCertificateRefs/CompleteCertificateRefsV2 (XAdES)
 	 * 
 	 * @return the list of certificate references
 	 */
 	public abstract List<CertificateRef> getCompleteCertificateRefs();
+	
+	/**
+	 * Retrieves the list of {@link CertificateToken}s according references to included in the attribute
+	 * complete-certificate-references (CAdES) or the
+	 * CompleteCertificateRefs/CompleteCertificateRefsV2 (XAdES)
+	 * 
+	 * @return list of {@link CertificateToken}s
+	 */
+	public List<CertificateToken> getCompleteCertificates() {
+		return findTokensFromRefs(getCompleteCertificateRefs(), getCertificates());
+	}
 
 	/**
-	 * Retrieves the list of certificate references included in the attribute
+	 * Retrieves the list of {@link CertificateRef}s included in the attribute
 	 * attribute-certificate-references (CAdES) or the
 	 * AttributeCertificateRefs/AttributeCertificateRefsV2 (XAdES)
 	 * 
 	 * @return the list of certificate references
 	 */
 	public abstract List<CertificateRef> getAttributeCertificateRefs();
+	
+	/**
+	 * Retrieves the list of {@link CertificateToken}s according to references included in the attribute
+	 * attribute-certificate-references (CAdES) or the
+	 * AttributeCertificateRefs/AttributeCertificateRefsV2 (XAdES)
+	 * 
+	 * @return list of {@link CertificateToken}s
+	 */
+	public List<CertificateToken> getAttributeCertificates() {
+		return findTokensFromRefs(getAttributeCertificateRefs(), getCertificates());
+	}
 
 	@Override
 	public CertificateSourceType getCertificateSourceType() {
 		return CertificateSourceType.SIGNATURE;
+	}
+
+	private List<CertificateToken> findTokensFromRefs(List<CertificateRef> signingCertificateRefs, List<CertificateToken> certificateTokens) {
+		List<CertificateToken> usedCertificates = new ArrayList<CertificateToken>();
+		for (CertificateRef certificateRef : signingCertificateRefs) {
+			Digest certDigest = certificateRef.getCertDigest();
+			IssuerSerialInfo issuerInfo = certificateRef.getIssuerInfo();
+			boolean found = false;
+			if (certDigest != null) {
+				for (CertificateToken token : certificateTokens) {
+					byte[] currentDigest = token.getDigest(certDigest.getAlgorithm());
+					if (Arrays.equals(currentDigest, certDigest.getValue())) {
+						usedCertificates.add(token);
+						found = true;
+						break;
+					}
+				}
+			} else if (issuerInfo != null) {
+				for (CertificateToken token : certificateTokens) {
+					if (token.getSerialNumber().equals(issuerInfo.getSerialNumber()) && DSSUtils
+							.x500PrincipalAreEquals(token.getIssuerX500Principal(), issuerInfo.getIssuerName())) {
+						usedCertificates.add(token);
+						found = true;
+						break;
+					}
+				}
+			}
+
+			if (!found) {
+				LOG.debug("The related Certificate Token was not wound for Certificate Reference [{}]", certificateRef);
+			}
+		}
+		return usedCertificates;
 	}
 
 }

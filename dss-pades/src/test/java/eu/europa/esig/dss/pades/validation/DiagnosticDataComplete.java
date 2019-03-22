@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.math.BigInteger;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -82,19 +81,13 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports report = validator.validateDocument();
-		report.print();
+		// report.print();
 		DiagnosticData diagnosticData = report.getDiagnosticData();
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		assertNotNull(signatures);
-		Set<RevocationWrapper> differentRevocationData = new HashSet<RevocationWrapper>();
-		for (SignatureWrapper signature : signatures) {
-			List<RevocationWrapper> signatureRevocations = diagnosticData.getAllRevocationForSignature(signature.getId());
-			differentRevocationData.addAll(signatureRevocations);
-			assertEquals(2, signatureRevocations.size());
-		}
-		assertEquals(diagnosticData.getAllRevocationData().size(), differentRevocationData.size());
 		
 		SignatureWrapper signatureOne = signatures.get(0);
+		assertEquals(3, diagnosticData.getAllRevocationForSignature(signatureOne.getId()).size());
 		assertEquals(3, diagnosticData.getAllRevocationForSignatureByType(signatureOne.getId(), RevocationType.CRL).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(signatureOne.getId(), RevocationType.OCSP).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureOne.getId(), 
@@ -105,13 +98,14 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 				RevocationType.CRL, RevocationOriginType.INTERNAL_DSS).size());
 		
 		SignatureWrapper signatureTwo = signatures.get(1);
-		assertEquals(1, diagnosticData.getAllRevocationForSignatureByType(signatureTwo.getId(), RevocationType.CRL).size());
+		assertEquals(3, diagnosticData.getAllRevocationForSignature(signatureTwo.getId()).size());
+		assertEquals(3, diagnosticData.getAllRevocationForSignatureByType(signatureTwo.getId(), RevocationType.CRL).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(signatureTwo.getId(), RevocationType.OCSP).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureTwo.getId(), 
 				RevocationType.CRL, RevocationOriginType.INTERNAL_REVOCATION_VALUES).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureTwo.getId(), 
 				RevocationType.CRL, RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
-		assertEquals(1, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureTwo.getId(), 
+		assertEquals(3, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureTwo.getId(), 
 				RevocationType.CRL, RevocationOriginType.INTERNAL_DSS).size());
 	}
 

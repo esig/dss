@@ -110,9 +110,9 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		assertEquals(3, signatures.size());
 		
-		assertEquals(1, diagnosticData.getAllRevocationForSignature(signatures.get(0).getId()).size());
-		assertEquals(1, diagnosticData.getAllRevocationForSignature(signatures.get(1).getId()).size());
-		assertEquals(1, diagnosticData.getAllRevocationForSignature(signatures.get(2).getId()).size());
+		assertEquals(2, diagnosticData.getAllRevocationForSignature(signatures.get(0).getId()).size());
+		assertEquals(2, diagnosticData.getAllRevocationForSignature(signatures.get(1).getId()).size());
+		assertEquals(2, diagnosticData.getAllRevocationForSignature(signatures.get(2).getId()).size());
 		
 	}
 	

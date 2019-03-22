@@ -66,6 +66,8 @@ import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
  */
 public class PAdESSignature extends CAdESSignature {
 
+	private static final long serialVersionUID = 3818555396958720967L;
+
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESSignature.class);
 
 	private final DSSDocument document;
