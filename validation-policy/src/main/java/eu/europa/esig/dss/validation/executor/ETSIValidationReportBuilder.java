@@ -9,6 +9,7 @@ import javax.xml.bind.JAXBElement;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -162,9 +163,11 @@ public class ETSIValidationReportBuilder {
 	private void addRevocationData(ValidationObjectListType validationObjectListType, RevocationWrapper revocationData) {
 		ValidationObjectType validationObject = objectFactory.createValidationObjectType();
 		validationObject.setId(revocationData.getId());
-		// TODO type
-//		validationObject.setObjectType(ObjectType.CRL);
-//		validationObject.setObjectType(ObjectType.OCSP_RESPONSE);
+		if (RevocationType.CRL.equals(revocationData.getRevocationType())) {
+			validationObject.setObjectType(ObjectType.CRL);
+		} else {
+			validationObject.setObjectType(ObjectType.OCSP_RESPONSE);
+		}
 		ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
 		representation.setBase64(revocationData.getBinaries());
 		validationObject.setValidationObject(representation);
