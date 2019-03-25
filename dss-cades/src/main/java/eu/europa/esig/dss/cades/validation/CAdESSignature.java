@@ -1117,9 +1117,17 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (contentTypeAttribute == null) {
 			return null;
 		}
-		final ASN1ObjectIdentifier asn1Encodable = (ASN1ObjectIdentifier) contentTypeAttribute.getAttrValues().getObjectAt(0);
-		final String contentType = asn1Encodable.getId();
-		return contentType;
+		final ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) contentTypeAttribute.getAttrValues().getObjectAt(0);
+		return oid.getId();
+	}
+
+	@Override
+	public String getMimeType() {
+		final Attribute mimeTypeAttribute = getSignedAttribute(OID.id_aa_ets_mimeType);
+		if (mimeTypeAttribute == null) {
+			return null;
+		}
+		return DSSASN1Utils.getString(mimeTypeAttribute.getAttrValues().getObjectAt(0));
 	}
 
 	@Override
@@ -1201,7 +1209,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			certRef.setCertDigest(certDigest);
 
 			final IssuerSerial issuerSerial = otherCertId.getIssuerSerial();
-			certRef.setIssuerInfo(DSSASN1Utils.getIssuerInfo(issuerSerial));
+			if (issuerSerial != null) {
+				certRef.setIssuerInfo(DSSASN1Utils.getIssuerInfo(issuerSerial));
+			}
 			list.add(certRef);
 		}
 		return list;

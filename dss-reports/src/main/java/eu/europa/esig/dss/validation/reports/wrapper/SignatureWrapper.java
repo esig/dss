@@ -110,6 +110,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getContentType();
 	}
 
+	public String getMimeType() {
+		return signature.getMimeType();
+	}
+
 	public String getContentHints() {
 		return signature.getContentHints();
 	}

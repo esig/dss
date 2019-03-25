@@ -99,6 +99,7 @@
 			<xs:element name="CertificateChain"	type="CertificateChain" minOccurs="0" />
 
 			<xs:element name="ContentType" type="xs:string" minOccurs="0" />
+			<xs:element name="MimeType" type="xs:string" minOccurs="0" />
 			<xs:element name="ContentIdentifier" type="xs:string" minOccurs="0" />
 			<xs:element name="ContentHints" type="xs:string" minOccurs="0" />
 			<xs:element name="SignatureProductionPlace" type="SignatureProductionPlace" minOccurs="0" />

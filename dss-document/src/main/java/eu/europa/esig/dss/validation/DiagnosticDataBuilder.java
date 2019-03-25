@@ -380,6 +380,7 @@ public class DiagnosticDataBuilder {
 		xmlSignature.getCertifiedRoles().addAll(getXmlCertifiedRoles(signature.getCertifiedSignerRoles()));
 
 		xmlSignature.setContentType(signature.getContentType());
+		xmlSignature.setMimeType(signature.getMimeType());
 		xmlSignature.setContentIdentifier(signature.getContentIdentifier());
 		xmlSignature.setContentHints(signature.getContentHints());
 

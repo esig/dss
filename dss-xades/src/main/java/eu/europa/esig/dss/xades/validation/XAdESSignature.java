@@ -61,7 +61,6 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.IssuerSerialInfo;
 import eu.europa.esig.dss.MaskGenerationFunction;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
@@ -586,7 +585,38 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getContentType() {
-		return MimeType.XML.getMimeTypeString();
+		String contentType = null;
+		final NodeList allContentTypes = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_ALL_DATA_OBJECT_FORMAT_OBJECT_IDENTIFIER);
+		if (allContentTypes != null && allContentTypes.getLength() > 0) {
+			for (int i = 0; i < allContentTypes.getLength(); i++) {
+				Node node = allContentTypes.item(i);
+				if (node instanceof Element) {
+					Element element = (Element) node;
+					contentType = element.getTextContent();
+					// TODO returns the first one
+					break;
+				}
+			}
+		}
+		return contentType;
+	}
+
+	@Override
+	public String getMimeType() {
+		String mimeType = null;
+		final NodeList allMimeTypes = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_ALL_DATA_OBJECT_FORMAT_MIMETYPE);
+		if (allMimeTypes != null && allMimeTypes.getLength() > 0) {
+			for (int i = 0; i < allMimeTypes.getLength(); i++) {
+				Node node = allMimeTypes.item(i);
+				if (node instanceof Element) {
+					Element element = (Element) node;
+					mimeType = element.getTextContent();
+					// TODO returns the first one
+					break;
+				}
+			}
+		}
+		return mimeType;
 	}
 
 	@Override

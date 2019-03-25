@@ -86,6 +86,9 @@ public class XPathQueryHolder implements Serializable {
 	public final String XPATH__ALL_DATA_OBJECTS_TIMESTAMP = "xades:AllDataObjectsTimeStamp";
 	public final String XPATH__INDIVIDUAL_DATA_OBJECTS_TIMESTAMP = "xades:IndividualDataObjectsTimeStamp";
 	public final String XPATH__COMMITMENT_TYPE_INDICATION = "xades:CommitmentTypeIndication";
+	public final String XPATH__DATA_OBJECT_FORMAT = "xades:DataObjectFormat";
+	public final String XPATH__MIME_TYPE = "xades:MimeType";
+	public final String XPATH__OBJECT_IDENTIFIER = "xades:ObjectIdentifier";
 
 	public final String XPATH_KEY_INFO_X509_CERTIFICATE = XPATH_X509_DATA + "/ds:X509Certificate";
 
@@ -105,6 +108,11 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH_SIGNED_SIGNATURE_PROPERTIES = XPATH_SIGNED_PROPERTIES + "/xades:SignedSignatureProperties";
 	public String XPATH_SIGNED_DATA_OBJECT_PROPERTIES = XPATH_SIGNED_PROPERTIES + "/xades:SignedDataObjectProperties";
 	public String XPATH_ALL_DATA_OBJECTS_TIMESTAMP = XPATH_SIGNED_DATA_OBJECT_PROPERTIES + "/" + XPATH__ALL_DATA_OBJECTS_TIMESTAMP;
+
+	public String XPATH_ALL_DATA_OBJECT_FORMAT = XPATH_SIGNED_DATA_OBJECT_PROPERTIES + "/" + XPATH__DATA_OBJECT_FORMAT;
+	public String XPATH_ALL_DATA_OBJECT_FORMAT_MIMETYPE = XPATH_ALL_DATA_OBJECT_FORMAT + "/" + XPATH__MIME_TYPE;
+	public String XPATH_ALL_DATA_OBJECT_FORMAT_OBJECT_IDENTIFIER = XPATH_ALL_DATA_OBJECT_FORMAT + "/" + XPATH__OBJECT_IDENTIFIER;
+
 	public String XPATH_INDIVIDUAL_DATA_OBJECTS_TIMESTAMP = XPATH_SIGNED_DATA_OBJECT_PROPERTIES + "/" + XPATH__INDIVIDUAL_DATA_OBJECTS_TIMESTAMP;
 	public String XPATH_SIGNING_TIME = XPATH_SIGNED_SIGNATURE_PROPERTIES + "/xades:SigningTime";
 	public String XPATH_SIGNING_CERTIFICATE_CERT = XPATH_SIGNED_SIGNATURE_PROPERTIES + "/xades:SigningCertificate/xades:Cert";

@@ -218,11 +218,18 @@ public interface AdvancedSignature extends Serializable {
 	CommitmentType getCommitmentTypeIndication();
 
 	/**
-	 * Returns the content type of the signed data
+	 * Returns the value of the signed attribute content-type
 	 *
 	 * @return content type as {@code String}
 	 */
 	String getContentType();
+
+	/**
+	 * Returns the value of the signed attribute mime-type
+	 *
+	 * @return mime type as {@code String}
+	 */
+	String getMimeType();
 
 	/**
 	 * @return content identifier as {@code String}

@@ -22,6 +22,7 @@ import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.jaxb.validationreport.ObjectFactory;
 import eu.europa.esig.jaxb.validationreport.SACommitmentTypeIndicationType;
 import eu.europa.esig.jaxb.validationreport.SAContactInfoType;
+import eu.europa.esig.jaxb.validationreport.SADataObjectFormatType;
 import eu.europa.esig.jaxb.validationreport.SAFilterType;
 import eu.europa.esig.jaxb.validationreport.SAMessageDigestType;
 import eu.europa.esig.jaxb.validationreport.SANameType;
@@ -206,6 +207,7 @@ public class ETSIValidationReportBuilder {
 		addSigningTime(sigAttributes, sigWrapper);
 		// &lt;element name="SigningCertificate" type="{http://uri.etsi.org/19102/v1.2.1#}SACertIDListType"/&gt;
 		// &lt;element name="DataObjectFormat" type="{http://uri.etsi.org/19102/v1.2.1#}SADataObjectFormatType"/&gt;
+		addDataObjectFormat(sigAttributes, sigWrapper);
 		// &lt;element name="CommitmentTypeIndication" type="{http://uri.etsi.org/19102/v1.2.1#}SACommitmentTypeIndicationType"/&gt;
 		addCommitmentTypeIndications(sigAttributes, sigWrapper);
 		// &lt;element name="AllDataObjectsTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
@@ -293,6 +295,21 @@ public class ETSIValidationReportBuilder {
 			return objectFactory.createSignatureAttributesTypeArchiveTimeStamp(timestamp);
 		default:
 			throw new DSSException("Unsupported timestamp type " + timestampType);
+		}
+	}
+
+	private void addDataObjectFormat(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		String contentType = sigWrapper.getContentType();
+		String mimeType = sigWrapper.getMimeType();
+		if (Utils.isStringNotEmpty(contentType) || Utils.isStringNotEmpty(mimeType)) {
+			SADataObjectFormatType dataObjectFormatType = objectFactory.createSADataObjectFormatType();
+			if (Utils.isStringNotEmpty(contentType)) {
+				dataObjectFormatType.setContentType(contentType);
+			}
+			if (Utils.isStringNotEmpty(mimeType)) {
+				dataObjectFormatType.setMimeType(mimeType);
+			}
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(dataObjectFormatType);
 		}
 	}
 
