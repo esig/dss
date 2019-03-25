@@ -23,6 +23,7 @@ package eu.europa.esig.dss.x509.revocation.ocsp;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.security.auth.x500.X500Principal;
@@ -195,7 +196,13 @@ public class OCSPToken extends RevocationToken {
 			try {
 				CertHash asn1CertHash = CertHash.getInstance(extension.getParsedValue());
 				DigestAlgorithm digestAlgo = DigestAlgorithm.forOID(asn1CertHash.getHashAlgorithm().getAlgorithm().getId());
-				certHash = new Digest(digestAlgo, asn1CertHash.getCertificateHash());
+				Digest certHash = new Digest(digestAlgo, asn1CertHash.getCertificateHash());
+				if (certHash != null) {
+					certHashPresent = true;
+					byte[] expectedDigest = relatedCertificate.getDigest(certHash.getAlgorithm());
+					byte[] foundDigest = certHash.getValue();
+					certHashPresent = Arrays.equals(expectedDigest, foundDigest);
+				}
 			} catch (Exception e) {
 				LOG.warn("Unable to extract id_isismtt_at_certHash : " + e.getMessage());
 			}

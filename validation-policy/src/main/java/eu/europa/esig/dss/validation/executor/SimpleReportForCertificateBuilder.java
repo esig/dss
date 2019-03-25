@@ -36,9 +36,9 @@ import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlSubject;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlTrustAnchor;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 
 public class SimpleReportForCertificateBuilder {
 
@@ -93,7 +93,7 @@ public class SimpleReportForCertificateBuilder {
 		item.setPdsUrls(null);
 
 		XmlRevocation revocation = new XmlRevocation();
-		RevocationWrapper revocationData = certificate.getLatestRevocationData();
+		CertificateRevocationWrapper revocationData = diagnosticData.getLatestRevocationDataForCertificate(certificate);
 		if (revocationData != null) {
 			revocation.setProductionDate(revocationData.getProductionDate());
 			revocation.setRevocationDate(revocationData.getRevocationDate());

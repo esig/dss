@@ -23,6 +23,13 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
+				<xs:element name="UsedRevocations" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Revocation" type="Revocation" minOccurs="0" maxOccurs="unbounded" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
 				
 				<xs:element name="TrustedLists" minOccurs="0">
 					<xs:complexType>
@@ -128,10 +135,10 @@
 				</xs:complexType>
 			</xs:element>
 			
-			<xs:element name="RevocationRefs" minOccurs="0">
+			<xs:element name="RelatedRevocations" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="RevocationRef" type="RevocationRef" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="CertificateRevocationRef" type="CertificateRevocationRef" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -290,7 +297,7 @@
 			<xs:element name="Revocations" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="Revocation" type="Revocation" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="CertificateRevocation" type="CertificateRevocation" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -467,40 +474,44 @@
 		<xs:attribute name="Type" type="xs:string" use="required" />
 	</xs:complexType>
 	
+	<xs:complexType name="CertificateRevocation">
+		<xs:sequence>
+			<xs:element name="Available" type="xs:boolean" minOccurs="0" />
+			<xs:element name="Status" type="xs:boolean" />
+			<xs:element name="Reason" type="xs:string" minOccurs="0" />
+			<xs:element name="RevocationDate" type="xs:dateTime" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="required" />
+	</xs:complexType>
+	
 	<xs:complexType name="Revocation">
 		<xs:sequence>
 			<xs:element name="Origin" type="RevocationOriginType" />
 			<xs:element name="Type" type="RevocationType" />
 			<xs:element name="SourceAddress" type="xs:string" minOccurs="0" />
-			<xs:element name="Available" type="xs:boolean" minOccurs="0" />
-			<xs:element name="Status" type="xs:boolean" />
-			<xs:element name="Reason" type="xs:string" minOccurs="0" />
 			<xs:element name="ProductionDate" type="xs:dateTime" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
 			<xs:element name="ThisUpdate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="NextUpdate" type="xs:dateTime" minOccurs="0" />
-			<xs:element name="RevocationDate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="ExpiredCertsOnCRL" type="xs:dateTime" minOccurs="0" /> <!-- CRL -->
 			<xs:element name="ArchiveCutOff" type="xs:dateTime" minOccurs="0" /> <!-- OCSP -->
 			<xs:element name="CertHashExtensionPresent" type="xs:boolean" minOccurs="0" /> <!-- OCSP -->
 			<xs:element name="CertHashExtensionMatch" type="xs:boolean" minOccurs="0" /> <!-- OCSP -->
-
 			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValues" minOccurs="0" />
-			
 			<xs:element name="BasicSignature" type="BasicSignature" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
 			<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
-			
 			<xs:element name="Base64Encoded" type="xs:base64Binary" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 	</xs:complexType>
 	
-	<xs:complexType name="RevocationRef">
+	<xs:complexType name="CertificateRevocationRef">
 		<xs:sequence>
+			<xs:element name="CertificateId" type="xs:string" />
+			<xs:element name="RevocationId" type="xs:string" />
+			<xs:element name="Type" type="RevocationType" />
 			<xs:element name="Origin" type="RevocationOriginType" />
 		</xs:sequence>
-		<xs:attribute name="Id" type="xs:string" use="required" />
-		<xs:attribute name="Type" type="RevocationType" use="required" />
 	</xs:complexType>
 	
 	<xs:simpleType name="RevocationOriginType" final="restriction">
@@ -510,7 +521,7 @@
 			<xs:enumeration value="INTERNAL_TIMESTAMP_REVOCATION_VALUES" />
 			<xs:enumeration value="INTERNAL_DSS" />
 			<xs:enumeration value="INTERNAL_VRI" />
-			<xs:enumeration value="SIGNATURE" /> <!-- To support old diagnostic data origin -->
+			<xs:enumeration value="SIGNATURE" />
 			<xs:enumeration value="EXTERNAL" />
 			<xs:enumeration value="CACHED" />
 		</xs:restriction>

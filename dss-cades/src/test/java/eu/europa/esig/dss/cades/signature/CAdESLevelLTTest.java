@@ -34,6 +34,7 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
@@ -81,10 +82,15 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 		List<XmlCertificate> usedCertificates = diagnosticDataJaxb.getUsedCertificates();
 		for (XmlCertificate xmlCertificate : usedCertificates) {
 			if (!xmlCertificate.isTrusted() && !xmlCertificate.isIdPkixOcspNoCheck() && !xmlCertificate.isSelfSigned()) {
-				List<XmlRevocation> revocations = xmlCertificate.getRevocations();
+				List<XmlCertificateRevocation> revocations = xmlCertificate.getRevocations();
 				assertTrue(Utils.isCollectionNotEmpty(revocations));
-				for (XmlRevocation xmlRevocation : revocations) {
-					assertNotNull(xmlRevocation.getBase64Encoded());
+				for (XmlCertificateRevocation xmlCertificateRevocation : revocations) {
+					List<XmlRevocation> xmlRevocations = diagnosticDataJaxb.getUsedRevocations();
+					for (XmlRevocation revocation : xmlRevocations) {
+						if (xmlCertificateRevocation.getId().equals(revocation.getId())) {
+							assertNotNull(revocation.getBase64Encoded());
+						}
+					}
 				}
 			}
 
@@ -114,9 +120,9 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 			assertNotNull(timestampWrapper.getBinaries());
 		}
 		for (RevocationWrapper revocation : dd.getAllRevocationData()) {
-			RevocationWrapper revocationWrapper = dd.getRevocationDataById(revocation.getId());
-			assertNotNull(revocationWrapper);
-			assertNotNull(revocationWrapper.getBinaries());
+			XmlRevocation xmlRevocation = dd.getXmlRevocationDataById(revocation.getId());
+			assertNotNull(xmlRevocation);
+			assertNotNull(xmlRevocation.getBase64Encoded());
 		}
 	}
 

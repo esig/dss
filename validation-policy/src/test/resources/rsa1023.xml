@@ -131,36 +131,11 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="293d0ba3a31e5d82a8e3fae12709932ffdda44423e0f733fb01ef123e73eb4da6d76fbf942ea268c1708007834acae5369d5d36f5f7e33a153419d3ce923b30b">
-                    <Origin>EXTERNAL</Origin>
-                    <Type>CRL</Type>
-                    <SourceAddress>http://crl.eid.belgium.be/belgium4.crl</SourceAddress>
+                <CertificateRevocation Id="293d0ba3a31e5d82a8e3fae12709932ffdda44423e0f733fb01ef123e73eb4da6d76fbf942ea268c1708007834acae5369d5d36f5f7e33a153419d3ce923b30b">
                     <Available>true</Available>
                     <Status>true</Status>
-                    <ProductionDate>2017-01-01T11:00:00</ProductionDate>
-                    <ThisUpdate>2017-01-01T11:00:00</ThisUpdate>
-                    <NextUpdate>2017-07-31T11:00:00</NextUpdate>
-                    <DigestAlgoAndValues>
-                        <DigestAlgoAndValue>
-                            <DigestMethod>SHA1</DigestMethod>
-                            <DigestValue>zqTIZ3Y/AoqqcZtMrYPlSUpKgNU=</DigestValue>
-                        </DigestAlgoAndValue>
-                    </DigestAlgoAndValues>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0"/>
-                    <CertificateChain>
-                        <ChainItem Id="C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
         
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
         </Certificate>
         <Certificate Id="C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0">
@@ -319,42 +294,11 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="4fab29027727e58e4518ed0b6ae554d055f05b3d9197e0d16b20028d227d1a9f5317c6de53411851d8bed36db85c70fa33c29407951fb943fd4fe9120d441cd9">
-                    <Origin>EXTERNAL</Origin>
-                    <Type>OCSP</Type>
-                    <SourceAddress>http://ocsp.eid.belgium.be/2</SourceAddress>
+                <CertificateRevocation Id="4fab29027727e58e4518ed0b6ae554d055f05b3d9197e0d16b20028d227d1a9f5317c6de53411851d8bed36db85c70fa33c29407951fb943fd4fe9120d441cd9">
                     <Available>true</Available>
                     <Status>true</Status>
-                    <ProductionDate>2017-03-20T12:42:28</ProductionDate>
-                    <ThisUpdate>2017-03-20T12:42:28</ThisUpdate>
-                    <NextUpdate>2017-03-20T12:43:28</NextUpdate>
-                    <DigestAlgoAndValues>
-                        <DigestAlgoAndValue>
-                            <DigestMethod>SHA1</DigestMethod>
-                            <DigestValue>pSlc7F0Vvy7RyaFRHzX1qUZcb5E=</DigestValue>
-                        </DigestAlgoAndValue>
-                    </DigestAlgoAndValues>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="827D5794C2E16B837350551291FB81527C7C282DBBD1668DDF4559C87CD58275"/>
-                    <CertificateChain>
-                        <ChainItem Id="827D5794C2E16B837350551291FB81527C7C282DBBD1668DDF4559C87CD58275">
-                            <Source>OCSP_RESPONSE</Source>
-                        </ChainItem>
-                        <ChainItem Id="293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA">
-                            <Source>SIGNATURE</Source>
-                        </ChainItem>
-                        <ChainItem Id="C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
         
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
         </Certificate>
         <Certificate Id="827D5794C2E16B837350551291FB81527C7C282DBBD1668DDF4559C87CD58275">
@@ -425,6 +369,70 @@
             <Revocations/>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="293d0ba3a31e5d82a8e3fae12709932ffdda44423e0f733fb01ef123e73eb4da6d76fbf942ea268c1708007834acae5369d5d36f5f7e33a153419d3ce923b30b">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://crl.eid.belgium.be/belgium4.crl</SourceAddress>
+            <ProductionDate>2017-01-01T11:00:00</ProductionDate>
+            <ThisUpdate>2017-01-01T11:00:00</ThisUpdate>
+            <NextUpdate>2017-07-31T11:00:00</NextUpdate>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>zqTIZ3Y/AoqqcZtMrYPlSUpKgNU=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0"/>
+            <CertificateChain>
+                <ChainItem Id="C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+
+        </Revocation>
+        <Revocation Id="4fab29027727e58e4518ed0b6ae554d055f05b3d9197e0d16b20028d227d1a9f5317c6de53411851d8bed36db85c70fa33c29407951fb943fd4fe9120d441cd9">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.eid.belgium.be/2</SourceAddress>
+            <ProductionDate>2017-03-20T12:42:28</ProductionDate>
+            <ThisUpdate>2017-03-20T12:42:28</ThisUpdate>
+            <NextUpdate>2017-03-20T12:43:28</NextUpdate>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>pSlc7F0Vvy7RyaFRHzX1qUZcb5E=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="827D5794C2E16B837350551291FB81527C7C282DBBD1668DDF4559C87CD58275"/>
+            <CertificateChain>
+                <ChainItem Id="827D5794C2E16B837350551291FB81527C7C282DBBD1668DDF4559C87CD58275">
+                    <Source>OCSP_RESPONSE</Source>
+                </ChainItem>
+                <ChainItem Id="293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA">
+                    <Source>SIGNATURE</Source>
+                </ChainItem>
+                <ChainItem Id="C3FBF37259AF0954EEEA4282DD1C7226A54E7150F7C29A2C495BA34DBFE09CA0">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+
+        </Revocation>
+    </UsedRevocations>
     <TrustedLists>
         <TrustedList>
             <CountryCode>BE</CountryCode>

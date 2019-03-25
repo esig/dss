@@ -153,34 +153,38 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="d74af393cf3b506da33b46bc52b49cd6fac12b2bdaa9ce1fba25c0c1e4ebbe19410c957281b50386f63c4978969c803a40006d7f5457941e7ac2f6de11daed84">
-                    <Origin>EXTERNAL</Origin>
-                    <Type>CRL</Type>
-                    <SourceAddress>http://crl.pki.belgium.be/belgium2.crl</SourceAddress>
+                <CertificateRevocation Id="d74af393cf3b506da33b46bc52b49cd6fac12b2bdaa9ce1fba25c0c1e4ebbe19410c957281b50386f63c4978969c803a40006d7f5457941e7ac2f6de11daed84">
                     <Available>true</Available>
                     <Status>true</Status>
-                    <ProductionDate>2018-01-01T11:00:00</ProductionDate>
-                    <ThisUpdate>2018-01-01T11:00:00</ThisUpdate>
-                    <NextUpdate>2018-07-31T11:00:00</NextUpdate>
-                    <DigestAlgoAndValues/>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
-                    <CertificateChain>
-                        <ChainItem Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
             <Base64Encoded>MIIEBTCCAu2gAwIBAgILBAAAAAABQeUqkm4wDQYJKoZIhvcNAQEFBQAwKDELMAkGA1UEBhMCQkUxGTAXBgNVBAMTEEJlbGdpdW0gUm9vdCBDQTIwHhcNMTMxMDIzMTEwMDAwWhcNMTkwMTIzMTEwMDAwWjBjMQswCQYDVQQGEwJCRTENMAsGA1UEBRMEMjAxNDEjMCEGA1UEChMaQmVsZ2l1bSBGZWRlcmFsIEdvdmVybm1lbnQxIDAeBgNVBAMTF1RpbWUgU3RhbXBpbmcgQXV0aG9yaXR5MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuurzcUZ9xj0Hxj8pzLPSdodxbl9hTzmvVFjVwkPlO/CKItuMv5jdX78vkJyxDoCIzlaydC8iX6LKVvbKWS8DHU4Q9vUg9jlyPrG3pM8/7uMKEiVJlo1Q7G/j3ycVIfKW5JgLEUkkA7prtjxumaUaNtoSoLXVbHU+4qIVLuBOq7dYwZN0oftYM6cUEslqDi8OSAZVyPYvUNI7klcQRh28duuMyUXhOzu4neBz49uSA5c3nAIHJxJH+zsIEIZ/rv2+oiFsN3NRy8mu8sHwOR1bf81SP73C6Gsgx0cjb4JaEvAdEXayOx5YjIkp8p9rF0sMHbimYy6Xhg6uAzObjFrQtwIDAQABo4H0MIHxMA4GA1UdDwEB/wQEAwIGwDAWBgNVHSUBAf8EDDAKBggrBgEFBQcDCDBDBgNVHSAEPDA6MDgGBmA4CQEBBTAuMCwGCCsGAQUFBwIBFiBodHRwOi8vcmVwb3NpdG9yeS5wa2kuYmVsZ2l1bS5iZTAdBgNVHQ4EFgQUhy+xl8l/bUtfYofrFHxPI0hLRJIwNwYDVR0fBDAwLjAsoCqgKIYmaHR0cDovL2NybC5wa2kuYmVsZ2l1bS5iZS9iZWxnaXVtMi5jcmwwCQYDVR0TBAIwADAfBgNVHSMEGDAWgBSFiuv0xbu+DlkDlN7WgAEV4xCcOTANBgkqhkiG9w0BAQUFAAOCAQEAKtng/BMJwJ4moDPdh0wJbMcDupg7Cr3PboLqNiVtJHtojtgya5+LDfIpDaBt054es/OKV3fNd40LU1eNBj0flU0SNgxwRqqWwBjdpBj9XCZsLsTlCjLDG7HJq6toyAfXYjHBj3KldUQS2g4wf3nxeQgDbLTs28MhpJWN9FCk2DJ63aPEbAZ/HA20NPAb86KM/LhO2AlkDwhpP510ih1dBWjiwNRrkrmxInW+PCQmBGR60rqRs5f8naosyR8URDz/wHiQ4Arn/HrX/KVZ2HMD8pt1IZY+5LuIuA2fn0hNCQyrGZoa3HNqIIP5zfavw0Tp+jDKLNNSsi5L8CP128lkug==</Base64Encoded>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="d74af393cf3b506da33b46bc52b49cd6fac12b2bdaa9ce1fba25c0c1e4ebbe19410c957281b50386f63c4978969c803a40006d7f5457941e7ac2f6de11daed84">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://crl.pki.belgium.be/belgium2.crl</SourceAddress>
+            <ProductionDate>2018-01-01T11:00:00</ProductionDate>
+            <ThisUpdate>2018-01-01T11:00:00</ThisUpdate>
+            <NextUpdate>2018-07-31T11:00:00</NextUpdate>
+            <DigestAlgoAndValues/>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
+            <CertificateChain>
+                <ChainItem Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+    </UsedRevocations>
     <TrustedLists>
         <TrustedList>
             <CountryCode>BE</CountryCode>

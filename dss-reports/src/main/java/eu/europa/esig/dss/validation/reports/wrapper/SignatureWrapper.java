@@ -29,12 +29,12 @@ import java.util.List;
 import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
@@ -432,14 +432,18 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 	
-	public List<XmlRevocationRef> getRevocationRefs() {
-		return signature.getRevocationRefs();
+	public List<XmlCertificateRevocationRef> getRelatedRevocations() {
+		return signature.getRelatedRevocations();
 	}
 	
-	public List<String> getRevocationIds() {
-		List<String> revocationIds = new ArrayList<String>();
-		for (XmlRevocationRef revocationRef : getRevocationRefs()) {
-			revocationIds.add(revocationRef.getId());
+	/**
+	 * Returns a set of revocation ids found in the signature
+	 * @return set of ids
+	 */
+	public Set<String> getRevocationIds() {
+		Set<String> revocationIds = new HashSet<String>();
+		for (XmlCertificateRevocationRef revocationRef : getRelatedRevocations()) {
+			revocationIds.add(revocationRef.getRevocationId());
 		}
 		return revocationIds;
 	}

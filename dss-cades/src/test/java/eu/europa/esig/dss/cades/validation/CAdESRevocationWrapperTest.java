@@ -11,6 +11,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.RevocationOriginType;
+import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
@@ -26,26 +27,26 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 		Reports report = validator.validateDocument();
 		// report.print();
 		DiagnosticData diagnosticData = report.getDiagnosticData();
-		int revocationValuesOriginCounter = 0;
-		int timestampRevocationDataOriginCounter = 0;
-		int dssDictionatyOriginCounter = 0;
+		int revocationSignatureOriginCounter = 0;
 		Set<RevocationWrapper> revocationData = diagnosticData.getAllRevocationData();
 		for (RevocationWrapper revocation : revocationData) {
 			assertNotNull(revocation.getRevocationType());
 			assertNotNull(revocation.getOrigin());
-			if (RevocationOriginType.INTERNAL_REVOCATION_VALUES.equals(revocation.getOrigin())) {
-				revocationValuesOriginCounter++;
-			}
-			if (RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES.equals(revocation.getOrigin())) {
-				timestampRevocationDataOriginCounter++;
-			}
-			if (RevocationOriginType.INTERNAL_DSS.equals(revocation.getOrigin())) {
-				dssDictionatyOriginCounter++;
+			if (RevocationOriginType.SIGNATURE.equals(revocation.getOrigin())) {
+				revocationSignatureOriginCounter++;
 			}
 		}
-		assertEquals(2, revocationValuesOriginCounter);
-		assertEquals(0, timestampRevocationDataOriginCounter);
-		assertEquals(0, dssDictionatyOriginCounter);
+		assertEquals(2, revocationSignatureOriginCounter);
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(), 
+				RevocationType.CRL).size());
+		assertEquals(2, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(), 
+				RevocationType.OCSP).size());
+		assertEquals(2, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
+				RevocationType.OCSP, RevocationOriginType.INTERNAL_REVOCATION_VALUES).size());
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
+				RevocationType.OCSP, RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
+				RevocationType.OCSP, RevocationOriginType.INTERNAL_DSS).size());
 	}
 
 	@Override

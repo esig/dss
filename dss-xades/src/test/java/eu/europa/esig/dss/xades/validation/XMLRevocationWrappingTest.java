@@ -12,10 +12,11 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.RevocationOriginType;
+import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
@@ -32,36 +33,42 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		Reports reports = validator.validateDocument();
 		// reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		int revocationValuesOriginCounter = 0;
-		int timestampRevocationDataOriginCounter = 0;
+		int revocationSignatureOriginCounter = 0;
+		
 		Set<RevocationWrapper> revocationData = diagnosticData.getAllRevocationData();
 		Set<String> revocationIds = new HashSet<String>();
 		for (RevocationWrapper revocation : revocationData) {
 			assertNotNull(revocation.getRevocationType());
 			assertNotNull(revocation.getOrigin());
-			if (RevocationOriginType.INTERNAL_REVOCATION_VALUES.equals(revocation.getOrigin())) {
-				revocationValuesOriginCounter++;
-			}
-			if (RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES.equals(revocation.getOrigin())) {
-				timestampRevocationDataOriginCounter++;
+			if (RevocationOriginType.SIGNATURE.equals(revocation.getOrigin())) {
+				revocationSignatureOriginCounter++;
 			}
 			revocationIds.add(revocation.getId());
 		}
-		assertEquals(2, revocationValuesOriginCounter);
-		assertEquals(2, timestampRevocationDataOriginCounter);
+		assertEquals(4, revocationSignatureOriginCounter);
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(), 
+				RevocationType.CRL).size());
+		assertEquals(4, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(), 
+				RevocationType.OCSP).size());
+		assertEquals(2, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
+				RevocationType.OCSP, RevocationOriginType.INTERNAL_REVOCATION_VALUES).size());
+		assertEquals(2, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
+				RevocationType.OCSP, RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
 		
 		eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData xmlDiagnosticData = reports.getDiagnosticDataJaxb();
 		List<XmlSignature> xmlSignatures = xmlDiagnosticData.getSignatures();
 		assertNotNull(xmlSignatures);
 		for (XmlSignature signature : xmlSignatures) {
-			List<XmlRevocationRef> revocationRefs = signature.getRevocationRefs();
+			List<XmlCertificateRevocationRef> revocationRefs = signature.getRelatedRevocations();
 			assertNotNull(revocationRefs);
 			assertEquals(4, revocationRefs.size());
-			for (XmlRevocationRef revocation : revocationRefs) {
-				assertNotNull(revocation.getId());
+			for (XmlCertificateRevocationRef revocation : revocationRefs) {
+				assertNotNull(revocation.getRevocationId());
+				assertNotNull(revocation.getCertificateId());
 				assertNotNull(revocation.getType());
 				assertNotNull(revocation.getOrigin());
-				assertTrue(revocationIds.contains(revocation.getId()));
+				assertTrue(revocationIds.contains(revocation.getRevocationId()));
+				assertNotNull(diagnosticData.getUsedCertificateById(revocation.getCertificateId()));
 			}
 		}
 	}
@@ -74,36 +81,41 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		Reports reports = validator.validateDocument();
 		// reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		int revocationValuesOriginCounter = 0;
-		int timestampRevocationDataOriginCounter = 0;
+		int revocationSignatureOriginCounter = 0;
 		Set<RevocationWrapper> revocationData = diagnosticData.getAllRevocationData();
 		Set<String> revocationIds = new HashSet<String>();
 		for (RevocationWrapper revocation : revocationData) {
 			assertNotNull(revocation.getRevocationType());
 			assertNotNull(revocation.getOrigin());
-			if (RevocationOriginType.INTERNAL_REVOCATION_VALUES.equals(revocation.getOrigin())) {
-				revocationValuesOriginCounter++;
-			}
-			if (RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES.equals(revocation.getOrigin())) {
-				timestampRevocationDataOriginCounter++;
+			if (RevocationOriginType.SIGNATURE.equals(revocation.getOrigin())) {
+				revocationSignatureOriginCounter++;
 			}
 			revocationIds.add(revocation.getId());
 		}
-		assertEquals(2, revocationValuesOriginCounter);
-		assertEquals(0, timestampRevocationDataOriginCounter);
+		assertEquals(1, revocationSignatureOriginCounter);
+		assertEquals(2, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(), 
+				RevocationType.CRL).size());
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(), 
+				RevocationType.OCSP).size());
+		assertEquals(2, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
+				RevocationType.CRL, RevocationOriginType.INTERNAL_REVOCATION_VALUES).size());
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
+				RevocationType.CRL, RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
 		
 		eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData xmlDiagnosticData = reports.getDiagnosticDataJaxb();
 		List<XmlSignature> xmlSignatures = xmlDiagnosticData.getSignatures();
 		assertNotNull(xmlSignatures);
 		for (XmlSignature signature : xmlSignatures) {
-			List<XmlRevocationRef> revocationRefs = signature.getRevocationRefs();
+			List<XmlCertificateRevocationRef> revocationRefs = signature.getRelatedRevocations();
 			assertNotNull(revocationRefs);
-			for (XmlRevocationRef revocation : revocationRefs) {
-				assertNotNull(revocation.getId());
+			for (XmlCertificateRevocationRef revocation : revocationRefs) {
+				assertNotNull(revocation.getCertificateId());
+				assertNotNull(revocation.getRevocationId());
 				assertNotNull(revocation.getType());
 				assertNotNull(revocation.getOrigin());
-				assertTrue(revocationIds.contains(revocation.getId()));
+				assertTrue(revocationIds.contains(revocation.getRevocationId()));
 				assertTrue(presentOnlyOnce(revocationRefs, revocation));
+				assertNotNull(diagnosticData.getUsedCertificateById(revocation.getCertificateId()));
 			}
 		}
 		
@@ -116,11 +128,12 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		
 	}
 	
-	public boolean presentOnlyOnce(List<XmlRevocationRef> list, XmlRevocationRef revocation) 
+	public boolean presentOnlyOnce(List<XmlCertificateRevocationRef> list, XmlCertificateRevocationRef revocation) 
 	{
 	    int numCount = 0;
-	    for (XmlRevocationRef thisRev : list) {
-	        if (thisRev.getId().equals(revocation.getId())) numCount++;
+	    for (XmlCertificateRevocationRef thisRev : list) {
+	        if ((thisRev.getCertificateId() + thisRev.getRevocationId()).equals(
+	        		(revocation.getCertificateId() + revocation.getRevocationId()))) numCount++;
 	    }
 	    return numCount == 1;
 	}

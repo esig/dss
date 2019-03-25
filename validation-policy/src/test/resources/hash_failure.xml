@@ -138,31 +138,10 @@
             <QCTypes />
             <TrustedServiceProviders />
 			<Revocations>
-	            <Revocation Id="1CC343320B734D6C0D9A05B412E79F231C6E47637CE421C5633CBA753099780C">
-	                <Origin>EXTERNAL</Origin>
-	                <Type>OCSP</Type>
-	                <SourceAddress>http://ocsp.firmacerta.it/ocsp/certstatus</SourceAddress>
+	            <CertificateRevocation Id="1CC343320B734D6C0D9A05B412E79F231C6E47637CE421C5633CBA753099780C">
 	                <Available>true</Available>
 	                <Status>true</Status>
-	                <ProductionDate>2016-05-04T15:49:36</ProductionDate>
-	                <ThisUpdate>2016-05-04T15:49:36</ThisUpdate>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA224</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Id="C668E3EE3DBF3D8621BF64C44460664CA0BD378858F47B0FB6D9F2063389B444"/>
-	                <CertificateChain>
-	                    <ChainItem Id="C668E3EE3DBF3D8621BF64C44460664CA0BD378858F47B0FB6D9F2063389B444">
-	                        <Source>OCSP_RESPONSE</Source>
-	                    </ChainItem>
-	                    <ChainItem Id="C02F95F78AF80B249A3481CA41924AE60D7663867C5F22FF8437A0E8CC344137">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	            </Revocation>
+	            </CertificateRevocation>
             </Revocations>
         </Certificate>
         <Certificate Id="C02F95F78AF80B249A3481CA41924AE60D7663867C5F22FF8437A0E8CC344137">
@@ -283,32 +262,59 @@
             <QCTypes />
             <TrustedServiceProviders />
             <Revocations>
-	            <Revocation Id="F952A9D82EC371D8DF1CE76CA4AB9DECB773AC290B13D9A04E7157CE13924EB5">
-	                <Origin>EXTERNAL</Origin>
-	                <Type>OCSP</Type>
-	                <SourceAddress>http://ocsp.firmacerta.it/ocsp/certstatus</SourceAddress>
+	            <CertificateRevocation Id="F952A9D82EC371D8DF1CE76CA4AB9DECB773AC290B13D9A04E7157CE13924EB5">
 	                <Available>true</Available>
 	                <Status>true</Status>
-	                <ProductionDate>2016-05-04T15:49:37</ProductionDate>
-	                <ThisUpdate>2016-05-04T15:49:36</ThisUpdate>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA224</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Id="C668E3EE3DBF3D8621BF64C44460664CA0BD378858F47B0FB6D9F2063389B444"/>
-	                <CertificateChain>
-	                    <ChainItem Id="C668E3EE3DBF3D8621BF64C44460664CA0BD378858F47B0FB6D9F2063389B444">
-	                        <Source>OCSP_RESPONSE</Source>
-	                    </ChainItem>
-	                    <ChainItem Id="C02F95F78AF80B249A3481CA41924AE60D7663867C5F22FF8437A0E8CC344137">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	            </Revocation>
+	            </CertificateRevocation>
             </Revocations>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="1CC343320B734D6C0D9A05B412E79F231C6E47637CE421C5633CBA753099780C">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.firmacerta.it/ocsp/certstatus</SourceAddress>
+            <ProductionDate>2016-05-04T15:49:36</ProductionDate>
+            <ThisUpdate>2016-05-04T15:49:36</ThisUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA224</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="C668E3EE3DBF3D8621BF64C44460664CA0BD378858F47B0FB6D9F2063389B444"/>
+            <CertificateChain>
+                <ChainItem Id="C668E3EE3DBF3D8621BF64C44460664CA0BD378858F47B0FB6D9F2063389B444">
+                    <Source>OCSP_RESPONSE</Source>
+                </ChainItem>
+                <ChainItem Id="C02F95F78AF80B249A3481CA41924AE60D7663867C5F22FF8437A0E8CC344137">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+        <Revocation Id="F952A9D82EC371D8DF1CE76CA4AB9DECB773AC290B13D9A04E7157CE13924EB5">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.firmacerta.it/ocsp/certstatus</SourceAddress>
+            <ProductionDate>2016-05-04T15:49:37</ProductionDate>
+            <ThisUpdate>2016-05-04T15:49:36</ThisUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA224</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="C668E3EE3DBF3D8621BF64C44460664CA0BD378858F47B0FB6D9F2063389B444"/>
+            <CertificateChain>
+                <ChainItem Id="C668E3EE3DBF3D8621BF64C44460664CA0BD378858F47B0FB6D9F2063389B444">
+                    <Source>OCSP_RESPONSE</Source>
+                </ChainItem>
+                <ChainItem Id="C02F95F78AF80B249A3481CA41924AE60D7663867C5F22FF8437A0E8CC344137">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+    </UsedRevocations>
 </DiagnosticData>

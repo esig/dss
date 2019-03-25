@@ -170,33 +170,10 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="709e9cb89541807694d261d1eb3e80232af173b5aad235771ad9291d01b04b09094c495a56e31aa49a6a3c74f65869cdeb8431e55e3946f5e82bf778342e92cd">
-                    <Origin>EXTERNAL</Origin>
-                    <Type>OCSP</Type>
-                    <SourceAddress>http://aia.sk.ee/esteid2015</SourceAddress>
+                <CertificateRevocation Id="709e9cb89541807694d261d1eb3e80232af173b5aad235771ad9291d01b04b09094c495a56e31aa49a6a3c74f65869cdeb8431e55e3946f5e82bf778342e92cd">
                     <Available>true</Available>
                     <Status>true</Status>
-                    <ProductionDate>2018-11-29T07:01:41</ProductionDate>
-                    <ThisUpdate>2018-11-29T07:01:41</ThisUpdate>
-                    <ArchiveCutOff>2015-12-17T12:38:43</ArchiveCutOff>
-                    <DigestAlgoAndValues/>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="D0E894F016BBFF0BF3CA5D932607108DEE7EEB9C92BD7910BBA510043AB0C683"/>
-                    <CertificateChain>
-                        <ChainItem Id="D0E894F016BBFF0BF3CA5D932607108DEE7EEB9C92BD7910BBA510043AB0C683">
-                            <Source>OCSP_RESPONSE</Source>
-                        </ChainItem>
-                        <ChainItem Id="74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
         </Certificate>
         <Certificate Id="D0E894F016BBFF0BF3CA5D932607108DEE7EEB9C92BD7910BBA510043AB0C683">
@@ -378,6 +355,33 @@
             <Revocations/>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="709e9cb89541807694d261d1eb3e80232af173b5aad235771ad9291d01b04b09094c495a56e31aa49a6a3c74f65869cdeb8431e55e3946f5e82bf778342e92cd">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://aia.sk.ee/esteid2015</SourceAddress>
+            <ProductionDate>2018-11-29T07:01:41</ProductionDate>
+            <ThisUpdate>2018-11-29T07:01:41</ThisUpdate>
+            <ArchiveCutOff>2015-12-17T12:38:43</ArchiveCutOff>
+            <DigestAlgoAndValues/>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="D0E894F016BBFF0BF3CA5D932607108DEE7EEB9C92BD7910BBA510043AB0C683"/>
+            <CertificateChain>
+                <ChainItem Id="D0E894F016BBFF0BF3CA5D932607108DEE7EEB9C92BD7910BBA510043AB0C683">
+                    <Source>OCSP_RESPONSE</Source>
+                </ChainItem>
+                <ChainItem Id="74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+    </UsedRevocations>
     <TrustedLists>
         <TrustedList>
             <CountryCode>EE</CountryCode>

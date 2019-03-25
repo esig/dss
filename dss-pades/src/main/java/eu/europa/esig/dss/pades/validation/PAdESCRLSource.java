@@ -38,7 +38,6 @@ import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 public class PAdESCRLSource extends SignatureCRLSource {
 
 	private final PdfDssDict dssDictionary;
-	private PdfVRIDict vriDictionary;
 	
 	private final String vriDictionaryName;
 	
@@ -57,6 +56,10 @@ public class PAdESCRLSource extends SignatureCRLSource {
 	public PAdESCRLSource(final PdfDssDict dssDictionary, final String vriDictionaryName) {
 		this.dssDictionary = dssDictionary;
 		this.vriDictionaryName = vriDictionaryName;
+		appendContainedCRLResponses();
+	}
+	
+	private void appendContainedCRLResponses() {
 		extractDSSCRLs();
 		extractVRICRLs();
 	}
@@ -66,6 +69,9 @@ public class PAdESCRLSource extends SignatureCRLSource {
 	 * @return {@link Map<Long, byte[]>} of CRLs
 	 */
 	public Map<Long, byte[]> getCrlMap() {
+		if (crlMap == null) {
+			appendContainedCRLResponses();
+		}
 		if (crlMap != null) {
 			return crlMap;
 		}
@@ -75,15 +81,6 @@ public class PAdESCRLSource extends SignatureCRLSource {
 	private Map<Long, byte[]> getDssCrlMap() {
 		if (dssDictionary != null) {
 			crlMap = dssDictionary.getCRLs();
-			List<PdfVRIDict> vriDictList = dssDictionary.getVRIs();
-			if (vriDictionaryName != null && Utils.isCollectionNotEmpty(vriDictList)) {
-				for (PdfVRIDict vriDict : vriDictList) {
-					if (vriDictionaryName.equals(vriDict.getName())) {
-						vriDictionary = vriDict;
-						break;
-					}
-				}
-			}
 			return crlMap;
 		}
 		return Collections.emptyMap();
@@ -95,7 +92,24 @@ public class PAdESCRLSource extends SignatureCRLSource {
 		}
 	}
 	
+	private PdfVRIDict findVriDict() {
+		PdfVRIDict vriDictionary = null;
+		if (dssDictionary != null) {
+			List<PdfVRIDict> vriDictList = dssDictionary.getVRIs();
+			if (vriDictionaryName != null && Utils.isCollectionNotEmpty(vriDictList)) {
+				for (PdfVRIDict vriDict : vriDictList) {
+					if (vriDictionaryName.equals(vriDict.getName())) {
+						vriDictionary = vriDict;
+						break;
+					}
+				}
+			}
+		}
+		return vriDictionary;
+	}
+	
 	private void extractVRICRLs() {
+		PdfVRIDict vriDictionary = findVriDict();
 		if (vriDictionary != null) {
 			for (Entry<Long, byte[]> crlEntry : vriDictionary.getCrlMap().entrySet()) {
 				if (!crlMap.containsKey(crlEntry.getKey())) {

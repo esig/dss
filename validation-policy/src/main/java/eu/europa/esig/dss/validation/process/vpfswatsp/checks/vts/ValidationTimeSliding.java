@@ -41,6 +41,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChec
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.POEExistsAtOrBeforeControlTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.SatisfyingRevocationDataExistsCheck;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
@@ -131,9 +132,9 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 * return the indication INDETERMINATE with the sub-indication
 				 * NO_POE.
 				 */
-				RevocationWrapper latestCompliantRevocation = null;
-				Set<RevocationWrapper> revocations = certificate.getRevocationData();
-				for (RevocationWrapper revocation : revocations) {
+				CertificateRevocationWrapper latestCompliantRevocation = null;
+				Set<CertificateRevocationWrapper> revocations = diagnosticData.getRevocationDataByCertificate(certificate);
+				for (CertificateRevocationWrapper revocation : revocations) {
 					if ((latestCompliantRevocation == null || revocation.getProductionDate().after(latestCompliantRevocation.getProductionDate()))
 							&& isConsistant(certificate, revocation) && isIssuanceBeforeControlTime(revocation)) {
 						latestCompliantRevocation = revocation;

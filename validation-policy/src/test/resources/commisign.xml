@@ -299,41 +299,45 @@
             </TrustedServiceProvider>
          </TrustedServiceProviders>
          <Revocations>
-            <Revocation Id="96de975c5d625eb6b23007402a12f7edc7240e6fc22888b9e6a47a23587183ccd44b3bc2cbfca258343153ddc0197a58e747bc1153f83d0fbcd1617bb9724a95">
-               <Origin>EXTERNAL</Origin>
-               <Type>OCSP</Type>
-               <SourceAddress>http://hide.eu/ocsp</SourceAddress>
+            <CertificateRevocation Id="96de975c5d625eb6b23007402a12f7edc7240e6fc22888b9e6a47a23587183ccd44b3bc2cbfca258343153ddc0197a58e747bc1153f83d0fbcd1617bb9724a95">
                <Available>true</Available>
                <Status>true</Status>
-               <ProductionDate>2018-07-10T15:24:39</ProductionDate>
-               <ThisUpdate>2018-07-10T07:55:03</ThisUpdate>
-               <NextUpdate>2018-07-16T07:55:03</NextUpdate>
-               <DigestAlgoAndValues>
-                  <DigestAlgoAndValue>
-                     <DigestMethod>SHA1</DigestMethod>
-                     <DigestValue>6Gy3VRznvktjj8L+mKoO68KKjVY=</DigestValue>
-                  </DigestAlgoAndValue>
-               </DigestAlgoAndValues>
-               <BasicSignature>
-                  <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                  <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                  <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                  <SignatureIntact>true</SignatureIntact>
-                  <SignatureValid>true</SignatureValid>
-               </BasicSignature>
-               <SigningCertificate Id="43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8"/>
-               <CertificateChain>
-                  <ChainItem Id="43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8">
-                     <Source>OCSP_RESPONSE</Source>
-                  </ChainItem>
-                  <ChainItem Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
-                     <Source>TRUSTED_LIST</Source>
-                  </ChainItem>
-               </CertificateChain>
-            </Revocation>
+            </CertificateRevocation>
          </Revocations>
       </Certificate>
    </UsedCertificates>
+   <UsedRevocations>
+      <Revocation Id="96de975c5d625eb6b23007402a12f7edc7240e6fc22888b9e6a47a23587183ccd44b3bc2cbfca258343153ddc0197a58e747bc1153f83d0fbcd1617bb9724a95">
+         <Origin>EXTERNAL</Origin>
+         <Type>OCSP</Type>
+         <SourceAddress>http://hide.eu/ocsp</SourceAddress>
+         <ProductionDate>2018-07-10T15:24:39</ProductionDate>
+         <ThisUpdate>2018-07-10T07:55:03</ThisUpdate>
+         <NextUpdate>2018-07-16T07:55:03</NextUpdate>
+         <DigestAlgoAndValues>
+            <DigestAlgoAndValue>
+               <DigestMethod>SHA1</DigestMethod>
+               <DigestValue>6Gy3VRznvktjj8L+mKoO68KKjVY=</DigestValue>
+            </DigestAlgoAndValue>
+         </DigestAlgoAndValues>
+         <BasicSignature>
+            <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+            <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+            <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+            <SignatureIntact>true</SignatureIntact>
+            <SignatureValid>true</SignatureValid>
+         </BasicSignature>
+         <SigningCertificate Id="43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8"/>
+         <CertificateChain>
+            <ChainItem Id="43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8">
+               <Source>OCSP_RESPONSE</Source>
+            </ChainItem>
+            <ChainItem Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
+               <Source>TRUSTED_LIST</Source>
+            </ChainItem>
+         </CertificateChain>
+      </Revocation>
+   </UsedRevocations>
    <TrustedLists>
       <TrustedList>
          <CountryCode>EC</CountryCode>

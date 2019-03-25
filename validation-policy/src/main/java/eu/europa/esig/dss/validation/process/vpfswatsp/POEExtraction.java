@@ -32,6 +32,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.TimestampedObjectType;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
@@ -73,9 +74,9 @@ public class POEExtraction {
 		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
 		for (CertificateWrapper certificate : usedCertificates) {
 			addPOE(certificate.getId(), currentTime);
-			Set<RevocationWrapper> revocations = certificate.getRevocationData();
+			Set<CertificateRevocationWrapper> revocations = diagnosticData.getRevocationDataByCertificate(certificate);
 			if (Utils.isCollectionNotEmpty(revocations)) {
-				for (RevocationWrapper revocation : revocations) {
+				for (CertificateRevocationWrapper revocation : revocations) {
 					if (revocation.isInternalRevocationOrigin()) {
 						addPOE(revocation.getId(), currentTime);
 					}
@@ -130,19 +131,14 @@ public class POEExtraction {
 	}
 
 	private String getRevocationIdByDigest(XmlDigestAlgoAndValue digestAlgoValue, DiagnosticData diagnosticData) {
-		List<CertificateWrapper> certificates = diagnosticData.getUsedCertificates();
-		if (Utils.isCollectionNotEmpty(certificates)) {
-			for (CertificateWrapper certificate : certificates) {
-				Set<RevocationWrapper> revocations = certificate.getRevocationData();
-				if (Utils.isCollectionNotEmpty(revocations)) {
-					for (RevocationWrapper revocationData : revocations) {
-						List<XmlDigestAlgoAndValue> digestAlgAndValues = revocationData.getDigestAlgoAndValues();
-						for (XmlDigestAlgoAndValue revocDigestAndValue : digestAlgAndValues) {
-							if (Utils.areStringsEqual(revocDigestAndValue.getDigestMethod(), digestAlgoValue.getDigestMethod())
-									&& Arrays.equals(revocDigestAndValue.getDigestValue(), digestAlgoValue.getDigestValue())) {
-								return revocationData.getId();
-							}
-						}
+		Set<RevocationWrapper> revocations = diagnosticData.getAllRevocationData();
+		if (Utils.isCollectionNotEmpty(revocations)) {
+			for (RevocationWrapper revocationData : revocations) {
+				List<XmlDigestAlgoAndValue> digestAlgAndValues = revocationData.getDigestAlgoAndValues();
+				for (XmlDigestAlgoAndValue revocDigestAndValue : digestAlgAndValues) {
+					if (Utils.areStringsEqual(revocDigestAndValue.getDigestMethod(), digestAlgoValue.getDigestMethod())
+							&& Arrays.equals(revocDigestAndValue.getDigestValue(), digestAlgoValue.getDigestValue())) {
+						return revocationData.getId();
 					}
 				}
 			}

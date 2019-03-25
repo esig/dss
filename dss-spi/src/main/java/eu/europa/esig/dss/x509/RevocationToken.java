@@ -22,14 +22,16 @@ package eu.europa.esig.dss.x509;
 
 import java.util.Date;
 
-import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 import eu.europa.esig.dss.x509.revocation.RevocationSourceType;
 
 @SuppressWarnings("serial")
 public abstract class RevocationToken extends Token {
 
-	private String relatedCertificateID;
+	/**
+	 * Related {@link CertificateToken} to this revocation object
+	 */
+	protected CertificateToken relatedCertificate;
 	
 	/**
 	 * An identifier referencing a CRL or OCSP response has been used for determining the revocation status.
@@ -82,9 +84,14 @@ public abstract class RevocationToken extends Token {
 	protected Date archiveCutOff;
 
 	/**
-	 * Represents the certHash extension from an OCSP Response (optional)
+	 * Represents if the certHash extension from an OCSP Response is present (optional)
 	 */
-	protected Digest certHash;
+	protected boolean certHashPresent = false;
+
+	/**
+	 * Represents if the certHash extension from an OCSP Response is match with the related certificate's hash (optional)
+	 */
+	protected boolean certHashMatch = false;
 
 	/**
 	 * The reason of the revocation.
@@ -101,11 +108,14 @@ public abstract class RevocationToken extends Token {
 	}
 
 	public String getRelatedCertificateID() {
-		return relatedCertificateID;
+		if (relatedCertificate != null) {
+			return relatedCertificate.getDSSIdAsString();
+		}
+		return null;
 	}
 
-	public void setRelatedCertificateID(String relatedCertificateID) {
-		this.relatedCertificateID = relatedCertificateID;
+	public void setRelatedCertificate(CertificateToken relatedCertificate) {
+		this.relatedCertificate = relatedCertificate;
 	}
 
 	/**
@@ -218,12 +228,19 @@ public abstract class RevocationToken extends Token {
 	}
 
 	/**
-	 * Returns the certHash extension (from an OCSP Response)
-	 * 
-	 * @return the certHash contains or null
+	 * Returns TRUE if the certHash extension (from an OCSP Response) is present
+	 * @return the TRUE if certHash is present, FALSE otherwise
 	 */
-	public Digest getCertHash() {
-		return certHash;
+	public boolean isCertHashPresent() {
+		return certHashPresent;
+	}
+
+	/**
+	 * Returns TRUE if the certHash extension (from an OCSP Response) is match to the hash of related certificate token
+	 * @return the TRUE if certHash is match, FALSE otherwise
+	 */
+	public boolean isCertHashMatch() {
+		return certHashMatch;
 	}
 
 	/**
@@ -269,7 +286,7 @@ public abstract class RevocationToken extends Token {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((productionDate == null) ? 0 : productionDate.hashCode());
-		result = prime * result + ((relatedCertificateID == null) ? 0 : relatedCertificateID.hashCode());
+		result = prime * result + ((relatedCertificate == null) ? 0 : relatedCertificate.getDSSIdAsString().hashCode());
 		return result;
 	}
 
@@ -292,11 +309,11 @@ public abstract class RevocationToken extends Token {
 		} else if (!productionDate.equals(other.productionDate)) {
 			return false;
 		}
-		if (relatedCertificateID == null) {
-			if (other.relatedCertificateID != null) {
+		if (relatedCertificate == null) {
+			if (other.relatedCertificate != null) {
 				return false;
 			}
-		} else if (!relatedCertificateID.equals(other.relatedCertificateID)) {
+		} else if (!relatedCertificate.equals(other.relatedCertificate)) {
 			return false;
 		}
 		return true;

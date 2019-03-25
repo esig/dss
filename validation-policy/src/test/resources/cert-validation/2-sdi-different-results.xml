@@ -153,33 +153,37 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="e4a94773cf7b28c2bdf25015be6716e501e73ab82bf0a9788d0df8ad14d6876d1113ca4e946c23557f42043c15ccb567d952fa13b5dea850d5fcef23cacbfca9">
-                    <Origin>EXTERNAL</Origin>
-                    <Type>CRL</Type>
-                    <SourceAddress>http://46.101.246.130:8080/esig-validation-tests/crl/SDI-5.3.3.crl</SourceAddress>
+                <CertificateRevocation Id="e4a94773cf7b28c2bdf25015be6716e501e73ab82bf0a9788d0df8ad14d6876d1113ca4e946c23557f42043c15ccb567d952fa13b5dea850d5fcef23cacbfca9">
                     <Available>false</Available>
                     <Status>true</Status>
-                    <ProductionDate>2018-12-07T12:54:39</ProductionDate>
-                    <ThisUpdate>2018-12-07T12:54:39</ThisUpdate>
-                    <NextUpdate>2018-12-08T12:54:39</NextUpdate>
-                    <DigestAlgoAndValues/>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A"/>
-                    <CertificateChain>
-                        <ChainItem Id="D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A">
-                            <Source>UNKNOWN</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="e4a94773cf7b28c2bdf25015be6716e501e73ab82bf0a9788d0df8ad14d6876d1113ca4e946c23557f42043c15ccb567d952fa13b5dea850d5fcef23cacbfca9">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://46.101.246.130:8080/esig-validation-tests/crl/SDI-5.3.3.crl</SourceAddress>
+            <ProductionDate>2018-12-07T12:54:39</ProductionDate>
+            <ThisUpdate>2018-12-07T12:54:39</ThisUpdate>
+            <NextUpdate>2018-12-08T12:54:39</NextUpdate>
+            <DigestAlgoAndValues/>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A"/>
+            <CertificateChain>
+                <ChainItem Id="D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A">
+                    <Source>UNKNOWN</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+    </UsedRevocations>
     <TrustedLists>
         <TrustedList>
             <CountryCode>IT</CountryCode>

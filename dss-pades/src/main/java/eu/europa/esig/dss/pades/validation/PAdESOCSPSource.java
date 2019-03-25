@@ -42,7 +42,6 @@ import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 public class PAdESOCSPSource extends SignatureOCSPSource {
 
 	private final PdfDssDict dssDictionary;
-	private PdfVRIDict vriDictionary;
 	
 	private final String vriDictionaryName;
 	
@@ -74,6 +73,9 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 	 * @return {@link Map<Long, BasicOCSPResp>} of OCSPs
 	 */
 	public Map<Long, BasicOCSPResp> getOcspMap() {
+		if (ocspMap == null) {
+			appendContainedOCSPResponses();
+		}
 		if (ocspMap != null) {
 			return ocspMap;
 		}
@@ -88,14 +90,6 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 	private Map<Long, BasicOCSPResp> getDssOcspMap() {
 		if (dssDictionary != null) {
 			ocspMap = dssDictionary.getOCSPs();
-			List<PdfVRIDict> vriDictList = dssDictionary.getVRIs();
-			if (vriDictionaryName != null && Utils.isCollectionNotEmpty(vriDictList)) {
-				for (PdfVRIDict vriDict : vriDictList) {
-					if (vriDictionaryName.equals(vriDict.getName())) {
-						vriDictionary = vriDict;
-					}
-				}
-			}
 			return ocspMap;
 		}
 		return Collections.emptyMap();
@@ -107,7 +101,24 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 		}
 	}
 	
+	private PdfVRIDict findVriDict() {
+		PdfVRIDict vriDictionary = null;
+		if (dssDictionary != null) {
+			List<PdfVRIDict> vriDictList = dssDictionary.getVRIs();
+			if (vriDictionaryName != null && Utils.isCollectionNotEmpty(vriDictList)) {
+				for (PdfVRIDict vriDict : vriDictList) {
+					if (vriDictionaryName.equals(vriDict.getName())) {
+						vriDictionary = vriDict;
+						break;
+					}
+				}
+			}
+		}
+		return vriDictionary;
+	}
+	
 	private void extractVRIOCSPs() {
+		PdfVRIDict vriDictionary = findVriDict();
 		if (vriDictionary != null) {
 			for (Entry<Long, BasicOCSPResp> ocspEntry : vriDictionary.getOcspMap().entrySet()) {
 				if (!ocspMap.containsKey(ocspEntry.getKey())) {

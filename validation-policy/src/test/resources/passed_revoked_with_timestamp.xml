@@ -216,108 +216,24 @@
             <QCTypes />
             <TrustedServiceProviders />
 			<Revocations>
-	            <Revocation Id="69674FCADB3AF99EAB7E9700EEB220216D7E423B3C2FF3B79EF4FC1B1954D26E">
-	                <Origin>EXTERNAL</Origin>
-	                <Type>OCSP</Type>
-	                <SourceAddress>http://ocsp.sc.infocert.it/</SourceAddress>
+	            <CertificateRevocation Id="69674FCADB3AF99EAB7E9700EEB220216D7E423B3C2FF3B79EF4FC1B1954D26E">
 	                <Available>true</Available>
 	                <Status>false</Status>
 	                <Reason>cessationOfOperation</Reason>
-	                <ProductionDate>2016-05-04T15:16:52</ProductionDate>
-	                <ThisUpdate>2016-05-04T14:30:00</ThisUpdate>
-	                <NextUpdate>2016-05-04T21:16:52</NextUpdate>
 	                <RevocationDate>2014-10-15T15:12:23</RevocationDate>
-	                <DigestAlgoAndValues>
-		                <DigestAlgoAndValue>
-		                    <DigestMethod>SHA256</DigestMethod>
-		                    <DigestValue>yl8eaHFKyymDFYT4pXjt7wjTeahmqyQd+n4Vv1J6fsw=</DigestValue>
-		                </DigestAlgoAndValue>
-	                </DigestAlgoAndValues>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
-	                <CertificateChain>
-	                    <ChainItem Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
-	                        <Source>OCSP_RESPONSE</Source>
-	                    </ChainItem>
-	                    <ChainItem Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	            </Revocation>
-	            <Revocation Id="0574F0CFD174789DDCB57C5F2EC6EC43DD341BF7789708E28E87AF9A2696CA56">
-	                <Origin>EXTERNAL</Origin>
-	                <Type>OCSP</Type>
-	                <SourceAddress>http://ocsp.sc.infocert.it/</SourceAddress>
+	            </CertificateRevocation>
+	            <CertificateRevocation Id="0574F0CFD174789DDCB57C5F2EC6EC43DD341BF7789708E28E87AF9A2696CA56">
 	                <Available>true</Available>
 	                <Status>false</Status>
 	                <Reason>cessationOfOperation</Reason>
-	                <ProductionDate>2016-05-04T15:03:54</ProductionDate>
-	                <ThisUpdate>2016-05-04T14:30:00</ThisUpdate>
-	                <NextUpdate>2016-05-04T21:03:54</NextUpdate>
 	                <RevocationDate>2014-10-15T15:12:23</RevocationDate>
-	                <DigestAlgoAndValues>
-		                <DigestAlgoAndValue>
-		                    <DigestMethod>SHA256</DigestMethod>
-		                    <DigestValue>vJiJmppf/Vj83i+217pf8M/fFNZKYMGM14F+FwwrdDw=</DigestValue>
-		                </DigestAlgoAndValue>
-	                </DigestAlgoAndValues>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
-	                <CertificateChain>
-	                    <ChainItem Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
-	                        <Source>OCSP_RESPONSE</Source>
-	                    </ChainItem>
-	                    <ChainItem Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	            </Revocation>
-	            <Revocation Id="55F56C98A1A43A431C6DD59F46D921DDE91F9FFE23FB1E4CC53A372CD38B4495">
-	                <Origin>EXTERNAL</Origin>
-	                <Type>OCSP</Type>
-	                <SourceAddress>http://ocsp.sc.infocert.it/</SourceAddress>
+	            </CertificateRevocation>
+	            <CertificateRevocation Id="55F56C98A1A43A431C6DD59F46D921DDE91F9FFE23FB1E4CC53A372CD38B4495">
 	                <Available>true</Available>
 	                <Status>false</Status>
 	                <Reason>cessationOfOperation</Reason>
-	                <ProductionDate>2016-05-04T15:12:31</ProductionDate>
-	                <ThisUpdate>2016-05-04T14:30:00</ThisUpdate>
-	                <NextUpdate>2016-05-04T21:12:31</NextUpdate>
 	                <RevocationDate>2014-10-15T15:12:23</RevocationDate>
-	                <DigestAlgoAndValues>
-		                <DigestAlgoAndValue>
-		                    <DigestMethod>SHA256</DigestMethod>
-		                    <DigestValue>ncfUfryvFn3rgFo6T/YEdaUYAgZw1CJdTK/B9Qg+wcU=</DigestValue>
-		                </DigestAlgoAndValue>
-		            </DigestAlgoAndValues>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
-	                <CertificateChain>
-	                    <ChainItem Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
-	                        <Source>OCSP_RESPONSE</Source>
-	                    </ChainItem>
-	                    <ChainItem Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	            </Revocation>
+	            </CertificateRevocation>
 	        </Revocations>
         </Certificate>
         <Certificate Id="C7D570E1C918E1DA6AA5C8A2C6B9D4E4FC382F790B149B901E80B157F1CF3AA0">
@@ -409,38 +325,10 @@
             <QCTypes />
             <TrustedServiceProviders />
 			<Revocations>
-	            <Revocation Id="E3338F7F9E1963241C750B0FABA972C18C401EF51A1FF049CB3CD1EAD069C29F">
-	                <Origin>EXTERNAL</Origin>
-	                <Type>OCSP</Type>
-	                <SourceAddress>http://ocsp.sc.infocert.it/</SourceAddress>
+	            <CertificateRevocation Id="E3338F7F9E1963241C750B0FABA972C18C401EF51A1FF049CB3CD1EAD069C29F">
 	                <Available>true</Available>
 	                <Status>true</Status>
-	                <ProductionDate>2016-05-04T15:16:52</ProductionDate>
-	                <ThisUpdate>2016-05-04T14:00:00</ThisUpdate>
-	                <NextUpdate>2016-05-04T21:16:52</NextUpdate>
-	                <DigestAlgoAndValues>
-		                <DigestAlgoAndValue>
-		                    <DigestMethod>SHA256</DigestMethod>
-		                    <DigestValue>3oTBCg11NLrPCxx2YaQSertjfeHPlWiN8tb5oPesR9Y=</DigestValue>
-		                </DigestAlgoAndValue>
-		            </DigestAlgoAndValues>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Id="C7D570E1C918E1DA6AA5C8A2C6B9D4E4FC382F790B149B901E80B157F1CF3AA0"/>
-	                <CertificateChain>
-	                    <ChainItem Id="C7D570E1C918E1DA6AA5C8A2C6B9D4E4FC382F790B149B901E80B157F1CF3AA0">
-	                        <Source>OCSP_RESPONSE</Source>
-	                    </ChainItem>
-	                    <ChainItem Id="FC8BFE53A334F6F762F5EA9AFF47E01AA62DF620E55E8CE9BECB713BB70755A7">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	            </Revocation>
+	            </CertificateRevocation>
 	        </Revocations>
         </Certificate>
         <Certificate Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
@@ -488,4 +376,126 @@
             <TrustedServiceProviders />
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+		<Revocation Id="69674FCADB3AF99EAB7E9700EEB220216D7E423B3C2FF3B79EF4FC1B1954D26E">
+		    <Origin>EXTERNAL</Origin>
+		    <Type>OCSP</Type>
+		    <SourceAddress>http://ocsp.sc.infocert.it/</SourceAddress>
+		    <ProductionDate>2016-05-04T15:16:52</ProductionDate>
+		    <ThisUpdate>2016-05-04T14:30:00</ThisUpdate>
+		    <NextUpdate>2016-05-04T21:16:52</NextUpdate>
+		    <DigestAlgoAndValues>
+		     <DigestAlgoAndValue>
+		         <DigestMethod>SHA256</DigestMethod>
+		         <DigestValue>yl8eaHFKyymDFYT4pXjt7wjTeahmqyQd+n4Vv1J6fsw=</DigestValue>
+		     </DigestAlgoAndValue>
+		    </DigestAlgoAndValues>
+		    <BasicSignature>
+		        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+		        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+		        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+		        <SignatureIntact>true</SignatureIntact>
+		        <SignatureValid>true</SignatureValid>
+		    </BasicSignature>
+		    <SigningCertificate Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
+		    <CertificateChain>
+		        <ChainItem Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
+		            <Source>OCSP_RESPONSE</Source>
+		        </ChainItem>
+		        <ChainItem Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
+		            <Source>TRUSTED_LIST</Source>
+		        </ChainItem>
+		    </CertificateChain>
+		</Revocation>
+		<Revocation Id="0574F0CFD174789DDCB57C5F2EC6EC43DD341BF7789708E28E87AF9A2696CA56">
+		    <Origin>EXTERNAL</Origin>
+		    <Type>OCSP</Type>
+		    <SourceAddress>http://ocsp.sc.infocert.it/</SourceAddress>
+		    <ProductionDate>2016-05-04T15:03:54</ProductionDate>
+		    <ThisUpdate>2016-05-04T14:30:00</ThisUpdate>
+		    <NextUpdate>2016-05-04T21:03:54</NextUpdate>
+		    <DigestAlgoAndValues>
+		     <DigestAlgoAndValue>
+		         <DigestMethod>SHA256</DigestMethod>
+		         <DigestValue>vJiJmppf/Vj83i+217pf8M/fFNZKYMGM14F+FwwrdDw=</DigestValue>
+		     </DigestAlgoAndValue>
+		    </DigestAlgoAndValues>
+		    <BasicSignature>
+		        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+		        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+		        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+		        <SignatureIntact>true</SignatureIntact>
+		        <SignatureValid>true</SignatureValid>
+		    </BasicSignature>
+		    <SigningCertificate Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
+		    <CertificateChain>
+		        <ChainItem Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
+		            <Source>OCSP_RESPONSE</Source>
+		        </ChainItem>
+		        <ChainItem Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
+		            <Source>TRUSTED_LIST</Source>
+		        </ChainItem>
+		    </CertificateChain>
+		</Revocation>
+		<Revocation Id="55F56C98A1A43A431C6DD59F46D921DDE91F9FFE23FB1E4CC53A372CD38B4495">
+		    <Origin>EXTERNAL</Origin>
+		    <Type>OCSP</Type>
+		    <SourceAddress>http://ocsp.sc.infocert.it/</SourceAddress>
+		    <ProductionDate>2016-05-04T15:12:31</ProductionDate>
+		    <ThisUpdate>2016-05-04T14:30:00</ThisUpdate>
+		    <NextUpdate>2016-05-04T21:12:31</NextUpdate>
+		    <DigestAlgoAndValues>
+		     <DigestAlgoAndValue>
+		         <DigestMethod>SHA256</DigestMethod>
+		         <DigestValue>ncfUfryvFn3rgFo6T/YEdaUYAgZw1CJdTK/B9Qg+wcU=</DigestValue>
+		     </DigestAlgoAndValue>
+		 </DigestAlgoAndValues>
+		    <BasicSignature>
+		        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+		        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+		        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+		        <SignatureIntact>true</SignatureIntact>
+		        <SignatureValid>true</SignatureValid>
+		    </BasicSignature>
+		    <SigningCertificate Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
+		    <CertificateChain>
+		        <ChainItem Id="200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
+		            <Source>OCSP_RESPONSE</Source>
+		        </ChainItem>
+		        <ChainItem Id="B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
+		            <Source>TRUSTED_LIST</Source>
+		        </ChainItem>
+		    </CertificateChain>
+		</Revocation>
+        <Revocation Id="E3338F7F9E1963241C750B0FABA972C18C401EF51A1FF049CB3CD1EAD069C29F">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.sc.infocert.it/</SourceAddress>
+            <ProductionDate>2016-05-04T15:16:52</ProductionDate>
+            <ThisUpdate>2016-05-04T14:00:00</ThisUpdate>
+            <NextUpdate>2016-05-04T21:16:52</NextUpdate>
+            <DigestAlgoAndValues>
+             <DigestAlgoAndValue>
+                 <DigestMethod>SHA256</DigestMethod>
+                 <DigestValue>3oTBCg11NLrPCxx2YaQSertjfeHPlWiN8tb5oPesR9Y=</DigestValue>
+             </DigestAlgoAndValue>
+         </DigestAlgoAndValues>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="C7D570E1C918E1DA6AA5C8A2C6B9D4E4FC382F790B149B901E80B157F1CF3AA0"/>
+            <CertificateChain>
+                <ChainItem Id="C7D570E1C918E1DA6AA5C8A2C6B9D4E4FC382F790B149B901E80B157F1CF3AA0">
+                    <Source>OCSP_RESPONSE</Source>
+                </ChainItem>
+                <ChainItem Id="FC8BFE53A334F6F762F5EA9AFF47E01AA62DF620E55E8CE9BECB713BB70755A7">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+    </UsedRevocations>
 </DiagnosticData>

@@ -281,36 +281,40 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="a1e2d4ca9c521332369fa3224f0b7282ad2596e8a7416cbc0df087e05d8f5502ee61c3ce61699e2ba6898ae5d8dce78dc246bf1a07590adf78c44e00f59d4fab">
-                    <Origin>EXTERNAL</Origin>
-                    <Type>OCSP</Type>
-                    <SourceAddress>http://ocsp.f.hr</SourceAddress>
+                <CertificateRevocation Id="a1e2d4ca9c521332369fa3224f0b7282ad2596e8a7416cbc0df087e05d8f5502ee61c3ce61699e2ba6898ae5d8dce78dc246bf1a07590adf78c44e00f59d4fab">
                     <Available>true</Available>
                     <Status>true</Status>
-                    <ProductionDate>2018-06-01T11:29:26</ProductionDate>
-                    <ThisUpdate>2018-06-01T11:29:26</ThisUpdate>
-                    <DigestAlgoAndValues/>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="A1C213591D7738A3B4048487174769B1A09824927782ED76A2892819A5E1207F"/>
-                    <CertificateChain>
-                        <ChainItem Id="A1C213591D7738A3B4048487174769B1A09824927782ED76A2892819A5E1207F">
-                            <Source>OCSP_RESPONSE</Source>
-                        </ChainItem>
-                        <ChainItem Id="857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
             <Base64Encoded>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</Base64Encoded>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="a1e2d4ca9c521332369fa3224f0b7282ad2596e8a7416cbc0df087e05d8f5502ee61c3ce61699e2ba6898ae5d8dce78dc246bf1a07590adf78c44e00f59d4fab">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.f.hr</SourceAddress>
+            <ProductionDate>2018-06-01T11:29:26</ProductionDate>
+            <ThisUpdate>2018-06-01T11:29:26</ThisUpdate>
+            <DigestAlgoAndValues/>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="A1C213591D7738A3B4048487174769B1A09824927782ED76A2892819A5E1207F"/>
+            <CertificateChain>
+                <ChainItem Id="A1C213591D7738A3B4048487174769B1A09824927782ED76A2892819A5E1207F">
+                    <Source>OCSP_RESPONSE</Source>
+                </ChainItem>
+                <ChainItem Id="857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+    </UsedRevocations>
     <TrustedLists>
         <TrustedList>
             <CountryCode>HR</CountryCode>

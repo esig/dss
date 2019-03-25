@@ -138,35 +138,10 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="452027db8aba14cdd1f484a86227b8fd19b576181d01b47b892ef76a2c44881b41437955ec545002fae44675dbbc51a8396d32450ed8733a53ef79e215c258b2">
-                    <Origin>EXTERNAL</Origin>
-                    <Type>CRL</Type>
-                    <SourceAddress>http://www.postsignum.cz/crl/psqualifiedca2.crl</SourceAddress>
+                <CertificateRevocation Id="452027db8aba14cdd1f484a86227b8fd19b576181d01b47b892ef76a2c44881b41437955ec545002fae44675dbbc51a8396d32450ed8733a53ef79e215c258b2">
                     <Available>true</Available>
                     <Status>true</Status>
-                    <ProductionDate>2017-01-26T07:58:13</ProductionDate>
-                    <ThisUpdate>2017-01-26T07:58:13</ThisUpdate>
-                    <NextUpdate>2017-01-27T05:20:00</NextUpdate>
-                    <DigestAlgoAndValues>
-                        <DigestAlgoAndValue>
-                            <DigestMethod>SHA1</DigestMethod>
-                            <DigestValue>/xwM4+yS0saml95HSAX8Lzkt6t4=</DigestValue>
-                        </DigestAlgoAndValue>
-                    </DigestAlgoAndValues>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC"/>
-                    <CertificateChain>
-                        <ChainItem Id="3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
         </Certificate>
         <Certificate Id="3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
@@ -296,6 +271,35 @@
             <Revocations/>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="452027db8aba14cdd1f484a86227b8fd19b576181d01b47b892ef76a2c44881b41437955ec545002fae44675dbbc51a8396d32450ed8733a53ef79e215c258b2">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://www.postsignum.cz/crl/psqualifiedca2.crl</SourceAddress>
+            <ProductionDate>2017-01-26T07:58:13</ProductionDate>
+            <ThisUpdate>2017-01-26T07:58:13</ThisUpdate>
+            <NextUpdate>2017-01-27T05:20:00</NextUpdate>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>/xwM4+yS0saml95HSAX8Lzkt6t4=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC"/>
+            <CertificateChain>
+                <ChainItem Id="3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+    </UsedRevocations>
     <TrustedLists>
         <TrustedList>
             <CountryCode>CZ</CountryCode>

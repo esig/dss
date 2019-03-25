@@ -313,33 +313,9 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="81dd4cad9aa0d9dc473cd1afcb14db23d637ebf2ff4559aa277924d0250621f27a4f3a882a796996d4bc50d31c76a4894521642907f7bc8babbf7da52e8dd519">
-                    <Origin>SIGNATURE</Origin>
-                    <Type>CRL</Type>
+                <CertificateRevocation Id="81dd4cad9aa0d9dc473cd1afcb14db23d637ebf2ff4559aa277924d0250621f27a4f3a882a796996d4bc50d31c76a4894521642907f7bc8babbf7da52e8dd519">
                     <Status>true</Status>
-                    <ProductionDate>2018-06-12T10:30:30</ProductionDate>
-                    <ThisUpdate>2018-06-12T10:30:30</ThisUpdate>
-                    <NextUpdate>2018-06-19T09:30:30</NextUpdate>
-                    <DigestAlgoAndValues>
-                        <DigestAlgoAndValue>
-                            <DigestMethod>SHA1</DigestMethod>
-                            <DigestValue>R8/co84yK1N+nC/HNY1nErauQ7U=</DigestValue>
-                        </DigestAlgoAndValue>
-                    </DigestAlgoAndValues>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
-                    <CertificateChain>
-                        <ChainItem Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
         </Certificate>
         <Certificate Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
@@ -494,33 +470,9 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="05eb1a1653bc225be23a3428ae4c90487c9a109703e81828dc1c6fd78274cfbdfcc9f56e6a1856a12dcf4b18fef166e2586bc58dfe4a2a5d528d3ab547fb512e">
-                    <Origin>SIGNATURE</Origin>
-                    <Type>CRL</Type>
+                <CertificateRevocation Id="05eb1a1653bc225be23a3428ae4c90487c9a109703e81828dc1c6fd78274cfbdfcc9f56e6a1856a12dcf4b18fef166e2586bc58dfe4a2a5d528d3ab547fb512e">
                     <Status>true</Status>
-                    <ProductionDate>2018-06-12T11:00:13</ProductionDate>
-                    <ThisUpdate>2018-06-12T11:00:13</ThisUpdate>
-                    <NextUpdate>2018-06-12T15:30:13</NextUpdate>
-                    <DigestAlgoAndValues>
-                        <DigestAlgoAndValue>
-                            <DigestMethod>SHA1</DigestMethod>
-                            <DigestValue>1BPnQ9mq4W1uN7JbgIdh0bcNqFY=</DigestValue>
-                        </DigestAlgoAndValue>
-                    </DigestAlgoAndValues>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
-                    <CertificateChain>
-                        <ChainItem Id="BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
         </Certificate>
         <Certificate Id="0EC53B285E62AA6C9B3C1BF5346042BF4A53C35DF073E3034700420A5D3E30BA">
@@ -623,62 +575,12 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="0ec53b285e62aa6c9b3c1bf5346042bf4a53c35df073e3034700420a5d3e30ba63489294d3107dd3890fb0c328e2bd7146687d695409cd9d3e67a21c9125a6ff">
-                    <Origin>SIGNATURE</Origin>
-                    <Type>OCSP</Type>
+                <CertificateRevocation Id="0ec53b285e62aa6c9b3c1bf5346042bf4a53c35df073e3034700420a5d3e30ba63489294d3107dd3890fb0c328e2bd7146687d695409cd9d3e67a21c9125a6ff">
                     <Status>true</Status>
-                    <ProductionDate>2018-06-12T11:29:01</ProductionDate>
-                    <ThisUpdate>2018-06-12T11:23:21</ThisUpdate>
-                    <DigestAlgoAndValues>
-                        <DigestAlgoAndValue>
-                            <DigestMethod>SHA1</DigestMethod>
-                            <DigestValue>iaCXSFlGfzOshPC/1n9AMP42p7E=</DigestValue>
-                        </DigestAlgoAndValue>
-                    </DigestAlgoAndValues>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="05EB1A1653BC225BE23A3428AE4C90487C9A109703E81828DC1C6FD78274CFBD"/>
-                    <CertificateChain>
-                        <ChainItem Id="05EB1A1653BC225BE23A3428AE4C90487C9A109703E81828DC1C6FD78274CFBD">
-                            <Source>SIGNATURE</Source>
-                        </ChainItem>
-                        <ChainItem Id="BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
-                <Revocation Id="0ec53b285e62aa6c9b3c1bf5346042bf4a53c35df073e3034700420a5d3e30bafcc9f56e6a1856a12dcf4b18fef166e2586bc58dfe4a2a5d528d3ab547fb512e">
-                    <Origin>SIGNATURE</Origin>
-                    <Type>CRL</Type>
+                </CertificateRevocation>
+                <CertificateRevocation Id="0ec53b285e62aa6c9b3c1bf5346042bf4a53c35df073e3034700420a5d3e30bafcc9f56e6a1856a12dcf4b18fef166e2586bc58dfe4a2a5d528d3ab547fb512e">
                     <Status>true</Status>
-                    <ProductionDate>2018-06-12T11:00:13</ProductionDate>
-                    <ThisUpdate>2018-06-12T11:00:13</ThisUpdate>
-                    <NextUpdate>2018-06-12T15:30:13</NextUpdate>
-                    <DigestAlgoAndValues>
-                        <DigestAlgoAndValue>
-                            <DigestMethod>SHA1</DigestMethod>
-                            <DigestValue>1BPnQ9mq4W1uN7JbgIdh0bcNqFY=</DigestValue>
-                        </DigestAlgoAndValue>
-                    </DigestAlgoAndValues>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
-                    <CertificateChain>
-                        <ChainItem Id="BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
         </Certificate>
         <Certificate Id="64EE60788051EF086692103DC87CC088354A836C207B91D14E2F0878E5F28FEC">
@@ -750,36 +652,146 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="64ee60788051ef086692103dc87cc088354a836c207b91d14e2f0878e5f28fec7a4f3a882a796996d4bc50d31c76a4894521642907f7bc8babbf7da52e8dd519">
-                    <Origin>SIGNATURE</Origin>
-                    <Type>CRL</Type>
+                <CertificateRevocation Id="64ee60788051ef086692103dc87cc088354a836c207b91d14e2f0878e5f28fec7a4f3a882a796996d4bc50d31c76a4894521642907f7bc8babbf7da52e8dd519">
                     <Status>true</Status>
-                    <ProductionDate>2018-06-12T10:30:30</ProductionDate>
-                    <ThisUpdate>2018-06-12T10:30:30</ThisUpdate>
-                    <NextUpdate>2018-06-19T09:30:30</NextUpdate>
-                    <DigestAlgoAndValues>
-                        <DigestAlgoAndValue>
-                            <DigestMethod>SHA1</DigestMethod>
-                            <DigestValue>R8/co84yK1N+nC/HNY1nErauQ7U=</DigestValue>
-                        </DigestAlgoAndValue>
-                    </DigestAlgoAndValues>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
-                    <CertificateChain>
-                        <ChainItem Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="81dd4cad9aa0d9dc473cd1afcb14db23d637ebf2ff4559aa277924d0250621f27a4f3a882a796996d4bc50d31c76a4894521642907f7bc8babbf7da52e8dd519">
+            <Origin>SIGNATURE</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2018-06-12T10:30:30</ProductionDate>
+            <ThisUpdate>2018-06-12T10:30:30</ThisUpdate>
+            <NextUpdate>2018-06-19T09:30:30</NextUpdate>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>R8/co84yK1N+nC/HNY1nErauQ7U=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+            <CertificateChain>
+                <ChainItem Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+        <Revocation Id="05eb1a1653bc225be23a3428ae4c90487c9a109703e81828dc1c6fd78274cfbdfcc9f56e6a1856a12dcf4b18fef166e2586bc58dfe4a2a5d528d3ab547fb512e">
+            <Origin>SIGNATURE</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2018-06-12T11:00:13</ProductionDate>
+            <ThisUpdate>2018-06-12T11:00:13</ThisUpdate>
+            <NextUpdate>2018-06-12T15:30:13</NextUpdate>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>1BPnQ9mq4W1uN7JbgIdh0bcNqFY=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+            <CertificateChain>
+                <ChainItem Id="BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+        <Revocation Id="0ec53b285e62aa6c9b3c1bf5346042bf4a53c35df073e3034700420a5d3e30ba63489294d3107dd3890fb0c328e2bd7146687d695409cd9d3e67a21c9125a6ff">
+            <Origin>SIGNATURE</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2018-06-12T11:29:01</ProductionDate>
+            <ThisUpdate>2018-06-12T11:23:21</ThisUpdate>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>iaCXSFlGfzOshPC/1n9AMP42p7E=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="05EB1A1653BC225BE23A3428AE4C90487C9A109703E81828DC1C6FD78274CFBD"/>
+            <CertificateChain>
+                <ChainItem Id="05EB1A1653BC225BE23A3428AE4C90487C9A109703E81828DC1C6FD78274CFBD">
+                    <Source>SIGNATURE</Source>
+                </ChainItem>
+                <ChainItem Id="BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+        <Revocation Id="0ec53b285e62aa6c9b3c1bf5346042bf4a53c35df073e3034700420a5d3e30bafcc9f56e6a1856a12dcf4b18fef166e2586bc58dfe4a2a5d528d3ab547fb512e">
+            <Origin>SIGNATURE</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2018-06-12T11:00:13</ProductionDate>
+            <ThisUpdate>2018-06-12T11:00:13</ThisUpdate>
+            <NextUpdate>2018-06-12T15:30:13</NextUpdate>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>1BPnQ9mq4W1uN7JbgIdh0bcNqFY=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+            <CertificateChain>
+                <ChainItem Id="BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+        <Revocation Id="64ee60788051ef086692103dc87cc088354a836c207b91d14e2f0878e5f28fec7a4f3a882a796996d4bc50d31c76a4894521642907f7bc8babbf7da52e8dd519">
+            <Origin>SIGNATURE</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2018-06-12T10:30:30</ProductionDate>
+            <ThisUpdate>2018-06-12T10:30:30</ThisUpdate>
+            <NextUpdate>2018-06-19T09:30:30</NextUpdate>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>R8/co84yK1N+nC/HNY1nErauQ7U=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+            <CertificateChain>
+                <ChainItem Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+    </UsedRevocations>
     <TrustedLists>
         <TrustedList>
             <CountryCode>LU</CountryCode>

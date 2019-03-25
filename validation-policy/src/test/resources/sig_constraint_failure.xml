@@ -171,37 +171,10 @@
             <QCTypes />
             <TrustedServiceProviders />
             <Revocations>
-	            <Revocation Id="79ADAE6C275B8805AF16746D43CEA07C1E1102C6476C9E9C4B2B4F30230B4F74">
-	                <Origin>EXTERNAL</Origin>
-	                <Type>OCSP</Type>
-	                <SourceAddress>http://ocsp.s-trust.de</SourceAddress>
+	            <CertificateRevocation Id="79ADAE6C275B8805AF16746D43CEA07C1E1102C6476C9E9C4B2B4F30230B4F74">
 	                <Available>true</Available>
 	                <Status>true</Status>
-	                <ProductionDate>2016-05-04T15:55:17</ProductionDate>
-	                <ThisUpdate>2016-05-04T15:55:17</ThisUpdate>
-	                <DigestAlgoAndValues>
-		                <DigestAlgoAndValue>
-		                    <DigestMethod>SHA256</DigestMethod>
-		                    <DigestValue>Fh+ie77tvClEw75bwguQz4cF7A3dlSDi9qe1vEm5jQ8=</DigestValue>
-		                </DigestAlgoAndValue>
-	                </DigestAlgoAndValues>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA224</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Id="19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002"/>
-	                <CertificateChain>
-	                    <ChainItem Id="19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002">
-	                        <Source>OCSP_RESPONSE</Source>
-	                    </ChainItem>
-	                    <ChainItem Id="4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	            </Revocation>
+	            </CertificateRevocation>
             </Revocations>
         </Certificate>
         <Certificate Id="D9CAABC3225B7030CDB83E3846E3691C14ED790B1764CE1B4F043157899C5C58">
@@ -249,38 +222,10 @@
             <QCTypes />
             <TrustedServiceProviders />
             <Revocations>
-	            <Revocation Id="44E8F4F581737AD1B43EA4562D51AB3F3EB458C3A0E91979EF35F133EE31797E">
-	                <Origin>EXTERNAL</Origin>
-	                <Type>OCSP</Type>
-	                <SourceAddress>http://subca.ocsp-certum.com</SourceAddress>
+	            <CertificateRevocation Id="44E8F4F581737AD1B43EA4562D51AB3F3EB458C3A0E91979EF35F133EE31797E">
 	                <Available>true</Available>
 	                <Status>true</Status>
-	                <ProductionDate>2016-05-04T15:55:21</ProductionDate>
-	                <ThisUpdate>2016-05-04T15:55:21</ThisUpdate>
-	                <NextUpdate>2016-05-11T15:55:21</NextUpdate>
-	                <DigestAlgoAndValues>
-		                <DigestAlgoAndValue>
-		                    <DigestMethod>SHA256</DigestMethod>
-		                    <DigestValue>r4vdxeqLiOifpHicRjeIatoKW/jyaZk3t/ogUoP8gUY=</DigestValue>
-		                </DigestAlgoAndValue>
-	                </DigestAlgoAndValues>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA224</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Id="8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733"/>
-	                <CertificateChain>
-	                    <ChainItem Id="8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733">
-	                        <Source>OCSP_RESPONSE</Source>
-	                    </ChainItem>
-	                    <ChainItem Id="5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
-	                        <Source>SIGNATURE</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	            </Revocation>
+	            </CertificateRevocation>
             </Revocations>
         </Certificate>
         <Certificate Id="8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733">
@@ -412,4 +357,65 @@
             <TrustedServiceProviders />
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="79ADAE6C275B8805AF16746D43CEA07C1E1102C6476C9E9C4B2B4F30230B4F74">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.s-trust.de</SourceAddress>
+            <ProductionDate>2016-05-04T15:55:17</ProductionDate>
+            <ThisUpdate>2016-05-04T15:55:17</ThisUpdate>
+            <DigestAlgoAndValues>
+             <DigestAlgoAndValue>
+                 <DigestMethod>SHA256</DigestMethod>
+                 <DigestValue>Fh+ie77tvClEw75bwguQz4cF7A3dlSDi9qe1vEm5jQ8=</DigestValue>
+             </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA224</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002"/>
+            <CertificateChain>
+                <ChainItem Id="19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002">
+                    <Source>OCSP_RESPONSE</Source>
+                </ChainItem>
+                <ChainItem Id="4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+        <Revocation Id="44E8F4F581737AD1B43EA4562D51AB3F3EB458C3A0E91979EF35F133EE31797E">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://subca.ocsp-certum.com</SourceAddress>
+            <ProductionDate>2016-05-04T15:55:21</ProductionDate>
+            <ThisUpdate>2016-05-04T15:55:21</ThisUpdate>
+            <NextUpdate>2016-05-11T15:55:21</NextUpdate>
+            <DigestAlgoAndValues>
+             <DigestAlgoAndValue>
+                 <DigestMethod>SHA256</DigestMethod>
+                 <DigestValue>r4vdxeqLiOifpHicRjeIatoKW/jyaZk3t/ogUoP8gUY=</DigestValue>
+             </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA224</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733"/>
+            <CertificateChain>
+                <ChainItem Id="8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733">
+                    <Source>OCSP_RESPONSE</Source>
+                </ChainItem>
+                <ChainItem Id="5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
+                    <Source>SIGNATURE</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+    </UsedRevocations>
 </DiagnosticData>

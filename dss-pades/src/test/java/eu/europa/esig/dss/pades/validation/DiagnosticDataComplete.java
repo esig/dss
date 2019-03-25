@@ -18,7 +18,6 @@ import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 public class DiagnosticDataComplete extends PKIFactoryAccess {
@@ -53,26 +52,23 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		Reports report = validator.validateDocument();
 		// report.print();
 		DiagnosticData diagnosticData = report.getDiagnosticData();
-		int xmlRevocationValuesOriginCounter = 0;
-		int xmlTimestampRevocationDataOriginCounter = 0;
-		int dssDictionatyOriginCounter = 0;
-		Set<RevocationWrapper> revocationData = diagnosticData.getAllRevocationData();
-		for (RevocationWrapper revocation : revocationData) {
-			assertNotNull(revocation.getRevocationType());
-			assertNotNull(revocation.getOrigin());
-			if (RevocationOriginType.INTERNAL_REVOCATION_VALUES.equals(revocation.getOrigin())) {
-				xmlRevocationValuesOriginCounter++;
-			}
-			if (RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES.equals(revocation.getOrigin())) {
-				xmlTimestampRevocationDataOriginCounter++;
-			}
-			if (RevocationOriginType.INTERNAL_DSS.equals(revocation.getOrigin())) {
-				dssDictionatyOriginCounter++;
-			}
-		}
-		assertEquals(0, xmlRevocationValuesOriginCounter);
-		assertEquals(0, xmlTimestampRevocationDataOriginCounter);
-		assertEquals(7, dssDictionatyOriginCounter);
+
+		assertEquals(3, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(), 
+				RevocationType.CRL).size());
+		assertEquals(4, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(), 
+				RevocationType.OCSP).size());
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
+				RevocationType.CRL, RevocationOriginType.INTERNAL_REVOCATION_VALUES).size());
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
+				RevocationType.CRL, RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+		assertEquals(3, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
+				RevocationType.CRL, RevocationOriginType.INTERNAL_DSS).size());
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
+				RevocationType.OCSP, RevocationOriginType.INTERNAL_REVOCATION_VALUES).size());
+		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
+				RevocationType.OCSP, RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+		assertEquals(4, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
+				RevocationType.OCSP, RevocationOriginType.INTERNAL_DSS).size());
 	}
 	
 	@Test
@@ -115,8 +111,7 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports report = validator.validateDocument();
-		// report.print();
-		System.out.println(report.getXmlDiagnosticData().replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", ""));
+		// System.out.println(report.getXmlDiagnosticData().replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", ""));
 		DiagnosticData diagnosticData = report.getDiagnosticData();
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		assertNotNull(signatures);

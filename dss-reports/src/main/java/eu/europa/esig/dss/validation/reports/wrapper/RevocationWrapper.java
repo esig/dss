@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.reports.wrapper;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
@@ -32,11 +33,17 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.RevocationOriginType;
 import eu.europa.esig.dss.validation.RevocationType;
 
+/**
+ * Revocation wrapper containing common revocation information
+ */
 public class RevocationWrapper extends AbstractTokenProxy {
 
 	private final XmlRevocation revocation;
 
 	public RevocationWrapper(XmlRevocation revocation) {
+		if (revocation == null) {
+			throw new DSSException("XMLRevocation cannot be null!");
+		}
 		this.revocation = revocation;
 	}
 
@@ -64,28 +71,12 @@ public class RevocationWrapper extends AbstractTokenProxy {
 		return revocation.getProductionDate();
 	}
 
-	public boolean isStatus() {
-		return Utils.isTrue(revocation.isStatus());
-	}
-
-	public boolean isAvailable() {
-		return Utils.isTrue(revocation.isAvailable());
-	}
-
 	public Date getThisUpdate() {
 		return revocation.getThisUpdate();
 	}
 
 	public Date getNextUpdate() {
 		return revocation.getNextUpdate();
-	}
-
-	public String getReason() {
-		return revocation.getReason();
-	}
-
-	public Date getRevocationDate() {
-		return revocation.getRevocationDate();
 	}
 
 	public Date getExpiredCertsOnCRL() {
@@ -104,24 +95,12 @@ public class RevocationWrapper extends AbstractTokenProxy {
 		return Utils.isTrue(revocation.isCertHashExtensionMatch());
 	}
 
-	public RevocationType getRevocationType() {
-		return revocation.getType();
-	}
-
 	public RevocationOriginType getOrigin() {
 		return revocation.getOrigin();
 	}
-	
-	/**
-	 * Returns true if the Revocation data was obtained from a signature container
-	 * @return true if the revocation origin is internal, false otherwise
-	 */
-	public boolean isInternalRevocationOrigin() {
-		return RevocationOriginType.INTERNAL_ATTRIBUTE_REVOCATION_VALUES.equals(getOrigin()) || 
-				RevocationOriginType.INTERNAL_REVOCATION_VALUES.equals(getOrigin()) || 
-				RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES.equals(getOrigin()) || 
-				RevocationOriginType.INTERNAL_DSS.equals(getOrigin()) || 
-				RevocationOriginType.INTERNAL_VRI.equals(getOrigin());
+
+	public RevocationType getRevocationType() {
+		return revocation.getType();
 	}
 
 	public List<XmlDigestAlgoAndValue> getDigestAlgoAndValues() {
@@ -132,8 +111,16 @@ public class RevocationWrapper extends AbstractTokenProxy {
 		return revocation.getBase64Encoded();
 	}
 	
-	public boolean isRevoked() {
-		return !isStatus() && getRevocationDate() != null;
+	/**
+	 * Returns true if the Revocation data was obtained from a signature container
+	 * @return true if the revocation origin is internal, false otherwise
+	 */
+	public boolean isInternalRevocationOrigin() {
+		RevocationOriginType originType = getOrigin();
+		if (originType != null) {
+			return getOrigin().isInternalOrigin();
+		}
+		return false;
 	}
 
 }

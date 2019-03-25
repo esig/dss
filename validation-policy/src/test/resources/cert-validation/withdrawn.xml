@@ -131,33 +131,37 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="18d60ffce5904ed1e2b3de04a7ba48bf7f904a34d6988962b964843649a334563b36cbfdce6aa8c34ae67c8acb33073fcf5d2fab96e4adf03d77e66ad2a4f4a9">
-                    <Origin>EXTERNAL</Origin>
-                    <Type>OCSP</Type>
-                    <SourceAddress>http://localhost:8080/qes-validation-web/ocsp/SDI-3.1.4</SourceAddress>
+                <CertificateRevocation Id="18d60ffce5904ed1e2b3de04a7ba48bf7f904a34d6988962b964843649a334563b36cbfdce6aa8c34ae67c8acb33073fcf5d2fab96e4adf03d77e66ad2a4f4a9">
                     <Available>true</Available>
                     <Status>true</Status>
-                    <ProductionDate>2018-06-27T08:37:00</ProductionDate>
-                    <ThisUpdate>2018-06-27T08:37:00</ThisUpdate>
-                    <DigestAlgoAndValues/>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376"/>
-                    <CertificateChain>
-                        <ChainItem Id="3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
             <Base64Encoded>MIIEgzCCA2ugAwIBAgIBCTANBgkqhkiG9w0BAQsFADBQMRIwEAYDVQQDDAlTREktMy4xLjQxFTATBgNVBAoMDFRTUC0zLjEgTmFtZTEWMBQGA1UECwwNQ0VSVCBGT1IgVEVTVDELMAkGA1UEBhMCTFUwHhcNMTcwNjI3MDgzMjMyWhcNMTkwNjI3MDgzMjMyWjBaMRgwFgYDVQQDDA9DRVJULVRFU1QtMy4xLjQxGTAXBgNVBAoMEFRMMyBPcmdhbml6YXRpb24xFjAUBgNVBAsMDUNFUlQgRk9SIFRFU1QxCzAJBgNVBAYTAkxVMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3bK7ldb/iYomIVXb4Z5QPQto+xHZOCi4qzOOQIcuRBZ9lb1wlvqHN9RbDnsBeRddhbaNwHph8JSvxS9jgQzpma0vLEictmRaLwFTix42Dy2UflRCjqvuIYIuqQf9uoU9VAoXIBkAolHij29jpwk8W5o+HXVf34neWts7619Wsg4DS8RQoF77JqoQBwguU7U4F/ZMJ3bZEK5dxXWqC81stMMhb+bnrOA4BvL7j3kHRkZxkVolL51iHvpEkT//vYNZng3KHWFIn5TqUSUtSJzo1isEOSxMsmcIMkTtcY72e4iJDLlDzLkOp5sRgE32vTmDm85YVuDKNBxra5/cWiFsvwIDAQABo4IBXDCCAVgwDgYDVR0PAQH/BAQDAgZAMDoGCCsGAQUFBwEDAQH/BCswKTAIBgYEAI5GAQEwCAYGBACORgEEMBMGBgQAjkYBBjAJBgcEAI5GAQYBMEsGA1UdHwREMEIwQKA+oDyGOmh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9xZXMtdmFsaWRhdGlvbi13ZWIvY3JsL1NESS0zLjEuNC5jcmwwgZ0GCCsGAQUFBwEBBIGQMIGNMEMGCCsGAQUFBzABhjdodHRwOi8vbG9jYWxob3N0OjgwODAvcWVzLXZhbGlkYXRpb24td2ViL29jc3AvU0RJLTMuMS40MEYGCCsGAQUFBzAChjpodHRwOi8vbG9jYWxob3N0OjgwODAvcWVzLXZhbGlkYXRpb24td2ViL2NydC9TREktMy4xLjQuY3J0MB0GA1UdDgQWBBSko4bHRnAaFRw1AUeonsWPxajJwjANBgkqhkiG9w0BAQsFAAOCAQEACX3OZ4ZtAotx4ffKXHrVmXesdOTXoy8nMi6FgRLq8He2UKOGcGOMMY23+aEkP3XxnH0ZZEJkOeYHZg/bPHd1CUoeS32+dDCeW4a6B40OH9g7ZMSvibpsyXoobf+xcNNCjdDfSsV58SzhpTYwAwqHCkX6u1WHRq2yQUAfbb4cW4iVc/lRFZXbOLFs3zcnKY/rloITwigBL1stvVykSRhjnBvPNN8GXn5Z/mDNDhx8szS3bnQvVx/SIPn/NqZScxn/gBMqo0TJsybT7n7hpBYBnY5oZKaz7GPRbg+CTtF2ncchcOjRuL9kWNk9FqeZG58gKrUNpTik/LFEROBaoTPQQw==</Base64Encoded>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="18d60ffce5904ed1e2b3de04a7ba48bf7f904a34d6988962b964843649a334563b36cbfdce6aa8c34ae67c8acb33073fcf5d2fab96e4adf03d77e66ad2a4f4a9">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://localhost:8080/qes-validation-web/ocsp/SDI-3.1.4</SourceAddress>
+            <ProductionDate>2018-06-27T08:37:00</ProductionDate>
+            <ThisUpdate>2018-06-27T08:37:00</ThisUpdate>
+            <DigestAlgoAndValues/>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376"/>
+            <CertificateChain>
+                <ChainItem Id="3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+    </UsedRevocations>
     <TrustedLists>
         <TrustedList>
             <CountryCode>LU</CountryCode>

@@ -31,40 +31,38 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class CertificateOnHoldCheck extends ChainItem<XmlSubXCV> {
 
-	private final CertificateWrapper certificate;
+	private final CertificateRevocationWrapper certificateRevocation;
 	private final Date currentTime;
 
-	public CertificateOnHoldCheck(XmlSubXCV result, CertificateWrapper certificate, Date currentTime, LevelConstraint constraint) {
+	public CertificateOnHoldCheck(XmlSubXCV result, CertificateRevocationWrapper certificateRevocation, Date currentTime, LevelConstraint constraint) {
 		super(result, constraint);
-		this.certificate = certificate;
+		this.certificateRevocation = certificateRevocation;
 		this.currentTime = currentTime;
 	}
 
 	@Override
 	protected boolean process() {
-		RevocationWrapper revocationData = certificate.getLatestRevocationData();
-		boolean isOnHold = (revocationData != null) && !revocationData.isStatus() && CRLReasonEnum.certificateHold.name().equals(revocationData.getReason());
+		boolean isOnHold = (certificateRevocation != null) && !certificateRevocation.isStatus() && 
+				CRLReasonEnum.certificateHold.name().equals(certificateRevocation.getReason());
 		if (isOnHold) {
-			isOnHold = revocationData.getRevocationDate() != null && currentTime.after(revocationData.getRevocationDate());
+			isOnHold = certificateRevocation.getRevocationDate() != null && currentTime.after(certificateRevocation.getRevocationDate());
 		}
 		return !isOnHold;
 	}
 
 	@Override
 	protected String getAdditionalInfo() {
-		RevocationWrapper revocationData = certificate.getLatestRevocationData();
-		if (revocationData != null && revocationData.getRevocationDate() != null) {
+		if (certificateRevocation != null && certificateRevocation.getRevocationDate() != null) {
 			SimpleDateFormat sdf = new SimpleDateFormat(AdditionalInfo.DATE_FORMAT);
 			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-			String revocationDateStr = sdf.format(revocationData.getRevocationDate());
-			Object[] params = new Object[] { revocationData.getReason(), revocationDateStr };
+			String revocationDateStr = sdf.format(certificateRevocation.getRevocationDate());
+			Object[] params = new Object[] { certificateRevocation.getReason(), revocationDateStr };
 			return MessageFormat.format(AdditionalInfo.REVOCATION, params);
 		}
 		return null;

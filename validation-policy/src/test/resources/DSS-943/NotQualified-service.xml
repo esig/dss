@@ -160,85 +160,93 @@
             <QCTypes />
             <TrustedServiceProviders />
 			<Revocations>
-	            <Revocation Id="AC40244C9404372BD81970D28266FB99021557A64101DA5D92232BCF1A9E7326">
-	                <Origin>EXTERNAL</Origin>
-	                <Type>OCSP</Type>
-	                <SourceAddress>http://ocsp.firmadigitale.bancaditalia.it/ocsp</SourceAddress>
+	            <CertificateRevocation Id="AC40244C9404372BD81970D28266FB99021557A64101DA5D92232BCF1A9E7326">
 	                <Available>true</Available>
 	                <Status>true</Status>
-	                <ProductionDate>2016-07-19T11:12:49</ProductionDate>
-	                <ThisUpdate>2016-07-19T09:03:20</ThisUpdate>
-	                <NextUpdate>2016-07-20T10:03:20</NextUpdate>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
-	                <CertificateChain>
-	                    <ChainItem Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
-	                        <Source>OCSP_RESPONSE</Source>
-	                    </ChainItem>
-	                    <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	            </Revocation>
-	            <Revocation Id="C088D84D6BD4740306551C0780A9323896071255EF5509334E70FE593FEF14AC">
-	                <Origin>EXTERNAL</Origin>
-	                <Type>OCSP</Type>
-	                <SourceAddress>http://ocsp.firmadigitale.bancaditalia.it/ocsp</SourceAddress>
+	            </CertificateRevocation>
+	            <CertificateRevocation Id="C088D84D6BD4740306551C0780A9323896071255EF5509334E70FE593FEF14AC">
 	                <Available>true</Available>
 	                <Status>true</Status>
-	                <ProductionDate>2016-07-19T11:18:22</ProductionDate>
-	                <ThisUpdate>2016-07-19T09:03:20</ThisUpdate>
-	                <NextUpdate>2016-07-20T10:03:20</NextUpdate>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
-	                <CertificateChain>
-	                    <ChainItem Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
-	                        <Source>OCSP_RESPONSE</Source>
-	                    </ChainItem>
-	                    <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	            </Revocation>
-	            <Revocation Id="5AA34C169A86F12918C17B226D96475B97B6F1B1E99EA04773CB5330563A9717">
-	                <Origin>EXTERNAL</Origin>
-	                <Type>OCSP</Type>
-	                <SourceAddress>http://ocsp.firmadigitale.bancaditalia.it/ocsp</SourceAddress>
+	            </CertificateRevocation>
+	            <CertificateRevocation Id="5AA34C169A86F12918C17B226D96475B97B6F1B1E99EA04773CB5330563A9717">
 	                <Available>true</Available>
 	                <Status>true</Status>
-	                <ProductionDate>2016-07-19T11:13:48</ProductionDate>
-	                <ThisUpdate>2016-07-19T09:03:20</ThisUpdate>
-	                <NextUpdate>2016-07-20T10:03:20</NextUpdate>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
-	                <CertificateChain>
-	                    <ChainItem Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
-	                        <Source>OCSP_RESPONSE</Source>
-	                    </ChainItem>
-	                    <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	            </Revocation>
+	            </CertificateRevocation>
 	        </Revocations>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="AC40244C9404372BD81970D28266FB99021557A64101DA5D92232BCF1A9E7326">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.firmadigitale.bancaditalia.it/ocsp</SourceAddress>
+            <ProductionDate>2016-07-19T11:12:49</ProductionDate>
+            <ThisUpdate>2016-07-19T09:03:20</ThisUpdate>
+            <NextUpdate>2016-07-20T10:03:20</NextUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
+            <CertificateChain>
+                <ChainItem Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
+                    <Source>OCSP_RESPONSE</Source>
+                </ChainItem>
+                <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+        <Revocation Id="C088D84D6BD4740306551C0780A9323896071255EF5509334E70FE593FEF14AC">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.firmadigitale.bancaditalia.it/ocsp</SourceAddress>
+            <ProductionDate>2016-07-19T11:18:22</ProductionDate>
+            <ThisUpdate>2016-07-19T09:03:20</ThisUpdate>
+            <NextUpdate>2016-07-20T10:03:20</NextUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
+            <CertificateChain>
+                <ChainItem Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
+                    <Source>OCSP_RESPONSE</Source>
+                </ChainItem>
+                <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+        <Revocation Id="5AA34C169A86F12918C17B226D96475B97B6F1B1E99EA04773CB5330563A9717">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.firmadigitale.bancaditalia.it/ocsp</SourceAddress>
+            <ProductionDate>2016-07-19T11:13:48</ProductionDate>
+            <ThisUpdate>2016-07-19T09:03:20</ThisUpdate>
+            <NextUpdate>2016-07-20T10:03:20</NextUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
+            <CertificateChain>
+                <ChainItem Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
+                    <Source>OCSP_RESPONSE</Source>
+                </ChainItem>
+                <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+    </UsedRevocations>
 </DiagnosticData>

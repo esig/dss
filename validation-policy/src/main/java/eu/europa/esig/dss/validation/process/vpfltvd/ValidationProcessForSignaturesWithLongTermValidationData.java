@@ -57,6 +57,7 @@ import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDateAfterB
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.SigningTimeAttributePresentCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampCoherenceOrderCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampDelayCheck;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
@@ -299,7 +300,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	
 	private ChainItem<XmlValidationProcessLongTermData> revocationIsFresh(Date bestSignatureTime, Context currentContext) {
 		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
-		RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(signingCertificate.getLatestRevocationData(), bestSignatureTime, 
+		CertificateRevocationWrapper certificateRevocation = diagnosticData.getLatestRevocationDataForCertificate(signingCertificate);
+		RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(certificateRevocation, bestSignatureTime, 
 				currentContext, SubContext.SIGNING_CERT, policy);
 		return checkRevocationFreshnessCheckerResult(rfc.execute(), currentContext, SubContext.SIGNING_CERT);
 	}
@@ -327,7 +329,9 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			if ((SubContext.SIGNING_CERT.equals(subContext) && SubIndication.REVOKED_NO_POE.equals(subIndication)) ||
 					SubContext.CA_CERTIFICATE.equals(subContext) && SubIndication.REVOKED_CA_NO_POE.equals(subIndication)) {
 				CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateId);
-				item = item.setNextItem(new RevocationDateAfterBestSignatureTimeCheck(result, certificate, bestSignatureTime, constraint, subContext));
+				CertificateRevocationWrapper certificateRevocation = diagnosticData.getLatestRevocationDataForCertificate(certificate);
+				item = item.setNextItem(new RevocationDateAfterBestSignatureTimeCheck(result, certificateRevocation, 
+						bestSignatureTime, constraint, subContext));
 			}
 		}
 		return item;

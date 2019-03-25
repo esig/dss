@@ -87,8 +87,8 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 			item = item.setNextItem(trustedServiceWithExpectedStatus());
 
-			SubX509CertificateValidation certificateValidation = new SubX509CertificateValidation(currentCertificate, validationDate, context,
-					SubContext.SIGNING_CERT, validationPolicy);
+			SubX509CertificateValidation certificateValidation = new SubX509CertificateValidation(diagnosticData, currentCertificate, validationDate, 
+					context, SubContext.SIGNING_CERT, validationPolicy);
 			XmlSubXCV subXCV = certificateValidation.execute();
 			result.getSubXCV().add(subXCV);
 
@@ -103,7 +103,8 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 				for (XmlChainItem chainCertificate : certificateChainList) {
 					if (!trustAnchorReached) {
 						CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(chainCertificate.getId());
-						certificateValidation = new SubX509CertificateValidation(certificate, lastDate, context, SubContext.CA_CERTIFICATE, validationPolicy);
+						certificateValidation = new SubX509CertificateValidation(diagnosticData, certificate, lastDate, 
+								context, SubContext.CA_CERTIFICATE, validationPolicy);
 						subXCV = certificateValidation.execute();
 						result.getSubXCV().add(subXCV);
 

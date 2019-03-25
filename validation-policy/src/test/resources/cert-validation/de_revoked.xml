@@ -224,34 +224,12 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="0e9b5c373afec1ced5723fcd9231f793bb330ffbf2b94bb8698301c90405b9bfcfa17dcb6fe2588a8209a374c1e685a7ecd2068f975bfe1d4ba9234a521e4e36">
-                    <Origin>EXTERNAL</Origin>
-                    <Type>OCSP</Type>
-                    <SourceAddress>http://qual.ocsp.d-trust.net</SourceAddress>
+                <CertificateRevocation Id="0e9b5c373afec1ced5723fcd9231f793bb330ffbf2b94bb8698301c90405b9bfcfa17dcb6fe2588a8209a374c1e685a7ecd2068f975bfe1d4ba9234a521e4e36">
                     <Available>true</Available>
                     <Status>false</Status>
                     <Reason>unspecified</Reason>
-                    <ProductionDate>2018-02-09T07:03:45</ProductionDate>
-                    <ThisUpdate>2018-02-09T07:03:45</ThisUpdate>
                     <RevocationDate>2014-12-30T13:28:24</RevocationDate>
-                    <DigestAlgoAndValues/>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="5C7199AD1BD04360237812292EAFB2FC010C3C7681831A99FED2C9E0FE567C8B"/>
-                    <CertificateChain>
-                        <ChainItem Id="5C7199AD1BD04360237812292EAFB2FC010C3C7681831A99FED2C9E0FE567C8B">
-                            <Source>OCSP_RESPONSE</Source>
-                        </ChainItem>
-                        <ChainItem Id="454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
             <Base64Encoded>MIIFLjCCBBagAwIBAgIDDjK2MA0GCSqGSIb3DQEBCwUAME0xCzAJBgNVBAYTAkRFMRUwEwYDVQQKDAxELVRydXN0IEdtYkgxJzAlBgNVBAMMHkQtVFJVU1QgUXVhbGlmaWVkIENBIDEgMjAwODpQTjAeFw0xMTExMTcxMzE3MjdaFw0xNTExMjcxMzE3MjdaMIGRMQswCQYDVQQGEwJERTEVMBMGA1UECgwMc2VjcnlwdCBHbWJIMRkwFwYDVQQDDBBNYXR0aGlhcyBTY2hsZWRlMR8wHQYDVQQqDBZNYXR0aGlhcyBKb2hhbm4gU3RlZmFuMRAwDgYDVQQEDAdTY2hsZWRlMR0wGwYDVQQFExREVFJXRTMyMTUzMDI0OTU2MDI0NTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAIETmF3TMfrg0thKrLWHQTHQzgIjdShFz6ti7D0WP2sLQlbyhpYGNECGRDmfiKTeFBSpkAbQQROuwFCAJ3wuGq3gaTHg0NtGHotco8RzB3njjOuEO1ZfjJeoYP4rBuqhtGejz5fo0Xyqv8Oyoc5ZUGd4wohRCRjfeN5cEKENU0KpTDMqlS5KYeHlMMlNkjO2+96G9YJiUBTLqBQSlL/1SR0GUGlw19vLw25xDy68t1aVtWzPtQ08U/AmvBdYWRwSGb/vb+wox4PXIfxHW+eRNr/Rsh25FhUW1B9TYX4AyWoE8DFz/OJjYlTHtgK4u+vP21NBuF/pqA9WBD1ekS2v/NsCAwC5BaOCAdAwggHMMB8GA1UdIwQYMBaAFHexY8VjZaUsc+n1pI8dSnVMgft9MCUGCCsGAQUFBwEDBBkwFzAIBgYEAI5GAQEwCwYGBACORgEDAgEeMDgGCCsGAQUFBwEBBCwwKjAoBggrBgEFBQcwAYYcaHR0cDovL3F1YWwub2NzcC5kLXRydXN0Lm5ldDAXBgNVHSAEEDAOMAwGCisGAQQBpTQCHwEwgcoGA1UdHwSBwjCBvzCBvKCBuaCBtoZ4bGRhcDovL2RpcmVjdG9yeS5kLXRydXN0Lm5ldC9DTj1ELVRSVVNUJTIwUXVhbGlmaWVkJTIwQ0ElMjAxJTIwMjAwOCUzQVBOLE89RC1UcnVzdCUyMEdtYkgsQz1ERT9jZXJ0aWZpY2F0ZXJldm9jYXRpb25saXN0hjpodHRwOi8vd3d3LmQtdHJ1c3QubmV0L2NybC9kLXRydXN0X3F1YWxpZmllZF9jYV8xXzIwMDguY3JsMDMGA1UdEgQsMCqBEGluZm9AZC10cnVzdC5uZXSGFmh0dHA6Ly93d3cuZC10cnVzdC5uZXQwHQYDVR0OBBYEFBSuVkfarU8Kuahe92clYaKhf73rMA4GA1UdDwEB/wQEAwIGQDANBgkqhkiG9w0BAQsFAAOCAQEAFYsQ4qAP/Ki0wp5vGP0GIDp0qCcJC9J0y9sZdVveneJ7TOp/mpsjrQaXaW9ES1oYPUS0JR6k/7Fyoyk90doc0wt1wbNKdD7V0xU7RXt0WsiLDSf3VLv4s6Z5spd4Yr4Gn52DEcT8xnBnUGR/GvOjnLQxxNv7PA3RpPKBkP2czH0SS3chEg3yyjkgEaoAYizasR/tkSrelGr6h+/5L8plMtM/o0P3eHU0j7oQt+7tdxMkCG2Xw23mnUwTBkRF6753GlgBfKlYcLjdGRWv9+T4BUeV8JUiu4z8EUOPL5Cu1A26+APDpOMxRsVi83gwxnahL+yVJiu7P2gEfMnLDUlJFQ==</Base64Encoded>
         </Certificate>
@@ -330,6 +308,32 @@
             <Base64Encoded>MIIFAzCCA+ugAwIBAgIDB9wxMA0GCSqGSIb3DQEBCwUAMFIxCzAJBgNVBAYTAkRFMRUwEwYDVQQKDAxELVRydXN0IEdtYkgxLDAqBgNVBAMMI0QtVFJVU1QgUXVhbGlmaWVkIFJvb3QgQ0EgMSAyMDA4OlBOMB4XDTA4MDcyNDE2NTQxMVoXDTEzMDcyNDE1MzAwMFowTTELMAkGA1UEBhMCREUxFTATBgNVBAoMDEQtVHJ1c3QgR21iSDEnMCUGA1UEAwweRC1UUlVTVCBRdWFsaWZpZWQgQ0EgMSAyMDA4OlBOMIIBJDANBgkqhkiG9w0BAQEFAAOCAREAMIIBDAKCAQEA75dOYYcc+7whvO9TghzZxvpu1jKDybqleE91IBzfM9uwaM9uMNDbOaefPK5NvibSgzp0ASns94o9Y1geUVJLp5dP11tjx+up4etREfrsyjeqMdfLR4+UT149/mTjHZPSFnbOgtT3CP1czzKWsZ/yDsCePhQ8bGXLttyxPSkJTSfhmIGvBHdYtlxj3xq6EW3SjLQQLn1UbDBZBCpP9Uyx3jWD6Z4YUfOPX4DrQn6h0X2BhV7AvrotpfuIXDOoOiX662CVvwqISWmIUwSJ6tJJKEB4uS1WHXPdnrnk85SePfnFpipnwJ7/Php+wf4KNg1V1xr8c6QHpGVJoUu/qiDgVQIFALsUjUmjggHjMIIB3zAfBgNVHSMEGDAWgBRn4GVW/H0lN8W/7XiIKvD68kfAOjAYBggrBgEFBQcBAwQMMAowCAYGBACORgEBMDgGCCsGAQUFBwEBBCwwKjAoBggrBgEFBQcwAYYcaHR0cDovL3F1YWwub2NzcC5kLXRydXN0Lm5ldDAXBgNVHSAEEDAOMAwGCisGAQQBpTQCHwEwMwYDVR0RBCwwKoEQaW5mb0BkLXRydXN0Lm5ldIYWaHR0cDovL3d3dy5kLXRydXN0Lm5ldDCB1gYDVR0fBIHOMIHLMIHIoIHFoIHChn9sZGFwOi8vZGlyZWN0b3J5LmQtdHJ1c3QubmV0L0NOPUQtVFJVU1QlMjBRdWFsaWZpZWQlMjBSb290JTIwQ0ElMjAxJTIwMjAwOCUzQVBOLE89RC1UcnVzdCUyMEdtYkgsQz1ERT9jZXJ0aWZpY2F0ZXJldm9jYXRpb25saXN0hj9odHRwOi8vd3d3LmQtdHJ1c3QubmV0L2NybC9kLXRydXN0X3F1YWxpZmllZF9yb290X2NhXzFfMjAwOC5jcmwwHQYDVR0OBBYEFHexY8VjZaUsc+n1pI8dSnVMgft9MA4GA1UdDwEB/wQEAwIBBjASBgNVHRMBAf8ECDAGAQH/AgEAMA0GCSqGSIb3DQEBCwUAA4IBAQBfonGItG9cFyWQfd1mbDeTEPHulMUqi8YEufpIG3gysIcKXgn8FLaqlPqD22gL+Z6BgWRELhIKYCne024wbnpF5UgHHhCkt+iVjl65mH8BPgUcPseOQN8mnYR8BmvkTGBvUBjy2hhObwUHuj9LAWz3qG2w9f6zojA6EqxDu6VQEpq5EIrTLuvFbPI9gMMr15Zc6H9G+6uNct3XWglcTQ60h4Tt6Qf1a0aHK75zLmCZGV4+pKUkReL8nG8TIVqJ7/pF5nf2M+DBjPs9dTYA3rUIDdzy3HyeM/YWascJ42KjgeIUZhENXLQmJq3YBDpW0Vm4xQf15p2webrX81opBATC</Base64Encoded>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+    	<Revocation Id="0e9b5c373afec1ced5723fcd9231f793bb330ffbf2b94bb8698301c90405b9bfcfa17dcb6fe2588a8209a374c1e685a7ecd2068f975bfe1d4ba9234a521e4e36">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://qual.ocsp.d-trust.net</SourceAddress>
+            <ProductionDate>2018-02-09T07:03:45</ProductionDate>
+            <ThisUpdate>2018-02-09T07:03:45</ThisUpdate>
+            <DigestAlgoAndValues/>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="5C7199AD1BD04360237812292EAFB2FC010C3C7681831A99FED2C9E0FE567C8B"/>
+            <CertificateChain>
+                <ChainItem Id="5C7199AD1BD04360237812292EAFB2FC010C3C7681831A99FED2C9E0FE567C8B">
+                    <Source>OCSP_RESPONSE</Source>
+                </ChainItem>
+                <ChainItem Id="454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+    </UsedRevocations>
     <TrustedLists>
         <TrustedList>
             <CountryCode>DE</CountryCode>

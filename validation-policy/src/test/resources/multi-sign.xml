@@ -431,34 +431,38 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="d30fa7d4fa90904884ddeed35b989da84d82d742580e2625d56625c07c572ff8c3e145f6a7765097e9f92aaff292e4f09bad7e2613dc2b6448f607c03e5ada91">
-                    <Origin>EXTERNAL</Origin>
-                    <Type>CRL</Type>
-                    <SourceAddress>http://193.178.164.4/repozytorium/ca1_2015.crl</SourceAddress>
+                <CertificateRevocation Id="d30fa7d4fa90904884ddeed35b989da84d82d742580e2625d56625c07c572ff8c3e145f6a7765097e9f92aaff292e4f09bad7e2613dc2b6448f607c03e5ada91">
                     <Available>true</Available>
                     <Status>true</Status>
-                    <ProductionDate>2017-08-03T19:39:30</ProductionDate>
-                    <ThisUpdate>2017-08-03T19:39:30</ThisUpdate>
-                    <NextUpdate>2017-08-04T07:39:30</NextUpdate>
-                    <DigestAlgoAndValues/>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86"/>
-                    <CertificateChain>
-                        <ChainItem Id="08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
             <Base64Encoded>MIIF3jCCBMagAwIBAgIIYD1+e56DT64wDQYJKoZIhvcNAQEFBQAwfzELMAkGA1UEBhMCUEwxODA2BgNVBAoML1BvbHNrYSBXeXR3w7NybmlhIFBhcGllcsOzdyBXYXJ0b8WbY2lvd3ljaCBTLkEuMRQwEgYDVQQFEwtOciB3cGlzdTogMzEgMB4GA1UEAwwXUFdQVyAtIGt3YWxpZmlrb3dhbnkgQ0EwHhcNMTUxMTAzMjMwMDAwWhcNMTcxMTAyMjMwMDAwWjCCAQ8xCzAJBgNVBAYTAlBMMRIwEAYDVQQIDAnFm2zEhXNraWUxETAPBgNVBAcMCEthdG93aWNlMU0wSwYDVQQKDERaYWvFgmFkIEVsZWt0cm9uaWN6bmVqIFRlY2huaWtpIE9ibGljemVuaW93ZWogdyBLYXRvd2ljYWNoIFNwIHogby5vLjESMBAGA1UEBAwJS2FsYcWEc2tpMRAwDgYDVQQqDAdNaWNoYcWCMRswGQYDVQQFExJQRVNFTDogNjYwNDI2MTQwNzYxDzANBgNVBAMMBm1pa2FsYTElMCMGA1UEEDAcDAlPd29jb3dhIDEMDzQwLTE1OCBLYXRvd2ljZTEPMA0GA1UEQQwGbWlrYWxhMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv8tbpEcjhJMokCIOHSzX4hb+9Vbl1j+2vrHclRc8JuzOP/2kpJDTzg/8xsntBGqQ0YPj+dXX1RpFAKS5a0X2udkaOYAD0enCxXBzdm/+NmrQGuKjmv7jzrzAgMsM4U6gUzY+GoVO93hoCCYTPYDH6cGIC3UzRY3sBgkMRYEBL7x46aYKwICmQI6ZxaT4gqRDeJPbTSc0bclk0GbcUM9UG9v87WpUnn9JDH3WdfChpV1XMWXIzoHGp6yigyCnUmhr2dFI0GFotUqUXlFIPRnixpHI7rB7FUO4Vk2TJgC9nMCUP46r5skeZ3DETNJSpiLRS60C1J7NuCe9+TeDsW3dxQIDAQABo4IByjCCAcYwOAYIKwYBBQUHAQMBAf8EKTAnMBUGBgQAjkYBAjALEwNQTE4CAQACAQAwDgYJKoRoAWUDAQECCgECMCQGA1UdEQQdMBuBGWthbGFuc2tpbUB6ZXRva2F0b3dpY2UucGwwDAYDVR0TAQH/BAIwADAfBgNVHSMEGDAWgBTnANNndSJDwjHz2krzfS+UVF4pWzCCASMGA1UdIAEB/wSCARcwggETMIIBDwYLKoRoAYb3GAoBAQAwgf8wgcMGCCsGAQUFBwICMIG2DIGzQ2VydHlmaWthdCBwb3dzdGHFgiB3IG9wYXJjaXUgbyBQb2xpdHlraSBQQ0NFIGRsYSBDZXJ0eWZpa2F0w7N3IEt3YWxpZmlrb3dhbnljaC4gVHJlxZvEhyBQb2xpdHlraSBvcmF6IFJlZ3VsYW1pbiBQQ0NFIHpuYWpkdWplIHNpxJkgcG9kIGFkcmVzZW0gaHR0cDovL3d3dy5zaWdpbGx1bS5wbC9yZXBvenl0b3JpdW0wNwYIKwYBBQUHAgEWK2h0dHA6Ly93d3cuc2lnaWxsdW0ucGwvc2lnLWNtc3dzL3BhZ2UvP0Q7ODgwDgYDVR0PAQH/BAQDAgZAMA0GCSqGSIb3DQEBBQUAA4IBAQCWtDpsRRguXluA43VfY79xFhJyNoFyLHQWoY13jTXGBSsuSpvQODPJesplZSwlxKvw16R9O6tYGkr1ltwzNxyhAdnfsnx8tXSaYj1IIrJx42REfQ7+L9xgAjBV/1Cg1BRFhw6V1tWJDFexkhTJPpE8xQGNgXj/FZLt/VxoGq3rTSM8ZLdmPzfKrAAjn7tauL0KWeM92uw/TeHHgsprgsBXIHbEftFTyyvqjIFQomShF5C3gaZCCjb5UKL8wIk470dZFypgL1jUFnOPigAiNRxmKgKnNJdcPDMVblHy4IpOaVxO+KUJ8I2bwL0PvewkygtJ2AWyfT2vhddiDqLajMsT</Base64Encoded>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="d30fa7d4fa90904884ddeed35b989da84d82d742580e2625d56625c07c572ff8c3e145f6a7765097e9f92aaff292e4f09bad7e2613dc2b6448f607c03e5ada91">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://193.178.164.4/repozytorium/ca1_2015.crl</SourceAddress>
+            <ProductionDate>2017-08-03T19:39:30</ProductionDate>
+            <ThisUpdate>2017-08-03T19:39:30</ThisUpdate>
+            <NextUpdate>2017-08-04T07:39:30</NextUpdate>
+            <DigestAlgoAndValues/>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86"/>
+            <CertificateChain>
+                <ChainItem Id="08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+        </Revocation>
+    </UsedRevocations>
     <TrustedLists>
         <TrustedList>
             <CountryCode>PL</CountryCode>

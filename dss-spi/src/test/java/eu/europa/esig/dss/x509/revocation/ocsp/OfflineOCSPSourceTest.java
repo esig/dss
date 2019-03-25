@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.x509.revocation.ocsp;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -31,7 +31,6 @@ import java.io.File;
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.revocation.ocsp.ExternalResourcesOCSPSource;
@@ -86,7 +85,7 @@ public class OfflineOCSPSourceTest {
 		assertNotNull(ocspToken.getBasicOCSPResp());
 		assertNotNull(ocspToken.getCertId());
 		assertNull(ocspToken.getExpiredCertsOnCRL());
-		assertNull(ocspToken.getCertHash());
+		assertFalse(ocspToken.isCertHashPresent());
 		assertNotNull(ocspToken.getReason());
 	}
 
@@ -105,12 +104,8 @@ public class OfflineOCSPSourceTest {
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getRevocationDate());
 
-		Digest ocspCertHash = ocspToken.getCertHash();
-		assertNotNull(ocspCertHash);
-		assertNotNull(ocspCertHash.getAlgorithm());
-		assertNotNull(ocspCertHash.getValue());
-
-		assertArrayEquals(ocspCertHash.getValue(), user.getDigest(ocspCertHash.getAlgorithm()));
+		assertTrue(ocspToken.isCertHashPresent());
+		assertTrue(ocspToken.isCertHashMatch());
 	}
 
 }

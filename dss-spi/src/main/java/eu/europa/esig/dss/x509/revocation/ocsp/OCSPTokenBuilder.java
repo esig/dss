@@ -123,7 +123,7 @@ public class OCSPTokenBuilder {
 		}
 		ocspToken.setAvailable(available);
 		ocspToken.setResponseStatus(responseStatus);
-		ocspToken.setRelatedCertificateID(certificateToken.getDSSIdAsString());
+		ocspToken.setRelatedCertificate(certificateToken);
 		
 		ocspToken.setBasicOCSPResp(basicOCSPResp);
 		if (nonce != null) {
