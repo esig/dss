@@ -29,9 +29,11 @@ import java.util.List;
 import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
@@ -433,6 +435,19 @@ public class SignatureWrapper extends AbstractTokenProxy {
 			return pdfSignatureDictionary.getSignatureByteRange();
 		}
 		return null;
+	}
+
+	public List<String> getFoundCertificateIds(XmlCertificateLocationType locationType) {
+		List<String> result = new ArrayList<String>();
+		List<XmlFoundCertificate> foundCertificates = signature.getFoundCertificates();
+		if (Utils.isCollectionNotEmpty(foundCertificates)) {
+			for (XmlFoundCertificate xmlFoundCertificate : foundCertificates) {
+				if (locationType.equals(xmlFoundCertificate.getLocation())) {
+					result.add(xmlFoundCertificate.getCertId());
+				}
+			}
+		}
+		return result;
 	}
 
 }

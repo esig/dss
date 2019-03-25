@@ -55,6 +55,7 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
@@ -62,6 +63,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlManifestFile;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
@@ -89,6 +91,7 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.x509.KeyUsageBit;
 import eu.europa.esig.dss.x509.RevocationToken;
+import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
@@ -405,6 +408,8 @@ public class DiagnosticDataBuilder {
 
 		xmlSignature.setTimestamps(getXmlTimestamps(signature));
 
+		xmlSignature.setFoundCertificates(getXmlFoundCertificates(signature));
+
 		xmlSignature.setSignatureScopes(getXmlSignatureScopes(signature.getSignatureScopes()));
 
 		return xmlSignature;
@@ -656,6 +661,40 @@ public class DiagnosticDataBuilder {
 		xmlDistinguishedName.setFormat(x500PrincipalFormat);
 		xmlDistinguishedName.setValue(X500PrincipalName.getName(x500PrincipalFormat));
 		return xmlDistinguishedName;
+	}
+
+	private List<XmlFoundCertificate> getXmlFoundCertificates(AdvancedSignature signature) {
+		List<XmlFoundCertificate> foundCertificates = new ArrayList<XmlFoundCertificate>();
+		SignatureCertificateSource certificateSource = signature.getCertificateSource();
+		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.KEY_INFO, certificateSource.getKeyInfoCertificates()));
+		// TODO
+		// foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.SIGNING_CERTIFICATE,
+		// certificateSource.getSigningCertificateValues()));
+		// foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.COMPLETE_CERTIFICATE_REFS,
+		// certificateSource.getCompleteCertificateRefs()));
+		// foundCertificates
+		// .addAll(getXmlFoundCertificates(XmlCertificateLocationType.ATTRIBUTE_CERTIFICATE_REFS,
+		// certificateSource.getAttributeCertificateRefs()));
+		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.CERTIFICATE_VALUES, certificateSource.getCertificateValues()));
+		foundCertificates
+				.addAll(getXmlFoundCertificates(XmlCertificateLocationType.ATTR_AUTORITIES_CERT_VALUES, certificateSource.getAttrAuthoritiesCertValues()));
+		foundCertificates.addAll(
+				getXmlFoundCertificates(XmlCertificateLocationType.TIMESTAMP_DATA_VALIDATION, certificateSource.getTimeStampValidationDataCertValues()));
+		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.DSS, certificateSource.getDSSDictionaryCertValues()));
+		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.VRI, certificateSource.getVRIDictionaryCertValues()));
+
+		return foundCertificates;
+	}
+
+	private List<XmlFoundCertificate> getXmlFoundCertificates(XmlCertificateLocationType location, List<CertificateToken> certs) {
+		List<XmlFoundCertificate> result = new ArrayList<XmlFoundCertificate>();
+		for (CertificateToken certificateToken : certs) {
+			XmlFoundCertificate xfc = new XmlFoundCertificate();
+			xfc.setLocation(location);
+			xfc.setCertId(certificateToken.getDSSIdAsString());
+			result.add(xfc);
+		}
+		return result;
 	}
 
 	private List<XmlTimestamp> getXmlTimestamps(AdvancedSignature signature) {
