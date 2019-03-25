@@ -7,6 +7,7 @@ import java.util.List;
 import javax.xml.bind.JAXBElement;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.RevocationType;
@@ -20,9 +21,13 @@ import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.TimestampType;
+import eu.europa.esig.jaxb.validationreport.AttributeBaseType;
 import eu.europa.esig.jaxb.validationreport.ObjectFactory;
+import eu.europa.esig.jaxb.validationreport.SACertIDListType;
 import eu.europa.esig.jaxb.validationreport.SACommitmentTypeIndicationType;
 import eu.europa.esig.jaxb.validationreport.SAContactInfoType;
+import eu.europa.esig.jaxb.validationreport.SADSSType;
+import eu.europa.esig.jaxb.validationreport.SADataObjectFormatType;
 import eu.europa.esig.jaxb.validationreport.SAFilterType;
 import eu.europa.esig.jaxb.validationreport.SAMessageDigestType;
 import eu.europa.esig.jaxb.validationreport.SANameType;
@@ -33,6 +38,7 @@ import eu.europa.esig.jaxb.validationreport.SASignerRoleType;
 import eu.europa.esig.jaxb.validationreport.SASigningTimeType;
 import eu.europa.esig.jaxb.validationreport.SASubFilterType;
 import eu.europa.esig.jaxb.validationreport.SATimestampType;
+import eu.europa.esig.jaxb.validationreport.SAVRIType;
 import eu.europa.esig.jaxb.validationreport.SignatureAttributesType;
 import eu.europa.esig.jaxb.validationreport.SignatureIdentifierType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationProcessType;
@@ -208,7 +214,9 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="SigningTime" type="{http://uri.etsi.org/19102/v1.2.1#}SASigningTimeType"/&gt;
 		addSigningTime(sigAttributes, sigWrapper);
 		// &lt;element name="SigningCertificate" type="{http://uri.etsi.org/19102/v1.2.1#}SACertIDListType"/&gt;
+		addSigningCertificate(sigAttributes, sigWrapper);
 		// &lt;element name="DataObjectFormat" type="{http://uri.etsi.org/19102/v1.2.1#}SADataObjectFormatType"/&gt;
+		addDataObjectFormat(sigAttributes, sigWrapper);
 		// &lt;element name="CommitmentTypeIndication" type="{http://uri.etsi.org/19102/v1.2.1#}SACommitmentTypeIndicationType"/&gt;
 		addCommitmentTypeIndications(sigAttributes, sigWrapper);
 		// &lt;element name="AllDataObjectsTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
@@ -226,25 +234,32 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="SignatureTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
 		addTimestamps(sigAttributes, sigWrapper, TimestampType.SIGNATURE_TIMESTAMP);
 		// &lt;element name="CompleteCertificateRefs" type="{http://uri.etsi.org/19102/v1.2.1#}SACertIDListType"/&gt;
+		addCompleteCertificateRefs(sigAttributes, sigWrapper);
 		// &lt;element name="CompleteRevocationRefs" type="{http://uri.etsi.org/19102/v1.2.1#}SARevIDListType"/&gt;
 		// &lt;element name="AttributeCertificateRefs" type="{http://uri.etsi.org/19102/v1.2.1#}SACertIDListType"/&gt;
+		addAttributeCertificateRefs(sigAttributes, sigWrapper);
 		// &lt;element name="AttributeRevocationRefs" type="{http://uri.etsi.org/19102/v1.2.1#}SARevIDListType"/&gt;
 		// &lt;element name="SigAndRefsTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
 		addTimestamps(sigAttributes, sigWrapper, TimestampType.VALIDATION_DATA_TIMESTAMP);
 		// &lt;element name="RefsOnlyTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
 		addTimestamps(sigAttributes, sigWrapper, TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
 		// &lt;element name="CertificateValues" type="{http://uri.etsi.org/19102/v1.2.1#}AttributeBaseType"/&gt;
+		addCertificateValues(sigAttributes, sigWrapper);
 		// &lt;element name="RevocationValues" type="{http://uri.etsi.org/19102/v1.2.1#}AttributeBaseType"/&gt;
 		// &lt;element name="AttrAuthoritiesCertValues" type="{http://uri.etsi.org/19102/v1.2.1#}AttributeBaseType"/&gt;
+		addAttrAuthoritiesCertValues(sigAttributes, sigWrapper);
 		// &lt;element name="AttributeRevocationValues" type="{http://uri.etsi.org/19102/v1.2.1#}AttributeBaseType"/&gt;
 		// &lt;element name="TimeStampValidationData" type="{http://uri.etsi.org/19102/v1.2.1#}AttributeBaseType"/&gt;
+		addTimeStampValidationData(sigAttributes, sigWrapper);
 		// &lt;element name="ArchiveTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
 		addTimestamps(sigAttributes, sigWrapper, TimestampType.ARCHIVE_TIMESTAMP);
 		// &lt;element name="RenewedDigests" type="{http://uri.etsi.org/19102/v1.2.1#}SAListOfIntegersType"/&gt;
 		// &lt;element name="MessageDigest" type="{http://uri.etsi.org/19102/v1.2.1#}SAMessageDigestType"/&gt;
 		addMessageDigest(sigAttributes, sigWrapper);
 		// &lt;element name="DSS" type="{http://uri.etsi.org/19102/v1.2.1#}SADSSType"/&gt;
+		addDSS(sigAttributes, sigWrapper);
 		// &lt;element name="VRI" type="{http://uri.etsi.org/19102/v1.2.1#}SAVRIType"/&gt;
+		addVRI(sigAttributes, sigWrapper);
 		// &lt;element name="DocTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
 		// &lt;element name="Reason" type="{http://uri.etsi.org/19102/v1.2.1#}SAReasonType"/&gt;
 		addReason(sigAttributes, sigWrapper);
@@ -259,6 +274,70 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="Filter" type="{http://uri.etsi.org/19102/v1.2.1#}SAFilterType"/&gt;
 		addFilter(sigAttributes, sigWrapper);
 		return sigAttributes;
+	}
+
+	private void addAttrAuthoritiesCertValues(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.ATTR_AUTORITIES_CERT_VALUES);
+		if (Utils.isCollectionNotEmpty(certIds)) {
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
+					.add(objectFactory.createSignatureAttributesTypeAttrAuthoritiesCertValues(buildTokenList(certIds)));
+		}
+	}
+
+	private void addTimeStampValidationData(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.TIMESTAMP_DATA_VALIDATION);
+		if (Utils.isCollectionNotEmpty(certIds)) {
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
+					.add(objectFactory.createSignatureAttributesTypeTimeStampValidationData(buildTokenList(certIds)));
+		}
+	}
+
+	private void addCertificateValues(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.CERTIFICATE_VALUES);
+		if (Utils.isCollectionNotEmpty(certIds)) {
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
+					.add(objectFactory.createSignatureAttributesTypeCertificateValues(buildTokenList(certIds)));
+		}
+	}
+
+	private void addAttributeCertificateRefs(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.ATTRIBUTE_CERTIFICATE_REFS);
+		if (Utils.isCollectionNotEmpty(certIds)) {
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
+					.add(objectFactory.createSignatureAttributesTypeAttributeCertificateRefs(buildCertIDListType(certIds)));
+		}
+	}
+
+	private void addCompleteCertificateRefs(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.COMPLETE_CERTIFICATE_REFS);
+		if (Utils.isCollectionNotEmpty(certIds)) {
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
+					.add(objectFactory.createSignatureAttributesTypeCompleteCertificateRefs(buildCertIDListType(certIds)));
+		}
+	}
+
+	private void addSigningCertificate(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.SIGNING_CERTIFICATE);
+		if (Utils.isCollectionNotEmpty(certIds)) {
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
+					.add(objectFactory.createSignatureAttributesTypeSigningCertificate(buildCertIDListType(certIds)));
+		}
+	}
+
+	private AttributeBaseType buildTokenList(List<String> ids) {
+		AttributeBaseType attributeBaseType = objectFactory.createAttributeBaseType();
+		for (String id : ids) {
+			attributeBaseType.getAttributeObject().add(getVOReference(id));
+		}
+		return attributeBaseType;
+	}
+
+	private SACertIDListType buildCertIDListType(List<String> certIds) {
+		SACertIDListType certIdList = objectFactory.createSACertIDListType();
+		for (String certId : certIds) {
+			certIdList.getAttributeObject().add(getVOReference(certId));
+		}
+		return certIdList;
 	}
 
 	private void addMessageDigest(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
@@ -296,6 +375,21 @@ public class ETSIValidationReportBuilder {
 			return objectFactory.createSignatureAttributesTypeArchiveTimeStamp(timestamp);
 		default:
 			throw new DSSException("Unsupported timestamp type " + timestampType);
+		}
+	}
+
+	private void addDataObjectFormat(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		String contentType = sigWrapper.getContentType();
+		String mimeType = sigWrapper.getMimeType();
+		if (Utils.isStringNotEmpty(contentType) || Utils.isStringNotEmpty(mimeType)) {
+			SADataObjectFormatType dataObjectFormatType = objectFactory.createSADataObjectFormatType();
+			if (Utils.isStringNotEmpty(contentType)) {
+				dataObjectFormatType.setContentType(contentType);
+			}
+			if (Utils.isStringNotEmpty(mimeType)) {
+				dataObjectFormatType.setMimeType(mimeType);
+			}
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(dataObjectFormatType);
 		}
 	}
 
@@ -410,6 +504,31 @@ public class ETSIValidationReportBuilder {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(byteRangeObject);
 		}
 	}
+
+	private void addDSS(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.DSS);
+		if (Utils.isCollectionNotEmpty(certIds)) {
+			SADSSType dssType = objectFactory.createSADSSType();
+			// TODO more than 1 value ??
+			String firstCertId = certIds.get(0);
+			dssType.setCerts(getVOReference(firstCertId));
+			// TODO CRL/OCSP
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(dssType);
+		}
+	}
+
+	private void addVRI(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.VRI);
+		if (Utils.isCollectionNotEmpty(certIds)) {
+			SAVRIType vriType = objectFactory.createSAVRIType();
+			// TODO more than 1 value ??
+			String firstCertId = certIds.get(0);
+			vriType.setCerts(getVOReference(firstCertId));
+			// TODO CRL/OCSP
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(vriType);
+		}
+	}
+
 
 	private void addSigningTime(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
 		SASigningTimeType saSigningTimeType = objectFactory.createSASigningTimeType();

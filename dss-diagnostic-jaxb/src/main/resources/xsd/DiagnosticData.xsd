@@ -106,6 +106,7 @@
 			<xs:element name="CertificateChain"	type="CertificateChain" minOccurs="0" />
 
 			<xs:element name="ContentType" type="xs:string" minOccurs="0" />
+			<xs:element name="MimeType" type="xs:string" minOccurs="0" />
 			<xs:element name="ContentIdentifier" type="xs:string" minOccurs="0" />
 			<xs:element name="ContentHints" type="xs:string" minOccurs="0" />
 			<xs:element name="SignatureProductionPlace" type="SignatureProductionPlace" minOccurs="0" />
@@ -139,6 +140,14 @@
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="CertificateRevocationRef" type="CertificateRevocationRef" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="FoundCertificates" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="FoundCertificate" type="FoundCertificate" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -455,6 +464,25 @@
 			
 			<!-- TIMESTAMP -->
 			<xs:enumeration value="MESSAGE_IMPRINT" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="FoundCertificate">
+		<xs:attribute name="CertId" type="xs:string" use="required" />
+		<xs:attribute name="Location" type="CertificateLocationType" use="required" />
+	</xs:complexType>
+	
+	<xs:simpleType name="CertificateLocationType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="KEY_INFO" />
+			<xs:enumeration value="SIGNING_CERTIFICATE" />
+			<xs:enumeration value="COMPLETE_CERTIFICATE_REFS" />
+			<xs:enumeration value="ATTRIBUTE_CERTIFICATE_REFS" />
+			<xs:enumeration value="CERTIFICATE_VALUES" />
+			<xs:enumeration value="ATTR_AUTORITIES_CERT_VALUES" />
+			<xs:enumeration value="TIMESTAMP_DATA_VALIDATION" />
+			<xs:enumeration value="DSS" />
+			<xs:enumeration value="VRI" />
 		</xs:restriction>
 	</xs:simpleType>
 	

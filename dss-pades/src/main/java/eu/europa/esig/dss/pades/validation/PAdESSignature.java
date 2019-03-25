@@ -38,7 +38,6 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
@@ -139,11 +138,6 @@ public class PAdESSignature extends CAdESSignature {
 			signatureProductionPlace.setCountryName(location);
 			return signatureProductionPlace;
 		}
-	}
-
-	@Override
-	public String getContentType() {
-		return MimeType.PDF.getMimeTypeString();
 	}
 
 	@Override

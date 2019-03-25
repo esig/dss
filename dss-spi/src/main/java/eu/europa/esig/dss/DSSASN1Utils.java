@@ -765,7 +765,7 @@ public final class DSSASN1Utils {
 		return stringBuilder.toString();
 	}
 
-	private static String getString(ASN1Encodable attributeValue) {
+	public static String getString(ASN1Encodable attributeValue) {
 		String string;
 		if (attributeValue instanceof ASN1String) {
 			string = ((ASN1String) attributeValue).getString();
