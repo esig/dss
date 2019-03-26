@@ -403,10 +403,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					byte[] currentDigest = certificateToken.getDigest(digestAlgorithm);
 					boolean digestEqual = Arrays.equals(expectedDigest, currentDigest);
 					certificateValidity.setDigestEqual(digestEqual);
-
-					if (digestEqual && (candidates.getTheCertificateValidity() == null)) {
-						candidates.setTheCertificateValidity(certificateValidity);
-					}
 				}
 
 				IssuerSerialInfo issuerInfo = potentialSigningCert.getIssuerInfo();
@@ -428,6 +424,15 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						LOG.info("issuerName : {}", c14nIssuerName);
 					}
 				}
+
+				// If the signing certificate is not set yet then it must be
+				// done now. Actually if the signature is tempered then the
+				// method checkSignatureIntegrity cannot set the signing
+				// certificate.
+				if (candidates.getTheCertificateValidity() == null) {
+					candidates.setTheCertificateValidity(certificateValidity);
+				}
+				break;
 			}
 		}
 	}

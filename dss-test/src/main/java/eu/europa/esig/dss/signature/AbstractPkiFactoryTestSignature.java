@@ -345,6 +345,12 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		CertificateWrapper certificateWrapper = diagnosticData.getUsedCertificateById(signingCertificateId);
 		assertEquals(signatureAlgorithm.getDigestAlgorithm(), certificateWrapper.getDigestAlgorithm());
 		assertEquals(signatureAlgorithm.getEncryptionAlgorithm(), certificateWrapper.getEncryptionAlgorithm());
+
+		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
+		for (SignatureWrapper signatureWrapper : allSignatures) {
+			assertTrue(signatureWrapper.isSigningCertificateIdentified());
+		}
+
 	}
 
 	protected void checkIssuerSigningCertificateValue(DiagnosticData diagnosticData) {
