@@ -31,20 +31,20 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="569D6B69CEF8B70B57B3A36D7702F8D95D50EEA3A2B614C7FA0CA9F39CFB7FD1">
+            <SigningCertificate Certificate="C-569D6B69CEF8B70B57B3A36D7702F8D95D50EEA3A2B614C7FA0CA9F39CFB7FD1">
                 <AttributePresent>true</AttributePresent>
                 <DigestValuePresent>true</DigestValuePresent>
                 <DigestValueMatch>true</DigestValueMatch>
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Id="569D6B69CEF8B70B57B3A36D7702F8D95D50EEA3A2B614C7FA0CA9F39CFB7FD1">
+                <ChainItem Certificate="C-569D6B69CEF8B70B57B3A36D7702F8D95D50EEA3A2B614C7FA0CA9F39CFB7FD1">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
+                <ChainItem Certificate="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
-                <ChainItem Id="D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730">
+                <ChainItem Certificate="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730">
                     <Source>AIA</Source>
                 </ChainItem>
             </CertificateChain>
@@ -75,15 +75,15 @@
                         <SignatureIntact>true</SignatureIntact>
                         <SignatureValid>true</SignatureValid>
                     </BasicSignature>
-                    <SigningCertificate Id="5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F"/>
+                    <SigningCertificate Certificate="C-5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F"/>
                     <CertificateChain>
-                        <ChainItem Id="5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F">
+                        <ChainItem Certificate="C-5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F">
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
-                        <ChainItem Id="D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
+                        <ChainItem Certificate="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
-                        <ChainItem Id="AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
+                        <ChainItem Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
                             <Source>AIA</Source>
                         </ChainItem>
                     </CertificateChain>
@@ -113,15 +113,15 @@
                         <SignatureIntact>true</SignatureIntact>
                         <SignatureValid>true</SignatureValid>
                     </BasicSignature>
-                    <SigningCertificate Id="5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F"/>
+                    <SigningCertificate Certificate="C-5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F"/>
                     <CertificateChain>
-                        <ChainItem Id="5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F">
+                        <ChainItem Certificate="C-5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F">
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
-                        <ChainItem Id="D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
+                        <ChainItem Certificate="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
-                        <ChainItem Id="AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
+                        <ChainItem Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
                             <Source>AIA</Source>
                         </ChainItem>
                     </CertificateChain>
@@ -168,7 +168,7 @@
         </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F">
+        <Certificate Id="C-5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F">
             <SubjectDistinguishedName Format="CANONICAL">cn=postsignum tsa - tsu 1,ou=time stamping authority,o=česká pošta\, s.p. [ič 47114983],ou=ntrcz-47114983,c=cz</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=PostSignum TSA - TSU 1,OU=Time Stamping Authority,O=Česká pošta\, s.p. [IČ 47114983],OU=NTRCZ-47114983,C=CZ</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=postsignum qualified ca 3,o=česká pošta\, s.p. [ič 47114983],c=cz</IssuerDistinguishedName>
@@ -214,12 +214,12 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02"/>
+            <SigningCertificate Certificate="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02"/>
             <CertificateChain>
-                <ChainItem Id="D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
+                <ChainItem Certificate="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
-                <ChainItem Id="AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
+                <ChainItem Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
                     <Source>AIA</Source>
                 </ChainItem>
             </CertificateChain>
@@ -244,7 +244,7 @@
                     <CountryCode>CZ</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                            <ServiceDigitalIdentifier>5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F</ServiceDigitalIdentifier>
+                            <ServiceDigitalIdentifier>C-5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F</ServiceDigitalIdentifier>
                             <ServiceName>(105) PostSignum TSA - TSU 1</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -258,7 +258,7 @@
                     <CountryCode>CZ</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                            <ServiceDigitalIdentifier>D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02</ServiceDigitalIdentifier>
+                            <ServiceDigitalIdentifier>C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02</ServiceDigitalIdentifier>
                             <ServiceName>(57) PostSignum - issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -277,7 +277,7 @@
             </TrustedServiceProviders>
             <Revocations/>
         </Certificate>
-        <Certificate Id="AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
+        <Certificate Id="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
             <SubjectDistinguishedName Format="CANONICAL">cn=postsignum root qca 2,o=česká pošta\, s.p. [ič 47114983],c=cz</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=PostSignum Root QCA 2,O=Česká pošta\, s.p. [IČ 47114983],C=CZ</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=postsignum root qca 2,o=česká pošta\, s.p. [ič 47114983],c=cz</IssuerDistinguishedName>
@@ -326,7 +326,7 @@
             <TrustedServiceProviders/>
             <Revocations/>
         </Certificate>
-        <Certificate Id="076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
+        <Certificate Id="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130e4e5452435a2d3236343339333935,o=první certifikační autorita\, a.s.,cn=i.ca qualified 2 ca/rsa 02/2016,c=cz</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#130e4e5452435a2d3236343339333935,O=První certifikační autorita\, a.s.,CN=I.CA Qualified 2 CA/RSA 02/2016,C=CZ</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">2.5.4.5=#130e4e5452435a2d3236343339333935,cn=i.ca root ca/rsa,o=první certifikační autorita\, a.s.,c=cz</IssuerDistinguishedName>
@@ -369,9 +369,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730"/>
+            <SigningCertificate Certificate="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730"/>
             <CertificateChain>
-                <ChainItem Id="D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730">
+                <ChainItem Certificate="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730">
                     <Source>AIA</Source>
                 </ChainItem>
             </CertificateChain>
@@ -389,7 +389,7 @@
                     <CountryCode>CZ</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                            <ServiceDigitalIdentifier>076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A</ServiceDigitalIdentifier>
+                            <ServiceDigitalIdentifier>C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A</ServiceDigitalIdentifier>
                             <ServiceName>(78) I.CA - issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -400,7 +400,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                            <ServiceDigitalIdentifier>076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A</ServiceDigitalIdentifier>
+                            <ServiceDigitalIdentifier>C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A</ServiceDigitalIdentifier>
                             <ServiceName>(78) I.CA - issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -411,7 +411,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                            <ServiceDigitalIdentifier>076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A</ServiceDigitalIdentifier>
+                            <ServiceDigitalIdentifier>C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A</ServiceDigitalIdentifier>
                             <ServiceName>(78) I.CA - issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -423,7 +423,7 @@
             </TrustedServiceProviders>
             <Revocations/>
         </Certificate>
-        <Certificate Id="D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
+        <Certificate Id="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
             <SubjectDistinguishedName Format="CANONICAL">cn=postsignum qualified ca 3,o=česká pošta\, s.p. [ič 47114983],c=cz</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=PostSignum Qualified CA 3,O=Česká pošta\, s.p. [IČ 47114983],C=CZ</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=postsignum root qca 2,o=česká pošta\, s.p. [ič 47114983],c=cz</IssuerDistinguishedName>
@@ -466,9 +466,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578"/>
+            <SigningCertificate Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578"/>
             <CertificateChain>
-                <ChainItem Id="AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
+                <ChainItem Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
                     <Source>AIA</Source>
                 </ChainItem>
             </CertificateChain>
@@ -486,7 +486,7 @@
                     <CountryCode>CZ</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                            <ServiceDigitalIdentifier>D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02</ServiceDigitalIdentifier>
+                            <ServiceDigitalIdentifier>C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02</ServiceDigitalIdentifier>
                             <ServiceName>(57) PostSignum - issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -498,7 +498,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                            <ServiceDigitalIdentifier>D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02</ServiceDigitalIdentifier>
+                            <ServiceDigitalIdentifier>C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02</ServiceDigitalIdentifier>
                             <ServiceName>(57) PostSignum - issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -509,7 +509,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                            <ServiceDigitalIdentifier>D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02</ServiceDigitalIdentifier>
+                            <ServiceDigitalIdentifier>C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02</ServiceDigitalIdentifier>
                             <ServiceName>(57) PostSignum - issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -521,7 +521,7 @@
             </TrustedServiceProviders>
             <Revocations/>
         </Certificate>
-        <Certificate Id="569D6B69CEF8B70B57B3A36D7702F8D95D50EEA3A2B614C7FA0CA9F39CFB7FD1">
+        <Certificate Id="C-569D6B69CEF8B70B57B3A36D7702F8D95D50EEA3A2B614C7FA0CA9F39CFB7FD1">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130e494341202d203130343432323233,2.5.4.97=#0c0e4e5452435a2d3234323735303531,o=innogy česká republika a.s.,c=cz,cn=dctm e-stamp faktury</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#130e494341202d203130343432323233,2.5.4.97=#0c0e4e5452435a2d3234323735303531,O=innogy Česká republika a.s.,C=CZ,CN=DCTM e-stamp faktury</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">2.5.4.5=#130e4e5452435a2d3236343339333935,o=první certifikační autorita\, a.s.,cn=i.ca qualified 2 ca/rsa 02/2016,c=cz</IssuerDistinguishedName>
@@ -566,12 +566,12 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A"/>
+            <SigningCertificate Certificate="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A"/>
             <CertificateChain>
-                <ChainItem Id="076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
+                <ChainItem Certificate="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
-                <ChainItem Id="D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730">
+                <ChainItem Certificate="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730">
                     <Source>AIA</Source>
                 </ChainItem>
             </CertificateChain>
@@ -590,7 +590,7 @@
                     <CountryCode>CZ</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                            <ServiceDigitalIdentifier>076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A</ServiceDigitalIdentifier>
+                            <ServiceDigitalIdentifier>C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A</ServiceDigitalIdentifier>
                             <ServiceName>(78) I.CA - issuing qualified certificates</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -605,12 +605,12 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <CertificateRevocation Id="569d6b69cef8b70b57b3a36d7702f8d95d50eea3a2b614c7fa0ca9f39cfb7fd1789207048a37c0a57b26a1e48b969db26e174520c4f5cf1aa55420a77fd5aedf">
+                <CertificateRevocation Revocation="R-569d6b69cef8b70b57b3a36d7702f8d95d50eea3a2b614c7fa0ca9f39cfb7fd1789207048a37c0a57b26a1e48b969db26e174520c4f5cf1aa55420a77fd5aedf">
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>
         </Certificate>
-        <Certificate Id="D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730">
+        <Certificate Id="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130e4e5452435a2d3236343339333935,cn=i.ca root ca/rsa,o=první certifikační autorita\, a.s.,c=cz</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#130e4e5452435a2d3236343339333935,CN=I.CA Root CA/RSA,O=První certifikační autorita\, a.s.,C=CZ</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">2.5.4.5=#130e4e5452435a2d3236343339333935,cn=i.ca root ca/rsa,o=první certifikační autorita\, a.s.,c=cz</IssuerDistinguishedName>
@@ -657,7 +657,7 @@
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>
-        <Revocation Id="569d6b69cef8b70b57b3a36d7702f8d95d50eea3a2b614c7fa0ca9f39cfb7fd1789207048a37c0a57b26a1e48b969db26e174520c4f5cf1aa55420a77fd5aedf">
+        <Revocation Id="R-569d6b69cef8b70b57b3a36d7702f8d95d50eea3a2b614c7fa0ca9f39cfb7fd1789207048a37c0a57b26a1e48b969db26e174520c4f5cf1aa55420a77fd5aedf">
             <Origin>INTERNAL_REVOCATION_VALUES</Origin>
             <Type>CRL</Type>
             <ProductionDate>2018-12-06T20:51:03</ProductionDate>
@@ -677,12 +677,12 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A"/>
+            <SigningCertificate Certificate="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A"/>
             <CertificateChain>
-                <ChainItem Id="076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
+                <ChainItem Certificate="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
-                <ChainItem Id="D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730">
+                <ChainItem Certificate="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730">
                     <Source>AIA</Source>
                 </ChainItem>
             </CertificateChain>

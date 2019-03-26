@@ -35,22 +35,20 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValidationCertificateQualification> {
 
-	private final List<CertificateWrapper> usedCertificates;
 	private final TrustedServiceWrapper trustService;
 	private MessageTag errorMessage = MessageTag.EMPTY;
 
-	public TrustedCertificateMatchTrustServiceCheck(XmlValidationCertificateQualification result, List<CertificateWrapper> usedCertificates,
-			TrustedServiceWrapper trustService, LevelConstraint constraint) {
+	public TrustedCertificateMatchTrustServiceCheck(XmlValidationCertificateQualification result, TrustedServiceWrapper trustService,
+			LevelConstraint constraint) {
 		super(result, constraint);
 
-		this.usedCertificates = usedCertificates;
 		this.trustService = trustService;
 	}
 
 	@Override
 	protected boolean process() {
 
-		CertificateWrapper trustedCert = getTrustedCert();
+		CertificateWrapper trustedCert = trustService.getServiceDigitalIdentifier();
 		if (trustedCert == null) {
 			errorMessage = MessageTag.QUAL_IS_TRUST_CERT_MATCH_SERVICE_ANS0;
 			return false;
@@ -68,16 +66,6 @@ public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValid
 		}
 
 		return true;
-	}
-
-	private CertificateWrapper getTrustedCert() {
-		String certId = trustService.getServiceDigitalIdentifier();
-		for (CertificateWrapper certificateWrapper : usedCertificates) {
-			if (Utils.areStringsEqual(certId, certificateWrapper.getId())) {
-				return certificateWrapper;
-			}
-		}
-		return null;
 	}
 
 	private boolean isMatch(CertificateWrapper trustedCert) {

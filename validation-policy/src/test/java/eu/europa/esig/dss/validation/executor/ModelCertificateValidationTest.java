@@ -128,7 +128,7 @@ public class ModelCertificateValidationTest extends ModelAbstractlValidation {
 
 	@Test
 	public void testModelBasedCertificateChain() throws Exception {
-		final String signerCertId = diagnosticData.getSignatures().get(0).getSigningCertificate().getId();
+		final String signerCertId = diagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate().getId();
 		assertTrue(testCase.getTestData().getSignerCertificateIdentifier().equals(signerCertId));
 		
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();

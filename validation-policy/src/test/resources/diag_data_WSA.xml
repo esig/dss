@@ -31,17 +31,17 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="24A830ADC0D077255FD14A607513D398CDB278A53A3DBAB79AC4ADE6A66EEAA6">
+            <SigningCertificate Certificate="C-24A830ADC0D077255FD14A607513D398CDB278A53A3DBAB79AC4ADE6A66EEAA6">
                 <AttributePresent>true</AttributePresent>
                 <DigestValuePresent>true</DigestValuePresent>
                 <DigestValueMatch>true</DigestValueMatch>
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Id="24A830ADC0D077255FD14A607513D398CDB278A53A3DBAB79AC4ADE6A66EEAA6">
+                <ChainItem Certificate="C-24A830ADC0D077255FD14A607513D398CDB278A53A3DBAB79AC4ADE6A66EEAA6">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998">
+                <ChainItem Certificate="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -55,7 +55,7 @@
         </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998">
+        <Certificate Id="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998">
             <SubjectDistinguishedName Format="CANONICAL">c=it,ou=cert for test,o=tsp-5.1 name,cn=sdi-5.1.2</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=IT,OU=CERT FOR TEST,O=TSP-5.1 Name,CN=SDI-5.1.2</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">c=it,ou=cert for test,o=tsp-5.1 name,cn=sdi-5.1.2</IssuerDistinguishedName>
@@ -97,7 +97,7 @@
                     <CountryCode>IT</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998</ServiceDigitalIdentifier>
                             <ServiceName>TS-5.1.2 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -112,7 +112,7 @@
             <Revocations/>
             <Base64Encoded>MIIDZTCCAk2gAwIBAgIBBDANBgkqhkiG9w0BAQsFADBQMRIwEAYDVQQDDAlTREktNS4xLjIxFTATBgNVBAoMDFRTUC01LjEgTmFtZTEWMBQGA1UECwwNQ0VSVCBGT1IgVEVTVDELMAkGA1UEBhMCSVQwHhcNMTcwNzA1MTMxODMyWhcNMTkwNzA1MTMxODMyWjBQMRIwEAYDVQQDDAlTREktNS4xLjIxFTATBgNVBAoMDFRTUC01LjEgTmFtZTEWMBQGA1UECwwNQ0VSVCBGT1IgVEVTVDELMAkGA1UEBhMCSVQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC5gbrXv1kvywQrojA4H/O1k8m+lmcjuhX7CPSEQgMUXXg7u3er1AMDQmPfyo4UzXR2oT5h0z5QRAy7RUf4ThU/e8A7V5Ih0yfCM9MdkS8DNXQ2CUoMM6eOXgjrSB89B2Nj/A8Bq8xpktAkEIacoZYN6J/A+M+x3alrBHh71lqIv1txCfwKxI9LwF4uuvj3LG6aWMBszz/GTz2j/LgmZIzKvy6Y03dX0uDm+4SWD2y39p8czxa1E0jNss8+oYH/Az7bpgi6lzxV98HC8enUMndD4VcSZgq8AstlIGpwb0B/c2f2Rl2LSGAyTnu5G3sfuNs2dlkxSspcVXVRcsb+/3YpAgMBAAGjSjBIMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMJMB0GA1UdDgQWBBRUsSdTflWH+8K2Nxqb5GNxqGad4zAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCf/mbZvAKRMSFp7ftkRHe1cvUQt5foSGc1x4wru18V1PcvK8DtJE8qL4LQwd5r54l//QsmEJgSmfRwJjc9OeQvBcYjsMgBFmg5LlU0WSm3linT3OEbE02JC3JxkyaPnsNs84Z4JAu/idNkSTqDgfsmfq+EBzQP3st9svWRcfjMOtl9M305qfm4tVmO8QIfPOEdbTSaJFutpxKguBwCvFRWEPsCWGIsscQ8myWXino3ihsfqe4C2Nh8XUCwDcoAGhcT7SZgE0G+bVnpQyDa1gDyrK8Tl0rKoilLZ9ncz6LkY5x5lnjHSrg6zzHT4l1L0UW5na5nBouGxzHp9SrTUThj</Base64Encoded>
         </Certificate>
-        <Certificate Id="24A830ADC0D077255FD14A607513D398CDB278A53A3DBAB79AC4ADE6A66EEAA6">
+        <Certificate Id="C-24A830ADC0D077255FD14A607513D398CDB278A53A3DBAB79AC4ADE6A66EEAA6">
             <SubjectDistinguishedName Format="CANONICAL">c=it,ou=cert for test,o=tl5 organization,cn=cert-test-5.1.2</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=IT,OU=CERT FOR TEST,O=TL5 Organization,CN=CERT-TEST-5.1.2</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">c=it,ou=cert for test,o=tsp-5.1 name,cn=sdi-5.1.2</IssuerDistinguishedName>
@@ -148,9 +148,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998"/>
+            <SigningCertificate Certificate="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998"/>
             <CertificateChain>
-                <ChainItem Id="754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998">
+                <ChainItem Certificate="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -171,7 +171,7 @@
                     <CountryCode>IT</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998</ServiceDigitalIdentifier>
                             <ServiceName>TS-5.1.2 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -185,7 +185,7 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <CertificateRevocation Id="24a830adc0d077255fd14a607513d398cdb278a53a3dbab79ac4ade6a66eeaa6612c5dde30ee75fdd123676afadd61707b562650f2881cb353b586269d8fe894">
+                <CertificateRevocation Revocation="R-24a830adc0d077255fd14a607513d398cdb278a53a3dbab79ac4ade6a66eeaa6612c5dde30ee75fdd123676afadd61707b562650f2881cb353b586269d8fe894">
                     <Available>true</Available>
                     <Status>true</Status>
                 </CertificateRevocation>
@@ -194,7 +194,7 @@
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>
-        <Revocation Id="24a830adc0d077255fd14a607513d398cdb278a53a3dbab79ac4ade6a66eeaa6612c5dde30ee75fdd123676afadd61707b562650f2881cb353b586269d8fe894">
+        <Revocation Id="R-24a830adc0d077255fd14a607513d398cdb278a53a3dbab79ac4ade6a66eeaa6612c5dde30ee75fdd123676afadd61707b562650f2881cb353b586269d8fe894">
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://localhost:8080/qes-validation-web/ocsp/SDI-5.1.2</SourceAddress>
@@ -208,9 +208,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998"/>
+            <SigningCertificate Certificate="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998"/>
             <CertificateChain>
-                <ChainItem Id="754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998">
+                <ChainItem Certificate="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>

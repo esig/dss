@@ -49,6 +49,44 @@
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.RevocationTypeParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationTypeParser.print" />
 		</jaxb:bindings>
+		
+ 	<jaxb:bindings node="//xs:complexType[@name='CertificateRevocationRef']//xs:element[@name='Certificate']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
+        </jaxb:property>
+    </jaxb:bindings>
+ 	<jaxb:bindings node="//xs:complexType[@name='CertificateRevocationRef']//xs:element[@name='Revocation']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation" />
+        </jaxb:property>
+    </jaxb:bindings>
+    <jaxb:bindings node="//xs:complexType[@name='SigningCertificate']//xs:attribute[@name='Certificate']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
+        </jaxb:property>
+    </jaxb:bindings>
+    <jaxb:bindings node="//xs:element[@name='ChainItem']//xs:attribute[@name='Certificate']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
+        </jaxb:property>
+    </jaxb:bindings>
+    <jaxb:bindings node="//xs:complexType[@name='FoundCertificate']//xs:attribute[@name='Certificate']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
+        </jaxb:property>
+    </jaxb:bindings>
+    <jaxb:bindings node="//xs:complexType[@name='CertificateRevocation']//xs:attribute[@name='Revocation']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation" />
+        </jaxb:property>
+    </jaxb:bindings>
+    <jaxb:bindings node="//xs:complexType[@name='TrustedService']//xs:element[@name='ServiceDigitalIdentifier']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
+        </jaxb:property>
+    </jaxb:bindings>
+    
+
   </jaxb:bindings>
   
 </jaxb:bindings>

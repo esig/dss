@@ -57,23 +57,21 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	private final ValidationTime validationTime;
 	private final Date date;
 	private final CertificateWrapper signingCertificate;
-	private final List<CertificateWrapper> usedCertificates;
 	private final List<TrustedServiceWrapper> caqcServices;
 
 	private CertificateQualification certificateQualification = CertificateQualification.NA;
 
-	public CertQualificationAtTimeBlock(ValidationTime validationTime, CertificateWrapper signingCertificate, List<CertificateWrapper> usedCertificates,
+	public CertQualificationAtTimeBlock(ValidationTime validationTime, CertificateWrapper signingCertificate,
 			List<TrustedServiceWrapper> caqcServices) {
-		this(validationTime, null, signingCertificate, usedCertificates, caqcServices);
+		this(validationTime, null, signingCertificate, caqcServices);
 	}
 
 	public CertQualificationAtTimeBlock(ValidationTime validationTime, Date date, CertificateWrapper signingCertificate,
-			List<CertificateWrapper> usedCertificates, List<TrustedServiceWrapper> caqcServices) {
+			List<TrustedServiceWrapper> caqcServices) {
 		super(new XmlValidationCertificateQualification());
 
 		this.validationTime = validationTime;
 		this.signingCertificate = signingCertificate;
-		this.usedCertificates = usedCertificates;
 		this.caqcServices = new ArrayList<TrustedServiceWrapper>(caqcServices);
 
 		switch (validationTime) {
@@ -189,7 +187,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isTrustedCertificateMatchTrustService(TrustedServiceWrapper selectedTrustService) {
-		return new TrustedCertificateMatchTrustServiceCheck(result, usedCertificates, selectedTrustService, getWarnLevelConstraint());
+		return new TrustedCertificateMatchTrustServiceCheck(result, selectedTrustService, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isQualified(QualifiedStatus qualifiedStatus) {

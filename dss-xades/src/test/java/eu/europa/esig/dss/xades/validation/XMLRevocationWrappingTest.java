@@ -63,12 +63,12 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 			assertNotNull(revocationRefs);
 			assertEquals(4, revocationRefs.size());
 			for (XmlCertificateRevocationRef revocation : revocationRefs) {
-				assertNotNull(revocation.getRevocationId());
-				assertNotNull(revocation.getCertificateId());
+				assertNotNull(revocation.getRevocation());
+				assertNotNull(revocation.getCertificate());
 				assertNotNull(revocation.getType());
 				assertNotNull(revocation.getOrigin());
-				assertTrue(revocationIds.contains(revocation.getRevocationId()));
-				assertNotNull(diagnosticData.getUsedCertificateById(revocation.getCertificateId()));
+				assertTrue(revocationIds.contains(revocation.getRevocation().getId()));
+				assertNotNull(diagnosticData.getUsedCertificateById(revocation.getCertificate().getId()));
 			}
 		}
 	}
@@ -109,13 +109,13 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 			List<XmlCertificateRevocationRef> revocationRefs = signature.getRelatedRevocations();
 			assertNotNull(revocationRefs);
 			for (XmlCertificateRevocationRef revocation : revocationRefs) {
-				assertNotNull(revocation.getCertificateId());
-				assertNotNull(revocation.getRevocationId());
+				assertNotNull(revocation.getCertificate());
+				assertNotNull(revocation.getRevocation());
 				assertNotNull(revocation.getType());
 				assertNotNull(revocation.getOrigin());
-				assertTrue(revocationIds.contains(revocation.getRevocationId()));
+				assertTrue(revocationIds.contains(revocation.getRevocation().getId()));
 				assertTrue(presentOnlyOnce(revocationRefs, revocation));
-				assertNotNull(diagnosticData.getUsedCertificateById(revocation.getCertificateId()));
+				assertNotNull(diagnosticData.getUsedCertificateById(revocation.getCertificate().getId()));
 			}
 		}
 		
@@ -132,8 +132,9 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 	{
 	    int numCount = 0;
 	    for (XmlCertificateRevocationRef thisRev : list) {
-	        if ((thisRev.getCertificateId() + thisRev.getRevocationId()).equals(
-	        		(revocation.getCertificateId() + revocation.getRevocationId()))) numCount++;
+			if ((thisRev.getCertificate().getId() + thisRev.getRevocation().getId()).equals(
+					(revocation.getCertificate().getId() + revocation.getRevocation().getId())))
+				numCount++;
 	    }
 	    return numCount == 1;
 	}

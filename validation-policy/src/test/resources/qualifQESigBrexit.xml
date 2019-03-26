@@ -25,20 +25,20 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="75F5216C135CA7D30473723247E8AD6104F843A598ACEBF82764F556E378D62D">
+            <SigningCertificate Certificate="C-75F5216C135CA7D30473723247E8AD6104F843A598ACEBF82764F556E378D62D">
                 <AttributePresent>true</AttributePresent>
                 <DigestValuePresent>true</DigestValuePresent>
                 <DigestValueMatch>true</DigestValueMatch>
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Id="75F5216C135CA7D30473723247E8AD6104F843A598ACEBF82764F556E378D62D">
+                <ChainItem Certificate="C-75F5216C135CA7D30473723247E8AD6104F843A598ACEBF82764F556E378D62D">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
+                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -64,12 +64,12 @@
                         <SignatureIntact>true</SignatureIntact>
                         <SignatureValid>true</SignatureValid>
                     </BasicSignature>
-                    <SigningCertificate Id="D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
+                    <SigningCertificate Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
                     <CertificateChain>
-                        <ChainItem Id="D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19">
+                        <ChainItem Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19">
                             <Source>SIGNATURE</Source>
                         </ChainItem>
-                        <ChainItem Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+                        <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
@@ -90,7 +90,7 @@
         </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19">
+        <Certificate Id="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19">
             <SubjectDistinguishedName Format="CANONICAL">cn=time stamping authority,o=belgium federal government,2.5.4.5=#130432303134,c=be</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Time Stamping Authority,O=Belgium Federal Government,2.5.4.5=#130432303134,C=BE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=belgium root ca2,c=be</IssuerDistinguishedName>
@@ -130,9 +130,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
+            <SigningCertificate Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
             <CertificateChain>
-                <ChainItem Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+                <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -149,7 +149,7 @@
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -160,7 +160,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -174,16 +174,16 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <CertificateRevocation Id="d74af393cf3b506da33b46bc52b49cd6fac12b2bdaa9ce1fba25c0c1e4ebbe1909748ac3d9315ee0353007888872e011f23888946587ae8ca27bba634f1eb7e1">
+                <CertificateRevocation Revocation="R-d74af393cf3b506da33b46bc52b49cd6fac12b2bdaa9ce1fba25c0c1e4ebbe1909748ac3d9315ee0353007888872e011f23888946587ae8ca27bba634f1eb7e1">
                     <Status>true</Status>
                 </CertificateRevocation>
-                <CertificateRevocation Id="d74af393cf3b506da33b46bc52b49cd6fac12b2bdaa9ce1fba25c0c1e4ebbe1937478d403aa751c3f67f0d56db9f9340b7876dbbc05396911ebe8dc6162bf388">
+                <CertificateRevocation Revocation="R-d74af393cf3b506da33b46bc52b49cd6fac12b2bdaa9ce1fba25c0c1e4ebbe1937478d403aa751c3f67f0d56db9f9340b7876dbbc05396911ebe8dc6162bf388">
                     <Available>true</Available>
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>
         </Certificate>
-        <Certificate Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+        <Certificate Id="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
             <SubjectDistinguishedName Format="CANONICAL">cn=belgium root ca2,c=be</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Belgium Root CA2,C=BE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=belgium root ca2,c=be</IssuerDistinguishedName>
@@ -234,7 +234,7 @@
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -245,7 +245,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -260,7 +260,7 @@
             </TrustedServiceProviders>
             <Revocations/>
         </Certificate>
-        <Certificate Id="75F5216C135CA7D30473723247E8AD6104F843A598ACEBF82764F556E378D62D">
+        <Certificate Id="C-75F5216C135CA7D30473723247E8AD6104F843A598ACEBF82764F556E378D62D">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130b3739313032353230393931,2.5.4.42=#130b4672616e6b2048656e7269,2.5.4.4=#1308436f726e656c6973,cn=f c (signature),c=be</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#130b3739313032353230393931,2.5.4.42=#130b4672616e6b2048656e7269,2.5.4.4=#1308436f726e656c6973,CN=f c (Signature),C=BE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">2.5.4.5=#1306323031343034,cn=citizen ca,c=be</IssuerDistinguishedName>
@@ -304,12 +304,12 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE"/>
+            <SigningCertificate Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE"/>
             <CertificateChain>
-                <ChainItem Id="A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
+                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -329,7 +329,7 @@
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -343,7 +343,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -360,18 +360,18 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <CertificateRevocation Id="75f5216c135ca7d30473723247e8ad6104f843a598acebf82764f556e378d62d18423017027efece3d0668fa492ad8625e7dcac01c057a11d679eb33ab41def9">
+                <CertificateRevocation Revocation="R-75f5216c135ca7d30473723247e8ad6104f843a598acebf82764f556e378d62d18423017027efece3d0668fa492ad8625e7dcac01c057a11d679eb33ab41def9">
                     <Available>true</Available>
                     <Status>false</Status>
                     <Reason>unspecified</Reason>
                     <RevocationDate>2016-07-05T15:10:07</RevocationDate>
                 </CertificateRevocation>
-                <CertificateRevocation Id="75f5216c135ca7d30473723247e8ad6104f843a598acebf82764f556e378d62d0b07eb2dbac8ca8fcdcb77ce16df70577cf9133aeed18b94c3f3fb11a5fc2ff9">
+                <CertificateRevocation Revocation="R-75f5216c135ca7d30473723247e8ad6104f843a598acebf82764f556e378d62d0b07eb2dbac8ca8fcdcb77ce16df70577cf9133aeed18b94c3f3fb11a5fc2ff9">
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>
         </Certificate>
-        <Certificate Id="A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
+        <Certificate Id="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
             <SubjectDistinguishedName Format="CANONICAL">cn=belgium root ca3,c=be</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Belgium Root CA3,C=BE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=belgium root ca3,c=be</IssuerDistinguishedName>
@@ -422,7 +422,7 @@
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -433,7 +433,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -448,7 +448,7 @@
             </TrustedServiceProviders>
             <Revocations/>
         </Certificate>
-        <Certificate Id="D64BB62EFF83D5D9D368BBABEAA8BC6B291FD3F76B2AAEBD187387EECCB73A13">
+        <Certificate Id="C-D64BB62EFF83D5D9D368BBABEAA8BC6B291FD3F76B2AAEBD187387EECCB73A13">
             <SubjectDistinguishedName Format="CANONICAL">c=be,cn=belgium ocsp responder</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=BE,CN=Belgium OCSP Responder</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">2.5.4.5=#1306323031343034,cn=citizen ca,c=be</IssuerDistinguishedName>
@@ -484,12 +484,12 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE"/>
+            <SigningCertificate Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE"/>
             <CertificateChain>
-                <ChainItem Id="A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
+                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -504,7 +504,7 @@
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -519,7 +519,7 @@
             </TrustedServiceProviders>
             <Revocations/>
         </Certificate>
-        <Certificate Id="A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
+        <Certificate Id="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#1306323031343034,cn=citizen ca,c=be</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#1306323031343034,CN=Citizen CA,C=BE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=belgium root ca3,c=be</IssuerDistinguishedName>
@@ -558,9 +558,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
+            <SigningCertificate Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
             <CertificateChain>
-                <ChainItem Id="A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -577,7 +577,7 @@
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -588,7 +588,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -602,16 +602,16 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <CertificateRevocation Id="a2bcb1e8523fbb23b9a277afa0b67da2e61e9ad8bac1b926a733a1ae07c67cde43affe03ea0cd0bc9d663ca5ecb1db343657acdf1ec742cba90b503a08b0456f">
+                <CertificateRevocation Revocation="R-a2bcb1e8523fbb23b9a277afa0b67da2e61e9ad8bac1b926a733a1ae07c67cde43affe03ea0cd0bc9d663ca5ecb1db343657acdf1ec742cba90b503a08b0456f">
                     <Status>true</Status>
                 </CertificateRevocation>
-                <CertificateRevocation Id="a2bcb1e8523fbb23b9a277afa0b67da2e61e9ad8bac1b926a733a1ae07c67cde52e8de03ed10fb4ba24696f38afbf93c309823f76ef058871bb8604533ce4ca4">
+                <CertificateRevocation Revocation="R-a2bcb1e8523fbb23b9a277afa0b67da2e61e9ad8bac1b926a733a1ae07c67cde52e8de03ed10fb4ba24696f38afbf93c309823f76ef058871bb8604533ce4ca4">
                     <Available>true</Available>
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>
         </Certificate>
-        <Certificate Id="6C9DA2AA6632C9006C9805D4B3849D9FDFB97DA182DF8FA47219625FD47E12BE">
+        <Certificate Id="C-6C9DA2AA6632C9006C9805D4B3849D9FDFB97DA182DF8FA47219625FD47E12BE">
             <SubjectDistinguishedName Format="CANONICAL">c=be,cn=belgium ocsp responder</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=BE,CN=Belgium OCSP Responder</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">2.5.4.5=#1306323031343034,cn=citizen ca,c=be</IssuerDistinguishedName>
@@ -647,12 +647,12 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE"/>
+            <SigningCertificate Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE"/>
             <CertificateChain>
-                <ChainItem Id="A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
+                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -667,7 +667,7 @@
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -678,7 +678,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</ServiceDigitalIdentifier>
                     		<ServiceName>CN=Belgium Root CA4, C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -695,7 +695,7 @@
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>
-        <Revocation Id="d74af393cf3b506da33b46bc52b49cd6fac12b2bdaa9ce1fba25c0c1e4ebbe1909748ac3d9315ee0353007888872e011f23888946587ae8ca27bba634f1eb7e1">
+        <Revocation Id="R-d74af393cf3b506da33b46bc52b49cd6fac12b2bdaa9ce1fba25c0c1e4ebbe1909748ac3d9315ee0353007888872e011f23888946587ae8ca27bba634f1eb7e1">
             <Origin>SIGNATURE</Origin>
             <Type>CRL</Type>
             <ProductionDate>2016-02-15T12:00:00</ProductionDate>
@@ -718,14 +718,14 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
+            <SigningCertificate Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
             <CertificateChain>
-                <ChainItem Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+                <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
         </Revocation>
-        <Revocation Id="d74af393cf3b506da33b46bc52b49cd6fac12b2bdaa9ce1fba25c0c1e4ebbe1937478d403aa751c3f67f0d56db9f9340b7876dbbc05396911ebe8dc6162bf388">
+        <Revocation Id="R-d74af393cf3b506da33b46bc52b49cd6fac12b2bdaa9ce1fba25c0c1e4ebbe1937478d403aa751c3f67f0d56db9f9340b7876dbbc05396911ebe8dc6162bf388">
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://crl.pki.belgium.be/belgium2.crl</SourceAddress>
@@ -749,14 +749,14 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
+            <SigningCertificate Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
             <CertificateChain>
-                <ChainItem Id="9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+                <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
         </Revocation>
-        <Revocation Id="75f5216c135ca7d30473723247e8ad6104f843a598acebf82764f556e378d62d18423017027efece3d0668fa492ad8625e7dcac01c057a11d679eb33ab41def9">
+        <Revocation Id="R-75f5216c135ca7d30473723247e8ad6104f843a598acebf82764f556e378d62d18423017027efece3d0668fa492ad8625e7dcac01c057a11d679eb33ab41def9">
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp.eid.belgium.be/2</SourceAddress>
@@ -780,20 +780,20 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="D64BB62EFF83D5D9D368BBABEAA8BC6B291FD3F76B2AAEBD187387EECCB73A13"/>
+            <SigningCertificate Certificate="C-D64BB62EFF83D5D9D368BBABEAA8BC6B291FD3F76B2AAEBD187387EECCB73A13"/>
             <CertificateChain>
-                <ChainItem Id="D64BB62EFF83D5D9D368BBABEAA8BC6B291FD3F76B2AAEBD187387EECCB73A13">
+                <ChainItem Certificate="C-D64BB62EFF83D5D9D368BBABEAA8BC6B291FD3F76B2AAEBD187387EECCB73A13">
                     <Source>OCSP_RESPONSE</Source>
                 </ChainItem>
-                <ChainItem Id="A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
+                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
         </Revocation>
-        <Revocation Id="75f5216c135ca7d30473723247e8ad6104f843a598acebf82764f556e378d62d0b07eb2dbac8ca8fcdcb77ce16df70577cf9133aeed18b94c3f3fb11a5fc2ff9">
+        <Revocation Id="R-75f5216c135ca7d30473723247e8ad6104f843a598acebf82764f556e378d62d0b07eb2dbac8ca8fcdcb77ce16df70577cf9133aeed18b94c3f3fb11a5fc2ff9">
             <Origin>SIGNATURE</Origin>
             <Type>OCSP</Type>
             <ProductionDate>2016-04-18T10:27:33</ProductionDate>
@@ -816,20 +816,20 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="6C9DA2AA6632C9006C9805D4B3849D9FDFB97DA182DF8FA47219625FD47E12BE"/>
+            <SigningCertificate Certificate="C-6C9DA2AA6632C9006C9805D4B3849D9FDFB97DA182DF8FA47219625FD47E12BE"/>
             <CertificateChain>
-                <ChainItem Id="6C9DA2AA6632C9006C9805D4B3849D9FDFB97DA182DF8FA47219625FD47E12BE">
+                <ChainItem Certificate="C-6C9DA2AA6632C9006C9805D4B3849D9FDFB97DA182DF8FA47219625FD47E12BE">
                     <Source>OCSP_RESPONSE</Source>
                 </ChainItem>
-                <ChainItem Id="A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
+                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
         </Revocation>
-        <Revocation Id="a2bcb1e8523fbb23b9a277afa0b67da2e61e9ad8bac1b926a733a1ae07c67cde43affe03ea0cd0bc9d663ca5ecb1db343657acdf1ec742cba90b503a08b0456f">
+        <Revocation Id="R-a2bcb1e8523fbb23b9a277afa0b67da2e61e9ad8bac1b926a733a1ae07c67cde43affe03ea0cd0bc9d663ca5ecb1db343657acdf1ec742cba90b503a08b0456f">
             <Origin>SIGNATURE</Origin>
             <Type>CRL</Type>
             <ProductionDate>2016-02-15T12:00:00</ProductionDate>
@@ -852,14 +852,14 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
+            <SigningCertificate Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
             <CertificateChain>
-                <ChainItem Id="A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
         </Revocation>
-        <Revocation Id="a2bcb1e8523fbb23b9a277afa0b67da2e61e9ad8bac1b926a733a1ae07c67cde52e8de03ed10fb4ba24696f38afbf93c309823f76ef058871bb8604533ce4ca4">
+        <Revocation Id="R-a2bcb1e8523fbb23b9a277afa0b67da2e61e9ad8bac1b926a733a1ae07c67cde52e8de03ed10fb4ba24696f38afbf93c309823f76ef058871bb8604533ce4ca4">
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://crl.eid.belgium.be/belgium3.crl</SourceAddress>
@@ -883,9 +883,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
+            <SigningCertificate Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
             <CertificateChain>
-                <ChainItem Id="A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>

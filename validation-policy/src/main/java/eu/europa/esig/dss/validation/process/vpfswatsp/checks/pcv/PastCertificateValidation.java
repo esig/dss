@@ -116,14 +116,14 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 
 		List<XmlChainItem> certificateChain = token.getCertificateChain();
 		for (XmlChainItem certChainItem : certificateChain) {
-			CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certChainItem.getId());
+			CertificateWrapper certificate = new CertificateWrapper(certChainItem.getCertificate());
 			if (certificate.isTrusted()) {
 				// There is not need to check for the trusted certificate
 				continue;
 			}
 
 			SubContext subContext = SubContext.CA_CERTIFICATE;
-			if (Utils.areStringsEqual(signingCertificateId, certChainItem.getId())) {
+			if (Utils.areStringsEqual(signingCertificateId, certificate.getId())) {
 				subContext = SubContext.SIGNING_CERT;
 			}
 
@@ -169,14 +169,14 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		if (controlTime != null) {
 			certificateChain = token.getCertificateChain();
 			for (XmlChainItem certChainItem : certificateChain) {
-				CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certChainItem.getId());
+				CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certChainItem.getCertificate().getId());
 				if (certificate.isTrusted()) {
 					// There is not need to check for the trusted certificate
 					continue;
 				}
 
 				SubContext subContext = SubContext.CA_CERTIFICATE;
-				if (Utils.areStringsEqual(signingCertificateId, certChainItem.getId())) {
+				if (Utils.areStringsEqual(signingCertificateId, certChainItem.getCertificate().getId())) {
 					subContext = SubContext.SIGNING_CERT;
 				}
 

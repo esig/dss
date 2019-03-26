@@ -25,20 +25,20 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="1BCF2B72C91C013C824AE6BD2C01358475118ED7E50D920EF78D7870F51513EE">
+            <SigningCertificate Certificate="C-1BCF2B72C91C013C824AE6BD2C01358475118ED7E50D920EF78D7870F51513EE">
                 <AttributePresent>true</AttributePresent>
                 <DigestValuePresent>true</DigestValuePresent>
                 <DigestValueMatch>true</DigestValueMatch>
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Id="1BCF2B72C91C013C824AE6BD2C01358475118ED7E50D920EF78D7870F51513EE">
+                <ChainItem Certificate="C-1BCF2B72C91C013C824AE6BD2C01358475118ED7E50D920EF78D7870F51513EE">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686">
+                <ChainItem Certificate="C-355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
+                <ChainItem Certificate="C-D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
                     <Source>AIA</Source>
                 </ChainItem>
             </CertificateChain>
@@ -52,7 +52,7 @@
         </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168">
+        <Certificate Id="C-903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168">
             <SubjectDistinguishedName Format="CANONICAL">cn=ndca validation authority,o=agence nationale de certification electronique,c=tn</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=NDCA Validation Authority,O=Agence Nationale de Certification Electronique,C=TN</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">o=national digital certification agency,cn=tunisian root certificate authority - tunrootca2,c=tn</IssuerDistinguishedName>
@@ -94,7 +94,7 @@
             <TrustedServiceProviders/>
             <Revocations/>
         </Certificate>
-        <Certificate Id="D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
+        <Certificate Id="C-D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
             <SubjectDistinguishedName Format="CANONICAL">o=national digital certification agency,cn=tunisian root certificate authority - tunrootca1,c=tn</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">O=National Digital Certification Agency,CN=Tunisian Root Certificate Authority - TunRootCA1,C=TN</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">o=national digital certification agency,cn=tunisian root certificate authority - tunrootca1,c=tn</IssuerDistinguishedName>
@@ -136,7 +136,7 @@
             <TrustedServiceProviders/>
             <Revocations/>
         </Certificate>
-        <Certificate Id="1BCF2B72C91C013C824AE6BD2C01358475118ED7E50D920EF78D7870F51513EE">
+        <Certificate Id="C-1BCF2B72C91C013C824AE6BD2C01358475118ED7E50D920EF78D7870F51513EE">
             <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1614746172686f756e69406e672d7369676e2e636f6d,cn=MAT,ou=direction generale,o=MAT,c=tn</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1614746172686f756e69406e672d7369676e2e636f6d,CN=MAT,OU=DIRECTION GENERALE,O=MAT,C=TN</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=tunisian personal certificate authority - tunpersonalca1,o=national digital certification agency,c=tn</IssuerDistinguishedName>
@@ -176,12 +176,12 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686"/>
+            <SigningCertificate Certificate="C-355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686"/>
             <CertificateChain>
-                <ChainItem Id="355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686">
+                <ChainItem Certificate="C-355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
+                <ChainItem Certificate="C-D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
                     <Source>AIA</Source>
                 </ChainItem>
             </CertificateChain>
@@ -194,18 +194,18 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations>
-                <CertificateRevocation Id="1bcf2b72c91c013c824ae6bd2c01358475118ed7e50d920ef78d7870f51513eeca921613208aaacbbbc6798e54b76546fca9d3437749f414ff57473b6d2f44ba">
+                <CertificateRevocation Revocation="R-1bcf2b72c91c013c824ae6bd2c01358475118ed7e50d920ef78d7870f51513eeca921613208aaacbbbc6798e54b76546fca9d3437749f414ff57473b6d2f44ba">
                     <Available>true</Available>
                     <Status>true</Status>
                 </CertificateRevocation>
-                <CertificateRevocation Id="1bcf2b72c91c013c824ae6bd2c01358475118ed7e50d920ef78d7870f51513eee4d28fb520311e9a6a81279b408300874eecd3ca35f4f7462d78f4bf0514aae8">
+                <CertificateRevocation Revocation="R-1bcf2b72c91c013c824ae6bd2c01358475118ed7e50d920ef78d7870f51513eee4d28fb520311e9a6a81279b408300874eecd3ca35f4f7462d78f4bf0514aae8">
                     <Available>true</Available>
                     <Status>false</Status>
                     <Reason>unknow</Reason>
                 </CertificateRevocation>
             </Revocations>
         </Certificate>
-        <Certificate Id="355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686">
+        <Certificate Id="C-355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686">
             <SubjectDistinguishedName Format="CANONICAL">cn=tunisian personal certificate authority - tunpersonalca1,o=national digital certification agency,c=tn</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Tunisian Personal Certificate Authority - TunPersonalCA1,O=National Digital Certification Agency,C=TN</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">o=national digital certification agency,cn=tunisian root certificate authority - tunrootca1,c=tn</IssuerDistinguishedName>
@@ -245,9 +245,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C"/>
+            <SigningCertificate Certificate="C-D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C"/>
             <CertificateChain>
-                <ChainItem Id="D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
+                <ChainItem Certificate="C-D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
                     <Source>AIA</Source>
                 </ChainItem>
             </CertificateChain>
@@ -260,7 +260,7 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations>
-                <CertificateRevocation Id="355e634464029b58fc89189da20cb1f3499373af91d8fa34b57b66775aa73686b671e62088b3f75a75ecee64dd3c5331cbf7045be28221c7fad8cbf2c4894f6d">
+                <CertificateRevocation Revocation="R-355e634464029b58fc89189da20cb1f3499373af91d8fa34b57b66775aa73686b671e62088b3f75a75ecee64dd3c5331cbf7045be28221c7fad8cbf2c4894f6d">
                     <Available>true</Available>
                     <Status>true</Status>
                 </CertificateRevocation>
@@ -268,7 +268,7 @@
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>
-        <Revocation Id="1bcf2b72c91c013c824ae6bd2c01358475118ed7e50d920ef78d7870f51513eeca921613208aaacbbbc6798e54b76546fca9d3437749f414ff57473b6d2f44ba">
+        <Revocation Id="R-1bcf2b72c91c013c824ae6bd2c01358475118ed7e50d920ef78d7870f51513eeca921613208aaacbbbc6798e54b76546fca9d3437749f414ff57473b6d2f44ba">
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://crl.certification.tn/TunPersonalCA1.crl</SourceAddress>
@@ -288,17 +288,17 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686"/>
+            <SigningCertificate Certificate="C-355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686"/>
             <CertificateChain>
-                <ChainItem Id="355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686">
+                <ChainItem Certificate="C-355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
+                <ChainItem Certificate="C-D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
                     <Source>AIA</Source>
                 </ChainItem>
             </CertificateChain>
         </Revocation>
-        <Revocation Id="1bcf2b72c91c013c824ae6bd2c01358475118ed7e50d920ef78d7870f51513eee4d28fb520311e9a6a81279b408300874eecd3ca35f4f7462d78f4bf0514aae8">
+        <Revocation Id="R-1bcf2b72c91c013c824ae6bd2c01358475118ed7e50d920ef78d7870f51513eee4d28fb520311e9a6a81279b408300874eecd3ca35f4f7462d78f4bf0514aae8">
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp.certification.tn</SourceAddress>
@@ -317,14 +317,14 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168"/>
+            <SigningCertificate Certificate="C-903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168"/>
             <CertificateChain>
-                <ChainItem Id="903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168">
+                <ChainItem Certificate="C-903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168">
                     <Source>OCSP_RESPONSE</Source>
                 </ChainItem>
             </CertificateChain>
         </Revocation>
-        <Revocation Id="355e634464029b58fc89189da20cb1f3499373af91d8fa34b57b66775aa73686b671e62088b3f75a75ecee64dd3c5331cbf7045be28221c7fad8cbf2c4894f6d">
+        <Revocation Id="R-355e634464029b58fc89189da20cb1f3499373af91d8fa34b57b66775aa73686b671e62088b3f75a75ecee64dd3c5331cbf7045be28221c7fad8cbf2c4894f6d">
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp.certification.tn</SourceAddress>
@@ -344,9 +344,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168"/>
+            <SigningCertificate Certificate="C-903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168"/>
             <CertificateChain>
-                <ChainItem Id="903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168">
+                <ChainItem Certificate="C-903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168">
                     <Source>OCSP_RESPONSE</Source>
                 </ChainItem>
             </CertificateChain>

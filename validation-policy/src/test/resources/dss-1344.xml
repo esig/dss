@@ -25,20 +25,20 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0">
+            <SigningCertificate Certificate="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0">
                 <AttributePresent>true</AttributePresent>
                 <DigestValuePresent>true</DigestValuePresent>
                 <DigestValueMatch>true</DigestValueMatch>
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Id="E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0">
+                <ChainItem Certificate="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0">
+                <ChainItem Certificate="C-1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4">
+                <ChainItem Certificate="C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -61,12 +61,12 @@
                         <SignatureIntact>true</SignatureIntact>
                         <SignatureValid>true</SignatureValid>
                     </BasicSignature>
-                    <SigningCertificate Id="81AF749F424A8DF91012FF63D44357A75384FF64BB1C2ED59D0A658EE3C8C755"/>
+                    <SigningCertificate Certificate="C-81AF749F424A8DF91012FF63D44357A75384FF64BB1C2ED59D0A658EE3C8C755"/>
                     <CertificateChain>
-                        <ChainItem Id="81AF749F424A8DF91012FF63D44357A75384FF64BB1C2ED59D0A658EE3C8C755">
+                        <ChainItem Certificate="C-81AF749F424A8DF91012FF63D44357A75384FF64BB1C2ED59D0A658EE3C8C755">
                             <Source>TIMESTAMP</Source>
                         </ChainItem>
-                        <ChainItem Id="4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
+                        <ChainItem Certificate="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
@@ -113,12 +113,12 @@
                         <SignatureIntact>true</SignatureIntact>
                         <SignatureValid>true</SignatureValid>
                     </BasicSignature>
-                    <SigningCertificate Id="CFF2E3B95D7EBF7D89B1D586102D09632CE5E39BFA31115C3C9577461DD856AD"/>
+                    <SigningCertificate Certificate="C-CFF2E3B95D7EBF7D89B1D586102D09632CE5E39BFA31115C3C9577461DD856AD"/>
                     <CertificateChain>
-                        <ChainItem Id="CFF2E3B95D7EBF7D89B1D586102D09632CE5E39BFA31115C3C9577461DD856AD">
+                        <ChainItem Certificate="C-CFF2E3B95D7EBF7D89B1D586102D09632CE5E39BFA31115C3C9577461DD856AD">
                             <Source>TIMESTAMP</Source>
                         </ChainItem>
-                        <ChainItem Id="4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
+                        <ChainItem Certificate="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
@@ -196,12 +196,12 @@
                         <SignatureIntact>true</SignatureIntact>
                         <SignatureValid>true</SignatureValid>
                     </BasicSignature>
-                    <SigningCertificate Id="F4E7DF969A590AF41E38E5854542EBF9DF6A5BE9B16FD31494FA689509057494"/>
+                    <SigningCertificate Certificate="C-F4E7DF969A590AF41E38E5854542EBF9DF6A5BE9B16FD31494FA689509057494"/>
                     <CertificateChain>
-                        <ChainItem Id="F4E7DF969A590AF41E38E5854542EBF9DF6A5BE9B16FD31494FA689509057494">
+                        <ChainItem Certificate="C-F4E7DF969A590AF41E38E5854542EBF9DF6A5BE9B16FD31494FA689509057494">
                             <Source>TIMESTAMP</Source>
                         </ChainItem>
-                        <ChainItem Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                        <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                             <Source>TRUSTED_LIST</Source>
                         </ChainItem>
                     </CertificateChain>
@@ -272,7 +272,7 @@
         </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="3D62E6557C1DB8C28114420B85F9632206A12586E9EEC4F91280E4D5B6171E1A">
+        <Certificate Id="C-3D62E6557C1DB8C28114420B85F9632206A12586E9EEC4F91280E4D5B6171E1A">
             <SubjectDistinguishedName Format="CANONICAL">cn=certipost e-trust primary qualified ca,o=certipost s.a./n.v.,c=be</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Certipost E-Trust Primary Qualified CA,O=Certipost s.a./n.v.,C=BE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=gte cybertrust global root,ou=gte cybertrust solutions\, inc.,o=gte corporation,c=us</IssuerDistinguishedName>
@@ -327,7 +327,7 @@
             <TrustedServiceProviders/>
             <Revocations/>
         </Certificate>
-        <Certificate Id="A53125188D2110AA964B02C7B7C6DA3203170894E5FB71FFFB6667D5E6810A36">
+        <Certificate Id="C-A53125188D2110AA964B02C7B7C6DA3203170894E5FB71FFFB6667D5E6810A36">
             <SubjectDistinguishedName Format="CANONICAL">cn=gte cybertrust global root,ou=gte cybertrust solutions\, inc.,o=gte corporation,c=us</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=GTE CyberTrust Global Root,OU=GTE CyberTrust Solutions\, Inc.,O=GTE Corporation,C=US</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=gte cybertrust global root,ou=gte cybertrust solutions\, inc.,o=gte corporation,c=us</IssuerDistinguishedName>
@@ -376,7 +376,7 @@
             <TrustedServiceProviders/>
             <Revocations/>
         </Certificate>
-        <Certificate Id="4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
+        <Certificate Id="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
             <SubjectDistinguishedName Format="CANONICAL">c=fr,o=cryptolog international,ou=0002 43912916400026,cn=universign timestamping ca</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=FR,O=Cryptolog International,OU=0002 43912916400026,CN=Universign Timestamping CA</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">c=fr,o=cryptolog international,ou=0002 43912916400026,cn=universign timestamping ca</IssuerDistinguishedName>
@@ -435,14 +435,14 @@
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-12-01T01:00:00</StartDate>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -450,7 +450,7 @@
                             <EndDate>2016-12-01T01:00:00</EndDate>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -458,14 +458,14 @@
                             <EndDate>2016-07-01T00:00:00</EndDate>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
                             <ServiceName>Certification Authority for Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
                             <ServiceName>Certification Authority for Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -477,7 +477,7 @@
             </TrustedServiceProviders>
             <Revocations/>
         </Certificate>
-        <Certificate Id="E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0">
+        <Certificate Id="C-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.12=#13055469746c65,1.2.840.113549.1.9.1=#1613636572746e5f3230343840534d4330312e6575,l=brussels,ou=date of birth : 01/04/1965,o=organization nv / sa,c=be,cn=certn-activetestcertifcertipost first-name second-name thirdname</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.12=#13055469746c65,1.2.840.113549.1.9.1=#1613636572746e5f3230343840534d4330312e6575,L=Brussels,OU=Date of birth : 01/04/1965,O=Organization nv / sa,C=BE,CN=CERTN-Activetestcertifcertipost First-name Second-name Thirdname</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=certipost e-trust secondary qualified ca for physical persons,o=certipost s.a./n.v.,c=be</IssuerDistinguishedName>
@@ -527,12 +527,12 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0"/>
+            <SigningCertificate Certificate="C-1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0"/>
             <CertificateChain>
-                <ChainItem Id="1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0">
+                <ChainItem Certificate="C-1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4">
+                <ChainItem Certificate="C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -553,7 +553,7 @@
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
                             <ServiceName>CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -565,7 +565,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
                             <ServiceName>CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -578,7 +578,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
                             <ServiceName>CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -593,13 +593,13 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <CertificateRevocation Id="e07f11472bc72bb04a6e3c012dfc838cd323d130bdb3f0e5b1e9558de1b723d0639285188fba321c3b3ade9102a0222b43d3ee4133b9e64b2e9984f9b5f335e6">
+                <CertificateRevocation Revocation="R-e07f11472bc72bb04a6e3c012dfc838cd323d130bdb3f0e5b1e9558de1b723d0639285188fba321c3b3ade9102a0222b43d3ee4133b9e64b2e9984f9b5f335e6">
                     <Status>true</Status>
         
                 </CertificateRevocation>
             </Revocations>
         </Certificate>
-        <Certificate Id="058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4">
+        <Certificate Id="C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4">
             <SubjectDistinguishedName Format="CANONICAL">cn=certipost e-trust primary qualified ca,o=certipost s.a./n.v.,c=be</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Certipost E-Trust Primary Qualified CA,O=Certipost s.a./n.v.,C=BE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=certipost e-trust primary qualified ca,o=certipost s.a./n.v.,c=be</IssuerDistinguishedName>
@@ -657,7 +657,7 @@
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
                             <ServiceName>CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -668,7 +668,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
                             <ServiceName>CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -680,7 +680,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
                             <ServiceName>CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -695,7 +695,7 @@
             </TrustedServiceProviders>
             <Revocations/>
         </Certificate>
-        <Certificate Id="F4E7DF969A590AF41E38E5854542EBF9DF6A5BE9B16FD31494FA689509057494">
+        <Certificate Id="C-F4E7DF969A590AF41E38E5854542EBF9DF6A5BE9B16FD31494FA689509057494">
             <SubjectDistinguishedName Format="CANONICAL">c=fr,o=cryptolog international,ou=0002 43912916400026,cn=universign timestamping unit 018</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=FR,O=Cryptolog International,OU=0002 43912916400026,CN=Universign Timestamping Unit 018</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=universign timestamping ca 2015,ou=0002 43912916400026,o=cryptolog international,c=fr</IssuerDistinguishedName>
@@ -742,9 +742,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+            <SigningCertificate Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
             <CertificateChain>
-                <ChainItem Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -762,14 +762,14 @@
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
                             <ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
                             <ServiceName>Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -779,13 +779,13 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <CertificateRevocation Id="f4e7df969a590af41e38e5854542ebf9df6a5be9b16fd31494fa689509057494cc99ff005e499c964a1d2ccf78dfaf20d8280d9af4eb026cdd56fbe4694f85d0">
+                <CertificateRevocation Revocation="R-f4e7df969a590af41e38e5854542ebf9df6a5be9b16fd31494fa689509057494cc99ff005e499c964a1d2ccf78dfaf20d8280d9af4eb026cdd56fbe4694f85d0">
                     <Available>true</Available>
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>
         </Certificate>
-        <Certificate Id="1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0">
+        <Certificate Id="C-1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0">
             <SubjectDistinguishedName Format="CANONICAL">cn=certipost e-trust secondary qualified ca for physical persons,o=certipost s.a./n.v.,c=be</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Certipost E-Trust Secondary Qualified CA for Physical Persons,O=Certipost s.a./n.v.,C=BE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=certipost e-trust primary qualified ca,o=certipost s.a./n.v.,c=be</IssuerDistinguishedName>
@@ -830,9 +830,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4"/>
+            <SigningCertificate Certificate="C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4"/>
             <CertificateChain>
-                <ChainItem Id="058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4">
+                <ChainItem Certificate="C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -850,7 +850,7 @@
                     <CountryCode>BE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
                             <ServiceName>CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -861,7 +861,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
                             <ServiceName>CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -873,7 +873,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</ServiceDigitalIdentifier>
                             <ServiceName>CN=Certipost E-Trust Primary Qualified CA, O=Certipost s.a./n.v., C=BE</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -887,13 +887,13 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <CertificateRevocation Id="1a07376222bf46318884ea94953003ecf8e35635c373305c973c1b39169202f0add0a9b25b1db305a80fb69659a26675d0a7f3dfdee0b75cad7c1c8381b2e4ff">
+                <CertificateRevocation Revocation="R-1a07376222bf46318884ea94953003ecf8e35635c373305c973c1b39169202f0add0a9b25b1db305a80fb69659a26675d0a7f3dfdee0b75cad7c1c8381b2e4ff">
                     <Status>true</Status>
         
                 </CertificateRevocation>
             </Revocations>
         </Certificate>
-        <Certificate Id="CFF2E3B95D7EBF7D89B1D586102D09632CE5E39BFA31115C3C9577461DD856AD">
+        <Certificate Id="C-CFF2E3B95D7EBF7D89B1D586102D09632CE5E39BFA31115C3C9577461DD856AD">
             <SubjectDistinguishedName Format="CANONICAL">c=fr,o=cryptolog international,ou=0002 43912916400026,cn=universign timestamping unit 009</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=FR,O=Cryptolog International,OU=0002 43912916400026,CN=Universign Timestamping Unit 009</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">c=fr,o=cryptolog international,ou=0002 43912916400026,cn=universign timestamping ca</IssuerDistinguishedName>
@@ -940,9 +940,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A"/>
+            <SigningCertificate Certificate="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A"/>
             <CertificateChain>
-                <ChainItem Id="4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
+                <ChainItem Certificate="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -960,14 +960,14 @@
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-12-01T01:00:00</StartDate>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -975,7 +975,7 @@
                             <EndDate>2016-12-01T01:00:00</EndDate>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -983,14 +983,14 @@
                             <EndDate>2016-07-01T00:00:00</EndDate>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
                             <ServiceName>Certification Authority for Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
                             <ServiceName>Certification Authority for Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -1001,13 +1001,13 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <CertificateRevocation Id="cff2e3b95d7ebf7d89b1d586102d09632ce5e39bfa31115c3c9577461dd856ad3da1994ddfbdf2294ca907be84c9ae592a19aff7f417b4288c1f772ffdc85f0c">
+                <CertificateRevocation Revocation="R-cff2e3b95d7ebf7d89b1d586102d09632ce5e39bfa31115c3c9577461dd856ad3da1994ddfbdf2294ca907be84c9ae592a19aff7f417b4288c1f772ffdc85f0c">
                     <Status>true</Status>
         
                 </CertificateRevocation>
             </Revocations>
         </Certificate>
-        <Certificate Id="81AF749F424A8DF91012FF63D44357A75384FF64BB1C2ED59D0A658EE3C8C755">
+        <Certificate Id="C-81AF749F424A8DF91012FF63D44357A75384FF64BB1C2ED59D0A658EE3C8C755">
             <SubjectDistinguishedName Format="CANONICAL">c=fr,o=cryptolog international,ou=0002 43912916400026,cn=universign timestamping unit 008</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=FR,O=Cryptolog International,OU=0002 43912916400026,CN=Universign Timestamping Unit 008</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">c=fr,o=cryptolog international,ou=0002 43912916400026,cn=universign timestamping ca</IssuerDistinguishedName>
@@ -1054,9 +1054,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A"/>
+            <SigningCertificate Certificate="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A"/>
             <CertificateChain>
-                <ChainItem Id="4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
+                <ChainItem Certificate="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -1074,14 +1074,14 @@
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-12-01T01:00:00</StartDate>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -1089,7 +1089,7 @@
                             <EndDate>2016-12-01T01:00:00</EndDate>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
                             <ServiceName>Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -1097,14 +1097,14 @@
                             <EndDate>2016-07-01T00:00:00</EndDate>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
                             <ServiceName>Certification Authority for Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</ServiceDigitalIdentifier>
                             <ServiceName>Certification Authority for Universign Time Stamping</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -1115,13 +1115,13 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <CertificateRevocation Id="81af749f424a8df91012ff63d44357a75384ff64bb1c2ed59d0a658ee3c8c7553da1994ddfbdf2294ca907be84c9ae592a19aff7f417b4288c1f772ffdc85f0c">
+                <CertificateRevocation Revocation="R-81af749f424a8df91012ff63d44357a75384ff64bb1c2ed59d0a658ee3c8c7553da1994ddfbdf2294ca907be84c9ae592a19aff7f417b4288c1f772ffdc85f0c">
                     <Status>true</Status>
         
                 </CertificateRevocation>
             </Revocations>
         </Certificate>
-        <Certificate Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+        <Certificate Id="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
             <SubjectDistinguishedName Format="CANONICAL">cn=universign timestamping ca 2015,ou=0002 43912916400026,o=cryptolog international,c=fr</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Universign Timestamping CA 2015,OU=0002 43912916400026,O=Cryptolog International,C=FR</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=universign timestamping ca 2015,ou=0002 43912916400026,o=cryptolog international,c=fr</IssuerDistinguishedName>
@@ -1180,14 +1180,14 @@
                     <CountryCode>FR</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
                             <ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
                             <StartDate>2016-07-01T00:00:00</StartDate>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
                             <ServiceName>Certification Authority for Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -1195,14 +1195,14 @@
                             <EndDate>2016-07-01T00:00:00</EndDate>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
                             <ServiceName>Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-12-01T01:00:00</StartDate>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
                             <ServiceName>Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -1210,7 +1210,7 @@
                             <EndDate>2016-12-01T01:00:00</EndDate>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
                             <ServiceName>Universign Time Stamping 2015</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -1224,7 +1224,7 @@
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>
-        <Revocation Id="e07f11472bc72bb04a6e3c012dfc838cd323d130bdb3f0e5b1e9558de1b723d0639285188fba321c3b3ade9102a0222b43d3ee4133b9e64b2e9984f9b5f335e6">
+        <Revocation Id="R-e07f11472bc72bb04a6e3c012dfc838cd323d130bdb3f0e5b1e9558de1b723d0639285188fba321c3b3ade9102a0222b43d3ee4133b9e64b2e9984f9b5f335e6">
             <Origin>SIGNATURE</Origin>
             <Type>CRL</Type>
             <ProductionDate>2013-08-13T18:09:00</ProductionDate>
@@ -1251,18 +1251,18 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0"/>
+            <SigningCertificate Certificate="C-1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0"/>
             <CertificateChain>
-                <ChainItem Id="1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0">
+                <ChainItem Certificate="C-1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4">
+                <ChainItem Certificate="C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
 
         </Revocation>
-        <Revocation Id="f4e7df969a590af41e38e5854542ebf9df6a5be9b16fd31494fa689509057494cc99ff005e499c964a1d2ccf78dfaf20d8280d9af4eb026cdd56fbe4694f85d0">
+        <Revocation Id="R-f4e7df969a590af41e38e5854542ebf9df6a5be9b16fd31494fa689509057494cc99ff005e499c964a1d2ccf78dfaf20d8280d9af4eb026cdd56fbe4694f85d0">
             <Origin>EXTERNAL</Origin>
             <Type>CRL</Type>
             <SourceAddress>http://crl.universign.eu/universign_tsa_root_2015.crl</SourceAddress>
@@ -1290,14 +1290,14 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+            <SigningCertificate Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
             <CertificateChain>
-                <ChainItem Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
         </Revocation>
-        <Revocation Id="1a07376222bf46318884ea94953003ecf8e35635c373305c973c1b39169202f0add0a9b25b1db305a80fb69659a26675d0a7f3dfdee0b75cad7c1c8381b2e4ff">
+        <Revocation Id="R-1a07376222bf46318884ea94953003ecf8e35635c373305c973c1b39169202f0add0a9b25b1db305a80fb69659a26675d0a7f3dfdee0b75cad7c1c8381b2e4ff">
             <Origin>SIGNATURE</Origin>
             <Type>CRL</Type>
             <ProductionDate>2013-07-01T06:00:00</ProductionDate>
@@ -1324,15 +1324,15 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4"/>
+            <SigningCertificate Certificate="C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4"/>
             <CertificateChain>
-                <ChainItem Id="058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4">
+                <ChainItem Certificate="C-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
 
         </Revocation>
-        <Revocation Id="cff2e3b95d7ebf7d89b1d586102d09632ce5e39bfa31115c3c9577461dd856ad3da1994ddfbdf2294ca907be84c9ae592a19aff7f417b4288c1f772ffdc85f0c">
+        <Revocation Id="R-cff2e3b95d7ebf7d89b1d586102d09632ce5e39bfa31115c3c9577461dd856ad3da1994ddfbdf2294ca907be84c9ae592a19aff7f417b4288c1f772ffdc85f0c">
             <Origin>SIGNATURE</Origin>
             <Type>CRL</Type>
             <ProductionDate>2018-02-05T17:00:30</ProductionDate>
@@ -1359,15 +1359,15 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A"/>
+            <SigningCertificate Certificate="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A"/>
             <CertificateChain>
-                <ChainItem Id="4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
+                <ChainItem Certificate="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
 
         </Revocation>
-        <Revocation Id="81af749f424a8df91012ff63d44357a75384ff64bb1c2ed59d0a658ee3c8c7553da1994ddfbdf2294ca907be84c9ae592a19aff7f417b4288c1f772ffdc85f0c">
+        <Revocation Id="R-81af749f424a8df91012ff63d44357a75384ff64bb1c2ed59d0a658ee3c8c7553da1994ddfbdf2294ca907be84c9ae592a19aff7f417b4288c1f772ffdc85f0c">
             <Origin>SIGNATURE</Origin>
             <Type>CRL</Type>
             <ProductionDate>2018-02-05T17:00:30</ProductionDate>
@@ -1394,9 +1394,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A"/>
+            <SigningCertificate Certificate="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A"/>
             <CertificateChain>
-                <ChainItem Id="4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
+                <ChainItem Certificate="C-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>

@@ -95,7 +95,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	
 	public XmlCertificateRevocation getCertificateRevocationDataById(String revocationId) {
 		for (XmlCertificateRevocation certificateRevocation : getCertificateRevocationData()) {
-			if (certificateRevocation.getId().equals(revocationId)) {
+			if (certificateRevocation.getRevocation().getId().equals(revocationId)) {
 				return certificateRevocation;
 			}
 		}
@@ -209,7 +209,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 					for (XmlTrustedService trustedService : trustedServices) {
 						TrustedServiceWrapper wrapper = new TrustedServiceWrapper();
 						wrapper.setTspName(tsp.getTSPName());
-						wrapper.setServiceDigitalIdentifier(trustedService.getServiceDigitalIdentifier());
+						wrapper.setServiceDigitalIdentifier(new CertificateWrapper(trustedService.getServiceDigitalIdentifier()));
 						wrapper.setServiceName(trustedService.getServiceName());
 						wrapper.setCountryCode(tsp.getCountryCode());
 						wrapper.setStatus(trustedService.getStatus());

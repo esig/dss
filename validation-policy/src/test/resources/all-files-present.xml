@@ -20,7 +20,7 @@
         </ContentFiles>
     </ContainerInfo>
     <Signatures>
-        <Signature Id="1543416150409">
+        <Signature Id="S-1543416150409">
             <SignatureFilename>META-INF/signatures0.xml</SignatureFilename>
             <DateTime>2018-11-28T14:42:30</DateTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
@@ -60,17 +60,17 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="709E9CB89541807694D261D1EB3E80232AF173B5AAD235771AD9291D01B04B09">
+            <SigningCertificate Certificate="C-709E9CB89541807694D261D1EB3E80232AF173B5AAD235771AD9291D01B04B09">
                 <AttributePresent>true</AttributePresent>
                 <DigestValuePresent>true</DigestValuePresent>
                 <DigestValueMatch>true</DigestValueMatch>
                 <IssuerSerialMatch>false</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Id="709E9CB89541807694D261D1EB3E80232AF173B5AAD235771AD9291D01B04B09">
+                <ChainItem Certificate="C-709E9CB89541807694D261D1EB3E80232AF173B5AAD235771AD9291D01B04B09">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
+                <ChainItem Certificate="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -88,7 +88,7 @@
         </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="709E9CB89541807694D261D1EB3E80232AF173B5AAD235771AD9291D01B04B09">
+        <Certificate Id="C-709E9CB89541807694D261D1EB3E80232AF173B5AAD235771AD9291D01B04B09">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130b3337333035333030313233,2.5.4.42=#0c0c4d49434841454c204a4f484e,2.5.4.4=#0c054144414d53,cn=a\,m j\,37305300123,ou=digital signature,o=esteid (digi-id e-resident),c=ee</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#130b3337333035333030313233,2.5.4.42=#0c0c4d49434841454c204a4f484e,2.5.4.4=#0c054144414d53,CN=a\,m j\,37305300123,OU=digital signature,O=ESTEID (DIGI-ID E-RESIDENT),C=EE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=esteid-sk 2015,2.5.4.97=#0c0e4e545245452d3130373437303133,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
@@ -126,9 +126,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F"/>
+            <SigningCertificate Certificate="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F"/>
             <CertificateChain>
-                <ChainItem Id="74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
+                <ChainItem Certificate="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -154,7 +154,7 @@
                     <CountryCode>EE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
                             <ServiceName>ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -170,13 +170,13 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <CertificateRevocation Id="709e9cb89541807694d261d1eb3e80232af173b5aad235771ad9291d01b04b09094c495a56e31aa49a6a3c74f65869cdeb8431e55e3946f5e82bf778342e92cd">
+                <CertificateRevocation Revocation="R-709e9cb89541807694d261d1eb3e80232af173b5aad235771ad9291d01b04b09094c495a56e31aa49a6a3c74f65869cdeb8431e55e3946f5e82bf778342e92cd">
                     <Available>true</Available>
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>
         </Certificate>
-        <Certificate Id="D0E894F016BBFF0BF3CA5D932607108DEE7EEB9C92BD7910BBA510043AB0C683">
+        <Certificate Id="C-D0E894F016BBFF0BF3CA5D932607108DEE7EEB9C92BD7910BBA510043AB0C683">
             <SubjectDistinguishedName Format="CANONICAL">cn=esteid-sk 2015 aia ocsp responder 201811,ou=ocsp,2.5.4.97=#0c0e4e545245452d3130373437303133,o=sk id solutions as,c=ee</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=ESTEID-SK 2015 AIA OCSP RESPONDER 201811,OU=OCSP,2.5.4.97=#0c0e4e545245452d3130373437303133,O=SK ID Solutions AS,C=EE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=esteid-sk 2015,2.5.4.97=#0c0e4e545245452d3130373437303133,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
@@ -210,9 +210,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F"/>
+            <SigningCertificate Certificate="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F"/>
             <CertificateChain>
-                <ChainItem Id="74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
+                <ChainItem Certificate="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -228,7 +228,7 @@
                     <CountryCode>EE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
                             <ServiceName>ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -241,7 +241,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
                             <ServiceName>ESTEID-SK 2015 qualified certificates for electronic signatures</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -259,7 +259,7 @@
             </TrustedServiceProviders>
             <Revocations/>
         </Certificate>
-        <Certificate Id="74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
+        <Certificate Id="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
             <SubjectDistinguishedName Format="CANONICAL">cn=esteid-sk 2015,2.5.4.97=#0c0e4e545245452d3130373437303133,o=as sertifitseerimiskeskus,c=ee</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=ESTEID-SK 2015,2.5.4.97=#0c0e4e545245452d3130373437303133,O=AS Sertifitseerimiskeskus,C=EE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=ee certification centre root ca,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
@@ -318,7 +318,7 @@
                     <CountryCode>EE</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
                             <ServiceName>ESTEID qualified certificates for electronic signatures (ESTEID-SK 2015)</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -331,7 +331,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
                             <ServiceName>ESTEID-SK 2015 qualified certificates for electronic signatures</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -342,7 +342,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F</ServiceDigitalIdentifier>
                             <ServiceName>ESTEID-SK 2015: Qualified certificates for Estonian ID-card, the residence permit card, the digital identity card, the digital identity card in form of the Mobile-ID</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -356,7 +356,7 @@
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>
-        <Revocation Id="709e9cb89541807694d261d1eb3e80232af173b5aad235771ad9291d01b04b09094c495a56e31aa49a6a3c74f65869cdeb8431e55e3946f5e82bf778342e92cd">
+        <Revocation Id="R-709e9cb89541807694d261d1eb3e80232af173b5aad235771ad9291d01b04b09094c495a56e31aa49a6a3c74f65869cdeb8431e55e3946f5e82bf778342e92cd">
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://aia.sk.ee/esteid2015</SourceAddress>
@@ -371,12 +371,12 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="D0E894F016BBFF0BF3CA5D932607108DEE7EEB9C92BD7910BBA510043AB0C683"/>
+            <SigningCertificate Certificate="C-D0E894F016BBFF0BF3CA5D932607108DEE7EEB9C92BD7910BBA510043AB0C683"/>
             <CertificateChain>
-                <ChainItem Id="D0E894F016BBFF0BF3CA5D932607108DEE7EEB9C92BD7910BBA510043AB0C683">
+                <ChainItem Certificate="C-D0E894F016BBFF0BF3CA5D932607108DEE7EEB9C92BD7910BBA510043AB0C683">
                     <Source>OCSP_RESPONSE</Source>
                 </ChainItem>
-                <ChainItem Id="74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
+                <ChainItem Certificate="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>

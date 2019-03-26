@@ -87,7 +87,7 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 				for (XmlCertificateRevocation xmlCertificateRevocation : revocations) {
 					List<XmlRevocation> xmlRevocations = diagnosticDataJaxb.getUsedRevocations();
 					for (XmlRevocation revocation : xmlRevocations) {
-						if (xmlCertificateRevocation.getId().equals(revocation.getId())) {
+						if (xmlCertificateRevocation.getRevocation().getId().equals(revocation.getId())) {
 							assertNotNull(revocation.getBase64Encoded());
 						}
 					}

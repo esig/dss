@@ -688,7 +688,7 @@ public class DiagnosticData {
 		for (XmlCertificateRevocationRef revocationRef : revocationRefList) {
 			if ((revocationType == null || revocationRef.getType().equals(revocationType)) && 
 					(originType == null || revocationRef.getOrigin().equals(originType))) {
-				revocations.add(getCertificateRevocationDataByIds(revocationRef.getCertificateId(), revocationRef.getRevocationId()));
+				revocations.add(new RevocationWrapper(revocationRef.getRevocation()));
 			}
 		}
 		return revocations;
@@ -742,8 +742,7 @@ public class DiagnosticData {
 			for (XmlCertificate certificate : certificates) {
 				List<XmlCertificateRevocation> certificateRevocations = certificate.getRevocations();
 				for (XmlCertificateRevocation certificateRevocation : certificateRevocations) {
-					XmlRevocation commonRevocation = getXmlRevocationDataById(certificateRevocation.getId());
-					usedRevocations.add(new CertificateRevocationWrapper(commonRevocation, certificateRevocation));
+					usedRevocations.add(new CertificateRevocationWrapper(certificateRevocation.getRevocation(), certificateRevocation));
 				}
 			}
 		}
@@ -804,13 +803,8 @@ public class DiagnosticData {
 		List<XmlCertificateRevocation> xmlCertificateRevocations = certificate.getCertificateRevocationData();
 		if (Utils.isCollectionNotEmpty(xmlCertificateRevocations)) {
 			Set<CertificateRevocationWrapper> revocations = new HashSet<CertificateRevocationWrapper>();
-			List<XmlRevocation> usedRevocations = wrapped.getUsedRevocations();
 			for (XmlCertificateRevocation certificateRevocation : xmlCertificateRevocations) {
-				for (XmlRevocation xmlRevocation : usedRevocations) {
-					if (certificateRevocation.getId().equals(xmlRevocation.getId())) {
-						revocations.add(new CertificateRevocationWrapper(xmlRevocation, certificateRevocation));
-					}
-				}
+				revocations.add(new CertificateRevocationWrapper(certificateRevocation.getRevocation(), certificateRevocation));
 			}
 			return revocations;
 		}

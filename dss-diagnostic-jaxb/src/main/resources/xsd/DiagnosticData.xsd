@@ -161,7 +161,7 @@
 			</xs:element>
 			
 		</xs:sequence>
-		<xs:attribute name="Id" type="xs:string" use="required" />
+		<xs:attribute name="Id" type="xs:ID" use="required" />
 		<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
 	</xs:complexType>
 	
@@ -313,7 +313,7 @@
 			
 			<xs:element name="Base64Encoded" type="xs:base64Binary" minOccurs="0" />
 		</xs:sequence>
-		<xs:attribute name="Id" type="xs:string" use="required" />
+		<xs:attribute name="Id" type="xs:ID" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="OID">
@@ -381,7 +381,7 @@
 			<xs:element name="DigestValueMatch" type="xs:boolean" minOccurs="0" />
 			<xs:element name="IssuerSerialMatch" type="xs:boolean" minOccurs="0" />
 		</xs:sequence>
-		<xs:attribute name="Id" type="xs:string" use="required" />
+		<xs:attribute name="Certificate" type="xs:IDREF" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="TimestampedObjects">
@@ -414,7 +414,7 @@
 					<xs:sequence>
 						<xs:element name="Source" type="xs:string" />
 					</xs:sequence>
-					<xs:attribute name="Id" type="xs:string" use="required" />
+					<xs:attribute name="Certificate" type="xs:IDREF" use="required" />
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
@@ -468,7 +468,7 @@
 	</xs:simpleType>
 	
 	<xs:complexType name="FoundCertificate">
-		<xs:attribute name="CertId" type="xs:string" use="required" />
+		<xs:attribute name="Certificate" type="xs:IDREF" use="required" />
 		<xs:attribute name="Location" type="CertificateLocationType" use="required" />
 	</xs:complexType>
 	
@@ -509,7 +509,7 @@
 			<xs:element name="Reason" type="xs:string" minOccurs="0" />
 			<xs:element name="RevocationDate" type="xs:dateTime" minOccurs="0" />
 		</xs:sequence>
-		<xs:attribute name="Id" type="xs:string" use="required" />
+		<xs:attribute name="Revocation" type="xs:IDREF" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="Revocation">
@@ -530,13 +530,13 @@
 			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
 			<xs:element name="Base64Encoded" type="xs:base64Binary" minOccurs="0" />
 		</xs:sequence>
-		<xs:attribute name="Id" type="xs:string" use="required" />
+		<xs:attribute name="Id" type="xs:ID" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="CertificateRevocationRef">
 		<xs:sequence>
-			<xs:element name="CertificateId" type="xs:string" />
-			<xs:element name="RevocationId" type="xs:string" />
+			<xs:element name="Certificate" type="xs:IDREF" />
+			<xs:element name="Revocation" type="xs:IDREF" />
 			<xs:element name="Type" type="RevocationType" />
 			<xs:element name="Origin" type="RevocationOriginType" />
 		</xs:sequence>
@@ -593,7 +593,7 @@
 	
 	<xs:complexType name="TrustedService">
 		<xs:sequence>
-			<xs:element name="ServiceDigitalIdentifier" type="xs:string" />
+			<xs:element name="ServiceDigitalIdentifier" type="xs:IDREF" />
 			<xs:element name="ServiceName" type="xs:string" />
 			<xs:element name="ServiceType" type="xs:string" />
 			<xs:element name="Status" type="xs:string" />

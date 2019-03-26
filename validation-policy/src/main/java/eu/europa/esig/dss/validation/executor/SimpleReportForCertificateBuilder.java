@@ -132,7 +132,7 @@ public class SimpleReportForCertificateBuilder {
 			List<XmlTrustedService> trustedServices = xmlTrustedServiceProvider.getTrustedServices();
 			boolean foundCertId = false;
 			for (XmlTrustedService xmlTrustedService : trustedServices) {
-				if (Utils.areStringsEqual(certificateId, xmlTrustedService.getServiceDigitalIdentifier())) {
+				if (Utils.areStringsEqual(certificateId, xmlTrustedService.getServiceDigitalIdentifier().getId())) {
 					foundCertId = true;
 					break;
 				}

@@ -469,7 +469,7 @@ public class DiagnosticDataBuilder {
 	
 	private XmlCertificateRevocation getXmlCertificateRevocation(CertificateToken certToken, RevocationToken revocationToken) {
 		final XmlCertificateRevocation xmlCertificateRevocation = new XmlCertificateRevocation();
-		xmlCertificateRevocation.setId(revocationToken.getDSSIdAsString());
+		xmlCertificateRevocation.setRevocation(getMinimalRevocation(revocationToken.getDSSIdAsString()));
 		final Boolean revocationTokenStatus = revocationToken.getStatus();
 		// revocationTokenStatus can be null when OCSP return Unknown. In
 		// this case we set status to false.
@@ -488,6 +488,12 @@ public class DiagnosticDataBuilder {
 		}
 		
 		return xmlCertificateRevocation;
+	}
+
+	private XmlRevocation getMinimalRevocation(String id) {
+		XmlRevocation revocation = new XmlRevocation();
+		revocation.setId(id);
+		return revocation;
 	}
 
 	private XmlRevocation getXmlRevocation(RevocationToken revocationToken, Set<DigestAlgorithm> usedDigestAlgorithms) {
@@ -563,9 +569,15 @@ public class DiagnosticDataBuilder {
 
 	private XmlChainItem getXmlChainItem(final CertificateToken token) {
 		final XmlChainItem chainItem = new XmlChainItem();
-		chainItem.setId(token.getDSSIdAsString());
+		chainItem.setCertificate(getMinimalCertificate(token.getDSSIdAsString()));
 		chainItem.setSource(getCertificateMainSourceType(token).name());
 		return chainItem;
+	}
+
+	private XmlCertificate getMinimalCertificate(String id) {
+		XmlCertificate certificate = new XmlCertificate();
+		certificate.setId(id);
+		return certificate;
 	}
 
 	private CertificateSourceType getCertificateMainSourceType(final CertificateToken token) {
@@ -596,7 +608,7 @@ public class DiagnosticDataBuilder {
 		final CertificateToken certificateByPubKey = getCertificateByPubKey(certPubKey);
 		if (certificateByPubKey != null) {
 			final XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
-			xmlSignCertType.setId(certificateByPubKey.getDSSIdAsString());
+			xmlSignCertType.setCertificate(getMinimalCertificate(certificateByPubKey.getDSSIdAsString()));
 			return xmlSignCertType;
 		}
 		return null;
@@ -627,7 +639,7 @@ public class DiagnosticDataBuilder {
 		XmlSigningCertificate xmlSignCertType = new XmlSigningCertificate();
 		CertificateToken signingCertificateToken = theCertificateValidity.getCertificateToken();
 		if (signingCertificateToken != null) {
-			xmlSignCertType.setId(signingCertificateToken.getDSSIdAsString());
+			xmlSignCertType.setCertificate(getMinimalCertificate(signingCertificateToken.getDSSIdAsString()));
 		}
 		xmlSignCertType.setAttributePresent(theCertificateValidity.isAttributePresent());
 		xmlSignCertType.setDigestValuePresent(theCertificateValidity.isDigestPresent());
@@ -713,7 +725,7 @@ public class DiagnosticDataBuilder {
 		for (CertificateToken certificateToken : certs) {
 			XmlFoundCertificate xfc = new XmlFoundCertificate();
 			xfc.setLocation(location);
-			xfc.setCertId(certificateToken.getDSSIdAsString());
+			xfc.setCertificate(getMinimalCertificate(certificateToken.getDSSIdAsString()));
 			result.add(xfc);
 		}
 		return result;
@@ -754,8 +766,8 @@ public class DiagnosticDataBuilder {
 	
 	private XmlCertificateRevocationRef getXmlCertificateRevocationRef(RevocationToken revocationToken, RevocationOriginType originType) {
 		XmlCertificateRevocationRef xmlRevocationRef = new XmlCertificateRevocationRef();
-		xmlRevocationRef.setCertificateId(revocationToken.getRelatedCertificateID());
-		xmlRevocationRef.setRevocationId(revocationToken.getDSSIdAsString());
+		xmlRevocationRef.setCertificate(getMinimalCertificate(revocationToken.getRelatedCertificateID()));
+		xmlRevocationRef.setRevocation(getMinimalRevocation(revocationToken.getDSSIdAsString()));
 		xmlRevocationRef.setType(RevocationType.valueOf(revocationToken.getRevocationSourceType().name()));
 		xmlRevocationRef.setOrigin(originType);
 		return xmlRevocationRef;
@@ -1145,7 +1157,7 @@ public class DiagnosticDataBuilder {
 				for (ServiceInfoStatus serviceInfoStatus : serviceStatusAfterOfEqualsCertIssuance) {
 					XmlTrustedService trustedService = new XmlTrustedService();
 
-					trustedService.setServiceDigitalIdentifier(trustedCert.getDSSIdAsString());
+					trustedService.setServiceDigitalIdentifier(getMinimalCertificate(trustedCert.getDSSIdAsString()));
 					trustedService.setServiceName(serviceInfoStatus.getServiceName());
 					trustedService.setServiceType(serviceInfoStatus.getType());
 					trustedService.setStatus(serviceInfoStatus.getStatus());
