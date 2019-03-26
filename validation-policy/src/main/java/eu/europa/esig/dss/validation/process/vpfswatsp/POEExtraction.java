@@ -74,7 +74,7 @@ public class POEExtraction {
 		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
 		for (CertificateWrapper certificate : usedCertificates) {
 			addPOE(certificate.getId(), currentTime);
-			Set<CertificateRevocationWrapper> revocations = diagnosticData.getRevocationDataByCertificate(certificate);
+			List<CertificateRevocationWrapper> revocations = certificate.getCertificateRevocationData();
 			if (Utils.isCollectionNotEmpty(revocations)) {
 				for (CertificateRevocationWrapper revocation : revocations) {
 					if (revocation.isInternalRevocationOrigin()) {

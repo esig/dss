@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import java.util.Set;
+import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.utils.Utils;
@@ -34,9 +34,9 @@ import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class RevocationCertHashMatchCheck extends ChainItem<XmlSubXCV> {
 
-	private final Set<CertificateRevocationWrapper> certificateRevocations;
+	private final List<CertificateRevocationWrapper> certificateRevocations;
 
-	public RevocationCertHashMatchCheck(XmlSubXCV result, Set<CertificateRevocationWrapper> certificateRevocations, LevelConstraint constraint) {
+	public RevocationCertHashMatchCheck(XmlSubXCV result, List<CertificateRevocationWrapper> certificateRevocations, LevelConstraint constraint) {
 		super(result, constraint);
 		this.certificateRevocations = certificateRevocations;
 	}

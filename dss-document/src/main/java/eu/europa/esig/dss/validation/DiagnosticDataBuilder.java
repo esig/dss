@@ -273,19 +273,9 @@ public class DiagnosticDataBuilder {
 
 		allUsedCertificatesDigestAlgorithms = getAllUserCertificateDigestAlgoritms();
 
-		Set<String> countryCodes = new HashSet<String>();
 		if (Utils.isCollectionNotEmpty(usedCertificates)) {
 			for (CertificateToken certificateToken : usedCertificates) {
 				diagnosticData.getUsedCertificates().add(getXmlCertificate(certificateToken.getDSSIdAsString()));
-
-				if (trustedCertSource != null) {
-					Set<ServiceInfo> associatedTSPS = trustedCertSource.getTrustServices(certificateToken);
-					if (Utils.isCollectionNotEmpty(associatedTSPS)) {
-						for (ServiceInfo serviceInfo : associatedTSPS) {
-							countryCodes.add(serviceInfo.getTlCountryCode());
-						}
-					}
-				}
 			}
 		}
 		
@@ -299,8 +289,25 @@ public class DiagnosticDataBuilder {
 			}
 		}
 
+		if (Utils.isCollectionNotEmpty(signatures)) {
+			for (AdvancedSignature advancedSignature : signatures) {
+				diagnosticData.getSignatures().add(getXmlSignature(advancedSignature));
+			}
+		}
+
 		if (trustedCertSource instanceof TrustedListsCertificateSource) {
 			TrustedListsCertificateSource tlCS = (TrustedListsCertificateSource) trustedCertSource;
+
+			Set<String> countryCodes = new HashSet<String>();
+			for (CertificateToken certificateToken : usedCertificates) {
+				Set<ServiceInfo> associatedTSPS = trustedCertSource.getTrustServices(certificateToken);
+				if (Utils.isCollectionNotEmpty(associatedTSPS)) {
+					for (ServiceInfo serviceInfo : associatedTSPS) {
+						countryCodes.add(serviceInfo.getTlCountryCode());
+					}
+				}
+			}
+
 			boolean addLOTL = false;
 			for (String countryCode : countryCodes) {
 				TLInfo tlInfo = tlCS.getTlInfo(countryCode);
@@ -313,11 +320,9 @@ public class DiagnosticDataBuilder {
 			if (addLOTL) {
 				diagnosticData.setListOfTrustedLists(getXmlTrustedList("LOTL", tlCS.getLotlInfo()));
 			}
-		}
 
-		if (Utils.isCollectionNotEmpty(signatures)) {
-			for (AdvancedSignature advancedSignature : signatures) {
-				diagnosticData.getSignatures().add(getXmlSignature(advancedSignature));
+			for (XmlCertificate xmlCert : diagnosticData.getUsedCertificates()) {
+				xmlCert.setTrustedServiceProviders(getXmlTrustedServiceProviders(getCertificateToken(xmlCert.getId())));
 			}
 		}
 
@@ -501,9 +506,7 @@ public class DiagnosticDataBuilder {
 
 	private XmlRevocation getXmlRevocation(String revocationId, RevocationToken currentRevocation) {
 		XmlRevocation xmlRevocation = xmlRevocations.get(revocationId);
-		if (xmlRevocation != null) {
-			return xmlRevocation;
-		} else {
+		if (xmlRevocation == null) {
 			xmlRevocation = buildXmlRevocation(revocationId, currentRevocation);
 			xmlRevocations.put(revocationId, xmlRevocation);
 		}
@@ -525,20 +528,18 @@ public class DiagnosticDataBuilder {
 		}
 		xmlRevocation.setType(RevocationType.valueOf(revocationToken.getRevocationSourceType().name()));
 		
-		xmlRevocation.setExpiredCertsOnCRL(revocationToken.getExpiredCertsOnCRL());
-		
 		xmlRevocation.setProductionDate(revocationToken.getProductionDate());
 		xmlRevocation.setThisUpdate(revocationToken.getThisUpdate());
 		xmlRevocation.setNextUpdate(revocationToken.getNextUpdate());
+		xmlRevocation.setExpiredCertsOnCRL(revocationToken.getExpiredCertsOnCRL());
+		xmlRevocation.setArchiveCutOff(revocationToken.getArchiveCutOff());
 
 		String sourceURL = revocationToken.getSourceURL();
 		if (Utils.isStringNotEmpty(sourceURL)) { // not empty = online
 			xmlRevocation.setSourceAddress(sourceURL);
 		}
-		xmlRevocation.setArchiveCutOff(revocationToken.getArchiveCutOff());
 
 		xmlRevocation.setBasicSignature(getXmlBasicSignature(revocationToken));
-
 		xmlRevocation.setDigestAlgoAndValues(getXmlDigestAlgoAndValues(revocationToken));
 
 		xmlRevocation.setSigningCertificate(getXmlSigningCertificate(revocationToken.getPublicKeyOfTheSigner()));
@@ -1024,9 +1025,7 @@ public class DiagnosticDataBuilder {
 
 	private XmlCertificate getXmlCertificate(String certificateId) {
 		XmlCertificate xmlCertificate = xmlCerts.get(certificateId);
-		if (xmlCertificate != null) {
-			return xmlCertificate;
-		} else {
+		if (xmlCertificate == null) {
 			xmlCertificate = buildXmlCertificate(certificateId);
 			xmlCerts.put(certificateId, xmlCertificate);
 		}
@@ -1098,9 +1097,6 @@ public class DiagnosticDataBuilder {
 			xmlCert.getRevocations().add(getXmlCertificateRevocation(certToken, revocationToken));
 		}
 
-		if (trustedCertSource != null) {
-			xmlCert.setTrustedServiceProviders(getXmlTrustedServiceProviders(certToken));
-		}
 		return xmlCert;
 	}
 

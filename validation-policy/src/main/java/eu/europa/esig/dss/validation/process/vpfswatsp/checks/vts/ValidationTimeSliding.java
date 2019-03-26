@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
@@ -133,7 +132,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 * NO_POE.
 				 */
 				CertificateRevocationWrapper latestCompliantRevocation = null;
-				Set<CertificateRevocationWrapper> revocations = diagnosticData.getRevocationDataByCertificate(certificate);
+				List<CertificateRevocationWrapper> revocations = certificate.getCertificateRevocationData();
 				for (CertificateRevocationWrapper revocation : revocations) {
 					if ((latestCompliantRevocation == null || revocation.getProductionDate().after(latestCompliantRevocation.getProductionDate()))
 							&& isConsistant(certificate, revocation) && isIssuanceBeforeControlTime(revocation)) {
