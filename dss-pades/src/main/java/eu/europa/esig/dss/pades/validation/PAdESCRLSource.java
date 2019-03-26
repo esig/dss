@@ -65,8 +65,10 @@ public class PAdESCRLSource extends SignatureCRLSource {
 	}
 	
 	/**
-	 * Returns a map of all CRL entries contained in DSS dictionary or into nested VRI dictionaries
-	 * @return {@link Map<Long, byte[]>} of CRLs
+	 * Returns a map of all CRL entries contained in DSS dictionary or into nested
+	 * VRI dictionaries
+	 * 
+	 * @return a map of CRL binaries with their object ids
 	 */
 	public Map<Long, byte[]> getCrlMap() {
 		if (crlMap == null) {

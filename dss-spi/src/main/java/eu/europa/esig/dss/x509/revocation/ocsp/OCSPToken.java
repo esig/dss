@@ -201,7 +201,7 @@ public class OCSPToken extends RevocationToken {
 					certHashPresent = true;
 					byte[] expectedDigest = relatedCertificate.getDigest(certHash.getAlgorithm());
 					byte[] foundDigest = certHash.getValue();
-					certHashPresent = Arrays.equals(expectedDigest, foundDigest);
+					certHashMatch = Arrays.equals(expectedDigest, foundDigest);
 				}
 			} catch (Exception e) {
 				LOG.warn("Unable to extract id_isismtt_at_certHash : " + e.getMessage());

@@ -69,8 +69,10 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 	}
 	
 	/**
-	 * Returns a map of all OCSP entries contained in DSS dictionary or into nested VRI dictionaries
-	 * @return {@link Map<Long, BasicOCSPResp>} of OCSPs
+	 * Returns a map of all OCSP entries contained in DSS dictionary or into nested
+	 * VRI dictionaries
+	 * 
+	 * @return a map of BasicOCSPResp with their object ids
 	 */
 	public Map<Long, BasicOCSPResp> getOcspMap() {
 		if (ocspMap == null) {

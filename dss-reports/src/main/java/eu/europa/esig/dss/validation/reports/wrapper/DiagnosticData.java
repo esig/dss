@@ -665,11 +665,19 @@ public class DiagnosticData {
 	}
 	
 	/**
-	 * Returns list of {@link RevocationWrapper}s for the given signature by {@code signatureId}, specified {@link RevocationType}
-	 * and specified {@link RevocationOriginType}
-	 * @param signatureId {@link String} id of the relevant signature
-	 * @param type {@link RevocationType} type to get revocation data of. If NULL returns revocations of all types
-	 * @param originType {@link RevocationOriginType} origin type to get revocation data of. If NULL returns revocations of all origin types
+	 * Returns list of {@link RevocationWrapper}s for the given signature by
+	 * {@code signatureId}, specified {@link RevocationType} and specified
+	 * {@link RevocationOriginType}
+	 * 
+	 * @param signatureId
+	 *                       {@link String} id of the relevant signature
+	 * @param revocationType
+	 *                       {@link RevocationType} type to get revocation data of.
+	 *                       If NULL returns revocations of all types
+	 * @param originType
+	 *                       {@link RevocationOriginType} origin type to get
+	 *                       revocation data of. If NULL returns revocations of all
+	 *                       origin types
 	 * @return list of {@link RevocationWrapper}s
 	 */
 	public List<RevocationWrapper> getAllRevocationForSignatureByTypeAndOrigin(String signatureId, RevocationType revocationType, 
