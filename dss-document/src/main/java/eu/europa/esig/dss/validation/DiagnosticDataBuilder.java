@@ -694,14 +694,9 @@ public class DiagnosticDataBuilder {
 		List<XmlFoundCertificate> foundCertificates = new ArrayList<XmlFoundCertificate>();
 		SignatureCertificateSource certificateSource = signature.getCertificateSource();
 		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.KEY_INFO, certificateSource.getKeyInfoCertificates()));
-		// TODO
-		// foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.SIGNING_CERTIFICATE,
-		// certificateSource.getSigningCertificateValues()));
-		// foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.COMPLETE_CERTIFICATE_REFS,
-		// certificateSource.getCompleteCertificateRefs()));
-		// foundCertificates
-		// .addAll(getXmlFoundCertificates(XmlCertificateLocationType.ATTRIBUTE_CERTIFICATE_REFS,
-		// certificateSource.getAttributeCertificateRefs()));
+		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.SIGNING_CERTIFICATE, certificateSource.getSigningCertificates()));
+		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.COMPLETE_CERTIFICATE_REFS, certificateSource.getCompleteCertificates()));
+		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.ATTRIBUTE_CERTIFICATE_REFS, certificateSource.getAttributeCertificates()));
 		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.CERTIFICATE_VALUES, certificateSource.getCertificateValues()));
 		foundCertificates
 				.addAll(getXmlFoundCertificates(XmlCertificateLocationType.ATTR_AUTORITIES_CERT_VALUES, certificateSource.getAttrAuthoritiesCertValues()));
