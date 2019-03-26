@@ -1,13 +1,16 @@
 package eu.europa.esig.dss.validation.executor;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.RevocationType;
@@ -24,6 +27,7 @@ import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.jaxb.validationreport.AttributeBaseType;
 import eu.europa.esig.jaxb.validationreport.ObjectFactory;
 import eu.europa.esig.jaxb.validationreport.SACertIDListType;
+import eu.europa.esig.jaxb.validationreport.SACertIDType;
 import eu.europa.esig.jaxb.validationreport.SACommitmentTypeIndicationType;
 import eu.europa.esig.jaxb.validationreport.SAContactInfoType;
 import eu.europa.esig.jaxb.validationreport.SADSSType;
@@ -54,6 +58,7 @@ import eu.europa.esig.jaxb.validationreport.enums.EndorsementType;
 import eu.europa.esig.jaxb.validationreport.enums.MainIndication;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
 import eu.europa.esig.jaxb.validationreport.enums.SignatureValidationProcessID;
+import eu.europa.esig.jaxb.xmldsig.DigestMethodType;
 
 public class ETSIValidationReportBuilder {
 
@@ -103,10 +108,16 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private VOReferenceType getVOReference(String id) {
+		return getVOReference(Arrays.asList(id));
+	}
+
+	private VOReferenceType getVOReference(List<String> ids) {
 		VOReferenceType voRef = objectFactory.createVOReferenceType();
-		ValidationObjectType validationObject = objectFactory.createValidationObjectType();
-		validationObject.setId(id);
-		voRef.getVOReference().add(validationObject);
+		for (String id : ids) {
+			ValidationObjectType validationObject = objectFactory.createValidationObjectType();
+			validationObject.setId(id);
+			voRef.getVOReference().add(validationObject);
+		}
 		return voRef;
 	}
 
@@ -335,9 +346,23 @@ public class ETSIValidationReportBuilder {
 	private SACertIDListType buildCertIDListType(List<String> certIds) {
 		SACertIDListType certIdList = objectFactory.createSACertIDListType();
 		for (String certId : certIds) {
-			certIdList.getAttributeObject().add(getVOReference(certId));
+			SACertIDType certIDType = objectFactory.createSACertIDType();
+			CertificateWrapper certificate = getCertificateWrapper(certId);
+			List<XmlDigestAlgoAndValue> digestAlgoAndValues = certificate.getDigestAlgoAndValues();
+			XmlDigestAlgoAndValue xmlDigestAlgoAndValue = digestAlgoAndValues.get(0);
+			DigestAlgorithm digestAlgorithm = DigestAlgorithm.valueOf(xmlDigestAlgoAndValue.getDigestMethod());
+			DigestMethodType dmt = new DigestMethodType();
+			dmt.setAlgorithm(digestAlgorithm.getXmlId());
+			certIDType.setDigestMethod(dmt);
+			certIDType.setDigestValue(xmlDigestAlgoAndValue.getDigestValue());
+			certIdList.getCertID().add(certIDType);
 		}
+
 		return certIdList;
+	}
+
+	private CertificateWrapper getCertificateWrapper(String certId) {
+		return diagnosticData.getUsedCertificateById(certId);
 	}
 
 	private void addMessageDigest(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
@@ -509,9 +534,7 @@ public class ETSIValidationReportBuilder {
 		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.DSS);
 		if (Utils.isCollectionNotEmpty(certIds)) {
 			SADSSType dssType = objectFactory.createSADSSType();
-			// TODO more than 1 value ??
-			String firstCertId = certIds.get(0);
-			dssType.setCerts(getVOReference(firstCertId));
+			dssType.setCerts(getVOReference(certIds));
 			// TODO CRL/OCSP
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(dssType);
 		}
@@ -521,9 +544,7 @@ public class ETSIValidationReportBuilder {
 		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.VRI);
 		if (Utils.isCollectionNotEmpty(certIds)) {
 			SAVRIType vriType = objectFactory.createSAVRIType();
-			// TODO more than 1 value ??
-			String firstCertId = certIds.get(0);
-			vriType.setCerts(getVOReference(firstCertId));
+			vriType.setCerts(getVOReference(certIds));
 			// TODO CRL/OCSP
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(vriType);
 		}
