@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.validation.reports.wrapper;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -616,36 +615,6 @@ public class DiagnosticData {
 	}
 	
 	/**
-	 * This method returns the RevocationWrapper corresponding to the id
-	 *
-	 * @param id
-	 *            id of the revocation data
-	 * @return revocation wrapper or null
-	 */
-	public XmlRevocation getXmlRevocationDataById(String id) {
-		List<XmlRevocation> revocationData = wrapped.getUsedRevocations();
-		for(XmlRevocation rd : revocationData) {
-			if(Utils.areStringsEqual(rd.getId(), id)) {
-				return rd;
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * Returns the complete {@link CertificateRevocationWrapper} for the given {@code certificateId} and its revocation
-	 * @param certificateId id of the certificate the target revocation was applied to
-	 * @param revocationId is of the revocation
-	 * @return {@link RevocationWrapper}
-	 */
-	public CertificateRevocationWrapper getCertificateRevocationDataByIds(String certificateId, String revocationId) {
-		CertificateWrapper certificate = getUsedCertificateById(certificateId);
-		XmlCertificateRevocation certificateRevocation = certificate.getCertificateRevocationDataById(revocationId);
-		XmlRevocation xmlRevocation = getXmlRevocationDataById(revocationId);
-		return new CertificateRevocationWrapper(xmlRevocation, certificateRevocation);
-	}
-	
-	/**
 	 * Returns list of {@link RevocationWrapper}s for the given signature by {@code signatureId}
 	 * @param signatureId {@link String} id of the relevant signature
 	 * @return list of {@link RevocationWrapper}s
@@ -795,33 +764,17 @@ public class DiagnosticData {
 	}
 	
 	/**
-	 * Returns set of {@link CertificateRevocationWrapper}s for the given {@code certificate}
-	 * @param certificate {@link CertificateRevocationWrapper} to get revocations for
-	 * @return set of {@link CertificateRevocationWrapper}s
-	 */
-	public Set<CertificateRevocationWrapper> getRevocationDataByCertificate(CertificateWrapper certificate) {
-		List<XmlCertificateRevocation> xmlCertificateRevocations = certificate.getCertificateRevocationData();
-		if (Utils.isCollectionNotEmpty(xmlCertificateRevocations)) {
-			Set<CertificateRevocationWrapper> revocations = new HashSet<CertificateRevocationWrapper>();
-			for (XmlCertificateRevocation certificateRevocation : xmlCertificateRevocations) {
-				revocations.add(new CertificateRevocationWrapper(certificateRevocation.getRevocation(), certificateRevocation));
-			}
-			return revocations;
-		}
-		return Collections.emptySet();
-	}
-	
-	/**
 	 * Returns the last actual revocation for the given {@code certificate}
 	 * @param certificate {@link CertificateWrapper} to find the latest revocation for
 	 * @return {@link CertificateRevocationWrapper} revocation
 	 */
 	public CertificateRevocationWrapper getLatestRevocationDataForCertificate(CertificateWrapper certificate) {
 		CertificateRevocationWrapper latest = null;
-		for (CertificateRevocationWrapper revoc : getRevocationDataByCertificate(certificate)) {
-			if (latest == null || (latest.getProductionDate() != null && revoc != null && revoc.getProductionDate() != null
-					&& revoc.getProductionDate().after(latest.getProductionDate()))) {
-				latest = revoc;
+		List<CertificateRevocationWrapper> certificateRevocationData = certificate.getCertificateRevocationData();
+		for (CertificateRevocationWrapper certRevoc : certificateRevocationData) {
+			if (latest == null || (latest.getProductionDate() != null && certRevoc != null && certRevoc.getProductionDate() != null
+					&& certRevoc.getProductionDate().after(latest.getProductionDate()))) {
+				latest = certRevoc;
 			}
 		}
 		return latest;

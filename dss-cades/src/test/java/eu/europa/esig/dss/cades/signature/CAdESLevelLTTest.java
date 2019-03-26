@@ -120,9 +120,8 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 			assertNotNull(timestampWrapper.getBinaries());
 		}
 		for (RevocationWrapper revocation : dd.getAllRevocationData()) {
-			XmlRevocation xmlRevocation = dd.getXmlRevocationDataById(revocation.getId());
-			assertNotNull(xmlRevocation);
-			assertNotNull(xmlRevocation.getBase64Encoded());
+			assertNotNull(revocation);
+			assertNotNull(revocation.getBinaries());
 		}
 	}
 
