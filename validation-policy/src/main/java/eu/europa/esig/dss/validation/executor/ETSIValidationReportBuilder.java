@@ -54,6 +54,7 @@ import eu.europa.esig.jaxb.validationreport.ValidationObjectRepresentationType;
 import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationStatusType;
+import eu.europa.esig.jaxb.validationreport.ValidationTimeInfoType;
 import eu.europa.esig.jaxb.validationreport.enums.EndorsementType;
 import eu.europa.esig.jaxb.validationreport.enums.MainIndication;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
@@ -85,6 +86,7 @@ public class ETSIValidationReportBuilder {
 			signatureValidationReport.setSignerInformation(getSignerInformation(sigWrapper));
 			signatureValidationReport.setSignatureValidationProcess(getSignatureValidationProcess(sigWrapper));
 			signatureValidationReport.setSignatureValidationStatus(getValidationStatus(sigWrapper));
+			signatureValidationReport.setValidationTimeInfo(getValidationTimeInfo(sigWrapper));
 
 			result.setSignatureValidationReport(signatureValidationReport);
 		}
@@ -92,6 +94,14 @@ public class ETSIValidationReportBuilder {
 		result.setSignatureValidationObjects(getSignatureValidationObjects());
 
 		return result;
+	}
+
+	private ValidationTimeInfoType getValidationTimeInfo(SignatureWrapper sigWrapper) {
+		ValidationTimeInfoType validationTimeInfoType = objectFactory.createValidationTimeInfoType();
+		validationTimeInfoType.setValidationTime(currentTime);
+		// TODO
+		// validationTimeInfoType.setBestSignatureTime(POE);
+		return validationTimeInfoType;
 	}
 
 	private SignerInformationType getSignerInformation(SignatureWrapper sigWrapper) {
