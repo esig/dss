@@ -161,7 +161,7 @@ public class OCSPRef extends RevocationRef {
 			return false;
 		}
 		OCSPRef o = (OCSPRef) obj;
-		if (!producedAt.equals(o.producedAt) || location.equals(o.getLocation()) ||
+		if (!producedAt.equals(o.producedAt) || !location.equals(o.getLocation()) ||
 				responderId.getName() != null && !responderId.getName().equals(o.getResponderId().getName()) ||
 				responderId.getKey() != null && !Arrays.equals(responderId.getKey(), o.getResponderId().getKey()) ||
 				digestAlgorithm != null && !digestAlgorithm.equals(o.getDigestAlgorithm()) || 

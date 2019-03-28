@@ -653,20 +653,20 @@ public class DiagnosticData {
 			XmlRevocationOrigin originType) {
 		SignatureWrapper signature = getSignatureById(signatureId);
 		
-		Set<XmlRelatedRevocation> revocationRefSet = null;
+		Set<XmlRelatedRevocation> revocationSet = null;
 		if (revocationType != null) {
-			revocationRefSet = signature.getRelatedRevocationsByType(revocationType);
+			revocationSet = signature.getRelatedRevocationsByType(revocationType);
 			if (originType != null) {
-				revocationRefSet.retainAll(signature.getRelatedRevocationsByOrigin(originType));
+				revocationSet.retainAll(signature.getRelatedRevocationsByOrigin(originType));
 			}
 		} else if (originType != null) {
-			revocationRefSet = signature.getRelatedRevocationsByOrigin(originType);
+			revocationSet = signature.getRelatedRevocationsByOrigin(originType);
 		} else {
-			revocationRefSet = new HashSet<XmlRelatedRevocation>(signature.getFoundRevocations());
+			revocationSet = new HashSet<XmlRelatedRevocation>(signature.getFoundRevocations().getRelatedRevocation());
 		}
 
 		List<RevocationWrapper> revocations = new ArrayList<RevocationWrapper>();
-		for (XmlRelatedRevocation revocationRef : revocationRefSet) {
+		for (XmlRelatedRevocation revocationRef : revocationSet) {
 			if ((revocationType == null || revocationRef.getType().equals(revocationType)) && 
 					(originType == null || revocationRef.getOrigin().equals(originType))) {
 				revocations.add(new RevocationWrapper(revocationRef.getRevocation()));

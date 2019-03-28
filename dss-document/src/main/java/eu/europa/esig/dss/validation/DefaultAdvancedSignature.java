@@ -822,6 +822,27 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		revocationRefs.addAll(getAttributeRevocationOCSPReferences());
 		return revocationRefs;
 	}
+	
+	@Override
+	public List<RevocationRef> getUnusedRevocationRefs() {
+		if (revocationRefsMap == null) {
+			collectRevocationRefsMap();
+		}
+		List<RevocationRef> unusedRevocationRefs = new ArrayList<RevocationRef>();
+		for (RevocationRef revocationRef : getAllFoundRevocationRefs()) {
+			boolean used = false;
+			for (List<RevocationRef> referenceList : revocationRefsMap.values()) {
+				if (referenceList.contains(revocationRef)) {
+					used = true;
+					break;
+				}
+			}
+			if (!used) {
+				unusedRevocationRefs.add(revocationRef);
+			}
+		}
+		return unusedRevocationRefs;
+	}
 
 	@Override
 	public List<RevocationToken> getCompleteRevocationTokens() {
@@ -869,7 +890,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	private void collectRevocationRefsMap() {
-
 		revocationRefsMap = new HashMap<RevocationToken, List<RevocationRef>>();
 		for (RevocationToken revocationToken : getAllRevocationTokens()) {
 			for (RevocationRef reference : getAllFoundRevocationRefs()) {

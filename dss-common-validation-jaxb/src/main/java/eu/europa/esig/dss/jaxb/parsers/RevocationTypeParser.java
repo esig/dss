@@ -12,7 +12,11 @@ public class RevocationTypeParser {
 	}
 
 	public static String print(RevocationType v) {
-		return v.name();
+		if (v != null) {
+			return v.name();
+		} else {
+			return null;
+		}
 	}
 
 }
