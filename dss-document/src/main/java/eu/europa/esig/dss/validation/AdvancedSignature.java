@@ -394,14 +394,6 @@ public interface AdvancedSignature extends Serializable {
 	String getId();
 
 	/**
-	 * Returns the set of digest algorithms used to build the certificate's digest. For example, these digests are
-	 * referenced in CompleteCertificateRefs in the case of XAdES signature.
-	 *
-	 * @return
-	 */
-	Set<DigestAlgorithm> getUsedCertificatesDigestAlgorithms();
-
-	/**
 	 * @param signatureLevel
 	 *            {@code SignatureLevel} to be checked
 	 * @return true if the signature contains the data needed for this {@code SignatureLevel}. Doesn't mean any validity

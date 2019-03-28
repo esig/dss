@@ -971,22 +971,22 @@ public class DiagnosticDataBuilder {
 				switch (timestampReference.getCategory()) {
 				case CERTIFICATE:
 					XmlTimestampedCertificate certRef = new XmlTimestampedCertificate();
-					certRef.setCertificate(xmlCerts.get(timestampReference.getSignatureId()));
+					certRef.setCertificate(xmlCerts.get(timestampReference.getObjectId()));
 					objects.add(certRef);
 					break;
 				case REVOCATION:
 					XmlTimestampedRevocationData revocRef = new XmlTimestampedRevocationData();
-					revocRef.setRevocation(xmlRevocations.get(timestampReference.getSignatureId()));
+					revocRef.setRevocation(xmlRevocations.get(timestampReference.getObjectId()));
 					objects.add(revocRef);
 					break;
 				case SIGNATURE:
 					XmlTimestampedSignature sigRef = new XmlTimestampedSignature();
-					sigRef.setSignature(xmlSignatures.get(timestampReference.getSignatureId()));
+					sigRef.setSignature(xmlSignatures.get(timestampReference.getObjectId()));
 					objects.add(sigRef);
 					break;
 				case TIMESTAMP:
 					XmlTimestampedTimestamp tstRef = new XmlTimestampedTimestamp();
-					tstRef.setTimestamp(xmlTimestamps.get(timestampReference.getSignatureId()));
+					tstRef.setTimestamp(xmlTimestamps.get(timestampReference.getObjectId()));
 					objects.add(tstRef);
 					break;
 				default:

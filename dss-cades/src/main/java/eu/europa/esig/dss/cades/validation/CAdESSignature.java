@@ -730,18 +730,22 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				// Will call getContentTimestampData
 				break;
 			case SIGNATURE_TIMESTAMP:
-				timestampToken.setTimestampedReferences(getSignatureTimestampedReferences());
+				timestampToken.setTimestampedReferences(getSignatureTimestampReferences());
 				break;
 			case VALIDATION_DATA_REFSONLY_TIMESTAMP:
 				timestampToken.setTimestampedReferences(getTimestampedReferences());
 				break;
 			case VALIDATION_DATA_TIMESTAMP:
-				final List<TimestampReference> validationDataReferences = getSignatureTimestampedReferences();
+				final List<TimestampReference> validationDataReferences = getSignatureTimestampReferences();
 				validationDataReferences.addAll(getTimestampedReferences());
 				timestampToken.setTimestampedReferences(validationDataReferences);
 				break;
 			case ARCHIVE_TIMESTAMP:
-				timestampToken.setTimestampedReferences(getTimestampReferencesForArchiveTimestamp(timestampedTimestamps));
+				final List<TimestampReference> references = getSignatureTimestampReferences();
+				addReferencesFromRevocationData(references);
+				addReferencesForCertificates(references);
+				addReferencesForPreviousTimestamps(references, timestampedTimestamps);
+				timestampToken.setTimestampedReferences(references);
 				break;
 			default:
 				throw new DSSException("TimeStampType not supported : " + timestampType);
@@ -751,10 +755,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	public List<TimestampReference> getTimestampReferencesForArchiveTimestamp(final List<TimestampToken> timestampedTimestamps) {
-		final List<TimestampReference> archiveReferences = getSignatureTimestampedReferences();
-		for (final TimestampToken timestamp : timestampedTimestamps) {
-			archiveReferences.add(new TimestampReference(timestamp.getDSSIdAsString(), TimestampedObjectType.TIMESTAMP));
-		}
+		final List<TimestampReference> archiveReferences = getSignatureTimestampReferences();
+		addReferencesForPreviousTimestamps(archiveReferences, timestampedTimestamps);
 		archiveReferences.addAll(getTimestampedReferences());
 		return archiveReferences;
 	}
@@ -800,28 +802,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		return timestampTokenList;
-	}
-
-	public List<TimestampReference> getSignatureTimestampedReferences() {
-		final List<TimestampReference> references = new ArrayList<TimestampReference>();
-		references.add(getSignatureTimestampReference());
-		references.addAll(getSigningCertificateTimestampReferences());
-		return references;
-	}
-
-	private TimestampReference getSignatureTimestampReference() {
-		return new TimestampReference(getId(), TimestampedObjectType.SIGNATURE);
-	}
-
-	public List<TimestampReference> getSigningCertificateTimestampReferences() {
-		if (signingCertificateTimestampReferences == null) {
-			signingCertificateTimestampReferences = new ArrayList<TimestampReference>();
-			List<CertificateToken> signingCertificates = getCertificateSource().getSigningCertificates();
-			for (CertificateToken certificate : signingCertificates) {
-				signingCertificateTimestampReferences.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
-			}
-		}
-		return signingCertificateTimestampReferences;
 	}
 
 	@Override
@@ -1522,9 +1502,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getId() {
-
 		if (signatureId == null) {
-
 			final CertificateToken certificateToken = getSigningCertificateToken();
 			final TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
 			// Only used to keep the same signature id between CAdES and PAdES
@@ -1543,8 +1521,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			references.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 
-		addReferencesFromOfflineCRLSource(references);
-		addReferencesFromOfflineOCSPSource(references);
+		addReferencesFromRevocationData(references);
 
 		return references;
 	}

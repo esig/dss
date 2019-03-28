@@ -21,4 +21,9 @@ public class CertificateRef {
 		this.issuerInfo = issuerInfo;
 	}
 
+	@Override
+	public String toString() {
+		return "CertificateRef [certDigest=" + certDigest + ", issuerInfo=" + issuerInfo + "]";
+	}
+
 }

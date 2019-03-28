@@ -190,7 +190,7 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 			}
 
 			if (!found) {
-				LOG.debug("The related Certificate Token was not wound for Certificate Reference [{}]", certificateRef);
+				LOG.debug("The related Certificate Token was not found for Certificate Reference [{}]", certificateRef);
 			}
 		}
 		return usedCertificates;

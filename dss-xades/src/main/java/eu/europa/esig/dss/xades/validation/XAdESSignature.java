@@ -821,20 +821,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 	}
 
-	private List<TimestampReference> getSignatureTimestampedReferences() {
-		final List<TimestampReference> references = new ArrayList<TimestampReference>();
-		references.add(new TimestampReference(getId(), TimestampedObjectType.SIGNATURE));
-		references.addAll(getSigningCertificateTimestampReferences());
-		return references;
-	}
-
-	private List<TimestampReference> getSigningCertificateTimestampReferences() {
+	@Override
+	protected List<TimestampReference> getSigningCertificateTimestampReferences() {
 		if (signingCertificateTimestampReferences == null) {
-			signingCertificateTimestampReferences = new ArrayList<TimestampReference>();
-			List<CertificateToken> signingCertificateValues = getCertificateSource().getSigningCertificates();
-			for (CertificateToken certificate : signingCertificateValues) {
-				signingCertificateTimestampReferences.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
-			}
+			signingCertificateTimestampReferences = super.getSigningCertificateTimestampReferences();
 
 			if (isKeyInfoCovered()) {
 				List<CertificateToken> keyInfoCerts = getCertificateSource().getKeyInfoCertificates();
@@ -926,7 +916,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		if (unsignedSignaturePropertiesDom == null) {
 			return;
 		}
-		final List<String> timestampedTimestamps = new ArrayList<String>();
+		final List<TimestampToken> previousTimestampedTimestamp = new ArrayList<TimestampToken>();
 		final NodeList unsignedProperties = unsignedSignaturePropertiesDom.getChildNodes();
 		for (int ii = 0; ii < unsignedProperties.getLength(); ii++) {
 
@@ -938,15 +928,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			TimestampToken timestampToken;
 			final String localName = node.getLocalName();
 			if (XPathQueryHolder.XMLE_SIGNATURE_TIME_STAMP.equals(localName)) {
-
 				timestampToken = makeTimestampToken((Element) node, TimestampType.SIGNATURE_TIMESTAMP);
 				if (timestampToken == null) {
 					continue;
 				}
-				timestampToken.setTimestampedReferences(getSignatureTimestampedReferences());
+				timestampToken.setTimestampedReferences(getSignatureTimestampReferences());
 				signatureTimestamps.add(timestampToken);
 			} else if (XPathQueryHolder.XMLE_REFS_ONLY_TIME_STAMP.equals(localName) || XPathQueryHolder.XMLE_REFS_ONLY_TIME_STAMP_V2.equals(localName)) {
-
 				timestampToken = makeTimestampToken((Element) node, TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
 				if (timestampToken == null) {
 					continue;
@@ -954,12 +942,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				timestampToken.setTimestampedReferences(getTimestampedReferences());
 				refsOnlyTimestamps.add(timestampToken);
 			} else if (XPathQueryHolder.XMLE_SIG_AND_REFS_TIME_STAMP.equals(localName) || XPathQueryHolder.XMLE_SIG_AND_REFS_TIME_STAMP_V2.equals(localName)) {
-
 				timestampToken = makeTimestampToken((Element) node, TimestampType.VALIDATION_DATA_TIMESTAMP);
 				if (timestampToken == null) {
 					continue;
 				}
-				final List<TimestampReference> references = getSignatureTimestampedReferences();
+				final List<TimestampReference> references = getSignatureTimestampReferences();
 				references.addAll(getTimestampedReferences());
 				timestampToken.setTimestampedReferences(references);
 				sigAndRefsTimestamps.add(timestampToken);
@@ -972,25 +959,23 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final ArchiveTimestampType archiveTimestampType = getArchiveTimestampType(node, localName);
 				timestampToken.setArchiveTimestampType(archiveTimestampType);
 
-				final List<TimestampReference> references = getSignatureTimestampedReferences();
-				for (final String timestampId : timestampedTimestamps) {
-					references.add(new TimestampReference(timestampId, TimestampedObjectType.TIMESTAMP));
-				}
+				final List<TimestampReference> references = getSignatureTimestampReferences();
+				addReferencesForPreviousTimestamps(references, previousTimestampedTimestamp);
+
 				references.addAll(getTimestampedReferences());
 				final List<CertificateToken> encapsulatedCertificates = getCertificateSource().getCertificateValues();
 				for (final CertificateToken certificateToken : encapsulatedCertificates) {
 					references.add(new TimestampReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 				}
 
-				addReferencesFromOfflineCRLSource(references);
-				addReferencesFromOfflineOCSPSource(references);
+				addReferencesFromRevocationData(references);
 
 				timestampToken.setTimestampedReferences(references);
 				archiveTimestamps.add(timestampToken);
 			} else {
 				continue;
 			}
-			timestampedTimestamps.add(timestampToken.getDSSIdAsString());
+			previousTimestampedTimestamp.add(timestampToken);
 		}
 	}
 
@@ -1726,26 +1711,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			references.add(new TimestampReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 
-		final Node completeRevocationRefsNode = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_COMPLETE_REVOCATION_REFS); // TODO V2
-		if (completeRevocationRefsNode != null) {
-
-			final NodeList nodes = DomUtils.getNodeList(completeRevocationRefsNode, "./*/*/xades:DigestAlgAndValue");
-			for (int ii = 0; ii < nodes.getLength(); ii++) {
-
-				final Element element = (Element) nodes.item(ii);
-				final TimestampReference revocationReference = createRevocationTimestampReference(element);
-				references.add(revocationReference);
-			}
-		}
 		return references;
-	}
-
-	private TimestampReference createRevocationTimestampReference(Element element) {
-		String digestAlgorithmStr = DomUtils.getNode(element, xPathQueryHolder.XPATH__DIGEST_METHOD_ALGORITHM).getTextContent();
-		DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(digestAlgorithmStr);
-		final String digestValue = DomUtils.getElement(element, xPathQueryHolder.XPATH__DIGEST_VALUE).getTextContent();
-		final TimestampReference revocationReference = new TimestampReference(digestAlgorithm, Utils.fromBase64(digestValue));
-		return revocationReference;
 	}
 
 	/**
