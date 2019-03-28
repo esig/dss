@@ -99,7 +99,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 					if (signingCertificate != null) {
 
 						SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(conlusion, bestSignatureTime, signingCertificate,
-								diagnosticData.getUsedCertificates(), detailedReport.getTLAnalysis(), diagnosticData.getLOTLCountryCode());
+								detailedReport.getTLAnalysis(), diagnosticData.getLOTLCountryCode());
 						signatureAnalysis.setValidationSignatureQualification(qualificationBlock.execute());
 					}
 				} catch (Exception e) {

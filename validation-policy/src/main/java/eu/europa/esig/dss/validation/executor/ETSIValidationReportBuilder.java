@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.validation.executor;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import eu.europa.esig.jaxb.validationreport.AttributeBaseType;
 import eu.europa.esig.jaxb.validationreport.ObjectFactory;
 import eu.europa.esig.jaxb.validationreport.SACRLIDType;
 import eu.europa.esig.jaxb.validationreport.SACertIDListType;
+import eu.europa.esig.jaxb.validationreport.SACertIDType;
 import eu.europa.esig.jaxb.validationreport.SACommitmentTypeIndicationType;
 import eu.europa.esig.jaxb.validationreport.SAContactInfoType;
 import eu.europa.esig.jaxb.validationreport.SADSSType;
@@ -112,10 +114,16 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private VOReferenceType getVOReference(String id) {
+		return getVOReference(Arrays.asList(id));
+	}
+
+	private VOReferenceType getVOReference(List<String> ids) {
 		VOReferenceType voRef = objectFactory.createVOReferenceType();
-		ValidationObjectType validationObject = objectFactory.createValidationObjectType();
-		validationObject.setId(id);
-		voRef.getVOReference().add(validationObject);
+		for (String id : ids) {
+			ValidationObjectType validationObject = objectFactory.createValidationObjectType();
+			validationObject.setId(id);
+			voRef.getVOReference().add(validationObject);
+		}
 		return voRef;
 	}
 
@@ -349,8 +357,18 @@ public class ETSIValidationReportBuilder {
 	private SACertIDListType buildCertIDListType(List<String> certIds) {
 		SACertIDListType certIdList = objectFactory.createSACertIDListType();
 		for (String certId : certIds) {
-			certIdList.getAttributeObject().add(getVOReference(certId));
+			SACertIDType certIDType = objectFactory.createSACertIDType();
+			CertificateWrapper certificate = getCertificateWrapper(certId);
+			List<XmlDigestAlgoAndValue> digestAlgoAndValues = certificate.getDigestAlgoAndValues();
+			XmlDigestAlgoAndValue xmlDigestAlgoAndValue = digestAlgoAndValues.get(0);
+			DigestAlgorithm digestAlgorithm = DigestAlgorithm.valueOf(xmlDigestAlgoAndValue.getDigestMethod());
+			DigestMethodType dmt = new DigestMethodType();
+			dmt.setAlgorithm(digestAlgorithm.getXmlId());
+			certIDType.setDigestMethod(dmt);
+			certIDType.setDigestValue(xmlDigestAlgoAndValue.getDigestValue());
+			certIdList.getCertID().add(certIDType);
 		}
+
 		return certIdList;
 	}
 	
@@ -411,6 +429,10 @@ public class ETSIValidationReportBuilder {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeAttributeRevocationValues(buildTokenList(revocationRefs)));
 		}
+	}
+
+	private CertificateWrapper getCertificateWrapper(String certId) {
+		return diagnosticData.getUsedCertificateById(certId);
 	}
 
 	private void addMessageDigest(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
@@ -580,41 +602,39 @@ public class ETSIValidationReportBuilder {
 
 	private void addDSS(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
 		SADSSType dssType = objectFactory.createSADSSType();
+		
 		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.DSS);
 		if (Utils.isCollectionNotEmpty(certIds)) {
-			// TODO more than 1 value ??
-			dssType.setCerts(getVOReference(certIds.get(0)));
+			dssType.setCerts(getVOReference(certIds));
 		}
 		List<String> crlIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_DSS);
 		if (Utils.isCollectionNotEmpty(crlIds)) {
-			// TODO more than 1 value ??
-			dssType.setCRLs(getVOReference(crlIds.get(0)));
+			dssType.setCRLs(getVOReference(crlIds));
 		}
 		List<String> ocspIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_DSS);
 		if (Utils.isCollectionNotEmpty(ocspIds)) {
-			// TODO more than 1 value ??
-			dssType.setOCSPs(getVOReference(ocspIds.get(0)));
+			dssType.setOCSPs(getVOReference(ocspIds));
 		}
+		
 		sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(dssType);
 	}
 
-	private void addVRI(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+	private void addVRI(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {		
 		SAVRIType vriType = objectFactory.createSAVRIType();
+		
 		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.VRI);
 		if (Utils.isCollectionNotEmpty(certIds)) {
-			// TODO more than 1 value ??
-			vriType.setCerts(getVOReference(certIds.get(0)));
+			vriType.setCerts(getVOReference(certIds));
 		}
 		List<String> crlIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_VRI);
 		if (Utils.isCollectionNotEmpty(crlIds)) {
-			// TODO more than 1 value ??
-			vriType.setCRLs(getVOReference(crlIds.get(0)));
+			vriType.setCRLs(getVOReference(crlIds));
 		}
 		List<String> ocspIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_VRI);
 		if (Utils.isCollectionNotEmpty(ocspIds)) {
-			// TODO more than 1 value ??
-			vriType.setOCSPs(getVOReference(ocspIds.get(0)));
+			vriType.setOCSPs(getVOReference(ocspIds));
 		}
+		
 		sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(vriType);
 	}
 

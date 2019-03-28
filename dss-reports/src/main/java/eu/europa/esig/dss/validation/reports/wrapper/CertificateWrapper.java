@@ -89,19 +89,15 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return Utils.isCollectionNotEmpty(certificate.getRevocations());
 	}
 
-	public List<XmlCertificateRevocation> getCertificateRevocationData() {
-		return certificate.getRevocations();
+	public List<CertificateRevocationWrapper> getCertificateRevocationData() {
+		List<CertificateRevocationWrapper> certRevocationWrappers = new ArrayList<CertificateRevocationWrapper>();
+		List<XmlCertificateRevocation> revocations = certificate.getRevocations();
+		for (XmlCertificateRevocation xmlCertificateRevocation : revocations) {
+			certRevocationWrappers.add(new CertificateRevocationWrapper(xmlCertificateRevocation.getRevocation(), xmlCertificateRevocation));
+		}
+		return certRevocationWrappers;
 	}
 	
-	public XmlCertificateRevocation getCertificateRevocationDataById(String revocationId) {
-		for (XmlCertificateRevocation certificateRevocation : getCertificateRevocationData()) {
-			if (certificateRevocation.getId().equals(revocationId)) {
-				return certificateRevocation;
-			}
-		}
-		return null;
-	}
-
 	public boolean isIdPkixOcspNoCheck() {
 		return Utils.isTrue(certificate.isIdPkixOcspNoCheck());
 	}
@@ -209,7 +205,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 					for (XmlTrustedService trustedService : trustedServices) {
 						TrustedServiceWrapper wrapper = new TrustedServiceWrapper();
 						wrapper.setTspName(tsp.getTSPName());
-						wrapper.setServiceDigitalIdentifier(trustedService.getServiceDigitalIdentifier());
+						wrapper.setServiceDigitalIdentifier(new CertificateWrapper(trustedService.getServiceDigitalIdentifier()));
 						wrapper.setServiceName(trustedService.getServiceName());
 						wrapper.setCountryCode(tsp.getCountryCode());
 						wrapper.setStatus(trustedService.getStatus());

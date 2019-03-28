@@ -26,7 +26,7 @@ import java.util.List;
 public class TrustedServiceWrapper {
 
 	private String tspName;
-	private String serviceDigitalIdentifier;
+	private CertificateWrapper serviceDigitalIdentifier;
 	private String serviceName;
 	private String countryCode;
 	private String status;
@@ -44,11 +44,11 @@ public class TrustedServiceWrapper {
 		this.tspName = tspName;
 	}
 
-	public String getServiceDigitalIdentifier() {
+	public CertificateWrapper getServiceDigitalIdentifier() {
 		return serviceDigitalIdentifier;
 	}
 
-	public void setServiceDigitalIdentifier(String serviceDigitalIdentifier) {
+	public void setServiceDigitalIdentifier(CertificateWrapper serviceDigitalIdentifier) {
 		this.serviceDigitalIdentifier = serviceDigitalIdentifier;
 	}
 

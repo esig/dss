@@ -22,17 +22,17 @@
 	            <SignatureIntact>true</SignatureIntact>
 	            <SignatureValid>true</SignatureValid>
 	        </BasicSignature>
-	        <SigningCertificate Id="CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314">
+	        <SigningCertificate Certificate="C-CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314">
 	            <AttributePresent>true</AttributePresent>
 	            <DigestValuePresent>true</DigestValuePresent>
 	            <DigestValueMatch>true</DigestValueMatch>
 	            <IssuerSerialMatch>true</IssuerSerialMatch>
 	        </SigningCertificate>
 	        <CertificateChain>
-	            <ChainItem Id="CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314">
+	            <ChainItem Certificate="C-CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314">
 	                <Source>SIGNATURE</Source>
 	            </ChainItem>
-	            <ChainItem Id="4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
+	            <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
 	                <Source>TRUSTED_LIST</Source>
 	            </ChainItem>
 	        </CertificateChain>
@@ -43,7 +43,7 @@
 	    </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
+        <Certificate Id="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
             <SubjectDistinguishedName Format="CANONICAL">cn=trans sped qca,ou=trans sped certification authority,o=trans sped srl,c=ro</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Trans Sped QCA,OU=Trans Sped Certification Authority,O=Trans Sped SRL,C=RO</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=tc trustcenter class 3 ca ii,ou=tc trustcenter class 3 ca,o=tc trustcenter gmbh,c=de</IssuerDistinguishedName>
@@ -84,7 +84,7 @@
             <QCTypes />
             <TrustedServiceProviders />
         </Certificate>
-        <Certificate Id="5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
+        <Certificate Id="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
             <SubjectDistinguishedName Format="CANONICAL">cn=certum trusted network ca,ou=certum certification authority,o=unizeto technologies s.a.,c=pl</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Certum Trusted Network CA,OU=Certum Certification Authority,O=Unizeto Technologies S.A.,C=PL</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=certum trusted network ca,ou=certum certification authority,o=unizeto technologies s.a.,c=pl</IssuerDistinguishedName>
@@ -122,7 +122,7 @@
             <QCTypes />
             <TrustedServiceProviders />
         </Certificate>
-        <Certificate Id="CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314">
+        <Certificate Id="C-CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314">
             <SubjectDistinguishedName Format="CANONICAL">c=ro,2.5.4.5=#130d32303034313232333441415635,2.5.4.4=#0c05416e656369,2.5.4.42=#0c0d41647269616e2d566173696c65,cn=A-V A</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=RO,2.5.4.5=#130d32303034313232333441415635,2.5.4.4=#0c05416e656369,2.5.4.42=#0c0d41647269616e2d566173696c65,CN=A-V A</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=trans sped qca,ou=trans sped certification authority,o=trans sped srl,c=ro</IssuerDistinguishedName>
@@ -153,9 +153,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
+            <SigningCertificate Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
             <CertificateChain>
-                <ChainItem Id="4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
+                <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -171,13 +171,13 @@
             <QCTypes />
             <TrustedServiceProviders />
             <Revocations>
-	            <CertificateRevocation Id="79ADAE6C275B8805AF16746D43CEA07C1E1102C6476C9E9C4B2B4F30230B4F74">
+	            <CertificateRevocation Revocation="R-79ADAE6C275B8805AF16746D43CEA07C1E1102C6476C9E9C4B2B4F30230B4F74">
 	                <Available>true</Available>
 	                <Status>true</Status>
 	            </CertificateRevocation>
             </Revocations>
         </Certificate>
-        <Certificate Id="D9CAABC3225B7030CDB83E3846E3691C14ED790B1764CE1B4F043157899C5C58">
+        <Certificate Id="C-D9CAABC3225B7030CDB83E3846E3691C14ED790B1764CE1B4F043157899C5C58">
             <SubjectDistinguishedName Format="CANONICAL">cn=certum ev tsa sha2,ou=certum certification authority,o=unizeto technologies s.a.,c=pl</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Certum EV TSA SHA2,OU=Certum Certification Authority,O=Unizeto Technologies S.A.,C=PL</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=certum trusted network ca,ou=certum certification authority,o=unizeto technologies s.a.,c=pl</IssuerDistinguishedName>
@@ -207,9 +207,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E"/>
+            <SigningCertificate Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E"/>
             <CertificateChain>
-                <ChainItem Id="5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
+                <ChainItem Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
             </CertificateChain>
@@ -222,13 +222,13 @@
             <QCTypes />
             <TrustedServiceProviders />
             <Revocations>
-	            <CertificateRevocation Id="44E8F4F581737AD1B43EA4562D51AB3F3EB458C3A0E91979EF35F133EE31797E">
+	            <CertificateRevocation Revocation="R-44E8F4F581737AD1B43EA4562D51AB3F3EB458C3A0E91979EF35F133EE31797E">
 	                <Available>true</Available>
 	                <Status>true</Status>
 	            </CertificateRevocation>
             </Revocations>
         </Certificate>
-        <Certificate Id="8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733">
+        <Certificate Id="C-8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733">
             <SubjectDistinguishedName Format="CANONICAL">cn=certum validation service,ou=certum certification authority,o=unizeto technologies s.a.,c=pl</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Certum Validation Service,OU=Certum Certification Authority,O=Unizeto Technologies S.A.,C=PL</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=certum trusted network ca,ou=certum certification authority,o=unizeto technologies s.a.,c=pl</IssuerDistinguishedName>
@@ -261,9 +261,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E"/>
+            <SigningCertificate Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E"/>
             <CertificateChain>
-                <ChainItem Id="5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
+                <ChainItem Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
             </CertificateChain>
@@ -274,7 +274,7 @@
             <QCTypes />
             <TrustedServiceProviders />
         </Certificate>
-        <Certificate Id="8DA084FCF99CE07722F89B3205939806FA5CB811E1C813F6A108C7D336B3408E">
+        <Certificate Id="C-8DA084FCF99CE07722F89B3205939806FA5CB811E1C813F6A108C7D336B3408E">
             <SubjectDistinguishedName Format="CANONICAL">cn=tc trustcenter class 3 ca ii,ou=tc trustcenter class 3 ca,o=tc trustcenter gmbh,c=de</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=TC TrustCenter Class 3 CA II,OU=TC TrustCenter Class 3 CA,O=TC TrustCenter GmbH,C=DE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=tc trustcenter class 3 ca ii,ou=tc trustcenter class 3 ca,o=tc trustcenter gmbh,c=de</IssuerDistinguishedName>
@@ -312,7 +312,7 @@
             <QCTypes />
             <TrustedServiceProviders />
         </Certificate>
-        <Certificate Id="19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002">
+        <Certificate Id="C-19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002">
             <SubjectDistinguishedName Format="CANONICAL">cn=trans sped qca ocsp signer,ou=trans sped certification authority,o=trans sped srl,c=ro</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Trans Sped QCA OCSP Signer,OU=Trans Sped Certification Authority,O=Trans Sped SRL,C=RO</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=trans sped qca,ou=trans sped certification authority,o=trans sped srl,c=ro</IssuerDistinguishedName>
@@ -343,9 +343,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
+            <SigningCertificate Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
             <CertificateChain>
-                <ChainItem Id="4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
+                <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -358,7 +358,7 @@
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>
-        <Revocation Id="79ADAE6C275B8805AF16746D43CEA07C1E1102C6476C9E9C4B2B4F30230B4F74">
+        <Revocation Id="R-79ADAE6C275B8805AF16746D43CEA07C1E1102C6476C9E9C4B2B4F30230B4F74">
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://ocsp.s-trust.de</SourceAddress>
@@ -377,17 +377,17 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002"/>
+            <SigningCertificate Certificate="C-19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002"/>
             <CertificateChain>
-                <ChainItem Id="19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002">
+                <ChainItem Certificate="C-19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002">
                     <Source>OCSP_RESPONSE</Source>
                 </ChainItem>
-                <ChainItem Id="4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
+                <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
         </Revocation>
-        <Revocation Id="44E8F4F581737AD1B43EA4562D51AB3F3EB458C3A0E91979EF35F133EE31797E">
+        <Revocation Id="R-44E8F4F581737AD1B43EA4562D51AB3F3EB458C3A0E91979EF35F133EE31797E">
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://subca.ocsp-certum.com</SourceAddress>
@@ -407,12 +407,12 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733"/>
+            <SigningCertificate Certificate="C-8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733"/>
             <CertificateChain>
-                <ChainItem Id="8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733">
+                <ChainItem Certificate="C-8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733">
                     <Source>OCSP_RESPONSE</Source>
                 </ChainItem>
-                <ChainItem Id="5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
+                <ChainItem Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
             </CertificateChain>

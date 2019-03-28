@@ -282,6 +282,11 @@ public abstract class RevocationToken extends Token {
 	public abstract boolean isValid();
 
 	@Override
+	public String getDSSIdAsString() {
+		return "R-" + super.getDSSIdAsString();
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();

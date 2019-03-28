@@ -2,7 +2,7 @@
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <ValidationDate>2018-02-09T07:11:54</ValidationDate>
     <UsedCertificates>
-        <Certificate Id="3ECBC4648AA3BCB671976F53D7516F774DB1C886FAB81FE5469462181187DB8D">
+        <Certificate Id="C-3ECBC4648AA3BCB671976F53D7516F774DB1C886FAB81FE5469462181187DB8D">
             <SubjectDistinguishedName Format="CANONICAL">cn=rune tendal kock+2.5.4.5=#131c5049443a393230382d323030322d322d383434373439313736313538,o=ingen organisatorisk tilknytning,c=dk</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Rune Tendal Kock+2.5.4.5=#131c5049443a393230382d323030322d322d383434373439313736313538,O=Ingen organisatorisk tilknytning,C=DK</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=trust2408 oces ca i,o=trust2408,c=dk</IssuerDistinguishedName>

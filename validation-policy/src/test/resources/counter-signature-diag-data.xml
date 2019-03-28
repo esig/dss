@@ -31,14 +31,14 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
+            <SigningCertificate Certificate="C-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
                 <AttributePresent>true</AttributePresent>
                 <DigestValuePresent>true</DigestValuePresent>
                 <DigestValueMatch>true</DigestValueMatch>
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Id="A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
+                <ChainItem Certificate="C-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
                     <Source>UNKNOWN</Source>
                 </ChainItem>
             </CertificateChain>
@@ -79,14 +79,14 @@
                 <SignatureIntact>false</SignatureIntact>
                 <SignatureValid>false</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
+            <SigningCertificate Certificate="C-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
                 <AttributePresent>true</AttributePresent>
                 <DigestValuePresent>true</DigestValuePresent>
                 <DigestValueMatch>true</DigestValueMatch>
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Id="A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
+                <ChainItem Certificate="C-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
                     <Source>UNKNOWN</Source>
                 </ChainItem>
             </CertificateChain>
@@ -98,7 +98,7 @@
         </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
+        <Certificate Id="C-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.46=#13095a5a41413030303630,cn=D D de F,2.5.4.5=#131349543a44464c444e4437365431354c31303956,2.5.4.42=#0c0d44414d49414e4f20444945474f,2.5.4.4=#0c0944452046454c494345,ou=esercito italiano,o=ministero della difesa/97355240587,c=it</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.46=#13095a5a41413030303630,CN=D D DE F,2.5.4.5=#131349543a44464c444e4437365431354c31303956,2.5.4.42=#0c0d44414d49414e4f20444945474f,2.5.4.4=#0c0944452046454c494345,OU=Esercito Italiano,O=Ministero della Difesa/97355240587,C=IT</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=ministero della difesa - ca di firma digitale,2.5.4.5=#130b3937333535323430353837,ou=s.m.d. - c.do c4 difesa,o=ministero della difesa,c=it</IssuerDistinguishedName>

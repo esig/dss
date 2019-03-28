@@ -118,7 +118,7 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 			XmlCertificateChain certificateChain = new XmlCertificateChain();
 			for (eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem diagnosticChainItem : token.getCertificateChain()) {
 				XmlChainItem chainItem = new XmlChainItem();
-				chainItem.setId(diagnosticChainItem.getId());
+				chainItem.setId(diagnosticChainItem.getCertificate().getId());
 				chainItem.setSource(diagnosticChainItem.getSource());
 				certificateChain.getChainItem().add(chainItem);
 			}

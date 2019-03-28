@@ -383,4 +383,9 @@ public class CertificateToken extends Token {
 		return x509Certificate.getSignature();
 	}
 
+	@Override
+	public String getDSSIdAsString() {
+		return "C-" + super.getDSSIdAsString();
+	}
+
 }

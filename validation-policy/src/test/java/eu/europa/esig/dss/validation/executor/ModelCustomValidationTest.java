@@ -110,7 +110,7 @@ public class ModelCustomValidationTest extends ModelAbstractlValidation {
 
 	@Test
 	public void testModelBasedSignedDocument() throws Exception {
-		final String signerCertId = diagnosticData.getSignatures().get(0).getSigningCertificate().getId();
+		final String signerCertId = diagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate().getId();
 		assertTrue(testCase.getTestData().getSignerCertificateIdentifier().equals(signerCertId));
 		
 		CustomProcessExecutor executor = new CustomProcessExecutor();

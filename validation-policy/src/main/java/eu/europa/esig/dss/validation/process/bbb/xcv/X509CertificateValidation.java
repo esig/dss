@@ -102,7 +102,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 			if (Utils.isCollectionNotEmpty(certificateChainList)) {
 				for (XmlChainItem chainCertificate : certificateChainList) {
 					if (!trustAnchorReached) {
-						CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(chainCertificate.getId());
+						CertificateWrapper certificate = new CertificateWrapper(chainCertificate.getCertificate());
 						certificateValidation = new SubX509CertificateValidation(diagnosticData, certificate, lastDate, 
 								context, SubContext.CA_CERTIFICATE, validationPolicy);
 						subXCV = certificateValidation.execute();

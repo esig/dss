@@ -62,11 +62,11 @@ public class ModelAbstractlValidation {
 	 */
 	public enum TestData {
 		DATA_1("src/test/resources/diag_data_model_policy.xml", "src/test/resources/diag_data_model_1.xml",
-				"3967083A1B9CE00484905529E22C64BBF622EE356088D62371B8069A84FE47F7", 2), 
+				"C-3967083A1B9CE00484905529E22C64BBF622EE356088D62371B8069A84FE47F7", 2),
 		DATA_2("src/test/resources/diag_data_model_policy.xml", "src/test/resources/diag_data_model_2.xml",
-				"C01FC833D83EAF08F4031A1915A72BE6602A63587C5B65227D37461E35019532", 3),
+				"C-C01FC833D83EAF08F4031A1915A72BE6602A63587C5B65227D37461E35019532", 3),
 		DATA_3("src/test/resources/diag_data_model_policy.xml", "src/test/resources/diag_data_model_3.xml", 
-				"10065BCA3329FF0813FF6254448C6C9281F36C0630C71E9446F109FC1B5CDBCF", 4);
+				"C-10065BCA3329FF0813FF6254448C6C9281F36C0630C71E9446F109FC1B5CDBCF", 4);
 
 		private final String policy;
 		private final String diagData;

@@ -313,7 +313,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 	private ChainItem<XmlSubXCV> revocationCertHashCheck() {
 		LevelConstraint constraint = validationPolicy.getRevocationCertHashMatchConstraint(context, subContext);
-		return new RevocationCertHashMatchCheck(result, diagnosticData.getRevocationDataByCertificate(currentCertificate), constraint);
+		return new RevocationCertHashMatchCheck(result, currentCertificate.getCertificateRevocationData(), constraint);
 	}
 
 }

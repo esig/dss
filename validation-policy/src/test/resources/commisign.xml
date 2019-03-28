@@ -25,17 +25,17 @@
             <SignatureIntact>true</SignatureIntact>
             <SignatureValid>true</SignatureValid>
          </BasicSignature>
-         <SigningCertificate Id="96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
+         <SigningCertificate Certificate="C-96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
             <AttributePresent>true</AttributePresent>
             <DigestValuePresent>true</DigestValuePresent>
             <DigestValueMatch>true</DigestValueMatch>
             <IssuerSerialMatch>true</IssuerSerialMatch>
          </SigningCertificate>
          <CertificateChain>
-            <ChainItem Id="96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
+            <ChainItem Certificate="C-96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
                <Source>UNKNOWN</Source>
             </ChainItem>
-            <ChainItem Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
+            <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
                <Source>TRUSTED_LIST</Source>
             </ChainItem>
          </CertificateChain>
@@ -49,7 +49,7 @@
       </Signature>
    </Signatures>
    <UsedCertificates>
-      <Certificate Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
+      <Certificate Id="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
          <SubjectDistinguishedName Format="CANONICAL">cn=C - 2,o=european commission</SubjectDistinguishedName>
          <SubjectDistinguishedName Format="RFC2253">CN=C - 2,O=European Commission</SubjectDistinguishedName>
          <IssuerDistinguishedName Format="CANONICAL">cn=european commission root ca - 2</IssuerDistinguishedName>
@@ -87,9 +87,9 @@
             <SignatureIntact>true</SignatureIntact>
             <SignatureValid>true</SignatureValid>
          </BasicSignature>
-         <SigningCertificate Id="C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA"/>
+         <SigningCertificate Certificate="C-C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA"/>
          <CertificateChain>
-            <ChainItem Id="C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA">
+            <ChainItem Certificate="C-C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA">
                <Source>UNKNOWN</Source>
             </ChainItem>
          </CertificateChain>
@@ -108,7 +108,7 @@
                <CountryCode>EC</CountryCode>
                <TrustedServices>
                   <TrustedService>
-					<ServiceDigitalIdentifier>E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672</ServiceDigitalIdentifier>
+					<ServiceDigitalIdentifier>C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672</ServiceDigitalIdentifier>
                      <ServiceName>C - 2</ServiceName>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -119,7 +119,7 @@
          </TrustedServiceProviders>
          <Revocations/>
       </Certificate>
-      <Certificate Id="43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8">
+      <Certificate Id="C-43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8">
          <SubjectDistinguishedName Format="CANONICAL">cn=ocsp2-C-prod</SubjectDistinguishedName>
          <SubjectDistinguishedName Format="RFC2253">CN=ocsp2-C-prod</SubjectDistinguishedName>
          <IssuerDistinguishedName Format="CANONICAL">cn=C - 2,o=european commission</IssuerDistinguishedName>
@@ -153,9 +153,9 @@
             <SignatureIntact>true</SignatureIntact>
             <SignatureValid>true</SignatureValid>
          </BasicSignature>
-         <SigningCertificate Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
+         <SigningCertificate Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
          <CertificateChain>
-            <ChainItem Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
+            <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
                <Source>TRUSTED_LIST</Source>
             </ChainItem>
          </CertificateChain>
@@ -171,7 +171,7 @@
                <CountryCode>EC</CountryCode>
                <TrustedServices>
                   <TrustedService>
-                  		<ServiceDigitalIdentifier>E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672</ServiceDigitalIdentifier>
+                  		<ServiceDigitalIdentifier>C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672</ServiceDigitalIdentifier>
                      <ServiceName>C - 2</ServiceName>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -184,7 +184,7 @@
          </TrustedServiceProviders>
          <Revocations/>
       </Certificate>
-      <Certificate Id="C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA">
+      <Certificate Id="C-C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA">
          <SubjectDistinguishedName Format="CANONICAL">cn=european commission root ca - 2</SubjectDistinguishedName>
          <SubjectDistinguishedName Format="RFC2253">CN=European Commission Root CA - 2</SubjectDistinguishedName>
          <IssuerDistinguishedName Format="CANONICAL">cn=european commission root ca - 2</IssuerDistinguishedName>
@@ -227,7 +227,7 @@
          <TrustedServiceProviders/>
          <Revocations/>
       </Certificate>
-      <Certificate Id="96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
+      <Certificate Id="C-96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
          <SubjectDistinguishedName Format="CANONICAL">cn=R A,o=european commission,1.2.840.113549.1.9.1=#1626416e64726561732e524549465343484e4549444552406578742e65632e6575726f70612e6575</SubjectDistinguishedName>
          <SubjectDistinguishedName Format="RFC2253">CN=R A,O=European Commission,1.2.840.113549.1.9.1=#1626416e64726561732e524549465343484e4549444552406578742e65632e6575726f70612e6575</SubjectDistinguishedName>
          <IssuerDistinguishedName Format="CANONICAL">cn=C - 2,o=european commission</IssuerDistinguishedName>
@@ -270,9 +270,9 @@
             <SignatureIntact>true</SignatureIntact>
             <SignatureValid>true</SignatureValid>
          </BasicSignature>
-         <SigningCertificate Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
+         <SigningCertificate Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
          <CertificateChain>
-            <ChainItem Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
+            <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
                <Source>TRUSTED_LIST</Source>
             </ChainItem>
          </CertificateChain>
@@ -287,7 +287,7 @@
                <TSPRegistrationIdentifier>NTRBE-0949.383.342 </TSPRegistrationIdentifier>
                <CountryCode>EC</CountryCode>
                <TrustedServices>
-                  <TrustedService><ServiceDigitalIdentifier>E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672</ServiceDigitalIdentifier>
+                  <TrustedService><ServiceDigitalIdentifier>C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672</ServiceDigitalIdentifier>
                      <ServiceName>C - 2</ServiceName>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -299,7 +299,7 @@
             </TrustedServiceProvider>
          </TrustedServiceProviders>
          <Revocations>
-            <CertificateRevocation Id="96de975c5d625eb6b23007402a12f7edc7240e6fc22888b9e6a47a23587183ccd44b3bc2cbfca258343153ddc0197a58e747bc1153f83d0fbcd1617bb9724a95">
+            <CertificateRevocation Revocation="R-96de975c5d625eb6b23007402a12f7edc7240e6fc22888b9e6a47a23587183ccd44b3bc2cbfca258343153ddc0197a58e747bc1153f83d0fbcd1617bb9724a95">
                <Available>true</Available>
                <Status>true</Status>
             </CertificateRevocation>
@@ -307,7 +307,7 @@
       </Certificate>
    </UsedCertificates>
    <UsedRevocations>
-      <Revocation Id="96de975c5d625eb6b23007402a12f7edc7240e6fc22888b9e6a47a23587183ccd44b3bc2cbfca258343153ddc0197a58e747bc1153f83d0fbcd1617bb9724a95">
+      <Revocation Id="R-96de975c5d625eb6b23007402a12f7edc7240e6fc22888b9e6a47a23587183ccd44b3bc2cbfca258343153ddc0197a58e747bc1153f83d0fbcd1617bb9724a95">
          <Origin>EXTERNAL</Origin>
          <Type>OCSP</Type>
          <SourceAddress>http://hide.eu/ocsp</SourceAddress>
@@ -327,12 +327,12 @@
             <SignatureIntact>true</SignatureIntact>
             <SignatureValid>true</SignatureValid>
          </BasicSignature>
-         <SigningCertificate Id="43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8"/>
+         <SigningCertificate Certificate="C-43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8"/>
          <CertificateChain>
-            <ChainItem Id="43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8">
+            <ChainItem Certificate="C-43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8">
                <Source>OCSP_RESPONSE</Source>
             </ChainItem>
-            <ChainItem Id="E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
+            <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
                <Source>TRUSTED_LIST</Source>
             </ChainItem>
          </CertificateChain>

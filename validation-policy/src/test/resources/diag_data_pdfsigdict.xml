@@ -25,23 +25,23 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="F5ADDE9792A56C8C5FF3872560E3E85221E62D7A517DAD428D623299CCEF373B">
+            <SigningCertificate Certificate="C-F5ADDE9792A56C8C5FF3872560E3E85221E62D7A517DAD428D623299CCEF373B">
                 <AttributePresent>true</AttributePresent>
                 <DigestValuePresent>true</DigestValuePresent>
                 <DigestValueMatch>true</DigestValueMatch>
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Id="F5ADDE9792A56C8C5FF3872560E3E85221E62D7A517DAD428D623299CCEF373B">
+                <ChainItem Certificate="C-F5ADDE9792A56C8C5FF3872560E3E85221E62D7A517DAD428D623299CCEF373B">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
-                <ChainItem Id="498D3379F39A398AFCCA536C528F91A013D0A868FEAEFFA1114EC3B6938249F0">
+                <ChainItem Certificate="C-498D3379F39A398AFCCA536C528F91A013D0A868FEAEFFA1114EC3B6938249F0">
                     <Source>AIA</Source>
                 </ChainItem>
-                <ChainItem Id="B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9">
+                <ChainItem Certificate="C-B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9">
                     <Source>AIA</Source>
                 </ChainItem>
-                <ChainItem Id="FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
+                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
                     <Source>AIA</Source>
                 </ChainItem>
             </CertificateChain>
@@ -84,18 +84,18 @@
                         <SignatureIntact>true</SignatureIntact>
                         <SignatureValid>true</SignatureValid>
                     </BasicSignature>
-                    <SigningCertificate Id="2086827691ADF87520375749ADF3616AC5FACA0456E8F2DA54DDCF844D24B86E"/>
+                    <SigningCertificate Certificate="C-2086827691ADF87520375749ADF3616AC5FACA0456E8F2DA54DDCF844D24B86E"/>
                     <CertificateChain>
-                        <ChainItem Id="2086827691ADF87520375749ADF3616AC5FACA0456E8F2DA54DDCF844D24B86E">
+                        <ChainItem Certificate="C-2086827691ADF87520375749ADF3616AC5FACA0456E8F2DA54DDCF844D24B86E">
                             <Source>TIMESTAMP</Source>
                         </ChainItem>
-                        <ChainItem Id="A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D">
+                        <ChainItem Certificate="C-A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D">
                             <Source>AIA</Source>
                         </ChainItem>
-                        <ChainItem Id="87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505">
+                        <ChainItem Certificate="C-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505">
                             <Source>AIA</Source>
                         </ChainItem>
-                        <ChainItem Id="FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
+                        <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
                             <Source>AIA</Source>
                         </ChainItem>
                     </CertificateChain>
@@ -136,14 +136,14 @@
                 <SignatureIntact>false</SignatureIntact>
                 <SignatureValid>false</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="C4DCF22C04E2914AEB651F660A2558AF783D8C344E62D82D0DE5DBD5DC87F2F5">
+            <SigningCertificate Certificate="C-C4DCF22C04E2914AEB651F660A2558AF783D8C344E62D82D0DE5DBD5DC87F2F5">
                 <AttributePresent>true</AttributePresent>
                 <DigestValuePresent>true</DigestValuePresent>
                 <DigestValueMatch>true</DigestValueMatch>
                 <IssuerSerialMatch>false</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Id="C4DCF22C04E2914AEB651F660A2558AF783D8C344E62D82D0DE5DBD5DC87F2F5">
+                <ChainItem Certificate="C-C4DCF22C04E2914AEB651F660A2558AF783D8C344E62D82D0DE5DBD5DC87F2F5">
                     <Source>SIGNATURE</Source>
                 </ChainItem>
             </CertificateChain>
@@ -164,7 +164,7 @@
         </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="F5ADDE9792A56C8C5FF3872560E3E85221E62D7A517DAD428D623299CCEF373B">
+        <Certificate Id="C-F5ADDE9792A56C8C5FF3872560E3E85221E62D7A517DAD428D623299CCEF373B">
             <SubjectDistinguishedName Format="CANONICAL">cn=davyd pereira do nascimento santos:30773760830,ou=ar comprova,ou=(em branco),ou=rfb e-cpf a3,ou=secretaria da receita federal do brasil - rfb,o=icp-brasil,c=br</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=DAVYD PEREIRA DO NASCIMENTO SANTOS:30773760830,OU=AR COMPROVA,OU=(EM BRANCO),OU=RFB e-CPF A3,OU=Secretaria da Receita Federal do Brasil - RFB,O=ICP-Brasil,C=BR</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=ac serasa rfb v2,ou=secretaria da receita federal do brasil - rfb,o=icp-brasil,c=br</IssuerDistinguishedName>
@@ -216,15 +216,15 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="498D3379F39A398AFCCA536C528F91A013D0A868FEAEFFA1114EC3B6938249F0"/>
+            <SigningCertificate Certificate="C-498D3379F39A398AFCCA536C528F91A013D0A868FEAEFFA1114EC3B6938249F0"/>
             <CertificateChain>
-                <ChainItem Id="498D3379F39A398AFCCA536C528F91A013D0A868FEAEFFA1114EC3B6938249F0">
+                <ChainItem Certificate="C-498D3379F39A398AFCCA536C528F91A013D0A868FEAEFFA1114EC3B6938249F0">
                     <Source>AIA</Source>
                 </ChainItem>
-                <ChainItem Id="B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9">
+                <ChainItem Certificate="C-B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9">
                     <Source>AIA</Source>
                 </ChainItem>
-                <ChainItem Id="FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
+                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
                     <Source>AIA</Source>
                 </ChainItem>
             </CertificateChain>
@@ -238,7 +238,7 @@
             <TrustedServiceProviders/>
             <Revocations/>
         </Certificate>
-        <Certificate Id="FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
+        <Certificate Id="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
             <SubjectDistinguishedName Format="CANONICAL">cn=autoridade certificadora raiz brasileira v2,ou=instituto nacional de tecnologia da informacao - iti,o=icp-brasil,c=br</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Autoridade Certificadora Raiz Brasileira v2,OU=Instituto Nacional de Tecnologia da Informacao - ITI,O=ICP-Brasil,C=BR</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=autoridade certificadora raiz brasileira v2,ou=instituto nacional de tecnologia da informacao - iti,o=icp-brasil,c=br</IssuerDistinguishedName>
@@ -290,7 +290,7 @@
             <TrustedServiceProviders/>
             <Revocations/>
         </Certificate>
-        <Certificate Id="2086827691ADF87520375749ADF3616AC5FACA0456E8F2DA54DDCF844D24B86E">
+        <Certificate Id="C-2086827691ADF87520375749ADF3616AC5FACA0456E8F2DA54DDCF844D24B86E">
             <SubjectDistinguishedName Format="CANONICAL">cn=timestamp01.d699-d038-d51e,ou=#14284175746f72696461646520646520436172696d626f20646f2054656d706f2043657274697369676e,ou=#141e6e436970686572204453452045534e3a443639392d443033382d44353145,ou=#1412417373696e6174757261205469706f205433,ou=#1422417574656e74696361646f20706f722041432043657274697369676e2054656d706f,o=#140a4943502d42726173696c,c=br</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=TimeStamp01.D699-D038-D51E,OU=Autoridade de Carimbo do Tempo Certisign,OU=nCipher DSE ESN:D699-D038-D51E,OU=Assinatura Tipo T3,OU=Autenticado por AC Certisign Tempo,O=ICP-Brasil,C=BR</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=ac certisign tempo g1,ou=certisign certificadora digital s.a.,o=icp-brasil,c=br</IssuerDistinguishedName>
@@ -341,15 +341,15 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D"/>
+            <SigningCertificate Certificate="C-A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D"/>
             <CertificateChain>
-                <ChainItem Id="A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D">
+                <ChainItem Certificate="C-A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D">
                     <Source>AIA</Source>
                 </ChainItem>
-                <ChainItem Id="87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505">
+                <ChainItem Certificate="C-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505">
                     <Source>AIA</Source>
                 </ChainItem>
-                <ChainItem Id="FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
+                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
                     <Source>AIA</Source>
                 </ChainItem>
             </CertificateChain>
@@ -363,7 +363,7 @@
             <TrustedServiceProviders/>
             <Revocations/>
         </Certificate>
-        <Certificate Id="498D3379F39A398AFCCA536C528F91A013D0A868FEAEFFA1114EC3B6938249F0">
+        <Certificate Id="C-498D3379F39A398AFCCA536C528F91A013D0A868FEAEFFA1114EC3B6938249F0">
             <SubjectDistinguishedName Format="CANONICAL">cn=ac serasa rfb v2,ou=secretaria da receita federal do brasil - rfb,o=icp-brasil,c=br</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=AC SERASA RFB v2,OU=Secretaria da Receita Federal do Brasil - RFB,O=ICP-Brasil,C=BR</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=ac secretaria da receita federal do brasil v3,ou=autoridade certificadora raiz brasileira v2,o=icp-brasil,c=br</IssuerDistinguishedName>
@@ -405,12 +405,12 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9"/>
+            <SigningCertificate Certificate="C-B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9"/>
             <CertificateChain>
-                <ChainItem Id="B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9">
+                <ChainItem Certificate="C-B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9">
                     <Source>AIA</Source>
                 </ChainItem>
-                <ChainItem Id="FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
+                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
                     <Source>AIA</Source>
                 </ChainItem>
             </CertificateChain>
@@ -427,7 +427,7 @@
             <TrustedServiceProviders/>
             <Revocations/>
         </Certificate>
-        <Certificate Id="87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505">
+        <Certificate Id="C-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505">
             <SubjectDistinguishedName Format="CANONICAL">cn=ac certisign g6,ou=autoridade certificadora raiz brasileira v2,o=icp-brasil,c=br</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=AC Certisign G6,OU=Autoridade Certificadora Raiz Brasileira v2,O=ICP-Brasil,C=BR</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=autoridade certificadora raiz brasileira v2,ou=instituto nacional de tecnologia da informacao - iti,o=icp-brasil,c=br</IssuerDistinguishedName>
@@ -469,9 +469,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C"/>
+            <SigningCertificate Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C"/>
             <CertificateChain>
-                <ChainItem Id="FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
+                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
                     <Source>AIA</Source>
                 </ChainItem>
             </CertificateChain>
@@ -485,7 +485,7 @@
             <TrustedServiceProviders/>
             <Revocations/>
         </Certificate>
-        <Certificate Id="C4DCF22C04E2914AEB651F660A2558AF783D8C344E62D82D0DE5DBD5DC87F2F5">
+        <Certificate Id="C-C4DCF22C04E2914AEB651F660A2558AF783D8C344E62D82D0DE5DBD5DC87F2F5">
             <SubjectDistinguishedName Format="CANONICAL">cn=docusign dev-test,ou=engineering operations,o=docusign\, inc.,l=seattle,st=washington,c=us</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=DocuSign DEV-TEST,OU=Engineering Operations,O=DocuSign\, Inc.,L=Seattle,ST=Washington,C=US</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=docusignhq-sea-cas-01-ca,dc=#160a646f63757369676e6871,dc=#1603636f6d</IssuerDistinguishedName>
@@ -542,7 +542,7 @@
             <TrustedServiceProviders/>
             <Revocations/>
         </Certificate>
-        <Certificate Id="B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9">
+        <Certificate Id="C-B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9">
             <SubjectDistinguishedName Format="CANONICAL">cn=ac secretaria da receita federal do brasil v3,ou=autoridade certificadora raiz brasileira v2,o=icp-brasil,c=br</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=AC Secretaria da Receita Federal do Brasil v3,OU=Autoridade Certificadora Raiz Brasileira v2,O=ICP-Brasil,C=BR</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=autoridade certificadora raiz brasileira v2,ou=instituto nacional de tecnologia da informacao - iti,o=icp-brasil,c=br</IssuerDistinguishedName>
@@ -584,9 +584,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C"/>
+            <SigningCertificate Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C"/>
             <CertificateChain>
-                <ChainItem Id="FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
+                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
                     <Source>AIA</Source>
                 </ChainItem>
             </CertificateChain>
@@ -600,7 +600,7 @@
             <TrustedServiceProviders/>
             <Revocations/>
         </Certificate>
-        <Certificate Id="A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D">
+        <Certificate Id="C-A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D">
             <SubjectDistinguishedName Format="CANONICAL">cn=ac certisign tempo g1,ou=certisign certificadora digital s.a.,o=icp-brasil,c=br</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=AC Certisign Tempo G1,OU=Certisign Certificadora Digital S.A.,O=ICP-Brasil,C=BR</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=ac certisign g6,ou=autoridade certificadora raiz brasileira v2,o=icp-brasil,c=br</IssuerDistinguishedName>
@@ -642,12 +642,12 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505"/>
+            <SigningCertificate Certificate="C-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505"/>
             <CertificateChain>
-                <ChainItem Id="87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505">
+                <ChainItem Certificate="C-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505">
                     <Source>AIA</Source>
                 </ChainItem>
-                <ChainItem Id="FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
+                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
                     <Source>AIA</Source>
                 </ChainItem>
             </CertificateChain>

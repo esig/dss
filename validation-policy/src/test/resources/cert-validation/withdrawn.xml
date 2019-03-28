@@ -2,7 +2,7 @@
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <ValidationDate>2018-06-27T08:37:00</ValidationDate>
     <UsedCertificates>
-        <Certificate Id="3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
+        <Certificate Id="C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
             <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=cert for test,o=tsp-3.1 name,cn=sdi-3.1.4</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=LU,OU=CERT FOR TEST,O=TSP-3.1 Name,CN=SDI-3.1.4</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=cert for test,o=tsp-3.1 name,cn=sdi-3.1.4</IssuerDistinguishedName>
@@ -44,7 +44,7 @@
                     <CountryCode>LU</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376</ServiceDigitalIdentifier>
                             <ServiceName>TS-3.1.4 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -58,7 +58,7 @@
             </TrustedServiceProviders>
             <Revocations/>
         </Certificate>
-        <Certificate Id="18D60FFCE5904ED1E2B3DE04A7BA48BF7F904A34D6988962B964843649A33456">
+        <Certificate Id="C-18D60FFCE5904ED1E2B3DE04A7BA48BF7F904A34D6988962B964843649A33456">
             <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=cert for test,o=tl3 organization,cn=cert-test-3.1.4</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=LU,OU=CERT FOR TEST,O=TL3 Organization,CN=CERT-TEST-3.1.4</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=cert for test,o=tsp-3.1 name,cn=sdi-3.1.4</IssuerDistinguishedName>
@@ -94,9 +94,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376"/>
+            <SigningCertificate Certificate="C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376"/>
             <CertificateChain>
-                <ChainItem Id="3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
+                <ChainItem Certificate="C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -117,7 +117,7 @@
                     <CountryCode>LU</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376</ServiceDigitalIdentifier>
                             <ServiceName>TS-3.1.4 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -131,7 +131,7 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <CertificateRevocation Id="18d60ffce5904ed1e2b3de04a7ba48bf7f904a34d6988962b964843649a334563b36cbfdce6aa8c34ae67c8acb33073fcf5d2fab96e4adf03d77e66ad2a4f4a9">
+                <CertificateRevocation Revocation="R-18d60ffce5904ed1e2b3de04a7ba48bf7f904a34d6988962b964843649a334563b36cbfdce6aa8c34ae67c8acb33073fcf5d2fab96e4adf03d77e66ad2a4f4a9">
                     <Available>true</Available>
                     <Status>true</Status>
                 </CertificateRevocation>
@@ -140,7 +140,7 @@
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>
-        <Revocation Id="18d60ffce5904ed1e2b3de04a7ba48bf7f904a34d6988962b964843649a334563b36cbfdce6aa8c34ae67c8acb33073fcf5d2fab96e4adf03d77e66ad2a4f4a9">
+        <Revocation Id="R-18d60ffce5904ed1e2b3de04a7ba48bf7f904a34d6988962b964843649a334563b36cbfdce6aa8c34ae67c8acb33073fcf5d2fab96e4adf03d77e66ad2a4f4a9">
             <Origin>EXTERNAL</Origin>
             <Type>OCSP</Type>
             <SourceAddress>http://localhost:8080/qes-validation-web/ocsp/SDI-3.1.4</SourceAddress>
@@ -154,9 +154,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376"/>
+            <SigningCertificate Certificate="C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376"/>
             <CertificateChain>
-                <ChainItem Id="3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
+                <ChainItem Certificate="C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>

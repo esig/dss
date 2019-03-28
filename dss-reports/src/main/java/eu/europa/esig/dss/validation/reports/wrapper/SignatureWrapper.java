@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
@@ -487,7 +487,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	public List<String> getRevocationIds() {
 		List<String> revocationIds = new ArrayList<String>();
 		for (XmlCertificateRevocationRef revocationRef : getRelatedRevocations()) {
-			revocationIds.add(revocationRef.getRevocationId());
+			revocationIds.add(revocationRef.getRevocation().getId());
 		}
 		return revocationIds;
 	}
@@ -536,7 +536,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		if (Utils.isCollectionNotEmpty(foundCertificates)) {
 			for (XmlFoundCertificate xmlFoundCertificate : foundCertificates) {
 				if (locationType.equals(xmlFoundCertificate.getLocation())) {
-					result.add(xmlFoundCertificate.getCertId());
+					result.add(xmlFoundCertificate.getCertificate().getId());
 				}
 			}
 		}

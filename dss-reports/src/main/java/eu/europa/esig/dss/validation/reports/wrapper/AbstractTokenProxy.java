@@ -61,7 +61,7 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 		List<XmlChainItem> certificateChain = getCertificateChain();
 		if (Utils.isCollectionNotEmpty(certificateChain)) {
 			for (XmlChainItem xmlChainCertificate : certificateChain) {
-				result.add(xmlChainCertificate.getId());
+				result.add(xmlChainCertificate.getCertificate().getId());
 			}
 		}
 		return result;
@@ -161,7 +161,7 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	public String getSigningCertificateId() {
 		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
 		if (currentSigningCertificate != null) {
-			return currentSigningCertificate.getId();
+			return currentSigningCertificate.getCertificate().getId();
 		}
 		return Utils.EMPTY_STRING;
 	}
@@ -169,13 +169,13 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	@Override
 	public String getLastChainCertificateId() {
 		XmlChainItem item = getLastChainCertificate();
-		return item == null ? Utils.EMPTY_STRING : item.getId();
+		return item == null ? Utils.EMPTY_STRING : item.getCertificate().getId();
 	}
 
 	@Override
 	public String getFirstChainCertificateId() {
 		XmlChainItem item = getFirstChainCertificate();
-		return item == null ? Utils.EMPTY_STRING : item.getId();
+		return item == null ? Utils.EMPTY_STRING : item.getCertificate().getId();
 	}
 
 	@Override

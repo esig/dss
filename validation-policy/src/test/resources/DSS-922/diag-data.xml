@@ -15,17 +15,17 @@
 	            <SignatureIntact>true</SignatureIntact>
 	            <SignatureValid>true</SignatureValid>
 	        </BasicSignature>
-	        <SigningCertificate Id="F5F7727489506D7F7CBCB375028D19A433B296CFC28ADA46CDE6D2EE93BA74A4">
+	        <SigningCertificate Certificate="C-F5F7727489506D7F7CBCB375028D19A433B296CFC28ADA46CDE6D2EE93BA74A4">
 	            <AttributePresent>true</AttributePresent>
 	            <DigestValuePresent>true</DigestValuePresent>
 	            <DigestValueMatch>true</DigestValueMatch>
 	            <IssuerSerialMatch>true</IssuerSerialMatch>
 	        </SigningCertificate>
 	        <CertificateChain>
-	            <ChainItem Id="F5F7727489506D7F7CBCB375028D19A433B296CFC28ADA46CDE6D2EE93BA74A4">
+	            <ChainItem Certificate="C-F5F7727489506D7F7CBCB375028D19A433B296CFC28ADA46CDE6D2EE93BA74A4">
 	                <Source>SIGNATURE</Source>
 	            </ChainItem>
-	            <ChainItem Id="7EF532D928F552651A05C70CB362C37F8E34F20DD263F0F38E3C6360F4625643">
+	            <ChainItem Certificate="C-7EF532D928F552651A05C70CB362C37F8E34F20DD263F0F38E3C6360F4625643">
 	                <Source>TRUSTED_LIST</Source>
 	            </ChainItem>
 	        </CertificateChain>
@@ -45,7 +45,7 @@
 	    </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="E83A008AF341579A76367AF41CDD371F7F35E949220FC4621A3F2596A73D1D05">
+        <Certificate Id="C-E83A008AF341579A76367AF41CDD371F7F35E949220FC4621A3F2596A73D1D05">
             <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=test of sk ocsp responder 2011,ou=ocsp,o=as sertifitseerimiskeskus,c=ee</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,CN=TEST of SK OCSP RESPONDER 2011,OU=OCSP,O=AS Sertifitseerimiskeskus,C=EE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=test of ee certification centre root ca,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
@@ -78,7 +78,7 @@
             <QCTypes />
             <TrustedServiceProviders />
         </Certificate>
-        <Certificate Id="F5F7727489506D7F7CBCB375028D19A433B296CFC28ADA46CDE6D2EE93BA74A4">
+        <Certificate Id="C-F5F7727489506D7F7CBCB375028D19A433B296CFC28ADA46CDE6D2EE93BA74A4">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130b3437313031303130303333,2.5.4.42=#0c094d4152492d4c494953,2.5.4.4=#0c074dc3844e4e494b,cn=männik\,mari-liis\,47101010033,ou=digital signature,o=esteid,c=ee</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#130b3437313031303130303333,2.5.4.42=#0c094d4152492d4c494953,2.5.4.4=#0c074dc3844e4e494b,CN=MÄNNIK\,MARI-LIIS\,47101010033,OU=digital signature,O=ESTEID,C=EE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=test of esteid-sk 2011,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
@@ -106,9 +106,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="7EF532D928F552651A05C70CB362C37F8E34F20DD263F0F38E3C6360F4625643"/>
+            <SigningCertificate Certificate="C-7EF532D928F552651A05C70CB362C37F8E34F20DD263F0F38E3C6360F4625643"/>
             <CertificateChain>
-                <ChainItem Id="7EF532D928F552651A05C70CB362C37F8E34F20DD263F0F38E3C6360F4625643">
+                <ChainItem Certificate="C-7EF532D928F552651A05C70CB362C37F8E34F20DD263F0F38E3C6360F4625643">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -123,13 +123,13 @@
             <QCTypes />
             <TrustedServiceProviders />
 			<Revocations>
-	            <CertificateRevocation Id="DC0E71B7A59FAE435C3F3A8B10A7CB4BDC42973BD93D139B352D439B0F071ECD">
+	            <CertificateRevocation Revocation="R-DC0E71B7A59FAE435C3F3A8B10A7CB4BDC42973BD93D139B352D439B0F071ECD">
 	                <Status>false</Status>
 	                <Reason>OCSP status: unknown</Reason>
 	            </CertificateRevocation>
 	        </Revocations>
         </Certificate>
-        <Certificate Id="7EF532D928F552651A05C70CB362C37F8E34F20DD263F0F38E3C6360F4625643">
+        <Certificate Id="C-7EF532D928F552651A05C70CB362C37F8E34F20DD263F0F38E3C6360F4625643">
             <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=test of esteid-sk 2011,o=as sertifitseerimiskeskus,c=ee</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,CN=TEST of ESTEID-SK 2011,O=AS Sertifitseerimiskeskus,C=EE</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=test of ee certification centre root ca,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
@@ -166,7 +166,7 @@
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>
-        <Revocation Id="DC0E71B7A59FAE435C3F3A8B10A7CB4BDC42973BD93D139B352D439B0F071ECD">
+        <Revocation Id="R-DC0E71B7A59FAE435C3F3A8B10A7CB4BDC42973BD93D139B352D439B0F071ECD">
             <Origin>SIGNATURE</Origin>
             <Type>OCSP</Type>
             <ProductionDate>2013-10-11T14:27:58</ProductionDate>
@@ -180,9 +180,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="E83A008AF341579A76367AF41CDD371F7F35E949220FC4621A3F2596A73D1D05"/>
+            <SigningCertificate Certificate="C-E83A008AF341579A76367AF41CDD371F7F35E949220FC4621A3F2596A73D1D05"/>
             <CertificateChain>
-                <ChainItem Id="E83A008AF341579A76367AF41CDD371F7F35E949220FC4621A3F2596A73D1D05">
+                <ChainItem Certificate="C-E83A008AF341579A76367AF41CDD371F7F35E949220FC4621A3F2596A73D1D05">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
