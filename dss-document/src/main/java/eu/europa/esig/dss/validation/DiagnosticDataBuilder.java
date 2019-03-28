@@ -66,6 +66,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocations;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlManifestFile;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
@@ -482,7 +483,7 @@ public class DiagnosticDataBuilder {
 
 		xmlSignature.setPDFSignatureDictionary(getXmlPDFSignatureDictionary(signature));
 
-		xmlSignature.setFoundRevocations(getXmlRelatedRevocations(signature));
+		xmlSignature.setFoundRevocations(getXmlFoundRevocations(signature));
 		xmlSignature.setFoundCertificates(getXmlFoundCertificates(signature));
 		xmlSignature.setSignatureScopes(getXmlSignatureScopes(signature.getSignatureScopes()));
 
@@ -774,6 +775,13 @@ public class DiagnosticDataBuilder {
 		}
 		return foundTimestamps;
 	}
+	
+	private XmlFoundRevocations getXmlFoundRevocations(AdvancedSignature signature) {
+		XmlFoundRevocations foundRevocations = new XmlFoundRevocations();
+		foundRevocations.getRelatedRevocation().addAll(getXmlRelatedRevocations(signature));
+		foundRevocations.setUnusedRevocationRefs(getXmlUnusedRevocationRefs(signature));
+		return foundRevocations;
+	}
 
 	private List<XmlRelatedRevocation> getXmlRelatedRevocations(AdvancedSignature signature) {		
 		List<XmlRelatedRevocation> xmlRevocationRefs = new ArrayList<XmlRelatedRevocation>();
@@ -807,18 +815,27 @@ public class DiagnosticDataBuilder {
 		xmlRevocationRef.setType(RevocationType.valueOf(revocationToken.getRevocationSourceType().name()));
 		xmlRevocationRef.setOrigin(originType);
 		List<RevocationRef> revocationRefs = signature.findRefsForRevocationToken(revocationToken);
-		xmlRevocationRef.getRevocationReferences().addAll(getXmlRevocataRefs(revocationRefs));
+		xmlRevocationRef.getRevocationReferences().addAll(getXmlRevocationRefs(revocationRefs, false));
 		return xmlRevocationRef;
 	}
 	
-	private List<XmlRevocationRef> getXmlRevocataRefs(List<RevocationRef> revocationRefs) {
+	private List<XmlRevocationRef> getXmlUnusedRevocationRefs(AdvancedSignature signature) {
+		return getXmlRevocationRefs(signature.getUnusedRevocationRefs(), true);
+	}
+	
+	private List<XmlRevocationRef> getXmlRevocationRefs(List<RevocationRef> revocationRefs, boolean addType) {
 		List<XmlRevocationRef> xmlRevocationRefs = new ArrayList<XmlRevocationRef>();
 		for (RevocationRef ref : revocationRefs) {
+			XmlRevocationRef revocationRef;
 			if (ref instanceof CRLRef) {
-				xmlRevocationRefs.add(getXmlCRLRevocationRef((CRLRef) ref));
-			} else if (ref instanceof OCSPRef) {
-				xmlRevocationRefs.add(getXmlOCSPRevocationRef((OCSPRef) ref));
+				revocationRef = getXmlCRLRevocationRef((CRLRef) ref);
+			} else {
+				revocationRef = getXmlOCSPRevocationRef((OCSPRef) ref);
 			}
+			if (addType) {
+				revocationRef.setType(RevocationType.OCSP);
+			}
+			xmlRevocationRefs.add(revocationRef);
 		}
 		return xmlRevocationRefs;
 	} 

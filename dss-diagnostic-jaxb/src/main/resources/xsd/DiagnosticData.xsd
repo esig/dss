@@ -147,6 +147,13 @@
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="RelatedRevocation" type="RelatedRevocation" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="UnusedRevocationRefs" minOccurs="0" >
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="RevocationRef" type="RevocationRef" minOccurs="0" maxOccurs="unbounded" />
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -586,6 +593,7 @@
 				<xs:element name="ResponderIdKey" type="xs:base64Binary" /> <!-- OCSP -->
 			</xs:choice>
 		</xs:sequence>
+		<xs:attribute name="Type" type="RevocationType" /> <!--  optional, used in case of unused revocation reference -->
 		<xs:attribute name="Location" type="RevocationRefLocationType" use="required" />
 	</xs:complexType>
 	
