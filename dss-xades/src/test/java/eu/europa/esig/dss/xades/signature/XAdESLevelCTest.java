@@ -36,8 +36,8 @@ import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CRLRef;
-import eu.europa.esig.dss.validation.OCSPRef;
+import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 public class XAdESLevelCTest extends AbstractXAdESTestSignature {
@@ -74,8 +74,8 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 			assertNotNull(certificateRef.getIssuerInfo());
 		}
 
-		List<OCSPRef> ocspRefs = advancedSignature.getOCSPRefs();
-		List<CRLRef> crlRefs = advancedSignature.getCRLRefs();
+		List<OCSPRef> ocspRefs = advancedSignature.getCompleteRevocationOCSPReferences();
+		List<CRLRef> crlRefs = advancedSignature.getCompleteRevocationCRLReferences();
 
 		assertTrue(Utils.isCollectionNotEmpty(ocspRefs) || Utils.isCollectionNotEmpty(crlRefs));
 

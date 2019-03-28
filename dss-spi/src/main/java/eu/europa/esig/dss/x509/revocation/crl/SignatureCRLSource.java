@@ -21,6 +21,9 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	private List<CRLToken> timestampRevocationValuesCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> dssDictionaryCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> vriDictionaryCRLs = new ArrayList<CRLToken>();
+	
+	private List<CRLRef> completeRevocationRefsCRLs = new ArrayList<CRLRef>();
+	private List<CRLRef> attributeRevocationRefsCRLs = new ArrayList<CRLRef>();
 
 	@Override
 	public List<CRLToken> getRevocationValuesTokens() {
@@ -51,6 +54,14 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		removeDuplicates(vriDictionaryCRLs);
 		return vriDictionaryCRLs;
 	}
+
+	public List<CRLRef> getCompleteRevocationRefs() {
+		return completeRevocationRefsCRLs;
+	}
+
+	public List<CRLRef> getAttributeRevocationRefs() {
+		return attributeRevocationRefsCRLs;
+	}
 	
 	public Map<CRLBinary, List<CRLToken>> getCRLTokenMap() {
 		return crlTokenMap;
@@ -74,15 +85,15 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		if (crlsBinaryList.contains(crlBinary)) {
 			if (!crlTokenMap.containsKey(crlBinary)) {
 				crlTokenMap.put(crlBinary, new ArrayList<CRLToken>(Collections.singletonList(crlToken)));
-				addToRelevantList(crlBinary.getOrigin(), crlToken);
+				addToRelevantList(crlToken, crlBinary.getOrigin());
 			} else if (!crlTokenMap.get(crlBinary).contains(crlToken)) {
 				crlTokenMap.get(crlBinary).add(crlToken);
-				addToRelevantList(crlBinary.getOrigin(), crlToken);
+				addToRelevantList(crlToken, crlBinary.getOrigin());
 			}
 		}
 	}
 	
-	private void addToRelevantList(RevocationOrigin origin, CRLToken crlToken) {
+	private void addToRelevantList(CRLToken crlToken, RevocationOrigin origin) {
 		switch (origin) {
 			case INTERNAL_REVOCATION_VALUES:
 				revocationValuesCRLs.add(crlToken);
@@ -100,6 +111,22 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 				vriDictionaryCRLs.add(crlToken);
 			default:
 				break;
+		}
+	}
+	
+	protected void addReference(CRLRef crlRef, RevocationOrigin origin) {
+		switch (origin) {
+		case INTERNAL_COMPLETE_REVOCATION_REFS:
+			if (!completeRevocationRefsCRLs.contains(crlRef)) {
+				completeRevocationRefsCRLs.add(crlRef);
+			}
+			break;
+		case INTERNAL_ATTRIBUTE_REVOCATION_REFS:
+			if (!attributeRevocationRefsCRLs.contains(crlRef)) {
+				attributeRevocationRefsCRLs.add(crlRef);
+			}
+		default:
+			break;
 		}
 	}
 	

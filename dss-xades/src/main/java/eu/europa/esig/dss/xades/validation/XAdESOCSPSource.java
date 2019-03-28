@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import java.util.Date;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -28,9 +29,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponse;
+import eu.europa.esig.dss.x509.revocation.ocsp.ResponderId;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
@@ -62,14 +67,17 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 		this.signatureElement = signatureElement;
 		this.xPathQueryHolder = xPathQueryHolder;
 	}
-	
-	
 
 	@Override
 	public void appendContainedOCSPResponses() {
+		// values
 		collect(xPathQueryHolder.XPATH_OCSP_VALUES_ENCAPSULATED_OCSP, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
-		// TODO: collect INTERNAL_ATTRIBUTE_REVOCATION_VALUES
-		collect(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUE, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
+		collect(xPathQueryHolder.XPATH_ATTR_REV_ENCAPSULATED_OCSP_VALUES, RevocationOrigin.INTERNAL_ATTRIBUTE_REVOCATION_VALUES);
+		collect(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUES, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
+		
+		// references
+		collectRefs(xPathQueryHolder.XPATH_COMPLETE_REVOCATION_OCSP_REFS, RevocationOrigin.INTERNAL_COMPLETE_REVOCATION_REFS);
+		collectRefs(xPathQueryHolder.XPATH_ATTRIBUTE_REVOCATION_OCSP_REFS, RevocationOrigin.INTERNAL_ATTRIBUTE_REVOCATION_REFS);
 	}
 
 	private void collect(String xPathQuery, RevocationOrigin origin) {
@@ -77,6 +85,64 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 			final Element ocspValueEl = (Element) nodeList.item(ii);
 			convertAndAppend(ocspValueEl.getTextContent(), origin);
+		}
+	}
+	
+	private void collectRefs(final String xPathQuery, RevocationOrigin revocationOrigin) {
+		final Element ocspRefsElement = DomUtils.getElement(signatureElement, xPathQuery);
+		if (ocspRefsElement != null) {
+
+			final NodeList ocspRefNodes = DomUtils.getNodeList(ocspRefsElement, xPathQueryHolder.XPATH__OCSPREF);
+			for (int i = 0; i < ocspRefNodes.getLength(); i++) {
+
+				final Element certId = (Element) ocspRefNodes.item(i);
+				
+				DigestAlgorithm digestAlgo = null;
+				byte[] base64EncodedDigestValue = null;
+				
+				ResponderId responderId = new ResponderId();
+				final Element responderIdEl = DomUtils.getElement(certId, xPathQueryHolder.XPATH__OCSP_RESPONDER_ID_ELEMENT);
+				if (responderIdEl != null && responderIdEl.hasChildNodes()) {
+					final Element responderIdByName = DomUtils.getElement(responderIdEl, xPathQueryHolder.XPATH__RESPONDER_ID_BY_NAME);
+					if (responderIdByName != null) {
+						responderId.setName(responderIdByName.getTextContent());
+					} else {
+						final Element responderIdByKey = DomUtils.getElement(responderIdEl, xPathQueryHolder.XPATH__RESPONDER_ID_BY_KEY);
+						if (responderIdByKey != null) {
+							responderId.setKey(Utils.fromBase64(responderIdByKey.getTextContent()));
+						}
+					}
+				}
+				
+				// process only if ResponderId is present
+				if (responderId.getName() == null && responderId.getKey() == null) {
+					continue;
+				}
+				
+				Date producedAtDate = null;
+				final Element producedAtEl = DomUtils.getElement(certId, xPathQueryHolder.XPATH__OCSP_PRODUCED_AT_DATETIME);
+				if (producedAtEl != null) {
+					producedAtDate = DomUtils.getDate(producedAtEl.getTextContent());
+				}
+
+				// producedAtDate must be present
+				if (producedAtDate == null) {
+					continue;
+				}
+				
+				final Element digestAlgorithmEl = DomUtils.getElement(certId, xPathQueryHolder.XPATH__DAAV_DIGEST_METHOD);
+				final Element digestValueEl = DomUtils.getElement(certId, xPathQueryHolder.XPATH__DAAV_DIGEST_VALUE);
+				if (digestAlgorithmEl != null && digestValueEl != null) {
+					final String xmlName = digestAlgorithmEl.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+					digestAlgo = DigestAlgorithm.forXML(xmlName);
+					final String digestValue = digestValueEl.getTextContent();
+					base64EncodedDigestValue = Utils.fromBase64(digestValue);
+				}
+				
+				OCSPRef ocspRef = new OCSPRef(digestAlgo, base64EncodedDigestValue, producedAtDate, responderId, false);
+				addReference(ocspRef, revocationOrigin);
+				
+			}
 		}
 	}
 

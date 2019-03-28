@@ -7,10 +7,15 @@ import java.util.List;
 import javax.xml.bind.JAXBElement;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocationRef;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.RevocationRefLocation;
 import eu.europa.esig.dss.validation.RevocationType;
+import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -23,6 +28,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.jaxb.validationreport.AttributeBaseType;
 import eu.europa.esig.jaxb.validationreport.ObjectFactory;
+import eu.europa.esig.jaxb.validationreport.SACRLIDType;
 import eu.europa.esig.jaxb.validationreport.SACertIDListType;
 import eu.europa.esig.jaxb.validationreport.SACommitmentTypeIndicationType;
 import eu.europa.esig.jaxb.validationreport.SAContactInfoType;
@@ -31,8 +37,10 @@ import eu.europa.esig.jaxb.validationreport.SADataObjectFormatType;
 import eu.europa.esig.jaxb.validationreport.SAFilterType;
 import eu.europa.esig.jaxb.validationreport.SAMessageDigestType;
 import eu.europa.esig.jaxb.validationreport.SANameType;
+import eu.europa.esig.jaxb.validationreport.SAOCSPIDType;
 import eu.europa.esig.jaxb.validationreport.SAOneSignerRoleType;
 import eu.europa.esig.jaxb.validationreport.SAReasonType;
+import eu.europa.esig.jaxb.validationreport.SARevIDListType;
 import eu.europa.esig.jaxb.validationreport.SASignatureProductionPlaceType;
 import eu.europa.esig.jaxb.validationreport.SASignerRoleType;
 import eu.europa.esig.jaxb.validationreport.SASigningTimeType;
@@ -54,6 +62,7 @@ import eu.europa.esig.jaxb.validationreport.enums.EndorsementType;
 import eu.europa.esig.jaxb.validationreport.enums.MainIndication;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
 import eu.europa.esig.jaxb.validationreport.enums.SignatureValidationProcessID;
+import eu.europa.esig.jaxb.xmldsig.DigestMethodType;
 
 public class ETSIValidationReportBuilder {
 
@@ -236,9 +245,11 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="CompleteCertificateRefs" type="{http://uri.etsi.org/19102/v1.2.1#}SACertIDListType"/&gt;
 		addCompleteCertificateRefs(sigAttributes, sigWrapper);
 		// &lt;element name="CompleteRevocationRefs" type="{http://uri.etsi.org/19102/v1.2.1#}SARevIDListType"/&gt;
+		addCompleteRevocationRefs(sigAttributes, sigWrapper);
 		// &lt;element name="AttributeCertificateRefs" type="{http://uri.etsi.org/19102/v1.2.1#}SACertIDListType"/&gt;
 		addAttributeCertificateRefs(sigAttributes, sigWrapper);
 		// &lt;element name="AttributeRevocationRefs" type="{http://uri.etsi.org/19102/v1.2.1#}SARevIDListType"/&gt;
+		addAttributeRevocationRefs(sigAttributes, sigWrapper);
 		// &lt;element name="SigAndRefsTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
 		addTimestamps(sigAttributes, sigWrapper, TimestampType.VALIDATION_DATA_TIMESTAMP);
 		// &lt;element name="RefsOnlyTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
@@ -246,9 +257,11 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="CertificateValues" type="{http://uri.etsi.org/19102/v1.2.1#}AttributeBaseType"/&gt;
 		addCertificateValues(sigAttributes, sigWrapper);
 		// &lt;element name="RevocationValues" type="{http://uri.etsi.org/19102/v1.2.1#}AttributeBaseType"/&gt;
+		addRevocationValues(sigAttributes, sigWrapper);
 		// &lt;element name="AttrAuthoritiesCertValues" type="{http://uri.etsi.org/19102/v1.2.1#}AttributeBaseType"/&gt;
 		addAttrAuthoritiesCertValues(sigAttributes, sigWrapper);
 		// &lt;element name="AttributeRevocationValues" type="{http://uri.etsi.org/19102/v1.2.1#}AttributeBaseType"/&gt;
+		addAttributeRevocationValues(sigAttributes, sigWrapper);
 		// &lt;element name="TimeStampValidationData" type="{http://uri.etsi.org/19102/v1.2.1#}AttributeBaseType"/&gt;
 		addTimeStampValidationData(sigAttributes, sigWrapper);
 		// &lt;element name="ArchiveTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
@@ -285,10 +298,11 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addTimeStampValidationData(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.TIMESTAMP_DATA_VALIDATION);
-		if (Utils.isCollectionNotEmpty(certIds)) {
+		List<String> refIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.TIMESTAMP_DATA_VALIDATION);
+		refIds.addAll(sigWrapper.getRevocationIdsByOrigin(XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES));
+		if (Utils.isCollectionNotEmpty(refIds)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-					.add(objectFactory.createSignatureAttributesTypeTimeStampValidationData(buildTokenList(certIds)));
+					.add(objectFactory.createSignatureAttributesTypeTimeStampValidationData(buildTokenList(refIds)));
 		}
 	}
 
@@ -338,6 +352,65 @@ public class ETSIValidationReportBuilder {
 			certIdList.getAttributeObject().add(getVOReference(certId));
 		}
 		return certIdList;
+	}
+	
+	private void addCompleteRevocationRefs(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		List<XmlFoundRevocationRef> revocationRefs = sigWrapper.getFoundRevocationRefsByLocation(RevocationRefLocation.COMPLETE_REVOCATION_REFS);
+		if (Utils.isCollectionNotEmpty(revocationRefs)) {
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
+				.add(objectFactory.createSignatureAttributesTypeCompleteRevocationRefs(buildRevIDListType(revocationRefs)));
+		}
+	}
+	
+	private void addAttributeRevocationRefs(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		List<XmlFoundRevocationRef> revocationRefs = sigWrapper.getFoundRevocationRefsByLocation(RevocationRefLocation.ATTRIBUTE_REVOCATION_REFS);
+		if (Utils.isCollectionNotEmpty(revocationRefs)) {
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
+				.add(objectFactory.createSignatureAttributesTypeAttributeRevocationRefs(buildRevIDListType(revocationRefs)));
+		}
+	}
+	
+	private SARevIDListType buildRevIDListType(List<XmlFoundRevocationRef> revocationRefs) {
+		SARevIDListType revIDListType = objectFactory.createSARevIDListType();
+		
+		for (XmlFoundRevocationRef xmlRevocationRef : revocationRefs) {
+			if (RevocationType.CRL.equals(xmlRevocationRef.getType())) {
+				SACRLIDType sacrlidType = objectFactory.createSACRLIDType();
+				DigestMethodType digestMethodType = new DigestMethodType();
+				XmlDigestAlgoAndValue digestAlgoAndValue = xmlRevocationRef.getDigestAlgoAndValue();
+				digestMethodType.setAlgorithm(DigestAlgorithm.valueOf(digestAlgoAndValue.getDigestMethod()).getXmlId());
+				sacrlidType.setDigestMethod(digestMethodType);
+				sacrlidType.setDigestValue(digestAlgoAndValue.getDigestValue());
+				revIDListType.getCRLIDOrOCSPID().add(sacrlidType);
+			} else if (RevocationType.OCSP.equals(xmlRevocationRef.getType())) {
+				SAOCSPIDType saocspidType = objectFactory.createSAOCSPIDType();
+				saocspidType.setProducedAt(xmlRevocationRef.getProducedAt());
+				if (Utils.isStringNotEmpty(xmlRevocationRef.getResponderIdName())) {
+					saocspidType.setResponderIDByName(xmlRevocationRef.getResponderIdName());
+				} else {
+					saocspidType.setResponderIDByKey(xmlRevocationRef.getResponderIdKey());
+				}
+				revIDListType.getCRLIDOrOCSPID().add(saocspidType);
+			}
+		}
+		
+		return revIDListType;
+	}
+	
+	private void addRevocationValues(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		List<String> revocationRefs = sigWrapper.getRevocationIdsByOrigin(XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES);
+		if (Utils.isCollectionNotEmpty(revocationRefs)) {
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
+					.add(objectFactory.createSignatureAttributesTypeRevocationValues(buildTokenList(revocationRefs)));
+		}
+	}
+	
+	private void addAttributeRevocationValues(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		List<String> revocationRefs = sigWrapper.getRevocationIdsByOrigin(XmlRevocationOrigin.INTERNAL_ATTRIBUTE_REVOCATION_VALUES);
+		if (Utils.isCollectionNotEmpty(revocationRefs)) {
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
+					.add(objectFactory.createSignatureAttributesTypeAttributeRevocationValues(buildTokenList(revocationRefs)));
+		}
 	}
 
 	private void addMessageDigest(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
@@ -506,27 +579,43 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addDSS(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		SADSSType dssType = objectFactory.createSADSSType();
 		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.DSS);
 		if (Utils.isCollectionNotEmpty(certIds)) {
-			SADSSType dssType = objectFactory.createSADSSType();
 			// TODO more than 1 value ??
-			String firstCertId = certIds.get(0);
-			dssType.setCerts(getVOReference(firstCertId));
-			// TODO CRL/OCSP
-			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(dssType);
+			dssType.setCerts(getVOReference(certIds.get(0)));
 		}
+		List<String> crlIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_DSS);
+		if (Utils.isCollectionNotEmpty(crlIds)) {
+			// TODO more than 1 value ??
+			dssType.setCRLs(getVOReference(crlIds.get(0)));
+		}
+		List<String> ocspIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_DSS);
+		if (Utils.isCollectionNotEmpty(ocspIds)) {
+			// TODO more than 1 value ??
+			dssType.setOCSPs(getVOReference(ocspIds.get(0)));
+		}
+		sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(dssType);
 	}
 
 	private void addVRI(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		SAVRIType vriType = objectFactory.createSAVRIType();
 		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.VRI);
 		if (Utils.isCollectionNotEmpty(certIds)) {
-			SAVRIType vriType = objectFactory.createSAVRIType();
 			// TODO more than 1 value ??
-			String firstCertId = certIds.get(0);
-			vriType.setCerts(getVOReference(firstCertId));
-			// TODO CRL/OCSP
-			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(vriType);
+			vriType.setCerts(getVOReference(certIds.get(0)));
 		}
+		List<String> crlIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_VRI);
+		if (Utils.isCollectionNotEmpty(crlIds)) {
+			// TODO more than 1 value ??
+			vriType.setCRLs(getVOReference(crlIds.get(0)));
+		}
+		List<String> ocspIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_VRI);
+		if (Utils.isCollectionNotEmpty(ocspIds)) {
+			// TODO more than 1 value ??
+			vriType.setOCSPs(getVOReference(ocspIds.get(0)));
+		}
+		sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(vriType);
 	}
 
 

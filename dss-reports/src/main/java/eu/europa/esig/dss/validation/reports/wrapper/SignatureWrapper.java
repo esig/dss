@@ -35,6 +35,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
@@ -44,6 +45,9 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DigestMatcherType;
+import eu.europa.esig.dss.validation.RevocationRefLocation;
+import eu.europa.esig.dss.validation.XmlRevocationOrigin;
+import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.x509.TimestampType;
 
 public class SignatureWrapper extends AbstractTokenProxy {
@@ -442,15 +446,87 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getRelatedRevocations();
 	}
 	
+	public List<XmlFoundRevocationRef> getFoundRevocationRefs() {
+		return signature.getFoundRevocationRefs();
+	}
+	
+	public List<XmlFoundRevocationRef> getFoundRevocationRefsByLocation(RevocationRefLocation revocationRefLocation) {
+		List<XmlFoundRevocationRef> revocationRefs = new ArrayList<XmlFoundRevocationRef>();
+		for (XmlFoundRevocationRef ref : signature.getFoundRevocationRefs()) {
+			if (ref.getLocation().equals(revocationRefLocation)) {
+				revocationRefs.add(ref);
+			}
+		}
+		return revocationRefs;
+	}
+	
+	public Set<XmlCertificateRevocationRef> getRelatedRevocationsByOrigin(XmlRevocationOrigin originType) {
+		Set<XmlCertificateRevocationRef> revocationWithOrigin = new HashSet<XmlCertificateRevocationRef>();
+		for (XmlCertificateRevocationRef revocationRef : getRelatedRevocations()) {
+			if (revocationRef.getOrigin().equals(originType)) {
+				revocationWithOrigin.add(revocationRef);
+			}
+		}
+		return revocationWithOrigin;
+	}
+	
+	public Set<XmlCertificateRevocationRef> getRelatedRevocationsByType(RevocationType type) {
+		Set<XmlCertificateRevocationRef> revocationWithType = new HashSet<XmlCertificateRevocationRef>();
+		for (XmlCertificateRevocationRef revocationRef : getRelatedRevocations()) {
+			if (revocationRef.getType().equals(type)) {
+				revocationWithType.add(revocationRef);
+			}
+		}
+		return revocationWithType;
+	}
+	
 	/**
-	 * Returns a set of revocation ids found in the signature
-	 * @return set of ids
+	 * Returns a list of revocation ids found in the signature
+	 * @return list of ids
 	 */
-	public Set<String> getRevocationIds() {
-		Set<String> revocationIds = new HashSet<String>();
+	public List<String> getRevocationIds() {
+		List<String> revocationIds = new ArrayList<String>();
 		for (XmlCertificateRevocationRef revocationRef : getRelatedRevocations()) {
 			revocationIds.add(revocationRef.getRevocationId());
 		}
+		return revocationIds;
+	}
+
+	/**
+	 * Returns a list of revocation ids found in the signature with the specified {@code type}
+	 * @param type - {@link RevocationType} to find revocations with
+	 * @return list of ids
+	 */
+	public List<String> getRevocationIdsByType(RevocationType type) {
+		List<String> revocationIds = new ArrayList<String>();
+		for (XmlCertificateRevocationRef revocationRef : getRelatedRevocationsByType(type)) {
+			revocationIds.add(revocationRef.getRevocationId());
+		}
+		return revocationIds;
+	}
+
+	/**
+	 * Returns a list of revocation ids found in the signature with the specified {@code origin}
+	 * @param origin - {@link XmlRevocationOrigin} to find revocations with
+	 * @return list of ids
+	 */
+	public List<String> getRevocationIdsByOrigin(XmlRevocationOrigin origin) {
+		List<String> revocationIds = new ArrayList<String>();
+		for (XmlCertificateRevocationRef revocationRef : getRelatedRevocationsByOrigin(origin)) {
+			revocationIds.add(revocationRef.getRevocationId());
+		}
+		return revocationIds;
+	}
+	
+	/**
+	 * Returns a list of revocation ids found in the signature with the specified {@code type} and {@code origin}
+	 * @param type - {@link RevocationType} to find revocations with
+	 * @param origin - {@link XmlRevocationOrigin} to find revocations with
+	 * @return list of ids
+	 */
+	public List<String> getRevocationIdsByTypeAndOrigin(RevocationType type, XmlRevocationOrigin origin) {
+		List<String> revocationIds = getRevocationIdsByType(type);
+		revocationIds.retainAll(getRevocationIdsByOrigin(origin));
 		return revocationIds;
 	}
 

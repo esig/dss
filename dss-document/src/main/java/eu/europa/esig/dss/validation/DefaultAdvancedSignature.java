@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,11 +53,14 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.TimestampType;
+import eu.europa.esig.dss.x509.revocation.RevocationRef;
+import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
 import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
@@ -747,6 +751,17 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public boolean hasLTAProfile() {
 		return Utils.isCollectionNotEmpty(getArchiveTimestamps());
 	}
+	
+	@Override
+	public Set<RevocationToken> getAllRevocationTokens() {
+		Set<RevocationToken> allRevocations = new HashSet<RevocationToken>();
+		allRevocations.addAll(getRevocationValuesTokens());
+		allRevocations.addAll(getAttributeRevocationValuesTokens());
+		allRevocations.addAll(getTimestampRevocationValuesTokens());
+		allRevocations.addAll(getDSSDictionaryRevocationTokens());
+		allRevocations.addAll(getVRIDictionaryRevocationTokens());
+		return allRevocations;
+	}
 
 	@Override
 	public List<RevocationToken> getRevocationValuesTokens() {
@@ -791,6 +806,76 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		revocationTokens.addAll(offlineOCSPSource.getVRIDictionaryTokens());
 		removeUnrelatedTokens(revocationTokens);
 		return revocationTokens;
+	}
+	
+	@Override
+	public List<CRLRef> getCompleteRevocationCRLReferences() {
+		return offlineCRLSource.getCompleteRevocationRefs();
+	}
+
+	@Override
+	public List<CRLRef> getAttributeRevocationCRLReferences() {
+		return offlineCRLSource.getAttributeRevocationRefs();
+	}
+	
+	@Override
+	public List<OCSPRef> getCompleteRevocationOCSPReferences() {
+		return offlineOCSPSource.getCompleteRevocationRefs();
+	}
+
+	@Override
+	public List<OCSPRef> getAttributeRevocationOCSPReferences() {
+		return offlineOCSPSource.getAttributeRevocationRefs();
+	}
+
+	@Override
+	public List<RevocationToken> getCompleteRevocationTokens() {
+		List<RevocationRef> revocationRefs = new ArrayList<RevocationRef>();
+		revocationRefs.addAll(getCompleteRevocationCRLReferences());
+		revocationRefs.addAll(getCompleteRevocationOCSPReferences());
+		return findTokensFromRefs(revocationRefs, getAllRevocationTokens());
+	}
+
+	@Override
+	public List<RevocationToken> getAttributeRevocationTokens() {
+		List<RevocationRef> revocationRefs = new ArrayList<RevocationRef>();
+		revocationRefs.addAll(getAttributeRevocationCRLReferences());
+		revocationRefs.addAll(getAttributeRevocationOCSPReferences());
+		return findTokensFromRefs(revocationRefs, getAllRevocationTokens());
+	}
+	
+	private List<RevocationToken> findTokensFromRefs(List<RevocationRef> revocationRefs, Collection<RevocationToken> revocationTokens) {
+		List<RevocationToken> tokensFromRefs = new ArrayList<RevocationToken>();
+		
+		for (RevocationRef reference : revocationRefs) {
+			if (reference.getDigestAlgorithm() != null && reference.getDigestValue() != null) {
+				for (RevocationToken revocationToken : revocationTokens) {
+					if (Arrays.equals(reference.getDigestValue(), revocationToken.getDigest(reference.getDigestAlgorithm()))) {
+						tokensFromRefs.add(revocationToken);
+						break;
+					}
+				}
+			}
+			if (reference instanceof OCSPRef) {
+				OCSPRef ocspRef = (OCSPRef) reference;
+				for (RevocationToken revocationToken : revocationTokens) {
+					if (!ocspRef.getProducedAt().equals(revocationToken.getProductionDate())) {
+						continue;
+					}
+					if (ocspRef.getResponderId().getName() != null &&
+							ocspRef.getResponderId().getName().equals(revocationToken.getIssuerX500Principal().getName())) {
+						tokensFromRefs.add(revocationToken);
+						break;
+					} else if (ocspRef.getResponderId().getKey() != null && 
+							Arrays.equals(ocspRef.getResponderId().getKey(), revocationToken.getIssuerX500Principal().getEncoded())) {
+						tokensFromRefs.add(revocationToken);
+						break;
+					}
+				}
+			}
+		}
+		
+		return tokensFromRefs;
 	}
 	
 	private void removeUnrelatedTokens(List<RevocationToken> revocationTokens) {

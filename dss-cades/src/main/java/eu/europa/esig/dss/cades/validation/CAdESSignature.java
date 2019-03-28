@@ -72,12 +72,6 @@ import org.bouncycastle.asn1.cms.ContentInfo;
 import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
 import org.bouncycastle.asn1.esf.CommitmentTypeIndication;
-import org.bouncycastle.asn1.esf.CrlListID;
-import org.bouncycastle.asn1.esf.CrlOcspRef;
-import org.bouncycastle.asn1.esf.CrlValidatedID;
-import org.bouncycastle.asn1.esf.OcspListID;
-import org.bouncycastle.asn1.esf.OcspResponsesID;
-import org.bouncycastle.asn1.esf.OtherHash;
 import org.bouncycastle.asn1.esf.OtherHashAlgAndValue;
 import org.bouncycastle.asn1.esf.SigPolicyQualifierInfo;
 import org.bouncycastle.asn1.esf.SigPolicyQualifiers;
@@ -135,14 +129,12 @@ import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtracto
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CAdESCertificateSource;
-import eu.europa.esig.dss.validation.CRLRef;
 import eu.europa.esig.dss.validation.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.validation.CertificateValidity;
 import eu.europa.esig.dss.validation.CertifiedRole;
 import eu.europa.esig.dss.validation.CommitmentType;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.DigestMatcherType;
-import eu.europa.esig.dss.validation.OCSPRef;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
@@ -1212,78 +1204,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				certRef.setIssuerInfo(DSSASN1Utils.getIssuerInfo(issuerSerial));
 			}
 			list.add(certRef);
-		}
-		return list;
-	}
-
-	@Override
-	public List<CRLRef> getCRLRefs() {
-
-		final List<CRLRef> list = new ArrayList<CRLRef>();
-
-		try {
-			final Attribute attribute = getUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_revocationRefs);
-			if (attribute == null) {
-				return list;
-			}
-
-			final ASN1Set attrValues = attribute.getAttrValues();
-			if (attrValues.size() <= 0) {
-				return list;
-			}
-
-			final ASN1Encodable attrValue = attrValues.getObjectAt(0);
-			final ASN1Sequence completeCertificateRefs = (ASN1Sequence) attrValue;
-			for (int ii = 0; ii < completeCertificateRefs.size(); ii++) {
-
-				final ASN1Encodable completeCertificateRef = completeCertificateRefs.getObjectAt(ii);
-				final CrlOcspRef otherCertId = CrlOcspRef.getInstance(completeCertificateRef);
-				final CrlListID otherCertIds = otherCertId.getCrlids();
-				if (otherCertIds != null) {
-
-					for (final CrlValidatedID id : otherCertIds.getCrls()) {
-
-						final CRLRef crlRef = new CRLRef(id);
-						list.add(crlRef);
-					}
-				}
-			}
-		} catch (Exception e) {
-			// When error in computing or in format, the algorithm just
-			// continues.
-			LOG.warn("When error in computing or in format the algorithm just continue...", e);
-		}
-		return list;
-	}
-
-	@Override
-	public List<OCSPRef> getOCSPRefs() {
-
-		final List<OCSPRef> list = new ArrayList<OCSPRef>();
-
-		final Attribute attribute = getUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_revocationRefs);
-		if (attribute == null) {
-			return list;
-		}
-		final ASN1Set attrValues = attribute.getAttrValues();
-		if (attrValues.size() <= 0) {
-			return list;
-		}
-
-		final ASN1Encodable attrValue = attrValues.getObjectAt(0);
-		final ASN1Sequence completeRevocationRefs = (ASN1Sequence) attrValue;
-		for (int i = 0; i < completeRevocationRefs.size(); i++) {
-
-			final CrlOcspRef otherCertId = CrlOcspRef.getInstance(completeRevocationRefs.getObjectAt(i));
-			final OcspListID ocspListID = otherCertId.getOcspids();
-			if (ocspListID != null) {
-				for (final OcspResponsesID ocspResponsesID : ocspListID.getOcspResponses()) {
-
-					final OtherHash otherHash = ocspResponsesID.getOcspRepHash();
-					final OCSPRef ocspRef = new OCSPRef(otherHash, true);
-					list.add(ocspRef);
-				}
-			}
 		}
 		return list;
 	}

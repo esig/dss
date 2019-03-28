@@ -152,6 +152,14 @@
 				</xs:complexType>
 			</xs:element>
 			
+			<xs:element name="FoundRevocationRefs" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="FoundRevocationRef" type="FoundRevocationRef" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
 			<xs:element name="SignatureScopes" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
@@ -542,6 +550,24 @@
 		</xs:sequence>
 	</xs:complexType>
 	
+	<xs:complexType name="FoundRevocationRef">
+		<xs:sequence>
+			<xs:element name="Type" type="RevocationType" />
+			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
+			<xs:element name="ProducedAt" type="xs:dateTime" minOccurs="0" /> <!-- OCSP -->
+			<xs:element name="ResponderIdName" type="xs:string" minOccurs="0" /> <!-- OCSP -->
+			<xs:element name="ResponderIdKey" type="xs:base64Binary" minOccurs="0" /> <!-- OCSP -->
+		</xs:sequence>
+		<xs:attribute name="Location" type="RevocationRefLocationType" use="required" />
+	</xs:complexType>
+	
+	<xs:simpleType name="RevocationType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CRL" />
+			<xs:enumeration value="OCSP" />
+		</xs:restriction>
+	</xs:simpleType>
+	
 	<xs:simpleType name="RevocationOriginType" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="INTERNAL_REVOCATION_VALUES" />
@@ -555,10 +581,10 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:simpleType name="RevocationType" final="restriction">
+	<xs:simpleType name="RevocationRefLocationType" final="restriction">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="CRL" />
-			<xs:enumeration value="OCSP" />
+			<xs:enumeration value="COMPLETE_REVOCATION_REFS" />
+			<xs:enumeration value="ATTRIBUTE_REVOCATION_REFS" />
 		</xs:restriction>
 	</xs:simpleType>
 	

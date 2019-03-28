@@ -13,7 +13,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.RevocationOriginType;
+import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -58,17 +58,17 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		assertEquals(4, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(), 
 				RevocationType.OCSP).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
-				RevocationType.CRL, RevocationOriginType.INTERNAL_REVOCATION_VALUES).size());
+				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
-				RevocationType.CRL, RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
 		assertEquals(3, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
-				RevocationType.CRL, RevocationOriginType.INTERNAL_DSS).size());
+				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_DSS).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
-				RevocationType.OCSP, RevocationOriginType.INTERNAL_REVOCATION_VALUES).size());
+				RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
-				RevocationType.OCSP, RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+				RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
 		assertEquals(4, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
-				RevocationType.OCSP, RevocationOriginType.INTERNAL_DSS).size());
+				RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_DSS).size());
 	}
 	
 	@Test
@@ -87,22 +87,26 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		assertEquals(3, diagnosticData.getAllRevocationForSignatureByType(signatureOne.getId(), RevocationType.CRL).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(signatureOne.getId(), RevocationType.OCSP).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureOne.getId(), 
-				RevocationType.CRL, RevocationOriginType.INTERNAL_REVOCATION_VALUES).size());
+				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureOne.getId(), 
-				RevocationType.CRL, RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
 		assertEquals(3, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureOne.getId(), 
-				RevocationType.CRL, RevocationOriginType.INTERNAL_DSS).size());
+				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_DSS).size());
+		
+		assertEquals(0, signatureOne.getFoundRevocationRefs().size());
 		
 		SignatureWrapper signatureTwo = signatures.get(1);
 		assertEquals(3, diagnosticData.getAllRevocationForSignature(signatureTwo.getId()).size());
 		assertEquals(3, diagnosticData.getAllRevocationForSignatureByType(signatureTwo.getId(), RevocationType.CRL).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(signatureTwo.getId(), RevocationType.OCSP).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureTwo.getId(), 
-				RevocationType.CRL, RevocationOriginType.INTERNAL_REVOCATION_VALUES).size());
+				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureTwo.getId(), 
-				RevocationType.CRL, RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
 		assertEquals(3, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureTwo.getId(), 
-				RevocationType.CRL, RevocationOriginType.INTERNAL_DSS).size());
+				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_DSS).size());
+		assertEquals(0, signatureTwo.getFoundRevocationRefs().size());
+		
 	}
 	
 	@Test
@@ -121,13 +125,13 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(signature.getId(), RevocationType.CRL).size());
 		assertEquals(2, diagnosticData.getAllRevocationForSignatureByType(signature.getId(), RevocationType.OCSP).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signature.getId(), 
-				RevocationType.OCSP, RevocationOriginType.INTERNAL_REVOCATION_VALUES).size());
+				RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signature.getId(), 
-				RevocationType.OCSP, RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+				RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
 		assertEquals(1, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signature.getId(), 
-				RevocationType.OCSP, RevocationOriginType.INTERNAL_DSS).size());
+				RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_DSS).size());
 		assertEquals(1, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signature.getId(), 
-				RevocationType.OCSP, RevocationOriginType.INTERNAL_VRI).size());
+				RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_VRI).size());
 	}
 
 	@Override

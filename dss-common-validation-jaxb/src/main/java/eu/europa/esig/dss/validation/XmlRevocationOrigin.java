@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.validation;
 
-public enum RevocationOriginType {
+public enum XmlRevocationOrigin {
 
 	/**
 	 * The revocation data was embedded in the signature 'revocation-values' attribute (used in CAdES and XAdES)
@@ -44,7 +44,7 @@ public enum RevocationOriginType {
 	
 	private final boolean internalOrigin;
 	
-	RevocationOriginType(final boolean internalOrigin) {
+	XmlRevocationOrigin(final boolean internalOrigin) {
 		this.internalOrigin = internalOrigin;
 	}
 	

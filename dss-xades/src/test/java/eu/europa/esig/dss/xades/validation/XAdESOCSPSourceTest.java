@@ -27,7 +27,7 @@ import org.junit.Test;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.RevocationOriginType;
+import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -48,9 +48,9 @@ public class XAdESOCSPSourceTest extends PKIFactoryAccess {
 		assertEquals(1, diagnosticData.getAllRevocationForSignatureByType(firstSignatureId, RevocationType.OCSP).size());
 		
 		assertEquals(1, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(firstSignatureId, RevocationType.OCSP, 
-				RevocationOriginType.INTERNAL_REVOCATION_VALUES).size());
+				XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(firstSignatureId, RevocationType.OCSP, 
-				RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+				XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
 	}
 
 	@Test
@@ -66,9 +66,9 @@ public class XAdESOCSPSourceTest extends PKIFactoryAccess {
 		assertEquals(4, diagnosticData.getAllRevocationForSignatureByType(firstSignatureId, RevocationType.OCSP).size());
 		
 		assertEquals(2, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(firstSignatureId, RevocationType.OCSP, 
-				RevocationOriginType.INTERNAL_REVOCATION_VALUES).size());
+				XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
 		assertEquals(2, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(firstSignatureId, RevocationType.OCSP, 
-				RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+				XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
 	}
 
 	@Test
@@ -84,9 +84,9 @@ public class XAdESOCSPSourceTest extends PKIFactoryAccess {
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(firstSignatureId, RevocationType.OCSP).size());
 		
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(firstSignatureId, RevocationType.OCSP, 
-				RevocationOriginType.INTERNAL_REVOCATION_VALUES).size());
+				XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(firstSignatureId, RevocationType.OCSP, 
-				RevocationOriginType.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
+				XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
 	}
 	
 	private DiagnosticData getDiagnosticData(DSSDocument doc) {

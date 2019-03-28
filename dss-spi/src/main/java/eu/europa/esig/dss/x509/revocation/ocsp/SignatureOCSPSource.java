@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.SignatureRevocationSource;
 
 @SuppressWarnings("serial")
@@ -18,6 +19,9 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	private final List<OCSPToken> timestampRevocationValuesOCSPs = new ArrayList<OCSPToken>();
 	private final List<OCSPToken> dssDictionaryOCSPs = new ArrayList<OCSPToken>();
 	private final List<OCSPToken> vriDictionaryOCSPs = new ArrayList<OCSPToken>();
+	
+	private List<OCSPRef> completeRevocationRefsOCSPs = new ArrayList<OCSPRef>();
+	private List<OCSPRef> attributeRevocationRefsOCSPs = new ArrayList<OCSPRef>();
 
 	@Override
 	public List<OCSPToken> getRevocationValuesTokens() {
@@ -42,6 +46,14 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	@Override
 	public List<OCSPToken> getVRIDictionaryTokens() {
 		return vriDictionaryOCSPs;
+	}
+
+	public List<OCSPRef> getCompleteRevocationRefs() {
+		return completeRevocationRefsOCSPs;
+	}
+
+	public List<OCSPRef> getAttributeRevocationRefs() {
+		return attributeRevocationRefsOCSPs;
 	}
 	
 	public Map<OCSPResponse, OCSPToken> getOCSPTokenMap() {
@@ -85,6 +97,22 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 				default:
 					break;
 			}
+		}
+	}
+	
+	protected void addReference(OCSPRef ocspRef, RevocationOrigin origin) {
+		switch (origin) {
+			case INTERNAL_COMPLETE_REVOCATION_REFS:
+				if (!completeRevocationRefsOCSPs.contains(ocspRef)) {
+					completeRevocationRefsOCSPs.add(ocspRef);
+				}
+				break;
+			case INTERNAL_ATTRIBUTE_REVOCATION_REFS:
+				if (!attributeRevocationRefsOCSPs.contains(ocspRef)) {
+					attributeRevocationRefsOCSPs.add(ocspRef);
+				}
+			default:
+				break;
 		}
 	}
 

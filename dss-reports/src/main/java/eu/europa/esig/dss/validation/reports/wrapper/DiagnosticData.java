@@ -39,7 +39,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.RevocationOriginType;
+import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 import eu.europa.esig.dss.validation.RevocationType;
 
 /**
@@ -667,7 +667,7 @@ public class DiagnosticData {
 	/**
 	 * Returns list of {@link RevocationWrapper}s for the given signature by
 	 * {@code signatureId}, specified {@link RevocationType} and specified
-	 * {@link RevocationOriginType}
+	 * {@link XmlRevocationOrigin}
 	 * 
 	 * @param signatureId
 	 *                       {@link String} id of the relevant signature
@@ -675,17 +675,29 @@ public class DiagnosticData {
 	 *                       {@link RevocationType} type to get revocation data of.
 	 *                       If NULL returns revocations of all types
 	 * @param originType
-	 *                       {@link RevocationOriginType} origin type to get
+	 *                       {@link XmlRevocationOrigin} origin type to get
 	 *                       revocation data of. If NULL returns revocations of all
 	 *                       origin types
 	 * @return list of {@link RevocationWrapper}s
 	 */
 	public List<RevocationWrapper> getAllRevocationForSignatureByTypeAndOrigin(String signatureId, RevocationType revocationType, 
-			RevocationOriginType originType) {
+			XmlRevocationOrigin originType) {
 		SignatureWrapper signature = getSignatureById(signatureId);
+		
+		Set<XmlCertificateRevocationRef> revocationRefSet = null;
+		if (revocationType != null) {
+			revocationRefSet = signature.getRelatedRevocationsByType(revocationType);
+			if (originType != null) {
+				revocationRefSet.retainAll(signature.getRelatedRevocationsByOrigin(originType));
+			}
+		} else if (originType != null) {
+			revocationRefSet = signature.getRelatedRevocationsByOrigin(originType);
+		} else {
+			revocationRefSet = new HashSet<XmlCertificateRevocationRef>(signature.getRelatedRevocations());
+		}
+
 		List<RevocationWrapper> revocations = new ArrayList<RevocationWrapper>();
-		List<XmlCertificateRevocationRef> revocationRefList = signature.getRelatedRevocations();
-		for (XmlCertificateRevocationRef revocationRef : revocationRefList) {
+		for (XmlCertificateRevocationRef revocationRef : revocationRefSet) {
 			if ((revocationType == null || revocationRef.getType().equals(revocationType)) && 
 					(originType == null || revocationRef.getOrigin().equals(originType))) {
 				revocations.add(getCertificateRevocationDataByIds(revocationRef.getCertificateId(), revocationRef.getRevocationId()));

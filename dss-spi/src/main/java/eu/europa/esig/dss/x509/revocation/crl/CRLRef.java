@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.x509.revocation.crl;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -36,18 +36,17 @@ import org.bouncycastle.asn1.x500.X500Name;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.x509.revocation.RevocationRef;
 
 /**
  * Reference to a X509CRL
  *
  */
-public final class CRLRef {
+public final class CRLRef extends RevocationRef {
 
 	private X500Name crlIssuer;
 	private Date crlIssuedTime;
 	private BigInteger crlNumber;
-	private DigestAlgorithm digestAlgorithm;
-	private byte[] digestValue;
 
 	/**
 	 * The default constructor for CRLRef.
@@ -80,10 +79,6 @@ public final class CRLRef {
 		}
 	}
 
-	/**
-	 * @param crl
-	 * @return
-	 */
 	public boolean match(X509CRL crl) {
 		try {
 			MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
@@ -94,39 +89,21 @@ public final class CRLRef {
 		}
 	}
 
-	/**
-	 * @return
-	 */
 	public X500Name getCrlIssuer() {
 		return crlIssuer;
 	}
 
-	/**
-	 * @return
-	 */
 	public Date getCrlIssuedTime() {
 		return crlIssuedTime;
 	}
 
-	/**
-	 * @return
-	 */
 	public BigInteger getCrlNumber() {
 		return crlNumber;
 	}
-
-	/**
-	 * @return
-	 */
-	public DigestAlgorithm getDigestAlgorithm() {
-		return digestAlgorithm;
-	}
-
-	/**
-	 * @return
-	 */
-	public byte[] getDigestValue() {
-		return digestValue;
+	
+	@Override
+	public String toString() {
+		return "CRL Reference with Digest [" + super.toString() + "]";
 	}
 
 }

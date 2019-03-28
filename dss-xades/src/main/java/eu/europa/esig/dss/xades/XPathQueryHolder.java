@@ -64,6 +64,7 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH_EX509C = "/xades:EncapsulatedX509Certificate";
 	public String XPATH_ATTR_AUTH_CV = "/xades:AttrAuthoritiesCertValues";
 	public String XPATH_REV_VALUES = "/xades:RevocationValues";
+	public String XPATH_ATTR_REV_VALUES = "/xades:AttributeRevocationValues";
 	public String XPATH_CRLV = "/xades:CRLValues";
 	public String XPATH_OCSPV = "/xades:OCSPValues";
 	public String XPATH_ECRLV = "/xades:EncapsulatedCRLValue";
@@ -89,6 +90,9 @@ public class XPathQueryHolder implements Serializable {
 	public final String XPATH__DATA_OBJECT_FORMAT = "xades:DataObjectFormat";
 	public final String XPATH__MIME_TYPE = "xades:MimeType";
 	public final String XPATH__OBJECT_IDENTIFIER = "xades:ObjectIdentifier";
+	
+	public String XPATH__RESPONDER_ID_BY_NAME = "xades:ByName";
+	public String XPATH__RESPONDER_ID_BY_KEY = "xades:ByKey";
 
 	public final String XPATH_KEY_INFO_X509_CERTIFICATE = XPATH_X509_DATA + "/ds:X509Certificate";
 
@@ -151,8 +155,6 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH_UNSIGNED_PROPERTIES = XPATH_QUALIFYING_PROPERTIES + "/xades:UnsignedProperties";
 	public String XPATH_UNSIGNED_SIGNATURE_PROPERTIES = XPATH_UNSIGNED_PROPERTIES + "/xades:UnsignedSignatureProperties";
 	public String XPATH_SIGNATURE_TIMESTAMP = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:" + XMLE_SIGNATURE_TIME_STAMP;
-	public String XPATH_COMPLETE_REVOCATION_REFS = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:CompleteRevocationRefs";
-	public String XPATH_OCSP_REFS = XPATH_COMPLETE_REVOCATION_REFS + "/xades:OCSPRefs";
 	public String XPATH_SIG_AND_REFS_TIMESTAMP = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:" + XMLE_SIG_AND_REFS_TIME_STAMP;
 	public String XPATH_SIG_AND_REFS_TIMESTAMP_V2 = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:" + XMLE_SIG_AND_REFS_TIME_STAMP_V2;
 	public String XPATH_CERTIFICATE_VALUES = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + XPATH_CV;
@@ -162,7 +164,13 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH_COUNTER_SIGNATURE = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:CounterSignature";
 	public String XPATH_ARCHIVE_TIMESTAMP = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:" + XMLE_ARCHIVE_TIME_STAMP;
 	public String XPATH_ARCHIVE_TIMESTAMP_141 = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades141:" + XMLE_ARCHIVE_TIME_STAMP;
-	public String XPATH_REVOCATION_CRL_REFS = XPATH_COMPLETE_REVOCATION_REFS + "/xades:CRLRefs";
+	
+	public String XPATH_COMPLETE_REVOCATION_REFS = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:CompleteRevocationRefs";
+	public String XPATH_COMPLETE_REVOCATION_CRL_REFS = XPATH_COMPLETE_REVOCATION_REFS + "/xades:CRLRefs";
+	public String XPATH_COMPLETE_REVOCATION_OCSP_REFS = XPATH_COMPLETE_REVOCATION_REFS + "/xades:OCSPRefs";
+	public String XPATH_ATTRIBUTE_REVOCATION_REFS = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:AttributeRevocationRefs";
+	public String XPATH_ATTRIBUTE_REVOCATION_CRL_REFS = XPATH_ATTRIBUTE_REVOCATION_REFS + "/xades:CRLRefs";
+	public String XPATH_ATTRIBUTE_REVOCATION_OCSP_REFS = XPATH_ATTRIBUTE_REVOCATION_REFS + "/xades:OCSPRefs";
 
 	public final String XPATH__DIGEST_METHOD_ALGORITHM = "./ds:DigestMethod/@Algorithm";
 	public final String XPATH__DS_TRANSFORM = "./ds:Transforms/ds:Transform";
@@ -171,6 +179,8 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH__COMPLETE_CERTIFICATE_REFS__CERT_DIGEST = "./xades:CertRefs/xades:Cert/xades:CertDigest";
 	public String XPATH__DAAV_DIGEST_METHOD = "./xades:DigestAlgAndValue/ds:DigestMethod";
 	public String XPATH__DAAV_DIGEST_VALUE = "./xades:DigestAlgAndValue/ds:DigestValue";
+	public String XPATH__OCSP_PRODUCED_AT_DATETIME = "./xades:OCSPIdentifier/xades:ProducedAt";
+	public String XPATH__OCSP_RESPONDER_ID_ELEMENT = "./xades:OCSPIdentifier/xades:ResponderID";
 	public final String XPATH__CANONICALIZATION_METHOD = "./ds:CanonicalizationMethod";
 	public String XPATH__ENCAPSULATED_TIMESTAMP = "./xades:EncapsulatedTimeStamp";
 
@@ -178,8 +188,11 @@ public class XPathQueryHolder implements Serializable {
 	public String XPATH_AUTH_ENCAPSULATED_X509_CERTIFICATE = XPATH_ATTR_AUTHORITIES + XPATH_CV + XPATH_EX509C;
 	public String XPATH_TSVD_ENCAPSULATED_X509_CERTIFICATE = XPATH_TIME_STAMP_VALIDATION_DATA + XPATH_CV + XPATH_EX509C;
 
+	public String XPATH_ATTR_REV_ENCAPSULATED_CRL_VALUES = XPATH_ATTR_REV_VALUES + XPATH_REV_VALUES + XPATH_CRLV + XPATH_ECRLV;
+	public String XPATH_ATTR_REV_ENCAPSULATED_OCSP_VALUES = XPATH_ATTR_REV_VALUES + XPATH_REV_VALUES + XPATH_OCSPV + XPATH_EOCSPV;
+
 	public String XPATH_TSVD_ENCAPSULATED_CRL_VALUES = XPATH_TIME_STAMP_VALIDATION_DATA + XPATH_REV_VALUES + XPATH_CRLV + XPATH_ECRLV;
-	public String XPATH_TSVD_ENCAPSULATED_OCSP_VALUE = XPATH_TIME_STAMP_VALIDATION_DATA + XPATH_REV_VALUES + XPATH_OCSPV + XPATH_EOCSPV;
+	public String XPATH_TSVD_ENCAPSULATED_OCSP_VALUES = XPATH_TIME_STAMP_VALIDATION_DATA + XPATH_REV_VALUES + XPATH_OCSPV + XPATH_EOCSPV;
 
 	public String XPATH_COMPLETE_CERTIFICATE_REFS = XPATH_UNSIGNED_SIGNATURE_PROPERTIES + "/xades:CompleteCertificateRefs";
 	public String XPATH_CCR_CERT_REFS = XPATH_COMPLETE_CERTIFICATE_REFS + "/xades:CertRefs";

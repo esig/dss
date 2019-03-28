@@ -37,8 +37,10 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.SignaturePolicy;
+import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
@@ -384,16 +386,6 @@ public interface AdvancedSignature extends Serializable {
 	List<CertificateRef> getCertificateRefs();
 
 	/**
-	 * @return The list of CRLRefs contained in the Signature
-	 */
-	List<CRLRef> getCRLRefs();
-
-	/**
-	 * @return The list of OCSPRef contained in the Signature
-	 */
-	List<OCSPRef> getOCSPRefs();
-
-	/**
 	 * This method returns the DSS unique signature id. It allows to unambiguously identify each signature.
 	 *
 	 * @return The signature unique Id
@@ -460,6 +452,12 @@ public interface AdvancedSignature extends Serializable {
 	List<ReferenceValidation> getReferenceValidations();
 	
 	// ------------------------ TS 119 102-2 Specifics
+
+	/**
+	 * Retrieves the set of all {@link RevocationToken}s in the signature
+	 * @return list of {@link RevocationToken}s
+	 */
+	Set<RevocationToken> getAllRevocationTokens();
 	
 	/**
 	 * Retrieves the list of all {@link RevocationToken}s present in 'RevocationValues' element
@@ -495,6 +493,48 @@ public interface AdvancedSignature extends Serializable {
 	 * @return list of {@link RevocationToken}s
 	 */
 	List<RevocationToken> getVRIDictionaryRevocationTokens();
+
+	/**
+	 * Retrieves the list of all {@link RevocationToken}s present in 'CompleteRevocationRefs' element
+	 * NOTE: Applicable only for XAdES and CAdES revocation sources
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getCompleteRevocationTokens();
+
+	/**
+	 * Retrieves the list of all {@link RevocationToken}s present in 'AttributeRevocationRefs' element
+	 * NOTE: Applicable only for XAdES and CAdES revocation sources
+	 * @return list of {@link RevocationToken}s
+	 */
+	List<RevocationToken> getAttributeRevocationTokens();
+	
+	/**
+	 * Retrieves a list of all {@link CRLRef}s present in 'CompleteRevocationRefs' element
+	 * NOTE: Applicable only for XAdES and CAdES revocation sources
+	 * @return list of {@link CRLRef}s
+	 */
+	List<CRLRef> getCompleteRevocationCRLReferences();
+	
+	/**
+	 * Retrieves a list of all {@link CRLRef}s present in 'AttributeRevocationRefs' element
+	 * NOTE: Applicable only for XAdES and CAdES revocation sources
+	 * @return list of {@link CRLRef}s
+	 */
+	List<CRLRef> getAttributeRevocationCRLReferences();
+	
+	/**
+	 * Retrieves a list of all {@link OCSPRef}s present in 'CompleteRevocationRefs' element
+	 * NOTE: Applicable only for XAdES and CAdES revocation sources
+	 * @return list of {@link OCSPRef}s
+	 */
+	List<OCSPRef> getCompleteRevocationOCSPReferences();
+	
+	/**
+	 * Retrieves a list of all {@link OCSPRef}s present in 'AttributeRevocationRefs' element
+	 * NOTE: Applicable only for XAdES and CAdES revocation sources
+	 * @return list of {@link OCSPRef}s
+	 */
+	List<OCSPRef> getAttributeRevocationOCSPReferences();
 
 	// ------------------------ CAdES Specifics for TS 119 102-2
 

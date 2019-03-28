@@ -47,9 +47,7 @@ import eu.europa.esig.dss.pdf.PdfSignatureInfo;
 import eu.europa.esig.dss.pdf.PdfSignatureOrDocTimestampInfo;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CRLRef;
 import eu.europa.esig.dss.validation.CertifiedRole;
-import eu.europa.esig.dss.validation.OCSPRef;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.TimestampReference;
 import eu.europa.esig.dss.validation.TimestampToken;
@@ -278,16 +276,6 @@ public class PAdESSignature extends CAdESSignature {
 			ref.setCertDigest(new Digest(DigestAlgorithm.SHA1, certificateToken.getDigest(DigestAlgorithm.SHA1)));
 			refs.add(ref);
 		}
-	}
-
-	@Override
-	public List<CRLRef> getCRLRefs() {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<OCSPRef> getOCSPRefs() {
-		return Collections.emptyList();
 	}
 
 	@Override

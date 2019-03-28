@@ -24,9 +24,14 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.esf.CrlListID;
+import org.bouncycastle.asn1.esf.CrlOcspRef;
+import org.bouncycastle.asn1.esf.CrlValidatedID;
 import org.bouncycastle.asn1.esf.RevocationValues;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.CertificateList;
@@ -34,9 +39,12 @@ import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.util.Store;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.x509.RevocationOrigin;
+import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 
 /**
@@ -45,6 +53,8 @@ import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
  */
 @SuppressWarnings("serial")
 public class CAdESCRLSource extends SignatureCRLSource {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CAdESCRLSource.class);
 
 	private final CMSSignedData cmsSignedData;
 	private final SignerInformation signerInformation;
@@ -66,14 +76,14 @@ public class CAdESCRLSource extends SignatureCRLSource {
 		final Store<X509CRLHolder> crLs = cmsSignedData.getCRLs();
 		final Collection<X509CRLHolder> collection = crLs.getMatches(null);
 		for (final X509CRLHolder x509CRLHolder : collection) {
-			addX509CRLHolder(x509CRLHolder);
+			addX509CRLHolder(x509CRLHolder, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
 		}
 
 		// Adds CRLs in -XL ... inside SignerInfo attribute if present
 		if (signerInformation != null) {
 
-			final AttributeTable attributes = signerInformation.getUnsignedAttributes();
-			if (attributes != null) {
+			final AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
+			if (unsignedAttributes != null) {
 				/*
 				 * ETSI TS 101 733 V2.2.1 (2013-04) page 43
 				 * 6.3.4 revocation-values Attribute Definition
@@ -92,17 +102,34 @@ public class CAdESCRLSource extends SignatureCRLSource {
 				 * ocspVals [1] SEQUENCE OF BasicOCSPResponse OPTIONAL,
 				 * otherRevVals [2] OtherRevVals OPTIONAL}
 				 */
-				final Attribute attribute = attributes.get(PKCSObjectIdentifiers.id_aa_ets_revocationValues);
-				if (attribute != null) {
-
-					final ASN1Set attrValues = attribute.getAttrValues();
-
-					final ASN1Encodable attValue = attrValues.getObjectAt(0);
-					final RevocationValues revValues = RevocationValues.getInstance(attValue);
-					for (final CertificateList revValue : revValues.getCrlVals()) {
-						addX509CRLHolder(new X509CRLHolder(revValue));
-					}
-				}
+				collectRevocationValues(unsignedAttributes, PKCSObjectIdentifiers.id_aa_ets_revocationValues, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
+				
+				/*
+				 * ETSI TS 101 733 V2.2.1 (2013-04) pages 39,41
+				 * 6.2.2 complete-revocation-references Attribute Definition and
+				 * 6.2.4 attribute-revocation-references Attribute Definition
+				 * The complete-revocation-references attribute is an unsigned attribute. 
+				 * Only a single instance of this
+				 * attribute shall occur with an electronic signature. 
+				 * It references the full set of the CRL, ACRL, or OCSP responses that
+				 * have been used in the validation of the signer, and 
+				 * CA certificates used in ES with Complete validation data.
+				 * The complete-revocation-references attribute value has the ASN.1 syntax CompleteRevocationRefs
+				 * 
+				 * CompleteRevocationRefs ::= SEQUENCE OF CrlOcspRef
+				 * CrlOcspRef ::= SEQUENCE {
+				 *  crlids [0] CRLListID OPTIONAL,
+				 *  ocspids [1] OcspListID OPTIONAL,
+				 *  otherRev [2] OtherRevRefs OPTIONAL
+				 * } 
+				 * AttributeRevocationRefs ::= SEQUENCE OF CrlOcspRef (the same as for CompleteRevocationRefs)
+				 */
+				collectRevocationRefs(unsignedAttributes, PKCSObjectIdentifiers.id_aa_ets_revocationRefs, RevocationOrigin.INTERNAL_COMPLETE_REVOCATION_REFS);
+				/*
+				 * id-aa-ets-attrRevocationRefs OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+				 * us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) id-aa(2) 45} 
+				 */
+				collectRevocationRefs(unsignedAttributes, PKCSObjectIdentifiers.id_aa.branch("45"), RevocationOrigin.INTERNAL_ATTRIBUTE_REVOCATION_REFS);
 			}
 
 			/*
@@ -130,12 +157,58 @@ public class CAdESCRLSource extends SignatureCRLSource {
 			// revocation data? (ie: timestamp)
 		}
 	}
+	
+	private void collectRevocationValues(AttributeTable unsignedAttributes, ASN1ObjectIdentifier revocationValuesAttribute, RevocationOrigin origin) {
+		final Attribute attribute = unsignedAttributes.get(revocationValuesAttribute);
+		if (attribute != null) {
 
-	private void addX509CRLHolder(X509CRLHolder crlHolder) {
+			final ASN1Set attrValues = attribute.getAttrValues();
+
+			final ASN1Encodable attValue = attrValues.getObjectAt(0);
+			final RevocationValues revValues = RevocationValues.getInstance(attValue);
+			for (final CertificateList revValue : revValues.getCrlVals()) {
+				addX509CRLHolder(new X509CRLHolder(revValue), origin);
+			}
+		}
+	}
+
+	private void addX509CRLHolder(X509CRLHolder crlHolder, RevocationOrigin origin) {
 		try {
-			addCRLBinary(crlHolder.getEncoded(), RevocationOrigin.INTERNAL_REVOCATION_VALUES);
+			addCRLBinary(crlHolder.getEncoded(), origin);
 		} catch (IOException e) {
 			throw new DSSException(e);
+		}
+	}
+	
+	private void collectRevocationRefs(AttributeTable unsignedAttributes, ASN1ObjectIdentifier revocationRefsAttribute, RevocationOrigin origin) {
+		try {
+			final Attribute attribute = unsignedAttributes.get(revocationRefsAttribute);
+			if (attribute == null) {
+				return;
+			}
+			
+			final ASN1Set attrValues = attribute.getAttrValues();
+			if (attrValues.size() <= 0) {
+				return;
+			}
+			
+			final ASN1Encodable attrValue = attrValues.getObjectAt(0);
+			final ASN1Sequence completeCertificateRefs = (ASN1Sequence) attrValue;
+			for (int ii = 0; ii < completeCertificateRefs.size(); ii++) {
+				final ASN1Encodable completeCertificateRef = completeCertificateRefs.getObjectAt(ii);
+				final CrlOcspRef otherCertId = CrlOcspRef.getInstance(completeCertificateRef);
+				final CrlListID otherCertIds = otherCertId.getCrlids();
+				if (otherCertIds != null) {
+					for (final CrlValidatedID id : otherCertIds.getCrls()) {
+						final CRLRef crlRef = new CRLRef(id);
+						addReference(crlRef, origin);
+					}
+				}
+			}
+		} catch (Exception e) {
+			// When error in computing or in format, the algorithm just continues.
+			LOG.warn("An error occurred during extraction of revocation references from  signature unsigned properties. "
+					+ "Revocations for origin {} were not stored", origin.toString(), e);
 		}
 	}
 
