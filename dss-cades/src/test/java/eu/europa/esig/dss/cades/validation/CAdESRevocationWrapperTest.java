@@ -11,13 +11,13 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocationRef;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 import eu.europa.esig.dss.validation.RevocationRefLocation;
 import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
@@ -63,16 +63,15 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 		Reports report = validator.validateDocument();
 		// report.print();
 		DiagnosticData diagnosticData = report.getDiagnosticData();SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		List<XmlFoundRevocationRef> foundRevocationRefs = signature.getFoundRevocationRefs();
+		List<XmlRevocationRef> foundRevocationRefs = signature.getAllFoundRevocationRefs();
 		assertNotNull(foundRevocationRefs);
 		assertEquals(3, foundRevocationRefs.size());
 		assertEquals(3, signature.getFoundRevocationRefsByLocation(RevocationRefLocation.COMPLETE_REVOCATION_REFS).size());
 		assertEquals(0, signature.getFoundRevocationRefsByLocation(RevocationRefLocation.ATTRIBUTE_REVOCATION_REFS).size());
-		for (XmlFoundRevocationRef revocationRef : foundRevocationRefs) {
+		for (XmlRevocationRef revocationRef : foundRevocationRefs) {
 			assertNotNull(revocationRef.getDigestAlgoAndValue());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestValue());
-			assertNotNull(revocationRef.getType());
 			assertNotNull(revocationRef.getLocation());
 		}
 	}
@@ -85,16 +84,15 @@ public class CAdESRevocationWrapperTest extends PKIFactoryAccess {
 		Reports report = validator.validateDocument();
 		// report.print();
 		DiagnosticData diagnosticData = report.getDiagnosticData();SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		List<XmlFoundRevocationRef> foundRevocationRefs = signature.getFoundRevocationRefs();
+		List<XmlRevocationRef> foundRevocationRefs = signature.getAllFoundRevocationRefs();
 		assertNotNull(foundRevocationRefs);
 		assertEquals(3, foundRevocationRefs.size());
 		assertEquals(3, signature.getFoundRevocationRefsByLocation(RevocationRefLocation.COMPLETE_REVOCATION_REFS).size());
 		assertEquals(0, signature.getFoundRevocationRefsByLocation(RevocationRefLocation.ATTRIBUTE_REVOCATION_REFS).size());
-		for (XmlFoundRevocationRef revocationRef : foundRevocationRefs) {
+		for (XmlRevocationRef revocationRef : foundRevocationRefs) {
 			assertNotNull(revocationRef.getDigestAlgoAndValue());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestMethod());
 			assertNotNull(revocationRef.getDigestAlgoAndValue().getDigestValue());
-			assertNotNull(revocationRef.getType());
 			assertNotNull(revocationRef.getLocation());
 			assertNotNull(revocationRef.getProducedAt());
 			assertTrue(Utils.isStringNotEmpty(revocationRef.getResponderIdName()) || Utils.isArrayNotEmpty(revocationRef.getResponderIdKey()));

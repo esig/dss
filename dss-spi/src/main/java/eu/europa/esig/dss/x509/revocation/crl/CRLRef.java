@@ -36,6 +36,7 @@ import org.bouncycastle.asn1.x500.X500Name;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.RevocationRef;
 
 /**
@@ -51,9 +52,10 @@ public final class CRLRef extends RevocationRef {
 	/**
 	 * The default constructor for CRLRef.
 	 */
-	public CRLRef(DigestAlgorithm digestAlgorithm, byte[] digestValue) {
+	public CRLRef(DigestAlgorithm digestAlgorithm, byte[] digestValue, RevocationOrigin location) {
 		this.digestAlgorithm = digestAlgorithm;
 		this.digestValue = digestValue;
+		this.location = location;
 	}
 
 	/**
@@ -61,7 +63,7 @@ public final class CRLRef extends RevocationRef {
 	 *
 	 * @param cmsRef
 	 */
-	public CRLRef(CrlValidatedID cmsRef) {
+	public CRLRef(CrlValidatedID cmsRef, RevocationOrigin location) {
 		try {
 
 			final CrlIdentifier crlIdentifier = cmsRef.getCrlIdentifier();
@@ -74,6 +76,7 @@ public final class CRLRef extends RevocationRef {
 
 			digestAlgorithm = DigestAlgorithm.forOID(crlHash.getHashAlgorithm().getAlgorithm().getId());
 			digestValue = crlHash.getHashValue();
+			this.location = location;
 		} catch (ParseException ex) {
 			throw new DSSException(ex);
 		}

@@ -194,7 +194,7 @@ public class CAdESOCSPSource extends SignatureOCSPSource {
 			final OcspListID ocspListID = otherCertId.getOcspids();
 			if (ocspListID != null) {
 				for (final OcspResponsesID ocspResponsesID : ocspListID.getOcspResponses()) {
-					final OCSPRef ocspRef = new OCSPRef(ocspResponsesID);
+					final OCSPRef ocspRef = new OCSPRef(ocspResponsesID, origin);
 					addReference(ocspRef, origin);
 				}
 			}

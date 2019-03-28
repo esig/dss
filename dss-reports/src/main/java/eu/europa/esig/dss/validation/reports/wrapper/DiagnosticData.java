@@ -31,15 +31,15 @@ import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 import eu.europa.esig.dss.validation.RevocationType;
+import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 
 /**
  * This class represents all static data extracted by the process analysing the signature. They are independent from the
@@ -653,7 +653,7 @@ public class DiagnosticData {
 			XmlRevocationOrigin originType) {
 		SignatureWrapper signature = getSignatureById(signatureId);
 		
-		Set<XmlCertificateRevocationRef> revocationRefSet = null;
+		Set<XmlRelatedRevocation> revocationRefSet = null;
 		if (revocationType != null) {
 			revocationRefSet = signature.getRelatedRevocationsByType(revocationType);
 			if (originType != null) {
@@ -662,11 +662,11 @@ public class DiagnosticData {
 		} else if (originType != null) {
 			revocationRefSet = signature.getRelatedRevocationsByOrigin(originType);
 		} else {
-			revocationRefSet = new HashSet<XmlCertificateRevocationRef>(signature.getRelatedRevocations());
+			revocationRefSet = new HashSet<XmlRelatedRevocation>(signature.getFoundRevocations());
 		}
 
 		List<RevocationWrapper> revocations = new ArrayList<RevocationWrapper>();
-		for (XmlCertificateRevocationRef revocationRef : revocationRefSet) {
+		for (XmlRelatedRevocation revocationRef : revocationRefSet) {
 			if ((revocationType == null || revocationRef.getType().equals(revocationType)) && 
 					(originType == null || revocationRef.getOrigin().equals(originType))) {
 				revocations.add(new RevocationWrapper(revocationRef.getRevocation()));

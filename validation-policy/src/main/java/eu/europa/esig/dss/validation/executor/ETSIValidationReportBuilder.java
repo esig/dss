@@ -12,7 +12,7 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocationRef;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.RevocationRefLocation;
 import eu.europa.esig.dss.validation.RevocationType;
@@ -373,7 +373,7 @@ public class ETSIValidationReportBuilder {
 	}
 	
 	private void addCompleteRevocationRefs(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<XmlFoundRevocationRef> revocationRefs = sigWrapper.getFoundRevocationRefsByLocation(RevocationRefLocation.COMPLETE_REVOCATION_REFS);
+		List<XmlRevocationRef> revocationRefs = sigWrapper.getFoundRevocationRefsByLocation(RevocationRefLocation.COMPLETE_REVOCATION_REFS);
 		if (Utils.isCollectionNotEmpty(revocationRefs)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 				.add(objectFactory.createSignatureAttributesTypeCompleteRevocationRefs(buildRevIDListType(revocationRefs)));
@@ -381,18 +381,19 @@ public class ETSIValidationReportBuilder {
 	}
 	
 	private void addAttributeRevocationRefs(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<XmlFoundRevocationRef> revocationRefs = sigWrapper.getFoundRevocationRefsByLocation(RevocationRefLocation.ATTRIBUTE_REVOCATION_REFS);
+		List<XmlRevocationRef> revocationRefs = sigWrapper.getFoundRevocationRefsByLocation(RevocationRefLocation.ATTRIBUTE_REVOCATION_REFS);
 		if (Utils.isCollectionNotEmpty(revocationRefs)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 				.add(objectFactory.createSignatureAttributesTypeAttributeRevocationRefs(buildRevIDListType(revocationRefs)));
 		}
 	}
 	
-	private SARevIDListType buildRevIDListType(List<XmlFoundRevocationRef> revocationRefs) {
+	private SARevIDListType buildRevIDListType(List<XmlRevocationRef> revocationRefs) {
 		SARevIDListType revIDListType = objectFactory.createSARevIDListType();
 		
-		for (XmlFoundRevocationRef xmlRevocationRef : revocationRefs) {
-			if (RevocationType.CRL.equals(xmlRevocationRef.getType())) {
+		for (XmlRevocationRef xmlRevocationRef : revocationRefs) {
+			// ProducedAt parameter is only for OCSP refs
+			if (xmlRevocationRef.getProducedAt() == null) {
 				SACRLIDType sacrlidType = objectFactory.createSACRLIDType();
 				DigestMethodType digestMethodType = new DigestMethodType();
 				XmlDigestAlgoAndValue digestAlgoAndValue = xmlRevocationRef.getDigestAlgoAndValue();
@@ -400,7 +401,7 @@ public class ETSIValidationReportBuilder {
 				sacrlidType.setDigestMethod(digestMethodType);
 				sacrlidType.setDigestValue(digestAlgoAndValue.getDigestValue());
 				revIDListType.getCRLIDOrOCSPID().add(sacrlidType);
-			} else if (RevocationType.OCSP.equals(xmlRevocationRef.getType())) {
+			} else {
 				SAOCSPIDType saocspidType = objectFactory.createSAOCSPIDType();
 				saocspidType.setProducedAt(xmlRevocationRef.getProducedAt());
 				if (Utils.isStringNotEmpty(xmlRevocationRef.getResponderIdName())) {

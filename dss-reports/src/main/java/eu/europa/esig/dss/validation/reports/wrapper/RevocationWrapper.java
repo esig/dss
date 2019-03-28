@@ -102,10 +102,6 @@ public class RevocationWrapper extends AbstractTokenProxy {
 	public RevocationType getRevocationType() {
 		return revocation.getType();
 	}
-
-	public List<XmlDigestAlgoAndValue> getDigestAlgoAndValues() {
-		return revocation.getDigestAlgoAndValues();
-	}
 	
 	public byte[] getBinaries() {
 		return revocation.getBase64Encoded();

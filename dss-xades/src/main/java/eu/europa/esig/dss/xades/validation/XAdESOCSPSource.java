@@ -139,7 +139,7 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 					base64EncodedDigestValue = Utils.fromBase64(digestValue);
 				}
 				
-				OCSPRef ocspRef = new OCSPRef(digestAlgo, base64EncodedDigestValue, producedAtDate, responderId, false);
+				OCSPRef ocspRef = new OCSPRef(digestAlgo, base64EncodedDigestValue, producedAtDate, responderId, false, revocationOrigin);
 				addReference(ocspRef, revocationOrigin);
 				
 			}

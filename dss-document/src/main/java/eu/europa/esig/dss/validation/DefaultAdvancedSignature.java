@@ -139,6 +139,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	private List<SignatureScope> signatureScopes;
 
 	private String signatureFilename;
+	
+	/**
+	 * Contains a list of found {@link RevocationRef}s for each {@link RevocationToken}
+	 */
+	private Map<RevocationToken, List<RevocationRef>> revocationRefsMap;
 
 	/**
 	 * @param certPool
@@ -827,13 +832,23 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public List<OCSPRef> getAttributeRevocationOCSPReferences() {
 		return offlineOCSPSource.getAttributeRevocationRefs();
 	}
+	
+	@Override
+	public List<RevocationRef> getAllFoundRevocationRefs() {
+		List<RevocationRef> revocationRefs = new ArrayList<RevocationRef>();
+		revocationRefs.addAll(getCompleteRevocationCRLReferences());
+		revocationRefs.addAll(getAttributeRevocationCRLReferences());
+		revocationRefs.addAll(getCompleteRevocationOCSPReferences());
+		revocationRefs.addAll(getAttributeRevocationOCSPReferences());
+		return revocationRefs;
+	}
 
 	@Override
 	public List<RevocationToken> getCompleteRevocationTokens() {
 		List<RevocationRef> revocationRefs = new ArrayList<RevocationRef>();
 		revocationRefs.addAll(getCompleteRevocationCRLReferences());
 		revocationRefs.addAll(getCompleteRevocationOCSPReferences());
-		return findTokensFromRefs(revocationRefs, getAllRevocationTokens());
+		return findTokensFromRefs(revocationRefs);
 	}
 
 	@Override
@@ -841,41 +856,68 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		List<RevocationRef> revocationRefs = new ArrayList<RevocationRef>();
 		revocationRefs.addAll(getAttributeRevocationCRLReferences());
 		revocationRefs.addAll(getAttributeRevocationOCSPReferences());
-		return findTokensFromRefs(revocationRefs, getAllRevocationTokens());
+		return findTokensFromRefs(revocationRefs);
 	}
 	
-	private List<RevocationToken> findTokensFromRefs(List<RevocationRef> revocationRefs, Collection<RevocationToken> revocationTokens) {
+	private List<RevocationToken> findTokensFromRefs(List<RevocationRef> revocationRefs) {
+		if (revocationRefsMap == null) {
+			collectRevocationRefsMap();
+		}
 		List<RevocationToken> tokensFromRefs = new ArrayList<RevocationToken>();
-		
-		for (RevocationRef reference : revocationRefs) {
-			if (reference.getDigestAlgorithm() != null && reference.getDigestValue() != null) {
-				for (RevocationToken revocationToken : revocationTokens) {
-					if (Arrays.equals(reference.getDigestValue(), revocationToken.getDigest(reference.getDigestAlgorithm()))) {
-						tokensFromRefs.add(revocationToken);
-						break;
-					}
+		for (Entry<RevocationToken, List<RevocationRef>> revocationMapEntry : revocationRefsMap.entrySet()) {
+			for (RevocationRef tokenRevocationRef : revocationMapEntry.getValue()) {
+				if (revocationRefs.contains(tokenRevocationRef)) {
+					tokensFromRefs.add(revocationMapEntry.getKey());
+					break;
 				}
 			}
-			if (reference instanceof OCSPRef) {
-				OCSPRef ocspRef = (OCSPRef) reference;
-				for (RevocationToken revocationToken : revocationTokens) {
+		}
+		return tokensFromRefs;
+	}
+	
+	@Override
+	public List<RevocationRef> findRefsForRevocationToken(RevocationToken revocationToken) {
+		if (revocationRefsMap == null) {
+			collectRevocationRefsMap();
+		}
+		List<RevocationRef> revocationRefs = revocationRefsMap.get(revocationToken);
+		if (revocationRefs != null) {
+			return revocationRefs;
+		} else {
+			return Collections.emptyList();
+		}
+	}
+	
+	private void collectRevocationRefsMap() {
+		revocationRefsMap = new HashMap<RevocationToken, List<RevocationRef>>();
+		for (RevocationToken revocationToken : getAllRevocationTokens()) {
+			for (RevocationRef reference : getAllFoundRevocationRefs()) {
+				if (reference.getDigestAlgorithm() != null && reference.getDigestValue() != null &&
+						Arrays.equals(reference.getDigestValue(), revocationToken.getDigest(reference.getDigestAlgorithm()))) { 
+					addReferenceToMap(revocationToken, reference);
+				} else if (reference instanceof OCSPRef) {
+					OCSPRef ocspRef = (OCSPRef) reference;
 					if (!ocspRef.getProducedAt().equals(revocationToken.getProductionDate())) {
 						continue;
 					}
 					if (ocspRef.getResponderId().getName() != null &&
 							ocspRef.getResponderId().getName().equals(revocationToken.getIssuerX500Principal().getName())) {
-						tokensFromRefs.add(revocationToken);
-						break;
+						addReferenceToMap(revocationToken, reference);
 					} else if (ocspRef.getResponderId().getKey() != null && 
 							Arrays.equals(ocspRef.getResponderId().getKey(), revocationToken.getIssuerX500Principal().getEncoded())) {
-						tokensFromRefs.add(revocationToken);
-						break;
+						addReferenceToMap(revocationToken, reference);
 					}
 				}
 			}
 		}
-		
-		return tokensFromRefs;
+	}
+	
+	private void addReferenceToMap(RevocationToken revocationToken, RevocationRef reference) {
+		if (revocationRefsMap.containsKey(revocationToken)) {
+			revocationRefsMap.get(revocationToken).add(reference);
+		} else {
+			revocationRefsMap.put(revocationToken, new ArrayList<RevocationRef>(Arrays.asList(reference)));
+		}
 	}
 	
 	private void removeUnrelatedTokens(List<RevocationToken> revocationTokens) {

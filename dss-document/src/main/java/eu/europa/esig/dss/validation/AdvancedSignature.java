@@ -37,6 +37,7 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.SignaturePolicy;
+import eu.europa.esig.dss.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
@@ -535,6 +536,19 @@ public interface AdvancedSignature extends Serializable {
 	 * @return list of {@link OCSPRef}s
 	 */
 	List<OCSPRef> getAttributeRevocationOCSPReferences();
+	
+	/**
+	 * Retrieves a list of all found {@link RevocationRef}s present in the signature
+	 * @return list of {@link RevocationRef}s
+	 */
+	List<RevocationRef> getAllFoundRevocationRefs();
+	
+	/**
+	 * Retrieves a list of found {@link RevocationRef}s for the given {@code revocationToken}
+	 * @param revocationToken {@link RevocationToken} to get references for
+	 * @return list of {@link RevocationRef}s
+	 */
+	List<RevocationRef> findRefsForRevocationToken(RevocationToken revocationToken);
 
 	// ------------------------ CAdES Specifics for TS 119 102-2
 

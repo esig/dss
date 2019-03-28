@@ -136,10 +136,10 @@
 				</xs:complexType>
 			</xs:element>
 			
-			<xs:element name="RelatedRevocations" minOccurs="0">
+			<xs:element name="FoundRevocations" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="CertificateRevocationRef" type="CertificateRevocationRef" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="RelatedRevocation" type="RelatedRevocation" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -148,14 +148,6 @@
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="FoundCertificate" type="FoundCertificate" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name="FoundRevocationRefs" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="FoundRevocationRef" type="FoundRevocationRef" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -532,7 +524,6 @@
 			<xs:element name="ArchiveCutOff" type="xs:dateTime" minOccurs="0" /> <!-- OCSP -->
 			<xs:element name="CertHashExtensionPresent" type="xs:boolean" minOccurs="0" /> <!-- OCSP -->
 			<xs:element name="CertHashExtensionMatch" type="xs:boolean" minOccurs="0" /> <!-- OCSP -->
-			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValues" minOccurs="0" />
 			<xs:element name="BasicSignature" type="BasicSignature" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
 			<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
@@ -541,22 +532,30 @@
 		<xs:attribute name="Id" type="xs:ID" use="required" />
 	</xs:complexType>
 	
-	<xs:complexType name="CertificateRevocationRef">
+	<xs:complexType name="RelatedRevocation">
 		<xs:sequence>
 			<xs:element name="Certificate" type="xs:IDREF" />
 			<xs:element name="Revocation" type="xs:IDREF" />
 			<xs:element name="Type" type="RevocationType" />
 			<xs:element name="Origin" type="RevocationOriginType" />
+			<xs:element name="RevocationReferences">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="RevocationRef" type="RevocationRef" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="FoundRevocationRef">
+	<xs:complexType name="RevocationRef">
 		<xs:sequence>
-			<xs:element name="Type" type="RevocationType" />
 			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
 			<xs:element name="ProducedAt" type="xs:dateTime" minOccurs="0" /> <!-- OCSP -->
-			<xs:element name="ResponderIdName" type="xs:string" minOccurs="0" /> <!-- OCSP -->
-			<xs:element name="ResponderIdKey" type="xs:base64Binary" minOccurs="0" /> <!-- OCSP -->
+			<xs:choice minOccurs="0"> <!-- OCSP -->
+				<xs:element name="ResponderIdName" type="xs:string" /> <!-- OCSP -->
+				<xs:element name="ResponderIdKey" type="xs:base64Binary" /> <!-- OCSP -->
+			</xs:choice>
 		</xs:sequence>
 		<xs:attribute name="Location" type="RevocationRefLocationType" use="required" />
 	</xs:complexType>

@@ -39,6 +39,7 @@ import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.RevocationRef;
 
 /**
@@ -53,17 +54,19 @@ public class OCSPRef extends RevocationRef {
 
 	private final boolean matchOnlyBasicOCSPResponse;
 	
-	public OCSPRef(Date producedAt, ResponderId responderId, boolean matchOnlyBasicOCSPResponse) {
+	public OCSPRef(Date producedAt, ResponderId responderId, boolean matchOnlyBasicOCSPResponse, RevocationOrigin location) {
 		this.producedAt = producedAt;
 		this.responderId = responderId;
 		this.matchOnlyBasicOCSPResponse = matchOnlyBasicOCSPResponse;
+		this.location = location;
 	}
 
 	/**
 	 * The default constructor for OCSPRef.
 	 */
-	public OCSPRef(DigestAlgorithm algorithm, byte[] digestValue, Date producedAt, ResponderId responderId, boolean matchOnlyBasicOCSPResponse) {
-		this(producedAt, responderId, matchOnlyBasicOCSPResponse);
+	public OCSPRef(DigestAlgorithm algorithm, byte[] digestValue, Date producedAt, ResponderId responderId, 
+			boolean matchOnlyBasicOCSPResponse, RevocationOrigin location) {
+		this(producedAt, responderId, matchOnlyBasicOCSPResponse, location);
 		this.digestAlgorithm = algorithm;
 		this.digestValue = digestValue;
 	}
@@ -71,7 +74,7 @@ public class OCSPRef extends RevocationRef {
 	/**
 	 * The default constructor for OCSPRef.
 	 */
-	public OCSPRef(final OcspResponsesID ocspResponsesID) {
+	public OCSPRef(final OcspResponsesID ocspResponsesID, RevocationOrigin location) {
 		final OtherHash otherHash = ocspResponsesID.getOcspRepHash();
 		if (otherHash != null) {
 			this.digestAlgorithm = DigestAlgorithm.forOID(otherHash.getHashAlgorithm().getAlgorithm().getId());
@@ -91,6 +94,7 @@ public class OCSPRef extends RevocationRef {
 		}
 		
 		this.matchOnlyBasicOCSPResponse = true;
+		this.location = location;
 	}
 
 	/**
@@ -157,7 +161,7 @@ public class OCSPRef extends RevocationRef {
 			return false;
 		}
 		OCSPRef o = (OCSPRef) obj;
-		if (!producedAt.equals(o.producedAt) || 
+		if (!producedAt.equals(o.producedAt) || location.equals(o.getLocation()) ||
 				responderId.getName() != null && !responderId.getName().equals(o.getResponderId().getName()) ||
 				responderId.getKey() != null && !Arrays.equals(responderId.getKey(), o.getResponderId().getKey()) ||
 				digestAlgorithm != null && !digestAlgorithm.equals(o.getDigestAlgorithm()) || 
@@ -169,7 +173,7 @@ public class OCSPRef extends RevocationRef {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(producedAt, responderId.getName(), responderId.getKey(), digestAlgorithm, digestValue);
+		return Objects.hash(producedAt, responderId.getName(), responderId.getKey(), digestAlgorithm, digestValue, location);
 	}
 	
 }

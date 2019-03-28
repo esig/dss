@@ -93,7 +93,7 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		assertEquals(3, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureOne.getId(), 
 				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_DSS).size());
 		
-		assertEquals(0, signatureOne.getFoundRevocationRefs().size());
+		assertEquals(0, signatureOne.getAllFoundRevocationRefs().size());
 		
 		SignatureWrapper signatureTwo = signatures.get(1);
 		assertEquals(3, diagnosticData.getAllRevocationForSignature(signatureTwo.getId()).size());
@@ -105,7 +105,7 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
 		assertEquals(3, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureTwo.getId(), 
 				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_DSS).size());
-		assertEquals(0, signatureTwo.getFoundRevocationRefs().size());
+		assertEquals(0, signatureTwo.getAllFoundRevocationRefs().size());
 		
 	}
 	

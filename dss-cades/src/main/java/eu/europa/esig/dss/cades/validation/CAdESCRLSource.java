@@ -200,7 +200,7 @@ public class CAdESCRLSource extends SignatureCRLSource {
 				final CrlListID otherCertIds = otherCertId.getCrlids();
 				if (otherCertIds != null) {
 					for (final CrlValidatedID id : otherCertIds.getCrls()) {
-						final CRLRef crlRef = new CRLRef(id);
+						final CRLRef crlRef = new CRLRef(id, origin);
 						addReference(crlRef, origin);
 					}
 				}

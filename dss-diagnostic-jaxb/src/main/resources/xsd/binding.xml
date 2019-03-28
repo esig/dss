@@ -56,12 +56,12 @@
 				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationRefLocationParser.print" />
 		</jaxb:bindings>
 		
- 	<jaxb:bindings node="//xs:complexType[@name='CertificateRevocationRef']//xs:element[@name='Certificate']">
+ 	<jaxb:bindings node="//xs:complexType[@name='RelatedRevocation']//xs:element[@name='Certificate']">
         <jaxb:property>
             <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
         </jaxb:property>
     </jaxb:bindings>
- 	<jaxb:bindings node="//xs:complexType[@name='CertificateRevocationRef']//xs:element[@name='Revocation']">
+ 	<jaxb:bindings node="//xs:complexType[@name='RelatedRevocation']//xs:element[@name='Revocation']">
         <jaxb:property>
             <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation" />
         </jaxb:property>

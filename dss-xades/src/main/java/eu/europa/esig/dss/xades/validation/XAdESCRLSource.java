@@ -83,7 +83,7 @@ public class XAdESCRLSource extends SignatureCRLSource {
 				final String xmlName = digestAlgorithmEl.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
 				final DigestAlgorithm digestAlgo = DigestAlgorithm.forXML(xmlName);
 				
-				CRLRef crlRef = new CRLRef(digestAlgo, Utils.fromBase64(digestValueEl.getTextContent()));
+				CRLRef crlRef = new CRLRef(digestAlgo, Utils.fromBase64(digestValueEl.getTextContent()), revocationOrigin);
 				addReference(crlRef, revocationOrigin);
 			}
 		}

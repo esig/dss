@@ -6,11 +6,14 @@ import java.util.Objects;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 
 public abstract class RevocationRef {
 
 	protected DigestAlgorithm digestAlgorithm = null;
 	protected byte[] digestValue = DSSUtils.EMPTY_BYTE_ARRAY;
+	
+	protected RevocationOrigin location;
 
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgorithm;
@@ -18,6 +21,10 @@ public abstract class RevocationRef {
 
 	public byte[] getDigestValue() {
 		return digestValue;
+	}
+	
+	public RevocationOrigin getLocation() {
+		return location;
 	}
 	
 	@Override
@@ -34,12 +41,13 @@ public abstract class RevocationRef {
 			return false;
 		}
 		RevocationRef o = (RevocationRef) obj;
-		return digestAlgorithm.equals(o.getDigestAlgorithm()) && Arrays.equals(digestValue, o.getDigestValue());
+		return digestAlgorithm.equals(o.getDigestAlgorithm()) && Arrays.equals(digestValue, o.getDigestValue()) &&
+				location.equals(o.location);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(digestAlgorithm, digestValue);
+		return Objects.hash(digestAlgorithm, digestValue, location);
 	}
 
 }

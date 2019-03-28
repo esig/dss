@@ -23,7 +23,6 @@ package eu.europa.esig.dss.validation;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -59,7 +58,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
@@ -67,12 +65,13 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlManifestFile;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
@@ -99,6 +98,7 @@ import eu.europa.esig.dss.x509.SignatureCertificateSource;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.Token;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
+import eu.europa.esig.dss.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
 
@@ -439,10 +439,9 @@ public class DiagnosticDataBuilder {
 		xmlSignature.setPDFSignatureDictionary(getXmlPDFSignatureDictionary(signature));
 
 		xmlSignature.setTimestamps(getXmlTimestamps(signature));
-		xmlSignature.setRelatedRevocations(getXmlRelatedRevocations(signature));
 
+		xmlSignature.setFoundRevocations(getXmlRelatedRevocations(signature));
 		xmlSignature.setFoundCertificates(getXmlFoundCertificates(signature));
-		xmlSignature.setFoundRevocationRefs(getXmlFoundRevocationRefs(signature));
 
 		xmlSignature.setSignatureScopes(getXmlSignatureScopes(signature.getSignatureScopes()));
 
@@ -545,7 +544,6 @@ public class DiagnosticDataBuilder {
 		}
 
 		xmlRevocation.setBasicSignature(getXmlBasicSignature(revocationToken));
-		xmlRevocation.setDigestAlgoAndValues(getXmlDigestAlgoAndValues(revocationToken));
 
 		xmlRevocation.setSigningCertificate(getXmlSigningCertificate(revocationToken.getPublicKeyOfTheSigner()));
 		xmlRevocation.setCertificateChain(getXmlForCertificateChain(revocationToken.getPublicKeyOfTheSigner()));
@@ -756,50 +754,6 @@ public class DiagnosticDataBuilder {
 		}
 		return result;
 	}
-	
-	private List<XmlFoundRevocationRef> getXmlFoundRevocationRefs(AdvancedSignature signature) {
-		List<XmlFoundRevocationRef> foundRevocationRefs = new ArrayList<XmlFoundRevocationRef>();
-		foundRevocationRefs.addAll(getXmlFoundCRLRevocationRefsByLocation(signature.getCompleteRevocationCRLReferences(), RevocationRefLocation.COMPLETE_REVOCATION_REFS));
-		foundRevocationRefs.addAll(getXmlFoundCRLRevocationRefsByLocation(signature.getAttributeRevocationCRLReferences(), RevocationRefLocation.ATTRIBUTE_REVOCATION_REFS));
-		foundRevocationRefs.addAll(getXmlFoundOCSPRevocationRefsByLocation(signature.getCompleteRevocationOCSPReferences(), RevocationRefLocation.COMPLETE_REVOCATION_REFS));
-		foundRevocationRefs.addAll(getXmlFoundOCSPRevocationRefsByLocation(signature.getAttributeRevocationOCSPReferences(), RevocationRefLocation.ATTRIBUTE_REVOCATION_REFS));
-		return foundRevocationRefs;
-	}
-	
-	private List<XmlFoundRevocationRef> getXmlFoundCRLRevocationRefsByLocation(Collection<CRLRef> crlRefs, RevocationRefLocation location) {
-		List<XmlFoundRevocationRef> foundRevocationRefs = new ArrayList<XmlFoundRevocationRef>();
-		for (CRLRef crlRef : crlRefs) {
-			XmlFoundRevocationRef xmlFoundRevocationRef = new XmlFoundRevocationRef();
-			xmlFoundRevocationRef.setType(RevocationType.CRL);
-			xmlFoundRevocationRef.setLocation(location);
-			xmlFoundRevocationRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(crlRef.getDigestAlgorithm(), crlRef.getDigestValue()));
-			foundRevocationRefs.add(xmlFoundRevocationRef);
-		}
-		return foundRevocationRefs;
-	}
-	
-	private List<XmlFoundRevocationRef> getXmlFoundOCSPRevocationRefsByLocation(Collection<OCSPRef> ocspRefs, RevocationRefLocation location) {
-		List<XmlFoundRevocationRef> foundRevocationRefs = new ArrayList<XmlFoundRevocationRef>();
-		for (OCSPRef ocspRef : ocspRefs) {
-			XmlFoundRevocationRef xmlFoundRevocationRef = new XmlFoundRevocationRef();
-			xmlFoundRevocationRef.setType(RevocationType.OCSP);
-			xmlFoundRevocationRef.setLocation(location);
-			if (ocspRef.getDigestAlgorithm() != null && ocspRef.getDigestValue() != null) {
-				xmlFoundRevocationRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ocspRef.getDigestAlgorithm(), ocspRef.getDigestValue()));
-			}
-			xmlFoundRevocationRef.setProducedAt(ocspRef.getProducedAt());
-			String name = ocspRef.getResponderId().getName();
-			if (Utils.isStringNotEmpty(name)) {
-				xmlFoundRevocationRef.setResponderIdName(name);
-			}
-			byte[] key = ocspRef.getResponderId().getKey();
-			if (Utils.isArrayNotEmpty(key)) {
-				xmlFoundRevocationRef.setResponderIdKey(key);
-			}
-			foundRevocationRefs.add(xmlFoundRevocationRef);
-		}
-		return foundRevocationRefs;
-	}
 
 	private List<XmlTimestamp> getXmlTimestamps(AdvancedSignature signature) {
 		List<XmlTimestamp> xmlTimestamps = new ArrayList<XmlTimestamp>();
@@ -811,38 +765,78 @@ public class DiagnosticDataBuilder {
 		return xmlTimestamps;
 	}
 	
-	private List<XmlCertificateRevocationRef> getXmlRelatedRevocations(AdvancedSignature signature) {		
-		List<XmlCertificateRevocationRef> xmlRevocationRefs = new ArrayList<XmlCertificateRevocationRef>();
-		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature.getRevocationValuesTokens(), 
+	private List<XmlRelatedRevocation> getXmlRelatedRevocations(AdvancedSignature signature) {		
+		List<XmlRelatedRevocation> xmlRevocationRefs = new ArrayList<XmlRelatedRevocation>();
+		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature, signature.getRevocationValuesTokens(), 
 				XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES));
-		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature.getAttributeRevocationValuesTokens(), 
+		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature, signature.getAttributeRevocationValuesTokens(), 
 				XmlRevocationOrigin.INTERNAL_ATTRIBUTE_REVOCATION_VALUES));
-		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature.getTimestampRevocationValuesTokens(), 
+		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature, signature.getTimestampRevocationValuesTokens(), 
 				XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES));
-		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature.getDSSDictionaryRevocationTokens(), 
+		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature, signature.getDSSDictionaryRevocationTokens(), 
 				XmlRevocationOrigin.INTERNAL_DSS));
-		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature.getVRIDictionaryRevocationTokens(), 
+		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature, signature.getVRIDictionaryRevocationTokens(), 
 				XmlRevocationOrigin.INTERNAL_VRI));
 		return xmlRevocationRefs;
 	}
 	
-	private List<XmlCertificateRevocationRef> getXmlRevocationsRefsByType(List<RevocationToken> revocationTokens, XmlRevocationOrigin originType) {
-		List<XmlCertificateRevocationRef> xmlRevocationRefs = new ArrayList<XmlCertificateRevocationRef>();
+	private List<XmlRelatedRevocation> getXmlRevocationsRefsByType(AdvancedSignature signature, List<RevocationToken> revocationTokens, 
+			XmlRevocationOrigin originType) {
+		List<XmlRelatedRevocation> xmlRevocationRefs = new ArrayList<XmlRelatedRevocation>();
 		for (RevocationToken revocationToken : revocationTokens) {
-			xmlRevocationRefs.add(getXmlCertificateRevocationRef(revocationToken, originType));
+			xmlRevocationRefs.add(getXmlCertificateRevocationRef(signature, revocationToken, originType));
 		}
 		return xmlRevocationRefs;
 	}
 	
-	private XmlCertificateRevocationRef getXmlCertificateRevocationRef(RevocationToken revocationToken, XmlRevocationOrigin originType) {
-		XmlCertificateRevocationRef xmlRevocationRef = new XmlCertificateRevocationRef();
+	private XmlRelatedRevocation getXmlCertificateRevocationRef(AdvancedSignature signature, RevocationToken revocationToken, 
+			XmlRevocationOrigin originType) {
+		XmlRelatedRevocation xmlRevocationRef = new XmlRelatedRevocation();
 		xmlRevocationRef.setCertificate(getXmlCertificate(revocationToken.getRelatedCertificateID()));
 		xmlRevocationRef.setRevocation(getXmlRevocation(revocationToken.getDSSIdAsString(), revocationToken));
 		xmlRevocationRef.setType(RevocationType.valueOf(revocationToken.getRevocationSourceType().name()));
 		xmlRevocationRef.setOrigin(originType);
+		List<RevocationRef> revocationRefs = signature.findRefsForRevocationToken(revocationToken);
+		xmlRevocationRef.getRevocationReferences().addAll(getXmlRevocataRefs(revocationRefs));
 		return xmlRevocationRef;
 	}
-
+	
+	private List<XmlRevocationRef> getXmlRevocataRefs(List<RevocationRef> revocationRefs) {
+		List<XmlRevocationRef> xmlRevocationRefs = new ArrayList<XmlRevocationRef>();
+		for (RevocationRef ref : revocationRefs) {
+			if (ref instanceof CRLRef) {
+				xmlRevocationRefs.add(getXmlCRLRevocationRef((CRLRef) ref));
+			} else if (ref instanceof OCSPRef) {
+				xmlRevocationRefs.add(getXmlOCSPRevocationRef((OCSPRef) ref));
+			}
+		}
+		return xmlRevocationRefs;
+	} 
+	
+	private XmlRevocationRef getXmlCRLRevocationRef(CRLRef crlRef) {
+		XmlRevocationRef xmlRevocationRef = new XmlRevocationRef();
+		xmlRevocationRef.setLocation(RevocationRefLocation.valueOf(crlRef.getLocation().toString()));
+		xmlRevocationRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(crlRef.getDigestAlgorithm(), crlRef.getDigestValue()));
+		return xmlRevocationRef;
+	}
+	
+	private XmlRevocationRef getXmlOCSPRevocationRef(OCSPRef ocspRef) {
+		XmlRevocationRef xmlRevocationRef = new XmlRevocationRef();
+		xmlRevocationRef.setLocation(RevocationRefLocation.valueOf(ocspRef.getLocation().toString()));
+		if (ocspRef.getDigestAlgorithm() != null && ocspRef.getDigestValue() != null) {
+			xmlRevocationRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(ocspRef.getDigestAlgorithm(), ocspRef.getDigestValue()));
+		}
+		xmlRevocationRef.setProducedAt(ocspRef.getProducedAt());
+		String name = ocspRef.getResponderId().getName();
+		if (Utils.isStringNotEmpty(name)) {
+			xmlRevocationRef.setResponderIdName(name);
+		}
+		byte[] key = ocspRef.getResponderId().getKey();
+		if (Utils.isArrayNotEmpty(key)) {
+			xmlRevocationRef.setResponderIdKey(key);
+		}
+		return xmlRevocationRef;
+	}
 
 	/**
 	 * This method deals with the signature policy. The retrieved information is
