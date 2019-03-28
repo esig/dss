@@ -27,11 +27,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateTimestampedObject;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationTimestampedObject;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureTimestampedObject;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampTimestampedObject;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedRevocationData;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
@@ -93,17 +93,17 @@ public class POEExtraction {
 		if (Utils.isCollectionNotEmpty(timestampedObjects)) {
 
 			for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
-				if (xmlTimestampedObject instanceof XmlCertificateTimestampedObject) {
-					XmlCertificateTimestampedObject certificateTimestampedObject = (XmlCertificateTimestampedObject) xmlTimestampedObject;
+				if (xmlTimestampedObject instanceof XmlTimestampedCertificate) {
+					XmlTimestampedCertificate certificateTimestampedObject = (XmlTimestampedCertificate) xmlTimestampedObject;
 					addPOE(certificateTimestampedObject.getCertificate().getId(), productionTime);
-				} else if (xmlTimestampedObject instanceof XmlRevocationTimestampedObject) {
-					XmlRevocationTimestampedObject revocationTimestampedObject = (XmlRevocationTimestampedObject) xmlTimestampedObject;
+				} else if (xmlTimestampedObject instanceof XmlTimestampedRevocationData) {
+					XmlTimestampedRevocationData revocationTimestampedObject = (XmlTimestampedRevocationData) xmlTimestampedObject;
 					addPOE(revocationTimestampedObject.getRevocation().getId(), productionTime);
-				} else if (xmlTimestampedObject instanceof XmlTimestampTimestampedObject) {
-					XmlTimestampTimestampedObject timestampTimestampedObject = (XmlTimestampTimestampedObject) xmlTimestampedObject;
+				} else if (xmlTimestampedObject instanceof XmlTimestampedTimestamp) {
+					XmlTimestampedTimestamp timestampTimestampedObject = (XmlTimestampedTimestamp) xmlTimestampedObject;
 					addPOE(timestampTimestampedObject.getTimestamp().getId(), productionTime);
-				} else if (xmlTimestampedObject instanceof XmlSignatureTimestampedObject) {
-					XmlSignatureTimestampedObject signatureTimestampedObject = (XmlSignatureTimestampedObject) xmlTimestampedObject;
+				} else if (xmlTimestampedObject instanceof XmlTimestampedSignature) {
+					XmlTimestampedSignature signatureTimestampedObject = (XmlTimestampedSignature) xmlTimestampedObject;
 					addPOE(signatureTimestampedObject.getSignature().getId(), productionTime);
 				}
 			}

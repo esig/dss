@@ -60,7 +60,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocationRef;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateTimestampedObject;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
@@ -74,16 +73,17 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationTimestampedObject;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureTimestampedObject;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampTimestampedObject;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedRevocationData;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
@@ -922,22 +922,22 @@ public class DiagnosticDataBuilder {
 			for (final TimestampReference timestampReference : timestampReferences) {
 				switch (timestampReference.getCategory()) {
 				case CERTIFICATE:
-					XmlCertificateTimestampedObject certRef = new XmlCertificateTimestampedObject();
+					XmlTimestampedCertificate certRef = new XmlTimestampedCertificate();
 					certRef.setCertificate(xmlCerts.get(timestampReference.getSignatureId()));
 					objects.add(certRef);
 					break;
 				case REVOCATION:
-					XmlRevocationTimestampedObject revocRef = new XmlRevocationTimestampedObject();
+					XmlTimestampedRevocationData revocRef = new XmlTimestampedRevocationData();
 					revocRef.setRevocation(xmlRevocations.get(timestampReference.getSignatureId()));
 					objects.add(revocRef);
 					break;
 				case SIGNATURE:
-					XmlSignatureTimestampedObject sigRef = new XmlSignatureTimestampedObject();
+					XmlTimestampedSignature sigRef = new XmlTimestampedSignature();
 					sigRef.setSignature(xmlSignatures.get(timestampReference.getSignatureId()));
 					objects.add(sigRef);
 					break;
 				case TIMESTAMP:
-					XmlTimestampTimestampedObject tstRef = new XmlTimestampTimestampedObject();
+					XmlTimestampedTimestamp tstRef = new XmlTimestampedTimestamp();
 					tstRef.setTimestamp(xmlTimestamps.get(timestampReference.getSignatureId()));
 					objects.add(tstRef);
 					break;

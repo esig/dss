@@ -391,22 +391,17 @@
 	</xs:complexType>
 	
 	<xs:complexType name="TimestampedObjects">
-		<xs:sequence>
-			<xs:element name="TimestampedObject" type="TimestampedObject" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
+		<xs:choice maxOccurs="unbounded">
+			<xs:element name="TimestampedCertificate" type="TimestampedCertificate" />
+			<xs:element name="TimestampedRevocationData" type="TimestampedRevocationData" />
+			<xs:element name="TimestampedTimestamp" type="TimestampedTimestamp" />
+			<xs:element name="TimestampedSignature" type="TimestampedSignature" />
+		</xs:choice>
 	</xs:complexType>
 	
 	<xs:complexType name="TimestampedObject" abstract="true"/>
-	
-	<xs:complexType name="SignatureTimestampedObject">
-        <xs:complexContent>
-            <xs:extension base="TimestampedObject">
-				<xs:attribute name="Signature" type="xs:IDREF" use="required" />
-            </xs:extension>
-        </xs:complexContent>
-    </xs:complexType>
     
-	<xs:complexType name="CertificateTimestampedObject">
+	<xs:complexType name="TimestampedCertificate">
         <xs:complexContent>
             <xs:extension base="TimestampedObject">
 				<xs:attribute name="Certificate" type="xs:IDREF" use="required" />
@@ -414,15 +409,7 @@
         </xs:complexContent>
     </xs:complexType>
     
-	<xs:complexType name="TimestampTimestampedObject">
-        <xs:complexContent>
-            <xs:extension base="TimestampedObject">
-				<xs:attribute name="Timestamp" type="xs:IDREF" use="required" />
-            </xs:extension>
-        </xs:complexContent>
-    </xs:complexType>
-    
-	<xs:complexType name="RevocationTimestampedObject">
+	<xs:complexType name="TimestampedRevocationData">
         <xs:complexContent>
             <xs:extension base="TimestampedObject">
 				<xs:attribute name="Revocation" type="xs:IDREF" use="required" />
@@ -430,6 +417,22 @@
         </xs:complexContent>
     </xs:complexType>
 	
+	<xs:complexType name="TimestampedTimestamp">
+        <xs:complexContent>
+            <xs:extension base="TimestampedObject">
+				<xs:attribute name="Timestamp" type="xs:IDREF" use="required" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+	<xs:complexType name="TimestampedSignature">
+        <xs:complexContent>
+            <xs:extension base="TimestampedObject">
+				<xs:attribute name="Signature" type="xs:IDREF" use="required" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
 	<xs:complexType name="CertificateChain">
 		<xs:sequence>
 			<xs:element name="ChainItem" minOccurs="0" maxOccurs="unbounded">

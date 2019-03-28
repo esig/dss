@@ -31,8 +31,8 @@ import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureTimestampedObject;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignature;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -73,8 +73,8 @@ public class PAdESBExtendToLTACheckTimeStampID extends PKIFactoryAccess {
 		for (TimestampWrapper wrapper : diagnostic.getTimestampList(signatureId)) {
 			boolean found = false;
 			for (XmlTimestampedObject xmlTimestampedObject : wrapper.getTimestampedObjects()) {
-				if (xmlTimestampedObject instanceof XmlSignatureTimestampedObject) {
-					XmlSignatureTimestampedObject timestampedSignature = (XmlSignatureTimestampedObject) xmlTimestampedObject;
+				if (xmlTimestampedObject instanceof XmlTimestampedSignature) {
+					XmlTimestampedSignature timestampedSignature = (XmlTimestampedSignature) xmlTimestampedObject;
 					String id = timestampedSignature.getSignature().getId();
 					if (signatureId.equals(id)) {
 						found = true;
