@@ -464,6 +464,7 @@ public class CommonsDataLoader implements DataLoader {
 		final Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 		env.put(Context.PROVIDER_URL, urlString);
+		env.put("com.sun.jndi.ldap.read.timeout", ""+getTimeoutSocket());
 		try {
 
 			// parse URL according to the template: 'ldap://host:port/DN?attributes?scope?filter?extensions'
@@ -547,7 +548,7 @@ public class CommonsDataLoader implements DataLoader {
 			return readHttpResponse(httpResponse);
 
 		} catch (URISyntaxException | IOException e) {
-			throw new DSSException("Unable to process GET call for url '" + url + "'", e);
+			throw new DSSException("Unable to process GET call for url '" + url + "'. Cause: " + e.getLocalizedMessage(), e);
 		} finally {
 			try {
 				if (httpRequest != null) {
@@ -595,7 +596,7 @@ public class CommonsDataLoader implements DataLoader {
 
 			return readHttpResponse(httpResponse);
 		} catch (IOException e) {
-			throw new DSSException("Unable to process POST call for url '" + url + "'", e);
+			throw new DSSException("Unable to process POST call for url '" + url + "'. Cause: "+e.getLocalizedMessage(), e);
 		} finally {
 			try {
 				if (httpRequest != null) {
@@ -673,7 +674,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Used when the {@code HttpClient} and LDAP {@code InitialContext} is/are created.
 	 *
 	 * @return the value (millis)
 	 */
@@ -682,7 +683,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} is created.
+	 * Used when the {@code HttpClient} and LDAP {@code InitialContext} is/are created.
 	 *
 	 * @param timeoutSocket
 	 *            the value (millis)
