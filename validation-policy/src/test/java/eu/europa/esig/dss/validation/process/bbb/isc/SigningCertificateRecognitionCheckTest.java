@@ -70,7 +70,7 @@ public class SigningCertificateRecognitionCheckTest {
 		XmlISC result = new XmlISC();
 
 		SigningCertificateRecognitionCheck scrc = new SigningCertificateRecognitionCheck(result,
-				new SignatureWrapper(sig), wrapper, constraint);
+				new SignatureWrapper(sig), constraint);
 
 		scrc.execute();
 

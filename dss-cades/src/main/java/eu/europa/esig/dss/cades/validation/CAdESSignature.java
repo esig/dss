@@ -803,29 +803,22 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	public List<TimestampReference> getSignatureTimestampedReferences() {
-
 		final List<TimestampReference> references = new ArrayList<TimestampReference>();
-		final TimestampReference signatureReference = getSignatureTimestampReference();
-		references.add(signatureReference);
-		final List<TimestampReference> signingCertificateTimestampReferences = getSigningCertificateTimestampReferences();
-		references.addAll(signingCertificateTimestampReferences);
+		references.add(getSignatureTimestampReference());
+		references.addAll(getSigningCertificateTimestampReferences());
 		return references;
 	}
 
 	private TimestampReference getSignatureTimestampReference() {
-
-		final TimestampReference signatureReference = new TimestampReference(getId());
-		return signatureReference;
+		return new TimestampReference(getId(), TimestampedObjectType.SIGNATURE);
 	}
 
 	public List<TimestampReference> getSigningCertificateTimestampReferences() {
 		if (signingCertificateTimestampReferences == null) {
 			signingCertificateTimestampReferences = new ArrayList<TimestampReference>();
-			List<CertificateRef> signingCertificateRefs = getCertificateSource().getSigningCertificateValues();
-			for (CertificateRef certificateRef : signingCertificateRefs) {
-				Digest certDigest = certificateRef.getCertDigest();
-				final TimestampReference reference = new TimestampReference(certDigest.getAlgorithm(), certDigest.getValue());
-				signingCertificateTimestampReferences.add(reference);
+			List<CertificateToken> signingCertificates = getCertificateSource().getSigningCertificates();
+			for (CertificateToken certificate : signingCertificates) {
+				signingCertificateTimestampReferences.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 			}
 		}
 		return signingCertificateTimestampReferences;
@@ -1544,17 +1537,10 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<TimestampReference> getTimestampedReferences() {
-
 		final List<TimestampReference> references = new ArrayList<TimestampReference>();
-		final List<CertificateRef> certRefs = getCertificateRefs();
-		for (final CertificateRef certificateRef : certRefs) {
-			Digest certDigest = certificateRef.getCertDigest();
-			if (certDigest != null) {
-				final DigestAlgorithm digestAlgorithm = certDigest.getAlgorithm();
-				usedCertificatesDigestAlgorithms.add(digestAlgorithm);
-				final TimestampReference reference = new TimestampReference(digestAlgorithm, certDigest.getValue());
-				references.add(reference);
-			}
+		final List<CertificateToken> certs = getCertificateSource().getCompleteCertificates();
+		for (final CertificateToken certificate : certs) {
+			references.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 
 		addReferencesFromOfflineCRLSource(references);

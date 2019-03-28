@@ -48,20 +48,12 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	}
 
 	@Override
-	public List<XmlChainItem> getCertificateChain() {
-		if (getCurrentCertificateChain() != null) {
-			return getCurrentCertificateChain();
-		}
-		return new ArrayList<XmlChainItem>();
-	}
-
-	@Override
-	public List<String> getCertificateChainIds() {
-		List<String> result = new ArrayList<String>();
-		List<XmlChainItem> certificateChain = getCertificateChain();
+	public List<CertificateWrapper> getCertificateChain() {
+		List<CertificateWrapper> result = new ArrayList<CertificateWrapper>();
+		List<XmlChainItem> certificateChain = getCurrentCertificateChain();
 		if (Utils.isCollectionNotEmpty(certificateChain)) {
 			for (XmlChainItem xmlChainCertificate : certificateChain) {
-				result.add(xmlChainCertificate.getCertificate().getId());
+				result.add(new CertificateWrapper(xmlChainCertificate.getCertificate()));
 			}
 		}
 		return result;
@@ -158,32 +150,28 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	}
 
 	@Override
-	public String getSigningCertificateId() {
+	public CertificateWrapper getSigningCertificate() {
 		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
 		if (currentSigningCertificate != null) {
-			return currentSigningCertificate.getCertificate().getId();
+			return new CertificateWrapper(currentSigningCertificate.getCertificate());
 		}
-		return Utils.EMPTY_STRING;
+		return null;
 	}
 
-	@Override
-	public String getLastChainCertificateId() {
-		XmlChainItem item = getLastChainCertificate();
-		return item == null ? Utils.EMPTY_STRING : item.getCertificate().getId();
-	}
-
-	@Override
-	public String getFirstChainCertificateId() {
-		XmlChainItem item = getFirstChainCertificate();
-		return item == null ? Utils.EMPTY_STRING : item.getCertificate().getId();
-	}
-
+	/**
+	 * @deprecated
+	 */
+	@Deprecated
 	@Override
 	public String getLastChainCertificateSource() {
 		XmlChainItem item = getLastChainCertificate();
 		return item == null ? Utils.EMPTY_STRING : item.getSource();
 	}
 
+	/**
+	 * @deprecated
+	 */
+	@Deprecated
 	public XmlChainItem getLastChainCertificate() {
 		List<XmlChainItem> certificateChain = getCurrentCertificateChain();
 		if (Utils.isCollectionNotEmpty(certificateChain)) {
@@ -203,14 +191,6 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 			}
 		}
 		return false;
-	}
-
-	public XmlChainItem getFirstChainCertificate() {
-		List<XmlChainItem> certificateChain = getCurrentCertificateChain();
-		if (Utils.isCollectionNotEmpty(certificateChain)) {
-			return certificateChain.get(0);
-		}
-		return null;
 	}
 
 	@Override

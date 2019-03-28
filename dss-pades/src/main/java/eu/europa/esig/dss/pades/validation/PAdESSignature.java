@@ -155,9 +155,10 @@ public class PAdESSignature extends CAdESSignature {
 
 	@Override
 	public List<TimestampToken> getSignatureTimestamps() {
-
 		final List<TimestampToken> result = new ArrayList<TimestampToken>();
+		// CAdES timestamps
 		result.addAll(super.getSignatureTimestamps());
+
 		final Set<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
 		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures) {
 
@@ -193,9 +194,8 @@ public class PAdESSignature extends CAdESSignature {
 		final List<TimestampToken> archiveTimestampTokenList = new ArrayList<TimestampToken>();
 		final List<String> timestampedTimestamps = new ArrayList<String>();
 		final Set<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
-		usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
 
-		for (TimestampToken token : super.getSignatureTimestamps()) {
+		for (TimestampToken token : getSignatureTimestamps()) {
 			timestampedTimestamps.add(token.getDSSIdAsString());
 		}
 
@@ -211,12 +211,14 @@ public class PAdESSignature extends CAdESSignature {
 					for (final String timestampId : timestampedTimestamps) {
 						references.add(new TimestampReference(timestampId, TimestampedObjectType.TIMESTAMP));
 					}
-					final List<CertificateRef> certRefs = getCertificateRefs();
-					for (final CertificateRef certRef : certRefs) {
-						Digest certDigest = certRef.getCertDigest();
-						if (certDigest != null) {
-							references.add(createCertificateTimestampReference(certDigest));
-						}
+
+					List<CertificateToken> dssDictionaryCertValues = getCertificateSource().getDSSDictionaryCertValues();
+					for (CertificateToken certificate : dssDictionaryCertValues) {
+						references.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+					}
+					List<CertificateToken> vriDictionaryCertValues = getCertificateSource().getVRIDictionaryCertValues();
+					for (CertificateToken certificate : vriDictionaryCertValues) {
+						references.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 					}
 
 					addReferencesFromOfflineCRLSource(references);
@@ -235,20 +237,9 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public List<TimestampReference> getSignatureTimestampedReferences() {
 		final List<TimestampReference> references = new ArrayList<TimestampReference>();
-		// timestamp of the current signature
-		references.add(new TimestampReference(getId()));
-		// retrieve references from CMS Object
-		final List<TimestampReference> signingCertificateTimestampReferences = super.getSigningCertificateTimestampReferences();
-		for (TimestampReference timestampReference : signingCertificateTimestampReferences) {
-			usedCertificatesDigestAlgorithms.add(timestampReference.getDigestAlgorithm());
-		}
-		references.addAll(signingCertificateTimestampReferences);
+		references.add(new TimestampReference(getId(), TimestampedObjectType.SIGNATURE));
+		references.addAll(super.getSigningCertificateTimestampReferences());
 		return references;
-	}
-
-	private TimestampReference createCertificateTimestampReference(Digest certDigest) {
-		usedCertificatesDigestAlgorithms.add(certDigest.getAlgorithm());
-		return new TimestampReference(certDigest.getAlgorithm(), certDigest.getValue(), TimestampedObjectType.CERTIFICATE);
 	}
 
 	@Override

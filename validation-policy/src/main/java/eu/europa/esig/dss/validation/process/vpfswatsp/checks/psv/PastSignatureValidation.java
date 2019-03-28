@@ -124,7 +124,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 			else if (Indication.INDETERMINATE.equals(currentTimeIndication) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(currentTimeSubIndication)) {
 
 				Date bestSignatureTime = poe.getLowestPOE(token.getId(), controlTime);
-				CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(token.getSigningCertificateId());
+				CertificateWrapper signingCertificate = token.getSigningCertificate();
 
 				item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime, signingCertificate));
 				item = item.setNextItem(bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(bestSignatureTime, signingCertificate));

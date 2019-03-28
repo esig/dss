@@ -178,7 +178,7 @@ public class BasicBuildingBlocks {
 
 	private XmlISC executeIdentificationOfTheSigningCertificate() {
 		if (!Context.CERTIFICATE.equals(context)) {
-			IdentificationOfTheSigningCertificate isc = new IdentificationOfTheSigningCertificate(diagnosticData, token, context, policy);
+			IdentificationOfTheSigningCertificate isc = new IdentificationOfTheSigningCertificate(token, context, policy);
 			return isc.execute();
 		} else {
 			return null;
@@ -209,7 +209,7 @@ public class BasicBuildingBlocks {
 					certificate.getNotBefore(), context, policy);
 			return xcv.execute();
 		} else {
-			CertificateWrapper certificate = diagnosticData.getUsedCertificateById(token.getSigningCertificateId());
+			CertificateWrapper certificate = token.getSigningCertificate();
 			if (certificate != null) {
 				if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
 					X509CertificateValidation xcv = new X509CertificateValidation(diagnosticData, certificate, currentTime,

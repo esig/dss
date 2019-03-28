@@ -31,7 +31,6 @@ import eu.europa.esig.jaxb.validationreport.AttributeBaseType;
 import eu.europa.esig.jaxb.validationreport.ObjectFactory;
 import eu.europa.esig.jaxb.validationreport.SACRLIDType;
 import eu.europa.esig.jaxb.validationreport.SACertIDListType;
-import eu.europa.esig.jaxb.validationreport.SACertIDType;
 import eu.europa.esig.jaxb.validationreport.SACommitmentTypeIndicationType;
 import eu.europa.esig.jaxb.validationreport.SAContactInfoType;
 import eu.europa.esig.jaxb.validationreport.SADSSType;
@@ -60,6 +59,7 @@ import eu.europa.esig.jaxb.validationreport.ValidationObjectRepresentationType;
 import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationStatusType;
+import eu.europa.esig.jaxb.validationreport.ValidationTimeInfoType;
 import eu.europa.esig.jaxb.validationreport.enums.EndorsementType;
 import eu.europa.esig.jaxb.validationreport.enums.MainIndication;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
@@ -91,6 +91,7 @@ public class ETSIValidationReportBuilder {
 			signatureValidationReport.setSignerInformation(getSignerInformation(sigWrapper));
 			signatureValidationReport.setSignatureValidationProcess(getSignatureValidationProcess(sigWrapper));
 			signatureValidationReport.setSignatureValidationStatus(getValidationStatus(sigWrapper));
+			signatureValidationReport.setValidationTimeInfo(getValidationTimeInfo(sigWrapper));
 
 			result.setSignatureValidationReport(signatureValidationReport);
 		}
@@ -100,8 +101,16 @@ public class ETSIValidationReportBuilder {
 		return result;
 	}
 
+	private ValidationTimeInfoType getValidationTimeInfo(SignatureWrapper sigWrapper) {
+		ValidationTimeInfoType validationTimeInfoType = objectFactory.createValidationTimeInfoType();
+		validationTimeInfoType.setValidationTime(currentTime);
+		// TODO
+		// validationTimeInfoType.setBestSignatureTime(POE);
+		return validationTimeInfoType;
+	}
+
 	private SignerInformationType getSignerInformation(SignatureWrapper sigWrapper) {
-		CertificateWrapper signingCert = diagnosticData.getUsedCertificateById(sigWrapper.getSigningCertificateId());
+		CertificateWrapper signingCert = sigWrapper.getSigningCertificate();
 		if (signingCert == null) {
 			return null;
 		}
@@ -357,16 +366,17 @@ public class ETSIValidationReportBuilder {
 	private SACertIDListType buildCertIDListType(List<String> certIds) {
 		SACertIDListType certIdList = objectFactory.createSACertIDListType();
 		for (String certId : certIds) {
-			SACertIDType certIDType = objectFactory.createSACertIDType();
-			CertificateWrapper certificate = getCertificateWrapper(certId);
-			List<XmlDigestAlgoAndValue> digestAlgoAndValues = certificate.getDigestAlgoAndValues();
-			XmlDigestAlgoAndValue xmlDigestAlgoAndValue = digestAlgoAndValues.get(0);
-			DigestAlgorithm digestAlgorithm = DigestAlgorithm.valueOf(xmlDigestAlgoAndValue.getDigestMethod());
-			DigestMethodType dmt = new DigestMethodType();
-			dmt.setAlgorithm(digestAlgorithm.getXmlId());
-			certIDType.setDigestMethod(dmt);
-			certIDType.setDigestValue(xmlDigestAlgoAndValue.getDigestValue());
-			certIdList.getCertID().add(certIDType);
+			// TODO
+//			SACertIDType certIDType = objectFactory.createSACertIDType();
+//			CertificateWrapper certificate = getCertificateWrapper(certId);
+//			List<XmlDigestAlgoAndValue> digestAlgoAndValues = certificate.getDigestAlgoAndValue();
+//			XmlDigestAlgoAndValue xmlDigestAlgoAndValue = digestAlgoAndValues.get(0);
+//			DigestAlgorithm digestAlgorithm = DigestAlgorithm.valueOf(xmlDigestAlgoAndValue.getDigestMethod());
+//			DigestMethodType dmt = new DigestMethodType();
+//			dmt.setAlgorithm(digestAlgorithm.getXmlId());
+//			certIDType.setDigestMethod(dmt);
+//			certIDType.setDigestValue(xmlDigestAlgoAndValue.getDigestValue());
+//			certIdList.getCertID().add(certIDType);
 		}
 
 		return certIdList;

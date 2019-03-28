@@ -32,10 +32,10 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignature;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
@@ -69,8 +69,12 @@ public class PAdESLTACheckTimeStampID extends PKIFactoryAccess {
 		for (TimestampWrapper wrapper : diagnostic.getTimestampList(signatureId)) {
 			boolean found = false;
 			for (XmlTimestampedObject xmlTimestampedObject : wrapper.getTimestampedObjects()) {
-				if (TimestampedObjectType.SIGNATURE == xmlTimestampedObject.getCategory() && signatureId.equals(xmlTimestampedObject.getId())) {
-					found = true;
+				if (xmlTimestampedObject instanceof XmlTimestampedSignature) {
+					XmlTimestampedSignature timestampedSignature = (XmlTimestampedSignature) xmlTimestampedObject;
+					String id = timestampedSignature.getSignature().getId();
+					if (signatureId.equals(id)) {
+						found = true;
+					}
 				}
 			}
 			assertTrue(found);

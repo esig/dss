@@ -36,7 +36,6 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
@@ -100,12 +99,9 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 			}
 		}
 
-		List<XmlSignature> signatures = diagnosticDataJaxb.getSignatures();
-		for (XmlSignature xmlSignature : signatures) {
-			List<XmlTimestamp> timestamps = xmlSignature.getTimestamps();
-			for (XmlTimestamp xmlTimestamp : timestamps) {
-				assertNotNull(xmlTimestamp.getBase64Encoded());
-			}
+		List<XmlTimestamp> timestamps = diagnosticDataJaxb.getUsedTimestamps();
+		for (XmlTimestamp xmlTimestamp : timestamps) {
+			assertNotNull(xmlTimestamp.getBase64Encoded());
 		}
 
 		DiagnosticData dd = new DiagnosticData(diagnosticDataJaxb);

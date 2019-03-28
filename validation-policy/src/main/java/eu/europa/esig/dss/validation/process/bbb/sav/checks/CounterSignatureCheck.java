@@ -49,7 +49,7 @@ public class CounterSignatureCheck extends ChainItem<XmlSAV> {
 
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		for (SignatureWrapper signatureWrapper : signatures) {
-			if (signatureWrapper.isCounterSignature() && currentSignatureId.equals(signatureWrapper.getParentId())) {
+			if (signatureWrapper.isCounterSignature() && currentSignatureId.equals(signatureWrapper.getParent().getId())) {
 				foundCountersignature = true;
 				break;
 			}

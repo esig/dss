@@ -95,7 +95,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 
 			if (policy.isEIDASConstraintPresent()) {
 				try {
-					CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(signature.getSigningCertificateId());
+					CertificateWrapper signingCertificate = signature.getSigningCertificate();
 					if (signingCertificate != null) {
 
 						SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(conlusion, bestSignatureTime, signingCertificate,

@@ -64,10 +64,9 @@ public class SimpleReportForCertificateBuilder {
 		addQualifications(firstChainItem);
 		chain.add(firstChainItem);
 
-		List<String> certificateChainIds = certificate.getCertificateChainIds();
-		for (String certId : certificateChainIds) {
-			CertificateWrapper issuer = diagnosticData.getUsedCertificateById(certId);
-			chain.add(getChainItem(issuer));
+		List<CertificateWrapper> certificateChain = certificate.getCertificateChain();
+		for (CertificateWrapper cert : certificateChain) {
+			chain.add(getChainItem(cert));
 		}
 		simpleReport.setChain(chain);
 
@@ -78,9 +77,9 @@ public class SimpleReportForCertificateBuilder {
 		XmlChainItem item = new XmlChainItem();
 		item.setId(certificate.getId());
 		item.setSubject(getSubject(certificate));
-		String signingCertificateId = certificate.getSigningCertificateId();
-		if (Utils.isStringNotBlank(signingCertificateId)) {
-			item.setIssuerId(signingCertificateId);
+		CertificateWrapper signingCertificate = certificate.getSigningCertificate();
+		if (signingCertificate != null) {
+			item.setIssuerId(signingCertificate.getId());
 		}
 		item.setNotBefore(certificate.getNotBefore());
 		item.setNotAfter(certificate.getNotAfter());

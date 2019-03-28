@@ -137,7 +137,10 @@ public class SimpleReportBuilder {
 		addBestSignatureTime(signature, xmlSignature);
 		addSignatureFormat(signature, xmlSignature);
 
-		xmlSignature.setSignedBy(signature.getSigningCertificateId());
+		CertificateWrapper signingCertificate = signature.getSigningCertificate();
+		if (signingCertificate != null) {
+			xmlSignature.setSignedBy(signingCertificate.getId());
+		}
 
 		xmlSignature.getErrors().addAll(detailedReport.getErrors(signatureId));
 		xmlSignature.getWarnings().addAll(detailedReport.getWarnings(signatureId));
@@ -182,7 +185,7 @@ public class SimpleReportBuilder {
 	private void addCounterSignature(SignatureWrapper signature, XmlSignature xmlSignature) {
 		if (signature.isCounterSignature()) {
 			xmlSignature.setCounterSignature(true);
-			xmlSignature.setParentId(signature.getParentId());
+			xmlSignature.setParentId(signature.getParent().getId());
 		}
 	}
 

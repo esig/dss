@@ -30,7 +30,6 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
@@ -51,7 +50,7 @@ public class DiagnosticData {
 
 	private List<SignatureWrapper> foundSignatures;
 	private List<CertificateWrapper> usedCertificates;
-	private List<CertificateRevocationWrapper> usedRevocations;
+	private List<TimestampWrapper> usedTimestamps;
 
 	public DiagnosticData(final eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData wrapped) {
 		this.wrapped = wrapped;
@@ -194,7 +193,7 @@ public class DiagnosticData {
 	 */
 	public String getFirstSigningCertificateId() {
 		SignatureWrapper signature = getFirstSignatureNullSafe();
-		return signature.getSigningCertificateId();
+		return signature.getSigningCertificate().getId();
 	}
 
 	/**
@@ -206,7 +205,7 @@ public class DiagnosticData {
 	 */
 	public String getSigningCertificateId(final String signatureId) {
 		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
-		return signature.getSigningCertificateId();
+		return signature.getSigningCertificate().getId();
 	}
 
 	/**
@@ -230,7 +229,11 @@ public class DiagnosticData {
 	 */
 	public List<String> getSignatureCertificateChain(final String signatureId) {
 		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
-		return signature.getCertificateChainIds();
+		List<String> result = new ArrayList<String>();
+		for (CertificateWrapper certWrapper : signature.getCertificateChain()) {
+			result.add(certWrapper.getId());
+		}
+		return result;
 	}
 
 	/**
@@ -386,7 +389,7 @@ public class DiagnosticData {
 	 */
 	public String getTimestampSigningCertificateId(final String timestampId) {
 		TimestampWrapper timestamp = getTimestampByIdNullSafe(timestampId);
-		return timestamp.getSigningCertificateId();
+		return timestamp.getSigningCertificate().getId();
 	}
 
 	/**
@@ -554,7 +557,7 @@ public class DiagnosticData {
 
 	private TimestampWrapper getTimestampByIdNullSafe(String id) {
 		TimestampWrapper timestamp = getTimestampById(id);
-		if(timestamp != null) {
+		if (timestamp != null) {
 			return timestamp;
 		}
 		return new TimestampWrapper(new XmlTimestamp());
@@ -568,13 +571,10 @@ public class DiagnosticData {
 	 * @return timestamp wrapper or null
 	 */
 	public TimestampWrapper getTimestampById(String id) {
-		List<SignatureWrapper> signatures = getSignatures();
-		for (SignatureWrapper signatureWrapper : signatures) {
-			List<TimestampWrapper> timestampList = signatureWrapper.getTimestampList();
-			for (TimestampWrapper timestampWrapper : timestampList) {
-				if (Utils.areStringsEqual(id, timestampWrapper.getId())) {
-					return timestampWrapper;
-				}
+		Set<TimestampWrapper> allTimestamps = getAllTimestamps();
+		for (TimestampWrapper timestampWrapper : allTimestamps) {
+			if (Utils.areStringsEqual(id, timestampWrapper.getId())) {
+				return timestampWrapper;
 			}
 		}
 		return null;
@@ -584,12 +584,12 @@ public class DiagnosticData {
 	 * This method returns a certificate wrapper for the given certificate id
 	 * 
 	 * @param id
-	 *            the certificate id
+	 *           the certificate id
 	 * @return a certificate wrapper (or empty object)
 	 */
 	public CertificateWrapper getUsedCertificateByIdNullSafe(String id) {
 		CertificateWrapper cert = getUsedCertificateById(id);
-		if(cert != null) {
+		if (cert != null) {
 			return cert;
 		}
 		return new CertificateWrapper(new XmlCertificate()); // TODO improve ?
@@ -694,6 +694,24 @@ public class DiagnosticData {
 	}
 
 	/**
+	 * This method retrieves a set of timestamp wrappers
+	 * 
+	 * @return a List of timestamp wrappers
+	 */
+	public List<TimestampWrapper> getTimestamps() {
+		if (usedTimestamps == null) {
+			usedTimestamps = new ArrayList<TimestampWrapper>();
+			List<XmlTimestamp> xmlTimestamps = wrapped.getUsedTimestamps();
+			if (Utils.isCollectionNotEmpty(xmlTimestamps)) {
+				for (XmlTimestamp xmlTimestamp : xmlTimestamps) {
+					usedTimestamps.add(new TimestampWrapper(xmlTimestamp));
+				}
+			}
+		}
+		return usedTimestamps;
+	}
+
+	/**
 	 * This method retrieves a list of certificate wrappers
 	 * 
 	 * @return a list of {@link CertificateWrapper}s.
@@ -712,25 +730,6 @@ public class DiagnosticData {
 	}
 
 	/**
-	 * This method retrieves a list of revocations
-	 * 
-	 * @return a list of {@link CertificateRevocationWrapper}s.
-	 */
-	public List<CertificateRevocationWrapper> getUsedRevocation() {
-		if (usedRevocations == null) {
-			usedRevocations = new ArrayList<CertificateRevocationWrapper>();
-			List<XmlCertificate> certificates = wrapped.getUsedCertificates();
-			for (XmlCertificate certificate : certificates) {
-				List<XmlCertificateRevocation> certificateRevocations = certificate.getRevocations();
-				for (XmlCertificateRevocation certificateRevocation : certificateRevocations) {
-					usedRevocations.add(new CertificateRevocationWrapper(certificateRevocation.getRevocation(), certificateRevocation));
-				}
-			}
-		}
-		return usedRevocations;
-	}
-
-	/**
 	 * This method returns signatures (not countersignatures)
 	 * 
 	 * @return a set of SignatureWrapper
@@ -739,7 +738,7 @@ public class DiagnosticData {
 		Set<SignatureWrapper> signatures = new HashSet<SignatureWrapper>();
 		List<SignatureWrapper> mixedSignatures = getSignatures();
 		for (SignatureWrapper signatureWrapper : mixedSignatures) {
-			if (Utils.isStringEmpty(signatureWrapper.getParentId())) {
+			if (signatureWrapper.getParent() == null) {
 				signatures.add(signatureWrapper);
 			}
 		}
@@ -755,11 +754,20 @@ public class DiagnosticData {
 		Set<SignatureWrapper> signatures = new HashSet<SignatureWrapper>();
 		List<SignatureWrapper> mixedSignatures = getSignatures();
 		for (SignatureWrapper signatureWrapper : mixedSignatures) {
-			if (Utils.isStringNotEmpty(signatureWrapper.getParentId())) {
+			if (signatureWrapper.getParent() != null) {
 				signatures.add(signatureWrapper);
 			}
 		}
 		return signatures;
+	}
+
+	/**
+	 * This method returns timestamps
+	 * 
+	 * @return a set of TimestampWrapper
+	 */
+	public Set<TimestampWrapper> getAllTimestamps() {
+		return new HashSet<TimestampWrapper>(getTimestamps());
 	}
 
 	/**
@@ -792,21 +800,7 @@ public class DiagnosticData {
 		return latest;
 	}
 
-	/**
-	 * This method retrieves a set of timestamp wrappers
-	 * 
-	 * @return a list of timestamp wrappers
-	 */
-	public Set<TimestampWrapper> getAllTimestamps() {
-		Set<TimestampWrapper> allTimestamps = new HashSet<TimestampWrapper>();
-		List<SignatureWrapper> signatures = getSignatures();
-		if (Utils.isCollectionNotEmpty(signatures)) {
-			for (SignatureWrapper signatureWrapper : signatures) {
-				allTimestamps.addAll(signatureWrapper.getTimestampList());
-			}
-		}
-		return allTimestamps;
-	}
+
 
 	/**
 	 * This method returns the JAXB model

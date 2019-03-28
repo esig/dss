@@ -22,10 +22,6 @@ public class CertificateRevocationWrapper extends RevocationWrapper {
 		return Utils.isTrue(certificateRevocation.isStatus());
 	}
 
-	public boolean isAvailable() {
-		return Utils.isTrue(certificateRevocation.isAvailable());
-	}
-
 	public String getReason() {
 		return certificateRevocation.getReason();
 	}
