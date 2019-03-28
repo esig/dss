@@ -42,14 +42,12 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.POEExis
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.SatisfyingRevocationDataExistsCheck;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 
 public class ValidationTimeSliding extends Chain<XmlVTS> {
 
-	private final DiagnosticData diagnosticData;
 	private final TokenProxy token;
 	private final Date currentTime;
 
@@ -60,11 +58,10 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 	private Date controlTime;
 
-	public ValidationTimeSliding(DiagnosticData diagnosticData, TokenProxy token, Date currentTime, Context context, POEExtraction poe,
+	public ValidationTimeSliding(TokenProxy token, Date currentTime, Context context, POEExtraction poe,
 			ValidationPolicy policy) {
 		super(new XmlVTS());
 
-		this.diagnosticData = diagnosticData;
 		this.token = token;
 		this.currentTime = currentTime;
 
@@ -89,22 +86,21 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		 */
 		controlTime = currentTime;
 
-		List<String> certificateChainIds = token.getCertificateChainIds();
-		if (Utils.isCollectionNotEmpty(certificateChainIds)) {
+		List<CertificateWrapper> certificateChain = token.getCertificateChain();
+		if (Utils.isCollectionNotEmpty(certificateChain)) {
 
-			certificateChainIds = reduceChainUntilFirstTrustAnchor(certificateChainIds);
+			certificateChain = reduceChainUntilFirstTrustAnchor(certificateChain);
 
 			/*
 			 * 2) For each certificate in the chain starting from the first
 			 * certificate (the certificate issued by the trust anchor):
 			 */
-			Collections.reverse(certificateChainIds); // trusted_list -> ... ->
+			Collections.reverse(certificateChain); // trusted_list -> ... ->
 														// signature
 
 			ChainItem<XmlVTS> item = null;
 
-			for (String certificateId : certificateChainIds) {
-				CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateId);
+			for (CertificateWrapper certificate : certificateChain) {
 				if (certificate.isTrusted()) {
 					continue;
 				}
@@ -205,12 +201,11 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		}
 	}
 
-	private List<String> reduceChainUntilFirstTrustAnchor(List<String> originalCertificateIdsChain) {
-		List<String> result = new ArrayList<String>();
-		for (String certId : originalCertificateIdsChain) {
-			result.add(certId);
-			CertificateWrapper currentCert = diagnosticData.getUsedCertificateByIdNullSafe(certId);
-			if (currentCert.isTrusted()) {
+	private List<CertificateWrapper> reduceChainUntilFirstTrustAnchor(List<CertificateWrapper> originalCertificateChain) {
+		List<CertificateWrapper> result = new ArrayList<CertificateWrapper>();
+		for (CertificateWrapper cert : originalCertificateChain) {
+			result.add(cert);
+			if (cert.isTrusted()) {
 				break;
 			}
 		}
@@ -270,8 +265,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 		/* expiredCertsRevocationInfo Extension from TL */
 		if (expiredCertsOnCRL != null && archiveCutOff != null) {
-			String revocationSigningCertificateId = revocationData.getSigningCertificateId();
-			CertificateWrapper revocCert = diagnosticData.getUsedCertificateById(revocationSigningCertificateId);
+			CertificateWrapper revocCert = revocationData.getSigningCertificate();
 			if (revocCert != null) {
 				Date expiredCertsRevocationInfo = revocCert.getCertificateTSPServiceExpiredCertsRevocationInfo();
 				if (expiredCertsRevocationInfo != null) {

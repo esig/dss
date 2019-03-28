@@ -284,7 +284,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
 		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
 		
-		diagnosticData.getSignatures().get(0).getTimestamps().get(0).setType(TimestampType.CONTENT_TIMESTAMP.name());
+		diagnosticData.getUsedTimestamps().get(0).setType(TimestampType.CONTENT_TIMESTAMP.name());
 
 		result = signatureConstraintAlgorithmExpired(ALGORITHM_SHA256, "2020-01-01");
 		assertEquals(Indication.TOTAL_PASSED, result);

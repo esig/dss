@@ -25,7 +25,6 @@ import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.SubContext;
@@ -98,11 +97,10 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 			// Check CA_CERTIFICATEs
 			Date lastDate = Model.SHELL.equals(model) ? validationDate : currentCertificate.getNotBefore();
-			List<XmlChainItem> certificateChainList = currentCertificate.getCertificateChain();
+			List<CertificateWrapper> certificateChainList = currentCertificate.getCertificateChain();
 			if (Utils.isCollectionNotEmpty(certificateChainList)) {
-				for (XmlChainItem chainCertificate : certificateChainList) {
+				for (CertificateWrapper certificate : certificateChainList) {
 					if (!trustAnchorReached) {
-						CertificateWrapper certificate = new CertificateWrapper(chainCertificate.getCertificate());
 						certificateValidation = new SubX509CertificateValidation(diagnosticData, certificate, lastDate, 
 								context, SubContext.CA_CERTIFICATE, validationPolicy);
 						subXCV = certificateValidation.execute();

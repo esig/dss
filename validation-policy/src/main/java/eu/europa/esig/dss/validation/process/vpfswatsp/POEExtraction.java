@@ -21,21 +21,21 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateTimestampedObject;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationTimestampedObject;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureTimestampedObject;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampTimestampedObject;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 
@@ -93,57 +93,21 @@ public class POEExtraction {
 		if (Utils.isCollectionNotEmpty(timestampedObjects)) {
 
 			for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
-				if (Utils.isStringNotEmpty(xmlTimestampedObject.getId())) {
-					// SIGNATURES and TIMESTAMPS
-					addPOE(xmlTimestampedObject.getId(), productionTime);
-				} else if (TimestampedObjectType.CERTIFICATE == xmlTimestampedObject.getCategory()) {
-					String certificateId = getCertificateIdByDigest(xmlTimestampedObject.getDigestAlgoAndValue(), diagnosticData);
-					if (certificateId != null) {
-						addPOE(certificateId, productionTime);
-					}
-				} else if (TimestampedObjectType.REVOCATION == xmlTimestampedObject.getCategory()) {
-					String revocationId = getRevocationIdByDigest(xmlTimestampedObject.getDigestAlgoAndValue(), diagnosticData);
-					if (revocationId != null) {
-						addPOE(revocationId, productionTime);
-					}
-				}
-			}
-
-		}
-	}
-
-	private String getCertificateIdByDigest(XmlDigestAlgoAndValue digestAlgoValue, DiagnosticData diagnosticData) {
-		List<CertificateWrapper> certificates = diagnosticData.getUsedCertificates();
-		if (Utils.isCollectionNotEmpty(certificates)) {
-			for (CertificateWrapper certificate : certificates) {
-				List<XmlDigestAlgoAndValue> digestAlgAndValues = certificate.getDigestAlgoAndValues();
-				if (Utils.isCollectionNotEmpty(digestAlgAndValues)) {
-					for (XmlDigestAlgoAndValue certificateDigestAndValue : digestAlgAndValues) {
-						if (Utils.areStringsEqual(certificateDigestAndValue.getDigestMethod(), digestAlgoValue.getDigestMethod())
-								&& Arrays.equals(certificateDigestAndValue.getDigestValue(), digestAlgoValue.getDigestValue())) {
-							return certificate.getId();
-						}
-					}
+				if (xmlTimestampedObject instanceof XmlCertificateTimestampedObject) {
+					XmlCertificateTimestampedObject certificateTimestampedObject = (XmlCertificateTimestampedObject) xmlTimestampedObject;
+					addPOE(certificateTimestampedObject.getCertificate().getId(), productionTime);
+				} else if (xmlTimestampedObject instanceof XmlRevocationTimestampedObject) {
+					XmlRevocationTimestampedObject revocationTimestampedObject = (XmlRevocationTimestampedObject) xmlTimestampedObject;
+					addPOE(revocationTimestampedObject.getRevocation().getId(), productionTime);
+				} else if (xmlTimestampedObject instanceof XmlTimestampTimestampedObject) {
+					XmlTimestampTimestampedObject timestampTimestampedObject = (XmlTimestampTimestampedObject) xmlTimestampedObject;
+					addPOE(timestampTimestampedObject.getTimestamp().getId(), productionTime);
+				} else if (xmlTimestampedObject instanceof XmlSignatureTimestampedObject) {
+					XmlSignatureTimestampedObject signatureTimestampedObject = (XmlSignatureTimestampedObject) xmlTimestampedObject;
+					addPOE(signatureTimestampedObject.getSignature().getId(), productionTime);
 				}
 			}
 		}
-		return null;
-	}
-
-	private String getRevocationIdByDigest(XmlDigestAlgoAndValue digestAlgoValue, DiagnosticData diagnosticData) {
-		Set<RevocationWrapper> revocations = diagnosticData.getAllRevocationData();
-		if (Utils.isCollectionNotEmpty(revocations)) {
-			for (RevocationWrapper revocationData : revocations) {
-				List<XmlDigestAlgoAndValue> digestAlgAndValues = revocationData.getDigestAlgoAndValues();
-				for (XmlDigestAlgoAndValue revocDigestAndValue : digestAlgAndValues) {
-					if (Utils.areStringsEqual(revocDigestAndValue.getDigestMethod(), digestAlgoValue.getDigestMethod())
-							&& Arrays.equals(revocDigestAndValue.getDigestValue(), digestAlgoValue.getDigestValue())) {
-						return revocationData.getId();
-					}
-				}
-			}
-		}
-		return null;
 	}
 
 	private void addPOE(String poeId, Date productionTime) {

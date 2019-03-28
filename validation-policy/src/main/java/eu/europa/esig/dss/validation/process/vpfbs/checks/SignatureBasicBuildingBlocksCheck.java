@@ -337,7 +337,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 	}
 
 	private Date getRevocationDateForSigningCertificate(SignatureWrapper currentSignature) {
-		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
+		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
 		if (signingCertificate != null && Utils.isCollectionNotEmpty(signingCertificate.getCertificateRevocationData())) {
 			return diagnosticData.getLatestRevocationDataForCertificate(signingCertificate).getRevocationDate();
 		}
@@ -345,7 +345,7 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 	}
 
 	private Date getExpirationDateForSigningCertificate(SignatureWrapper currentSignature) {
-		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
+		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
 		if (signingCertificate != null) {
 			return signingCertificate.getNotAfter();
 		}

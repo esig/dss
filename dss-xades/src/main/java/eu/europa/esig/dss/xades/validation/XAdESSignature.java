@@ -825,7 +825,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	private List<TimestampReference> getSignatureTimestampedReferences() {
 		final List<TimestampReference> references = new ArrayList<TimestampReference>();
-		references.add(getSignatureTimestampReference());
+		references.add(new TimestampReference(getId(), TimestampedObjectType.SIGNATURE));
 		references.addAll(getSigningCertificateTimestampReferences());
 		return references;
 	}
@@ -833,16 +833,15 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	private List<TimestampReference> getSigningCertificateTimestampReferences() {
 		if (signingCertificateTimestampReferences == null) {
 			signingCertificateTimestampReferences = new ArrayList<TimestampReference>();
-			List<CertificateRef> signingCertificateValues = getCertificateSource().getSigningCertificateValues();
-			for (CertificateRef certificateRef : signingCertificateValues) {
-				Digest certDigest = certificateRef.getCertDigest();
-				signingCertificateTimestampReferences.add(new TimestampReference(certDigest.getAlgorithm(), certDigest.getValue()));
+			List<CertificateToken> signingCertificateValues = getCertificateSource().getSigningCertificates();
+			for (CertificateToken certificate : signingCertificateValues) {
+				signingCertificateTimestampReferences.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 			}
 
 			if (isKeyInfoCovered()) {
 				List<CertificateToken> keyInfoCerts = getCertificateSource().getKeyInfoCertificates();
-				for (CertificateToken cert : keyInfoCerts) {
-					signingCertificateTimestampReferences.add(new TimestampReference(DigestAlgorithm.SHA256, cert.getDigest(DigestAlgorithm.SHA256)));
+				for (CertificateToken certificate : keyInfoCerts) {
+					signingCertificateTimestampReferences.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 				}
 			}
 		}
@@ -982,11 +981,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				references.addAll(getTimestampedReferences());
 				final List<CertificateToken> encapsulatedCertificates = getCertificateSource().getCertificateValues();
 				for (final CertificateToken certificateToken : encapsulatedCertificates) {
-					
-					final TimestampReference certificateTimestampReference = createCertificateTimestampReference(certificateToken);
-					if (!references.contains(certificateTimestampReference)) {
-						references.add(certificateTimestampReference);
-					}
+					references.add(new TimestampReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 				}
 
 				addReferencesFromOfflineCRLSource(references);
@@ -1009,11 +1004,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		return ArchiveTimestampType.XAdES;
-	}
-
-	private TimestampReference getSignatureTimestampReference() {
-		final TimestampReference signatureReference = new TimestampReference(getId());
-		return signatureReference;
 	}
 
 	private String getTimestampCanonicalizationMethod(final Element timestampElement) {
@@ -1777,20 +1767,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<TimestampReference> getTimestampedReferences() {
-
 		final List<TimestampReference> references = new ArrayList<TimestampReference>();
 
-		final Node completeCertificateRefsNode = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_COMPLETE_CERTIFICATE_REFS);
-		if (completeCertificateRefsNode != null) {
-
-			final NodeList nodes = DomUtils.getNodeList(completeCertificateRefsNode, xPathQueryHolder.XPATH__COMPLETE_CERTIFICATE_REFS__CERT_DIGEST); // TODO V2
-			for (int ii = 0; ii < nodes.getLength(); ii++) {
-
-				final Element certDigestElement = (Element) nodes.item(ii);
-				final TimestampReference certificateReference = createCertificateTimestampReference(certDigestElement);
-				references.add(certificateReference);
-			}
+		List<CertificateToken> completeCertificates = getCertificateSource().getCompleteCertificates();
+		for (CertificateToken certificateToken : completeCertificates) {
+			references.add(new TimestampReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
+
 		final Node completeRevocationRefsNode = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_COMPLETE_REVOCATION_REFS); // TODO V2
 		if (completeRevocationRefsNode != null) {
 
@@ -1846,32 +1829,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		final List<String> childrenNames = DomUtils.getChildrenNames(signatureElement, xPathQueryHolder.XPATH_SIGNED_DATA_OBJECT_PROPERTIES);
 		return childrenNames;
-	}
-
-	/**
-	 * This method creates
-	 *
-	 * @param element
-	 * @return
-	 * @throws eu.europa.esig.dss.DSSException
-	 */
-	private TimestampReference createCertificateTimestampReference(final Element element) throws DSSException {
-
-		final String xmlDigestAlgorithm = DomUtils.getNode(element, xPathQueryHolder.XPATH__DIGEST_METHOD_ALGORITHM).getTextContent();
-		final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forXML(xmlDigestAlgorithm);
-		usedCertificatesDigestAlgorithms.add(digestAlgorithm);
-		final Element digestValueElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__DIGEST_VALUE);
-		final String digestValue = (digestValueElement == null) ? "" : digestValueElement.getTextContent();
-		final TimestampReference reference = new TimestampReference(digestAlgorithm, Utils.fromBase64(digestValue));
-		return reference;
-	}
-
-	private TimestampReference createCertificateTimestampReference(final CertificateToken certificateToken) throws DSSException {
-
-		usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
-
-		final TimestampReference reference = new TimestampReference(DigestAlgorithm.SHA1, certificateToken.getDigest(DigestAlgorithm.SHA1));
-		return reference;
 	}
 
 	@Override

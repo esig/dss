@@ -36,10 +36,10 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampTimestampedObject;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
@@ -80,8 +80,12 @@ public class XAdESLTACheckTimeStampedTimestampIDTest extends PKIFactoryAccess {
 				boolean coverPreviousTsp = false;
 				List<XmlTimestampedObject> timestampedObjects = wrapper.getTimestampedObjects();
 				for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
-					if (TimestampedObjectType.TIMESTAMP == xmlTimestampedObject.getCategory() && timestampId.equals(xmlTimestampedObject.getId())) {
-						coverPreviousTsp = true;
+					if (xmlTimestampedObject instanceof XmlTimestampTimestampedObject) {
+						XmlTimestampTimestampedObject timestampedTimestamp = (XmlTimestampTimestampedObject) xmlTimestampedObject;
+						String id = timestampedTimestamp.getTimestamp().getId();
+						if (timestampId.equals(id)) {
+							coverPreviousTsp = true;
+						}
 					}
 				}
 				assertTrue(coverPreviousTsp);

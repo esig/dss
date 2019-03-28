@@ -8,9 +8,7 @@ import java.util.List;
 import javax.xml.bind.JAXBElement;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.RevocationType;
@@ -27,7 +25,6 @@ import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.jaxb.validationreport.AttributeBaseType;
 import eu.europa.esig.jaxb.validationreport.ObjectFactory;
 import eu.europa.esig.jaxb.validationreport.SACertIDListType;
-import eu.europa.esig.jaxb.validationreport.SACertIDType;
 import eu.europa.esig.jaxb.validationreport.SACommitmentTypeIndicationType;
 import eu.europa.esig.jaxb.validationreport.SAContactInfoType;
 import eu.europa.esig.jaxb.validationreport.SADSSType;
@@ -59,7 +56,6 @@ import eu.europa.esig.jaxb.validationreport.enums.EndorsementType;
 import eu.europa.esig.jaxb.validationreport.enums.MainIndication;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
 import eu.europa.esig.jaxb.validationreport.enums.SignatureValidationProcessID;
-import eu.europa.esig.jaxb.xmldsig.DigestMethodType;
 
 public class ETSIValidationReportBuilder {
 
@@ -105,7 +101,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private SignerInformationType getSignerInformation(SignatureWrapper sigWrapper) {
-		CertificateWrapper signingCert = diagnosticData.getUsedCertificateById(sigWrapper.getSigningCertificateId());
+		CertificateWrapper signingCert = sigWrapper.getSigningCertificate();
 		if (signingCert == null) {
 			return null;
 		}
@@ -356,16 +352,17 @@ public class ETSIValidationReportBuilder {
 	private SACertIDListType buildCertIDListType(List<String> certIds) {
 		SACertIDListType certIdList = objectFactory.createSACertIDListType();
 		for (String certId : certIds) {
-			SACertIDType certIDType = objectFactory.createSACertIDType();
-			CertificateWrapper certificate = getCertificateWrapper(certId);
-			List<XmlDigestAlgoAndValue> digestAlgoAndValues = certificate.getDigestAlgoAndValues();
-			XmlDigestAlgoAndValue xmlDigestAlgoAndValue = digestAlgoAndValues.get(0);
-			DigestAlgorithm digestAlgorithm = DigestAlgorithm.valueOf(xmlDigestAlgoAndValue.getDigestMethod());
-			DigestMethodType dmt = new DigestMethodType();
-			dmt.setAlgorithm(digestAlgorithm.getXmlId());
-			certIDType.setDigestMethod(dmt);
-			certIDType.setDigestValue(xmlDigestAlgoAndValue.getDigestValue());
-			certIdList.getCertID().add(certIDType);
+			// TODO
+//			SACertIDType certIDType = objectFactory.createSACertIDType();
+//			CertificateWrapper certificate = getCertificateWrapper(certId);
+//			List<XmlDigestAlgoAndValue> digestAlgoAndValues = certificate.getDigestAlgoAndValue();
+//			XmlDigestAlgoAndValue xmlDigestAlgoAndValue = digestAlgoAndValues.get(0);
+//			DigestAlgorithm digestAlgorithm = DigestAlgorithm.valueOf(xmlDigestAlgoAndValue.getDigestMethod());
+//			DigestMethodType dmt = new DigestMethodType();
+//			dmt.setAlgorithm(digestAlgorithm.getXmlId());
+//			certIDType.setDigestMethod(dmt);
+//			certIDType.setDigestValue(xmlDigestAlgoAndValue.getDigestValue());
+//			certIdList.getCertID().add(certIDType);
 		}
 
 		return certIdList;

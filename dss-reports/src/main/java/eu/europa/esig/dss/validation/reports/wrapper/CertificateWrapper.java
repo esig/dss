@@ -33,7 +33,6 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
@@ -180,10 +179,6 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public String getPseudo() {
 		return certificate.getPseudonym();
-	}
-
-	public List<XmlDigestAlgoAndValue> getDigestAlgoAndValues() {
-		return certificate.getDigestAlgoAndValues();
 	}
 
 	public boolean hasTrustedServices() {

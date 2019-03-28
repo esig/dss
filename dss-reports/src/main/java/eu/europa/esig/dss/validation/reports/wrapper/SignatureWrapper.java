@@ -35,13 +35,13 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.x509.TimestampType;
@@ -131,11 +131,9 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	public List<TimestampWrapper> getTimestampList() {
 		List<TimestampWrapper> tsps = new ArrayList<TimestampWrapper>();
-		List<XmlTimestamp> timestamps = signature.getTimestamps();
-		if (Utils.isCollectionNotEmpty(timestamps)) {
-			for (XmlTimestamp timestamp : timestamps) {
-				tsps.add(new TimestampWrapper(timestamp));
-			}
+		List<XmlFoundTimestamp> foundTimestamps = signature.getFoundTimestamps();
+		for (XmlFoundTimestamp xmlFoundTimestamp : foundTimestamps) {
+			tsps.add(new TimestampWrapper(xmlFoundTimestamp.getTimestamp()));
 		}
 		return tsps;
 	}
@@ -279,8 +277,12 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return result;
 	}
 
-	public String getParentId() {
-		return signature.getParentId();
+	public SignatureWrapper getParent() {
+		XmlSignature parent = signature.getParent();
+		if (parent != null) {
+			return new SignatureWrapper(parent);
+		}
+		return null;
 	}
 
 	public List<XmlSignatureScope> getSignatureScopes() {

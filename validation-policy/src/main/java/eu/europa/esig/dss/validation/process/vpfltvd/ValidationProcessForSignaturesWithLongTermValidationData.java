@@ -299,7 +299,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	}
 	
 	private ChainItem<XmlValidationProcessLongTermData> revocationIsFresh(Date bestSignatureTime, Context currentContext) {
-		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
+		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
 		CertificateRevocationWrapper certificateRevocation = diagnosticData.getLatestRevocationDataForCertificate(signingCertificate);
 		RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(certificateRevocation, bestSignatureTime, 
 				currentContext, SubContext.SIGNING_CERT, policy);
@@ -319,17 +319,16 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private ChainItem<XmlValidationProcessLongTermData> revocationDateAfterBestSignatureDateValidation(
 			ChainItem<XmlValidationProcessLongTermData> item, Date bestSignatureTime, SubIndication subIndication) {
 		LevelConstraint constraint = policy.getRevocationTimeAgainstBestSignatureTime();
-		List<String> certificateChainIds = currentSignature.getCertificateChainIds();
-		for (String certificateId : certificateChainIds) {
+		List<CertificateWrapper> certificateChain = currentSignature.getCertificateChain();
+		for (CertificateWrapper chainItem : certificateChain) {
 			SubContext subContext = SubContext.CA_CERTIFICATE;
-			if (certificateId.equals(currentSignature.getSigningCertificateId())) {
+			if (chainItem.getId().equals(currentSignature.getSigningCertificate().getId())) {
 				subContext = SubContext.SIGNING_CERT;
 			}
 			// separate cases to check based on the returned subIndication
 			if ((SubContext.SIGNING_CERT.equals(subContext) && SubIndication.REVOKED_NO_POE.equals(subIndication)) ||
 					SubContext.CA_CERTIFICATE.equals(subContext) && SubIndication.REVOKED_CA_NO_POE.equals(subIndication)) {
-				CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateId);
-				CertificateRevocationWrapper certificateRevocation = diagnosticData.getLatestRevocationDataForCertificate(certificate);
+				CertificateRevocationWrapper certificateRevocation = diagnosticData.getLatestRevocationDataForCertificate(chainItem);
 				item = item.setNextItem(new RevocationDateAfterBestSignatureTimeCheck(result, certificateRevocation, 
 						bestSignatureTime, constraint, subContext));
 			}
@@ -338,7 +337,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime) {
-		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
+		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
 		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck(result, bestSignatureTime, signingCertificate,
 				policy.getBestSignatureTimeBeforeIssuanceDateOfSigningCertificateConstraint());
 	}
@@ -372,11 +371,10 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	 * @return last established {@link ChainItem}
 	 */
 	private ChainItem<XmlValidationProcessLongTermData> certificatesChainReliableAtBestSignatureTime(ChainItem<XmlValidationProcessLongTermData> item, Date bestSignatureTime) {
-		List<String> certificateChainIds = currentSignature.getCertificateChainIds();
-		for (String certificateChainId : certificateChainIds) {
+		List<CertificateWrapper> certificateChain = currentSignature.getCertificateChain();
+		for (CertificateWrapper certificate : certificateChain) {
 			ChainItem<XmlValidationProcessLongTermData> cryptoCheck = null;
-			CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateChainId);
-			if (certificateChainId.equals(currentSignature.getSigningCertificateId())) {
+			if (certificate.getId().equals(currentSignature.getSigningCertificate().getId())) {
 				cryptoCheck = new CryptographicCheck<XmlValidationProcessLongTermData>(result, certificate, bestSignatureTime, 
 						policy.getCertificateCryptographicConstraint(Context.SIGNATURE, SubContext.SIGNING_CERT));
 			} else {
