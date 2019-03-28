@@ -102,12 +102,12 @@ public abstract class SignatureOCSPSource extends OfflineOCSPSource implements S
 	
 	protected void addReference(OCSPRef ocspRef, RevocationOrigin origin) {
 		switch (origin) {
-			case INTERNAL_COMPLETE_REVOCATION_REFS:
+			case COMPLETE_REVOCATION_REFS:
 				if (!completeRevocationRefsOCSPs.contains(ocspRef)) {
 					completeRevocationRefsOCSPs.add(ocspRef);
 				}
 				break;
-			case INTERNAL_ATTRIBUTE_REVOCATION_REFS:
+			case ATTRIBUTE_REVOCATION_REFS:
 				if (!attributeRevocationRefsOCSPs.contains(ocspRef)) {
 					attributeRevocationRefsOCSPs.add(ocspRef);
 				}

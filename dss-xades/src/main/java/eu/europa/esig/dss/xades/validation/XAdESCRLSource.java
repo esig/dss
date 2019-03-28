@@ -58,9 +58,9 @@ public class XAdESCRLSource extends SignatureCRLSource {
 		
 		// references
 		collectRefs(signatureElement, xPathQueryHolder, 
-				xPathQueryHolder.XPATH_COMPLETE_REVOCATION_CRL_REFS, RevocationOrigin.INTERNAL_COMPLETE_REVOCATION_REFS);
+				xPathQueryHolder.XPATH_COMPLETE_REVOCATION_CRL_REFS, RevocationOrigin.COMPLETE_REVOCATION_REFS);
 		collectRefs(signatureElement, xPathQueryHolder, 
-				xPathQueryHolder.XPATH_ATTRIBUTE_REVOCATION_CRL_REFS, RevocationOrigin.INTERNAL_ATTRIBUTE_REVOCATION_REFS);
+				xPathQueryHolder.XPATH_ATTRIBUTE_REVOCATION_CRL_REFS, RevocationOrigin.ATTRIBUTE_REVOCATION_REFS);
 	}
 
 	private void collect(Element signatureElement, final String xPathQuery, RevocationOrigin revocationOrigin) {

@@ -76,8 +76,8 @@ public class XAdESOCSPSource extends SignatureOCSPSource {
 		collect(xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_OCSP_VALUES, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
 		
 		// references
-		collectRefs(xPathQueryHolder.XPATH_COMPLETE_REVOCATION_OCSP_REFS, RevocationOrigin.INTERNAL_COMPLETE_REVOCATION_REFS);
-		collectRefs(xPathQueryHolder.XPATH_ATTRIBUTE_REVOCATION_OCSP_REFS, RevocationOrigin.INTERNAL_ATTRIBUTE_REVOCATION_REFS);
+		collectRefs(xPathQueryHolder.XPATH_COMPLETE_REVOCATION_OCSP_REFS, RevocationOrigin.COMPLETE_REVOCATION_REFS);
+		collectRefs(xPathQueryHolder.XPATH_ATTRIBUTE_REVOCATION_OCSP_REFS, RevocationOrigin.ATTRIBUTE_REVOCATION_REFS);
 	}
 
 	private void collect(String xPathQuery, RevocationOrigin origin) {

@@ -124,12 +124,12 @@ public class CAdESCRLSource extends SignatureCRLSource {
 				 * } 
 				 * AttributeRevocationRefs ::= SEQUENCE OF CrlOcspRef (the same as for CompleteRevocationRefs)
 				 */
-				collectRevocationRefs(unsignedAttributes, PKCSObjectIdentifiers.id_aa_ets_revocationRefs, RevocationOrigin.INTERNAL_COMPLETE_REVOCATION_REFS);
+				collectRevocationRefs(unsignedAttributes, PKCSObjectIdentifiers.id_aa_ets_revocationRefs, RevocationOrigin.COMPLETE_REVOCATION_REFS);
 				/*
 				 * id-aa-ets-attrRevocationRefs OBJECT IDENTIFIER ::= { iso(1) member-body(2)
 				 * us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) id-aa(2) 45} 
 				 */
-				collectRevocationRefs(unsignedAttributes, PKCSObjectIdentifiers.id_aa.branch("45"), RevocationOrigin.INTERNAL_ATTRIBUTE_REVOCATION_REFS);
+				collectRevocationRefs(unsignedAttributes, PKCSObjectIdentifiers.id_aa.branch("45"), RevocationOrigin.ATTRIBUTE_REVOCATION_REFS);
 			}
 
 			/*

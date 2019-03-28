@@ -116,12 +116,12 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	
 	protected void addReference(CRLRef crlRef, RevocationOrigin origin) {
 		switch (origin) {
-		case INTERNAL_COMPLETE_REVOCATION_REFS:
+		case COMPLETE_REVOCATION_REFS:
 			if (!completeRevocationRefsCRLs.contains(crlRef)) {
 				completeRevocationRefsCRLs.add(crlRef);
 			}
 			break;
-		case INTERNAL_ATTRIBUTE_REVOCATION_REFS:
+		case ATTRIBUTE_REVOCATION_REFS:
 			if (!attributeRevocationRefsCRLs.contains(crlRef)) {
 				attributeRevocationRefsCRLs.add(crlRef);
 			}

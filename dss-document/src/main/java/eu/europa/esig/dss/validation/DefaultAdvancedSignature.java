@@ -771,8 +771,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public List<RevocationToken> getRevocationValuesTokens() {
 		List<RevocationToken> revocationTokens = new ArrayList<RevocationToken>();
-		revocationTokens.addAll(offlineCRLSource.getRevocationValuesTokens());
-		revocationTokens.addAll(offlineOCSPSource.getRevocationValuesTokens());
+		revocationTokens.addAll(getCRLSource().getRevocationValuesTokens());
+		revocationTokens.addAll(getOCSPSource().getRevocationValuesTokens());
 		removeUnrelatedTokens(revocationTokens);
 		return revocationTokens;
 	}
@@ -780,8 +780,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public List<RevocationToken> getAttributeRevocationValuesTokens() {
 		List<RevocationToken> revocationTokens = new ArrayList<RevocationToken>();
-		revocationTokens.addAll(offlineCRLSource.getAttributeRevocationValuesTokens());
-		revocationTokens.addAll(offlineOCSPSource.getAttributeRevocationValuesTokens());
+		revocationTokens.addAll(getCRLSource().getAttributeRevocationValuesTokens());
+		revocationTokens.addAll(getOCSPSource().getAttributeRevocationValuesTokens());
 		removeUnrelatedTokens(revocationTokens);
 		return revocationTokens;
 	}
@@ -789,8 +789,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public List<RevocationToken> getTimestampRevocationValuesTokens() {
 		List<RevocationToken> revocationTokens = new ArrayList<RevocationToken>();
-		revocationTokens.addAll(offlineCRLSource.getTimestampRevocationValuesTokens());
-		revocationTokens.addAll(offlineOCSPSource.getTimestampRevocationValuesTokens());
+		revocationTokens.addAll(getCRLSource().getTimestampRevocationValuesTokens());
+		revocationTokens.addAll(getOCSPSource().getTimestampRevocationValuesTokens());
 		removeUnrelatedTokens(revocationTokens);
 		return revocationTokens;
 	}
@@ -798,8 +798,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public List<RevocationToken> getDSSDictionaryRevocationTokens() {
 		List<RevocationToken> revocationTokens = new ArrayList<RevocationToken>();
-		revocationTokens.addAll(offlineCRLSource.getDSSDictionaryTokens());
-		revocationTokens.addAll(offlineOCSPSource.getDSSDictionaryTokens());
+		revocationTokens.addAll(getCRLSource().getDSSDictionaryTokens());
+		revocationTokens.addAll(getOCSPSource().getDSSDictionaryTokens());
 		removeUnrelatedTokens(revocationTokens);
 		return revocationTokens;
 	}
@@ -807,30 +807,30 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public List<RevocationToken> getVRIDictionaryRevocationTokens() {
 		List<RevocationToken> revocationTokens = new ArrayList<RevocationToken>();
-		revocationTokens.addAll(offlineCRLSource.getVRIDictionaryTokens());
-		revocationTokens.addAll(offlineOCSPSource.getVRIDictionaryTokens());
+		revocationTokens.addAll(getCRLSource().getVRIDictionaryTokens());
+		revocationTokens.addAll(getOCSPSource().getVRIDictionaryTokens());
 		removeUnrelatedTokens(revocationTokens);
 		return revocationTokens;
 	}
 	
 	@Override
 	public List<CRLRef> getCompleteRevocationCRLReferences() {
-		return offlineCRLSource.getCompleteRevocationRefs();
+		return getCRLSource().getCompleteRevocationRefs();
 	}
 
 	@Override
 	public List<CRLRef> getAttributeRevocationCRLReferences() {
-		return offlineCRLSource.getAttributeRevocationRefs();
+		return getCRLSource().getAttributeRevocationRefs();
 	}
 	
 	@Override
 	public List<OCSPRef> getCompleteRevocationOCSPReferences() {
-		return offlineOCSPSource.getCompleteRevocationRefs();
+		return getOCSPSource().getCompleteRevocationRefs();
 	}
 
 	@Override
 	public List<OCSPRef> getAttributeRevocationOCSPReferences() {
-		return offlineOCSPSource.getAttributeRevocationRefs();
+		return getOCSPSource().getAttributeRevocationRefs();
 	}
 	
 	@Override
@@ -889,12 +889,15 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	private void collectRevocationRefsMap() {
+
 		revocationRefsMap = new HashMap<RevocationToken, List<RevocationRef>>();
 		for (RevocationToken revocationToken : getAllRevocationTokens()) {
 			for (RevocationRef reference : getAllFoundRevocationRefs()) {
-				if (reference.getDigestAlgorithm() != null && reference.getDigestValue() != null &&
-						Arrays.equals(reference.getDigestValue(), revocationToken.getDigest(reference.getDigestAlgorithm()))) { 
-					addReferenceToMap(revocationToken, reference);
+				if (reference.getDigestAlgorithm() != null && reference.getDigestValue() != null) { 
+					if (Arrays.equals(reference.getDigestValue(), revocationToken.getDigest(reference.getDigestAlgorithm()))) {
+						addReferenceToMap(revocationToken, reference);
+					}
+					continue;
 				} else if (reference instanceof OCSPRef) {
 					OCSPRef ocspRef = (OCSPRef) reference;
 					if (!ocspRef.getProducedAt().equals(revocationToken.getProductionDate())) {
