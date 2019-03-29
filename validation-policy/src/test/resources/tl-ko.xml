@@ -38,9 +38,7 @@
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Certificate="C-9C1A3B646EAF132398EF319E41C8E7ED725B64D5772580AE125D59C0F6845630">
-                    <Source>TRUSTED_STORE</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-9C1A3B646EAF132398EF319E41C8E7ED725B64D5772580AE125D59C0F6845630"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
@@ -74,6 +72,9 @@
             <OCSPAccessUrls>
                 <Url>http://qca.ocsp.luxtrust.lu</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>TRUSTED_STORE</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2019-09-15T09:00:12</NotAfter>
             <NotBefore>2016-09-15T09:00:12</NotBefore>

@@ -20,6 +20,9 @@
                 <Url>http://crl.d-trust.net/crl/d-trust_ca_3-1_2016.crl</Url>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>OCSP_RESPONSE</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2031-10-26T08:36:50</NotAfter>
             <NotBefore>2016-11-07T13:52:19</NotBefore>
@@ -41,9 +44,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5"/>
             <CertificateChain>
-                <ChainItem Certificate="C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -90,6 +91,9 @@
             <OCSPAccessUrls>
                 <Url>http://root-ca-3-2016.ocsp.d-trust.net</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2031-10-26T08:36:50</NotAfter>
             <NotBefore>2016-10-26T08:36:38</NotBefore>
@@ -156,6 +160,9 @@
             <OCSPAccessUrls>
                 <Url>http://qual.ocsp.d-trust.net</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>UNKNOWN</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2015-11-27T13:17:27</NotAfter>
             <NotBefore>2011-11-17T13:17:27</NotBefore>
@@ -175,9 +182,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9"/>
             <CertificateChain>
-                <ChainItem Certificate="C-A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -249,6 +254,9 @@
             <OCSPAccessUrls>
                 <Url>http://qual.ocsp.d-trust.net</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2013-07-24T15:30:00</NotAfter>
             <NotBefore>2008-07-24T16:54:11</NotBefore>
@@ -324,12 +332,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-5C7199AD1BD04360237812292EAFB2FC010C3C7681831A99FED2C9E0FE567C8B"/>
             <CertificateChain>
-                <ChainItem Certificate="C-5C7199AD1BD04360237812292EAFB2FC010C3C7681831A99FED2C9E0FE567C8B">
-                    <Source>OCSP_RESPONSE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-5C7199AD1BD04360237812292EAFB2FC010C3C7681831A99FED2C9E0FE567C8B"/>
+                <ChainItem Certificate="C-454A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5"/>
             </CertificateChain>
         </Revocation>
     </UsedRevocations>

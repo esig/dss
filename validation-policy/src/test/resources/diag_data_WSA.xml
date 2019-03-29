@@ -38,12 +38,8 @@
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Certificate="C-24A830ADC0D077255FD14A607513D398CDB278A53A3DBAB79AC4ADE6A66EEAA6">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-24A830ADC0D077255FD14A607513D398CDB278A53A3DBAB79AC4ADE6A66EEAA6"/>
+                <ChainItem Certificate="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
@@ -67,6 +63,9 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2019-07-05T13:18:32</NotAfter>
             <NotBefore>2017-07-05T13:18:32</NotBefore>
@@ -130,6 +129,9 @@
             <OCSPAccessUrls>
                 <Url>http://localhost:8080/qes-validation-web/ocsp/SDI-5.1.2</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2019-07-05T13:18:33</NotAfter>
             <NotBefore>2017-07-05T13:18:33</NotBefore>
@@ -149,9 +151,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998"/>
             <CertificateChain>
-                <ChainItem Certificate="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -208,9 +208,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998"/>
             <CertificateChain>
-                <ChainItem Certificate="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998"/>
             </CertificateChain>
         </Revocation>
     </UsedRevocations>

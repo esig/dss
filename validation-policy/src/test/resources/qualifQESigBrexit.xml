@@ -32,15 +32,9 @@
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Certificate="C-75F5216C135CA7D30473723247E8AD6104F843A598ACEBF82764F556E378D62D">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-75F5216C135CA7D30473723247E8AD6104F843A598ACEBF82764F556E378D62D"/>
+                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE"/>
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
             </CertificateChain>
             <ContentType>application/pdf</ContentType>
             <SignatureProductionPlace>
@@ -71,6 +65,9 @@
                 <Url>http://crl.pki.belgium.be/belgium2.crl</Url>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA1</DigestMethod>
@@ -99,9 +96,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
             <CertificateChain>
-                <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -160,6 +155,9 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
+            <Sources>
+            	 <Source>TRUSTED_LIST</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA1</DigestMethod>
@@ -245,6 +243,9 @@
             <OCSPAccessUrls>
                 <Url>http://ocsp.eid.belgium.be/2</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA1</DigestMethod>
@@ -272,12 +273,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE"/>
             <CertificateChain>
-                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE"/>
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -347,6 +344,9 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA1</DigestMethod>
@@ -424,6 +424,9 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>OCSP_RESPONSE</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA1</DigestMethod>
@@ -451,12 +454,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE"/>
             <CertificateChain>
-                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE"/>
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -497,6 +496,9 @@
                 <Url>http://crl.eid.belgium.be/belgium3.crl</Url>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA1</DigestMethod>
@@ -525,9 +527,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
             <CertificateChain>
-                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -586,6 +586,9 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>OCSP_RESPONSE</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA1</DigestMethod>
@@ -613,12 +616,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE"/>
             <CertificateChain>
-                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE"/>
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -684,9 +683,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
             <CertificateChain>
-                <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
             </CertificateChain>
         </Revocation>
         <Revocation Id="R-d74af393cf3b506da33b46bc52b49cd6fac12b2bdaa9ce1fba25c0c1e4ebbe1937478d403aa751c3f67f0d56db9f9340b7876dbbc05396911ebe8dc6162bf388">
@@ -715,9 +712,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
             <CertificateChain>
-                <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
             </CertificateChain>
         </Revocation>
         <Revocation Id="R-75f5216c135ca7d30473723247e8ad6104f843a598acebf82764f556e378d62d18423017027efece3d0668fa492ad8625e7dcac01c057a11d679eb33ab41def9">
@@ -746,15 +741,9 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-D64BB62EFF83D5D9D368BBABEAA8BC6B291FD3F76B2AAEBD187387EECCB73A13"/>
             <CertificateChain>
-                <ChainItem Certificate="C-D64BB62EFF83D5D9D368BBABEAA8BC6B291FD3F76B2AAEBD187387EECCB73A13">
-                    <Source>OCSP_RESPONSE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-D64BB62EFF83D5D9D368BBABEAA8BC6B291FD3F76B2AAEBD187387EECCB73A13"/>
+                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE"/>
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
             </CertificateChain>
         </Revocation>
         <Revocation Id="R-75f5216c135ca7d30473723247e8ad6104f843a598acebf82764f556e378d62d0b07eb2dbac8ca8fcdcb77ce16df70577cf9133aeed18b94c3f3fb11a5fc2ff9">
@@ -782,15 +771,9 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-6C9DA2AA6632C9006C9805D4B3849D9FDFB97DA182DF8FA47219625FD47E12BE"/>
             <CertificateChain>
-                <ChainItem Certificate="C-6C9DA2AA6632C9006C9805D4B3849D9FDFB97DA182DF8FA47219625FD47E12BE">
-                    <Source>OCSP_RESPONSE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-6C9DA2AA6632C9006C9805D4B3849D9FDFB97DA182DF8FA47219625FD47E12BE"/>
+                <ChainItem Certificate="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE"/>
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
             </CertificateChain>
         </Revocation>
         <Revocation Id="R-a2bcb1e8523fbb23b9a277afa0b67da2e61e9ad8bac1b926a733a1ae07c67cde43affe03ea0cd0bc9d663ca5ecb1db343657acdf1ec742cba90b503a08b0456f">
@@ -818,9 +801,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
             <CertificateChain>
-                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
             </CertificateChain>
         </Revocation>
         <Revocation Id="R-a2bcb1e8523fbb23b9a277afa0b67da2e61e9ad8bac1b926a733a1ae07c67cde52e8de03ed10fb4ba24696f38afbf93c309823f76ef058871bb8604533ce4ca4">
@@ -849,9 +830,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
             <CertificateChain>
-                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D"/>
             </CertificateChain>
         </Revocation>
     </UsedRevocations>
@@ -873,12 +852,8 @@
              </BasicSignature>
              <SigningCertificate Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
              <CertificateChain>
-                 <ChainItem Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19">
-                     <Source>SIGNATURE</Source>
-                 </ChainItem>
-                 <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
-                     <Source>TRUSTED_LIST</Source>
-                 </ChainItem>
+                 <ChainItem Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
+                 <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
              </CertificateChain>
 		       <TimestampedObjects>
 			       	<TimestampedSignature Signature="id-1bc73e8a06e7678358dcff35f830d9438c0b985dfb6103cb6a8d44bc11811a66" />

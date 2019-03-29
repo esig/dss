@@ -29,12 +29,8 @@
 	            <IssuerSerialMatch>false</IssuerSerialMatch>
 	        </SigningCertificate>
 	        <CertificateChain>
-	            <ChainItem Certificate="C-C1164130B52CC2158C23556DA7C7C601EC1AF92DD477BD59F4762CFA85C76768">
-	                <Source>SIGNATURE</Source>
-	            </ChainItem>
-	            <ChainItem Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
-	                <Source>TRUSTED_LIST</Source>
-	            </ChainItem>
+	            <ChainItem Certificate="C-C1164130B52CC2158C23556DA7C7C601EC1AF92DD477BD59F4762CFA85C76768"/>
+	            <ChainItem Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
 	        </CertificateChain>
 	        <ContentType>application/pdf</ContentType>
 	        <SignatureScopes>
@@ -52,6 +48,9 @@
             <CommonName>StampIT OCSP Validation</CommonName>
             <CountryName>BG</CountryName>
             <OrganizationName>Information Services Plc.</OrganizationName>
+            <Sources>
+            	 <Source>OCSP_RESPONSE</Source>
+            </Sources>
             <DigestAlgoAndValues>
 	            <DigestAlgoAndValue>
 	                <DigestMethod>SHA1</DigestMethod>
@@ -75,9 +74,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
             <CertificateChain>
-                <ChainItem Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -102,6 +99,9 @@
             <CommonName>StampIT Qualified CA</CommonName>
             <CountryName>BG</CountryName>
             <OrganizationName>Information Services Plc.</OrganizationName>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <DigestAlgoAndValues>
 	            <DigestAlgoAndValue>
 	                <DigestMethod>SHA1</DigestMethod>
@@ -141,6 +141,9 @@
             <CommonName>E T K</CommonName>
             <CountryName>BG</CountryName>
             <OrganizationName>Information Services Plc.</OrganizationName>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <DigestAlgoAndValues>
 	            <DigestAlgoAndValue>
 	                <DigestMethod>SHA1</DigestMethod>
@@ -166,9 +169,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
             <CertificateChain>
-                <ChainItem Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -211,12 +212,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7"/>
             <CertificateChain>
-                <ChainItem Certificate="C-EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7">
-                    <Source>OCSP_RESPONSE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7"/>
+                <ChainItem Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
             </CertificateChain>
         </Revocation>
         <Revocation Id="R-47DB90134AA46D1F36475B286BECB476FE6CED6AE5D74E39D4C623AF8FC9F499">
@@ -240,12 +237,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7"/>
             <CertificateChain>
-                <ChainItem Certificate="C-EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7">
-                    <Source>OCSP_RESPONSE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7"/>
+                <ChainItem Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
             </CertificateChain>
         </Revocation>
     </UsedRevocations>

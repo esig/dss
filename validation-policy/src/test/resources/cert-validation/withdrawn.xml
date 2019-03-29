@@ -15,6 +15,9 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2019-06-27T08:32:31</NotAfter>
             <NotBefore>2017-06-27T08:32:31</NotBefore>
@@ -77,6 +80,9 @@
             <OCSPAccessUrls>
                 <Url>http://localhost:8080/qes-validation-web/ocsp/SDI-3.1.4</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>UNKNOWN</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2019-06-27T08:32:32</NotAfter>
             <NotBefore>2017-06-27T08:32:32</NotBefore>
@@ -96,9 +102,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376"/>
             <CertificateChain>
-                <ChainItem Certificate="C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -155,9 +159,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376"/>
             <CertificateChain>
-                <ChainItem Certificate="C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376"/>
             </CertificateChain>
         </Revocation>
     </UsedRevocations>

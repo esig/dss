@@ -38,9 +38,7 @@
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Certificate="C-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
@@ -94,9 +92,7 @@
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Certificate="C-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
@@ -150,12 +146,8 @@
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Certificate="C-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8"/>
+                <ChainItem Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
@@ -207,12 +199,8 @@
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Certificate="C-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8"/>
+                <ChainItem Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
@@ -243,6 +231,9 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2020-05-08T23:59:59</NotAfter>
             <NotBefore>2015-05-08T07:01:06</NotBefore>
@@ -314,6 +305,9 @@
                 <Url>http://www.cencert.pl/crl/CCfirmowy.crl</Url>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2018-08-24T14:47:04</NotAfter>
             <NotBefore>2016-08-24T14:47:04</NotBefore>
@@ -355,6 +349,9 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2017-11-02T23:00:00</NotAfter>
             <NotBefore>2015-11-03T23:00:00</NotBefore>
@@ -373,9 +370,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86"/>
             <CertificateChain>
-                <ChainItem Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -452,9 +447,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86"/>
             <CertificateChain>
-                <ChainItem Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86"/>
             </CertificateChain>
         </Revocation>
     </UsedRevocations>

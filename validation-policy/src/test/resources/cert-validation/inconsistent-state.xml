@@ -20,6 +20,9 @@
             <OCSPAccessUrls>
                 <Url>http://ocsp.f.hr</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2025-11-25T10:43:30</NotAfter>
             <NotBefore>2015-11-25T10:13:30</NotBefore>
@@ -113,6 +116,9 @@
             <OCSPAccessUrls>
                 <Url>http://ocsp.f.hr</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>OCSP_RESPONSE</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2019-04-15T07:09:20</NotAfter>
             <NotBefore>2018-04-15T06:39:20</NotBefore>
@@ -135,9 +141,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B"/>
             <CertificateChain>
-                <ChainItem Certificate="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -206,6 +210,9 @@
             <OCSPAccessUrls>
                 <Url>http://ocsp.f.hr</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>UNKNOWN</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2020-04-09T09:22:18</NotAfter>
             <NotBefore>2018-04-09T08:52:18</NotBefore>
@@ -225,9 +232,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B"/>
             <CertificateChain>
-                <ChainItem Certificate="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -305,12 +310,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-A1C213591D7738A3B4048487174769B1A09824927782ED76A2892819A5E1207F"/>
             <CertificateChain>
-                <ChainItem Certificate="C-A1C213591D7738A3B4048487174769B1A09824927782ED76A2892819A5E1207F">
-                    <Source>OCSP_RESPONSE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-A1C213591D7738A3B4048487174769B1A09824927782ED76A2892819A5E1207F"/>
+                <ChainItem Certificate="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B"/>
             </CertificateChain>
         </Revocation>
     </UsedRevocations>

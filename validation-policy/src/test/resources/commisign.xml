@@ -32,12 +32,8 @@
             <IssuerSerialMatch>true</IssuerSerialMatch>
          </SigningCertificate>
          <CertificateChain>
-            <ChainItem Certificate="C-96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
-               <Source>UNKNOWN</Source>
-            </ChainItem>
-            <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
-               <Source>TRUSTED_LIST</Source>
-            </ChainItem>
+            <ChainItem Certificate="C-96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC"/>
+            <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
          </CertificateChain>
          <ContentType>application/pdf</ContentType>
          <CommitmentTypeIndication/>
@@ -63,6 +59,9 @@
             <Url>http://hide.eu/info/crl/RootCA.arl</Url>
          </CRLDistributionPoints>
          <OCSPAccessUrls/>
+         <Sources>
+         	<Source>TRUSTED_LIST</Source>
+         </Sources>
          <DigestAlgoAndValues>
             <DigestAlgoAndValue>
                <DigestMethod>SHA1</DigestMethod>
@@ -88,9 +87,7 @@
          </BasicSignature>
          <SigningCertificate Certificate="C-C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA"/>
          <CertificateChain>
-            <ChainItem Certificate="C-C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA">
-               <Source>UNKNOWN</Source>
-            </ChainItem>
+            <ChainItem Certificate="C-C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA"/>
          </CertificateChain>
          <Trusted>true</Trusted>
          <SelfSigned>false</SelfSigned>
@@ -128,6 +125,9 @@
          <AuthorityInformationAccessUrls/>
          <CRLDistributionPoints/>
          <OCSPAccessUrls/>
+         <Sources>
+         	<Source>OCSP_RESPONSE</Source>
+         </Sources>
          <DigestAlgoAndValues>
             <DigestAlgoAndValue>
                <DigestMethod>SHA1</DigestMethod>
@@ -154,9 +154,7 @@
          </BasicSignature>
          <SigningCertificate Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
          <CertificateChain>
-            <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
-               <Source>TRUSTED_LIST</Source>
-            </ChainItem>
+            <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
          </CertificateChain>
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
@@ -193,6 +191,9 @@
          <AuthorityInformationAccessUrls/>
          <CRLDistributionPoints/>
          <OCSPAccessUrls/>
+         <Sources>
+         	<Source>UNKNOWN</Source>
+         </Sources>
          <DigestAlgoAndValues>
             <DigestAlgoAndValue>
                <DigestMethod>SHA1</DigestMethod>
@@ -244,6 +245,9 @@
          <OCSPAccessUrls>
             <Url>http://hide.eu/ocsp</Url>
          </OCSPAccessUrls>
+         <Sources>
+         	<Source>UNKNOWN</Source>
+         </Sources>
          <DigestAlgoAndValues>
             <DigestAlgoAndValue>
                <DigestMethod>SHA1</DigestMethod>
@@ -271,9 +275,7 @@
          </BasicSignature>
          <SigningCertificate Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
          <CertificateChain>
-            <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
-               <Source>TRUSTED_LIST</Source>
-            </ChainItem>
+            <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
          </CertificateChain>
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
@@ -327,12 +329,8 @@
          </BasicSignature>
          <SigningCertificate Certificate="C-43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8"/>
          <CertificateChain>
-            <ChainItem Certificate="C-43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8">
-               <Source>OCSP_RESPONSE</Source>
-            </ChainItem>
-            <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
-               <Source>TRUSTED_LIST</Source>
-            </ChainItem>
+            <ChainItem Certificate="C-43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8"/>
+            <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
          </CertificateChain>
       </Revocation>
    </UsedRevocations>

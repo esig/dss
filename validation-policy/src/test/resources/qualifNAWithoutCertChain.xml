@@ -52,6 +52,9 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>OCSP_RESPONSE</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA1</DigestMethod>
@@ -94,6 +97,9 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>AIA</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA1</DigestMethod>
@@ -143,6 +149,9 @@
             <OCSPAccessUrls>
                 <Url>http://ocsp.certification.tn</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>UNKNOWN</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA1</DigestMethod>
@@ -166,12 +175,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686"/>
             <CertificateChain>
-                <ChainItem Certificate="C-355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
-                    <Source>AIA</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686"/>
+                <ChainItem Certificate="C-D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -211,6 +216,9 @@
             <OCSPAccessUrls>
                 <Url>http://ocsp.certification.tn</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA1</DigestMethod>
@@ -235,9 +243,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C"/>
             <CertificateChain>
-                <ChainItem Certificate="C-D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
-                    <Source>AIA</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -278,12 +284,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686"/>
             <CertificateChain>
-                <ChainItem Certificate="C-355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
-                    <Source>AIA</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686"/>
+                <ChainItem Certificate="C-D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C"/>
             </CertificateChain>
 
         </Revocation>
@@ -308,9 +310,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168"/>
             <CertificateChain>
-                <ChainItem Certificate="C-903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168">
-                    <Source>OCSP_RESPONSE</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168"/>
             </CertificateChain>
 
         </Revocation>
@@ -336,9 +336,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168"/>
             <CertificateChain>
-                <ChainItem Certificate="C-903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168">
-                    <Source>OCSP_RESPONSE</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-903DC70F9CA41204737B141011FA21D16FE66288BEE6926A485870F85E6DB168"/>
             </CertificateChain>
 
         </Revocation>

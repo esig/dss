@@ -37,12 +37,8 @@
 	            <IssuerSerialMatch>true</IssuerSerialMatch>
 	        </SigningCertificate>
 	        <CertificateChain>
-	            <ChainItem Certificate="C-725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E">
-	                <Source>SIGNATURE</Source>
-	            </ChainItem>
-	            <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
-	                <Source>TRUSTED_LIST</Source>
-	            </ChainItem>
+	            <ChainItem Certificate="C-725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E"/>
+	            <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
 	        </CertificateChain>
 	        <ContentType>text/xml</ContentType>
 	        <SignatureScopes>
@@ -61,6 +57,9 @@
             <CountryName>IT</CountryName>
             <OrganizationName>INFOCERT SPA</OrganizationName>
             <OrganizationalUnit>Certificatore Accreditato</OrganizationalUnit>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <NotAfter>2029-04-19T17:26:15</NotAfter>
             <NotBefore>2013-04-19T16:26:15</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -96,6 +95,9 @@
             <OrganizationName>INFOCERT SPA/07945211006</OrganizationName>
             <GivenName>L</GivenName>
             <Surname>R</Surname>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <NotAfter>2014-10-30T01:00:00</NotAfter>
             <NotBefore>2014-10-08T10:46:20</NotBefore>
             <PublicKeySize>1024</PublicKeySize>
@@ -112,9 +114,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
             <CertificateChain>
-                <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -147,6 +147,9 @@
             <CountryName>IT</CountryName>
             <OrganizationName>InfoCert SpA</OrganizationName>
             <OrganizationalUnit>Certificatore Accreditato</OrganizationalUnit>
+            <Sources>
+            	<Source>OCSP_RESPONSE</Source>
+            </Sources>
             <NotAfter>2017-12-10T19:56:42</NotAfter>
             <NotBefore>2015-12-10T18:56:42</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -164,9 +167,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
             <CertificateChain>
-                <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -193,12 +194,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
             <CertificateChain>
-                <ChainItem Certificate="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
-                    <Source>OCSP_RESPONSE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
+                <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
             </CertificateChain>
         </Revocation>
     </UsedRevocations>

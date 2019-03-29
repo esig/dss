@@ -15,6 +15,10 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>UNKNOWN</Source>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2019-12-02T00:01:14</NotAfter>
             <NotBefore>2017-12-02T00:01:14</NotBefore>
@@ -86,6 +90,9 @@
                 <Url>http://46.101.246.130:8080/esig-validation-tests/crl/SDI-5.3.3.crl</Url>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>UNKNOWN</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2019-12-02T00:01:15</NotAfter>
             <NotBefore>2017-12-02T00:01:15</NotBefore>
@@ -105,9 +112,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A"/>
             <CertificateChain>
-                <ChainItem Certificate="C-D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -177,9 +182,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A"/>
             <CertificateChain>
-                <ChainItem Certificate="C-D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A">
-                    <Source>UNKNOWN</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A"/>
             </CertificateChain>
         </Revocation>
     </UsedRevocations>

@@ -33,12 +33,8 @@
 				<IssuerSerialMatch>true</IssuerSerialMatch>
 			</SigningCertificate>
 			<CertificateChain>
-				<ChainItem Certificate="C-38860679FAB0E6D8490335AA94F3968C97098C9D206512F2335106090EB86524">
-					<Source>SIGNATURE</Source>
-				</ChainItem>
-				<ChainItem Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC">
-					<Source>TRUSTED_LIST</Source>
-				</ChainItem>
+				<ChainItem Certificate="C-38860679FAB0E6D8490335AA94F3968C97098C9D206512F2335106090EB86524"/>
+				<ChainItem Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
 			</CertificateChain>
 			<ContentType>application/pdf</ContentType>
 			<CommitmentTypeIndication />
@@ -73,12 +69,8 @@
 				<IssuerSerialMatch>true</IssuerSerialMatch>
 			</SigningCertificate>
 			<CertificateChain>
-				<ChainItem	Certificate="C-B500D1A6A280C57C5433DCCD8924B5517E6AA08B18D4687E6A5820780D3FA250">
-					<Source>SIGNATURE</Source>
-				</ChainItem>
-				<ChainItem	Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC">
-					<Source>TRUSTED_LIST</Source>
-				</ChainItem>
+				<ChainItem	Certificate="C-B500D1A6A280C57C5433DCCD8924B5517E6AA08B18D4687E6A5820780D3FA250"/>
+				<ChainItem	Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
 			</CertificateChain>
 			<ContentType>application/pdf</ContentType>
 			<CommitmentTypeIndication />
@@ -117,6 +109,9 @@
 			<OCSPAccessUrls>
 				<Url>http://scah.ocsp.universign.eu/</Url>
 			</OCSPAccessUrls>
+			<Sources>
+				<Source>SIGNATURE</Source>
+			</Sources>
 			<DigestAlgoAndValues>
 				<DigestAlgoAndValue>
 					<DigestMethod>SHA1</DigestMethod>
@@ -144,9 +139,7 @@
 			</BasicSignature>
 			<SigningCertificate	Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC" />
 			<CertificateChain>
-				<ChainItem Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC">
-					<Source>TRUSTED_LIST</Source>
-				</ChainItem>
+				<ChainItem Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
 			</CertificateChain>
 			<Trusted>false</Trusted>
 			<SelfSigned>false</SelfSigned>
@@ -228,6 +221,9 @@
 				<Url>http://crl.universign.eu/universign_tsa_root_2015.crl</Url>
 			</CRLDistributionPoints>
 			<OCSPAccessUrls />
+			<Sources>
+				<Source>TIMESTAMP</Source>
+			</Sources>
 			<DigestAlgoAndValues>
 				<DigestAlgoAndValue>
 					<DigestMethod>SHA1</DigestMethod>
@@ -255,9 +251,7 @@
 			</BasicSignature>
 			<SigningCertificate	Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5" />
 			<CertificateChain>
-				<ChainItem	Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-					<Source>TRUSTED_LIST</Source>
-				</ChainItem>
+				<ChainItem	Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
 			</CertificateChain>
 			<Trusted>false</Trusted>
 			<SelfSigned>false</SelfSigned>
@@ -351,6 +345,9 @@
 			<AuthorityInformationAccessUrls />
 			<CRLDistributionPoints />
 			<OCSPAccessUrls />
+			<Sources>
+				<Source>TRUSTED_LIST</Source>
+			</Sources>
 			<DigestAlgoAndValues>
 				<DigestAlgoAndValue>
 					<DigestMethod>SHA1</DigestMethod>
@@ -466,6 +463,9 @@
 				<Url>http://crl.universign.eu/universign_tsa_root_2015.crl</Url>
 			</CRLDistributionPoints>
 			<OCSPAccessUrls />
+			<Sources>
+				<Source>TIMESTAMP</Source>
+			</Sources>
 			<DigestAlgoAndValues>
 				<DigestAlgoAndValue>
 					<DigestMethod>SHA1</DigestMethod>
@@ -493,9 +493,7 @@
 			</BasicSignature>
 			<SigningCertificate	Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5" />
 			<CertificateChain>
-				<ChainItem	Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-					<Source>TRUSTED_LIST</Source>
-				</ChainItem>
+				<ChainItem	Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
 			</CertificateChain>
 			<Trusted>false</Trusted>
 			<SelfSigned>false</SelfSigned>
@@ -593,6 +591,9 @@
 			<OCSPAccessUrls>
 				<Url>http://scah.ocsp.universign.eu/</Url>
 			</OCSPAccessUrls>
+			<Sources>
+				<Source>SIGNATURE</Source>
+			</Sources>
 			<DigestAlgoAndValues>
 				<DigestAlgoAndValue>
 					<DigestMethod>SHA1</DigestMethod>
@@ -620,9 +621,7 @@
 			</BasicSignature>
 			<SigningCertificate	Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC" />
 			<CertificateChain>
-				<ChainItem	Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC">
-					<Source>TRUSTED_LIST</Source>
-				</ChainItem>
+				<ChainItem	Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
 			</CertificateChain>
 			<Trusted>false</Trusted>
 			<SelfSigned>false</SelfSigned>
@@ -706,6 +705,9 @@
 			<AuthorityInformationAccessUrls />
 			<CRLDistributionPoints />
 			<OCSPAccessUrls />
+			<Sources>
+				<Source>OCSP_RESPONSE</Source>
+			</Sources>
 			<DigestAlgoAndValues>
 				<DigestAlgoAndValue>
 					<DigestMethod>SHA1</DigestMethod>
@@ -736,9 +738,7 @@
 			</BasicSignature>
 			<SigningCertificate	Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC" />
 			<CertificateChain>
-				<ChainItem	Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC">
-					<Source>TRUSTED_LIST</Source>
-				</ChainItem>
+				<ChainItem	Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
 			</CertificateChain>
 			<Trusted>false</Trusted>
 			<SelfSigned>false</SelfSigned>
@@ -789,6 +789,9 @@
 			<AuthorityInformationAccessUrls />
 			<CRLDistributionPoints />
 			<OCSPAccessUrls />
+			<Sources>
+				<Source>UNKNOWN</Source>
+			</Sources>
 			<DigestAlgoAndValues>
 				<DigestAlgoAndValue>
 					<DigestMethod>SHA1</DigestMethod>
@@ -874,6 +877,9 @@
 				</Url>
 			</CRLDistributionPoints>
 			<OCSPAccessUrls />
+			<Sources>
+				<Source>TRUSTED_LIST</Source>
+			</Sources>
 			<DigestAlgoAndValues>
 				<DigestAlgoAndValue>
 					<DigestMethod>SHA1</DigestMethod>
@@ -966,12 +972,8 @@
 			</BasicSignature>
 			<SigningCertificate	Certificate="C-E5AC48BF73EAF45CAD488C55A58C0E4C9C1117413CBFC405451D8EC50F341F4B" />
 			<CertificateChain>
-				<ChainItem	Certificate="C-E5AC48BF73EAF45CAD488C55A58C0E4C9C1117413CBFC405451D8EC50F341F4B">
-					<Source>OCSP_RESPONSE</Source>
-				</ChainItem>
-				<ChainItem	Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC">
-					<Source>TRUSTED_LIST</Source>
-				</ChainItem>
+				<ChainItem	Certificate="C-E5AC48BF73EAF45CAD488C55A58C0E4C9C1117413CBFC405451D8EC50F341F4B"/>
+				<ChainItem	Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
 			</CertificateChain>
 		</Revocation>
 		<Revocation	Id="R-f43d5e9d13f33da1113595d755c7946d0db74961b469cb139f03eda1cfd77bb2e5be2256b23b2514fd2858c1d6b0d9615ae72b728f3f380b226a14de6725596e">
@@ -1001,9 +1003,7 @@
 			</BasicSignature>
 			<SigningCertificate	Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5" />
 			<CertificateChain>
-				<ChainItem	Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-					<Source>UNKNOWN</Source>
-				</ChainItem>
+				<ChainItem	Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
 			</CertificateChain>
 		</Revocation>
 		<Revocation	Id="R-5a2f7f6fc616cb7fcc1084819f0d1b91cf9f1caf18c8808aab6779001dbf2cade5be2256b23b2514fd2858c1d6b0d9615ae72b728f3f380b226a14de6725596e">
@@ -1033,9 +1033,7 @@
 			</BasicSignature>
 			<SigningCertificate	Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5" />
 			<CertificateChain>
-				<ChainItem	Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-					<Source>UNKNOWN</Source>
-				</ChainItem>
+				<ChainItem	Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
 			</CertificateChain>
 		</Revocation>
 		<Revocation	Id="R-b500d1a6a280c57c5433dccd8924b5517e6aa08b18d4687e6a5820780d3fa2500d0191b6441a638ac2dfd67f34a53b1cbffbbb955691a3b3dab21ee93d419b1b">
@@ -1065,12 +1063,8 @@
 			</BasicSignature>
 			<SigningCertificate	Certificate="C-E5AC48BF73EAF45CAD488C55A58C0E4C9C1117413CBFC405451D8EC50F341F4B" />
 			<CertificateChain>
-				<ChainItem	Certificate="C-E5AC48BF73EAF45CAD488C55A58C0E4C9C1117413CBFC405451D8EC50F341F4B">
-					<Source>OCSP_RESPONSE</Source>
-				</ChainItem>
-				<ChainItem	Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC">
-					<Source>TRUSTED_LIST</Source>
-				</ChainItem>
+				<ChainItem	Certificate="C-E5AC48BF73EAF45CAD488C55A58C0E4C9C1117413CBFC405451D8EC50F341F4B"/>
+				<ChainItem	Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
 			</CertificateChain>
 		</Revocation>
 	</UsedRevocations>
@@ -1092,12 +1086,8 @@
 			</BasicSignature>
 			<SigningCertificate	Certificate="C-5A2F7F6FC616CB7FCC1084819F0D1B91CF9F1CAF18C8808AAB6779001DBF2CAD" />
 			<CertificateChain>
-				<ChainItem Certificate="C-5A2F7F6FC616CB7FCC1084819F0D1B91CF9F1CAF18C8808AAB6779001DBF2CAD">
-					<Source>TIMESTAMP</Source>
-				</ChainItem>
-				<ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-					<Source>TRUSTED_LIST</Source>
-				</ChainItem>
+				<ChainItem Certificate="C-5A2F7F6FC616CB7FCC1084819F0D1B91CF9F1CAF18C8808AAB6779001DBF2CAD"/>
+				<ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
 			</CertificateChain>
 	       <TimestampedObjects>
 		       	<TimestampedSignature Signature="id-a28e6cf46b56eb7ab0eb91f9c7b08f77819f4f2160a03c5d92a0555745d53b52" />
@@ -1122,12 +1112,8 @@
 			</BasicSignature>
 			<SigningCertificate	Certificate="C-F43D5E9D13F33DA1113595D755C7946D0DB74961B469CB139F03EDA1CFD77BB2" />
 			<CertificateChain>
-				<ChainItem	Certificate="C-F43D5E9D13F33DA1113595D755C7946D0DB74961B469CB139F03EDA1CFD77BB2">
-					<Source>TIMESTAMP</Source>
-				</ChainItem>
-				<ChainItem	Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
-					<Source>TRUSTED_LIST</Source>
-				</ChainItem>
+				<ChainItem	Certificate="C-F43D5E9D13F33DA1113595D755C7946D0DB74961B469CB139F03EDA1CFD77BB2"/>
+				<ChainItem	Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
 			</CertificateChain>
 	       <TimestampedObjects>
 		       	<TimestampedSignature Signature="id-752da48ccad668fcade0d92a1cd8def412feb7562591d1b2a442294d7219c336" />

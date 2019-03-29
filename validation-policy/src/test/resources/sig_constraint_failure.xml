@@ -29,12 +29,8 @@
 	            <IssuerSerialMatch>true</IssuerSerialMatch>
 	        </SigningCertificate>
 	        <CertificateChain>
-	            <ChainItem Certificate="C-CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314">
-	                <Source>SIGNATURE</Source>
-	            </ChainItem>
-	            <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
-	                <Source>TRUSTED_LIST</Source>
-	            </ChainItem>
+	            <ChainItem Certificate="C-CAA0910D7F836EB51888AD951455258EDA15F1F84B5D077F324B8FE60407C314"/>
+	            <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
 	        </CertificateChain>
 	        <ContentType>1.2.840.113549.1.7.1</ContentType>
 	        <SignatureScopes>
@@ -53,6 +49,9 @@
             <CountryName>RO</CountryName>
             <OrganizationName>Trans Sped SRL</OrganizationName>
             <OrganizationalUnit>Trans Sped Certification Authority</OrganizationalUnit>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <DigestAlgoAndValues>
 	            <DigestAlgoAndValue>
 	                <DigestMethod>SHA256</DigestMethod>
@@ -94,6 +93,9 @@
             <CountryName>PL</CountryName>
             <OrganizationName>Unizeto Technologies S.A.</OrganizationName>
             <OrganizationalUnit>Certum Certification Authority</OrganizationalUnit>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <DigestAlgoAndValues>
 	            <DigestAlgoAndValue>
 	                <DigestMethod>SHA256</DigestMethod>
@@ -132,6 +134,9 @@
             <CountryName>RO</CountryName>
             <GivenName>A-V</GivenName>
             <Surname>A</Surname>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <DigestAlgoAndValues>
 	            <DigestAlgoAndValue>
 	                <DigestMethod>SHA256</DigestMethod>
@@ -155,9 +160,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
             <CertificateChain>
-                <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -186,6 +189,9 @@
             <CountryName>PL</CountryName>
             <OrganizationName>Unizeto Technologies S.A.</OrganizationName>
             <OrganizationalUnit>Certum Certification Authority</OrganizationalUnit>
+            <Sources>
+            	<Source>UNKNOWN</Source>
+            </Sources>
             <DigestAlgoAndValues>
 	            <DigestAlgoAndValue>
 	                <DigestMethod>SHA256</DigestMethod>
@@ -208,9 +214,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E"/>
             <CertificateChain>
-                <ChainItem Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -236,6 +240,9 @@
             <CountryName>PL</CountryName>
             <OrganizationName>Unizeto Technologies S.A.</OrganizationName>
             <OrganizationalUnit>Certum Certification Authority</OrganizationalUnit>
+            <Sources>
+            	<Source>OCSP_RESPONSE</Source>
+            </Sources>
             <DigestAlgoAndValues>
 	            <DigestAlgoAndValue>
 	                <DigestMethod>SHA256</DigestMethod>
@@ -261,9 +268,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E"/>
             <CertificateChain>
-                <ChainItem Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -282,6 +287,9 @@
             <CountryName>DE</CountryName>
             <OrganizationName>TC TrustCenter GmbH</OrganizationName>
             <OrganizationalUnit>TC TrustCenter Class 3 CA</OrganizationalUnit>
+            <Sources>
+            	<Source>UNKNOWN</Source>
+            </Sources>
             <DigestAlgoAndValues>
 	            <DigestAlgoAndValue>
 	                <DigestMethod>SHA256</DigestMethod>
@@ -320,6 +328,9 @@
             <CountryName>RO</CountryName>
             <OrganizationName>Trans Sped SRL</OrganizationName>
             <OrganizationalUnit>Trans Sped Certification Authority</OrganizationalUnit>
+            <Sources>
+            	 <Source>OCSP_RESPONSE</Source>
+            </Sources>
             <DigestAlgoAndValues>
 	            <DigestAlgoAndValue>
 	                <DigestMethod>SHA256</DigestMethod>
@@ -343,9 +354,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
             <CertificateChain>
-                <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -377,12 +386,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002"/>
             <CertificateChain>
-                <ChainItem Certificate="C-19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002">
-                    <Source>OCSP_RESPONSE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002"/>
+                <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
             </CertificateChain>
         </Revocation>
         <Revocation Id="R-44E8F4F581737AD1B43EA4562D51AB3F3EB458C3A0E91979EF35F133EE31797E">
@@ -407,12 +412,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733"/>
             <CertificateChain>
-                <ChainItem Certificate="C-8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733">
-                    <Source>OCSP_RESPONSE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733"/>
+                <ChainItem Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E"/>
             </CertificateChain>
         </Revocation>
     </UsedRevocations>

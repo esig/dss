@@ -69,6 +69,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
+		// TODO: Etsi Validation Report
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
@@ -743,12 +744,12 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(4, simpleReport.getJaxbModel().getSignaturesCount());
 
-		LOG.info(reports.getXmlSimpleReport());
+		//LOG.info(reports.getXmlSimpleReport());
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(4, detailedReport.getSignatureIds().size());
 
-		LOG.info(reports.getXmlDetailedReport());
+		//LOG.info(reports.getXmlDetailedReport());
 
 		validateBestSigningTimes(reports);
 	}
@@ -769,12 +770,12 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(2, simpleReport.getJaxbModel().getSignaturesCount());
 
-		LOG.info(reports.getXmlSimpleReport());
+		//LOG.info(reports.getXmlSimpleReport());
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(2, detailedReport.getSignatureIds().size());
 
-		LOG.info(reports.getXmlDetailedReport());
+		//LOG.info(reports.getXmlDetailedReport());
 
 		validateBestSigningTimes(reports);
 	}

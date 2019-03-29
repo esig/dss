@@ -38,15 +38,9 @@
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Certificate="C-569D6B69CEF8B70B57B3A36D7702F8D95D50EEA3A2B614C7FA0CA9F39CFB7FD1">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730">
-                    <Source>AIA</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-569D6B69CEF8B70B57B3A36D7702F8D95D50EEA3A2B614C7FA0CA9F39CFB7FD1"/>
+                <ChainItem Certificate="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A"/>
+                <ChainItem Certificate="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
@@ -90,6 +84,9 @@
                 <Url>http://postsignum.ttc.cz/crl/psqualifiedca3.crl</Url>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA1</DigestMethod>
@@ -117,12 +114,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02"/>
             <CertificateChain>
-                <ChainItem Certificate="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
-                    <Source>AIA</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02"/>
+                <ChainItem Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578"/>
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -194,6 +187,9 @@
                 <Url>http://postsignum.ttc.cz/crl/psrootqca2.crl</Url>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>AIA</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA1</DigestMethod>
@@ -247,6 +243,9 @@
             <OCSPAccessUrls>
                 <Url>http://ocsp.ica.cz/rca15_rsa</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA1</DigestMethod>
@@ -272,9 +271,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730"/>
             <CertificateChain>
-                <ChainItem Certificate="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730">
-                    <Source>AIA</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730"/>
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -344,6 +341,9 @@
                 <Url>http://postsignum.ttc.cz/crl/psrootqca2.crl</Url>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA1</DigestMethod>
@@ -369,9 +369,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578"/>
             <CertificateChain>
-                <ChainItem Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
-                    <Source>AIA</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578"/>
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -442,6 +440,9 @@
             <OCSPAccessUrls>
                 <Url>http://ocsp.ica.cz/2qca16_rsa</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA1</DigestMethod>
@@ -469,12 +470,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A"/>
             <CertificateChain>
-                <ChainItem Certificate="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730">
-                    <Source>AIA</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A"/>
+                <ChainItem Certificate="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -523,6 +520,9 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>AIA</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA1</DigestMethod>
@@ -580,12 +580,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A"/>
             <CertificateChain>
-                <ChainItem Certificate="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730">
-                    <Source>AIA</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A"/>
+                <ChainItem Certificate="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730"/>
             </CertificateChain>
         </Revocation>
     </UsedRevocations>
@@ -607,15 +603,9 @@
                     </BasicSignature>
                     <SigningCertificate Certificate="C-5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F"/>
                     <CertificateChain>
-                        <ChainItem Certificate="C-5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                        <ChainItem Certificate="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                        <ChainItem Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
-                            <Source>AIA</Source>
-                        </ChainItem>
+                        <ChainItem Certificate="C-5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F"/>
+                        <ChainItem Certificate="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02"/>
+                        <ChainItem Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578"/>
                     </CertificateChain>
                      <TimestampedObjects>
 					   	<TimestampedSignature Signature="id-3319b7ffbd2bb9943f6cda5813bca4ca" />
@@ -640,15 +630,9 @@
                     </BasicSignature>
                     <SigningCertificate Certificate="C-5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F"/>
                     <CertificateChain>
-                        <ChainItem Certificate="C-5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                        <ChainItem Certificate="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                        <ChainItem Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
-                            <Source>AIA</Source>
-                        </ChainItem>
+                        <ChainItem Certificate="C-5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F"/>
+                        <ChainItem Certificate="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02"/>
+                        <ChainItem Certificate="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578"/>
                     </CertificateChain>
                     
                      <TimestampedObjects>

@@ -38,9 +38,7 @@
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Certificate="C-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
-                    <Source>UNKNOWN</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
@@ -85,9 +83,7 @@
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Certificate="C-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
-                    <Source>UNKNOWN</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
@@ -116,6 +112,9 @@
             <OCSPAccessUrls>
                 <Url>http://ocsppkiff.difesa.it/</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>UNKNOWN</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2023-12-15T22:59:00</NotAfter>
             <NotBefore>2014-10-02T10:40:21</NotBefore>

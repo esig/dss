@@ -1142,6 +1142,8 @@ public class DiagnosticDataBuilder {
 		if (includeRawCertificateTokens) {
 			xmlCert.setBase64Encoded(certToken.getEncoded());
 		}
+		// TODO: if false add DigestAlgoAndValue
+		// TODO: Optional default Digest Algo (SHA-256)
 
 		return xmlCert;
 	}
@@ -1153,7 +1155,8 @@ public class DiagnosticDataBuilder {
 			for (CertificateSourceType source : sourceTypes) {
 				certificateSources.add(XmlCertificateSourceType.valueOf(source.name()));
 			}
-		} else {
+		}
+		if (Utils.isCollectionEmpty(certificateSources)) {
 			certificateSources.add(XmlCertificateSourceType.UNKNOWN);
 		}
 		return certificateSources;

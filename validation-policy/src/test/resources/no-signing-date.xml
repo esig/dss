@@ -37,12 +37,8 @@
                 <IssuerSerialMatch>false</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Certificate="C-EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74"/>
+                <ChainItem Certificate="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
@@ -71,6 +67,9 @@
             <OCSPAccessUrls>
                 <Url>http://ocsp.quovadisglobal.com</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2021-03-17T19:33:33</NotAfter>
             <NotBefore>2014-05-30T20:15:49</NotBefore>
@@ -136,6 +135,9 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>OCSP_RESPONSE</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2019-11-03T21:06:26</NotAfter>
             <NotBefore>2016-11-03T21:06:26</NotBefore>
@@ -154,9 +156,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E"/>
             <CertificateChain>
-                <ChainItem Certificate="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -205,6 +205,9 @@
             <OCSPAccessUrls>
                 <Url>http://ocsp.quovadisglobal.com</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <DigestAlgoAndValues/>
             <NotAfter>2018-02-28T15:11:00</NotAfter>
             <NotBefore>2017-02-28T15:01:01</NotBefore>
@@ -224,9 +227,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E"/>
             <CertificateChain>
-                <ChainItem Certificate="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -284,12 +285,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-A0DFB7938782C01EB6FE9BA9B3210CFCEDB8653B309B53654D427A02ABEFFE7D"/>
             <CertificateChain>
-                <ChainItem Certificate="C-A0DFB7938782C01EB6FE9BA9B3210CFCEDB8653B309B53654D427A02ABEFFE7D">
-                    <Source>OCSP_RESPONSE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-A0DFB7938782C01EB6FE9BA9B3210CFCEDB8653B309B53654D427A02ABEFFE7D"/>
+                <ChainItem Certificate="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E"/>
             </CertificateChain>
         </Revocation>
     </UsedRevocations>

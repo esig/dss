@@ -32,18 +32,10 @@
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Certificate="C-F5ADDE9792A56C8C5FF3872560E3E85221E62D7A517DAD428D623299CCEF373B">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-498D3379F39A398AFCCA536C528F91A013D0A868FEAEFFA1114EC3B6938249F0">
-                    <Source>AIA</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9">
-                    <Source>AIA</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
-                    <Source>AIA</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-F5ADDE9792A56C8C5FF3872560E3E85221E62D7A517DAD428D623299CCEF373B"/>
+                <ChainItem Certificate="C-498D3379F39A398AFCCA536C528F91A013D0A868FEAEFFA1114EC3B6938249F0"/>
+                <ChainItem Certificate="C-B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9"/>
+                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C"/>
             </CertificateChain>
             <ContentType>application/pdf</ContentType>
             <CommitmentTypeIndication/>
@@ -104,9 +96,7 @@
                 <IssuerSerialMatch>false</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Certificate="C-C4DCF22C04E2914AEB651F660A2558AF783D8C344E62D82D0DE5DBD5DC87F2F5">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-C4DCF22C04E2914AEB651F660A2558AF783D8C344E62D82D0DE5DBD5DC87F2F5"/>
             </CertificateChain>
             <ContentType>application/pdf</ContentType>
             <CommitmentTypeIndication/>
@@ -145,6 +135,9 @@
             <OCSPAccessUrls>
                 <Url>http://ocsp.certificadodigital.com.br/serasarfbv2</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA256</DigestMethod>
@@ -178,15 +171,9 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-498D3379F39A398AFCCA536C528F91A013D0A868FEAEFFA1114EC3B6938249F0"/>
             <CertificateChain>
-                <ChainItem Certificate="C-498D3379F39A398AFCCA536C528F91A013D0A868FEAEFFA1114EC3B6938249F0">
-                    <Source>AIA</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9">
-                    <Source>AIA</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
-                    <Source>AIA</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-498D3379F39A398AFCCA536C528F91A013D0A868FEAEFFA1114EC3B6938249F0"/>
+                <ChainItem Certificate="C-B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9"/>
+                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -213,6 +200,9 @@
                 <Url>http://acraiz.icpbrasil.gov.br/LCRacraizv2.crl</Url>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>AIA</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA256</DigestMethod>
@@ -271,6 +261,9 @@
             <OCSPAccessUrls>
                 <Url>http://ocsp.certisign.com.br</Url>
             </OCSPAccessUrls>
+            <Sources>
+            	<Source>TIMESTAMP</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA256</DigestMethod>
@@ -303,15 +296,9 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D"/>
             <CertificateChain>
-                <ChainItem Certificate="C-A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D">
-                    <Source>AIA</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505">
-                    <Source>AIA</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
-                    <Source>AIA</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D"/>
+                <ChainItem Certificate="C-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505"/>
+                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -338,6 +325,9 @@
                 <Url>http://www.receita.fazenda.gov.br/acrfb/acrfbv3.crl</Url>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>AIA</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA256</DigestMethod>
@@ -367,12 +357,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9"/>
             <CertificateChain>
-                <ChainItem Certificate="C-B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9">
-                    <Source>AIA</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
-                    <Source>AIA</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9"/>
+                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -402,6 +388,9 @@
                 <Url>http://acraiz.icpbrasil.gov.br/LCRacraizv2.crl</Url>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>AIA</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA256</DigestMethod>
@@ -431,9 +420,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C"/>
             <CertificateChain>
-                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
-                    <Source>AIA</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -464,6 +451,9 @@
                 <Url>ldap:///CN=docusignhq-SEA-CAS-01-CA,CN=SEA-CAS-01,CN=CDP,CN=Public%20Key%20Services,CN=Services,CN=Configuration,DC=docusignhq,DC=com?certificateRevocationList?base?objectClass=cRLDistributionPoint</Url>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA256</DigestMethod>
@@ -517,6 +507,9 @@
                 <Url>http://acraiz.icpbrasil.gov.br/LCRacraizv2.crl</Url>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>AIA</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA256</DigestMethod>
@@ -546,9 +539,7 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C"/>
             <CertificateChain>
-                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
-                    <Source>AIA</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -575,6 +566,9 @@
                 <Url>http://icp-brasil.certisign.com.br/repositorio/lcr/ACCertisignG6/LatestCRL.crl</Url>
             </CRLDistributionPoints>
             <OCSPAccessUrls/>
+            <Sources>
+            	<Source>AIA</Source>
+            </Sources>
             <DigestAlgoAndValues>
                 <DigestAlgoAndValue>
                     <DigestMethod>SHA256</DigestMethod>
@@ -604,12 +598,8 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505"/>
             <CertificateChain>
-                <ChainItem Certificate="C-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505">
-                    <Source>AIA</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
-                    <Source>AIA</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505"/>
+                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -641,18 +631,10 @@
             </BasicSignature>
             <SigningCertificate Certificate="C-2086827691ADF87520375749ADF3616AC5FACA0456E8F2DA54DDCF844D24B86E"/>
             <CertificateChain>
-                <ChainItem Certificate="C-2086827691ADF87520375749ADF3616AC5FACA0456E8F2DA54DDCF844D24B86E">
-                    <Source>TIMESTAMP</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D">
-                    <Source>AIA</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505">
-                    <Source>AIA</Source>
-                </ChainItem>
-                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
-                    <Source>AIA</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-2086827691ADF87520375749ADF3616AC5FACA0456E8F2DA54DDCF844D24B86E"/>
+                <ChainItem Certificate="C-A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D"/>
+                <ChainItem Certificate="C-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505"/>
+                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C"/>
             </CertificateChain>
             <TimestampedObjects>
                 <TimestampedSignature Signature="id-eb2ce89008eb1ef77a4f96ee8738c07daceee2957537d5bdea0bd2e3af393f28" />
