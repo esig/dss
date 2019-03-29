@@ -61,13 +61,6 @@ public interface TokenProxy {
 
 	List<CertificateWrapper> getCertificateChain();
 
-	/**
-	 * @deprecated
-	 */
-	@Deprecated
-	String getLastChainCertificateSource();
-
-
 	boolean isTrustedChain();
 
 	List<XmlDigestMatcher> getDigestMatchers();

@@ -257,6 +257,14 @@
 				</xs:complexType>
 			</xs:element>
 			
+			<xs:element name="Sources" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Source" type="CertificateSourceType" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
 			<xs:element name="NotAfter" type="xs:dateTime" />
 			<xs:element name="NotBefore" type="xs:dateTime" />
 			<xs:element name="PublicKeySize" type="xs:int" />
@@ -444,9 +452,6 @@
 		<xs:sequence>
 			<xs:element name="ChainItem" minOccurs="0" maxOccurs="unbounded">
 				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Source" type="xs:string" />
-					</xs:sequence>
 					<xs:attribute name="Certificate" type="xs:IDREF" use="required" />
 				</xs:complexType>
 			</xs:element>
@@ -508,6 +513,19 @@
 	<xs:complexType name="FoundTimestamp">
 		<xs:attribute name="Timestamp" type="xs:IDREF" use="required" />
 	</xs:complexType>
+	
+	<xs:simpleType name="CertificateSourceType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="TRUSTED_STORE" />
+			<xs:enumeration value="TRUSTED_LIST" />
+			<xs:enumeration value="SIGNATURE" />
+			<xs:enumeration value="OCSP_RESPONSE" />
+			<xs:enumeration value="OTHER" />
+			<xs:enumeration value="AIA" />
+			<xs:enumeration value="TIMESTAMP" />
+			<xs:enumeration value="UNKNOWN" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:simpleType name="CertificateLocationType" final="restriction">
 		<xs:restriction base="xs:string">

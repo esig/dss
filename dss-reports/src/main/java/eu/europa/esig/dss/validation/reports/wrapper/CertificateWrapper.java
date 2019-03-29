@@ -39,6 +39,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.XmlCertificateSourceType;
 
 public class CertificateWrapper extends AbstractTokenProxy {
 
@@ -86,6 +87,10 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public boolean isRevocationDataAvailable() {
 		return Utils.isCollectionNotEmpty(certificate.getRevocations());
+	}
+	
+	public List<XmlCertificateSourceType> getSources() {
+		return certificate.getSources();
 	}
 
 	public List<CertificateRevocationWrapper> getCertificateRevocationData() {

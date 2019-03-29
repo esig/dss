@@ -50,6 +50,12 @@
 				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationRefLocationParser.print" />
 		</jaxb:bindings>
 		
+  <jaxb:bindings node="//xs:simpleType[@name='CertificateSourceType']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.XmlCertificateSourceType" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.CertificateSourceTypeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.CertificateSourceTypeParser.print" />
+		</jaxb:bindings>
+		
  	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:element[@name='Parent']">
         <jaxb:property>
             <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlSignature" />

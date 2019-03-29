@@ -591,25 +591,7 @@ public class DiagnosticDataBuilder {
 	private XmlChainItem getXmlChainItem(final CertificateToken token) {
 		final XmlChainItem chainItem = new XmlChainItem();
 		chainItem.setCertificate(xmlCerts.get(token.getDSSIdAsString()));
-		chainItem.setSource(getCertificateMainSourceType(token).name());
 		return chainItem;
-	}
-
-	private CertificateSourceType getCertificateMainSourceType(final CertificateToken token) {
-		CertificateSourceType mainSource = CertificateSourceType.UNKNOWN;
-		if (certificateSourceTypes != null) {
-			Set<CertificateSourceType> sourceTypes = certificateSourceTypes.get(token);
-			if (sourceTypes.size() > 0) {
-				if (sourceTypes.contains(CertificateSourceType.TRUSTED_LIST)) {
-					mainSource = CertificateSourceType.TRUSTED_LIST;
-				} else if (sourceTypes.contains(CertificateSourceType.TRUSTED_STORE)) {
-					mainSource = CertificateSourceType.TRUSTED_STORE;
-				} else {
-					mainSource = sourceTypes.iterator().next();
-				}
-			}
-		}
-		return mainSource;
 	}
 
 	/**
@@ -1134,6 +1116,8 @@ public class DiagnosticDataBuilder {
 		xmlCert.setAuthorityInformationAccessUrls(DSSASN1Utils.getCAAccessLocations(certToken));
 		xmlCert.setOCSPAccessUrls(DSSASN1Utils.getOCSPAccessLocations(certToken));
 		xmlCert.setCRLDistributionPoints(DSSASN1Utils.getCrlUrls(certToken));
+		
+		xmlCert.setSources(getXmlCertificateSources(certToken));
 
 		xmlCert.setNotAfter(certToken.getNotAfter());
 		xmlCert.setNotBefore(certToken.getNotBefore());
@@ -1160,6 +1144,19 @@ public class DiagnosticDataBuilder {
 		}
 
 		return xmlCert;
+	}
+
+	private List<XmlCertificateSourceType> getXmlCertificateSources(final CertificateToken token) {
+		List<XmlCertificateSourceType> certificateSources = new ArrayList<XmlCertificateSourceType>();
+		if (certificateSourceTypes != null) {
+			Set<CertificateSourceType> sourceTypes = certificateSourceTypes.get(token);
+			for (CertificateSourceType source : sourceTypes) {
+				certificateSources.add(XmlCertificateSourceType.valueOf(source.name()));
+			}
+		} else {
+			certificateSources.add(XmlCertificateSourceType.UNKNOWN);
+		}
+		return certificateSources;
 	}
 
 	private CertificateToken getCertificateToken(String certificateId) {

@@ -32,7 +32,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.CertificateSourceType;
+import eu.europa.esig.dss.validation.XmlCertificateSourceType;
 
 public abstract class AbstractTokenProxy implements TokenProxy {
 
@@ -158,35 +158,22 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 		return null;
 	}
 
-	/**
-	 * @deprecated
-	 */
-	@Deprecated
-	@Override
-	public String getLastChainCertificateSource() {
-		XmlChainItem item = getLastChainCertificate();
-		return item == null ? Utils.EMPTY_STRING : item.getSource();
-	}
-
-	/**
-	 * @deprecated
-	 */
-	@Deprecated
-	public XmlChainItem getLastChainCertificate() {
-		List<XmlChainItem> certificateChain = getCurrentCertificateChain();
-		if (Utils.isCollectionNotEmpty(certificateChain)) {
-			XmlChainItem lastItem = certificateChain.get(certificateChain.size() - 1);
-			return lastItem;
-		}
-		return null;
-	}
-
 	@Override
 	public boolean isTrustedChain() {
-		List<XmlChainItem> certificateChain = getCurrentCertificateChain();
-		for (XmlChainItem xmlChainItem : certificateChain) {
-			String currentCertSource = xmlChainItem.getSource();
-			if (CertificateSourceType.TRUSTED_STORE.name().equals(currentCertSource) || CertificateSourceType.TRUSTED_LIST.name().equals(currentCertSource)) {
+		List<CertificateWrapper> certificateChain = getCertificateChain();
+		for (CertificateWrapper certificate : certificateChain) {
+			List<XmlCertificateSourceType> currentCertSources = certificate.getSources();
+			if (currentCertSources.contains(XmlCertificateSourceType.TRUSTED_STORE) || 
+					currentCertSources.contains(XmlCertificateSourceType.TRUSTED_LIST)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean isCertificateChainFromTrustedStore() {
+		for (CertificateWrapper certificate : getCertificateChain()) {
+			if (certificate.getSources().contains(XmlCertificateSourceType.TRUSTED_STORE)) {
 				return true;
 			}
 		}
