@@ -55,7 +55,6 @@
                 <ProcessingError></ProcessingError>
                 <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
             </Policy>
-            <Timestamps/>
             <SignatureScopes>
                 <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering.</SignatureScope>
             </SignatureScopes>
@@ -112,7 +111,6 @@
                 <ProcessingError></ProcessingError>
                 <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
             </Policy>
-            <Timestamps/>
             <SignatureScopes>
                 <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering.</SignatureScope>
             </SignatureScopes>
@@ -170,7 +168,6 @@
                 <ProcessingError></ProcessingError>
                 <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
             </Policy>
-            <Timestamps/>
             <SignatureScopes>
                 <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering.</SignatureScope>
             </SignatureScopes>
@@ -228,7 +225,6 @@
                 <ProcessingError></ProcessingError>
                 <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
             </Policy>
-            <Timestamps/>
             <SignatureScopes>
                 <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering.</SignatureScope>
             </SignatureScopes>
@@ -432,7 +428,6 @@
             </TrustedServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-d30fa7d4fa90904884ddeed35b989da84d82d742580e2625d56625c07c572ff8c3e145f6a7765097e9f92aaff292e4f09bad7e2613dc2b6448f607c03e5ada91">
-                    <Available>true</Available>
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>

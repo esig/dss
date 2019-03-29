@@ -46,7 +46,6 @@
             </SignatureProductionPlace>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
-            <Timestamps/>
             <SignatureScopes>
                 <SignatureScope name="Full PDF" scope="FULL">Full document</SignatureScope>
             </SignatureScopes>
@@ -205,7 +204,6 @@
             </TrustedServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-3967083a1b9ce00484905529e22c64bbf622ee356088d62371b8069a84fe47f7ce5b5ad67683a8a2ae283364782aa32e718ab9b80ae030215e575716d4d58673">
-                    <Available>true</Available>
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>
@@ -496,7 +494,6 @@
             </TrustedServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-3967083a1b9ce00484905529e22c64bbf622ee356088d62371b8069a84fe47f7ce5b5ad67683a8a2ae283364782aa32e718ab9b80ae030215e575716d4d52222">
-                    <Available>true</Available>
                     <Status>true</Status>
 				</CertificateRevocation>
             </Revocations>

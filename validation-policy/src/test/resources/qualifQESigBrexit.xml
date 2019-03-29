@@ -48,42 +48,9 @@
             </SignatureProductionPlace>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
-            <Timestamps>
-                <Timestamp Id="D2E04180536591BAEF6A741431E7624ABD738CE34D2B4E3B869CEC718C9F8BFD" Type="SIGNATURE_TIMESTAMP">
-                    <ProductionTime>2016-04-18T10:27:39</ProductionTime>
-                    <DigestMatcher type="MESSAGE_IMPRINT">
-		              <DigestMethod>SHA256</DigestMethod>
-		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
-		              <DataFound>true</DataFound>
-		              <DataIntact>true</DataIntact>
-		          	</DigestMatcher>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
-                    <CertificateChain>
-                        <ChainItem Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19">
-                            <Source>SIGNATURE</Source>
-                        </ChainItem>
-                        <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                    <TimestampedObjects>
-                        <TimestampedObject Category="SIGNATURE" Id="id-1bc73e8a06e7678358dcff35f830d9438c0b985dfb6103cb6a8d44bc11811a66"/>
-                        <TimestampedObject Category="CERTIFICATE">
-                            <DigestAlgoAndValue>
-                                <DigestMethod>SHA256</DigestMethod>
-                                <DigestValue>dfUhbBNcp9MEc3IyR+itYQT4Q6WYrOv4J2T1VuN41i0=</DigestValue>
-                            </DigestAlgoAndValue>
-                        </TimestampedObject>
-                    </TimestampedObjects>
-                </Timestamp>
-            </Timestamps>
+			<FoundTimestamps>
+				<FoundTimestamp Timestamp="T-D2E04180536591BAEF6A741431E7624ABD738CE34D2B4E3B869CEC718C9F8BFD"/>
+			</FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope name="Full PDF" scope="FULL">Full document</SignatureScope>
             </SignatureScopes>
@@ -178,7 +145,6 @@
                     <Status>true</Status>
                 </CertificateRevocation>
                 <CertificateRevocation Revocation="R-d74af393cf3b506da33b46bc52b49cd6fac12b2bdaa9ce1fba25c0c1e4ebbe1937478d403aa751c3f67f0d56db9f9340b7876dbbc05396911ebe8dc6162bf388">
-                    <Available>true</Available>
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>
@@ -361,7 +327,6 @@
             </TrustedServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-75f5216c135ca7d30473723247e8ad6104f843a598acebf82764f556e378d62d18423017027efece3d0668fa492ad8625e7dcac01c057a11d679eb33ab41def9">
-                    <Available>true</Available>
                     <Status>false</Status>
                     <Reason>unspecified</Reason>
                     <RevocationDate>2016-07-05T15:10:07</RevocationDate>
@@ -606,7 +571,6 @@
                     <Status>true</Status>
                 </CertificateRevocation>
                 <CertificateRevocation Revocation="R-a2bcb1e8523fbb23b9a277afa0b67da2e61e9ad8bac1b926a733a1ae07c67cde52e8de03ed10fb4ba24696f38afbf93c309823f76ef058871bb8604533ce4ca4">
-                    <Available>true</Available>
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>
@@ -891,6 +855,37 @@
             </CertificateChain>
         </Revocation>
     </UsedRevocations>
+    <UsedTimestamps>
+         <Timestamp Id="T-D2E04180536591BAEF6A741431E7624ABD738CE34D2B4E3B869CEC718C9F8BFD" Type="SIGNATURE_TIMESTAMP">
+             <ProductionTime>2016-04-18T10:27:39</ProductionTime>
+             <DigestMatcher type="MESSAGE_IMPRINT">
+         <DigestMethod>SHA256</DigestMethod>
+         <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
+         <DataFound>true</DataFound>
+         <DataIntact>true</DataIntact>
+     	</DigestMatcher>
+             <BasicSignature>
+                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                 <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                 <SignatureIntact>true</SignatureIntact>
+                 <SignatureValid>true</SignatureValid>
+             </BasicSignature>
+             <SigningCertificate Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
+             <CertificateChain>
+                 <ChainItem Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19">
+                     <Source>SIGNATURE</Source>
+                 </ChainItem>
+                 <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+                     <Source>TRUSTED_LIST</Source>
+                 </ChainItem>
+             </CertificateChain>
+		       <TimestampedObjects>
+			       	<TimestampedSignature Signature="id-1bc73e8a06e7678358dcff35f830d9438c0b985dfb6103cb6a8d44bc11811a66" />
+			       	<TimestampedCertificate Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19" />
+		       </TimestampedObjects>
+         </Timestamp>
+     </UsedTimestamps>
     <TrustedLists>
         <TrustedList>
             <CountryCode>BE</CountryCode>

@@ -129,13 +129,11 @@
             <TrustedServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-0574F0CFD174789DDCB57C5F2EC6EC43DD341BF7789708E28E87AF9A2696CA56">
-	                <Available>true</Available>
 	                <Status>false</Status>
 	                <Reason>cessationOfOperation</Reason>
 	                <RevocationDate>2014-10-15T15:12:23</RevocationDate>
 	            </CertificateRevocation>
 	            <CertificateRevocation Revocation="R-55F56C98A1A43A431C6DD59F46D921DDE91F9FFE23FB1E4CC53A372CD38B4495">
-	                <Available>true</Available>
 	                <Status>false</Status>
 	                <Reason>cessationOfOperation</Reason>
 	                <RevocationDate>2014-10-15T15:12:23</RevocationDate>

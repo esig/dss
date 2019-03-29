@@ -37,258 +37,13 @@
 	            </ChainItem>
 	        </CertificateChain>
 	        <ContentType>application/pdf</ContentType>
-	        <Timestamps>
-	            <Timestamp Id="B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC" Type="SIGNATURE_TIMESTAMP">
-	                <ProductionTime>2014-04-29T07:32:54</ProductionTime>
-	               <DigestMatcher type="MESSAGE_IMPRINT">
-		              <DigestMethod>SHA256</DigestMethod>
-		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
-		              <DataFound>true</DataFound>
-		              <DataIntact>true</DataIntact>
-		          </DigestMatcher>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
-	                <CertificateChain>
-	                    <ChainItem Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19">
-	                        <Source>SIGNATURE</Source>
-	                    </ChainItem>
-	                    <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	                <TimestampedObjects>
-	                    <TimestampedObject Category="SIGNATURE" Id="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93"/>
-	                    <TimestampedObject Category="CERTIFICATE">
-		                    <DigestAlgoAndValue>
-		                        <DigestMethod>SHA256</DigestMethod>
-		                        <DigestValue>3wmjf13SiCB7D/TpbVUd5lzEAzNs5qJby/bA2Ee9LnQ=</DigestValue>
-		                    </DigestAlgoAndValue>
-	                    </TimestampedObject>
-	                </TimestampedObjects>
-	            </Timestamp>
-	            <Timestamp Id="C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC" Type="SIGNATURE_TIMESTAMP">
-	                <ProductionTime>2014-04-29T07:34:19</ProductionTime>
-	                <DigestMatcher type="MESSAGE_IMPRINT">
-		              <DigestMethod>SHA256</DigestMethod>
-		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
-		              <DataFound>true</DataFound>
-		              <DataIntact>true</DataIntact>
-		          	</DigestMatcher>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
-	                <CertificateChain>
-	                    <ChainItem Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19">
-	                        <Source>SIGNATURE</Source>
-	                    </ChainItem>
-	                    <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	                <TimestampedObjects>
-	                    <TimestampedObject Category="SIGNATURE" Id="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93"/>
-						<TimestampedObject Category="CERTIFICATE">
-		                    <DigestAlgoAndValue>
-		                        <DigestMethod>SHA256</DigestMethod>
-		                        <DigestValue>3wmjf13SiCB7D/TpbVUd5lzEAzNs5qJby/bA2Ee9LnQ=</DigestValue>
-		                    </DigestAlgoAndValue>
-	                    </TimestampedObject>
-	                </TimestampedObjects>
-	            </Timestamp>
-	            <Timestamp Id="1230C6EDF0088D1818AA37CB058F9EC4D978005C7C3372FB6874D2480507F76D" Type="ARCHIVE_TIMESTAMP">
-	                <ProductionTime>2014-04-29T07:33:19</ProductionTime>
-	               <DigestMatcher type="MESSAGE_IMPRINT">
-		              <DigestMethod>SHA256</DigestMethod>
-		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
-		              <DataFound>true</DataFound>
-		              <DataIntact>true</DataIntact>
-		          	</DigestMatcher>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
-	                <CertificateChain>
-	                    <ChainItem Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19">
-	                        <Source>SIGNATURE</Source>
-	                    </ChainItem>
-	                    <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	                <TimestampedObjects>
-	                    <TimestampedObject Category="SIGNATURE" Id="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93"/>
-	                    <TimestampedObject Category="TIMESTAMP"  Id="B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC"/>
-						<TimestampedObject Category="CERTIFICATE">
-		                    <DigestAlgoAndValue>
-		                        <DigestMethod>SHA256</DigestMethod>
-		                        <DigestValue>3wmjf13SiCB7D/TpbVUd5lzEAzNs5qJby/bA2Ee9LnQ=</DigestValue>
-		                    </DigestAlgoAndValue>
-						</TimestampedObject>
-						<TimestampedObject Category="CERTIFICATE">
-		                    <DigestAlgoAndValue>
-		                        <DigestMethod>SHA1</DigestMethod>
-		                        <DigestValue>UcygcQr3cz00rNwZRQmfQ1x/xZ8=</DigestValue>
-		                    </DigestAlgoAndValue>
-						</TimestampedObject>
-						<TimestampedObject Category="CERTIFICATE">
-		                    <DigestAlgoAndValue>
-		                        <DigestMethod>SHA1</DigestMethod>
-		                        <DigestValue>FcPZ/ByKno7Us/dn83JGxZKfmCk=</DigestValue>
-		                    </DigestAlgoAndValue>
-						</TimestampedObject>
-						<TimestampedObject Category="REVOCATION">
-		                    <DigestAlgoAndValue>
-		                        <DigestMethod>SHA1</DigestMethod>
-		                        <DigestValue>kJ2giWhV+3NlxxRhrf2SPS9KsCA=</DigestValue>
-		                    </DigestAlgoAndValue>
-						</TimestampedObject>
-						<TimestampedObject Category="REVOCATION">
-		                    <DigestAlgoAndValue>
-		                        <DigestMethod>SHA1</DigestMethod>
-		                        <DigestValue>ERWJOU4nqlSGYxy2k4d3mNeptU4=</DigestValue>
-		                    </DigestAlgoAndValue>
-	                    </TimestampedObject>
-	                </TimestampedObjects>
-	            </Timestamp>
-	            <Timestamp Id="A2C72B871E035E4EFB564B562B1A3D97E85FD59374B1FF7E6E963C259E2786AF" Type="ARCHIVE_TIMESTAMP">
-	                <ProductionTime>2014-04-29T07:35:49</ProductionTime>
-	                <DigestMatcher type="MESSAGE_IMPRINT">
-		              <DigestMethod>SHA256</DigestMethod>
-		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
-		              <DataFound>true</DataFound>
-		              <DataIntact>true</DataIntact>
-		          	</DigestMatcher>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
-	                <CertificateChain>
-	                    <ChainItem Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19">
-	                        <Source>SIGNATURE</Source>
-	                    </ChainItem>
-	                    <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	                <TimestampedObjects>
-	                    <TimestampedObject Category="SIGNATURE" Id="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93"/>
-	                    <TimestampedObject Category="TIMESTAMP"  Id="B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC"/>
-	                    <TimestampedObject Category="TIMESTAMP"  Id="1230C6EDF0088D1818AA37CB058F9EC4D978005C7C3372FB6874D2480507F76D"/>
-	                    <TimestampedObject Category="TIMESTAMP"  Id="C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC"/>
-						<TimestampedObject Category="CERTIFICATE">
-		                    <DigestAlgoAndValue>
-		                        <DigestMethod>SHA256</DigestMethod>
-		                        <DigestValue>3wmjf13SiCB7D/TpbVUd5lzEAzNs5qJby/bA2Ee9LnQ=</DigestValue>
-		                    </DigestAlgoAndValue>
-						</TimestampedObject>
-						<TimestampedObject Category="CERTIFICATE">
-		                    <DigestAlgoAndValue>
-		                        <DigestMethod>SHA1</DigestMethod>
-		                        <DigestValue>UcygcQr3cz00rNwZRQmfQ1x/xZ8=</DigestValue>
-		                    </DigestAlgoAndValue>
-						</TimestampedObject>
-						<TimestampedObject Category="CERTIFICATE">
-		                    <DigestAlgoAndValue>
-		                        <DigestMethod>SHA1</DigestMethod>
-		                        <DigestValue>FcPZ/ByKno7Us/dn83JGxZKfmCk=</DigestValue>
-		                    </DigestAlgoAndValue>
-						</TimestampedObject>
-						<TimestampedObject Category="REVOCATION">
-		                    <DigestAlgoAndValue>
-		                        <DigestMethod>SHA1</DigestMethod>
-		                        <DigestValue>kJ2giWhV+3NlxxRhrf2SPS9KsCA=</DigestValue>
-		                    </DigestAlgoAndValue>
-						</TimestampedObject>
-						<TimestampedObject Category="REVOCATION">
-		                    <DigestAlgoAndValue>
-		                        <DigestMethod>SHA1</DigestMethod>
-		                        <DigestValue>ERWJOU4nqlSGYxy2k4d3mNeptU4=</DigestValue>
-		                    </DigestAlgoAndValue>
-	                    </TimestampedObject>
-	                </TimestampedObjects>
-	            </Timestamp>
-	            <Timestamp Id="7453A148A73E91DDCD689D466D32A6C652D397853E52C1EC2EAC5F0CF4881168" Type="ARCHIVE_TIMESTAMP">
-	                <ProductionTime>2014-04-29T07:36:30</ProductionTime>
-	                <DigestMatcher type="MESSAGE_IMPRINT">
-		              <DigestMethod>SHA256</DigestMethod>
-		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
-		              <DataFound>true</DataFound>
-		              <DataIntact>true</DataIntact>
-		          	</DigestMatcher>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
-	                <CertificateChain>
-	                    <ChainItem Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19">
-	                        <Source>SIGNATURE</Source>
-	                    </ChainItem>
-	                    <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	                <TimestampedObjects>
-	                    <TimestampedObject Category="SIGNATURE" Id="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93"/>
-	                    <TimestampedObject Category="TIMESTAMP"  Id="B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC"/>
-	                    <TimestampedObject Category="TIMESTAMP"  Id="1230C6EDF0088D1818AA37CB058F9EC4D978005C7C3372FB6874D2480507F76D"/>
-	                    <TimestampedObject Category="TIMESTAMP"  Id="C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC"/>
-	                    <TimestampedObject Category="TIMESTAMP"  Id="A2C72B871E035E4EFB564B562B1A3D97E85FD59374B1FF7E6E963C259E2786AF"/>
-	                    <TimestampedObject Category="CERTIFICATE">
-		                    <DigestAlgoAndValue>
-		                        <DigestMethod>SHA256</DigestMethod>
-		                        <DigestValue>3wmjf13SiCB7D/TpbVUd5lzEAzNs5qJby/bA2Ee9LnQ=</DigestValue>
-		                    </DigestAlgoAndValue>
-						</TimestampedObject>
-						<TimestampedObject Category="CERTIFICATE">
-		                    <DigestAlgoAndValue>
-		                        <DigestMethod>SHA1</DigestMethod>
-		                        <DigestValue>UcygcQr3cz00rNwZRQmfQ1x/xZ8=</DigestValue>
-		                    </DigestAlgoAndValue>
-						</TimestampedObject>
-						<TimestampedObject Category="CERTIFICATE">
-		                    <DigestAlgoAndValue>
-		                        <DigestMethod>SHA1</DigestMethod>
-		                        <DigestValue>FcPZ/ByKno7Us/dn83JGxZKfmCk=</DigestValue>
-		                    </DigestAlgoAndValue>
-						</TimestampedObject>
-						<TimestampedObject Category="REVOCATION">
-		                    <DigestAlgoAndValue>
-		                        <DigestMethod>SHA1</DigestMethod>
-		                        <DigestValue>kJ2giWhV+3NlxxRhrf2SPS9KsCA=</DigestValue>
-		                    </DigestAlgoAndValue>
-						</TimestampedObject>
-						<TimestampedObject Category="REVOCATION">
-		                    <DigestAlgoAndValue>
-		                        <DigestMethod>SHA1</DigestMethod>
-		                        <DigestValue>ERWJOU4nqlSGYxy2k4d3mNeptU4=</DigestValue>
-		                    </DigestAlgoAndValue>
-						</TimestampedObject>
-	                </TimestampedObjects>
-	            </Timestamp>
-	        </Timestamps>
+            <FoundTimestamps>
+				<FoundTimestamp Timestamp="T-B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC"/>
+				<FoundTimestamp Timestamp="T-C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC"/>
+				<FoundTimestamp Timestamp="T-1230C6EDF0088D1818AA37CB058F9EC4D978005C7C3372FB6874D2480507F76D"/>
+				<FoundTimestamp Timestamp="T-A2C72B871E035E4EFB564B562B1A3D97E85FD59374B1FF7E6E963C259E2786AF"/>
+				<FoundTimestamp Timestamp="T-7453A148A73E91DDCD689D466D32A6C652D397853E52C1EC2EAC5F0CF4881168"/>
+			</FoundTimestamps>
 	        <SignatureScopes>
 	            <SignatureScope name="PDF previous version #4" scope="PARTIAL">The document byte range: [0, 56223, 94117, 772]</SignatureScope>
 	        </SignatureScopes>
@@ -387,7 +142,6 @@
             <TrustedServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-1808F9FD864971AD1CD004B9A8694D2EBF4C34983D74EBBDEE97C09C9510BEBB">
-	                <Available>true</Available>
 	                <Status>true</Status>
 	            </CertificateRevocation>
 	            <CertificateRevocation Revocation="R-9C1BA09764DA4D96D84DEEF36D58599A6C0C7509A5200A729350E2AA1E8EB0CC">
@@ -497,6 +251,7 @@
 			<Revocations>
 	            <CertificateRevocation Revocation="R-6C13D713EA83632818CB6064EBEECCE5C71E00F6B5EBEFE4154C583322236A84">
 	                <Status>false</Status>
+            		<RevocationDate>2014-04-29T12:50:05</RevocationDate>
 	            </CertificateRevocation>
 	       	</Revocations>
         </Certificate>
@@ -594,4 +349,181 @@
             </CertificateChain>
         </Revocation>
     </UsedRevocations>
+    
+	        <UsedTimestamps>
+	            <Timestamp Id="T-B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC" Type="SIGNATURE_TIMESTAMP">
+	                <ProductionTime>2014-04-29T07:32:54</ProductionTime>
+	               <DigestMatcher type="MESSAGE_IMPRINT">
+		              <DigestMethod>SHA256</DigestMethod>
+		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
+		              <DataFound>true</DataFound>
+		              <DataIntact>true</DataIntact>
+		          </DigestMatcher>
+	                <BasicSignature>
+	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+	                    <SignatureIntact>true</SignatureIntact>
+	                    <SignatureValid>true</SignatureValid>
+	                </BasicSignature>
+	                <SigningCertificate Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
+	                <CertificateChain>
+	                    <ChainItem Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19">
+	                        <Source>SIGNATURE</Source>
+	                    </ChainItem>
+	                    <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+	                        <Source>TRUSTED_LIST</Source>
+	                    </ChainItem>
+	                </CertificateChain>
+  	                 <TimestampedObjects>
+					   	<TimestampedSignature Signature="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93" />
+					   	<TimestampedCertificate Certificate="C-DF09A37F5DD288207B0FF4E96D551DE65CC403336CE6A25BCBF6C0D847BD2E74" />
+					</TimestampedObjects>
+	            </Timestamp>
+	            <Timestamp Id="T-C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC" Type="SIGNATURE_TIMESTAMP">
+	                <ProductionTime>2014-04-29T07:34:19</ProductionTime>
+	                <DigestMatcher type="MESSAGE_IMPRINT">
+		              <DigestMethod>SHA256</DigestMethod>
+		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
+		              <DataFound>true</DataFound>
+		              <DataIntact>true</DataIntact>
+		          	</DigestMatcher>
+	                <BasicSignature>
+	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+	                    <SignatureIntact>true</SignatureIntact>
+	                    <SignatureValid>true</SignatureValid>
+	                </BasicSignature>
+	                <SigningCertificate Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
+	                <CertificateChain>
+	                    <ChainItem Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19">
+	                        <Source>SIGNATURE</Source>
+	                    </ChainItem>
+	                    <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+	                        <Source>TRUSTED_LIST</Source>
+	                    </ChainItem>
+	                </CertificateChain>
+  	                 <TimestampedObjects>
+					   	<TimestampedSignature Signature="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93" />
+					   	<TimestampedCertificate Certificate="C-DF09A37F5DD288207B0FF4E96D551DE65CC403336CE6A25BCBF6C0D847BD2E74" />
+					</TimestampedObjects>
+	            </Timestamp>
+	            <Timestamp Id="T-1230C6EDF0088D1818AA37CB058F9EC4D978005C7C3372FB6874D2480507F76D" Type="ARCHIVE_TIMESTAMP">
+	                <ProductionTime>2014-04-29T07:33:19</ProductionTime>
+	               <DigestMatcher type="MESSAGE_IMPRINT">
+		              <DigestMethod>SHA256</DigestMethod>
+		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
+		              <DataFound>true</DataFound>
+		              <DataIntact>true</DataIntact>
+		          	</DigestMatcher>
+	                <BasicSignature>
+	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+	                    <SignatureIntact>true</SignatureIntact>
+	                    <SignatureValid>true</SignatureValid>
+	                </BasicSignature>
+	                <SigningCertificate Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
+	                <CertificateChain>
+	                    <ChainItem Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19">
+	                        <Source>SIGNATURE</Source>
+	                    </ChainItem>
+	                    <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+	                        <Source>TRUSTED_LIST</Source>
+	                    </ChainItem>
+	                </CertificateChain>
+  	                 <TimestampedObjects>
+					   	<TimestampedSignature Signature="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93" />
+
+		   				<TimestampedTimestamp Timestamp="T-B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC" />
+		   				
+					   	<TimestampedCertificate Certificate="C-DF09A37F5DD288207B0FF4E96D551DE65CC403336CE6A25BCBF6C0D847BD2E74" />
+						<TimestampedCertificate Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8" />
+						<TimestampedCertificate Certificate="C-0AF09567AEFB2E6B8C76FE459CF2CCE0D5182A6D093D01BEA21C6423EDC47B46" />
+					   	
+		   				<TimestampedRevocationData Revocation="R-6C13D713EA83632818CB6064EBEECCE5C71E00F6B5EBEFE4154C583322236A84" />
+		   				<TimestampedRevocationData Revocation="R-9C1BA09764DA4D96D84DEEF36D58599A6C0C7509A5200A729350E2AA1E8EB0CC" />
+					</TimestampedObjects>
+	            </Timestamp>
+	            <Timestamp Id="T-A2C72B871E035E4EFB564B562B1A3D97E85FD59374B1FF7E6E963C259E2786AF" Type="ARCHIVE_TIMESTAMP">
+	                <ProductionTime>2014-04-29T07:35:49</ProductionTime>
+	                <DigestMatcher type="MESSAGE_IMPRINT">
+		              <DigestMethod>SHA256</DigestMethod>
+		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
+		              <DataFound>true</DataFound>
+		              <DataIntact>true</DataIntact>
+		          	</DigestMatcher>
+	                <BasicSignature>
+	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+	                    <SignatureIntact>true</SignatureIntact>
+	                    <SignatureValid>true</SignatureValid>
+	                </BasicSignature>
+	                <SigningCertificate Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
+	                <CertificateChain>
+	                    <ChainItem Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19">
+	                        <Source>SIGNATURE</Source>
+	                    </ChainItem>
+	                    <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+	                        <Source>TRUSTED_LIST</Source>
+	                    </ChainItem>
+	                </CertificateChain>
+	                 <TimestampedObjects>
+					   	<TimestampedSignature Signature="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93" />
+
+		   				<TimestampedTimestamp Timestamp="T-B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC" />
+		   				<TimestampedTimestamp Timestamp="T-1230C6EDF0088D1818AA37CB058F9EC4D978005C7C3372FB6874D2480507F76D" />
+		   				<TimestampedTimestamp Timestamp="T-C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC" />
+		   				
+					   	<TimestampedCertificate Certificate="C-DF09A37F5DD288207B0FF4E96D551DE65CC403336CE6A25BCBF6C0D847BD2E74" />
+						<TimestampedCertificate Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8" />
+						<TimestampedCertificate Certificate="C-0AF09567AEFB2E6B8C76FE459CF2CCE0D5182A6D093D01BEA21C6423EDC47B46" />
+					   	
+		   				<TimestampedRevocationData Revocation="R-6C13D713EA83632818CB6064EBEECCE5C71E00F6B5EBEFE4154C583322236A84" />
+		   				<TimestampedRevocationData Revocation="R-9C1BA09764DA4D96D84DEEF36D58599A6C0C7509A5200A729350E2AA1E8EB0CC" />
+					</TimestampedObjects>
+	            </Timestamp>
+	            <Timestamp Id="T-7453A148A73E91DDCD689D466D32A6C652D397853E52C1EC2EAC5F0CF4881168" Type="ARCHIVE_TIMESTAMP">
+	                <ProductionTime>2014-04-29T07:36:30</ProductionTime>
+	                <DigestMatcher type="MESSAGE_IMPRINT">
+		              <DigestMethod>SHA256</DigestMethod>
+		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
+		              <DataFound>true</DataFound>
+		              <DataIntact>true</DataIntact>
+		          	</DigestMatcher>
+	                <BasicSignature>
+	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+	                    <SignatureIntact>true</SignatureIntact>
+	                    <SignatureValid>true</SignatureValid>
+	                </BasicSignature>
+	                <SigningCertificate Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19"/>
+	                <CertificateChain>
+	                    <ChainItem Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19">
+	                        <Source>SIGNATURE</Source>
+	                    </ChainItem>
+	                    <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
+	                        <Source>TRUSTED_LIST</Source>
+	                    </ChainItem>
+	                </CertificateChain>
+	                 <TimestampedObjects>
+					   	<TimestampedSignature Signature="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93" />
+
+		   				<TimestampedTimestamp Timestamp="T-B2F4019BDF9F53E6CB9313D56A6396FD07A5FF772E62F3BD5C3C46804616BCDC" />
+		   				<TimestampedTimestamp Timestamp="T-1230C6EDF0088D1818AA37CB058F9EC4D978005C7C3372FB6874D2480507F76D" />
+		   				<TimestampedTimestamp Timestamp="T-C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC" />
+		   				<TimestampedTimestamp Timestamp="T-A2C72B871E035E4EFB564B562B1A3D97E85FD59374B1FF7E6E963C259E2786AF" />
+		   				
+					   	<TimestampedCertificate Certificate="C-DF09A37F5DD288207B0FF4E96D551DE65CC403336CE6A25BCBF6C0D847BD2E74" />
+						<TimestampedCertificate Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8" />
+						<TimestampedCertificate Certificate="C-0AF09567AEFB2E6B8C76FE459CF2CCE0D5182A6D093D01BEA21C6423EDC47B46" />
+					   	
+		   				<TimestampedRevocationData Revocation="R-6C13D713EA83632818CB6064EBEECCE5C71E00F6B5EBEFE4154C583322236A84" />
+		   				<TimestampedRevocationData Revocation="R-9C1BA09764DA4D96D84DEEF36D58599A6C0C7509A5200A729350E2AA1E8EB0CC" />
+					</TimestampedObjects>
+	            </Timestamp>
+	        </UsedTimestamps>
 </DiagnosticData>

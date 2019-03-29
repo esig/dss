@@ -45,14 +45,13 @@
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
-            <Timestamps/>
             <SignatureScopes>
                 <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering; Exclusive Canonical XML (omits comments).</SignatureScope>
             </SignatureScopes>
         </Signature>
         <Signature Id="XSIG2" CounterSignature="true">
             <SignatureFilename>TEST_S1a_C1a_InTL_VALID.xml</SignatureFilename>
-            <ParentId>XSIG1</ParentId>
+            <Parent>XSIG1</Parent>
             <DateTime>2017-09-21T16:04:55</DateTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
@@ -93,7 +92,6 @@
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
-            <Timestamps/>
             <SignatureScopes/>
         </Signature>
     </Signatures>

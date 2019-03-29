@@ -47,7 +47,6 @@
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
-            <Timestamps/>
             <SignatureScopes>
                 <SignatureScope name="Full XML File" scope="FULL">The full XML file</SignatureScope>
             </SignatureScopes>
@@ -262,7 +261,6 @@
             </TrustedServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-efdf173dd8b570a0587980070ef0efc8c79dd4f4ef1a206511967a7f7532fc74e36f8862bbd580f5dcc4d07819d43045738d9921b691a7a3562f498239ae8f5a">
-                    <Available>true</Available>
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>

@@ -147,7 +147,7 @@
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="RelatedRevocation" type="RelatedRevocation" minOccurs="0" maxOccurs="unbounded" />
-						<xs:element name="UnusedRevocationRefs" minOccurs="0" >
+						<xs:element name="UnusedRevocationRefs" minOccurs="0">
 							<xs:complexType>
 								<xs:sequence>
 									<xs:element name="RevocationRef" type="RevocationRef" minOccurs="0" maxOccurs="unbounded" />
@@ -257,6 +257,7 @@
 				</xs:complexType>
 			</xs:element>
 			
+			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValues" minOccurs="0" />
 			<xs:element name="NotAfter" type="xs:dateTime" />
 			<xs:element name="NotBefore" type="xs:dateTime" />
 			<xs:element name="PublicKeySize" type="xs:int" />
@@ -560,6 +561,7 @@
 			<xs:element name="ArchiveCutOff" type="xs:dateTime" minOccurs="0" /> <!-- OCSP -->
 			<xs:element name="CertHashExtensionPresent" type="xs:boolean" minOccurs="0" /> <!-- OCSP -->
 			<xs:element name="CertHashExtensionMatch" type="xs:boolean" minOccurs="0" /> <!-- OCSP -->
+			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValues" minOccurs="0" />
 			<xs:element name="BasicSignature" type="BasicSignature" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
 			<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
@@ -689,5 +691,11 @@
 			<xs:element name="expiredCertsRevocationInfo" type="xs:dateTime" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
+	
+	<xs:complexType name="DigestAlgoAndValues">
+        <xs:sequence>
+            <xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
 	
 </xs:schema>

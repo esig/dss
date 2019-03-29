@@ -43,42 +43,9 @@
 	            </ChainItem>
 	        </CertificateChain>
 	        <ContentType>text/xml</ContentType>
-	        <Timestamps>
-	            <Timestamp Id="6A9149BB7AEABB204AD2C245E034E224453A5FB9BD377DB3BAE505C9BF4D310E" Type="SIGNATURE_TIMESTAMP">
-	                <ProductionTime>2014-10-14T14:53:02</ProductionTime>
-	                <DigestMatcher type="MESSAGE_IMPRINT">
-		              <DigestMethod>SHA256</DigestMethod>
-		              <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
-		              <DataFound>true</DataFound>
-		              <DataIntact>true</DataIntact>
-		          	</DigestMatcher>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Certificate="C-F3001FF8575E8C49F0D04A9A3C7A36E6F28E389CC514C2CBFC55227ACE4A275A"/>
-	                <CertificateChain>
-	                    <ChainItem Certificate="C-F3001FF8575E8C49F0D04A9A3C7A36E6F28E389CC514C2CBFC55227ACE4A275A">
-	                        <Source>SIGNATURE</Source>
-	                    </ChainItem>
-	                    <ChainItem Certificate="C-FC8BFE53A334F6F762F5EA9AFF47E01AA62DF620E55E8CE9BECB713BB70755A7">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	                <TimestampedObjects>
-	                    <TimestampedObject Category="SIGNATURE" Id="xmldsig-0a9a9d45-c8f6-44c5-9e74-462fa3441a26"/>
-	                    <TimestampedObject Category="CERTIFICATE">
-		                    <DigestAlgoAndValue >
-		                        <DigestMethod>SHA256</DigestMethod>
-		                        <DigestValue>clp2MnNYXdjfoCbrIGb1Zn//btRfcgUrP5wtNWXfa14=</DigestValue>
-		                    </DigestAlgoAndValue>
-	                    </TimestampedObject>
-	                </TimestampedObjects>
-	            </Timestamp>
-	        </Timestamps>
+			<FoundTimestamps>
+				<FoundTimestamp Timestamp="T-6A9149BB7AEABB204AD2C245E034E224453A5FB9BD377DB3BAE505C9BF4D310E"/>
+			</FoundTimestamps>
 	        <SignatureScopes>
 	            <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering.</SignatureScope>
 	        </SignatureScopes>
@@ -217,19 +184,16 @@
             <TrustedServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-69674FCADB3AF99EAB7E9700EEB220216D7E423B3C2FF3B79EF4FC1B1954D26E">
-	                <Available>true</Available>
 	                <Status>false</Status>
 	                <Reason>cessationOfOperation</Reason>
 	                <RevocationDate>2014-10-15T15:12:23</RevocationDate>
 	            </CertificateRevocation>
 	            <CertificateRevocation Revocation="R-0574F0CFD174789DDCB57C5F2EC6EC43DD341BF7789708E28E87AF9A2696CA56">
-	                <Available>true</Available>
 	                <Status>false</Status>
 	                <Reason>cessationOfOperation</Reason>
 	                <RevocationDate>2014-10-15T15:12:23</RevocationDate>
 	            </CertificateRevocation>
 	            <CertificateRevocation Revocation="R-55F56C98A1A43A431C6DD59F46D921DDE91F9FFE23FB1E4CC53A372CD38B4495">
-	                <Available>true</Available>
 	                <Status>false</Status>
 	                <Reason>cessationOfOperation</Reason>
 	                <RevocationDate>2014-10-15T15:12:23</RevocationDate>
@@ -326,7 +290,6 @@
             <TrustedServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-E3338F7F9E1963241C750B0FABA972C18C401EF51A1FF049CB3CD1EAD069C29F">
-	                <Available>true</Available>
 	                <Status>true</Status>
 	            </CertificateRevocation>
 	        </Revocations>
@@ -498,4 +461,35 @@
             </CertificateChain>
         </Revocation>
     </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Id="T-6A9149BB7AEABB204AD2C245E034E224453A5FB9BD377DB3BAE505C9BF4D310E" Type="SIGNATURE_TIMESTAMP">
+            <ProductionTime>2014-10-14T14:53:02</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+           <DigestMethod>SHA256</DigestMethod>
+           <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
+           <DataFound>true</DataFound>
+           <DataIntact>true</DataIntact>
+       	</DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F3001FF8575E8C49F0D04A9A3C7A36E6F28E389CC514C2CBFC55227ACE4A275A"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F3001FF8575E8C49F0D04A9A3C7A36E6F28E389CC514C2CBFC55227ACE4A275A">
+                    <Source>SIGNATURE</Source>
+                </ChainItem>
+                <ChainItem Certificate="C-FC8BFE53A334F6F762F5EA9AFF47E01AA62DF620E55E8CE9BECB713BB70755A7">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+            <TimestampedObjects>
+            	<TimestampedSignature Signature="xmldsig-0a9a9d45-c8f6-44c5-9e74-462fa3441a26" />
+            	<TimestampedCertificate Certificate="C-F3001FF8575E8C49F0D04A9A3C7A36E6F28E389CC514C2CBFC55227ACE4A275A" />
+            </TimestampedObjects>
+        </Timestamp>
+    </UsedTimestamps>
 </DiagnosticData>

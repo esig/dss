@@ -156,7 +156,6 @@
             </TrustedServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-c011f11e98aeff48798ad5874a7a7f0c8192add1ab6d37825fe42c2f9f5847ebc706b823277299734990996f5beb815915af1dc1a709a5351530fcd93ae49028">
-                    <Available>true</Available>
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>

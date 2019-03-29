@@ -165,7 +165,6 @@
 	                <Origin>EXTERNAL</Origin>
 	                <Type>OCSP</Type>
 	                <SourceAddress>http://ocsp.firmadigitale.bancaditalia.it/ocsp</SourceAddress>
-	                <Available>true</Available>
 	                <Status>true</Status>
 	                <ProductionDate>2016-07-19T11:12:49</ProductionDate>
 	                <ThisUpdate>2016-07-19T09:03:20</ThisUpdate>
@@ -193,7 +192,6 @@
 	                <Origin>EXTERNAL</Origin>
 	                <Type>OCSP</Type>
 	                <SourceAddress>http://ocsp.firmadigitale.bancaditalia.it/ocsp</SourceAddress>
-	                <Available>true</Available>
 	                <Status>true</Status>
 	                <ProductionDate>2016-07-19T11:18:22</ProductionDate>
 	                <ThisUpdate>2016-07-19T09:03:20</ThisUpdate>
@@ -221,7 +219,6 @@
 	                <Origin>EXTERNAL</Origin>
 	                <Type>OCSP</Type>
 	                <SourceAddress>http://ocsp.firmadigitale.bancaditalia.it/ocsp</SourceAddress>
-	                <Available>true</Available>
 	                <Status>true</Status>
 	                <ProductionDate>2016-07-19T11:13:48</ProductionDate>
 	                <ThisUpdate>2016-07-19T09:03:20</ThisUpdate>

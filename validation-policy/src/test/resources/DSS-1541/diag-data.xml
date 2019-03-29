@@ -49,7 +49,7 @@
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
             <Timestamps>
-                <Timestamp Id="12EF271A57D099A5C86187BF8A9873C6DA992FB37B7A5BA54BB56AFDED98A6BE" Type="SIGNATURE_TIMESTAMP">
+                <Timestamp Id="T-12EF271A57D099A5C86187BF8A9873C6DA992FB37B7A5BA54BB56AFDED98A6BE" Type="SIGNATURE_TIMESTAMP">
                     <ProductionTime>2014-11-07T13:11:31</ProductionTime>
                     <DigestMatcher type="MESSAGE_IMPRINT">
                         <DigestMethod>SHA256</DigestMethod>
@@ -86,7 +86,7 @@
                         </TimestampedObject>
                     </TimestampedObjects>
                 </Timestamp>
-                <Timestamp Id="052DBC2A457EF6AC4E9B88B9E016230BD047CA53B98EE1B86C143C908E9C3AA9" Type="ARCHIVE_TIMESTAMP">
+                <Timestamp Id="T-052DBC2A457EF6AC4E9B88B9E016230BD047CA53B98EE1B86C143C908E9C3AA9" Type="ARCHIVE_TIMESTAMP">
                     <ProductionTime>2014-11-07T13:11:37</ProductionTime>
                     <DigestMatcher type="MESSAGE_IMPRINT">
                         <DigestMethod>SHA256</DigestMethod>
