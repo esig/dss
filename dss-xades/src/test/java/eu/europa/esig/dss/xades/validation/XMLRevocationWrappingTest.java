@@ -32,7 +32,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 	public void revocationOriginTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/HU_POL/Signature-X-HU_POL-3.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		// reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
@@ -67,11 +67,9 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 			assertEquals(4, revocationRefs.size());
 			for (XmlRelatedRevocation revocation : revocationRefs) {
 				assertNotNull(revocation.getRevocation());
-				assertNotNull(revocation.getCertificate());
 				assertNotNull(revocation.getType());
 				assertNotNull(revocation.getOrigin());
 				assertTrue(revocationIds.contains(revocation.getRevocation().getId()));
-				assertNotNull(diagnosticData.getUsedCertificateById(revocation.getCertificate().getId()));
 			}
 		}
 	}
@@ -80,9 +78,8 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 	public void revocationOriginThreeSignaturesTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/HR_FIN/Signature-X-HR_FIN-1.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
-		// reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		int revocationSignatureOriginCounter = 0;
 		Set<RevocationWrapper> revocationData = diagnosticData.getAllRevocationData();
@@ -96,11 +93,11 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 			revocationIds.add(revocation.getId());
 		}
 		assertEquals(1, revocationSignatureOriginCounter);
-		assertEquals(2, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(), 
+		assertEquals(1, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(),
 				RevocationType.CRL).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(diagnosticData.getFirstSignatureId(), 
 				RevocationType.OCSP).size());
-		assertEquals(2, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
+		assertEquals(1, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
 				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(diagnosticData.getFirstSignatureId(), 
 				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES).size());
@@ -112,32 +109,32 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 			List<XmlRelatedRevocation> revocationRefs = signature.getFoundRevocations().getRelatedRevocation();
 			assertNotNull(revocationRefs);
 			for (XmlRelatedRevocation revocation : revocationRefs) {
-				assertNotNull(revocation.getCertificate());
 				assertNotNull(revocation.getRevocation());
 				assertNotNull(revocation.getType());
 				assertNotNull(revocation.getOrigin());
 				assertTrue(revocationIds.contains(revocation.getRevocation().getId()));
-				assertTrue(presentOnlyOnce(revocationRefs, revocation));
-				assertNotNull(diagnosticData.getUsedCertificateById(revocation.getCertificate().getId()));
 			}
 		}
 		
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		assertEquals(3, signatures.size());
 		
-		assertEquals(2, diagnosticData.getAllRevocationForSignature(signatures.get(0).getId()).size());
-		assertEquals(2, diagnosticData.getAllRevocationForSignature(signatures.get(1).getId()).size());
-		assertEquals(2, diagnosticData.getAllRevocationForSignature(signatures.get(2).getId()).size());
+		assertEquals(1, diagnosticData.getAllRevocationForSignature(signatures.get(0).getId()).size());
+		assertEquals(1, diagnosticData.getAllRevocationForSignature(signatures.get(1).getId()).size());
+		assertEquals(1, diagnosticData.getAllRevocationForSignature(signatures.get(2).getId()).size());
 		
+		// Same CRL has been inserted 3 times
+		assertEquals(1, diagnosticData.getAllRevocationData().size());
+
 	}
 	
 	@Test
 	public void revocationReferencesTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/ES/Signature-X-ES-100.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
-		// reports.print();
+		reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<XmlRevocationRef> foundRevocationRefs = signature.getAllFoundRevocationRefs();
@@ -163,7 +160,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 	public void ocspWrongRefTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/BG/Signature-X-BG-1.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		// reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
@@ -179,7 +176,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 	public void ocspRefWithByKeyResponderIdTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/UK_ELD/Signature-X-UK_ELD-4.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		// reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
@@ -197,16 +194,6 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		assertNotNull(revocationRef.getResponderIdKey());
 	}
 	
-	private boolean presentOnlyOnce(List<XmlRelatedRevocation> list, XmlRelatedRevocation revocation) {
-	    int numCount = 0;
-	    for (XmlRelatedRevocation thisRev : list) {
-			if ((thisRev.getCertificate().getId() + thisRev.getRevocation().getId()).equals(
-					(revocation.getCertificate().getId() + revocation.getRevocation().getId())))
-				numCount++;
-	    }
-	    return numCount == 1;
-	}
-
 	@Override
 	protected String getSigningAlias() {
 		return GOOD_USER;

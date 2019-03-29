@@ -590,7 +590,6 @@
 	
 	<xs:complexType name="RelatedRevocation">
 		<xs:sequence>
-			<xs:element name="Certificate" type="xs:IDREF" />
 			<xs:element name="Revocation" type="xs:IDREF" />
 			<xs:element name="Type" type="RevocationType" />
 			<xs:element name="Origin" type="RevocationOriginType" />

@@ -779,12 +779,17 @@ public class DiagnosticDataBuilder {
 				XmlRevocationOrigin.INTERNAL_VRI));
 		return xmlRevocationRefs;
 	}
-	
-	private List<XmlRelatedRevocation> getXmlRevocationsRefsByType(AdvancedSignature signature, List<RevocationToken> revocationTokens, 
+
+	private List<XmlRelatedRevocation> getXmlRevocationsRefsByType(AdvancedSignature signature, List<RevocationToken> revocationTokens,
 			XmlRevocationOrigin originType) {
 		List<XmlRelatedRevocation> xmlRevocationRefs = new ArrayList<XmlRelatedRevocation>();
+		// Avoid multiple entries for CRL + origin
+		Set<String> revocationKeys = new HashSet<String>();
 		for (RevocationToken revocationToken : revocationTokens) {
-			xmlRevocationRefs.add(getXmlCertificateRevocationRef(signature, revocationToken, originType));
+			if (!revocationKeys.contains(revocationToken.getDSSIdAsString())) {
+				xmlRevocationRefs.add(getXmlCertificateRevocationRef(signature, revocationToken, originType));
+				revocationKeys.add(revocationToken.getDSSIdAsString());
+			}
 		}
 		return xmlRevocationRefs;
 	}
@@ -792,7 +797,6 @@ public class DiagnosticDataBuilder {
 	private XmlRelatedRevocation getXmlCertificateRevocationRef(AdvancedSignature signature, RevocationToken revocationToken, 
 			XmlRevocationOrigin originType) {
 		XmlRelatedRevocation xmlRevocationRef = new XmlRelatedRevocation();
-		xmlRevocationRef.setCertificate(xmlCerts.get(revocationToken.getRelatedCertificateID()));
 		xmlRevocationRef.setRevocation(xmlRevocations.get(revocationToken.getDSSIdAsString()));
 		xmlRevocationRef.setType(RevocationType.valueOf(revocationToken.getRevocationSourceType().name()));
 		xmlRevocationRef.setOrigin(originType);

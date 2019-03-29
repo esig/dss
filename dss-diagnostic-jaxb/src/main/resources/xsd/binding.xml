@@ -61,11 +61,6 @@
             <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlSignature" />
         </jaxb:property>
     </jaxb:bindings>
- 	<jaxb:bindings node="//xs:complexType[@name='RelatedRevocation']//xs:element[@name='Certificate']">
-        <jaxb:property>
-            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
-        </jaxb:property>
-    </jaxb:bindings>
  	<jaxb:bindings node="//xs:complexType[@name='RelatedRevocation']//xs:element[@name='Revocation']">
         <jaxb:property>
             <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation" />
