@@ -449,6 +449,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getFoundRevocations();
 	}
 	
+	public List<XmlRevocationRef> getOrphanRevocationRefs() {
+		return getFoundRevocations().getOrphanRevocationRefs();
+	}
+	
 	public List<XmlRevocationRef> getAllFoundRevocationRefs() {
 		List<XmlRevocationRef> revocationRefs = new ArrayList<XmlRevocationRef>();
 		List<String> storedXmlRevocationIds = new ArrayList<String>(); // we do not need to collect references for the same revocations twice
@@ -459,7 +463,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 				revocationRefs.addAll(revocation.getRevocationReferences());
 			}
 		}
-		revocationRefs.addAll(foundRevocations.getUnusedRevocationRefs());
+		revocationRefs.addAll(foundRevocations.getOrphanRevocationRefs());
 		return revocationRefs;
 	}
 	

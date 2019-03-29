@@ -779,7 +779,7 @@ public class DiagnosticDataBuilder {
 	private XmlFoundRevocations getXmlFoundRevocations(AdvancedSignature signature) {
 		XmlFoundRevocations foundRevocations = new XmlFoundRevocations();
 		foundRevocations.getRelatedRevocation().addAll(getXmlRelatedRevocations(signature));
-		foundRevocations.setUnusedRevocationRefs(getXmlUnusedRevocationRefs(signature));
+		foundRevocations.setOrphanRevocationRefs(getXmlUnusedRevocationRefs(signature));
 		return foundRevocations;
 	}
 
@@ -829,16 +829,15 @@ public class DiagnosticDataBuilder {
 			XmlRevocationRef revocationRef;
 			if (ref instanceof CRLRef) {
 				revocationRef = getXmlCRLRevocationRef((CRLRef) ref);
+				if (addType) revocationRef.setType(RevocationType.CRL);
 			} else {
 				revocationRef = getXmlOCSPRevocationRef((OCSPRef) ref);
-			}
-			if (addType) {
-				revocationRef.setType(RevocationType.OCSP);
+				if (addType) revocationRef.setType(RevocationType.OCSP);
 			}
 			xmlRevocationRefs.add(revocationRef);
 		}
 		return xmlRevocationRefs;
-	} 
+	}
 	
 	private XmlRevocationRef getXmlCRLRevocationRef(CRLRef crlRef) {
 		XmlRevocationRef xmlRevocationRef = new XmlRevocationRef();

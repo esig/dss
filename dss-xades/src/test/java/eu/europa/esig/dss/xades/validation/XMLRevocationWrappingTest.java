@@ -172,8 +172,29 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		assertEquals(0, signature.getFoundRevocationRefsByLocation(RevocationRefLocation.ATTRIBUTE_REVOCATION_REFS).size());
 	}
 	
-	public boolean presentOnlyOnce(List<XmlRelatedRevocation> list, XmlRelatedRevocation revocation) 
-	{
+	@Test
+	public void ocspRefWithByKeyResponderIdTest() {
+		DSSDocument doc = new FileDocument("src/test/resources/plugtest/esig2014/ESIG-XAdES/UK_ELD/Signature-X-UK_ELD-4.xml");
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		Reports reports = validator.validateDocument();
+		// reports.print();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlRevocationRef> foundRevocationRefs = signature.getAllFoundRevocationRefs();
+		assertNotNull(foundRevocationRefs);
+		assertEquals(1, foundRevocationRefs.size());
+		assertEquals(0, signature.getOrphanRevocationRefs().size());
+		assertEquals(1, signature.getFoundRevocationRefsByLocation(RevocationRefLocation.COMPLETE_REVOCATION_REFS).size());
+		assertEquals(0, signature.getFoundRevocationRefsByLocation(RevocationRefLocation.ATTRIBUTE_REVOCATION_REFS).size());
+		XmlRevocationRef revocationRef = foundRevocationRefs.get(0);
+		assertNotNull(revocationRef.getLocation());
+		assertNotNull(revocationRef.getDigestAlgoAndValue());
+		assertNotNull(revocationRef.getProducedAt());
+		assertNotNull(revocationRef.getResponderIdKey());
+	}
+	
+	private boolean presentOnlyOnce(List<XmlRelatedRevocation> list, XmlRelatedRevocation revocation) {
 	    int numCount = 0;
 	    for (XmlRelatedRevocation thisRev : list) {
 			if ((thisRev.getCertificate().getId() + thisRev.getRevocation().getId()).equals(
