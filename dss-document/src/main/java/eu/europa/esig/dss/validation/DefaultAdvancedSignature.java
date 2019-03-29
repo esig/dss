@@ -927,7 +927,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 							ocspRef.getResponderId().getName().equals(revocationToken.getIssuerX500Principal().getName())) {
 						addReferenceToMap(revocationToken, reference);
 					} else if (ocspRef.getResponderId().getKey() != null && 
-							Arrays.equals(ocspRef.getResponderId().getKey(), revocationToken.getIssuerX500Principal().getEncoded())) {
+							Arrays.equals(ocspRef.getResponderId().getKey(), 
+									DSSASN1Utils.computeSkiFromCertPublicKey(revocationToken.getPublicKeyOfTheSigner()))) {
 						addReferenceToMap(revocationToken, reference);
 					}
 				}

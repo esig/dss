@@ -779,7 +779,7 @@ public class DiagnosticDataBuilder {
 	private XmlFoundRevocations getXmlFoundRevocations(AdvancedSignature signature) {
 		XmlFoundRevocations foundRevocations = new XmlFoundRevocations();
 		foundRevocations.getRelatedRevocation().addAll(getXmlRelatedRevocations(signature));
-		foundRevocations.setUnusedRevocationRefs(getXmlUnusedRevocationRefs(signature));
+		foundRevocations.setOrphanRevocationRefs(getXmlUnusedRevocationRefs(signature));
 		return foundRevocations;
 	}
 

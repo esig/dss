@@ -22,6 +22,7 @@ package eu.europa.esig.dss;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.PublicKey;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
@@ -502,9 +503,24 @@ public final class DSSASN1Utils {
 		}
 	}
 
+	/**
+	 * Computes SHA-1 hash of the {@code certificateToken}'s public key
+	 * @param certificateToken {@link CertificateToken} to compute digest for
+	 * @return byte array of public key's SHA-1 hash
+	 */
 	public static byte[] computeSkiFromCert(final CertificateToken certificateToken) {
+		return computeSkiFromCertPublicKey(certificateToken.getPublicKey());
+	}
+
+
+	/**
+	 * Computes SHA-1 hash of the given {@code publicKey}'s
+	 * @param publicKey {@link PublicKey} to compute digest for
+	 * @return byte array of public key's SHA-1 hash
+	 */
+	public static byte[] computeSkiFromCertPublicKey(final PublicKey publicKey) {
 		try {
-			DLSequence seq = (DLSequence) DERSequence.fromByteArray(certificateToken.getPublicKey().getEncoded());
+			DLSequence seq = (DLSequence) DERSequence.fromByteArray(publicKey.getEncoded());
 			DERBitString item = (DERBitString) seq.getObjectAt(1);
 			return DSSUtils.digest(DigestAlgorithm.SHA1, item.getOctets());
 		} catch (IOException e) {

@@ -199,8 +199,8 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 						final ASN1OctetString keyHashOctetString = (ASN1OctetString) derTaggedObject.getObject();
 						final byte[] keyHashOctetStringBytes = keyHashOctetString.getOctets();
-						final String base65EncodedKeyHashOctetStringBytes = Utils.toBase64(keyHashOctetStringBytes);
-						DomUtils.addTextElement(documentDom, responderIDDom, XAdESNamespaces.XAdES, "xades:ByKey", base65EncodedKeyHashOctetStringBytes);
+						final String base64EncodedKeyHashOctetStringBytes = Utils.toBase64(keyHashOctetStringBytes);
+						DomUtils.addTextElement(documentDom, responderIDDom, XAdESNamespaces.XAdES, "xades:ByKey", base64EncodedKeyHashOctetStringBytes);
 					} else {
 
 						final ASN1Primitive derObject = derTaggedObject.getObject();
