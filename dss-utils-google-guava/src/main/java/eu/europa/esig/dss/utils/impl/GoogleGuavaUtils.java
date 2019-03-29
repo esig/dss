@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 
 import com.google.common.base.Ascii;
@@ -193,6 +194,16 @@ public class GoogleGuavaUtils implements IUtils {
 	@SuppressWarnings("rawtypes")
 	public boolean isCollectionNotEmpty(Collection collection) {
 		return collection != null && !collection.isEmpty();
+	}
+
+	@Override
+	public boolean isMapEmpty(Map<?,?> map) {
+		return map == null || map.isEmpty();
+	}
+
+	@Override
+	public boolean isMapNotEmpty(Map<?,?> map) {
+		return map != null && !map.isEmpty();
 	}
 
 	@Override

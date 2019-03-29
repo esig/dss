@@ -35,7 +35,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -233,6 +235,32 @@ public abstract class AbstractUtilsTest {
 		list.add("b");
 		list.add("c");
 		assertTrue(Utils.isCollectionNotEmpty(list));
+	}
+	
+	@Test
+	public void isMapEmpty() {
+		assertTrue(Utils.isMapEmpty(null));
+		assertTrue(Utils.isMapEmpty(new HashMap<String, Integer>()));
+		
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		map.put("a", true);
+		map.put("b", false);
+		map.put("c", true);
+		assertFalse(Utils.isMapEmpty(map));
+		assertEquals(3, map.size());
+	}
+	
+	@Test
+	public void isMapNotEmpty() {
+		assertFalse(Utils.isMapNotEmpty(null));
+		assertFalse(Utils.isMapNotEmpty(new HashMap<String, Integer>()));
+		
+		Map<String, Boolean> map = new HashMap<String, Boolean>();
+		map.put("a", true);
+		map.put("b", false);
+		map.put("c", true);
+		assertTrue(Utils.isMapNotEmpty(map));
+		assertEquals(3, map.size());
 	}
 
 	@Test

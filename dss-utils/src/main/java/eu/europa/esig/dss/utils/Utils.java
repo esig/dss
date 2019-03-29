@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 
 public final class Utils {
@@ -143,7 +144,15 @@ public final class Utils {
 	public static boolean isCollectionNotEmpty(Collection collection) {
 		return impl.isCollectionNotEmpty(collection);
 	}
-
+	
+	public static boolean isMapEmpty(Map<?,?> map) {
+		return impl.isMapEmpty(map);
+	}
+	
+	public static boolean isMapNotEmpty(Map<?,?> map) {
+		return impl.isMapNotEmpty(map);
+	}
+	
 	@SuppressWarnings("rawtypes")
 	public static int collectionSize(Collection collection) {
 		return impl.collectionSize(collection);

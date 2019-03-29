@@ -825,7 +825,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	
 	@Override
 	public List<RevocationRef> getUnusedRevocationRefs() {
-		if (revocationRefsMap == null) {
+		if (Utils.isMapEmpty(revocationRefsMap)) {
 			collectRevocationRefsMap();
 		}
 		List<RevocationRef> unusedRevocationRefs = new ArrayList<RevocationRef>();
@@ -861,7 +861,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	private List<RevocationToken> findTokensFromRefs(List<RevocationRef> revocationRefs) {
-		if (revocationRefsMap == null) {
+		if (Utils.isMapEmpty(revocationRefsMap)) {
 			collectRevocationRefsMap();
 		}
 		List<RevocationToken> tokensFromRefs = new ArrayList<RevocationToken>();
@@ -878,7 +878,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	
 	@Override
 	public List<RevocationRef> findRefsForRevocationToken(RevocationToken revocationToken) {
-		if (revocationRefsMap == null) {
+		if (Utils.isMapEmpty(revocationRefsMap)) {
 			collectRevocationRefsMap();
 		}
 		List<RevocationRef> revocationRefs = revocationRefsMap.get(revocationToken);
