@@ -34,7 +34,6 @@
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
-            <Timestamps/>
             <SignatureScopes>
                 <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering; Exclusive Canonical XML (omits comments).</SignatureScope>
             </SignatureScopes>
@@ -116,7 +115,6 @@
             </TrustedServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-3e75a50c854182576becbe1128851364e0b0ac909ebed4aca5b38a6fc14fc23d69dd6a7f25f724833c0e8942f96610fe857c01e4cf52ee849c50277627d22b85">
-                    <Available>true</Available>
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>

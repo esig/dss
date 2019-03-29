@@ -79,7 +79,6 @@
                 <Indication>http://uri.etsi.org/01903/v1.2.2#ProofOfOrigin</Indication>
             </CommitmentTypeIndication>
             <ClaimedRoles/>
-            <Timestamps/>
             <SignatureScopes>
                 <SignatureScope name="order_data.xml" scope="FULL">Full document</SignatureScope>
                 <SignatureScope name="o_dynamic-linking" scope="PARTIAL">The XML element with ID 'o_dynamic-linking'</SignatureScope>
@@ -171,7 +170,6 @@
             </TrustedServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-709e9cb89541807694d261d1eb3e80232af173b5aad235771ad9291d01b04b09094c495a56e31aa49a6a3c74f65869cdeb8431e55e3946f5e82bf778342e92cd">
-                    <Available>true</Available>
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>

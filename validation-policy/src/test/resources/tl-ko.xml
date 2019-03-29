@@ -45,7 +45,6 @@
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
-            <Timestamps/>
             <SignatureScopes>
                 <SignatureScope name="#ROOT" scope="PARTIAL">The XML element with ID '#ROOT'.</SignatureScope>
             </SignatureScopes>

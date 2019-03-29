@@ -45,7 +45,6 @@
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
-            <Timestamps/>
             <SignatureScopes>
                 <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: Exclusive Canonical XML (omits comments).</SignatureScope>
             </SignatureScopes>

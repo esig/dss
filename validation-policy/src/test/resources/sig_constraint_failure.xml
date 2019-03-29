@@ -172,7 +172,6 @@
             <TrustedServiceProviders />
             <Revocations>
 	            <CertificateRevocation Revocation="R-79ADAE6C275B8805AF16746D43CEA07C1E1102C6476C9E9C4B2B4F30230B4F74">
-	                <Available>true</Available>
 	                <Status>true</Status>
 	            </CertificateRevocation>
             </Revocations>
@@ -223,7 +222,6 @@
             <TrustedServiceProviders />
             <Revocations>
 	            <CertificateRevocation Revocation="R-44E8F4F581737AD1B43EA4562D51AB3F3EB458C3A0E91979EF35F133EE31797E">
-	                <Available>true</Available>
 	                <Status>true</Status>
 	            </CertificateRevocation>
             </Revocations>

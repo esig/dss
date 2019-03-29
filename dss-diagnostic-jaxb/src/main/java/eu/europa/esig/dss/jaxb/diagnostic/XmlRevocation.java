@@ -46,6 +46,7 @@ import eu.europa.esig.dss.validation.XmlRevocationOrigin;
  *         &lt;element name="ArchiveCutOff" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/&gt;
  *         &lt;element name="CertHashExtensionPresent" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
  *         &lt;element name="CertHashExtensionMatch" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/&gt;
+ *         &lt;element name="DigestAlgoAndValues" type="{http://dss.esig.europa.eu/validation/diagnostic}DigestAlgoAndValues" minOccurs="0"/&gt;
  *         &lt;element name="BasicSignature" type="{http://dss.esig.europa.eu/validation/diagnostic}BasicSignature" minOccurs="0"/&gt;
  *         &lt;element name="SigningCertificate" type="{http://dss.esig.europa.eu/validation/diagnostic}SigningCertificate" minOccurs="0"/&gt;
  *         &lt;element name="CertificateChain" type="{http://dss.esig.europa.eu/validation/diagnostic}CertificateChain" minOccurs="0"/&gt;
@@ -71,6 +72,7 @@ import eu.europa.esig.dss.validation.XmlRevocationOrigin;
     "archiveCutOff",
     "certHashExtensionPresent",
     "certHashExtensionMatch",
+    "digestAlgoAndValues",
     "basicSignature",
     "signingCertificate",
     "certificateChain",
@@ -112,6 +114,9 @@ public class XmlRevocation implements Serializable
     protected Boolean certHashExtensionPresent;
     @XmlElement(name = "CertHashExtensionMatch")
     protected Boolean certHashExtensionMatch;
+    @XmlElementWrapper(name = "DigestAlgoAndValues")
+    @XmlElement(name = "DigestAlgoAndValue", namespace = "http://dss.esig.europa.eu/validation/diagnostic")
+    protected List<XmlDigestAlgoAndValue> digestAlgoAndValues;
     @XmlElement(name = "BasicSignature")
     protected XmlBasicSignature basicSignature;
     @XmlElement(name = "SigningCertificate")
@@ -459,6 +464,17 @@ public class XmlRevocation implements Serializable
      */
     public void setId(String value) {
         this.id = value;
+    }
+
+    public List<XmlDigestAlgoAndValue> getDigestAlgoAndValues() {
+        if (digestAlgoAndValues == null) {
+            digestAlgoAndValues = new ArrayList<XmlDigestAlgoAndValue>();
+        }
+        return digestAlgoAndValues;
+    }
+
+    public void setDigestAlgoAndValues(List<XmlDigestAlgoAndValue> digestAlgoAndValues) {
+        this.digestAlgoAndValues = digestAlgoAndValues;
     }
 
     public List<XmlChainItem> getCertificateChain() {

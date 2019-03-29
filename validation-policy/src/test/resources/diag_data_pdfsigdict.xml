@@ -68,48 +68,9 @@
                 <Reason></Reason>
                 <SignatureByteRange>0 234543 300079 5547</SignatureByteRange>
             </PDFSignatureDictionary>
-            <Timestamps>
-                <Timestamp Id="30662A206DBD6A4EB55C545C0EFD3101E9B0BBD31010B4A8CF0CD7C9FC58BD02" Type="SIGNATURE_TIMESTAMP">
-                    <ProductionTime>2017-04-28T00:58:29</ProductionTime>
-                    <DigestMatcher type="MESSAGE_IMPRINT">
-                        <DigestMethod>SHA256</DigestMethod>
-                        <DigestValue>dI5uMiqg0USizkv/5sinZ70nvVsEazWB4bBVlqP4L4U=</DigestValue>
-                        <DataFound>true</DataFound>
-                        <DataIntact>true</DataIntact>
-                    </DigestMatcher>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Certificate="C-2086827691ADF87520375749ADF3616AC5FACA0456E8F2DA54DDCF844D24B86E"/>
-                    <CertificateChain>
-                        <ChainItem Certificate="C-2086827691ADF87520375749ADF3616AC5FACA0456E8F2DA54DDCF844D24B86E">
-                            <Source>TIMESTAMP</Source>
-                        </ChainItem>
-                        <ChainItem Certificate="C-A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D">
-                            <Source>AIA</Source>
-                        </ChainItem>
-                        <ChainItem Certificate="C-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505">
-                            <Source>AIA</Source>
-                        </ChainItem>
-                        <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
-                            <Source>AIA</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                    <TimestampedObjects>
-                        <TimestampedObject Id="id-eb2ce89008eb1ef77a4f96ee8738c07daceee2957537d5bdea0bd2e3af393f28" Category="SIGNATURE"/>
-                        <TimestampedObject Category="CERTIFICATE">
-                            <DigestAlgoAndValue>
-                                <DigestMethod>SHA256</DigestMethod>
-                                <DigestValue>9a3el5KlbIxf84clYOPoUiHmLXpRfa1CjWIymczvNzs=</DigestValue>
-                            </DigestAlgoAndValue>
-                        </TimestampedObject>
-                    </TimestampedObjects>
-                </Timestamp>
-            </Timestamps>
+			<FoundTimestamps>
+				<FoundTimestamp Timestamp="T-30662A206DBD6A4EB55C545C0EFD3101E9B0BBD31010B4A8CF0CD7C9FC58BD02"/>
+			</FoundTimestamps>
             <SignatureScopes>
                 <SignatureScope name="PDF previous version #1" scope="PARTIAL">The document byte range: [0, 234543, 300079, 5547]</SignatureScope>
             </SignatureScopes>
@@ -157,7 +118,6 @@
                 <Reason>Digitally verifiable PDF exported from www.docusign.com</Reason>
                 <SignatureByteRange>0 305954 371490 5010</SignatureByteRange>
             </PDFSignatureDictionary>
-            <Timestamps/>
             <SignatureScopes>
                 <SignatureScope name="Full PDF" scope="FULL">Full document</SignatureScope>
             </SignatureScopes>
@@ -663,5 +623,42 @@
             <Revocations/>
         </Certificate>
     </UsedCertificates>
+    <UsedTimestamps>
+        <Timestamp Id="T-30662A206DBD6A4EB55C545C0EFD3101E9B0BBD31010B4A8CF0CD7C9FC58BD02" Type="SIGNATURE_TIMESTAMP">
+            <ProductionTime>2017-04-28T00:58:29</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>dI5uMiqg0USizkv/5sinZ70nvVsEazWB4bBVlqP4L4U=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-2086827691ADF87520375749ADF3616AC5FACA0456E8F2DA54DDCF844D24B86E"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-2086827691ADF87520375749ADF3616AC5FACA0456E8F2DA54DDCF844D24B86E">
+                    <Source>TIMESTAMP</Source>
+                </ChainItem>
+                <ChainItem Certificate="C-A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D">
+                    <Source>AIA</Source>
+                </ChainItem>
+                <ChainItem Certificate="C-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505">
+                    <Source>AIA</Source>
+                </ChainItem>
+                <ChainItem Certificate="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
+                    <Source>AIA</Source>
+                </ChainItem>
+            </CertificateChain>
+            <TimestampedObjects>
+                <TimestampedSignature Signature="id-eb2ce89008eb1ef77a4f96ee8738c07daceee2957537d5bdea0bd2e3af393f28" />
+                <TimestampedCertificate Certificate="C-F5ADDE9792A56C8C5FF3872560E3E85221E62D7A517DAD428D623299CCEF373B" />
+            </TimestampedObjects>
+        </Timestamp>
+    </UsedTimestamps>
     <TrustedLists/>
 </DiagnosticData>

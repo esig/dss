@@ -441,4 +441,9 @@ public class TimestampToken extends Token {
 		return timeStamp.getSID();
 	}
 
+	@Override
+	public String getDSSIdAsString() {
+		return "T-" + super.getDSSIdAsString();
+	}
+
 }
