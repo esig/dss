@@ -25,4 +25,9 @@ public class IssuerSerialInfo {
 		this.serialNumber = serialNumber;
 	}
 
+	@Override
+	public String toString() {
+		return "IssuerSerialInfo [issuerName=" + issuerName + ", serialNumber=" + serialNumber + "]";
+	}
+
 }

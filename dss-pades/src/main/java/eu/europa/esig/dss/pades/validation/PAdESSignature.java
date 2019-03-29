@@ -54,6 +54,7 @@ import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
@@ -169,7 +170,7 @@ public class PAdESSignature extends CAdESSignature {
 				final TimestampToken timestampToken = timestampInfo.getTimestampToken();
 				if (timestampToken.getTimeStampType() == TimestampType.SIGNATURE_TIMESTAMP) {
 
-					timestampToken.setTimestampedReferences(getSignatureTimestampedReferences());
+					timestampToken.setTimestampedReferences(getSignatureTimestampReferences());
 					result.add(timestampToken);
 				}
 			}
@@ -192,11 +193,11 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public List<TimestampToken> getArchiveTimestamps() {
 		final List<TimestampToken> archiveTimestampTokenList = new ArrayList<TimestampToken>();
-		final List<String> timestampedTimestamps = new ArrayList<String>();
+		final List<TimestampToken> timestampedTimestamps = new ArrayList<TimestampToken>();
 		final Set<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
 
 		for (TimestampToken token : getSignatureTimestamps()) {
-			timestampedTimestamps.add(token.getDSSIdAsString());
+			timestampedTimestamps.add(token);
 		}
 
 		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures) {
@@ -207,27 +208,17 @@ public class PAdESSignature extends CAdESSignature {
 				// return this timestamp if it's an archive timestamp
 				final TimestampToken timestampToken = timestampInfo.getTimestampToken();
 				if (timestampToken.getTimeStampType() == TimestampType.ARCHIVE_TIMESTAMP) {
-					final List<TimestampReference> references = getSignatureTimestampedReferences();
-					for (final String timestampId : timestampedTimestamps) {
-						references.add(new TimestampReference(timestampId, TimestampedObjectType.TIMESTAMP));
-					}
 
-					List<CertificateToken> dssDictionaryCertValues = getCertificateSource().getDSSDictionaryCertValues();
-					for (CertificateToken certificate : dssDictionaryCertValues) {
-						references.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
-					}
-					List<CertificateToken> vriDictionaryCertValues = getCertificateSource().getVRIDictionaryCertValues();
-					for (CertificateToken certificate : vriDictionaryCertValues) {
-						references.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
-					}
+					final List<TimestampReference> references = getSignatureTimestampReferences();
 
-					addReferencesFromOfflineCRLSource(references);
-					addReferencesFromOfflineOCSPSource(references);
+					addReferencesForPreviousTimestamps(references, timestampedTimestamps);
+					addReferencesForCertificates(references);
+					addReferencesFromRevocationData(references);
 
 					timestampToken.setTimestampedReferences(references);
 					archiveTimestampTokenList.add(timestampToken);
 				}
-				timestampedTimestamps.add(timestampToken.getDSSIdAsString());
+				timestampedTimestamps.add(timestampToken);
 			}
 
 		}
@@ -235,11 +226,33 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public List<TimestampReference> getSignatureTimestampedReferences() {
-		final List<TimestampReference> references = new ArrayList<TimestampReference>();
-		references.add(new TimestampReference(getId(), TimestampedObjectType.SIGNATURE));
-		references.addAll(super.getSigningCertificateTimestampReferences());
-		return references;
+	protected void addReferencesForCertificates(List<TimestampReference> references) {
+		List<CertificateToken> dssDictionaryCertValues = getCertificateSource().getDSSDictionaryCertValues();
+		for (CertificateToken certificate : dssDictionaryCertValues) {
+			references.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+		}
+		List<CertificateToken> vriDictionaryCertValues = getCertificateSource().getVRIDictionaryCertValues();
+		for (CertificateToken certificate : vriDictionaryCertValues) {
+			references.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+		}
+	}
+
+	/**
+	 * This method adds references to retrieved revocation data.
+	 * 
+	 * @param references
+	 */
+	@Override
+	protected void addReferencesFromRevocationData(List<TimestampReference> references) {
+		List<RevocationToken> vriRevocationTokens = getVRIDictionaryRevocationTokens();
+		for (RevocationToken revocationToken : vriRevocationTokens) {
+			references.add(new TimestampReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
+		}
+
+		List<RevocationToken> dssRevocationTokens = getDSSDictionaryRevocationTokens();
+		for (RevocationToken revocationToken : dssRevocationTokens) {
+			references.add(new TimestampReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
+		}
 	}
 
 	@Override

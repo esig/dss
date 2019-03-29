@@ -22,95 +22,61 @@ package eu.europa.esig.dss.validation;
 
 import java.io.Serializable;
 
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
-
 /**
- * This class stocks the timestamp reference, which is composed of:
- * - digest algorithm used to calculate the digest value of the reference;
- * - digest value of the reference;
- * - the timestamp reference category {@code TimestampReferenceCategory};
- * - signature id in the case where the reference apply to the signature.
+ * This class stocks the timestamp reference, which is composed of: - the
+ * timestamp reference category {@code TimestampReferenceCategory}; - object id
+ * in the case where the reference apply to the signature.
  */
 public class TimestampReference implements Serializable {
 
-	private String signatureId;
+	private final String objectId;
+	private final TimestampedObjectType category;
 
-	private DigestAlgorithm digestAlgorithm;
-	private byte[] digestValue;
-	private TimestampedObjectType category;
-
-	public TimestampReference(final String signatureId) {
-
-		if (signatureId == null) {
-			throw new NullPointerException();
-		}
-		this.signatureId = signatureId;
-		this.digestAlgorithm = DigestAlgorithm.SHA1;
-		this.digestValue = DSSUtils.digest(DigestAlgorithm.SHA1, signatureId.getBytes());
-		this.category = TimestampedObjectType.SIGNATURE;
-	}
-
-	public TimestampReference(final String signatureId, final TimestampedObjectType category) {
-		this(signatureId);
+	public TimestampReference(final String objectId, final TimestampedObjectType category) {
+		this.objectId = objectId;
 		this.category = category;
-	}
-
-	public TimestampReference(final DigestAlgorithm digestAlgorithm, final byte[] digestValue) {
-
-		if (digestAlgorithm == null) {
-			throw new NullPointerException("digestAlgorithm");
-		}
-		this.digestAlgorithm = digestAlgorithm;
-		if (digestValue == null) {
-			throw new NullPointerException("digestValue");
-		}
-		this.digestValue = digestValue;
-		this.category = TimestampedObjectType.CERTIFICATE;
-	}
-
-	public TimestampReference(final DigestAlgorithm digestAlgorithm, final byte[] digestValue, final TimestampedObjectType category) {
-
-		this(digestAlgorithm, digestValue);
-		this.category = category;
-	}
-
-	public DigestAlgorithm getDigestAlgorithm() {
-		return digestAlgorithm;
-	}
-
-	public byte[] getDigestValue() {
-		return digestValue;
 	}
 
 	public TimestampedObjectType getCategory() {
 		return category;
 	}
 
-	public String getSignatureId() {
-		return signatureId;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-
-		TimestampReference that = (TimestampReference) o;
-
-		if (!digestValue.equals(that.digestValue)) {
-			return false;
-		}
-
-		return true;
+	public String getObjectId() {
+		return objectId;
 	}
 
 	@Override
 	public int hashCode() {
-		return digestValue.hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((category == null) ? 0 : category.hashCode());
+		result = prime * result + ((objectId == null) ? 0 : objectId.hashCode());
+		return result;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		TimestampReference other = (TimestampReference) obj;
+		if (category != other.category) {
+			return false;
+		}
+		if (objectId == null) {
+			if (other.objectId != null) {
+				return false;
+			}
+		} else if (!objectId.equals(other.objectId)) {
+			return false;
+		}
+		return true;
+	}
+
 }
