@@ -30,6 +30,7 @@ import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
@@ -445,6 +446,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 	
+	public List<XmlFoundCertificate> getFoundCertificates() {
+		return signature.getFoundCertificates();
+	}
+	
 	public XmlFoundRevocations getFoundRevocations() {
 		return signature.getFoundRevocations();
 	}
@@ -547,6 +552,11 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return revocationIds;
 	}
 
+	/**
+	 * Returns a list of found certificate ids based on the requested {@code locationType}
+	 * @param locationType {@link XmlCertificateLocationType} to get certificate ids for
+	 * @return list of certificate ids
+	 */
 	public List<String> getFoundCertificateIds(XmlCertificateLocationType locationType) {
 		List<String> result = new ArrayList<String>();
 		List<XmlFoundCertificate> foundCertificates = signature.getFoundCertificates();
@@ -558,6 +568,24 @@ public class SignatureWrapper extends AbstractTokenProxy {
 			}
 		}
 		return result;
+	}
+	
+	/**
+	 * Returns a list of found {@link XmlFoundCertificate} from the given {@code locationType}
+	 * @param locationType {@link XmlCertificateLocationType} to get certificates from
+	 * @return list of found {@link XmlFoundCertificate}
+	 */
+	public List<XmlFoundCertificate> getFoundCertificatesByLocation(XmlCertificateLocationType locationType) {
+		List<XmlFoundCertificate> certificatesByLocation = new ArrayList<XmlFoundCertificate>();
+		List<XmlFoundCertificate> allFoundCertificates = signature.getFoundCertificates();
+		if (Utils.isCollectionNotEmpty(allFoundCertificates)) {
+			for (XmlFoundCertificate xmlFoundCertificate : allFoundCertificates) {
+				if (locationType.equals(xmlFoundCertificate.getLocation())) {
+					certificatesByLocation.add(xmlFoundCertificate);
+				}
+			}
+		}
+		return certificatesByLocation;
 	}
 
 }

@@ -10,8 +10,10 @@ import javax.xml.bind.JAXBElement;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.RevocationRefLocation;
@@ -31,6 +33,7 @@ import eu.europa.esig.jaxb.validationreport.AttributeBaseType;
 import eu.europa.esig.jaxb.validationreport.ObjectFactory;
 import eu.europa.esig.jaxb.validationreport.SACRLIDType;
 import eu.europa.esig.jaxb.validationreport.SACertIDListType;
+import eu.europa.esig.jaxb.validationreport.SACertIDType;
 import eu.europa.esig.jaxb.validationreport.SACommitmentTypeIndicationType;
 import eu.europa.esig.jaxb.validationreport.SAContactInfoType;
 import eu.europa.esig.jaxb.validationreport.SADSSType;
@@ -291,6 +294,7 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="VRI" type="{http://uri.etsi.org/19102/v1.2.1#}SAVRIType"/&gt;
 		addVRI(sigAttributes, sigWrapper);
 		// &lt;element name="DocTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
+		// TODO: DocTimeStamp
 		// &lt;element name="Reason" type="{http://uri.etsi.org/19102/v1.2.1#}SAReasonType"/&gt;
 		addReason(sigAttributes, sigWrapper);
 		// &lt;element name="Name" type="{http://uri.etsi.org/19102/v1.2.1#}SANameType"/&gt;
@@ -332,26 +336,26 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addAttributeCertificateRefs(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.ATTRIBUTE_CERTIFICATE_REFS);
-		if (Utils.isCollectionNotEmpty(certIds)) {
+		List<XmlFoundCertificate> certs = sigWrapper.getFoundCertificatesByLocation(XmlCertificateLocationType.ATTRIBUTE_CERTIFICATE_REFS);
+		if (Utils.isCollectionNotEmpty(certs)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-					.add(objectFactory.createSignatureAttributesTypeAttributeCertificateRefs(buildCertIDListType(certIds)));
+					.add(objectFactory.createSignatureAttributesTypeAttributeCertificateRefs(buildCertIDListType(certs)));
 		}
 	}
 
 	private void addCompleteCertificateRefs(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.COMPLETE_CERTIFICATE_REFS);
-		if (Utils.isCollectionNotEmpty(certIds)) {
+		List<XmlFoundCertificate> certs = sigWrapper.getFoundCertificatesByLocation(XmlCertificateLocationType.COMPLETE_CERTIFICATE_REFS);
+		if (Utils.isCollectionNotEmpty(certs)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-					.add(objectFactory.createSignatureAttributesTypeCompleteCertificateRefs(buildCertIDListType(certIds)));
+					.add(objectFactory.createSignatureAttributesTypeCompleteCertificateRefs(buildCertIDListType(certs)));
 		}
 	}
 
 	private void addSigningCertificate(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.SIGNING_CERTIFICATE);
-		if (Utils.isCollectionNotEmpty(certIds)) {
+		List<XmlFoundCertificate> certs = sigWrapper.getFoundCertificatesByLocation(XmlCertificateLocationType.SIGNING_CERTIFICATE);
+		if (Utils.isCollectionNotEmpty(certs)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-					.add(objectFactory.createSignatureAttributesTypeSigningCertificate(buildCertIDListType(certIds)));
+					.add(objectFactory.createSignatureAttributesTypeSigningCertificate(buildCertIDListType(certs)));
 		}
 	}
 
@@ -363,22 +367,26 @@ public class ETSIValidationReportBuilder {
 		return attributeBaseType;
 	}
 
-	private SACertIDListType buildCertIDListType(List<String> certIds) {
+	private SACertIDListType buildCertIDListType(List<XmlFoundCertificate> certs) {
 		SACertIDListType certIdList = objectFactory.createSACertIDListType();
-		for (String certId : certIds) {
-			// TODO
-//			SACertIDType certIDType = objectFactory.createSACertIDType();
-//			CertificateWrapper certificate = getCertificateWrapper(certId);
-//			List<XmlDigestAlgoAndValue> digestAlgoAndValues = certificate.getDigestAlgoAndValue();
-//			XmlDigestAlgoAndValue xmlDigestAlgoAndValue = digestAlgoAndValues.get(0);
-//			DigestAlgorithm digestAlgorithm = DigestAlgorithm.valueOf(xmlDigestAlgoAndValue.getDigestMethod());
-//			DigestMethodType dmt = new DigestMethodType();
-//			dmt.setAlgorithm(digestAlgorithm.getXmlId());
-//			certIDType.setDigestMethod(dmt);
-//			certIDType.setDigestValue(xmlDigestAlgoAndValue.getDigestValue());
-//			certIdList.getCertID().add(certIDType);
+		for (XmlFoundCertificate cert : certs) {
+			certIdList.getAttributeObject().add(getVOReference(cert.getCertificate().getId()));
+			List<XmlCertificateRef> certificateRefs = cert.getCertificateRef();
+			for (XmlCertificateRef certificateRef : certificateRefs) {
+				if (certificateRef != null && certificateRef.getDigestAlgoAndValue() != null) {
+					SACertIDType certIDType = objectFactory.createSACertIDType();
+					XmlDigestAlgoAndValue digestAlgoAndValue = certificateRef.getDigestAlgoAndValue();
+					DigestMethodType digestMethodType = new DigestMethodType();
+					digestMethodType.setAlgorithm(DigestAlgorithm.valueOf(digestAlgoAndValue.getDigestMethod()).getXmlId());
+					certIDType.setDigestMethod(digestMethodType);
+					certIDType.setDigestValue(digestAlgoAndValue.getDigestValue());
+					if (certificateRef.getIssuerSerial() != null) {
+						certIDType.setX509IssuerSerial(certificateRef.getIssuerSerial());
+					}
+					certIdList.getCertID().add(certIDType);
+				}
+			} 
 		}
-
 		return certIdList;
 	}
 	

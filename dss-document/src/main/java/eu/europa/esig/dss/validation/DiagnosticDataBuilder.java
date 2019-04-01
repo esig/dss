@@ -37,11 +37,13 @@ import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.AdapterUtils;
 import eu.europa.esig.dss.CertificatePolicy;
+import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
@@ -49,6 +51,7 @@ import eu.europa.esig.dss.DSSPKUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.EncryptionAlgorithm;
+import eu.europa.esig.dss.IssuerSerialInfo;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
@@ -58,6 +61,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
@@ -703,17 +707,17 @@ public class DiagnosticDataBuilder {
 		List<XmlFoundCertificate> foundCertificates = new ArrayList<XmlFoundCertificate>();
 		SignatureCertificateSource certificateSource = signature.getCertificateSource();
 		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.KEY_INFO, certificateSource.getKeyInfoCertificates()));
-		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.SIGNING_CERTIFICATE, certificateSource.getSigningCertificates()));
-		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.COMPLETE_CERTIFICATE_REFS, certificateSource.getCompleteCertificates()));
-		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.ATTRIBUTE_CERTIFICATE_REFS, certificateSource.getAttributeCertificates()));
-		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.CERTIFICATE_VALUES, certificateSource.getCertificateValues()));
-		foundCertificates
-				.addAll(getXmlFoundCertificates(XmlCertificateLocationType.ATTR_AUTORITIES_CERT_VALUES, certificateSource.getAttrAuthoritiesCertValues()));
-		foundCertificates.addAll(
-				getXmlFoundCertificates(XmlCertificateLocationType.TIMESTAMP_DATA_VALIDATION, certificateSource.getTimeStampValidationDataCertValues()));
+		foundCertificates.addAll(getXmlFoundCertificateRefs(XmlCertificateLocationType.SIGNING_CERTIFICATE, 
+				certificateSource.getSigningCertificates(), certificateSource));
+		foundCertificates.addAll(getXmlFoundCertificateRefs(XmlCertificateLocationType.COMPLETE_CERTIFICATE_REFS, 
+				certificateSource.getCompleteCertificates(), certificateSource));
+		foundCertificates.addAll(getXmlFoundCertificateRefs(XmlCertificateLocationType.ATTRIBUTE_CERTIFICATE_REFS, 
+				certificateSource.getAttributeCertificates(), certificateSource));
+		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.CERTIFICATE_VALUES, 	certificateSource.getCertificateValues()));
+		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.ATTR_AUTORITIES_CERT_VALUES, certificateSource.getAttrAuthoritiesCertValues()));
+		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.TIMESTAMP_DATA_VALIDATION, certificateSource.getTimeStampValidationDataCertValues()));
 		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.DSS, certificateSource.getDSSDictionaryCertValues()));
-		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.VRI, certificateSource.getVRIDictionaryCertValues()));
-
+		foundCertificates.addAll(getXmlFoundCertificates( XmlCertificateLocationType.VRI, certificateSource.getVRIDictionaryCertValues()));
 		return foundCertificates;
 	}
 
@@ -723,6 +727,34 @@ public class DiagnosticDataBuilder {
 			XmlFoundCertificate xfc = new XmlFoundCertificate();
 			xfc.setLocation(location);
 			xfc.setCertificate(xmlCerts.get(certificateToken.getDSSIdAsString()));
+			result.add(xfc);
+		}
+		return result;
+	}
+	
+	private List<XmlFoundCertificate> getXmlFoundCertificateRefs(XmlCertificateLocationType location, 
+			List<CertificateToken> certs, SignatureCertificateSource certificateSource) {
+		List<XmlFoundCertificate> result = new ArrayList<XmlFoundCertificate>();
+		for (CertificateToken certificateToken : certs) {
+			XmlFoundCertificate xfc = new XmlFoundCertificate();
+			xfc.setLocation(location);
+			xfc.setCertificate(xmlCerts.get(certificateToken.getDSSIdAsString()));
+			List<CertificateRef> references = certificateSource.getReferencesForCertificateToken(certificateToken);
+			if (Utils.isCollectionNotEmpty(references)) {
+				for (CertificateRef ref : references) {
+					XmlCertificateRef certificateRef = new XmlCertificateRef();
+					IssuerSerialInfo serialInfo = ref.getIssuerInfo();
+					if (serialInfo != null && serialInfo.getIssuerName() != null && serialInfo.getSerialNumber() != null) {
+						IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(serialInfo.getIssuerName(), serialInfo.getSerialNumber());
+						certificateRef.setIssuerSerial(DSSASN1Utils.getDEREncoded(issuerSerial));
+					}
+					Digest refDigest = ref.getCertDigest();
+					if (refDigest != null) {
+						certificateRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(refDigest.getAlgorithm(), refDigest.getValue()));
+					}
+					xfc.getCertificateRef().add(certificateRef);
+				}
+			}
 			result.add(xfc);
 		}
 		return result;
@@ -1146,8 +1178,6 @@ public class DiagnosticDataBuilder {
 		if (includeRawCertificateTokens) {
 			xmlCert.setBase64Encoded(certToken.getEncoded());
 		}
-		// TODO: if false add DigestAlgoAndValue
-		// TODO: Optional default Digest Algo (SHA-256)
 
 		return xmlCert;
 	}

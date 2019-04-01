@@ -681,6 +681,22 @@ public final class DSSASN1Utils {
 	}
 
 	/**
+	 * This method returns a new IssuerSerial based on x500Principal of issuer and serial number
+	 *
+	 * @param issuerX500Principal
+	 *            the {@link X500Principal} of certificate token's issuer
+	 * @param serialNumber
+	 *            serial number of certificate token
+	 * @return a IssuerSerial
+	 */
+	public static IssuerSerial getIssuerSerial(final X500Principal issuerX500Principal, BigInteger serialNumber) {
+		final X500Name issuerX500Name = X500Name.getInstance(issuerX500Principal.getEncoded());
+		final GeneralName generalName = new GeneralName(issuerX500Name);
+		final GeneralNames generalNames = new GeneralNames(generalName);
+		return new IssuerSerial(generalNames, serialNumber);
+	}
+
+	/**
 	 * This method returns a new IssuerSerial based on the certificate token
 	 *
 	 * @param certToken

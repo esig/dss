@@ -23,7 +23,10 @@ package eu.europa.esig.dss.x509;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +35,7 @@ import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.IssuerSerialInfo;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * The advanced signature contains a list of certificate that was needed to validate the signature. This class is a
@@ -42,6 +46,11 @@ import eu.europa.esig.dss.IssuerSerialInfo;
 public abstract class SignatureCertificateSource extends CommonCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignatureCertificateSource.class);
+	
+	/**
+	 * Contains a list of found {@link CertificateRef}s for each {@link CertificateToken}
+	 */
+	private Map<CertificateToken, List<CertificateRef>> certificateRefsMap;
 
 	/**
 	 * The default constructor with mandatory certificates pool.
@@ -115,7 +124,7 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 	 * @return list of {@link CertificateToken}s
 	 */
 	public List<CertificateToken> getSigningCertificates() {
-		return findTokensFromRefs(getSigningCertificateValues(), getCertificates());
+		return findTokensFromRefs(getSigningCertificateValues());
 	}
 
 	/**
@@ -135,7 +144,7 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 	 * @return list of {@link CertificateToken}s
 	 */
 	public List<CertificateToken> getCompleteCertificates() {
-		return findTokensFromRefs(getCompleteCertificateRefs(), getCertificates());
+		return findTokensFromRefs(getCompleteCertificateRefs());
 	}
 
 	/**
@@ -155,45 +164,82 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 	 * @return list of {@link CertificateToken}s
 	 */
 	public List<CertificateToken> getAttributeCertificates() {
-		return findTokensFromRefs(getAttributeCertificateRefs(), getCertificates());
+		return findTokensFromRefs(getAttributeCertificateRefs());
 	}
 
 	@Override
 	public CertificateSourceType getCertificateSourceType() {
 		return CertificateSourceType.SIGNATURE;
 	}
+	
+	/**
+	 * Returns list of {@link CertificateRef}s found for the given {@code certificateToken}
+	 * @param certificateToken {@link CertificateToken} to find references for
+	 * @return list of {@link CertificateRef}s
+	 */
+	public List<CertificateRef> getReferencesForCertificateToken(CertificateToken certificateToken) {
+		if (Utils.isMapEmpty(certificateRefsMap)) {
+			collectCertificateRefsMap();
+		}
+		List<CertificateRef> references = certificateRefsMap.get(certificateToken);
+		if (references != null) {
+			return references;
+		} else {
+			return Collections.emptyList();
+		}
+	}
 
-	private List<CertificateToken> findTokensFromRefs(List<CertificateRef> signingCertificateRefs, List<CertificateToken> certificateTokens) {
-		List<CertificateToken> usedCertificates = new ArrayList<CertificateToken>();
-		for (CertificateRef certificateRef : signingCertificateRefs) {
-			Digest certDigest = certificateRef.getCertDigest();
-			IssuerSerialInfo issuerInfo = certificateRef.getIssuerInfo();
-			boolean found = false;
-			if (certDigest != null) {
-				for (CertificateToken token : certificateTokens) {
-					byte[] currentDigest = token.getDigest(certDigest.getAlgorithm());
-					if (Arrays.equals(currentDigest, certDigest.getValue())) {
-						usedCertificates.add(token);
-						found = true;
-						break;
-					}
+	private List<CertificateToken> findTokensFromRefs(List<CertificateRef> certificateRefs) {
+		if (Utils.isMapEmpty(certificateRefsMap)) {
+			collectCertificateRefsMap();
+		}
+		List<CertificateToken> tokensFromRefs = new ArrayList<CertificateToken>();
+		for (Entry<CertificateToken, List<CertificateRef>> certMapEntry : certificateRefsMap.entrySet()) {
+			for (CertificateRef reference : certMapEntry.getValue()) {
+				if (certificateRefs.contains(reference)) {
+					tokensFromRefs.add(certMapEntry.getKey());
+					break;
 				}
-			} else if (issuerInfo != null) {
-				for (CertificateToken token : certificateTokens) {
-					if (token.getSerialNumber().equals(issuerInfo.getSerialNumber()) && DSSUtils
-							.x500PrincipalAreEquals(token.getIssuerX500Principal(), issuerInfo.getIssuerName())) {
-						usedCertificates.add(token);
-						found = true;
-						break;
-					}
-				}
-			}
-
-			if (!found) {
-				LOG.debug("The related Certificate Token was not found for Certificate Reference [{}]", certificateRef);
 			}
 		}
-		return usedCertificates;
+		return tokensFromRefs;
+	}
+	
+	private List<CertificateRef> getAllCertificateRefs() {
+		List<CertificateRef> allCertificateRefs = new ArrayList<CertificateRef>();
+		allCertificateRefs.addAll(getCompleteCertificateRefs());
+		allCertificateRefs.addAll(getAttributeCertificateRefs());
+		allCertificateRefs.addAll(getSigningCertificateValues());
+		return allCertificateRefs;
+	}
+	
+	private void collectCertificateRefsMap() {
+		certificateRefsMap = new HashMap<CertificateToken, List<CertificateRef>>();
+		for (CertificateToken certificateToken : getCertificates()) {
+			for (CertificateRef certificateRef : getAllCertificateRefs()) {
+				Digest certDigest = certificateRef.getCertDigest();
+				IssuerSerialInfo issuerInfo = certificateRef.getIssuerInfo();
+				if (certDigest != null) {
+					byte[] currentDigest = certificateToken.getDigest(certDigest.getAlgorithm());
+					if (Arrays.equals(currentDigest, certDigest.getValue())) {
+						addCertificateRefToMap(certificateToken, certificateRef);
+					}
+				} else if (issuerInfo != null) {
+					if (certificateToken.getSerialNumber().equals(issuerInfo.getSerialNumber()) && DSSUtils
+							.x500PrincipalAreEquals(certificateToken.getIssuerX500Principal(), issuerInfo.getIssuerName())) {
+						addCertificateRefToMap(certificateToken, certificateRef);
+					}
+				}
+			}
+		}
+	}
+	
+	private void addCertificateRefToMap(CertificateToken certificateToken, CertificateRef certificateRef) {
+		if (certificateRefsMap.containsKey(certificateToken)) {
+			certificateRefsMap.get(certificateToken).add(certificateRef);
+		} else {
+			certificateRefsMap.put(certificateToken, new ArrayList<CertificateRef>(Arrays.asList(certificateRef)));
+		}
 	}
 
 }

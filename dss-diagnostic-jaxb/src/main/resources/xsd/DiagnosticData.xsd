@@ -265,7 +265,6 @@
 				</xs:complexType>
 			</xs:element>
 			
-			<xs:element name="DigestAlgoAndValues" type="DigestAlgoAndValues" minOccurs="0" />
 			<xs:element name="NotAfter" type="xs:dateTime" />
 			<xs:element name="NotBefore" type="xs:dateTime" />
 			<xs:element name="PublicKeySize" type="xs:int" />
@@ -507,8 +506,18 @@
 	</xs:simpleType>
 	
 	<xs:complexType name="FoundCertificate">
+		<xs:sequence>
+			<xs:element name="CertificateRef" type="CertificateRef" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
 		<xs:attribute name="Certificate" type="xs:IDREF" use="required" />
 		<xs:attribute name="Location" type="CertificateLocationType" use="required" />
+	</xs:complexType>
+	
+	<xs:complexType name="CertificateRef">
+		<xs:sequence>
+			<xs:element name="IssuerSerial" type="xs:base64Binary" />
+			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
+		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="FoundTimestamp">

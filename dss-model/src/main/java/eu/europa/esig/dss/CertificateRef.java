@@ -25,5 +25,34 @@ public class CertificateRef {
 	public String toString() {
 		return "CertificateRef [certDigest=" + certDigest + ", issuerInfo=" + issuerInfo + "]";
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof CertificateRef)) {
+			return false;
+		}
+		CertificateRef o = (CertificateRef) obj;
+		if ((certDigest == null && o.getCertDigest() != null) || 
+				(certDigest != null && !certDigest.equals(o.getCertDigest()))) {
+			return false;
+		}
+		if ((issuerInfo == null && o.getIssuerInfo() != null) || 
+				(issuerInfo != null && !issuerInfo.equals(o.getIssuerInfo()))) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = (prime * result) + ((certDigest == null) ? 0 : certDigest.hashCode());
+		result = (prime * result) + ((issuerInfo == null) ? 0 : issuerInfo.hashCode());
+		return result;
+	}
 
 }

@@ -12,12 +12,16 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.XmlCertificateSourceType;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 public class CAdESCertificateWrapperTest extends PKIFactoryAccess {
 	
@@ -53,6 +57,22 @@ public class CAdESCertificateWrapperTest extends PKIFactoryAccess {
 		assertEquals(3, certsFromOcspResponse);
 		assertEquals(2, certsFromTimestamp);
 		assertEquals(1, certsFromMoreThanTwoSources);
+		
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlFoundCertificate> foundCertificates = signatureWrapper.getFoundCertificates();
+		assertNotNull(foundCertificates);
+		assertEquals(6, foundCertificates.size());
+		List<XmlFoundCertificate> signinigCertificates = signatureWrapper.getFoundCertificatesByLocation(XmlCertificateLocationType.SIGNING_CERTIFICATE);
+		assertNotNull(foundCertificates);
+		assertEquals(1, signinigCertificates.size());
+		XmlFoundCertificate signCertificate = signinigCertificates.get(0);
+		List<XmlCertificateRef> certificateRefs = signCertificate.getCertificateRef();
+		assertNotNull(certificateRefs);
+		XmlCertificateRef certRef = certificateRefs.get(0);
+		assertNotNull(certRef.getDigestAlgoAndValue());
+		assertNotNull(certRef.getDigestAlgoAndValue().getDigestMethod());
+		assertNotNull(certRef.getDigestAlgoAndValue().getDigestValue());
+		assertNotNull(certRef.getIssuerSerial());
 	}
 
 	@Override
