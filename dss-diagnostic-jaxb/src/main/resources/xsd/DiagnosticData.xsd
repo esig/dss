@@ -332,7 +332,10 @@
 				</xs:complexType>
 			</xs:element>
 			
-			<xs:element name="Base64Encoded" type="xs:base64Binary" minOccurs="0" />
+			<xs:choice>
+				<xs:element name="Base64Encoded" type="xs:base64Binary" />
+				<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
+			</xs:choice>
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:ID" use="required" />
 	</xs:complexType>

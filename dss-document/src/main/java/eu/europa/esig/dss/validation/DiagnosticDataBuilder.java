@@ -133,6 +133,8 @@ public class DiagnosticDataBuilder {
 	private boolean includeRawCertificateTokens = false;
 	private boolean includeRawRevocationData = false;
 	private boolean includeRawTimestampTokens = false;
+	
+	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
 
 	private Map<String, XmlCertificate> xmlCerts = new HashMap<String, XmlCertificate>();
 	private Map<String, XmlRevocation> xmlRevocations = new HashMap<String, XmlRevocation>();
@@ -250,6 +252,16 @@ public class DiagnosticDataBuilder {
 	 */
 	public DiagnosticDataBuilder includeRawTimestampTokens(boolean includeRawTimestampTokens) {
 		this.includeRawTimestampTokens = includeRawTimestampTokens;
+		return this;
+	}
+	
+	/**
+	 * This method allows to set the default {@link DigestAlgorithm} which will be used for Certificate.DigestAlgoAndValue calculation
+	 * @param digestAlgorithm {@link DigestAlgorithm} to set as default
+	 * @returnn the builder
+	 */
+	public DiagnosticDataBuilder setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+		this.defaultDigestAlgorithm = digestAlgorithm;
 		return this;
 	}
 
@@ -1192,6 +1204,9 @@ public class DiagnosticDataBuilder {
 
 		if (includeRawCertificateTokens) {
 			xmlCert.setBase64Encoded(certToken.getEncoded());
+		} else {
+			byte[] certDigest = certToken.getDigest(defaultDigestAlgorithm);
+			xmlCert.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(defaultDigestAlgorithm, certDigest));
 		}
 
 		return xmlCert;

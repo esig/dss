@@ -474,21 +474,23 @@ public class ETSIValidationReportBuilder {
 
 	private JAXBElement<SATimestampType> wrap(TimestampType timestampType, SATimestampType timestamp) {
 		switch (timestampType) {
-		case SIGNATURE_TIMESTAMP:
-			return objectFactory.createSignatureAttributesTypeSignatureTimeStamp(timestamp);
-		case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
-			return objectFactory.createSignatureAttributesTypeIndividualDataObjectsTimeStamp(timestamp);
-		case ALL_DATA_OBJECTS_TIMESTAMP:
-		case CONTENT_TIMESTAMP:
-			return objectFactory.createSignatureAttributesTypeAllDataObjectsTimeStamp(timestamp);
-		case VALIDATION_DATA_REFSONLY_TIMESTAMP:
-			return objectFactory.createSignatureAttributesTypeRefsOnlyTimeStamp(timestamp);
-		case VALIDATION_DATA_TIMESTAMP:
-			return objectFactory.createSignatureAttributesTypeSigAndRefsTimeStamp(timestamp);
-		case ARCHIVE_TIMESTAMP:
-			return objectFactory.createSignatureAttributesTypeArchiveTimeStamp(timestamp);
-		default:
-			throw new DSSException("Unsupported timestamp type " + timestampType);
+			case SIGNATURE_TIMESTAMP:
+				return objectFactory.createSignatureAttributesTypeSignatureTimeStamp(timestamp);
+			case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:
+				return objectFactory.createSignatureAttributesTypeIndividualDataObjectsTimeStamp(timestamp);
+			case ALL_DATA_OBJECTS_TIMESTAMP:
+			case CONTENT_TIMESTAMP:
+				return objectFactory.createSignatureAttributesTypeAllDataObjectsTimeStamp(timestamp);
+			case VALIDATION_DATA_REFSONLY_TIMESTAMP:
+				return objectFactory.createSignatureAttributesTypeRefsOnlyTimeStamp(timestamp);
+			case VALIDATION_DATA_TIMESTAMP:
+				return objectFactory.createSignatureAttributesTypeSigAndRefsTimeStamp(timestamp);
+			case ARCHIVE_TIMESTAMP:
+				return objectFactory.createSignatureAttributesTypeArchiveTimeStamp(timestamp);
+			case DOC_TIMESTAMP:
+				return objectFactory.createSignatureAttributesTypeDocTimeStamp(timestamp);
+			default:
+				throw new DSSException("Unsupported timestamp type " + timestampType);
 		}
 	}
 
