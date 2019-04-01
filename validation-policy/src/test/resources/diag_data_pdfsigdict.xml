@@ -138,16 +138,6 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>9a3el5KlbIxf84clYOPoUiHmLXpRfa1CjWIymczvNzs=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>zBJ9pNcojwwCTzAfZ3dA2fzlS4I=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2019-06-29T21:00:00</NotAfter>
             <NotBefore>2016-06-29T21:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -184,6 +174,10 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>9a3el5KlbIxf84clYOPoUiHmLXpRfa1CjWIymczvNzs=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B0915067C">
             <SubjectDistinguishedName Format="CANONICAL">cn=autoridade certificadora raiz brasileira v2,ou=instituto nacional de tecnologia da informacao - iti,o=icp-brasil,c=br</SubjectDistinguishedName>
@@ -203,16 +197,6 @@
             <Sources>
             	<Source>AIA</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>+0fZKpkJ/U+pvsAnN1Q+HzUUztdHQHqNnPo5ewkVBnw=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>qYIubGkzxjwUjC3KpEpc8arSxC4=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2023-06-21T19:04:57</NotAfter>
             <NotBefore>2010-06-21T19:04:57</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -239,6 +223,10 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>+0fZKpkJ/U+pvsAnN1Q+HzUUztdHQHqNnPo5ewkVBnw=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-2086827691ADF87520375749ADF3616AC5FACA0456E8F2DA54DDCF844D24B86E">
             <SubjectDistinguishedName Format="CANONICAL">cn=timestamp01.d699-d038-d51e,ou=#14284175746f72696461646520646520436172696d626f20646f2054656d706f2043657274697369676e,ou=#141e6e436970686572204453452045534e3a443639392d443033382d44353145,ou=#1412417373696e6174757261205469706f205433,ou=#1422417574656e74696361646f20706f722041432043657274697369676e2054656d706f,o=#140a4943502d42726173696c,c=br</SubjectDistinguishedName>
@@ -264,16 +252,6 @@
             <Sources>
             	<Source>TIMESTAMP</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>IIaCdpGt+HUgN1dJrfNhasX6ygRW6PLaVN3PhE0kuG4=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>eQsxzwl+IslNF7KKuqIy/HjeKgg=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2021-07-25T23:59:59</NotAfter>
             <NotBefore>2017-02-20T00:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -309,6 +287,10 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>IIaCdpGt+HUgN1dJrfNhasX6ygRW6PLaVN3PhE0kuG4=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-498D3379F39A398AFCCA536C528F91A013D0A868FEAEFFA1114EC3B6938249F0">
             <SubjectDistinguishedName Format="CANONICAL">cn=ac serasa rfb v2,ou=secretaria da receita federal do brasil - rfb,o=icp-brasil,c=br</SubjectDistinguishedName>
@@ -328,16 +310,6 @@
             <Sources>
             	<Source>AIA</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>SY0zefOaOYr8ylNsUo+RoBPQqGj+rv+hEU7DtpOCSfA=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>0pUMbcatVltqrp+B08BckGn7m4s=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2019-12-16T13:39:42</NotAfter>
             <NotBefore>2011-12-16T13:39:42</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -372,6 +344,10 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>SY0zefOaOYr8ylNsUo+RoBPQqGj+rv+hEU7DtpOCSfA=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505">
             <SubjectDistinguishedName Format="CANONICAL">cn=ac certisign g6,ou=autoridade certificadora raiz brasileira v2,o=icp-brasil,c=br</SubjectDistinguishedName>
@@ -391,16 +367,6 @@
             <Sources>
             	<Source>AIA</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>h/8EzrSUL/Q2MhfKzXgAmH+idR2Agax+/2EvcYTUtQU=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>0i0DkuCEBSkiOMV+4gy/OMs9wZ0=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2021-09-20T18:51:40</NotAfter>
             <NotBefore>2011-09-20T18:51:40</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -431,6 +397,10 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>h/8EzrSUL/Q2MhfKzXgAmH+idR2Agax+/2EvcYTUtQU=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-C4DCF22C04E2914AEB651F660A2558AF783D8C344E62D82D0DE5DBD5DC87F2F5">
             <SubjectDistinguishedName Format="CANONICAL">cn=docusign dev-test,ou=engineering operations,o=docusign\, inc.,l=seattle,st=washington,c=us</SubjectDistinguishedName>
@@ -454,16 +424,6 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>xNzyLATikUrrZR9mCiVYr3g9jDROYtgtDeXb1dyH8vU=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>zhneeDDbXSzPURFf1ZGODqajqlI=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2017-11-06T23:44:20</NotAfter>
             <NotBefore>2017-01-10T19:04:16</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -491,6 +451,10 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>xNzyLATikUrrZR9mCiVYr3g9jDROYtgtDeXb1dyH8vU=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9">
             <SubjectDistinguishedName Format="CANONICAL">cn=ac secretaria da receita federal do brasil v3,ou=autoridade certificadora raiz brasileira v2,o=icp-brasil,c=br</SubjectDistinguishedName>
@@ -510,16 +474,6 @@
             <Sources>
             	<Source>AIA</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>sSOoYRdPQMAeUNA5ZS5k+eNN+fdi82iRmH4qs3Fifvk=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>7NzEk/308dQK3i+OJsWuzvFy1HU=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2021-10-21T12:16:29</NotAfter>
             <NotBefore>2011-10-21T12:16:29</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -550,6 +504,10 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>sSOoYRdPQMAeUNA5ZS5k+eNN+fdi82iRmH4qs3Fifvk=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D">
             <SubjectDistinguishedName Format="CANONICAL">cn=ac certisign tempo g1,ou=certisign certificadora digital s.a.,o=icp-brasil,c=br</SubjectDistinguishedName>
@@ -569,16 +527,6 @@
             <Sources>
             	<Source>AIA</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>ohtdhA4pRSW5hqHldB/IAZKs7Mq9bQGWxmObS2rusz0=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>nFG792XM6K3SKiPxjw6qM5RUuyA=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2021-07-25T23:59:59</NotAfter>
             <NotBefore>2014-07-25T00:00:00</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -611,6 +559,10 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ohtdhA4pRSW5hqHldB/IAZKs7Mq9bQGWxmObS2rusz0=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
     <UsedTimestamps>

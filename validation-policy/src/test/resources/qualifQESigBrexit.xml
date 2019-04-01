@@ -68,16 +68,6 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>nijlspVz2D09CpwjskczOLI2F0Y=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>10rzk887UG2jO0a8UrSc1vrBKyvaqc4fuiXAweTrvhk=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2019-01-23T12:00:00</NotAfter>
             <NotBefore>2013-10-23T13:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -143,6 +133,10 @@
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>10rzk887UG2jO0a8UrSc1vrBKyvaqc4fuiXAweTrvhk=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8">
             <SubjectDistinguishedName Format="CANONICAL">cn=belgium root ca2,c=be</SubjectDistinguishedName>
@@ -158,16 +152,6 @@
             <Sources>
             	 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>UcygcQr3cz00rNwZRQmfQ1x/xZ8=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>n5dERjvhNxR1Tho77PmMCMwgXkqzICj04oMMShsndbg=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2021-12-15T09:00:00</NotAfter>
             <NotBefore>2007-10-04T12:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -223,6 +207,10 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>n5dERjvhNxR1Tho77PmMCMwgXkqzICj04oMMShsndbg=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-75F5216C135CA7D30473723247E8AD6104F843A598ACEBF82764F556E378D62D">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130b3739313032353230393931,2.5.4.42=#130b4672616e6b2048656e7269,2.5.4.4=#1308436f726e656c6973,cn=f c (signature),c=be</SubjectDistinguishedName>
@@ -246,16 +234,6 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>XmgF7FFxNQ5ZDumEa4vVx4auXLk=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>dfUhbBNcp9MEc3IyR+itYQT4Q6WYrOv4J2T1VuN41i0=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2024-04-08T01:59:59</NotAfter>
             <NotBefore>2014-04-09T00:47:22</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -332,6 +310,10 @@
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>dfUhbBNcp9MEc3IyR+itYQT4Q6WYrOv4J2T1VuN41i0=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-A8D14E945E3E5156BCAE5E39737CF6A1B1F51028BBBF982F50CE5F4C05568B4D">
             <SubjectDistinguishedName Format="CANONICAL">cn=belgium root ca3,c=be</SubjectDistinguishedName>
@@ -347,16 +329,6 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>/WuDXJm5nm/4T80OYmajYQeGpxc=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>qNFOlF4+UVa8rl45c3z2obH1ECi7v5gvUM5fTAVWi00=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2028-01-28T13:00:00</NotAfter>
             <NotBefore>2013-06-26T14:00:00</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -412,6 +384,10 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>qNFOlF4+UVa8rl45c3z2obH1ECi7v5gvUM5fTAVWi00=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-D64BB62EFF83D5D9D368BBABEAA8BC6B291FD3F76B2AAEBD187387EECCB73A13">
             <SubjectDistinguishedName Format="CANONICAL">c=be,cn=belgium ocsp responder</SubjectDistinguishedName>
@@ -427,16 +403,6 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>R80OuXsxwe414SC9W1vg6Qye5lE=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>1ku2Lv+D1dnTaLur6qi8aykf0/drKq69GHOH7sy3OhM=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2018-01-29T12:00:00</NotAfter>
             <NotBefore>2016-12-10T12:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -482,6 +448,10 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>1ku2Lv+D1dnTaLur6qi8aykf0/drKq69GHOH7sy3OhM=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-A2BCB1E8523FBB23B9A277AFA0B67DA2E61E9AD8BAC1B926A733A1AE07C67CDE">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#1306323031343034,cn=citizen ca,c=be</SubjectDistinguishedName>
@@ -499,16 +469,6 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>43zlgQCuzcf1OAR+8ABtzWM+d1o=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>oryx6FI/uyO5onevoLZ9ouYemti6wbkmpzOhrgfGfN4=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2025-06-23T13:00:00</NotAfter>
             <NotBefore>2013-10-23T13:00:00</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -574,6 +534,10 @@
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>oryx6FI/uyO5onevoLZ9ouYemti6wbkmpzOhrgfGfN4=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-6C9DA2AA6632C9006C9805D4B3849D9FDFB97DA182DF8FA47219625FD47E12BE">
             <SubjectDistinguishedName Format="CANONICAL">c=be,cn=belgium ocsp responder</SubjectDistinguishedName>
@@ -589,16 +553,6 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>sc+hZduktFoF9hFp+vVotL0xeHI=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>bJ2iqmYyyQBsmAXUs4Sdn9+5faGC34+kchliX9R+Er4=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2017-01-29T12:00:00</NotAfter>
             <NotBefore>2015-12-08T12:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -655,6 +609,10 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>bJ2iqmYyyQBsmAXUs4Sdn9+5faGC34+kchliX9R+Er4=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>

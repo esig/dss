@@ -87,12 +87,6 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>4Hxf4sz8axKUvq971XTfDaaLT5w=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2024-03-26T07:00:36</NotAfter>
             <NotBefore>2018-03-23T09:48:35</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -170,6 +164,10 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>4Hxf4sz8axKUvq971XTfDaaLT5w=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578">
             <SubjectDistinguishedName Format="CANONICAL">cn=postsignum root qca 2,o=česká pošta\, s.p. [ič 47114983],c=cz</SubjectDistinguishedName>
@@ -190,12 +188,6 @@
             <Sources>
             	<Source>AIA</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>oPjbPwv0F2k7KC63SmrYbfnUSKM=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2025-01-19T08:04:31</NotAfter>
             <NotBefore>2010-01-19T08:04:31</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -222,6 +214,10 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>oPjbPwv0F2k7KC63SmrYbfnUSKM=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130e4e5452435a2d3236343339333935,o=první certifikační autorita\, a.s.,cn=i.ca qualified 2 ca/rsa 02/2016,c=cz</SubjectDistinguishedName>
@@ -246,12 +242,6 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>7aHc1gMJaN1fQdYGVnJBy4DdOrE=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2026-02-08T12:17:11</NotAfter>
             <NotBefore>2016-02-11T12:17:11</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -320,6 +310,10 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>7aHc1gMJaN1fQdYGVnJBy4DdOrE=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
             <SubjectDistinguishedName Format="CANONICAL">cn=postsignum qualified ca 3,o=česká pošta\, s.p. [ič 47114983],c=cz</SubjectDistinguishedName>
@@ -344,12 +338,6 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>9ThtufPi6f6WE7Zu/kC1/R/oM6E=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2024-03-26T07:00:36</NotAfter>
             <NotBefore>2014-03-26T08:01:32</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -419,6 +407,10 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>9ThtufPi6f6WE7Zu/kC1/R/oM6E=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-569D6B69CEF8B70B57B3A36D7702F8D95D50EEA3A2B614C7FA0CA9F39CFB7FD1">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130e494341202d203130343432323233,2.5.4.97=#0c0e4e5452435a2d3234323735303531,o=innogy česká republika a.s.,c=cz,cn=dctm e-stamp faktury</SubjectDistinguishedName>
@@ -443,12 +435,6 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>bOLYezQLGkrUVlbi0Zy9QnBvPU4=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2018-12-08T08:50:41</NotAfter>
             <NotBefore>2017-12-08T08:50:41</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -507,6 +493,10 @@
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>bOLYezQLGkrUVlbi0Zy9QnBvPU4=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130e4e5452435a2d3236343339333935,cn=i.ca root ca/rsa,o=první certifikační autorita\, a.s.,c=cz</SubjectDistinguishedName>
@@ -523,12 +513,6 @@
             <Sources>
             	<Source>AIA</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>mwlZiYFUCBv2qQ6bnlikaQyboQQ=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2040-05-27T12:20:00</NotAfter>
             <NotBefore>2015-05-27T12:20:00</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -555,6 +539,10 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>mwlZiYFUCBv2qQ6bnlikaQyboQQ=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>

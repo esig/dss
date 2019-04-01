@@ -68,12 +68,6 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>EmG1Bsek2JVPN12aAOLI3J9Z4rw=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2015-11-17T00:00:00</NotAfter>
             <NotBefore>2014-11-17T00:00:00</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -151,12 +145,6 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>HcRetp4LV6xw7ozfFiT2oO1BtFM=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2020-11-17T00:00:00</NotAfter>
             <NotBefore>2016-05-12T00:00:00</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -242,12 +230,6 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>e4/S+JJrkTX2y15sHAsemIqDzLQ=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2028-11-17T00:00:00</NotAfter>
             <NotBefore>2015-10-17T00:00:00</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -331,12 +313,6 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>CF1nT2EAu/sAPffWOH/4r9Gu/xk=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2016-11-17T00:00:00</NotAfter>
             <NotBefore>2015-10-17T00:00:00</NotBefore>
             <PublicKeySize>4096</PublicKeySize>

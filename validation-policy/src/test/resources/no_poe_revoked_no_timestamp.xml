@@ -81,6 +81,10 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>2431c8db94dc4be2f37ac7fffbd743377feab3a0</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.42=#0c054c55494749,2.5.4.4=#0c0552495a5a4f,2.5.4.5=#131349543a525a5a4c475536334830364535303643,2.5.4.46=#130e3230313431343938353033393236,cn=L R,o=infocert spa/07945211006,c=it</SubjectDistinguishedName>
@@ -139,6 +143,10 @@
 	                <RevocationDate>2014-10-15T15:12:23</RevocationDate>
 	            </CertificateRevocation>
 	        </Revocations>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>fefc9c13a09e7ffb2c2a688180b5891f2c98c6aa</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
             <SubjectDistinguishedName Format="CANONICAL">cn=ocsp responder firma qualificata 2015_12 02,ou=certificatore accreditato,o=infocert spa,c=it</SubjectDistinguishedName>
@@ -178,6 +186,10 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>8cacffd4832c424dbb98a9b7c0657cbb5e1066f5</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>

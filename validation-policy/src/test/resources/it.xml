@@ -75,6 +75,10 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>b3d5db2b1982d53a4b37ae383e801819c1031138</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
             <SubjectDistinguishedName Format="CANONICAL">cn=servizio ocsp bi - cdm,ou=utenti gestione,o=banca d'italia,c=it</SubjectDistinguishedName>
@@ -115,6 +119,10 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>62bf399e4ae80e758f5655a3adc6ab451b375cad</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC">
             <SubjectDistinguishedName Format="CANONICAL">cn=g e+2.5.4.42=#0c0+2.5.4.46=#130432333838+2.5.4.4=#0c084741524749554c4f+2.5.4.5=#1313,o=banca d'italia,c=it</SubjectDistinguishedName>
@@ -171,6 +179,10 @@
 	                <Status>true</Status>
 	            </CertificateRevocation>
 	        </Revocations>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>ac55c64ac5524eadcf24b72bfddd023cab4213ee</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>

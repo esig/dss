@@ -19,7 +19,6 @@
             	<Source>UNKNOWN</Source>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2019-12-02T00:01:14</NotAfter>
             <NotBefore>2017-12-02T00:01:14</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -72,6 +71,10 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>8d0e2202302048715c05ef6450dee967f9db74d9</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-E4A94773CF7B28C2BDF25015BE6716E501E73AB82BF0A9788D0DF8AD14D6876D">
             <SubjectDistinguishedName Format="CANONICAL">c=it,ou=cert for test,o=tl5 organization,cn=cert-test-5.3.3</SubjectDistinguishedName>
@@ -93,7 +96,6 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2019-12-02T00:01:15</NotAfter>
             <NotBefore>2017-12-02T00:01:15</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -162,6 +164,10 @@
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>a34efe0ceed8a54a58629e39ebe0e150c6d131b5</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>

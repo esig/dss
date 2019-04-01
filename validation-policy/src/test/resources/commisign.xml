@@ -62,12 +62,6 @@
          <Sources>
          	<Source>TRUSTED_LIST</Source>
          </Sources>
-         <DigestAlgoAndValues>
-            <DigestAlgoAndValue>
-               <DigestMethod>SHA1</DigestMethod>
-               <DigestValue>exi2JlxCfs6H1FbIo1RasWjB0Qs=</DigestValue>
-            </DigestAlgoAndValue>
-         </DigestAlgoAndValues>
          <NotAfter>2026-10-04T12:58:02</NotAfter>
          <NotBefore>2016-10-04T12:58:02</NotBefore>
          <PublicKeySize>4096</PublicKeySize>
@@ -114,6 +108,10 @@
             </TrustedServiceProvider>
          </TrustedServiceProviders>
          <Revocations/>
+         <DigestAlgoAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>exi2JlxCfs6H1FbIo1RasWjB0Qs=</DigestValue>
+         </DigestAlgoAndValue>
       </Certificate>
       <Certificate Id="C-43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8">
          <SubjectDistinguishedName Format="CANONICAL">cn=ocsp2-C-prod</SubjectDistinguishedName>
@@ -128,12 +126,6 @@
          <Sources>
          	<Source>OCSP_RESPONSE</Source>
          </Sources>
-         <DigestAlgoAndValues>
-            <DigestAlgoAndValue>
-               <DigestMethod>SHA1</DigestMethod>
-               <DigestValue>ewC5U78HlNMPIzbA5GGnuwtGlOE=</DigestValue>
-            </DigestAlgoAndValue>
-         </DigestAlgoAndValues>
          <NotAfter>2019-09-07T09:14:13</NotAfter>
          <NotBefore>2017-09-07T09:14:13</NotBefore>
          <PublicKeySize>2048</PublicKeySize>
@@ -180,6 +172,10 @@
             </TrustedServiceProvider>
          </TrustedServiceProviders>
          <Revocations/>
+         <DigestAlgoAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>ewC5U78HlNMPIzbA5GGnuwtGlOE=</DigestValue>
+         </DigestAlgoAndValue>
       </Certificate>
       <Certificate Id="C-C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA">
          <SubjectDistinguishedName Format="CANONICAL">cn=european commission root ca - 2</SubjectDistinguishedName>
@@ -194,12 +190,6 @@
          <Sources>
          	<Source>UNKNOWN</Source>
          </Sources>
-         <DigestAlgoAndValues>
-            <DigestAlgoAndValue>
-               <DigestMethod>SHA1</DigestMethod>
-               <DigestValue>gjcTffdNpqyGKIdMlaZOH4lz//Q=</DigestValue>
-            </DigestAlgoAndValue>
-         </DigestAlgoAndValues>
          <NotAfter>2046-10-04T11:21:17</NotAfter>
          <NotBefore>2016-10-04T11:21:17</NotBefore>
          <PublicKeySize>4096</PublicKeySize>
@@ -226,6 +216,10 @@
          <QCTypes/>
          <TrustedServiceProviders/>
          <Revocations/>
+         <DigestAlgoAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>gjcTffdNpqyGKIdMlaZOH4lz//Q=</DigestValue>
+         </DigestAlgoAndValue>
       </Certificate>
       <Certificate Id="C-96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CC">
          <SubjectDistinguishedName Format="CANONICAL">cn=R A,o=european commission,1.2.840.113549.1.9.1=#1626416e64726561732e524549465343484e4549444552406578742e65632e6575726f70612e6575</SubjectDistinguishedName>
@@ -248,12 +242,6 @@
          <Sources>
          	<Source>UNKNOWN</Source>
          </Sources>
-         <DigestAlgoAndValues>
-            <DigestAlgoAndValue>
-               <DigestMethod>SHA1</DigestMethod>
-               <DigestValue>JLPakAqo5lg5j4MkLVYuX6QUbNk=</DigestValue>
-            </DigestAlgoAndValue>
-         </DigestAlgoAndValues>
          <NotAfter>2021-04-18T13:11:25</NotAfter>
          <NotBefore>2017-04-18T13:11:25</NotBefore>
          <PublicKeySize>2048</PublicKeySize>
@@ -304,6 +292,10 @@
                <Status>true</Status>
             </CertificateRevocation>
          </Revocations>
+         <DigestAlgoAndValue>
+            <DigestMethod>SHA1</DigestMethod>
+            <DigestValue>JLPakAqo5lg5j4MkLVYuX6QUbNk=</DigestValue>
+         </DigestAlgoAndValue>
       </Certificate>
    </UsedCertificates>
    <UsedRevocations>

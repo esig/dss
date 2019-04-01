@@ -85,12 +85,6 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>VuHR1lHCilRZpzZgmx6vmObG3hA=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2035-03-05T13:21:57</NotAfter>
             <NotBefore>2015-03-06T14:12:15</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -179,12 +173,6 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>a5f4mVZZKpsgEBl1J7DcTKWsm+A=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2032-10-22T12:00:00</NotAfter>
             <NotBefore>2013-06-26T12:00:00</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -270,12 +258,6 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>Yu/Uo45lxpDEhnv9mukMRKLF5U8=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2019-07-27T09:29:06</NotAfter>
             <NotBefore>2016-07-27T09:29:06</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -376,12 +358,6 @@
             <Sources>
             	<Source>TIMESTAMP</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>IfoWV88WMCGueSmJRjE9XkGGRe8=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2022-02-28T10:00:00</NotAfter>
             <NotBefore>2016-11-28T10:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -460,12 +436,6 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>gzSBwfZsG9rfrEME3+/IdyGm6Ec=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2019-07-20T12:22:56</NotAfter>
             <NotBefore>2018-07-20T12:22:56</NotBefore>
             <PublicKeySize>2048</PublicKeySize>

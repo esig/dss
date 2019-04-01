@@ -23,7 +23,6 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2031-10-26T08:36:50</NotAfter>
             <NotBefore>2016-11-07T13:52:19</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -94,7 +93,6 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2031-10-26T08:36:50</NotAfter>
             <NotBefore>2016-10-26T08:36:38</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -163,7 +161,6 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2015-11-27T13:17:27</NotAfter>
             <NotBefore>2011-11-17T13:17:27</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -257,7 +254,6 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2013-07-24T15:30:00</NotAfter>
             <NotBefore>2008-07-24T16:54:11</NotBefore>
             <PublicKeySize>2048</PublicKeySize>

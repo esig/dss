@@ -58,7 +58,6 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2019-07-05T13:18:37</NotAfter>
             <NotBefore>2017-07-05T13:18:37</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -133,7 +132,6 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2019-07-05T13:18:36</NotAfter>
             <NotBefore>2017-07-05T13:18:36</NotBefore>
             <PublicKeySize>2048</PublicKeySize>

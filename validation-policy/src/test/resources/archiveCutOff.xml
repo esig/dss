@@ -112,16 +112,6 @@
 			<Sources>
 				<Source>SIGNATURE</Source>
 			</Sources>
-			<DigestAlgoAndValues>
-				<DigestAlgoAndValue>
-					<DigestMethod>SHA1</DigestMethod>
-					<DigestValue>ImUI5LOrIgEzRiyVEvmvBvTJjfw=</DigestValue>
-				</DigestAlgoAndValue>
-				<DigestAlgoAndValue>
-					<DigestMethod>SHA256</DigestMethod>
-					<DigestValue>OIYGefqw5thJAzWqlPOWjJcJjJ0gZRLyM1EGCQ64ZSQ=</DigestValue>
-				</DigestAlgoAndValue>
-			</DigestAlgoAndValues>
 			<NotAfter>2020-08-28T12:08:39</NotAfter>
 			<NotBefore>2015-08-28T12:08:39</NotBefore>
 			<PublicKeySize>2048</PublicKeySize>
@@ -224,16 +214,6 @@
 			<Sources>
 				<Source>TIMESTAMP</Source>
 			</Sources>
-			<DigestAlgoAndValues>
-				<DigestAlgoAndValue>
-					<DigestMethod>SHA1</DigestMethod>
-					<DigestValue>aRZIYU3CVFp+VPnI5zYNkLPb+H0=</DigestValue>
-				</DigestAlgoAndValue>
-				<DigestAlgoAndValue>
-					<DigestMethod>SHA256</DigestMethod>
-					<DigestValue>9D1enRPzPaERNZXXVceUbQ23SWG0acsTnwPtoc/Xe7I=</DigestValue>
-				</DigestAlgoAndValue>
-			</DigestAlgoAndValues>
 			<NotAfter>2021-02-26T15:01:46</NotAfter>
 			<NotBefore>2015-02-26T15:01:46</NotBefore>
 			<PublicKeySize>2048</PublicKeySize>
@@ -348,16 +328,6 @@
 			<Sources>
 				<Source>TRUSTED_LIST</Source>
 			</Sources>
-			<DigestAlgoAndValues>
-				<DigestAlgoAndValue>
-					<DigestMethod>SHA1</DigestMethod>
-					<DigestValue>ZWVjr7hEZgvQtCGLkeGXbI6NHXM=</DigestValue>
-				</DigestAlgoAndValue>
-				<DigestAlgoAndValue>
-					<DigestMethod>SHA256</DigestMethod>
-					<DigestValue>nPPJZpe3IFibEMwTuKK9Nf+8QXtwUKOCCvWZpDnedeU=</DigestValue>
-				</DigestAlgoAndValue>
-			</DigestAlgoAndValues>
 			<NotAfter>2025-01-29T14:03:15</NotAfter>
 			<NotBefore>2015-01-29T14:03:15</NotBefore>
 			<PublicKeySize>2048</PublicKeySize>
@@ -439,6 +409,10 @@
 				</TrustedServiceProvider>
 			</TrustedServiceProviders>
 			<Revocations />
+			<DigestAlgoAndValue>
+				<DigestMethod>SHA256</DigestMethod>
+				<DigestValue>nPPJZpe3IFibEMwTuKK9Nf+8QXtwUKOCCvWZpDnedeU=</DigestValue>
+			</DigestAlgoAndValue>
 		</Certificate>
 		<Certificate Id="C-5A2F7F6FC616CB7FCC1084819F0D1B91CF9F1CAF18C8808AAB6779001DBF2CAD">
 			<SubjectDistinguishedName Format="CANONICAL">c=fr,o=cryptolog
@@ -466,16 +440,6 @@
 			<Sources>
 				<Source>TIMESTAMP</Source>
 			</Sources>
-			<DigestAlgoAndValues>
-				<DigestAlgoAndValue>
-					<DigestMethod>SHA1</DigestMethod>
-					<DigestValue>WW5uD+1f5YE9NNJq8wEQ1AE4Mz4=</DigestValue>
-				</DigestAlgoAndValue>
-				<DigestAlgoAndValue>
-					<DigestMethod>SHA256</DigestMethod>
-					<DigestValue>Wi9/b8YWy3/MEISBnw0bkc+fHK8YyICKq2d5AB2/LK0=</DigestValue>
-				</DigestAlgoAndValue>
-			</DigestAlgoAndValues>
 			<NotAfter>2021-04-01T14:32:32</NotAfter>
 			<NotBefore>2015-04-01T14:32:32</NotBefore>
 			<PublicKeySize>2048</PublicKeySize>
@@ -594,16 +558,6 @@
 			<Sources>
 				<Source>SIGNATURE</Source>
 			</Sources>
-			<DigestAlgoAndValues>
-				<DigestAlgoAndValue>
-					<DigestMethod>SHA1</DigestMethod>
-					<DigestValue>i8dEjP+My4EvD9q1PPF+AqCS3KQ=</DigestValue>
-				</DigestAlgoAndValue>
-				<DigestAlgoAndValue>
-					<DigestMethod>SHA256</DigestMethod>
-					<DigestValue>tQDRpqKAxXxUM9zNiSS1UX5qoIsY1Gh+alggeA0/olA=</DigestValue>
-				</DigestAlgoAndValue>
-			</DigestAlgoAndValues>
 			<NotAfter>2017-07-06T19:37:24</NotAfter>
 			<NotBefore>2012-07-06T19:37:24</NotBefore>
 			<PublicKeySize>2048</PublicKeySize>
@@ -708,16 +662,6 @@
 			<Sources>
 				<Source>OCSP_RESPONSE</Source>
 			</Sources>
-			<DigestAlgoAndValues>
-				<DigestAlgoAndValue>
-					<DigestMethod>SHA1</DigestMethod>
-					<DigestValue>Ar9m31tnSobraZSn46vLHUxRZbo=</DigestValue>
-				</DigestAlgoAndValue>
-				<DigestAlgoAndValue>
-					<DigestMethod>SHA256</DigestMethod>
-					<DigestValue>5axIv3Pq9FytSIxVpYwOTJwRF0E8v8QFRR2OxQ80H0s=</DigestValue>
-				</DigestAlgoAndValue>
-			</DigestAlgoAndValues>
 			<NotAfter>2018-07-20T15:32:16</NotAfter>
 			<NotBefore>2016-07-20T15:32:16</NotBefore>
 			<PublicKeySize>2048</PublicKeySize>
@@ -792,16 +736,6 @@
 			<Sources>
 				<Source>UNKNOWN</Source>
 			</Sources>
-			<DigestAlgoAndValues>
-				<DigestAlgoAndValue>
-					<DigestMethod>SHA1</DigestMethod>
-					<DigestValue>nzJg36ABCqkiQK+BgFjMImPQMfQ=</DigestValue>
-				</DigestAlgoAndValue>
-				<DigestAlgoAndValue>
-					<DigestMethod>SHA256</DigestMethod>
-					<DigestValue>CjcyKUJuhaYACwfhGFXahmi9E3kGor95H01guP91MN0=</DigestValue>
-				</DigestAlgoAndValue>
-			</DigestAlgoAndValues>
 			<NotAfter>2042-05-29T16:58:07</NotAfter>
 			<NotBefore>2012-05-29T16:58:07</NotBefore>
 			<PublicKeySize>2048</PublicKeySize>
@@ -880,16 +814,6 @@
 			<Sources>
 				<Source>TRUSTED_LIST</Source>
 			</Sources>
-			<DigestAlgoAndValues>
-				<DigestAlgoAndValue>
-					<DigestMethod>SHA1</DigestMethod>
-					<DigestValue>fuxyZwsYqK9YpjVoltLASghz5bc=</DigestValue>
-				</DigestAlgoAndValue>
-				<DigestAlgoAndValue>
-					<DigestMethod>SHA256</DigestMethod>
-					<DigestValue>LHKxLXffoQ7d1HjZZ+uA+zFN6h99li3cgWUkHpYxd6w=</DigestValue>
-				</DigestAlgoAndValue>
-			</DigestAlgoAndValues>
 			<NotAfter>2022-06-15T12:56:25</NotAfter>
 			<NotBefore>2012-06-15T12:56:25</NotBefore>
 			<PublicKeySize>2048</PublicKeySize>

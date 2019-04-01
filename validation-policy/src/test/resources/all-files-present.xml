@@ -107,7 +107,6 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2022-05-12T20:59:59</NotAfter>
             <NotBefore>2018-11-27T09:26:54</NotBefore>
             <PublicKeySize>384</PublicKeySize>
@@ -170,6 +169,10 @@
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>2ff1acb9e9babd22448a8d885424aeae503b1811</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-D0E894F016BBFF0BF3CA5D932607108DEE7EEB9C92BD7910BBA510043AB0C683">
             <SubjectDistinguishedName Format="CANONICAL">cn=esteid-sk 2015 aia ocsp responder 201811,ou=ocsp,2.5.4.97=#0c0e4e545245452d3130373437303133,o=sk id solutions as,c=ee</SubjectDistinguishedName>
@@ -189,7 +192,6 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2018-12-05T21:00:00</NotAfter>
             <NotBefore>2018-10-31T21:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -254,6 +256,10 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>7caade6cc97a7071b699dd1b5b481c12ae7a8940</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
             <SubjectDistinguishedName Format="CANONICAL">cn=esteid-sk 2015,2.5.4.97=#0c0e4e545245452d3130373437303133,o=as sertifitseerimiskeskus,c=ee</SubjectDistinguishedName>
@@ -276,7 +282,6 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2030-12-17T23:59:59</NotAfter>
             <NotBefore>2015-12-17T12:38:43</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -352,6 +357,10 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>cd6803d66dbcf6685bc4ef84f60be4cc2d3fce8f</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>

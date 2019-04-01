@@ -18,7 +18,6 @@
             <Sources>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2019-06-25T14:37:57</NotAfter>
             <NotBefore>2017-06-25T14:37:57</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -84,7 +83,6 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2019-06-25T14:37:57</NotAfter>
             <NotBefore>2017-06-25T14:37:57</NotBefore>
             <PublicKeySize>2048</PublicKeySize>

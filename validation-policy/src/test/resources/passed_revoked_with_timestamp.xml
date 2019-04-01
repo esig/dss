@@ -61,12 +61,6 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA256</DigestMethod>
-	                <DigestValue>tom/z9ruB4QFODlx6EjD0HdFfNDsa2hVUPEO0lD4/cU=</DigestValue>
-	            </DigestAlgoAndValue>
-	        </DigestAlgoAndValues>
             <NotAfter>2029-04-19T17:26:15</NotAfter>
             <NotBefore>2013-04-19T16:26:15</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -90,6 +84,10 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+	        <DigestAlgoAndValue>
+	            <DigestMethod>SHA256</DigestMethod>
+	            <DigestValue>tom/z9ruB4QFODlx6EjD0HdFfNDsa2hVUPEO0lD4/cU=</DigestValue>
+	        </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-FC8BFE53A334F6F762F5EA9AFF47E01AA62DF620E55E8CE9BECB713BB70755A7">
             <SubjectDistinguishedName Format="CANONICAL">cn=infocert time stamping authority 2,2.5.4.5=#130b3037393435323131303036,ou=tsa,o=infocert spa,c=it</SubjectDistinguishedName>
@@ -104,12 +102,6 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA256</DigestMethod>
-	                <DigestValue>/Iv+U6M09vdi9eqa/0fgGqYt9iDlXozpvstxO7cHVac=</DigestValue>
-	            </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2029-04-19T17:30:33</NotAfter>
             <NotBefore>2013-04-19T16:30:33</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -133,6 +125,10 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>/Iv+U6M09vdi9eqa/0fgGqYt9iDlXozpvstxO7cHVac=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.42=#0c054c55494749,2.5.4.4=#0c0552495a5a4f,2.5.4.5=#131349543a525a5a4c475536334830364535303643,2.5.4.46=#130e3230313431343938353033393236,cn=L R,o=infocert spa/07945211006,c=it</SubjectDistinguishedName>
@@ -148,12 +144,6 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA256</DigestMethod>
-	                <DigestValue>clp2MnNYXdjfoCbrIGb1Zn//btRfcgUrP5wtNWXfa14=</DigestValue>
-	            </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2014-10-30T01:00:00</NotAfter>
             <NotBefore>2014-10-08T10:46:20</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -202,6 +192,10 @@
 	                <RevocationDate>2014-10-15T15:12:23</RevocationDate>
 	            </CertificateRevocation>
 	        </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>clp2MnNYXdjfoCbrIGb1Zn//btRfcgUrP5wtNWXfa14=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-C7D570E1C918E1DA6AA5C8A2C6B9D4E4FC382F790B149B901E80B157F1CF3AA0">
             <SubjectDistinguishedName Format="CANONICAL">cn=ocsp responder 2015_12 time stamping authority 2,ou=certificatore accreditato,o=infocert spa,c=it</SubjectDistinguishedName>
@@ -216,12 +210,6 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA256</DigestMethod>
-	                <DigestValue>x9Vw4ckY4dpqpciixrnU5Pw4L3kLFJuQHoCxV/HPOqA=</DigestValue>
-	            </DigestAlgoAndValue>
-	        </DigestAlgoAndValues>
             <NotAfter>2017-12-10T19:58:57</NotAfter>
             <NotBefore>2015-12-10T18:58:57</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -247,6 +235,10 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>x9Vw4ckY4dpqpciixrnU5Pw4L3kLFJuQHoCxV/HPOqA=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-F3001FF8575E8C49F0D04A9A3C7A36E6F28E389CC514C2CBFC55227ACE4A275A">
             <SubjectDistinguishedName Format="CANONICAL">cn=icedts04201410,ou=tsa,o=infocert spa,c=it</SubjectDistinguishedName>
@@ -261,12 +253,6 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA256</DigestMethod>
-	                <DigestValue>8wAf+FdejEnw0EqaPHo25vKOOJzFFMLL/FUies5KJ1o=</DigestValue>
-	            </DigestAlgoAndValue>
-	        </DigestAlgoAndValues>
             <NotAfter>2018-10-13T02:00:00</NotAfter>
             <NotBefore>2014-10-13T10:07:05</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -298,6 +284,10 @@
 	                <Status>true</Status>
 	            </CertificateRevocation>
 	        </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>8wAf+FdejEnw0EqaPHo25vKOOJzFFMLL/FUies5KJ1o=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
             <SubjectDistinguishedName Format="CANONICAL">cn=ocsp responder firma qualificata 2015_12 02,ou=certificatore accreditato,o=infocert spa,c=it</SubjectDistinguishedName>
@@ -312,12 +302,6 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA256</DigestMethod>
-	                <DigestValue>IAuyHhD94Cp15nOOy11huvvhACgXHIWkfn8pe34vhZo=</DigestValue>
-	            </DigestAlgoAndValue>
-	        </DigestAlgoAndValues>
             <NotAfter>2017-12-10T19:56:42</NotAfter>
             <NotBefore>2015-12-10T18:56:42</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -343,6 +327,10 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>IAuyHhD94Cp15nOOy11huvvhACgXHIWkfn8pe34vhZo=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>

@@ -51,12 +51,6 @@
             <Sources>
             	 <Source>OCSP_RESPONSE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA1</DigestMethod>
-	                <DigestValue>4F7bCO3UoPsM68QP52konFLaxi4=</DigestValue>
-	            </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2020-11-10T16:49:08</NotAfter>
             <NotBefore>2011-02-17T10:41:07</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -89,6 +83,10 @@
 	                <Status>true</Status>
 	            </CertificateRevocation>
 	        </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>4F7bCO3UoPsM68QP52konFLaxi4=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
             <SubjectDistinguishedName Format="CANONICAL">c=bg,st=b:831641791,l=sofia,o=information services plc.,cn=stampit qualified ca,street=2 p. volov str.</SubjectDistinguishedName>
@@ -102,12 +100,6 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA1</DigestMethod>
-	                <DigestValue>WWHsRoGqE5OpLRI6fW4j7D4API4=</DigestValue>
-	            </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2020-11-10T16:49:08</NotAfter>
             <NotBefore>2010-11-11T16:49:08</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -131,6 +123,10 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>WWHsRoGqE5OpLRI6fW4j7D4API4=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-C1164130B52CC2158C23556DA7C7C601EC1AF92DD477BD59F4762CFA85C76768">
             <SubjectDistinguishedName Format="CANONICAL">c=bg,st=b:831641791\,egn:7408013104,l=sofia,o=information services plc.,cn=E T K,1.2.840.113549.1.9.1=#161b656c696e2e6b6f6c6576406d61696c2e7374616d7069742e6f7267</SubjectDistinguishedName>
@@ -144,12 +140,6 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA1</DigestMethod>
-	                <DigestValue>Hccszp4wQjYaiWt16FH/DFAXLMQ=</DigestValue>
-	            </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2016-12-18T12:47:38</NotAfter>
             <NotBefore>2015-12-19T12:47:38</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -188,6 +178,10 @@
 	                <Status>true</Status>
                 </CertificateRevocation>
 	        </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>Hccszp4wQjYaiWt16FH/DFAXLMQ=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>

@@ -72,12 +72,6 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>HgxNuVW8tl/fSLpQffMXwblnITc=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2018-05-22T04:47:22</NotAfter>
             <NotBefore>2016-05-12T04:47:22</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -230,12 +224,6 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>T9QnTdvQfcDdw74mv7LbqmsLy7c=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2031-10-26T08:36:50</NotAfter>
             <NotBefore>2018-09-17T14:01:52</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -307,12 +295,6 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>T9QnTdvQfcDdw74mv7LbqmsLy7c=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2031-10-26T08:36:50</NotAfter>
             <NotBefore>2018-09-17T14:01:52</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -384,12 +366,6 @@
             <Sources>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>mR1c81QbeGVDmCL39TgUUIpWHhg=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2016-11-17T14:40:38</NotAfter>
             <NotBefore>2015-10-17T14:40:38</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -521,12 +497,6 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>07tfg0cKj4UO80YiAeSv++/C9pg=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2015-11-17T14:30:30</NotAfter>
             <NotBefore>2014-11-17T14:30:30</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -621,12 +591,6 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>OKV3Mo+tUEcvlNR6tDPYj482oi0=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2031-10-26T08:36:50</NotAfter>
             <NotBefore>2016-10-26T08:36:38</NotBefore>
             <PublicKeySize>4096</PublicKeySize>

@@ -135,6 +135,10 @@
 	                <Status>true</Status>
 	            </CertificateRevocation>
             </Revocations>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>ef2d6814dcce0320b2bf0c8b72b695732a8a3f7c</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-C02F95F78AF80B249A3481CA41924AE60D7663867C5F22FF8437A0E8CC344137">
             <SubjectDistinguishedName Format="CANONICAL">cn=n ca firma qualificata,ou=certification authority,o=n s.p.a./02046570426,c=it</SubjectDistinguishedName>
@@ -172,6 +176,10 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>38a8ae9e59632b08951d55b3409d43bf88dfbb06</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-C668E3EE3DBF3D8621BF64C44460664CA0BD378858F47B0FB6D9F2063389B444">
             <SubjectDistinguishedName Format="CANONICAL">cn=ocsp server,ou=certification authority,o=n s.p.a./02046570426,c=it</SubjectDistinguishedName>
@@ -212,6 +220,10 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>e03bce66e83caa3cf14a9ab6f81b88f67d2e7490</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-768B62E709F02EDFF5E223BC92DEB7069643C9D4B623B09AA993E4CAA6C8552E">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.46=#13145245545332303136303431393633373838393938,cn=test scadenza,2.5.4.5=#131349543a54535453444e37394130314132373154,2.5.4.42=#0c0853434144454e5a41,2.5.4.4=#0c0454455354,o=non presente,c=it</SubjectDistinguishedName>
@@ -263,6 +275,10 @@
 	                <Status>true</Status>
 	            </CertificateRevocation>
             </Revocations>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>bc4087489c7c229f0ebf986af426428287ab44a4</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>

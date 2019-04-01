@@ -70,7 +70,6 @@
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2021-03-17T19:33:33</NotAfter>
             <NotBefore>2014-05-30T20:15:49</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -121,6 +120,10 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>cd9f5ba7ea392b27f48288e1dab3537e1129d214</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-A0DFB7938782C01EB6FE9BA9B3210CFCEDB8653B309B53654D427A02ABEFFE7D">
             <SubjectDistinguishedName Format="CANONICAL">cn=quovadis ocsp authority signature,ou=ocsp responder,o=quovadis limited,c=bm</SubjectDistinguishedName>
@@ -138,7 +141,6 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2019-11-03T21:06:26</NotAfter>
             <NotBefore>2016-11-03T21:06:26</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -184,6 +186,10 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>b9d118b06b67e5d5a990942f1efa9e4ddd84e4e1</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74">
             <SubjectDistinguishedName Format="CANONICAL">cn=hans v egmond,2.5.4.4=#0c0a76616e2045676d6f6e64,2.5.4.42=#0c0b4a6f68616e6e6573204e2e,ou=qualified certificate,c=nl</SubjectDistinguishedName>
@@ -208,7 +214,6 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2018-02-28T15:11:00</NotAfter>
             <NotBefore>2017-02-28T15:01:01</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -265,6 +270,10 @@
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>3ce3dc19756f0df8eba397481d50bdf1fa7f603e</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>

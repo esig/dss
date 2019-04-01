@@ -21,7 +21,6 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2016-06-11T20:58:25</NotAfter>
             <NotBefore>2013-06-11T20:58:59</NotBefore>
             <PublicKeySize>2048</PublicKeySize>

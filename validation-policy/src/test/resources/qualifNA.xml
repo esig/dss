@@ -60,12 +60,6 @@
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>3qfq1vB4L4Kfs3V5BDJX2z7lWHw=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2017-02-10T15:38:09</NotAfter>
             <NotBefore>2016-02-11T15:38:09</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -89,6 +83,10 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>3qfq1vB4L4Kfs3V5BDJX2z7lWHw=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-D6A17B67077639415439BD3BF9339E599954D33C5D4836170E15BA7354FD970C">
             <SubjectDistinguishedName Format="CANONICAL">o=national digital certification agency,cn=tunisian root certificate authority - tunrootca1,c=tn</SubjectDistinguishedName>
@@ -105,12 +103,6 @@
             <Sources>
             	<Source>AIA</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>HUTr0lFacYgYKy3idI+AGbEIzps=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2030-12-31T10:11:42</NotAfter>
             <NotBefore>2011-04-29T11:11:42</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -134,6 +126,10 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>HUTr0lFacYgYKy3idI+AGbEIzps=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-1BCF2B72C91C013C824AE6BD2C01358475118ED7E50D920EF78D7870F51513EE">
             <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1614746172686f756e69406e672d7369676e2e636f6d,cn=MAT,ou=direction generale,o=MAT,c=tn</SubjectDistinguishedName>
@@ -157,12 +153,6 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>G0oA5AA+4KLhm8/6FLUETeazMbo=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2018-04-06T01:59:59</NotAfter>
             <NotBefore>2016-04-06T02:00:00</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -200,6 +190,10 @@
                     <Reason>unknow</Reason>
                 </CertificateRevocation>
             </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>G0oA5AA+4KLhm8/6FLUETeazMbo=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-355E634464029B58FC89189DA20CB1F3499373AF91D8FA34B57B66775AA73686">
             <SubjectDistinguishedName Format="CANONICAL">cn=tunisian personal certificate authority - tunpersonalca1,o=national digital certification agency,c=tn</SubjectDistinguishedName>
@@ -222,12 +216,6 @@
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>QQUdgz7Zegy1reA28bYEt+qBTMA=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <NotAfter>2031-01-01T00:59:59</NotAfter>
             <NotBefore>2011-05-30T02:00:00</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -261,6 +249,10 @@
                     <Status>true</Status>
                 </CertificateRevocation>
             </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>QQUdgz7Zegy1reA28bYEt+qBTMA=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
     <UsedRevocations>

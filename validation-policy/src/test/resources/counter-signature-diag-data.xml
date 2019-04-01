@@ -115,7 +115,6 @@
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
-            <DigestAlgoAndValues/>
             <NotAfter>2023-12-15T22:59:00</NotAfter>
             <NotBefore>2014-10-02T10:40:21</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -146,6 +145,10 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>3a73fb5af0dfa058b2bfc504f2b99d8428793fc2</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
     <TrustedLists/>
