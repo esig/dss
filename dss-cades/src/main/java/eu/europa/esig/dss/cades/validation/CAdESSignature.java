@@ -44,6 +44,7 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -709,6 +710,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			makeTimestampTokens();
 		}
 		return archiveTimestamps;
+	}
+
+	@Override
+	public List<TimestampToken> getDocumentTimestamps() {
+		/* Not applicable for CAdES */
+		return Collections.emptyList();
 	}
 
 	private void makeTimestampTokens() {

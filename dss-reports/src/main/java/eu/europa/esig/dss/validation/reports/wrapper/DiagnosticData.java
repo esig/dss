@@ -39,6 +39,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.XmlRevocationOrigin;
+import eu.europa.esig.dss.x509.TimestampType;
 
 /**
  * This class represents all static data extracted by the process analysing the signature. They are independent from the
@@ -399,7 +400,7 @@ public class DiagnosticData {
 	 *            the timestamp id
 	 * @return the related timestamp type
 	 */
-	public String getTimestampType(String timestampId) {
+	public TimestampType getTimestampType(String timestampId) {
 		TimestampWrapper timestamp = getTimestampByIdNullSafe(timestampId);
 		return timestamp.getType();
 	}

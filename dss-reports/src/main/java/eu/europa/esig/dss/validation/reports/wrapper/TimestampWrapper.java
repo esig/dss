@@ -30,6 +30,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
+import eu.europa.esig.dss.x509.TimestampType;
 
 public class TimestampWrapper extends AbstractTokenProxy {
 
@@ -59,8 +60,8 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return timestamp.getSigningCertificate();
 	}
 
-	public String getType() {
-		return timestamp.getType();
+	public TimestampType getType() {
+		return TimestampType.valueOf(timestamp.getType().name());
 	}
 
 	public Date getProductionTime() {

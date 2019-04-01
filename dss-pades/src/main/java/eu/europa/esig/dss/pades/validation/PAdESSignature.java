@@ -226,6 +226,21 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
+	public List<TimestampToken> getDocumentTimestamps() {
+		final List<TimestampToken> result = new ArrayList<TimestampToken>();
+		final Set<PdfSignatureOrDocTimestampInfo> outerSignatures = pdfSignatureInfo.getOuterSignatures();
+		for (final PdfSignatureOrDocTimestampInfo outerSignature : outerSignatures) {
+			if (outerSignature.isTimestamp() && (outerSignature instanceof PdfDocTimestampInfo)) {
+				final PdfDocTimestampInfo timestampInfo = (PdfDocTimestampInfo) outerSignature;
+				final TimestampToken timestampToken = timestampInfo.getTimestampToken();
+				timestampToken.setTimestampedReferences(getSignatureTimestampReferences());
+				result.add(timestampToken);
+			}
+		}
+		return Collections.unmodifiableList(result);
+	}
+
+	@Override
 	protected void addReferencesForCertificates(List<TimestampReference> references) {
 		List<CertificateToken> dssDictionaryCertValues = getCertificateSource().getDSSDictionaryCertValues();
 		for (CertificateToken certificate : dssDictionaryCertValues) {

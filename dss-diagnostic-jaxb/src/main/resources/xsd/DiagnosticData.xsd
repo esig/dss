@@ -520,10 +520,6 @@
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="FoundTimestamp">
-		<xs:attribute name="Timestamp" type="xs:IDREF" use="required" />
-	</xs:complexType>
-	
 	<xs:simpleType name="CertificateSourceType" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="TRUSTED_STORE" />
@@ -551,6 +547,11 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
+	<xs:complexType name="FoundTimestamp">
+		<xs:attribute name="Timestamp" type="xs:IDREF" use="required" />
+		<xs:attribute name="Location" type="TimestampType" use="optional" />
+	</xs:complexType>
+	
 	<xs:complexType name="Timestamp">
 		<xs:sequence>
 			<xs:element name="ProductionTime" type="xs:dateTime" />
@@ -564,8 +565,21 @@
 			<xs:element name="Base64Encoded" type="xs:base64Binary" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:ID" use="required" />
-		<xs:attribute name="Type" type="xs:string" use="required" />
+		<xs:attribute name="Type" type="TimestampType" use="required" />
 	</xs:complexType>
+	
+	<xs:simpleType name="TimestampType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CONTENT_TIMESTAMP" />
+			<xs:enumeration value="ALL_DATA_OBJECTS_TIMESTAMP" />
+			<xs:enumeration value="INDIVIDUAL_DATA_OBJECTS_TIMESTAMP" />
+			<xs:enumeration value="SIGNATURE_TIMESTAMP" />
+			<xs:enumeration value="VALIDATION_DATA_REFSONLY_TIMESTAMP" />
+			<xs:enumeration value="VALIDATION_DATA_TIMESTAMP" />
+			<xs:enumeration value="ARCHIVE_TIMESTAMP" />
+			<xs:enumeration value="DOC_TIMESTAMP" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="CertificateRevocation">
 		<xs:sequence>

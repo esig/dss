@@ -340,10 +340,17 @@ public interface AdvancedSignature extends Serializable {
 	/**
 	 * Returns the archive Timestamps
 	 *
-	 * @return {@code List} of {@code TimestampToken}
+	 * @return {@code List} of {@code TimestampToken}s
 	 */
 	List<TimestampToken> getArchiveTimestamps();
-
+	
+	/**
+	 * Returns a list of timestamps defined with the 'DocTimeStamp' type
+	 * NOTE: applicable only for PAdES
+	 * @return {@code List} of {@code TimestampToken}s
+	 */
+	List<TimestampToken> getDocumentTimestamps();
+	
 	/**
 	 * Archive timestamp seals the data of the signature in a specific order. We need to retrieve the data for each
 	 * timestamp.

@@ -89,8 +89,8 @@ public class CAdESWithContentTimestampTest {
 
 		boolean foundContentTimestamp = false;
 		for (String timestampId : timestampIdList) {
-			String timestampType = diagnosticData.getTimestampType(timestampId);
-			if (TimestampType.CONTENT_TIMESTAMP.name().equals(timestampType)) {
+			TimestampType timestampType = diagnosticData.getTimestampType(timestampId);
+			if (TimestampType.CONTENT_TIMESTAMP.equals(timestampType)) {
 				foundContentTimestamp = true;
 			}
 		}

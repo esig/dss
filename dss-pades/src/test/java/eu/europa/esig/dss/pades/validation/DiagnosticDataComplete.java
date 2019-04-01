@@ -13,12 +13,14 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
+import eu.europa.esig.dss.x509.TimestampType;
 
 public class DiagnosticDataComplete extends PKIFactoryAccess {
 
@@ -132,6 +134,13 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 				RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_DSS).size());
 		assertEquals(1, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signature.getId(), 
 				RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_VRI).size());
+		
+		List<TimestampWrapper> timestamps = signature.getTimestampList();
+		assertNotNull(timestamps);
+		assertEquals(2, timestamps.size());
+		List<TimestampWrapper> docTimestamps = signature.getTimestampListByType(TimestampType.DOC_TIMESTAMP);
+		assertNotNull(docTimestamps);
+		assertEquals(1, docTimestamps.size());
 	}
 
 	@Override

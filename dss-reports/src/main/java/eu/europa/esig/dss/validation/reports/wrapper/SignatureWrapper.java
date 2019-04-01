@@ -30,7 +30,6 @@ import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
@@ -50,6 +49,7 @@ import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.RevocationRefLocation;
 import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.XmlRevocationOrigin;
+import eu.europa.esig.dss.validation.XmlTimestampType;
 import eu.europa.esig.dss.x509.TimestampType;
 
 public class SignatureWrapper extends AbstractTokenProxy {
@@ -145,10 +145,13 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	public List<TimestampWrapper> getTimestampListByType(final TimestampType timestampType) {
+		if (TimestampType.DOC_TIMESTAMP.equals(timestampType)) {
+			return getDocTimeStamps();
+		}
 		List<TimestampWrapper> result = new ArrayList<TimestampWrapper>();
 		List<TimestampWrapper> all = getTimestampList();
 		for (TimestampWrapper tsp : all) {
-			if (timestampType.name().equals(tsp.getType())) {
+			if (timestampType.equals(tsp.getType())) {
 				result.add(tsp);
 			}
 		}
@@ -162,6 +165,17 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		notArchivalTimestamps.addAll(getTimestampListByType(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
 		notArchivalTimestamps.addAll(getTimestampListByType(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
 		return notArchivalTimestamps;
+	}
+	
+	private List<TimestampWrapper> getDocTimeStamps() {
+		List<TimestampWrapper> tsps = new ArrayList<TimestampWrapper>();
+		List<XmlFoundTimestamp> foundTimestamps = signature.getFoundTimestamps();
+		for (XmlFoundTimestamp xmlFoundTimestamp : foundTimestamps) {
+			if (XmlTimestampType.DOC_TIMESTAMP.equals(xmlFoundTimestamp.getLocation())) {
+				tsps.add(new TimestampWrapper(xmlFoundTimestamp.getTimestamp()));
+			}
+		}
+		return tsps;
 	}
 
 	public boolean isSignatureProductionPlacePresent() {

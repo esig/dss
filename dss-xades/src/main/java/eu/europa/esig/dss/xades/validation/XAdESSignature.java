@@ -27,6 +27,7 @@ import java.math.BigInteger;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -1661,6 +1662,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		} catch (IOException e) {
 			throw new DSSException("Error when computing the archive data", e);
 		}
+	}
+
+	@Override
+	public List<TimestampToken> getDocumentTimestamps() {
+		/* Not applicable for XAdES */
+		return Collections.emptyList();
 	}
 
 	/**

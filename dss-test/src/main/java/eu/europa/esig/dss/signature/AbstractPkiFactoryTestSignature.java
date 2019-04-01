@@ -406,9 +406,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 
 		if ((timestampIdList != null) && (timestampIdList.size() > 0)) {
 			for (String timestampId : timestampIdList) {
-				String timestampType = diagnosticData.getTimestampType(timestampId);
-				TimestampType type = TimestampType.valueOf(timestampType);
-				switch (type) {
+				TimestampType timestampType = diagnosticData.getTimestampType(timestampId);
+				switch (timestampType) {
 				case CONTENT_TIMESTAMP:
 				case ALL_DATA_OBJECTS_TIMESTAMP:
 				case INDIVIDUAL_DATA_OBJECTS_TIMESTAMP:

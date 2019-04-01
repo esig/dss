@@ -73,7 +73,7 @@ public class DSS1443 extends PKIFactoryAccess {
 		assertEquals(2, allTimestamps.size());
 
 		for (TimestampWrapper timestampWrapper : allTimestamps) {
-			assertEquals(TimestampType.ARCHIVE_TIMESTAMP.name(), timestampWrapper.getType());
+			assertEquals(TimestampType.ARCHIVE_TIMESTAMP, timestampWrapper.getType());
 		}
 	}
 

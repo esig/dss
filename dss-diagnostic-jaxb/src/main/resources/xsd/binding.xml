@@ -56,6 +56,12 @@
 				printMethod="eu.europa.esig.dss.jaxb.parsers.CertificateSourceTypeParser.print" />
 		</jaxb:bindings>
 		
+  <jaxb:bindings node="//xs:simpleType[@name='TimestampType']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.XmlTimestampType" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.TimestampTypeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.TimestampTypeParser.print" />
+		</jaxb:bindings>
+		
  	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:element[@name='Parent']">
         <jaxb:property>
             <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlSignature" />
