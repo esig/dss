@@ -52,9 +52,10 @@ public class CertificateOnHoldCheckTest {
 		XmlCertificateRevocation xcr = new XmlCertificateRevocation();
 		xcr.setStatus(true);
 		XmlRevocation xr = new XmlRevocation();
+		xcr.setRevocation(xr);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateOnHoldCheck cohc = new CertificateOnHoldCheck(result, new CertificateRevocationWrapper(xr, xcr), CAL2.getTime(), constraint);
+		CertificateOnHoldCheck cohc = new CertificateOnHoldCheck(result, new CertificateRevocationWrapper(xcr), CAL2.getTime(), constraint);
 		cohc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -72,9 +73,10 @@ public class CertificateOnHoldCheckTest {
 		xcr.setRevocationDate(CAL1.getTime());
 		xcr.setReason("certificateHold");
 		XmlRevocation xr = new XmlRevocation();
+		xcr.setRevocation(xr);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateOnHoldCheck cohc = new CertificateOnHoldCheck(result, new CertificateRevocationWrapper(xr, xcr), CAL2.getTime(), constraint);
+		CertificateOnHoldCheck cohc = new CertificateOnHoldCheck(result, new CertificateRevocationWrapper(xcr), CAL2.getTime(), constraint);
 		cohc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

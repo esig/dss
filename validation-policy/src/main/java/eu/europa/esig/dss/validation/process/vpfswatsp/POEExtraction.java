@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedRevocationData;
@@ -105,6 +106,8 @@ public class POEExtraction {
 				} else if (xmlTimestampedObject instanceof XmlTimestampedSignature) {
 					XmlTimestampedSignature signatureTimestampedObject = (XmlTimestampedSignature) xmlTimestampedObject;
 					addPOE(signatureTimestampedObject.getSignature().getId(), productionTime);
+				} else {
+					throw new DSSException("Unsupported XmlTimestampedObject : " + xmlTimestampedObject.getClass().getName());
 				}
 			}
 		}

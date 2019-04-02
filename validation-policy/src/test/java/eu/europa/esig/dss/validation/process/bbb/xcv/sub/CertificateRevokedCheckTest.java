@@ -54,9 +54,10 @@ public class CertificateRevokedCheckTest {
 		xcr.setStatus(false);
 		xcr.setReason("certificateHold");
 		XmlRevocation xr = new XmlRevocation();
+		xcr.setRevocation(xr);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateRevokedCheck cec = new CertificateRevokedCheck(result, new CertificateRevocationWrapper(xr, xcr), CAL2.getTime(), 
+		CertificateRevokedCheck cec = new CertificateRevokedCheck(result, new CertificateRevocationWrapper(xcr), CAL2.getTime(), 
 				constraint, SubContext.CA_CERTIFICATE);
 		cec.execute();
 
@@ -75,9 +76,10 @@ public class CertificateRevokedCheckTest {
 		xcr.setRevocationDate(CAL1.getTime());
 		xcr.setReason("certificate");
 		XmlRevocation xr = new XmlRevocation();
+		xcr.setRevocation(xr);
 
 		XmlSubXCV result = new XmlSubXCV();
-		CertificateRevokedCheck cec = new CertificateRevokedCheck(result, new CertificateRevocationWrapper(xr, xcr), CAL2.getTime(), 
+		CertificateRevokedCheck cec = new CertificateRevokedCheck(result, new CertificateRevocationWrapper(xcr), CAL2.getTime(), 
 				constraint, SubContext.CA_CERTIFICATE);
 		cec.execute();
 

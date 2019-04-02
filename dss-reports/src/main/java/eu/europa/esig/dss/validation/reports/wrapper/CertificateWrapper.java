@@ -98,7 +98,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		List<CertificateRevocationWrapper> certRevocationWrappers = new ArrayList<CertificateRevocationWrapper>();
 		List<XmlCertificateRevocation> revocations = certificate.getRevocations();
 		for (XmlCertificateRevocation xmlCertificateRevocation : revocations) {
-			certRevocationWrappers.add(new CertificateRevocationWrapper(xmlCertificateRevocation.getRevocation(), xmlCertificateRevocation));
+			certRevocationWrappers.add(new CertificateRevocationWrapper(xmlCertificateRevocation));
 		}
 		return certRevocationWrappers;
 	}

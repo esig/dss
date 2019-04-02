@@ -256,9 +256,12 @@ public class DiagnosticDataBuilder {
 	}
 	
 	/**
-	 * This method allows to set the default {@link DigestAlgorithm} which will be used for Certificate.DigestAlgoAndValue calculation
-	 * @param digestAlgorithm {@link DigestAlgorithm} to set as default
-	 * @returnn the builder
+	 * This method allows to set the default {@link DigestAlgorithm} which will be
+	 * used for Certificate.DigestAlgoAndValue calculation
+	 * 
+	 * @param digestAlgorithm
+	 *                        {@link DigestAlgorithm} to set as default
+	 * @return the builder
 	 */
 	public DiagnosticDataBuilder setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
 		this.defaultDigestAlgorithm = digestAlgorithm;

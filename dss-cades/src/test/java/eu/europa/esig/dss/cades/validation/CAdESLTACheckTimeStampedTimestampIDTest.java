@@ -72,7 +72,7 @@ public class CAdESLTACheckTimeStampedTimestampIDTest extends PKIFactoryAccess {
 		DiagnosticData diagnostic = report.getDiagnosticData();
 		String timestampId = diagnostic.getSignatures().get(0).getTimestampList().get(0).getId();
 		for (TimestampWrapper wrapper : diagnostic.getTimestampList(diagnostic.getFirstSignatureId())) {
-			if (wrapper.getType().equals(TimestampType.ARCHIVE_TIMESTAMP.toString())) {
+			if (TimestampType.ARCHIVE_TIMESTAMP.equals(wrapper.getType())) {
 				boolean coverPreviousTsp = false;
 				List<XmlTimestampedObject> timestampedObjects = wrapper.getTimestampedObjects();
 				for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {

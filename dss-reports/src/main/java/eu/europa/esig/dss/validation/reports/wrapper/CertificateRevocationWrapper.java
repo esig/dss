@@ -3,7 +3,6 @@ package eu.europa.esig.dss.validation.reports.wrapper;
 import java.util.Date;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -11,10 +10,10 @@ import eu.europa.esig.dss.utils.Utils;
  */
 public class CertificateRevocationWrapper extends RevocationWrapper {
 	
-	private XmlCertificateRevocation certificateRevocation;
+	private final XmlCertificateRevocation certificateRevocation;
 	
-	public CertificateRevocationWrapper(XmlRevocation commonRevocation, XmlCertificateRevocation certificateRevocation) {
-		super(commonRevocation);
+	public CertificateRevocationWrapper(XmlCertificateRevocation certificateRevocation) {
+		super(certificateRevocation.getRevocation());
 		this.certificateRevocation = certificateRevocation;
 	}
 
