@@ -162,6 +162,10 @@
             <CertificateChain>
                 <ChainItem Certificate="C-296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>03ff75fec96d2b5ebc245f91203f3d3bc1b40921</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
     <TrustedLists>

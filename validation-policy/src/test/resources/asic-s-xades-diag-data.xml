@@ -374,7 +374,6 @@
             <ProductionDate>2017-09-26T08:26:31</ProductionDate>
             <ThisUpdate>2017-09-26T08:26:31</ThisUpdate>
             <NextUpdate>2017-09-26T08:27:31</NextUpdate>
-            <DigestAlgoAndValues/>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -388,6 +387,10 @@
                 <ChainItem Certificate="C-293D0BA3A31E5D82A8E3FAE12709932FFDDA44423E0F733FB01EF123E73EB4DA"/>
                 <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>784c96a3abf080bef9e521771f65afe701141b6a</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-293d0ba3a31e5d82a8e3fae12709932ffdda44423e0f733fb01ef123e73eb4dae7a38824e892663bfaa50ba2edf0f5bfb5437dbeb73af1c9fec79b6ce77df88d">
             <Origin>EXTERNAL</Origin>
@@ -408,6 +411,10 @@
             <CertificateChain>
                 <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>5a880347e6c7488c9359455781e8adf6b6c7c38d</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
     <TrustedLists>

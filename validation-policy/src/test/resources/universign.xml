@@ -740,16 +740,6 @@
             <ProductionDate>2018-02-02T09:30:30</ProductionDate>
             <ThisUpdate>2018-02-02T09:30:30</ThisUpdate>
             <NextUpdate>2018-02-09T08:30:30</NextUpdate>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>GmlCHuygQVQl1w6gIHimpzKnrFt+SgCovasQNeb9QcU=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>zeb1AWEMykRa0NscuiEP69ehQmw=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -761,6 +751,10 @@
             <CertificateChain>
                 <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>GmlCHuygQVQl1w6gIHimpzKnrFt+SgCovasQNeb9QcU=</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-38860679fab0e6d8490335aa94f3968c97098c9d206512f2335106090eb865243bfb691278ec85174c63a76d10731f08af4c43e05681ff999a0048caf0c5bcb7">
             <Origin>EXTERNAL</Origin>
@@ -769,16 +763,6 @@
             <ProductionDate>2018-02-06T09:39:33</ProductionDate>
             <ThisUpdate>2018-02-06T09:05:30</ThisUpdate>
             <NextUpdate>2018-02-13T09:05:30</NextUpdate>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>O/tpEnjshRdMY6dtEHMfCK9MQ+BWgf+ZmgBIyvDFvLc=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>HnThNWf/OW4pKyICJ6ZlR6NupyM=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -791,6 +775,10 @@
                 <ChainItem Certificate="C-E5AC48BF73EAF45CAD488C55A58C0E4C9C1117413CBFC405451D8EC50F341F4B"/>
                 <ChainItem Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>O/tpEnjshRdMY6dtEHMfCK9MQ+BWgf+ZmgBIyvDFvLc=</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-5a2f7f6fc616cb7fcc1084819f0d1b91cf9f1caf18c8808aab6779001dbf2cad1a69421eeca0415425d70ea02078a6a732a7ac5b7e4a00a8bdab1035e6fd41c5">
             <Origin>EXTERNAL</Origin>
@@ -799,16 +787,6 @@
             <ProductionDate>2018-02-02T09:30:30</ProductionDate>
             <ThisUpdate>2018-02-02T09:30:30</ThisUpdate>
             <NextUpdate>2018-02-09T08:30:30</NextUpdate>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>GmlCHuygQVQl1w6gIHimpzKnrFt+SgCovasQNeb9QcU=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>zeb1AWEMykRa0NscuiEP69ehQmw=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -820,6 +798,10 @@
             <CertificateChain>
                 <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>GmlCHuygQVQl1w6gIHimpzKnrFt+SgCovasQNeb9QcU=</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-b500d1a6a280c57c5433dccd8924b5517e6aa08b18d4687e6a5820780d3fa2504354fe72336123fb5365e8851f1f27a9224553108c51199fb0f3086255904d86">
             <Origin>EXTERNAL</Origin>
@@ -828,16 +810,6 @@
             <ProductionDate>2018-02-06T09:39:34</ProductionDate>
             <ThisUpdate>2018-02-06T09:05:30</ThisUpdate>
             <NextUpdate>2018-02-13T09:05:30</NextUpdate>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>Q1T+cjNhI/tTZeiFHx8nqSJFUxCMURmfsPMIYlWQTYY=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>rtvzX1Fe3ViyFN0hGVecxmyPmVs=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -850,6 +822,10 @@
                 <ChainItem Certificate="C-E5AC48BF73EAF45CAD488C55A58C0E4C9C1117413CBFC405451D8EC50F341F4B"/>
                 <ChainItem Certificate="C-2C72B12D77DFA10EDDD478D967EB80FB314DEA1F7D962DDC8165241E963177AC"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Q1T+cjNhI/tTZeiFHx8nqSJFUxCMURmfsPMIYlWQTYY=</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
     
@@ -878,6 +854,10 @@
 				       	<TimestampedSignature Signature="id-a28e6cf46b56eb7ab0eb91f9c7b08f77819f4f2160a03c5d92a0555745d53b52" />
 				       	<TimestampedCertificate Certificate="C-5A2F7F6FC616CB7FCC1084819F0D1B91CF9F1CAF18C8808AAB6779001DBF2CAD" />
 			       </TimestampedObjects>
+		            <DigestAlgoAndValue>
+		            	<DigestMethod>SHA1</DigestMethod>
+		            	<DigestValue>sA0gXGfS47+kGPgVLkd4bfLvC30=</DigestValue>
+		            </DigestAlgoAndValue>
                 </Timestamp>
                 <Timestamp Id="T-57FC751EC68ABA100E9D1A03354DD2BB90AB7C332190782077468B5E4F3098BE" Type="SIGNATURE_TIMESTAMP">
                     <ProductionTime>2015-08-31T14:54:57</ProductionTime>
@@ -903,6 +883,10 @@
 				       	<TimestampedSignature Signature="id-752da48ccad668fcade0d92a1cd8def412feb7562591d1b2a442294d7219c336" />
 				       	<TimestampedCertificate Certificate="C-F43D5E9D13F33DA1113595D755C7946D0DB74961B469CB139F03EDA1CFD77BB2" />
 			       </TimestampedObjects>
+		            <DigestAlgoAndValue>
+		            	<DigestMethod>SHA1</DigestMethod>
+		            	<DigestValue>9jMOZSe9+FxzXmMR9CnpgwI7btQ=</DigestValue>
+		            </DigestAlgoAndValue>
                 </Timestamp>
             </UsedTimestamps>
     <TrustedLists>

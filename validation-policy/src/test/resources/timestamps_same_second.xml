@@ -244,16 +244,6 @@
             <ProductionDate>2016-02-15T12:00:00</ProductionDate>
             <ThisUpdate>2016-02-15T12:00:00</ThisUpdate>
             <NextUpdate>2016-07-31T13:00:00</NextUpdate>
-            <DigestAlgoAndValues>
-             <DigestAlgoAndValue>
-                 <DigestMethod>SHA1</DigestMethod>
-                 <DigestValue>hbrh5fjsW4tewHrqt5bovPgVsQo=</DigestValue>
-             </DigestAlgoAndValue>
-             <DigestAlgoAndValue>
-                 <DigestMethod>SHA256</DigestMethod>
-                 <DigestValue>CXSKw9kxXuA1MAeIiHLgEfI4iJRlh66Monu6Y08et+E=</DigestValue>
-             </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -265,6 +255,10 @@
             <CertificateChain>
                 <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>CXSKw9kxXuA1MAeIiHLgEfI4iJRlh66Monu6Y08et+E=</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-9C1BA09764DA4D96D84DEEF36D58599A6C0C7509A5200A729350E2AA1E8EB0CC">
             <Origin>SIGNATURE</Origin>
@@ -272,16 +266,6 @@
             <ProductionDate>2014-01-01T12:00:00</ProductionDate>
             <ThisUpdate>2014-01-01T12:00:00</ThisUpdate>
             <NextUpdate>2014-07-31T13:00:00</NextUpdate>
-            <DigestAlgoAndValues>
-             <DigestAlgoAndValue>
-                 <DigestMethod>SHA1</DigestMethod>
-                 <DigestValue>ERWJOU4nqlSGYxy2k4d3mNeptU4=</DigestValue>
-             </DigestAlgoAndValue>
-             <DigestAlgoAndValue>
-                 <DigestMethod>SHA256</DigestMethod>
-                 <DigestValue>SONeXlmGmdYsH0JE7y7yGMAaDtoU7CyDgsLqa0kDyiQ=</DigestValue>
-             </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -293,6 +277,10 @@
             <CertificateChain>
                 <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>SONeXlmGmdYsH0JE7y7yGMAaDtoU7CyDgsLqa0kDyiQ=</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-6C13D713EA83632818CB6064EBEECCE5C71E00F6B5EBEFE4154C583322236A84">
             <Origin>SIGNATURE</Origin>
@@ -300,16 +288,6 @@
             <ProductionDate>2014-04-29T12:50:05</ProductionDate>
             <ThisUpdate>2014-04-29T12:50:05</ThisUpdate>
             <NextUpdate>2014-04-29T18:50:05</NextUpdate>
-            <DigestAlgoAndValues>
-             <DigestAlgoAndValue>
-                 <DigestMethod>SHA1</DigestMethod>
-                 <DigestValue>kJ2giWhV+3NlxxRhrf2SPS9KsCA=</DigestValue>
-             </DigestAlgoAndValue>
-             <DigestAlgoAndValue>
-                 <DigestMethod>SHA256</DigestMethod>
-                 <DigestValue>AEdMZsgnhjNQIOWh5cRmMzAPVvtHjqFsg5r8/cP346A=</DigestValue>
-             </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -321,6 +299,10 @@
             <CertificateChain>
                 <ChainItem Certificate="C-0AF09567AEFB2E6B8C76FE459CF2CCE0D5182A6D093D01BEA21C6423EDC47B46"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>AEdMZsgnhjNQIOWh5cRmMzAPVvtHjqFsg5r8/cP346A=</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
     
@@ -349,6 +331,10 @@
 					   	<TimestampedSignature Signature="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93" />
 					   	<TimestampedCertificate Certificate="C-DF09A37F5DD288207B0FF4E96D551DE65CC403336CE6A25BCBF6C0D847BD2E74" />
 					</TimestampedObjects>
+		            <DigestAlgoAndValue>
+		            	<DigestMethod>SHA1</DigestMethod>
+		            	<DigestValue>2ht1KGWgeqIfzZ0/VS58W1dhvXE=</DigestValue>
+		            </DigestAlgoAndValue>
 	            </Timestamp>
 	            <Timestamp Id="T-C6E73AB142B57409F06DF8ABB1CC6DB944F56B0BE06C5FAD0FB39080069EE7FC" Type="SIGNATURE_TIMESTAMP">
 	                <ProductionTime>2014-04-29T07:33:19</ProductionTime>
@@ -374,6 +360,10 @@
 					   	<TimestampedSignature Signature="id-9dfd881433dc9613a0f927531feee240cfd96eeec2beba7bc51081e2f61c7e93" />
 					   	<TimestampedCertificate Certificate="C-DF09A37F5DD288207B0FF4E96D551DE65CC403336CE6A25BCBF6C0D847BD2E74" />
 					</TimestampedObjects>
+		            <DigestAlgoAndValue>
+		            	<DigestMethod>SHA1</DigestMethod>
+		            	<DigestValue>HOz1LjidFJ2ZPDCrc/yUmtHEC7o=</DigestValue>
+		            </DigestAlgoAndValue>
 	            </Timestamp>
 	            <Timestamp Id="T-1230C6EDF0088D1818AA37CB058F9EC4D978005C7C3372FB6874D2480507F76D" Type="ARCHIVE_TIMESTAMP">
 	                <ProductionTime>2014-04-29T07:33:19</ProductionTime>
@@ -407,6 +397,10 @@
 		   				<TimestampedRevocationData Revocation="R-6C13D713EA83632818CB6064EBEECCE5C71E00F6B5EBEFE4154C583322236A84" />
 		   				<TimestampedRevocationData Revocation="R-9C1BA09764DA4D96D84DEEF36D58599A6C0C7509A5200A729350E2AA1E8EB0CC" />
 					</TimestampedObjects>
+		            <DigestAlgoAndValue>
+		            	<DigestMethod>SHA1</DigestMethod>
+		            	<DigestValue>vOukY7UTXUMYenjdrAHbLNXvfYw=</DigestValue>
+		            </DigestAlgoAndValue>
 	            </Timestamp>
 	            <Timestamp Id="T-A2C72B871E035E4EFB564B562B1A3D97E85FD59374B1FF7E6E963C259E2786AF" Type="ARCHIVE_TIMESTAMP">
 	                <ProductionTime>2014-04-29T07:35:49</ProductionTime>
@@ -442,6 +436,10 @@
 		   				<TimestampedRevocationData Revocation="R-6C13D713EA83632818CB6064EBEECCE5C71E00F6B5EBEFE4154C583322236A84" />
 		   				<TimestampedRevocationData Revocation="R-9C1BA09764DA4D96D84DEEF36D58599A6C0C7509A5200A729350E2AA1E8EB0CC" />
 					</TimestampedObjects>
+		            <DigestAlgoAndValue>
+		            	<DigestMethod>SHA1</DigestMethod>
+		            	<DigestValue>Jc6mTcSGikDIpppahT/UI/glk9Y=</DigestValue>
+		            </DigestAlgoAndValue>
 	            </Timestamp>
 	            <Timestamp Id="T-7453A148A73E91DDCD689D466D32A6C652D397853E52C1EC2EAC5F0CF4881168" Type="ARCHIVE_TIMESTAMP">
 	                <ProductionTime>2014-04-29T07:36:30</ProductionTime>
@@ -478,6 +476,10 @@
 		   				<TimestampedRevocationData Revocation="R-6C13D713EA83632818CB6064EBEECCE5C71E00F6B5EBEFE4154C583322236A84" />
 		   				<TimestampedRevocationData Revocation="R-9C1BA09764DA4D96D84DEEF36D58599A6C0C7509A5200A729350E2AA1E8EB0CC" />
 					</TimestampedObjects>
+		            <DigestAlgoAndValue>
+		            	<DigestMethod>SHA1</DigestMethod>
+		            	<DigestValue>cLXJ7bmkdglWgzikWDui/OEYzLI=</DigestValue>
+		            </DigestAlgoAndValue>
 	            </Timestamp>
 	        </UsedTimestamps>
 </DiagnosticData>

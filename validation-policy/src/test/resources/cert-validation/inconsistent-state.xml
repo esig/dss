@@ -297,7 +297,6 @@
             <SourceAddress>http://ocsp.f.hr</SourceAddress>
             <ProductionDate>2018-06-01T11:29:26</ProductionDate>
             <ThisUpdate>2018-06-01T11:29:26</ThisUpdate>
-            <DigestAlgoAndValues/>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -310,6 +309,10 @@
                 <ChainItem Certificate="C-A1C213591D7738A3B4048487174769B1A09824927782ED76A2892819A5E1207F"/>
                 <ChainItem Certificate="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>6748e1b64fe2509abbdd39a76c1a3b7c780f306b</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
     <TrustedLists>

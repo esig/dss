@@ -553,12 +553,6 @@
             <ThisUpdate>2018-12-06T20:51:03</ThisUpdate>
             <NextUpdate>2018-12-07T20:51:03</NextUpdate>
             <ExpiredCertsOnCRL>2018-12-03T00:00:00</ExpiredCertsOnCRL>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>Obtgkt4FjNZtIc23fWXU/3QsXA0=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -571,6 +565,10 @@
                 <ChainItem Certificate="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A"/>
                 <ChainItem Certificate="C-D3D607A9FF24A19523B6DA9D2C649446F8788CB96D9FD130972E120C13677730"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>Obtgkt4FjNZtIc23fWXU/3QsXA0=</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
     <UsedTimestamps>

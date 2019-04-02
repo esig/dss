@@ -205,6 +205,10 @@
                 <ChainItem Certificate="C-90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
                 <ChainItem Certificate="C-B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>1e875475b279a7887a9ac7f109108aeeb83eb0d8</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-C088D84D6BD4740306551C0780A9323896071255EF5509334E70FE593FEF14AC">
             <Origin>EXTERNAL</Origin>
@@ -225,6 +229,10 @@
                 <ChainItem Certificate="C-90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
                 <ChainItem Certificate="C-B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>42101f47411371559118ed8ae6a4157774e90f47</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-5AA34C169A86F12918C17B226D96475B97B6F1B1E99EA04773CB5330563A9717">
             <Origin>EXTERNAL</Origin>
@@ -245,6 +253,10 @@
                 <ChainItem Certificate="C-90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
                 <ChainItem Certificate="C-B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>cbee3d9b55ee833b61147e81d3ee5c59e8b2e7f3</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
 </DiagnosticData>

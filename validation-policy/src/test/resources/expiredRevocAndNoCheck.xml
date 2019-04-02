@@ -439,16 +439,6 @@
             <ProductionDate>2017-10-27T11:55:08</ProductionDate>
             <ThisUpdate>2017-10-27T11:55:08</ThisUpdate>
             <NextUpdate>2017-10-27T11:56:08</NextUpdate>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>v8CNVTp3TR9ECrNlJaMpDizCO0bQrJVOpNggH6/w2Ro=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>MRhWbZTCsnogtBv4KZ5GzE2imWA=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -462,6 +452,10 @@
                 <ChainItem Certificate="C-80AC352930875BA0AFE7F70DD389130C8E1E7BEFFDC96477356AD2A9E003AD2B"/>
                 <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>v8CNVTp3TR9ECrNlJaMpDizCO0bQrJVOpNggH6/w2Ro=</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-7a38824e892663bfaa50ba2edf0f5bfb5437dbeb73af1c9fec79b6ce77df88d">
             <Origin>SIGNATURE</Origin>
@@ -469,16 +463,6 @@
             <ProductionDate>2017-07-01T11:00:00</ProductionDate>
             <ThisUpdate>2017-07-01T11:00:00</ThisUpdate>
             <NextUpdate>2018-01-31T11:00:00</NextUpdate>
-            <DigestAlgoAndValues>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>56OIJOiSZjv6pQui7fD1v7VDfb63OvHJ/sebbOd9+I0=</DigestValue>
-                </DigestAlgoAndValue>
-                <DigestAlgoAndValue>
-                    <DigestMethod>SHA1</DigestMethod>
-                    <DigestValue>niipo0CbtXds4XfrwXLirTs6cVw=</DigestValue>
-                </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -490,6 +474,10 @@
             <CertificateChain>
                 <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>56OIJOiSZjv6pQui7fD1v7VDfb63OvHJ/sebbOd9+I0=</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
     
@@ -519,6 +507,10 @@
 					   	<TimestampedSignature Signature="id-2056753e8b67ab9c96a6fe80ec9f619f8e9b4505b66b078c7a2b6e151edc2bbb" />
 					   	<TimestampedCertificate Certificate="C-021EC5069EB8A903BD62B6769EDDFE439DFA90A720C9A362D5FE76B9C31D0302" />
 					</TimestampedObjects>
+		            <DigestAlgoAndValue>
+		            	<DigestMethod>SHA1</DigestMethod>
+		            	<DigestValue>wvwWL3iyXAgZuYxRJhj19WpMfY0=</DigestValue>
+		            </DigestAlgoAndValue>
                 </Timestamp>
                 <Timestamp Id="T-7F9B88A8161CC87905298FF8E0CD080516452FBA1480DD6AFAE38B7DD18E2A1B" Type="ARCHIVE_TIMESTAMP">
                     <ProductionTime>2017-10-27T11:55:08</ProductionTime>
@@ -552,6 +544,10 @@
 		   				<TimestampedRevocationData Revocation="R-7a38824e892663bfaa50ba2edf0f5bfb5437dbeb73af1c9fec79b6ce77df88d" />
 		   				<TimestampedRevocationData Revocation="R-021ec5069eb8a903bd62b6769eddfe439dfa90a720c9a362d5fe76b9c31d0302bfc08d553a774d1f440ab36525a3290e2cc23b46d0ac954ea4d8201faff0d91a" />
 					</TimestampedObjects>
+		            <DigestAlgoAndValue>
+		            	<DigestMethod>SHA1</DigestMethod>
+		            	<DigestValue>fIaBu8V5SIFFNr5ovCBT6FJJGqk=</DigestValue>
+		            </DigestAlgoAndValue>
                 </Timestamp>
             </UsedTimestamps>
     <TrustedLists>

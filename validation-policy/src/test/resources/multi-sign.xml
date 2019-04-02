@@ -434,7 +434,6 @@
             <ProductionDate>2017-08-03T19:39:30</ProductionDate>
             <ThisUpdate>2017-08-03T19:39:30</ThisUpdate>
             <NextUpdate>2017-08-04T07:39:30</NextUpdate>
-            <DigestAlgoAndValues/>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -446,6 +445,10 @@
             <CertificateChain>
                 <ChainItem Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>59fc2c64e979d7b6d4f463a787c5e0be32c37e64</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
     <TrustedLists>

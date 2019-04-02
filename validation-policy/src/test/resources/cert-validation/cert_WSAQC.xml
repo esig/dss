@@ -147,7 +147,6 @@
             <SourceAddress>http://localhost:8080/qes-validation-web/ocsp/SDI-5.1.2</SourceAddress>
             <ProductionDate>2018-07-05T13:28:08</ProductionDate>
             <ThisUpdate>2018-07-05T13:28:08</ThisUpdate>
-            <DigestAlgoAndValues/>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -159,6 +158,10 @@
             <CertificateChain>
                 <ChainItem Certificate="C-754629916B5EB3642FAA544FBCB105795A67AA1BAB84763EC839EF6EAE5CE998"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>e6ddc8e11ab85dba7699e887901e13a09d5d3638</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
     <TrustedLists>

@@ -371,7 +371,6 @@
             <ProductionDate>2018-11-29T07:01:41</ProductionDate>
             <ThisUpdate>2018-11-29T07:01:41</ThisUpdate>
             <ArchiveCutOff>2015-12-17T12:38:43</ArchiveCutOff>
-            <DigestAlgoAndValues/>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -384,6 +383,10 @@
                 <ChainItem Certificate="C-D0E894F016BBFF0BF3CA5D932607108DEE7EEB9C92BD7910BBA510043AB0C683"/>
                 <ChainItem Certificate="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>1bae4dfd0f3b7d105fb77d751edb6a0078bedb42</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
     <TrustedLists>

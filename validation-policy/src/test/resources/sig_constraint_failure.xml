@@ -357,12 +357,6 @@
             <SourceAddress>http://ocsp.s-trust.de</SourceAddress>
             <ProductionDate>2016-05-04T15:55:17</ProductionDate>
             <ThisUpdate>2016-05-04T15:55:17</ThisUpdate>
-            <DigestAlgoAndValues>
-             <DigestAlgoAndValue>
-                 <DigestMethod>SHA256</DigestMethod>
-                 <DigestValue>Fh+ie77tvClEw75bwguQz4cF7A3dlSDi9qe1vEm5jQ8=</DigestValue>
-             </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -375,6 +369,10 @@
                 <ChainItem Certificate="C-19F1F410A503DB645E0851141333A75A74E55E5F07DF45ED33C0620857519002"/>
                 <ChainItem Certificate="C-4855220002BCE218101315CE272CC1B4A5F4DAE037032F63305EF90886701C67"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Fh+ie77tvClEw75bwguQz4cF7A3dlSDi9qe1vEm5jQ8=</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
         <Revocation Id="R-44E8F4F581737AD1B43EA4562D51AB3F3EB458C3A0E91979EF35F133EE31797E">
             <Origin>EXTERNAL</Origin>
@@ -383,12 +381,6 @@
             <ProductionDate>2016-05-04T15:55:21</ProductionDate>
             <ThisUpdate>2016-05-04T15:55:21</ThisUpdate>
             <NextUpdate>2016-05-11T15:55:21</NextUpdate>
-            <DigestAlgoAndValues>
-             <DigestAlgoAndValue>
-                 <DigestMethod>SHA256</DigestMethod>
-                 <DigestValue>r4vdxeqLiOifpHicRjeIatoKW/jyaZk3t/ogUoP8gUY=</DigestValue>
-             </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -401,6 +393,10 @@
                 <ChainItem Certificate="C-8F3CBD3815591583E63725FA33DAF5CB01852E6CF82C9DFD4F091D160349C733"/>
                 <ChainItem Certificate="C-5C58468D55F58E497E743982D2B50010B6D165374ACF83A7D4A32DB768C4408E"/>
             </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>r4vdxeqLiOifpHicRjeIatoKW/jyaZk3t/ogUoP8gUY=</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
 </DiagnosticData>
