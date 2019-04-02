@@ -283,7 +283,7 @@
 			<xs:element name="ValidationObject" type="vr:ValidationObjectRepresentationType"/>
 			<xs:element name="POE" type="vr:POEType" minOccurs="0"/>
 			<xs:element name="POEProvisioning" type="vr:POEProvisioningType" minOccurs="0"/>
-			<xs:element name="ValidationReport" type="vr:SignatureValidationReportType"/>
+			<xs:element name="ValidationReport" type="vr:SignatureValidationReportType" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:ID" use="required"/>
 	</xs:complexType>
