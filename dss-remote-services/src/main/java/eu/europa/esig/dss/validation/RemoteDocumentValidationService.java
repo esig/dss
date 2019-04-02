@@ -60,7 +60,8 @@ public class RemoteDocumentValidationService {
 			}
 		}
 
-		ReportsDTO reportsDTO = new ReportsDTO(reports.getDiagnosticDataJaxb(), reports.getSimpleReportJaxb(), reports.getDetailedReportJaxb());
+		ReportsDTO reportsDTO = new ReportsDTO(reports.getDiagnosticDataJaxb(), reports.getSimpleReportJaxb(), 
+				reports.getDetailedReportJaxb(), reports.getEtsiValidationReportJaxb());
 		LOG.info("ValidateDocument is finished");
 		return reportsDTO;
 	}

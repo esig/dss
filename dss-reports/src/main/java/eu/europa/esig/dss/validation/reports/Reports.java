@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.reports;
 
-import javax.xml.bind.JAXBElement;
-
 import eu.europa.esig.jaxb.validationreport.ObjectFactory;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
@@ -53,14 +51,16 @@ public class Reports extends AbstractReports {
 	 *            the JAXB {@code DetailedReport}
 	 * @param simpleReport
 	 *            the JAXB {@code SimpleReport}
+	 * @param validationReport
+	 *            the JAXB {@code ValidationReportType}
 	 */
 	public Reports(final eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData diagnosticDataJaxb,
 			final eu.europa.esig.dss.jaxb.detailedreport.DetailedReport detailedReport, final eu.europa.esig.dss.jaxb.simplereport.SimpleReport simpleReport,
-			final ValidationReportType validationReportType) {
+			final ValidationReportType validationReport) {
 		super(diagnosticDataJaxb, detailedReport);
 		this.simpleReport = simpleReport;
 		this.simpleReportWrapper = new SimpleReport(simpleReport);
-		this.etsiValidationReport = validationReportType;
+		this.etsiValidationReport = validationReport;
 	}
 
 	/**
@@ -82,6 +82,15 @@ public class Reports extends AbstractReports {
 	}
 
 	/**
+	 * This method returns the JAXB EtsiValidationReport
+	 * 
+	 * @return the JAXB {@code ValidationReportType}
+	 */
+	public ValidationReportType getEtsiValidationReportJaxb() {
+		return etsiValidationReport;
+	}
+	
+	/**
 	 * This method returns the XML representation of the JAXB SimpleReport String
 	 * 
 	 * @return a String with the XML content of the JAXB {@code SimpleReport}
@@ -94,12 +103,15 @@ public class Reports extends AbstractReports {
 		}
 		return xmlSimpleReport;
 	}
-	
+
+	/**
+	 * This method returns the XML representation of the JAXB ETSI Validation Report String
+	 * 
+	 * @return a String with the XML content of the JAXB {@code ValidationReportType}
+	 */
 	public String getXmlValidationReport() {
 		if (xmlEtsiValidationReport == null) {
-			
 			ObjectFactory oFactory = new ObjectFactory();
-			
 			xmlEtsiValidationReport = getJAXBObjectAsString(oFactory.createValidationReport(etsiValidationReport), ValidationReportType.class.getPackage().getName(),
 					"/xsd/1910202xmlSchema.xsd");
 		}
