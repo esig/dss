@@ -316,7 +316,7 @@
 				</xs:complexType>
 			</xs:element>
 						
-			<xs:element name="TrustedServiceProviders">
+			<xs:element name="TrustedServiceProviders" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="TrustedServiceProvider" type="TrustedServiceProvider" minOccurs="0" maxOccurs="unbounded" />
