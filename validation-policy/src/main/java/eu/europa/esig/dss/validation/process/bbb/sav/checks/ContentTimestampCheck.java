@@ -49,9 +49,9 @@ public class ContentTimestampCheck extends ChainItem<XmlSAV> {
 		List<TimestampWrapper> timestampsBySignature = diagnosticData.getTimestampList(signature.getId());
 
 		for (TimestampWrapper timestampWrapper : timestampsBySignature) {
-			if (TimestampType.CONTENT_TIMESTAMP.name().equals(timestampWrapper.getType())
-					|| TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.name().equals(timestampWrapper.getType())
-					|| TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP.name().equals(timestampWrapper.getType())) {
+			if (TimestampType.CONTENT_TIMESTAMP.equals(timestampWrapper.getType())
+					|| TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timestampWrapper.getType())
+					|| TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP.equals(timestampWrapper.getType())) {
 				return true;
 			}
 		}

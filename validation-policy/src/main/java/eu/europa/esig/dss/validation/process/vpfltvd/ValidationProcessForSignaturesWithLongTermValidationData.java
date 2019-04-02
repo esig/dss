@@ -270,7 +270,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private Set<TimestampWrapper> filterValidSignatureTimestamps(List<TimestampWrapper> allTimestamps) {
 		Set<TimestampWrapper> result = new HashSet<TimestampWrapper>();
 		for (TimestampWrapper timestampWrapper : allTimestamps) {
-			if (!TimestampType.SIGNATURE_TIMESTAMP.name().equals(timestampWrapper.getType())) {
+			if (!TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
 				break;
 			}
 			boolean foundValidationTSP = false;
