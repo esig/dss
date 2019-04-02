@@ -788,12 +788,12 @@ public class DiagnosticDataBuilder {
 	private List<XmlFoundTimestamp> getXmlFoundTimestamps(AdvancedSignature signature) {
 		List<XmlFoundTimestamp> foundTimestamps = new ArrayList<XmlFoundTimestamp>();
 		List<TimestampToken> docTimeStamps = signature.getDocumentTimestamps();
-		foundTimestamps.addAll(getFoundDocumentTimeStamps(docTimeStamps));
 		foundTimestamps.addAll(getFoundTimestamps(signature.getContentTimestamps(), docTimeStamps));
 		foundTimestamps.addAll(getFoundTimestamps(signature.getSignatureTimestamps(), docTimeStamps));
 		foundTimestamps.addAll(getFoundTimestamps(signature.getTimestampsX1(), docTimeStamps));
 		foundTimestamps.addAll(getFoundTimestamps(signature.getTimestampsX2(), docTimeStamps));
 		foundTimestamps.addAll(getFoundTimestamps(signature.getArchiveTimestamps(), docTimeStamps));
+		foundTimestamps.addAll(getFoundDocumentTimeStamps(docTimeStamps));
 		return foundTimestamps;
 	}
 	
