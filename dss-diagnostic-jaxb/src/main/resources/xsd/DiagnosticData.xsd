@@ -565,7 +565,10 @@
 
 			<xs:element name="TimestampedObjects" type="TimestampedObjects" minOccurs="0" />
 
-			<xs:element name="Base64Encoded" type="xs:base64Binary" minOccurs="0" />
+			<xs:choice>
+				<xs:element name="Base64Encoded" type="xs:base64Binary" />
+				<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
+			</xs:choice>
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:ID" use="required" />
 		<xs:attribute name="Type" type="TimestampType" use="required" />
@@ -609,7 +612,10 @@
 			<xs:element name="BasicSignature" type="BasicSignature" minOccurs="0" /> <!-- Can be null in case of no SUCCESSFUL response of OCSP -->
 			<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 			<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
-			<xs:element name="Base64Encoded" type="xs:base64Binary" minOccurs="0" />
+			<xs:choice>
+				<xs:element name="Base64Encoded" type="xs:base64Binary" />
+				<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
+			</xs:choice>
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:ID" use="required" />
 	</xs:complexType>

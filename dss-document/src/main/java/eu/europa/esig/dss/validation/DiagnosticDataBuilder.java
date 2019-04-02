@@ -257,7 +257,7 @@ public class DiagnosticDataBuilder {
 	
 	/**
 	 * This method allows to set the default {@link DigestAlgorithm} which will be
-	 * used for Certificate.DigestAlgoAndValue calculation
+	 * used for tokens' DigestAlgoAndValue calculation
 	 * 
 	 * @param digestAlgorithm
 	 *                        {@link DigestAlgorithm} to set as default
@@ -580,6 +580,9 @@ public class DiagnosticDataBuilder {
 
 		if (includeRawRevocationData) {
 			xmlRevocation.setBase64Encoded(revocationToken.getEncoded());
+		} else {
+			byte[] certDigest = revocationToken.getDigest(defaultDigestAlgorithm);
+			xmlRevocation.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(defaultDigestAlgorithm, certDigest));
 		}
 
 		return xmlRevocation;
@@ -1012,6 +1015,9 @@ public class DiagnosticDataBuilder {
 
 		if (includeRawTimestampTokens) {
 			xmlTimestampToken.setBase64Encoded(timestampToken.getEncoded());
+		} else {
+			byte[] certDigest = timestampToken.getDigest(defaultDigestAlgorithm);
+			xmlTimestampToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(defaultDigestAlgorithm, certDigest));
 		}
 
 		return xmlTimestampToken;

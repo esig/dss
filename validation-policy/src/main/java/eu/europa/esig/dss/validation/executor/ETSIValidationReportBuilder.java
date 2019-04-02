@@ -67,6 +67,7 @@ import eu.europa.esig.jaxb.validationreport.enums.EndorsementType;
 import eu.europa.esig.jaxb.validationreport.enums.MainIndication;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
 import eu.europa.esig.jaxb.validationreport.enums.SignatureValidationProcessID;
+import eu.europa.esig.jaxb.xades132.DigestAlgAndValueType;
 import eu.europa.esig.jaxb.xmldsig.DigestMethodType;
 
 public class ETSIValidationReportBuilder {
@@ -180,9 +181,23 @@ public class ETSIValidationReportBuilder {
 		validationObject.setId(certificate.getId());
 		validationObject.setObjectType(ObjectType.CERTIFICATE);
 		ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
-		representation.setBase64(certificate.getBinaries());
+		if (Utils.isArrayNotEmpty(certificate.getBinaries())) {
+			representation.setBase64(certificate.getBinaries());
+		} else {
+			representation.setDigestAlgAndValue(getDigestAlgAndValueType(certificate.getDigestAlgoAndValue()));
+		}
+		
 		validationObject.setValidationObject(representation);
 		validationObjectListType.getValidationObject().add(validationObject);
+	}
+	
+	private DigestAlgAndValueType getDigestAlgAndValueType(XmlDigestAlgoAndValue xmlDigestAlgoAndValue) {
+		DigestAlgAndValueType digestAlgAndValueType = new DigestAlgAndValueType();
+		DigestMethodType digestMethodType = new DigestMethodType();
+		digestMethodType.setAlgorithm(DigestAlgorithm.valueOf(xmlDigestAlgoAndValue.getDigestMethod()).getXmlId());
+		digestAlgAndValueType.setDigestMethod(digestMethodType);
+		digestAlgAndValueType.setDigestValue(xmlDigestAlgoAndValue.getDigestValue());
+		return digestAlgAndValueType;
 	}
 
 	private void addTimestamp(ValidationObjectListType validationObjectListType, TimestampWrapper timestamp) {
@@ -190,7 +205,11 @@ public class ETSIValidationReportBuilder {
 		validationObject.setId(timestamp.getId());
 		validationObject.setObjectType(ObjectType.TIMESTAMP);
 		ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
-		representation.setBase64(timestamp.getBinaries());
+		if (Utils.isArrayNotEmpty(timestamp.getBinaries())) {
+			representation.setBase64(timestamp.getBinaries());
+		} else {
+			representation.setDigestAlgAndValue(getDigestAlgAndValueType(timestamp.getDigestAlgoAndValue()));
+		}
 		validationObject.setValidationObject(representation);
 		validationObjectListType.getValidationObject().add(validationObject);
 	}
@@ -204,7 +223,11 @@ public class ETSIValidationReportBuilder {
 			validationObject.setObjectType(ObjectType.OCSP_RESPONSE);
 		}
 		ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
-		representation.setBase64(revocationData.getBinaries());
+		if (Utils.isArrayNotEmpty(revocationData.getBinaries())) {
+			representation.setBase64(revocationData.getBinaries());
+		} else {
+			representation.setDigestAlgAndValue(getDigestAlgAndValueType(revocationData.getDigestAlgoAndValue()));
+		}
 		validationObject.setValidationObject(representation);
 		validationObjectListType.getValidationObject().add(validationObject);
 	}
@@ -505,7 +528,8 @@ public class ETSIValidationReportBuilder {
 			if (Utils.isStringNotEmpty(mimeType)) {
 				dataObjectFormatType.setMimeType(mimeType);
 			}
-			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(dataObjectFormatType);
+			JAXBElement<SADataObjectFormatType> attributesTypeDataObjectFormat = objectFactory.createSignatureAttributesTypeDataObjectFormat(dataObjectFormatType);
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(attributesTypeDataObjectFormat);
 		}
 	}
 
@@ -541,30 +565,32 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addProductionPlace(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		final String address = sigWrapper.getAddress();
-		final String city = sigWrapper.getCity();
-		final String stateOrProvince = sigWrapper.getStateOrProvince();
-		final String postalCode = sigWrapper.getPostalCode();
-		final String countryName = sigWrapper.getCountryName();
+		if (sigWrapper.isSignatureProductionPlacePresent()) {
+			final String address = sigWrapper.getAddress();
+			final String city = sigWrapper.getCity();
+			final String stateOrProvince = sigWrapper.getStateOrProvince();
+			final String postalCode = sigWrapper.getPostalCode();
+			final String countryName = sigWrapper.getCountryName();
 
-		if (Utils.isAtLeastOneNotEmpty(address, city, stateOrProvince, postalCode, countryName)) {
-			SASignatureProductionPlaceType sigProductionPlace = objectFactory.createSASignatureProductionPlaceType();
-			if (Utils.isStringNotEmpty(address)) {
-				sigProductionPlace.getAddressString().add(address);
+			if (Utils.isAtLeastOneNotEmpty(address, city, stateOrProvince, postalCode, countryName)) {
+				SASignatureProductionPlaceType sigProductionPlace = objectFactory.createSASignatureProductionPlaceType();
+				if (Utils.isStringNotEmpty(address)) {
+					sigProductionPlace.getAddressString().add(address);
+				}
+				if (Utils.isStringNotEmpty(city)) {
+					sigProductionPlace.getAddressString().add(city);
+				}
+				if (Utils.isStringNotEmpty(stateOrProvince)) {
+					sigProductionPlace.getAddressString().add(stateOrProvince);
+				}
+				if (Utils.isStringNotEmpty(postalCode)) {
+					sigProductionPlace.getAddressString().add(postalCode);
+				}
+				if (Utils.isStringNotEmpty(countryName)) {
+					sigProductionPlace.getAddressString().add(countryName);
+				}
+				sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(sigProductionPlace);
 			}
-			if (Utils.isStringNotEmpty(city)) {
-				sigProductionPlace.getAddressString().add(city);
-			}
-			if (Utils.isStringNotEmpty(stateOrProvince)) {
-				sigProductionPlace.getAddressString().add(stateOrProvince);
-			}
-			if (Utils.isStringNotEmpty(postalCode)) {
-				sigProductionPlace.getAddressString().add(postalCode);
-			}
-			if (Utils.isStringNotEmpty(countryName)) {
-				sigProductionPlace.getAddressString().add(countryName);
-			}
-			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(sigProductionPlace);
 		}
 	}
 
@@ -637,7 +663,8 @@ public class ETSIValidationReportBuilder {
 			dssType.setOCSPs(getVOReference(ocspIds));
 		}
 		
-		sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(dssType);
+		JAXBElement<SADSSType> attributesTypeDSS = objectFactory.createSignatureAttributesTypeDSS(dssType);
+		sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(attributesTypeDSS);
 	}
 
 	private void addVRI(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {		
@@ -656,14 +683,16 @@ public class ETSIValidationReportBuilder {
 			vriType.setOCSPs(getVOReference(ocspIds));
 		}
 		
-		sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(vriType);
+		JAXBElement<SAVRIType> attributesTypeVRI = objectFactory.createSignatureAttributesTypeVRI(vriType);
+		sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(attributesTypeVRI);
 	}
 
 
 	private void addSigningTime(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
 		SASigningTimeType saSigningTimeType = objectFactory.createSASigningTimeType();
 		saSigningTimeType.setTime(sigWrapper.getDateTime());
-		sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(saSigningTimeType);
+		JAXBElement<SASigningTimeType> attributesTypeSigningTime = objectFactory.createSignatureAttributesTypeSigningTime(saSigningTimeType);
+		sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(attributesTypeSigningTime);
 	}
 
 }

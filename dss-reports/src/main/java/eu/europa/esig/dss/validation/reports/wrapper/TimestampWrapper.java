@@ -26,6 +26,7 @@ import java.util.List;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
@@ -91,6 +92,10 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	
 	public byte[] getBinaries() {
 		return timestamp.getBase64Encoded();
+	}
+	
+	public XmlDigestAlgoAndValue getDigestAlgoAndValue() {
+		return timestamp.getDigestAlgoAndValue();
 	}
 
 }

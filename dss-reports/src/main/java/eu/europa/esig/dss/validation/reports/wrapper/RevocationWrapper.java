@@ -26,6 +26,7 @@ import java.util.List;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.utils.Utils;
@@ -104,6 +105,10 @@ public class RevocationWrapper extends AbstractTokenProxy {
 	
 	public byte[] getBinaries() {
 		return revocation.getBase64Encoded();
+	}
+	
+	public XmlDigestAlgoAndValue getDigestAlgoAndValue() {
+		return revocation.getDigestAlgoAndValue();
 	}
 	
 	/**
