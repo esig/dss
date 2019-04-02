@@ -186,7 +186,6 @@ public class ETSIValidationReportBuilder {
 		} else {
 			representation.setDigestAlgAndValue(getDigestAlgAndValueType(certificate.getDigestAlgoAndValue()));
 		}
-		
 		validationObject.setValidationObject(representation);
 		validationObjectListType.getValidationObject().add(validationObject);
 	}
@@ -194,7 +193,7 @@ public class ETSIValidationReportBuilder {
 	private DigestAlgAndValueType getDigestAlgAndValueType(XmlDigestAlgoAndValue xmlDigestAlgoAndValue) {
 		DigestAlgAndValueType digestAlgAndValueType = new DigestAlgAndValueType();
 		DigestMethodType digestMethodType = new DigestMethodType();
-		digestMethodType.setAlgorithm(DigestAlgorithm.valueOf(xmlDigestAlgoAndValue.getDigestMethod()).getXmlId());
+		digestMethodType.setAlgorithm(DigestAlgorithm.forName(xmlDigestAlgoAndValue.getDigestMethod()).getXmlId());
 		digestAlgAndValueType.setDigestMethod(digestMethodType);
 		digestAlgAndValueType.setDigestValue(xmlDigestAlgoAndValue.getDigestValue());
 		return digestAlgAndValueType;
@@ -400,7 +399,7 @@ public class ETSIValidationReportBuilder {
 					SACertIDType certIDType = objectFactory.createSACertIDType();
 					XmlDigestAlgoAndValue digestAlgoAndValue = certificateRef.getDigestAlgoAndValue();
 					DigestMethodType digestMethodType = new DigestMethodType();
-					digestMethodType.setAlgorithm(DigestAlgorithm.valueOf(digestAlgoAndValue.getDigestMethod()).getXmlId());
+					digestMethodType.setAlgorithm(DigestAlgorithm.forName(digestAlgoAndValue.getDigestMethod()).getXmlId());
 					certIDType.setDigestMethod(digestMethodType);
 					certIDType.setDigestValue(digestAlgoAndValue.getDigestValue());
 					if (certificateRef.getIssuerSerial() != null) {
@@ -438,7 +437,7 @@ public class ETSIValidationReportBuilder {
 				SACRLIDType sacrlidType = objectFactory.createSACRLIDType();
 				DigestMethodType digestMethodType = new DigestMethodType();
 				XmlDigestAlgoAndValue digestAlgoAndValue = xmlRevocationRef.getDigestAlgoAndValue();
-				digestMethodType.setAlgorithm(DigestAlgorithm.valueOf(digestAlgoAndValue.getDigestMethod()).getXmlId());
+				digestMethodType.setAlgorithm(DigestAlgorithm.forName(digestAlgoAndValue.getDigestMethod()).getXmlId());
 				sacrlidType.setDigestMethod(digestMethodType);
 				sacrlidType.setDigestValue(digestAlgoAndValue.getDigestValue());
 				revIDListType.getCRLIDOrOCSPID().add(sacrlidType);
