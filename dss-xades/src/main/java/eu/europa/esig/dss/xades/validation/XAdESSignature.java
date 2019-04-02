@@ -767,7 +767,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public byte[] getContentTimestampData(final TimestampToken timestampToken) {
 		final TimestampType timeStampType = timestampToken.getTimeStampType();
-		if (timeStampType != TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP && timeStampType != TimestampType.ALL_DATA_OBJECTS_TIMESTAMP) {
+		if (!TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP.equals(timeStampType) && !TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timeStampType)) {
 			return null;
 		}
 
@@ -808,7 +808,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private boolean isContentTimestampedReference(Reference reference, TimestampType timeStampType, List<TimestampInclude> includes) {
-		if (timeStampType == TimestampType.ALL_DATA_OBJECTS_TIMESTAMP) {
+		if (TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timeStampType)) {
 			// All references are covered except the one referencing the SignedProperties
 			return !isSignedProperties(reference);
 		} else {
