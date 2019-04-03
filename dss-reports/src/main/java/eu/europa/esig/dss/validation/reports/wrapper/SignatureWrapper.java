@@ -49,7 +49,7 @@ import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.RevocationRefLocation;
 import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.XmlRevocationOrigin;
-import eu.europa.esig.dss.validation.XmlTimestampType;
+import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 
 public class SignatureWrapper extends AbstractTokenProxy {
@@ -145,9 +145,6 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	public List<TimestampWrapper> getTimestampListByType(final TimestampType timestampType) {
-		if (TimestampType.DOC_TIMESTAMP.equals(timestampType)) {
-			return getDocTimeStamps();
-		}
 		List<TimestampWrapper> result = new ArrayList<TimestampWrapper>();
 		List<TimestampWrapper> all = getTimestampList();
 		for (TimestampWrapper tsp : all) {
@@ -157,6 +154,18 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		}
 		return result;
 	}
+	
+	public List<TimestampWrapper> getTimestampListByLocation(TimestampLocation timestampLocation) {
+		List<TimestampWrapper> tsps = new ArrayList<TimestampWrapper>();
+		List<XmlFoundTimestamp> foundTimestamps = signature.getFoundTimestamps();
+		for (XmlFoundTimestamp xmlFoundTimestamp : foundTimestamps) {
+			if (xmlFoundTimestamp.getLocation() != null && 
+					xmlFoundTimestamp.getLocation().name().equals(timestampLocation.name())) {
+				tsps.add(new TimestampWrapper(xmlFoundTimestamp.getTimestamp()));
+			}
+		}
+		return tsps;
+	}
 
 	public Set<TimestampWrapper> getAllTimestampsNotArchival() {
 		Set<TimestampWrapper> notArchivalTimestamps = new HashSet<TimestampWrapper>();
@@ -165,17 +174,6 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		notArchivalTimestamps.addAll(getTimestampListByType(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP));
 		notArchivalTimestamps.addAll(getTimestampListByType(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP));
 		return notArchivalTimestamps;
-	}
-	
-	private List<TimestampWrapper> getDocTimeStamps() {
-		List<TimestampWrapper> tsps = new ArrayList<TimestampWrapper>();
-		List<XmlFoundTimestamp> foundTimestamps = signature.getFoundTimestamps();
-		for (XmlFoundTimestamp xmlFoundTimestamp : foundTimestamps) {
-			if (XmlTimestampType.DOC_TIMESTAMP.equals(xmlFoundTimestamp.getLocation())) {
-				tsps.add(new TimestampWrapper(xmlFoundTimestamp.getTimestamp()));
-			}
-		}
-		return tsps;
 	}
 
 	public boolean isSignatureProductionPlacePresent() {

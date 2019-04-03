@@ -27,6 +27,7 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.x509.CertificatePool;
+import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 
 /**
@@ -61,7 +62,7 @@ public class PdfDocTimestampInfo extends PdfCMSInfo implements PdfSignatureOrDoc
 			if (isArchiveTimestamp) {
 				timestampType = TimestampType.ARCHIVE_TIMESTAMP;
 			}
-			timestampToken = new TimestampToken(cms, timestampType, validationCertPool);
+			timestampToken = new TimestampToken(cms, timestampType, validationCertPool, TimestampLocation.DOC_TIMESTAMP);
 			content = cms;
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Created PdfDocTimestampInfo {} : {}", timestampType, uniqueId());

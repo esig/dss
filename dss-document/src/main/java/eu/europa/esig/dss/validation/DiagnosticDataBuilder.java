@@ -801,35 +801,23 @@ public class DiagnosticDataBuilder {
 	
 	private List<XmlFoundTimestamp> getXmlFoundTimestamps(AdvancedSignature signature) {
 		List<XmlFoundTimestamp> foundTimestamps = new ArrayList<XmlFoundTimestamp>();
-		List<TimestampToken> docTimeStamps = signature.getDocumentTimestamps();
-		foundTimestamps.addAll(getFoundTimestamps(signature.getContentTimestamps(), docTimeStamps));
-		foundTimestamps.addAll(getFoundTimestamps(signature.getSignatureTimestamps(), docTimeStamps));
-		foundTimestamps.addAll(getFoundTimestamps(signature.getTimestampsX1(), docTimeStamps));
-		foundTimestamps.addAll(getFoundTimestamps(signature.getTimestampsX2(), docTimeStamps));
-		foundTimestamps.addAll(getFoundTimestamps(signature.getArchiveTimestamps(), docTimeStamps));
-		foundTimestamps.addAll(getFoundDocumentTimeStamps(docTimeStamps));
-		return foundTimestamps;
-	}
-	
-	private List<XmlFoundTimestamp> getFoundDocumentTimeStamps(List<TimestampToken> tsts) {
-		List<XmlFoundTimestamp> foundTimestamps = new ArrayList<XmlFoundTimestamp>();
-		for (TimestampToken timestampToken : tsts) {
-			XmlFoundTimestamp timestamp = new XmlFoundTimestamp();
-			timestamp.setTimestamp(xmlTimestamps.get(timestampToken.getDSSIdAsString()));
-			timestamp.setLocation(XmlTimestampType.DOC_TIMESTAMP);
-			foundTimestamps.add(timestamp);
-		}
+		foundTimestamps.addAll(getFoundTimestamps(signature.getContentTimestamps()));
+		foundTimestamps.addAll(getFoundTimestamps(signature.getSignatureTimestamps()));
+		foundTimestamps.addAll(getFoundTimestamps(signature.getTimestampsX1()));
+		foundTimestamps.addAll(getFoundTimestamps(signature.getTimestampsX2()));
+		foundTimestamps.addAll(getFoundTimestamps(signature.getArchiveTimestamps()));
 		return foundTimestamps;
 	}
 
-	private List<XmlFoundTimestamp> getFoundTimestamps(List<TimestampToken> tsts, List<TimestampToken> docTimeStamps) {
+	private List<XmlFoundTimestamp> getFoundTimestamps(List<TimestampToken> tsts) {
 		List<XmlFoundTimestamp> foundTimestamps = new ArrayList<XmlFoundTimestamp>();
 		for (TimestampToken timestampToken : tsts) {
-			if (!docTimeStamps.contains(timestampToken)) {
-				XmlFoundTimestamp foundTimestamp = new XmlFoundTimestamp();
-				foundTimestamp.setTimestamp(xmlTimestamps.get(timestampToken.getDSSIdAsString()));
-				foundTimestamps.add(foundTimestamp);
+			XmlFoundTimestamp foundTimestamp = new XmlFoundTimestamp();
+			foundTimestamp.setTimestamp(xmlTimestamps.get(timestampToken.getDSSIdAsString()));
+			if (timestampToken.getTimestampLocation() != null) {
+				foundTimestamp.setLocation(XmlTimestampLocation.valueOf(timestampToken.getTimestampLocation().name()));
 			}
+			foundTimestamps.add(foundTimestamp);
 		}
 		return foundTimestamps;
 	}

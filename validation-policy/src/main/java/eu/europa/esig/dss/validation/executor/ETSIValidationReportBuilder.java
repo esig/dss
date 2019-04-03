@@ -28,6 +28,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
+import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.jaxb.validationreport.AttributeBaseType;
 import eu.europa.esig.jaxb.validationreport.ObjectFactory;
@@ -271,11 +272,11 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="CommitmentTypeIndication" type="{http://uri.etsi.org/19102/v1.2.1#}SACommitmentTypeIndicationType"/&gt;
 		addCommitmentTypeIndications(sigAttributes, sigWrapper);
 		// &lt;element name="AllDataObjectsTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
-		addTimestamps(sigAttributes, sigWrapper, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
+		addTimestampsByType(sigAttributes, sigWrapper, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
 		// see TS 119 102-2 - V1.2.1 A.6.3 CAdES
-		addTimestamps(sigAttributes, sigWrapper, TimestampType.CONTENT_TIMESTAMP);
+		addTimestampsByType(sigAttributes, sigWrapper, TimestampType.CONTENT_TIMESTAMP);
 		// &lt;element name="IndividualDataObjectsTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
-		addTimestamps(sigAttributes, sigWrapper, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
+		addTimestampsByType(sigAttributes, sigWrapper, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 		// &lt;element name="SigPolicyIdentifier" type="{http://uri.etsi.org/19102/v1.2.1#}SASigPolicyIdentifierType"/&gt;
 		// &lt;element name="SignatureProductionPlace" type="{http://uri.etsi.org/19102/v1.2.1#}SASignatureProductionPlaceType"/&gt;
 		addProductionPlace(sigAttributes, sigWrapper);
@@ -283,7 +284,7 @@ public class ETSIValidationReportBuilder {
 		addSignerRoles(sigAttributes, sigWrapper);
 		// &lt;element name="CounterSignature" type="{http://uri.etsi.org/19102/v1.2.1#}SACounterSignatureType"/&gt;
 		// &lt;element name="SignatureTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
-		addTimestamps(sigAttributes, sigWrapper, TimestampType.SIGNATURE_TIMESTAMP);
+		addTimestampsByType(sigAttributes, sigWrapper, TimestampType.SIGNATURE_TIMESTAMP);
 		// &lt;element name="CompleteCertificateRefs" type="{http://uri.etsi.org/19102/v1.2.1#}SACertIDListType"/&gt;
 		addCompleteCertificateRefs(sigAttributes, sigWrapper);
 		// &lt;element name="CompleteRevocationRefs" type="{http://uri.etsi.org/19102/v1.2.1#}SARevIDListType"/&gt;
@@ -293,9 +294,9 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="AttributeRevocationRefs" type="{http://uri.etsi.org/19102/v1.2.1#}SARevIDListType"/&gt;
 		addAttributeRevocationRefs(sigAttributes, sigWrapper);
 		// &lt;element name="SigAndRefsTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
-		addTimestamps(sigAttributes, sigWrapper, TimestampType.VALIDATION_DATA_TIMESTAMP);
+		addTimestampsByType(sigAttributes, sigWrapper, TimestampType.VALIDATION_DATA_TIMESTAMP);
 		// &lt;element name="RefsOnlyTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
-		addTimestamps(sigAttributes, sigWrapper, TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
+		addTimestampsByType(sigAttributes, sigWrapper, TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP);
 		// &lt;element name="CertificateValues" type="{http://uri.etsi.org/19102/v1.2.1#}AttributeBaseType"/&gt;
 		addCertificateValues(sigAttributes, sigWrapper);
 		// &lt;element name="RevocationValues" type="{http://uri.etsi.org/19102/v1.2.1#}AttributeBaseType"/&gt;
@@ -307,7 +308,7 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="TimeStampValidationData" type="{http://uri.etsi.org/19102/v1.2.1#}AttributeBaseType"/&gt;
 		addTimeStampValidationData(sigAttributes, sigWrapper);
 		// &lt;element name="ArchiveTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
-		addTimestamps(sigAttributes, sigWrapper, TimestampType.ARCHIVE_TIMESTAMP);
+		addTimestampsByType(sigAttributes, sigWrapper, TimestampType.ARCHIVE_TIMESTAMP);
 		// &lt;element name="RenewedDigests" type="{http://uri.etsi.org/19102/v1.2.1#}SAListOfIntegersType"/&gt;
 		// &lt;element name="MessageDigest" type="{http://uri.etsi.org/19102/v1.2.1#}SAMessageDigestType"/&gt;
 		addMessageDigest(sigAttributes, sigWrapper);
@@ -316,7 +317,7 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="VRI" type="{http://uri.etsi.org/19102/v1.2.1#}SAVRIType"/&gt;
 		addVRI(sigAttributes, sigWrapper);
 		// &lt;element name="DocTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
-		addTimestamps(sigAttributes, sigWrapper, TimestampType.DOC_TIMESTAMP);
+		addTimestampsByLocation(sigAttributes, sigWrapper, TimestampLocation.DOC_TIMESTAMP);
 		// &lt;element name="Reason" type="{http://uri.etsi.org/19102/v1.2.1#}SAReasonType"/&gt;
 		addReason(sigAttributes, sigWrapper);
 		// &lt;element name="Name" type="{http://uri.etsi.org/19102/v1.2.1#}SANameType"/&gt;
@@ -482,13 +483,30 @@ public class ETSIValidationReportBuilder {
 		}
 	}
 
-	private void addTimestamps(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper, TimestampType timestampType) {
+	private void addTimestampsByType(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper, TimestampType timestampType) {
 		List<TimestampWrapper> timestampListByType = sigWrapper.getTimestampListByType(timestampType);
+		// remove document timestamps (they will be present in DocTimeStamp element)
+		List<TimestampWrapper> docTimestamps = sigWrapper.getTimestampListByLocation(TimestampLocation.DOC_TIMESTAMP);
+		timestampListByType.removeAll(docTimestamps);
 		for (TimestampWrapper timestampWrapper : timestampListByType) {
-			SATimestampType timestamp = objectFactory.createSATimestampType();
-			timestamp.setTimeStampValue(timestampWrapper.getProductionTime());
+			SATimestampType timestamp = getSATimestampType(timestampWrapper);
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(wrap(timestampType, timestamp));
 		}
+	}
+
+	private void addTimestampsByLocation(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper, TimestampLocation timestampLocation) {
+		List<TimestampWrapper> timestampListByType = sigWrapper.getTimestampListByLocation(timestampLocation);
+		for (TimestampWrapper timestampWrapper : timestampListByType) {
+			SATimestampType timestamp = getSATimestampType(timestampWrapper);
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(wrap(timestampLocation, timestamp));
+		}
+	}
+	
+	private SATimestampType getSATimestampType(TimestampWrapper timestampWrapper) {
+		SATimestampType timestamp = objectFactory.createSATimestampType();
+		timestamp.setTimeStampValue(timestampWrapper.getProductionTime());
+		timestamp.getAttributeObject().add(getVOReference(timestampWrapper.getId()));
+		return timestamp;
 	}
 
 	private JAXBElement<SATimestampType> wrap(TimestampType timestampType, SATimestampType timestamp) {
@@ -506,10 +524,17 @@ public class ETSIValidationReportBuilder {
 				return objectFactory.createSignatureAttributesTypeSigAndRefsTimeStamp(timestamp);
 			case ARCHIVE_TIMESTAMP:
 				return objectFactory.createSignatureAttributesTypeArchiveTimeStamp(timestamp);
+			default:
+				throw new DSSException("Unsupported timestamp type " + timestampType);
+		}
+	}
+
+	private JAXBElement<SATimestampType> wrap(TimestampLocation timestampLocation, SATimestampType timestamp) {
+		switch (timestampLocation) {
 			case DOC_TIMESTAMP:
 				return objectFactory.createSignatureAttributesTypeDocTimeStamp(timestamp);
 			default:
-				throw new DSSException("Unsupported timestamp type " + timestampType);
+				throw new DSSException("Unsupported timestamp type " + timestampLocation);
 		}
 	}
 

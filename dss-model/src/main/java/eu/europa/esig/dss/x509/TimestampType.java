@@ -33,5 +33,5 @@ public enum TimestampType {
 	VALIDATION_DATA_REFSONLY_TIMESTAMP, // CAdES: id-aa-ets-certCRLTimestamp, XAdES: RefsOnlyTimeStamp
 	VALIDATION_DATA_TIMESTAMP, // CAdES: id-aa-ets-escTimeStamp, XAdES: SigAndRefsTimeStamp
 	ARCHIVE_TIMESTAMP, // CAdES: id-aa-ets-archiveTimestamp, XAdES: ArchiveTimeStamp, PAdES-LTV "document timestamp"
-	DOC_TIMESTAMP // PAdES only, 'DocTimeStamp' dictionary type
+	
 }

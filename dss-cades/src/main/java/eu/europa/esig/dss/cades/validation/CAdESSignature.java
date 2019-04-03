@@ -147,6 +147,7 @@ import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
+import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
@@ -797,7 +798,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 					} else {
 						try {
 							byte[] encoded = value.toASN1Primitive().getEncoded();
-							final TimestampToken timestampToken = new TimestampToken(encoded, timestampType, certPool);
+							final TimestampToken timestampToken = new TimestampToken(encoded, timestampType, certPool, TimestampLocation.CAdES);
 
 							timestampToken.setArchiveTimestampType(archiveTimestampType);
 							timestampTokenList.add(timestampToken);
