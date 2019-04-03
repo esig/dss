@@ -157,7 +157,7 @@
 	<xs:complexType name="RFC">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
-				<xs:attribute name="Id" type="xs:string" use="required" />
+				<xs:attribute name="Id" type="xs:string" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -365,12 +365,25 @@
 			<xs:element name="ChainItem" minOccurs="0" maxOccurs="unbounded">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="Source" type="xs:string" />
+						<xs:element name="Source" type="CertificateSourceType" />
 					</xs:sequence>
 					<xs:attribute name="Id" type="xs:string" use="required" />
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
+	
+	<xs:simpleType name="CertificateSourceType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="TRUSTED_STORE" />
+			<xs:enumeration value="TRUSTED_LIST" />
+			<xs:enumeration value="SIGNATURE" />
+			<xs:enumeration value="OCSP_RESPONSE" />
+			<xs:enumeration value="OTHER" />
+			<xs:enumeration value="AIA" />
+			<xs:enumeration value="TIMESTAMP" />
+			<xs:enumeration value="UNKNOWN" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 </xs:schema>

@@ -550,10 +550,12 @@ public interface AdvancedSignature extends Serializable {
 	List<RevocationRef> findRefsForRevocationToken(RevocationToken revocationToken);
 
 	/**
-	 * Retrieves a list of found {@link RevocationRef}s whick were not assigned to one of used {@code revocationToken}s
+	 * Retrieves a list of found {@link RevocationRef}s which were not assigned to
+	 * one of used {@code revocationToken}s
+	 * 
 	 * @return list of {@link RevocationRef}s
 	 */
-	List<RevocationRef> getUnusedRevocationRefs();
+	List<RevocationRef> getOrphanRevocationRefs();
 
 	// ------------------------ CAdES Specifics for TS 119 102-2
 

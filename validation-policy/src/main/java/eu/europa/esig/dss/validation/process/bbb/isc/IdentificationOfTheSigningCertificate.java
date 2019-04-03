@@ -20,10 +20,13 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.isc;
 
+import java.util.List;
+
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificateChain;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlChainItem;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
+import eu.europa.esig.dss.validation.XmlCertificateSourceType;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
@@ -117,8 +120,14 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 			for (CertificateWrapper certificate : token.getCertificateChain()) {
 				XmlChainItem chainItem = new XmlChainItem();
 				chainItem.setId(certificate.getId());
-				// TODO move source to XMLCertificate
-//				chainItem.setSource(diagnosticChainItem.getSource()); 
+				List<XmlCertificateSourceType> sources = certificate.getSources();
+				if (sources.contains(XmlCertificateSourceType.TRUSTED_LIST)) {
+					chainItem.setSource(XmlCertificateSourceType.TRUSTED_LIST);
+				} else if (sources.contains(XmlCertificateSourceType.TRUSTED_STORE)) {
+					chainItem.setSource(XmlCertificateSourceType.TRUSTED_STORE);
+				} else {
+					chainItem.setSource(sources.iterator().next());
+				}
 				certificateChain.getChainItem().add(chainItem);
 			}
 			result.setCertificateChain(certificateChain);

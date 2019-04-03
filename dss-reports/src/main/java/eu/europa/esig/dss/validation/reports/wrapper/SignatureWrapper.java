@@ -477,7 +477,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		List<String> storedXmlRevocationIds = new ArrayList<String>(); // we do not need to collect references for the same revocations twice
 		XmlFoundRevocations foundRevocations = getFoundRevocations();
 		if (foundRevocations != null) {
-			for (XmlRelatedRevocation revocation : foundRevocations.getRelatedRevocation()) {
+			for (XmlRelatedRevocation revocation : foundRevocations.getRelatedRevocations()) {
 				if (!storedXmlRevocationIds.contains(revocation.getRevocation().getId())) {
 					storedXmlRevocationIds.add(revocation.getRevocation().getId());
 					revocationRefs.addAll(revocation.getRevocationReferences());
@@ -502,7 +502,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		Set<XmlRelatedRevocation> revocationWithOrigin = new HashSet<XmlRelatedRevocation>();
 		XmlFoundRevocations foundRevocations = getFoundRevocations();
 		if (foundRevocations != null) {
-			for (XmlRelatedRevocation revocationRef : foundRevocations.getRelatedRevocation()) {
+			for (XmlRelatedRevocation revocationRef : foundRevocations.getRelatedRevocations()) {
 				if (revocationRef.getOrigin().equals(originType)) {
 					revocationWithOrigin.add(revocationRef);
 				}
@@ -515,7 +515,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		Set<XmlRelatedRevocation> revocationWithType = new HashSet<XmlRelatedRevocation>();
 		XmlFoundRevocations foundRevocations = getFoundRevocations();
 		if (foundRevocations != null) {
-			for (XmlRelatedRevocation revocationRef : foundRevocations.getRelatedRevocation()) {
+			for (XmlRelatedRevocation revocationRef : foundRevocations.getRelatedRevocations()) {
 				if (revocationRef.getType().equals(type)) {
 					revocationWithType.add(revocationRef);
 				}
@@ -532,7 +532,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		List<String> revocationIds = new ArrayList<String>();
 		XmlFoundRevocations foundRevocations = getFoundRevocations();
 		if (foundRevocations != null) {
-			for (XmlRelatedRevocation revocationRef : foundRevocations.getRelatedRevocation()) {
+			for (XmlRelatedRevocation revocationRef : foundRevocations.getRelatedRevocations()) {
 			revocationIds.add(revocationRef.getRevocation().getId());
 			}
 		}

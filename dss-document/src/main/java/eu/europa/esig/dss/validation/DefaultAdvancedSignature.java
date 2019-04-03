@@ -824,7 +824,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 	
 	@Override
-	public List<RevocationRef> getUnusedRevocationRefs() {
+	public List<RevocationRef> getOrphanRevocationRefs() {
 		if (Utils.isMapEmpty(revocationRefsMap)) {
 			collectRevocationRefsMap();
 		}

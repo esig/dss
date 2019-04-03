@@ -146,7 +146,7 @@
 			<xs:element name="FoundRevocations" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="RelatedRevocation" type="RelatedRevocation" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="RelatedRevocations" type="RelatedRevocation" minOccurs="0" maxOccurs="unbounded" />
 						<xs:element name="OrphanRevocationRefs" minOccurs="0">
 							<xs:complexType>
 								<xs:sequence>
@@ -625,7 +625,7 @@
 			<xs:element name="Revocation" type="xs:IDREF" />
 			<xs:element name="Type" type="RevocationType" />
 			<xs:element name="Origin" type="RevocationOriginType" />
-			<xs:element name="RevocationReferences">
+			<xs:element name="RevocationReferences" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="RevocationRef" type="RevocationRef" minOccurs="0" maxOccurs="unbounded" />

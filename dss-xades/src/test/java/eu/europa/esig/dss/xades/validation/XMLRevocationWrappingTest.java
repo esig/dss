@@ -62,7 +62,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		List<XmlSignature> xmlSignatures = xmlDiagnosticData.getSignatures();
 		assertNotNull(xmlSignatures);
 		for (XmlSignature signature : xmlSignatures) {
-			List<XmlRelatedRevocation> revocationRefs = signature.getFoundRevocations().getRelatedRevocation();
+			List<XmlRelatedRevocation> revocationRefs = signature.getFoundRevocations().getRelatedRevocations();
 			assertNotNull(revocationRefs);
 			assertEquals(4, revocationRefs.size());
 			for (XmlRelatedRevocation revocation : revocationRefs) {
@@ -106,7 +106,7 @@ public class XMLRevocationWrappingTest extends PKIFactoryAccess {
 		List<XmlSignature> xmlSignatures = xmlDiagnosticData.getSignatures();
 		assertNotNull(xmlSignatures);
 		for (XmlSignature signature : xmlSignatures) {
-			List<XmlRelatedRevocation> revocationRefs = signature.getFoundRevocations().getRelatedRevocation();
+			List<XmlRelatedRevocation> revocationRefs = signature.getFoundRevocations().getRelatedRevocations();
 			assertNotNull(revocationRefs);
 			for (XmlRelatedRevocation revocation : revocationRefs) {
 				assertNotNull(revocation.getRevocation());

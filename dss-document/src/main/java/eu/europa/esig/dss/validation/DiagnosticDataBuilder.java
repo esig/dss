@@ -321,17 +321,13 @@ public class DiagnosticDataBuilder {
 			for (RevocationToken revocationToken : usedRevocations) {
 				if (!xmlRevocations.containsKey(revocationToken.getDSSIdAsString())) {
 					XmlRevocation currentXmlRevocation = buildDetachedXmlRevocation(revocationToken);
+					currentXmlRevocation.setSigningCertificate(getXmlSigningCertificate(revocationToken.getPublicKeyOfTheSigner()));
+					currentXmlRevocation.setCertificateChain(getXmlForCertificateChain(revocationToken.getPublicKeyOfTheSigner()));
 					xmlRevocations.put(revocationToken.getDSSIdAsString(), currentXmlRevocation);
 					diagnosticData.getUsedRevocations().add(currentXmlRevocation);
 				}
 			}
 
-			for (RevocationToken revocationToken : usedRevocations) {
-				XmlRevocation xmlRevocation = xmlRevocations.get(revocationToken.getDSSIdAsString());
-				xmlRevocation.setSigningCertificate(getXmlSigningCertificate(revocationToken.getPublicKeyOfTheSigner()));
-				xmlRevocation.setCertificateChain(getXmlForCertificateChain(revocationToken.getPublicKeyOfTheSigner()));
-			}
-			
 			for (CertificateToken certificateToken : usedCertificates) {
 				XmlCertificate xmlCertificate = xmlCerts.get(certificateToken.getDSSIdAsString());
 				Set<RevocationToken> revocationsForCert = getRevocationsForCert(certificateToken);
@@ -671,11 +667,26 @@ public class DiagnosticDataBuilder {
 	private XmlSignatureProductionPlace getXmlSignatureProductionPlace(SignatureProductionPlace signatureProductionPlace) {
 		if (signatureProductionPlace != null) {
 			final XmlSignatureProductionPlace xmlSignatureProductionPlace = new XmlSignatureProductionPlace();
-			xmlSignatureProductionPlace.setCountryName(signatureProductionPlace.getCountryName());
-			xmlSignatureProductionPlace.setStateOrProvince(signatureProductionPlace.getStateOrProvince());
-			xmlSignatureProductionPlace.setPostalCode(signatureProductionPlace.getPostalCode());
-			xmlSignatureProductionPlace.setAddress(signatureProductionPlace.getStreetAddress());
-			xmlSignatureProductionPlace.setCity(signatureProductionPlace.getCity());
+			String countryName = signatureProductionPlace.getCountryName();
+			if (Utils.isStringNotEmpty(countryName)) {
+				xmlSignatureProductionPlace.setCountryName(countryName);
+			}
+			String stateOrProvince = signatureProductionPlace.getStateOrProvince();
+			if (Utils.isStringNotEmpty(stateOrProvince)) {
+				xmlSignatureProductionPlace.setStateOrProvince(stateOrProvince);
+			}
+			String postalCode = signatureProductionPlace.getPostalCode();
+			if (Utils.isStringNotEmpty(postalCode)) {
+				xmlSignatureProductionPlace.setPostalCode(postalCode);
+			}
+			String streetAddress = signatureProductionPlace.getStreetAddress();
+			if (Utils.isStringNotEmpty(streetAddress)) {
+				xmlSignatureProductionPlace.setAddress(streetAddress);
+			}
+			String city = signatureProductionPlace.getCity();
+			if (Utils.isStringNotEmpty(city)) {
+				xmlSignatureProductionPlace.setCity(city);
+			}
 			return xmlSignatureProductionPlace;
 		}
 		return null;
@@ -825,8 +836,12 @@ public class DiagnosticDataBuilder {
 	
 	private XmlFoundRevocations getXmlFoundRevocations(AdvancedSignature signature) {
 		XmlFoundRevocations foundRevocations = new XmlFoundRevocations();
-		foundRevocations.getRelatedRevocation().addAll(getXmlRelatedRevocations(signature));
-		foundRevocations.setOrphanRevocationRefs(getXmlUnusedRevocationRefs(signature));
+		foundRevocations.getRelatedRevocations().addAll(getXmlRelatedRevocations(signature));
+
+		List<RevocationRef> orphanRevocationRefs = signature.getOrphanRevocationRefs();
+		if (Utils.isCollectionNotEmpty(orphanRevocationRefs)) {
+			foundRevocations.setOrphanRevocationRefs(getXmlRevocationRefs(orphanRevocationRefs, true));
+		}
 		return foundRevocations;
 	}
 
@@ -852,28 +867,27 @@ public class DiagnosticDataBuilder {
 		Set<String> revocationKeys = new HashSet<String>();
 		for (RevocationToken revocationToken : revocationTokens) {
 			if (!revocationKeys.contains(revocationToken.getDSSIdAsString())) {
-				xmlRevocationRefs.add(getXmlCertificateRevocationRef(signature, revocationToken, originType));
-				revocationKeys.add(revocationToken.getDSSIdAsString());
+				XmlRevocation xmlRevocation = xmlRevocations.get(revocationToken.getDSSIdAsString());
+				if (xmlRevocation == null) {
+					LOG.debug("Embedded revocation data {} has not been processed", revocationToken.getDSSIdAsString());
+				} else {
+					XmlRelatedRevocation xmlRevocationRef = new XmlRelatedRevocation();
+					xmlRevocationRef.setRevocation(xmlRevocation);
+					xmlRevocationRef.setType(RevocationType.valueOf(revocationToken.getRevocationSourceType().name()));
+					xmlRevocationRef.setOrigin(originType);
+					List<RevocationRef> revocationRefs = signature.findRefsForRevocationToken(revocationToken);
+					if (Utils.isCollectionNotEmpty(revocationRefs)) {
+						xmlRevocationRef.getRevocationReferences().addAll(getXmlRevocationRefs(revocationRefs, false));
+					}
+
+					xmlRevocationRefs.add(xmlRevocationRef);
+					revocationKeys.add(revocationToken.getDSSIdAsString());
+				}
 			}
 		}
 		return xmlRevocationRefs;
 	}
-	
-	private XmlRelatedRevocation getXmlCertificateRevocationRef(AdvancedSignature signature, RevocationToken revocationToken, 
-			XmlRevocationOrigin originType) {
-		XmlRelatedRevocation xmlRevocationRef = new XmlRelatedRevocation();
-		xmlRevocationRef.setRevocation(xmlRevocations.get(revocationToken.getDSSIdAsString()));
-		xmlRevocationRef.setType(RevocationType.valueOf(revocationToken.getRevocationSourceType().name()));
-		xmlRevocationRef.setOrigin(originType);
-		List<RevocationRef> revocationRefs = signature.findRefsForRevocationToken(revocationToken);
-		xmlRevocationRef.getRevocationReferences().addAll(getXmlRevocationRefs(revocationRefs, false));
-		return xmlRevocationRef;
-	}
-	
-	private List<XmlRevocationRef> getXmlUnusedRevocationRefs(AdvancedSignature signature) {
-		return getXmlRevocationRefs(signature.getUnusedRevocationRefs(), true);
-	}
-	
+
 	private List<XmlRevocationRef> getXmlRevocationRefs(List<RevocationRef> revocationRefs, boolean addType) {
 		List<XmlRevocationRef> xmlRevocationRefs = new ArrayList<XmlRevocationRef>();
 		for (RevocationRef ref : revocationRefs) {

@@ -59,11 +59,10 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 
 	private CertificateQualification qualificationAtSigningTime;
 
-	public SignatureQualificationBlock(XmlConclusion etsi319102Conclusion, Date bestSignatureTime, CertificateWrapper signingCertificate,
+	public SignatureQualificationBlock(String signatureId, XmlConclusion etsi319102Conclusion, Date bestSignatureTime, CertificateWrapper signingCertificate,
 			List<XmlTLAnalysis> tlAnalysis, String lotlCountryCode) {
 		super(new XmlValidationSignatureQualification());
-
-		// result.setId(signature.getId()); TODO
+		result.setId(signatureId);
 
 		this.etsi319102Conclusion = etsi319102Conclusion;
 		this.bestSignatureTime = bestSignatureTime;
