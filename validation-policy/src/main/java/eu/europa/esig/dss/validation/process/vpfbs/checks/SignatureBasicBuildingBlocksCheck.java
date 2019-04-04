@@ -31,6 +31,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlProofOfExistence;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignatures;
@@ -65,10 +66,19 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 		this.diagnosticData = diagnosticData;
 		this.signatureBBB = signatureBBB;
 		this.bbbs = bbbs;
+		
+		result.setProofOfExistence(getCurrentTime());
+	}
+	
+	private XmlProofOfExistence getCurrentTime() {
+		XmlProofOfExistence proofOfExistence = new XmlProofOfExistence();
+		proofOfExistence.setTime(diagnosticData.getValidationDate());
+		return proofOfExistence;
 	}
 
 	@Override
 	protected boolean process() {
+		
 
 		/*
 		 * 1) Token signature validation: the building block shall perform the validation process for Basic Signatures

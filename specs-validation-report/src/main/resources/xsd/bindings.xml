@@ -35,6 +35,13 @@
 		</jaxb:bindings>
 		
 		
+		<jaxb:bindings node="//xs:element[@name='TypeOfProof']">
+			<jaxb:javaType
+				name="eu.europa.esig.jaxb.validationreport.enums.TypeOfProof"
+				parseMethod="eu.europa.esig.jaxb.validationreport.parsers.UriBasedEnumParser.parseTypeOfProof"
+				printMethod="eu.europa.esig.jaxb.validationreport.parsers.UriBasedEnumParser.print" />
+		</jaxb:bindings>
+		
 		<jaxb:bindings node="//xs:element[@name='RevocationReason']">
 			<jaxb:javaType
 				name="eu.europa.esig.jaxb.validationreport.enums.RevocationReason"

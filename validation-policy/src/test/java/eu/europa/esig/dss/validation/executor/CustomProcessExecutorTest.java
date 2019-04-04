@@ -1117,9 +1117,9 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		eu.europa.esig.dss.jaxb.detailedreport.DetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
 		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> xmlSignatures = detailedReportJaxb.getSignatures();
 		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : xmlSignatures) {
-			assertNotNull(xmlSignature.getValidationProcessBasicSignatures().getBestSignatureTime());
-			assertNotNull(xmlSignature.getValidationProcessLongTermData().getBestSignatureTime());
-			assertNotNull(xmlSignature.getValidationProcessArchivalData().getBestSignatureTime());
+			assertNotNull(xmlSignature.getValidationProcessBasicSignatures().getProofOfExistence());
+			assertNotNull(xmlSignature.getValidationProcessLongTermData().getProofOfExistence());
+			assertNotNull(xmlSignature.getValidationProcessArchivalData().getProofOfExistence());
 		}
 	}
 

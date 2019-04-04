@@ -9,6 +9,7 @@ import javax.xml.bind.JAXBElement;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlProofOfExistence;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
@@ -32,6 +33,7 @@ import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.jaxb.validationreport.AttributeBaseType;
 import eu.europa.esig.jaxb.validationreport.ObjectFactory;
+import eu.europa.esig.jaxb.validationreport.POEType;
 import eu.europa.esig.jaxb.validationreport.SACRLIDType;
 import eu.europa.esig.jaxb.validationreport.SACertIDListType;
 import eu.europa.esig.jaxb.validationreport.SACertIDType;
@@ -68,6 +70,7 @@ import eu.europa.esig.jaxb.validationreport.enums.EndorsementType;
 import eu.europa.esig.jaxb.validationreport.enums.MainIndication;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
 import eu.europa.esig.jaxb.validationreport.enums.SignatureValidationProcessID;
+import eu.europa.esig.jaxb.validationreport.enums.TypeOfProof;
 import eu.europa.esig.jaxb.xades132.DigestAlgAndValueType;
 import eu.europa.esig.jaxb.xmldsig.DigestMethodType;
 
@@ -109,8 +112,20 @@ public class ETSIValidationReportBuilder {
 	private ValidationTimeInfoType getValidationTimeInfo(SignatureWrapper sigWrapper) {
 		ValidationTimeInfoType validationTimeInfoType = objectFactory.createValidationTimeInfoType();
 		validationTimeInfoType.setValidationTime(currentTime);
-		// TODO
-		// validationTimeInfoType.setBestSignatureTime(POE);
+
+		XmlProofOfExistence proofOfExistence = detailedReport.getBestProofOfExistence(sigWrapper.getId());
+		POEType poeType = new POEType();
+		poeType.setPOETime(proofOfExistence.getTime());
+
+		String timestampId = proofOfExistence.getTimestampId();
+		if (Utils.isStringNotEmpty(timestampId)) {
+			poeType.setTypeOfProof(TypeOfProof.PROVIDED);
+			poeType.setPOEObject(getVOReference(timestampId));
+		} else {
+			// Current/validation time
+			poeType.setTypeOfProof(TypeOfProof.VALIDATION);
+		}
+		validationTimeInfoType.setBestSignatureTime(poeType);
 		return validationTimeInfoType;
 	}
 
