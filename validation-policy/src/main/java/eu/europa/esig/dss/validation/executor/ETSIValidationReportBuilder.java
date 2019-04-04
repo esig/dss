@@ -9,6 +9,9 @@ import javax.xml.bind.JAXBElement;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificateChain;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlChainItem;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlProofOfExistence;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
@@ -21,6 +24,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignature;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.RevocationRefLocation;
 import eu.europa.esig.dss.validation.RevocationType;
+import eu.europa.esig.dss.validation.XmlCertificateSourceType;
 import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -35,6 +39,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.jaxb.validationreport.AttributeBaseType;
+import eu.europa.esig.jaxb.validationreport.CertificateChainType;
 import eu.europa.esig.jaxb.validationreport.ObjectFactory;
 import eu.europa.esig.jaxb.validationreport.POEProvisioningType;
 import eu.europa.esig.jaxb.validationreport.POEType;
@@ -68,6 +73,7 @@ import eu.europa.esig.jaxb.validationreport.VOReferenceType;
 import eu.europa.esig.jaxb.validationreport.ValidationObjectListType;
 import eu.europa.esig.jaxb.validationreport.ValidationObjectRepresentationType;
 import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
+import eu.europa.esig.jaxb.validationreport.ValidationReportDataType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationStatusType;
 import eu.europa.esig.jaxb.validationreport.ValidationTimeInfoType;
@@ -319,9 +325,54 @@ public class ETSIValidationReportBuilder {
 			validationStatus.getSubIndication().add(eu.europa.esig.jaxb.validationreport.enums.SubIndication.valueOf(subIndication.name()));
 		}
 
-		// TODO
-//		validationStatus.getAssociatedValidationReportData().add(e);
+		ValidationReportDataType validationReportData = objectFactory.createValidationReportDataType();
+		XmlBasicBuildingBlocks basicBuildingBlockSignature = detailedReport.getBasicBuildingBlockById(sigWrapper.getId());
+		if (basicBuildingBlockSignature != null) {
+			XmlCertificateChain certificateChain = basicBuildingBlockSignature.getCertificateChain();
+			if (certificateChain != null) {
+				fillCertificateChainAndTrustAnchor(validationReportData, certificateChain);
+			}
+		}
+
+		validationStatus.getAssociatedValidationReportData().add(validationReportData);
 		return validationStatus;
+	}
+
+	private void fillCertificateChainAndTrustAnchor(ValidationReportDataType validationReportData, XmlCertificateChain certificateChain) {
+		CertificateChainType certificateChainType = objectFactory.createCertificateChainType();
+		VOReferenceType signingCert = null;
+		VOReferenceType trustAnchor = null;
+
+		List<XmlChainItem> chainItem = certificateChain.getChainItem();
+		for (int i = 0; i < chainItem.size(); i++) {
+			XmlChainItem currentChainItem = chainItem.get(i);
+			VOReferenceType currentVORef = getVOReference(currentChainItem.getId());
+			XmlCertificateSourceType source = currentChainItem.getSource();
+
+			boolean isSigningCert = (i == 0);
+			boolean isTrustAnchor = isTrustAnchor(source);
+
+			if (isSigningCert || isTrustAnchor) {
+				if (isSigningCert) {
+					signingCert = currentVORef;
+				}
+				if (isTrustAnchor) {
+					trustAnchor = currentVORef;
+				}
+			} else {
+				certificateChainType.getIntermediateCertificate().add(currentVORef);
+			}
+		}
+
+		certificateChainType.setSigningCertificate(signingCert);
+		certificateChainType.setTrustAnchor(trustAnchor);
+
+		validationReportData.setCertificateChain(certificateChainType);
+		validationReportData.setTrustAnchor(trustAnchor);
+	}
+
+	private boolean isTrustAnchor(XmlCertificateSourceType source) {
+		return XmlCertificateSourceType.TRUSTED_LIST.equals(source) || XmlCertificateSourceType.TRUSTED_STORE.equals(source);
 	}
 
 	private SignatureIdentifierType getSignatureIdentifier(SignatureWrapper sigWrapper) {
