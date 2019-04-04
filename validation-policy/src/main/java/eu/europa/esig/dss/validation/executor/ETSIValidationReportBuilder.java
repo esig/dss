@@ -243,6 +243,10 @@ public class ETSIValidationReportBuilder {
 		} else {
 			representation.setDigestAlgAndValue(getDigestAlgAndValueType(revocationData.getDigestAlgoAndValue()));
 		}
+		String sourceAddress = revocationData.getSourceAddress();
+		if (Utils.isStringNotEmpty(sourceAddress)) {
+			representation.setURI(sourceAddress);
+		}
 		validationObject.setValidationObject(representation);
 		validationObjectListType.getValidationObject().add(validationObject);
 	}
