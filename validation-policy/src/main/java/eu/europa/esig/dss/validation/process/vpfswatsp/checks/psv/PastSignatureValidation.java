@@ -123,7 +123,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 
 			else if (Indication.INDETERMINATE.equals(currentTimeIndication) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(currentTimeSubIndication)) {
 
-				Date bestSignatureTime = poe.getLowestPOE(token.getId(), controlTime);
+				Date bestSignatureTime = poe.getLowestPOETime(token.getId(), controlTime);
 				CertificateWrapper signingCertificate = token.getSigningCertificate();
 
 				item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime, signingCertificate));
@@ -140,7 +140,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 * considered secure, the building block shall return the status indication PASSED.
 		 */
 		if (Indication.INDETERMINATE.equals(currentTimeIndication) && SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(currentTimeSubIndication)) {
-			Date bestSignatureTime = poe.getLowestPOE(token.getId(), controlTime);
+			Date bestSignatureTime = poe.getLowestPOETime(token.getId(), controlTime);
 			item = item.setNextItem(poeUsedAlgorithmInSecureTimeExistsForEachAlgorithmConcernedByFailure(bestSignatureTime));
 			return;
 		}

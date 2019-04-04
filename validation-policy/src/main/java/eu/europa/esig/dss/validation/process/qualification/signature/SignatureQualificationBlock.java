@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusionWithProofOfExistence;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
@@ -59,13 +60,14 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 
 	private CertificateQualification qualificationAtSigningTime;
 
-	public SignatureQualificationBlock(String signatureId, XmlConclusion etsi319102Conclusion, Date bestSignatureTime, CertificateWrapper signingCertificate,
+	public SignatureQualificationBlock(String signatureId, XmlConstraintsConclusionWithProofOfExistence etsi319102validation,
+			CertificateWrapper signingCertificate,
 			List<XmlTLAnalysis> tlAnalysis, String lotlCountryCode) {
 		super(new XmlValidationSignatureQualification());
 		result.setId(signatureId);
 
-		this.etsi319102Conclusion = etsi319102Conclusion;
-		this.bestSignatureTime = bestSignatureTime;
+		this.etsi319102Conclusion = etsi319102validation.getConclusion();
+		this.bestSignatureTime = etsi319102validation.getProofOfExistence().getTime();
 		this.signingCertificate = signingCertificate;
 		this.tlAnalysis = tlAnalysis;
 		this.lotlCountryCode = lotlCountryCode;

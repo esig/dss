@@ -908,4 +908,8 @@ public class DiagnosticData {
 		return null;
 	}
 
+	public Date getValidationDate() {
+		return wrapped.getValidationDate();
+	}
+
 }

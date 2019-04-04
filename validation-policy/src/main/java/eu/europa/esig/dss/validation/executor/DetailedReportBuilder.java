@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusionWithProofOfExistence;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignatures;
@@ -74,32 +74,24 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 				signatureAnalysis.setCounterSignature(true);
 			}
 
-			Date bestSignatureTime = currentTime;
-			XmlConclusion conlusion = executeBasicValidation(signatureAnalysis, signature, bbbs);
+			XmlConstraintsConclusionWithProofOfExistence validation = executeBasicValidation(signatureAnalysis, signature, bbbs);
 
 			if (ValidationLevel.TIMESTAMPS.equals(validationLevel)) {
 				executeTimestampsValidation(signatureAnalysis, signature, bbbs);
 			} else if (ValidationLevel.LONG_TERM_DATA.equals(validationLevel)) {
 				executeTimestampsValidation(signatureAnalysis, signature, bbbs);
-				XmlValidationProcessLongTermData ltvResult = executeLongTermValidation(signatureAnalysis, signature, bbbs);
-				conlusion = ltvResult.getConclusion();
-				bestSignatureTime = ltvResult.getBestSignatureTime();
+				validation = executeLongTermValidation(signatureAnalysis, signature, bbbs);
 			} else if (ValidationLevel.ARCHIVAL_DATA.equals(validationLevel)) {
 				executeTimestampsValidation(signatureAnalysis, signature, bbbs);
 				executeLongTermValidation(signatureAnalysis, signature, bbbs);
-				XmlValidationProcessArchivalData archivalResult = executeArchiveValidation(signatureAnalysis, signature,
-						bbbs);
-				conlusion = archivalResult.getConclusion();
-				bestSignatureTime = archivalResult.getBestSignatureTime();
+				validation = executeArchiveValidation(signatureAnalysis, signature, bbbs);
 			}
 
 			if (policy.isEIDASConstraintPresent()) {
 				try {
 					CertificateWrapper signingCertificate = signature.getSigningCertificate();
 					if (signingCertificate != null) {
-
-						SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(signature.getId(), conlusion, bestSignatureTime,
-								signingCertificate,
+						SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(signature.getId(), validation, signingCertificate,
 								detailedReport.getTLAnalysis(), diagnosticData.getLOTLCountryCode());
 						signatureAnalysis.setValidationSignatureQualification(qualificationBlock.execute());
 					}
@@ -114,12 +106,12 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 		return detailedReport;
 	}
 
-	private XmlConclusion executeBasicValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs) {
+	private XmlValidationProcessBasicSignatures executeBasicValidation(XmlSignature signatureAnalysis, SignatureWrapper signature,
+			Map<String, XmlBasicBuildingBlocks> bbbs) {
 		ValidationProcessForBasicSignatures vpfbs = new ValidationProcessForBasicSignatures(diagnosticData, signature, bbbs);
 		XmlValidationProcessBasicSignatures bs = vpfbs.execute();
-		bs.setBestSignatureTime(currentTime);
 		signatureAnalysis.setValidationProcessBasicSignatures(bs);
-		return bs.getConclusion();
+		return bs;
 	}
 
 	private void executeTimestampsValidation(XmlSignature signatureAnalysis, SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs) {

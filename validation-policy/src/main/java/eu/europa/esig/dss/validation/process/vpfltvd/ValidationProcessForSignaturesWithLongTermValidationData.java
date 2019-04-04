@@ -33,6 +33,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlProofOfExistence;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
@@ -109,7 +110,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * NOTE 1: Best-signature-time is an internal variable for the algorithm denoting the earliest time when it can
 		 * be proven that a signature has existed.
 		 */
-		Date bestSignatureTime = currentDate;
+		XmlProofOfExistence bestSignatureTime = getCurrentTime();
 
 		/*
 		 * 2) Signature validation: the process shall perform the validation process for Basic Signatures as per
@@ -144,8 +145,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			 */
 			for (TimestampWrapper timestampWrapper : allowedTimestamps) {
 				Date productionTime = timestampWrapper.getProductionTime();
-				if (productionTime.before(bestSignatureTime)) {
-					bestSignatureTime = productionTime;
+				if (productionTime.before(bestSignatureTime.getTime())) {
+					bestSignatureTime = getProofOfExistence(timestampWrapper);
 				}
 			}
 		}
@@ -159,7 +160,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		XmlConclusion bsConclusion = basicSignatureValidation.getConclusion();
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && 
 				(SubIndication.REVOKED_NO_POE.equals(bsConclusion.getSubIndication()) || SubIndication.REVOKED_CA_NO_POE.equals(bsConclusion.getSubIndication()))) {
-			item = revocationDateAfterBestSignatureDateValidation(item, bestSignatureTime, bsConclusion.getSubIndication());
+			item = revocationDateAfterBestSignatureDateValidation(item, bestSignatureTime.getTime(), bsConclusion.getSubIndication());
 		}
 
 		/*
@@ -170,7 +171,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * OUT_OF_BOUNDS_NO_POE.
 		 */
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bsConclusion.getSubIndication())) {
-			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime));
+			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime.getTime()));
 		}
 
 		/*
@@ -184,10 +185,10 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				&& SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(bsConclusion.getSubIndication())) {
 			
 			// check validity of Cryptographic Constraints for the Signature
-			item = item.setNextItem(algorithmReliableAtBestSignatureTime(bestSignatureTime));
+			item = item.setNextItem(algorithmReliableAtBestSignatureTime(bestSignatureTime.getTime()));
 
 			// check validity of Cryptographic Constraints for the Signing Certificate and CA Certificates
-			item = certificatesChainReliableAtBestSignatureTime(item, bestSignatureTime);
+			item = certificatesChainReliableAtBestSignatureTime(item, bestSignatureTime.getTime());
 			
 		}
 
@@ -223,7 +224,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				 * process shall go to the next step. Otherwise, the process shall return the indication INDETERMINATE with the
 				 * sub-indication SIG_CONSTRAINTS_FAILURE.
 				 */
-				item = item.setNextItem(timestampDelay(bestSignatureTime));
+				item = item.setNextItem(timestampDelay(bestSignatureTime.getTime()));
 			}
 		}
 		
@@ -237,7 +238,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 */
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication())
 				&& SubIndication.TRY_LATER.equals(bsConclusion.getSubIndication())) {
-			item = item.setNextItem(revocationIsFresh(bestSignatureTime, currentContext));
+			item = item.setNextItem(revocationIsFresh(bestSignatureTime.getTime(), currentContext));
 		}
 		
 		/*
@@ -253,7 +254,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * the SVA shall return the indication and sub-indication returned by the Signature Acceptance Validation
 		 * Process. 
 		 */
-		item = item.setNextItem(signatureIsAcceptable(bestSignatureTime, currentContext));
+		item = item.setNextItem(signatureIsAcceptable(bestSignatureTime.getTime(), currentContext));
 		
 		/*
 		 * 9) Data extraction: the process shall return the success indication PASSED, the certificate chain obtained in step 2
@@ -264,7 +265,20 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * time-stamp token. 
 		 */
 
-		result.setBestSignatureTime(bestSignatureTime);
+		result.setProofOfExistence(bestSignatureTime);
+	}
+
+	private XmlProofOfExistence getCurrentTime() {
+		XmlProofOfExistence xpoe = new XmlProofOfExistence();
+		xpoe.setTime(currentDate);
+		return xpoe;
+	}
+
+	private XmlProofOfExistence getProofOfExistence(TimestampWrapper timestampWrapper) {
+		XmlProofOfExistence xpoe = new XmlProofOfExistence();
+		xpoe.setTime(timestampWrapper.getProductionTime());
+		xpoe.setTimestampId(timestampWrapper.getId());
+		return xpoe;
 	}
 
 	private Set<TimestampWrapper> filterValidSignatureTimestamps(List<TimestampWrapper> allTimestamps) {

@@ -9,6 +9,7 @@ import javax.xml.bind.JAXBElement;
 
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlProofOfExistence;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
@@ -116,8 +117,20 @@ public class ETSIValidationReportBuilder {
 	private ValidationTimeInfoType getValidationTimeInfo(SignatureWrapper sigWrapper) {
 		ValidationTimeInfoType validationTimeInfoType = objectFactory.createValidationTimeInfoType();
 		validationTimeInfoType.setValidationTime(currentTime);
-		// TODO
-		// validationTimeInfoType.setBestSignatureTime(POE);
+
+		XmlProofOfExistence proofOfExistence = detailedReport.getBestProofOfExistence(sigWrapper.getId());
+		POEType poeType = new POEType();
+		poeType.setPOETime(proofOfExistence.getTime());
+
+		String timestampId = proofOfExistence.getTimestampId();
+		if (Utils.isStringNotEmpty(timestampId)) {
+			poeType.setTypeOfProof(TypeOfProof.PROVIDED);
+			poeType.setPOEObject(getVOReference(timestampId));
+		} else {
+			// Current/validation time
+			poeType.setTypeOfProof(TypeOfProof.VALIDATION);
+		}
+		validationTimeInfoType.setBestSignatureTime(poeType);
 		return validationTimeInfoType;
 	}
 
@@ -170,9 +183,7 @@ public class ETSIValidationReportBuilder {
 		ValidationObjectListType validationObjectListType = objectFactory.createValidationObjectListType();
 		
 		POEExtraction poeExtraction = new POEExtraction();
-		for (TimestampWrapper timestamp : diagnosticData.getAllTimestamps()) {
-			poeExtraction.extractPOE(timestamp, diagnosticData);
-		}
+		poeExtraction.collectAllPOE(diagnosticData);
 
 		for (CertificateWrapper certificate : diagnosticData.getUsedCertificates()) {
 			addCertificate(validationObjectListType, certificate, poeExtraction);
@@ -216,18 +227,13 @@ public class ETSIValidationReportBuilder {
 	private POEType getPOE(String tokenId, POEExtraction poeExtraction) {
 		POEType poeType = objectFactory.createPOEType();
 		if (poeExtraction.isPOEExists(tokenId, currentTime)) {
-			Date lowestExistenseTime = poeExtraction.getLowestPOE(tokenId, currentTime);
-			poeType.setPOETime(lowestExistenseTime);
-			poeType.setTypeOfProof(TypeOfProof.PROVIDED.getUri());
-			for (TimestampWrapper timestamp : diagnosticData.getAllTimestamps()) {
-				if (timestamp.getProductionTime().equals(lowestExistenseTime)) {
-					poeType.setPOEObject(getVOReference(timestamp.getId()));
-					break;
-				}
-			}
+			XmlProofOfExistence lowestPOE = poeExtraction.getLowestPOE(tokenId, currentTime);
+			poeType.setPOETime(lowestPOE.getTime());
+			poeType.setPOEObject(getVOReference(lowestPOE.getTimestampId()));
+			poeType.setTypeOfProof(TypeOfProof.PROVIDED);
 		} else {
 			poeType.setPOETime(currentTime);
-			poeType.setTypeOfProof(TypeOfProof.VALIDATION.getUri());
+			poeType.setTypeOfProof(TypeOfProof.VALIDATION);
 			// TODO: check TypeOfProof correctness (when to use VALIDATION, when PROVIDED)
 		}
 		return poeType;
@@ -293,6 +299,10 @@ public class ETSIValidationReportBuilder {
 			representation.setBase64(revocationData.getBinaries());
 		} else {
 			representation.setDigestAlgAndValue(getDigestAlgAndValueType(revocationData.getDigestAlgoAndValue()));
+		}
+		String sourceAddress = revocationData.getSourceAddress();
+		if (Utils.isStringNotEmpty(sourceAddress)) {
+			representation.setURI(sourceAddress);
 		}
 		validationObject.setValidationObject(representation);
 		validationObject.setPOE(getPOE(revocationData.getId(), poeExtraction));

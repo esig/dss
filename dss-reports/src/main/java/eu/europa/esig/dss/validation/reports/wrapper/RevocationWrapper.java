@@ -30,8 +30,8 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 import eu.europa.esig.dss.validation.RevocationType;
+import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 
 /**
  * Revocation wrapper containing common revocation information
@@ -121,6 +121,10 @@ public class RevocationWrapper extends AbstractTokenProxy {
 			return getOrigin().isInternalOrigin();
 		}
 		return false;
+	}
+
+	public String getSourceAddress() {
+		return revocation.getSourceAddress();
 	}
 
 }
