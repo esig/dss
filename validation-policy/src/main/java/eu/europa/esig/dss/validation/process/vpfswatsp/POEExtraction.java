@@ -149,26 +149,24 @@ public class POEExtraction {
 	}
 
 	public Date getLowestPOETime(final String id, final Date controlTime) {
-		Date lowestDate = controlTime;
+		return getLowestPOE(id, controlTime).getTime();
+	}
+	
+	public XmlProofOfExistence getLowestPOE(final String id, final Date controlTime) {
+		XmlProofOfExistence lowestPOE = new XmlProofOfExistence();
+		lowestPOE.setTime(controlTime);
 		List<XmlProofOfExistence> poes = poe.get(id);
 		if (poes != null) {
 			for (XmlProofOfExistence poe : poes) {
 				if (poe.getTime().compareTo(controlTime) <= 0) {
-					if (lowestDate == controlTime) {
-						lowestDate = poe.getTime();
-					} else if (lowestDate.after(poe.getTime())) {
-						lowestDate = poe.getTime();
+					if (lowestPOE.getTime() == controlTime || 
+							lowestPOE.getTime().after(poe.getTime())) {
+						lowestPOE = poe;
 					}
 				}
 			}
 		}
-		return lowestDate;
-	}
-	
-	public XmlProofOfExistence getLowestPOE(final String id, final Date controlTime) {
-		XmlProofOfExistence xpoe = new XmlProofOfExistence();
-		xpoe.setTime(getLowestPOETime(id, controlTime));
-		return xpoe;
+		return lowestPOE;
 	}
 
 }
