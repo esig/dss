@@ -29,6 +29,8 @@ import java.io.Serializable;
  */
 public class TimestampReference implements Serializable {
 
+	private static final long serialVersionUID = -6147592379027843583L;
+	
 	private final String objectId;
 	private final TimestampedObjectType category;
 

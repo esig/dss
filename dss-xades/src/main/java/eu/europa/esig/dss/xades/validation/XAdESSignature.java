@@ -949,7 +949,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					continue;
 				}
 				final List<TimestampReference> references = getSignatureTimestampReferences();
-				references.addAll(getTimestampedReferences());
+				addReferences(references, getTimestampedReferences());
 				timestampToken.setTimestampedReferences(references);
 				sigAndRefsTimestamps.add(timestampToken);
 			} else if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
@@ -963,11 +963,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 				final List<TimestampReference> references = getSignatureTimestampReferences();
 				addReferencesForPreviousTimestamps(references, previousTimestampedTimestamp);
-
-				references.addAll(getTimestampedReferences());
+				addReferences(references, getTimestampedReferences());
+				
 				final List<CertificateToken> encapsulatedCertificates = getCertificateSource().getCertificateValues();
 				for (final CertificateToken certificateToken : encapsulatedCertificates) {
-					references.add(new TimestampReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+					addReference(references, new TimestampReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 				}
 
 				addReferencesFromRevocationData(references);

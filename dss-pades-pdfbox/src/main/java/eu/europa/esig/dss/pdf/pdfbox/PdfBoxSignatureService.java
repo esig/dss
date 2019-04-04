@@ -321,15 +321,20 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			PdfDssDict dssDictionary = getDSSDictionary(doc);
 
-			List<PDSignature> pdSignatures = doc.getSignatureDictionaries();
+			List<PDSignatureField> pdSignatureFields = doc.getSignatureFields();
 
-			if (Utils.isCollectionNotEmpty(pdSignatures)) {
-				LOG.debug("{} signature(s) found", pdSignatures.size());
+			if (Utils.isCollectionNotEmpty(pdSignatureFields)) {
+				LOG.debug("{} signature(s) found", pdSignatureFields.size());
 
-				for (PDSignature signature : pdSignatures) {
+				for (PDSignatureField signatureField : pdSignatureFields) {
+					PDSignature signature = signatureField.getSignature();
+					if (signature == null) {
+						LOG.warn("Signature field with name '{}' does not contain a signature", signatureField.getPartialName());
+						continue;
+					}
 					try {
 						PdfDict dictionary = new PdfBoxDict(signature.getCOSObject(), doc);
-						PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
+						PdfSigDict signatureDictionary = new PdfSigDict(dictionary, signatureField.getPartialName());
 						final int[] byteRange = signatureDictionary.getByteRange();
 
 						validateByteRange(byteRange);

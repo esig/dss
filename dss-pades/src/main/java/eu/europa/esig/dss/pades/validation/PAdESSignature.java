@@ -244,11 +244,11 @@ public class PAdESSignature extends CAdESSignature {
 	protected void addReferencesForCertificates(List<TimestampReference> references) {
 		List<CertificateToken> dssDictionaryCertValues = getCertificateSource().getDSSDictionaryCertValues();
 		for (CertificateToken certificate : dssDictionaryCertValues) {
-			references.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+			addReference(references, new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 		List<CertificateToken> vriDictionaryCertValues = getCertificateSource().getVRIDictionaryCertValues();
 		for (CertificateToken certificate : vriDictionaryCertValues) {
-			references.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+			addReference(references, new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 	}
 
@@ -261,12 +261,12 @@ public class PAdESSignature extends CAdESSignature {
 	protected void addReferencesFromRevocationData(List<TimestampReference> references) {
 		List<RevocationToken> vriRevocationTokens = getVRIDictionaryRevocationTokens();
 		for (RevocationToken revocationToken : vriRevocationTokens) {
-			references.add(new TimestampReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
+			addReference(references, new TimestampReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
 		}
 
 		List<RevocationToken> dssRevocationTokens = getDSSDictionaryRevocationTokens();
 		for (RevocationToken revocationToken : dssRevocationTokens) {
-			references.add(new TimestampReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
+			addReference(references, new TimestampReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
 		}
 	}
 
@@ -433,10 +433,15 @@ public class PAdESSignature extends CAdESSignature {
 	public PdfSignatureInfo getPdfSignatureInfo() {
 		return pdfSignatureInfo;
 	}
+	
+	@Override
+	public String getSignatureFieldName() {
+		return pdfSignatureInfo.getSigFieldName();
+	}
 
 	@Override
-	public String getSignatureName() {
-		return pdfSignatureInfo.getSignatureName();
+	public String getSignerName() {
+		return pdfSignatureInfo.getSignerName();
 	}
 
 	@Override

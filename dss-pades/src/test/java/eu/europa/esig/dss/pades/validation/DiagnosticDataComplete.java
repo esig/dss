@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.pades.validation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -26,6 +27,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.TimestampLocation;
+import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.jaxb.validationreport.SATimestampType;
 import eu.europa.esig.jaxb.validationreport.SignatureAttributesType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
@@ -93,6 +95,7 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		DiagnosticData diagnosticData = report.getDiagnosticData();
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		assertNotNull(signatures);
+		assertEquals(2, signatures.size());
 		
 		SignatureWrapper signatureOne = signatures.get(0);
 		assertEquals(2, diagnosticData.getAllRevocationForSignature(signatureOne.getId()).size());
@@ -106,6 +109,7 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_DSS).size());
 		
 		assertEquals(0, signatureOne.getAllFoundRevocationRefs().size());
+		assertEquals("Signature1", signatureOne.getSignatureFieldName());
 		
 		SignatureWrapper signatureTwo = signatures.get(1);
 		assertEquals(2, diagnosticData.getAllRevocationForSignature(signatureTwo.getId()).size());
@@ -118,7 +122,39 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		assertEquals(2, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signatureTwo.getId(), 
 				RevocationType.CRL, XmlRevocationOrigin.INTERNAL_DSS).size());
 		assertEquals(0, signatureTwo.getAllFoundRevocationRefs().size());
+		assertEquals("Signature3", signatureTwo.getSignatureFieldName());
 		
+		List<TimestampWrapper> timestamps= diagnosticData.getTimestamps();
+		assertNotNull(timestamps);
+		assertEquals(3, timestamps.size());
+		assertEquals(2, timestamps.get(0).getTimestampedObjects().size());
+		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestamps.get(0).getType());
+		assertEquals(2, timestamps.get(2).getTimestampedObjects().size());
+		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestamps.get(2).getType());
+		
+		TimestampWrapper archiveTimestamp = timestamps.get(1);
+		assertEquals(TimestampType.ARCHIVE_TIMESTAMP, archiveTimestamp.getType());
+		assertEquals(1, archiveTimestamp.getTimestampedSignatures().size());
+		List<String> timestampedCertificateIds = archiveTimestamp.getTimestampedCertificateIds();
+		assertEquals(4, timestampedCertificateIds.size());
+		List<String> checkedIds = new ArrayList<String>();
+		for (String id : timestampedCertificateIds) {
+			assertFalse(checkedIds.contains(id));
+			checkedIds.add(id);
+		}
+		List<String> timestampedRevocationIds = archiveTimestamp.getTimestampedRevocationIds();
+		assertEquals(2, timestampedRevocationIds.size());
+		for (String id : timestampedRevocationIds) {
+			assertFalse(checkedIds.contains(id));
+			checkedIds.add(id);
+		}
+		List<String> timestampedTimestampIds = archiveTimestamp.getTimestampedTimestampIds();
+		assertEquals(1, timestampedTimestampIds.size());
+		for (String id : timestampedTimestampIds) {
+			assertFalse(checkedIds.contains(id));
+			checkedIds.add(id);
+		}
+		assertEquals(7, checkedIds.size());
 	}
 	
 	@Test

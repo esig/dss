@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.reports.wrapper;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +31,12 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedRevocationData;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.TimestampType;
 
 public class TimestampWrapper extends AbstractTokenProxy {
@@ -86,8 +92,80 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		return Collections.singletonList(getMessageImprint());
 	}
 
+	/**
+	 * Returns a complete list of all {@link XmlTimestampedObject}s covered by the timestamp
+	 * @return list of {@link XmlTimestampedObject}s
+	 */
 	public List<XmlTimestampedObject> getTimestampedObjects() {
 		return timestamp.getTimestampedObjects();
+	}
+	
+	public XmlTimestampedSignature getLastTimestampedSignature() {
+		List<XmlTimestampedSignature> signatures = getTimestampedSignatures();
+		if (Utils.isCollectionNotEmpty(signatures)) {
+			return signatures.get(signatures.size() - 1);
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns a list of {@link XmlTimestampedSignature}s covered be the current timestamp
+	 * @return list of {@link XmlTimestampedSignature}s
+	 */
+	public List<XmlTimestampedSignature> getTimestampedSignatures() {
+		List<XmlTimestampedSignature> timestampedObjectIds = new ArrayList<XmlTimestampedSignature>();
+		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {
+			if (timestampedObject instanceof XmlTimestampedSignature) {
+				XmlTimestampedSignature timestampedSignature = (XmlTimestampedSignature) timestampedObject;
+				timestampedObjectIds.add(timestampedSignature);
+			}
+		}
+		return timestampedObjectIds;
+	}
+	
+	/**
+	 * Returns a list of {@link XmlTimestampedCertificate} ids covered be the current timestamp
+	 * @return list of ids
+	 */
+	public List<String> getTimestampedCertificateIds() {
+		List<String> timestampedObjectIds = new ArrayList<String>();
+		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {
+			if (timestampedObject instanceof XmlTimestampedCertificate) {
+				XmlTimestampedCertificate timestampedCertificate = (XmlTimestampedCertificate) timestampedObject;
+				timestampedObjectIds.add(timestampedCertificate.getCertificate().getId());
+			}
+		}
+		return timestampedObjectIds;
+	}
+	
+	/**
+	 * Returns a list of {@link XmlTimestampedRevocationData} ids covered be the current timestamp
+	 * @return list of ids
+	 */
+	public List<String> getTimestampedRevocationIds() {
+		List<String> timestampedObjectIds = new ArrayList<String>();
+		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {
+			if (timestampedObject instanceof XmlTimestampedRevocationData) {
+				XmlTimestampedRevocationData timestampedRevocation = (XmlTimestampedRevocationData) timestampedObject;
+				timestampedObjectIds.add(timestampedRevocation.getRevocation().getId());
+			}
+		}
+		return timestampedObjectIds;
+	}
+	
+	/**
+	 * Returns a list of {@link XmlTimestampedTimestamp} ids covered be the current timestamp
+	 * @return list of ids
+	 */
+	public List<String> getTimestampedTimestampIds() {
+		List<String> timestampedObjectIds = new ArrayList<String>();
+		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {
+			if (timestampedObject instanceof XmlTimestampedTimestamp) {
+				XmlTimestampedTimestamp timestampedTimestamp = (XmlTimestampedTimestamp) timestampedObject;
+				timestampedObjectIds.add(timestampedTimestamp.getTimestamp().getId());
+			}
+		}
+		return timestampedObjectIds;
 	}
 	
 	public byte[] getBinaries() {

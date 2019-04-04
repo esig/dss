@@ -206,7 +206,8 @@
 	
 	<xs:complexType name="PDFSignatureDictionary">
 		<xs:sequence>
-			<xs:element name="SignatureName" type="xs:string" minOccurs="0" />
+			<xs:element name="SignatureFieldName" type="xs:string" minOccurs="0" />
+			<xs:element name="SignerName" type="xs:string" minOccurs="0" />
 			<xs:element name="Filter" type="xs:string" minOccurs="0" />
 			<xs:element name="SubFilter" type="xs:string" minOccurs="0" />
 			<xs:element name="ContactInfo" type="xs:string" minOccurs="0" />

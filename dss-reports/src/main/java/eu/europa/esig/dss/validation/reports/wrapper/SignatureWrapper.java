@@ -409,11 +409,19 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	public String getFormat() {
 		return signature.getSignatureFormat();
 	}
-
-	public String getSignatureName() {
+	
+	public String getSignatureFieldName() {
 		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
 		if (pdfSignatureDictionary != null) {
-			return pdfSignatureDictionary.getSignatureName();
+			return pdfSignatureDictionary.getSignatureFieldName();
+		}
+		return null;
+	}
+
+	public String getSignerName() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getSignerName();
 		}
 		return null;
 	}

@@ -27,50 +27,61 @@ import eu.europa.esig.dss.DSSException;
 
 public class PdfSigDict {
 
-	private PdfDict dictionay;
+	private PdfDict dictionary;
+	
+	private String sigFieldName;
 
-	public PdfSigDict(PdfDict dictionay) {
-		this.dictionay = dictionay;
+	public PdfSigDict(PdfDict dictionary) {
+		this.dictionary = dictionary;
 	}
 
-	public String getSignatureName() {
-		return dictionay.getStringValue("Name");
+	public PdfSigDict(PdfDict dictionary, String signatureName) {
+		this(dictionary);
+		this.sigFieldName = signatureName;
+	}
+	
+	public String getSigFieldName() {
+		return sigFieldName;
+	}
+
+	public String getSignerName() {
+		return dictionary.getStringValue("Name");
 	}
 
 	public String getContactInfo() {
-		return dictionay.getStringValue("ContactInfo");
+		return dictionary.getStringValue("ContactInfo");
 	}
 
 	public String getReason() {
-		return dictionay.getStringValue("Reason");
+		return dictionary.getStringValue("Reason");
 	}
 
 	public String getLocation() {
-		return dictionay.getStringValue("Location");
+		return dictionary.getStringValue("Location");
 	}
 
 	public Date getSigningDate() {
-		return dictionay.getDateValue("M");
+		return dictionary.getDateValue("M");
 	}
 
 	public String getFilter() {
-		return dictionay.getNameValue("Filter");
+		return dictionary.getNameValue("Filter");
 	}
 
 	public String getSubFilter() {
-		return dictionay.getNameValue("SubFilter");
+		return dictionary.getNameValue("SubFilter");
 	}
 
 	public byte[] getContents() {
 		try {
-			return dictionay.getBinariesValue("Contents");
+			return dictionary.getBinariesValue("Contents");
 		} catch (IOException e) {
 			throw new DSSException("Unable to retrieve the signature content", e);
 		}
 	}
 
 	public int[] getByteRange() {
-		PdfArray byteRangeArray = dictionay.getAsArray("ByteRange");
+		PdfArray byteRangeArray = dictionary.getAsArray("ByteRange");
 		if (byteRangeArray == null) {
 			throw new DSSException("Unable to retrieve the ByteRange");
 		}

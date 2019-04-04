@@ -14,7 +14,9 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignature;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.RevocationRefLocation;
 import eu.europa.esig.dss.validation.RevocationType;
@@ -22,6 +24,7 @@ import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
@@ -32,6 +35,8 @@ import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.jaxb.validationreport.AttributeBaseType;
 import eu.europa.esig.jaxb.validationreport.ObjectFactory;
+import eu.europa.esig.jaxb.validationreport.POEProvisioningType;
+import eu.europa.esig.jaxb.validationreport.POEType;
 import eu.europa.esig.jaxb.validationreport.SACRLIDType;
 import eu.europa.esig.jaxb.validationreport.SACertIDListType;
 import eu.europa.esig.jaxb.validationreport.SACertIDType;
@@ -54,6 +59,7 @@ import eu.europa.esig.jaxb.validationreport.SATimestampType;
 import eu.europa.esig.jaxb.validationreport.SAVRIType;
 import eu.europa.esig.jaxb.validationreport.SignatureAttributesType;
 import eu.europa.esig.jaxb.validationreport.SignatureIdentifierType;
+import eu.europa.esig.jaxb.validationreport.SignatureReferenceType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationProcessType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
 import eu.europa.esig.jaxb.validationreport.SignerInformationType;
@@ -68,6 +74,7 @@ import eu.europa.esig.jaxb.validationreport.enums.EndorsementType;
 import eu.europa.esig.jaxb.validationreport.enums.MainIndication;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
 import eu.europa.esig.jaxb.validationreport.enums.SignatureValidationProcessID;
+import eu.europa.esig.jaxb.validationreport.enums.TypeOfProof;
 import eu.europa.esig.jaxb.xades132.DigestAlgAndValueType;
 import eu.europa.esig.jaxb.xmldsig.DigestMethodType;
 
@@ -161,23 +168,28 @@ public class ETSIValidationReportBuilder {
 
 	private ValidationObjectListType getSignatureValidationObjects() {
 		ValidationObjectListType validationObjectListType = objectFactory.createValidationObjectListType();
+		
+		POEExtraction poeExtraction = new POEExtraction();
+		for (TimestampWrapper timestamp : diagnosticData.getAllTimestamps()) {
+			poeExtraction.extractPOE(timestamp, diagnosticData);
+		}
 
 		for (CertificateWrapper certificate : diagnosticData.getUsedCertificates()) {
-			addCertificate(validationObjectListType, certificate);
+			addCertificate(validationObjectListType, certificate, poeExtraction);
+		}
+
+		for (RevocationWrapper revocationData : diagnosticData.getAllRevocationData()) {
+			addRevocationData(validationObjectListType, revocationData, poeExtraction);
 		}
 
 		for (TimestampWrapper timestamp : diagnosticData.getAllTimestamps()) {
 			addTimestamp(validationObjectListType, timestamp);
 		}
 
-		for (RevocationWrapper revocationData : diagnosticData.getAllRevocationData()) {
-			addRevocationData(validationObjectListType, revocationData);
-		}
-
 		return validationObjectListType;
 	}
 
-	private void addCertificate(ValidationObjectListType validationObjectListType, CertificateWrapper certificate) {
+	private void addCertificate(ValidationObjectListType validationObjectListType, CertificateWrapper certificate, POEExtraction poeExtraction) {
 		ValidationObjectType validationObject = objectFactory.createValidationObjectType();
 		validationObject.setId(certificate.getId());
 		validationObject.setObjectType(ObjectType.CERTIFICATE);
@@ -188,6 +200,7 @@ public class ETSIValidationReportBuilder {
 			representation.setDigestAlgAndValue(getDigestAlgAndValueType(certificate.getDigestAlgoAndValue()));
 		}
 		validationObject.setValidationObject(representation);
+		validationObject.setPOE(getPOE(certificate.getId(), poeExtraction));
 		validationObjectListType.getValidationObject().add(validationObject);
 	}
 	
@@ -198,6 +211,26 @@ public class ETSIValidationReportBuilder {
 		digestAlgAndValueType.setDigestMethod(digestMethodType);
 		digestAlgAndValueType.setDigestValue(xmlDigestAlgoAndValue.getDigestValue());
 		return digestAlgAndValueType;
+	}
+	
+	private POEType getPOE(String tokenId, POEExtraction poeExtraction) {
+		POEType poeType = objectFactory.createPOEType();
+		if (poeExtraction.isPOEExists(tokenId, currentTime)) {
+			Date lowestExistenseTime = poeExtraction.getLowestPOE(tokenId, currentTime);
+			poeType.setPOETime(lowestExistenseTime);
+			poeType.setTypeOfProof(TypeOfProof.PROVIDED.getUri());
+			for (TimestampWrapper timestamp : diagnosticData.getAllTimestamps()) {
+				if (timestamp.getProductionTime().equals(lowestExistenseTime)) {
+					poeType.setPOEObject(getVOReference(timestamp.getId()));
+					break;
+				}
+			}
+		} else {
+			poeType.setPOETime(currentTime);
+			poeType.setTypeOfProof(TypeOfProof.VALIDATION.getUri());
+			// TODO: check TypeOfProof correctness (when to use VALIDATION, when PROVIDED)
+		}
+		return poeType;
 	}
 
 	private void addTimestamp(ValidationObjectListType validationObjectListType, TimestampWrapper timestamp) {
@@ -211,10 +244,43 @@ public class ETSIValidationReportBuilder {
 			representation.setDigestAlgAndValue(getDigestAlgAndValueType(timestamp.getDigestAlgoAndValue()));
 		}
 		validationObject.setValidationObject(representation);
+		validationObject.setPOEProvisioning(getPOEProvisioningType(timestamp));
 		validationObjectListType.getValidationObject().add(validationObject);
 	}
+	
+	private POEProvisioningType getPOEProvisioningType(TimestampWrapper timestamp) {
+		POEProvisioningType poeProvisioning = objectFactory.createPOEProvisioningType();
+		poeProvisioning.setPOETime(timestamp.getProductionTime());
+		for (String id : timestamp.getTimestampedCertificateIds()) {
+			poeProvisioning.getValidationObject().add(getVOReference(id));
+		}
+		for (String id : timestamp.getTimestampedRevocationIds()) {
+			poeProvisioning.getValidationObject().add(getVOReference(id));
+		}
+		for (String id : timestamp.getTimestampedTimestampIds()) {
+			poeProvisioning.getValidationObject().add(getVOReference(id));
+		}
+		XmlTimestampedSignature timestampedSignature = timestamp.getLastTimestampedSignature();
+		if (timestampedSignature != null) {
+			poeProvisioning.setSignatureReference(getSignatureReference(timestampedSignature));
+		}
+		return poeProvisioning;
+	}
+	
+	private SignatureReferenceType getSignatureReference(XmlTimestampedSignature timestampedSignature) {
+		SignatureReferenceType signatureReference = objectFactory.createSignatureReferenceType();
+		XmlPDFSignatureDictionary pdfDictionary = timestampedSignature.getSignature().getPDFSignatureDictionary();
+		if (pdfDictionary != null && pdfDictionary.getSignatureFieldName() != null) {
+			signatureReference.setPAdESFieldName(pdfDictionary.getSignatureFieldName());
+		}
+		// TODO: get digest
+//		signatureReference.setCanonicalizationMethod(value);();
+//		signatureReference.setDigestMethod();
+//		signatureReference.setDigestValue(value);
+		return signatureReference;
+	}
 
-	private void addRevocationData(ValidationObjectListType validationObjectListType, RevocationWrapper revocationData) {
+	private void addRevocationData(ValidationObjectListType validationObjectListType, RevocationWrapper revocationData, POEExtraction poeExtraction) {
 		ValidationObjectType validationObject = objectFactory.createValidationObjectType();
 		validationObject.setId(revocationData.getId());
 		if (RevocationType.CRL.equals(revocationData.getRevocationType())) {
@@ -229,6 +295,7 @@ public class ETSIValidationReportBuilder {
 			representation.setDigestAlgAndValue(getDigestAlgAndValueType(revocationData.getDigestAlgoAndValue()));
 		}
 		validationObject.setValidationObject(representation);
+		validationObject.setPOE(getPOE(revocationData.getId(), poeExtraction));
 		validationObjectListType.getValidationObject().add(validationObject);
 	}
 
@@ -321,7 +388,7 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="Reason" type="{http://uri.etsi.org/19102/v1.2.1#}SAReasonType"/&gt;
 		addReason(sigAttributes, sigWrapper);
 		// &lt;element name="Name" type="{http://uri.etsi.org/19102/v1.2.1#}SANameType"/&gt;
-		addSignatureName(sigAttributes, sigWrapper);
+		addSignerName(sigAttributes, sigWrapper);
 		// &lt;element name="ContactInfo" type="{http://uri.etsi.org/19102/v1.2.1#}SAContactInfoType"/&gt;
 		addContactInfo(sigAttributes, sigWrapper);
 		// &lt;element name="SubFilter" type="{http://uri.etsi.org/19102/v1.2.1#}SASubFilterType"/&gt;
@@ -644,11 +711,11 @@ public class ETSIValidationReportBuilder {
 		}
 	}
 
-	private void addSignatureName(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		String signatureName = sigWrapper.getSignatureName();
-		if (Utils.isStringNotEmpty(signatureName)) {
+	private void addSignerName(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		String signerName = sigWrapper.getSignerName();
+		if (Utils.isStringNotEmpty(signerName)) {
 			SANameType nameType = objectFactory.createSANameType();
-			nameType.setNameElement(signatureName);
+			nameType.setNameElement(signerName);
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(objectFactory.createSignatureAttributesTypeName(nameType));
 		}
 	}

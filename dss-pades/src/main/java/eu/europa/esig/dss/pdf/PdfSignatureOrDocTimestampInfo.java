@@ -31,8 +31,10 @@ public interface PdfSignatureOrDocTimestampInfo {
 	int[] getSignatureByteRange();
 
 	void checkIntegrity();
+	
+	String getSigFieldName();
 
-	String getSignatureName();
+	String getSignerName();
 
 	String getLocation();
 

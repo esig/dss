@@ -277,7 +277,7 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				LOG.info("Document revision: {} of {}", af.getRevision(name), af.getTotalRevisions());
 
 				PdfDict dictionary = new ITextPdfDict(af.getSignatureDictionary(name));
-				PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
+				PdfSigDict signatureDictionary = new PdfSigDict(dictionary, name);
 				final int[] byteRange = signatureDictionary.getByteRange();
 
 				validateByteRange(byteRange);

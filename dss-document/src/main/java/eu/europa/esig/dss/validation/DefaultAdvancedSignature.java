@@ -562,8 +562,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	protected List<TimestampReference> getSignatureTimestampReferences() {
 		final List<TimestampReference> references = new ArrayList<TimestampReference>();
-		references.add(new TimestampReference(getId(), TimestampedObjectType.SIGNATURE));
-		references.addAll(getSigningCertificateTimestampReferences());
+		addReference(references, new TimestampReference(getId(), TimestampedObjectType.SIGNATURE));
+		addReferences(references, getSigningCertificateTimestampReferences());
 		return references;
 	}
 
@@ -571,25 +571,25 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		final List<TimestampReference> references = new ArrayList<TimestampReference>();
 		List<CertificateToken> signingCertificates = getCertificateSource().getSigningCertificates();
 		for (CertificateToken certificateToken : signingCertificates) {
-			references.add(new TimestampReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+			addReference(references, new TimestampReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 		return references;
 	}
 
 	protected void addReferencesForPreviousTimestamps(List<TimestampReference> references, List<TimestampToken> timestampedTimestamps) {
 		for (final TimestampToken timestampToken : timestampedTimestamps) {
-			references.add(new TimestampReference(timestampToken.getDSSIdAsString(), TimestampedObjectType.TIMESTAMP));
+			addReference(references, new TimestampReference(timestampToken.getDSSIdAsString(), TimestampedObjectType.TIMESTAMP));
 		}
 	}
 
 	protected void addReferencesForCertificates(List<TimestampReference> references) {
 		List<CertificateToken> certValues = getCertificateSource().getCertificateValues();
 		for (CertificateToken certificate : certValues) {
-			references.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+			addReference(references, new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 		List<CertificateToken> completeCertValues = getCertificateSource().getCompleteCertificates();
 		for (CertificateToken certificate : completeCertValues) {
-			references.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+			addReference(references, new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 	}
 
@@ -601,7 +601,28 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	protected void addReferencesFromRevocationData(List<TimestampReference> references) {
 		List<RevocationToken> completeRevocationTokens = getCompleteRevocationTokens();
 		for (RevocationToken revocationToken : completeRevocationTokens) {
-			references.add(new TimestampReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
+			addReference(references, new TimestampReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
+		}
+	}
+	
+	/**
+	 * Adds {@code referenceToAdd} to {@code referenceList} without duplicates
+	 * @param referenceList - list of {@link TimestampReference}s to be extended
+	 * @param referenceToAdd - {@link TimestampReference} to be added
+	 */
+	protected void addReference(List<TimestampReference> referenceList, TimestampReference referenceToAdd) {
+		addReferences(referenceList, Arrays.asList(referenceToAdd));
+	}
+	/**
+	 * Adds {@code referencesToAdd} to {@code referenceList} without duplicates
+	 * @param referenceList - list of {@link TimestampReference}s to be extended
+	 * @param referencesToAdd - {@link TimestampReference}s to be added
+	 */
+	protected void addReferences(List<TimestampReference> referenceList, List<TimestampReference> referencesToAdd) {
+		for (TimestampReference reference : referencesToAdd) {
+			if (!referenceList.contains(reference)) {
+				referenceList.add(reference);
+			}
 		}
 	}
 
@@ -929,9 +950,15 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		// Not applicable by default (CAdES/PAdES only)
 		return null;
 	}
+	
+	@Override
+	public String getSignatureFieldName() {
+		// Not applicable by default (PDF only)
+		return null;
+	}
 
 	@Override
-	public String getSignatureName() {
+	public String getSignerName() {
 		// Not applicable by default (PDF only)
 		return null;
 	}

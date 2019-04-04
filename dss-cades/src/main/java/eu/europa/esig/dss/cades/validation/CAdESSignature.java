@@ -745,7 +745,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				break;
 			case VALIDATION_DATA_TIMESTAMP:
 				final List<TimestampReference> validationDataReferences = getSignatureTimestampReferences();
-				validationDataReferences.addAll(getTimestampedReferences());
+				addReferences(validationDataReferences, getTimestampedReferences());
 				timestampToken.setTimestampedReferences(validationDataReferences);
 				break;
 			case ARCHIVE_TIMESTAMP:
@@ -765,7 +765,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public List<TimestampReference> getTimestampReferencesForArchiveTimestamp(final List<TimestampToken> timestampedTimestamps) {
 		final List<TimestampReference> archiveReferences = getSignatureTimestampReferences();
 		addReferencesForPreviousTimestamps(archiveReferences, timestampedTimestamps);
-		archiveReferences.addAll(getTimestampedReferences());
+		addReferences(archiveReferences, getTimestampedReferences());
 		return archiveReferences;
 	}
 
