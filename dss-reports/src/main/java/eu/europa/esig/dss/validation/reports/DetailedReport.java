@@ -504,4 +504,18 @@ public class DetailedReport {
 		INFO, WARN, ERROR
 	}
 
+	public XmlSubXCV getSigningCertificate(String bbbId) {
+		XmlBasicBuildingBlocks basicBuildingBlocks = getBasicBuildingBlockById(bbbId);
+		if (basicBuildingBlocks != null) {
+			XmlXCV xcv = basicBuildingBlocks.getXCV();
+			if (xcv != null) {
+				List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+				if (Utils.isCollectionNotEmpty(subXCVs)) {
+					return subXCVs.get(0);
+				}
+			}
+		}
+		return null;
+	}
+
 }
