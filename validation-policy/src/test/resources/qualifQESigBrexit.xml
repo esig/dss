@@ -777,8 +777,8 @@
                  <ChainItem Certificate="C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8"/>
              </CertificateChain>
 		       <TimestampedObjects>
-			       	<TimestampedSignature Signature="id-1bc73e8a06e7678358dcff35f830d9438c0b985dfb6103cb6a8d44bc11811a66" />
-			       	<TimestampedCertificate Certificate="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19" />
+			       	<TimestampedSignature Token="id-1bc73e8a06e7678358dcff35f830d9438c0b985dfb6103cb6a8d44bc11811a66" />
+			       	<TimestampedCertificate Token="C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19" />
 		       </TimestampedObjects>
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>

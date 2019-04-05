@@ -25,10 +25,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.JAXBElement;
+
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedCertificate;
@@ -97,13 +100,18 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	 * @return list of {@link XmlTimestampedObject}s
 	 */
 	public List<XmlTimestampedObject> getTimestampedObjects() {
-		return timestamp.getTimestampedObjects();
+		List<XmlTimestampedObject> timestampedObjects = new ArrayList<XmlTimestampedObject>();
+		for (JAXBElement<? extends XmlTimestampedObject> object : timestamp.getTimestampedObjects()) {
+			timestampedObjects.add(object.getValue());
+		}
+		return timestampedObjects;
 	}
 	
-	public XmlTimestampedSignature getLastTimestampedSignature() {
+	public SignatureWrapper getLastTimestampedSignature() {
 		List<XmlTimestampedSignature> signatures = getTimestampedSignatures();
 		if (Utils.isCollectionNotEmpty(signatures)) {
-			return signatures.get(signatures.size() - 1);
+			XmlSignature xmlSignature = (XmlSignature) signatures.get(signatures.size() - 1).getToken();
+			return new SignatureWrapper(xmlSignature);
 		}
 		return null;
 	}
@@ -131,8 +139,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		List<String> timestampedObjectIds = new ArrayList<String>();
 		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {
 			if (timestampedObject instanceof XmlTimestampedCertificate) {
-				XmlTimestampedCertificate timestampedCertificate = (XmlTimestampedCertificate) timestampedObject;
-				timestampedObjectIds.add(timestampedCertificate.getCertificate().getId());
+				timestampedObjectIds.add(timestampedObject.getToken().getId());
 			}
 		}
 		return timestampedObjectIds;
@@ -146,8 +153,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		List<String> timestampedObjectIds = new ArrayList<String>();
 		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {
 			if (timestampedObject instanceof XmlTimestampedRevocationData) {
-				XmlTimestampedRevocationData timestampedRevocation = (XmlTimestampedRevocationData) timestampedObject;
-				timestampedObjectIds.add(timestampedRevocation.getRevocation().getId());
+				timestampedObjectIds.add(timestampedObject.getToken().getId());
 			}
 		}
 		return timestampedObjectIds;
@@ -161,8 +167,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		List<String> timestampedObjectIds = new ArrayList<String>();
 		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {
 			if (timestampedObject instanceof XmlTimestampedTimestamp) {
-				XmlTimestampedTimestamp timestampedTimestamp = (XmlTimestampedTimestamp) timestampedObject;
-				timestampedObjectIds.add(timestampedTimestamp.getTimestamp().getId());
+				timestampedObjectIds.add(timestampedObject.getToken().getId());
 			}
 		}
 		return timestampedObjectIds;

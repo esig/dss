@@ -504,8 +504,8 @@
                         <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
                     </CertificateChain>
                     <TimestampedObjects>
-					   	<TimestampedSignature Signature="id-2056753e8b67ab9c96a6fe80ec9f619f8e9b4505b66b078c7a2b6e151edc2bbb" />
-					   	<TimestampedCertificate Certificate="C-021EC5069EB8A903BD62B6769EDDFE439DFA90A720C9A362D5FE76B9C31D0302" />
+					   	<TimestampedSignature Token="id-2056753e8b67ab9c96a6fe80ec9f619f8e9b4505b66b078c7a2b6e151edc2bbb" />
+					   	<TimestampedCertificate Token="C-021EC5069EB8A903BD62B6769EDDFE439DFA90A720C9A362D5FE76B9C31D0302" />
 					</TimestampedObjects>
 		            <DigestAlgoAndValue>
 		            	<DigestMethod>SHA1</DigestMethod>
@@ -533,16 +533,16 @@
                         <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
                     </CertificateChain>
                     <TimestampedObjects>
-					   	<TimestampedSignature Signature="id-2056753e8b67ab9c96a6fe80ec9f619f8e9b4505b66b078c7a2b6e151edc2bbb" />
-					   	<TimestampedCertificate Certificate="C-021EC5069EB8A903BD62B6769EDDFE439DFA90A720C9A362D5FE76B9C31D0302" />
-		   				<TimestampedTimestamp Timestamp="T-F8B72B7574450E84664DE88950BC781CA2528CF5B39ABB3E1F93947B752BE79F" />
+					   	<TimestampedSignature Token="id-2056753e8b67ab9c96a6fe80ec9f619f8e9b4505b66b078c7a2b6e151edc2bbb" />
+					   	<TimestampedCertificate Token="C-021EC5069EB8A903BD62B6769EDDFE439DFA90A720C9A362D5FE76B9C31D0302" />
+		   				<TimestampedTimestamp Token="T-F8B72B7574450E84664DE88950BC781CA2528CF5B39ABB3E1F93947B752BE79F" />
 		   				
-					   	<TimestampedCertificate Certificate="C-021EC5069EB8A903BD62B6769EDDFE439DFA90A720C9A362D5FE76B9C31D0302" />
-					   	<TimestampedCertificate Certificate="C-80AC352930875BA0AFE7F70DD389130C8E1E7BEFFDC96477356AD2A9E003AD2B" />
-					   	<TimestampedCertificate Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F" />
+					   	<TimestampedCertificate Token="C-021EC5069EB8A903BD62B6769EDDFE439DFA90A720C9A362D5FE76B9C31D0302" />
+					   	<TimestampedCertificate Token="C-80AC352930875BA0AFE7F70DD389130C8E1E7BEFFDC96477356AD2A9E003AD2B" />
+					   	<TimestampedCertificate Token="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F" />
 					   	
-		   				<TimestampedRevocationData Revocation="R-7a38824e892663bfaa50ba2edf0f5bfb5437dbeb73af1c9fec79b6ce77df88d" />
-		   				<TimestampedRevocationData Revocation="R-021ec5069eb8a903bd62b6769eddfe439dfa90a720c9a362d5fe76b9c31d0302bfc08d553a774d1f440ab36525a3290e2cc23b46d0ac954ea4d8201faff0d91a" />
+		   				<TimestampedRevocationData Token="R-7a38824e892663bfaa50ba2edf0f5bfb5437dbeb73af1c9fec79b6ce77df88d" />
+		   				<TimestampedRevocationData Token="R-021ec5069eb8a903bd62b6769eddfe439dfa90a720c9a362d5fe76b9c31d0302bfc08d553a774d1f440ab36525a3290e2cc23b46d0ac954ea4d8201faff0d91a" />
 					</TimestampedObjects>
 		            <DigestAlgoAndValue>
 		            	<DigestMethod>SHA1</DigestMethod>

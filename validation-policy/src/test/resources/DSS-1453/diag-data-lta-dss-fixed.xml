@@ -686,7 +686,7 @@
                 <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
             </CertificateChain>
             <TimestampedObjects>
-                <TimestampedSignature Signature="id-91a71e2c25ac8f6d492d578b67d8a818" />
+                <TimestampedSignature Token="id-91a71e2c25ac8f6d492d578b67d8a818" />
             </TimestampedObjects>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA1</DigestMethod>
@@ -714,14 +714,14 @@
                 <ChainItem Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
             </CertificateChain>
             <TimestampedObjects>
-                <TimestampedSignature Signature="id-91a71e2c25ac8f6d492d578b67d8a818" />
-                <TimestampedTimestamp Timestamp="T-6BC95837F1C1104A00F59028389FCAB9C2D3560C3E9D9354AAFB2426DFDED7FF" />
-                <TimestampedCertificate Certificate="C-05EB1A1653BC225BE23A3428AE4C90487C9A109703E81828DC1C6FD78274CFBD" />
-                <TimestampedCertificate Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF" />
-                <TimestampedCertificate Certificate="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5" />
-                <TimestampedRevocationData Revocation="R-7a4f3a882a796996d4bc50d31c76a4894521642907f7bc8babbf7da52e8dd519" />
-                <TimestampedRevocationData Revocation="R-fcc9f56e6a1856a12dcf4b18fef166e2586bc58dfe4a2a5d528d3ab547fb512e" />
-                <TimestampedRevocationData Revocation="R-0ec53b285e62aa6c9b3c1bf5346042bf4a53c35df073e3034700420a5d3e30ba63489294d3107dd3890fb0c328e2bd7146687d695409cd9d3e67a21c9125a6ff" />
+                <TimestampedSignature Token="id-91a71e2c25ac8f6d492d578b67d8a818" />
+                <TimestampedTimestamp Token="T-6BC95837F1C1104A00F59028389FCAB9C2D3560C3E9D9354AAFB2426DFDED7FF" />
+                <TimestampedCertificate Token="C-05EB1A1653BC225BE23A3428AE4C90487C9A109703E81828DC1C6FD78274CFBD" />
+                <TimestampedCertificate Token="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF" />
+                <TimestampedCertificate Token="C-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5" />
+                <TimestampedRevocationData Token="R-7a4f3a882a796996d4bc50d31c76a4894521642907f7bc8babbf7da52e8dd519" />
+                <TimestampedRevocationData Token="R-fcc9f56e6a1856a12dcf4b18fef166e2586bc58dfe4a2a5d528d3ab547fb512e" />
+                <TimestampedRevocationData Token="R-0ec53b285e62aa6c9b3c1bf5346042bf4a53c35df073e3034700420a5d3e30ba63489294d3107dd3890fb0c328e2bd7146687d695409cd9d3e67a21c9125a6ff" />
             </TimestampedObjects>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA1</DigestMethod>

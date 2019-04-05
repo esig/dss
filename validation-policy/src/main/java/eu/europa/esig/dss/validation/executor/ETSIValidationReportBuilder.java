@@ -15,9 +15,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignature;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.RevocationRefLocation;
 import eu.europa.esig.dss.validation.RevocationType;
@@ -106,7 +104,7 @@ public class ETSIValidationReportBuilder {
 			signatureValidationReport.setSignatureValidationStatus(getValidationStatus(sigWrapper));
 			signatureValidationReport.setValidationTimeInfo(getValidationTimeInfo(sigWrapper));
 
-			result.setSignatureValidationReport(signatureValidationReport);
+			result.getSignatureValidationReport().add(signatureValidationReport);
 		}
 
 		result.setSignatureValidationObjects(getSignatureValidationObjects());
@@ -266,21 +264,20 @@ public class ETSIValidationReportBuilder {
 		for (String id : timestamp.getTimestampedTimestampIds()) {
 			poeProvisioning.getValidationObject().add(getVOReference(id));
 		}
-		XmlTimestampedSignature timestampedSignature = timestamp.getLastTimestampedSignature();
+		SignatureWrapper timestampedSignature = timestamp.getLastTimestampedSignature();
 		if (timestampedSignature != null) {
 			poeProvisioning.setSignatureReference(getSignatureReference(timestampedSignature));
 		}
 		return poeProvisioning;
 	}
 	
-	private SignatureReferenceType getSignatureReference(XmlTimestampedSignature timestampedSignature) {
+	private SignatureReferenceType getSignatureReference(SignatureWrapper timestampedSignature) {
 		SignatureReferenceType signatureReference = objectFactory.createSignatureReferenceType();
-		XmlPDFSignatureDictionary pdfDictionary = timestampedSignature.getSignature().getPDFSignatureDictionary();
-		if (pdfDictionary != null && pdfDictionary.getSignatureFieldName() != null) {
-			signatureReference.setPAdESFieldName(pdfDictionary.getSignatureFieldName());
+		if (timestampedSignature != null) {
+			signatureReference.setPAdESFieldName(timestampedSignature.getSignatureFieldName());
 		}
 		// TODO: get digest
-//		signatureReference.setCanonicalizationMethod(value);();
+//		signatureReference.setCanonicalizationMethod(value);
 //		signatureReference.setDigestMethod();
 //		signatureReference.setDigestValue(value);
 		return signatureReference;
@@ -329,7 +326,7 @@ public class ETSIValidationReportBuilder {
 		sigId.setId(sigWrapper.getId());
 
 		// TODO
-		sigId.setDocHashOnly(false);
+		sigId.setDocHashOnly(false); // TODO: true when DocumentDigest was used
 		sigId.setHashOnly(false);
 //		SignatureValueType sigValue = new SignatureValueType();
 //		sigValue.setValue(value);
@@ -355,6 +352,7 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="IndividualDataObjectsTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
 		addTimestampsByType(sigAttributes, sigWrapper, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 		// &lt;element name="SigPolicyIdentifier" type="{http://uri.etsi.org/19102/v1.2.1#}SASigPolicyIdentifierType"/&gt;
+		// TODO: Policy ID
 		// &lt;element name="SignatureProductionPlace" type="{http://uri.etsi.org/19102/v1.2.1#}SASignatureProductionPlaceType"/&gt;
 		addProductionPlace(sigAttributes, sigWrapper);
 		// &lt;element name="SignerRole" type="{http://uri.etsi.org/19102/v1.2.1#}SASignerRoleType"/&gt;

@@ -12,24 +12,24 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
- * <p>Java class for TimestampedObject complex type.
+ * <p>Java class for AbstractToken complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="TimestampedObject"&gt;
+ * &lt;complexType name="AbstractToken"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;sequence&gt;
- *       &lt;/sequence&gt;
- *       &lt;attribute name="Token" use="required" type="{http://www.w3.org/2001/XMLSchema}IDREF" /&gt;
+ *       &lt;attribute name="Id" use="required" type="{http://www.w3.org/2001/XMLSchema}ID" /&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
@@ -38,44 +38,45 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TimestampedObject")
+@XmlType(name = "AbstractToken")
 @XmlSeeAlso({
-    XmlTimestampedCertificate.class,
-    XmlTimestampedRevocationData.class,
-    XmlTimestampedTimestamp.class,
-    XmlTimestampedSignature.class
+    XmlSignature.class,
+    XmlCertificate.class,
+    XmlTimestamp.class,
+    XmlRevocation.class
 })
-public abstract class XmlTimestampedObject implements Serializable
+public abstract class XmlAbstractToken implements Serializable
 {
 
     private final static long serialVersionUID = 1L;
-    @XmlAttribute(name = "Token", required = true)
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    protected XmlAbstractToken token;
+    @XmlAttribute(name = "Id", required = true)
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    @XmlID
+    @XmlSchemaType(name = "ID")
+    protected String id;
 
     /**
-     * Gets the value of the token property.
+     * Gets the value of the id property.
      * 
      * @return
      *     possible object is
-     *     {@link Object }
+     *     {@link String }
      *     
      */
-    public XmlAbstractToken getToken() {
-        return token;
+    public String getId() {
+        return id;
     }
 
     /**
-     * Sets the value of the token property.
+     * Sets the value of the id property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Object }
+     *     {@link String }
      *     
      */
-    public void setToken(XmlAbstractToken value) {
-        this.token = value;
+    public void setId(String value) {
+        this.id = value;
     }
 
 }

@@ -27,13 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlProofOfExistence;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedRevocationData;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
@@ -102,21 +97,7 @@ public class POEExtraction {
 			poe.setTime(timestamp.getProductionTime());
 
 			for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
-				if (xmlTimestampedObject instanceof XmlTimestampedCertificate) {
-					XmlTimestampedCertificate certificateTimestampedObject = (XmlTimestampedCertificate) xmlTimestampedObject;
-					addPOE(certificateTimestampedObject.getCertificate().getId(), poe);
-				} else if (xmlTimestampedObject instanceof XmlTimestampedRevocationData) {
-					XmlTimestampedRevocationData revocationTimestampedObject = (XmlTimestampedRevocationData) xmlTimestampedObject;
-					addPOE(revocationTimestampedObject.getRevocation().getId(), poe);
-				} else if (xmlTimestampedObject instanceof XmlTimestampedTimestamp) {
-					XmlTimestampedTimestamp timestampTimestampedObject = (XmlTimestampedTimestamp) xmlTimestampedObject;
-					addPOE(timestampTimestampedObject.getTimestamp().getId(), poe);
-				} else if (xmlTimestampedObject instanceof XmlTimestampedSignature) {
-					XmlTimestampedSignature signatureTimestampedObject = (XmlTimestampedSignature) xmlTimestampedObject;
-					addPOE(signatureTimestampedObject.getSignature().getId(), poe);
-				} else {
-					throw new DSSException("Unsupported XmlTimestampedObject : " + xmlTimestampedObject.getClass().getName());
-				}
+				addPOE(xmlTimestampedObject.getToken().getId(), poe);
 			}
 		}
 	}

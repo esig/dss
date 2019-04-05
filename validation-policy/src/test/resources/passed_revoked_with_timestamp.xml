@@ -453,8 +453,8 @@
                 <ChainItem Certificate="C-FC8BFE53A334F6F762F5EA9AFF47E01AA62DF620E55E8CE9BECB713BB70755A7"/>
             </CertificateChain>
             <TimestampedObjects>
-            	<TimestampedSignature Signature="xmldsig-0a9a9d45-c8f6-44c5-9e74-462fa3441a26" />
-            	<TimestampedCertificate Certificate="C-F3001FF8575E8C49F0D04A9A3C7A36E6F28E389CC514C2CBFC55227ACE4A275A" />
+            	<TimestampedSignature Token="xmldsig-0a9a9d45-c8f6-44c5-9e74-462fa3441a26" />
+            	<TimestampedCertificate Token="C-F3001FF8575E8C49F0D04A9A3C7A36E6F28E389CC514C2CBFC55227ACE4A275A" />
             </TimestampedObjects>
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>

@@ -13,7 +13,7 @@
 	<xs:element name="ValidationReport" type="vr:ValidationReportType"/>
 	<xs:complexType name="ValidationReportType">
 		<xs:sequence>
-			<xs:element name="SignatureValidationReport" type="vr:SignatureValidationReportType"/>
+			<xs:element name="SignatureValidationReport" type="vr:SignatureValidationReportType" maxOccurs="unbounded"/>
 			<xs:element name="SignatureValidationObjects" type="vr:ValidationObjectListType" minOccurs="0"/>
 			<xs:element name="SignatureValidator" type="vr:SignatureValidatorType" minOccurs="0"/>
 			<xs:element ref="ds:Signature" minOccurs="0"/>

@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -32,7 +33,6 @@ import eu.europa.esig.jaxb.validationreport.SATimestampType;
 import eu.europa.esig.jaxb.validationreport.SignatureAttributesType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
-import eu.europa.esig.jaxb.xmldsig.SignatureType;
 
 public class DiagnosticDataComplete extends PKIFactoryAccess {
 
@@ -190,7 +190,7 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		
 		ValidationReportType etsiValidationReport = report.getEtsiValidationReportJaxb();
 		assertNotNull(etsiValidationReport);
-		SignatureValidationReportType signatureValidationType = etsiValidationReport.getSignatureValidationReport();
+		SignatureValidationReportType signatureValidationType = etsiValidationReport.getSignatureValidationReport().get(0);
 		assertNotNull(signatureValidationType);
 		SignatureAttributesType signatureAttributesType = signatureValidationType.getSignatureAttributes();
 		assertNotNull(signatureAttributesType);
@@ -222,6 +222,31 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		assertEquals(1, sigTimestampsCounter);
 		assertEquals(1, docTimestampsCounter);
 		assertEquals(0, archiveTimestampsCounter);
+	}
+	
+	@Test
+	public void fiveSignaturesOWithSingleTimestampTest() {
+		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/validation/pades-5-signatures-and-1-document-timestamp.pdf"));
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		validator.setCertificateVerifier(getCompleteCertificateVerifier());
+		Reports report = validator.validateDocument();
+		// System.out.println(report.getXmlDiagnosticData().replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", ""));
+		DiagnosticData diagnosticData = report.getDiagnosticData();
+		assertNotNull(diagnosticData);
+		List<TimestampWrapper> timestamps = diagnosticData.getTimestamps();
+		assertNotNull(timestamps);
+		assertEquals(3, timestamps.size());
+		List<String> usedTimestampIds = new ArrayList<String>();
+		for (TimestampWrapper timestamp : timestamps) {
+			assertFalse(usedTimestampIds.contains(timestamp.getId()));
+			usedTimestampIds.add(timestamp.getId());
+			List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
+			List<String> usedTimestampObjectIds = new ArrayList<String>();
+			for (XmlTimestampedObject timestampedObject : timestampedObjects) {
+				assertFalse(usedTimestampObjectIds.contains(timestampedObject.getToken().getId()));
+				usedTimestampObjectIds.add(timestampedObject.getToken().getId());
+			}
+		}
 	}
 
 	@Override

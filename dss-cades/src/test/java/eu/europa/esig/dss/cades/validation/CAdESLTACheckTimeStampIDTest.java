@@ -75,8 +75,7 @@ public class CAdESLTACheckTimeStampIDTest extends PKIFactoryAccess {
 			boolean found = false;
 			for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
 				if (xmlTimestampedObject instanceof XmlTimestampedSignature) {
-					XmlTimestampedSignature timestampedSignature = (XmlTimestampedSignature) xmlTimestampedObject;
-					String id = timestampedSignature.getSignature().getId();
+					String id = xmlTimestampedObject.getToken().getId();
 					if (signatureId.equals(id)) {
 						found = true;
 					}

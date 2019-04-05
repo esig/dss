@@ -35,6 +35,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
+import javax.xml.bind.JAXBElement;
 
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.IssuerSerial;
@@ -57,6 +58,7 @@ import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.diagnostic.ObjectFactory;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
@@ -357,14 +359,15 @@ public class DiagnosticDataBuilder {
 				xmlSignatures.put(advancedSignature.getId(), currentXmlSignature);
 				diagnosticData.getSignatures().add(currentXmlSignature);
 			}
+			
+			List<XmlTimestamp> builtTimestamps = new ArrayList<XmlTimestamp>();
 
 			for (AdvancedSignature advancedSignature : signatures) {
 				XmlSignature currentSignature = xmlSignatures.get(advancedSignature.getId());
 
 				// build timestamps
-				List<XmlTimestamp> builtTimestamps = getXmlTimestamps(advancedSignature);
-				for (XmlTimestamp xmlTimestamp : builtTimestamps) {
-					diagnosticData.getUsedTimestamps().add(xmlTimestamp);
+				for (XmlTimestamp xmlTimestamp : getXmlTimestamps(advancedSignature)) {
+					addXmlTimestampToList(builtTimestamps, xmlTimestamp);
 				}
 
 				// attach timestamps
@@ -377,6 +380,9 @@ public class DiagnosticDataBuilder {
 					currentSignature.setCounterSignature(true);
 					currentSignature.setParent(xmlMasterSignature);
 				}
+			}
+			for (XmlTimestamp timestamp : builtTimestamps) {
+				diagnosticData.getUsedTimestamps().add(timestamp);
 			}
 		}
 
@@ -542,6 +548,31 @@ public class DiagnosticDataBuilder {
 			return text.replaceAll("&", "");
 		}
 		return Utils.EMPTY_STRING;
+	}
+	
+	private void addXmlTimestampToList(List<XmlTimestamp> timestampList, XmlTimestamp timestampToAdd) {
+		boolean contains = false;
+		for (XmlTimestamp timestamp : timestampList) {
+			if (timestamp.getId().equals(timestampToAdd.getId())) {
+				List<JAXBElement<? extends XmlTimestampedObject>> timestampedObjects = timestampToAdd.getTimestampedObjects();
+				for (JAXBElement<? extends XmlTimestampedObject> timestampedObject : timestampedObjects) {
+					boolean found = false;
+					for (JAXBElement<? extends XmlTimestampedObject> oldObject : timestamp.getTimestampedObjects()) {
+						if (timestampedObject.getValue().getToken().getId().equals(oldObject.getValue().getToken().getId())) {
+							found = true;
+							break;
+						}
+					}
+					if (!found) {
+						timestamp.getTimestampedObjects().add(timestampedObject);
+					}
+				}
+				contains = true;
+			}
+		}
+		if (!contains) {
+			timestampList.add(timestampToAdd);
+		}
 	}
 
 	private XmlRevocation buildDetachedXmlRevocation(RevocationToken revocationToken) {
@@ -1038,31 +1069,33 @@ public class DiagnosticDataBuilder {
 		return digestMatcher;
 	}
 
-	private List<XmlTimestampedObject> getXmlTimestampedObjects(TimestampToken timestampToken) {
+	private List<JAXBElement<? extends XmlTimestampedObject>> getXmlTimestampedObjects(TimestampToken timestampToken) {
+		ObjectFactory objectFactory = new ObjectFactory();
 		List<TimestampReference> timestampReferences = timestampToken.getTimestampedReferences();
 		if (Utils.isCollectionNotEmpty(timestampReferences)) {
-			List<XmlTimestampedObject> objects = new ArrayList<XmlTimestampedObject>();
+			//List<XmlTimestampedObject> objects = new ArrayList<XmlTimestampedObject>();
+			List<JAXBElement<? extends XmlTimestampedObject>> objects = new ArrayList<JAXBElement<? extends XmlTimestampedObject>>();
 			for (final TimestampReference timestampReference : timestampReferences) {
 				switch (timestampReference.getCategory()) {
 					case SIGNATURE:
 						XmlTimestampedSignature sigRef = new XmlTimestampedSignature();
-						sigRef.setSignature(xmlSignatures.get(timestampReference.getObjectId()));
-						objects.add(sigRef);
+						sigRef.setToken(xmlSignatures.get(timestampReference.getObjectId()));
+						objects.add(objectFactory.createTimestampedSignature(sigRef));
 						break;
 					case CERTIFICATE:
 						XmlTimestampedCertificate certRef = new XmlTimestampedCertificate();
-						certRef.setCertificate(xmlCerts.get(timestampReference.getObjectId()));
-						objects.add(certRef);
+						certRef.setToken(xmlCerts.get(timestampReference.getObjectId()));
+						objects.add(objectFactory.createTimestampedCertificate(certRef));
 						break;
 					case REVOCATION:
 						XmlTimestampedRevocationData revocRef = new XmlTimestampedRevocationData();
-						revocRef.setRevocation(xmlRevocations.get(timestampReference.getObjectId()));
-						objects.add(revocRef);
+						revocRef.setToken(xmlRevocations.get(timestampReference.getObjectId()));
+						objects.add(objectFactory.createTimestampedRevocationData(revocRef));
 						break;
 					case TIMESTAMP:
 						XmlTimestampedTimestamp tstRef = new XmlTimestampedTimestamp();
-						tstRef.setTimestamp(xmlTimestamps.get(timestampReference.getObjectId()));
-						objects.add(tstRef);
+						tstRef.setToken(xmlTimestamps.get(timestampReference.getObjectId()));
+						objects.add(objectFactory.createTimestampedTimestamp(tstRef));
 						break;
 					default:
 						throw new DSSException("Unsupported category " + timestampReference.getCategory());
