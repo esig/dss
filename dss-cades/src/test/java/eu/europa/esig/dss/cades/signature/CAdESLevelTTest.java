@@ -32,6 +32,7 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
 public class CAdESLevelTTest extends AbstractCAdESTestSignature {
@@ -79,7 +80,9 @@ public class CAdESLevelTTest extends AbstractCAdESTestSignature {
 	protected void verifyETSIValidationReport(ValidationReportType etsiValidationReportJaxb) {
 		super.verifyETSIValidationReport(etsiValidationReportJaxb);
 
-		assertTrue(etsiValidationReportJaxb.getSignatureValidationReport().getSignerInformation().isPseudonym());
+		for (SignatureValidationReportType signatureValidationReport : etsiValidationReportJaxb.getSignatureValidationReport()) {
+			assertTrue(signatureValidationReport.getSignerInformation().isPseudonym());
+		}
 	}
 
 }
