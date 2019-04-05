@@ -9,19 +9,19 @@
 package eu.europa.esig.dss.jaxb.simplecertificatereport;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import eu.europa.esig.dss.validation.RevocationReason;
+import eu.europa.esig.dss.validation.policy.rules.Indication;
 
-public class Adapter2
-    extends XmlAdapter<String, RevocationReason>
+public class Adapter4
+    extends XmlAdapter<String, Indication>
 {
 
 
-    public RevocationReason unmarshal(String value) {
-        return (eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.parse(value));
+    public Indication unmarshal(String value) {
+        return (eu.europa.esig.dss.jaxb.parsers.IndicationParser.parse(value));
     }
 
-    public String marshal(RevocationReason value) {
-        return (eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.print(value));
+    public String marshal(Indication value) {
+        return (eu.europa.esig.dss.jaxb.parsers.IndicationParser.print(value));
     }
 
 }

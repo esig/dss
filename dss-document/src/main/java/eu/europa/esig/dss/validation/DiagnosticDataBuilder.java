@@ -345,7 +345,7 @@ public class DiagnosticDataBuilder {
 					xmlCertificateRevocation.setRevocationDate(revocationToken.getRevocationDate());
 					CRLReasonEnum reason = revocationToken.getReason();
 					if (reason != null) {
-						xmlCertificateRevocation.setReason(reason.name());
+						xmlCertificateRevocation.setReason(RevocationReason.valueOf(reason.name()));
 					}
 
 					xmlCertificate.getRevocations().add(xmlCertificateRevocation);

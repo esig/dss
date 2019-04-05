@@ -62,10 +62,16 @@
 				printMethod="eu.europa.esig.dss.jaxb.parsers.TimestampTypeParser.print" />
 		</jaxb:bindings>
 		
-  <jaxb:bindings node="//xs:simpleType[@name='TimestampLocation']">
+  	<jaxb:bindings node="//xs:simpleType[@name='TimestampLocation']">
 			<jaxb:javaType name="eu.europa.esig.dss.validation.XmlTimestampLocation" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.TimestampLocationParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.TimestampLocationParser.print" />
+		</jaxb:bindings>
+		
+  	<jaxb:bindings node="//xs:simpleType[@name='RevocationReason']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.RevocationReason" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.print" />
 		</jaxb:bindings>
 		
  	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:element[@name='Parent']">

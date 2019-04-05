@@ -20,7 +20,11 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
+import java.util.List;
 
 import org.junit.Before;
 
@@ -28,9 +32,17 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlRevocationInformation;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.jaxb.validationreport.RevocationStatusInformationType;
+import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
+import eu.europa.esig.jaxb.validationreport.ValidationReportDataType;
+import eu.europa.esig.jaxb.validationreport.ValidationReportType;
+import eu.europa.esig.jaxb.validationreport.ValidationStatusType;
 
 public class XAdESLevelLTRevokedTest extends AbstractXAdESTestSignature {
 
@@ -72,6 +84,40 @@ public class XAdESLevelLTRevokedTest extends AbstractXAdESTestSignature {
 	@Override
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
+	}
+
+	@Override
+	protected void verifyDetailedReport(DetailedReport detailedReport) {
+		super.verifyDetailedReport(detailedReport);
+
+		String signatureId = detailedReport.getFirstSignatureId();
+		XmlSubXCV subXCV = detailedReport.getSigningCertificate(signatureId);
+		assertNotNull(subXCV);
+		XmlRevocationInformation revocationInfo = subXCV.getRevocationInfo();
+		assertNotNull(revocationInfo);
+		assertNotNull(revocationInfo.getCertificateId());
+		assertNotNull(revocationInfo.getRevocationId());
+		assertNotNull(revocationInfo.getRevocationDate());
+		assertNotNull(revocationInfo.getReason());
+	}
+
+	@Override
+	protected void verifyETSIValidationReport(ValidationReportType etsiValidationReportJaxb) {
+		super.verifyETSIValidationReport(etsiValidationReportJaxb);
+
+		List<SignatureValidationReportType> signatureValidationReports = etsiValidationReportJaxb.getSignatureValidationReport();
+		SignatureValidationReportType signatureValidationReportType = signatureValidationReports.get(0);
+		ValidationStatusType signatureValidationStatus = signatureValidationReportType.getSignatureValidationStatus();
+		assertNotNull(signatureValidationStatus);
+		List<ValidationReportDataType> associatedValidationReportData = signatureValidationStatus.getAssociatedValidationReportData();
+		assertEquals(1, associatedValidationReportData.size());
+		ValidationReportDataType validationReportDataType = associatedValidationReportData.get(0);
+		RevocationStatusInformationType revocationStatusInformation = validationReportDataType.getRevocationStatusInformation();
+		assertNotNull(revocationStatusInformation);
+		assertNotNull(revocationStatusInformation.getRevocationObject());
+		assertNotNull(revocationStatusInformation.getRevocationReason());
+		assertNotNull(revocationStatusInformation.getRevocationTime());
+		assertNotNull(revocationStatusInformation.getValidationObjectId());
 	}
 
 }

@@ -200,6 +200,7 @@
 			<xs:extension base="ConstraintsConclusion">
 				<xs:sequence>
 					<xs:element name="RFC" type="RFC" minOccurs="0" />
+					<xs:element name="RevocationInfo" type="RevocationInformation" minOccurs="0" />
 				</xs:sequence>
 				<xs:attribute name="Id" type="xs:string" use="required" />
 				<xs:attribute name="TrustAnchor" type="xs:boolean" />
@@ -396,6 +397,31 @@
 			<xs:enumeration value="AIA" />
 			<xs:enumeration value="TIMESTAMP" />
 			<xs:enumeration value="UNKNOWN" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="RevocationInformation">
+		<xs:sequence>
+			<xs:element name="CertificateId" type="xs:string" />
+			<xs:element name="RevocationId" type="xs:string" />
+			<xs:element name="Reason" type="RevocationReason" />
+			<xs:element name="RevocationDate" type="xs:dateTime" />		
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="RevocationReason" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="unspecified" />
+			<xs:enumeration value="keyCompromise" />
+			<xs:enumeration value="cACompromise" />
+			<xs:enumeration value="affiliationChanged" />
+			<xs:enumeration value="superseded" />
+			<xs:enumeration value="cessationOfOperation" />
+			<xs:enumeration value="certificateHold" />
+			<xs:enumeration value="unknow" />
+			<xs:enumeration value="removeFromCRL" />
+			<xs:enumeration value="privilegeWithdrawn" />
+			<xs:enumeration value="aACompromise" />
 		</xs:restriction>
 	</xs:simpleType>
 	

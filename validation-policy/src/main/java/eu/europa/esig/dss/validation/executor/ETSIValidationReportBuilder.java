@@ -14,6 +14,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificateChain;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlChainItem;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlProofOfExistence;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlRevocationInformation;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
@@ -45,6 +46,7 @@ import eu.europa.esig.jaxb.validationreport.CertificateChainType;
 import eu.europa.esig.jaxb.validationreport.ObjectFactory;
 import eu.europa.esig.jaxb.validationreport.POEProvisioningType;
 import eu.europa.esig.jaxb.validationreport.POEType;
+import eu.europa.esig.jaxb.validationreport.RevocationStatusInformationType;
 import eu.europa.esig.jaxb.validationreport.SACRLIDType;
 import eu.europa.esig.jaxb.validationreport.SACertIDListType;
 import eu.europa.esig.jaxb.validationreport.SACertIDType;
@@ -82,6 +84,7 @@ import eu.europa.esig.jaxb.validationreport.ValidationTimeInfoType;
 import eu.europa.esig.jaxb.validationreport.enums.EndorsementType;
 import eu.europa.esig.jaxb.validationreport.enums.MainIndication;
 import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
+import eu.europa.esig.jaxb.validationreport.enums.RevocationReason;
 import eu.europa.esig.jaxb.validationreport.enums.SignatureValidationProcessID;
 import eu.europa.esig.jaxb.validationreport.enums.TypeOfProof;
 import eu.europa.esig.jaxb.xades132.DigestAlgAndValueType;
@@ -348,8 +351,22 @@ public class ETSIValidationReportBuilder {
 			}
 		}
 
+		XmlSubXCV signingCertificate = detailedReport.getSigningCertificate(sigWrapper.getId());
+		if (signingCertificate != null && signingCertificate.getRevocationInfo() != null) {
+			fillRevocationInfo(validationReportData, signingCertificate.getRevocationInfo());
+		}
+
 		validationStatus.getAssociatedValidationReportData().add(validationReportData);
 		return validationStatus;
+	}
+
+	private void fillRevocationInfo(ValidationReportDataType validationReportData, XmlRevocationInformation revocationInfo) {
+		RevocationStatusInformationType revocationStatusInformationType = objectFactory.createRevocationStatusInformationType();
+		revocationStatusInformationType.setRevocationTime(revocationInfo.getRevocationDate());
+		revocationStatusInformationType.setRevocationObject(getVOReference(revocationInfo.getRevocationId()));
+		revocationStatusInformationType.setValidationObjectId(getVOReference(revocationInfo.getCertificateId()));
+		revocationStatusInformationType.setRevocationReason(RevocationReason.valueOf(revocationInfo.getReason().name()));
+		validationReportData.setRevocationStatusInformation(revocationStatusInformationType);
 	}
 
 	private void fillCertificateChainAndTrustAnchor(ValidationReportDataType validationReportData, XmlCertificateChain certificateChain) {

@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
+import eu.europa.esig.dss.validation.RevocationReason;
 import eu.europa.esig.dss.validation.policy.SubContext;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
@@ -33,7 +34,6 @@ import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;
-import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
@@ -53,7 +53,7 @@ public class CertificateRevokedCheck extends ChainItem<XmlSubXCV> {
 	@Override
 	protected boolean process() {
 		boolean isRevoked = (certificateRevocation != null) && !certificateRevocation.isStatus() && 
-				!CRLReasonEnum.certificateHold.name().equals(certificateRevocation.getReason());
+				!RevocationReason.certificateHold.equals(certificateRevocation.getReason());
 		if (isRevoked) {
 			isRevoked = certificateRevocation.getRevocationDate() != null && currentTime.after(certificateRevocation.getRevocationDate());
 		}
