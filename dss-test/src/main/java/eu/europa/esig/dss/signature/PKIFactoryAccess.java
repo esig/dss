@@ -89,6 +89,7 @@ public abstract class PKIFactoryAccess {
 	protected static final String GOOD_USER_OCSP_ERROR_500 = "good-user-ocsp-error-500";
 	protected static final String GOOD_USER_OCSP_FAIL = "good-user-ocsp-fail";
 	protected static final String GOOD_USER_CROSS_CERTIF = "cc-good-user-crossed";
+	protected static final String GOOD_USER_WITH_PSEUDO = "good-user-with-pseudo";
 	protected static final String REVOKED_USER = "revoked-user";
 	protected static final String EXPIRED_USER = "expired-user";
 	protected static final String DSA_USER = "good-dsa-user";

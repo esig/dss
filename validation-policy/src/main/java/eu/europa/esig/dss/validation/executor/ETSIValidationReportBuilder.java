@@ -12,7 +12,10 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificateChain;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlChainItem;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlProofOfExistence;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
@@ -29,6 +32,7 @@ import eu.europa.esig.dss.validation.XmlRevocationOrigin;
 import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
+import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
@@ -146,11 +150,24 @@ public class ETSIValidationReportBuilder {
 			return null;
 		}
 		SignerInformationType signerInfo = objectFactory.createSignerInformationType();
-		// TODO
-//		signerInfo.setPseudonym(true);
+		signerInfo.setPseudonym(isUsePseudo(sigWrapper));
 		signerInfo.setSigner(signingCert.getReadableCertificateName());
 		signerInfo.setSignerCertificate(getVOReference(signingCert.getId()));
 		return signerInfo;
+	}
+
+	private Boolean isUsePseudo(SignatureWrapper sigWrapper) {
+		XmlSubXCV signingCertificateXCV = detailedReport.getSigningCertificate(sigWrapper.getId());
+		if (signingCertificateXCV != null) {
+			List<XmlConstraint> constraints = signingCertificateXCV.getConstraint();
+			for (XmlConstraint xmlConstraint : constraints) {
+				if (MessageTag.BBB_XCV_PSEUDO_USE.name().equals(xmlConstraint.getName().getNameId())) {
+					XmlStatus status = xmlConstraint.getStatus();
+					return (XmlStatus.OK != status) && (XmlStatus.IGNORED != status);
+				}
+			}
+		}
+		return null;
 	}
 
 	private VOReferenceType getVOReference(String id) {
