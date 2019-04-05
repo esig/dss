@@ -84,6 +84,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerDocumentRepresentation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
@@ -501,8 +502,9 @@ public class DiagnosticDataBuilder {
 		xmlSignature.setDigestMatchers(getXmlDigestMatchers(signature));
 
 		xmlSignature.setPolicy(getXmlPolicy(signature));
-
 		xmlSignature.setPDFSignatureDictionary(getXmlPDFSignatureDictionary(signature));
+		xmlSignature.setSignerDocumentRepresentation(getXmlSignerDocumentRepresentation(signature));
+		
 		// TODO: sigRef digest (for etsi SignatureReferenceType)
 
 		xmlSignature.setFoundRevocations(getXmlFoundRevocations(signature));
@@ -527,6 +529,16 @@ public class DiagnosticDataBuilder {
 			return pdfSignatureDictionary;
 		}
 		return null;
+	}
+	
+	private XmlSignerDocumentRepresentation getXmlSignerDocumentRepresentation(AdvancedSignature signature) {
+		if (signature.getDetachedContents() == null) {
+			return null;
+		}
+		XmlSignerDocumentRepresentation signerDocumentRepresentation = new XmlSignerDocumentRepresentation();
+		signerDocumentRepresentation.setDocHashOnly(signature.isDocHashOnlyValidation());
+		signerDocumentRepresentation.setHashOnly(signature.isHashOnlyValidation());
+		return signerDocumentRepresentation;
 	}
 
 	private XmlStructuralValidation getXmlStructuralValidation(AdvancedSignature signature) {

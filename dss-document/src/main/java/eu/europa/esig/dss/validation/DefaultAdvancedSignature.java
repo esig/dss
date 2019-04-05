@@ -37,6 +37,7 @@ import eu.europa.esig.dss.CertificateReorderer;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
@@ -943,6 +944,25 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		} else {
 			revocationRefsMap.put(revocationToken, new ArrayList<RevocationRef>(Arrays.asList(reference)));
 		}
+	}
+	
+	@Override
+	public boolean isDocHashOnlyValidation() {
+		if (detachedContents != null) {
+			for (DSSDocument dssDocument : detachedContents) {
+				if (!(dssDocument instanceof DigestDocument)) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean isHashOnlyValidation() {
+		// TODO: not implemented yet
+		return false;
 	}
 	
 	@Override

@@ -140,6 +140,14 @@
 					<xs:element name="CertifiedRoles" type="CertifiedRole" minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="Policy" type="Policy" minOccurs="0" />
 					<xs:element name="PDFSignatureDictionary" type="PDFSignatureDictionary" minOccurs="0" />
+					
+					<xs:element name="SignerDocumentRepresentation" minOccurs="0">
+						<xs:complexType>
+							<!-- DTBSR DigestAlgAndValueType -->
+							<xs:attribute name="HashOnly" type="xs:boolean" use="required" />
+							<xs:attribute name="DocHashOnly" type="xs:boolean" use="required" />
+						</xs:complexType>
+					</xs:element>
 								
 					<xs:element name="FoundTimestamps" minOccurs="0">
 						<xs:complexType>
@@ -435,8 +443,6 @@
 		<xs:sequence/>
 		<xs:attribute name="Token" type="xs:IDREF" use="required" />
 	</xs:complexType>
-	
-	<xs:element name="AbstractTokenRef" type="xs:IDREF" />
     
 	<xs:complexType name="TimestampedCertificate">
         <xs:complexContent>

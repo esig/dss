@@ -442,6 +442,27 @@ public interface AdvancedSignature extends Serializable {
 	void findSignatureScope(SignatureScopeFinder signatureScopeFinder);
 
 	List<SignatureScope> getSignatureScopes();
+	
+	/**
+	 * Returns true if the validation of the signature has been performed only on Signer's Document Representation (SDR).
+	 * (An SDR typically is built on a cryptographic hash of the Signer's Document)
+	 * @return true of it is DocHashOnly validation, false otherwise
+	 */
+	boolean isDocHashOnlyValidation();
+	
+	/**
+	 * Returns true if the validation of the signature has been performed only on Data To Be Signed Representation (DTBSR).
+	 * 
+	 * EN 319 102-1 v1.1.1 (4.2.8 Data to be signed representation (DTBSR)):
+	 * The DTBS preparation component shall take the DTBSF and hash it according to the hash algorithm specified in the
+	 * cryptographic suite. The result of this process is the DTBSR, which is then used to create the signature. 
+	 * NOTE: In order for the produced hash to be representative of the DTBSF, the hashing function has the property 
+	 * that it is computationally infeasible to find collisions for the expected signature lifetime. Should the hash
+	 * function become weak in the future, additional security measures, such as applying time-stamp tokens,
+	 * can be taken. 
+	 * @return true of it is HashOnly validation, false otherwise
+	 */
+	boolean isHashOnlyValidation();
 
 	/**
 	 * Returns individual validation foreach reference (XAdES) or for the

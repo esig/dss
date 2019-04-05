@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -42,6 +44,10 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
+import eu.europa.esig.jaxb.validationreport.SignatureIdentifierType;
+import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
+import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
 public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 
@@ -58,12 +64,16 @@ public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 		SignatureValue signatureValue = getToken().sign(toBeSigned, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDoc = service.signDocument(completeDocument, params, signatureValue);
 
-		validate(signedDoc, completeDocument);
-		validate(signedDoc, getDigestDocument());
-		validateWrong(signedDoc);
+		Reports reports = validate(signedDoc, completeDocument);
+		validateHashOnly(reports, false, false);
+		reports = validate(signedDoc, getDigestDocument());
+		validateHashOnly(reports, true, false);
+		reports = validateWrong(signedDoc);
+		validateHashOnly(reports, false, false);
 
 		DSSDocument extendDocument = service.extendDocument(signedDoc, getExtendParams());
-		validate(extendDocument, completeDocument);
+		reports = validate(extendDocument, completeDocument);
+		validateHashOnly(reports, false, false);
 	}
 
 	@Test
@@ -76,15 +86,19 @@ public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 		SignatureValue signatureValue = getToken().sign(toBeSigned, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDoc = service.signDocument(digestDocument, params, signatureValue);
 
-		validate(signedDoc, digestDocument);
-		validate(signedDoc, getCompleteDocument());
-		validateWrong(signedDoc);
+		Reports reports = validate(signedDoc, digestDocument);
+		validateHashOnly(reports, true, false);
+		reports = validate(signedDoc, getCompleteDocument());
+		validateHashOnly(reports, false, false);
+		reports = validateWrong(signedDoc);
+		validateHashOnly(reports, false, false);
 
 		DSSDocument extendDocument = service.extendDocument(signedDoc, getExtendParams());
-		validate(extendDocument, digestDocument);
+		reports = validate(extendDocument, digestDocument);
+		validateHashOnly(reports, true, false);
 	}
 
-	private void validate(DSSDocument signedDocument, DSSDocument original) {
+	private Reports validate(DSSDocument signedDocument, DSSDocument original) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		validator.setDetachedContents(Arrays.asList(original));
@@ -92,9 +106,26 @@ public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 
 		DiagnosticData diagData = reports.getDiagnosticData();
 		assertTrue(diagData.isBLevelTechnicallyValid(diagData.getFirstSignatureId()));
+		return reports;
+	}
+	
+	private void validateHashOnly(Reports reports, boolean expectedDocHashOnly, boolean expectedHashOnly) {
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertEquals(expectedDocHashOnly, signature.isDocHashOnly());
+		assertEquals(expectedHashOnly, signature.isHashOnly());
+		
+		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
+		assertNotNull(etsiValidationReportJaxb);
+		SignatureValidationReportType signatureValidationReport = etsiValidationReportJaxb.getSignatureValidationReport().get(0);
+		assertNotNull(signatureValidationReport);
+		SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
+		assertNotNull(signatureIdentifier);
+		assertEquals(expectedDocHashOnly, signatureIdentifier.isDocHashOnly());
+		assertEquals(expectedHashOnly, signatureIdentifier.isHashOnly());
 	}
 
-	private void validateWrong(DSSDocument signedDocument) {
+	private Reports validateWrong(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		validator.setDetachedContents(Arrays.asList(getWrongDocument()));
@@ -102,6 +133,7 @@ public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 
 		DiagnosticData diagData = reports.getDiagnosticData();
 		assertFalse(diagData.isBLevelTechnicallyValid(diagData.getFirstSignatureId()));
+		return reports;
 	}
 
 	private CAdESService getService() {

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -77,7 +78,14 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 		detachedContents.add(digestDocument);
 		validator.setDetachedContents(detachedContents);
 
-		validator.validateDocument();
+		Reports reports = validator.validateDocument();
+		
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		
+		assertTrue(signature.isDocHashOnly());
+		assertFalse(signature.isHashOnly());
+		
 	}
 
 	@Test
@@ -111,8 +119,12 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 		Reports reports = validator.validateDocument();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertTrue(signatureById.isBLevelTechnicallyValid());
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertTrue(signature.isBLevelTechnicallyValid());
+		
+		assertTrue(signature.isDocHashOnly());
+		assertFalse(signature.isHashOnly());
+		
 	}
 
 	@Override

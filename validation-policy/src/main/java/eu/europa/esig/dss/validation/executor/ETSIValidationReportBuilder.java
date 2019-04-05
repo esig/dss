@@ -392,10 +392,9 @@ public class ETSIValidationReportBuilder {
 	private SignatureIdentifierType getSignatureIdentifier(SignatureWrapper sigWrapper) {
 		SignatureIdentifierType sigId = objectFactory.createSignatureIdentifierType();
 		sigId.setId(sigWrapper.getId());
-
+		sigId.setDocHashOnly(sigWrapper.isDocHashOnly());
+		sigId.setHashOnly(sigWrapper.isHashOnly());
 		// TODO
-		sigId.setDocHashOnly(false); // TODO: true when DocumentDigest was used
-		sigId.setHashOnly(false);
 //		SignatureValueType sigValue = new SignatureValueType();
 //		sigValue.setValue(value);
 //		sigId.setSignatureValue(sigValue );
