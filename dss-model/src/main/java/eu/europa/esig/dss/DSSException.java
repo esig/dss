@@ -33,7 +33,7 @@ public class DSSException extends RuntimeException {
     }
 
     public DSSException(Throwable cause) {
-        super(cause);
+        super(cause.getMessage(), cause);
     }
 
     public DSSException(String message, Throwable cause) {

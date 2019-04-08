@@ -249,7 +249,7 @@ public class CommonsDataLoader implements DataLoader {
 					getSupportedSSLCipherSuites(), getHostnameVerifier());
 			return socketFactoryRegistryBuilder.register("https", sslConnectionSocketFactory);
 		} catch (final Exception e) {
-			throw new DSSException("Unable to configure the SSLContext/SSLConnectionSocketFactory", e);
+			throw new DSSException("Unable to configure the SSLContext/SSLConnectionSocketFactory. Cause: " + e.getMessage(), e);
 		}
 	}
 
@@ -425,7 +425,7 @@ public class CommonsDataLoader implements DataLoader {
 					if (e instanceof DSSException) {
 						throw (DSSException) e;
 					}
-					throw new DSSException(e);
+					throw new DSSException("Failed to execute 'get' operation for " + urlString + ". Cause: " + e.getLocalizedMessage(), e);
 				}
 				LOG.warn("Impossible to obtain data using '{}' : {}", urlString, e.getMessage());
 			}
@@ -464,7 +464,6 @@ public class CommonsDataLoader implements DataLoader {
 		final Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 		env.put(Context.PROVIDER_URL, urlString);
-		env.put("com.sun.jndi.ldap.read.timeout", ""+getTimeoutSocket());
 		try {
 
 			// parse URL according to the template: 'ldap://host:port/DN?attributes?scope?filter?extensions'
@@ -518,7 +517,7 @@ public class CommonsDataLoader implements DataLoader {
 		try {
 			return new URL(urlString);
 		} catch (MalformedURLException e) {
-			throw new DSSException("Unable to create URL instance", e);
+			throw new DSSException("Unable to create URL instance. Cause: " + e.getLocalizedMessage(), e);
 		}
 	}
 
@@ -596,7 +595,7 @@ public class CommonsDataLoader implements DataLoader {
 
 			return readHttpResponse(httpResponse);
 		} catch (IOException e) {
-			throw new DSSException("Unable to process POST call for url '" + url + "'. Cause: "+e.getLocalizedMessage(), e);
+			throw new DSSException("Unable to process POST call for url '" + url + "'. Cause: " + e.getLocalizedMessage(), e);
 		} finally {
 			try {
 				if (httpRequest != null) {
@@ -674,7 +673,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} and LDAP {@code InitialContext} is/are created.
+	 * Used when the {@code HttpClient} is created.
 	 *
 	 * @return the value (millis)
 	 */
@@ -683,7 +682,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Used when the {@code HttpClient} and LDAP {@code InitialContext} is/are created.
+	 * Used when the {@code HttpClient} is created.
 	 *
 	 * @param timeoutSocket
 	 *            the value (millis)
