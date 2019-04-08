@@ -182,6 +182,9 @@
 	<xs:complexType name="SAV">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+					<xs:element name="CryptographicInfo" type="CryptographicInformation" />
+				</xs:sequence>
 				<xs:attribute name="ValidationTime" type="xs:dateTime" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
@@ -200,6 +203,7 @@
 			<xs:extension base="ConstraintsConclusion">
 				<xs:sequence>
 					<xs:element name="RFC" type="RFC" minOccurs="0" />
+					<xs:element name="RevocationInfo" type="RevocationInformation" minOccurs="0" />
 				</xs:sequence>
 				<xs:attribute name="Id" type="xs:string" use="required" />
 				<xs:attribute name="TrustAnchor" type="xs:boolean" />
@@ -396,6 +400,40 @@
 			<xs:enumeration value="AIA" />
 			<xs:enumeration value="TIMESTAMP" />
 			<xs:enumeration value="UNKNOWN" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="RevocationInformation">
+		<xs:sequence>
+			<xs:element name="CertificateId" type="xs:string" />
+			<xs:element name="RevocationId" type="xs:string" />
+			<xs:element name="Reason" type="RevocationReason" />
+			<xs:element name="RevocationDate" type="xs:dateTime" />		
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="CryptographicInformation">
+		<xs:sequence>
+			<xs:element name="Algorithm" type="xs:string" />
+			<xs:element name="KeyLength" type="xs:string" />
+			<xs:element name="Secure" type="xs:boolean" />
+			<xs:element name="NotAfter" type="xs:dateTime" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="RevocationReason" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="unspecified" />
+			<xs:enumeration value="keyCompromise" />
+			<xs:enumeration value="cACompromise" />
+			<xs:enumeration value="affiliationChanged" />
+			<xs:enumeration value="superseded" />
+			<xs:enumeration value="cessationOfOperation" />
+			<xs:enumeration value="certificateHold" />
+			<xs:enumeration value="unknow" />
+			<xs:enumeration value="removeFromCRL" />
+			<xs:enumeration value="privilegeWithdrawn" />
+			<xs:enumeration value="aACompromise" />
 		</xs:restriction>
 	</xs:simpleType>
 	

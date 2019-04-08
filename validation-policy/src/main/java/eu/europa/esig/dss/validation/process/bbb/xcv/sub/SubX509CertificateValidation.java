@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 import java.util.Date;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlRevocationInformation;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.SubContext;
@@ -146,6 +147,9 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		item = item.setNextItem(certificateExpiration(currentCertificate, subContext));
 		
 		CertificateRevocationWrapper latestCertificateRevocation = diagnosticData.getLatestRevocationDataForCertificate(currentCertificate);
+		if (latestCertificateRevocation != null && latestCertificateRevocation.isRevoked()) {
+			attachRevocationInformation(latestCertificateRevocation);
+		}
 
 		item = item.setNextItem(certificateRevoked(latestCertificateRevocation, subContext));
 
@@ -163,6 +167,15 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		}
 
 		item = item.setNextItem(revocationCertHashCheck());
+	}
+
+	private void attachRevocationInformation(CertificateRevocationWrapper certificateRevocation) {
+		XmlRevocationInformation revocationInfo = new XmlRevocationInformation();
+		revocationInfo.setCertificateId(currentCertificate.getId());
+		revocationInfo.setRevocationId(certificateRevocation.getId());
+		revocationInfo.setRevocationDate(certificateRevocation.getRevocationDate());
+		revocationInfo.setReason(certificateRevocation.getReason());
+		result.setRevocationInfo(revocationInfo);
 	}
 
 	/*
