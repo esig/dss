@@ -34,7 +34,6 @@ import org.bouncycastle.asn1.esf.OtherHash;
 import org.bouncycastle.asn1.x500.X500Name;
 
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 
 /**
@@ -86,7 +85,7 @@ public final class CRLRef {
 	 */
 	public boolean match(X509CRL crl) {
 		try {
-			MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
+			MessageDigest digest = digestAlgorithm.getMessageDigest();
 			byte[] computedValue = digest.digest(crl.getEncoded());
 			return Arrays.equals(digestValue, computedValue);
 		} catch (CRLException ex) {

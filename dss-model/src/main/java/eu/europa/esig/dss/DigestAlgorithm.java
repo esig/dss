@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -263,8 +265,26 @@ public enum DigestAlgorithm {
 		return xmlId;
 	}
 
+	/**
+	 * Get the salt length (PSS)
+	 * 
+	 * @return the salt length
+	 */
 	public int getSaltLength() {
 		return saltLength;
+	}
+
+	/**
+	 * Get a new instance of MessageDigest for the current digestAlgorithm
+	 * 
+	 * @return an instance of MessageDigest
+	 */
+	public MessageDigest getMessageDigest() {
+		try {
+			return MessageDigest.getInstance(javaName);
+		} catch (NoSuchAlgorithmException e) {
+			throw new DSSException("Unable to create an instance of MessageDigest", e);
+		}
 	}
 
 }

@@ -85,6 +85,21 @@ public class JdbcCacheCrlSourceTest {
 		RevocationToken forceRefresh = crlSource.getRevocationToken(certificateToken, caToken, true);
 		assertNotNull(forceRefresh);
 		assertEquals(RevocationOrigin.EXTERNAL, forceRefresh.getOrigin());
+
+		savedRevocationToken = crlSource.getRevocationToken(certificateToken, caToken);
+		assertNotNull(savedRevocationToken);
+		assertEquals(RevocationOrigin.CACHED, savedRevocationToken.getOrigin());
+
+		crlSource.setMaxNexUpdateDelay(1L);
+		forceRefresh = crlSource.getRevocationToken(certificateToken, caToken);
+		assertNotNull(forceRefresh);
+		assertEquals(RevocationOrigin.EXTERNAL, forceRefresh.getOrigin());
+
+		crlSource.setMaxNexUpdateDelay(null);
+		forceRefresh = crlSource.getRevocationToken(certificateToken, caToken);
+		assertNotNull(forceRefresh);
+		assertEquals(RevocationOrigin.CACHED, forceRefresh.getOrigin());
+
 	}
 
 	@After

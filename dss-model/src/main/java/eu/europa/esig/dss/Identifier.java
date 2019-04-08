@@ -21,8 +21,6 @@
 package eu.europa.esig.dss;
 
 import java.io.Serializable;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * This class is used to obtain a unique id for an object
@@ -36,7 +34,7 @@ public abstract class Identifier implements Serializable {
 	private final Digest id;
 
 	Identifier(byte[] data) {
-		this.id = new Digest(DIGEST_ALGO, getMessageDigest().digest(data));
+		this.id = new Digest(DIGEST_ALGO, DIGEST_ALGO.getMessageDigest().digest(data));
 	}
 
 	/**
@@ -46,14 +44,6 @@ public abstract class Identifier implements Serializable {
 	 */
 	public String asXmlId() {
 		return id.getHexValue();
-	}
-
-	private MessageDigest getMessageDigest() {
-		try {
-			return MessageDigest.getInstance(DIGEST_ALGO.getJavaName());
-		} catch (NoSuchAlgorithmException e) {
-			throw new DSSException("Unable to initialize MessageDigest", e);
-		}
 	}
 
 	@Override

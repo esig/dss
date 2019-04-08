@@ -138,7 +138,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	private byte[] signDocumentAndReturnDigest(final PAdESSignatureParameters parameters, final byte[] signatureBytes, final OutputStream fileOutputStream,
 			final PDDocument pdDocument, final DigestAlgorithm digestAlgorithm) {
 
-		final MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
+		final MessageDigest digest = digestAlgorithm.getMessageDigest();
 		SignatureInterface signatureInterface = new SignatureInterface() {
 
 			@Override

@@ -27,9 +27,4 @@ public enum SignatureForm {
 
 	XAdES, CAdES, PAdES, PKCS7;
 
-	public String getReadable() {
-		String name = this.name();
-		return name.replace('_', '-');
-	}
-
 }

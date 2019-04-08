@@ -31,7 +31,8 @@ public class OCSPSourceSnippet {
 		JdbcCacheOCSPSource cacheOCSPSource = new JdbcCacheOCSPSource();
 		cacheOCSPSource.setDataSource(dataSource);
 		cacheOCSPSource.setProxySource(onlineOCSPSource);
-		cacheOCSPSource.setCacheExpirationTime(180000); // 3 minutes
+		Long threeMinutes = (long) (1000 * 60 * 3);
+		cacheOCSPSource.setDefaultNextUpdateDelay(threeMinutes); // default nextUpdateDelay (if not defined in the revocation data)
 		cacheOCSPSource.initTable();
 		RevocationToken ocspRevocationToken = cacheOCSPSource.getRevocationToken(certificateToken, certificateToken);
 		// end::demo-cached[]
