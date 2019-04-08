@@ -23,6 +23,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.RevocationRefLocation;
 import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.XmlCertificateSourceType;
@@ -240,11 +241,16 @@ public class ETSIValidationReportBuilder {
 	}
 	
 	private DigestAlgAndValueType getDigestAlgAndValueType(XmlDigestAlgoAndValue xmlDigestAlgoAndValue) {
+		return getDigestAlgAndValueType(xmlDigestAlgoAndValue.getDigestMethod(), xmlDigestAlgoAndValue.getDigestValue());
+	}
+	
+	private DigestAlgAndValueType getDigestAlgAndValueType(String digestMethod, byte[] digestValue) {
 		DigestAlgAndValueType digestAlgAndValueType = new DigestAlgAndValueType();
 		DigestMethodType digestMethodType = new DigestMethodType();
-		digestMethodType.setAlgorithm(DigestAlgorithm.forName(xmlDigestAlgoAndValue.getDigestMethod()).getXmlId());
+		digestMethodType.setAlgorithm(DigestAlgorithm.isSupportedAlgorithm(digestMethod) ? 
+				DigestAlgorithm.forName(digestMethod).getXmlId() : "?");
 		digestAlgAndValueType.setDigestMethod(digestMethodType);
-		digestAlgAndValueType.setDigestValue(xmlDigestAlgoAndValue.getDigestValue());
+		digestAlgAndValueType.setDigestValue(digestValue);
 		return digestAlgAndValueType;
 	}
 	
@@ -397,11 +403,26 @@ public class ETSIValidationReportBuilder {
 		sigId.setId(sigWrapper.getId());
 		sigId.setDocHashOnly(sigWrapper.isDocHashOnly());
 		sigId.setHashOnly(sigWrapper.isHashOnly());
-		// TODO: This element shall contain the DTBSR in an element of type XAdES:DigestAlgAndValueType
+		sigId.setDigestAlgAndValue(getDTBSRDigestAlgAndValue(sigWrapper.getDigestMatchers()));
 		SignatureValueType sigValue = new SignatureValueType();
 		sigValue.setValue(sigWrapper.getSignatureValue());
 		sigId.setSignatureValue(sigValue);
 		return sigId;
+	}
+	
+	private DigestAlgAndValueType getDTBSRDigestAlgAndValue(List<XmlDigestMatcher> digestMatchers) {
+		if (Utils.isCollectionNotEmpty(digestMatchers)) {
+			if (digestMatchers.size() == 1) {
+				XmlDigestMatcher xmlDigestMatcher = digestMatchers.get(0);
+				return getDigestAlgAndValueType(xmlDigestMatcher.getDigestMethod(), xmlDigestMatcher.getDigestValue());
+			}
+			for (XmlDigestMatcher digestMatcher : digestMatchers) {
+				if (DigestMatcherType.SIGNED_PROPERTIES.equals(digestMatcher.getType())) {
+					return getDigestAlgAndValueType(digestMatcher.getDigestMethod(), digestMatcher.getDigestValue());
+				}
+			}
+		}
+		return null;
 	}
 
 	private SignatureAttributesType getSignatureAttributes(SignatureWrapper sigWrapper) {
