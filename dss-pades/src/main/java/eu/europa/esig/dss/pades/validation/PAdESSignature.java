@@ -109,7 +109,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public SignatureCRLSource getCRLSource() {
 		if (offlineCRLSource == null) {
-			offlineCRLSource = new PAdESCRLSource(dssDictionary, getSignatureVRIName());
+			offlineCRLSource = new PAdESCRLSource(dssDictionary, getVRIKey());
 		}
 		return offlineCRLSource;
 	}
@@ -117,7 +117,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public SignatureOCSPSource getOCSPSource() {
 		if (offlineOCSPSource == null) {
-			offlineOCSPSource = new PAdESOCSPSource(dssDictionary, getSignatureVRIName());
+			offlineOCSPSource = new PAdESOCSPSource(dssDictionary, getVRIKey());
 		}
 		return offlineOCSPSource;
 	}
@@ -473,7 +473,7 @@ public class PAdESSignature extends CAdESSignature {
 	 * Name of the related to the signature VRI dictionary
 	 * @return related {@link String} VRI dictionary name
 	 */
-	private String getSignatureVRIName() {
+	public String getVRIKey() {
 		// By ETSI EN 319 142-1 V1.1.1, VRI dictionary's name is the base-16-encoded (uppercase)
 		// SHA1 digest of the signature to which it applies
 		return DSSUtils.toHex(DSSUtils.digest(DigestAlgorithm.SHA1, getSignatureValue())).toUpperCase();

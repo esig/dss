@@ -406,7 +406,7 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 					if (cert.size() > 0) {
 						vri.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_VRI), cert);
 					}
-					String vkey = getVRIKey(callback.getSignature());
+					String vkey = callback.getSignature().getVRIKey();
 					vrim.put(new PdfName(vkey), vri);
 				}
 				dss.put(new PdfName(PAdESConstants.VRI_DICTIONARY_NAME),
@@ -446,12 +446,6 @@ class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		} else {
 			return new DSSIndirectReference(reader, objectNumber.intValue());
 		}
-	}
-
-	private String getVRIKey(PAdESSignature signature) {
-		PdfSignatureInfo pdfSignatureInfo = signature.getPdfSignatureInfo();
-		final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, pdfSignatureInfo.getContent());
-		return Utils.toHex(digest).toUpperCase();
 	}
 
 	@Override
