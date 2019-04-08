@@ -1140,6 +1140,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public SignerInformation getSignerInformation() {
 		return signerInformation;
 	}
+	
+	@Override
+	public byte[] getSignatureValue() {
+		return signerInformation.getSignature();
+	}
 
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {

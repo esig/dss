@@ -675,8 +675,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		return timestampToken;
 	}
 
-	public Element getSignatureValue() {
-		return DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_VALUE);
+	@Override
+	public byte[] getSignatureValue() {
+		Element signatureValueElement = DomUtils.getElement(signatureElement, xPathQueryHolder.XPATH_SIGNATURE_VALUE);
+		if (signatureValueElement != null) {
+			return Utils.fromBase64(signatureValueElement.getTextContent());
+		}
+		return null;
 	}
 
 	/**

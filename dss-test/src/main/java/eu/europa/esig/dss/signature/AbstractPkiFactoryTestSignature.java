@@ -88,6 +88,7 @@ import eu.europa.esig.jaxb.validationreport.SASubFilterType;
 import eu.europa.esig.jaxb.validationreport.SATimestampType;
 import eu.europa.esig.jaxb.validationreport.SAVRIType;
 import eu.europa.esig.jaxb.validationreport.SignatureAttributesType;
+import eu.europa.esig.jaxb.validationreport.SignatureIdentifierType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
 import eu.europa.esig.jaxb.validationreport.SignerInformationType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
@@ -563,6 +564,9 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		List<SignatureValidationReportType> reports = etsiValidationReportJaxb.getSignatureValidationReport();
 		for (SignatureValidationReportType signatureValidationReport : reports) {
 			assertNotNull(signatureValidationReport);
+			
+			SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
+			validateEtsiSignatureIdentifier(signatureIdentifier);
 
 			SignerInformationType signerInformation = signatureValidationReport.getSignerInformation();
 			assertNotNull(signerInformation);
@@ -583,6 +587,15 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 			SignatureAttributesType signatureAttributes = signatureValidationReport.getSignatureAttributes();
 			validateETSISignatureAttributes(signatureAttributes);
 		}
+	}
+
+	private void validateEtsiSignatureIdentifier(SignatureIdentifierType signatureIdentifier) {
+		assertNotNull(signatureIdentifier);
+		assertNotNull(signatureIdentifier.getId());
+		assertNotNull(signatureIdentifier.getDigestAlgAndValue());
+		assertNotNull(signatureIdentifier.getDigestAlgAndValue().getDigestMethod());
+		assertNotNull(signatureIdentifier.getDigestAlgAndValue().getDigestValue());
+		assertNotNull(signatureIdentifier.getSignatureValue());
 	}
 
 	@SuppressWarnings("rawtypes")

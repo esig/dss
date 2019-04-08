@@ -469,11 +469,8 @@ class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			}
 
 			// We can't use CMSSignedData, the pdSignature content is trimmed (000000)
-			PdfSignatureInfo pdfSignatureInfo = callback.getSignature().getPdfSignatureInfo();
-			final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, pdfSignatureInfo.getContent());
-			String hexHash = Utils.toHex(digest).toUpperCase();
-
-			vriDictionary.setItem(hexHash, sigVriDictionary);
+			String vriKey = callback.getSignature().getVRIKey();
+			vriDictionary.setItem(vriKey, sigVriDictionary);
 		}
 		dss.setItem(PAdESConstants.VRI_DICTIONARY_NAME, vriDictionary);
 

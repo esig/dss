@@ -467,6 +467,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return null;
 	}
 	
+	public byte[] getSignatureValue() {
+		return signature.getSignatureValue();
+	}
+	
 	public boolean isDocHashOnly() {
 		XmlSignerDocumentRepresentation signerDocumentRepresentation = signature.getSignerDocumentRepresentation();
 		if (signerDocumentRepresentation != null) {
