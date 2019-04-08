@@ -463,6 +463,12 @@ public interface AdvancedSignature extends Serializable {
 	 * @return true of it is HashOnly validation, false otherwise
 	 */
 	boolean isHashOnlyValidation();
+	
+	/**
+	 * Returns the digital signature value
+	 * @return digital signature value byte array
+	 */
+	byte[] getSignatureValue();
 
 	/**
 	 * Returns individual validation foreach reference (XAdES) or for the

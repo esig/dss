@@ -21,7 +21,9 @@
 package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -35,10 +37,13 @@ import org.junit.Test;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.SignatureScopeType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
@@ -49,6 +54,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.jaxb.validationreport.SASigPolicyIdentifierType;
+import eu.europa.esig.jaxb.validationreport.SignatureIdentifierType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
@@ -256,7 +262,7 @@ public class XMLSignatureWrappingTest {
 		validator.setCertificateVerifier(certificateVerifier);
 
 		Reports reports = validator.validateDocument();
-		reports.print();
+		// reports.print();
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
@@ -280,6 +286,72 @@ public class XMLSignatureWrappingTest {
 			}
 		}
 		assertTrue(signaturePolicyIdPresent);
+		
+	}
+	
+	@Test
+	public void signatureIdentifierTest() {
+		SignedDocumentValidator validator = SignedDocumentValidator
+				.fromDocument(new FileDocument(new File("src/test/resources/validation/valid-xades.xml")));
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
+
+		Reports reports = validator.validateDocument();
+		// reports.print();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+		assertNotNull(signature.getSignatureValue());
+		
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+		assertNotNull(etsiValidationReport);
+		SignatureValidationReportType signatureValidationReport = etsiValidationReport.getSignatureValidationReport().get(0);
+		assertNotNull(signatureValidationReport);
+		SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
+		assertNotNull(signatureIdentifier);
+		assertFalse(signatureIdentifier.isDocHashOnly());
+		assertFalse(signatureIdentifier.isHashOnly());
+		
+		assertNotNull(signatureIdentifier.getSignatureValue());
+		assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+		
+	}
+	
+	@Test
+	public void noSignedDataSignatureTest() {
+		SignedDocumentValidator validator = SignedDocumentValidator
+				.fromDocument(new FileDocument(new File("src/test/resources/validation/dss-signed-altered-signedPropsRemoved.xml")));
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
+		
+		Reports reports = validator.validateDocument();
+		//reports.print();
+		
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertNotNull(diagnosticData);
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
+		assertNotNull(digestMatchers);
+		boolean signedPropertiesMatcherFound = false;
+		for (XmlDigestMatcher digestMatcher : digestMatchers) {
+			if (DigestMatcherType.SIGNED_PROPERTIES.equals(digestMatcher.getType())) {
+				assertNull(digestMatcher.getDigestMethod());
+				assertNull(digestMatcher.getDigestValue());
+				signedPropertiesMatcherFound = true;
+			}
+		}
+		assertTrue(signedPropertiesMatcherFound);
+		
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+		SignatureValidationReportType signatureValidationReport = etsiValidationReport.getSignatureValidationReport().get(0);
+		assertNotNull(signatureValidationReport);
+		SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
+		assertNotNull(signatureIdentifier);
+		assertNull(signatureIdentifier.getDigestAlgAndValue());
 		
 	}
 	

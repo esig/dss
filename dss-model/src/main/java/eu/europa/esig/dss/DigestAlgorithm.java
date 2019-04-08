@@ -137,6 +137,15 @@ public enum DigestAlgorithm {
 		}
 		return algorithm;
 	}
+	
+	/**
+	 * Returns indication if the algorithm with given {@code name} is supported
+	 * @param name {@link String} target algorithm's name
+	 * @return TRUE if the algorithm is supported, FALSE otherwise
+	 */
+	public static boolean isSupportedAlgorithm(final String name) {
+		return Registry.ALGORITHMS.get(name) != null;
+	}
 
 	/**
 	 * Returns the digest algorithm associated to the given OID.

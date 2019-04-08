@@ -143,7 +143,6 @@
 					
 					<xs:element name="SignerDocumentRepresentation" minOccurs="0">
 						<xs:complexType>
-							<!-- DTBSR DigestAlgAndValueType -->
 							<xs:attribute name="HashOnly" type="xs:boolean" use="required" />
 							<xs:attribute name="DocHashOnly" type="xs:boolean" use="required" />
 						</xs:complexType>
@@ -187,6 +186,8 @@
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
+					
+					<xs:element name="SignatureValue" type="xs:base64Binary" minOccurs="0" />
 					
 				</xs:sequence>
 				<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
