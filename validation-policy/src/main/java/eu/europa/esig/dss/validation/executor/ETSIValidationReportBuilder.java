@@ -38,6 +38,7 @@ import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
+import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.jaxb.validationreport.AttributeBaseType;
@@ -59,6 +60,7 @@ import eu.europa.esig.jaxb.validationreport.SAOCSPIDType;
 import eu.europa.esig.jaxb.validationreport.SAOneSignerRoleType;
 import eu.europa.esig.jaxb.validationreport.SAReasonType;
 import eu.europa.esig.jaxb.validationreport.SARevIDListType;
+import eu.europa.esig.jaxb.validationreport.SASigPolicyIdentifierType;
 import eu.europa.esig.jaxb.validationreport.SASignatureProductionPlaceType;
 import eu.europa.esig.jaxb.validationreport.SASignerRoleType;
 import eu.europa.esig.jaxb.validationreport.SASigningTimeType;
@@ -419,7 +421,7 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="IndividualDataObjectsTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
 		addTimestampsByType(sigAttributes, sigWrapper, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 		// &lt;element name="SigPolicyIdentifier" type="{http://uri.etsi.org/19102/v1.2.1#}SASigPolicyIdentifierType"/&gt;
-		// TODO: Policy ID
+		addSigPolicyIdentifier(sigAttributes, sigWrapper);
 		// &lt;element name="SignatureProductionPlace" type="{http://uri.etsi.org/19102/v1.2.1#}SASignatureProductionPlaceType"/&gt;
 		addProductionPlace(sigAttributes, sigWrapper);
 		// &lt;element name="SignerRole" type="{http://uri.etsi.org/19102/v1.2.1#}SASignerRoleType"/&gt;
@@ -677,6 +679,17 @@ public class ETSIValidationReportBuilder {
 				return objectFactory.createSignatureAttributesTypeDocTimeStamp(timestamp);
 			default:
 				throw new DSSException("Unsupported timestamp type " + timestampLocation);
+		}
+	}
+	
+	private void addSigPolicyIdentifier(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		String policyId = sigWrapper.getPolicyId();
+		if (Utils.isStringNotEmpty(policyId) && // exclude empty and default values
+				!SignaturePolicy.IMPLICIT_POLICY.equals(policyId)) {
+			SASigPolicyIdentifierType saSigPolicyIdentifierType = objectFactory.createSASigPolicyIdentifierType();
+			saSigPolicyIdentifierType.setSigPolicyId(policyId);
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
+				.add(objectFactory.createSignatureAttributesTypeSigPolicyIdentifier(saSigPolicyIdentifierType));
 		}
 	}
 

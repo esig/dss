@@ -21,11 +21,14 @@
 package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.xml.bind.JAXBElement;
 
 import org.junit.Test;
 
@@ -45,6 +48,9 @@ import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.jaxb.validationreport.SASigPolicyIdentifierType;
+import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
+import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
 /**
  * Test for XML Signature wrapping detection
@@ -238,6 +244,43 @@ public class XMLSignatureWrappingTest {
 		CertificateToken rootToken = DSSUtils.loadCertificateFromBase64EncodedString(
 				"MIID1DCCArygAwIBAgIBCjANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTcwOTI5MDg1NzMyWhcNMTkwNzI5MDg1NzMyWjBPMRIwEAYDVQQDDAlnb29kLXVzZXIxGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJiJTCR/uqNZPWXpToBIOrH1ggpmmZ4Lq4aSkxPhkHTNacI59Va3WyCnrIRN3EgJraLJ+dp7CD/5wbh9Utu7UHG5vs2ZTifPIdsWf3551BWQzi4ksYJO390/9H0H3G/MSabI3rairYvHdkSdQF7/3PImT1k5PyREiJ/VrhYbLRaeSaF1rpAznzHfp3+MWGbjtJe7DBvuxu+Ob38I3Z4+hcGwxmqoioT3yF4vieahPmSHtv2sDrK3IiL5v2YTzleKA4k3+0J2gSQia8KCKECjsKKFsRYefCDM6YPpjs49/51ppV5YwA1GKbl9UtGh6bPwiypiT7FvpiGTBPa+TRJktw0CAwEAAaOBvDCBuTAOBgNVHQ8BAf8EBAMCBkAwgYcGCCsGAQUFBwEBBHsweTA5BggrBgEFBQcwAYYtaHR0cDovL2Rzcy5ub3dpbmEubHUvcGtpLWZhY3Rvcnkvb2NzcC9nb29kLWNhMDwGCCsGAQUFBzAChjBodHRwOi8vZHNzLm5vd2luYS5sdS9wa2ktZmFjdG9yeS9jcnQvZ29vZC1jYS5jcnQwHQYDVR0OBBYEFF6/dyhxBXMAMXBN7889SSzNgGvxMA0GCSqGSIb3DQEBCwUAA4IBAQCb9an2uzczD2dkyHMeZ9YI4cki9YOJ+3isdxdZG6ErlTvTb31zhOdQZOxhA9EpCwyG/It0nMTImJoUDJumixD0ZH/pyb0DeXyCgZbOVB4txxTKksRNbMvD6gKnIekJlfQEJnPIteyqp4EMZdcIZ105ud5lQ3c2Illl4FMjLkz+6QDI+8sN2hnVP43hImFwJfxng+pZeteD0Bhb0x7MD+jf9CL+1Ty0S7ZEoAgSlRKztJtoWfoFOxd+pepfYFlit7/muuqOLNdzj9P6zK4KAF6xM/ulHa77cHwroxpRYL9bhCZTk7sZGtWSfJZfvRH+shMzh4PPJGMAcsbDeVtpXvFZ");
 		checkForTrustedCertificateRoot(validator, certificateVerifier, rootToken);
+	}
+	
+	@Test
+	public void signaturePolicyIdentifierTest() {
+		SignedDocumentValidator validator = SignedDocumentValidator
+				.fromDocument(new FileDocument(new File("src/test/resources/validation/valid-xades.xml")));
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
+
+		Reports reports = validator.validateDocument();
+		reports.print();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+		assertNotNull(signature.getPolicyId());
+		
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+		assertNotNull(etsiValidationReport);
+		SignatureValidationReportType signatureValidationReport = etsiValidationReport.getSignatureValidationReport().get(0);
+		assertNotNull(signatureValidationReport);
+		assertNotNull(signatureValidationReport.getSignatureAttributes());
+		List<Object> signingTimeOrSigningCertificateOrDataObjectFormat = signatureValidationReport.getSignatureAttributes().getSigningTimeOrSigningCertificateOrDataObjectFormat();
+		assertNotNull(signingTimeOrSigningCertificateOrDataObjectFormat);
+		boolean signaturePolicyIdPresent = false;
+		for (Object object : signingTimeOrSigningCertificateOrDataObjectFormat) {
+			JAXBElement<?> jaxbElement = (JAXBElement<?>) object;
+			if (jaxbElement.getValue() instanceof SASigPolicyIdentifierType) {
+				SASigPolicyIdentifierType sigPolicyIdentifier = (SASigPolicyIdentifierType) jaxbElement.getValue();
+				assertNotNull(sigPolicyIdentifier);
+				assertEquals(signature.getPolicyId(), sigPolicyIdentifier.getSigPolicyId());
+				signaturePolicyIdPresent = true;
+			}
+		}
+		assertTrue(signaturePolicyIdPresent);
+		
 	}
 	
 	/**
