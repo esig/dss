@@ -34,6 +34,7 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
+import eu.europa.esig.dss.validation.reports.wrapper.AbstractTokenProxy;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
@@ -109,20 +110,30 @@ public class ETSIValidationReportBuilder {
 		ValidationReportType result = objectFactory.createValidationReportType();
 
 		for (SignatureWrapper sigWrapper : diagnosticData.getAllSignatures()) {
-			SignatureValidationReportType signatureValidationReport = objectFactory.createSignatureValidationReportType();
-			signatureValidationReport.setSignatureIdentifier(getSignatureIdentifier(sigWrapper));
-			signatureValidationReport.setSignatureAttributes(getSignatureAttributes(sigWrapper));
-			signatureValidationReport.setSignerInformation(getSignerInformation(sigWrapper));
-			signatureValidationReport.setSignatureValidationProcess(getSignatureValidationProcess(sigWrapper));
-			signatureValidationReport.setSignatureValidationStatus(getValidationStatus(sigWrapper));
-			signatureValidationReport.setValidationTimeInfo(getValidationTimeInfo(sigWrapper));
-
-			result.getSignatureValidationReport().add(signatureValidationReport);
+			result.getSignatureValidationReport().add(getSignatureValidationReport(sigWrapper));
 		}
 
 		result.setSignatureValidationObjects(getSignatureValidationObjects());
 
 		return result;
+	}
+
+	private SignatureValidationReportType getSignatureValidationReport(SignatureWrapper sigWrapper) {
+		SignatureValidationReportType signatureValidationReport = objectFactory.createSignatureValidationReportType();
+		signatureValidationReport.setSignatureIdentifier(getSignatureIdentifier(sigWrapper));
+		signatureValidationReport.setSignatureAttributes(getSignatureAttributes(sigWrapper));
+		signatureValidationReport.setSignerInformation(getSignerInformation(sigWrapper));
+		signatureValidationReport.setSignatureValidationProcess(getSignatureValidationProcess(sigWrapper));
+		signatureValidationReport.setSignatureValidationStatus(getSignatureValidationStatus(sigWrapper));
+		signatureValidationReport.setValidationTimeInfo(getValidationTimeInfo(sigWrapper));
+		return signatureValidationReport;
+	}
+
+	private SignatureValidationReportType getValidationReport(AbstractTokenProxy token) {
+		SignatureValidationReportType signatureValidationReport = objectFactory.createSignatureValidationReportType();
+		signatureValidationReport.setSignerInformation(getSignerInformation(token));
+		signatureValidationReport.setSignatureValidationStatus(getValidationStatus(token));
+		return signatureValidationReport;
 	}
 
 	private ValidationTimeInfoType getValidationTimeInfo(SignatureWrapper sigWrapper) {
@@ -145,20 +156,20 @@ public class ETSIValidationReportBuilder {
 		return validationTimeInfoType;
 	}
 
-	private SignerInformationType getSignerInformation(SignatureWrapper sigWrapper) {
-		CertificateWrapper signingCert = sigWrapper.getSigningCertificate();
+	private SignerInformationType getSignerInformation(AbstractTokenProxy token) {
+		CertificateWrapper signingCert = token.getSigningCertificate();
 		if (signingCert == null) {
 			return null;
 		}
 		SignerInformationType signerInfo = objectFactory.createSignerInformationType();
-		signerInfo.setPseudonym(isUsePseudo(sigWrapper));
+		signerInfo.setPseudonym(isUsePseudo(token));
 		signerInfo.setSigner(signingCert.getReadableCertificateName());
 		signerInfo.setSignerCertificate(getVOReference(signingCert.getId()));
 		return signerInfo;
 	}
 
-	private Boolean isUsePseudo(SignatureWrapper sigWrapper) {
-		XmlSubXCV signingCertificateXCV = detailedReport.getSigningCertificate(sigWrapper.getId());
+	private Boolean isUsePseudo(AbstractTokenProxy token) {
+		XmlSubXCV signingCertificateXCV = detailedReport.getSigningCertificate(token.getId());
 		if (signingCertificateXCV != null) {
 			List<XmlConstraint> constraints = signingCertificateXCV.getConstraint();
 			for (XmlConstraint xmlConstraint : constraints) {
@@ -275,9 +286,10 @@ public class ETSIValidationReportBuilder {
 		}
 		validationObject.setValidationObject(representation);
 		validationObject.setPOEProvisioning(getPOEProvisioningType(timestamp));
+		validationObject.setValidationReport(getValidationReport(timestamp));
 		validationObjectListType.getValidationObject().add(validationObject);
 	}
-	
+
 	private POEProvisioningType getPOEProvisioningType(TimestampWrapper timestamp) {
 		POEProvisioningType poeProvisioning = objectFactory.createPOEProvisioningType();
 		poeProvisioning.setPOETime(timestamp.getProductionTime());
@@ -329,21 +341,35 @@ public class ETSIValidationReportBuilder {
 		}
 		validationObject.setValidationObject(representation);
 		validationObject.setPOE(getPOE(revocationData.getId(), poeExtraction));
+		validationObject.setValidationReport(getValidationReport(revocationData));
 		validationObjectListType.getValidationObject().add(validationObject);
 	}
 
-	private ValidationStatusType getValidationStatus(SignatureWrapper sigWrapper) {
+	private ValidationStatusType getSignatureValidationStatus(SignatureWrapper signature) {
 		ValidationStatusType validationStatus = objectFactory.createValidationStatusType();
 
-		Indication indication = detailedReport.getHighestIndication(sigWrapper.getId());
-		validationStatus.setMainIndication(MainIndication.valueOf(indication.name()));
-		SubIndication subIndication = detailedReport.getHighestSubIndication(sigWrapper.getId());
-		if (subIndication != null) {
-			validationStatus.getSubIndication().add(eu.europa.esig.jaxb.validationreport.enums.SubIndication.valueOf(subIndication.name()));
+		Indication indication = detailedReport.getHighestIndication(signature.getId());
+		if (indication != null) {
+			validationStatus.setMainIndication(MainIndication.valueOf(indication.name()));
+			SubIndication subIndication = detailedReport.getHighestSubIndication(signature.getId());
+			if (subIndication != null) {
+				validationStatus.getSubIndication().add(eu.europa.esig.jaxb.validationreport.enums.SubIndication.valueOf(subIndication.name()));
+			}
 		}
 
+		validationStatus.getAssociatedValidationReportData().add(getValidationReportData(signature));
+		return validationStatus;
+	}
+
+	private ValidationStatusType getValidationStatus(AbstractTokenProxy token) {
+		ValidationStatusType validationStatus = objectFactory.createValidationStatusType();
+		validationStatus.getAssociatedValidationReportData().add(getValidationReportData(token));
+		return validationStatus;
+	}
+
+	private ValidationReportDataType getValidationReportData(AbstractTokenProxy token) {
 		ValidationReportDataType validationReportData = objectFactory.createValidationReportDataType();
-		XmlBasicBuildingBlocks basicBuildingBlockSignature = detailedReport.getBasicBuildingBlockById(sigWrapper.getId());
+		XmlBasicBuildingBlocks basicBuildingBlockSignature = detailedReport.getBasicBuildingBlockById(token.getId());
 		if (basicBuildingBlockSignature != null) {
 			XmlCertificateChain certificateChain = basicBuildingBlockSignature.getCertificateChain();
 			if (certificateChain != null) {
@@ -351,13 +377,11 @@ public class ETSIValidationReportBuilder {
 			}
 		}
 
-		XmlSubXCV signingCertificate = detailedReport.getSigningCertificate(sigWrapper.getId());
+		XmlSubXCV signingCertificate = detailedReport.getSigningCertificate(token.getId());
 		if (signingCertificate != null && signingCertificate.getRevocationInfo() != null) {
 			fillRevocationInfo(validationReportData, signingCertificate.getRevocationInfo());
 		}
-
-		validationStatus.getAssociatedValidationReportData().add(validationReportData);
-		return validationStatus;
+		return validationReportData;
 	}
 
 	private void fillRevocationInfo(ValidationReportDataType validationReportData, XmlRevocationInformation revocationInfo) {
@@ -365,7 +389,9 @@ public class ETSIValidationReportBuilder {
 		revocationStatusInformationType.setRevocationTime(revocationInfo.getRevocationDate());
 		revocationStatusInformationType.setRevocationObject(getVOReference(revocationInfo.getRevocationId()));
 		revocationStatusInformationType.setValidationObjectId(getVOReference(revocationInfo.getCertificateId()));
-		revocationStatusInformationType.setRevocationReason(RevocationReason.valueOf(revocationInfo.getReason().name()));
+		if (revocationInfo.getReason() != null) {
+			revocationStatusInformationType.setRevocationReason(RevocationReason.valueOf(revocationInfo.getReason().name()));
+		}
 		validationReportData.setRevocationStatusInformation(revocationStatusInformationType);
 	}
 
