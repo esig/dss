@@ -81,15 +81,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 		String maskGenerationFunctionUsedToSignThisToken = token.getMaskGenerationFunctionUsedToSignThisToken();
 		String keyLengthUsedToSignThisToken = token.getKeyLengthUsedToSignThisToken();
 
-		SignatureAlgorithm sigAlgo = null;
-		if (Utils.isStringNotEmpty(maskGenerationFunctionUsedToSignThisToken)) {
-			sigAlgo = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.forName(encryptionAlgoUsedToSignThisToken),
-					DigestAlgorithm.forName(digestAlgoUsedToSignThisToken), MaskGenerationFunction.valueOf(maskGenerationFunctionUsedToSignThisToken));
-		} else {
-			sigAlgo = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.forName(encryptionAlgoUsedToSignThisToken),
-					DigestAlgorithm.forName(digestAlgoUsedToSignThisToken));
-		}
-		cryptoInfo.setAlgorithm(sigAlgo.getXMLId());
+		fillAlgorithmURI(cryptoInfo, encryptionAlgoUsedToSignThisToken, digestAlgoUsedToSignThisToken, maskGenerationFunctionUsedToSignThisToken);
 		cryptoInfo.setKeyLength(keyLengthUsedToSignThisToken);
 		
 		XmlConclusion conclusion = result.getConclusion();
@@ -118,5 +110,21 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 		result.setCryptographicInfo(cryptoInfo);
 	}
 
+	private void fillAlgorithmURI(XmlCryptographicInformation cryptoInfo, String encryptionAlgoUsedToSignThisToken, String digestAlgoUsedToSignThisToken,
+			String maskGenerationFunctionUsedToSignThisToken) {
+		try {
+			SignatureAlgorithm sigAlgo = null;
+			if (Utils.isStringNotEmpty(maskGenerationFunctionUsedToSignThisToken)) {
+				sigAlgo = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.forName(encryptionAlgoUsedToSignThisToken),
+						DigestAlgorithm.forName(digestAlgoUsedToSignThisToken), MaskGenerationFunction.valueOf(maskGenerationFunctionUsedToSignThisToken));
+			} else {
+				sigAlgo = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.valueOf(encryptionAlgoUsedToSignThisToken),
+						DigestAlgorithm.forName(digestAlgoUsedToSignThisToken));
+			}
+			cryptoInfo.setAlgorithm(sigAlgo.getXMLId());
+		} catch (Exception e) {
+			cryptoInfo.setAlgorithm("???");
+		}
+	}
 
 }

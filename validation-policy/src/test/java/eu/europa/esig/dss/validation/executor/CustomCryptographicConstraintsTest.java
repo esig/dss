@@ -216,11 +216,11 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		initializeExecutor("src/test/resources/universign.xml");
 		validationPolicyFile = "src/test/resources/policy/no-crypto-constraint-policy.xml";
 		
-		Indication result = null;
-		
-		result = defaultConstraintValidationDateIsBeforeExpirationDateTest(ALGORITHM_SHA256);
+		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
+		setValidationPolicy(constraintsParameters);
+		SimpleReport simpleReport = createSimpleReport();
+		Indication result = simpleReport.getIndication(simpleReport.getFirstSignatureId());
 		assertEquals(Indication.TOTAL_PASSED, result);
-		
 	}
 
 	@Test
