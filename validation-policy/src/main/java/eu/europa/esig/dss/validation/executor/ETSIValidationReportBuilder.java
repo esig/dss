@@ -417,7 +417,8 @@ public class ETSIValidationReportBuilder {
 				return getDigestAlgAndValueType(xmlDigestMatcher.getDigestMethod(), xmlDigestMatcher.getDigestValue());
 			}
 			for (XmlDigestMatcher digestMatcher : digestMatchers) {
-				if (DigestMatcherType.SIGNED_PROPERTIES.equals(digestMatcher.getType())) {
+				if (DigestMatcherType.SIGNED_PROPERTIES.equals(digestMatcher.getType()) &&
+						Utils.isStringNotEmpty(digestMatcher.getDigestMethod()) && Utils.isArrayNotEmpty(digestMatcher.getDigestValue())) {
 					return getDigestAlgAndValueType(digestMatcher.getDigestMethod(), digestMatcher.getDigestValue());
 				}
 			}

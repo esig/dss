@@ -155,7 +155,7 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports report = validator.validateDocument();
-		// System.out.println(report.getXmlDiagnosticData().replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", ""));
+		// report.print();
 		DiagnosticData diagnosticData = report.getDiagnosticData();
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		assertNotNull(signatures);

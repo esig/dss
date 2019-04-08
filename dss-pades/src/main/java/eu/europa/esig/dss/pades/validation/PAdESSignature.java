@@ -464,11 +464,6 @@ public class PAdESSignature extends CAdESSignature {
 		return pdfSignatureInfo.getReason();
 	}
 	
-	@Override
-	public byte[] getSignatureValue() {
-		return pdfSignatureInfo.getContent();
-	}
-	
 	/**
 	 * Name of the related to the signature VRI dictionary
 	 * @return related {@link String} VRI dictionary name
@@ -476,7 +471,7 @@ public class PAdESSignature extends CAdESSignature {
 	public String getVRIKey() {
 		// By ETSI EN 319 142-1 V1.1.1, VRI dictionary's name is the base-16-encoded (uppercase)
 		// SHA1 digest of the signature to which it applies
-		return DSSUtils.toHex(DSSUtils.digest(DigestAlgorithm.SHA1, getSignatureValue())).toUpperCase();
+		return DSSUtils.toHex(DSSUtils.digest(DigestAlgorithm.SHA1, pdfSignatureInfo.getContent())).toUpperCase();
 	}
 
 }
