@@ -948,7 +948,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	
 	@Override
 	public boolean isDocHashOnlyValidation() {
-		if (detachedContents != null) {
+		if (Utils.isCollectionNotEmpty(detachedContents)) {
 			for (DSSDocument dssDocument : detachedContents) {
 				if (!(dssDocument instanceof DigestDocument)) {
 					return false;
