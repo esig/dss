@@ -210,6 +210,18 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_ANS_2, true);
 		
 	}
+	
+	@Test
+	public void noCryptoPolicyTest() throws Exception {
+		initializeExecutor("src/test/resources/universign.xml");
+		validationPolicyFile = "src/test/resources/policy/no-crypto-constraint-policy.xml";
+		
+		Indication result = null;
+		
+		result = defaultConstraintValidationDateIsBeforeExpirationDateTest(ALGORITHM_SHA256);
+		assertEquals(Indication.TOTAL_PASSED, result);
+		
+	}
 
 	@Test
 	public void pastSignatureValidationTest() throws Exception {
