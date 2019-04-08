@@ -188,6 +188,11 @@
 						</xs:complexType>
 					</xs:element>
 					
+					<xs:choice>
+						<xs:element name="SignatureValue" type="xs:base64Binary" />
+						<xs:element name="DataToBeSignedRepresentation" type="DigestAlgoAndValue" />
+					</xs:choice>
+					
 				</xs:sequence>
 				<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
 			</xs:extension>

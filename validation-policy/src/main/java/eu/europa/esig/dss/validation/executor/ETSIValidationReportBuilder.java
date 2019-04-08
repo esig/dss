@@ -88,6 +88,7 @@ import eu.europa.esig.jaxb.validationreport.enums.SignatureValidationProcessID;
 import eu.europa.esig.jaxb.validationreport.enums.TypeOfProof;
 import eu.europa.esig.jaxb.xades132.DigestAlgAndValueType;
 import eu.europa.esig.jaxb.xmldsig.DigestMethodType;
+import eu.europa.esig.jaxb.xmldsig.SignatureValueType;
 
 public class ETSIValidationReportBuilder {
 
@@ -396,11 +397,10 @@ public class ETSIValidationReportBuilder {
 		sigId.setId(sigWrapper.getId());
 		sigId.setDocHashOnly(sigWrapper.isDocHashOnly());
 		sigId.setHashOnly(sigWrapper.isHashOnly());
-		// TODO
-//		SignatureValueType sigValue = new SignatureValueType();
-//		sigValue.setValue(value);
-//		sigId.setSignatureValue(sigValue );
-
+		// TODO: This element shall contain the DTBSR in an element of type XAdES:DigestAlgAndValueType
+		SignatureValueType sigValue = new SignatureValueType();
+		sigValue.setValue(sigWrapper.getSignatureValue());
+		sigId.setSignatureValue(sigValue);
 		return sigId;
 	}
 

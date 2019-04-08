@@ -3,14 +3,11 @@ package eu.europa.esig.dss.pades.validation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import javax.xml.bind.JAXBElement;
 
 import org.junit.Test;
 
@@ -18,7 +15,6 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -29,10 +25,6 @@ import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
-import eu.europa.esig.jaxb.validationreport.SATimestampType;
-import eu.europa.esig.jaxb.validationreport.SignatureAttributesType;
-import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
-import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
 public class DiagnosticDataComplete extends PKIFactoryAccess {
 
@@ -187,41 +179,6 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		List<TimestampWrapper> docTimestamps = signature.getTimestampListByLocation(TimestampLocation.DOC_TIMESTAMP);
 		assertNotNull(docTimestamps);
 		assertEquals(1, docTimestamps.size());
-		
-		ValidationReportType etsiValidationReport = report.getEtsiValidationReportJaxb();
-		assertNotNull(etsiValidationReport);
-		SignatureValidationReportType signatureValidationType = etsiValidationReport.getSignatureValidationReport().get(0);
-		assertNotNull(signatureValidationType);
-		SignatureAttributesType signatureAttributesType = signatureValidationType.getSignatureAttributes();
-		assertNotNull(signatureAttributesType);
-		List<Object> attributesList = signatureAttributesType.getSigningTimeOrSigningCertificateOrDataObjectFormat();
-		assertTrue(Utils.isCollectionNotEmpty(attributesList));
-		List<SATimestampType> foundTimestamps = new ArrayList<SATimestampType>();
-		int docTimestampsCounter = 0;
-		int sigTimestampsCounter = 0;
-		int archiveTimestampsCounter = 0;
-		for (Object object : attributesList) {
-			JAXBElement element = (JAXBElement) object;
-			if (element.getValue() instanceof SATimestampType) {
-				SATimestampType saTimestamp = (SATimestampType) element.getValue();
-				assertTrue(Utils.isCollectionNotEmpty(saTimestamp.getAttributeObject()));
-				assertNotNull(saTimestamp.getTimeStampValue());
-				foundTimestamps.add(saTimestamp);
-			}
-			if (element.getName().getLocalPart().equals("ArchiveTimeStamp")) {
-				archiveTimestampsCounter++;
-			}
-			if (element.getName().getLocalPart().equals("DocTimeStamp")) {
-				docTimestampsCounter++;
-			}
-			if (element.getName().getLocalPart().equals("SignatureTimeStamp")) {
-				sigTimestampsCounter++;
-			}
-		}
-		assertEquals(2, foundTimestamps.size());
-		assertEquals(1, sigTimestampsCounter);
-		assertEquals(1, docTimestampsCounter);
-		assertEquals(0, archiveTimestampsCounter);
 	}
 	
 	@Test

@@ -1140,6 +1140,16 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public SignerInformation getSignerInformation() {
 		return signerInformation;
 	}
+	
+	@Override
+	public byte[] getSignatureValue() {
+		try {
+			return cmsSignedData.getEncoded();
+		} catch (IOException e) {
+			LOG.error("Cannot get CMSSignedData's encoded value", e);
+			return null;
+		}
+	}
 
 	@Override
 	public List<AdvancedSignature> getCounterSignatures() {

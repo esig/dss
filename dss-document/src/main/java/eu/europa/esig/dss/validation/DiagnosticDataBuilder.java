@@ -510,6 +510,8 @@ public class DiagnosticDataBuilder {
 		xmlSignature.setFoundRevocations(getXmlFoundRevocations(signature));
 		xmlSignature.setFoundCertificates(getXmlFoundCertificates(signature));
 		xmlSignature.setSignatureScopes(getXmlSignatureScopes(signature.getSignatureScopes()));
+		
+		xmlSignature.setSignatureValue(signature.getSignatureValue());
 
 		return xmlSignature;
 	}
