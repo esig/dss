@@ -13,8 +13,10 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlCertificateChain;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlChainItem;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlCryptographicInformation;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlProofOfExistence;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRevocationInformation;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
@@ -44,6 +46,7 @@ import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.jaxb.validationreport.AttributeBaseType;
 import eu.europa.esig.jaxb.validationreport.CertificateChainType;
+import eu.europa.esig.jaxb.validationreport.CryptoInformationType;
 import eu.europa.esig.jaxb.validationreport.ObjectFactory;
 import eu.europa.esig.jaxb.validationreport.POEProvisioningType;
 import eu.europa.esig.jaxb.validationreport.POEType;
@@ -381,7 +384,24 @@ public class ETSIValidationReportBuilder {
 		if (signingCertificate != null && signingCertificate.getRevocationInfo() != null) {
 			fillRevocationInfo(validationReportData, signingCertificate.getRevocationInfo());
 		}
+
+		XmlBasicBuildingBlocks basicBuildingBlockById = detailedReport.getBasicBuildingBlockById(token.getId());
+		if (basicBuildingBlockById != null) {
+			XmlSAV sav = basicBuildingBlockById.getSAV();
+			if (sav != null && sav.getCryptographicInfo() != null) {
+				fillCryptographicInfo(validationReportData, sav.getCryptographicInfo());
+			}
+		}
+
 		return validationReportData;
+	}
+
+	private void fillCryptographicInfo(ValidationReportDataType validationReportData, XmlCryptographicInformation cryptographicInfo) {
+		CryptoInformationType cryptoInformationType = objectFactory.createCryptoInformationType();
+		cryptoInformationType.setAlgorithm(cryptographicInfo.getAlgorithm());
+		cryptoInformationType.setSecureAlgorithm(cryptographicInfo.isSecure());
+		cryptoInformationType.setNotAfter(cryptographicInfo.getNotAfter());
+		validationReportData.setCryptoInformation(cryptoInformationType);
 	}
 
 	private void fillRevocationInfo(ValidationReportDataType validationReportData, XmlRevocationInformation revocationInfo) {
