@@ -371,40 +371,50 @@ public class ETSIValidationReportBuilder {
 			}
 		}
 
-		validationStatus.getAssociatedValidationReportData().add(getValidationReportData(signature));
+		addValidationReportData(validationStatus, signature);
 		return validationStatus;
 	}
 
 	private ValidationStatusType getValidationStatus(AbstractTokenProxy token) {
 		ValidationStatusType validationStatus = objectFactory.createValidationStatusType();
-		validationStatus.getAssociatedValidationReportData().add(getValidationReportData(token));
+
+		Indication indication = detailedReport.getBasicBuildingBlocksIndication(token.getId());
+		if (indication != null) {
+			validationStatus.setMainIndication(MainIndication.valueOf(indication.name()));
+			SubIndication subIndication = detailedReport.getBasicBuildingBlocksSubIndication(token.getId());
+			if (subIndication != null) {
+				validationStatus.getSubIndication().add(eu.europa.esig.jaxb.validationreport.enums.SubIndication.valueOf(subIndication.name()));
+			}
+		}
+
+		addValidationReportData(validationStatus, token);
 		return validationStatus;
 	}
 
-	private ValidationReportDataType getValidationReportData(AbstractTokenProxy token) {
-		ValidationReportDataType validationReportData = objectFactory.createValidationReportDataType();
-		XmlBasicBuildingBlocks basicBuildingBlockSignature = detailedReport.getBasicBuildingBlockById(token.getId());
-		if (basicBuildingBlockSignature != null) {
-			XmlCertificateChain certificateChain = basicBuildingBlockSignature.getCertificateChain();
-			if (certificateChain != null) {
-				fillCertificateChainAndTrustAnchor(validationReportData, certificateChain);
-			}
-		}
-
+	private void addValidationReportData(ValidationStatusType validationStatus, AbstractTokenProxy token) {
+		XmlBasicBuildingBlocks basicBuildingBlock = detailedReport.getBasicBuildingBlockById(token.getId());
 		XmlSubXCV signingCertificate = detailedReport.getSigningCertificate(token.getId());
-		if (signingCertificate != null && signingCertificate.getRevocationInfo() != null) {
-			fillRevocationInfo(validationReportData, signingCertificate.getRevocationInfo());
-		}
 
-		XmlBasicBuildingBlocks basicBuildingBlockById = detailedReport.getBasicBuildingBlockById(token.getId());
-		if (basicBuildingBlockById != null) {
-			XmlSAV sav = basicBuildingBlockById.getSAV();
-			if (sav != null && sav.getCryptographicInfo() != null) {
-				fillCryptographicInfo(validationReportData, sav.getCryptographicInfo());
+		if (basicBuildingBlock != null || signingCertificate != null) {
+			ValidationReportDataType validationReportData = objectFactory.createValidationReportDataType();
+			if (basicBuildingBlock != null) {
+				XmlCertificateChain certificateChain = basicBuildingBlock.getCertificateChain();
+				if (certificateChain != null) {
+					fillCertificateChainAndTrustAnchor(validationReportData, certificateChain);
+				}
+
+				XmlSAV sav = basicBuildingBlock.getSAV();
+				if (sav != null && sav.getCryptographicInfo() != null) {
+					fillCryptographicInfo(validationReportData, sav.getCryptographicInfo());
+				}
 			}
-		}
 
-		return validationReportData;
+			if (signingCertificate != null && signingCertificate.getRevocationInfo() != null) {
+				fillRevocationInfo(validationReportData, signingCertificate.getRevocationInfo());
+			}
+
+			validationStatus.getAssociatedValidationReportData().add(validationReportData);
+		}
 	}
 
 	private void fillCryptographicInfo(ValidationReportDataType validationReportData, XmlCryptographicInformation cryptographicInfo) {

@@ -489,7 +489,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 		if (revocations.isEmpty() || isRevocationDataRefreshNeeded(certToken, revocations)) {
 
-			if (checkRevocationForUntrustedChains || isTrustedChain(certChain)) {
+			if (checkRevocationForUntrustedChains || containsTrustAnchor(certChain)) {
 
 				// Online resources (OCSP and CRL if OCSP doesn't reply)
 				OCSPAndCRLCertificateVerifier onlineVerifier = null;
@@ -506,7 +506,7 @@ public class SignatureValidationContext implements ValidationContext {
 					revocations.add(onlineRevocationToken);
 				}
 			} else {
-				LOG.warn("External revocation check is skipped for untrusted certificate : {}", certChain.iterator().next().getDSSIdAsString());
+				LOG.warn("External revocation check is skipped for untrusted certificate : {}", certToken.getDSSIdAsString());
 			}
 		}
 
@@ -517,9 +517,13 @@ public class SignatureValidationContext implements ValidationContext {
 		return revocations;
 	}
 
-	private boolean isTrustedChain(List<Token> certChain) {
-		Token lastToken = certChain.get(certChain.size() - 1);
-		return isTrusted(lastToken);
+	private boolean containsTrustAnchor(List<Token> certChain) {
+		for (Token token : certChain) {
+			if (isTrusted(token)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

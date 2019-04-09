@@ -520,19 +520,19 @@ public class DiagnosticDataBuilder {
 		SignatureForm signatureForm = signature.getSignatureForm();
 		if (SignatureForm.PAdES == signatureForm || SignatureForm.PKCS7 == signatureForm) {
 			XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
-			pdfSignatureDictionary.setSignatureFieldName(signature.getSignatureFieldName());
-			pdfSignatureDictionary.setSignerName(signature.getSignerName());
-			pdfSignatureDictionary.setFilter(signature.getFilter());
-			pdfSignatureDictionary.setSubFilter(signature.getSubFilter());
-			pdfSignatureDictionary.setContactInfo(signature.getContactInfo());
-			pdfSignatureDictionary.setReason(signature.getReason());
+			pdfSignatureDictionary.setSignatureFieldName(emptyToNull(signature.getSignatureFieldName()));
+			pdfSignatureDictionary.setSignerName(emptyToNull(signature.getSignerName()));
+			pdfSignatureDictionary.setFilter(emptyToNull(signature.getFilter()));
+			pdfSignatureDictionary.setSubFilter(emptyToNull(signature.getSubFilter()));
+			pdfSignatureDictionary.setContactInfo(emptyToNull(signature.getContactInfo()));
+			pdfSignatureDictionary.setReason(emptyToNull(signature.getReason()));
 			pdfSignatureDictionary.getSignatureByteRange().addAll(
 					AdapterUtils.intArrayToBigIntegerList(signature.getSignatureByteRange()));
 			return pdfSignatureDictionary;
 		}
 		return null;
 	}
-	
+
 	private XmlSignerDocumentRepresentation getXmlSignerDocumentRepresentation(AdvancedSignature signature) {
 		if (signature.getDetachedContents() == null) {
 			return null;
@@ -714,26 +714,11 @@ public class DiagnosticDataBuilder {
 	private XmlSignatureProductionPlace getXmlSignatureProductionPlace(SignatureProductionPlace signatureProductionPlace) {
 		if (signatureProductionPlace != null) {
 			final XmlSignatureProductionPlace xmlSignatureProductionPlace = new XmlSignatureProductionPlace();
-			String countryName = signatureProductionPlace.getCountryName();
-			if (Utils.isStringNotEmpty(countryName)) {
-				xmlSignatureProductionPlace.setCountryName(countryName);
-			}
-			String stateOrProvince = signatureProductionPlace.getStateOrProvince();
-			if (Utils.isStringNotEmpty(stateOrProvince)) {
-				xmlSignatureProductionPlace.setStateOrProvince(stateOrProvince);
-			}
-			String postalCode = signatureProductionPlace.getPostalCode();
-			if (Utils.isStringNotEmpty(postalCode)) {
-				xmlSignatureProductionPlace.setPostalCode(postalCode);
-			}
-			String streetAddress = signatureProductionPlace.getStreetAddress();
-			if (Utils.isStringNotEmpty(streetAddress)) {
-				xmlSignatureProductionPlace.setAddress(streetAddress);
-			}
-			String city = signatureProductionPlace.getCity();
-			if (Utils.isStringNotEmpty(city)) {
-				xmlSignatureProductionPlace.setCity(city);
-			}
+			xmlSignatureProductionPlace.setCountryName(emptyToNull(signatureProductionPlace.getCountryName()));
+			xmlSignatureProductionPlace.setStateOrProvince(emptyToNull(signatureProductionPlace.getStateOrProvince()));
+			xmlSignatureProductionPlace.setPostalCode(emptyToNull(signatureProductionPlace.getPostalCode()));
+			xmlSignatureProductionPlace.setAddress(emptyToNull(signatureProductionPlace.getStreetAddress()));
+			xmlSignatureProductionPlace.setCity(emptyToNull(signatureProductionPlace.getCity()));
 			return xmlSignatureProductionPlace;
 		}
 		return null;
@@ -1461,6 +1446,13 @@ public class DiagnosticDataBuilder {
 		xmlDigestAlgAndValue.setDigestMethod(digestAlgo == null ? "" : digestAlgo.getName());
 		xmlDigestAlgAndValue.setDigestValue(digestValue);
 		return xmlDigestAlgAndValue;
+	}
+
+	private String emptyToNull(String text) {
+		if (Utils.isStringEmpty(text)) {
+			return null;
+		}
+		return text;
 	}
 
 }
