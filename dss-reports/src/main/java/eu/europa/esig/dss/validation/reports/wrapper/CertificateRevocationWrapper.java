@@ -4,6 +4,7 @@ import java.util.Date;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.RevocationReason;
 
 /**
  * Complete revocation wrapper, containing detailed certificate revocation and common information
@@ -21,7 +22,7 @@ public class CertificateRevocationWrapper extends RevocationWrapper {
 		return Utils.isTrue(certificateRevocation.isStatus());
 	}
 
-	public String getReason() {
+	public RevocationReason getReason() {
 		return certificateRevocation.getReason();
 	}
 

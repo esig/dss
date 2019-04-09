@@ -47,6 +47,7 @@ import eu.europa.esig.dss.jaxb.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlChainItem;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateQualification;
+import eu.europa.esig.dss.validation.RevocationReason;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 
@@ -90,7 +91,7 @@ public class CertificateProcessExecutorTest extends AbstractValidationExecutorTe
 		assertEquals(Indication.INDETERMINATE, simpleReport.getCertificateIndication(certificateId));
 		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getCertificateCrlUrls(certificateId)));
 		assertNotNull(simpleReport.getCertificateRevocationDate(certificateId));
-		assertEquals("unspecified", simpleReport.getCertificateRevocationReason(certificateId));
+		assertEquals(RevocationReason.unspecified, simpleReport.getCertificateRevocationReason(certificateId));
 		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getCertificateCrlUrls(certificateId)));
 		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getTrustAnchorVATNumbers()));
 

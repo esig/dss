@@ -73,9 +73,25 @@
 		<xs:sequence>
 			<xs:element name="productionDate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="revocationDate" type="xs:dateTime" minOccurs="0" />
-			<xs:element name="revocationReason" type="xs:string" minOccurs="0" />		
+			<xs:element name="revocationReason" type="RevocationReason" minOccurs="0" />		
 		</xs:sequence>
 	</xs:complexType>
+	
+	<xs:simpleType name="RevocationReason" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="unspecified" />
+			<xs:enumeration value="keyCompromise" />
+			<xs:enumeration value="cACompromise" />
+			<xs:enumeration value="affiliationChanged" />
+			<xs:enumeration value="superseded" />
+			<xs:enumeration value="cessationOfOperation" />
+			<xs:enumeration value="certificateHold" />
+			<xs:enumeration value="unknow" />
+			<xs:enumeration value="removeFromCRL" />
+			<xs:enumeration value="privilegeWithdrawn" />
+			<xs:enumeration value="aACompromise" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="TrustAnchors">
 		<xs:sequence>
