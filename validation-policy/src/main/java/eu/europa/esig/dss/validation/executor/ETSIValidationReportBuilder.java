@@ -364,7 +364,7 @@ public class ETSIValidationReportBuilder {
 
 		Indication indication = detailedReport.getHighestIndication(signature.getId());
 		if (indication != null) {
-			validationStatus.setMainIndication(MainIndication.valueOf(indication.name()));
+			fillIndication(validationStatus, indication);
 			SubIndication subIndication = detailedReport.getHighestSubIndication(signature.getId());
 			if (subIndication != null) {
 				validationStatus.getSubIndication().add(eu.europa.esig.jaxb.validationreport.enums.SubIndication.valueOf(subIndication.name()));
@@ -373,6 +373,22 @@ public class ETSIValidationReportBuilder {
 
 		addValidationReportData(validationStatus, signature);
 		return validationStatus;
+	}
+
+	private void fillIndication(ValidationStatusType validationStatus, Indication indication) {
+		switch (indication) {
+		case PASSED:
+			validationStatus.setMainIndication(MainIndication.TOTAL_PASSED);
+			break;
+		case FAILED:
+			validationStatus.setMainIndication(MainIndication.TOTAL_FAILED);
+			break;
+		case INDETERMINATE:
+			validationStatus.setMainIndication(MainIndication.INDETERMINATE);
+			break;
+		default:
+			throw new DSSException("Unsupported indication : " + indication);
+		}
 	}
 
 	private ValidationStatusType getValidationStatus(AbstractTokenProxy token) {
@@ -974,9 +990,12 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addSigningTime(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		SASigningTimeType saSigningTimeType = objectFactory.createSASigningTimeType();
-		saSigningTimeType.setTime(sigWrapper.getDateTime());
-		sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(objectFactory.createSignatureAttributesTypeSigningTime(saSigningTimeType));
+		Date dateTime = sigWrapper.getDateTime();
+		if (dateTime != null) {
+			SASigningTimeType saSigningTimeType = objectFactory.createSASigningTimeType();
+			saSigningTimeType.setTime(dateTime);
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(objectFactory.createSignatureAttributesTypeSigningTime(saSigningTimeType));
+		}
 	}
 
 }

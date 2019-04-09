@@ -50,8 +50,8 @@ public class PdfPkcs7 {
 		assertEquals(SignatureLevel.PKCS7_T.toString(), signatureById.getSignatureFormat());
 
 		// no signing certificate attribute
-		assertEquals(0, signatureById.getFoundCertificateIds(XmlCertificateLocationType.SIGNING_CERTIFICATE));
-		assertEquals(4, signatureById.getFoundCertificateIds(XmlCertificateLocationType.KEY_INFO));
+		assertEquals(0, signatureById.getFoundCertificateIds(XmlCertificateLocationType.SIGNING_CERTIFICATE).size());
+		assertEquals(4, signatureById.getFoundCertificateIds(XmlCertificateLocationType.KEY_INFO).size());
 
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());
