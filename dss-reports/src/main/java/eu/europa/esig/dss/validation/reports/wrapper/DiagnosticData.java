@@ -761,6 +761,22 @@ public class DiagnosticData {
 		}
 		return signatures;
 	}
+	
+	/**
+	 * Returns a set of {@link SignatureWrapper}s for a given {@code masterSignatureWrapper}
+	 * @param masterSignatureWrapper - {@link SignatureWrapper} to get counter signatures for
+	 * @return set of {@link SignatureWrapper}s
+	 */
+	public Set<SignatureWrapper> getAllCounterSignaturesForMasterSignature(SignatureWrapper masterSignatureWrapper) {
+		Set<SignatureWrapper> signatures = new HashSet<SignatureWrapper>();
+		List<SignatureWrapper> mixedSignatures = getSignatures();
+		for (SignatureWrapper signatureWrapper : mixedSignatures) {
+			if (signatureWrapper.getParent() != null && signatureWrapper.getParent().equals(masterSignatureWrapper)) {
+				signatures.add(signatureWrapper);
+			}
+		}
+		return signatures;
+	}
 
 	/**
 	 * This method returns timestamps

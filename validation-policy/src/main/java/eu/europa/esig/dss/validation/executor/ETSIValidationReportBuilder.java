@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
 
@@ -52,6 +53,7 @@ import eu.europa.esig.jaxb.validationreport.SACertIDListType;
 import eu.europa.esig.jaxb.validationreport.SACertIDType;
 import eu.europa.esig.jaxb.validationreport.SACommitmentTypeIndicationType;
 import eu.europa.esig.jaxb.validationreport.SAContactInfoType;
+import eu.europa.esig.jaxb.validationreport.SACounterSignatureType;
 import eu.europa.esig.jaxb.validationreport.SADSSType;
 import eu.europa.esig.jaxb.validationreport.SADataObjectFormatType;
 import eu.europa.esig.jaxb.validationreport.SAFilterType;
@@ -109,7 +111,8 @@ public class ETSIValidationReportBuilder {
 	public ValidationReportType build() {
 		ValidationReportType result = objectFactory.createValidationReportType();
 
-		for (SignatureWrapper sigWrapper : diagnosticData.getAllSignatures()) {
+		// iterate over the complete list of signatures, including counter signatures
+		for (SignatureWrapper sigWrapper : diagnosticData.getSignatures()) {
 			SignatureValidationReportType signatureValidationReport = objectFactory.createSignatureValidationReportType();
 			signatureValidationReport.setSignatureIdentifier(getSignatureIdentifier(sigWrapper));
 			signatureValidationReport.setSignatureAttributes(getSignatureAttributes(sigWrapper));
@@ -449,6 +452,7 @@ public class ETSIValidationReportBuilder {
 		// &lt;element name="SignerRole" type="{http://uri.etsi.org/19102/v1.2.1#}SASignerRoleType"/&gt;
 		addSignerRoles(sigAttributes, sigWrapper);
 		// &lt;element name="CounterSignature" type="{http://uri.etsi.org/19102/v1.2.1#}SACounterSignatureType"/&gt;
+		addCounterSignatures(sigAttributes, sigWrapper);
 		// &lt;element name="SignatureTimeStamp" type="{http://uri.etsi.org/19102/v1.2.1#}SATimestampType"/&gt;
 		addTimestampsByType(sigAttributes, sigWrapper, TimestampType.SIGNATURE_TIMESTAMP);
 		// &lt;element name="CompleteCertificateRefs" type="{http://uri.etsi.org/19102/v1.2.1#}SACertIDListType"/&gt;
@@ -760,6 +764,18 @@ public class ETSIValidationReportBuilder {
 			oneSignerRole.setRole(role);
 			oneSignerRole.setEndorsementType(endorsement);
 			signerRoleType.getRoleDetails().add(oneSignerRole);
+		}
+	}
+	
+	private void addCounterSignatures(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
+		Set<SignatureWrapper> counterSignatures = diagnosticData.getAllCounterSignaturesForMasterSignature(sigWrapper);
+		for (SignatureWrapper counterSignature : counterSignatures) {
+			SACounterSignatureType saCounterSignatureType = objectFactory.createSACounterSignatureType();
+			saCounterSignatureType.getAttributeObject().add(getVOReference(counterSignature.getId()));
+			SignatureReferenceType signatureReference = getSignatureReference(counterSignature);
+			saCounterSignatureType.setCounterSignature(signatureReference);
+			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat().add(
+					objectFactory.createSignatureAttributesTypeCounterSignature(saCounterSignatureType));
 		}
 	}
 
