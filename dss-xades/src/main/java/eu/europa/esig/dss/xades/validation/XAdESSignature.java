@@ -86,6 +86,7 @@ import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
@@ -953,8 +954,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				if (timestampToken == null) {
 					continue;
 				}
-				final List<TimestampReference> references = getSignatureTimestampReferences();
-				addReferences(references, getTimestampedReferences());
+				final List<TimestampReference> references = getTimestampedReferences();
+				addReferencesForPreviousTimestamps(references, filterSignatureTimestamps(previousTimestampedTimestamp));
 				timestampToken.setTimestampedReferences(references);
 				sigAndRefsTimestamps.add(timestampToken);
 			} else if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
@@ -984,6 +985,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 			previousTimestampedTimestamp.add(timestampToken);
 		}
+	}
+
+	private List<TimestampToken> filterSignatureTimestamps(List<TimestampToken> previousTimestampedTimestamp) {
+		List<TimestampToken> result = new ArrayList<TimestampToken>();
+		for (TimestampToken timestampToken : previousTimestampedTimestamp) {
+			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampToken.getTimeStampType())) {
+				result.add(timestampToken);
+			}
+		}
+		return result;
 	}
 
 	private ArchiveTimestampType getArchiveTimestampType(final Node node, final String localName) {
@@ -1719,9 +1730,30 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public List<TimestampReference> getTimestampedReferences() {
 		final List<TimestampReference> references = new ArrayList<TimestampReference>();
 
-		List<CertificateToken> completeCertificates = getCertificateSource().getCompleteCertificates();
+		XAdESCertificateSource certificateSource = getCertificateSource();
+
+		// CompleteCertificateRefsV2
+		List<CertificateToken> completeCertificates = certificateSource.getCompleteCertificates();
 		for (CertificateToken certificateToken : completeCertificates) {
 			references.add(new TimestampReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+		}
+
+		// CompleteRevocationRefs
+		List<RevocationToken> completeRevocationTokens = getCompleteRevocationTokens();
+		for (RevocationToken revocationToken : completeRevocationTokens) {
+			references.add(new TimestampReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
+		}
+
+		// AttributeCertificateRefsV2
+		List<CertificateToken> attributeCertificates = certificateSource.getAttributeCertificates();
+		for (CertificateToken certificateToken : attributeCertificates) {
+			references.add(new TimestampReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+		}
+
+		// AttributeRevocationRefs
+		List<RevocationToken> attributeRevocationTokens = getAttributeRevocationTokens();
+		for (RevocationToken revocationToken : attributeRevocationTokens) {
+			references.add(new TimestampReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
 		}
 
 		return references;

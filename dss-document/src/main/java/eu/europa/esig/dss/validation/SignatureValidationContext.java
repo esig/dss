@@ -490,12 +490,13 @@ public class SignatureValidationContext implements ValidationContext {
 		if (revocations.isEmpty() || isRevocationDataRefreshNeeded(certToken, revocations)) {
 
 			if (checkRevocationForUntrustedChains || containsTrustAnchor(certChain)) {
+				CertificateToken trustAnchor = (CertificateToken) getFirstTrustAnchor(certChain);
 
 				// Online resources (OCSP and CRL if OCSP doesn't reply)
 				OCSPAndCRLCertificateVerifier onlineVerifier = null;
 
-				if (trustedCertSource instanceof CommonTrustedCertificateSource) {
-					onlineVerifier = instantiateWithTrustServices((CommonTrustedCertificateSource) trustedCertSource, certToken, certChain);
+				if (trustedCertSource instanceof CommonTrustedCertificateSource && (trustAnchor != null)) {
+					onlineVerifier = instantiateWithTrustServices((CommonTrustedCertificateSource) trustedCertSource, trustAnchor);
 				} else {
 					onlineVerifier = new OCSPAndCRLCertificateVerifier(crlSource, ocspSource, validationCertificatePool);
 				}
@@ -518,24 +519,20 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private boolean containsTrustAnchor(List<Token> certChain) {
+		return getFirstTrustAnchor(certChain) != null;
+	}
+
+	private Token getFirstTrustAnchor(List<Token> certChain) {
 		for (Token token : certChain) {
 			if (isTrusted(token)) {
-				return true;
+				return token;
 			}
 		}
-		return false;
+		return null;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private OCSPAndCRLCertificateVerifier instantiateWithTrustServices(CommonTrustedCertificateSource trustedCertSource, CertificateToken certToken,
-			List<Token> certChain) {
-
-		CertificateToken trustAnchor = certToken;
-		Token lastToken = certChain.get(certChain.size() - 1);
-		if (lastToken instanceof CertificateToken) {
-			trustAnchor = (CertificateToken) lastToken;
-		}
-
+	private OCSPAndCRLCertificateVerifier instantiateWithTrustServices(CommonTrustedCertificateSource trustedCertSource, CertificateToken trustAnchor) {
 		RevocationSource currentOCSPSource = null;
 		List<String> alternativeOCSPUrls = trustedCertSource.getAlternativeOCSPUrls(trustAnchor);
 		if (Utils.isCollectionNotEmpty(alternativeOCSPUrls) && ocspSource instanceof RevocationSourceAlternateUrlsSupport) {

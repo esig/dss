@@ -71,6 +71,7 @@ public abstract class PKIFactoryAccess {
 
 	private static final String TSA_ROOT_PATH = "/tsa/";
 	private static final String GOOD_TSA = "good-tsa";
+	private static final String REVOKED_TSA = "revoked-tsa";
 	private static final String EE_GOOD_TSA = "ee-good-tsa";
 	private static final String GOOD_TSA_CROSS_CERTIF = "cc-good-tsa-crossed";
 
@@ -188,6 +189,10 @@ public abstract class PKIFactoryAccess {
 
 	protected TSPSource getGoodTsa() {
 		return getOnlineTSPSource(GOOD_TSA);
+	}
+
+	protected TSPSource getRevokedTsa() {
+		return getOnlineTSPSource(REVOKED_TSA);
 	}
 
 	protected TSPSource getFailGoodTsa() {
