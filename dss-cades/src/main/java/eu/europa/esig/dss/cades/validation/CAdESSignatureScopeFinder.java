@@ -23,17 +23,34 @@ package eu.europa.esig.dss.cades.validation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import eu.europa.esig.dss.DSSDocument;
+import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DigestDocument;
+import eu.europa.esig.dss.validation.AbstractSignatureScopeFinder;
+import eu.europa.esig.dss.validation.DigestSignatureScope;
 import eu.europa.esig.dss.validation.FullSignatureScope;
 import eu.europa.esig.dss.validation.SignatureScope;
-import eu.europa.esig.dss.validation.SignatureScopeFinder;
 
-public class CAdESSignatureScopeFinder implements SignatureScopeFinder<CAdESSignature> {
+public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<CAdESSignature> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignatureScopeFinder.class);
 
     @Override
     public List<SignatureScope> findSignatureScope(final CAdESSignature cAdESSignature) {
         List<SignatureScope> result = new ArrayList<SignatureScope>();
-
-        result.add(new FullSignatureScope("Full document"));
+        try {
+            DSSDocument originalDocument = cAdESSignature.getOriginalDocument();
+            if (originalDocument instanceof DigestDocument) {
+                result.add(new DigestSignatureScope("Digest document", originalDocument.getDigest(originalDocument.getExistingDigestAlgorithm())));
+            } else {
+                result.add(new FullSignatureScope("Full document", cAdESSignature.getOriginalDocument().getDigest(getDigestAlgorithm())));
+            }
+        } catch (DSSException e) {
+        	LOG.warn("A CAdES signer's original document is not found [{}].", e.getMessage());
+        }
         return result;
     }
 }

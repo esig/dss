@@ -560,9 +560,20 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public String getStructureValidationResult() {
 		return structureValidation;
 	}
+	
+	protected List<TimestampReference> getContentTimestampReferences() {
+		final List<TimestampReference> references = new ArrayList<TimestampReference>();
+		if (Utils.isCollectionNotEmpty(signatureScopes)) {
+			for (SignatureScope signatureScope : signatureScopes) {
+				addReference(references, new TimestampReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
+			}
+		}
+		return references;
+	}
 
 	protected List<TimestampReference> getSignatureTimestampReferences() {
 		final List<TimestampReference> references = new ArrayList<TimestampReference>();
+		addReferences(references, getContentTimestampReferences());
 		addReference(references, new TimestampReference(getId(), TimestampedObjectType.SIGNATURE));
 		addReferences(references, getSigningCertificateTimestampReferences());
 		return references;

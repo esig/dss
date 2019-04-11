@@ -224,6 +224,11 @@ public class GoogleGuavaUtils implements IUtils {
 	public byte[] fromHex(String hex) {
 		return BaseEncoding.base16().lowerCase().decode(Ascii.toLowerCase(hex));
 	}
+	
+	@Override
+	public boolean isBase64Encoded(String base64String) {
+		return BaseEncoding.base64().canDecode(base64String);
+	}
 
 	@Override
 	public String toBase64(byte[] bytes) {

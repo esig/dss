@@ -153,8 +153,7 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 	}
 
 	private DSSDocument getDigestDocument() {
-		DigestDocument digestDocument = new DigestDocument();
-		digestDocument.addDigest(USED_DIGEST, getCompleteDocument().getDigest(USED_DIGEST));
+		DigestDocument digestDocument = new DigestDocument(USED_DIGEST, getCompleteDocument().getDigest64Base(USED_DIGEST));
 		return digestDocument;
 	}
 

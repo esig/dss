@@ -196,7 +196,7 @@ public class SimpleReportBuilder {
 				XmlSignatureScope scope = new XmlSignatureScope();
 				scope.setName(scopeType.getName());
 				scope.setScope(scopeType.getScope().name());
-				scope.setValue(scopeType.getValue());
+				scope.setValue(scopeType.getDescription());
 				xmlSignature.getSignatureScope().add(scope);
 			}
 		}

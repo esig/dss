@@ -50,7 +50,7 @@ public class PrecomputedDigestCalculatorProvider implements DigestCalculatorProv
 	public DigestCalculator get(final AlgorithmIdentifier digestAlgorithmIdentifier) throws OperatorCreationException {
 
 		ASN1ObjectIdentifier algorithmOid = digestAlgorithmIdentifier.getAlgorithm();
-		final String digestBase64 = digestDocument.getDigest(DigestAlgorithm.forOID(algorithmOid.getId()));
+		final String digestBase64 = digestDocument.getDigest64Base(DigestAlgorithm.forOID(algorithmOid.getId()));
 
 		return new DigestCalculator() {
 

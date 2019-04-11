@@ -63,7 +63,7 @@ public class DataToSignASiCSWithXAdESFromFilesTest {
 		String base64 = Utils.toBase64(byteArray);
 		LOG.info(base64);
 
-		String digest = dssDocument.getDigest(DigestAlgorithm.SHA256);
+		String digest = dssDocument.getDigest64Base(DigestAlgorithm.SHA256);
 
 		LOG.info(digest);
 
@@ -72,7 +72,7 @@ public class DataToSignASiCSWithXAdESFromFilesTest {
 		DataToSignASiCSWithXAdESFromFiles dataToSign2 = new DataToSignASiCSWithXAdESFromFiles(filesToBeSigned, now, asicParameters);
 		DSSDocument twice = dataToSign2.getToBeSigned().get(0);
 
-		String digestTwice = twice.getDigest(DigestAlgorithm.SHA256);
+		String digestTwice = twice.getDigest64Base(DigestAlgorithm.SHA256);
 
 		String base64twice = Utils.toBase64(DSSUtils.toByteArray(twice));
 		LOG.info(base64twice);

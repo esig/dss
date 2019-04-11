@@ -103,7 +103,7 @@ public class ManifestBuilder {
 			digestMethodDom.setAttribute(XAdESBuilder.ALGORITHM, digestAlgorithm.getXmlId());
 
 			Element digestValueDom = DomUtils.addElement(documentDom, referenceDom, XMLSignature.XMLNS, XAdESBuilder.DS_DIGEST_VALUE);
-			Text textNode = documentDom.createTextNode(document.getDigest(digestAlgorithm));
+			Text textNode = documentDom.createTextNode(document.getDigest64Base(digestAlgorithm));
 			digestValueDom.appendChild(textNode);
 
 		}

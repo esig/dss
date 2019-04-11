@@ -42,7 +42,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerDocumentRepresentation;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerDocumentRepresentations;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
 import eu.europa.esig.dss.utils.Utils;
@@ -472,7 +472,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 	
 	public boolean isDocHashOnly() {
-		XmlSignerDocumentRepresentation signerDocumentRepresentation = signature.getSignerDocumentRepresentation();
+		XmlSignerDocumentRepresentations signerDocumentRepresentation = signature.getSignerDocumentRepresentations();
 		if (signerDocumentRepresentation != null) {
 			return signerDocumentRepresentation.isDocHashOnly();
 		}
@@ -480,7 +480,7 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 	
 	public boolean isHashOnly() {
-		XmlSignerDocumentRepresentation signerDocumentRepresentation = signature.getSignerDocumentRepresentation();
+		XmlSignerDocumentRepresentations signerDocumentRepresentation = signature.getSignerDocumentRepresentations();
 		if (signerDocumentRepresentation != null) {
 			return signerDocumentRepresentation.isHashOnly();
 		}

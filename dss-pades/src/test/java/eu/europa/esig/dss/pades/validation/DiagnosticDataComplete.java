@@ -118,34 +118,49 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		List<TimestampWrapper> timestamps= diagnosticData.getTimestamps();
 		assertNotNull(timestamps);
 		assertEquals(3, timestamps.size());
-		assertEquals(2, timestamps.get(0).getTimestampedObjects().size());
+		assertEquals(3, timestamps.get(0).getTimestampedObjects().size());
 		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestamps.get(0).getType());
-		assertEquals(2, timestamps.get(2).getTimestampedObjects().size());
+		assertEquals(3, timestamps.get(2).getTimestampedObjects().size());
 		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestamps.get(2).getType());
 		
 		TimestampWrapper archiveTimestamp = timestamps.get(1);
 		assertEquals(TimestampType.ARCHIVE_TIMESTAMP, archiveTimestamp.getType());
+
+		List<String> checkedIds = new ArrayList<String>();
+		
 		assertEquals(1, archiveTimestamp.getTimestampedSignatures().size());
+		checkedIds.add(archiveTimestamp.getTimestampedSignatures().get(0).getToken().getId());
+		
+		List<String> timestampedSignedDataIds = archiveTimestamp.getTimestampedSignedDataIds();
+		assertEquals(1, timestampedSignedDataIds.size());
+		for (String id : timestampedSignedDataIds) {
+			assertFalse(checkedIds.contains(id));
+			checkedIds.add(id);
+		}
+		
 		List<String> timestampedCertificateIds = archiveTimestamp.getTimestampedCertificateIds();
 		assertEquals(4, timestampedCertificateIds.size());
-		List<String> checkedIds = new ArrayList<String>();
 		for (String id : timestampedCertificateIds) {
 			assertFalse(checkedIds.contains(id));
 			checkedIds.add(id);
 		}
+		
 		List<String> timestampedRevocationIds = archiveTimestamp.getTimestampedRevocationIds();
 		assertEquals(2, timestampedRevocationIds.size());
 		for (String id : timestampedRevocationIds) {
 			assertFalse(checkedIds.contains(id));
 			checkedIds.add(id);
 		}
+		
 		List<String> timestampedTimestampIds = archiveTimestamp.getTimestampedTimestampIds();
 		assertEquals(1, timestampedTimestampIds.size());
 		for (String id : timestampedTimestampIds) {
 			assertFalse(checkedIds.contains(id));
 			checkedIds.add(id);
 		}
-		assertEquals(7, checkedIds.size());
+		
+		assertEquals(9, checkedIds.size());
+		
 	}
 	
 	@Test

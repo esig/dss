@@ -100,8 +100,8 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
 		assertEquals(1, results.size());
 
-		String digest = document.getDigest(DigestAlgorithm.SHA256);
-		String digest2 = results.get(0).getDigest(DigestAlgorithm.SHA256);
+		String digest = document.getDigest64Base(DigestAlgorithm.SHA256);
+		String digest2 = results.get(0).getDigest64Base(DigestAlgorithm.SHA256);
 
 		assertEquals(digest, digest2);
 	}
@@ -130,8 +130,8 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		List<DSSDocument> results = validator.getOriginalDocuments(reports.getDiagnosticData().getFirstSignatureId());
 		assertEquals(1, results.size());
 
-		String digest = document.getDigest(DigestAlgorithm.SHA256);
-		String digest2 = results.get(0).getDigest(DigestAlgorithm.SHA256);
+		String digest = document.getDigest64Base(DigestAlgorithm.SHA256);
+		String digest2 = results.get(0).getDigest64Base(DigestAlgorithm.SHA256);
 
 		assertEquals(digest, digest2);
 	}

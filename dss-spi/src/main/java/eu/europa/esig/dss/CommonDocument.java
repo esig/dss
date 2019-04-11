@@ -91,9 +91,18 @@ public abstract class CommonDocument implements DSSDocument {
 	public void setAbsolutePath(String absolutePath) {
 		this.absolutePath = absolutePath;
 	}
+	
+	@Override
+	public Digest getDigest(final DigestAlgorithm digestAlgorithm) {
+		String base64Digest = getDigest64Base(digestAlgorithm);
+		if (base64Digest != null) {
+			return new Digest(digestAlgorithm, Utils.fromBase64(base64Digest));
+		}
+		return null;
+	}
 
 	@Override
-	public String getDigest(final DigestAlgorithm digestAlgorithm) {
+	public String getDigest64Base(final DigestAlgorithm digestAlgorithm) {
 		String base64EncodeDigest = base64EncodeDigestMap.get(digestAlgorithm);
 		if (base64EncodeDigest == null) {
 			final byte[] digestBytes = DSSUtils.digest(digestAlgorithm, this);
@@ -101,6 +110,20 @@ public abstract class CommonDocument implements DSSDocument {
 			base64EncodeDigestMap.put(digestAlgorithm, base64EncodeDigest);
 		}
 		return base64EncodeDigest;
+	}
+	
+	@Override
+	public DigestAlgorithm getExistingDigestAlgorithm() {
+		if (Utils.isMapNotEmpty(base64EncodeDigestMap)) {
+			return base64EncodeDigestMap.entrySet().iterator().next().getKey();
+		}
+		return null;
+	}
+	
+	@Override
+	public boolean digestForAlgorithmExists(DigestAlgorithm digestAlgorithm) {
+		// by default any {@link DigestAlgorithm} can be processed
+		return true;
 	}
 
 	@Override

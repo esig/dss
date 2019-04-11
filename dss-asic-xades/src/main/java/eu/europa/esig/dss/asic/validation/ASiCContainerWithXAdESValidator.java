@@ -30,8 +30,11 @@ import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.OpenDocumentSupportUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.xades.XAdESUtils;
+import eu.europa.esig.dss.xades.validation.XAdESSignature;
 
 /**
  * This class is an implementation to validate ASiC containers with XAdES signature(s)
@@ -106,16 +109,25 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 			xadesValidator.setDetachedContents(potentials);
 			List<DSSDocument> retrievedDocs = xadesValidator.getOriginalDocuments(signatureId);
 			if (Utils.isCollectionNotEmpty(retrievedDocs)) {
-				if (ASiCContainerType.ASiC_S.equals(getContainerType())) {
-					result.addAll(getSignedDocumentsASiCS(retrievedDocs));
-				} else {
-					result.addAll(retrievedDocs);
-				}
-				break;
+				return filterRetrievedOriginalDocuments(retrievedDocs);
 			}
 		}
 
 		return result;
+	}
+	
+	@Override
+	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
+		XAdESSignature xadesignature = (XAdESSignature) advancedSignature;
+		List<DSSDocument> retrievedDocs = XAdESUtils.getSignerDocuments(xadesignature);
+		return filterRetrievedOriginalDocuments(retrievedDocs);
+	}
+	
+	private List<DSSDocument> filterRetrievedOriginalDocuments(List<DSSDocument> retrievedDocs) {
+		if (ASiCContainerType.ASiC_S.equals(getContainerType())) {
+			return getSignedDocumentsASiCS(retrievedDocs);
+		}
+		return retrievedDocs;
 	}
 
 }

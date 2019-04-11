@@ -31,9 +31,15 @@ public class DigestDocument extends CommonDocument {
 
 	/**
 	 * Creates DigestDocument.
-	 *
+	 * Initial algorithm and digest must be specified
+	 * 
+	 * @param digestAlgorithm
+	 *            {@code DigestAlgorithm}
+	 * @param base64EncodeDigest
+	 *            the corresponding base 64 encoded digest value
 	 */
-	public DigestDocument() {
+	public DigestDocument(final DigestAlgorithm digestAlgorithm, final String base64EncodeDigest) {
+		addDigest(digestAlgorithm, base64EncodeDigest);
 	}
 
 	/**
@@ -50,12 +56,21 @@ public class DigestDocument extends CommonDocument {
 	}
 
 	@Override
-	public String getDigest(final DigestAlgorithm digestAlgorithm) {
+	public String getDigest64Base(final DigestAlgorithm digestAlgorithm) {
 		String base64EncodeDigest = base64EncodeDigestMap.get(digestAlgorithm);
 		if (base64EncodeDigest == null) {
 			throw new DSSException("Unknown digest value for algorithm : " + digestAlgorithm);
 		}
 		return base64EncodeDigest;
+	}
+	
+	@Override
+	public boolean digestForAlgorithmExists(DigestAlgorithm digestAlgorithm) {
+		if (base64EncodeDigestMap.containsKey(digestAlgorithm)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override

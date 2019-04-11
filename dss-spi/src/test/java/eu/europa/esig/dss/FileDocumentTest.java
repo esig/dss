@@ -48,8 +48,8 @@ public class FileDocumentTest {
 		assertTrue(doc.exists());
 		assertEquals("AdobeCA.p7c", doc.getName());
 		assertEquals(MimeType.BINARY, doc.getMimeType());
-		assertEquals("xF8SpcLlrd4Bhl1moh4Ciz+Rq/PImaChEl/tyGTZyPM=", doc.getDigest(DigestAlgorithm.SHA256));
-		assertEquals("xF8SpcLlrd4Bhl1moh4Ciz+Rq/PImaChEl/tyGTZyPM=", doc.getDigest(DigestAlgorithm.SHA256)); // uses map
+		assertEquals("xF8SpcLlrd4Bhl1moh4Ciz+Rq/PImaChEl/tyGTZyPM=", doc.getDigest64Base(DigestAlgorithm.SHA256));
+		assertEquals("xF8SpcLlrd4Bhl1moh4Ciz+Rq/PImaChEl/tyGTZyPM=", doc.getDigest64Base(DigestAlgorithm.SHA256)); // uses map
 		String path = "target/testFileDocument";
 		doc.save(path);
 

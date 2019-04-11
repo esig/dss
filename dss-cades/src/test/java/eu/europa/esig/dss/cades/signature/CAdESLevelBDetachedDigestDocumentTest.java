@@ -164,9 +164,8 @@ public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 	}
 
 	private DSSDocument getDigestDocument() {
-		DigestDocument digestDocument = new DigestDocument();
+		DigestDocument digestDocument = new DigestDocument(USED_DIGEST, Utils.toBase64(DSSUtils.digest(USED_DIGEST, getCompleteDocument())));
 		// digestDocument.setName(DOCUMENT_NAME);
-		digestDocument.addDigest(USED_DIGEST, Utils.toBase64(DSSUtils.digest(USED_DIGEST, getCompleteDocument())));
 		return digestDocument;
 	}
 

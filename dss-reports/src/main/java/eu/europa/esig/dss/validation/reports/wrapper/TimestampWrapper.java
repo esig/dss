@@ -38,6 +38,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedRevocationData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignedData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.TimestampType;
@@ -167,6 +168,20 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		List<String> timestampedObjectIds = new ArrayList<String>();
 		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {
 			if (timestampedObject instanceof XmlTimestampedTimestamp) {
+				timestampedObjectIds.add(timestampedObject.getToken().getId());
+			}
+		}
+		return timestampedObjectIds;
+	}
+	
+	/**
+	 * Returns a list of {@link XmlTimestampedSignedData} ids covered be the current timestamp
+	 * @return list of ids
+	 */
+	public List<String> getTimestampedSignedDataIds() {
+		List<String> timestampedObjectIds = new ArrayList<String>();
+		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {
+			if (timestampedObject instanceof XmlTimestampedSignedData) {
 				timestampedObjectIds.add(timestampedObject.getToken().getId());
 			}
 		}

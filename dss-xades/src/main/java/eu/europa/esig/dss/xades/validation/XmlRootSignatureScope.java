@@ -22,12 +22,13 @@ package eu.europa.esig.dss.xades.validation;
 
 import java.util.List;
 
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.validation.SignatureScopeType;
 
 public class XmlRootSignatureScope extends XmlElementSignatureScope {
 
-    protected XmlRootSignatureScope(final List<String> transformations) {
-        super("Full XML File", transformations);
+    protected XmlRootSignatureScope(final List<String> transformations, final Digest digest) {
+        super("Full XML File", transformations, digest);
     }
 
     @Override

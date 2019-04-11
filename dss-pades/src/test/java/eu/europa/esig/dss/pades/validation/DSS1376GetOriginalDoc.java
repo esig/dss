@@ -57,8 +57,8 @@ public class DSS1376GetOriginalDoc {
 		List<DSSDocument> originalDocuments = sdv.getOriginalDocuments(firstSig.getId());
 		assertEquals(1, originalDocuments.size());
 		DSSDocument retrievedDoc = originalDocuments.get(0);
-		LOG.info("{} : {}", retrievedDoc.getName(), retrievedDoc.getDigest(DigestAlgorithm.SHA256));
-		assertEquals(rev_n_1.getDigest(DigestAlgorithm.SHA256), retrievedDoc.getDigest(DigestAlgorithm.SHA256));
+		LOG.info("{} : {}", retrievedDoc.getName(), retrievedDoc.getDigest64Base(DigestAlgorithm.SHA256));
+		assertEquals(rev_n_1.getDigest64Base(DigestAlgorithm.SHA256), retrievedDoc.getDigest64Base(DigestAlgorithm.SHA256));
 
 		AdvancedSignature secondSig = signatures.get(0);
 

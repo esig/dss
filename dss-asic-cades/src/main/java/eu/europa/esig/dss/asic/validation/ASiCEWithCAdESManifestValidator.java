@@ -94,7 +94,7 @@ public class ASiCEWithCAdESManifestValidator {
 				}
 
 				String expectedDigestB64 = getDigestValue(dataObjectReference);
-				String computedDigestB64 = signedFile.getDigest(digestAlgo);
+				String computedDigestB64 = signedFile.getDigest64Base(digestAlgo);
 				if (!Utils.areStringsEqual(expectedDigestB64, computedDigestB64)) {
 					LOG.warn("Digest value doesn't match for signed data with name '{}'", filename);
 					LOG.warn("Expected : '{}'", expectedDigestB64);

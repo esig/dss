@@ -2,10 +2,12 @@ package eu.europa.esig.dss.pades.validation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
@@ -22,7 +24,9 @@ import eu.europa.esig.jaxb.validationreport.SATimestampType;
 import eu.europa.esig.jaxb.validationreport.SignatureAttributesType;
 import eu.europa.esig.jaxb.validationreport.SignatureIdentifierType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
+import eu.europa.esig.jaxb.validationreport.SignersDocumentType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
+import eu.europa.esig.jaxb.xades132.DigestAlgAndValueType;
 
 public class EtsiValidationReportComplete extends PKIFactoryAccess {
 	
@@ -89,6 +93,31 @@ public class EtsiValidationReportComplete extends PKIFactoryAccess {
 		
 		assertNotNull(signatureIdentifier.getSignatureValue());
 		
+	}
+	
+	@Test
+	public void signerDocumentTest() {
+		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/validation/pades-5-signatures-and-1-document-timestamp.pdf"));
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+		Reports reports = validator.validateDocument();
+
+		 System.out.println(reports.getXmlValidationReport().replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", ""));
+		
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+		List<SignatureValidationReportType> signatureValidationReports = etsiValidationReport.getSignatureValidationReport();
+		assertEquals(5, signatureValidationReports.size());
+		byte[] previousSignatureSignerDocumentDigest = null;
+		for (SignatureValidationReportType signatureValidationReportType : signatureValidationReports) {
+			SignersDocumentType signersDocument = signatureValidationReportType.getSignersDocument().get(0);
+			assertNotNull(signersDocument);
+			DigestAlgAndValueType digestAlgAndValue = signersDocument.getDigestAlgAndValue();
+			assertNotNull(digestAlgAndValue);
+			byte[] digestValue = digestAlgAndValue.getDigestValue();
+			assertTrue(Utils.isArrayNotEmpty(digestValue));
+			assertFalse(Arrays.equals(digestValue, previousSignatureSignerDocumentDigest));
+			previousSignatureSignerDocumentDigest = digestValue;
+		}
 	}
 
 	@Override

@@ -161,6 +161,14 @@ public interface DocumentValidator {
 	 */
 	List<DSSDocument> getOriginalDocuments(final String signatureId);
 
+	/**
+	 * This method returns the signed document(s) without their signature(s)
+	 *
+	 * @param advancedSignature
+	 *            {@link AdvancedSignature} to find signer documents for
+	 */
+	List<DSSDocument> getOriginalDocuments(final AdvancedSignature advancedSignature);
+
 	List<AdvancedSignature> processSignaturesValidation(ValidationContext validationContext, boolean structuralValidation);
 
 }

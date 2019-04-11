@@ -20,6 +20,7 @@
  */
 package plugtests;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -46,6 +47,9 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.x509.SignatureCertificateSource;
+import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
+import eu.europa.esig.jaxb.validationreport.SignersDocumentType;
+import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
 /**
  * This test is only to ensure that we don't have exception with valid? files
@@ -101,7 +105,6 @@ public class ETSISamplesValidation {
 		DetailedReport detailedReport = validateDocument.getDetailedReport();
 		assertNotNull(detailedReport);
 
-
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature advancedSignature : signatures) {
 			assertNotNull(advancedSignature);
@@ -119,6 +122,17 @@ public class ETSISamplesValidation {
 			assertNotNull(advancedSignature.getCRLSource());
 			assertNotNull(advancedSignature.getOCSPSource());
 		}
+		
+		ValidationReportType etsiValidationReport = validateDocument.getEtsiValidationReportJaxb();
+		assertNotNull(etsiValidationReport);
+		List<SignatureValidationReportType> signatureValidationReports = etsiValidationReport.getSignatureValidationReport();
+		assertEquals(diagnosticData.getSignatures().size(), signatureValidationReports.size());
+		for (SignatureValidationReportType signatureValidationReport : signatureValidationReports) {
+			List<SignersDocumentType> signersDocuments = signatureValidationReport.getSignersDocument();
+			assertNotNull(signersDocuments);
+			assertEquals(1, signersDocuments.size());
+		}
+		
 	}
 
 }

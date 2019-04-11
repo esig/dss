@@ -23,11 +23,15 @@ package eu.europa.esig.dss.cades.validation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
@@ -42,6 +46,8 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
  *
  */
 public class CMSDocumentValidator extends SignedDocumentValidator {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CMSDocumentValidator.class);
 
 	protected CMSSignedData cmsSignedData;
 
@@ -125,6 +131,17 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 			}
 		}
 		return results;
+	}
+
+	@Override
+	public List<DSSDocument> getOriginalDocuments(final AdvancedSignature advancedSignature) throws DSSException {
+		final CAdESSignature cadesSignature = (CAdESSignature) advancedSignature;
+		try {
+			return Arrays.asList(cadesSignature.getOriginalDocument());
+		} catch (DSSException e) {
+			LOG.error("Cannot retrieve a list of original documents");
+			return Collections.emptyList();
+		}
 	}
 
 }

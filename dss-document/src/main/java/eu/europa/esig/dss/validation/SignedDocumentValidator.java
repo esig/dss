@@ -37,6 +37,7 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSSecurityProvider;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.CustomProcessExecutor;
@@ -136,6 +137,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	protected SignedDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
 		this.signatureScopeFinder = signatureScopeFinder;
+	}
+	
+	private void setSignedScopeFinderDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+		if (signatureScopeFinder != null) {
+			signatureScopeFinder.setDefaultDigestAlgorithm(digestAlgorithm);
+		}
 	}
 
 	/**
@@ -301,6 +308,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 		final DiagnosticData diagnosticData = new DiagnosticDataBuilder().document(document).containerInfo(getContainerInfo()).foundSignatures(allSignatureList)
 				.usedCertificates(validationContext.getProcessedCertificates()).usedRevocations(validationContext.getProcessedRevocations())
+				.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
 				.includeRawCertificateTokens(certificateVerifier.isIncludeCertificateTokenValues())
 				.includeRawRevocationData(certificateVerifier.isIncludeCertificateRevocationValues())
 				.includeRawTimestampTokens(certificateVerifier.isIncludeTimestampTokenValues())
@@ -316,6 +324,14 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		final List<AdvancedSignature> allSignatureList = getAllSignatures();
 		// The list of all signing certificates is created to allow a parallel
 		// validation.
+		
+		// Signature Scope must be processed before in order to properly initialize content timestamps
+		setSignedScopeFinderDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
+		for (final AdvancedSignature signature : allSignatureList) {
+			if (signatureScopeFinder != null) {
+				signature.findSignatureScope(signatureScopeFinder);
+			}
+		}
 		prepareCertificatesAndTimestamps(allSignatureList, validationContext);
 
 		final ListCRLSource signatureCRLSource = getSignatureCrlSource(allSignatureList);
@@ -337,9 +353,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			}
 			signature.checkSignaturePolicy(signaturePolicyProvider);
 
-			if (signatureScopeFinder != null) {
-				signature.findSignatureScope(signatureScopeFinder);
-			}
 			signature.populateCRLTokenLists(signatureCRLSource);
 			signature.populateOCSPTokenLists(signatureOCSPSource);
 		}

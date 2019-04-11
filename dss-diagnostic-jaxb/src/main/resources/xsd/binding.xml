@@ -99,14 +99,19 @@
             <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
         </jaxb:property>
     </jaxb:bindings>
+    <jaxb:bindings node="//xs:complexType[@name='CertificateRevocation']//xs:attribute[@name='Revocation']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation" />
+        </jaxb:property>
+    </jaxb:bindings>
     <jaxb:bindings node="//xs:complexType[@name='FoundTimestamp']//xs:attribute[@name='Timestamp']">
         <jaxb:property>
             <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp" />
         </jaxb:property>
     </jaxb:bindings>
-    <jaxb:bindings node="//xs:complexType[@name='CertificateRevocation']//xs:attribute[@name='Revocation']">
+    <jaxb:bindings node="//xs:complexType[@name='SignatureScope']//xs:attribute[@name='SignedData']">
         <jaxb:property>
-            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation" />
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlSignedData" />
         </jaxb:property>
     </jaxb:bindings>
     

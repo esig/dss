@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,13 +42,21 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.xades.DSSReference;
 import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
+import eu.europa.esig.jaxb.validationreport.SignersDocumentType;
+import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
 public class GetOriginalDocumentTest extends PKIFactoryAccess {
 
@@ -261,6 +271,38 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		firstDocument = new String(canon.canonicalize(DSSUtils.toByteArray(doc2)));
 		secondDocument = new String(canon.canonicalize(DSSUtils.toByteArray(orig2)));
 		assertEquals(firstDocument, secondDocument);
+		
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertNotNull(diagnosticData);
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlSignatureScope> signerData = signature.getSignatureScopes();
+		assertNotNull(signerData);
+		assertEquals(2, signerData.size());
+		XmlDigestAlgoAndValue digestAlgoAndValueSignatureOne = signerData.get(0).getSignedData().getDigestAlgoAndValue();
+		assertNotNull(digestAlgoAndValueSignatureOne);
+		
+		DigestAlgorithm digestAlgorithm = DigestAlgorithm.forName(digestAlgoAndValueSignatureOne.getDigestMethod());
+		assertEquals(doc1.getDigest64Base(digestAlgorithm), orig1.getDigest64Base(digestAlgorithm));
+		assertTrue(Arrays.equals(digestAlgoAndValueSignatureOne.getDigestValue(), 
+				DSSUtils.digest(DigestAlgorithm.forName(digestAlgoAndValueSignatureOne.getDigestMethod()), orig1)));
+		XmlDigestAlgoAndValue digestAlgoAndValueSignatureTwo = signerData.get(1).getSignedData().getDigestAlgoAndValue();
+		assertNotNull(digestAlgoAndValueSignatureTwo);
+		assertTrue(Arrays.equals(digestAlgoAndValueSignatureTwo.getDigestValue(), 
+				DSSUtils.digest(DigestAlgorithm.forName(digestAlgoAndValueSignatureTwo.getDigestMethod()), orig2)));
+		
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+		
+		SignatureValidationReportType signatureValidationReport = etsiValidationReport.getSignatureValidationReport().get(0);
+		assertNotNull(signatureValidationReport);
+		List<SignersDocumentType> signersDocuments = signatureValidationReport.getSignersDocument();
+		assertNotNull(signersDocuments);
+		assertEquals(DigestAlgorithm.forName(digestAlgoAndValueSignatureOne.getDigestMethod()), 
+				DigestAlgorithm.forXML(signersDocuments.get(0).getDigestAlgAndValue().getDigestMethod().getAlgorithm()));
+		assertEquals(digestAlgoAndValueSignatureOne.getDigestValue(), signersDocuments.get(0).getDigestAlgAndValue().getDigestValue());
+		assertEquals(DigestAlgorithm.forName(digestAlgoAndValueSignatureTwo.getDigestMethod()), 
+				DigestAlgorithm.forXML(signersDocuments.get(1).getDigestAlgAndValue().getDigestMethod().getAlgorithm()));
+		assertEquals(digestAlgoAndValueSignatureTwo.getDigestValue(), signersDocuments.get(1).getDigestAlgAndValue().getDigestValue());
+		
 	}
 
 	@Override

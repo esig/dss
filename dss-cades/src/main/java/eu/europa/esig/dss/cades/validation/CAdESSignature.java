@@ -736,6 +736,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			switch (timestampType) {
 			case CONTENT_TIMESTAMP:
 				// Will call getContentTimestampData
+				timestampToken.setTimestampedReferences(getContentTimestampReferences());
 				break;
 			case SIGNATURE_TIMESTAMP:
 				timestampToken.setTimestampedReferences(getSignatureTimestampReferences());
@@ -993,7 +994,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 				// try to match with found digest algorithm(s)
 				for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
-					String digest = originalDocument.getDigest(digestAlgorithm);
+					String digest = originalDocument.getDigest64Base(digestAlgorithm);
 					if (Arrays.equals(expectedMessageDigestValue, Utils.fromBase64(digest))) {
 						messageDigest.setAlgorithm(digestAlgorithm);
 						validation.setIntact(true);

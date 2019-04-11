@@ -34,6 +34,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.utils.Utils;
@@ -817,8 +818,14 @@ public class DiagnosticData {
 		}
 		return latest;
 	}
-
-
+	
+	/**
+	 * Returns a complete list of original signer documents signed by all signatures
+	 * @return list of {@link XmlSignedData}s
+	 */
+	public List<XmlSignedData> getOriginalSignerDocuments() {
+		return wrapped.getOriginalDocuments();
+	}
 
 	/**
 	 * This method returns the JAXB model

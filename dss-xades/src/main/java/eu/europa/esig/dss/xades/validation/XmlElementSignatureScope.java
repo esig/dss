@@ -22,6 +22,7 @@ package eu.europa.esig.dss.xades.validation;
 
 import java.util.List;
 
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.validation.SignatureScope;
 import eu.europa.esig.dss.validation.SignatureScopeType;
 
@@ -32,8 +33,8 @@ public class XmlElementSignatureScope extends SignatureScope {
 
 	private final List<String> transformations;
 
-	protected XmlElementSignatureScope(String xmlId, final List<String> transformations) {
-		super(xmlId);
+	protected XmlElementSignatureScope(String xmlId, final List<String> transformations, final Digest digest) {
+		super(xmlId, digest);
 		this.transformations = transformations;
 	}
 

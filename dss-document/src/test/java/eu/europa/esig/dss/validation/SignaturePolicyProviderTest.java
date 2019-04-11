@@ -79,8 +79,8 @@ public class SignaturePolicyProviderTest {
 		DataLoader dataLoader = new MemoryDataLoader(dataMap);
 		spp.setDataLoader(dataLoader);
 
-		assertEquals(policy.getDigest(DigestAlgorithm.SHA256), spp.getSignaturePolicyByUrl(POLICY_URL).getDigest(DigestAlgorithm.SHA256));
-		assertEquals(policy.getDigest(DigestAlgorithm.SHA256), spp.getSignaturePolicy(POLICY_ID, POLICY_URL).getDigest(DigestAlgorithm.SHA256));
+		assertEquals(policy.getDigest64Base(DigestAlgorithm.SHA256), spp.getSignaturePolicyByUrl(POLICY_URL).getDigest64Base(DigestAlgorithm.SHA256));
+		assertEquals(policy.getDigest64Base(DigestAlgorithm.SHA256), spp.getSignaturePolicy(POLICY_ID, POLICY_URL).getDigest64Base(DigestAlgorithm.SHA256));
 	}
 
 }

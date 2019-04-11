@@ -181,6 +181,11 @@ public class ApacheCommonsUtils implements IUtils {
 			throw new IllegalArgumentException("Unable to extract binary from Hex", e);
 		}
 	}
+	
+	@Override
+	public boolean isBase64Encoded(String base64String) {
+		return Base64.isBase64(base64String);
+	}
 
 	@Override
 	public String toBase64(byte[] bytes) {

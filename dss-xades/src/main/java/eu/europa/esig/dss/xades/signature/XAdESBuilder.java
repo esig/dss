@@ -255,7 +255,7 @@ public abstract class XAdESBuilder {
 			byte[] bytes = DSSXMLUtils.canonicalizeSubtree(dssTransform.getAlgorithm(), dom);
 			base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, bytes));
 		} else {
-			base64EncodedDigestBytes = originalDocument.getDigest(digestAlgorithm);
+			base64EncodedDigestBytes = originalDocument.getDigest64Base(digestAlgorithm);
 		}
 
 		LOG.trace("C14n Digest value {} --> {}", parentDom.getNodeName(), base64EncodedDigestBytes);

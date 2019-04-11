@@ -31,28 +31,28 @@ public class DigestDocumentTest {
 	@Test
 	public void test() {
 		String base64EncodeDigest = "aaa";
-		DigestDocument doc = new DigestDocument();
-		doc.addDigest(DigestAlgorithm.SHA1, base64EncodeDigest);
-		assertEquals(base64EncodeDigest, doc.getDigest(DigestAlgorithm.SHA1));
+		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
+		assertEquals(base64EncodeDigest, doc.getDigest64Base(DigestAlgorithm.SHA1));
 	}
 
 	@Test(expected = DSSException.class)
 	public void testUnknownDigest() {
 		String base64EncodeDigest = "aaa";
-		DigestDocument doc = new DigestDocument();
-		doc.addDigest(DigestAlgorithm.SHA1, base64EncodeDigest);
-		doc.getDigest(DigestAlgorithm.SHA256);
+		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
+		doc.getDigest64Base(DigestAlgorithm.SHA256);
 	}
 
 	@Test(expected = DSSException.class)
 	public void testOpenStream() {
-		DigestDocument doc = new DigestDocument();
+		String base64EncodeDigest = "aaa";
+		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
 		doc.openStream();
 	}
 
 	@Test(expected = DSSException.class)
 	public void testSave() throws IOException {
-		DigestDocument doc = new DigestDocument();
+		String base64EncodeDigest = "aaa";
+		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
 		doc.save("target/test");
 	}
 

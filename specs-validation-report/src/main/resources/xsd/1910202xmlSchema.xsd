@@ -27,7 +27,7 @@
 			<xs:element name="SignatureIdentifier" type="vr:SignatureIdentifierType" minOccurs="0"/>
 			<xs:element name="ValidationConstraintsEvaluationReport" type="vr:ValidationConstraintsEvaluationReportType" minOccurs="0"/>
 			<xs:element name="ValidationTimeInfo" type="vr:ValidationTimeInfoType" minOccurs="0"/>
-			<xs:element name="SignersDocument" type="vr:SignersDocumentType" minOccurs="0"/>
+			<xs:element name="SignersDocument" type="vr:SignersDocumentType" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="SignatureAttributes" type="vr:SignatureAttributesType" minOccurs="0"/>
 			<xs:element name="SignerInformation" type="vr:SignerInformationType" minOccurs="0"/>
 			<xs:element name="SignatureQuality" type="vr:SignatureQualityType" minOccurs="0"/>

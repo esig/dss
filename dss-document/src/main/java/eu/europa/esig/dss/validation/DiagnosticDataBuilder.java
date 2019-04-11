@@ -84,7 +84,8 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerDocumentRepresentation;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedData;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerDocumentRepresentations;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
@@ -92,6 +93,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedRevocationData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignedData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
@@ -143,6 +145,7 @@ public class DiagnosticDataBuilder {
 	private Map<String, XmlRevocation> xmlRevocations = new HashMap<String, XmlRevocation>();
 	private Map<String, XmlSignature> xmlSignatures = new HashMap<String, XmlSignature>();
 	private Map<String, XmlTimestamp> xmlTimestamps = new HashMap<String, XmlTimestamp>();
+	private Map<String, XmlSignedData> xmlSignedData = new HashMap<String, XmlSignedData>();
 
 	/**
 	 * This method allows to set the document which is analysed
@@ -355,6 +358,19 @@ public class DiagnosticDataBuilder {
 		}
 
 		if (Utils.isCollectionNotEmpty(signatures)) {
+			// collect original signer documents
+			List<String> originalDocumentIds = new ArrayList<String>();
+			for (AdvancedSignature advancedSignature : signatures) {
+				for (SignatureScope signatureScope : advancedSignature.getSignatureScopes()) {
+					if (!originalDocumentIds.contains(signatureScope.getDSSIdAsString())) {
+						XmlSignedData signedData = getXmlSignedData(signatureScope);
+						xmlSignedData.put(signatureScope.getDSSIdAsString(), signedData);
+						diagnosticData.getOriginalDocuments().add(signedData);
+						originalDocumentIds.add(signatureScope.getDSSIdAsString());
+					}
+				}
+			}
+			
 			for (AdvancedSignature advancedSignature : signatures) {
 				XmlSignature currentXmlSignature = buildDetachedXmlSignature(advancedSignature);
 				xmlSignatures.put(advancedSignature.getId(), currentXmlSignature);
@@ -503,7 +519,7 @@ public class DiagnosticDataBuilder {
 
 		xmlSignature.setPolicy(getXmlPolicy(signature));
 		xmlSignature.setPDFSignatureDictionary(getXmlPDFSignatureDictionary(signature));
-		xmlSignature.setSignerDocumentRepresentation(getXmlSignerDocumentRepresentation(signature));
+		xmlSignature.setSignerDocumentRepresentations(getXmlSignerDocumentRepresentations(signature));
 		
 		// TODO: sigRef digest (for etsi SignatureReferenceType)
 
@@ -533,15 +549,24 @@ public class DiagnosticDataBuilder {
 		return null;
 	}
 	
-	private XmlSignerDocumentRepresentation getXmlSignerDocumentRepresentation(AdvancedSignature signature) {
+	private XmlSignerDocumentRepresentations getXmlSignerDocumentRepresentations(AdvancedSignature signature) {
 		if (signature.getDetachedContents() == null) {
 			return null;
 		}
-		XmlSignerDocumentRepresentation signerDocumentRepresentation = new XmlSignerDocumentRepresentation();
+		XmlSignerDocumentRepresentations signerDocumentRepresentation = new XmlSignerDocumentRepresentations();
 		signerDocumentRepresentation.setDocHashOnly(signature.isDocHashOnlyValidation());
 		signerDocumentRepresentation.setHashOnly(signature.isHashOnlyValidation());
 		return signerDocumentRepresentation;
 	}
+	
+	private XmlSignedData getXmlSignedData(SignatureScope signatureScope) {
+		XmlSignedData xmlSignedData = new XmlSignedData();
+		xmlSignedData.setId(signatureScope.getDSSIdAsString());
+		xmlSignedData.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(signatureScope.getDigest().getAlgorithm(), 
+				signatureScope.getDigest().getValue()));
+		xmlSignedData.setReferencedName(signatureScope.getName());
+		return xmlSignedData;
+	}	
 
 	private XmlStructuralValidation getXmlStructuralValidation(AdvancedSignature signature) {
 		String structureValidationResult = signature.getStructureValidationResult();
@@ -782,18 +807,24 @@ public class DiagnosticDataBuilder {
 	private List<XmlFoundCertificate> getXmlFoundCertificates(AdvancedSignature signature) {
 		List<XmlFoundCertificate> foundCertificates = new ArrayList<XmlFoundCertificate>();
 		SignatureCertificateSource certificateSource = signature.getCertificateSource();
-		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.KEY_INFO, certificateSource.getKeyInfoCertificates()));
+		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.KEY_INFO, 
+				certificateSource.getKeyInfoCertificates()));
 		foundCertificates.addAll(getXmlFoundCertificateRefs(XmlCertificateLocationType.SIGNING_CERTIFICATE, 
 				certificateSource.getSigningCertificates(), certificateSource));
 		foundCertificates.addAll(getXmlFoundCertificateRefs(XmlCertificateLocationType.COMPLETE_CERTIFICATE_REFS, 
 				certificateSource.getCompleteCertificates(), certificateSource));
 		foundCertificates.addAll(getXmlFoundCertificateRefs(XmlCertificateLocationType.ATTRIBUTE_CERTIFICATE_REFS, 
 				certificateSource.getAttributeCertificates(), certificateSource));
-		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.CERTIFICATE_VALUES, 	certificateSource.getCertificateValues()));
-		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.ATTR_AUTORITIES_CERT_VALUES, certificateSource.getAttrAuthoritiesCertValues()));
-		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.TIMESTAMP_DATA_VALIDATION, certificateSource.getTimeStampValidationDataCertValues()));
-		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.DSS, certificateSource.getDSSDictionaryCertValues()));
-		foundCertificates.addAll(getXmlFoundCertificates( XmlCertificateLocationType.VRI, certificateSource.getVRIDictionaryCertValues()));
+		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.CERTIFICATE_VALUES, 
+				certificateSource.getCertificateValues()));
+		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.ATTR_AUTORITIES_CERT_VALUES, 
+				certificateSource.getAttrAuthoritiesCertValues()));
+		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.TIMESTAMP_DATA_VALIDATION, 
+				certificateSource.getTimeStampValidationDataCertValues()));
+		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.DSS, 
+				certificateSource.getDSSDictionaryCertValues()));
+		foundCertificates.addAll(getXmlFoundCertificates(XmlCertificateLocationType.VRI, 
+				certificateSource.getVRIDictionaryCertValues()));
 		return foundCertificates;
 	}
 
@@ -1111,6 +1142,11 @@ public class DiagnosticDataBuilder {
 						tstRef.setToken(xmlTimestamps.get(timestampReference.getObjectId()));
 						objects.add(objectFactory.createTimestampedTimestamp(tstRef));
 						break;
+					case SIGNED_DATA:
+						XmlTimestampedSignedData sdRef = new XmlTimestampedSignedData();
+						sdRef.setToken(xmlSignedData.get(timestampReference.getObjectId()));
+						objects.add(objectFactory.createTimestampedSignedData(sdRef));
+						break;
 					default:
 						throw new DSSException("Unsupported category " + timestampReference.getCategory());
 				}
@@ -1207,7 +1243,8 @@ public class DiagnosticDataBuilder {
 		final XmlSignatureScope xmlSignatureScope = new XmlSignatureScope();
 		xmlSignatureScope.setName(scope.getName());
 		xmlSignatureScope.setScope(scope.getType());
-		xmlSignatureScope.setValue(scope.getDescription());
+		xmlSignatureScope.setDescription(scope.getDescription());
+		xmlSignatureScope.setSignedData(xmlSignedData.get(scope.getDSSIdAsString()));
 		return xmlSignatureScope;
 	}
 

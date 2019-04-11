@@ -26,6 +26,9 @@ public enum SignatureScopeType {
 	FULL,
 
 	/* The signature covers only a part of the document */
-	PARTIAL
+	PARTIAL,
+	
+	/* The signature covers only the digest of document */
+	DIGEST,
 
 }
