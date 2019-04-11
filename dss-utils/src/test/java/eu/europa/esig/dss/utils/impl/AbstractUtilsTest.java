@@ -300,6 +300,23 @@ public abstract class AbstractUtilsTest {
 	public void fromHexNull() {
 		Utils.fromHex(null);
 	}
+	
+	@Test
+	public void isBase64Encoded() {
+		assertTrue(Utils.isBase64Encoded(""));
+		assertTrue(Utils.isBase64Encoded("AQIDBAU="));
+		assertTrue(Utils.isBase64Encoded("AQIDBAU"));
+		assertTrue(Utils.isBase64Encoded("AQIDBAU=="));
+		assertTrue(Utils.isBase64Encoded("AQIDBAU==="));
+		assertTrue(Utils.isBase64Encoded("\nAQI\nD BA\tU=\n"));
+		assertFalse(Utils.isBase64Encoded("1.3.5"));
+		assertFalse(Utils.isBase64Encoded("AS.DF,GH/JK"));
+	}
+	
+	@Test(expected = NullPointerException.class)
+	public void isBase64EncodedNullPointer() {
+		assertFalse(Utils.isBase64Encoded(null));
+	}
 
 	@Test
 	public void toBase64() {

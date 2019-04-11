@@ -227,7 +227,7 @@ public class GoogleGuavaUtils implements IUtils {
 	
 	@Override
 	public boolean isBase64Encoded(String base64String) {
-		return BaseEncoding.base64().canDecode(base64String);
+		return BaseEncoding.base64().canDecode(CharMatcher.whitespace().removeFrom(base64String));
 	}
 
 	@Override
