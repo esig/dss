@@ -282,7 +282,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		assertNotNull(digestAlgoAndValueSignatureOne);
 		
 		DigestAlgorithm digestAlgorithm = DigestAlgorithm.forName(digestAlgoAndValueSignatureOne.getDigestMethod());
-		assertEquals(doc1.getDigest64Base(digestAlgorithm), orig1.getDigest64Base(digestAlgorithm));
+		assertEquals(doc1.getDigest(digestAlgorithm), orig1.getDigest(digestAlgorithm));
 		assertTrue(Arrays.equals(digestAlgoAndValueSignatureOne.getDigestValue(), 
 				DSSUtils.digest(DigestAlgorithm.forName(digestAlgoAndValueSignatureOne.getDigestMethod()), orig1)));
 		XmlDigestAlgoAndValue digestAlgoAndValueSignatureTwo = signerData.get(1).getSignedData().getDigestAlgoAndValue();

@@ -53,7 +53,7 @@ public abstract class AbstractManifestBuilder {
 		digestMethodDom.setAttribute("Algorithm", digestAlgorithm.getXmlId());
 
 		final Element digestValueDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLSignature.XMLNS, "DigestValue");
-		final Text textNode = documentDom.createTextNode(document.getDigest64Base(digestAlgorithm));
+		final Text textNode = documentDom.createTextNode(document.getDigest(digestAlgorithm));
 		digestValueDom.appendChild(textNode);
 	}
 

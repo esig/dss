@@ -69,7 +69,6 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 	private final Map<String, String> presentableTransformationNames = new HashMap<String, String>();
 
 	public XAdESSignatureScopeFinder() {
-
 		// @see http://www.w3.org/TR/xmldsig-core/#sec-TransformAlg
 		// those transformations don't change the content of the original document
 		transformationToIgnore.add(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
@@ -149,8 +148,10 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 				for (DSSDocument detachedDocument : xadesSignature.getDetachedContents()) {
 					if (uri.equals(detachedDocument.getName())) {
 						if (detachedDocument instanceof DigestDocument) {
-							result.add(new DigestSignatureScope(DSSUtils.decodeUrl(uri), 
-									detachedDocument.getDigest(detachedDocument.getExistingDigestAlgorithm()) ));
+							DigestDocument digestDocument = (DigestDocument) detachedDocument;
+							result.add(new DigestSignatureScope(DSSUtils.decodeUrl(uri), digestDocument.getExistingDigest()));
+						} else if (Utils.isCollectionNotEmpty(transformations)) {
+							result.add(new XmlFullSignatureScope(DSSUtils.decodeUrl(uri), transformations, getDigest(DSSUtils.toByteArray(detachedDocument))));
 						} else {
 							result.add(new FullSignatureScope(DSSUtils.decodeUrl(uri), getDigest(DSSUtils.toByteArray(detachedDocument))));
 						}
@@ -163,8 +164,8 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 			for (DSSDocument detachedDocument : xadesSignature.getDetachedContents()) {
 				// can be only a Digest Document
 				if (detachedDocument instanceof DigestDocument && Utils.isStringEmpty(detachedDocument.getName())) {
-					result.add(new DigestSignatureScope(detachedDocument.getName(), 
-							detachedDocument.getDigest(detachedDocument.getExistingDigestAlgorithm()) ));
+					DigestDocument digestDocument = (DigestDocument) detachedDocument;
+					result.add(new DigestSignatureScope(detachedDocument.getName(), digestDocument.getExistingDigest()));
 				}
 			}
 		}

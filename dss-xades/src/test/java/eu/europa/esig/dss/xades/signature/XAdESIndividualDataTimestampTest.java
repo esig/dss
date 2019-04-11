@@ -144,7 +144,7 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		assertNotNull(digestAlgAndValueFirstDoc);
 		assertNotNull(digestAlgAndValueFirstDoc.getDigestMethod());
 		assertNotNull(digestAlgAndValueFirstDoc.getDigestValue());
-		assertEquals(Utils.toBase64(digestAlgAndValueFirstDoc.getDigestValue()), fileToBeIndividualTimestamped.getDigest64Base(
+		assertEquals(Utils.toBase64(digestAlgAndValueFirstDoc.getDigestValue()), fileToBeIndividualTimestamped.getDigest(
 				DigestAlgorithm.forXML(digestAlgAndValueFirstDoc.getDigestMethod().getAlgorithm())));
 		
 		assertNotNull(signersDocuments.get(1));
@@ -152,7 +152,7 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		assertNotNull(digestAlgAndValueSecondDoc);
 		assertNotNull(digestAlgAndValueSecondDoc.getDigestMethod());
 		assertNotNull(digestAlgAndValueSecondDoc.getDigestValue());
-		assertEquals(Utils.toBase64(digestAlgAndValueSecondDoc.getDigestValue()), notIndividuallyTimestampedFile.getDigest64Base(
+		assertEquals(Utils.toBase64(digestAlgAndValueSecondDoc.getDigestValue()), notIndividuallyTimestampedFile.getDigest(
 				DigestAlgorithm.forXML(digestAlgAndValueSecondDoc.getDigestMethod().getAlgorithm())));
 		
 		ValidationObjectListType signatureValidationObjects = etsiValidationReport.getSignatureValidationObjects();

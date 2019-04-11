@@ -81,10 +81,10 @@ public class GetOriginalTest {
 
 	private void isFindAllOriginals(List<DSSDocument> retrievedDocuments) {
 		for (DSSDocument dssDocument : EXPECTED_MULTIFILES) {
-			String digestExpected = dssDocument.getDigest64Base(DigestAlgorithm.SHA256);
+			String digestExpected = dssDocument.getDigest(DigestAlgorithm.SHA256);
 			boolean found = false;
 			for (DSSDocument retrieved : retrievedDocuments) {
-				String digestRetrieved = retrieved.getDigest64Base(DigestAlgorithm.SHA256);
+				String digestRetrieved = retrieved.getDigest(DigestAlgorithm.SHA256);
 				if (Utils.areStringsEqual(digestExpected, digestRetrieved)) {
 					found = true;
 				}
@@ -105,7 +105,7 @@ public class GetOriginalTest {
 		for (AdvancedSignature advancedSignature : signatures) {
 			List<DSSDocument> originalDocuments = sdv.getOriginalDocuments(advancedSignature.getId());
 			assertEquals(1, originalDocuments.size());
-			assertEquals(EXPECTED_ONEFILE.getDigest64Base(DigestAlgorithm.SHA256), originalDocuments.get(0).getDigest64Base(DigestAlgorithm.SHA256));
+			assertEquals(EXPECTED_ONEFILE.getDigest(DigestAlgorithm.SHA256), originalDocuments.get(0).getDigest(DigestAlgorithm.SHA256));
 		}
 	}
 
@@ -122,7 +122,7 @@ public class GetOriginalTest {
 		for (AdvancedSignature advancedSignature : signatures) {
 			List<DSSDocument> originalDocuments = sdv.getOriginalDocuments(advancedSignature.getId());
 			assertEquals(1, originalDocuments.size());
-			assertEquals(EXPECTED_ONEFILE.getDigest64Base(DigestAlgorithm.SHA256), originalDocuments.get(0).getDigest64Base(DigestAlgorithm.SHA256));
+			assertEquals(EXPECTED_ONEFILE.getDigest(DigestAlgorithm.SHA256), originalDocuments.get(0).getDigest(DigestAlgorithm.SHA256));
 		}
 	}
 

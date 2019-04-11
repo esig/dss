@@ -141,7 +141,7 @@ public class ManifestValidator {
 		}
 
 		try {
-			String documentDigestB64 = doc.getDigest64Base(digest.getAlgorithm());
+			String documentDigestB64 = doc.getDigest(digest.getAlgorithm());
 			return Arrays.equals(digest.getValue(), Utils.fromBase64(documentDigestB64));
 		} catch (Exception e) {
 			LOG.warn("Unable to verify integrity for document '{}' : {}", doc.getName(), e.getMessage());

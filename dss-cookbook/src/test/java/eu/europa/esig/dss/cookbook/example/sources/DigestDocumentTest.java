@@ -45,18 +45,18 @@ public class DigestDocumentTest {
 		DSSDocument fileDocument = new FileDocument("src/main/resources/xml_example.xml");
 
 		// After that, we create a DigestDocument
-		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA1, fileDocument.getDigest64Base(DigestAlgorithm.SHA1));
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA1, fileDocument.getDigest(DigestAlgorithm.SHA1));
 		digestDocument.setName(fileDocument.getName());
 		
 		// We can add an additional needed digest value(s). Eg : for a SHA-256 based signature
-		digestDocument.addDigest(DigestAlgorithm.SHA256, fileDocument.getDigest64Base(DigestAlgorithm.SHA256));
+		digestDocument.addDigest(DigestAlgorithm.SHA256, fileDocument.getDigest(DigestAlgorithm.SHA256));
 
 		// end::demo[]
 
-		assertNotNull(digestDocument.getDigest64Base(DigestAlgorithm.SHA256));
+		assertNotNull(digestDocument.getDigest(DigestAlgorithm.SHA256));
 
 		try {
-			digestDocument.getDigest64Base(DigestAlgorithm.SHA512);
+			digestDocument.getDigest(DigestAlgorithm.SHA512);
 			fail("SHA-512 doesn't exist");
 		} catch (DSSException e) {
 			// normal behavior

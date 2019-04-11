@@ -22,16 +22,26 @@ package eu.europa.esig.dss;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map.Entry;
+
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Digest representation of a {@code DSSDocument}. It can be used to handle a large file to be signed. The computation
  * of the digest associated to the file can be done externally.
  */
 public class DigestDocument extends CommonDocument {
+	
+	/**
+	 * Creates DigestDocument with an empty digest map.
+	 * Initial algorithm and digest must be specified in order to use the object
+	 */
+	public DigestDocument() {
+		
+	}
 
 	/**
 	 * Creates DigestDocument.
-	 * Initial algorithm and digest must be specified
 	 * 
 	 * @param digestAlgorithm
 	 *            {@code DigestAlgorithm}
@@ -56,7 +66,7 @@ public class DigestDocument extends CommonDocument {
 	}
 
 	@Override
-	public String getDigest64Base(final DigestAlgorithm digestAlgorithm) {
+	public String getDigest(final DigestAlgorithm digestAlgorithm) {
 		String base64EncodeDigest = base64EncodeDigestMap.get(digestAlgorithm);
 		if (base64EncodeDigest == null) {
 			throw new DSSException("Unknown digest value for algorithm : " + digestAlgorithm);
@@ -64,13 +74,12 @@ public class DigestDocument extends CommonDocument {
 		return base64EncodeDigest;
 	}
 	
-	@Override
-	public boolean digestForAlgorithmExists(DigestAlgorithm digestAlgorithm) {
-		if (base64EncodeDigestMap.containsKey(digestAlgorithm)) {
-			return true;
-		} else {
-			return false;
+	public Digest getExistingDigest() {
+		if (Utils.isMapNotEmpty(base64EncodeDigestMap)) {
+			Entry<DigestAlgorithm, String> digestEntry = base64EncodeDigestMap.entrySet().iterator().next();
+			return new Digest(digestEntry.getKey(), Utils.fromBase64(digestEntry.getValue()));
 		}
+		throw new DSSException("The DigestDocument does not contain any digest! You must specify it by using addDigest() method.");
 	}
 
 	@Override

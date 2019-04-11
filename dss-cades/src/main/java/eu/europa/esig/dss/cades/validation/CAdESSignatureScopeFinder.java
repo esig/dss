@@ -28,7 +28,9 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AbstractSignatureScopeFinder;
 import eu.europa.esig.dss.validation.DigestSignatureScope;
 import eu.europa.esig.dss.validation.FullSignatureScope;
@@ -44,9 +46,11 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<CAdE
         try {
             DSSDocument originalDocument = cAdESSignature.getOriginalDocument();
             if (originalDocument instanceof DigestDocument) {
-                result.add(new DigestSignatureScope("Digest document", originalDocument.getDigest(originalDocument.getExistingDigestAlgorithm())));
+            	DigestDocument digestDocument = (DigestDocument) originalDocument;
+                result.add(new DigestSignatureScope("Digest document", digestDocument.getExistingDigest()));
             } else {
-                result.add(new FullSignatureScope("Full document", cAdESSignature.getOriginalDocument().getDigest(getDigestAlgorithm())));
+            	String digest64Base = cAdESSignature.getOriginalDocument().getDigest(getDigestAlgorithm());
+                result.add(new FullSignatureScope("Full document", new Digest(getDigestAlgorithm(), Utils.fromBase64(digest64Base))));
             }
         } catch (DSSException e) {
         	LOG.warn("A CAdES signer's original document is not found [{}].", e.getMessage());

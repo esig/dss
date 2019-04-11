@@ -96,14 +96,6 @@ public interface DSSDocument extends Serializable {
 	 *             if any IO error happens
 	 */
 	void save(final String filePath) throws IOException;
-	
-	/**
-	 * This method returns {@link Digest} for the specified {@code digestAlgorithm}
-	 * 
-	 * @param digestAlgorithm {@link DigestAlgorithm} to get digest for
-	 * @return {@link Digest}
-	 */
-	Digest getDigest(final DigestAlgorithm digestAlgorithm);
 
 	/**
 	 * This method returns the encoded digest value of the current {@code DSSDocument} using the base64 algorithm.
@@ -112,21 +104,6 @@ public interface DSSDocument extends Serializable {
 	 *            {@code DigestAlgorithm}
 	 * @return base64 encoded {@code String}
 	 */
-	String getDigest64Base(final DigestAlgorithm digestAlgorithm);
-	
-	/**
-	 * Returns a first existing {@link DigestAlgorithm} that has been processed in order to calculate the document digest
-	 * @return {@link DigestAlgorithm}
-	 */
-	DigestAlgorithm getExistingDigestAlgorithm();
-	
-	/**
-	 * Returns boolean value indicated if the digest for the given algorithm can be returned
-	 * 
-	 * @param digestAlgorithm
-	 *            {@code DigestAlgorithm}
-	 * @return TRUE if the digest for the {@code digestAlgorithm} exists, FALSE otherwise
-	 */
-	boolean digestForAlgorithmExists(DigestAlgorithm digestAlgorithm);
+	String getDigest(final DigestAlgorithm digestAlgorithm);
 
 }

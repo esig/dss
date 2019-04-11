@@ -994,7 +994,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 				// try to match with found digest algorithm(s)
 				for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
-					String digest = originalDocument.getDigest64Base(digestAlgorithm);
+					String digest = originalDocument.getDigest(digestAlgorithm);
 					if (Arrays.equals(expectedMessageDigestValue, Utils.fromBase64(digest))) {
 						messageDigest.setAlgorithm(digestAlgorithm);
 						validation.setIntact(true);

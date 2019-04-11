@@ -60,7 +60,7 @@ public class DSS1334Test extends PKIFactoryAccess {
 	public static void encodingTest() {
 		// be careful about carriage returns windows/linux
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1334/simple-test.xml");
-		assertEquals("tl08+/KLCeJN8RRCEDzF8aJ12Ew=", doc.getDigest64Base(DigestAlgorithm.SHA1));
+		assertEquals("tl08+/KLCeJN8RRCEDzF8aJ12Ew=", doc.getDigest(DigestAlgorithm.SHA1));
 		// Hex content :
 		// 3c3f786d6c2076657273696f6e3d22312e302220656e636f64696e673d225554462d38223f3e0d0a3c746573743e0d0a093c74657374456c656d656e743e746573743c2f74657374456c656d656e743e0d0a3c2f746573743e0d0a
 	}

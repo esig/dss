@@ -57,7 +57,7 @@ public class DetectionModificationAfterSignTest {
 		DSSDocument retrievedDocument = retrievedDocuments.get(0);
 
 		DSSDocument expected = new InMemoryDocument(getClass().getResourceAsStream("/validation/retrieved-modified_after_signature.pdf"));
-		assertEquals(expected.getDigest64Base(DigestAlgorithm.SHA256), retrievedDocument.getDigest64Base(DigestAlgorithm.SHA256));
+		assertEquals(expected.getDigest(DigestAlgorithm.SHA256), retrievedDocument.getDigest(DigestAlgorithm.SHA256));
 
 		// Additional code to detect visual difference
 		BufferedImage differenceImage = PdfScreenshotUtils.getDifferenceImage(dssDocument, expected);

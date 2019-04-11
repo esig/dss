@@ -58,7 +58,7 @@ public class DetachedSignatureResolver extends ResourceResolverSpi {
 		DSSDocument document = getCurrentDocument(context);
 		if (document instanceof DigestDocument) {
 			DigestDocument digestDoc = (DigestDocument) document;
-			return new XMLSignatureInput(digestDoc.getDigest64Base(digestAlgorithm));
+			return new XMLSignatureInput(digestDoc.getDigest(digestAlgorithm));
 		} else {
 			return createFromCommonDocument(document);
 		}

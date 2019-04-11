@@ -60,7 +60,7 @@ public class ManifestBuilderTest {
 			String xmlContent = new String(Utils.toByteArray(is), "UTF-8");
 			assertTrue(xmlContent.contains(XAdESBuilder.DS_MANIFEST));
 			assertTrue(xmlContent.contains(file1.getName()));
-			assertTrue(xmlContent.contains(file1.getDigest64Base(DigestAlgorithm.SHA512)));
+			assertTrue(xmlContent.contains(file1.getDigest(DigestAlgorithm.SHA512)));
 			LOG.info(xmlContent);
 		}
 	}

@@ -27,37 +27,27 @@ import java.util.List;
 
 import javax.xml.crypto.dsig.XMLSignature;
 
-import org.apache.xml.security.signature.Reference;
-import org.apache.xml.security.signature.XMLSignatureException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
-import eu.europa.esig.dss.xades.signature.XAdESBuilder;
 
 /**
  * Validator of XML Signed document
  *
  */
 public class XMLDocumentValidator extends SignedDocumentValidator {
-
-	private static final Logger LOG = LoggerFactory.getLogger(XMLDocumentValidator.class);
 
 	private static final byte[] xmlPreamble = new byte[] { '<', '?', 'x', 'm', 'l' };
 	private static final byte[] xmlUtf8 = new byte[] { -17, -69, -65, '<', '?' };

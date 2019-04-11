@@ -76,7 +76,7 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 
 		// Provide only the digest value
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
-		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA1, toBeSigned.getDigest64Base(DigestAlgorithm.SHA1));
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA1, toBeSigned.getDigest(DigestAlgorithm.SHA1));
 		digestDocument.setName("sample.xml");
 		detachedContents.add(digestDocument);
 		validator.setDetachedContents(detachedContents);
@@ -113,7 +113,7 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 
 		// Provide only the digest value
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
-		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, toBeSigned.getDigest64Base(DigestAlgorithm.SHA256));
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, toBeSigned.getDigest(DigestAlgorithm.SHA256));
 		digestDocument.setName("sample.xml");
 		detachedContents.add(digestDocument);
 		validator.setDetachedContents(detachedContents);
@@ -139,7 +139,7 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 		assertNotNull(xmlSignatureScope.getSignedData().getDigestAlgoAndValue().getDigestValue());
 		
 		assertTrue(Arrays.equals(xmlSignatureScope.getSignedData().getDigestAlgoAndValue().getDigestValue(), 
-				Utils.fromBase64(toBeSigned.getDigest64Base(DigestAlgorithm.forName(xmlSignatureScope.getSignedData().getDigestAlgoAndValue().getDigestMethod())))
+				Utils.fromBase64(toBeSigned.getDigest(DigestAlgorithm.forName(xmlSignatureScope.getSignedData().getDigestAlgoAndValue().getDigestMethod())))
 				));
 		
 	}

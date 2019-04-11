@@ -26,20 +26,22 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import eu.europa.esig.dss.utils.Utils;
+
 public class DigestDocumentTest {
 
 	@Test
 	public void test() {
 		String base64EncodeDigest = "aaa";
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
-		assertEquals(base64EncodeDigest, doc.getDigest64Base(DigestAlgorithm.SHA1));
+		assertEquals(base64EncodeDigest, doc.getDigest(DigestAlgorithm.SHA1));
 	}
 
 	@Test(expected = DSSException.class)
 	public void testUnknownDigest() {
 		String base64EncodeDigest = "aaa";
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
-		doc.getDigest64Base(DigestAlgorithm.SHA256);
+		doc.getDigest(DigestAlgorithm.SHA256);
 	}
 
 	@Test(expected = DSSException.class)
@@ -53,6 +55,16 @@ public class DigestDocumentTest {
 	public void testSave() throws IOException {
 		String base64EncodeDigest = "aaa";
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
+		doc.save("target/test");
+	}
+	
+	@Test
+	public void defaultConstructorTest() throws IOException {
+		byte[] stringToEncode = "aaa".getBytes();
+		DigestDocument doc = new DigestDocument();
+		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
+			doc.addDigest(digestAlgorithm, Utils.toBase64(DSSUtils.digest(digestAlgorithm, stringToEncode)));
+		}
 		doc.save("target/test");
 	}
 

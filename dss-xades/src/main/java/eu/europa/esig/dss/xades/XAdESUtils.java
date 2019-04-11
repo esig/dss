@@ -25,7 +25,7 @@ public final class XAdESUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESUtils.class);
 	
-	private static final String TRANSFORMATION_EXLUDE_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
+	private static final String TRANSFORMATION_EXCLUDE_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
 	private static final String TRANSFORMATION_XPATH_NODE_NAME = "XPath";
 	
 	/**
@@ -144,7 +144,7 @@ public final class XAdESUtils {
 							for (int j = 0; j < childNodes.getLength(); j++) {
 								Node item = childNodes.item(j);
 								if (Node.ELEMENT_NODE == item.getNodeType() && TRANSFORMATION_XPATH_NODE_NAME.equals(item.getLocalName()) &&
-										TRANSFORMATION_EXLUDE_SIGNATURE.equals(item.getTextContent())) {
+										TRANSFORMATION_EXCLUDE_SIGNATURE.equals(item.getTextContent())) {
 									return reference.getReferencedBytes();
 								}
 							}
