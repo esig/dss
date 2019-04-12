@@ -71,18 +71,13 @@
 					<plugin>
 						<groupId>org.asciidoctor</groupId>
 						<artifactId>asciidoctor-maven-plugin</artifactId>
-						<version>1.5.7.1</version>
+						<version>1.6.0</version>
 						<dependencies>
 		                    <dependency>
 		                        <groupId>org.asciidoctor</groupId>
 		                        <artifactId>asciidoctorj-pdf</artifactId>
 		                        <version>1.5.0-alpha.16</version>
 		                    </dependency>
-		                    <dependency>
-							    <groupId>org.jruby</groupId>
-							    <artifactId>jruby-complete</artifactId>
-							    <version>9.1.17.0</version>
-							</dependency>
 						</dependencies>
 						<executions>
 					        <execution>
