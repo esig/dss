@@ -46,6 +46,8 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AbstractSignatureScopeFinder;
+import eu.europa.esig.dss.validation.ContainerContentSignatureScope;
+import eu.europa.esig.dss.validation.ContainerSignatureScope;
 import eu.europa.esig.dss.validation.DigestSignatureScope;
 import eu.europa.esig.dss.validation.FullSignatureScope;
 import eu.europa.esig.dss.validation.SignatureScope;
@@ -147,14 +149,27 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 				// detached file
 				for (DSSDocument detachedDocument : xadesSignature.getDetachedContents()) {
 					if (uri.equals(detachedDocument.getName())) {
+						
 						if (detachedDocument instanceof DigestDocument) {
 							DigestDocument digestDocument = (DigestDocument) detachedDocument;
 							result.add(new DigestSignatureScope(DSSUtils.decodeUrl(uri), digestDocument.getExistingDigest()));
+							
 						} else if (Utils.isCollectionNotEmpty(transformations)) {
 							result.add(new XmlFullSignatureScope(DSSUtils.decodeUrl(uri), transformations, getDigest(DSSUtils.toByteArray(detachedDocument))));
+							
+						} else if (isASiCSArchive(xadesSignature, detachedDocument)) {
+							result.add(new ContainerSignatureScope(DSSUtils.decodeUrl(uri), getDigest(DSSUtils.toByteArray(detachedDocument))));
+							
+							for (DSSDocument archivedDocument : xadesSignature.getContainerContents()) {
+								result.add(new ContainerContentSignatureScope(DSSUtils.decodeUrl(archivedDocument.getName()), 
+										getDigest(DSSUtils.toByteArray(archivedDocument))));
+							}
+							
 						} else {
 							result.add(new FullSignatureScope(DSSUtils.decodeUrl(uri), getDigest(DSSUtils.toByteArray(detachedDocument))));
+							
 						}
+						
 					}
 				}
 			}

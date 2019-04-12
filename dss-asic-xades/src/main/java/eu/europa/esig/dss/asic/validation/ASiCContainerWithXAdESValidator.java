@@ -76,6 +76,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 					xadesValidator.setDetachedContents(OpenDocumentSupportUtils.getOpenDocumentCoverage(extractResult));
 				} else {
 					xadesValidator.setDetachedContents(getSignedDocuments());
+					xadesValidator.setContainerContents(getArchiveDocuments());
 				}
 
 				validators.add(xadesValidator);
@@ -89,7 +90,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 		List<ManifestFile> descriptions = new ArrayList<ManifestFile>();
 		List<DSSDocument> signatureDocuments = getSignatureDocuments();
 		List<DSSDocument> manifestDocuments = getManifestDocuments();
-		// All signatures uses the same file : manifest.xml
+		// All signatures use the same file : manifest.xml
 		for (DSSDocument signatureDoc : signatureDocuments) {
 			for (DSSDocument manifestDoc : manifestDocuments) {
 				ASiCEWithXAdESManifestParser manifestParser = new ASiCEWithXAdESManifestParser(signatureDoc, manifestDoc);
@@ -109,10 +110,9 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 			xadesValidator.setDetachedContents(potentials);
 			List<DSSDocument> retrievedDocs = xadesValidator.getOriginalDocuments(signatureId);
 			if (Utils.isCollectionNotEmpty(retrievedDocs)) {
-				return filterRetrievedOriginalDocuments(retrievedDocs);
+				return extractArchiveDocuments(retrievedDocs);
 			}
 		}
-
 		return result;
 	}
 	
@@ -120,14 +120,22 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
 		XAdESSignature xadesignature = (XAdESSignature) advancedSignature;
 		List<DSSDocument> retrievedDocs = XAdESUtils.getSignerDocuments(xadesignature);
-		return filterRetrievedOriginalDocuments(retrievedDocs);
+		return extractArchiveDocuments(retrievedDocs);
 	}
 	
-	private List<DSSDocument> filterRetrievedOriginalDocuments(List<DSSDocument> retrievedDocs) {
+	private List<DSSDocument> extractArchiveDocuments(List<DSSDocument> retrievedDocs) {
+		if (Utils.isCollectionNotEmpty(getArchiveDocuments())) {
+			return getArchiveDocuments();
+		}
 		if (ASiCContainerType.ASiC_S.equals(getContainerType())) {
 			return getSignedDocumentsASiCS(retrievedDocs);
 		}
 		return retrievedDocs;
+	}
+
+	@Override
+	protected void attachExternalTimestamps(List<AdvancedSignature> allSignatures) {
+		// Not-applicable for ASiC XAdES
 	}
 
 }

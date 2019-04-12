@@ -30,5 +30,8 @@ public enum SignatureScopeType {
 	
 	/* The signature covers only the digest of document */
 	DIGEST,
+	
+	/* The signature covers its bounded archive */
+	ARCHIVED,
 
 }

@@ -64,6 +64,22 @@ public interface DocumentValidator {
 	void setDetachedContents(final List<DSSDocument> detachedContent);
 
 	/**
+	 * Sets the {@code List} of {@code DSSDocument} containing the original container content for ASiC signatures.
+	 *
+	 * @param archiveContents
+	 *            the {@code List} of {@code DSSDocument} to set
+	 */
+	void setContainerContents(final List<DSSDocument> archiveContents);
+
+	/**
+	 * Sets the {@code List} of {@code ManifestFile}s found in the signature file.
+	 *
+	 * @param manifestFiles
+	 *            the {@code List} of {@code ManifestFile} to set
+	 */
+	void setManifestFiles(final List<ManifestFile> manifestFiles);
+
+	/**
 	 * This method allows to define the signing certificate. It is useful in the case of ,non AdES signatures.
 	 *
 	 * @param x509Certificate

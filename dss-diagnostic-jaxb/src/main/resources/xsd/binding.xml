@@ -109,9 +109,9 @@
             <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp" />
         </jaxb:property>
     </jaxb:bindings>
-    <jaxb:bindings node="//xs:complexType[@name='SignatureScope']//xs:attribute[@name='SignedData']">
+    <jaxb:bindings node="//xs:complexType[@name='SignatureScope']//xs:attribute[@name='SignerData']">
         <jaxb:property>
-            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlSignedData" />
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData" />
         </jaxb:property>
     </jaxb:bindings>
     
@@ -126,7 +126,6 @@
             <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
         </jaxb:property>
     </jaxb:bindings>
-    
 
   </jaxb:bindings>
   

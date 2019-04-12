@@ -133,13 +133,13 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 		assertNotNull(xmlSignatureScope);
 		assertNotNull(xmlSignatureScope.getName());
 		assertNotNull(xmlSignatureScope.getScope());
-		assertNotNull(xmlSignatureScope.getSignedData());;
-		assertNotNull(xmlSignatureScope.getSignedData().getDigestAlgoAndValue());
-		assertNotNull(xmlSignatureScope.getSignedData().getDigestAlgoAndValue().getDigestMethod());
-		assertNotNull(xmlSignatureScope.getSignedData().getDigestAlgoAndValue().getDigestValue());
+		assertNotNull(xmlSignatureScope.getSignerData());
+		assertNotNull(xmlSignatureScope.getSignerData().getDigestAlgoAndValue());
+		assertNotNull(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestMethod());
+		assertNotNull(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue());
 		
-		assertTrue(Arrays.equals(xmlSignatureScope.getSignedData().getDigestAlgoAndValue().getDigestValue(), 
-				Utils.fromBase64(toBeSigned.getDigest(DigestAlgorithm.forName(xmlSignatureScope.getSignedData().getDigestAlgoAndValue().getDigestMethod())))
+		assertTrue(Arrays.equals(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue(), 
+				Utils.fromBase64(toBeSigned.getDigest(DigestAlgorithm.forName(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestMethod())))
 				));
 		
 	}

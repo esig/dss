@@ -93,6 +93,16 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	protected List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
 
+	/**
+	 * In case of an ASiC signature this {@code List} of container documents.
+	 */
+	protected List<DSSDocument> containerContents;
+	
+	/**
+	 * List of all found {@link ManifestFile}s
+	 */
+	protected List<ManifestFile> manifestFiles;
+
 	protected CertificateToken providedSigningCertificateToken = null;
 
 	/**
@@ -209,6 +219,16 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	@Override
 	public void setDetachedContents(final List<DSSDocument> detachedContents) {
 		this.detachedContents = detachedContents;
+	}
+	
+	@Override
+	public void setContainerContents(List<DSSDocument> containerContents) {
+		this.containerContents = containerContents;
+	}
+	
+	@Override
+	public void setManifestFiles(List<ManifestFile> manifestFiles) {
+		this.manifestFiles = manifestFiles;
 	}
 
 	/**

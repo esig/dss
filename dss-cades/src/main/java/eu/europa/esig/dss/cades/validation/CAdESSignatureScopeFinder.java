@@ -28,12 +28,16 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AbstractSignatureScopeFinder;
+import eu.europa.esig.dss.validation.ContainerContentSignatureScope;
+import eu.europa.esig.dss.validation.ContainerSignatureScope;
 import eu.europa.esig.dss.validation.DigestSignatureScope;
 import eu.europa.esig.dss.validation.FullSignatureScope;
+import eu.europa.esig.dss.validation.ManifestSignatureScope;
 import eu.europa.esig.dss.validation.SignatureScope;
 
 public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<CAdESSignature> {
@@ -48,8 +52,23 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<CAdE
             if (originalDocument instanceof DigestDocument) {
             	DigestDocument digestDocument = (DigestDocument) originalDocument;
                 result.add(new DigestSignatureScope("Digest document", digestDocument.getExistingDigest()));
+                
+            } else if (isASiCSArchive(cAdESSignature, originalDocument)) {
+            	result.add(new ContainerSignatureScope(originalDocument.getName(), getDigest(DSSUtils.toByteArray(originalDocument))));
+				for (DSSDocument archivedDocument : cAdESSignature.getContainerContents()) {
+					result.add(new ContainerContentSignatureScope(DSSUtils.decodeUrl(archivedDocument.getName()), 
+							getDigest(DSSUtils.toByteArray(archivedDocument))));
+				}
+				
+            } else if (isASiCEArchive(cAdESSignature)) {
+            	result.add(new ManifestSignatureScope(originalDocument.getName(), getDigest(DSSUtils.toByteArray(originalDocument))));
+            	for (DSSDocument manifestContent : cAdESSignature.getManifestedDocuments()) {
+					result.add(new FullSignatureScope(manifestContent.getName(), 
+							getDigest(DSSUtils.toByteArray(manifestContent))));
+            	}
+            	
             } else {
-            	String digest64Base = cAdESSignature.getOriginalDocument().getDigest(getDigestAlgorithm());
+            	String digest64Base = originalDocument.getDigest(getDigestAlgorithm());
                 result.add(new FullSignatureScope("Full document", new Digest(getDigestAlgorithm(), Utils.fromBase64(digest64Base))));
             }
         } catch (DSSException e) {
@@ -57,4 +76,5 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<CAdE
         }
         return result;
     }
+    
 }

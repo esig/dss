@@ -27,7 +27,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedData;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.RevocationRefLocation;
@@ -245,8 +245,8 @@ public class ETSIValidationReportBuilder {
 			addTimestamp(validationObjectListType, timestamp);
 		}
 		
-		for (XmlSignedData signedData : diagnosticData.getOriginalSignerDocuments()) {
-			addSignedData(validationObjectListType, signedData, poeExtraction);
+		for (XmlSignerData signedData : diagnosticData.getOriginalSignerDocuments()) {
+			addSignerData(validationObjectListType, signedData, poeExtraction);
 		}
 
 		return validationObjectListType;
@@ -346,7 +346,7 @@ public class ETSIValidationReportBuilder {
 		return signatureReference;
 	}
 	
-	private void addSignedData(ValidationObjectListType validationObjectListType, XmlSignedData signedData, POEExtraction poeExtraction) {
+	private void addSignerData(ValidationObjectListType validationObjectListType, XmlSignerData signedData, POEExtraction poeExtraction) {
 		ValidationObjectType validationObject = objectFactory.createValidationObjectType();
 		validationObject.setId(signedData.getId());
 		validationObject.setObjectType(ObjectType.SIGNED_DATA);
@@ -519,8 +519,8 @@ public class ETSIValidationReportBuilder {
 		List<XmlSignatureScope> signerData = sigWrapper.getSignatureScopes();
 		for (XmlSignatureScope xmlSignatureScope : signerData) {
 			SignersDocumentType signersDocumentType = objectFactory.createSignersDocumentType();
-			signersDocumentType.setDigestAlgAndValue(getDigestAlgAndValueType(xmlSignatureScope.getSignedData().getDigestAlgoAndValue()));
-			signersDocumentType.setSignersDocumentRef(getVOReference(xmlSignatureScope.getSignedData().getId()));
+			signersDocumentType.setDigestAlgAndValue(getDigestAlgAndValueType(xmlSignatureScope.getSignerData().getDigestAlgoAndValue()));
+			signersDocumentType.setSignersDocumentRef(getVOReference(xmlSignatureScope.getSignerData().getId()));
 			signatureValidationReport.getSignersDocument().add(signersDocumentType);
 		}
 	}

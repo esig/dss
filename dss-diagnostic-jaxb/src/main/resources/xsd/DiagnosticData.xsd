@@ -40,7 +40,7 @@
 				<xs:element name="OriginalDocuments" minOccurs="0">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="SignedData" type="SignedData" minOccurs="0" maxOccurs="unbounded" />
+							<xs:element name="SignerData" type="SignerData" minOccurs="0" maxOccurs="unbounded" />
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
@@ -397,7 +397,7 @@
 			<xs:element name="name" type="xs:string" />
 			<xs:element name="description" type="xs:string" />
 		</xs:sequence>
-		<xs:attribute name="SignedData" type="xs:IDREF" use="required" />
+		<xs:attribute name="SignerData" type="xs:IDREF" use="required" />
 	</xs:complexType>
 	
 	<xs:simpleType name="ScopeType" final="restriction">
@@ -446,7 +446,7 @@
 	<xs:element name="TimestampedRevocationData" type="TimestampedRevocationData" substitutionGroup="TimestampedObject" />
 	<xs:element name="TimestampedTimestamp" type="TimestampedTimestamp" substitutionGroup="TimestampedObject" />
 	<xs:element name="TimestampedSignature" type="TimestampedSignature" substitutionGroup="TimestampedObject" />
-	<xs:element name="TimestampedSignedData" type="TimestampedSignedData" substitutionGroup="TimestampedObject" />
+	<xs:element name="TimestampedSignerData" type="TimestampedSignerData" substitutionGroup="TimestampedObject" />
 	
 	<xs:complexType name="TimestampedObject" abstract="true">
 		<xs:sequence/>
@@ -485,7 +485,7 @@
         </xs:complexContent>
     </xs:complexType>
     
-	<xs:complexType name="TimestampedSignedData">
+	<xs:complexType name="TimestampedSignerData">
         <xs:complexContent>
             <xs:restriction base="TimestampedObject">
 				<xs:attribute name="Token" type="xs:IDREF" use="required" />
@@ -746,7 +746,7 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:complexType name="SignedData">
+	<xs:complexType name="SignerData">
 		<xs:complexContent>
             <xs:extension base="AbstractToken">
 				<xs:sequence>

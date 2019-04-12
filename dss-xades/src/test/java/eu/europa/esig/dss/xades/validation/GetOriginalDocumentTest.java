@@ -278,14 +278,14 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		List<XmlSignatureScope> signerData = signature.getSignatureScopes();
 		assertNotNull(signerData);
 		assertEquals(2, signerData.size());
-		XmlDigestAlgoAndValue digestAlgoAndValueSignatureOne = signerData.get(0).getSignedData().getDigestAlgoAndValue();
+		XmlDigestAlgoAndValue digestAlgoAndValueSignatureOne = signerData.get(0).getSignerData().getDigestAlgoAndValue();
 		assertNotNull(digestAlgoAndValueSignatureOne);
 		
 		DigestAlgorithm digestAlgorithm = DigestAlgorithm.forName(digestAlgoAndValueSignatureOne.getDigestMethod());
 		assertEquals(doc1.getDigest(digestAlgorithm), orig1.getDigest(digestAlgorithm));
 		assertTrue(Arrays.equals(digestAlgoAndValueSignatureOne.getDigestValue(), 
 				DSSUtils.digest(DigestAlgorithm.forName(digestAlgoAndValueSignatureOne.getDigestMethod()), orig1)));
-		XmlDigestAlgoAndValue digestAlgoAndValueSignatureTwo = signerData.get(1).getSignedData().getDigestAlgoAndValue();
+		XmlDigestAlgoAndValue digestAlgoAndValueSignatureTwo = signerData.get(1).getSignerData().getDigestAlgoAndValue();
 		assertNotNull(digestAlgoAndValueSignatureTwo);
 		assertTrue(Arrays.equals(digestAlgoAndValueSignatureTwo.getDigestValue(), 
 				DSSUtils.digest(DigestAlgorithm.forName(digestAlgoAndValueSignatureTwo.getDigestMethod()), orig2)));

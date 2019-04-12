@@ -80,10 +80,26 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 				cadesValidator.setSignaturePolicyProvider(signaturePolicyProvider);
 				cadesValidator.setValidationCertPool(validationCertPool);
 				cadesValidator.setDetachedContents(getSignedDocuments(signature));
+				cadesValidator.setContainerContents(getArchiveDocuments());
+				cadesValidator.setManifestFiles(getManifestFiles());
 				validators.add(cadesValidator);
 			}
 		}
 		return validators;
+	}
+	
+	@Override
+	protected List<DSSDocument> getArchiveDocuments() {
+		List<DSSDocument> archiveContents = super.getArchiveDocuments();
+		// in case of Manifest file (ASiC-E CAdES signature) add signed documents
+		if (Utils.isCollectionNotEmpty(getManifestDocuments())) {
+			for (DSSDocument document : getSignedDocuments()) {
+				if (!archiveContents.contains(document)) {
+					archiveContents.add(document);
+				}
+			}
+		}
+		return archiveContents;
 	}
 
 	@Override
@@ -145,9 +161,9 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 
 	private List<DSSDocument> getSignedDocuments(DSSDocument signature) {
 		ASiCContainerType type = getContainerType();
-		if (ASiCContainerType.ASiC_S == type) {
+		if (ASiCContainerType.ASiC_S.equals(type)) {
 			return getSignedDocuments(); // Collection size should be equals 1
-		} else if (ASiCContainerType.ASiC_E == type) {
+		} else if (ASiCContainerType.ASiC_E.equals(type)) {
 			// the manifest file is signed
 			// we need first to check the manifest file and its digests
 			ASiCEWithCAdESManifestValidator manifestValidator = new ASiCEWithCAdESManifestValidator(signature, getManifestDocuments(), getSignedDocuments());

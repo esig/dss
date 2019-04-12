@@ -102,7 +102,7 @@ public class EtsiValidationReportComplete extends PKIFactoryAccess {
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 
-		 System.out.println(reports.getXmlValidationReport().replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", ""));
+		// System.out.println(reports.getXmlValidationReport().replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", ""));
 		
 		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
 		List<SignatureValidationReportType> signatureValidationReports = etsiValidationReport.getSignatureValidationReport();

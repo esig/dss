@@ -84,7 +84,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureProductionPlace;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlSignedData;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerDocumentRepresentations;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
@@ -93,7 +93,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedRevocationData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignedData;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignerData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
@@ -145,7 +145,7 @@ public class DiagnosticDataBuilder {
 	private Map<String, XmlRevocation> xmlRevocations = new HashMap<String, XmlRevocation>();
 	private Map<String, XmlSignature> xmlSignatures = new HashMap<String, XmlSignature>();
 	private Map<String, XmlTimestamp> xmlTimestamps = new HashMap<String, XmlTimestamp>();
-	private Map<String, XmlSignedData> xmlSignedData = new HashMap<String, XmlSignedData>();
+	private Map<String, XmlSignerData> xmlSignedData = new HashMap<String, XmlSignerData>();
 
 	/**
 	 * This method allows to set the document which is analysed
@@ -363,7 +363,7 @@ public class DiagnosticDataBuilder {
 			for (AdvancedSignature advancedSignature : signatures) {
 				for (SignatureScope signatureScope : advancedSignature.getSignatureScopes()) {
 					if (!originalDocumentIds.contains(signatureScope.getDSSIdAsString())) {
-						XmlSignedData signedData = getXmlSignedData(signatureScope);
+						XmlSignerData signedData = getXmlSignerData(signatureScope);
 						xmlSignedData.put(signatureScope.getDSSIdAsString(), signedData);
 						diagnosticData.getOriginalDocuments().add(signedData);
 						originalDocumentIds.add(signatureScope.getDSSIdAsString());
@@ -559,8 +559,8 @@ public class DiagnosticDataBuilder {
 		return signerDocumentRepresentation;
 	}
 	
-	private XmlSignedData getXmlSignedData(SignatureScope signatureScope) {
-		XmlSignedData xmlSignedData = new XmlSignedData();
+	private XmlSignerData getXmlSignerData(SignatureScope signatureScope) {
+		XmlSignerData xmlSignedData = new XmlSignerData();
 		xmlSignedData.setId(signatureScope.getDSSIdAsString());
 		xmlSignedData.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(signatureScope.getDigest().getAlgorithm(), 
 				signatureScope.getDigest().getValue()));
@@ -1143,9 +1143,9 @@ public class DiagnosticDataBuilder {
 						objects.add(objectFactory.createTimestampedTimestamp(tstRef));
 						break;
 					case SIGNED_DATA:
-						XmlTimestampedSignedData sdRef = new XmlTimestampedSignedData();
+						XmlTimestampedSignerData sdRef = new XmlTimestampedSignerData();
 						sdRef.setToken(xmlSignedData.get(timestampReference.getObjectId()));
-						objects.add(objectFactory.createTimestampedSignedData(sdRef));
+						objects.add(objectFactory.createTimestampedSignerData(sdRef));
 						break;
 					default:
 						throw new DSSException("Unsupported category " + timestampReference.getCategory());
@@ -1244,7 +1244,7 @@ public class DiagnosticDataBuilder {
 		xmlSignatureScope.setName(scope.getName());
 		xmlSignatureScope.setScope(scope.getType());
 		xmlSignatureScope.setDescription(scope.getDescription());
-		xmlSignatureScope.setSignedData(xmlSignedData.get(scope.getDSSIdAsString()));
+		xmlSignatureScope.setSignerData(xmlSignedData.get(scope.getDSSIdAsString()));
 		return xmlSignatureScope;
 	}
 

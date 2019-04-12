@@ -28,7 +28,11 @@ import eu.europa.esig.dss.validation.SignatureScopeType;
 public class XmlRootSignatureScope extends XmlElementSignatureScope {
 
     protected XmlRootSignatureScope(final List<String> transformations, final Digest digest) {
-        super("Full XML File", transformations, digest);
+    	super("Full XML File", transformations, digest);
+    }
+    
+    protected XmlRootSignatureScope(final String name, final List<String> transformations, final Digest digest) {
+        super(name, transformations, digest);
     }
 
     @Override
