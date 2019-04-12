@@ -515,7 +515,6 @@ public class ETSIValidationReportBuilder {
 	}
 	
 	private void getSignersDocuments(SignatureValidationReportType signatureValidationReport, SignatureWrapper sigWrapper) {
-		// TODO: check for asics if to return a list of unzipped documents
 		List<XmlSignatureScope> signerData = sigWrapper.getSignatureScopes();
 		for (XmlSignatureScope xmlSignatureScope : signerData) {
 			SignersDocumentType signersDocumentType = objectFactory.createSignersDocumentType();
