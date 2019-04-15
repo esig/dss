@@ -183,6 +183,11 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 		return result;
 	}
 
+	/**
+	 * Returns a list of transformations contained in the {@code reference}
+	 * @param reference {@link Reference} to find transformations for
+	 * @return list of transformation names
+	 */
 	private List<String> getTransformationNames(final Reference reference) {
 		final List<String> algorithms = new ArrayList<String>();
 		try {
@@ -194,12 +199,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 					for (int i = 0; i < transfromChildNodes.getLength(); i++) {
 						Node transformation = transfromChildNodes.item(i);
 						if (Node.ELEMENT_NODE == transformation.getNodeType()) {
-							final String algorithm = DomUtils.getValue(transformation, "@Algorithm");
-							if (presentableTransformationNames.containsKey(algorithm)) {
-								algorithms.add(presentableTransformationNames.get(algorithm));
-							} else {
-								algorithms.add(algorithm);
-							}
+							algorithms.add(buildTransformationName(transformation));
 						}
 					}
 				}
@@ -208,6 +208,42 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 			LOG.warn("Unable to analyze trasnformations", e);
 		}
 		return algorithms;
+	}
+	
+	/**
+	 * Returns a complete description string for the given transformation node
+	 * @param transformation {@link Node} containing a signle reference transformation information
+	 * @return transformation description name
+	 */
+	private String buildTransformationName(Node transformation) {
+		String algorithm = DomUtils.getValue(transformation, "@Algorithm");
+		if (presentableTransformationNames.containsKey(algorithm)) {
+			algorithm = presentableTransformationNames.get(algorithm);
+		}
+		StringBuilder stringBuilder = new StringBuilder(algorithm);
+		if (transformation.hasChildNodes()) {
+			NodeList childNodes = transformation.getChildNodes();
+			stringBuilder.append(" (");
+			boolean hasValues = false;
+			for (int j = 0; j < childNodes.getLength(); j++) {
+				Node parameterNode = childNodes.item(j);
+				if (Node.ELEMENT_NODE != parameterNode.getNodeType()) {
+					continue;
+				}
+				Node parameterValueNode = parameterNode.getFirstChild();
+				if (parameterValueNode != null && Node.TEXT_NODE == parameterValueNode.getNodeType() &&
+						Utils.isStringNotBlank(parameterValueNode.getTextContent())) {
+					if (hasValues) {
+						stringBuilder.append("; ");
+					}
+					stringBuilder.append(parameterNode.getLocalName()).append(": ");
+					stringBuilder.append(parameterValueNode.getTextContent());
+					hasValues = true;
+				}
+			}
+			stringBuilder.append(")");
+		}
+		return stringBuilder.toString();
 	}
 
 	/**
