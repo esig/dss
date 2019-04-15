@@ -114,8 +114,13 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 				crlValidity.setSignatureInvalidityReason("Signature value not correct");
 			}
 		} catch (GeneralSecurityException e) {
-			LOG.warn("Unable to validate the CRL signature", e);
-			crlValidity.setSignatureInvalidityReason("CRL Signature cannot be validated : " + e.getMessage());
+			String msg = String.format("CRL Signature cannot be validated : %s", e.getMessage());
+			if (LOG.isDebugEnabled()) {
+				LOG.debug(msg, e);
+			} else {
+				LOG.warn(msg);
+			}
+			crlValidity.setSignatureInvalidityReason(msg);
 		}
 	}
 

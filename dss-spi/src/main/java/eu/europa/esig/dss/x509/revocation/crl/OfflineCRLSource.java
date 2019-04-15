@@ -111,23 +111,21 @@ public abstract class OfflineCRLSource implements CRLSource {
 			if (crlValidity == null || !crlValidity.isValid()) {
 				continue;
 			}
-			if (issuerToken.getPublicKey().equals(crlValidity.getIssuerToken().getPublicKey())) {
-				// check the overlapping of the [thisUpdate, nextUpdate] from the CRL and [notBefore, notAfter] from
-				// the X509Certificate
-				final Date thisUpdate = crlValidity.getThisUpdate();
-				final Date nextUpdate = crlValidity.getNextUpdate();
-				final Date notAfter = certificateToken.getNotAfter();
-				final Date notBefore = certificateToken.getNotBefore();
-				boolean periodAreIntersecting = thisUpdate.before(notAfter) && (nextUpdate != null && nextUpdate.after(notBefore));
-				if (!periodAreIntersecting) {
-					LOG.warn("The CRL was not issued during the validity period of the certificate! Certificate: {}", certificateToken.getDSSIdAsString());
-					continue;
-				}
+			// check the overlapping of the [thisUpdate, nextUpdate] from the CRL and
+			// [notBefore, notAfter] from the X509Certificate
+			final Date thisUpdate = crlValidity.getThisUpdate();
+			final Date nextUpdate = crlValidity.getNextUpdate();
+			final Date notAfter = certificateToken.getNotAfter();
+			final Date notBefore = certificateToken.getNotBefore();
+			boolean periodAreIntersecting = thisUpdate.before(notAfter) && (nextUpdate != null && nextUpdate.after(notBefore));
+			if (!periodAreIntersecting) {
+				LOG.warn("The CRL was not issued during the validity period of the certificate! Certificate: {}", certificateToken.getDSSIdAsString());
+				continue;
+			}
 
-				if ((bestX509UpdateDate == null) || thisUpdate.after(bestX509UpdateDate)) {
-					bestCRLValidity = crlValidity;
-					bestX509UpdateDate = thisUpdate;
-				}
+			if ((bestX509UpdateDate == null) || thisUpdate.after(bestX509UpdateDate)) {
+				bestCRLValidity = crlValidity;
+				bestX509UpdateDate = thisUpdate;
 			}
 		}
 		return bestCRLValidity;
