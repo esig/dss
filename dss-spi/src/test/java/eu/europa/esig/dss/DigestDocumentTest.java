@@ -57,8 +57,8 @@ public class DigestDocumentTest {
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
 		doc.save("target/test");
 	}
-	
-	@Test
+
+	@Test(expected = DSSException.class)
 	public void defaultConstructorTest() throws IOException {
 		byte[] stringToEncode = "aaa".getBytes();
 		DigestDocument doc = new DigestDocument();
