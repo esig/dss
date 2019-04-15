@@ -84,7 +84,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *         &lt;element name="CertifiedRoles" type="{http://dss.esig.europa.eu/validation/diagnostic}CertifiedRole" maxOccurs="unbounded" minOccurs="0"/&gt;
  *         &lt;element name="Policy" type="{http://dss.esig.europa.eu/validation/diagnostic}Policy" minOccurs="0"/&gt;
  *         &lt;element name="PDFSignatureDictionary" type="{http://dss.esig.europa.eu/validation/diagnostic}PDFSignatureDictionary" minOccurs="0"/&gt;
- *         &lt;element name="SignerDocumentRepresentation" minOccurs="0"&gt;
+ *         &lt;element name="SignerDocumentRepresentations" minOccurs="0"&gt;
  *           &lt;complexType&gt;
  *             &lt;complexContent&gt;
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
@@ -94,12 +94,12 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *             &lt;/complexContent&gt;
  *           &lt;/complexType&gt;
  *         &lt;/element&gt;
- *         &lt;element name="FoundTimestamps" minOccurs="0"&gt;
+ *         &lt;element name="FoundCertificates" minOccurs="0"&gt;
  *           &lt;complexType&gt;
  *             &lt;complexContent&gt;
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *                 &lt;sequence&gt;
- *                   &lt;element name="FoundTimestamp" type="{http://dss.esig.europa.eu/validation/diagnostic}FoundTimestamp" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *                   &lt;element name="FoundCertificate" type="{http://dss.esig.europa.eu/validation/diagnostic}FoundCertificate" maxOccurs="unbounded" minOccurs="0"/&gt;
  *                 &lt;/sequence&gt;
  *               &lt;/restriction&gt;
  *             &lt;/complexContent&gt;
@@ -127,12 +127,12 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *             &lt;/complexContent&gt;
  *           &lt;/complexType&gt;
  *         &lt;/element&gt;
- *         &lt;element name="FoundCertificates" minOccurs="0"&gt;
+ *         &lt;element name="FoundTimestamps" minOccurs="0"&gt;
  *           &lt;complexType&gt;
  *             &lt;complexContent&gt;
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *                 &lt;sequence&gt;
- *                   &lt;element name="FoundCertificate" type="{http://dss.esig.europa.eu/validation/diagnostic}FoundCertificate" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *                   &lt;element name="FoundTimestamp" type="{http://dss.esig.europa.eu/validation/diagnostic}FoundTimestamp" maxOccurs="unbounded" minOccurs="0"/&gt;
  *                 &lt;/sequence&gt;
  *               &lt;/restriction&gt;
  *             &lt;/complexContent&gt;
@@ -182,10 +182,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "certifiedRoles",
     "policy",
     "pdfSignatureDictionary",
-    "signerDocumentRepresentation",
-    "foundTimestamps",
-    "foundRevocations",
+    "signerDocumentRepresentations",
     "foundCertificates",
+    "foundRevocations",
+    "foundTimestamps",
     "signatureScopes",
     "signatureValue"
 })
@@ -245,16 +245,16 @@ public class XmlSignature
     protected XmlPolicy policy;
     @XmlElement(name = "PDFSignatureDictionary")
     protected XmlPDFSignatureDictionary pdfSignatureDictionary;
-    @XmlElement(name = "SignerDocumentRepresentation")
-    protected XmlSignerDocumentRepresentation signerDocumentRepresentation;
-    @XmlElementWrapper(name = "FoundTimestamps")
-    @XmlElement(name = "FoundTimestamp", namespace = "http://dss.esig.europa.eu/validation/diagnostic")
-    protected List<XmlFoundTimestamp> foundTimestamps;
-    @XmlElement(name = "FoundRevocations")
-    protected XmlFoundRevocations foundRevocations;
+    @XmlElement(name = "SignerDocumentRepresentations")
+    protected XmlSignerDocumentRepresentations signerDocumentRepresentations;
     @XmlElementWrapper(name = "FoundCertificates")
     @XmlElement(name = "FoundCertificate", namespace = "http://dss.esig.europa.eu/validation/diagnostic")
     protected List<XmlFoundCertificate> foundCertificates;
+    @XmlElement(name = "FoundRevocations")
+    protected XmlFoundRevocations foundRevocations;
+    @XmlElementWrapper(name = "FoundTimestamps")
+    @XmlElement(name = "FoundTimestamp", namespace = "http://dss.esig.europa.eu/validation/diagnostic")
+    protected List<XmlFoundTimestamp> foundTimestamps;
     @XmlElementWrapper(name = "SignatureScopes")
     @XmlElement(name = "SignatureScope", namespace = "http://dss.esig.europa.eu/validation/diagnostic")
     protected List<XmlSignatureScope> signatureScopes;
@@ -677,27 +677,27 @@ public class XmlSignature
     }
 
     /**
-     * Gets the value of the signerDocumentRepresentation property.
+     * Gets the value of the signerDocumentRepresentations property.
      * 
      * @return
      *     possible object is
-     *     {@link XmlSignerDocumentRepresentation }
+     *     {@link XmlSignerDocumentRepresentations }
      *     
      */
-    public XmlSignerDocumentRepresentation getSignerDocumentRepresentation() {
-        return signerDocumentRepresentation;
+    public XmlSignerDocumentRepresentations getSignerDocumentRepresentations() {
+        return signerDocumentRepresentations;
     }
 
     /**
-     * Sets the value of the signerDocumentRepresentation property.
+     * Sets the value of the signerDocumentRepresentations property.
      * 
      * @param value
      *     allowed object is
-     *     {@link XmlSignerDocumentRepresentation }
+     *     {@link XmlSignerDocumentRepresentations }
      *     
      */
-    public void setSignerDocumentRepresentation(XmlSignerDocumentRepresentation value) {
-        this.signerDocumentRepresentation = value;
+    public void setSignerDocumentRepresentations(XmlSignerDocumentRepresentations value) {
+        this.signerDocumentRepresentations = value;
     }
 
     /**
@@ -814,17 +814,6 @@ public class XmlSignature
         this.claimedRoles = claimedRoles;
     }
 
-    public List<XmlFoundTimestamp> getFoundTimestamps() {
-        if (foundTimestamps == null) {
-            foundTimestamps = new ArrayList<XmlFoundTimestamp>();
-        }
-        return foundTimestamps;
-    }
-
-    public void setFoundTimestamps(List<XmlFoundTimestamp> foundTimestamps) {
-        this.foundTimestamps = foundTimestamps;
-    }
-
     public List<XmlFoundCertificate> getFoundCertificates() {
         if (foundCertificates == null) {
             foundCertificates = new ArrayList<XmlFoundCertificate>();
@@ -834,6 +823,17 @@ public class XmlSignature
 
     public void setFoundCertificates(List<XmlFoundCertificate> foundCertificates) {
         this.foundCertificates = foundCertificates;
+    }
+
+    public List<XmlFoundTimestamp> getFoundTimestamps() {
+        if (foundTimestamps == null) {
+            foundTimestamps = new ArrayList<XmlFoundTimestamp>();
+        }
+        return foundTimestamps;
+    }
+
+    public void setFoundTimestamps(List<XmlFoundTimestamp> foundTimestamps) {
+        this.foundTimestamps = foundTimestamps;
     }
 
     public List<XmlSignatureScope> getSignatureScopes() {

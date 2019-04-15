@@ -54,7 +54,11 @@
 			</FoundTimestamps>
            
             <SignatureScopes>
-                <SignatureScope name="Full document" scope="FULL">Full document</SignatureScope>
+                <SignatureScope SignerData="D-8fa2874a722c336027fb3b524e2d339e7095865baa20a6c76e43660d1aaf1a6c">
+                    <Scope>FULL</Scope>
+                    <Name>Full document</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>
@@ -542,6 +546,15 @@
 	            </DigestAlgoAndValue>
            </Timestamp>
        </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-8fa2874a722c336027fb3b524e2d339e7095865baa20a6c76e43660d1aaf1a6c">
+            <ReferencedName>Full document</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>j6KHSnIsM2An+ztSTi0znnCVhluqIKbHbkNmDRqvGmw=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
     <TrustedLists>
         <TrustedList>
             <CountryCode>BE</CountryCode>

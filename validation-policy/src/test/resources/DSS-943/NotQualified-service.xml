@@ -34,7 +34,11 @@
 	        </CertificateChain>
 	        <ContentType>1.2.840.113549.1.7.1</ContentType>
 	        <SignatureScopes>
-	            <SignatureScope name="Full document" scope="FULL">Full document</SignatureScope>
+                <SignatureScope SignerData="D-109597d62f3b24e3717226f2abacb419d9951d9d1686e356cca01d840055dd73">
+                    <Scope>FULL</Scope>
+                    <Name>Full document</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
     </Signatures>
@@ -259,4 +263,13 @@
             </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-109597d62f3b24e3717226f2abacb419d9951d9d1686e356cca01d840055dd73">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>EJWX1i87JONxcibyq6y0GdmVHZ0WhuNWzKAdhABV3XM=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
 </DiagnosticData>

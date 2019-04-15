@@ -20,6 +20,11 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.util.List;
+
+import eu.europa.esig.dss.DataIdentifier;
+import eu.europa.esig.dss.Digest;
+
 /**
  * This class describes the scope of the signature
  */
@@ -29,17 +34,64 @@ public abstract class SignatureScope {
 	 * The name of the item on which this signature scope applies
 	 */
 	private final String name;
-
-	protected SignatureScope(final String name) {
+	
+	/**
+	 * Digest of the original signer data
+	 */
+	private final Digest dataDigest;
+	
+	private DataIdentifier dssId;
+	
+	protected SignatureScope(final String name, final Digest digest) {
 		this.name = name;
+		this.dataDigest = digest;
 	}
 
 	public String getName() {
 		return name;
 	}
+	
+	public Digest getDigest() {
+		return dataDigest;
+	}
 
 	public abstract String getDescription();
+	
+	public List<String> getTransformations() {
+		// not implemented by default
+		return null;
+	}
 
 	public abstract SignatureScopeType getType();
+	
+	public DataIdentifier getDSSId() {
+		if (dssId != null) {
+			return dssId;
+		}
+		String uniqueString = name + dataDigest.toString();
+		dssId = new DataIdentifier(uniqueString.getBytes());
+		return dssId;
+	}
+	
+	public String getDSSIdAsString() {
+		return "D-" + getDSSId().asXmlId();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof SignatureScope)) {
+			return false;
+		}
+		SignatureScope s = (SignatureScope) obj;
+		return getDSSId().equals(s.getDSSId());
+	}
+
+	@Override
+	public int hashCode() {
+		return getDSSId().hashCode();
+	}
 
 }

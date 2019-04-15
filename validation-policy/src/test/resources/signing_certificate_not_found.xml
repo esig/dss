@@ -34,7 +34,11 @@
 	        </CertificateChain>
 	        <ContentType>application/pdf</ContentType>
 	        <SignatureScopes>
-	            <SignatureScope name="Full PDF" scope="FULL">Full document</SignatureScope>
+                <SignatureScope SignerData="D-4015074beb240dea0c0085038bc8cd626f3bf2437ed3864c2547202e83a1abc1">
+                    <Scope>FULL</Scope>
+                    <Name>Full PDF</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
     </Signatures>
@@ -232,4 +236,13 @@
             </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-4015074beb240dea0c0085038bc8cd626f3bf2437ed3864c2547202e83a1abc1">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>QBUHS+skDeoMAIUDi8jNYm878kN+04ZMJUcgLoOhq8E=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
 </DiagnosticData>

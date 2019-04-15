@@ -80,6 +80,16 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	protected List<DSSDocument> detachedContents;
 
 	/**
+	 * In case of a ASiC signature this is the archive or manifest content.
+	 */
+	protected List<DSSDocument> containerContents;
+	
+	/**
+	 * In case of a ASiC-E signature this is the list of found manifest files.
+	 */
+	protected List<ManifestFile> manifestFiles;
+
+	/**
 	 * This variable contains a list of reference validations (reference tag for
 	 * XAdES or message-digest for CAdES)
 	 */
@@ -159,7 +169,41 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public void setDetachedContents(final List<DSSDocument> detachedContents) {
 		this.detachedContents = detachedContents;
 	}
+	
+	@Override
+	public List<DSSDocument> getContainerContents() {
+		return containerContents;
+	}
+	
+	@Override
+	public void setContainerContents(List<DSSDocument> containerContents) {
+		this.containerContents = containerContents;
+	}
+	@Override
+	public void setManifestFiles(List<ManifestFile> manifestFiles) {
+		this.manifestFiles = manifestFiles;
+	}
 
+	@Override
+    public List<DSSDocument> getManifestedDocuments() {
+    	List<DSSDocument> foundManifestedDocuments = new ArrayList<DSSDocument>();
+    	if (Utils.isCollectionEmpty(manifestFiles) || 
+    			Utils.isCollectionEmpty(containerContents)) {
+    		return foundManifestedDocuments;
+    	}
+    	for (ManifestFile manifestFile : manifestFiles) {
+    		if (manifestFile.getSignatureFilename().equals(signatureFilename)) {
+    			for (DSSDocument document : containerContents) {
+    				if (manifestFile.getEntries().contains(document.getName())) {
+    					foundManifestedDocuments.add(document);
+    				}
+    			}
+    			break;
+    		}
+    	}
+    	return foundManifestedDocuments;
+    }
+	
 	/**
 	 * @return the upper level for which data have been found. Doesn't mean any validity of the data found. Null if
 	 *         unknown.
@@ -560,9 +604,20 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public String getStructureValidationResult() {
 		return structureValidation;
 	}
+	
+	protected List<TimestampReference> getContentTimestampReferences() {
+		final List<TimestampReference> references = new ArrayList<TimestampReference>();
+		if (Utils.isCollectionNotEmpty(signatureScopes)) {
+			for (SignatureScope signatureScope : signatureScopes) {
+				addReference(references, new TimestampReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
+			}
+		}
+		return references;
+	}
 
 	protected List<TimestampReference> getSignatureTimestampReferences() {
 		final List<TimestampReference> references = new ArrayList<TimestampReference>();
+		addReferences(references, getContentTimestampReferences());
 		addReference(references, new TimestampReference(getId(), TimestampedObjectType.SIGNATURE));
 		addReferences(references, getSigningCertificateTimestampReferences());
 		return references;

@@ -22,6 +22,8 @@ package eu.europa.esig.dss.xades.validation;
 
 import java.util.List;
 
+import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureScope;
 import eu.europa.esig.dss.validation.SignatureScopeType;
 
@@ -32,32 +34,27 @@ public class XmlElementSignatureScope extends SignatureScope {
 
 	private final List<String> transformations;
 
-	protected XmlElementSignatureScope(String xmlId, final List<String> transformations) {
-		super(xmlId);
+	protected XmlElementSignatureScope(String xmlId, final List<String> transformations, final Digest digest) {
+		super(xmlId, digest);
 		this.transformations = transformations;
 	}
 
 	@Override
 	public String getDescription() {
 		String description = "The XML element with ID '" + getName() + "'";
-		if (transformations.isEmpty()) {
-			return description;
-		} else {
-			return addTransformationDescription(description);
+		if (Utils.isCollectionNotEmpty(transformations)) {
+			description = addTransformationDescription(description);
 		}
+		return description;
+	}
+	
+	protected String addTransformationDescription(String description) {
+		description += " with transformations.";
+		return description;
 	}
 
-	protected String addTransformationDescription(final String description) {
-		StringBuilder result = new StringBuilder();
-		result.append(description).append(" with transformations: ");
-		for (final String transformation : transformations) {
-			result.append(transformation).append("; ");
-		}
-		result.delete(result.length() - 2, result.length()).append('.');
-		return result.toString();
-	}
-
-	protected List<String> getTransformations() {
+	@Override
+	public List<String> getTransformations() {
 		return transformations;
 	}
 

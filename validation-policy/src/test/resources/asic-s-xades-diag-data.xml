@@ -55,7 +55,11 @@
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
             <SignatureScopes>
-                <SignatureScope name="Hello world.pdf" scope="FULL">Full document</SignatureScope>
+                <SignatureScope SignerData="D-db91482357a982ff4b61d29493505988085dadd583c3a0008d9e151ff2c1f98b">
+                    <Scope>FULL</Scope>
+                    <Name>Hello world.pdf</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>
@@ -417,6 +421,15 @@
             </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-db91482357a982ff4b61d29493505988085dadd583c3a0008d9e151ff2c1f98b">
+            <ReferencedName>Hello world.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
     <TrustedLists>
         <TrustedList>
             <CountryCode>BE</CountryCode>

@@ -165,6 +165,10 @@ public final class Utils {
 	public static byte[] fromHex(String hex) {
 		return impl.fromHex(hex);
 	}
+	
+	public static boolean isBase64Encoded(String base64String) {
+		return impl.isBase64Encoded(base64String);
+	}
 
 	public static String toBase64(byte[] bytes) {
 		return impl.toBase64(bytes);

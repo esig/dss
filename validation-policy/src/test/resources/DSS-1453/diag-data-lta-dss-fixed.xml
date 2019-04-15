@@ -49,7 +49,14 @@
 				<FoundTimestamp Timestamp="T-CC3CB51F6CA52D84138B6E53536CC2423D45E0BE583637D62A0186B421B3BC39"/>
 			</FoundTimestamps>
             <SignatureScopes>
-                <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: Exclusive Canonical XML (omits comments).</SignatureScope>
+                <SignatureScope SignerData="D-666166c3cff0d6f72370346c832955bda808df824c036d0b07f463e3bd02dec9">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Exclusive Canonical XML (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>
@@ -729,6 +736,15 @@
             </DigestAlgoAndValue>
         </Timestamp>
     </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-666166c3cff0d6f72370346c832955bda808df824c036d0b07f463e3bd02dec9">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ZmFmw8/w1vcjcDRsgylVvagI34JMA20LB/Rj470C3sk=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
     <TrustedLists>
         <TrustedList>
             <CountryCode>LU</CountryCode>

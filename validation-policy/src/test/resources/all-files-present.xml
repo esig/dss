@@ -76,9 +76,21 @@
             </CommitmentTypeIndication>
             <ClaimedRoles/>
             <SignatureScopes>
-                <SignatureScope name="order_data.xml" scope="FULL">Full document</SignatureScope>
-                <SignatureScope name="o_dynamic-linking" scope="PARTIAL">The XML element with ID 'o_dynamic-linking'</SignatureScope>
-                <SignatureScope name="o_device-attestation" scope="PARTIAL">The XML element with ID 'o_device-attestation'</SignatureScope>
+                <SignatureScope SignerData="D-6b8e169ef6fce5bcdbea98fcf10a9b4f0792b2fb09cc2482835525ee7c25c032">
+                    <Scope>FULL</Scope>
+                    <Name>order_data.xml</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+                <SignatureScope SignerData="D-e16f6a64846bc8b9bf880996699e25929ad43d0cabaa193a303661b73e3c6848">
+                    <Scope>PARTIAL</Scope>
+                    <Name>o_dynamic-linking</Name>
+                    <Description>The XML element with ID 'o_dynamic-linking'</Description>
+                </SignatureScope>
+                <SignatureScope SignerData="D-b2835f09dc5a193b5562c123c3e6568876f77a2149590756d685447a29830f75">
+                    <Scope>PARTIAL</Scope>
+                    <Name>o_device-attestation</Name>
+                    <Description>The XML element with ID 'o_device-attestation'</Description>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>
@@ -389,6 +401,29 @@
             </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-6b8e169ef6fce5bcdbea98fcf10a9b4f0792b2fb09cc2482835525ee7c25c032">
+            <ReferencedName>order_data.xml</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>RVqdeRq43KgCy8jqDT2GAFO7oWvSIoswy+Pgztvpod4=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-e16f6a64846bc8b9bf880996699e25929ad43d0cabaa193a303661b73e3c6848">
+            <ReferencedName>o_dynamic-linking</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>KshNrXxZ9NkQ7jha/HXztI3Tv3FbZeZXvam6z3gEB/8=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-b2835f09dc5a193b5562c123c3e6568876f77a2149590756d685447a29830f75">
+            <ReferencedName>o_device-attestation</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>lLiM5kW8ck7RlaHparJVD7wqp6PGw+Uw96SF/NIsfyU=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
     <TrustedLists>
         <TrustedList>
             <CountryCode>EE</CountryCode>

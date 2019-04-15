@@ -26,6 +26,8 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.RevocationRefLocation;
@@ -82,6 +84,7 @@ import eu.europa.esig.jaxb.validationreport.SignatureReferenceType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationProcessType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
 import eu.europa.esig.jaxb.validationreport.SignerInformationType;
+import eu.europa.esig.jaxb.validationreport.SignersDocumentType;
 import eu.europa.esig.jaxb.validationreport.VOReferenceType;
 import eu.europa.esig.jaxb.validationreport.ValidationObjectListType;
 import eu.europa.esig.jaxb.validationreport.ValidationObjectRepresentationType;
@@ -130,6 +133,7 @@ public class ETSIValidationReportBuilder {
 	private SignatureValidationReportType getSignatureValidationReport(SignatureWrapper sigWrapper) {
 		SignatureValidationReportType signatureValidationReport = objectFactory.createSignatureValidationReportType();
 		signatureValidationReport.setSignatureIdentifier(getSignatureIdentifier(sigWrapper));
+		getSignersDocuments(signatureValidationReport, sigWrapper);
 		signatureValidationReport.setSignatureAttributes(getSignatureAttributes(sigWrapper));
 		signatureValidationReport.setSignerInformation(getSignerInformation(sigWrapper));
 		signatureValidationReport.setSignatureValidationProcess(getSignatureValidationProcess(sigWrapper));
@@ -240,6 +244,10 @@ public class ETSIValidationReportBuilder {
 		for (TimestampWrapper timestamp : diagnosticData.getAllTimestamps()) {
 			addTimestamp(validationObjectListType, timestamp);
 		}
+		
+		for (XmlSignerData signedData : diagnosticData.getOriginalSignerDocuments()) {
+			addSignerData(validationObjectListType, signedData, poeExtraction);
+		}
 
 		return validationObjectListType;
 	}
@@ -316,6 +324,9 @@ public class ETSIValidationReportBuilder {
 		for (String id : timestamp.getTimestampedTimestampIds()) {
 			poeProvisioning.getValidationObject().add(getVOReference(id));
 		}
+		for (String id : timestamp.getTimestampedSignedDataIds()) {
+			poeProvisioning.getValidationObject().add(getVOReference(id));
+		}
 		SignatureWrapper timestampedSignature = timestamp.getLastTimestampedSignature();
 		if (timestampedSignature != null) {
 			poeProvisioning.setSignatureReference(getSignatureReference(timestampedSignature));
@@ -333,6 +344,17 @@ public class ETSIValidationReportBuilder {
 //		signatureReference.setDigestMethod();
 //		signatureReference.setDigestValue(value);
 		return signatureReference;
+	}
+	
+	private void addSignerData(ValidationObjectListType validationObjectListType, XmlSignerData signedData, POEExtraction poeExtraction) {
+		ValidationObjectType validationObject = objectFactory.createValidationObjectType();
+		validationObject.setId(signedData.getId());
+		validationObject.setObjectType(ObjectType.SIGNED_DATA);
+		ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
+		representation.setDigestAlgAndValue(getDigestAlgAndValueType(signedData.getDigestAlgoAndValue()));
+		validationObject.setValidationObject(representation);
+		validationObject.setPOE(getPOE(signedData.getId(), poeExtraction));
+		validationObjectListType.getValidationObject().add(validationObject);
 	}
 
 	private void addRevocationData(ValidationObjectListType validationObjectListType, RevocationWrapper revocationData, POEExtraction poeExtraction) {
@@ -499,6 +521,7 @@ public class ETSIValidationReportBuilder {
 		SignatureValueType sigValue = new SignatureValueType();
 		sigValue.setValue(sigWrapper.getSignatureValue());
 		sigId.setSignatureValue(sigValue);
+		// TODO: add DAIdentifier
 		return sigId;
 	}
 	
@@ -516,6 +539,16 @@ public class ETSIValidationReportBuilder {
 			}
 		}
 		return null;
+	}
+	
+	private void getSignersDocuments(SignatureValidationReportType signatureValidationReport, SignatureWrapper sigWrapper) {
+		List<XmlSignatureScope> signerData = sigWrapper.getSignatureScopes();
+		for (XmlSignatureScope xmlSignatureScope : signerData) {
+			SignersDocumentType signersDocumentType = objectFactory.createSignersDocumentType();
+			signersDocumentType.setDigestAlgAndValue(getDigestAlgAndValueType(xmlSignatureScope.getSignerData().getDigestAlgoAndValue()));
+			signersDocumentType.setSignersDocumentRef(getVOReference(xmlSignatureScope.getSignerData().getId()));
+			signatureValidationReport.getSignersDocument().add(signersDocumentType);
+		}
 	}
 
 	private SignatureAttributesType getSignatureAttributes(SignatureWrapper sigWrapper) {

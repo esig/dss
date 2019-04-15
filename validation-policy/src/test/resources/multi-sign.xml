@@ -54,7 +54,14 @@
                 <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
             </Policy>
             <SignatureScopes>
-                <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering.</SignatureScope>
+                <SignatureScope SignerData="D-6a0d92f704f2ba58dc672bcb1caa13dd60bdede21b940e89e371ed6c7e8a2db2">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>XPath filtering</Transformation>
+                    </Transformations>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
         <Signature Id="Signature-52abf6c0-67ec-40d4-b73d-08ab4f6691d0">
@@ -108,7 +115,14 @@
                 <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
             </Policy>
             <SignatureScopes>
-                <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering.</SignatureScope>
+                <SignatureScope SignerData="D-6eb0a17f99eaca6d2fab9c5e5978d17358d6b8e6223ee0f7505f9b7ee9340909">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>XPath filtering</Transformation>
+                    </Transformations>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
         <Signature Id="ID-8b009720-f82c-11e6-ae9c-0050569a5ac0">
@@ -161,7 +175,14 @@
                 <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
             </Policy>
             <SignatureScopes>
-                <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering.</SignatureScope>
+                <SignatureScope SignerData="D-2a439fffb825da1ec3372e646972c8f713bd257789a7476c4978d49508f8f551">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>XPath filtering</Transformation>
+                    </Transformations>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
         <Signature Id="ID-e5b77ba0-1b6a-11e7-a15a-0050569a0676">
@@ -214,7 +235,14 @@
                 <DigestAlgorithmsEqual>false</DigestAlgorithmsEqual>
             </Policy>
             <SignatureScopes>
-                <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering.</SignatureScope>
+                <SignatureScope SignerData="D-6555d90214394e526083b50eac4503b05396588f351d062a28b0ea20fa1f7202">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>XPath filtering</Transformation>
+                    </Transformations>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>
@@ -451,6 +479,36 @@
             </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-6a0d92f704f2ba58dc672bcb1caa13dd60bdede21b940e89e371ed6c7e8a2db2">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ag2S9wTyuljcZyvLHKoT3WC97eIblA6J43HtbH6KLbI=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-6eb0a17f99eaca6d2fab9c5e5978d17358d6b8e6223ee0f7505f9b7ee9340909">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>brChf5nqym0vq5xeWXjRc1jWuOYiPuD3UF+bfuk0CQk=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-2a439fffb825da1ec3372e646972c8f713bd257789a7476c4978d49508f8f551">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>KkOf/7gl2h7DNy5kaXLI9xO9JXeJp0dsSXjUlQj49VE=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-6555d90214394e526083b50eac4503b05396588f351d062a28b0ea20fa1f7202">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ZVXZAhQ5TlJgg7UOrEUDsFOWWI81HQYqKLDqIPofcgI=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
     <TrustedLists>
         <TrustedList>
             <CountryCode>PL</CountryCode>

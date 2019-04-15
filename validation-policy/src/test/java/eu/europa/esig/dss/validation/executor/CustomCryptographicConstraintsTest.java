@@ -31,7 +31,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	 * Validation date is set on 2018-02-06T09:39:33
 	 */
 	@Test
-	public void defaultOnlyCryptographicConstrantTest() throws Exception {
+	public void defaultOnlyCryptographicConstraintTest() throws Exception {
 		
 		initializeExecutor("src/test/resources/universign.xml");
 		validationPolicyFile = "src/test/resources/policy/default-only-constraint-policy.xml";
@@ -113,7 +113,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 
 	@Test
-	public void overrideDefaultCryptographicConstrantTest() throws Exception {
+	public void overrideDefaultCryptographicConstraintTest() throws Exception {
 		
 		initializeExecutor("src/test/resources/universign.xml");
 		validationPolicyFile = "src/test/resources/policy/all-constraint-specified-policy.xml";

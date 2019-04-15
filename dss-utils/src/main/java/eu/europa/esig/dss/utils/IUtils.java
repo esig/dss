@@ -84,6 +84,8 @@ public interface IUtils {
 	String toHex(byte[] bytes);
 
 	byte[] fromHex(String hex);
+	
+	boolean isBase64Encoded(String base64String);
 
 	String toBase64(byte[] bytes);
 

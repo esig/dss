@@ -31,7 +31,15 @@
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
             <SignatureScopes>
-                <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering; Exclusive Canonical XML (omits comments).</SignatureScope>
+                <SignatureScope SignerData="D-bd31e6d9393ac9f2b217b85b43a9df197c9d16c239f1f91b79029626dbeb9203">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>XPath filtering</Transformation>
+                        <Transformation>Exclusive Canonical XML (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>
@@ -201,6 +209,15 @@
             </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-bd31e6d9393ac9f2b217b85b43a9df197c9d16c239f1f91b79029626dbeb9203">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>vTHm2Tk6yfKyF7hbQ6nfGXydFsI58fkbeQKWJtvrkgM=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
     <TrustedLists>
         <TrustedList>
             <CountryCode>IT</CountryCode>

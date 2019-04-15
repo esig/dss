@@ -45,8 +45,7 @@ public class RemoteConverter {
 
 	public static DSSDocument toDSSDocument(RemoteDocument remoteDocument) {
 		if (remoteDocument.getDigestAlgorithm() != null) {
-			DigestDocument digestDocument = new DigestDocument();
-			digestDocument.addDigest(remoteDocument.getDigestAlgorithm(), Utils.toBase64(remoteDocument.getBytes()));
+			DigestDocument digestDocument = new DigestDocument(remoteDocument.getDigestAlgorithm(), Utils.toBase64(remoteDocument.getBytes()));
 			digestDocument.setName(remoteDocument.getName());
 			digestDocument.setMimeType(remoteDocument.getMimeType());
 			return digestDocument;

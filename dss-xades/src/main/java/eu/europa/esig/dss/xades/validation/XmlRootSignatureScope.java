@@ -22,22 +22,27 @@ package eu.europa.esig.dss.xades.validation;
 
 import java.util.List;
 
+import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureScopeType;
 
 public class XmlRootSignatureScope extends XmlElementSignatureScope {
 
-    protected XmlRootSignatureScope(final List<String> transformations) {
-        super("Full XML File", transformations);
+    protected XmlRootSignatureScope(final List<String> transformations, final Digest digest) {
+    	super("Full XML File", transformations, digest);
+    }
+    
+    protected XmlRootSignatureScope(final String name, final List<String> transformations, final Digest digest) {
+        super(name, transformations, digest);
     }
 
     @Override
     public String getDescription() {
         String description = "The full XML file";
-        if (getTransformations().isEmpty()) {
-            return description;
-        } else {
-            return addTransformationDescription(description);
+        if (Utils.isCollectionNotEmpty(getTransformations())) {
+        	description = addTransformationDescription(description);
         }
+        return description;
     }
 
 	@Override

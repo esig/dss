@@ -64,7 +64,11 @@
 				<FoundTimestamp Timestamp="T-30662A206DBD6A4EB55C545C0EFD3101E9B0BBD31010B4A8CF0CD7C9FC58BD02"/>
 			</FoundTimestamps>
             <SignatureScopes>
-                <SignatureScope name="PDF previous version #1" scope="PARTIAL">The document byte range: [0, 234543, 300079, 5547]</SignatureScope>
+                <SignatureScope SignerData="D-5a827612c63884734b28584b4757c028aab50d428b08d5cf152c847bc02e946d">
+                    <Scope>PARTIAL</Scope>
+                    <Name>PDF previous version #1</Name>
+                    <Description>The document byte range: [0, 234543, 300079, 5547]</Description>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
         <Signature Id="id-db705a41fda3e98f53acef69eae86ed559c9059a3cb67f9898d1488a8b8a1225">
@@ -109,7 +113,11 @@
                 <SignatureByteRange>0 305954 371490 5010</SignatureByteRange>
             </PDFSignatureDictionary>
             <SignatureScopes>
-                <SignatureScope name="Full PDF" scope="FULL">Full document</SignatureScope>
+                <SignatureScope SignerData="D-aa923ca08e1f99b618a4d9c42942d790592b48ee1f615b60a3d21eb365d6a125">
+                    <Scope>FULL</Scope>
+                    <Name>Full PDF</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>
@@ -598,5 +606,21 @@
             </DigestAlgoAndValue>
         </Timestamp>
     </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-5a827612c63884734b28584b4757c028aab50d428b08d5cf152c847bc02e946d">
+            <ReferencedName>PDF previous version #1</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>WoJ2EsY4hHNLKFhLR1fAKKq1DUKLCNXPFSyEe8AulG0=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-aa923ca08e1f99b618a4d9c42942d790592b48ee1f615b60a3d21eb365d6a125">
+            <ReferencedName>Full PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>qpI8oI4fmbYYpNnEKULXkFkrSO4fYVtgo9Ies2XWoSU=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
     <TrustedLists/>
 </DiagnosticData>

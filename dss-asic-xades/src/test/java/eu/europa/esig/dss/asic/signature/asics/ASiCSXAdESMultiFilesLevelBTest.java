@@ -49,6 +49,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignatureScopeType;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
@@ -114,7 +115,19 @@ public class ASiCSXAdESMultiFilesLevelBTest extends AbstractPkiFactoryTestMultip
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
-		assertEquals(1, Utils.collectionSize(signatureScopes)); // package.zip
+		assertEquals(3, Utils.collectionSize(signatureScopes)); // package.zip + two signed files
+		int archive = 0;
+		int archiveContent = 0;
+		for (XmlSignatureScope signatureScope : signatureScopes) {
+			if ("package.zip".equals(signatureScope.getName()) && SignatureScopeType.FULL.equals(signatureScope.getScope())) {
+				archive++;
+			}
+			if (SignatureScopeType.ARCHIVED.equals(signatureScope.getScope())) {
+				archiveContent++;
+			}
+		}
+		assertEquals(1, archive);
+		assertEquals(2, archiveContent);
 	}
 
 	@Override

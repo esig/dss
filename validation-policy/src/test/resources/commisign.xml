@@ -39,7 +39,11 @@
          <CommitmentTypeIndication/>
          <ClaimedRoles/>
          <SignatureScopes>
-            <SignatureScope name="Full PDF" scope="FULL">Full document</SignatureScope>
+            <SignatureScope SignerData="D-a497ebfc9e2c3edf940760576741dc7f985ed26d91edd062559d18ef8c05ecd4">
+                <Scope>FULL</Scope>
+                <Name>Full PDF</Name>
+                <Description>Full document</Description>
+            </SignatureScope>
          </SignatureScopes>
       </Signature>
    </Signatures>
@@ -324,6 +328,15 @@
          </DigestAlgoAndValue>
       </Revocation>
    </UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-a497ebfc9e2c3edf940760576741dc7f985ed26d91edd062559d18ef8c05ecd4">
+            <ReferencedName>Full document</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>pJfr/J4sPt+UB2BXZ0Hcf5he0m2R7dBiVZ0Y74wF7NQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
    <TrustedLists>
       <TrustedList>
          <CountryCode>EC</CountryCode>

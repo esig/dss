@@ -23,15 +23,18 @@ package eu.europa.esig.dss.pades.validation;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.InMemoryDocument;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.PdfSignatureInfo;
+import eu.europa.esig.dss.validation.AbstractSignatureScopeFinder;
 import eu.europa.esig.dss.validation.FullSignatureScope;
 import eu.europa.esig.dss.validation.SignatureScope;
-import eu.europa.esig.dss.validation.SignatureScopeFinder;
 
 /**
  *
  */
-public class PAdESSignatureScopeFinder implements SignatureScopeFinder<PAdESSignature> {
+public class PAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<PAdESSignature> {
 
 	@Override
 	public List<SignatureScope> findSignatureScope(final PAdESSignature pAdESSignature) {
@@ -39,13 +42,25 @@ public class PAdESSignatureScopeFinder implements SignatureScopeFinder<PAdESSign
 		List<SignatureScope> result = new ArrayList<SignatureScope>();
 		final PdfSignatureInfo pdfSignature = pAdESSignature.getPdfSignatureInfo();
 		if (pdfSignature.isCoverAllOriginalBytes()) {
-			result.add(new FullSignatureScope("Full PDF"));
+			result.add(new FullSignatureScope("Full PDF", getOriginalPdfDigest(pAdESSignature)));
 		} else if (pAdESSignature.hasOuterSignatures()) {
 			final int outerSignatureSize = pdfSignature.getOuterSignatures().size();
-			result.add(new PdfByteRangeSignatureScope("PDF previous version #" + outerSignatureSize, pdfSignature.getSignatureByteRange()));
+			result.add(new PdfByteRangeSignatureScope("PDF previous version #" + outerSignatureSize, pdfSignature.getSignatureByteRange(), 
+					getOriginalPdfDigest(pAdESSignature)));
 		} else {
-			result.add(new PdfByteRangeSignatureScope("Partial PDF", pdfSignature.getSignatureByteRange()));
+			result.add(new PdfByteRangeSignatureScope("Partial PDF", pdfSignature.getSignatureByteRange(), 
+					getOriginalPdfDigest(pAdESSignature)));
 		}
 		return result;
 	}
+	
+	private Digest getOriginalPdfDigest(PAdESSignature padesSignature) {
+		return getDigest(getOriginalPdfBytes(padesSignature));
+	}
+	
+	private byte[] getOriginalPdfBytes(PAdESSignature padesSignature) {
+		InMemoryDocument originalPDF = PAdESUtils.getOriginalPDF(padesSignature);
+		return originalPDF.getBytes();
+	}
+	
 }

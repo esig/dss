@@ -43,7 +43,14 @@
 				<FoundTimestamp Timestamp="T-6A9149BB7AEABB204AD2C245E034E224453A5FB9BD377DB3BAE505C9BF4D310E"/>
 			</FoundTimestamps>
 	        <SignatureScopes>
-	            <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering.</SignatureScope>
+                <SignatureScope SignerData="D-64d1f75ca68e42f71af514ac5080ae2b24009cdc3a4620790fc85c59beccf278">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>XPath filtering</Transformation>
+                    </Transformations>
+                </SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
     </Signatures>
@@ -462,4 +469,13 @@
             </DigestAlgoAndValue>
         </Timestamp>
     </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-64d1f75ca68e42f71af514ac5080ae2b24009cdc3a4620790fc85c59beccf278">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
 </DiagnosticData>

@@ -37,6 +37,13 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
+				<xs:element name="OriginalDocuments" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="SignerData" type="SignerData" minOccurs="0" maxOccurs="unbounded" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
 				
 				<xs:element name="TrustedLists" minOccurs="0">
 					<xs:complexType>
@@ -142,17 +149,17 @@
 					<xs:element name="Policy" type="Policy" minOccurs="0" />
 					<xs:element name="PDFSignatureDictionary" type="PDFSignatureDictionary" minOccurs="0" />
 					
-					<xs:element name="SignerDocumentRepresentation" minOccurs="0">
+					<xs:element name="SignerDocumentRepresentations" minOccurs="0">
 						<xs:complexType>
 							<xs:attribute name="HashOnly" type="xs:boolean" use="required" />
 							<xs:attribute name="DocHashOnly" type="xs:boolean" use="required" />
 						</xs:complexType>
 					</xs:element>
-								
-					<xs:element name="FoundTimestamps" minOccurs="0">
+					
+					<xs:element name="FoundCertificates" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="FoundTimestamp" type="FoundTimestamp" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="FoundCertificate" type="FoundCertificate" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
@@ -171,11 +178,11 @@
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
-					
-					<xs:element name="FoundCertificates" minOccurs="0">
+								
+					<xs:element name="FoundTimestamps" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="FoundCertificate" type="FoundCertificate" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="FoundTimestamp" type="FoundTimestamp" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
@@ -386,12 +393,19 @@
 	</xs:complexType>
 	
 	<xs:complexType name="SignatureScope">
-		<xs:simpleContent>
-			<xs:extension base="xs:string">
-				<xs:attribute name="name" type="xs:string" use="required" />
-				<xs:attribute name="scope" type="ScopeType" use="required" />
-			</xs:extension>
-		</xs:simpleContent>
+		<xs:sequence>
+			<xs:element name="Scope" type="ScopeType" />
+			<xs:element name="Name" type="xs:string" />
+			<xs:element name="Description" type="xs:string" />
+			<xs:element name="Transformations" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Transformation" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="SignerData" type="xs:IDREF" use="required" />
 	</xs:complexType>
 	
 	<xs:simpleType name="ScopeType" final="restriction">
@@ -440,6 +454,7 @@
 	<xs:element name="TimestampedRevocationData" type="TimestampedRevocationData" substitutionGroup="TimestampedObject" />
 	<xs:element name="TimestampedTimestamp" type="TimestampedTimestamp" substitutionGroup="TimestampedObject" />
 	<xs:element name="TimestampedSignature" type="TimestampedSignature" substitutionGroup="TimestampedObject" />
+	<xs:element name="TimestampedSignerData" type="TimestampedSignerData" substitutionGroup="TimestampedObject" />
 	
 	<xs:complexType name="TimestampedObject" abstract="true">
 		<xs:sequence/>
@@ -471,6 +486,14 @@
     </xs:complexType>
     
 	<xs:complexType name="TimestampedSignature">
+        <xs:complexContent>
+            <xs:restriction base="TimestampedObject">
+				<xs:attribute name="Token" type="xs:IDREF" use="required" />
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+    
+	<xs:complexType name="TimestampedSignerData">
         <xs:complexContent>
             <xs:restriction base="TimestampedObject">
 				<xs:attribute name="Token" type="xs:IDREF" use="required" />
@@ -730,6 +753,17 @@
 			<xs:enumeration value="ATTRIBUTE_REVOCATION_REFS" />
 		</xs:restriction>
 	</xs:simpleType>
+	
+	<xs:complexType name="SignerData">
+		<xs:complexContent>
+            <xs:extension base="AbstractToken">
+				<xs:sequence>
+					<xs:element name="ReferencedName" type="xs:string" minOccurs="0" />
+					<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	
 	<xs:complexType name="TrustedList">
 		<xs:sequence>

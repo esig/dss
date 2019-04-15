@@ -79,6 +79,7 @@ import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
+import eu.europa.esig.dss.validation.SignatureScope;
 import eu.europa.esig.dss.validation.TimestampInclude;
 import eu.europa.esig.dss.validation.TimestampReference;
 import eu.europa.esig.dss.validation.TimestampToken;
@@ -123,6 +124,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	protected XPathQueryHolder xPathQueryHolder;
 
 	private final Element signatureElement;
+	
+	private XMLSignature santuarioSignature;
 
 	/**
 	 * Indicates the id of the signature. If not existing this attribute is auto calculated.
@@ -140,7 +143,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * This variable contains all references found within the signature. They are extracted when the method
 	 * {@code checkSignatureIntegrity} is called.
 	 */
-	private transient List<Reference> references = new ArrayList<Reference>();
+	private transient List<Reference> references;
 
 	/**
 	 * Cached list of the Signing Certificate Timestamp References.
@@ -771,6 +774,21 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final Element element = (Element) node;
 			final TimestampToken timestampToken = makeTimestampToken(element, timestampType);
 			if (timestampToken != null) {
+				List<TimestampReference> timestampReferences = new ArrayList<TimestampReference>();
+				if (TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timestampToken.getTimeStampType())) {
+					timestampReferences = getContentTimestampReferences();
+				} else {
+					for (Reference reference : getReferences()) {
+						if (isContentTimestampedReference(reference, timestampToken.getTimeStampType(), timestampToken.getTimestampIncludes())) {
+							for (SignatureScope signatureScope : getSignatureScopes()) {
+								if (Utils.endsWithIgnoreCase(reference.getURI(), signatureScope.getName())) {
+									timestampReferences.add(new TimestampReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
+								}
+							}
+						}
+					}
+				}
+				timestampToken.setTimestampedReferences(timestampReferences);
 				timestampTokens.add(timestampToken);
 			}
 		}
@@ -1118,6 +1136,21 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 		return false;
 	}
+	
+	private void extractReferences() {
+		references = new ArrayList<Reference>();
+		final XMLSignature santuarioSignature = getSantuarioSignature();
+		final SignedInfo signedInfo = santuarioSignature.getSignedInfo();
+		final int numberOfReferences = signedInfo.getLength();
+		for (int ii = 0; ii < numberOfReferences; ii++) {
+			try {
+				final Reference reference = signedInfo.item(ii);
+				references.add(reference);
+			} catch (XMLSecurityException e) {
+				LOG.warn("Unable to retrieve reference #{} : {}", ii, e.getMessage());
+			}
+		}
+	}
 
 	@Override
 	public List<ReferenceValidation> getReferenceValidations() {
@@ -1125,19 +1158,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			referenceValidations = new ArrayList<ReferenceValidation>();
 
 			final XMLSignature santuarioSignature = getSantuarioSignature();
-			final SignedInfo signedInfo = santuarioSignature.getSignedInfo();
-			final int numberOfReferences = signedInfo.getLength();
-
+			List<Reference> references = getReferences();
 			boolean signedPropertiesFound = false;
 			boolean referenceFound = false;
-			for (int ii = 0; ii < numberOfReferences; ii++) {
+			for (Reference reference : references) {
 				ReferenceValidation validation = new ReferenceValidation();
 				boolean found = false;
 				boolean intact = false;
 				try {
-					final Reference reference = signedInfo.item(ii);
-					references.add(reference);
-
 					final String id = reference.getId();
 					final String uri = reference.getURI();
 					if (Utils.isStringNotBlank(id)) {
@@ -1182,7 +1210,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 					intact = reference.verify();
 				} catch (XMLSecurityException e) {
-					LOG.warn("Unable to verify reference {} : {}", ii, e.getMessage());
+					LOG.warn("Unable to verify reference with Id {} : {}", reference.getId(), e.getMessage());
 				}
 				validation.setFound(found);
 				validation.setIntact(intact);
@@ -1254,6 +1282,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private XMLSignature getSantuarioSignature() {
+		if (santuarioSignature != null) {
+			return santuarioSignature;
+		}
 		try {
 			final Document document = signatureElement.getOwnerDocument();
 			final Element rootElement = document.getDocumentElement();
@@ -1261,7 +1292,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			DSSXMLUtils.setIDIdentifier(rootElement);
 			DSSXMLUtils.recursiveIdBrowse(rootElement);
 
-			final XMLSignature santuarioSignature = new XMLSignature(signatureElement, "");
+			santuarioSignature = new XMLSignature(signatureElement, "");
 			if (Utils.isCollectionNotEmpty(detachedContents)) {
 				santuarioSignature.addResourceResolver(new DetachedSignatureResolver(detachedContents, getSignatureAlgorithm().getDigestAlgorithm()));
 			}
@@ -1518,7 +1549,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			 * The references are already calculated {@see #checkSignatureIntegrity()}
 			 */
 			final Set<String> referenceURIs = new HashSet<String>();
-			for (final Reference reference : references) {
+			for (final Reference reference : getReferences()) {
 				referenceURIs.add(cleanURI(reference.getURI()));
 				try {
 					final byte[] referencedBytes = reference.getReferencedBytes();
@@ -1920,6 +1951,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	public List<Reference> getReferences() {
+		if (references == null) {
+			extractReferences();
+		}
 		return references;
 	}
 

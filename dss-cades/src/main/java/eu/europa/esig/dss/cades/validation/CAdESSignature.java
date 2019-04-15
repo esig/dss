@@ -736,6 +736,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			switch (timestampType) {
 			case CONTENT_TIMESTAMP:
 				// Will call getContentTimestampData
+				timestampToken.setTimestampedReferences(getContentTimestampReferences());
 				break;
 			case SIGNATURE_TIMESTAMP:
 				timestampToken.setTimestampedReferences(getSignatureTimestampReferences());

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -54,6 +55,14 @@ import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
+import eu.europa.esig.jaxb.validationreport.SignersDocumentType;
+import eu.europa.esig.jaxb.validationreport.ValidationObjectListType;
+import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
+import eu.europa.esig.jaxb.validationreport.ValidationReportType;
+import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
+import eu.europa.esig.jaxb.xades132.DigestAlgAndValueType;
+import eu.europa.esig.jaxb.xmldsig.DigestMethodType;
 
 public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 
@@ -69,11 +78,11 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		canonicalization.setAlgorithm(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
 
 		List<DSSDocument> docs = new ArrayList<DSSDocument>();
-		DSSDocument fileToBeTimestamped = new FileDocument(FILE1);
-		docs.add(fileToBeTimestamped);
+		DSSDocument fileToBeIndividualTimestamped = new FileDocument(FILE1);
+		docs.add(fileToBeIndividualTimestamped);
 
-		DSSDocument notTimestampedFile = new FileDocument(FILE2);
-		docs.add(notTimestampedFile);
+		DSSDocument notIndividuallyTimestampedFile = new FileDocument(FILE2);
+		docs.add(notIndividuallyTimestampedFile);
 
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -83,7 +92,7 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
 		String usedCanonicalizationAlgo = Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS;
-		byte[] docCanonicalized = DSSXMLUtils.canonicalize(usedCanonicalizationAlgo, DSSUtils.toByteArray(fileToBeTimestamped));
+		byte[] docCanonicalized = DSSXMLUtils.canonicalize(usedCanonicalizationAlgo, DSSUtils.toByteArray(fileToBeIndividualTimestamped));
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, docCanonicalized);
 		TimeStampToken bcTst = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA256, digest);
@@ -122,6 +131,53 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
 		assertEquals(getCertificateChain().length, signatureCertificateChain.size());
 		assertEquals(signatureParameters.getSignatureLevel().toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+		SignatureValidationReportType signatureValidationReportType = etsiValidationReport.getSignatureValidationReport().get(0);
+		assertNotNull(signatureValidationReportType);
+		List<SignersDocumentType> signersDocuments = signatureValidationReportType.getSignersDocument();
+		assertNotNull(signersDocuments);
+		assertEquals(2, signersDocuments.size());
+		
+		assertNotNull(signersDocuments.get(0));
+		DigestAlgAndValueType digestAlgAndValueFirstDoc = signersDocuments.get(0).getDigestAlgAndValue();
+		assertNotNull(digestAlgAndValueFirstDoc);
+		assertNotNull(digestAlgAndValueFirstDoc.getDigestMethod());
+		assertNotNull(digestAlgAndValueFirstDoc.getDigestValue());
+		assertEquals(Utils.toBase64(digestAlgAndValueFirstDoc.getDigestValue()), fileToBeIndividualTimestamped.getDigest(
+				DigestAlgorithm.forXML(digestAlgAndValueFirstDoc.getDigestMethod().getAlgorithm())));
+		
+		assertNotNull(signersDocuments.get(1));
+		DigestAlgAndValueType digestAlgAndValueSecondDoc = signersDocuments.get(1).getDigestAlgAndValue();
+		assertNotNull(digestAlgAndValueSecondDoc);
+		assertNotNull(digestAlgAndValueSecondDoc.getDigestMethod());
+		assertNotNull(digestAlgAndValueSecondDoc.getDigestValue());
+		assertEquals(Utils.toBase64(digestAlgAndValueSecondDoc.getDigestValue()), notIndividuallyTimestampedFile.getDigest(
+				DigestAlgorithm.forXML(digestAlgAndValueSecondDoc.getDigestMethod().getAlgorithm())));
+		
+		ValidationObjectListType signatureValidationObjects = etsiValidationReport.getSignatureValidationObjects();
+		assertNotNull(signatureValidationObjects);
+		int timestampCounter = 0;
+		int signedDataCounter = 0;
+		for (ValidationObjectType validationObject : signatureValidationObjects.getValidationObject()) {
+			assertNotNull(validationObject.getId());
+			assertNotNull(validationObject.getObjectType());
+			if (ObjectType.TIMESTAMP.equals(validationObject.getObjectType())) {
+				assertNotNull(validationObject.getPOEProvisioning());
+				assertNotNull(validationObject.getPOEProvisioning().getPOETime());
+				assertTrue(Utils.isCollectionNotEmpty(validationObject.getPOEProvisioning().getValidationObject()));
+				timestampCounter++;
+			} else if (ObjectType.SIGNED_DATA.equals(validationObject.getObjectType())) {
+				assertNotNull(validationObject.getPOE());
+				assertNotNull(validationObject.getPOE().getPOETime());
+				assertNotNull(validationObject.getPOE().getPOEObject());
+				assertNotNull(validationObject.getPOE().getTypeOfProof());
+				signedDataCounter++;
+			}
+		}
+		assertEquals(2, timestampCounter);
+		assertEquals(2, signedDataCounter);
+		
 	}
 
 	@Override

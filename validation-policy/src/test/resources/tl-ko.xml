@@ -44,7 +44,11 @@
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
             <SignatureScopes>
-                <SignatureScope name="#ROOT" scope="PARTIAL">The XML element with ID '#ROOT'.</SignatureScope>
+                <SignatureScope SignerData="D-03dbf8e874bde1cd222196fb56b6395a653b698ef88d0df910ab922f9ebd8f34">
+                    <Scope>PARTIAL</Scope>
+                    <Name>#ROOT</Name>
+                    <Description>The XML element with ID '#ROOT'.</Description>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>
@@ -110,4 +114,13 @@
             </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
+    <OriginalDocuments>
+        <SignerData Id="D-03dbf8e874bde1cd222196fb56b6395a653b698ef88d0df910ab922f9ebd8f34">
+            <ReferencedName>#ROOT</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>A9v46HS94c0iIZb7VrY5WmU7aY74jQ35EKuSL569jzQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
 </DiagnosticData>

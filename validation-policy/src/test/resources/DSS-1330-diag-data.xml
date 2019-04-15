@@ -45,7 +45,11 @@
 				<FoundTimestamp Timestamp="T-88E49182915AC09C4734996E127BFB04944E485EFC29C89D7822250A57FCC2FB"/>
 			</FoundTimestamps>
             <SignatureScopes>
-                <SignatureScope name="PDF previous version #3" scope="PARTIAL">The document byte range: [0, 6418, 17102, 332]</SignatureScope>
+                <SignatureScope SignerData="D-8708277f3c6f4f6170228b5756c6a621497a3dfed4faca0db8cc39150a6d7c9d">
+                    <Scope>PARTIAL</Scope>
+                    <Name>PDF previous version #3</Name>
+                    <Description>The document byte range: [0, 6418, 17102, 332]</Description>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>
@@ -1080,6 +1084,15 @@
 		            </DigestAlgoAndValue>
                 </Timestamp>
             </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-8708277f3c6f4f6170228b5756c6a621497a3dfed4faca0db8cc39150a6d7c9d">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>hwgnfzxvT2FwIotXVsamIUl6Pf7U+soNuMw5FQptfJ0=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
     <TrustedLists>
         <TrustedList>
             <CountryCode>BE</CountryCode>
