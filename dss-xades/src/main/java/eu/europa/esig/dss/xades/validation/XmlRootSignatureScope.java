@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.validation;
 import java.util.List;
 
 import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureScopeType;
 
 public class XmlRootSignatureScope extends XmlElementSignatureScope {
@@ -38,11 +39,10 @@ public class XmlRootSignatureScope extends XmlElementSignatureScope {
     @Override
     public String getDescription() {
         String description = "The full XML file";
-        if (getTransformations().isEmpty()) {
-            return description;
-        } else {
-            return addTransformationDescription(description);
+        if (Utils.isCollectionNotEmpty(getTransformations())) {
+        	description = addTransformationDescription(description);
         }
+        return description;
     }
 
 	@Override

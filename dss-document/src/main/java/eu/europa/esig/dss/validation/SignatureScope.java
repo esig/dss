@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.validation;
 
+import java.util.List;
+
 import eu.europa.esig.dss.DataIdentifier;
 import eu.europa.esig.dss.Digest;
 
@@ -54,6 +56,11 @@ public abstract class SignatureScope {
 	}
 
 	public abstract String getDescription();
+	
+	public List<String> getTransformations() {
+		// not implemented by default
+		return null;
+	}
 
 	public abstract SignatureScopeType getType();
 	

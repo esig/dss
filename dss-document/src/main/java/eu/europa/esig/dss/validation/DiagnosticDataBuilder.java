@@ -1244,6 +1244,7 @@ public class DiagnosticDataBuilder {
 		xmlSignatureScope.setName(scope.getName());
 		xmlSignatureScope.setScope(scope.getType());
 		xmlSignatureScope.setDescription(scope.getDescription());
+		xmlSignatureScope.setTransformations(scope.getTransformations());
 		xmlSignatureScope.setSignerData(xmlSignedData.get(scope.getDSSIdAsString()));
 		return xmlSignatureScope;
 	}

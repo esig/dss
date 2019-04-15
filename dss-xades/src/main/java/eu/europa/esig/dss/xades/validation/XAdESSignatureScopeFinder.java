@@ -66,23 +66,19 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 
 	private static final String XNS_OPEN = "xmlns(";
 
-	private final List<String> transformationToIgnore = new ArrayList<String>();
-
 	private final Map<String, String> presentableTransformationNames = new HashMap<String, String>();
 
 	public XAdESSignatureScopeFinder() {
-		// @see http://www.w3.org/TR/xmldsig-core/#sec-TransformAlg
-		// those transformations don't change the content of the original document
-		transformationToIgnore.add(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
-		transformationToIgnore.add(Transforms.TRANSFORM_BASE64_DECODE);
-		transformationToIgnore.add(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
-		transformationToIgnore.add(Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS);
-		transformationToIgnore.add(Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS);
-
-		// those transformations change the original document and must be reported
+		presentableTransformationNames.put(Transforms.TRANSFORM_ENVELOPED_SIGNATURE, "Enveloped Signature Transform");
+		presentableTransformationNames.put(Transforms.TRANSFORM_BASE64_DECODE, "Base64 Decoding");
+		
 		presentableTransformationNames.put(Transforms.TRANSFORM_XPATH2FILTER, "XPath filtering");
 		presentableTransformationNames.put(Transforms.TRANSFORM_XPATH, "XPath filtering");
 		presentableTransformationNames.put(Transforms.TRANSFORM_XSLT, "XSLT Transform");
+		
+		presentableTransformationNames.put(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS, "Canonical XML 1.0 with Comments");
+		presentableTransformationNames.put(Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS, "Canonical XML 1.1 with Comments");
+		presentableTransformationNames.put(Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS, "Exclusive XML Canonicalization 1.0 with Comments");
 
 		presentableTransformationNames.put(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS, "Canonical XML 1.0 (omits comments)");
 		presentableTransformationNames.put(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, "Canonical XML 1.1 (omits comments)");
@@ -197,14 +193,13 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 				if (transfromChildNodes != null && transfromChildNodes.getLength() > 0) {
 					for (int i = 0; i < transfromChildNodes.getLength(); i++) {
 						Node transformation = transfromChildNodes.item(i);
-						final String algorithm = DomUtils.getValue(transformation, "@Algorithm");
-						if (transformationToIgnore.contains(algorithm)) {
-							continue;
-						}
-						if (presentableTransformationNames.containsKey(algorithm)) {
-							algorithms.add(presentableTransformationNames.get(algorithm));
-						} else {
-							algorithms.add(algorithm);
+						if (Node.ELEMENT_NODE == transformation.getNodeType()) {
+							final String algorithm = DomUtils.getValue(transformation, "@Algorithm");
+							if (presentableTransformationNames.containsKey(algorithm)) {
+								algorithms.add(presentableTransformationNames.get(algorithm));
+							} else {
+								algorithms.add(algorithm);
+							}
 						}
 					}
 				}

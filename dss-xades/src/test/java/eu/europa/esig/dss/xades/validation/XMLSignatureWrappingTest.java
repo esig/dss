@@ -39,9 +39,9 @@ import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.SignatureScopeType;
@@ -56,7 +56,10 @@ import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.jaxb.validationreport.SASigPolicyIdentifierType;
 import eu.europa.esig.jaxb.validationreport.SignatureIdentifierType;
 import eu.europa.esig.jaxb.validationreport.SignatureValidationReportType;
+import eu.europa.esig.jaxb.validationreport.ValidationObjectListType;
+import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
 import eu.europa.esig.jaxb.validationreport.ValidationReportType;
+import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
 
 /**
  * Test for XML Signature wrapping detection
@@ -352,6 +355,61 @@ public class XMLSignatureWrappingTest {
 		SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
 		assertNotNull(signatureIdentifier);
 		assertNull(signatureIdentifier.getDigestAlgAndValue());
+		
+	}
+	
+	@Test
+	public void signatureScopeTest() {
+		SignedDocumentValidator validator = SignedDocumentValidator
+				.fromDocument(new FileDocument(new File("src/test/resources/validation/valid-xades.xml")));
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
+		
+		Reports reports = validator.validateDocument();
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		List<XmlSignerData> originalSignerDocuments = diagnosticData.getOriginalSignerDocuments();
+		assertNotNull(originalSignerDocuments);
+		assertEquals(1, originalSignerDocuments.size());
+		XmlSignerData xmlSignerData = originalSignerDocuments.get(0);
+		assertNotNull(xmlSignerData.getId());
+		
+		assertEquals(1, diagnosticData.getSignatures().size());
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
+		assertNotNull(signatureScopes);
+		assertEquals(1, signatureScopes.size());
+		XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
+		assertNotNull(xmlSignatureScope.getName());
+		assertNotNull(xmlSignatureScope.getDescription());
+		assertNotNull(xmlSignatureScope.getScope());
+		assertEquals(SignatureScopeType.PARTIAL, xmlSignatureScope.getScope());
+		assertNotNull(xmlSignatureScope.getSignerData());
+		assertNotNull(xmlSignatureScope.getSignerData().getId());
+		assertEquals(xmlSignerData.getId(), xmlSignatureScope.getSignerData().getId());
+		assertNotNull(xmlSignatureScope.getSignerData().getReferencedName());
+		assertNotNull(xmlSignatureScope.getSignerData().getDigestAlgoAndValue());
+		assertNotNull(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestMethod());
+		assertNotNull(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue());
+		assertNotNull(xmlSignatureScope.getTransformations());
+		assertEquals(1, xmlSignatureScope.getTransformations().size());
+		
+		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
+		ValidationObjectListType signatureValidationObjects = etsiValidationReportJaxb.getSignatureValidationObjects();
+		int expectedSignedDataObjects = 0;
+		for (ValidationObjectType validationObject : signatureValidationObjects.getValidationObject()) {
+			if (ObjectType.SIGNED_DATA.equals(validationObject.getObjectType())) {
+				assertNotNull(validationObject.getId());
+				assertEquals(xmlSignerData.getId(), validationObject.getId());
+				assertNotNull(validationObject.getPOE());
+				expectedSignedDataObjects++;
+			}
+		}
+		assertEquals(1, expectedSignedDataObjects);
 		
 	}
 	

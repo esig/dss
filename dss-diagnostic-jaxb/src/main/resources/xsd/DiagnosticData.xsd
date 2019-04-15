@@ -393,9 +393,16 @@
 	
 	<xs:complexType name="SignatureScope">
 		<xs:sequence>
-			<xs:element name="scope" type="ScopeType" />
-			<xs:element name="name" type="xs:string" />
-			<xs:element name="description" type="xs:string" />
+			<xs:element name="Scope" type="ScopeType" />
+			<xs:element name="Name" type="xs:string" />
+			<xs:element name="Description" type="xs:string" />
+			<xs:element name="Transformations" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Transformation" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 		</xs:sequence>
 		<xs:attribute name="SignerData" type="xs:IDREF" use="required" />
 	</xs:complexType>
