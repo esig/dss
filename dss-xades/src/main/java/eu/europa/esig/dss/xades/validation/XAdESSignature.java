@@ -128,6 +128,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Indicates the id of the signature. If not existing this attribute is auto calculated.
 	 */
 	private String signatureId;
+	
+	/**
+	 * A signature identifier provided by a Driving Application.
+	 */
+	private String daIdentifier;
 
 	private XAdESCertificateSource certificatesSource;
 
@@ -1709,21 +1714,20 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getId() {
-
 		if (signatureId == null) {
-
-			String idValue = DSSXMLUtils.getIDIdentifier(signatureElement);
-			if (idValue != null) {
-
-				signatureId = idValue;
-			} else {
-
-				final CertificateToken certificateToken = getSigningCertificateToken();
-				TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
-				signatureId = DSSUtils.getDeterministicId(getSigningTime(), identifier);
-			}
+			final CertificateToken certificateToken = getSigningCertificateToken();
+			TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
+			signatureId = DSSUtils.getUniqueId(getDAIdentifier(), getSigningTime(), identifier);
 		}
 		return signatureId;
+	}
+	
+	@Override
+	public String getDAIdentifier() {
+		if (daIdentifier == null) {
+			daIdentifier = DSSXMLUtils.getIDIdentifier(signatureElement);
+		}
+		return daIdentifier;
 	}
 
 	@Override

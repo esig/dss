@@ -65,6 +65,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	public String getId() {
 		return signature.getId();
 	}
+	
+	public String getDAIdentifier() {
+		return signature.getDAIdentifier();
+	}
 
 	@Override
 	public List<XmlDigestMatcher> getDigestMatchers() {

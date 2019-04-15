@@ -172,16 +172,12 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 		List<DSSDocument> result = new ArrayList<DSSDocument>();
 
-		final NodeList signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
 		List<AdvancedSignature> signatureList = getSignatures();
 
-		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
+		for (AdvancedSignature advancedSignature : signatureList) {
 
-			final Element signatureEl = (Element) signatureNodeList.item(ii);
-			final String idIdentifier = DSSXMLUtils.getIDIdentifier(signatureEl);
-
-			if (signatureId.equals(idIdentifier)) {
-				XAdESSignature signature = (XAdESSignature) signatureList.get(ii);
+			if (signatureId.equals(advancedSignature.getId())) {
+				XAdESSignature signature = (XAdESSignature) advancedSignature;
 				signature.checkSignatureIntegrity();
 
 				SignatureCryptographicVerification signatureCryptographicVerification = signature.getSignatureCryptographicVerification();

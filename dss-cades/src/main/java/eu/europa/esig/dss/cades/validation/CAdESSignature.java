@@ -1525,6 +1525,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		return signatureId;
 	}
+	
+	@Override
+	public String getDAIdentifier() {
+		// not applicable for CAdES
+		return null;
+	}
 
 	@Override
 	public List<TimestampReference> getTimestampedReferences() {

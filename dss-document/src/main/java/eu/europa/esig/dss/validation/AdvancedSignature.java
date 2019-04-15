@@ -399,6 +399,14 @@ public interface AdvancedSignature extends Serializable {
 	 * @return The signature unique Id
 	 */
 	String getId();
+	
+	/**
+	 * This method returns an identifier provided by the Driving Application (DA)
+	 * Note: used only for XAdES
+	 * 
+	 * @return The signature identifier
+	 */
+	String getDAIdentifier();
 
 	/**
 	 * @param signatureLevel

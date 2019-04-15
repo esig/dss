@@ -304,6 +304,7 @@ public class XMLSignatureWrappingTest {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
 		assertNotNull(signature.getSignatureValue());
+		assertNotNull(signature.getDAIdentifier());
 		
 		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
 		assertNotNull(etsiValidationReport);
@@ -316,6 +317,8 @@ public class XMLSignatureWrappingTest {
 		
 		assertNotNull(signatureIdentifier.getSignatureValue());
 		assertTrue(Arrays.equals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue()));
+		assertNotNull(signatureIdentifier.getDAIdentifier());
+		assertEquals(signature.getDAIdentifier(), signatureIdentifier.getDAIdentifier());
 		
 	}
 	

@@ -477,6 +477,7 @@ public class DiagnosticDataBuilder {
 		xmlSignature.setSignatureFilename(removeSpecialCharsForXml(signature.getSignatureFilename()));
 
 		xmlSignature.setId(signature.getId());
+		xmlSignature.setDAIdentifier(signature.getDAIdentifier());
 		xmlSignature.setDateTime(signature.getSigningTime());
 		xmlSignature.setStructuralValidation(getXmlStructuralValidation(signature));
 		xmlSignature.setSignatureFormat(getXmlSignatureFormat(signature.getDataFoundUpToLevel()));
