@@ -44,7 +44,14 @@
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
             <SignatureScopes>
-                <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: Exclusive Canonical XML (omits comments).</SignatureScope>
+                <SignatureScope SignerData="D-d0cd6476fad927ab0dbec2a47d20248529dc42cd9e7b441faf6c50b1267a5c38">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Exclusive Canonical XML (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>
@@ -110,4 +117,13 @@
             </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
+    <OriginalDocuments>
+        <SignerData Id="D-d0cd6476fad927ab0dbec2a47d20248529dc42cd9e7b441faf6c50b1267a5c38">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>0M1kdvrZJ6sNvsKkfSAkhSncQs2ee0Qfr2xQsSZ6XDg=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
 </DiagnosticData>

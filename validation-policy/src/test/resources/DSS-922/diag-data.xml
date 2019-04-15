@@ -36,7 +36,11 @@
 	            <Identified>true</Identified>
 	        </Policy>
 	        <SignatureScopes>
-	            <SignatureScope name="test.txt" scope="FULL">Full document</SignatureScope>
+                <SignatureScope SignerData="D-d079f51d74298c183710c490f15347d823bc49b1c840210bb885189900a7d377">
+                    <Scope>FULL</Scope>
+                    <Name>test.txt</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
     </Signatures>
@@ -205,4 +209,13 @@
             </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-d079f51d74298c183710c490f15347d823bc49b1c840210bb885189900a7d377">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>0Hn1HXQpjBg3EMSQ8VNH2CO8SbHIQCELuIUYmQCn03c=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
 </DiagnosticData>

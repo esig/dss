@@ -42,7 +42,11 @@
 	        </CertificateChain>
 	        <ContentType>text/xml</ContentType>
 	        <SignatureScopes>
-	            <SignatureScope name="Full XML File" scope="FULL">The full XML file</SignatureScope>
+                <SignatureScope SignerData="D-4b52bc97f901d8e5f69b59580168b37071f935f2ac8b2287589c255729e518e7">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file</Description>
+                </SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
     </Signatures>
@@ -215,4 +219,13 @@
             </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-4b52bc97f901d8e5f69b59580168b37071f935f2ac8b2287589c255729e518e7">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>S1K8l/kB2OX2m1lYAWizcHH5NfKsiyKHWJwlVynlGOc=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
 </DiagnosticData>

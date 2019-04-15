@@ -59,7 +59,11 @@
 				<FoundTimestamp Timestamp="T-611D411B0B25EDEA4C4981B4B34A5CF59458DEA94B6794EA9BD9DF8EE7FF4041"/>
 			</FoundTimestamps>
             <SignatureScopes>
-                <SignatureScope name="test.xml" scope="FULL">Full document</SignatureScope>
+                <SignatureScope SignerData="D-12218531679bd712adaac3e895e2b27713de1dfa07b8e0eee19ecd0bcfd6955b">
+                    <Scope>FULL</Scope>
+                    <Name>test.xml</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>
@@ -672,6 +676,15 @@
             </DigestAlgoAndValue>
         </Timestamp>
     </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-12218531679bd712adaac3e895e2b27713de1dfa07b8e0eee19ecd0bcfd6955b">
+            <ReferencedName>test.xml</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>eStgPz6QScwdFZAr65hc8YP7IGtsrCvbH8sb6xXZw5o=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
     <TrustedLists>
         <TrustedList>
             <CountryCode>BE</CountryCode>

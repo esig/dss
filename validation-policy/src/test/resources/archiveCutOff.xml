@@ -43,9 +43,11 @@
 				<FoundTimestamp Timestamp="T-478805477111202956F33117583157569FBFA250686FE98FBF5D7131AACC8A57"/>
 			</FoundTimestamps>
 			<SignatureScopes>
-				<SignatureScope name="PDF previous version #1"
-					scope="PARTIAL">The document byte range: [0, 311011, 341013, 856]
-				</SignatureScope>
+                <SignatureScope SignerData="D-c38c6acc7dbac2dad32dd2d23a3eadacda43d24c98a3cfd7bc677fec53288440">
+                    <Scope>PARTIAL</Scope>
+                    <Name>PDF previous version #1</Name>
+                    <Description>The document byte range: [0, 311011, 341013, 856]</Description>
+                </SignatureScope>
 			</SignatureScopes>
 		</Signature>
 		<Signature	Id="id-752da48ccad668fcade0d92a1cd8def412feb7562591d1b2a442294d7219c336">
@@ -79,9 +81,13 @@
 				<FoundTimestamp Timestamp="T-57FC751EC68ABA100E9D1A03354DD2BB90AB7C332190782077468B5E4F3098BE"/>
 			</FoundTimestamps>
 			<SignatureScopes>
-				<SignatureScope name="Partial PDF" scope="PARTIAL">The document
-					byte range: [0, 342036, 372038, 872]</SignatureScope>
-			</SignatureScopes>
+                <SignatureScope SignerData="D-277297261129ed0557b918a6ceae3767ec8795812dc93235c5aca70aaebe1982">
+                    <Scope>PARTIAL</Scope>
+                    <Name>Partial PDF</Name>
+                    <Description>The document
+					byte range: [0, 342036, 372038, 872]</Description>
+                </SignatureScope>
+            </SignatureScopes>
 		</Signature>
 	</Signatures>
 	<UsedCertificates>
@@ -1029,6 +1035,22 @@
            </DigestAlgoAndValue>
 		</Timestamp>
 	</UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-c38c6acc7dbac2dad32dd2d23a3eadacda43d24c98a3cfd7bc677fec53288440">
+            <ReferencedName>PDF previous version #1</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>w4xqzH26wtrTLdLSOj6trNpD0kyYo8/XvGd/7FMohEA=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-277297261129ed0557b918a6ceae3767ec8795812dc93235c5aca70aaebe1982">
+            <ReferencedName>Partial PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>J3KXJhEp7QVXuRimzq43Z+yHlYEtyTI1xaynCq6+GYI=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
 	<TrustedLists>
 		<TrustedList>
 			<CountryCode>FR</CountryCode>

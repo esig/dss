@@ -64,7 +64,21 @@
 				<FoundTimestamp Timestamp="T-C70546FC1FEF916D9C13DA3167831B08D694147BA16EABBE5E07507909FA13BE"/>
 			</FoundTimestamps>
             <SignatureScopes>
-                <SignatureScope name="Full document" scope="FULL">Full document</SignatureScope>
+                <SignatureScope SignerData="D-8fa2874a722c336027fb3b524e2d339e7095865baa20a6c76e43660d1aaf1a6c">
+                    <Scope>FULL</Scope>
+                    <Name>Full document</Name>
+                    <Description>Full document.</Description>
+                </SignatureScope>
+                <SignatureScope SignerData="D-92423030d8b601268d6e6ebd9ac8a1e840155c8f5938207a67bc999f063a8eaf">
+                    <Scope>FULL</Scope>
+                    <Name>Full document</Name>
+                    <Description>Full document.</Description>
+                </SignatureScope>
+                <SignatureScope SignerData="D-b7f7feebbfd0ee68cd276f7e7fb00a10d29b972d7e1daf00a59210c6417c80a3">
+                    <Scope>FULL</Scope>
+                    <Name>Full document</Name>
+                    <Description>Full document.</Description>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>
@@ -552,6 +566,29 @@
             </DigestAlgoAndValue>
         </Timestamp>
     </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-8fa2874a722c336027fb3b524e2d339e7095865baa20a6c76e43660d1aaf1a6c">
+            <ReferencedName>test-pdf.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>j6KHSnIsM2An+ztSTi0znnCVhluqIKbHbkNmDRqvGmw=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-92423030d8b601268d6e6ebd9ac8a1e840155c8f5938207a67bc999f063a8eaf">
+            <ReferencedName>ffff.jpg</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>kkIwMNi2ASaNbm69msih6EAVXI9ZOCB6Z7yZnwY6jq8=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-b7f7feebbfd0ee68cd276f7e7fb00a10d29b972d7e1daf00a59210c6417c80a3">
+            <ReferencedName>screen.png</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>t/f+67/Q7mjNJ29+f7AKENKbly1+Ha8ApZIQxkF8gKM=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
     <TrustedLists>
         <TrustedList>
             <CountryCode>BE</CountryCode>

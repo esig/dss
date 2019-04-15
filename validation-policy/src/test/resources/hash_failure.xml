@@ -40,7 +40,11 @@
 	        </CertificateChain>
 	        <ContentType>text/xml</ContentType>
 	        <SignatureScopes>
-	            <SignatureScope name="Full XML File" scope="FULL">The full XML file</SignatureScope>
+                <SignatureScope SignerData="D-de11a94d7ee5345d5a821ed7530bfd6b24f637f0ce8df32a5dfe9ea357d6e409">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file</Description>
+                </SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
 	    <Signature Id="Signature-1758282779">
@@ -80,7 +84,11 @@
 	        </CertificateChain>
 	        <ContentType>text/xml</ContentType>
 	        <SignatureScopes>
-	            <SignatureScope name="Full XML File" scope="FULL">The full XML file</SignatureScope>
+                <SignatureScope SignerData="D-de11a94d7ee5345d5a821ed7530bfd6b24f637f0ce8df32a5dfe9ea357d6e409">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file</Description>
+                </SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
     </Signatures>
@@ -329,4 +337,13 @@
             </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-de11a94d7ee5345d5a821ed7530bfd6b24f637f0ce8df32a5dfe9ea357d6e409">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
 </DiagnosticData>

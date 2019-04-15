@@ -46,7 +46,11 @@
 				<FoundTimestamp Timestamp="T-D2E04180536591BAEF6A741431E7624ABD738CE34D2B4E3B869CEC718C9F8BFD"/>
 			</FoundTimestamps>
             <SignatureScopes>
-                <SignatureScope name="Full PDF" scope="FULL">Full document</SignatureScope>
+                <SignatureScope SignerData="D-2f312971844f0a9238b67e5d7609e9173eb77b71f41fd14d64551006d5e9b8dd">
+                    <Scope>FULL</Scope>
+                    <Name>Full PDF</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>
@@ -787,6 +791,15 @@
 	            </DigestAlgoAndValue>
          </Timestamp>
      </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-2f312971844f0a9238b67e5d7609e9173eb77b71f41fd14d64551006d5e9b8dd">
+            <ReferencedName>Full PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>LzEpcYRPCpI4tn5ddgnpFz63e3H0H9FNZFUQBtXpuN0=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
     <TrustedLists>
         <TrustedList>
             <CountryCode>BE</CountryCode>
