@@ -29,11 +29,11 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_signerA
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_signerLocation;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.pkcs_9_at_signingTime;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Random;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
@@ -375,19 +375,13 @@ public class CAdESLevelBaselineB {
 
 		final String contentIdentifierPrefix = parameters.getContentIdentifierPrefix();
 		if (Utils.isStringNotBlank(contentIdentifierPrefix)) {
-
-			final String contentIdentifierSuffix;
 			if (Utils.isStringBlank(parameters.getContentIdentifierSuffix())) {
-
-				final Date now = new Date();
-				final String asn1GeneralizedTimeString = new ASN1GeneralizedTime(now).getTimeString();
-				final long randomNumber = new Random(now.getTime()).nextLong();
-				contentIdentifierSuffix = asn1GeneralizedTimeString + randomNumber;
-				parameters.setContentIdentifierSuffix(contentIdentifierSuffix);
-			} else {
-				contentIdentifierSuffix = parameters.getContentIdentifierSuffix();
+				StringBuffer suffixBuffer = new StringBuffer();
+				suffixBuffer.append(new ASN1GeneralizedTime(new Date()).getTimeString());
+				suffixBuffer.append(new SecureRandom().nextLong());
+				parameters.setContentIdentifierSuffix(suffixBuffer.toString());
 			}
-			final String contentIdentifierString = contentIdentifierPrefix + contentIdentifierSuffix;
+			final String contentIdentifierString = contentIdentifierPrefix + parameters.getContentIdentifierSuffix();
 			final ContentIdentifier contentIdentifier = new ContentIdentifier(contentIdentifierString.getBytes());
 			final DERSet attrValues = new DERSet(contentIdentifier);
 			final Attribute attribute = new Attribute(id_aa_contentIdentifier, attrValues);
