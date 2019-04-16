@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<jaxb:bindings version="1.0"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd">
+
+	<jaxb:globalBindings>
+		<jaxb:serializable uid="1" />
+	</jaxb:globalBindings>
+
+	<jaxb:bindings schemaLocation="XAdESv141.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="eu.europa.esig.jaxb.xades141" />
+		</jaxb:schemaBindings>
+		<jaxb:bindings
+			schemaLocation="http://uri.etsi.org/01903/v1.3.2/XAdES.xsd"	node="/xs:schema">
+			<jaxb:schemaBindings>
+				<jaxb:package name="eu.europa.esig.jaxb.xades132" />
+			</jaxb:schemaBindings>
+		</jaxb:bindings>
+	</jaxb:bindings>
+
+</jaxb:bindings>

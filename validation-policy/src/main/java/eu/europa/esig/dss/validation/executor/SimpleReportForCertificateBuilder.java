@@ -37,9 +37,9 @@ import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlSubject;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlTrustAnchor;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 
 public class SimpleReportForCertificateBuilder {
 
@@ -65,10 +65,9 @@ public class SimpleReportForCertificateBuilder {
 		addQualifications(firstChainItem);
 		chain.add(firstChainItem);
 
-		List<String> certificateChainIds = certificate.getCertificateChainIds();
-		for (String certId : certificateChainIds) {
-			CertificateWrapper issuer = diagnosticData.getUsedCertificateById(certId);
-			chain.add(getChainItem(issuer));
+		List<CertificateWrapper> certificateChain = certificate.getCertificateChain();
+		for (CertificateWrapper cert : certificateChain) {
+			chain.add(getChainItem(cert));
 		}
 		simpleReport.setChain(chain);
 
@@ -79,9 +78,9 @@ public class SimpleReportForCertificateBuilder {
 		XmlChainItem item = new XmlChainItem();
 		item.setId(certificate.getId());
 		item.setSubject(getSubject(certificate));
-		String signingCertificateId = certificate.getSigningCertificateId();
-		if (Utils.isStringNotBlank(signingCertificateId)) {
-			item.setIssuerId(signingCertificateId);
+		CertificateWrapper signingCertificate = certificate.getSigningCertificate();
+		if (signingCertificate != null) {
+			item.setIssuerId(signingCertificate.getId());
 		}
 		item.setNotBefore(certificate.getNotBefore());
 		item.setNotAfter(certificate.getNotAfter());
@@ -94,7 +93,7 @@ public class SimpleReportForCertificateBuilder {
 		item.setPdsUrls(null);
 
 		XmlRevocation revocation = new XmlRevocation();
-		RevocationWrapper revocationData = certificate.getLatestRevocationData();
+		CertificateRevocationWrapper revocationData = diagnosticData.getLatestRevocationDataForCertificate(certificate);
 		if (revocationData != null) {
 			revocation.setProductionDate(revocationData.getProductionDate());
 			revocation.setRevocationDate(revocationData.getRevocationDate());
@@ -135,7 +134,7 @@ public class SimpleReportForCertificateBuilder {
 			List<XmlTrustedService> trustedServices = xmlTrustedServiceProvider.getTrustedServices();
 			boolean foundCertId = false;
 			for (XmlTrustedService xmlTrustedService : trustedServices) {
-				if (Utils.areStringsEqual(certificateId, xmlTrustedService.getServiceDigitalIdentifier())) {
+				if (Utils.areStringsEqual(certificateId, xmlTrustedService.getServiceDigitalIdentifier().getId())) {
 					foundCertId = true;
 					break;
 				}

@@ -41,6 +41,10 @@ public class ASiCEWithCAdESManifestParser {
 
 	private final DSSDocument manifestDocument;
 
+	static {
+		DomUtils.registerNamespace("asic", ASiCNamespace.NS);
+	}
+
 	public ASiCEWithCAdESManifestParser(DSSDocument manifestDocument) {
 		this.manifestDocument = manifestDocument;
 	}

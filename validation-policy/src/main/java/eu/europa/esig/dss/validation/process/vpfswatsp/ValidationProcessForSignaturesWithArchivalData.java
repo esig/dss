@@ -29,6 +29,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlPSV;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlProofOfExistence;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessArchivalData;
@@ -102,7 +103,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * NOTE 1: The set of POE in the input may have been initialized from external sources (e.g. provided from
 		 * an external archiving system). These POEs will be used without additional processing.
 		 */
-		poe.init(diagnosticData, currentTime);
+		poe.init(diagnosticData, getCurrentTime());
 
 		/*
 		 * 3) The long term validation process shall perform the validation process for Signatures with Time as per
@@ -119,7 +120,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * - In all other cases, the long term validation process shall fail with returned code and information.
 		 */
 		ChainItem<XmlValidationProcessArchivalData> item = firstItem = longTermValidation();
-		result.setBestSignatureTime(validationProcessLongTermData.getBestSignatureTime());
+		result.setProofOfExistence(validationProcessLongTermData.getProofOfExistence());
 		if (isValid(validationProcessLongTermData)) {
 			return;
 		}
@@ -128,7 +129,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * 4) The process shall add the best-signature-time returned in step 3 
 		 * as POE for the signature to the set of POEs.
 		 */
-		poe.init(diagnosticData, validationProcessLongTermData.getBestSignatureTime());
+		poe.init(diagnosticData, validationProcessLongTermData.getProofOfExistence());
 
 		/*
 		 * 5) If there is at least one time-stamp attribute:
@@ -227,7 +228,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		/*
 		 * 7) The SVA shall determine from the set of POEs the earliest time the existence of the signature can be prove
 		 */
-		Date bestSignatureTime = poe.getLowestPOE(signature.getId(), currentTime);
+		Date bestSignatureTime = poe.getLowestPOETime(signature.getId(), currentTime);
 		
 		/*
 		 * 8) The SVA shall perform the Signature Acceptance Validation process as per clause 5.2.8 with the following
@@ -256,6 +257,12 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * the SVA shall return the indication and sub-indication returned by the Signature Acceptance Validation Process
 		 */
 
+	}
+
+	private XmlProofOfExistence getCurrentTime() {
+		XmlProofOfExistence xpoe = new XmlProofOfExistence();
+		xpoe.setTime(currentTime);
+		return xpoe;
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> pastSignatureValidation(Context currentContext) {

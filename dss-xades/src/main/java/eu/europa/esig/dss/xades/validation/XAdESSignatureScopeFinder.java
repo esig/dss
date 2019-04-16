@@ -39,20 +39,26 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AbstractSignatureScopeFinder;
+import eu.europa.esig.dss.validation.ContainerContentSignatureScope;
+import eu.europa.esig.dss.validation.ContainerSignatureScope;
+import eu.europa.esig.dss.validation.DigestSignatureScope;
 import eu.europa.esig.dss.validation.FullSignatureScope;
 import eu.europa.esig.dss.validation.SignatureScope;
-import eu.europa.esig.dss.validation.SignatureScopeFinder;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdESUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
- *
+ * Performs operations in order to find all signed data for a XAdES Signature
  */
-public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSignature> {
+public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdESSignature> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESSignatureScopeFinder.class);
 
@@ -60,24 +66,19 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 
 	private static final String XNS_OPEN = "xmlns(";
 
-	private final List<String> transformationToIgnore = new ArrayList<String>();
-
 	private final Map<String, String> presentableTransformationNames = new HashMap<String, String>();
 
 	public XAdESSignatureScopeFinder() {
-
-		// @see http://www.w3.org/TR/xmldsig-core/#sec-TransformAlg
-		// those transformations don't change the content of the document
-		transformationToIgnore.add(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
-		transformationToIgnore.add(Transforms.TRANSFORM_BASE64_DECODE);
-		transformationToIgnore.add(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
-		transformationToIgnore.add(Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS);
-		transformationToIgnore.add(Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS);
-
-		// those transformations change the document and must be reported
+		presentableTransformationNames.put(Transforms.TRANSFORM_ENVELOPED_SIGNATURE, "Enveloped Signature Transform");
+		presentableTransformationNames.put(Transforms.TRANSFORM_BASE64_DECODE, "Base64 Decoding");
+		
 		presentableTransformationNames.put(Transforms.TRANSFORM_XPATH2FILTER, "XPath filtering");
 		presentableTransformationNames.put(Transforms.TRANSFORM_XPATH, "XPath filtering");
 		presentableTransformationNames.put(Transforms.TRANSFORM_XSLT, "XSLT Transform");
+		
+		presentableTransformationNames.put(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS, "Canonical XML 1.0 with Comments");
+		presentableTransformationNames.put(Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS, "Canonical XML 1.1 with Comments");
+		presentableTransformationNames.put(Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS, "Exclusive XML Canonicalization 1.0 with Comments");
 
 		presentableTransformationNames.put(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS, "Canonical XML 1.0 (omits comments)");
 		presentableTransformationNames.put(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, "Canonical XML 1.1 (omits comments)");
@@ -98,29 +99,32 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 			}
 			final String uri = signatureReference.getURI();
 			final List<String> transformations = getTransformationNames(signatureReference);
-			if (Utils.isStringBlank(uri)) {
+			byte[] referenceOriginalContentBytes = XAdESUtils.getReferenceOriginalContentBytes(signatureReference);
+			if (Utils.isStringBlank(uri) && referenceOriginalContentBytes != null) {
 				// self contained document
 				if (isEverythingCovered) {
-					result.add(new XmlRootSignatureScope(transformations));
+					result.add(new XmlRootSignatureScope(transformations, getDigest(referenceOriginalContentBytes)));
 				} else {
-					result.add(new XmlElementSignatureScope("", transformations));
+					result.add(new XmlElementSignatureScope("", transformations, getDigest(referenceOriginalContentBytes)));
 				}
 			} else if (uri.startsWith("#")) {
 				final String xmlIdOfSignedElement = uri.substring(1);
 				// internal reference
 				if (isXPointerQuery(uri)) {
 					final String id = DSSXMLUtils.getIDIdentifier(signatureReference.getElement());
-					final XPointerSignatureScope xPointerSignatureScope = new XPointerSignatureScope(id, uri);
+					// TODO: check and to do
+					final XPointerSignatureScope xPointerSignatureScope = new XPointerSignatureScope(id, uri, 
+							getDigest(XAdESUtils.getReferenceOriginalContentBytes(signatureReference)));
 					result.add(xPointerSignatureScope);
 				} else if (signatureReference.typeIsReferenceToObject()) {
 					Node objectById = xadesSignature.getObjectById(uri);
 					if (objectById != null) {
-						result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations));
+						result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations, getDigest(XAdESUtils.getNodeBytes(objectById))));
 					}
 				} else if (signatureReference.typeIsReferenceToManifest()) {
 					Node manifestById = xadesSignature.getManifestById(uri);
 					if (manifestById != null) {
-						result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations));
+						result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations, getDigest(XAdESUtils.getNodeBytes(manifestById))));
 					}
 				} else {
 					NodeList nodeList = DomUtils.getNodeList(xadesSignature.getSignatureElement().getOwnerDocument().getDocumentElement(),
@@ -130,21 +134,60 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 						final String namespaceURI = signedElement.getNamespaceURI();
 						if ((namespaceURI == null) || (!XAdESNamespaces.exists(namespaceURI) && !namespaceURI.equals(XMLSignature.XMLNS))) {
 							if (isEverythingCovered) {
-								result.add(new XmlRootSignatureScope(transformations));
+								result.add(new XmlRootSignatureScope(transformations, getDigest(XAdESUtils.getNodeBytes(signedElement))));
 							} else {
-								result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations));
+								result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations, getDigest(XAdESUtils.getNodeBytes(signedElement))));
 							}
 						}
 					}
 				}
-			} else {
+			} else if (Utils.isCollectionNotEmpty(xadesSignature.getDetachedContents())) {
 				// detached file
-				result.add(new FullSignatureScope(DSSUtils.decodeUrl(uri)));
+				for (DSSDocument detachedDocument : xadesSignature.getDetachedContents()) {
+					if (uri.equals(detachedDocument.getName())) {
+						
+						if (detachedDocument instanceof DigestDocument) {
+							DigestDocument digestDocument = (DigestDocument) detachedDocument;
+							result.add(new DigestSignatureScope(DSSUtils.decodeUrl(uri), digestDocument.getExistingDigest()));
+							
+						} else if (Utils.isCollectionNotEmpty(transformations)) {
+							result.add(new XmlFullSignatureScope(DSSUtils.decodeUrl(uri), transformations, getDigest(DSSUtils.toByteArray(detachedDocument))));
+							
+						} else if (isASiCSArchive(xadesSignature, detachedDocument)) {
+							result.add(new ContainerSignatureScope(DSSUtils.decodeUrl(uri), getDigest(DSSUtils.toByteArray(detachedDocument))));
+							
+							for (DSSDocument archivedDocument : xadesSignature.getContainerContents()) {
+								result.add(new ContainerContentSignatureScope(DSSUtils.decodeUrl(archivedDocument.getName()), 
+										getDigest(DSSUtils.toByteArray(archivedDocument))));
+							}
+							
+						} else {
+							result.add(new FullSignatureScope(DSSUtils.decodeUrl(uri), getDigest(DSSUtils.toByteArray(detachedDocument))));
+							
+						}
+						
+					}
+				}
+			}
+		}
+		// append detached documents with empty name
+		if (Utils.isCollectionNotEmpty(xadesSignature.getDetachedContents())) {
+			for (DSSDocument detachedDocument : xadesSignature.getDetachedContents()) {
+				// can be only a Digest Document
+				if (detachedDocument instanceof DigestDocument && Utils.isStringEmpty(detachedDocument.getName())) {
+					DigestDocument digestDocument = (DigestDocument) detachedDocument;
+					result.add(new DigestSignatureScope(detachedDocument.getName(), digestDocument.getExistingDigest()));
+				}
 			}
 		}
 		return result;
 	}
 
+	/**
+	 * Returns a list of transformations contained in the {@code reference}
+	 * @param reference {@link Reference} to find transformations for
+	 * @return list of transformation names
+	 */
 	private List<String> getTransformationNames(final Reference reference) {
 		final List<String> algorithms = new ArrayList<String>();
 		try {
@@ -155,14 +198,8 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 				if (transfromChildNodes != null && transfromChildNodes.getLength() > 0) {
 					for (int i = 0; i < transfromChildNodes.getLength(); i++) {
 						Node transformation = transfromChildNodes.item(i);
-						final String algorithm = DomUtils.getValue(transformation, "@Algorithm");
-						if (transformationToIgnore.contains(algorithm)) {
-							continue;
-						}
-						if (presentableTransformationNames.containsKey(algorithm)) {
-							algorithms.add(presentableTransformationNames.get(algorithm));
-						} else {
-							algorithms.add(algorithm);
+						if (Node.ELEMENT_NODE == transformation.getNodeType()) {
+							algorithms.add(buildTransformationName(transformation));
 						}
 					}
 				}
@@ -171,6 +208,42 @@ public class XAdESSignatureScopeFinder implements SignatureScopeFinder<XAdESSign
 			LOG.warn("Unable to analyze trasnformations", e);
 		}
 		return algorithms;
+	}
+	
+	/**
+	 * Returns a complete description string for the given transformation node
+	 * @param transformation {@link Node} containing a signle reference transformation information
+	 * @return transformation description name
+	 */
+	private String buildTransformationName(Node transformation) {
+		String algorithm = DomUtils.getValue(transformation, "@Algorithm");
+		if (presentableTransformationNames.containsKey(algorithm)) {
+			algorithm = presentableTransformationNames.get(algorithm);
+		}
+		StringBuilder stringBuilder = new StringBuilder(algorithm);
+		if (transformation.hasChildNodes()) {
+			NodeList childNodes = transformation.getChildNodes();
+			stringBuilder.append(" (");
+			boolean hasValues = false;
+			for (int j = 0; j < childNodes.getLength(); j++) {
+				Node parameterNode = childNodes.item(j);
+				if (Node.ELEMENT_NODE != parameterNode.getNodeType()) {
+					continue;
+				}
+				Node parameterValueNode = parameterNode.getFirstChild();
+				if (parameterValueNode != null && Node.TEXT_NODE == parameterValueNode.getNodeType() &&
+						Utils.isStringNotBlank(parameterValueNode.getTextContent())) {
+					if (hasValues) {
+						stringBuilder.append("; ");
+					}
+					stringBuilder.append(parameterNode.getLocalName()).append(": ");
+					stringBuilder.append(parameterValueNode.getTextContent());
+					hasValues = true;
+				}
+			}
+			stringBuilder.append(")");
+		}
+		return stringBuilder.toString();
 	}
 
 	/**

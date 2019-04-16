@@ -26,7 +26,7 @@ public class DSS1566Test extends AbstractValidationExecutorTest {
 		CertificateProcessExecutor executor = new CertificateProcessExecutor();
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setDiagnosticData(diagnosticData);
-		executor.setCertificateId("D04D16660A6BA5FDD2C3A519DAD8877B64D1D2C56BF91316208A0AE2FB76D368");
+		executor.setCertificateId("C-D04D16660A6BA5FDD2C3A519DAD8877B64D1D2C56BF91316208A0AE2FB76D368");
 		executor.setCurrentTime(new Date());
 		
 		CertificateReports reports = executor.execute();

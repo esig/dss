@@ -132,7 +132,7 @@ public class PAdESDoubleSignature extends PKIFactoryAccess {
 			if (certificateWrapper.isTrusted() || certificateWrapper.isSelfSigned() || certificateWrapper.isIdPkixOcspNoCheck()) {
 				continue;
 			}
-			int nbRevoc = certificateWrapper.getRevocationData().size();
+			int nbRevoc = certificateWrapper.getCertificateRevocationData().size();
 			assertEquals("Nb revoc for cert " + certificateWrapper.getCommonName() + " = " + nbRevoc, 1, nbRevoc);
 		}
 	}

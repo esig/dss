@@ -226,6 +226,16 @@ public class PdfSignatureOrDocTimestampInfoComparatorTest {
 			return false;
 		}
 
+		@Override
+		public String getSignerName() {
+			return null;
+		}
+		
+		@Override
+		public String getSigFieldName() {
+			return null;
+		}
+
 	}
 
 }

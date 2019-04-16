@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.validation.SignatureScope;
 import eu.europa.esig.dss.validation.SignatureScopeType;
 
@@ -33,8 +34,8 @@ public class XPointerSignatureScope extends SignatureScope {
 	 */
 	private final String uri;
 
-	protected XPointerSignatureScope(final String xmlId, final String uri) {
-		super(xmlId);
+	protected XPointerSignatureScope(final String xmlId, final String uri, final Digest digest) {
+		super(xmlId, digest);
 		this.uri = uri;
 	}
 

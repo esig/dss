@@ -66,9 +66,13 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected void analyseEntries() {
 		AbstractASiCContainerExtractor extractor = getArchiveExtractor();
 		extractResult = extractor.extract();
-
 		containerType = ASiCUtils.getContainerType(document, extractResult.getMimeTypeDocument(), extractResult.getZipComment(),
 				extractResult.getSignedDocuments());
+		if (ASiCContainerType.ASiC_S.equals(containerType)) {
+			extractResult.setContainerDocuments(getArchiveDocuments(extractResult.getSignedDocuments()));
+		} else if (ASiCContainerType.ASiC_E.equals(containerType)) {
+			extractResult.setManifestFiles(getManifestFilesDecriptions());
+		}
 	}
 
 	abstract AbstractASiCContainerExtractor getArchiveExtractor();
@@ -85,12 +89,10 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 			allSignatures.addAll(documentValidator.processSignaturesValidation(validationContext, structuralValidation));
 		}
 
+		// for CAdES
 		attachExternalTimestamps(allSignatures);
 
 		return allSignatures;
-	}
-
-	protected void attachExternalTimestamps(List<AdvancedSignature> allSignatures) {
 	}
 
 	/**
@@ -122,10 +124,12 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 			containerInfo.setSignedDocumentFilenames(signedDocumentFilenames);
 		}
 
-		containerInfo.setManifestFiles(getManifestFilesDecriptions());
+		containerInfo.setManifestFiles(getManifestFiles());
 
 		return containerInfo;
 	}
+
+	protected abstract void attachExternalTimestamps(List<AdvancedSignature> allSignatures);
 
 	protected abstract List<ManifestFile> getManifestFilesDecriptions();
 
@@ -153,6 +157,10 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected List<DSSDocument> getManifestDocuments() {
 		return extractResult.getManifestDocuments();
 	}
+	
+	protected List<ManifestFile> getManifestFiles() {
+		return extractResult.getManifestFiles();
+	}
 
 	protected List<DSSDocument> getTimestampDocuments() {
 		return extractResult.getTimestampDocuments();
@@ -161,9 +169,24 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected List<DSSDocument> getArchiveManifestDocuments() {
 		return extractResult.getArchiveManifestDocuments();
 	}
+	
+	protected List<DSSDocument> getArchiveDocuments() {
+		return extractResult.getContainerDocuments();
+	}
 
 	protected DSSDocument getMimeTypeDocument() {
 		return extractResult.getMimeTypeDocument();
+	}
+	
+	private List<DSSDocument> getArchiveDocuments(List<DSSDocument> foundDocuments) {
+		List<DSSDocument> archiveDocuments = new ArrayList<DSSDocument>();
+		for (DSSDocument document : foundDocuments) {
+			if (isASiCSArchive(document)) {
+				archiveDocuments.addAll(getPackageZipContent(document));
+				break; // only one "package.zip" is possible
+			}
+		}
+		return archiveDocuments;
 	}
 
 	protected List<DSSDocument> getSignedDocumentsASiCS(List<DSSDocument> retrievedDocs) {
@@ -172,12 +195,16 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		}
 		DSSDocument uniqueDoc = retrievedDocs.get(0);
 		List<DSSDocument> result = new ArrayList<DSSDocument>();
-		if (Utils.areStringsEqual(ASiCUtils.PACKAGE_ZIP, uniqueDoc.getName())) {
+		if (isASiCSArchive(uniqueDoc)) {
 			result.addAll(getPackageZipContent(uniqueDoc));
 		} else {
 			result.add(uniqueDoc);
 		}
 		return result;
+	}
+	
+	private boolean isASiCSArchive(DSSDocument document) {
+		return Utils.areStringsEqual(ASiCUtils.PACKAGE_ZIP, document.getName());
 	}
 
 	private List<DSSDocument> getPackageZipContent(DSSDocument packageZip) {

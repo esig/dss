@@ -22,7 +22,6 @@ package eu.europa.esig.dss.validation.reports.wrapper;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -32,15 +31,16 @@ import eu.europa.esig.dss.ExtendedKeyUsageOids;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificatePolicy;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDistinguishedName;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOID;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedService;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.XmlCertificateSourceType;
 
 public class CertificateWrapper extends AbstractTokenProxy {
 
@@ -89,30 +89,20 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	public boolean isRevocationDataAvailable() {
 		return Utils.isCollectionNotEmpty(certificate.getRevocations());
 	}
-
-	public Set<RevocationWrapper> getRevocationData() {
-		if (isRevocationDataAvailable()) {
-			List<XmlRevocation> revocation = certificate.getRevocations();
-			Set<RevocationWrapper> result = new HashSet<RevocationWrapper>();
-			for (XmlRevocation xmlRevocationType : revocation) {
-				result.add(new RevocationWrapper(xmlRevocationType));
-			}
-			return result;
-		}
-		return Collections.emptySet();
+	
+	public List<XmlCertificateSourceType> getSources() {
+		return certificate.getSources();
 	}
 
-	public RevocationWrapper getLatestRevocationData() {
-		RevocationWrapper latest = null;
-		for (RevocationWrapper revoc : getRevocationData()) {
-			if (latest == null || (latest.getProductionDate() != null && revoc != null && revoc.getProductionDate() != null
-					&& revoc.getProductionDate().after(latest.getProductionDate()))) {
-				latest = revoc;
-			}
+	public List<CertificateRevocationWrapper> getCertificateRevocationData() {
+		List<CertificateRevocationWrapper> certRevocationWrappers = new ArrayList<CertificateRevocationWrapper>();
+		List<XmlCertificateRevocation> revocations = certificate.getRevocations();
+		for (XmlCertificateRevocation xmlCertificateRevocation : revocations) {
+			certRevocationWrappers.add(new CertificateRevocationWrapper(xmlCertificateRevocation));
 		}
-		return latest;
+		return certRevocationWrappers;
 	}
-
+	
 	public boolean isIdPkixOcspNoCheck() {
 		return Utils.isTrue(certificate.isIdPkixOcspNoCheck());
 	}
@@ -150,21 +140,6 @@ public class CertificateWrapper extends AbstractTokenProxy {
 			}
 		}
 		return null;
-	}
-
-	public boolean isRevoked() {
-		RevocationWrapper latestRevocationData = getLatestRevocationData();
-		return latestRevocationData != null && latestRevocationData.isRevoked();
-	}
-
-	public boolean isValidCertificate() {
-		final boolean signatureValid = (certificate.getBasicSignature() != null) && certificate.getBasicSignature().isSignatureValid();
-		RevocationWrapper latestRevocationData = getLatestRevocationData();
-		final boolean revocationValid = (latestRevocationData != null) && latestRevocationData.isStatus();
-		final boolean trusted = certificate.isTrusted();
-
-		final boolean validity = signatureValid && (trusted ? true : revocationValid);
-		return validity;
 	}
 
 	public String getSerialNumber() {
@@ -211,9 +186,9 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	public String getPseudo() {
 		return certificate.getPseudonym();
 	}
-
-	public List<XmlDigestAlgoAndValue> getDigestAlgoAndValues() {
-		return certificate.getDigestAlgoAndValues();
+	
+	public XmlDigestAlgoAndValue getDigestAlgoAndValue() {
+		return certificate.getDigestAlgoAndValue();
 	}
 
 	public boolean hasTrustedServices() {
@@ -235,7 +210,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 					for (XmlTrustedService trustedService : trustedServices) {
 						TrustedServiceWrapper wrapper = new TrustedServiceWrapper();
 						wrapper.setTspName(tsp.getTSPName());
-						wrapper.setServiceDigitalIdentifier(trustedService.getServiceDigitalIdentifier());
+						wrapper.setServiceDigitalIdentifier(new CertificateWrapper(trustedService.getServiceDigitalIdentifier()));
 						wrapper.setServiceName(trustedService.getServiceName());
 						wrapper.setCountryCode(tsp.getCountryCode());
 						wrapper.setStatus(trustedService.getStatus());
@@ -336,6 +311,28 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	public List<XmlOID> getExtendedKeyUsages() {
 		return certificate.getExtendedKeyUsages();
+	}
+
+	public String getReadableCertificateName() {
+		if (Utils.isStringNotEmpty(certificate.getCommonName())) {
+			return certificate.getCommonName();
+		}
+		if (Utils.isStringNotEmpty(certificate.getGivenName())) {
+			return certificate.getGivenName();
+		}
+		if (Utils.isStringNotEmpty(certificate.getSurname())) {
+			return certificate.getSurname();
+		}
+		if (Utils.isStringNotEmpty(certificate.getPseudonym())) {
+			return certificate.getPseudonym();
+		}
+		if (Utils.isStringNotEmpty(certificate.getOrganizationName())) {
+			return certificate.getOrganizationName();
+		}
+		if (Utils.isStringNotEmpty(certificate.getOrganizationalUnit())) {
+			return certificate.getOrganizationalUnit();
+		}
+		return "?";
 	}
 
 }

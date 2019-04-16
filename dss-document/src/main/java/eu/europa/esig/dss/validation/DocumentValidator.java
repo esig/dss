@@ -64,6 +64,22 @@ public interface DocumentValidator {
 	void setDetachedContents(final List<DSSDocument> detachedContent);
 
 	/**
+	 * Sets the {@code List} of {@code DSSDocument} containing the original container content for ASiC signatures.
+	 *
+	 * @param archiveContents
+	 *            the {@code List} of {@code DSSDocument} to set
+	 */
+	void setContainerContents(final List<DSSDocument> archiveContents);
+
+	/**
+	 * Sets the {@code List} of {@code ManifestFile}s found in the signature file.
+	 *
+	 * @param manifestFiles
+	 *            the {@code List} of {@code ManifestFile} to set
+	 */
+	void setManifestFiles(final List<ManifestFile> manifestFiles);
+
+	/**
 	 * This method allows to define the signing certificate. It is useful in the case of ,non AdES signatures.
 	 *
 	 * @param x509Certificate
@@ -160,6 +176,14 @@ public interface DocumentValidator {
 	 *            the id of the signature to be removed.
 	 */
 	List<DSSDocument> getOriginalDocuments(final String signatureId);
+
+	/**
+	 * This method returns the signed document(s) without their signature(s)
+	 *
+	 * @param advancedSignature
+	 *            {@link AdvancedSignature} to find signer documents for
+	 */
+	List<DSSDocument> getOriginalDocuments(final AdvancedSignature advancedSignature);
 
 	List<AdvancedSignature> processSignaturesValidation(ValidationContext validationContext, boolean structuralValidation);
 

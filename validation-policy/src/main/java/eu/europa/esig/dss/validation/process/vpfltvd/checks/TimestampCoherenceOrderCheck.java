@@ -118,9 +118,9 @@ public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcess
 		return earliestProductionTime;
 	}
 
-	private boolean isInSelectedTypes(TimestampType[] allowedTypes, String type) {
+	private boolean isInSelectedTypes(TimestampType[] allowedTypes, TimestampType type) {
 		for (TimestampType timestampType : allowedTypes) {
-			if (timestampType.name().equals(type)) {
+			if (timestampType.equals(type)) {
 				return true;
 			}
 		}

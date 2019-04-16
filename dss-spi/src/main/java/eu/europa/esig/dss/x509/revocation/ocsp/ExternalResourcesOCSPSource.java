@@ -21,17 +21,14 @@
 package eu.europa.esig.dss.x509.revocation.ocsp;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.x509.RevocationOrigin;
 
 public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
-
-	protected List<BasicOCSPResp> ocspResponses = new ArrayList<BasicOCSPResp>();
 
 	/**
 	 * This constructor loads the OCSP responses from a array of <code>String</code>s representing resources.
@@ -64,15 +61,15 @@ public class ExternalResourcesOCSPSource extends OfflineOCSPSource {
 		try (InputStream is = inputStream) {
 			final OCSPResp ocspResp = new OCSPResp(is);
 			final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
-			ocspResponses.add(basicOCSPResp);
+			ocspResponses.add(new OCSPResponse(basicOCSPResp, RevocationOrigin.EXTERNAL));
 		} catch (Exception e) {
 			throw new DSSException(e);
 		}
 	}
 
 	@Override
-	public List<BasicOCSPResp> getContainedOCSPResponses() {
-		return ocspResponses;
+	public void appendContainedOCSPResponses() {
+		// do nothing
 	}
 
 }

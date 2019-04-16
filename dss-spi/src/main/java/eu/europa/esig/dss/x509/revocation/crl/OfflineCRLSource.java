@@ -23,21 +23,19 @@ package eu.europa.esig.dss.x509.revocation.crl;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSUtils;
-import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 
@@ -45,6 +43,7 @@ import eu.europa.esig.dss.x509.RevocationOrigin;
  * This class if a basic skeleton that is able to retrieve needed CRL data from
  * the contained list. The child need to retrieve the list of wrapped CRLs.
  */
+@SuppressWarnings("serial")
 public abstract class OfflineCRLSource implements CRLSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineCRLSource.class);
@@ -53,13 +52,13 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 * This {@code HashMap} contains not validated CRL binaries. When the validation passes, the entry will be removed.
 	 * The key is the SHA256 digest of the CRL binaries.
 	 */
-	protected Map<String, byte[]> crlsMap = new HashMap<String, byte[]>();
+	protected List<CRLBinary> crlsBinaryList = new ArrayList<CRLBinary>();
 
 	/**
 	 * This {@code HashMap} contains the {@code CRLValidity} object for each
 	 * {@code X509CRL}. It is used for performance reasons.
 	 */
-	private Map<String, CRLValidity> crlValidityMap = new HashMap<String, CRLValidity>();
+	private Map<CRLBinary, CRLValidity> crlValidityMap = new HashMap<CRLBinary, CRLValidity>();
 
 	private Map<CertificateToken, CRLToken> validCRLTokenList = new HashMap<CertificateToken, CRLToken>();
 
@@ -71,7 +70,6 @@ public abstract class OfflineCRLSource implements CRLSource {
 
 		final CRLToken validCRLToken = validCRLTokenList.get(certificateToken);
 		if (validCRLToken != null) {
-			validCRLToken.setOrigin(RevocationOrigin.SIGNATURE);
 			return validCRLToken;
 		}
 
@@ -79,14 +77,18 @@ public abstract class OfflineCRLSource implements CRLSource {
 			return null;
 		}
 
-		final CRLValidity bestCRLValidity = getBestCrlValidity(certificateToken, issuerToken);
+		final List<CRLBinary> crlBinariesToAdd = new ArrayList<CRLBinary>(); // used to store revocation data from different sources
+		final CRLValidity bestCRLValidity = getBestCrlValidityEntry(certificateToken, issuerToken, crlBinariesToAdd);
 		if (bestCRLValidity == null) {
 			return null;
 		}
 
 		final CRLToken crlToken = new CRLToken(certificateToken, bestCRLValidity);
-		crlToken.setOrigin(RevocationOrigin.SIGNATURE);
 		validCRLTokenList.put(certificateToken, crlToken);
+		// store tokens with different origins
+		for (CRLBinary crlBinary : crlBinariesToAdd) {
+			storeCRLToken(crlBinary, crlToken);
+		}
 		return crlToken;
 	}
 
@@ -101,13 +103,13 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 *            of the CRL
 	 * @return {@code CRLValidity}
 	 */
-	private CRLValidity getBestCrlValidity(final CertificateToken certificateToken, final CertificateToken issuerToken) {
+	private CRLValidity getBestCrlValidityEntry(final CertificateToken certificateToken, final CertificateToken issuerToken, List<CRLBinary> crlBinaries) {
 
 		CRLValidity bestCRLValidity = null;
 		Date bestX509UpdateDate = null;
 
-		for (final Entry<String, byte[]> crlEntry : crlsMap.entrySet()) {
-			final CRLValidity crlValidity = getCrlValidity(crlEntry.getKey(), crlEntry.getValue(), issuerToken);
+		for (CRLBinary crlEntry : crlsBinaryList) {
+			final CRLValidity crlValidity = getCrlValidity(crlEntry, issuerToken);
 			if (crlValidity == null || !crlValidity.isValid()) {
 				continue;
 			}
@@ -126,6 +128,10 @@ public abstract class OfflineCRLSource implements CRLSource {
 			if ((bestX509UpdateDate == null) || thisUpdate.after(bestX509UpdateDate)) {
 				bestCRLValidity = crlValidity;
 				bestX509UpdateDate = thisUpdate;
+				crlBinaries.clear();
+				crlBinaries.add(crlEntry);
+			} else if (thisUpdate.equals(bestX509UpdateDate)) {
+				crlBinaries.add(crlEntry);
 			}
 		}
 		return bestCRLValidity;
@@ -143,18 +149,21 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 *            {@code CertificateToken} issuer of the CRL
 	 * @return returns updated {@code CRLValidity} object
 	 */
-	private synchronized CRLValidity getCrlValidity(final String key, final byte[] crlBinaries, final CertificateToken issuerToken) {
-		CRLValidity crlValidity = crlValidityMap.get(key);
+	private  CRLValidity getCrlValidity(final CRLBinary crlBinary, final CertificateToken issuerToken) {
+		CRLValidity crlValidity = crlValidityMap.get(crlBinary);
 		if (crlValidity == null) {
-			try (InputStream is = new ByteArrayInputStream(crlBinaries)) {
+			try (InputStream is = new ByteArrayInputStream(crlBinary.getBinaries())) {
 				crlValidity = CRLUtils.isValidCRL(is, issuerToken);
 				if (crlValidity.isValid()) {
-					crlValidityMap.put(key, crlValidity);
+					crlValidityMap.put(crlBinary, crlValidity);
 					// crlsMap.remove(key);
 				}
 			} catch (IOException e) {
 				LOG.error("Unable to parse CRL", e);
 			}
+		}
+		if (crlValidity.getRevocationOrigin() == null) {
+			crlValidity.setRevocationOrigin(crlBinary.getOrigin());
 		}
 		return crlValidity;
 	}
@@ -163,18 +172,26 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 * @return unmodifiable {@code Collection}
 	 */
 	public Collection<byte[]> getContainedX509CRLs() {
-		return Collections.unmodifiableCollection(crlsMap.values());
-	}
-
-	protected void addCRLBinary(byte[] binaries) {
-		String base64Digest = Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, binaries));
-		addCRLBinary(base64Digest, binaries);
-	}
-
-	protected void addCRLBinary(String base64Digest, byte[] binaries) {
-		if (!crlsMap.containsKey(base64Digest) && !crlValidityMap.containsKey(base64Digest)) {
-			crlsMap.put(base64Digest, binaries);
+		Collection<byte[]> binaries = new ArrayList<byte[]>();
+		for (CRLBinary crlBinary : crlsBinaryList) {
+			binaries.add(crlBinary.getBinaries());
 		}
+		return Collections.unmodifiableCollection(binaries);
+	}
+
+	protected void addCRLBinary(byte[] binaries, RevocationOrigin origin) {
+		CRLBinary crlBinary = new CRLBinary(binaries, origin);
+		addCRLBinary(crlBinary);
+	}
+
+	protected void addCRLBinary(CRLBinary crlBinary) {
+		if (!crlsBinaryList.contains(crlBinary) && !crlValidityMap.containsKey(crlBinary)) {
+			crlsBinaryList.add(crlBinary);
+		}
+	}
+	
+	protected void storeCRLToken(final CRLBinary crlBinary, final CRLToken crlToken) {
+		// do nothing
 	}
 
 }

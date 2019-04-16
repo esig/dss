@@ -32,6 +32,7 @@ import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlRevocation;
 import eu.europa.esig.dss.jaxb.simplecertificatereport.XmlTrustAnchor;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateQualification;
+import eu.europa.esig.dss.validation.RevocationReason;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 
@@ -379,7 +380,7 @@ public class SimpleCertificateReport {
 	 *            the certificate id
 	 * @return the revocation reason or null
 	 */
-	public String getCertificateRevocationReason(String certificateId) {
+	public RevocationReason getCertificateRevocationReason(String certificateId) {
 		XmlChainItem cert = getCertificate(certificateId);
 		if (cert != null) {
 			XmlRevocation revocation = cert.getRevocation();

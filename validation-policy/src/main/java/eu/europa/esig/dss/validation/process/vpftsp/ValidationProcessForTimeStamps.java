@@ -62,7 +62,7 @@ public class ValidationProcessForTimeStamps extends Chain<XmlValidationProcessTi
 	@Override
 	protected void addAdditionalInfo() {
 		result.setId(timestamp.getId());
-		result.setType(timestamp.getType());
+		result.setType(timestamp.getType().name());
 		result.setProductionTime(timestamp.getProductionTime());
 	}
 

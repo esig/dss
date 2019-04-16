@@ -44,12 +44,14 @@ import eu.europa.esig.dss.tsl.TSLServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
-import eu.europa.esig.jaxb.ecc.CriteriaListType;
-import eu.europa.esig.jaxb.ecc.KeyUsageBitType;
-import eu.europa.esig.jaxb.ecc.KeyUsageType;
-import eu.europa.esig.jaxb.ecc.PoliciesListType;
-import eu.europa.esig.jaxb.xades.IdentifierType;
-import eu.europa.esig.jaxb.xades.ObjectIdentifierType;
+import eu.europa.esig.jaxb.trustedlist.ecc.CriteriaListType;
+import eu.europa.esig.jaxb.trustedlist.ecc.KeyUsageBitType;
+import eu.europa.esig.jaxb.trustedlist.ecc.KeyUsageType;
+import eu.europa.esig.jaxb.trustedlist.ecc.PoliciesListType;
+import eu.europa.esig.jaxb.trustedlist.ecc.enums.Assert;
+import eu.europa.esig.jaxb.trustedlist.ecc.parsers.KeyUsageBitParser;
+import eu.europa.esig.jaxb.xades132.IdentifierType;
+import eu.europa.esig.jaxb.xades132.ObjectIdentifierType;
 
 public class TSLParserTest {
 
@@ -260,7 +262,7 @@ public class TSLParserTest {
 		policiesB.getPolicyIdentifier().add(oid("2.999.7"));
 
 		CriteriaListType criteria = new CriteriaListType();
-		criteria.setAssert("atLeastOne");
+		criteria.setAssert(Assert.AT_LEAST_ONE);
 		criteria.getPolicySet().add(policiesA);
 		criteria.getPolicySet().add(policiesB);
 
@@ -290,7 +292,7 @@ public class TSLParserTest {
 		policiesB.getPolicyIdentifier().add(oid("22.33.44"));
 
 		CriteriaListType criteria = new CriteriaListType();
-		criteria.setAssert("all");
+		criteria.setAssert(Assert.ALL);
 		criteria.getPolicySet().add(policiesA);
 		criteria.getPolicySet().add(policiesB);
 		return criteria;
@@ -298,7 +300,7 @@ public class TSLParserTest {
 
 	private KeyUsageBitType kub(String kub, boolean val) {
 		KeyUsageBitType keyUsageBitType = new KeyUsageBitType();
-		keyUsageBitType.setName(kub);
+		keyUsageBitType.setName(KeyUsageBitParser.parse(kub));
 		keyUsageBitType.setValue(val);
 		return keyUsageBitType;
 	}

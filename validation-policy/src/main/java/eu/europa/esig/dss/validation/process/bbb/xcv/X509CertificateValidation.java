@@ -25,7 +25,6 @@ import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlXCV;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.Context;
 import eu.europa.esig.dss.validation.policy.SubContext;
@@ -87,8 +86,8 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 			item = item.setNextItem(trustedServiceWithExpectedStatus());
 
-			SubX509CertificateValidation certificateValidation = new SubX509CertificateValidation(currentCertificate, validationDate, context,
-					SubContext.SIGNING_CERT, validationPolicy);
+			SubX509CertificateValidation certificateValidation = new SubX509CertificateValidation(diagnosticData, currentCertificate, validationDate, 
+					context, SubContext.SIGNING_CERT, validationPolicy);
 			XmlSubXCV subXCV = certificateValidation.execute();
 			result.getSubXCV().add(subXCV);
 
@@ -98,12 +97,12 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 			// Check CA_CERTIFICATEs
 			Date lastDate = Model.SHELL.equals(model) ? validationDate : currentCertificate.getNotBefore();
-			List<XmlChainItem> certificateChainList = currentCertificate.getCertificateChain();
+			List<CertificateWrapper> certificateChainList = currentCertificate.getCertificateChain();
 			if (Utils.isCollectionNotEmpty(certificateChainList)) {
-				for (XmlChainItem chainCertificate : certificateChainList) {
+				for (CertificateWrapper certificate : certificateChainList) {
 					if (!trustAnchorReached) {
-						CertificateWrapper certificate = diagnosticData.getUsedCertificateByIdNullSafe(chainCertificate.getId());
-						certificateValidation = new SubX509CertificateValidation(certificate, lastDate, context, SubContext.CA_CERTIFICATE, validationPolicy);
+						certificateValidation = new SubX509CertificateValidation(diagnosticData, certificate, lastDate, 
+								context, SubContext.CA_CERTIFICATE, validationPolicy);
 						subXCV = certificateValidation.execute();
 						result.getSubXCV().add(subXCV);
 

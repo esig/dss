@@ -27,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.simplereport.XmlSignature;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureQualification;
@@ -49,6 +51,7 @@ import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
@@ -66,6 +69,7 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
+		// TODO: Etsi Validation Report
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
@@ -740,12 +744,12 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(4, simpleReport.getJaxbModel().getSignaturesCount());
 
-		LOG.info(reports.getXmlSimpleReport());
+		//LOG.info(reports.getXmlSimpleReport());
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(4, detailedReport.getSignatureIds().size());
 
-		LOG.info(reports.getXmlDetailedReport());
+		//LOG.info(reports.getXmlDetailedReport());
 
 		validateBestSigningTimes(reports);
 	}
@@ -766,12 +770,12 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(2, simpleReport.getJaxbModel().getSignaturesCount());
 
-		LOG.info(reports.getXmlSimpleReport());
+		//LOG.info(reports.getXmlSimpleReport());
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(2, detailedReport.getSignatureIds().size());
 
-		LOG.info(reports.getXmlDetailedReport());
+		//LOG.info(reports.getXmlDetailedReport());
 
 		validateBestSigningTimes(reports);
 	}
@@ -985,6 +989,66 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SubIndication.FORMAT_FAILURE, detailedReport.getArchiveDataValidationSubIndication(detailedReport.getFirstSignatureId()));
 	}
 
+	@Test
+	public void LTAandAIAforTrustAnchor() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/LTAandAIAforTrustAnchor.xml");
+		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, detailedReport.getLongTermValidationSubIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(Indication.PASSED, detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void testPdfSignatureDictionary() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/diag_data_pdfsigdict.xml");
+		DiagnosticData xmlDiagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(xmlDiagnosticData);
+		
+		List<eu.europa.esig.dss.jaxb.diagnostic.XmlSignature> xmlSignatures = xmlDiagnosticData.getSignatures();
+		assertNotNull(xmlSignatures);
+		for (eu.europa.esig.dss.jaxb.diagnostic.XmlSignature signature : xmlSignatures) {
+			XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+			assertNotNull(pdfSignatureDictionary);
+			List<BigInteger> byteRange = pdfSignatureDictionary.getSignatureByteRange();
+			assertNotNull(byteRange);
+			assertEquals(4, byteRange.size());
+			assertEquals(-1, byteRange.get(1).compareTo(byteRange.get(2)));
+		}
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(loadTLPolicy());
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+		eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertNotNull(diagnosticData.getAllSignatures());
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(xmlSignatures.get(0).getId());
+		assertNotNull(signatureWrapper);
+		List<BigInteger> byteRange = signatureWrapper.getSignatureByteRange();
+		assertNotNull(byteRange);
+		assertEquals(4, byteRange.size());
+		List<BigInteger> xmlByteRange = xmlSignatures.get(0).getPDFSignatureDictionary().getSignatureByteRange();
+		assertEquals(xmlByteRange.get(0), byteRange.get(0));
+		assertEquals(xmlByteRange.get(1), byteRange.get(1));
+		assertEquals(xmlByteRange.get(2), byteRange.get(2));
+		assertEquals(xmlByteRange.get(3), byteRange.get(3));
+
+	}
+
 	@Test(expected = NullPointerException.class)
 	public void diagDataNotNull() throws Exception {
 		CustomProcessExecutor executor = new CustomProcessExecutor();
@@ -1053,9 +1117,9 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		eu.europa.esig.dss.jaxb.detailedreport.DetailedReport detailedReportJaxb = reports.getDetailedReportJaxb();
 		List<eu.europa.esig.dss.jaxb.detailedreport.XmlSignature> xmlSignatures = detailedReportJaxb.getSignatures();
 		for (eu.europa.esig.dss.jaxb.detailedreport.XmlSignature xmlSignature : xmlSignatures) {
-			assertNotNull(xmlSignature.getValidationProcessBasicSignatures().getBestSignatureTime());
-			assertNotNull(xmlSignature.getValidationProcessLongTermData().getBestSignatureTime());
-			assertNotNull(xmlSignature.getValidationProcessArchivalData().getBestSignatureTime());
+			assertNotNull(xmlSignature.getValidationProcessBasicSignatures().getProofOfExistence());
+			assertNotNull(xmlSignature.getValidationProcessLongTermData().getProofOfExistence());
+			assertNotNull(xmlSignature.getValidationProcessArchivalData().getProofOfExistence());
 		}
 	}
 

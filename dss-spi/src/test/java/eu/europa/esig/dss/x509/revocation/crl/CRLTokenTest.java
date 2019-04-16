@@ -46,7 +46,7 @@ public class CRLTokenTest {
 
 			assertEquals(crlValidity.getExpiredCertsOnCRL(), crl.getExpiredCertsOnCRL());
 
-			assertNull(crl.getCertHash());
+			assertFalse(crl.isCertHashPresent());
 			assertNull(crl.getArchiveCutOff());
 		}
 	}

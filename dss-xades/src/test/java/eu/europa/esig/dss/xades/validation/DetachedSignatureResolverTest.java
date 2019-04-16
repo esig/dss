@@ -207,9 +207,8 @@ public class DetachedSignatureResolverTest {
 
 	@Test
 	public void engineCanResolveURIWithDigestDocument() throws ResourceResolverException {
-		DigestDocument doc = new DigestDocument();
+		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA256, "abcdef");
 		doc.setName("sample.xml");
-		doc.addDigest(DigestAlgorithm.SHA256, "abcdef");
 		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Arrays.<DSSDocument>asList(doc), DigestAlgorithm.SHA256);
 
 		Attr attr = mock(Attr.class);
@@ -223,9 +222,8 @@ public class DetachedSignatureResolverTest {
 
 	@Test
 	public void engineCanResolveURIWithDigestDocumentNoName() throws ResourceResolverException {
-		DigestDocument doc = new DigestDocument();
+		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA256, "abcdef");
 		// doc.setName("sample.xml");
-		doc.addDigest(DigestAlgorithm.SHA256, "abcdef");
 		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Arrays.<DSSDocument>asList(doc), DigestAlgorithm.SHA256);
 
 		Attr attr = mock(Attr.class);

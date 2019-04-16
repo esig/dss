@@ -20,24 +20,113 @@
       </jaxb:nameXmlTransform>
     </jaxb:schemaBindings>
     
-    <jaxb:bindings node="//xs:simpleType[@name='TimestampedObjectType']">
-			<jaxb:javaType name="eu.europa.esig.dss.validation.TimestampedObjectType" 
-				parseMethod="eu.europa.esig.dss.jaxb.parsers.TimestampedObjectTypeParser.parse" 
-				printMethod="eu.europa.esig.dss.jaxb.parsers.TimestampedObjectTypeParser.print" />
-		</jaxb:bindings>
-  
   <jaxb:bindings node="//xs:simpleType[@name='DigestMatcherType']">
 			<jaxb:javaType name="eu.europa.esig.dss.validation.DigestMatcherType" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.DigestMatcherTypeParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.DigestMatcherTypeParser.print" />
 		</jaxb:bindings>
 		
-		
   <jaxb:bindings node="//xs:simpleType[@name='ScopeType']">
 			<jaxb:javaType name="eu.europa.esig.dss.validation.SignatureScopeType" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.SignatureScopeTypeParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.SignatureScopeTypeParser.print" />
 		</jaxb:bindings>
+		
+  <jaxb:bindings node="//xs:simpleType[@name='RevocationType']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.RevocationType" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.RevocationTypeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationTypeParser.print" />
+		</jaxb:bindings>
+		
+  <jaxb:bindings node="//xs:simpleType[@name='RevocationOriginType']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.XmlRevocationOrigin" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.RevocationOriginTypeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationOriginTypeParser.print" />
+		</jaxb:bindings>
+		
+  <jaxb:bindings node="//xs:simpleType[@name='RevocationRefLocationType']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.RevocationRefLocation" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.RevocationRefLocationParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationRefLocationParser.print" />
+		</jaxb:bindings>
+		
+  <jaxb:bindings node="//xs:simpleType[@name='CertificateSourceType']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.XmlCertificateSourceType" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.CertificateSourceTypeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.CertificateSourceTypeParser.print" />
+		</jaxb:bindings>
+		
+  <jaxb:bindings node="//xs:simpleType[@name='TimestampType']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.XmlTimestampType" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.TimestampTypeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.TimestampTypeParser.print" />
+		</jaxb:bindings>
+		
+  	<jaxb:bindings node="//xs:simpleType[@name='TimestampLocation']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.XmlTimestampLocation" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.TimestampLocationParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.TimestampLocationParser.print" />
+		</jaxb:bindings>
+		
+  	<jaxb:bindings node="//xs:simpleType[@name='RevocationReason']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.RevocationReason" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.print" />
+		</jaxb:bindings>
+		
+ 	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:element[@name='Parent']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlSignature" />
+        </jaxb:property>
+    </jaxb:bindings>
+ 	<jaxb:bindings node="//xs:complexType[@name='RelatedRevocation']//xs:element[@name='Revocation']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation" />
+        </jaxb:property>
+    </jaxb:bindings>
+    <jaxb:bindings node="//xs:complexType[@name='SigningCertificate']//xs:attribute[@name='Certificate']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
+        </jaxb:property>
+    </jaxb:bindings>
+    <jaxb:bindings node="//xs:element[@name='ChainItem']//xs:attribute[@name='Certificate']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
+        </jaxb:property>
+    </jaxb:bindings>
+    <jaxb:bindings node="//xs:complexType[@name='FoundCertificate']//xs:attribute[@name='Certificate']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
+        </jaxb:property>
+    </jaxb:bindings>
+    <jaxb:bindings node="//xs:complexType[@name='CertificateRevocation']//xs:attribute[@name='Revocation']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation" />
+        </jaxb:property>
+    </jaxb:bindings>
+    <jaxb:bindings node="//xs:complexType[@name='FoundTimestamp']//xs:attribute[@name='Timestamp']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp" />
+        </jaxb:property>
+    </jaxb:bindings>
+    <jaxb:bindings node="//xs:complexType[@name='SignatureScope']//xs:attribute[@name='SignerData']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData" />
+        </jaxb:property>
+    </jaxb:bindings>
+    
+    <jaxb:bindings node="//xs:complexType[@name='TimestampedObject']//xs:attribute[@name='Token']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlAbstractToken" />
+        </jaxb:property>
+    </jaxb:bindings>
+    
+    <jaxb:bindings node="//xs:complexType[@name='TrustedService']//xs:element[@name='ServiceDigitalIdentifier']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
+        </jaxb:property>
+    </jaxb:bindings>
+
   </jaxb:bindings>
   
 </jaxb:bindings>

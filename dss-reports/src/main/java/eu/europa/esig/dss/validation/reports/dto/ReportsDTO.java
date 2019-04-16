@@ -25,6 +25,7 @@ import java.io.Serializable;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
+import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
 public class ReportsDTO implements Serializable {
 
@@ -33,14 +34,17 @@ public class ReportsDTO implements Serializable {
 	private DiagnosticData diagnosticData;
 	private SimpleReport simpleReport;
 	private DetailedReport detailedReport;
+	private ValidationReportType validationReport;
 
 	public ReportsDTO() {
 	}
 
-	public ReportsDTO(DiagnosticData diagnosticData, SimpleReport simpleReport, DetailedReport detailedReport) {
+	public ReportsDTO(DiagnosticData diagnosticData, SimpleReport simpleReport, DetailedReport detailedReport, 
+			ValidationReportType validationReport) {
 		this.diagnosticData = diagnosticData;
 		this.detailedReport = detailedReport;
 		this.simpleReport = simpleReport;
+		this.validationReport = validationReport;
 	}
 
 	public DiagnosticData getDiagnosticData() {
@@ -66,4 +70,13 @@ public class ReportsDTO implements Serializable {
 	public void setDetailedReport(eu.europa.esig.dss.jaxb.detailedreport.DetailedReport detailedReport) {
 		this.detailedReport = detailedReport;
 	}
+	
+	public ValidationReportType getEtsiValidationReport() {
+		return validationReport;
+	}
+	
+	public void setEtsiValidationReport(ValidationReportType validationReport) {
+		this.validationReport = validationReport;
+	}
+	
 }

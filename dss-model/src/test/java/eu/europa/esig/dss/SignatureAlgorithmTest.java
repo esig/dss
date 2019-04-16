@@ -27,8 +27,20 @@ import org.junit.Test;
 public class SignatureAlgorithmTest {
 
 	@Test
+	public void getAlgorithm() {
+		for (SignatureAlgorithm sigAlgo : SignatureAlgorithm.values()) {
+			assertEquals(sigAlgo,
+					SignatureAlgorithm.getAlgorithm(sigAlgo.getEncryptionAlgorithm(), sigAlgo.getDigestAlgorithm(), sigAlgo.getMaskGenerationFunction()));
+		}
+	}
+
+	@Test
 	public void forXML() {
-		assertEquals(SignatureAlgorithm.RSA_SHA512, SignatureAlgorithm.forXML(SignatureAlgorithm.RSA_SHA512.getXMLId()));
+		for (SignatureAlgorithm sigAlgo : SignatureAlgorithm.values()) {
+			if (sigAlgo.getXMLId() != null) {
+				assertEquals(sigAlgo, SignatureAlgorithm.forXML(sigAlgo.getXMLId()));
+			}
+		}
 	}
 
 	@Test(expected = DSSException.class)

@@ -35,6 +35,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlProofOfExistence;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSignature;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
@@ -208,17 +209,24 @@ public class DetailedReport {
 	}
 
 	public Date getBestSignatureTime(String signatureId) {
+		XmlProofOfExistence proofOfExistence = getBestProofOfExistence(signatureId);
+		if (proofOfExistence != null) {
+			return proofOfExistence.getTime();
+		}
+		return null;
+	}
+
+	public XmlProofOfExistence getBestProofOfExistence(String signatureId) {
 		XmlSignature xmlSignature = getXmlSignatureById(signatureId);
 		if (xmlSignature != null) {
-			if (xmlSignature.getValidationProcessArchivalData() != null && xmlSignature.getValidationProcessArchivalData().getBestSignatureTime() != null) {
-				return xmlSignature.getValidationProcessArchivalData().getBestSignatureTime();
+			if (xmlSignature.getValidationProcessArchivalData() != null) {
+				return xmlSignature.getValidationProcessArchivalData().getProofOfExistence();
 			}
-			if (xmlSignature.getValidationProcessLongTermData() != null && xmlSignature.getValidationProcessLongTermData().getBestSignatureTime() != null) {
-				return xmlSignature.getValidationProcessLongTermData().getBestSignatureTime();
+			if (xmlSignature.getValidationProcessLongTermData() != null) {
+				return xmlSignature.getValidationProcessLongTermData().getProofOfExistence();
 			}
-			if (xmlSignature.getValidationProcessBasicSignatures() != null
-					&& xmlSignature.getValidationProcessBasicSignatures().getBestSignatureTime() != null) {
-				return xmlSignature.getValidationProcessBasicSignatures().getBestSignatureTime();
+			if (xmlSignature.getValidationProcessBasicSignatures() != null) {
+				return xmlSignature.getValidationProcessBasicSignatures().getProofOfExistence();
 			}
 		}
 		return null;
@@ -498,6 +506,20 @@ public class DetailedReport {
 
 	enum MessageType {
 		INFO, WARN, ERROR
+	}
+
+	public XmlSubXCV getSigningCertificate(String bbbId) {
+		XmlBasicBuildingBlocks basicBuildingBlocks = getBasicBuildingBlockById(bbbId);
+		if (basicBuildingBlocks != null) {
+			XmlXCV xcv = basicBuildingBlocks.getXCV();
+			if (xcv != null) {
+				List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+				if (Utils.isCollectionNotEmpty(subXCVs)) {
+					return subXCVs.get(0);
+				}
+			}
+		}
+		return null;
 	}
 
 }

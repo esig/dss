@@ -16,17 +16,17 @@
 	            <SignatureIntact>true</SignatureIntact>
 	            <SignatureValid>true</SignatureValid>
 	        </BasicSignature>
-	        <SigningCertificate Id="79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC">
+	        <SigningCertificate Certificate="C-79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC">
 	            <AttributePresent>true</AttributePresent>
 	            <DigestValuePresent>true</DigestValuePresent>
 	            <DigestValueMatch>true</DigestValueMatch>
 	            <IssuerSerialMatch>true</IssuerSerialMatch>
 	        </SigningCertificate>
 	        <CertificateChain>
-	            <ChainItem Id="79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC">
+	            <ChainItem Certificate="C-79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC">
 	                <Source>SIGNATURE</Source>
 	            </ChainItem>
-	            <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
+	            <ChainItem Certificate="C-B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
 	                <Source>TRUSTED_LIST</Source>
 	            </ChainItem>
 	        </CertificateChain>
@@ -37,7 +37,7 @@
 	    </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
+        <Certificate Id="C-B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
             <SubjectDistinguishedName Format="CANONICAL">cn=banca d'italia,ou=servizi di certificazione,o=banca d'italia,c=it</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Banca d'Italia,OU=Servizi di certificazione,O=Banca d'Italia,C=IT</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=banca d'italia,ou=servizi di certificazione,o=banca d'italia,c=it</IssuerDistinguishedName>
@@ -73,7 +73,7 @@
             <QCTypes />
             <TrustedServiceProviders />
         </Certificate>
-        <Certificate Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
+        <Certificate Id="C-90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
             <SubjectDistinguishedName Format="CANONICAL">cn=servizio ocsp bi - cdm,ou=utenti gestione,o=banca d'italia,c=it</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=Servizio OCSP BI - CDM,OU=Utenti Gestione,O=Banca d'Italia,C=IT</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=banca d'italia,ou=servizi di certificazione,o=banca d'italia,c=it</IssuerDistinguishedName>
@@ -100,9 +100,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640"/>
+            <SigningCertificate Certificate="C-B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640"/>
             <CertificateChain>
-                <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
+                <ChainItem Certificate="C-B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -115,7 +115,7 @@
             <QCTypes />
             <TrustedServiceProviders />
         </Certificate>
-        <Certificate Id="79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC">
+        <Certificate Id="C-79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC">
             <SubjectDistinguishedName Format="CANONICAL">cn=g e+2.5.4.42=#0c0+2.5.4.46=#130432333838+2.5.4.4=#0c084741524749554c4f+2.5.4.5=#1313,o=banca d'italia,c=it</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.46=#130432333838+2.5.4.42=#0c0+2.5.4.4=#0c084741524749554c4f+CN=g e+2.5.4.5=#1313,O=Banca d'Italia,C=IT</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=banca d'italia,ou=servizi di certificazione,o=banca d'italia,c=it</IssuerDistinguishedName>
@@ -142,9 +142,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640"/>
+            <SigningCertificate Certificate="C-B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640"/>
             <CertificateChain>
-                <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
+                <ChainItem Certificate="C-B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
                     <Source>TRUSTED_LIST</Source>
                 </ChainItem>
             </CertificateChain>
@@ -161,11 +161,10 @@
             <QCTypes />
             <TrustedServiceProviders />
 			<Revocations>
-	            <Revocation Id="AC40244C9404372BD81970D28266FB99021557A64101DA5D92232BCF1A9E7326">
+	            <Revocation Id="R-AC40244C9404372BD81970D28266FB99021557A64101DA5D92232BCF1A9E7326">
 	                <Origin>EXTERNAL</Origin>
-	                <Source>OCSPToken</Source>
+	                <Type>OCSP</Type>
 	                <SourceAddress>http://ocsp.firmadigitale.bancaditalia.it/ocsp</SourceAddress>
-	                <Available>true</Available>
 	                <Status>true</Status>
 	                <ProductionDate>2016-07-19T11:12:49</ProductionDate>
 	                <ThisUpdate>2016-07-19T09:03:20</ThisUpdate>
@@ -179,21 +178,20 @@
 	                    <SignatureIntact>true</SignatureIntact>
 	                    <SignatureValid>true</SignatureValid>
 	                </BasicSignature>
-	                <SigningCertificate Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
+	                <SigningCertificate Certificate="C-90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
 	                <CertificateChain>
-	                    <ChainItem Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
+	                    <ChainItem Certificate="C-90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
 	                        <Source>OCSP_RESPONSE</Source>
 	                    </ChainItem>
-	                    <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
+	                    <ChainItem Certificate="C-B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
 	                        <Source>TRUSTED_LIST</Source>
 	                    </ChainItem>
 	                </CertificateChain>
 	            </Revocation>
-	            <Revocation Id="C088D84D6BD4740306551C0780A9323896071255EF5509334E70FE593FEF14AC">
+	            <Revocation Id="R-C088D84D6BD4740306551C0780A9323896071255EF5509334E70FE593FEF14AC">
 	                <Origin>EXTERNAL</Origin>
-	                <Source>OCSPToken</Source>
+	                <Type>OCSP</Type>
 	                <SourceAddress>http://ocsp.firmadigitale.bancaditalia.it/ocsp</SourceAddress>
-	                <Available>true</Available>
 	                <Status>true</Status>
 	                <ProductionDate>2016-07-19T11:18:22</ProductionDate>
 	                <ThisUpdate>2016-07-19T09:03:20</ThisUpdate>
@@ -207,21 +205,20 @@
 	                    <SignatureIntact>true</SignatureIntact>
 	                    <SignatureValid>true</SignatureValid>
 	                </BasicSignature>
-	                <SigningCertificate Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
+	                <SigningCertificate Certificate="C-90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
 	                <CertificateChain>
-	                    <ChainItem Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
+	                    <ChainItem Certificate="C-90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
 	                        <Source>OCSP_RESPONSE</Source>
 	                    </ChainItem>
-	                    <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
+	                    <ChainItem Certificate="C-B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
 	                        <Source>TRUSTED_LIST</Source>
 	                    </ChainItem>
 	                </CertificateChain>
 	            </Revocation>
-	            <Revocation Id="5AA34C169A86F12918C17B226D96475B97B6F1B1E99EA04773CB5330563A9717">
+	            <Revocation Id="R-5AA34C169A86F12918C17B226D96475B97B6F1B1E99EA04773CB5330563A9717">
 	                <Origin>EXTERNAL</Origin>
-	                <Source>OCSPToken</Source>
+	                <Type>OCSP</Type>
 	                <SourceAddress>http://ocsp.firmadigitale.bancaditalia.it/ocsp</SourceAddress>
-	                <Available>true</Available>
 	                <Status>true</Status>
 	                <ProductionDate>2016-07-19T11:13:48</ProductionDate>
 	                <ThisUpdate>2016-07-19T09:03:20</ThisUpdate>
@@ -235,12 +232,12 @@
 	                    <SignatureIntact>true</SignatureIntact>
 	                    <SignatureValid>true</SignatureValid>
 	                </BasicSignature>
-	                <SigningCertificate Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
+	                <SigningCertificate Certificate="C-90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C"/>
 	                <CertificateChain>
-	                    <ChainItem Id="90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
+	                    <ChainItem Certificate="C-90953EA55AFA03D97CCEEC3B2FF7C2BA007AFDFECA8E4E55EF76A05CDB0B796C">
 	                        <Source>OCSP_RESPONSE</Source>
 	                    </ChainItem>
-	                    <ChainItem Id="B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
+	                    <ChainItem Certificate="C-B29224C320AD97D9D1E6DAA014B39F0A3577D4AE97AEFE02F4DBB059D08C3640">
 	                        <Source>TRUSTED_LIST</Source>
 	                    </ChainItem>
 	                </CertificateChain>

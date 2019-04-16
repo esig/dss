@@ -28,6 +28,7 @@ import eu.europa.esig.dss.validation.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
 public class CustomProcessExecutor implements ProcessExecutor<Reports> {
 
@@ -75,8 +76,11 @@ public class CustomProcessExecutor implements ProcessExecutor<Reports> {
 
 		SimpleReportBuilder simpleReportBuilder = new SimpleReportBuilder(currentTime, policy, diagnosticData, detailedReportWrapper);
 		SimpleReport simpleReport = simpleReportBuilder.build();
+		
+		ETSIValidationReportBuilder etsiValidationReportBuilder = new ETSIValidationReportBuilder(currentTime, policy, diagnosticData, detailedReportWrapper);
+		ValidationReportType validationReport = etsiValidationReportBuilder.build();
 
-		return new Reports(jaxbDiagnosticData, jaxbDetailedReport, simpleReport);
+		return new Reports(jaxbDiagnosticData, jaxbDetailedReport, simpleReport, validationReport);
 	}
 
 	@Override

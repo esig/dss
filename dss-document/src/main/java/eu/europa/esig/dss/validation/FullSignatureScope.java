@@ -20,13 +20,15 @@
  */
 package eu.europa.esig.dss.validation;
 
+import eu.europa.esig.dss.Digest;
+
 /**
  * Marker class meaning that the signature covers the whole document.
  */
 public final class FullSignatureScope extends SignatureScope {
 
-    public FullSignatureScope(final String name) {
-        super(name);
+    public FullSignatureScope(final String name, Digest digest) {
+        super(name, digest);
     }
 
     @Override

@@ -22,14 +22,15 @@ package eu.europa.esig.dss.pades.validation;
 
 import java.util.Arrays;
 
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.validation.PartialSignatureScope;
 
 public class PdfByteRangeSignatureScope extends PartialSignatureScope {
 
 	private final int[] byteRange;
 
-	public PdfByteRangeSignatureScope(final String name, final int[] byteRange) {
-		super(name);
+	public PdfByteRangeSignatureScope(final String name, final int[] byteRange, final Digest digest) {
+		super(name, digest);
 		this.byteRange = byteRange;
 	}
 

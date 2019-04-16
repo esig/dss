@@ -99,6 +99,10 @@ public enum EncryptionAlgorithm {
 			return ECDSA;
 		}
 
+		if (PLAIN_ECDSA.getName().equals(name)) {
+			return PLAIN_ECDSA;
+		}
+
 		try {
 			return valueOf(name);
 		} catch (Exception e) {
@@ -116,13 +120,8 @@ public enum EncryptionAlgorithm {
 	 * @return the corresponding {@code EncryptionAlgorithm} or the default value
 	 */
 	public static EncryptionAlgorithm forName(final String name, final EncryptionAlgorithm defaultValue) {
-		// To be checked if ECC exists also .
-		if ("EC".equals(name) || "ECC".equals(name)) {
-			return ECDSA;
-		}
-
 		try {
-			return valueOf(name);
+			return forName(name);
 		} catch (Exception e) {
 			return defaultValue;
 		}

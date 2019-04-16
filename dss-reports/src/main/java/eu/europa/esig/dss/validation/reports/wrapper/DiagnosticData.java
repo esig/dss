@@ -31,10 +31,17 @@ import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlContainerInfo;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedRevocation;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTrustedList;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.RevocationReason;
+import eu.europa.esig.dss.validation.RevocationType;
+import eu.europa.esig.dss.validation.XmlRevocationOrigin;
+import eu.europa.esig.dss.x509.TimestampType;
 
 /**
  * This class represents all static data extracted by the process analysing the signature. They are independent from the
@@ -46,6 +53,7 @@ public class DiagnosticData {
 
 	private List<SignatureWrapper> foundSignatures;
 	private List<CertificateWrapper> usedCertificates;
+	private List<TimestampWrapper> usedTimestamps;
 
 	public DiagnosticData(final eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData wrapped) {
 		this.wrapped = wrapped;
@@ -188,7 +196,7 @@ public class DiagnosticData {
 	 */
 	public String getFirstSigningCertificateId() {
 		SignatureWrapper signature = getFirstSignatureNullSafe();
-		return signature.getSigningCertificateId();
+		return signature.getSigningCertificate().getId();
 	}
 
 	/**
@@ -200,7 +208,7 @@ public class DiagnosticData {
 	 */
 	public String getSigningCertificateId(final String signatureId) {
 		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
-		return signature.getSigningCertificateId();
+		return signature.getSigningCertificate().getId();
 	}
 
 	/**
@@ -224,7 +232,11 @@ public class DiagnosticData {
 	 */
 	public List<String> getSignatureCertificateChain(final String signatureId) {
 		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
-		return signature.getCertificateChainIds();
+		List<String> result = new ArrayList<String>();
+		for (CertificateWrapper certWrapper : signature.getCertificateChain()) {
+			result.add(certWrapper.getId());
+		}
+		return result;
 	}
 
 	/**
@@ -380,7 +392,7 @@ public class DiagnosticData {
 	 */
 	public String getTimestampSigningCertificateId(final String timestampId) {
 		TimestampWrapper timestamp = getTimestampByIdNullSafe(timestampId);
-		return timestamp.getSigningCertificateId();
+		return timestamp.getSigningCertificate().getId();
 	}
 
 	/**
@@ -390,7 +402,7 @@ public class DiagnosticData {
 	 *            the timestamp id
 	 * @return the related timestamp type
 	 */
-	public String getTimestampType(String timestampId) {
+	public TimestampType getTimestampType(String timestampId) {
 		TimestampWrapper timestamp = getTimestampByIdNullSafe(timestampId);
 		return timestamp.getType();
 	}
@@ -404,7 +416,14 @@ public class DiagnosticData {
 	 */
 	public boolean isValidCertificate(final String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
-		return certificate.isValidCertificate();
+		
+		final boolean signatureValid = (certificate.getCurrentBasicSignature() != null) && certificate.getCurrentBasicSignature().isSignatureValid();
+		CertificateRevocationWrapper latestRevocationData = getLatestRevocationDataForCertificate(certificate) ;
+		final boolean revocationValid = (latestRevocationData != null) && latestRevocationData.isStatus();
+		final boolean trusted = certificate.isTrusted();
+
+		final boolean validity = signatureValid && (trusted ? true : revocationValid);
+		return validity;
 	}
 
 	/**
@@ -450,12 +469,12 @@ public class DiagnosticData {
 	 *            DSS certificate identifier to be checked
 	 * @return revocation source
 	 */
-	public String getCertificateRevocationSource(final String dssCertificateId) {
+	public RevocationType getCertificateRevocationSource(final String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
 		if (certificate.isRevocationDataAvailable()) {
-			return certificate.getLatestRevocationData().getSource();
+			return getLatestRevocationDataForCertificate(certificate).getRevocationType();
 		}
-		return Utils.EMPTY_STRING;
+		return null;
 	}
 
 	/**
@@ -468,7 +487,7 @@ public class DiagnosticData {
 	public boolean getCertificateRevocationStatus(final String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
 		if (certificate.isRevocationDataAvailable()) {
-			return certificate.getLatestRevocationData().isStatus();
+			return getLatestRevocationDataForCertificate(certificate).isStatus();
 		}
 		return false;
 	}
@@ -480,12 +499,12 @@ public class DiagnosticData {
 	 *            DSS certificate identifier to be checked
 	 * @return revocation reason
 	 */
-	public String getCertificateRevocationReason(String dssCertificateId) {
+	public RevocationReason getCertificateRevocationReason(String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
 		if (certificate.isRevocationDataAvailable()) {
-			return certificate.getLatestRevocationData().getReason();
+			return getLatestRevocationDataForCertificate(certificate).getReason();
 		}
-		return Utils.EMPTY_STRING;
+		return null;
 	}
 
 	/**
@@ -541,7 +560,7 @@ public class DiagnosticData {
 
 	private TimestampWrapper getTimestampByIdNullSafe(String id) {
 		TimestampWrapper timestamp = getTimestampById(id);
-		if(timestamp != null) {
+		if (timestamp != null) {
 			return timestamp;
 		}
 		return new TimestampWrapper(new XmlTimestamp());
@@ -555,13 +574,10 @@ public class DiagnosticData {
 	 * @return timestamp wrapper or null
 	 */
 	public TimestampWrapper getTimestampById(String id) {
-		List<SignatureWrapper> signatures = getSignatures();
-		for (SignatureWrapper signatureWrapper : signatures) {
-			List<TimestampWrapper> timestampList = signatureWrapper.getTimestampList();
-			for (TimestampWrapper timestampWrapper : timestampList) {
-				if (Utils.areStringsEqual(id, timestampWrapper.getId())) {
-					return timestampWrapper;
-				}
+		Set<TimestampWrapper> allTimestamps = getAllTimestamps();
+		for (TimestampWrapper timestampWrapper : allTimestamps) {
+			if (Utils.areStringsEqual(id, timestampWrapper.getId())) {
+				return timestampWrapper;
 			}
 		}
 		return null;
@@ -571,12 +587,12 @@ public class DiagnosticData {
 	 * This method returns a certificate wrapper for the given certificate id
 	 * 
 	 * @param id
-	 *            the certificate id
+	 *           the certificate id
 	 * @return a certificate wrapper (or empty object)
 	 */
 	public CertificateWrapper getUsedCertificateByIdNullSafe(String id) {
 		CertificateWrapper cert = getUsedCertificateById(id);
-		if(cert != null) {
+		if (cert != null) {
 			return cert;
 		}
 		return new CertificateWrapper(new XmlCertificate()); // TODO improve ?
@@ -602,26 +618,70 @@ public class DiagnosticData {
 	}
 	
 	/**
-	 * This method returns the RevocationWrapper corresponding to the id
-	 *
-	 * @param id
-	 *            id of the revocation data
-	 * @return revocation wrapper or null
+	 * Returns list of {@link RevocationWrapper}s for the given signature by {@code signatureId}
+	 * @param signatureId {@link String} id of the relevant signature
+	 * @return list of {@link RevocationWrapper}s
 	 */
-	public RevocationWrapper getRevocationDataById(String id) {
-		Set<RevocationWrapper> revocationData = getAllRevocationData();
-		for(RevocationWrapper rd : revocationData) {
-			if(Utils.areStringsEqual(rd.getId(), id)) {
-				return rd;
+	public List<RevocationWrapper> getAllRevocationForSignature(String signatureId) {
+		return getAllRevocationForSignatureByType(signatureId, null);
+	}
+	
+	/**
+	 * Returns list of {@link RevocationWrapper}s for the given signature by {@code signatureId} and specified {@link RevocationType}
+	 * @param signatureId {@link String} id of the relevant signature
+	 * @param revocationType {@link RevocationType} type to get revocation data of. If NULL returns revocations of all revocation types
+	 * @return list of {@link RevocationWrapper}s
+	 */
+	public List<RevocationWrapper> getAllRevocationForSignatureByType(String signatureId, RevocationType revocationType) {
+		return getAllRevocationForSignatureByTypeAndOrigin(signatureId, revocationType, null);
+	}
+	
+	/**
+	 * Returns list of {@link RevocationWrapper}s for the given signature by
+	 * {@code signatureId}, specified {@link RevocationType} and specified
+	 * {@link XmlRevocationOrigin}
+	 * 
+	 * @param signatureId
+	 *                       {@link String} id of the relevant signature
+	 * @param revocationType
+	 *                       {@link RevocationType} type to get revocation data of.
+	 *                       If NULL returns revocations of all types
+	 * @param originType
+	 *                       {@link XmlRevocationOrigin} origin type to get
+	 *                       revocation data of. If NULL returns revocations of all
+	 *                       origin types
+	 * @return list of {@link RevocationWrapper}s
+	 */
+	public List<RevocationWrapper> getAllRevocationForSignatureByTypeAndOrigin(String signatureId, RevocationType revocationType, 
+			XmlRevocationOrigin originType) {
+		SignatureWrapper signature = getSignatureById(signatureId);
+		
+		Set<XmlRelatedRevocation> revocationSet = null;
+		if (revocationType != null) {
+			revocationSet = signature.getRelatedRevocationsByType(revocationType);
+			if (originType != null) {
+				revocationSet.retainAll(signature.getRelatedRevocationsByOrigin(originType));
+			}
+		} else if (originType != null) {
+			revocationSet = signature.getRelatedRevocationsByOrigin(originType);
+		} else {
+			revocationSet = new HashSet<XmlRelatedRevocation>(signature.getFoundRevocations().getRelatedRevocations());
+		}
+
+		List<RevocationWrapper> revocations = new ArrayList<RevocationWrapper>();
+		for (XmlRelatedRevocation revocationRef : revocationSet) {
+			if ((revocationType == null || revocationRef.getType().equals(revocationType)) && 
+					(originType == null || revocationRef.getOrigin().equals(originType))) {
+				revocations.add(new RevocationWrapper(revocationRef.getRevocation()));
 			}
 		}
-		return null;
+		return revocations;
 	}
 
 	/**
 	 * This method retrieves a list of signature wrappers.
 	 * 
-	 * @return a list of signature wrappers.
+	 * @return a list of {@link SignatureWrapper}s.
 	 */
 	public List<SignatureWrapper> getSignatures() {
 		if (foundSignatures == null) {
@@ -637,9 +697,27 @@ public class DiagnosticData {
 	}
 
 	/**
+	 * This method retrieves a set of timestamp wrappers
+	 * 
+	 * @return a List of timestamp wrappers
+	 */
+	public List<TimestampWrapper> getTimestamps() {
+		if (usedTimestamps == null) {
+			usedTimestamps = new ArrayList<TimestampWrapper>();
+			List<XmlTimestamp> xmlTimestamps = wrapped.getUsedTimestamps();
+			if (Utils.isCollectionNotEmpty(xmlTimestamps)) {
+				for (XmlTimestamp xmlTimestamp : xmlTimestamps) {
+					usedTimestamps.add(new TimestampWrapper(xmlTimestamp));
+				}
+			}
+		}
+		return usedTimestamps;
+	}
+
+	/**
 	 * This method retrieves a list of certificate wrappers
 	 * 
-	 * @return a list of certificate wrappers
+	 * @return a list of {@link CertificateWrapper}s.
 	 */
 	public List<CertificateWrapper> getUsedCertificates() {
 		if (usedCertificates == null) {
@@ -663,7 +741,7 @@ public class DiagnosticData {
 		Set<SignatureWrapper> signatures = new HashSet<SignatureWrapper>();
 		List<SignatureWrapper> mixedSignatures = getSignatures();
 		for (SignatureWrapper signatureWrapper : mixedSignatures) {
-			if (Utils.isStringEmpty(signatureWrapper.getParentId())) {
+			if (signatureWrapper.getParent() == null) {
 				signatures.add(signatureWrapper);
 			}
 		}
@@ -679,11 +757,36 @@ public class DiagnosticData {
 		Set<SignatureWrapper> signatures = new HashSet<SignatureWrapper>();
 		List<SignatureWrapper> mixedSignatures = getSignatures();
 		for (SignatureWrapper signatureWrapper : mixedSignatures) {
-			if (Utils.isStringNotEmpty(signatureWrapper.getParentId())) {
+			if (signatureWrapper.getParent() != null) {
 				signatures.add(signatureWrapper);
 			}
 		}
 		return signatures;
+	}
+	
+	/**
+	 * Returns a set of {@link SignatureWrapper}s for a given {@code masterSignatureWrapper}
+	 * @param masterSignatureWrapper - {@link SignatureWrapper} to get counter signatures for
+	 * @return set of {@link SignatureWrapper}s
+	 */
+	public Set<SignatureWrapper> getAllCounterSignaturesForMasterSignature(SignatureWrapper masterSignatureWrapper) {
+		Set<SignatureWrapper> signatures = new HashSet<SignatureWrapper>();
+		List<SignatureWrapper> mixedSignatures = getSignatures();
+		for (SignatureWrapper signatureWrapper : mixedSignatures) {
+			if (signatureWrapper.getParent() != null && signatureWrapper.getParent().equals(masterSignatureWrapper)) {
+				signatures.add(signatureWrapper);
+			}
+		}
+		return signatures;
+	}
+
+	/**
+	 * This method returns timestamps
+	 * 
+	 * @return a set of TimestampWrapper
+	 */
+	public Set<TimestampWrapper> getAllTimestamps() {
+		return new HashSet<TimestampWrapper>(getTimestamps());
 	}
 
 	/**
@@ -693,32 +796,35 @@ public class DiagnosticData {
 	 */
 	public Set<RevocationWrapper> getAllRevocationData() {
 		Set<RevocationWrapper> revocationData = new HashSet<RevocationWrapper>();
-		List<CertificateWrapper> certificates = getUsedCertificates();
-		if (Utils.isCollectionNotEmpty(certificates)) {
-			for (CertificateWrapper certificate : certificates) {
-				Set<RevocationWrapper> revocations = certificate.getRevocationData();
-				if (revocations != null) {
-					revocationData.addAll(revocations);
-				}
-			}
+		for (XmlRevocation xmlRevocation : wrapped.getUsedRevocations()) {
+			revocationData.add(new RevocationWrapper(xmlRevocation));
 		}
 		return revocationData;
 	}
-
+	
 	/**
-	 * This method retrieves a set of timestamp wrappers
-	 * 
-	 * @return a list of timestamp wrappers
+	 * Returns the last actual revocation for the given {@code certificate}
+	 * @param certificate {@link CertificateWrapper} to find the latest revocation for
+	 * @return {@link CertificateRevocationWrapper} revocation
 	 */
-	public Set<TimestampWrapper> getAllTimestamps() {
-		Set<TimestampWrapper> allTimestamps = new HashSet<TimestampWrapper>();
-		List<SignatureWrapper> signatures = getSignatures();
-		if (Utils.isCollectionNotEmpty(signatures)) {
-			for (SignatureWrapper signatureWrapper : signatures) {
-				allTimestamps.addAll(signatureWrapper.getTimestampList());
+	public CertificateRevocationWrapper getLatestRevocationDataForCertificate(CertificateWrapper certificate) {
+		CertificateRevocationWrapper latest = null;
+		List<CertificateRevocationWrapper> certificateRevocationData = certificate.getCertificateRevocationData();
+		for (CertificateRevocationWrapper certRevoc : certificateRevocationData) {
+			if (latest == null || (latest.getProductionDate() != null && certRevoc != null && certRevoc.getProductionDate() != null
+					&& certRevoc.getProductionDate().after(latest.getProductionDate()))) {
+				latest = certRevoc;
 			}
 		}
-		return allTimestamps;
+		return latest;
+	}
+	
+	/**
+	 * Returns a complete list of original signer documents signed by all signatures
+	 * @return list of {@link XmlSignerData}s
+	 */
+	public List<XmlSignerData> getOriginalSignerDocuments() {
+		return wrapped.getOriginalDocuments();
 	}
 
 	/**
@@ -824,6 +930,10 @@ public class DiagnosticData {
 			return listOfTrustedLists.getCountryCode();
 		}
 		return null;
+	}
+
+	public Date getValidationDate() {
+		return wrapped.getValidationDate();
 	}
 
 }

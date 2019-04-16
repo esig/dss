@@ -68,4 +68,13 @@ public enum KeyUsageBit {
 		return index;
 	}
 
+	public static KeyUsageBit fromString(String name) {
+		for (KeyUsageBit kui : KeyUsageBit.values()) {
+			if (kui.name().equals(name)) {
+				return kui;
+			}
+		}
+		return null;
+	}
+
 }

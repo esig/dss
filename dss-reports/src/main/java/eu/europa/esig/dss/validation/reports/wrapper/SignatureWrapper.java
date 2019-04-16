@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.reports.wrapper;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -28,16 +29,28 @@ import java.util.List;
 import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocations;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundTimestamp;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedRevocation;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerDocumentRepresentations;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.DigestMatcherType;
+import eu.europa.esig.dss.validation.RevocationRefLocation;
+import eu.europa.esig.dss.validation.RevocationType;
+import eu.europa.esig.dss.validation.XmlRevocationOrigin;
+import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 
 public class SignatureWrapper extends AbstractTokenProxy {
@@ -52,10 +65,24 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	public String getId() {
 		return signature.getId();
 	}
+	
+	public String getDAIdentifier() {
+		return signature.getDAIdentifier();
+	}
 
 	@Override
 	public List<XmlDigestMatcher> getDigestMatchers() {
 		return signature.getDigestMatchers();
+	}
+
+	public XmlDigestMatcher getMessageDigest() {
+		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
+		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
+			if (DigestMatcherType.MESSAGE_DIGEST == xmlDigestMatcher.getType()) {
+				return xmlDigestMatcher;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -97,6 +124,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getContentType();
 	}
 
+	public String getMimeType() {
+		return signature.getMimeType();
+	}
+
 	public String getContentHints() {
 		return signature.getContentHints();
 	}
@@ -111,11 +142,9 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	public List<TimestampWrapper> getTimestampList() {
 		List<TimestampWrapper> tsps = new ArrayList<TimestampWrapper>();
-		List<XmlTimestamp> timestamps = signature.getTimestamps();
-		if (Utils.isCollectionNotEmpty(timestamps)) {
-			for (XmlTimestamp timestamp : timestamps) {
-				tsps.add(new TimestampWrapper(timestamp));
-			}
+		List<XmlFoundTimestamp> foundTimestamps = signature.getFoundTimestamps();
+		for (XmlFoundTimestamp xmlFoundTimestamp : foundTimestamps) {
+			tsps.add(new TimestampWrapper(xmlFoundTimestamp.getTimestamp()));
 		}
 		return tsps;
 	}
@@ -124,11 +153,23 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		List<TimestampWrapper> result = new ArrayList<TimestampWrapper>();
 		List<TimestampWrapper> all = getTimestampList();
 		for (TimestampWrapper tsp : all) {
-			if (timestampType.name().equals(tsp.getType())) {
+			if (timestampType.equals(tsp.getType())) {
 				result.add(tsp);
 			}
 		}
 		return result;
+	}
+	
+	public List<TimestampWrapper> getTimestampListByLocation(TimestampLocation timestampLocation) {
+		List<TimestampWrapper> tsps = new ArrayList<TimestampWrapper>();
+		List<XmlFoundTimestamp> foundTimestamps = signature.getFoundTimestamps();
+		for (XmlFoundTimestamp xmlFoundTimestamp : foundTimestamps) {
+			if (xmlFoundTimestamp.getLocation() != null && 
+					xmlFoundTimestamp.getLocation().name().equals(timestampLocation.name())) {
+				tsps.add(new TimestampWrapper(xmlFoundTimestamp.getTimestamp()));
+			}
+		}
+		return tsps;
 	}
 
 	public Set<TimestampWrapper> getAllTimestampsNotArchival() {
@@ -259,8 +300,12 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return result;
 	}
 
-	public String getParentId() {
-		return signature.getParentId();
+	public SignatureWrapper getParent() {
+		XmlSignature parent = signature.getParent();
+		if (parent != null) {
+			return new SignatureWrapper(parent);
+		}
+		return null;
 	}
 
 	public List<XmlSignatureScope> getSignatureScopes() {
@@ -368,6 +413,235 @@ public class SignatureWrapper extends AbstractTokenProxy {
 
 	public String getFormat() {
 		return signature.getSignatureFormat();
+	}
+	
+	public String getSignatureFieldName() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getSignatureFieldName();
+		}
+		return null;
+	}
+
+	public String getSignerName() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getSignerName();
+		}
+		return null;
+	}
+
+	public String getFilter() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getFilter();
+		}
+		return null;
+	}
+
+	public String getSubFilter() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getSubFilter();
+		}
+		return null;
+	}
+
+	public String getContactInfo() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getContactInfo();
+		}
+		return null;
+	}
+
+	public String getReason() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getReason();
+		}
+		return null;
+	}
+	
+	public List<BigInteger> getSignatureByteRange() {
+		XmlPDFSignatureDictionary pdfSignatureDictionary = signature.getPDFSignatureDictionary();
+		if (pdfSignatureDictionary != null) {
+			return pdfSignatureDictionary.getSignatureByteRange();
+		}
+		return null;
+	}
+	
+	public byte[] getSignatureValue() {
+		return signature.getSignatureValue();
+	}
+	
+	public boolean isDocHashOnly() {
+		XmlSignerDocumentRepresentations signerDocumentRepresentation = signature.getSignerDocumentRepresentations();
+		if (signerDocumentRepresentation != null) {
+			return signerDocumentRepresentation.isDocHashOnly();
+		}
+		return false;
+	}
+	
+	public boolean isHashOnly() {
+		XmlSignerDocumentRepresentations signerDocumentRepresentation = signature.getSignerDocumentRepresentations();
+		if (signerDocumentRepresentation != null) {
+			return signerDocumentRepresentation.isHashOnly();
+		}
+		return false;
+	}
+	
+	public List<XmlFoundCertificate> getFoundCertificates() {
+		return signature.getFoundCertificates();
+	}
+	
+	public XmlFoundRevocations getFoundRevocations() {
+		return signature.getFoundRevocations();
+	}
+	
+	public List<XmlRevocationRef> getOrphanRevocationRefs() {
+		return getFoundRevocations().getOrphanRevocationRefs();
+	}
+	
+	public List<XmlRevocationRef> getAllFoundRevocationRefs() {
+		List<XmlRevocationRef> revocationRefs = new ArrayList<XmlRevocationRef>();
+		List<String> storedXmlRevocationIds = new ArrayList<String>(); // we do not need to collect references for the same revocations twice
+		XmlFoundRevocations foundRevocations = getFoundRevocations();
+		if (foundRevocations != null) {
+			for (XmlRelatedRevocation revocation : foundRevocations.getRelatedRevocations()) {
+				if (!storedXmlRevocationIds.contains(revocation.getRevocation().getId())) {
+					storedXmlRevocationIds.add(revocation.getRevocation().getId());
+					revocationRefs.addAll(revocation.getRevocationReferences());
+				}
+			}
+			revocationRefs.addAll(foundRevocations.getOrphanRevocationRefs());
+		}
+		return revocationRefs;
+	}
+	
+	public List<XmlRevocationRef> getFoundRevocationRefsByLocation(RevocationRefLocation revocationRefLocation) {
+		List<XmlRevocationRef> revocationRefs = new ArrayList<XmlRevocationRef>();
+		for (XmlRevocationRef ref : getAllFoundRevocationRefs()) {
+			if (ref.getLocation().equals(revocationRefLocation)) {
+				revocationRefs.add(ref);
+			}
+		}
+		return revocationRefs;
+	}
+	
+	public Set<XmlRelatedRevocation> getRelatedRevocationsByOrigin(XmlRevocationOrigin originType) {
+		Set<XmlRelatedRevocation> revocationWithOrigin = new HashSet<XmlRelatedRevocation>();
+		XmlFoundRevocations foundRevocations = getFoundRevocations();
+		if (foundRevocations != null) {
+			for (XmlRelatedRevocation revocationRef : foundRevocations.getRelatedRevocations()) {
+				if (revocationRef.getOrigin().equals(originType)) {
+					revocationWithOrigin.add(revocationRef);
+				}
+			}
+		}
+		return revocationWithOrigin;
+	}
+	
+	public Set<XmlRelatedRevocation> getRelatedRevocationsByType(RevocationType type) {
+		Set<XmlRelatedRevocation> revocationWithType = new HashSet<XmlRelatedRevocation>();
+		XmlFoundRevocations foundRevocations = getFoundRevocations();
+		if (foundRevocations != null) {
+			for (XmlRelatedRevocation revocationRef : foundRevocations.getRelatedRevocations()) {
+				if (revocationRef.getType().equals(type)) {
+					revocationWithType.add(revocationRef);
+				}
+			}
+		}
+		return revocationWithType;
+	}
+	
+	/**
+	 * Returns a list of revocation ids found in the signature
+	 * @return list of ids
+	 */
+	public List<String> getRevocationIds() {
+		List<String> revocationIds = new ArrayList<String>();
+		XmlFoundRevocations foundRevocations = getFoundRevocations();
+		if (foundRevocations != null) {
+			for (XmlRelatedRevocation revocationRef : foundRevocations.getRelatedRevocations()) {
+			revocationIds.add(revocationRef.getRevocation().getId());
+			}
+		}
+		return revocationIds;
+	}
+
+	/**
+	 * Returns a list of revocation ids found in the signature with the specified {@code type}
+	 * @param type - {@link RevocationType} to find revocations with
+	 * @return list of ids
+	 */
+	public List<String> getRevocationIdsByType(RevocationType type) {
+		List<String> revocationIds = new ArrayList<String>();
+		for (XmlRelatedRevocation revocationRef : getRelatedRevocationsByType(type)) {
+			revocationIds.add(revocationRef.getRevocation().getId());
+		}
+		return revocationIds;
+	}
+
+	/**
+	 * Returns a list of revocation ids found in the signature with the specified {@code origin}
+	 * @param origin - {@link XmlRevocationOrigin} to find revocations with
+	 * @return list of ids
+	 */
+	public List<String> getRevocationIdsByOrigin(XmlRevocationOrigin origin) {
+		List<String> revocationIds = new ArrayList<String>();
+		for (XmlRelatedRevocation revocationRef : getRelatedRevocationsByOrigin(origin)) {
+			revocationIds.add(revocationRef.getRevocation().getId());
+		}
+		return revocationIds;
+	}
+	
+	/**
+	 * Returns a list of revocation ids found in the signature with the specified {@code type} and {@code origin}
+	 * @param type - {@link RevocationType} to find revocations with
+	 * @param origin - {@link XmlRevocationOrigin} to find revocations with
+	 * @return list of ids
+	 */
+	public List<String> getRevocationIdsByTypeAndOrigin(RevocationType type, XmlRevocationOrigin origin) {
+		List<String> revocationIds = getRevocationIdsByType(type);
+		revocationIds.retainAll(getRevocationIdsByOrigin(origin));
+		return revocationIds;
+	}
+
+	/**
+	 * Returns a list of found certificate ids based on the requested {@code locationType}
+	 * @param locationType {@link XmlCertificateLocationType} to get certificate ids for
+	 * @return list of certificate ids
+	 */
+	public List<String> getFoundCertificateIds(XmlCertificateLocationType locationType) {
+		List<String> result = new ArrayList<String>();
+		List<XmlFoundCertificate> foundCertificates = signature.getFoundCertificates();
+		if (Utils.isCollectionNotEmpty(foundCertificates)) {
+			for (XmlFoundCertificate xmlFoundCertificate : foundCertificates) {
+				if (locationType.equals(xmlFoundCertificate.getLocation())) {
+					result.add(xmlFoundCertificate.getCertificate().getId());
+				}
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Returns a list of found {@link XmlFoundCertificate} from the given {@code locationType}
+	 * @param locationType {@link XmlCertificateLocationType} to get certificates from
+	 * @return list of found {@link XmlFoundCertificate}
+	 */
+	public List<XmlFoundCertificate> getFoundCertificatesByLocation(XmlCertificateLocationType locationType) {
+		List<XmlFoundCertificate> certificatesByLocation = new ArrayList<XmlFoundCertificate>();
+		List<XmlFoundCertificate> allFoundCertificates = signature.getFoundCertificates();
+		if (Utils.isCollectionNotEmpty(allFoundCertificates)) {
+			for (XmlFoundCertificate xmlFoundCertificate : allFoundCertificates) {
+				if (locationType.equals(xmlFoundCertificate.getLocation())) {
+					certificatesByLocation.add(xmlFoundCertificate);
+				}
+			}
+		}
+		return certificatesByLocation;
 	}
 
 }

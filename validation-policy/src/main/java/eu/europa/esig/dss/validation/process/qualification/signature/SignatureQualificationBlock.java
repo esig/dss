@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraintsConclusionWithProofOfExistence;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlTLAnalysis;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationSignatureQualification;
@@ -54,22 +55,20 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	private final XmlConclusion etsi319102Conclusion;
 	private final Date bestSignatureTime;
 	private final CertificateWrapper signingCertificate;
-	private final List<CertificateWrapper> usedCertificates;
 	private final List<XmlTLAnalysis> tlAnalysis;
 	private final String lotlCountryCode;
 
 	private CertificateQualification qualificationAtSigningTime;
 
-	public SignatureQualificationBlock(XmlConclusion etsi319102Conclusion, Date bestSignatureTime, CertificateWrapper signingCertificate,
-			List<CertificateWrapper> usedCertificates, List<XmlTLAnalysis> tlAnalysis, String lotlCountryCode) {
+	public SignatureQualificationBlock(String signatureId, XmlConstraintsConclusionWithProofOfExistence etsi319102validation,
+			CertificateWrapper signingCertificate,
+			List<XmlTLAnalysis> tlAnalysis, String lotlCountryCode) {
 		super(new XmlValidationSignatureQualification());
+		result.setId(signatureId);
 
-		// result.setId(signature.getId()); TODO
-
-		this.etsi319102Conclusion = etsi319102Conclusion;
-		this.bestSignatureTime = bestSignatureTime;
+		this.etsi319102Conclusion = etsi319102validation.getConclusion();
+		this.bestSignatureTime = etsi319102validation.getProofOfExistence().getTime();
 		this.signingCertificate = signingCertificate;
-		this.usedCertificates = usedCertificates;
 		this.tlAnalysis = tlAnalysis;
 		this.lotlCountryCode = lotlCountryCode;
 	}
@@ -112,13 +111,13 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 			List<TrustedServiceWrapper> caqcServices = filter.filter(acceptableServices);
 
 			CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(ValidationTime.CERTIFICATE_ISSUANCE_TIME,
-					signingCertificate, usedCertificates, caqcServices);
+					signingCertificate, caqcServices);
 			XmlValidationCertificateQualification certQualAtIssuanceResult = certQualAtIssuanceBlock.execute();
 			result.getValidationCertificateQualification().add(certQualAtIssuanceResult);
 			CertificateQualification qualificationAtIssuance = certQualAtIssuanceResult.getCertificateQualification();
 
 			CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(ValidationTime.BEST_SIGNATURE_TIME, bestSignatureTime,
-					signingCertificate, usedCertificates, caqcServices);
+					signingCertificate, caqcServices);
 			XmlValidationCertificateQualification certQualAtSigningTimeResult = certQualAtSigningTimeBlock.execute();
 			result.getValidationCertificateQualification().add(certQualAtSigningTimeResult);
 			qualificationAtSigningTime = certQualAtSigningTimeResult.getCertificateQualification();
