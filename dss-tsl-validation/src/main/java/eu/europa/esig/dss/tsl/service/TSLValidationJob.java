@@ -66,10 +66,10 @@ public class TSLValidationJob {
 	private String lotlRootSchemeInfoUri;
 
 	/*
-	 * Official journal URL where the allowed certificates can be found. This URL is present in the LOTL
-	 * (SchemeInformationURI)
+	 * Official journal Domain Name where the allowed certificates can be found. This URL with this DN is present in the LOTL
 	 */
-	private String ojUrl;
+	private String ojDomainName;
+	
 	private KeyStoreCertificateSource ojContentKeyStore;
 
 	private boolean checkLOTLSignature = true;
@@ -123,13 +123,13 @@ public class TSLValidationJob {
 	}
 
 	/**
-	 * This method allows to set the Official Journal URL (where the trusted certificates are listed)
+	 * This method allows to set the Official Journal Domain Name (where the trusted certificates are listed)
 	 * 
 	 * @param ojUrl
-	 *            the Official Journal URL
+	 *            the Official Journal Domain Name
 	 */
-	public void setOjUrl(String ojUrl) {
-		this.ojUrl = ojUrl;
+	public void setOjDomainName(String ojDomainName) {
+		this.ojDomainName = ojDomainName;
 	}
 
 	public void setOjContentKeyStore(KeyStoreCertificateSource ojContentKeyStore) {
@@ -283,8 +283,14 @@ public class TSLValidationJob {
 			}
 		}
 
-		if (!isLatestOjKeystore(parseResult)) {
-			LOG.warn("OJ keystore is out-dated !");
+		String currentStringOjUrlString = repository.getActualOjUrl();
+		
+		String latestOjKeystore = getLatestOjKeystore(parseResult);
+		if (latestOjKeystore != null && !latestOjKeystore.equals(currentStringOjUrlString)) {
+			if (currentStringOjUrlString != null) {
+				LOG.warn("OJ keystore is out-dated! Newer URL will be used");
+			}
+			repository.setActualOjUrl(latestOjKeystore);
 		}
 
 		checkLOTLLocation(parseResult);
@@ -386,15 +392,21 @@ public class TSLValidationJob {
 	}
 
 	/**
-	 * This method checks if the OJ url is still correct. If not, the DSS keystore is outdated.
+	 * This method returns the OJ url if present in LOTL.
 	 * 
 	 * @param parseResult
 	 * 
-	 * @return
+	 * @return latest OJ Keystore URL
 	 */
-	private boolean isLatestOjKeystore(TSLParserResult parseResult) {
+	private String getLatestOjKeystore(TSLParserResult parseResult) {
 		List<String> englishSchemeInformationURIs = parseResult.getEnglishSchemeInformationURIs();
-		return englishSchemeInformationURIs.contains(ojUrl);
+		for (String url : englishSchemeInformationURIs) {
+			if (url.contains(ojDomainName)) {
+				return url;
+			}
+		}
+		LOG.error("Latest Official Journal Keystore is not found!");
+		return null;
 	}
 
 	private boolean isPivotLOTL(TSLParserResult parseResult) {
@@ -408,7 +420,7 @@ public class TSLValidationJob {
 		Iterator<String> itr = englishSchemeInformationURIs.descendingIterator();
 		while (itr.hasNext()) {
 			String uri = itr.next();
-			if (!Utils.areStringsEqual(ojUrl, uri) && !uri.startsWith(lotlRootSchemeInfoUri)) {
+			if (!uri.contains(ojDomainName) && !uri.startsWith(lotlRootSchemeInfoUri)) {
 				pivotUris.add(uri);
 			}
 		}

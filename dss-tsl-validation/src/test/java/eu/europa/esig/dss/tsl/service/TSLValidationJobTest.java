@@ -54,7 +54,7 @@ public class TSLValidationJobTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(TSLValidationJobTest.class);
 
-	private static final String OJ_URL = "http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG";
+	private static final String OJ_DOMAIN_NAME = "eur-lex.europa.eu";
 	private static final String LOTL_URL = "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml";
 	private static final String LOTL_ROOT_SCHEME_INFO_URI = "https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl.html";
 	private KeyStoreCertificateSource dssKeyStore;
@@ -77,7 +77,7 @@ public class TSLValidationJobTest {
 		job.setCheckLOTLSignature(true);
 		job.setCheckTSLSignatures(true);
 		job.setDataLoader(new CommonsDataLoader());
-		job.setOjUrl(OJ_URL);
+		job.setOjDomainName(OJ_DOMAIN_NAME);
 		job.setLotlUrl(LOTL_URL);
 		job.setLotlRootSchemeInfoUri(LOTL_ROOT_SCHEME_INFO_URI);
 		job.setLotlCode("EU");
@@ -85,6 +85,8 @@ public class TSLValidationJobTest {
 		job.setRepository(repository);
 
 		job.refresh();
+		
+		assertNotNull(repository.getActualOjUrl());
 
 		spain = repository.getByCountry("ES");
 		assertNotNull(spain);
@@ -103,7 +105,7 @@ public class TSLValidationJobTest {
 		job.setCheckLOTLSignature(true);
 		job.setCheckTSLSignatures(true);
 		job.setDataLoader(new CommonsDataLoader());
-		job.setOjUrl(OJ_URL);
+		job.setOjDomainName(OJ_DOMAIN_NAME);
 		job.setLotlUrl(LOTL_URL);
 		job.setLotlRootSchemeInfoUri(LOTL_ROOT_SCHEME_INFO_URI);
 		job.setLotlCode("EU");
@@ -132,7 +134,7 @@ public class TSLValidationJobTest {
 		job.setCheckLOTLSignature(true);
 		job.setCheckTSLSignatures(true);
 		job.setDataLoader(new CommonsDataLoader());
-		job.setOjUrl(OJ_URL);
+		job.setOjDomainName(OJ_DOMAIN_NAME);
 		job.setLotlUrl(LOTL_URL);
 		job.setLotlRootSchemeInfoUri(LOTL_ROOT_SCHEME_INFO_URI);
 		job.setLotlCode("EU");
@@ -245,6 +247,32 @@ public class TSLValidationJobTest {
 		portugal = repository.getByCountry("PT");
 		assertNotNull(portugal);
 
+	}
+	
+	@Test
+	public void testWrongDomainName() {
+
+		TSLRepository repository = new TSLRepository();
+		repository.setTrustedListsCertificateSource(new TrustedListsCertificateSource());
+
+		TSLValidationModel spain = repository.getByCountry("ES");
+		assertNull(spain);
+
+		TSLValidationJob job = new TSLValidationJob();
+		job.setCheckLOTLSignature(true);
+		job.setCheckTSLSignatures(true);
+		job.setDataLoader(new CommonsDataLoader());
+		job.setOjDomainName("wrong-dns.eu");
+		job.setLotlUrl(LOTL_URL);
+		job.setLotlRootSchemeInfoUri(LOTL_ROOT_SCHEME_INFO_URI);
+		job.setLotlCode("EU");
+		job.setOjContentKeyStore(dssKeyStore);
+		job.setRepository(repository);
+
+		job.refresh();
+		
+		assertNull(repository.getActualOjUrl());
+		
 	}
 
 }

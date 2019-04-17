@@ -58,7 +58,7 @@ public class LOTLLoadingTest {
 		// The keystore contains certificates referenced in the Official Journal Link (OJ URL)
 		KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12",
 				"dss-password");
-		job.setOjUrl("http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG");
+		job.setOjDomainName("eur-lex.europa.eu");
 		job.setOjContentKeyStore(keyStoreCertificateSource);
 
 		job.setRepository(tslRepository);
