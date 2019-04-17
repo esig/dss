@@ -32,6 +32,7 @@ import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
+import eu.europa.esig.dss.SignatureIdentifier;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
@@ -418,6 +419,13 @@ public interface AdvancedSignature extends Serializable {
 	 * @return {@code List} of {@code CertificateRef}
 	 */
 	List<CertificateRef> getCertificateRefs();
+	
+	/**
+	 * This method returns the {@link SignatureIdentifier}.
+	 * 
+	 * @return unique {@link SignatureIdentifier}
+	 */
+	SignatureIdentifier getDSSId();
 
 	/**
 	 * This method returns the DSS unique signature id. It allows to unambiguously identify each signature.

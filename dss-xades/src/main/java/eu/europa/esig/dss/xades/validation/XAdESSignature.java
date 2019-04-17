@@ -64,6 +64,7 @@ import eu.europa.esig.dss.IssuerSerialInfo;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
+import eu.europa.esig.dss.SignatureIdentifier;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.XAdESNamespaces;
@@ -1742,15 +1743,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			buffer.write(DSSXMLUtils.canonicalizeOrSerializeSubtree(canonicalizationMethod, element));
 		}
 	}
-
+	
 	@Override
-	public String getId() {
-		if (signatureId == null) {
-			final CertificateToken certificateToken = getSigningCertificateToken();
-			TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
-			signatureId = DSSUtils.getUniqueId(getDAIdentifier(), getSigningTime(), identifier);
-		}
-		return signatureId;
+	protected SignatureIdentifier buildSignatureIdentifier() {
+		final CertificateToken certificateToken = getSigningCertificateToken();
+		final TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
+		return SignatureIdentifier.buildSignatureIdentifier(getSigningTime(), identifier, getDAIdentifier());
 	}
 	
 	@Override

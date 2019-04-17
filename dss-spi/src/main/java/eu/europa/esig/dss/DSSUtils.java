@@ -579,21 +579,16 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * Generates an ID to uniquely identify a signature
+	 * Return a unique id for a date and the certificateToken id.
 	 *
-	 * @param daIdentifier
-	 *            the signature identifier provided by a Driving Application
 	 * @param signingTime
 	 *            the signing time
 	 * @param id
 	 *            the token identifier
 	 * @return a unique string
 	 */
-	public static String getUniqueId(final String daIdentifier, final Date signingTime, TokenIdentifier id) {
+	public static String getDeterministicId(final Date signingTime, TokenIdentifier id) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); DataOutputStream dos = new DataOutputStream(baos)) {
-			if (daIdentifier != null) {
-				dos.writeChars(daIdentifier);
-			}
 			if (signingTime != null) {
 				dos.writeLong(signingTime.getTime());
 			}
@@ -605,19 +600,6 @@ public final class DSSUtils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
-	}
-
-	/**
-	 * Return a unique id for a date and the certificateToken id.
-	 *
-	 * @param signingTime
-	 *            the signing time
-	 * @param id
-	 *            the token identifier
-	 * @return a unique string
-	 */
-	public static String getDeterministicId(final Date signingTime, TokenIdentifier id) {
-		return getUniqueId(null, signingTime, id);
 	}
 
 	/**

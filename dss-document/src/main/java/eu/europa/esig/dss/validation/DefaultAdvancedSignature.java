@@ -38,6 +38,7 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestDocument;
+import eu.europa.esig.dss.SignatureIdentifier;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
@@ -137,10 +138,20 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	private String signatureFilename;
 	
+	/*
+	 * Unique signature identifier
+	 */
+	protected SignatureIdentifier signatureIdentifier;
+	
 	/**
 	 * Contains a list of found {@link RevocationRef}s for each {@link RevocationToken}
 	 */
 	private Map<RevocationToken, List<RevocationRef>> revocationRefsMap;
+	
+	/**
+	 * Build and defines {@code signatureIdentifier} value
+	 */
+	protected abstract SignatureIdentifier buildSignatureIdentifier();
 
 	/**
 	 * @param certPool
@@ -182,6 +193,19 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public void setManifestFiles(List<ManifestFile> manifestFiles) {
 		this.manifestFiles = manifestFiles;
+	}
+	
+	@Override
+	public SignatureIdentifier getDSSId() {
+		if (signatureIdentifier == null) {
+			signatureIdentifier = buildSignatureIdentifier();
+		}
+		return signatureIdentifier;
+	}
+	
+	@Override
+	public String getId() {
+		return "S-" + getDSSId().asXmlId();
 	}
 
 	@Override
@@ -1066,6 +1090,23 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public int[] getSignatureByteRange() {
 		// Not applicable by default (PDF only)
 		return null;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || !(obj instanceof DefaultAdvancedSignature)) {
+			return false;
+		}
+		DefaultAdvancedSignature das = (DefaultAdvancedSignature) obj;
+		return getDSSId().equals(das.getDSSId());
+	}
+
+	@Override
+	public int hashCode() {
+		return getDSSId().hashCode();
 	}
 
 }

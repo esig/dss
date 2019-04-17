@@ -122,6 +122,7 @@ import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.OID;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
+import eu.europa.esig.dss.SignatureIdentifier;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.cades.CMSUtils;
@@ -1513,18 +1514,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 		return new DERSequence(result);
 	}
-
+	
 	@Override
-	public String getId() {
-		if (signatureId == null) {
-			final CertificateToken certificateToken = getSigningCertificateToken();
-			final TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
-			// Only used to keep the same signature id between CAdES and PAdES
-			// signature!
-			final Date signingTime = getSigningTime();
-			signatureId = DSSUtils.getDeterministicId(signingTime, identifier);
-		}
-		return signatureId;
+	protected SignatureIdentifier buildSignatureIdentifier() {
+		final CertificateToken certificateToken = getSigningCertificateToken();
+		final TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
+		return SignatureIdentifier.buildSignatureIdentifier(getSigningTime(), identifier);
 	}
 	
 	@Override

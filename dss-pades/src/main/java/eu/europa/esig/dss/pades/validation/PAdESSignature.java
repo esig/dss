@@ -39,7 +39,9 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
+import eu.europa.esig.dss.SignatureIdentifier;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.TokenIdentifier;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.pdf.PdfDocTimestampInfo;
 import eu.europa.esig.dss.pdf.PdfDssDict;
@@ -347,11 +349,12 @@ public class PAdESSignature extends CAdESSignature {
 		}
 		throw new DSSException("Timestamp Data not found");
 	}
-
+	
 	@Override
-	public String getId() {
-		String cadesId = super.getId();
-		return cadesId + getDigestOfByteRange();
+	public SignatureIdentifier buildSignatureIdentifier() {
+		final CertificateToken certificateToken = getSigningCertificateToken();
+		final TokenIdentifier identifier = certificateToken == null ? null : certificateToken.getDSSId();
+		return SignatureIdentifier.buildSignatureIdentifier(getSigningTime(), identifier, getDigestOfByteRange());
 	}
 
 	private String getDigestOfByteRange() {
