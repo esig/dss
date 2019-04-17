@@ -125,7 +125,7 @@ public class TSLValidationJob {
 	/**
 	 * This method allows to set the Official Journal Domain Name (where the trusted certificates are listed)
 	 * 
-	 * @param ojUrl
+	 * @param ojDomainName
 	 *            the Official Journal Domain Name
 	 */
 	public void setOjDomainName(String ojDomainName) {
