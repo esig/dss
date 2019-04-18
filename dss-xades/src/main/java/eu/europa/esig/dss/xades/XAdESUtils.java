@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;
+import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +61,8 @@ public final class XAdESUtils {
 							}
 						}
 					} else {
-						result.add(new InMemoryDocument(getReferenceOriginalContentBytes(reference), reference.getURI()));
+						byte[] originalContentBytes = getReferenceOriginalContentBytes(reference);
+						result.add(new InMemoryDocument(originalContentBytes, reference.getURI()));
 					}
 				}
 			}
@@ -126,6 +129,7 @@ public final class XAdESUtils {
 	 * @return byte array containing original data
 	 */
 	public static byte[] getReferenceOriginalContentBytes(Reference reference) {
+		
 		try {
 			// returns bytes after transformation in case of enveloped signature
 			Transforms transforms = reference.getTransforms();
@@ -148,16 +152,36 @@ public final class XAdESUtils {
 									return reference.getReferencedBytes();
 								}
 							}
+							// if transformations are not applied to the signature go further and return bytes before transformation
 						}
 					}
 				}
 			}
-			// otherwise bytes before transformation
-			return reference.getContentsBeforeTransformation().getBytes();
-		} catch (IOException | XMLSecurityException e) {
-			LOG.error("Unable to retrieve content of reference with id {}", reference.getId(), e);
-			return null;
+			
+		} catch (XMLSecurityException e) {
+			// if exception occurs during the transformations
+			LOG.warn("Signature reference with id [{}] is corrupted or has an invalid format. "
+					+ "Original data cannot be obtained. Reason: [{}]", reference.getId(), e.getMessage());
+			
 		}
+
+		// otherwise bytes before transformation
+		return getBytesBeforeTransformation(reference);
+		
+	}
+	
+	private static byte[] getBytesBeforeTransformation(Reference reference) {
+		try {
+			return reference.getContentsBeforeTransformation().getBytes();
+		} catch (ReferenceNotInitializedException e) {
+			// if exception occurs during an attempt to access reference original data
+			LOG.warn("Original data is not provided for the reference with id [" + reference.getId() + "]. Reason: [{}]", e.getMessage());
+		} catch (IOException | CanonicalizationException e) {
+			// if exception occurs by another reason
+			LOG.error("Unable to retrieve the content of reference with id [" + reference.getId() + "].", e);
+		}
+		// in case of exceptions return null value
+		return null;
 	}
 
 }

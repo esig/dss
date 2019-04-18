@@ -99,20 +99,21 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 			}
 			final String uri = signatureReference.getURI();
 			final List<String> transformations = getTransformationNames(signatureReference);
-			byte[] referenceOriginalContentBytes = XAdESUtils.getReferenceOriginalContentBytes(signatureReference);
-			if (Utils.isStringBlank(uri) && referenceOriginalContentBytes != null) {
-				// self contained document
-				if (isEverythingCovered) {
-					result.add(new XmlRootSignatureScope(transformations, getDigest(referenceOriginalContentBytes)));
-				} else {
-					result.add(new XmlElementSignatureScope("", transformations, getDigest(referenceOriginalContentBytes)));
+			if (Utils.isStringBlank(uri)) {
+				byte[] referenceOriginalContentBytes = XAdESUtils.getReferenceOriginalContentBytes(signatureReference);
+				if (referenceOriginalContentBytes != null) {
+					// self contained document
+					if (isEverythingCovered) {
+						result.add(new XmlRootSignatureScope(transformations, getDigest(referenceOriginalContentBytes)));
+					} else {
+						result.add(new XmlElementSignatureScope("", transformations, getDigest(referenceOriginalContentBytes)));
+					}
 				}
 			} else if (uri.startsWith("#")) {
 				final String xmlIdOfSignedElement = uri.substring(1);
 				// internal reference
 				if (isXPointerQuery(uri)) {
 					final String id = DSSXMLUtils.getIDIdentifier(signatureReference.getElement());
-					// TODO: check and to do
 					final XPointerSignatureScope xPointerSignatureScope = new XPointerSignatureScope(id, uri, 
 							getDigest(XAdESUtils.getReferenceOriginalContentBytes(signatureReference)));
 					result.add(xPointerSignatureScope);
@@ -176,7 +177,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 				// can be only a Digest Document
 				if (detachedDocument instanceof DigestDocument && Utils.isStringEmpty(detachedDocument.getName())) {
 					DigestDocument digestDocument = (DigestDocument) detachedDocument;
-					result.add(new DigestSignatureScope(detachedDocument.getName(), digestDocument.getExistingDigest()));
+					result.add(new DigestSignatureScope(null, digestDocument.getExistingDigest()));
 				}
 			}
 		}
