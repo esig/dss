@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.tsl.service;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -63,11 +65,11 @@ public class TSLValidationJob {
 	private TSLRepository repository;
 	private String lotlCode;
 	private String lotlUrl;
-	private String lotlRootSchemeInfoUri;
 
 	/*
-	 * Official journal Domain Name where the allowed certificates can be found. This URL with this DN is present in the LOTL
+	 * Official journal URL where the allowed certificates can be found. This URL is present in the LOTL
 	 */
+	private String ojUrl;
 	private String ojDomainName;
 	
 	private KeyStoreCertificateSource ojContentKeyStore;
@@ -114,22 +116,33 @@ public class TSLValidationJob {
 	}
 
 	/**
-	 * This method allows to set the root URI for the LOTL HTML page (SchemeInformationURI)
+	 * This method allows to set the current used Official Journal URL (where the trusted certificates are listed)
 	 * 
-	 * @param lotlRootSchemeInfoUri
+	 * @param ojurl
+	 *            the Official Journal URL
 	 */
-	public void setLotlRootSchemeInfoUri(String lotlRootSchemeInfoUri) {
-		this.lotlRootSchemeInfoUri = lotlRootSchemeInfoUri;
+	public void setUsedOjKeystoreUrl(String ojurl) {
+		this.ojUrl = ojurl;
 	}
-
+	
 	/**
-	 * This method allows to set the Official Journal Domain Name (where the trusted certificates are listed)
-	 * 
-	 * @param ojDomainName
-	 *            the Official Journal Domain Name
+	 * Returns the OJ URL domain name
+	 * @return domain name {@link String}
 	 */
-	public void setOjDomainName(String ojDomainName) {
-		this.ojDomainName = ojDomainName;
+	private String getOjDomainName() {
+		if (ojDomainName != null) {
+			return ojDomainName;
+		}
+		try {
+			URI uri = new URI(ojUrl);
+			ojDomainName = uri.getHost();
+			if (ojDomainName == null) {
+				ojDomainName = uri.getSchemeSpecificPart();
+			}
+			return ojDomainName;
+		} catch (URISyntaxException | NullPointerException e) {
+			throw new DSSException("Incorrect format of Official Journal URL [" + ojUrl + "] is provided", e);
+		}
 	}
 
 	public void setOjContentKeyStore(KeyStoreCertificateSource ojContentKeyStore) {
@@ -282,15 +295,14 @@ public class TSLValidationJob {
 				return;
 			}
 		}
-
-		String currentStringOjUrlString = repository.getActualOjUrl();
 		
-		String latestOjKeystore = getLatestOjKeystore(parseResult);
-		if (latestOjKeystore != null && !latestOjKeystore.equals(currentStringOjUrlString)) {
-			if (currentStringOjUrlString != null) {
-				LOG.warn("OJ keystore is out-dated! Newer URL will be used");
+		if (ojUrl != null) {
+			String latestOjKeystore = getLatestOjKeystore(parseResult);
+			if (latestOjKeystore != null && !latestOjKeystore.equals(ojUrl)) {
+				LOG.warn("OJ keystore is outdated! Newer keystore can be found at the address: [{}]", latestOjKeystore);
+				ojUrl = latestOjKeystore;
 			}
-			repository.setActualOjUrl(latestOjKeystore);
+			repository.setActualOjUrl(ojUrl);
 		}
 
 		checkLOTLLocation(parseResult);
@@ -401,11 +413,11 @@ public class TSLValidationJob {
 	private String getLatestOjKeystore(TSLParserResult parseResult) {
 		List<String> englishSchemeInformationURIs = parseResult.getEnglishSchemeInformationURIs();
 		for (String url : englishSchemeInformationURIs) {
-			if (url.contains(ojDomainName)) {
+			if (url.contains(getOjDomainName())) {
 				return url;
 			}
 		}
-		LOG.error("Latest Official Journal Keystore is not found!");
+		LOG.warn("Latest Official Journal Keystore is not found!");
 		return null;
 	}
 
@@ -414,14 +426,21 @@ public class TSLValidationJob {
 	}
 
 	private List<String> getPivotUris(TSLParserResult parseResult) {
+		if (ojUrl == null) {
+			LOG.warn("Current Official Journal keystore URL is not defined. Cannot obtain pivots!");
+			return Collections.emptyList();
+		}
 		List<String> pivotUris = new LinkedList<String>();
 		LinkedList<String> englishSchemeInformationURIs = (LinkedList<String>) parseResult.getEnglishSchemeInformationURIs();
 		// Pivots order is current T, T-1, T-2,...
-		Iterator<String> itr = englishSchemeInformationURIs.descendingIterator();
+		Iterator<String> itr = englishSchemeInformationURIs.iterator();
 		while (itr.hasNext()) {
 			String uri = itr.next();
-			if (!uri.contains(ojDomainName) && !uri.startsWith(lotlRootSchemeInfoUri)) {
+			if (!uri.contains(getOjDomainName())) {
 				pivotUris.add(uri);
+			} else {
+				// if uri is OJ URL break the loop, because pivots are listed above
+				break;
 			}
 		}
 		return pivotUris;
@@ -448,7 +467,6 @@ public class TSLValidationJob {
 					} else {
 						countryModel = repository.getByCountry(loaderResult.getCountryCode());
 					}
-
 
 					if (countryModel.getFilepath() == null) {
 						LOG.warn("No file found for url '{}'", loaderResult.getUrl());
