@@ -28,5 +28,14 @@ public class ZipBombingTest {
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);
 	}
+	
+	@Test
+	public void zipBombingOneLevelAsice() {
+		FileDocument doc = new FileDocument("src/test/resources/validation/one-level-zip-bombing.asice");
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		Reports reports = validator.validateDocument();
+		assertNotNull(reports);
+	}
 
 }
