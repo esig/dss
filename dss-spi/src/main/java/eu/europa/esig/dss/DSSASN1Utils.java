@@ -71,6 +71,7 @@ import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
+import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
 import org.bouncycastle.asn1.x509.CRLDistPoint;
 import org.bouncycastle.asn1.x509.DistributionPoint;
 import org.bouncycastle.asn1.x509.DistributionPointName;
@@ -463,10 +464,11 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * This method returns SKI bytes from the certificate extension.
+	 * This method returns the Subject Key Identifier (SKI) bytes from the
+	 * certificate extension (SHA-1 of the public key of the current certificate).
 	 *
 	 * @param certificateToken
-	 *            the {@code CertificateToken}
+	 *                         the {@code CertificateToken}
 	 * @return ski bytes from the given certificate or null if missing
 	 */
 	public static byte[] getSki(final CertificateToken certificateToken) {
@@ -485,10 +487,9 @@ public final class DSSASN1Utils {
 	 */
 	public static byte[] getSki(final CertificateToken certificateToken, boolean computeIfMissing) {
 		try {
-			byte[] sKI = certificateToken.getCertificate().getExtensionValue(Extension.subjectKeyIdentifier.getId());
-			if (Utils.isArrayNotEmpty(sKI)) {
-
-				ASN1Primitive extension = JcaX509ExtensionUtils.parseExtensionValue(sKI);
+			byte[] extensionValue = certificateToken.getCertificate().getExtensionValue(Extension.subjectKeyIdentifier.getId());
+			if (Utils.isArrayNotEmpty(extensionValue)) {
+				ASN1Primitive extension = JcaX509ExtensionUtils.parseExtensionValue(extensionValue);
 				SubjectKeyIdentifier skiBC = SubjectKeyIdentifier.getInstance(extension);
 				return skiBC.getKeyIdentifier();
 			} else if (computeIfMissing) {
@@ -499,6 +500,29 @@ public final class DSSASN1Utils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
+	}
+
+	/**
+	 * This method returns authority key identifier as binaries from the certificate
+	 * extension (SHA-1 of the public key of the issuer certificate).
+	 *
+	 * @param certificateToken
+	 *                         the {@code CertificateToken}
+	 * @return authority key identifier bytes from the given certificate (can be
+	 *         null if the certificate is self signed)
+	 */
+	public static byte[] getAuthorityKeyIdentifier(CertificateToken certificateToken) {
+		byte[] extensionValue = certificateToken.getCertificate().getExtensionValue(Extension.authorityKeyIdentifier.getId());
+		if (Utils.isArrayNotEmpty(extensionValue)) {
+			try {
+				ASN1Primitive extension = JcaX509ExtensionUtils.parseExtensionValue(extensionValue);
+				AuthorityKeyIdentifier aki = AuthorityKeyIdentifier.getInstance(extension);
+				return aki.getKeyIdentifier();
+			} catch (IOException e) {
+				throw new DSSException("Unable to parse the authorityKeyIdentifier extension", e);
+			}
+		}
+		return null;
 	}
 
 	public static byte[] computeSkiFromCert(final CertificateToken certificateToken) {
