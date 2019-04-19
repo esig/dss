@@ -42,29 +42,46 @@ public final class PAdESUtils {
 			ByteArrayOutputStream tempRevision = new ByteArrayOutputStream();
 			int b;
 			while ((b = bis.read()) != -1) {
-				final char c = (char) b;
-				/*
-				 * 0x0a = New Line
-				 * 0x0d = Carriage return
-				 */
-				if ((c != 0x0a) && (c != 0x0d)) {
-					tempLine.write(b);
-				} else {
-					final byte[] byteArray = tempLine.toByteArray();
-					tempRevision.write(byteArray);
-					tempRevision.write(b);
-					// End of a document revision
-					if (Arrays.equals(byteArray, eof)) {
-						baos.write(tempRevision.toByteArray());
-						tempRevision.close();
-						tempRevision = new ByteArrayOutputStream();
+				
+				tempLine.write(b);
+				byte[] stringBytes = tempLine.toByteArray();
+				
+				if (Arrays.equals(stringBytes, eof)) {
+					tempLine.close();
+					tempLine = new ByteArrayOutputStream();
+					
+					tempRevision.write(stringBytes);
+					int c = bis.read();
+					// if \n
+					if (c == 0x0a) {
+						tempRevision.write(c);
+					} 
+					// if \r
+					else if (c == 0x0d) {
+						int d = bis.read();
+						// if \r\n
+						if (d == 0x0a) {
+							tempRevision.write(c);
+							tempRevision.write(d);
+						} else {
+							tempLine.write(c);
+							tempLine.write(d);
+						}
+					} else {
+						tempLine.write(c);
 					}
+					baos.write(tempRevision.toByteArray());
+					tempRevision.close();
+					tempRevision = new ByteArrayOutputStream();
+				} else if (b == 0x0a) {
+					tempRevision.write(tempLine.toByteArray());
 					tempLine.close();
 					tempLine = new ByteArrayOutputStream();
 				}
+				
 			}
-			tempRevision.close();
 			tempLine.close();
+			tempRevision.close();
 
 			baos.flush();
 			return new InMemoryDocument(baos.toByteArray(), "original.pdf", MimeType.PDF);
