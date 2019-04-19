@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -105,24 +106,18 @@ public class CommonCertificateSource implements CertificateSource {
 	 * @return If no match is found then an empty list is returned.
 	 */
 	@Override
-	public List<CertificateToken> get(final X500Principal x500Principal) {
-		List<CertificateToken> certificateTokenList = null;
-		if (x500Principal != null) {
-			final List<CertificateToken> missingCertificateTokens = new ArrayList<CertificateToken>();
-			certificateTokenList = certPool.get(x500Principal);
-			for (final CertificateToken certificateToken : certificateTokenList) {
-				if (!certificateTokens.contains(certificateToken)) {
-					missingCertificateTokens.add(certificateToken);
-				}
+	public Set<CertificateToken> get(final X500Principal x500Principal) {
+		final List<CertificateToken> missingCertificateTokens = new ArrayList<CertificateToken>();
+		Set<CertificateToken> certificateTokensSet = certPool.get(x500Principal);
+		for (final CertificateToken certificateToken : certificateTokensSet) {
+			if (!certificateTokens.contains(certificateToken)) {
+				missingCertificateTokens.add(certificateToken);
 			}
-			if (missingCertificateTokens.size() > 0) {
-				certificateTokenList.removeAll(missingCertificateTokens);
-			}
-		} else {
-
-			certificateTokenList = new ArrayList<CertificateToken>();
 		}
-		return Collections.unmodifiableList(certificateTokenList);
+		if (missingCertificateTokens.size() > 0) {
+			certificateTokensSet.removeAll(missingCertificateTokens);
+		}
+		return Collections.unmodifiableSet(certificateTokensSet);
 	}
 
 	/**

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -72,8 +73,8 @@ public class CertificatePoolTest {
 			}
 
 			@Override
-			public List<CertificateToken> get(X500Principal x500Principal) {
-				return null;
+			public Set<CertificateToken> get(X500Principal x500Principal) {
+				return Collections.emptySet();
 			}
 
 			@Override

@@ -22,6 +22,7 @@ package eu.europa.esig.dss.x509;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -44,16 +45,17 @@ public interface CertificateSource extends Serializable {
 	CertificateToken addCertificate(final CertificateToken certificate);
 
 	/**
-	 * This method returns the <code>List</code> of <code>CertificateToken</code>(s) corresponding to the given subject
-	 * distinguished name.
-	 * The search is performed at the level of source and not at the pool level (The same pool can be shared by many
-	 * sources).
+	 * This method returns the <code>Set</code> of <code>CertificateToken</code>(s)
+	 * corresponding to the given subject distinguished name. The search is
+	 * performed at the level of source and not at the pool level (The same pool can
+	 * be shared by many sources).
 	 *
 	 * @param x500Principal
-	 *            subject distinguished names of the certificate to find
-	 * @return a {@link List} of {@link CertificateToken} which have x500Principal as subject
+	 *                      subject distinguished names of the certificate to find
+	 * @return a {@link Set} of {@link CertificateToken} which have x500Principal as
+	 *         subject
 	 */
-	List<CertificateToken> get(final X500Principal x500Principal);
+	Set<CertificateToken> get(final X500Principal x500Principal);
 
 	/**
 	 * This method returns the certificate source type associated to the

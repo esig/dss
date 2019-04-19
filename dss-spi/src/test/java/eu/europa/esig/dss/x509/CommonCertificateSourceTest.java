@@ -24,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
-import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -56,9 +56,9 @@ public class CommonCertificateSourceTest {
 		assertNotNull(ccc.getCertificateSourceType());
 		assertEquals(1, ccc.getNumberOfCertificates());
 
-		List<CertificateToken> list = ccc.get(CERT.getSubjectX500Principal());
+		Set<CertificateToken> list = ccc.get(CERT.getSubjectX500Principal());
 		assertEquals(1, list.size());
-		assertEquals(CERT, list.get(0));
+		assertEquals(CERT, list.iterator().next());
 
 		list = ccc.get(CERT.getIssuerX500Principal());
 		assertEquals(0, list.size());

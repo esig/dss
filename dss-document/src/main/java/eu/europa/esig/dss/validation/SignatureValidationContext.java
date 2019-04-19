@@ -306,8 +306,8 @@ public class SignatureValidationContext implements ValidationContext {
 				continue;
 			}
 
-			List<CertificateToken> list = validationCertificatePool.get(candidate.getSubjectX500Principal());
-			for (CertificateToken pooledToken : list) {
+			Set<CertificateToken> tokensSet = validationCertificatePool.get(candidate.getSubjectX500Principal());
+			for (CertificateToken pooledToken : tokensSet) {
 				if (pooledToken.getPublicKey().equals(commonPublicKey) && isTrusted(pooledToken)) {
 					bestMatch = pooledToken;
 					token.isSignedBy(pooledToken);
