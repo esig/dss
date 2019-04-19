@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -59,11 +60,19 @@ public class CertificatePool implements Serializable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificatePool.class);
 
-	/* Map of entries, the key is a hash of the public key */
+	/*
+	 * Map of entries, the key is a hash of the public key.
+	 * 
+	 * All entries share the same keypair
+	 */
 	private Map<String, CertificatePoolEntity> entriesByPublicKeyHash = new HashMap<String, CertificatePoolEntity>();
 
-	/* Map of entries, the key is the canonicalized SubjectX500Principal */
-	private Map<String, CertificatePoolEntity> entriesBySubject = new HashMap<String, CertificatePoolEntity>();
+	/*
+	 * Map of tokens, the key is the canonicalized SubjectX500Principal
+	 * 
+	 * For a same SubjectX500Principal, different keypairs are possible
+	 */
+	private Map<String, Set<CertificateToken>> tokensBySubject = new HashMap<String, Set<CertificateToken>>();
 
 	public CertificatePool() {
 		LOG.debug("New CertificatePool created");
@@ -93,14 +102,23 @@ public class CertificatePool implements Serializable {
 				LOG.trace("Public key {} is not in the pool", entityKey);
 				poolEntity = new CertificatePoolEntity(certificateToAdd, certSource);
 				entriesByPublicKeyHash.put(entityKey, poolEntity);
-				entriesBySubject.put(getCanonicalizedSubject(certificateToAdd), poolEntity);
 			} else {
 				LOG.trace("Public key {} is already in the pool", entityKey);
 				poolEntity.addEquivalentCertificate(certificateToAdd);
 				poolEntity.addSource(certSource);
 			}
-
 		}
+		
+		synchronized (tokensBySubject) {
+			String canonicalizedSubject = getCanonicalizedSubject(certificateToAdd);
+			Set<CertificateToken> tokensSet = tokensBySubject.get(canonicalizedSubject);
+			if (tokensSet == null) {
+				tokensSet = new HashSet<CertificateToken>();
+				tokensBySubject.put(canonicalizedSubject, tokensSet);
+			}
+			tokensSet.add(certificateToAdd);
+		}
+		
 		return certificateToAdd;
 	}
 
@@ -197,9 +215,9 @@ public class CertificatePool implements Serializable {
 	 * @return If no match is found then an empty list is returned.
 	 */
 	public List<CertificateToken> get(final X500Principal x500Principal) {
-		final CertificatePoolEntity poolEntity = entriesBySubject.get(canonicalize(x500Principal));
-		if (poolEntity != null) {
-			return poolEntity.getEquivalentCertificates();
+		final Set<CertificateToken> tokensSet = tokensBySubject.get(canonicalize(x500Principal));
+		if (tokensSet != null) {
+			return new ArrayList<CertificateToken>(tokensSet);
 		}
 		return Collections.emptyList();
 	}
@@ -232,7 +250,7 @@ public class CertificatePool implements Serializable {
 		for (CertificatePoolEntity entity : values) {
 			List<CertificateToken> certificates = entity.getEquivalentCertificates();
 			CertificateToken first = certificates.iterator().next();
-			final byte[] computedSki = DSSASN1Utils.getSki(first, true);
+			final byte[] computedSki = DSSASN1Utils.computeSkiFromCert(first);
 			if (Arrays.equals(expectedSki, computedSki)) {
 				return certificates;
 			}
@@ -278,10 +296,6 @@ public class CertificatePool implements Serializable {
 
 	private String getCanonicalizedSubject(CertificateToken cert) {
 		return canonicalize(cert.getSubjectX500Principal());
-	}
-
-	private String getCanonicalizedIssuer(CertificateToken cert) {
-		return canonicalize(cert.getIssuerX500Principal());
 	}
 
 	private String canonicalize(final X500Principal x500Principal) {
@@ -336,8 +350,5 @@ public class CertificatePool implements Serializable {
 		}
 		return certs;
 	}
-
-
-
 
 }
