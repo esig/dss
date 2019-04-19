@@ -11,7 +11,6 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.validation.Schema;
 
 import org.junit.Test;
 
@@ -28,17 +27,12 @@ public class MarshallTrustedListTest {
 		JAXBContext jc = TrustedListUtils.getJAXBContext();
 		assertNotNull(jc);
 
-		Schema schema = TrustedListUtils.getSchema();
-		assertNotNull(schema);
-
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
-		unmarshaller.setSchema(schema);
 
 		JAXBElement<TrustStatusListType> unmarshalled = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(lotl);
 		assertNotNull(unmarshalled);
 
 		Marshaller marshaller = jc.createMarshaller();
-		marshaller.setSchema(schema);
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
 		StringWriter sw = new StringWriter();
@@ -58,16 +52,13 @@ public class MarshallTrustedListTest {
 		File lotl = new File("src/test/resources/tl.xml");
 
 		JAXBContext jc = TrustedListUtils.getJAXBContext();
-		Schema schema = TrustedListUtils.getSchema();
 
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
-		unmarshaller.setSchema(schema);
 
 		JAXBElement<TrustStatusListType> unmarshalled = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(lotl);
 		assertNotNull(unmarshalled);
 
 		Marshaller marshaller = jc.createMarshaller();
-		marshaller.setSchema(schema);
 
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 

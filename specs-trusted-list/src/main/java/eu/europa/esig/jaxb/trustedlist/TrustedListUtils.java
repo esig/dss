@@ -1,16 +1,7 @@
 package eu.europa.esig.jaxb.trustedlist;
 
-import java.io.File;
-
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-
-import org.xml.sax.SAXException;
 
 import eu.europa.esig.jaxb.xmldsig.ObjectFactory;
 
@@ -20,7 +11,6 @@ public final class TrustedListUtils {
 	}
 
 	private static JAXBContext jc;
-	private static Schema schema;
 
 	public static JAXBContext getJAXBContext() {
 		if (jc == null) {
@@ -33,20 +23,6 @@ public final class TrustedListUtils {
 			}
 		}
 		return jc;
-	}
-
-	public static Schema getSchema() {
-		if (schema == null) {
-			try {
-				SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-				schema = sf.newSchema(new Source[] { new StreamSource(new File("src/main/resources/xsd/ts_119612v020101_additionaltypes_xsd.xsd")),
-						new StreamSource(new File("src/main/resources/xsd/ts_119612v020101_sie_xsd.xsd")),
-						new StreamSource(new File("src/main/resources/xsd/ts_119612v020201_201601xsd.xsd")) });
-			} catch (SAXException e) {
-				throw new RuntimeException("Unable to initialize the Schema", e);
-			}
-		}
-		return schema;
 	}
 
 }
