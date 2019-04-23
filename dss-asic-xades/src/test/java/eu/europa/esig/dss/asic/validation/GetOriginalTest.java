@@ -64,7 +64,7 @@ public class GetOriginalTest {
 		for (AdvancedSignature advancedSignature : signatures) {
 			List<DSSDocument> originalDocuments = sdv.getOriginalDocuments(advancedSignature.getId());
 			assertEquals(2, originalDocuments.size());
-			isFindAllOriginals(originalDocuments);
+			isFoundAllOriginals(originalDocuments);
 		}
 		
 		Reports reports = sdv.validateDocument();
@@ -99,7 +99,7 @@ public class GetOriginalTest {
 		for (AdvancedSignature advancedSignature : signatures) {
 			List<DSSDocument> originalDocuments = sdv.getOriginalDocuments(advancedSignature.getId());
 			assertEquals(2, originalDocuments.size());
-			isFindAllOriginals(originalDocuments);
+			isFoundAllOriginals(originalDocuments);
 		}
 		
 		Reports reports = sdv.validateDocument();
@@ -111,7 +111,7 @@ public class GetOriginalTest {
 		assertEquals(2, signature.getSignatureScopes().size());
 	}
 
-	private void isFindAllOriginals(List<DSSDocument> retrievedDocuments) {
+	private void isFoundAllOriginals(List<DSSDocument> retrievedDocuments) {
 		for (DSSDocument dssDocument : EXPECTED_MULTIFILES) {
 			String digestExpected = dssDocument.getDigest(DigestAlgorithm.SHA256);
 			boolean found = false;

@@ -127,11 +127,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	private final Element signatureElement;
 	
 	private XMLSignature santuarioSignature;
-
-	/**
-	 * Indicates the id of the signature. If not existing this attribute is auto calculated.
-	 */
-	private String signatureId;
 	
 	/**
 	 * A signature identifier provided by a Driving Application.
@@ -150,6 +145,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Cached list of the Signing Certificate Timestamp References.
 	 */
 	private List<TimestampReference> signingCertificateTimestampReferences;
+	
+	/**
+	 * Cached list of {@link ReferenceValidation} contained in the signature manifest file (if applicable)
+	 */
+	private List<ReferenceValidation> manifestReferences;
 
 	static {
 
@@ -1194,8 +1194,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						found = found && (noDuplicateIdFound && (manifestNode != null));
 						referenceFound = referenceFound || found;
 						if (manifestNode != null && Utils.isCollectionNotEmpty(detachedContents)) {
-							ManifestValidator mv = new ManifestValidator(manifestNode, detachedContents, xPathQueryHolder);
-							referenceValidations.addAll(mv.validate());
+							referenceValidations.addAll(getManifestReferences(manifestNode));
 						}
 					} else {
 						validation.setType(DigestMatcherType.REFERENCE);
@@ -1230,6 +1229,19 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 		}
 		return referenceValidations;
+	}
+	
+	/**
+	 * Returns a list of all references contained in the given manifest
+	 * @param manifestNode {@link Node} to get references from
+	 * @return list of {@link ReferenceValidation} objects
+	 */
+	public List<ReferenceValidation> getManifestReferences(Node manifestNode) {
+		if (manifestReferences == null) {
+			ManifestValidator mv = new ManifestValidator(manifestNode, detachedContents, xPathQueryHolder);
+			manifestReferences = mv.validate();
+		}
+		return manifestReferences;
 	}
 
 	private boolean isSignedProperties(final Reference reference) {

@@ -416,6 +416,43 @@ public class XMLSignatureWrappingTest {
 		
 	}
 	
+	@Test
+	public void xadesManifestSignatureScopeTest() {
+		SignedDocumentValidator validator = SignedDocumentValidator
+				.fromDocument(new FileDocument(new File("src/test/resources/plugtest/esig2014/ESIG-XAdES/CZ_SEF/Signature-X-CZ_SEF-4.xml")));
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
+		
+		Reports reports = validator.validateDocument();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
+		assertNotNull(signatureScopes);
+		assertEquals(10, signatureScopes.size());
+		
+		List<XmlSignerData> originalSignerDocuments = diagnosticData.getOriginalSignerDocuments();
+		assertNotNull(originalSignerDocuments);
+		assertEquals(10, originalSignerDocuments.size());
+		
+		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+		assertNotNull(etsiValidationReport);
+		ValidationObjectListType signatureValidationObjects = etsiValidationReport.getSignatureValidationObjects();
+		int signedDataCounter = 0;
+		for (ValidationObjectType validationObject : signatureValidationObjects.getValidationObject()) {
+			if (ObjectType.SIGNED_DATA.equals(validationObject.getObjectType())) {
+				assertNotNull(validationObject.getId());
+				assertNotNull(validationObject.getPOE());
+				signedDataCounter++;
+			}
+		}
+		assertEquals(10, signedDataCounter);
+
+	}
+	
 	/**
 	 * Test added to ensure passing in case of trusted certificates/roots due to reorder of Basic Signature Validation according to EN 319 102-1 v1.1.1
 	 */

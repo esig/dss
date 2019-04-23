@@ -50,6 +50,7 @@ import eu.europa.esig.dss.validation.ContainerContentSignatureScope;
 import eu.europa.esig.dss.validation.ContainerSignatureScope;
 import eu.europa.esig.dss.validation.DigestSignatureScope;
 import eu.europa.esig.dss.validation.FullSignatureScope;
+import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureScope;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESUtils;
@@ -125,7 +126,12 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder<XAdE
 				} else if (signatureReference.typeIsReferenceToManifest()) {
 					Node manifestById = xadesSignature.getManifestById(uri);
 					if (manifestById != null) {
-						result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations, getDigest(XAdESUtils.getNodeBytes(manifestById))));
+						List<ReferenceValidation> referenceValidations = xadesSignature.getManifestReferences(manifestById);
+						for (ReferenceValidation referenceValidation : referenceValidations) {
+							if (referenceValidation.getName() != null && referenceValidation.getDigest() != null) {
+								result.add(new FullSignatureScope(referenceValidation.getName(), referenceValidation.getDigest()));
+							}
+						}
 					}
 				} else {
 					NodeList nodeList = DomUtils.getNodeList(xadesSignature.getSignatureElement().getOwnerDocument().getDocumentElement(),
