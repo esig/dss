@@ -241,7 +241,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		DigestAlgorithm digestAlgorithm = DigestAlgorithm.forName(digestAlgoAndValue.getDigestMethod());
 		assertNotNull(digestAlgorithm);
 		
-		List<DSSDocument> similarDocuments = buildSimilarCloseDocuments(originalDocument);
+		List<DSSDocument> similarDocuments = buildCloseDocuments(originalDocument);
 		boolean equals = false;
 		for (DSSDocument documentToCompare : similarDocuments) {
 			if (documentToCompare.getDigest(digestAlgorithm).equals(Utils.toBase64(digestAlgoAndValue.getDigestValue()))) {
@@ -257,7 +257,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	 * Documents can end with optional characters
 	 * This method returns all possible cases of the originalDocument end string
 	 */
-	private List<DSSDocument> buildSimilarCloseDocuments(DSSDocument originalDocument) throws IOException {
+	private List<DSSDocument> buildCloseDocuments(DSSDocument originalDocument) throws IOException {
 		List<DSSDocument> documentList = new ArrayList<DSSDocument>();
 		documentList.add(originalDocument);
 		documentList.add(getReducedDocument(originalDocument, 1));
