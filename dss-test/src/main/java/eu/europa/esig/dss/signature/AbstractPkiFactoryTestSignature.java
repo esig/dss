@@ -26,8 +26,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -48,12 +51,16 @@ import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.SignerLocation;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -162,7 +169,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		assertTrue(Utils.isCollectionNotEmpty(signatures));
 	}
 
-	protected void getOriginalDocument(DSSDocument signedDocument, DiagnosticData diagnosticData) {
+	protected void getOriginalDocument(DSSDocument signedDocument, DiagnosticData diagnosticData) throws IOException {
 		List<String> signatureIdList = diagnosticData.getSignatureIdList();
 		for (String signatureId : signatureIdList) {
 
@@ -189,7 +196,15 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 					byte[] originalByteArray = DSSUtils.toByteArray(original);
 					DSSDocument retrieved = retrievedOriginalDocuments.get(0);
 					byte[] retrievedByteArray = DSSUtils.toByteArray(retrieved);
-					assertTrue(isOnlyOneByteDifferAtLastPosition(originalByteArray, retrievedByteArray));
+					assertTrue(isOnlyTwoBytesDifferAtLastPosition(originalByteArray, retrievedByteArray));
+					
+					SignatureWrapper signature = diagnosticData.getSignatureById(signatureId);
+					List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
+					assertNotNull(signatureScopes);
+					assertEquals(1, signatureScopes.size());
+					XmlSignerData signerData = signatureScopes.get(0).getSignerData();
+					assertNotNull(signerData);
+					assertDigestEqual(original, signerData);
 				}
 			}
 		}
@@ -201,12 +216,12 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 	 * 
 	 * There's no technical way to extract the exact file ending.
 	 */
-	private boolean isOnlyOneByteDifferAtLastPosition(byte[] originalByteArray, byte[] retrievedByteArray) {
+	private boolean isOnlyTwoBytesDifferAtLastPosition(byte[] originalByteArray, byte[] retrievedByteArray) {
 		int lengthOrigin = originalByteArray.length;
 		int lengthRetrieved = retrievedByteArray.length;
 
 		int min = Math.min(lengthOrigin, lengthRetrieved);
-		if ((lengthOrigin - min > 1) || (lengthRetrieved - min > 1)) {
+		if ((lengthOrigin - min > 2) || (lengthRetrieved - min > 2)) {
 			return false;
 		}
 
@@ -217,6 +232,58 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends AbstractSignatu
 		}
 
 		return true;
+	}
+	
+	private void assertDigestEqual(DSSDocument originalDocument, XmlSignerData signerData) throws IOException {
+
+		XmlDigestAlgoAndValue digestAlgoAndValue = signerData.getDigestAlgoAndValue();
+		assertNotNull(digestAlgoAndValue);
+		DigestAlgorithm digestAlgorithm = DigestAlgorithm.forName(digestAlgoAndValue.getDigestMethod());
+		assertNotNull(digestAlgorithm);
+		
+		List<DSSDocument> similarDocuments = buildCloseDocuments(originalDocument);
+		boolean equals = false;
+		for (DSSDocument documentToCompare : similarDocuments) {
+			if (documentToCompare.getDigest(digestAlgorithm).equals(Utils.toBase64(digestAlgoAndValue.getDigestValue()))) {
+				equals = true;
+				break;
+			}
+		}
+		assertTrue(equals);
+		
+	}
+	
+	/**
+	 * Documents can end with optional characters
+	 * This method returns all possible cases of the originalDocument end string
+	 */
+	private List<DSSDocument> buildCloseDocuments(DSSDocument originalDocument) throws IOException {
+		List<DSSDocument> documentList = new ArrayList<DSSDocument>();
+		documentList.add(originalDocument);
+		documentList.add(getReducedDocument(originalDocument, 1));
+		documentList.add(getReducedDocument(originalDocument, 2));
+		documentList.add(getExpandedDocument(originalDocument, new byte[] {'\n'}));
+		documentList.add(getExpandedDocument(originalDocument, new byte[] {'\r', '\n'}));
+		documentList.add(getExpandedDocument(originalDocument, new byte[] {' ', '\r', '\n'}));
+		documentList.add(getExpandedDocument(originalDocument, new byte[] {' ', '\n'}));
+		return documentList;
+	}
+	
+	private DSSDocument getReducedDocument(DSSDocument document, int bytesToRemove) throws IOException {
+		try (InputStream inputStream = document.openStream()) {
+			byte[] originalBytes = Utils.toByteArray(inputStream);
+			byte[] subarray = Utils.subarray(originalBytes, 0, originalBytes.length - bytesToRemove);
+			return new InMemoryDocument(subarray);
+		}
+	}
+	
+	private DSSDocument getExpandedDocument(DSSDocument document, byte[] bytesToExpand) throws IOException {
+		try (InputStream inputStream = document.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			byte[] originalBytes = Utils.toByteArray(inputStream);
+			baos.write(originalBytes);
+			baos.write(bytesToExpand);
+			return new InMemoryDocument(baos.toByteArray());
+		}
 	}
 
 	private String getDigest(DSSDocument doc, boolean toBeCanonicalized) {
