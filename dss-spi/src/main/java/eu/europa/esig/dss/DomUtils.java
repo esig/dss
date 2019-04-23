@@ -70,6 +70,13 @@ import org.w3c.dom.Text;
 public final class DomUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DomUtils.class);
+	
+	// values used to pretty print xades signature
+	private static final String TRANSFORMER_INDENT_AMOUNT_ATTRIBUTE = "{http://xml.apache.org/xslt}indent-amount";
+	public static final int TRANSFORMER_INDENT_NUMBER = 4;
+	private static final String TRANSFORMER_INDENT_NUMBER_VALUE = String.valueOf(TRANSFORMER_INDENT_NUMBER);
+	private static final String TRANSFORMER_METHOD_VALUE = "xml";
+	private static final String TRANSFORMER_VALUE_YES = "yes";
 
 	private DomUtils() {
 	}
@@ -159,11 +166,24 @@ public final class DomUtils {
 		Transformer transformer = null;
 		try {
 			transformer = transformerFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+			transformer.setOutputProperty(OutputKeys.METHOD, TRANSFORMER_METHOD_VALUE);
 		} catch (TransformerConfigurationException e) {
 			throw new DSSException(e);
 		}
 		transformer.setErrorListener(new DSSXmlErrorListener());
+		return transformer;
+	}
+	
+	/**
+	 * This method returns a new instance of Transformer with secured and pretty print features enabled
+	 * 
+	 * @return an instance of Transformer with enabled secure and pretty print features
+	 */
+	public static Transformer getPrettyPrintTransformer() {
+		Transformer transformer = getSecureTransformer();
+		transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, TRANSFORMER_VALUE_YES);
+		transformer.setOutputProperty(OutputKeys.INDENT, TRANSFORMER_VALUE_YES);
+		transformer.setOutputProperty(TRANSFORMER_INDENT_AMOUNT_ATTRIBUTE, TRANSFORMER_INDENT_NUMBER_VALUE);
 		return transformer;
 	}
 

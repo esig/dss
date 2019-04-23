@@ -27,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -34,6 +35,7 @@ import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
@@ -43,6 +45,7 @@ import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.TimestampWrapper;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 
 public abstract class AbstractTestExtension<SP extends AbstractSignatureParameters> extends PKIFactoryAccess {
@@ -77,6 +80,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		verifyDiagnosticData(diagnosticData);
 		verifySimpleReport(reports.getSimpleReport());
 		verifyDetailedReport(reports.getDetailedReport());
 
@@ -102,6 +106,7 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		// reports.print();
 
 		diagnosticData = reports.getDiagnosticData();
+		verifyDiagnosticData(diagnosticData);
 		verifySimpleReport(reports.getSimpleReport());
 		verifyDetailedReport(reports.getDetailedReport());
 
@@ -138,6 +143,27 @@ public abstract class AbstractTestExtension<SP extends AbstractSignatureParamete
 		// extendedDocument.save("target/pdf.pdf");
 
 		return extendedDocument;
+	}
+	
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		checkTimestamps(diagnosticData);
+	}
+	
+	private void checkTimestamps(DiagnosticData diagnosticData) {
+		Set<TimestampWrapper> allTimestamps = diagnosticData.getAllTimestamps();
+		for (TimestampWrapper timestampWrapper : allTimestamps) {
+			assertNotNull(timestampWrapper.getProductionTime());
+			assertTrue(timestampWrapper.isMessageImprintDataFound());
+			assertTrue(timestampWrapper.isMessageImprintDataIntact());
+			assertTrue(timestampWrapper.isSignatureIntact());
+			assertTrue(timestampWrapper.isSignatureValid());
+
+			List<XmlDigestMatcher> digestMatchers = timestampWrapper.getDigestMatchers();
+			for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
+				assertTrue(xmlDigestMatcher.isDataFound());
+				assertTrue(xmlDigestMatcher.isDataIntact());
+			}
+		}
 	}
 
 	protected void verifySimpleReport(SimpleReport simpleReport) {
