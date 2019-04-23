@@ -98,7 +98,7 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	private void incorporateTimestampValidationData(final ValidationContext validationContext, String indent) {
 
 		final Element timeStampValidationDataDom = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom, XAdESNamespaces.XAdES141,
-				"xades141:TimeStampValidationData");
+				XADES141_TIME_STAMP_VALIDATION_DATA);
 
 		incorporateCertificateValues(timeStampValidationDataDom, validationContext, indent);
 		incorporateRevocationValues(timeStampValidationDataDom, validationContext, indent);

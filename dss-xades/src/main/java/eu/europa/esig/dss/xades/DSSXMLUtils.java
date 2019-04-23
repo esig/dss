@@ -239,7 +239,8 @@ public final class DSSXMLUtils {
 		NodeList signatures = DomUtils.getNodeList(documentDom, "//" + XPathQueryHolder.ELEMENT_SIGNATURE);
 		for (int i = 0; i < signatures.getLength(); i++) {
 			Element signature = (Element) signatures.item(i);
-			if (getIDIdentifier(signature).contains(signatureId)) {
+			String signatureAttrIdValue = getIDIdentifier(signature);
+			if (Utils.isStringNotEmpty(signatureAttrIdValue) && signatureAttrIdValue.contains(signatureId)) {
 				Node unsignedSignatureProperties = DomUtils.getNode(signature, ".//" + "xades:UnsignedSignatureProperties");
 				Node indentedSignature = getIndentedSignature(signature, noIndentObjectIds);
 				Node importedSignature = documentDom.importNode(indentedSignature, true);
@@ -491,7 +492,7 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * If this method finds an attribute with names ID (case-insensitive) then it is
+	 * If this method finds an attribute with the name ID (case-insensitive) then it is
 	 * returned. If there is more than one ID attributes then the first one is
 	 * returned.
 	 *

@@ -92,7 +92,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		if (length == 1) {
 			unsignedPropertiesDom = (Element) qualifyingPropertiesNodeList.item(0);
 		} else if (length == 0) {
-			unsignedPropertiesDom = DomUtils.addElement(documentDom, qualifyingPropertiesDom, XAdESNamespaces.XAdES, "xades:UnsignedProperties");
+			unsignedPropertiesDom = DomUtils.addElement(documentDom, qualifyingPropertiesDom, XAdESNamespaces.XAdES, XADES_UNSIGNED_PROPERTIES);
 			if (params.isPrettyPrint()) {
 				qualifyingPropertiesDom = (Element) DSSXMLUtils.alignChildrenIndents(qualifyingPropertiesDom);
 				unsignedPropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xPathQueryHolder.XPATH_UNSIGNED_PROPERTIES);
@@ -113,8 +113,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		if (length == 1) {
 			unsignedSignaturePropertiesDom = (Element) unsignedSignaturePropertiesNodeList.item(0);
 		} else if (length == 0) {
-			unsignedSignaturePropertiesDom = DomUtils.addElement(documentDom, unsignedPropertiesDom, XAdESNamespaces.XAdES,
-					"xades:UnsignedSignatureProperties");
+			unsignedSignaturePropertiesDom = DomUtils.addElement(documentDom, unsignedPropertiesDom, XAdESNamespaces.XAdES, XADES_UNSIGNED_SIGNATURE_PROPERTIES);
 			if (params.isPrettyPrint()) {
 				unsignedPropertiesDom = (Element) DSSXMLUtils.indentAndReplace(documentDom, unsignedPropertiesDom);
 				unsignedSignaturePropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xPathQueryHolder.XPATH_UNSIGNED_SIGNATURE_PROPERTIES);
