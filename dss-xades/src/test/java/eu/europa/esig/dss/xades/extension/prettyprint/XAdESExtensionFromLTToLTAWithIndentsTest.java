@@ -44,7 +44,7 @@ public class XAdESExtensionFromLTToLTAWithIndentsTest extends PKIFactoryAccess {
 	public void test() throws Exception {
 		DSSDocument originalDocument = new FileDocument(new File("src/test/resources/sample.xml"));
 		DSSDocument signedDocument = getSignedDocument(originalDocument);
-		signedDocument.save("target/signedDoc.xml");
+		// signedDocument.save("target/signedDoc.xml");
 		
 		DSSDocument signedWithIndents = addCustomIndents(signedDocument);
 
