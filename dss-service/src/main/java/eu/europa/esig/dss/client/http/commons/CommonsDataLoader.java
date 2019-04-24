@@ -464,6 +464,8 @@ public class CommonsDataLoader implements DataLoader {
 		final Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 		env.put(Context.PROVIDER_URL, urlString);
+		env.put("com.sun.jndi.ldap.connect.timeout", "" + timeoutConnection);
+		env.put("com.sun.jndi.ldap.read.timeout", "" + timeoutSocket);
 		try {
 
 			// parse URL according to the template: 'ldap://host:port/DN?attributes?scope?filter?extensions'

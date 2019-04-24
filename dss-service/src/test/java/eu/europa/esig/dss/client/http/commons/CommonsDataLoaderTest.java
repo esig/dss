@@ -97,5 +97,14 @@ public class CommonsDataLoaderTest {
 		url = "ldap://pks-ldap.telesec.de/o=T-Systems International GmbH,c=de?certificate";
 		assertFalse(Utils.isArrayNotEmpty(dataLoader.get(url)));
 	}
-
+	
+	@Test
+	public void ldapTimeout() {
+		final String url = "ldap://pks-ldap.telesec.de/o=T-Systems International GmbH,c=de";
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
+		
+		dataLoader.setTimeoutConnection(100);
+		dataLoader.setTimeoutSocket(100);
+		assertTrue(Utils.isArrayEmpty(dataLoader.get(url)));
+	}
 }
