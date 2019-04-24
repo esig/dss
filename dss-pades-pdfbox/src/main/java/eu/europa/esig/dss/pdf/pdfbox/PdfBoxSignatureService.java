@@ -390,8 +390,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		try {
 			byte[] cmsWithByteRange = signature.getContents(originalBytes);
 			return Arrays.equals(cms, cmsWithByteRange);
-		} catch (IOException e) {
-			String message = String.format("Invalid data in the ByteRange (signature name: %s)", signature.getName());
+		} catch (Exception e) {
+			String message = String.format("Unable to retrieve data from the ByteRange (signature name: %s)", signature.getName());
 			if (LOG.isDebugEnabled()) {
 				// Exception displays the (long) hex value
 				LOG.debug(message, e);
