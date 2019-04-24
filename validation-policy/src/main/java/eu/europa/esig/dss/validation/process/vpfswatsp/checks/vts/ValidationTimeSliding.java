@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlRFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVTS;
@@ -40,15 +40,14 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChec
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.POEExistsAtOrBeforeControlTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.SatisfyingRevocationDataExistsCheck;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TokenProxy;
 import eu.europa.esig.jaxb.policy.CryptographicConstraint;
 
 public class ValidationTimeSliding extends Chain<XmlVTS> {
 
-	private final DiagnosticData diagnosticData;
 	private final TokenProxy token;
 	private final Date currentTime;
 
@@ -59,11 +58,10 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 	private Date controlTime;
 
-	public ValidationTimeSliding(DiagnosticData diagnosticData, TokenProxy token, Date currentTime, Context context, POEExtraction poe,
+	public ValidationTimeSliding(TokenProxy token, Date currentTime, Context context, POEExtraction poe,
 			ValidationPolicy policy) {
 		super(new XmlVTS());
 
-		this.diagnosticData = diagnosticData;
 		this.token = token;
 		this.currentTime = currentTime;
 
@@ -88,20 +86,21 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		 */
 		controlTime = currentTime;
 
-		List<String> certificateChainIds = token.getCertificateChainIds();
-		if (Utils.isCollectionNotEmpty(certificateChainIds)) {
+		List<CertificateWrapper> certificateChain = token.getCertificateChain();
+		if (Utils.isCollectionNotEmpty(certificateChain)) {
+
+			certificateChain = reduceChainUntilFirstTrustAnchor(certificateChain);
 
 			/*
 			 * 2) For each certificate in the chain starting from the first
 			 * certificate (the certificate issued by the trust anchor):
 			 */
-			Collections.reverse(certificateChainIds); // trusted_list -> ... ->
+			Collections.reverse(certificateChain); // trusted_list -> ... ->
 														// signature
 
 			ChainItem<XmlVTS> item = null;
 
-			for (String certificateId : certificateChainIds) {
-				CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateId);
+			for (CertificateWrapper certificate : certificateChain) {
 				if (certificate.isTrusted()) {
 					continue;
 				}
@@ -128,9 +127,9 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 * return the indication INDETERMINATE with the sub-indication
 				 * NO_POE.
 				 */
-				RevocationWrapper latestCompliantRevocation = null;
-				Set<RevocationWrapper> revocations = certificate.getRevocationData();
-				for (RevocationWrapper revocation : revocations) {
+				CertificateRevocationWrapper latestCompliantRevocation = null;
+				List<CertificateRevocationWrapper> revocations = certificate.getCertificateRevocationData();
+				for (CertificateRevocationWrapper revocation : revocations) {
 					if ((latestCompliantRevocation == null || revocation.getProductionDate().after(latestCompliantRevocation.getProductionDate()))
 							&& isConsistant(certificate, revocation) && isIssuanceBeforeControlTime(revocation)) {
 						latestCompliantRevocation = revocation;
@@ -202,6 +201,17 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		}
 	}
 
+	private List<CertificateWrapper> reduceChainUntilFirstTrustAnchor(List<CertificateWrapper> originalCertificateChain) {
+		List<CertificateWrapper> result = new ArrayList<CertificateWrapper>();
+		for (CertificateWrapper cert : originalCertificateChain) {
+			result.add(cert);
+			if (cert.isTrusted()) {
+				break;
+			}
+		}
+		return result;
+	}
+
 	@Override
 	protected void addAdditionalInfo() {
 		result.setControlTime(controlTime);
@@ -255,8 +265,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 		/* expiredCertsRevocationInfo Extension from TL */
 		if (expiredCertsOnCRL != null && archiveCutOff != null) {
-			String revocationSigningCertificateId = revocationData.getSigningCertificateId();
-			CertificateWrapper revocCert = diagnosticData.getUsedCertificateById(revocationSigningCertificateId);
+			CertificateWrapper revocCert = revocationData.getSigningCertificate();
 			if (revocCert != null) {
 				Date expiredCertsRevocationInfo = revocCert.getCertificateTSPServiceExpiredCertsRevocationInfo();
 				if (expiredCertsRevocationInfo != null) {

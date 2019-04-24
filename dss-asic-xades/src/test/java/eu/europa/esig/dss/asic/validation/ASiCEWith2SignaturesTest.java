@@ -25,17 +25,20 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 
 public class ASiCEWith2SignaturesTest {
 
@@ -51,9 +54,19 @@ public class ASiCEWith2SignaturesTest {
 		signaturePolicyProvider.setSignaturePoliciesByUrl(signaturePoliciesByUrl);
 		validator.setSignaturePolicyProvider(signaturePolicyProvider);
 		Reports reports = validator.validateDocument();
+		
 		assertNotNull(reports);
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertEquals(2, diagnosticData.getSignatureIdList().size());
+		
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		assertNotNull(signatures);
+		for (SignatureWrapper signatureWrapper : signatures) {
+			List<XmlSignatureScope> signatureScopes = signatureWrapper.getSignatureScopes();
+			assertNotNull(signatureScopes);
+			assertEquals(1, signatureScopes.size());
+		}
+		
 	}
 }

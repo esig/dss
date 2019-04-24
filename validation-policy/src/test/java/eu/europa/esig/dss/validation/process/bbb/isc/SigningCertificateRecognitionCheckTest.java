@@ -32,6 +32,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConstraint;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.validation.process.bbb.LoadPolicyUtils;
@@ -54,7 +55,9 @@ public class SigningCertificateRecognitionCheckTest {
 		xsc.setDigestValueMatch(true);
 		xsc.setDigestValuePresent(true);
 		xsc.setIssuerSerialMatch(true);
-		xsc.setId("79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC");
+		XmlCertificate xCert = new XmlCertificate();
+		xCert.setId("C-79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC");
+		xsc.setCertificate(xCert);
 
 		XmlSignature sig = new XmlSignature();
 		sig.setSigningCertificate(xsc);
@@ -67,7 +70,7 @@ public class SigningCertificateRecognitionCheckTest {
 		XmlISC result = new XmlISC();
 
 		SigningCertificateRecognitionCheck scrc = new SigningCertificateRecognitionCheck(result,
-				new SignatureWrapper(sig), wrapper, constraint);
+				new SignatureWrapper(sig), constraint);
 
 		scrc.execute();
 

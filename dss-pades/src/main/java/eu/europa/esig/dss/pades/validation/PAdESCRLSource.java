@@ -21,17 +21,27 @@
 package eu.europa.esig.dss.pades.validation;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
+import eu.europa.esig.dss.pdf.PdfVRIDict;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.x509.RevocationOrigin;
+import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 
 /**
  * CRLSource that will retrieve the CRL from a PAdES Signature
  */
-public class PAdESCRLSource extends OfflineCRLSource {
+@SuppressWarnings("serial")
+public class PAdESCRLSource extends SignatureCRLSource {
 
 	private final PdfDssDict dssDictionary;
+	
+	private final String vriDictionaryName;
+	
+	private Map<Long, byte[]> crlMap;
 
 	/**
 	 * The default constructor for PAdESCRLSource.
@@ -40,21 +50,76 @@ public class PAdESCRLSource extends OfflineCRLSource {
 	 *                      the DSS dictionary
 	 */
 	public PAdESCRLSource(final PdfDssDict dssDictionary) {
+		this(dssDictionary, null);
+	}
+	
+	public PAdESCRLSource(final PdfDssDict dssDictionary, final String vriDictionaryName) {
 		this.dssDictionary = dssDictionary;
-		extract();
+		this.vriDictionaryName = vriDictionaryName;
+		appendContainedCRLResponses();
 	}
-
-	private void extract() {
-		for (byte[] crl : getCrlMap().values()) {
-			addCRLBinary(crl);
-		}
+	
+	private void appendContainedCRLResponses() {
+		extractDSSCRLs();
+		extractVRICRLs();
 	}
-
+	
+	/**
+	 * Returns a map of all CRL entries contained in DSS dictionary or into nested
+	 * VRI dictionaries
+	 * 
+	 * @return a map of CRL binaries with their object ids
+	 */
 	public Map<Long, byte[]> getCrlMap() {
-		if (dssDictionary != null) {
-			return dssDictionary.getCrlMap();
+		if (crlMap == null) {
+			appendContainedCRLResponses();
+		}
+		if (crlMap != null) {
+			return crlMap;
 		}
 		return Collections.emptyMap();
+	}
+
+	private Map<Long, byte[]> getDssCrlMap() {
+		if (dssDictionary != null) {
+			crlMap = dssDictionary.getCRLs();
+			return crlMap;
+		}
+		return Collections.emptyMap();
+	}
+
+	private void extractDSSCRLs() {
+		for (byte[] crl : getDssCrlMap().values()) {
+			addCRLBinary(crl, RevocationOrigin.INTERNAL_DSS);
+		}
+	}
+	
+	private PdfVRIDict findVriDict() {
+		PdfVRIDict vriDictionary = null;
+		if (dssDictionary != null) {
+			List<PdfVRIDict> vriDictList = dssDictionary.getVRIs();
+			if (vriDictionaryName != null && Utils.isCollectionNotEmpty(vriDictList)) {
+				for (PdfVRIDict vriDict : vriDictList) {
+					if (vriDictionaryName.equals(vriDict.getName())) {
+						vriDictionary = vriDict;
+						break;
+					}
+				}
+			}
+		}
+		return vriDictionary;
+	}
+	
+	private void extractVRICRLs() {
+		PdfVRIDict vriDictionary = findVriDict();
+		if (vriDictionary != null) {
+			for (Entry<Long, byte[]> crlEntry : vriDictionary.getCrlMap().entrySet()) {
+				if (!crlMap.containsKey(crlEntry.getKey())) {
+					crlMap.put(crlEntry.getKey(), crlEntry.getValue());
+				}
+				addCRLBinary(crlEntry.getValue(), RevocationOrigin.INTERNAL_VRI);
+			}
+		}
 	}
 
 }

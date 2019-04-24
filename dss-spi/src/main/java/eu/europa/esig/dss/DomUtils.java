@@ -557,8 +557,14 @@ public final class DomUtils {
 		return new HashMap<String, String>(namespaces);
 	}
 
+	/**
+	 * Returns case-insensitive xPath expression
+	 * @param uri to find
+	 * @return {@link String} xPath expression
+	 */
 	public static String getXPathByIdAttribute(String uri) {
-		return "[@Id='" + getId(uri) + "']";
+		String id = getId(uri);
+		return "[@Id='" + id + "' or @id='" + id + "' or @ID='" + id + "']";
 	}
 
 	public static String getId(String uri) {

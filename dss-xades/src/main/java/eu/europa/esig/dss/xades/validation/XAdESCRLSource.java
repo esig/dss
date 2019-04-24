@@ -20,22 +20,24 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.revocation.crl.OfflineCRLSource;
+import eu.europa.esig.dss.x509.RevocationOrigin;
+import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
+import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
 
 /**
  * Retrieves CRL values from an XAdES (-XL) signature.
  */
-public class XAdESCRLSource extends OfflineCRLSource {
+@SuppressWarnings("serial")
+public class XAdESCRLSource extends SignatureCRLSource {
 
 	/**
 	 * The default constructor for XAdESCRLSource.
@@ -45,24 +47,45 @@ public class XAdESCRLSource extends OfflineCRLSource {
 	 * @param xPathQueryHolder
 	 *            adapted {@code XPathQueryHolder}
 	 */
-	public XAdESCRLSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder) {
+	public XAdESCRLSource(final Element signatureElement, final XPathQueryHolder xPathQueryHolder) {		
 		Objects.requireNonNull(signatureElement, "Signature element cannot be null");
 		Objects.requireNonNull(xPathQueryHolder, "XPathQueryHolder cannot be null");
 
-		Set<String> base64Crls = new HashSet<String>();
-		collect(base64Crls, signatureElement, xPathQueryHolder.XPATH_CRL_VALUES_ENCAPSULATED_CRL);
-		collect(base64Crls, signatureElement, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_CRL_VALUES);
-
-		for (String base64Crl : base64Crls) {
-			addCRLBinary(Utils.fromBase64(base64Crl));
-		}
+		// values
+		collect(signatureElement, xPathQueryHolder.XPATH_CRL_VALUES_ENCAPSULATED_CRL, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
+		collect(signatureElement, xPathQueryHolder.XPATH_ATTR_REV_ENCAPSULATED_CRL_VALUES, RevocationOrigin.INTERNAL_ATTRIBUTE_REVOCATION_VALUES);
+		collect(signatureElement, xPathQueryHolder.XPATH_TSVD_ENCAPSULATED_CRL_VALUES, RevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES);
+		
+		// references
+		collectRefs(signatureElement, xPathQueryHolder, 
+				xPathQueryHolder.XPATH_COMPLETE_REVOCATION_CRL_REFS, RevocationOrigin.COMPLETE_REVOCATION_REFS);
+		collectRefs(signatureElement, xPathQueryHolder, 
+				xPathQueryHolder.XPATH_ATTRIBUTE_REVOCATION_CRL_REFS, RevocationOrigin.ATTRIBUTE_REVOCATION_REFS);
 	}
 
-	private void collect(Set<String> base64Crls, Element signatureElement, final String xPathQuery) {
+	private void collect(Element signatureElement, final String xPathQuery, RevocationOrigin revocationOrigin) {
 		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQuery);
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 			final Element crlValueEl = (Element) nodeList.item(ii);
-			base64Crls.add(crlValueEl.getTextContent());
+			addCRLBinary(Utils.fromBase64(crlValueEl.getTextContent()), revocationOrigin);
+		}
+	}
+	
+	private void collectRefs(Element signatureElement, final XPathQueryHolder xPathQueryHolder, 
+			final String xPathQuery, RevocationOrigin revocationOrigin) {
+		final Element crlRefsElement = DomUtils.getElement(signatureElement, xPathQuery);
+		if (crlRefsElement != null) {
+			final NodeList crlRefNodes = DomUtils.getNodeList(crlRefsElement, xPathQueryHolder.XPATH__CRL_REF);
+			for (int i = 0; i < crlRefNodes.getLength(); i++) {
+				final Element crlRefNode = (Element) crlRefNodes.item(i);
+				final Element digestAlgorithmEl = DomUtils.getElement(crlRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_METHOD);
+				final Element digestValueEl = DomUtils.getElement(crlRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_VALUE);
+				final String xmlName = digestAlgorithmEl.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+				final DigestAlgorithm digestAlgo = DigestAlgorithm.forXML(xmlName);
+				
+				CRLRef crlRef = new CRLRef(digestAlgo, Utils.fromBase64(digestValueEl.getTextContent()), revocationOrigin);
+				addReference(crlRef, revocationOrigin);
+			}
 		}
 	}
 

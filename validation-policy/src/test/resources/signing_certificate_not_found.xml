@@ -22,28 +22,28 @@
 	            <SignatureIntact>true</SignatureIntact>
 	            <SignatureValid>true</SignatureValid>
 	        </BasicSignature>
-	        <SigningCertificate Id="C1164130B52CC2158C23556DA7C7C601EC1AF92DD477BD59F4762CFA85C76768">
+	        <SigningCertificate Certificate="C-C1164130B52CC2158C23556DA7C7C601EC1AF92DD477BD59F4762CFA85C76768">
 	            <AttributePresent>false</AttributePresent>
 	            <DigestValuePresent>false</DigestValuePresent>
 	            <DigestValueMatch>false</DigestValueMatch>
 	            <IssuerSerialMatch>false</IssuerSerialMatch>
 	        </SigningCertificate>
 	        <CertificateChain>
-	            <ChainItem Id="C1164130B52CC2158C23556DA7C7C601EC1AF92DD477BD59F4762CFA85C76768">
-	                <Source>SIGNATURE</Source>
-	            </ChainItem>
-	            <ChainItem Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
-	                <Source>TRUSTED_LIST</Source>
-	            </ChainItem>
+	            <ChainItem Certificate="C-C1164130B52CC2158C23556DA7C7C601EC1AF92DD477BD59F4762CFA85C76768"/>
+	            <ChainItem Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
 	        </CertificateChain>
 	        <ContentType>application/pdf</ContentType>
 	        <SignatureScopes>
-	            <SignatureScope name="Full PDF" scope="FULL">Full document</SignatureScope>
+                <SignatureScope SignerData="D-4015074beb240dea0c0085038bc8cd626f3bf2437ed3864c2547202e83a1abc1">
+                    <Scope>FULL</Scope>
+                    <Name>Full PDF</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
 	        </SignatureScopes>
 	    </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7">
+        <Certificate Id="C-EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7">
             <SubjectDistinguishedName Format="CANONICAL">c=bg,st=b:831641791,l=sofia,o=information services plc.,cn=stampit ocsp validation,street=2 p. volov str.</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=BG,ST=B:831641791,L=Sofia,O=Information Services Plc.,CN=StampIT OCSP Validation,STREET=2 P. Volov Str.</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">c=bg,st=b:831641791,l=sofia,o=information services plc.,cn=stampit qualified ca,street=2 p. volov str.</IssuerDistinguishedName>
@@ -52,12 +52,9 @@
             <CommonName>StampIT OCSP Validation</CommonName>
             <CountryName>BG</CountryName>
             <OrganizationName>Information Services Plc.</OrganizationName>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA1</DigestMethod>
-	                <DigestValue>4F7bCO3UoPsM68QP52konFLaxi4=</DigestValue>
-	            </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
+            <Sources>
+            	 <Source>OCSP_RESPONSE</Source>
+            </Sources>
             <NotAfter>2020-11-10T16:49:08</NotAfter>
             <NotBefore>2011-02-17T10:41:07</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -73,11 +70,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
+            <SigningCertificate Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
             <CertificateChain>
-                <ChainItem Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -88,40 +83,16 @@
             <QCTypes />
             <TrustedServiceProviders />
 			<Revocations>
-	            <Revocation Id="6FA33A27510825642B995F3A377396F43DE6C34204EA08EBD080D6AE935F6E91">
-	                <Origin>EXTERNAL</Origin>
-	                <Source>OCSPToken</Source>
-	                <SourceAddress>http://ocsp.stampit.org/</SourceAddress>
-	                <Available>true</Available>
+	            <CertificateRevocation Revocation="R-6FA33A27510825642B995F3A377396F43DE6C34204EA08EBD080D6AE935F6E91">
 	                <Status>true</Status>
-	                <ProductionDate>2016-05-04T16:20:02</ProductionDate>
-	                <ThisUpdate>2016-05-04T16:20:02</ThisUpdate>
-	                <DigestAlgoAndValues>
-		                <DigestAlgoAndValue>
-		                    <DigestMethod>SHA1</DigestMethod>
-		                    <DigestValue>sfiKRUyRBkwxh0BNXiC6681QVus=</DigestValue>
-		                </DigestAlgoAndValue>
-	                </DigestAlgoAndValues>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Id="EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7"/>
-	                <CertificateChain>
-	                    <ChainItem Id="EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7">
-	                        <Source>OCSP_RESPONSE</Source>
-	                    </ChainItem>
-	                    <ChainItem Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	            </Revocation>
+	            </CertificateRevocation>
 	        </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>4F7bCO3UoPsM68QP52konFLaxi4=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
-        <Certificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
+        <Certificate Id="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
             <SubjectDistinguishedName Format="CANONICAL">c=bg,st=b:831641791,l=sofia,o=information services plc.,cn=stampit qualified ca,street=2 p. volov str.</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=BG,ST=B:831641791,L=Sofia,O=Information Services Plc.,CN=StampIT Qualified CA,STREET=2 P. Volov Str.</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">c=bg,st=b:831641791,l=sofia,o=information services plc.,cn=stampit primary root ca,street=2 p. volov str.</IssuerDistinguishedName>
@@ -130,12 +101,9 @@
             <CommonName>StampIT Qualified CA</CommonName>
             <CountryName>BG</CountryName>
             <OrganizationName>Information Services Plc.</OrganizationName>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA1</DigestMethod>
-	                <DigestValue>WWHsRoGqE5OpLRI6fW4j7D4API4=</DigestValue>
-	            </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <NotAfter>2020-11-10T16:49:08</NotAfter>
             <NotBefore>2010-11-11T16:49:08</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -159,8 +127,12 @@
             <QCStatementIds />
             <QCTypes />
             <TrustedServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>WWHsRoGqE5OpLRI6fW4j7D4API4=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
-        <Certificate Id="C1164130B52CC2158C23556DA7C7C601EC1AF92DD477BD59F4762CFA85C76768">
+        <Certificate Id="C-C1164130B52CC2158C23556DA7C7C601EC1AF92DD477BD59F4762CFA85C76768">
             <SubjectDistinguishedName Format="CANONICAL">c=bg,st=b:831641791\,egn:7408013104,l=sofia,o=information services plc.,cn=E T K,1.2.840.113549.1.9.1=#161b656c696e2e6b6f6c6576406d61696c2e7374616d7069742e6f7267</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=BG,ST=B:831641791\,EGN:7408013104,L=Sofia,O=Information Services Plc.,CN=E T K,1.2.840.113549.1.9.1=#161b656c696e2e6b6f6c6576406d61696c2e7374616d7069742e6f7267</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">c=bg,st=b:831641791,l=sofia,o=information services plc.,cn=stampit qualified ca,street=2 p. volov str.</IssuerDistinguishedName>
@@ -169,12 +141,9 @@
             <CommonName>E T K</CommonName>
             <CountryName>BG</CountryName>
             <OrganizationName>Information Services Plc.</OrganizationName>
-            <DigestAlgoAndValues>
-	            <DigestAlgoAndValue>
-	                <DigestMethod>SHA1</DigestMethod>
-	                <DigestValue>Hccszp4wQjYaiWt16FH/DFAXLMQ=</DigestValue>
-	            </DigestAlgoAndValue>
-            </DigestAlgoAndValues>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <NotAfter>2016-12-18T12:47:38</NotAfter>
             <NotBefore>2015-12-19T12:47:38</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -192,11 +161,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
+            <SigningCertificate Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
             <CertificateChain>
-                <ChainItem Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -211,38 +178,71 @@
             <QCTypes />
             <TrustedServiceProviders />
 			<Revocations>
-	            <Revocation Id="47DB90134AA46D1F36475B286BECB476FE6CED6AE5D74E39D4C623AF8FC9F499">
-	                <Origin>EXTERNAL</Origin>
-	                <Source>OCSPToken</Source>
-	                <SourceAddress>http://ocsp.stampit.org/</SourceAddress>
-	                <Available>true</Available>
+	            <CertificateRevocation Revocation="R-47DB90134AA46D1F36475B286BECB476FE6CED6AE5D74E39D4C623AF8FC9F499">
 	                <Status>true</Status>
-	                <ProductionDate>2016-05-04T16:20:02</ProductionDate>
-	                <ThisUpdate>2016-05-04T16:20:02</ThisUpdate>
-	                <DigestAlgoAndValues>
-		                <DigestAlgoAndValue>
-		                    <DigestMethod>SHA1</DigestMethod>
-		                    <DigestValue>X5xkac/hEkeb3Yne7gkc4Pl/G5Q=</DigestValue>
-		                </DigestAlgoAndValue>
-	                </DigestAlgoAndValues>
-	                <BasicSignature>
-	                    <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-	                    <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-	                    <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-	                    <SignatureIntact>true</SignatureIntact>
-	                    <SignatureValid>true</SignatureValid>
-	                </BasicSignature>
-	                <SigningCertificate Id="EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7"/>
-	                <CertificateChain>
-	                    <ChainItem Id="EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7">
-	                        <Source>OCSP_RESPONSE</Source>
-	                    </ChainItem>
-	                    <ChainItem Id="BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31">
-	                        <Source>TRUSTED_LIST</Source>
-	                    </ChainItem>
-	                </CertificateChain>
-	            </Revocation>
+                </CertificateRevocation>
 	        </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>Hccszp4wQjYaiWt16FH/DFAXLMQ=</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-6FA33A27510825642B995F3A377396F43DE6C34204EA08EBD080D6AE935F6E91">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.stampit.org/</SourceAddress>
+            <ProductionDate>2016-05-04T16:20:02</ProductionDate>
+            <ThisUpdate>2016-05-04T16:20:02</ThisUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7"/>
+                <ChainItem Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                 <DigestMethod>SHA1</DigestMethod>
+                 <DigestValue>sfiKRUyRBkwxh0BNXiC6681QVus=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-47DB90134AA46D1F36475B286BECB476FE6CED6AE5D74E39D4C623AF8FC9F499">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.stampit.org/</SourceAddress>
+            <ProductionDate>2016-05-04T16:20:02</ProductionDate>
+            <ThisUpdate>2016-05-04T16:20:02</ThisUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-EAEDAA15C9310326BF95FDCCF490DA17B1BAD8A5D2E7197DCFAB28CE474A1EC7"/>
+                <ChainItem Certificate="C-BC2A0E26684253EFB5848A7C57C3CC2CE75C76CFCBB035BD3AE54EE307310D31"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>X5xkac/hEkeb3Yne7gkc4Pl/G5Q=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-4015074beb240dea0c0085038bc8cd626f3bf2437ed3864c2547202e83a1abc1">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>QBUHS+skDeoMAIUDi8jNYm878kN+04ZMJUcgLoOhq8E=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
 </DiagnosticData>

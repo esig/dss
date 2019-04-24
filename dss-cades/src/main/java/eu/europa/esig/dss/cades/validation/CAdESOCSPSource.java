@@ -20,16 +20,19 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
+import org.bouncycastle.asn1.esf.CrlOcspRef;
+import org.bouncycastle.asn1.esf.OcspListID;
+import org.bouncycastle.asn1.esf.OcspResponsesID;
 import org.bouncycastle.asn1.esf.RevocationValues;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
@@ -43,14 +46,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.x509.revocation.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.x509.RevocationOrigin;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponse;
+import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
  * OCSPSource that retrieves information from a CAdESSignature.
  *
  *
  */
-public class CAdESOCSPSource extends OfflineOCSPSource {
+@SuppressWarnings("serial")
+public class CAdESOCSPSource extends SignatureOCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESOCSPSource.class);
 
@@ -71,19 +78,17 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 	}
 
 	@Override
-	public List<BasicOCSPResp> getContainedOCSPResponses() {
-
-		final List<BasicOCSPResp> basicOCSPResps = new ArrayList<BasicOCSPResp>();
+	public void appendContainedOCSPResponses() {
+		
 		// Add OCSPs from SignedData
-		addBasicOcspRespFrom_id_pkix_ocsp_basic(basicOCSPResps);
-		addBasicOcspRespFrom_id_ri_ocsp_response(basicOCSPResps);
+		addBasicOcspRespFrom_id_pkix_ocsp_basic();
+		addBasicOcspRespFrom_id_ri_ocsp_response();
 		// Adds OCSP responses in -XL id_aa_ets_revocationValues inside SignerInfo attribute if present
 		if (signerInformation != null) {
 
-			final AttributeTable attributes = signerInformation.getUnsignedAttributes();
-			if (attributes != null) {
+			final AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
+			if (unsignedAttributes != null) {
 
-				final Attribute attribute = attributes.get(PKCSObjectIdentifiers.id_aa_ets_revocationValues);
 				/*
 				ETSI TS 101 733 V2.2.1 (2013-04) page 43
                 6.3.4 revocation-values Attribute Definition
@@ -99,22 +104,34 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
                 ocspVals [1] SEQUENCE OF BasicOCSPResponse OPTIONAL,
                 otherRevVals [2] OtherRevVals OPTIONAL}
 				 */
-				if (attribute != null) {
-
-					final ASN1Set attrValues = attribute.getAttrValues();
-					final ASN1Encodable attValue = attrValues.getObjectAt(0);
-					final RevocationValues revocationValues = RevocationValues.getInstance(attValue);
-					for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
-
-						final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
-						addBasicOcspResp(basicOCSPResps, basicOCSPResp);
-					}
-					/* TODO: should add also OtherRevVals, but:
-					 "The syntax and semantics of the other revocation values (OtherRevVals) are outside the scope of the present
-                    document. The definition of the syntax of the other form of revocation information is as identified by
-                    OtherRevRefType."
-					 */
-				}
+				collectRevocationValues(unsignedAttributes, PKCSObjectIdentifiers.id_aa_ets_revocationValues, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
+				
+				/*
+				 * ETSI TS 101 733 V2.2.1 (2013-04) pages 39,41
+				 * 6.2.2 complete-revocation-references Attribute Definition and
+				 * 6.2.4 attribute-revocation-references Attribute Definition
+				 * The complete-revocation-references attribute is an unsigned attribute. 
+				 * Only a single instance of this
+				 * attribute shall occur with an electronic signature. 
+				 * It references the full set of the CRL, ACRL, or OCSP responses that
+				 * have been used in the validation of the signer, and 
+				 * CA certificates used in ES with Complete validation data.
+				 * The complete-revocation-references attribute value has the ASN.1 syntax CompleteRevocationRefs
+				 * 
+				 * CompleteRevocationRefs ::= SEQUENCE OF CrlOcspRef
+				 * CrlOcspRef ::= SEQUENCE {
+				 *  crlids [0] CRLListID OPTIONAL,
+				 *  ocspids [1] OcspListID OPTIONAL,
+				 *  otherRev [2] OtherRevRefs OPTIONAL
+				 * } 
+				 * AttributeRevocationRefs ::= SEQUENCE OF CrlOcspRef (the same as for CompleteRevocationRefs)
+				 */
+				collectRevocationRefs(unsignedAttributes, PKCSObjectIdentifiers.id_aa_ets_revocationRefs, RevocationOrigin.COMPLETE_REVOCATION_REFS);
+				/*
+				 * id-aa-ets-attrRevocationRefs OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+				 * us(840) rsadsi(113549) pkcs(1) pkcs-9(9) smime(16) id-aa(2) 45} 
+				 */
+				collectRevocationRefs(unsignedAttributes, PKCSObjectIdentifiers.id_aa.branch("45"), RevocationOrigin.ATTRIBUTE_REVOCATION_REFS);
 
 			}
 		}
@@ -123,7 +140,8 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
           In the PKCS #7 object of a digital signature in a PDF file, identifies a signed attribute
           that "can include all the revocation information that is necessary to carry out revocation
           checks for the signer's certificate and its issuer certificates."
-          Defined as adbe-revocationInfoArchival { adbe(1.2.840.113583) acrobat(1) security(1) 8 } in "PDF Reference, fifth edition: Adobe® Portable Document Format, Version 1.6" Adobe Systems Incorporated, 2004.
+          Defined as adbe-revocationInfoArchival { adbe(1.2.840.113583) acrobat(1) security(1) 8 } in "PDF Reference, 
+          fifth edition: Adobe® Portable Document Format, Version 1.6" Adobe Systems Incorporated, 2004.
           http://partners.adobe.com/public/developer/en/pdf/PDFReference16.pdf page 698
 
           RevocationInfoArchival ::= SEQUENCE {
@@ -136,10 +154,54 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
             Value OCTET STRING
           }
 		 */
-		return basicOCSPResps;
+	}
+	
+	private void collectRevocationValues(AttributeTable unsignedAttributes, ASN1ObjectIdentifier revocacationValuesAttribute, RevocationOrigin origin) {
+		final Attribute attribute = unsignedAttributes.get(revocacationValuesAttribute);
+		if (attribute != null) {
+
+			final ASN1Set attrValues = attribute.getAttrValues();
+			final ASN1Encodable attValue = attrValues.getObjectAt(0);
+			final RevocationValues revocationValues = RevocationValues.getInstance(attValue);
+			for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
+
+				final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
+				addBasicOcspResp(basicOCSPResp, origin);
+			}
+			/* TODO: should add also OtherRevVals, but:
+			 "The syntax and semantics of the other revocation values (OtherRevVals) are outside the scope of the present
+            document. The definition of the syntax of the other form of revocation information is as identified by
+            OtherRevRefType."
+			 */
+		}
+	}
+	
+	private void collectRevocationRefs(AttributeTable unsignedAttributes, ASN1ObjectIdentifier revocationReferencesAttribute, RevocationOrigin origin) {
+		final Attribute attribute = unsignedAttributes.get(revocationReferencesAttribute);
+		if (attribute == null) {
+			return;
+		}
+		final ASN1Set attrValues = attribute.getAttrValues();
+		if (attrValues.size() <= 0) {
+			return;
+		}
+	
+		final ASN1Encodable attrValue = attrValues.getObjectAt(0);
+		final ASN1Sequence completeRevocationRefs = (ASN1Sequence) attrValue;
+		for (int i = 0; i < completeRevocationRefs.size(); i++) {
+	
+			final CrlOcspRef otherCertId = CrlOcspRef.getInstance(completeRevocationRefs.getObjectAt(i));
+			final OcspListID ocspListID = otherCertId.getOcspids();
+			if (ocspListID != null) {
+				for (final OcspResponsesID ocspResponsesID : ocspListID.getOcspResponses()) {
+					final OCSPRef ocspRef = new OCSPRef(ocspResponsesID, origin);
+					addReference(ocspRef, origin);
+				}
+			}
+		}
 	}
 
-	private void addBasicOcspRespFrom_id_ri_ocsp_response(final List<BasicOCSPResp> basicOCSPResps) {
+	private void addBasicOcspRespFrom_id_ri_ocsp_response() {
 		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
 		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
 		for (final Object object : otherRevocationInfoMatches) {
@@ -152,7 +214,7 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 					final OCSPResp ocspResp = CMSUtils.getOcspResp(otherRevocationInfoMatch);
 					basicOCSPResp = CMSUtils.getBasicOcspResp(ocspResp);
 				}
-				addBasicOcspResp(basicOCSPResps, basicOCSPResp);
+				addBasicOcspResp(basicOCSPResp, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
 			} else {
 				LOG.warn("Unsupported object type for id_ri_ocsp_response (SHALL be DER encoding) : {}",
 						object.getClass().getSimpleName());
@@ -160,14 +222,14 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 		}
 	}
 
-	private void addBasicOcspRespFrom_id_pkix_ocsp_basic(final List<BasicOCSPResp> basicOCSPResps) {
+	private void addBasicOcspRespFrom_id_pkix_ocsp_basic() {
 		final Store otherRevocationInfo = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
 		final Collection otherRevocationInfoMatches = otherRevocationInfo.getMatches(null);
 		for (final Object object : otherRevocationInfoMatches) {
 			if (object instanceof DERSequence) {
 				final DERSequence otherRevocationInfoMatch = (DERSequence) object;
 				final BasicOCSPResp basicOCSPResp = CMSUtils.getBasicOcspResp(otherRevocationInfoMatch);
-				addBasicOcspResp(basicOCSPResps, basicOCSPResp);
+				addBasicOcspResp(basicOCSPResp, RevocationOrigin.INTERNAL_REVOCATION_VALUES);
 			} else {
 				LOG.warn("Unsupported object type for id_pkix_ocsp_basic (SHALL be DER encoding) : {}",
 						object.getClass().getSimpleName());
@@ -175,9 +237,9 @@ public class CAdESOCSPSource extends OfflineOCSPSource {
 		}
 	}
 
-	private void addBasicOcspResp(final List<BasicOCSPResp> basicOCSPResps, final BasicOCSPResp basicOCSPResp) {
+	private void addBasicOcspResp(final BasicOCSPResp basicOCSPResp, RevocationOrigin origin) {
 		if (basicOCSPResp != null) {
-			basicOCSPResps.add(basicOCSPResp);
+			ocspResponses.add(new OCSPResponse(basicOCSPResp, origin));
 		}
 	}
 

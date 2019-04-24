@@ -20,10 +20,13 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -37,7 +40,9 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
@@ -71,13 +76,19 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 
 		// Provide only the digest value
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
-		DigestDocument digestDocument = new DigestDocument();
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA1, toBeSigned.getDigest(DigestAlgorithm.SHA1));
 		digestDocument.setName("sample.xml");
-		digestDocument.addDigest(DigestAlgorithm.SHA1, toBeSigned.getDigest(DigestAlgorithm.SHA1));
 		detachedContents.add(digestDocument);
 		validator.setDetachedContents(detachedContents);
 
-		validator.validateDocument();
+		Reports reports = validator.validateDocument();
+		
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		
+		assertTrue(signature.isDocHashOnly());
+		assertFalse(signature.isHashOnly());
+		
 	}
 
 	@Test
@@ -102,17 +113,35 @@ public class DSS920ValidationWithDigestTest extends PKIFactoryAccess {
 
 		// Provide only the digest value
 		List<DSSDocument> detachedContents = new ArrayList<DSSDocument>();
-		DigestDocument digestDocument = new DigestDocument();
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, toBeSigned.getDigest(DigestAlgorithm.SHA256));
 		digestDocument.setName("sample.xml");
-		digestDocument.addDigest(DigestAlgorithm.SHA256, toBeSigned.getDigest(DigestAlgorithm.SHA256));
 		detachedContents.add(digestDocument);
 		validator.setDetachedContents(detachedContents);
 
 		Reports reports = validator.validateDocument();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertTrue(signatureById.isBLevelTechnicallyValid());
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertTrue(signature.isBLevelTechnicallyValid());
+		
+		assertTrue(signature.isDocHashOnly());
+		assertFalse(signature.isHashOnly());
+		
+		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
+		assertNotNull(signatureScopes);
+		XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
+		assertNotNull(xmlSignatureScope);
+		assertNotNull(xmlSignatureScope.getName());
+		assertNotNull(xmlSignatureScope.getScope());
+		assertNotNull(xmlSignatureScope.getSignerData());
+		assertNotNull(xmlSignatureScope.getSignerData().getDigestAlgoAndValue());
+		assertNotNull(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestMethod());
+		assertNotNull(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue());
+		
+		assertTrue(Arrays.equals(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue(), 
+				Utils.fromBase64(toBeSigned.getDigest(DigestAlgorithm.forName(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestMethod())))
+				));
+		
 	}
 
 	@Override

@@ -2,7 +2,7 @@
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <ValidationDate>2018-06-25T14:45:33</ValidationDate>
     <UsedCertificates>
-        <Certificate Id="296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF">
+        <Certificate Id="C-296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF">
             <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=cert for test,o=tsp-21.1 name,cn=sdi-21.1.1</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=LU,OU=CERT FOR TEST,O=TSP-21.1 Name,CN=SDI-21.1.1</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=cert for test,o=tsp-21.1 name,cn=sdi-21.1.1</IssuerDistinguishedName>
@@ -15,7 +15,9 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
-            <DigestAlgoAndValues/>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <NotAfter>2019-06-25T14:37:57</NotAfter>
             <NotBefore>2017-06-25T14:37:57</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -44,7 +46,7 @@
                     <CountryCode>LU</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                            <ServiceDigitalIdentifier>296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF</ServiceDigitalIdentifier>
+                            <ServiceDigitalIdentifier>C-296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF</ServiceDigitalIdentifier>
                             <ServiceName>TS-21.1.1 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -59,7 +61,7 @@
             <Revocations/>
             <Base64Encoded>MIIDaTCCAlGgAwIBAgIBAzANBgkqhkiG9w0BAQsFADBSMRMwEQYDVQQDDApTREktMjEuMS4xMRYwFAYDVQQKDA1UU1AtMjEuMSBOYW1lMRYwFAYDVQQLDA1DRVJUIEZPUiBURVNUMQswCQYDVQQGEwJMVTAeFw0xNzA2MjUxNDM3NTdaFw0xOTA2MjUxNDM3NTdaMFIxEzARBgNVBAMMClNESS0yMS4xLjExFjAUBgNVBAoMDVRTUC0yMS4xIE5hbWUxFjAUBgNVBAsMDUNFUlQgRk9SIFRFU1QxCzAJBgNVBAYTAkxVMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj8N0AODhSSK+lYygHnJ+TLupbOgPo5UWRXHCOtQp4VCTESyLm8sBT54BNQHY0pEz0eQg8JhC8Cf7Hq4+MeQKy5ljP1e8EOFdYCkFOe0vBe5hJ6mSxqJnN7jjLKn7GHzQ73BZtE6rkvVMxKBaczFKHA8/SjeHHdh9iVuBq/Sl0Re7MVx71rx+vi2tIXvzB0GAravRVAxhWcEvwRS0h4/JIkLm0fO4X92hdMrrv1SjsnSWF/vUYXvavLmLm52iOznm/yBI41rscvHUJLw2yD/o4nnGJTsIauFtucfAZLVMHZMGhpIhdGSPLuguCd83GxcPQr1mmYGdugpXlL7HqISPowIDAQABo0owSDAWBgNVHSUBAf8EDDAKBggrBgEFBQcDCTAdBgNVHQ4EFgQU1oPvGTdq3Xz6u9MeCMnMT/e/o4UwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAJoJiq1gwqY8wZ6RlTp9c8sNo4beLigGsJDuATFiiQeleLVQDV/gsiHx9R9QqJkU4miF2RJvi6Bo3TPZ8sEfra1aye8dvYGmnRh2pZJRkhB1BBV2Synw9n8/QytPdaJg4bSOsoBRRAGzZZjq4FxMPsUWV2zM8WMIl4SS/V5wKj0JfBfxDjyCOQrlsIpZ4B8m9ZXvUEkQ1r8iCK5HUcmr/6acASGQ2UAX7/FmAwtos1MwCvf1EltLw692niVYB9g6IiBgugo9jppMOzF0pJNtYOk9pZ+E5z5raPTWP34F+cP2NxWSECDjhVH3UG9JNV0qJfyUGo9LwNoBeQTZuBSwJOw==</Base64Encoded>
         </Certificate>
-        <Certificate Id="86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B">
+        <Certificate Id="C-86CA5DDDDCB6CA73C77511DFF3C94961BD675CA15111810103942CA7D96DCE1B">
             <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=cert for test,o=tl21 organization,cn=cert-test-21.1.1</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=LU,OU=CERT FOR TEST,O=TL21 Organization,CN=CERT-TEST-21.1.1</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=cert for test,o=tsp-21.1 name,cn=sdi-21.1.1</IssuerDistinguishedName>
@@ -78,7 +80,9 @@
             <OCSPAccessUrls>
                 <Url>http://localhost:8080/qes-validation-web/ocsp/SDI-21.1.1</Url>
             </OCSPAccessUrls>
-            <DigestAlgoAndValues/>
+            <Sources>
+            	<Source>UNKNOWN</Source>
+            </Sources>
             <NotAfter>2019-06-25T14:37:57</NotAfter>
             <NotBefore>2017-06-25T14:37:57</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -95,11 +99,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF"/>
+            <SigningCertificate Certificate="C-296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF"/>
             <CertificateChain>
-                <ChainItem Id="296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -117,7 +119,7 @@
                     <CountryCode>LU</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                            <ServiceDigitalIdentifier>296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF</ServiceDigitalIdentifier>
+                            <ServiceDigitalIdentifier>C-296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF</ServiceDigitalIdentifier>
                             <ServiceName>TS-21.1.1 Name</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -133,33 +135,37 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="86ca5ddddcb6ca73c77511dff3c94961bd675ca15111810103942ca7d96dce1b4fd467c5bfd626dd6a8fb05d515e8d1f57a819aa454f3e96f2dc113b4adebe9a">
-                    <Origin>EXTERNAL</Origin>
-                    <Source>OCSPToken</Source>
-                    <SourceAddress>http://localhost:8080/qes-validation-web/ocsp/SDI-21.1.1</SourceAddress>
-                    <Available>true</Available>
+                <CertificateRevocation Revocation="R-86ca5ddddcb6ca73c77511dff3c94961bd675ca15111810103942ca7d96dce1b4fd467c5bfd626dd6a8fb05d515e8d1f57a819aa454f3e96f2dc113b4adebe9a">
                     <Status>true</Status>
-                    <ProductionDate>2018-06-25T14:45:33</ProductionDate>
-                    <ThisUpdate>2018-06-25T14:45:33</ThisUpdate>
-                    <DigestAlgoAndValues/>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF"/>
-                    <CertificateChain>
-                        <ChainItem Id="296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
             <Base64Encoded>MIIEijCCA3KgAwIBAgIBBDANBgkqhkiG9w0BAQsFADBSMRMwEQYDVQQDDApTREktMjEuMS4xMRYwFAYDVQQKDA1UU1AtMjEuMSBOYW1lMRYwFAYDVQQLDA1DRVJUIEZPUiBURVNUMQswCQYDVQQGEwJMVTAeFw0xNzA2MjUxNDM3NTdaFw0xOTA2MjUxNDM3NTdaMFwxGTAXBgNVBAMMEENFUlQtVEVTVC0yMS4xLjExGjAYBgNVBAoMEVRMMjEgT3JnYW5pemF0aW9uMRYwFAYDVQQLDA1DRVJUIEZPUiBURVNUMQswCQYDVQQGEwJMVTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALDeQk8c0st4blVS/1QRSuJUPktIYjK3xTSRxO4TZRh8nit7psrpcklEI1/QefdQialQDw2jRQSKJYHnLGuf6jQQpJ3CvAuwXv2tkCIp7l8InvlcYZBNqYAMgUj/mS+9iNJGml9SbhnbW8Mdo47WeAQ/fy/KrrHooPrC1qZ2cDaPNQulzZyd+JIkRoitdsQs54lGp7mL3OGYCpVTVhyQZ/e3XocENhvJzdWvqLY9Kd+YaPWDsP1UORsjzKuqnCJsgsmwgfClt8rT/WeqzlT2TopxUpS5LgiLWd2MrsoRMEoI3tu89uJMItF4LG78fk2HfPX2KrpO7KpoC0LBFDQPkjMCAwEAAaOCAV8wggFbMA4GA1UdDwEB/wQEAwIGQDA6BggrBgEFBQcBAwEB/wQrMCkwCAYGBACORgEBMAgGBgQAjkYBBDATBgYEAI5GAQYwCQYHBACORgEGATBMBgNVHR8ERTBDMEGgP6A9hjtodHRwOi8vbG9jYWxob3N0OjgwODAvcWVzLXZhbGlkYXRpb24td2ViL2NybC9TREktMjEuMS4xLmNybDCBnwYIKwYBBQUHAQEEgZIwgY8wRAYIKwYBBQUHMAGGOGh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9xZXMtdmFsaWRhdGlvbi13ZWIvb2NzcC9TREktMjEuMS4xMEcGCCsGAQUFBzAChjtodHRwOi8vbG9jYWxob3N0OjgwODAvcWVzLXZhbGlkYXRpb24td2ViL2NydC9TREktMjEuMS4xLmNydDAdBgNVHQ4EFgQUs2rrSwSf+yQ+8D8A4jk40C+eqhowDQYJKoZIhvcNAQELBQADggEBAIC3h6SFRKDydS3g8Si7ngCotG+f1BHcnVKiIsJZxFdvs4aHkrKhOJ0ZIRIZIxRAoHrqNLtyqILAaY0EEIKcpFEjVWuVdNEwftH0H0U9vHtdTzK7lYiR07KX8B96e88x+fxF7v0bFG2eBr2sYAdhbnzlca/z1LSUF3x1toRFCDLh29Xn/AxCLEvUdFkvZOhoTEnUIpymj5429vsV79LFyiBJm00csym1oCAz5IP80QZw+aTgFoZCTD3k1d+ZTYJsqtnuwq2Rd1RPNK9hzd/i7Og9WYugpbfnkGckLP+lVu1o06/emm4asX07i0Tf5N3S8ndKpaqbec3n8x1k38kAvzw=</Base64Encoded>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-86ca5ddddcb6ca73c77511dff3c94961bd675ca15111810103942ca7d96dce1b4fd467c5bfd626dd6a8fb05d515e8d1f57a819aa454f3e96f2dc113b4adebe9a">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://localhost:8080/qes-validation-web/ocsp/SDI-21.1.1</SourceAddress>
+            <ProductionDate>2018-06-25T14:45:33</ProductionDate>
+            <ThisUpdate>2018-06-25T14:45:33</ThisUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-296DE5A6000420CF108CA7421056E514A8919D12E819B9FEA178C675342F80FF"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>7f8c13d8f9e529a56f47113260b4dbcb9d99fe85</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
     <TrustedLists>
         <TrustedList>
             <CountryCode>LU</CountryCode>

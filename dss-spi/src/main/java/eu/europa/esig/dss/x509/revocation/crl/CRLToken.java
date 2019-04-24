@@ -37,6 +37,7 @@ import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.crl.CRLReasonEnum;
+import eu.europa.esig.dss.x509.revocation.RevocationSourceType;
 
 /**
  * This class represents a CRL and provides the information about its validity.
@@ -74,6 +75,7 @@ public class CRLToken extends RevocationToken {
 
 	@Override
 	public void initInfo() {
+		this.revocationSourceType = RevocationSourceType.CRL;
 		this.revocationTokenKey = crlValidity.getKey();
 		this.signatureAlgorithm = crlValidity.getSignatureAlgorithm();
 		this.thisUpdate = crlValidity.getThisUpdate();

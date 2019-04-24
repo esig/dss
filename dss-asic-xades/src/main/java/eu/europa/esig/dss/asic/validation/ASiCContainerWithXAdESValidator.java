@@ -30,8 +30,11 @@ import eu.europa.esig.dss.asic.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.OpenDocumentSupportUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.xades.XAdESUtils;
+import eu.europa.esig.dss.xades.validation.XAdESSignature;
 
 /**
  * This class is an implementation to validate ASiC containers with XAdES signature(s)
@@ -73,6 +76,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 					xadesValidator.setDetachedContents(OpenDocumentSupportUtils.getOpenDocumentCoverage(extractResult));
 				} else {
 					xadesValidator.setDetachedContents(getSignedDocuments());
+					xadesValidator.setContainerContents(getArchiveDocuments());
 				}
 
 				validators.add(xadesValidator);
@@ -86,7 +90,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 		List<ManifestFile> descriptions = new ArrayList<ManifestFile>();
 		List<DSSDocument> signatureDocuments = getSignatureDocuments();
 		List<DSSDocument> manifestDocuments = getManifestDocuments();
-		// All signatures uses the same file : manifest.xml
+		// All signatures use the same file : manifest.xml
 		for (DSSDocument signatureDoc : signatureDocuments) {
 			for (DSSDocument manifestDoc : manifestDocuments) {
 				ASiCEWithXAdESManifestParser manifestParser = new ASiCEWithXAdESManifestParser(signatureDoc, manifestDoc);
@@ -106,16 +110,32 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 			xadesValidator.setDetachedContents(potentials);
 			List<DSSDocument> retrievedDocs = xadesValidator.getOriginalDocuments(signatureId);
 			if (Utils.isCollectionNotEmpty(retrievedDocs)) {
-				if (ASiCContainerType.ASiC_S.equals(getContainerType())) {
-					result.addAll(getSignedDocumentsASiCS(retrievedDocs));
-				} else {
-					result.addAll(retrievedDocs);
-				}
-				break;
+				return extractArchiveDocuments(retrievedDocs);
 			}
 		}
-
 		return result;
+	}
+	
+	@Override
+	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
+		XAdESSignature xadesignature = (XAdESSignature) advancedSignature;
+		List<DSSDocument> retrievedDocs = XAdESUtils.getSignerDocuments(xadesignature);
+		return extractArchiveDocuments(retrievedDocs);
+	}
+	
+	private List<DSSDocument> extractArchiveDocuments(List<DSSDocument> retrievedDocs) {
+		if (Utils.isCollectionNotEmpty(getArchiveDocuments())) {
+			return getArchiveDocuments();
+		}
+		if (ASiCContainerType.ASiC_S.equals(getContainerType())) {
+			return getSignedDocumentsASiCS(retrievedDocs);
+		}
+		return retrievedDocs;
+	}
+
+	@Override
+	protected void attachExternalTimestamps(List<AdvancedSignature> allSignatures) {
+		// Not-applicable for ASiC XAdES
 	}
 
 }

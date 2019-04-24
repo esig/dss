@@ -22,40 +22,32 @@ package eu.europa.esig.dss.xades.validation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.crypto.dsig.XMLSignature;
 
-import org.apache.xml.security.signature.Reference;
-import org.apache.xml.security.signature.XMLSignatureException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdESUtils;
 import eu.europa.esig.dss.xades.XPathQueryHolder;
-import eu.europa.esig.dss.xades.signature.XAdESBuilder;
 
 /**
  * Validator of XML Signed document
  *
  */
 public class XMLDocumentValidator extends SignedDocumentValidator {
-
-	private static final Logger LOG = LoggerFactory.getLogger(XMLDocumentValidator.class);
 
 	private static final byte[] xmlPreamble = new byte[] { '<', '?', 'x', 'm', 'l' };
 	private static final byte[] xmlUtf8 = new byte[] { -17, -69, -65, '<', '?' };
@@ -132,6 +124,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 			final XAdESSignature xadesSignature = new XAdESSignature(signatureEl, xPathQueryHolders, validationCertPool);
 			xadesSignature.setSignatureFilename(document.getName());
 			xadesSignature.setDetachedContents(detachedContents);
+			xadesSignature.setContainerContents(containerContents);
 			xadesSignature.setProvidedSigningCertificateToken(providedSigningCertificateToken);
 			signatures.add(xadesSignature);
 		}
@@ -165,87 +158,23 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public List<DSSDocument> getOriginalDocuments(final String signatureId) throws DSSException {
-
 		if (Utils.isStringBlank(signatureId)) {
 			throw new NullPointerException("signatureId");
 		}
 
-		List<DSSDocument> result = new ArrayList<DSSDocument>();
-
-		final NodeList signatureNodeList = rootElement.getElementsByTagNameNS(XMLSignature.XMLNS, XPathQueryHolder.XMLE_SIGNATURE);
 		List<AdvancedSignature> signatureList = getSignatures();
-
-		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
-
-			final Element signatureEl = (Element) signatureNodeList.item(ii);
-			final String idIdentifier = DSSXMLUtils.getIDIdentifier(signatureEl);
-
-			if (signatureId.equals(idIdentifier)) {
-				XAdESSignature signature = (XAdESSignature) signatureList.get(ii);
-				signature.checkSignatureIntegrity();
-
-				SignatureCryptographicVerification signatureCryptographicVerification = signature.getSignatureCryptographicVerification();
-				if (!signatureCryptographicVerification.isSignatureValid()) {
-					break;
-				}
-
-				List<Reference> references = signature.getReferences();
-				if (!references.isEmpty()) {
-					for (Reference reference : references) {
-						if (isReferenceLinkedToDocument(reference, signature)) {
-							if (reference.typeIsReferenceToObject()) {
-								List<Element> signatureObjects = signature.getSignatureObjects();
-								for (Element sigObject : signatureObjects) {
-									if (Utils.endsWithIgnoreCase(reference.getURI(), sigObject.getAttribute("Id"))) {
-										Node firstChild = sigObject.getFirstChild();
-										if (firstChild.getNodeType() == Node.ELEMENT_NODE) {
-											result.add(new InMemoryDocument(DSSXMLUtils.serializeNode(firstChild)));
-										} else if (firstChild.getNodeType() == Node.TEXT_NODE) {
-											result.add(new InMemoryDocument(Utils.fromBase64(firstChild.getTextContent())));
-										}
-									}
-								}
-							} else {
-								try {
-									result.add(new InMemoryDocument(reference.getReferencedBytes(), reference.getURI()));
-								} catch (XMLSignatureException e) {
-									LOG.warn("Unable to retrieve reference {}", reference.getId(), e);
-								}
-							}
-							
-						}
-					}
-				}
+		for (AdvancedSignature advancedSignature : signatureList) {
+			if (signatureId.equals(advancedSignature.getId())) {
+				return getOriginalDocuments(advancedSignature);
 			}
 		}
-		return result;
+		return Collections.emptyList();
 	}
 	
-	/**
-	 * Checks if the given {@value reference} is an occurrence of signed object
-	 * @param reference - Reference to check
-	 * @param signature - Signature, containing the given {@value reference}
-	 * @return - TRUE if the given {@value reference} is a signed object, FALSE otherwise
-	 */
-	private boolean isReferenceLinkedToDocument(Reference reference, XAdESSignature signature) {
-		String referenceType = reference.getType();
-		// if type is not declared
-		if (Utils.isStringEmpty(referenceType)) {
-			String referenceUri = reference.getURI();
-			referenceUri = DomUtils.getId(referenceUri);
-			Element element = DomUtils.getElement(signature.getSignatureElement(), "./*" + DomUtils.getXPathByIdAttribute(referenceUri));
-			if (element == null) { // if element is out of the signature node, it is a document
-				return true;
-			} else { // otherwise not a document
-				return false;
-			}
-		// if type refers to object or manifest - it is a document
-		} else if (XAdESBuilder.HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT.equals(referenceType) || XAdESBuilder.HTTP_WWW_W3_ORG_2000_09_XMLDSIG_MANIFEST.equals(referenceType)) {
-			return true;
-		// otherwise not a document
-		} else {
-			return false;
-		}
+	@Override
+	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) throws DSSException {
+		XAdESSignature signature = (XAdESSignature) advancedSignature;
+		return XAdESUtils.getSignerDocuments(signature);
 	}
 
 	/**

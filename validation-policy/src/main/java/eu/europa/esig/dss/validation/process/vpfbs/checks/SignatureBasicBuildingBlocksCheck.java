@@ -31,6 +31,7 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlConclusion;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlFC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlISC;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlName;
+import eu.europa.esig.dss.jaxb.detailedreport.XmlProofOfExistence;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlVCI;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlValidationProcessBasicSignatures;
@@ -65,10 +66,19 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 		this.diagnosticData = diagnosticData;
 		this.signatureBBB = signatureBBB;
 		this.bbbs = bbbs;
+		
+		result.setProofOfExistence(getCurrentTime());
+	}
+	
+	private XmlProofOfExistence getCurrentTime() {
+		XmlProofOfExistence proofOfExistence = new XmlProofOfExistence();
+		proofOfExistence.setTime(diagnosticData.getValidationDate());
+		return proofOfExistence;
 	}
 
 	@Override
 	protected boolean process() {
+		
 
 		/*
 		 * 1) Token signature validation: the building block shall perform the validation process for Basic Signatures
@@ -337,15 +347,15 @@ public class SignatureBasicBuildingBlocksCheck extends ChainItem<XmlValidationPr
 	}
 
 	private Date getRevocationDateForSigningCertificate(SignatureWrapper currentSignature) {
-		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
-		if (signingCertificate != null && signingCertificate.getRevocationData() != null) {
-			return signingCertificate.getLatestRevocationData().getRevocationDate();
+		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
+		if (signingCertificate != null && Utils.isCollectionNotEmpty(signingCertificate.getCertificateRevocationData())) {
+			return diagnosticData.getLatestRevocationDataForCertificate(signingCertificate).getRevocationDate();
 		}
 		return null;
 	}
 
 	private Date getExpirationDateForSigningCertificate(SignatureWrapper currentSignature) {
-		CertificateWrapper signingCertificate = diagnosticData.getUsedCertificateById(currentSignature.getSigningCertificateId());
+		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
 		if (signingCertificate != null) {
 			return signingCertificate.getNotAfter();
 		}

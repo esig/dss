@@ -34,7 +34,6 @@ import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.TrustedServiceWrapper;
-import eu.europa.esig.dss.x509.CertificateSourceType;
 import eu.europa.esig.jaxb.policy.MultiValuesConstraint;
 
 public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlXCV> {
@@ -54,9 +53,8 @@ public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlX
 
 	@Override
 	protected boolean process() {
-		String trustedSource = certificate.getLastChainCertificateSource();
 		// do not include Trusted list
-		if (CertificateSourceType.TRUSTED_STORE.name().equals(trustedSource)) {
+		if (certificate.isCertificateChainFromTrustedStore()) {
 			return true;
 		}
 

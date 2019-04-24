@@ -19,7 +19,7 @@
                 </DigestMatcher>
                 <DigestMatcher type="SIGNED_PROPERTIES">
                     <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>cfwwLPkuUbNIaaaaaL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
@@ -31,28 +31,33 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
+            <SigningCertificate Certificate="C-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
                 <AttributePresent>true</AttributePresent>
                 <DigestValuePresent>true</DigestValuePresent>
                 <DigestValueMatch>true</DigestValueMatch>
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Id="A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
-                    <Source>UNKNOWN</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
-            <Timestamps/>
             <SignatureScopes>
-                <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations: XPath filtering; Exclusive Canonical XML (omits comments).</SignatureScope>
+                <SignatureScope SignerData="D-c5c02c5bb58e2752dd28d9defcd6249e0e84839ab6f1b1c36aabe44b0893ee3a">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>XPath filtering</Transformation>
+                        <Transformation>Exclusive Canonical XML (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
         <Signature Id="XSIG2" CounterSignature="true">
             <SignatureFilename>TEST_S1a_C1a_InTL_VALID.xml</SignatureFilename>
-            <ParentId>XSIG1</ParentId>
+            <Parent>XSIG1</Parent>
             <DateTime>2017-09-21T16:04:55</DateTime>
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation>
@@ -67,7 +72,7 @@
                 </DigestMatcher>
                 <DigestMatcher type="SIGNED_PROPERTIES">
                     <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>cfwwLPkuUbNIaaaaaL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+					<DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>false</DataIntact>
                 </DigestMatcher>
@@ -79,26 +84,23 @@
                 <SignatureIntact>false</SignatureIntact>
                 <SignatureValid>false</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
+            <SigningCertificate Certificate="C-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
                 <AttributePresent>true</AttributePresent>
                 <DigestValuePresent>true</DigestValuePresent>
                 <DigestValueMatch>true</DigestValueMatch>
                 <IssuerSerialMatch>true</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Id="A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
-                    <Source>UNKNOWN</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
-            <Timestamps/>
             <SignatureScopes/>
         </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
+        <Certificate Id="C-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.46=#13095a5a41413030303630,cn=D D de F,2.5.4.5=#131349543a44464c444e4437365431354c31303956,2.5.4.42=#0c0d44414d49414e4f20444945474f,2.5.4.4=#0c0944452046454c494345,ou=esercito italiano,o=ministero della difesa/97355240587,c=it</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.46=#13095a5a41413030303630,CN=D D DE F,2.5.4.5=#131349543a44464c444e4437365431354c31303956,2.5.4.42=#0c0d44414d49414e4f20444945474f,2.5.4.4=#0c0944452046454c494345,OU=Esercito Italiano,O=Ministero della Difesa/97355240587,C=IT</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=ministero della difesa - ca di firma digitale,2.5.4.5=#130b3937333535323430353837,ou=s.m.d. - c.do c4 difesa,o=ministero della difesa,c=it</IssuerDistinguishedName>
@@ -118,7 +120,9 @@
             <OCSPAccessUrls>
                 <Url>http://ocsppkiff.difesa.it/</Url>
             </OCSPAccessUrls>
-            <DigestAlgoAndValues/>
+            <Sources>
+            	<Source>UNKNOWN</Source>
+            </Sources>
             <NotAfter>2023-12-15T22:59:00</NotAfter>
             <NotBefore>2014-10-02T10:40:21</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -149,7 +153,20 @@
             <QCTypes/>
             <TrustedServiceProviders/>
             <Revocations/>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>3a73fb5af0dfa058b2bfc504f2b99d8428793fc2</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
+    <OriginalDocuments>
+        <SignerData Id="D-c5c02c5bb58e2752dd28d9defcd6249e0e84839ab6f1b1c36aabe44b0893ee3a">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>xcAsW7WOJ1LdKNne/NYkng6Eg5q28bHDaqvkSwiT7jo=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
     <TrustedLists/>
 </DiagnosticData>

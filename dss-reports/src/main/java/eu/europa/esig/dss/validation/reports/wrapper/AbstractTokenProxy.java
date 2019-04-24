@@ -32,7 +32,7 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.x509.CertificateSourceType;
+import eu.europa.esig.dss.validation.XmlCertificateSourceType;
 
 public abstract class AbstractTokenProxy implements TokenProxy {
 
@@ -48,20 +48,12 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	}
 
 	@Override
-	public List<XmlChainItem> getCertificateChain() {
-		if (getCurrentCertificateChain() != null) {
-			return getCurrentCertificateChain();
-		}
-		return new ArrayList<XmlChainItem>();
-	}
-
-	@Override
-	public List<String> getCertificateChainIds() {
-		List<String> result = new ArrayList<String>();
-		List<XmlChainItem> certificateChain = getCertificateChain();
+	public List<CertificateWrapper> getCertificateChain() {
+		List<CertificateWrapper> result = new ArrayList<CertificateWrapper>();
+		List<XmlChainItem> certificateChain = getCurrentCertificateChain();
 		if (Utils.isCollectionNotEmpty(certificateChain)) {
 			for (XmlChainItem xmlChainCertificate : certificateChain) {
-				result.add(xmlChainCertificate.getId());
+				result.add(new CertificateWrapper(xmlChainCertificate.getCertificate()));
 			}
 		}
 		return result;
@@ -158,59 +150,34 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	}
 
 	@Override
-	public String getSigningCertificateId() {
+	public CertificateWrapper getSigningCertificate() {
 		XmlSigningCertificate currentSigningCertificate = getCurrentSigningCertificate();
 		if (currentSigningCertificate != null) {
-			return currentSigningCertificate.getId();
-		}
-		return Utils.EMPTY_STRING;
-	}
-
-	@Override
-	public String getLastChainCertificateId() {
-		XmlChainItem item = getLastChainCertificate();
-		return item == null ? Utils.EMPTY_STRING : item.getId();
-	}
-
-	@Override
-	public String getFirstChainCertificateId() {
-		XmlChainItem item = getFirstChainCertificate();
-		return item == null ? Utils.EMPTY_STRING : item.getId();
-	}
-
-	@Override
-	public String getLastChainCertificateSource() {
-		XmlChainItem item = getLastChainCertificate();
-		return item == null ? Utils.EMPTY_STRING : item.getSource();
-	}
-
-	public XmlChainItem getLastChainCertificate() {
-		List<XmlChainItem> certificateChain = getCurrentCertificateChain();
-		if (Utils.isCollectionNotEmpty(certificateChain)) {
-			XmlChainItem lastItem = certificateChain.get(certificateChain.size() - 1);
-			return lastItem;
+			return new CertificateWrapper(currentSigningCertificate.getCertificate());
 		}
 		return null;
 	}
 
 	@Override
 	public boolean isTrustedChain() {
-		List<XmlChainItem> certificateChain = getCurrentCertificateChain();
-		for (XmlChainItem xmlChainItem : certificateChain) {
-			String currentCertSource = xmlChainItem.getSource();
-			if (CertificateSourceType.TRUSTED_STORE.name().equals(currentCertSource) || CertificateSourceType.TRUSTED_LIST.name().equals(currentCertSource)) {
+		List<CertificateWrapper> certificateChain = getCertificateChain();
+		for (CertificateWrapper certificate : certificateChain) {
+			List<XmlCertificateSourceType> currentCertSources = certificate.getSources();
+			if (currentCertSources.contains(XmlCertificateSourceType.TRUSTED_STORE) || 
+					currentCertSources.contains(XmlCertificateSourceType.TRUSTED_LIST)) {
 				return true;
 			}
 		}
 		return false;
 	}
-
-	public XmlChainItem getFirstChainCertificate() {
-		List<XmlChainItem> certificateChain = getCurrentCertificateChain();
-		if (Utils.isCollectionNotEmpty(certificateChain)) {
-			return certificateChain.get(0);
+	
+	public boolean isCertificateChainFromTrustedStore() {
+		for (CertificateWrapper certificate : getCertificateChain()) {
+			if (certificate.getSources().contains(XmlCertificateSourceType.TRUSTED_STORE)) {
+				return true;
+			}
 		}
-		return null;
+		return false;
 	}
 
 	@Override

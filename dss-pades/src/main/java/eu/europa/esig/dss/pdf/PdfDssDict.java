@@ -20,16 +20,14 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 
@@ -43,10 +41,10 @@ public class PdfDssDict {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfDssDict.class);
 
-	/* Maps with object number + value */
-	private Map<Long, byte[]> crlMap = new HashMap<Long, byte[]>();
-	private Map<Long, BasicOCSPResp> ocspMap = new HashMap<Long, BasicOCSPResp>();
-	private Map<Long, CertificateToken> certMap = new HashMap<Long, CertificateToken>();
+	private List<PdfVRIDict> vris;
+	private final Map<Long, byte[]> crlMap;
+	private final Map<Long, BasicOCSPResp> ocspMap;
+	private final Map<Long, CertificateToken> certMap;
 
 	public static PdfDssDict extract(PdfDict documentDict) {
 		if (documentDict != null) {
@@ -61,9 +59,9 @@ public class PdfDssDict {
 
 	private PdfDssDict(PdfDict dssDictionary) {
 		readVRI(dssDictionary);
-		readCerts(dssDictionary);
-		readCrls(dssDictionary);
-		readOcsps(dssDictionary);
+		certMap = DSSDictionaryExtractionUtils.getCertsFromArray(dssDictionary, PAdESConstants.DSS_DICTIONARY_NAME, PAdESConstants.CERT_ARRAY_NAME_DSS);
+		ocspMap = DSSDictionaryExtractionUtils.getOCSPsFromArray(dssDictionary, PAdESConstants.DSS_DICTIONARY_NAME, PAdESConstants.OCSP_ARRAY_NAME_DSS);
+		crlMap = DSSDictionaryExtractionUtils.getCRLsFromArray(dssDictionary, PAdESConstants.DSS_DICTIONARY_NAME, PAdESConstants.CRL_ARRAY_NAME_DSS);
 	}
 
 	private void readVRI(PdfDict dssDictionary) {
@@ -73,13 +71,9 @@ public class PdfDssDict {
 			try {
 				String[] names = vriDict.list();
 				if (Utils.isArrayNotEmpty(names)) {
+					vris = new ArrayList<PdfVRIDict>();
 					for (String name : names) {
-						extractCertsFromArray(vriDict.getAsDict(name), PAdESConstants.VRI_DICTIONARY_NAME + "/" + name,
-								PAdESConstants.CERT_ARRAY_NAME_VRI);
-						extractOCSPsFromArray(vriDict.getAsDict(name), PAdESConstants.VRI_DICTIONARY_NAME + "/" + name,
-								PAdESConstants.OCSP_ARRAY_NAME_VRI);
-						extractCRLsFromArray(vriDict.getAsDict(name), PAdESConstants.VRI_DICTIONARY_NAME + "/" + name,
-								PAdESConstants.CRL_ARRAY_NAME_VRI);
+						vris.add(new PdfVRIDict(name, vriDict.getAsDict(name)));
 					}
 				}
 			} catch (Exception e) {
@@ -90,81 +84,20 @@ public class PdfDssDict {
 		}
 	}
 
-	private void readCerts(PdfDict dssDictionary) {
-		extractCertsFromArray(dssDictionary, PAdESConstants.DSS_DICTIONARY_NAME, PAdESConstants.CERT_ARRAY_NAME_DSS);
+	public Map<Long, byte[]> getCRLs() {
+		return crlMap;
 	}
 
-	private void readOcsps(PdfDict dssDictionary) {
-		extractOCSPsFromArray(dssDictionary, PAdESConstants.DSS_DICTIONARY_NAME, PAdESConstants.OCSP_ARRAY_NAME_DSS);
+	public Map<Long, BasicOCSPResp> getOCSPs() {
+		return ocspMap;
 	}
 
-	private void readCrls(PdfDict dssDictionary) {
-		extractCRLsFromArray(dssDictionary, PAdESConstants.DSS_DICTIONARY_NAME, PAdESConstants.CRL_ARRAY_NAME_DSS);
+	public Map<Long, CertificateToken> getCERTs() {
+		return certMap;
 	}
 
-	private void extractCRLsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
-		final PdfArray crlArray = dict.getAsArray(arrayName);
-		if (crlArray != null) {
-			LOG.debug("There are {} CRLs in {} dictionary", crlArray.size(), dictionaryName);
-			for (int ii = 0; ii < crlArray.size(); ii++) {
-				try {
-					crlMap.put(crlArray.getObjectNumber(ii), crlArray.getBytes(ii));
-				} catch (Exception e) {
-					LOG.debug("Unable to read CRL " + ii + " from " + dictionaryName + " dictionary : " + e.getMessage(), e);
-				}
-			}
-		} else {
-			LOG.debug("No CRLs found in {} dictionary", dictionaryName);
-		}
-	}
-
-	private void extractCertsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
-		final PdfArray certsArray = dict.getAsArray(arrayName);
-		if (certsArray != null) {
-			LOG.debug("There are {} certificates in {} dictionary", certsArray.size(), dictionaryName);
-			for (int ii = 0; ii < certsArray.size(); ii++) {
-				try {
-					final byte[] stream = certsArray.getBytes(ii);
-					final CertificateToken cert = DSSUtils.loadCertificate(stream);
-					certMap.put(certsArray.getObjectNumber(ii), cert);
-				} catch (Exception e) {
-					LOG.debug("Unable to read Cert " + ii + " from " + dictionaryName + " dictionary : " + e.getMessage(), e);
-				}
-			}
-		} else {
-			LOG.debug("No Certs found in {} dictionary", dictionaryName);
-		}
-	}
-
-	private void extractOCSPsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
-		PdfArray ocspArray = dict.getAsArray(arrayName);
-		if (ocspArray != null) {
-			LOG.debug("There are {} OCSPs in {} dictionary", ocspArray.size(), dictionaryName);
-			for (int ii = 0; ii < ocspArray.size(); ii++) {
-				try {
-					final byte[] stream = ocspArray.getBytes(ii);
-					final OCSPResp ocspResp = new OCSPResp(stream);
-					final BasicOCSPResp responseObject = (BasicOCSPResp) ocspResp.getResponseObject();
-					ocspMap.put(ocspArray.getObjectNumber(ii), responseObject);
-				} catch (Exception e) {
-					LOG.debug("Unable to read OCSP " + ii + " from " + dictionaryName + " dictionary : " + e.getMessage(), e);
-				}
-			}
-		} else {
-			LOG.debug("No OCSPs found in {} dictionary", dictionaryName);
-		}
-	}
-
-	public Map<Long, byte[]> getCrlMap() {
-		return Collections.unmodifiableMap(crlMap);
-	}
-
-	public Map<Long, BasicOCSPResp> getOcspMap() {
-		return Collections.unmodifiableMap(ocspMap);
-	}
-
-	public Map<Long, CertificateToken> getCertMap() {
-		return Collections.unmodifiableMap(certMap);
+	public List<PdfVRIDict> getVRIs() {
+		return vris;
 	}
 
 }

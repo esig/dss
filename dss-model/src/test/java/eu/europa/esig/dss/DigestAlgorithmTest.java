@@ -53,7 +53,9 @@ public class DigestAlgorithmTest {
 
 	@Test
 	public void forName() {
-		assertEquals(DigestAlgorithm.SHA256, DigestAlgorithm.forName(DigestAlgorithm.SHA256.getName()));
+		for (DigestAlgorithm digestAlgo : DigestAlgorithm.values()) {
+			assertEquals(digestAlgo, DigestAlgorithm.forName(digestAlgo.getName()));
+		}
 	}
 
 	@Test(expected = DSSException.class)

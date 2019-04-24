@@ -585,7 +585,7 @@ public final class DSSUtils {
 	 *            the signing time
 	 * @param id
 	 *            the token identifier
-	 * @return an unique string
+	 * @return a unique string
 	 */
 	public static String getDeterministicId(final Date signingTime, TokenIdentifier id) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); DataOutputStream dos = new DataOutputStream(baos)) {

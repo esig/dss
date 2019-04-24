@@ -321,15 +321,20 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			PdfDssDict dssDictionary = getDSSDictionary(doc);
 
-			List<PDSignature> pdSignatures = doc.getSignatureDictionaries();
+			List<PDSignatureField> pdSignatureFields = doc.getSignatureFields();
 
-			if (Utils.isCollectionNotEmpty(pdSignatures)) {
-				LOG.debug("{} signature(s) found", pdSignatures.size());
+			if (Utils.isCollectionNotEmpty(pdSignatureFields)) {
+				LOG.debug("{} signature(s) found", pdSignatureFields.size());
 
-				for (PDSignature signature : pdSignatures) {
+				for (PDSignatureField signatureField : pdSignatureFields) {
+					PDSignature signature = signatureField.getSignature();
+					if (signature == null) {
+						LOG.warn("Signature field with name '{}' does not contain a signature", signatureField.getPartialName());
+						continue;
+					}
 					try {
 						PdfDict dictionary = new PdfBoxDict(signature.getCOSObject(), doc);
-						PdfSigDict signatureDictionary = new PdfSigDict(dictionary);
+						PdfSigDict signatureDictionary = new PdfSigDict(dictionary, signatureField.getPartialName());
 						final int[] byteRange = signatureDictionary.getByteRange();
 
 						validateByteRange(byteRange);
@@ -472,11 +477,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			}
 
 			// We can't use CMSSignedData, the pdSignature content is trimmed (000000)
-			PdfSignatureInfo pdfSignatureInfo = callback.getSignature().getPdfSignatureInfo();
-			final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, pdfSignatureInfo.getContent());
-			String hexHash = Utils.toHex(digest).toUpperCase();
-
-			vriDictionary.setItem(hexHash, sigVriDictionary);
+			String vriKey = callback.getSignature().getVRIKey();
+			vriDictionary.setItem(vriKey, sigVriDictionary);
 		}
 		dss.setItem(PAdESConstants.VRI_DICTIONARY_NAME, vriDictionary);
 

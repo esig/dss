@@ -52,6 +52,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
 import eu.europa.esig.dss.x509.CertificatePool;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.Token;
 
@@ -75,6 +76,8 @@ public class TimestampToken extends Token {
 	private boolean messageImprintData;
 
 	private Boolean messageImprintIntact = null;
+	
+	private TimestampLocation timeStampLocation;
 
 	private List<TimestampReference> timestampedReferences;
 
@@ -102,6 +105,12 @@ public class TimestampToken extends Token {
 	 * unambiguously identify a timestamp.
 	 */
 	private int hashCode;
+
+	public TimestampToken(final byte[] binaries, final TimestampType type, final CertificatePool certPool, 
+			final TimestampLocation timeStampLocation) throws TSPException, IOException, CMSException {
+		this(new CMSSignedData(binaries), type, certPool);
+		this.timeStampLocation = timeStampLocation;
+	}
 
 	public TimestampToken(final byte[] binaries, final TimestampType type, final CertificatePool certPool) throws TSPException, IOException, CMSException {
 		this(new CMSSignedData(binaries), type, certPool);
@@ -242,6 +251,15 @@ public class TimestampToken extends Token {
 	}
 
 	/**
+	 * Retrieves the location of timestamp token.
+	 *
+	 * @return {@code TimestampLocation}
+	 */
+	public TimestampLocation getTimestampLocation() {
+		return timeStampLocation;
+	}
+
+	/**
 	 * Retrieves the timestamp generation time.
 	 *
 	 * @return {@code Date}
@@ -267,13 +285,12 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * Retrieves the encoded signed data digest value.
+	 * Retrieves the message-imprint digest value.
 	 *
-	 * @return base 64 encoded {@code String}
+	 * @return the byte array with the message-imprint digest value
 	 */
-	public String getEncodedSignedDataDigestValue() {
-		final byte[] messageImprintDigest = timeStamp.getTimeStampInfo().getMessageImprintDigest();
-		return Utils.toBase64(messageImprintDigest);
+	public byte[] getMessageImprintDigest() {
+		return timeStamp.getTimeStampInfo().getMessageImprintDigest();
 	}
 
 	/**
@@ -440,6 +457,11 @@ public class TimestampToken extends Token {
 
 	public SignerId getSignerId() {
 		return timeStamp.getSID();
+	}
+
+	@Override
+	public String getDSSIdAsString() {
+		return "T-" + super.getDSSIdAsString();
 	}
 
 }

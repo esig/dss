@@ -18,7 +18,7 @@
                 </DigestMatcher>
                 <DigestMatcher type="SIGNED_PROPERTIES">
                     <DigestMethod>SHA256</DigestMethod>
-                    <DigestValue>cfwwLPkuUbNIaaaaaL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
@@ -30,31 +30,30 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>false</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74">
+            <SigningCertificate Certificate="C-EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74">
                 <AttributePresent>false</AttributePresent>
                 <DigestValuePresent>false</DigestValuePresent>
                 <DigestValueMatch>false</DigestValueMatch>
                 <IssuerSerialMatch>false</IssuerSerialMatch>
             </SigningCertificate>
             <CertificateChain>
-                <ChainItem Id="EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74">
-                    <Source>SIGNATURE</Source>
-                </ChainItem>
-                <ChainItem Id="ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74"/>
+                <ChainItem Certificate="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E"/>
             </CertificateChain>
             <ContentType>text/xml</ContentType>
             <CommitmentTypeIndication/>
             <ClaimedRoles/>
-            <Timestamps/>
             <SignatureScopes>
-                <SignatureScope name="Full XML File" scope="FULL">The full XML file</SignatureScope>
+                <SignatureScope SignerData="D-17f46235369f1877ef170eef3286dbc89c1e521aa79488670c74578cc5861f76">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file with transformations.</Description>
+                </SignatureScope>
             </SignatureScopes>
         </Signature>
     </Signatures>
     <UsedCertificates>
-        <Certificate Id="ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
+        <Certificate Id="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
             <SubjectDistinguishedName Format="CANONICAL">cn=quovadis eu issuing certification authority g3,o=quovadis trustlink b.v.,c=nl</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=QuoVadis EU Issuing Certification Authority G3,O=QuoVadis Trustlink B.V.,C=NL</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=quovadis root certification authority,ou=root certification authority,o=quovadis limited,c=bm</IssuerDistinguishedName>
@@ -72,7 +71,9 @@
             <OCSPAccessUrls>
                 <Url>http://ocsp.quovadisglobal.com</Url>
             </OCSPAccessUrls>
-            <DigestAlgoAndValues/>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
             <NotAfter>2021-03-17T19:33:33</NotAfter>
             <NotBefore>2014-05-30T20:15:49</NotBefore>
             <PublicKeySize>4096</PublicKeySize>
@@ -102,7 +103,7 @@
                     <CountryCode>NL</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E</ServiceDigitalIdentifier>
 		                    <ServiceName>QuoVadis EU Issuing Certification Authority G3</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -112,7 +113,7 @@
                             </AdditionalServiceInfoUris>
                         </TrustedService>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E</ServiceDigitalIdentifier>
 		                    <ServiceName>QuoVadis EU Issuing Certification Authority G3</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
@@ -123,8 +124,12 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>cd9f5ba7ea392b27f48288e1dab3537e1129d214</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
-        <Certificate Id="A0DFB7938782C01EB6FE9BA9B3210CFCEDB8653B309B53654D427A02ABEFFE7D">
+        <Certificate Id="C-A0DFB7938782C01EB6FE9BA9B3210CFCEDB8653B309B53654D427A02ABEFFE7D">
             <SubjectDistinguishedName Format="CANONICAL">cn=quovadis ocsp authority signature,ou=ocsp responder,o=quovadis limited,c=bm</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=QuoVadis OCSP Authority Signature,OU=OCSP Responder,O=QuoVadis Limited,C=BM</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=quovadis eu issuing certification authority g3,o=quovadis trustlink b.v.,c=nl</IssuerDistinguishedName>
@@ -137,7 +142,9 @@
             <AuthorityInformationAccessUrls/>
             <CRLDistributionPoints/>
             <OCSPAccessUrls/>
-            <DigestAlgoAndValues/>
+            <Sources>
+            	<Source>OCSP_RESPONSE</Source>
+            </Sources>
             <NotAfter>2019-11-03T21:06:26</NotAfter>
             <NotBefore>2016-11-03T21:06:26</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -153,11 +160,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E"/>
+            <SigningCertificate Certificate="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E"/>
             <CertificateChain>
-                <ChainItem Id="ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -172,7 +177,7 @@
                     <CountryCode>NL</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E</ServiceDigitalIdentifier>
 		                    <ServiceName>QuoVadis EU Issuing Certification Authority G3</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -185,8 +190,12 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations/>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>b9d118b06b67e5d5a990942f1efa9e4ddd84e4e1</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
-        <Certificate Id="EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74">
+        <Certificate Id="C-EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74">
             <SubjectDistinguishedName Format="CANONICAL">cn=hans v egmond,2.5.4.4=#0c0a76616e2045676d6f6e64,2.5.4.42=#0c0b4a6f68616e6e6573204e2e,ou=qualified certificate,c=nl</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=h v e,2.5.4.4=#0c0a76616e2045676d6f6e64,2.5.4.42=#0c0b4a6f68616e6e6573204e2e,OU=Qualified Certificate,C=NL</SubjectDistinguishedName>
             <IssuerDistinguishedName Format="CANONICAL">cn=quovadis eu issuing certification authority g3,o=quovadis trustlink b.v.,c=nl</IssuerDistinguishedName>
@@ -206,7 +215,9 @@
             <OCSPAccessUrls>
                 <Url>http://ocsp.quovadisglobal.com</Url>
             </OCSPAccessUrls>
-            <DigestAlgoAndValues/>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
             <NotAfter>2018-02-28T15:11:00</NotAfter>
             <NotBefore>2017-02-28T15:01:01</NotBefore>
             <PublicKeySize>2048</PublicKeySize>
@@ -223,11 +234,9 @@
                 <SignatureIntact>true</SignatureIntact>
                 <SignatureValid>true</SignatureValid>
             </BasicSignature>
-            <SigningCertificate Id="ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E"/>
+            <SigningCertificate Certificate="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E"/>
             <CertificateChain>
-                <ChainItem Id="ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
-                    <Source>TRUSTED_LIST</Source>
-                </ChainItem>
+                <ChainItem Certificate="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E"/>
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
@@ -247,7 +256,7 @@
                     <CountryCode>NL</CountryCode>
                     <TrustedServices>
                         <TrustedService>
-                        	<ServiceDigitalIdentifier>ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E</ServiceDigitalIdentifier>
+                        	<ServiceDigitalIdentifier>C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E</ServiceDigitalIdentifier>
 		                    <ServiceName>QuoVadis EU Issuing Certification Authority G3</ServiceName>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -261,36 +270,51 @@
                 </TrustedServiceProvider>
             </TrustedServiceProviders>
             <Revocations>
-                <Revocation Id="efdf173dd8b570a0587980070ef0efc8c79dd4f4ef1a206511967a7f7532fc74e36f8862bbd580f5dcc4d07819d43045738d9921b691a7a3562f498239ae8f5a">
-                    <Origin>EXTERNAL</Origin>
-                    <Source>OCSPToken</Source>
-                    <SourceAddress>http://ocsp.quovadisglobal.com</SourceAddress>
-                    <Available>true</Available>
+                <CertificateRevocation Revocation="R-efdf173dd8b570a0587980070ef0efc8c79dd4f4ef1a206511967a7f7532fc74e36f8862bbd580f5dcc4d07819d43045738d9921b691a7a3562f498239ae8f5a">
                     <Status>true</Status>
-                    <ProductionDate>2017-03-02T09:11:50</ProductionDate>
-                    <ThisUpdate>2017-03-02T09:11:50</ThisUpdate>
-                    <NextUpdate>2017-03-04T09:11:50</NextUpdate>
-                    <DigestAlgoAndValues/>
-                    <BasicSignature>
-                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
-                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
-                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
-                        <SignatureIntact>true</SignatureIntact>
-                        <SignatureValid>true</SignatureValid>
-                    </BasicSignature>
-                    <SigningCertificate Id="A0DFB7938782C01EB6FE9BA9B3210CFCEDB8653B309B53654D427A02ABEFFE7D"/>
-                    <CertificateChain>
-                        <ChainItem Id="A0DFB7938782C01EB6FE9BA9B3210CFCEDB8653B309B53654D427A02ABEFFE7D">
-                            <Source>OCSP_RESPONSE</Source>
-                        </ChainItem>
-                        <ChainItem Id="ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E">
-                            <Source>TRUSTED_LIST</Source>
-                        </ChainItem>
-                    </CertificateChain>
-                </Revocation>
+                </CertificateRevocation>
             </Revocations>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>3ce3dc19756f0df8eba397481d50bdf1fa7f603e</DigestValue>
+            </DigestAlgoAndValue>
         </Certificate>
     </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-efdf173dd8b570a0587980070ef0efc8c79dd4f4ef1a206511967a7f7532fc74e36f8862bbd580f5dcc4d07819d43045738d9921b691a7a3562f498239ae8f5a">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.quovadisglobal.com</SourceAddress>
+            <ProductionDate>2017-03-02T09:11:50</ProductionDate>
+            <ThisUpdate>2017-03-02T09:11:50</ThisUpdate>
+            <NextUpdate>2017-03-04T09:11:50</NextUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-A0DFB7938782C01EB6FE9BA9B3210CFCEDB8653B309B53654D427A02ABEFFE7D"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-A0DFB7938782C01EB6FE9BA9B3210CFCEDB8653B309B53654D427A02ABEFFE7D"/>
+                <ChainItem Certificate="C-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>72430833e0b23ada4e6d4bb9532f89263be4020d</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-17f46235369f1877ef170eef3286dbc89c1e521aa79488670c74578cc5861f76">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
     <TrustedLists>
         <TrustedList>
             <CountryCode>NL</CountryCode>

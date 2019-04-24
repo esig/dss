@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
-import java.util.Set;
+import java.util.List;
 
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
 import eu.europa.esig.dss.utils.Utils;
@@ -28,25 +28,23 @@ import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;
 import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class RevocationCertHashMatchCheck extends ChainItem<XmlSubXCV> {
 
-	private final CertificateWrapper certificate;
+	private final List<CertificateRevocationWrapper> certificateRevocations;
 
-	public RevocationCertHashMatchCheck(XmlSubXCV result, CertificateWrapper certificate, LevelConstraint constraint) {
+	public RevocationCertHashMatchCheck(XmlSubXCV result, List<CertificateRevocationWrapper> certificateRevocations, LevelConstraint constraint) {
 		super(result, constraint);
-
-		this.certificate = certificate;
+		this.certificateRevocations = certificateRevocations;
 	}
 
 	@Override
 	protected boolean process() {
-		Set<RevocationWrapper> revocationData = certificate.getRevocationData();
-		if (Utils.isCollectionNotEmpty(revocationData)) {
-			for (RevocationWrapper revocation : revocationData) {
+		if (Utils.isCollectionNotEmpty(certificateRevocations)) {
+			for (RevocationWrapper revocation : certificateRevocations) {
 				/*
 				 * certHash extension can be present in an OCSP Response. If present, a digest match indicates the OCSP
 				 * responder knows the certificate as we have it, and so also its revocation state

@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.validation;
 
 public enum TimestampedObjectType {
+	
+	SIGNED_DATA,
 
 	SIGNATURE,
 

@@ -22,6 +22,7 @@ package eu.europa.esig.dss;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.PublicKey;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
@@ -47,6 +48,7 @@ import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -525,9 +527,26 @@ public final class DSSASN1Utils {
 		return null;
 	}
 
+	/**
+	 * Computes SHA-1 hash of the {@code certificateToken}'s public key
+	 * 
+	 * @param certificateToken
+	 *                         {@link CertificateToken} to compute digest for
+	 * @return byte array of public key's SHA-1 hash
+	 */
 	public static byte[] computeSkiFromCert(final CertificateToken certificateToken) {
+		return computeSkiFromCertPublicKey(certificateToken.getPublicKey());
+	}
+
+
+	/**
+	 * Computes SHA-1 hash of the given {@code publicKey}'s
+	 * @param publicKey {@link PublicKey} to compute digest for
+	 * @return byte array of public key's SHA-1 hash
+	 */
+	public static byte[] computeSkiFromCertPublicKey(final PublicKey publicKey) {
 		try {
-			DLSequence seq = (DLSequence) DERSequence.fromByteArray(certificateToken.getPublicKey().getEncoded());
+			DLSequence seq = (DLSequence) DERSequence.fromByteArray(publicKey.getEncoded());
 			DERBitString item = (DERBitString) seq.getObjectAt(1);
 			return DSSUtils.digest(DigestAlgorithm.SHA1, item.getOctets());
 		} catch (IOException e) {
@@ -688,6 +707,22 @@ public final class DSSASN1Utils {
 	}
 
 	/**
+	 * This method returns a new IssuerSerial based on x500Principal of issuer and serial number
+	 *
+	 * @param issuerX500Principal
+	 *            the {@link X500Principal} of certificate token's issuer
+	 * @param serialNumber
+	 *            serial number of certificate token
+	 * @return a IssuerSerial
+	 */
+	public static IssuerSerial getIssuerSerial(final X500Principal issuerX500Principal, BigInteger serialNumber) {
+		final X500Name issuerX500Name = X500Name.getInstance(issuerX500Principal.getEncoded());
+		final GeneralName generalName = new GeneralName(issuerX500Name);
+		final GeneralNames generalNames = new GeneralNames(generalName);
+		return new IssuerSerial(generalNames, serialNumber);
+	}
+
+	/**
 	 * This method returns a new IssuerSerial based on the certificate token
 	 *
 	 * @param certToken
@@ -788,7 +823,7 @@ public final class DSSASN1Utils {
 		return stringBuilder.toString();
 	}
 
-	private static String getString(ASN1Encodable attributeValue) {
+	public static String getString(ASN1Encodable attributeValue) {
 		String string;
 		if (attributeValue instanceof ASN1String) {
 			string = ((ASN1String) attributeValue).getString();
@@ -888,6 +923,44 @@ public final class DSSASN1Utils {
 		} catch (CertificateParsingException e) {
 			LOG.warn("Unable to retrieve ExtendedKeyUsage : {}", e.getMessage());
 			return Collections.emptyList();
+		}
+	}
+
+	public static IssuerSerialInfo getIssuerInfo(byte[] binaries) {
+		try (ASN1InputStream is = new ASN1InputStream(binaries)) {
+			ASN1Sequence seq = (ASN1Sequence) is.readObject();
+
+			IssuerSerial issuerAndSerial = IssuerSerial.getInstance(seq);
+
+			return getIssuerInfo(issuerAndSerial);
+		} catch (Exception e) {
+			LOG.error("Unable to decode IssuerSerialV2 textContent '" + Utils.toBase64(binaries) + "' : " + e.getMessage(), e);
+			return null;
+		}
+	}
+
+	public static IssuerSerialInfo getIssuerInfo(IssuerSerial issuerAndSerial) {
+		try {
+			IssuerSerialInfo issuerInfo = new IssuerSerialInfo();
+			GeneralNames gnames = issuerAndSerial.getIssuer();
+			if (gnames != null) {
+				GeneralName[] names = gnames.getNames();
+				if (names.length == 1) {
+					issuerInfo.setIssuerName(new X500Principal(names[0].getName().toASN1Primitive().getEncoded(ASN1Encoding.DER)));
+				} else {
+					LOG.warn("More than one GeneralName");
+				}
+			}
+
+			ASN1Integer serialNumber = issuerAndSerial.getSerial();
+			if (serialNumber != null) {
+				issuerInfo.setSerialNumber(serialNumber.getValue());
+			}
+
+			return issuerInfo;
+		} catch (Exception e) {
+			LOG.error("Unable to read the IssuerSerial object", e);
+			return null;
 		}
 	}
 

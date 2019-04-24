@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.validation;
 
+import eu.europa.esig.dss.Digest;
+
 public class PartialSignatureScope extends SignatureScope {
 
-    public PartialSignatureScope(final String name) {
-        super(name);
+    public PartialSignatureScope(final String name, Digest digest) {
+        super(name, digest);
     }
 
     @Override

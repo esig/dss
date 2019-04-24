@@ -115,6 +115,16 @@ public abstract class PdfCMSInfo implements PdfSignatureOrDocTimestampInfo {
 	public Set<PdfSignatureOrDocTimestampInfo> getOuterSignatures() {
 		return Collections.unmodifiableSet(outerSignatures);
 	}
+	
+	@Override
+	public String getSigFieldName() {
+		return signatureDictionary.getSigFieldName();
+	}
+
+	@Override
+	public String getSignerName() {
+		return signatureDictionary.getSignerName();
+	}
 
 	@Override
 	public String getContactInfo() {

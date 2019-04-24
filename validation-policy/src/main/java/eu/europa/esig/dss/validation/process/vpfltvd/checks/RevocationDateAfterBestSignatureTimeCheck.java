@@ -32,29 +32,27 @@ import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.process.AdditionalInfo;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.MessageTag;
-import eu.europa.esig.dss.validation.reports.wrapper.CertificateWrapper;
-import eu.europa.esig.dss.validation.reports.wrapper.RevocationWrapper;
+import eu.europa.esig.dss.validation.reports.wrapper.CertificateRevocationWrapper;
 import eu.europa.esig.jaxb.policy.LevelConstraint;
 
 public class RevocationDateAfterBestSignatureTimeCheck extends ChainItem<XmlValidationProcessLongTermData> {
 
-	private final CertificateWrapper certificate;
+	private final CertificateRevocationWrapper certificateRevocation;
 	private final Date bestSignatureTime;
 	private final SubContext subContext;
 
-	public RevocationDateAfterBestSignatureTimeCheck(XmlValidationProcessLongTermData result, CertificateWrapper certificate, Date bestSignatureTime,
-			LevelConstraint constraint, SubContext subContext) {
+	public RevocationDateAfterBestSignatureTimeCheck(XmlValidationProcessLongTermData result, CertificateRevocationWrapper certificateRevocation, 
+			Date bestSignatureTime, LevelConstraint constraint, SubContext subContext) {
 		super(result, constraint);
 
-		this.certificate = certificate;
+		this.certificateRevocation = certificateRevocation;
 		this.bestSignatureTime = bestSignatureTime;
 		this.subContext = subContext;
 	}
 
 	@Override
 	protected boolean process() {
-		RevocationWrapper revocationData = certificate.getLatestRevocationData();
-		Date revocationDate = revocationData.getRevocationDate();
+		Date revocationDate = certificateRevocation.getRevocationDate();
 		// revocation date can be null in case of unknown status
 		return revocationDate != null && revocationDate.after(bestSignatureTime);
 	}

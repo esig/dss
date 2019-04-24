@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import eu.europa.esig.dss.jaxb.detailedreport.DetailedReport;
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.simplereport.SimpleReport;
+import eu.europa.esig.jaxb.validationreport.ValidationReportType;
 
 @XmlRootElement(name = "WSReportsDTO", namespace = "http://validation.dss.esig.europa.eu/")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -42,13 +43,18 @@ public class WSReportsDTO {
 	@XmlElement(namespace = "http://dss.esig.europa.eu/validation/detailed-report")
 	private DetailedReport detailedReport;
 
+	@XmlElement(namespace = "http://uri.etsi.org/19102/v1.2.1")
+	private ValidationReportType etsiValidationReport;
+
 	public WSReportsDTO() {
 	}
 
-	public WSReportsDTO(DiagnosticData diagnosticData, SimpleReport simpleReport, DetailedReport detailedReport) {
+	public WSReportsDTO(DiagnosticData diagnosticData, SimpleReport simpleReport, DetailedReport detailedReport, 
+			ValidationReportType validationReport) {
 		this.diagnosticData = diagnosticData;
 		this.detailedReport = detailedReport;
 		this.simpleReport = simpleReport;
+		this.etsiValidationReport = validationReport;
 	}
 
 	public DiagnosticData getDiagnosticData() {
@@ -73,6 +79,14 @@ public class WSReportsDTO {
 
 	public void setDetailedReport(eu.europa.esig.dss.jaxb.detailedreport.DetailedReport detailedReport) {
 		this.detailedReport = detailedReport;
+	}
+	
+	public ValidationReportType getEtsiValidationReport() {
+		return etsiValidationReport;
+	}
+	
+	public void setEtsiValidationReport(ValidationReportType validationReport) {
+		this.etsiValidationReport = validationReport;
 	}
 
 }

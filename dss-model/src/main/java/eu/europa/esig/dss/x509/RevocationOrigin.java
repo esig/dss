@@ -23,9 +23,39 @@ package eu.europa.esig.dss.x509;
 public enum RevocationOrigin {
 
 	/**
-	 * The revocation data was embedded in the signature
+	 * The revocation data was embedded in the signature 'revocation-values' attribute (used in CAdES and XAdES)
 	 */
-	SIGNATURE,
+	INTERNAL_REVOCATION_VALUES,
+
+	/**
+	 * The revocation data was embedded in the signature 'AttributeRevocationValues' attribute (used in XAdES)
+	 */
+	INTERNAL_ATTRIBUTE_REVOCATION_VALUES,
+
+	/**
+	 * The revocation data was embedded in the signature 'TimeStampValidationData' attribute (used in XAdES)
+	 */
+	INTERNAL_TIMESTAMP_REVOCATION_VALUES,
+
+	/**
+	 * The revocation data was embedded to the contents of DSS PDF dictionary (used in PAdES)
+	 */
+	INTERNAL_DSS,
+
+	/**
+	 * The revocation data was embedded to VRI dictionary (used in PAdES)
+	 */
+	INTERNAL_VRI,
+	
+	/**
+	 * The revocation data was embedded in the signature 'complete-revocation-references' attribute (used in CAdES and XAdES)
+	 */
+	COMPLETE_REVOCATION_REFS,
+	
+	/**
+	 * The revocation data was embedded in the signature 'attribute-revocation-references' attribute (used in CAdES and XAdES)
+	 */
+	ATTRIBUTE_REVOCATION_REFS,
 
 	/**
 	 * The revocation data was provided by the user or online OCSP/CRL
