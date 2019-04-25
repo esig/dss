@@ -48,10 +48,11 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
-import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
 
 public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSignature {
 
@@ -80,8 +81,7 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 		reference1.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
 		reference1.setUri("#data1");
 		List<DSSTransform> transforms1 = new ArrayList<DSSTransform>();
-		DSSTransform transform1 = new DSSTransform();
-		transform1.setAlgorithm(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
+		CanonicalizationTransform transform1 = new CanonicalizationTransform(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
 		transforms1.add(transform1);
 		reference1.setTransforms(transforms1);
 		dssReferences.add(reference1);
@@ -92,8 +92,7 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 		reference2.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
 		reference2.setUri("#data2");
 		List<DSSTransform> transforms2 = new ArrayList<DSSTransform>();
-		DSSTransform transform2 = new DSSTransform();
-		transform2.setAlgorithm(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
+		CanonicalizationTransform transform2 = new CanonicalizationTransform(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
 		transforms2.add(transform2);
 		reference2.setTransforms(transforms2);
 		dssReferences.add(reference2);

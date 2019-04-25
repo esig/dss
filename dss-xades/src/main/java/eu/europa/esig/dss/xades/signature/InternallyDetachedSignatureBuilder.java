@@ -35,10 +35,11 @@ import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.xades.DSSReference;
-import eu.europa.esig.dss.xades.DSSTransform;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.DSSTransform;
 
 /**
  * This class handles the specifics of the internally detached XML signature.
@@ -98,8 +99,7 @@ class InternallyDetachedSignatureBuilder extends XAdESSignatureBuilder {
 		reference.setDigestMethodAlgorithm(digestAlgorithm);
 
 		List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
-		DSSTransform canonicalization = new DSSTransform();
-		canonicalization.setAlgorithm(CanonicalizationMethod.EXCLUSIVE);
+		CanonicalizationTransform canonicalization = new CanonicalizationTransform(CanonicalizationMethod.EXCLUSIVE);
 		dssTransformList.add(canonicalization);
 		reference.setTransforms(dssTransformList);
 		return reference;
