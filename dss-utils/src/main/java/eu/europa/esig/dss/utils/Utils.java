@@ -171,6 +171,10 @@ public final class Utils {
 	public static void write(byte[] content, OutputStream os) throws IOException {
 		impl.write(content, os);
 	}
+	
+	public static long getInputStreamSize(InputStream is) throws IOException {
+		return impl.getInputStreamSize(is);
+	}
 
 	public static void cleanDirectory(File directory) throws IOException {
 		impl.cleanDirectory(directory);
