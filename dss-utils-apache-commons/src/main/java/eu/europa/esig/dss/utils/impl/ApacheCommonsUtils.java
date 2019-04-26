@@ -199,6 +199,17 @@ public class ApacheCommonsUtils implements IUtils {
 	public void write(byte[] content, OutputStream os) throws IOException {
 		IOUtils.write(content, os);
 	}
+	
+	@Override
+	public long getInputStreamSize(InputStream is) throws IOException {
+		long byteCounter = 0;
+		int nRead;
+	    byte[] data = new byte[8192];
+	    while ((nRead = IOUtils.read(is, data)) != -1) {
+	    	byteCounter += nRead;
+	    }
+		return byteCounter;
+	}
 
 	@Override
 	public void cleanDirectory(File directory) throws IOException {

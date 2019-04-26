@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
@@ -41,10 +42,13 @@ public final class ASiCUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCUtils.class);
 
-	private static final String MIME_TYPE = "mimetype";
+	public static final String MIME_TYPE = "mimetype";
 	public static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
-	private static final String META_INF_FOLDER = "META-INF/";
+	public static final String META_INF_FOLDER = "META-INF/";
 	public static final String PACKAGE_ZIP = "package.zip";
+	
+	/* Defines the maximal amount of files that can be inside a ZIP container */
+	private static final int MAXIMAL_ALLOWED_FILE_AMOUNT = 1024;
 
 	private ASiCUtils() {
 	}
@@ -222,11 +226,30 @@ public final class ASiCUtils {
 		return false;
 	}
 
-	public static DSSDocument getCurrentDocument(String filepath, ZipInputStream zis) throws IOException {
+    /**
+     * Returns file from the given ZipInputStream
+     * @param filepath {@link String} filepath where the file is located
+     * @param zis {@link ZipInputStream} of the file
+     * @param containerSize - long byte size of the parent container
+     * @return {@link DSSDocument} created from the given {@code zis}
+     * @throws IOException in case of ZipInputStream read error
+     */
+	public static DSSDocument getCurrentDocument(String filepath, ZipInputStream zis, long containerSize) throws IOException {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			Utils.copy(zis, baos);
+		    DSSUtils.secureCopy(zis, baos, containerSize);
 			baos.flush();
 			return new InMemoryDocument(baos.toByteArray(), filepath);
+		}
+	}
+	
+	/**
+	 * Validates if the given {@code filesAmount} is not bigger than the predefined threshold
+	 * If FALSE throws a {@link DSSException}
+	 * @param filesAmount - amount of files extracted from an archive
+	 */
+	public static void validateAllowedFilesAmount(int filesAmount) {
+		if (filesAmount > MAXIMAL_ALLOWED_FILE_AMOUNT) {
+			throw new DSSException("Too many files detected. Cannot extract ASiC content");
 		}
 	}
 
