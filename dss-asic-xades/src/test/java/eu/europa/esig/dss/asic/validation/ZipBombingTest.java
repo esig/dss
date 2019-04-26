@@ -35,8 +35,7 @@ public class ZipBombingTest {
 		FileDocument doc = new FileDocument("src/test/resources/validation/one-level-zip-bombing.asice");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		Reports reports = validator.validateDocument();
-		assertNotNull(reports);
+		validator.validateDocument();
 	}
 	
 	@Test(expected = DSSException.class)
@@ -44,8 +43,7 @@ public class ZipBombingTest {
 		FileDocument doc = new FileDocument("src/test/resources/validation/container-too-many-files.asice");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		Reports reports = validator.validateDocument();
-		assertNotNull(reports);
+		validator.validateDocument();
 	}
 	
 	@Test

@@ -131,7 +131,7 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 				final ZipEntry newEntry = new ZipEntry(name);
 				if (!isSignatureFilename(name)) {
 					zos.putNextEntry(newEntry);
-					DSSUtils.secureCopy(zis, zos, containerSize);
+					ASiCUtils.secureCopy(zis, zos, containerSize);
 				}
 			}
 		}

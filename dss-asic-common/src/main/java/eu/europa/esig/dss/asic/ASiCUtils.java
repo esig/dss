@@ -23,6 +23,8 @@ package eu.europa.esig.dss.asic;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -33,7 +35,6 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.ASiCContainerType;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
-import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.utils.Utils;
@@ -47,8 +48,20 @@ public final class ASiCUtils {
 	public static final String META_INF_FOLDER = "META-INF/";
 	public static final String PACKAGE_ZIP = "package.zip";
 	
-	/* Defines the maximal amount of files that can be inside a ZIP container */
+	/**
+	 * Defines the maximal amount of files that can be inside a ZIP container
+	 */
 	private static final int MAXIMAL_ALLOWED_FILE_AMOUNT = 1024;
+
+    /**
+     * Minimum file size to be analized on zip bombing
+     */
+	private static final long ZIP_ENTRY_THRESHOLD = 1000000; // 1 MB
+	
+    /**
+     * Maximum compression ratio.
+     */
+    private static final long ZIP_ENTRY_RATIO = 100;
 
 	private ASiCUtils() {
 	}
@@ -225,6 +238,27 @@ public final class ASiCUtils {
 
 		return false;
 	}
+	
+	/**
+	 * Reads and copies InputStream in a secure way, depending on the provided container size
+	 * This method allows to detect "ZipBombing" (large files inside a zip container)
+	 * @param is {@link InputStream} of file
+	 * @param os {@link OutputStream} where save file to
+	 * @param containerSize - zip container size
+	 */
+	public static void secureCopy(InputStream is, OutputStream os, long containerSize) throws IOException {
+		byte[] data = new byte[8192];
+		int nRead;
+	    int byteCounter = 0;
+	    while ((nRead = is.read(data)) != -1) {
+	    	byteCounter += nRead;
+	    	if (byteCounter > ZIP_ENTRY_THRESHOLD && 
+	    			byteCounter > containerSize * ZIP_ENTRY_RATIO) {
+	    		throw new DSSException("Zip Bomb detected in the ZIP container. Validation is interrupted.");
+	    	}
+			Utils.write(Arrays.copyOfRange(data, 0, nRead), os);
+	    }
+	}
 
     /**
      * Returns file from the given ZipInputStream
@@ -236,7 +270,7 @@ public final class ASiCUtils {
      */
 	public static DSSDocument getCurrentDocument(String filepath, ZipInputStream zis, long containerSize) throws IOException {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-		    DSSUtils.secureCopy(zis, baos, containerSize);
+		    secureCopy(zis, baos, containerSize);
 			baos.flush();
 			return new InMemoryDocument(baos.toByteArray(), filepath);
 		}

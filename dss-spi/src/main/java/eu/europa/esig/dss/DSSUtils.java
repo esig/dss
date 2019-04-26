@@ -44,7 +44,6 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -88,16 +87,6 @@ public final class DSSUtils {
 	 * The default date pattern: "yyyy-MM-dd"
 	 */
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
-
-    /**
-     * Minimum file size to be analized on zip bombing
-     */
-	private static final long ZIP_ENTRY_THRESHOLD = 1000000; // 1 MB
-	
-    /**
-     * Maximum compression ratio.
-     */
-    private static final long ZIP_ENTRY_RATIO = 100;
 
 	/**
 	 * This class is an utility class and cannot be instantiated.
@@ -600,27 +589,6 @@ public final class DSSUtils {
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
-	}
-	
-	/**
-	 * Reads and copies InputStream in a secure way, depending on the provided container size
-	 * This method allows to detect "ZipBombing" (large files inside a zip container)
-	 * @param is {@link InputStream} of file
-	 * @param os {@link OutputStream} where save file to
-	 * @param containerSize - zip container size
-	 */
-	public static void secureCopy(InputStream is, OutputStream os, long containerSize) throws IOException {
-		byte[] data = new byte[8096];
-		int nRead;
-	    int byteCounter = 0;
-	    while ((nRead = is.read(data)) != -1) {
-	    	byteCounter += nRead;
-	    	if (byteCounter > ZIP_ENTRY_THRESHOLD && 
-	    			byteCounter > containerSize * ZIP_ENTRY_RATIO) {
-	    		throw new DSSException("Zip Bomb detected in the ZIP container. Validation is interrupted.");
-	    	}
-			Utils.write(Arrays.copyOfRange(data, 0, nRead), os);
-	    }
 	}
 
 	/**
