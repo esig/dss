@@ -27,11 +27,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -320,6 +322,26 @@ public abstract class AbstractUtilsTest {
 		extensions = new String[] { "doc", "pdf" };
 		listFiles = Utils.listFiles(folder, extensions, true);
 		assertTrue(Utils.isCollectionEmpty(listFiles));
+	}
+	
+	@Test
+	public void getInputStreamSize() throws IOException {
+		
+		InputStream is = new ByteArrayInputStream("Hello World!".getBytes());
+		assertEquals(12, Utils.getInputStreamSize(is));
+		
+		InputStream emptyIs = new ByteArrayInputStream(new byte[0]);
+		assertEquals(0, Utils.getInputStreamSize(emptyIs));
+
+		String newFileName = "target/sample.txt";
+		String newFileContent = "Hello world!\r\n";
+		FileOutputStream fos = new FileOutputStream(newFileName);
+		fos.write(newFileContent.getBytes("UTF-8"));
+		fos.close();
+		
+		FileInputStream fileInputStream = new FileInputStream(newFileName);
+		assertEquals(14, Utils.getInputStreamSize(fileInputStream));
+		
 	}
 
 	@Test

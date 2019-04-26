@@ -205,7 +205,7 @@ public class ApacheCommonsUtils implements IUtils {
 		long byteCounter = 0;
 		int nRead;
 	    byte[] data = new byte[8192];
-	    while ((nRead = IOUtils.read(is, data)) != -1) {
+	    while ((nRead = IOUtils.read(is, data)) > 0) {
 	    	byteCounter += nRead;
 	    }
 		return byteCounter;
