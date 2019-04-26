@@ -327,20 +327,23 @@ public abstract class AbstractUtilsTest {
 	@Test
 	public void getInputStreamSize() throws IOException {
 		
-		InputStream is = new ByteArrayInputStream("Hello World!".getBytes());
-		assertEquals(12, Utils.getInputStreamSize(is));
+		try (InputStream is = new ByteArrayInputStream("Hello World!".getBytes())) {
+			assertEquals(12, Utils.getInputStreamSize(is));
+		}
 		
-		InputStream emptyIs = new ByteArrayInputStream(new byte[0]);
-		assertEquals(0, Utils.getInputStreamSize(emptyIs));
+		try (InputStream emptyIs = new ByteArrayInputStream(new byte[0])) {
+			assertEquals(0, Utils.getInputStreamSize(emptyIs));
+		}
 
 		String newFileName = "target/sample.txt";
 		String newFileContent = "Hello world!\r\n";
-		FileOutputStream fos = new FileOutputStream(newFileName);
-		fos.write(newFileContent.getBytes("UTF-8"));
-		fos.close();
 		
-		FileInputStream fileInputStream = new FileInputStream(newFileName);
-		assertEquals(14, Utils.getInputStreamSize(fileInputStream));
+		try (FileOutputStream fos = new FileOutputStream(newFileName)) {
+			fos.write(newFileContent.getBytes("UTF-8"));
+		}
+		try (FileInputStream fileInputStream = new FileInputStream(newFileName)) {
+			assertEquals(14, Utils.getInputStreamSize(fileInputStream));
+		}
 		
 	}
 
