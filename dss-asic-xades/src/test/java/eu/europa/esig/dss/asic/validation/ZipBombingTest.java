@@ -37,6 +37,14 @@ public class ZipBombingTest {
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		validator.validateDocument();
 	}
+
+	@Test(expected = DSSException.class)
+	public void zipBombingOneLevelAsics() {
+		FileDocument doc = new FileDocument("src/test/resources/validation/zip-bomb-package-zip-1gb.asics");
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+		validator.setCertificateVerifier(new CommonCertificateVerifier());
+		validator.validateDocument();
+	}
 	
 	@Test(expected = DSSException.class)
 	public void zipBombingTooManyFilesAsice() {
