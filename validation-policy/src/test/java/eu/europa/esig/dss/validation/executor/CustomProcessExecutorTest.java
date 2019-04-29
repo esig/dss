@@ -49,6 +49,8 @@ import eu.europa.esig.dss.validation.process.MessageTag;
 import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
+import eu.europa.esig.jaxb.policy.Algo;
+import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
@@ -1033,6 +1035,30 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		executor.setValidationLevel(null);
 
 		executor.execute();
+	}
+	
+	@Test
+	public void dss1635Test() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/dss-1635-diag-data.xml");
+		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		ConstraintsParameters defaultPolicy = loadConstraintsParameters("src/main/resources/policy/constraint.xml");
+		List<Algo> algos = defaultPolicy.getCryptographic().getAlgoExpirationDate().getAlgo();
+		for (Algo algo : algos) {
+			if ("SHA1".equals(algo.getValue())) {
+				algo.setDate("2014");
+				break;
+			}
+		}
+		executor.setValidationPolicy(new EtsiValidationPolicy(defaultPolicy));
+		executor.setCurrentTime(new Date());
+
+		Reports reports = executor.execute();
+		// reports.print();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 	}
 
 	private void checkReports(Reports reports) {

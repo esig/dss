@@ -125,6 +125,7 @@ public abstract class AbstractCryptographicCheck<T extends XmlConstraintsConclus
 			if (Utils.areStringsEqual(algoToFind, algo.getValue()) && Utils.isStringNotEmpty(algo.getDate())) {
 				try {
 					result = dateFormat.parse(algo.getDate());
+					break;
 				} catch (Exception e) {
 					LOG.warn("Unable to parse date with pattern '{}' : {}", dateFormat.toPattern(), e.getMessage());
 				}

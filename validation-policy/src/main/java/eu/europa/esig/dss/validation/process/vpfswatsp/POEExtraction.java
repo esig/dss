@@ -92,9 +92,13 @@ public class POEExtraction {
 		if (Utils.isCollectionNotEmpty(timestampedObjects)) {
 
 			for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
-				if (Utils.isStringNotEmpty(xmlTimestampedObject.getId())) {
-					// SIGNATURES and TIMESTAMPS
+				if (TimestampedObjectType.TIMESTAMP == xmlTimestampedObject.getCategory()) {
 					addPOE(xmlTimestampedObject.getId(), productionTime);
+					TimestampWrapper timestampedTimestamp = diagnosticData.getTimestampById(xmlTimestampedObject.getId());
+					List<String> timestampCertChainIds = timestampedTimestamp.getCertificateChainIds();
+					for (String certificateId : timestampCertChainIds) {
+						addPOE(certificateId, productionTime);
+					}
 				} else if (TimestampedObjectType.CERTIFICATE == xmlTimestampedObject.getCategory()) {
 					String certificateId = getCertificateIdByDigest(xmlTimestampedObject.getDigestAlgoAndValue(), diagnosticData);
 					if (certificateId != null) {
@@ -105,6 +109,9 @@ public class POEExtraction {
 					if (revocationId != null) {
 						addPOE(revocationId, productionTime);
 					}
+				} else if (Utils.isStringNotEmpty(xmlTimestampedObject.getId())) {
+					// SIGNATURES
+					addPOE(xmlTimestampedObject.getId(), productionTime);
 				}
 			}
 
