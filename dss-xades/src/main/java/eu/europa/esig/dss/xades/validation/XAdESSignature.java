@@ -857,8 +857,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				LOG.trace("IndividualDataObjectsTimestampData/AllDataObjectsTimestampData bytes: {}", new String(byteArray));
 			}
 			return byteArray;
-		} catch (IOException | XMLSecurityException e) {
+		} catch (IOException e) {
 			throw new DSSException("Unable to extract IndividualDataObjectsTimestampData/AllDataObjectsTimestampData", e);
+		} catch (XMLSecurityException e) {
+			throw new DSSException("Unable to extract IndividualDataObjectsTimestampData/AllDataObjectsTimestampData. "
+					+ "A reference is broken or detached content is not provided.", e);
 		}
 
 	}
