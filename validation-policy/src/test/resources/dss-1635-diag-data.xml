@@ -140,6 +140,12 @@
                                 <DigestValue>LAdwMkgEEJ/naUPx2YSwLSWsGJg=</DigestValue>
                             </DigestAlgoAndValue>
                         </TimestampedObject>
+                        <TimestampedObject Category="CERTIFICATE">
+                            <DigestAlgoAndValue>
+                                <DigestMethod>SHA1</DigestMethod>
+                                <DigestValue>weBOuUZUnMJnnqBk8SE6iQ6cWto=</DigestValue>
+                            </DigestAlgoAndValue>
+                        </TimestampedObject>
                     </TimestampedObjects>
                 </Timestamp>
                 <Timestamp Id="B1FA84D704387F7DB671526D869166705F07C195CE158507C423443068D23CC4" Type="ARCHIVE_TIMESTAMP">
@@ -198,6 +204,12 @@
                             <DigestAlgoAndValue>
                                 <DigestMethod>SHA1</DigestMethod>
                                 <DigestValue>LAdwMkgEEJ/naUPx2YSwLSWsGJg=</DigestValue>
+                            </DigestAlgoAndValue>
+                        </TimestampedObject>
+                        <TimestampedObject Category="CERTIFICATE">
+                            <DigestAlgoAndValue>
+                                <DigestMethod>SHA1</DigestMethod>
+                                <DigestValue>weBOuUZUnMJnnqBk8SE6iQ6cWto=</DigestValue>
                             </DigestAlgoAndValue>
                         </TimestampedObject>
                         <TimestampedObject Category="CERTIFICATE">
