@@ -1059,6 +1059,21 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		
+		// current year returns a first day
+		for (Algo algo : algos) {
+			if ("SHA1".equals(algo.getValue())) {
+				algo.setDate("2013");
+				break;
+			}
+		}
+
+		executor.setValidationPolicy(new EtsiValidationPolicy(defaultPolicy));
+		reports = executor.execute();
+		simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		
 	}
 
 	private void checkReports(Reports reports) {
