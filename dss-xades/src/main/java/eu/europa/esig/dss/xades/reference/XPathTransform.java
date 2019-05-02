@@ -8,9 +8,9 @@ import eu.europa.esig.dss.DomUtils;
 
 public class XPathTransform extends ComplexTransform {
 	
-	private final String xPathExpression;
-
-	public static final String DS_XPATH = "ds:XPath";
+	protected static final String DS_XPATH = "ds:XPath";
+	
+	protected final String xPathExpression;
 	
 	protected XPathTransform(String algorithm, String xPathExpression) {
 		super(algorithm);

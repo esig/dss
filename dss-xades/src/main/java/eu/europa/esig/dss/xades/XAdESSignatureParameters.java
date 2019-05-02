@@ -28,6 +28,7 @@ import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.SignatureForm;
 import eu.europa.esig.dss.SignatureLevel;
+import eu.europa.esig.dss.xades.reference.DSSReference;
 
 public class XAdESSignatureParameters extends AbstractSignatureParameters {
 
