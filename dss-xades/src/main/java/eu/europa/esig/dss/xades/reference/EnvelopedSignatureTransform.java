@@ -5,6 +5,10 @@ import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 
+/**
+ * Used for Enveloped Signature
+ * Note: must be followed up by a {@link CanonicalizationTransform}
+ */
 public class EnvelopedSignatureTransform extends AbstractTransform {
 
 	public EnvelopedSignatureTransform() {

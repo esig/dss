@@ -246,19 +246,41 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		for (DSSReference reference : params.getReferences()) {
 			List<DSSTransform> transforms = reference.getTransforms();
 			if (Utils.isCollectionNotEmpty(transforms)) {
+				boolean incorrectUsageOfEnvelopedSignature = false;
+				String referenceWrongMessage = "Reference setting is not correct! ";
 				for (DSSTransform transform : transforms) {
-					if (Transforms.TRANSFORM_BASE64_DECODE.equals(transform.getAlgorithm())) {
-						String referenceWrongMessage = "Reference setting is not correct! ";
-						if (params.isEmbedXML()) {
-							throw new DSSException(referenceWrongMessage + "The embedXML(true) parameter is not compatible with base64 transform.");
-						} else if (params.isManifestSignature()) {
-							throw new DSSException(referenceWrongMessage + "Manifest signature is not compatible with base64 transform.");
-						} else if (SignaturePackaging.ENVELOPED.equals(params.getSignaturePackaging())) {
-							throw new DSSException(referenceWrongMessage + "Base64 transform is not compatible with Enveloped signature format.");
-						} else if (transforms.size() > 1) {
-							throw new DSSException(referenceWrongMessage + "Base64 transform cannot be used with other transformations.");
-						}
+					switch (transform.getAlgorithm()) {
+						case Transforms.TRANSFORM_BASE64_DECODE:
+							if (params.isEmbedXML()) {
+								throw new DSSException(referenceWrongMessage + "The embedXML(true) parameter is not compatible with base64 transform.");
+							} else if (params.isManifestSignature()) {
+								throw new DSSException(referenceWrongMessage + "Manifest signature is not compatible with base64 transform.");
+							} else if (SignaturePackaging.ENVELOPED.equals(params.getSignaturePackaging())) {
+								throw new DSSException(referenceWrongMessage + "Base64 transform is not compatible with Enveloped signature format.");
+							} else if (transforms.size() > 1) {
+								throw new DSSException(referenceWrongMessage + "Base64 transform cannot be used with other transformations.");
+							}
+							break;
+						case Transforms.TRANSFORM_ENVELOPED_SIGNATURE:
+							incorrectUsageOfEnvelopedSignature = true;
+							break;
+						case Transforms.TRANSFORM_C14N11_OMIT_COMMENTS:
+						case Transforms.TRANSFORM_C14N11_WITH_COMMENTS:
+						case Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS:
+						case Transforms.TRANSFORM_C14N_EXCL_WITH_COMMENTS:
+						case Transforms.TRANSFORM_C14N_OMIT_COMMENTS:
+						case Transforms.TRANSFORM_C14N_WITH_COMMENTS:
+							// enveloped signature must follow up by a canonicalization
+							if (incorrectUsageOfEnvelopedSignature) {
+								incorrectUsageOfEnvelopedSignature = false;
+							}
+						default:
+							// do nothing
+							break;
 					}
+				}
+				if (incorrectUsageOfEnvelopedSignature) {
+					throw new DSSException(referenceWrongMessage + "Enveloped Signature Transform must be followed up by a Canonicalization Transform.");
 				}
 			}
 		}
