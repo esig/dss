@@ -5,6 +5,15 @@ import org.w3c.dom.Node;
 
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 
+/**
+ * Transforms a reference content to its base64 representation
+ * 
+ * NOTE: Not compatible with:
+ * - other transformations;
+ * - isEmbed(true) parameter;
+ * - Manifest signature;
+ * - Enveloped signatures.
+ */
 public class Base64Transform extends AbstractTransform {
 
 	public Base64Transform() {

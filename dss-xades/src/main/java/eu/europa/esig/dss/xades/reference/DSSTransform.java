@@ -7,6 +7,18 @@ import org.w3c.dom.Node;
 public interface DSSTransform {
 	
 	/**
+	 * Returns a particular transformation algorithm name
+	 * @return {@link String} algorithm name of transformation
+	 */
+	String getAlgorithm();
+	
+	/**
+	 * Specifies a namespace for the transformation elements
+	 * @param namespace {@link String} uri
+	 */
+	void setNamespace(String namespace);
+	
+	/**
 	 * Performs transformation on the given {@code node} and returns resulting bytes
 	 * @param node {@link Node} to perform transformation on
 	 * @return byte array

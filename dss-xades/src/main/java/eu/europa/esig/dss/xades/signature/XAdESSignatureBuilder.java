@@ -32,6 +32,7 @@ import java.util.Set;
 import javax.security.auth.x500.X500Principal;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -49,6 +50,7 @@ import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.Policy;
 import eu.europa.esig.dss.SignatureAlgorithm;
+import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignerLocation;
 import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
@@ -200,6 +202,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			final List<DSSReference> defaultReferences = createDefaultReferences();
 			// The SignatureParameters object is updated with the default references.
 			params.setReferences(defaultReferences);
+		} else {
+			checkReferencesValidity();
 		}
 
 		incorporateFiles();
@@ -233,6 +237,31 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		}
 		built = true;
 		return canonicalizedSignedInfo;
+	}
+	
+	/**
+	 * Verifies a compatibility of defined signature parameters and reference transformations
+	 */
+	private void checkReferencesValidity() {
+		for (DSSReference reference : params.getReferences()) {
+			List<DSSTransform> transforms = reference.getTransforms();
+			if (Utils.isCollectionNotEmpty(transforms)) {
+				for (DSSTransform transform : transforms) {
+					if (Transforms.TRANSFORM_BASE64_DECODE.equals(transform.getAlgorithm())) {
+						String referenceWrongMessage = "Reference setting is not correct! ";
+						if (params.isEmbedXML()) {
+							throw new DSSException(referenceWrongMessage + "The embedXML(true) parameter is not compatible with base64 transform.");
+						} else if (params.isManifestSignature()) {
+							throw new DSSException(referenceWrongMessage + "Manifest signature is not compatible with base64 transform.");
+						} else if (SignaturePackaging.ENVELOPED.equals(params.getSignaturePackaging())) {
+							throw new DSSException(referenceWrongMessage + "Base64 transform is not compatible with Enveloped signature format.");
+						} else if (transforms.size() > 1) {
+							throw new DSSException(referenceWrongMessage + "Base64 transform cannot be used with other transformations.");
+						}
+					}
+				}
+			}
+		}
 	}
 
 	protected void incorporateFiles() {

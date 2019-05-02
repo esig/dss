@@ -19,6 +19,12 @@ public abstract class AbstractTransform implements DSSTransform {
 		this.algorithm = algorithm;
 	}
 	
+	@Override
+	public String getAlgorithm() {
+		return this.algorithm;
+	}
+	
+	@Override
 	public void setNamespace(String namespace) {
 		this.namespace = namespace;
 	}
