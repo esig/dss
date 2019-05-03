@@ -7,13 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import eu.europa.esig.dss.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.SignatureRevocationSource;
 
 @SuppressWarnings("serial")
 public abstract class SignatureCRLSource extends OfflineCRLSource implements SignatureRevocationSource<CRLToken> {
 	
-	Map<CRLBinary, List<CRLToken>> crlTokenMap = new HashMap<CRLBinary, List<CRLToken>>();
+	Map<CRLBinaryIdentifier, List<CRLToken>> crlTokenMap = new HashMap<CRLBinaryIdentifier, List<CRLToken>>();
 	
 	private List<CRLToken> revocationValuesCRLs = new ArrayList<CRLToken>();
 	private List<CRLToken> attributeRevocationValuesCRLs = new ArrayList<CRLToken>();
@@ -62,7 +63,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		return attributeRevocationRefsCRLs;
 	}
 	
-	public Map<CRLBinary, List<CRLToken>> getCRLTokenMap() {
+	public Map<CRLBinaryIdentifier, List<CRLToken>> getCRLTokenMap() {
 		return crlTokenMap;
 	}
 	
@@ -71,8 +72,8 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	 * @param signatureCRLSource {@link SignatureCRLSource} to populate values from
 	 */
 	public void populateCRLRevocationTokenLists(SignatureCRLSource signatureCRLSource) {
-		Map<CRLBinary, List<CRLToken>> mapToPopulateValuesFrom = signatureCRLSource.getCRLTokenMap();
-		for (Entry<CRLBinary, List<CRLToken>> entry : mapToPopulateValuesFrom.entrySet()) {
+		Map<CRLBinaryIdentifier, List<CRLToken>> mapToPopulateValuesFrom = signatureCRLSource.getCRLTokenMap();
+		for (Entry<CRLBinaryIdentifier, List<CRLToken>> entry : mapToPopulateValuesFrom.entrySet()) {
 			for (CRLToken crlToken : entry.getValue()) {
 				storeCRLToken(entry.getKey(), crlToken);
 			}
@@ -80,7 +81,7 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	}
 	
 	@Override
-	protected void storeCRLToken(CRLBinary crlBinary, CRLToken crlToken) {
+	protected void storeCRLToken(CRLBinaryIdentifier crlBinary, CRLToken crlToken) {
 		if (crlsBinaryList.contains(crlBinary)) {
 			List<CRLToken> tokensList = crlTokenMap.get(crlBinary);
 			if (tokensList == null) {

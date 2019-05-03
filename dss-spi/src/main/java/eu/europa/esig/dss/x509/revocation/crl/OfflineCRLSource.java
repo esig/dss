@@ -34,6 +34,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CRLBinaryIdentifier;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -52,13 +53,13 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 * This {@code HashMap} contains not validated CRL binaries. When the validation passes, the entry will be removed.
 	 * The key is the SHA256 digest of the CRL binaries.
 	 */
-	protected List<CRLBinary> crlsBinaryList = new ArrayList<CRLBinary>();
+	protected List<CRLBinaryIdentifier> crlsBinaryList = new ArrayList<CRLBinaryIdentifier>();
 
 	/**
 	 * This {@code HashMap} contains the {@code CRLValidity} object for each
-	 * {@code X509CRL}. It is used for performance reasons.
+	 * {@code CRLBinaryIdentifier}. It is used for performance reasons.
 	 */
-	private Map<CRLBinary, CRLValidity> crlValidityMap = new HashMap<CRLBinary, CRLValidity>();
+	private Map<CRLBinaryIdentifier, CRLValidity> crlValidityMap = new HashMap<CRLBinaryIdentifier, CRLValidity>();
 
 	private Map<CertificateToken, CRLToken> validCRLTokenList = new HashMap<CertificateToken, CRLToken>();
 
@@ -77,7 +78,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 			return null;
 		}
 
-		final List<CRLBinary> crlBinariesToAdd = new ArrayList<CRLBinary>(); // used to store revocation data from different sources
+		final List<CRLBinaryIdentifier> crlBinariesToAdd = new ArrayList<CRLBinaryIdentifier>(); // used to store revocation data from different sources
 		final CRLValidity bestCRLValidity = getBestCrlValidityEntry(certificateToken, issuerToken, crlBinariesToAdd);
 		if (bestCRLValidity == null) {
 			return null;
@@ -86,7 +87,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 		final CRLToken crlToken = new CRLToken(certificateToken, bestCRLValidity);
 		validCRLTokenList.put(certificateToken, crlToken);
 		// store tokens with different origins
-		for (CRLBinary crlBinary : crlBinariesToAdd) {
+		for (CRLBinaryIdentifier crlBinary : crlBinariesToAdd) {
 			storeCRLToken(crlBinary, crlToken);
 		}
 		return crlToken;
@@ -103,12 +104,12 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 *            of the CRL
 	 * @return {@code CRLValidity}
 	 */
-	private CRLValidity getBestCrlValidityEntry(final CertificateToken certificateToken, final CertificateToken issuerToken, List<CRLBinary> crlBinaries) {
+	private CRLValidity getBestCrlValidityEntry(final CertificateToken certificateToken, final CertificateToken issuerToken, List<CRLBinaryIdentifier> crlBinaries) {
 
 		CRLValidity bestCRLValidity = null;
 		Date bestX509UpdateDate = null;
 
-		for (CRLBinary crlEntry : crlsBinaryList) {
+		for (CRLBinaryIdentifier crlEntry : crlsBinaryList) {
 			final CRLValidity crlValidity = getCrlValidity(crlEntry, issuerToken);
 			if (crlValidity == null || !crlValidity.isValid()) {
 				continue;
@@ -150,7 +151,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 *            {@code CertificateToken} issuer of the CRL
 	 * @return returns updated {@code CRLValidity} object
 	 */
-	private  CRLValidity getCrlValidity(final CRLBinary crlBinary, final CertificateToken issuerToken) {
+	private CRLValidity getCrlValidity(final CRLBinaryIdentifier crlBinary, final CertificateToken issuerToken) {
 		CRLValidity crlValidity = crlValidityMap.get(crlBinary);
 		if (crlValidity == null) {
 			try (InputStream is = new ByteArrayInputStream(crlBinary.getBinaries())) {
@@ -174,24 +175,24 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 */
 	public Collection<byte[]> getContainedX509CRLs() {
 		Collection<byte[]> binaries = new ArrayList<byte[]>();
-		for (CRLBinary crlBinary : crlsBinaryList) {
+		for (CRLBinaryIdentifier crlBinary : crlsBinaryList) {
 			binaries.add(crlBinary.getBinaries());
 		}
 		return Collections.unmodifiableCollection(binaries);
 	}
 
 	protected void addCRLBinary(byte[] binaries, RevocationOrigin origin) {
-		CRLBinary crlBinary = new CRLBinary(binaries, origin);
+		CRLBinaryIdentifier crlBinary = CRLBinaryIdentifier.build(binaries, origin);
 		addCRLBinary(crlBinary);
 	}
 
-	protected void addCRLBinary(CRLBinary crlBinary) {
+	protected void addCRLBinary(CRLBinaryIdentifier crlBinary) {
 		if (!crlsBinaryList.contains(crlBinary) && !crlValidityMap.containsKey(crlBinary)) {
 			crlsBinaryList.add(crlBinary);
 		}
 	}
 	
-	protected void storeCRLToken(final CRLBinary crlBinary, final CRLToken crlToken) {
+	protected void storeCRLToken(final CRLBinaryIdentifier crlBinary, final CRLToken crlToken) {
 		// do nothing
 	}
 
