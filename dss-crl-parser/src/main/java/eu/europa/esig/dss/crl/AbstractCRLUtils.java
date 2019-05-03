@@ -31,7 +31,6 @@ import org.bouncycastle.asn1.x509.DistributionPointName;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuingDistributionPoint;
-import org.bouncycastle.asn1.x509.ReasonFlags;
 import org.bouncycastle.asn1.x509.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,23 +56,21 @@ public abstract class AbstractCRLUtils {
 	}
 
 	protected void checkCriticalExtensions(CRLValidity validity, Collection<String> criticalExtensionsOid, byte[] issuingDistributionPointBinary) {
-		if (criticalExtensionsOid == null || criticalExtensionsOid.isEmpty()) {
-			validity.setUnknownCriticalExtension(false);
-		} else {
-			IssuingDistributionPoint issuingDistributionPoint = IssuingDistributionPoint
-					.getInstance(ASN1OctetString.getInstance(issuingDistributionPointBinary).getOctets());
-			final boolean onlyAttributeCerts = issuingDistributionPoint.onlyContainsAttributeCerts();
-			final boolean onlyCaCerts = issuingDistributionPoint.onlyContainsCACerts();
-			final boolean onlyUserCerts = issuingDistributionPoint.onlyContainsUserCerts();
-			final boolean indirectCrl = issuingDistributionPoint.isIndirectCRL();
-			ReasonFlags onlySomeReasons = issuingDistributionPoint.getOnlySomeReasons();
-			final String url = getUrl(issuingDistributionPoint.getDistributionPoint());
-			validity.setUrl(url);
-			final boolean urlFound = url != null;
-			if (!(onlyAttributeCerts && onlyCaCerts && onlyUserCerts && indirectCrl) && (onlySomeReasons == null) && urlFound) {
-				validity.setUnknownCriticalExtension(false);
-			}
+		validity.setCriticalExtensionsOid(criticalExtensionsOid);
+		if (validity.areCriticalExtensionsOidNotEmpty()) {
+			extractIssuingDistributionPointBinary(validity, issuingDistributionPointBinary);
 		}
+	}
+	
+	private void extractIssuingDistributionPointBinary(CRLValidity validity, byte[] issuingDistributionPointBinary) {
+		IssuingDistributionPoint issuingDistributionPoint = IssuingDistributionPoint
+				.getInstance(ASN1OctetString.getInstance(issuingDistributionPointBinary).getOctets());
+		validity.setOnlyAttributeCerts(issuingDistributionPoint.onlyContainsAttributeCerts());
+		validity.setOnlyCaCerts(issuingDistributionPoint.onlyContainsCACerts());
+		validity.setOnlyUserCerts(issuingDistributionPoint.onlyContainsUserCerts());
+		validity.setIndirectCrl(issuingDistributionPoint.isIndirectCRL());
+		validity.setReasonFlags(issuingDistributionPoint.getOnlySomeReasons());
+		validity.setUrl(getUrl(issuingDistributionPoint.getDistributionPoint()));
 	}
 
 	private String getUrl(DistributionPointName distributionPoint) {
