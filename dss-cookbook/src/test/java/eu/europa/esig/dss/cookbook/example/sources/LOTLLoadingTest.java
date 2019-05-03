@@ -54,7 +54,7 @@ public class LOTLLoadingTest {
 
 		// Defines a URL where the keystore certificates were obtained from
 		// This information is needed to be able to filter the LOTL pivots
-		job.setUsedOjKeystoreUrl("http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG");
+		job.setOjUrl("http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG");
 
 		// The keystore contains certificates referenced in the Official Journal Link (OJ URL)
 		KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12",

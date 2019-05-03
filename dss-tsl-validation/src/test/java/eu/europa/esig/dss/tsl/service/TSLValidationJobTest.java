@@ -76,7 +76,7 @@ public class TSLValidationJobTest {
 		job.setCheckLOTLSignature(true);
 		job.setCheckTSLSignatures(true);
 		job.setDataLoader(new CommonsDataLoader());
-		job.setUsedOjKeystoreUrl(USED_OJ_URL);
+		job.setOjUrl(USED_OJ_URL);
 		job.setLotlUrl(LOTL_URL);
 		job.setLotlCode("EU");
 		job.setOjContentKeyStore(dssKeyStore);
@@ -103,7 +103,7 @@ public class TSLValidationJobTest {
 		job.setCheckLOTLSignature(true);
 		job.setCheckTSLSignatures(true);
 		job.setDataLoader(new CommonsDataLoader());
-		job.setUsedOjKeystoreUrl(USED_OJ_URL);
+		job.setOjUrl(USED_OJ_URL);
 		job.setLotlUrl(LOTL_URL);
 		job.setLotlCode("EU");
 		job.setOjContentKeyStore(dssKeyStore);
@@ -131,7 +131,7 @@ public class TSLValidationJobTest {
 		job.setCheckLOTLSignature(true);
 		job.setCheckTSLSignatures(true);
 		job.setDataLoader(new CommonsDataLoader());
-		job.setUsedOjKeystoreUrl(USED_OJ_URL);
+		job.setOjUrl(USED_OJ_URL);
 		job.setLotlUrl(LOTL_URL);
 		job.setLotlCode("EU");
 		job.setOjContentKeyStore(dssKeyStore);
@@ -258,7 +258,7 @@ public class TSLValidationJobTest {
 		job.setCheckLOTLSignature(true);
 		job.setCheckTSLSignatures(true);
 		job.setDataLoader(new CommonsDataLoader());
-		job.setUsedOjKeystoreUrl("http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2014.175.01.0001.01.ENG");
+		job.setOjUrl("http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2014.175.01.0001.01.ENG");
 		job.setLotlUrl(LOTL_URL);
 		job.setLotlCode("EU");
 		job.setOjContentKeyStore(dssKeyStore);
@@ -283,7 +283,7 @@ public class TSLValidationJobTest {
 		job.setCheckLOTLSignature(true);
 		job.setCheckTSLSignatures(true);
 		job.setDataLoader(new CommonsDataLoader());
-		job.setUsedOjKeystoreUrl("wrong-dns.eu/name");
+		job.setOjUrl("wrong-dns.eu/name");
 		job.setLotlUrl(LOTL_URL);
 		job.setLotlCode("EU");
 		job.setOjContentKeyStore(dssKeyStore);
@@ -307,7 +307,7 @@ public class TSLValidationJobTest {
 		job.setCheckLOTLSignature(true);
 		job.setCheckTSLSignatures(true);
 		job.setDataLoader(new CommonsDataLoader());
-		job.setUsedOjKeystoreUrl(null);
+		job.setOjUrl(null);
 		job.setLotlUrl(LOTL_URL);
 		job.setLotlCode("EU");
 		job.setOjContentKeyStore(dssKeyStore);
