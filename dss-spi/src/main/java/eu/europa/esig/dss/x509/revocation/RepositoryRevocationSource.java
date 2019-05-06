@@ -243,18 +243,16 @@ public abstract class RepositoryRevocationSource<T extends RevocationToken> impl
 	private boolean isNotExpired(T token) {
 		final Date thisUpdate = token.getThisUpdate();
 		Date nextUpdate = token.getNextUpdate();
-		if (nextUpdate == null && defaultNextUpdateDelay != null) {
+		if (nextUpdate == null && defaultNextUpdateDelay != null && thisUpdate != null) {
 			nextUpdate = new Date(thisUpdate.getTime() + defaultNextUpdateDelay);
 		}
 		if (nextUpdate != null) {
-
-			if (maxNexUpdateDelay != null) {
+			if (maxNexUpdateDelay != null && thisUpdate != null) {
 				Date maxNextUpdate = new Date(thisUpdate.getTime() + maxNexUpdateDelay);
 				if (nextUpdate.after(maxNextUpdate)) {
 					nextUpdate = maxNextUpdate;
 				}
 			}
-
 			return nextUpdate.after(new Date());
 		}
 		return false;
