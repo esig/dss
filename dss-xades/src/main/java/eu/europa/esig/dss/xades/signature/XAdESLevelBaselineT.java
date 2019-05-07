@@ -28,6 +28,7 @@ import static eu.europa.esig.dss.x509.TimestampType.SIGNATURE_TIMESTAMP;
 import static eu.europa.esig.dss.xades.ProfileParameters.Operation.SIGNING;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
@@ -60,6 +61,7 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.ProfileParameters;
 import eu.europa.esig.dss.xades.ProfileParameters.Operation;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XPathQueryHolder;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 
 /**
@@ -129,7 +131,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 
 				continue;
 			}
-			xadesSignature = new XAdESSignature(currentSignatureDom);
+			xadesSignature = new XAdESSignature(currentSignatureDom, Arrays.asList(new XPathQueryHolder()), certificateVerifier.createValidationPool());
 			xadesSignature.setDetachedContents(params.getDetachedContents());
 			extendSignatureTag();
 		}
