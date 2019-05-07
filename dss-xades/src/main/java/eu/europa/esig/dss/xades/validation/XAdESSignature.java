@@ -877,26 +877,26 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private List<TimestampReference> getSignatureTimestampedReferences() {
-
 		final List<TimestampReference> references = new ArrayList<TimestampReference>();
-		final TimestampReference signatureReference = getSignatureTimestampReference();
-		references.add(signatureReference);
-		final List<TimestampReference> signingCertificateTimestampReferences = getSigningCertificateTimestampReferences();
-		references.addAll(signingCertificateTimestampReferences);
+		references.add(getSignatureTimestampReference());
+		references.addAll(getSigningCertificateTimestampReferences());
 		return references;
 	}
 
 	private List<TimestampReference> getSigningCertificateTimestampReferences() {
-
 		if (signingCertificateTimestampReferences == null) {
-
 			signingCertificateTimestampReferences = new ArrayList<TimestampReference>();
 			final NodeList list = DomUtils.getNodeList(signatureElement, xPathQueryHolder.XPATH_CERT_DIGEST);
 			for (int jj = 0; jj < list.getLength(); jj++) {
-
 				final Element element = (Element) list.item(jj);
 				final TimestampReference signingCertReference = createCertificateTimestampReference(element);
 				signingCertificateTimestampReferences.add(signingCertReference);
+			}
+			if (isKeyInfoCovered()) {
+				List<CertificateToken> keyInfoCerts = getCertificateSource().getKeyInfoCertificates();
+				for (CertificateToken cert : keyInfoCerts) {
+					signingCertificateTimestampReferences.add(new TimestampReference(DigestAlgorithm.SHA256, Utils.toBase64(cert.getDigest(DigestAlgorithm.SHA256))));
+				}
 			}
 		}
 		return signingCertificateTimestampReferences;
@@ -932,7 +932,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<TimestampToken> getSignatureTimestamps() {
-
 		if (signatureTimestamps == null) {
 			makeTimestampTokens();
 		}
@@ -941,7 +940,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<TimestampToken> getTimestampsX1() {
-
 		if (sigAndRefsTimestamps == null) {
 			makeTimestampTokens();
 		}
@@ -950,7 +948,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<TimestampToken> getTimestampsX2() {
-
 		if (refsOnlyTimestamps == null) {
 			makeTimestampTokens();
 		}
@@ -959,7 +956,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<TimestampToken> getArchiveTimestamps() {
-
 		if (archiveTimestamps == null) {
 			makeTimestampTokens();
 		}
@@ -986,7 +982,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		if (unsignedSignaturePropertiesDom == null) {
 			return;
 		}
-		final List<String> timestampedTimestamps = new ArrayList<String>();
+		final List<TimestampToken> timestampedTimestamps = new ArrayList<TimestampToken>();
 		final NodeList unsignedProperties = unsignedSignaturePropertiesDom.getChildNodes();
 		for (int ii = 0; ii < unsignedProperties.getLength(); ii++) {
 
@@ -1020,7 +1016,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					continue;
 				}
 				final List<TimestampReference> references = getSignatureTimestampedReferences();
-				references.addAll(getTimestampedReferences());
+				addReferences(references, getTimestampedReferences());
 				timestampToken.setTimestampedReferences(references);
 				sigAndRefsTimestamps.add(timestampToken);
 			} else if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
@@ -1033,17 +1029,17 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				timestampToken.setArchiveTimestampType(archiveTimestampType);
 
 				final List<TimestampReference> references = getSignatureTimestampedReferences();
-				for (final String timestampId : timestampedTimestamps) {
-					references.add(new TimestampReference(timestampId, TimestampedObjectType.TIMESTAMP));
+				for (final TimestampToken timestamp : timestampedTimestamps) {
+					addReference(references, new TimestampReference(timestamp.getDSSIdAsString(), TimestampedObjectType.TIMESTAMP));
+					List<CertificateToken> wrappedCertificates = timestamp.getCertificates();
+					for (CertificateToken certificateToken : wrappedCertificates) {
+						addReference(references, createCertificateTimestampReference(certificateToken));
+					}
 				}
-				references.addAll(getTimestampedReferences());
+				addReferences(references, getTimestampedReferences());
 				final List<CertificateToken> encapsulatedCertificates = getCertificateSource().getEncapsulatedCertificates();
 				for (final CertificateToken certificateToken : encapsulatedCertificates) {
-
-					final TimestampReference certificateTimestampReference = createCertificateTimestampReference(certificateToken);
-					if (!references.contains(certificateTimestampReference)) {
-						references.add(certificateTimestampReference);
-					}
+					addReference(references, createCertificateTimestampReference(certificateToken));
 				}
 
 				addReferencesFromOfflineCRLSource(references);
@@ -1054,7 +1050,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			} else {
 				continue;
 			}
-			timestampedTimestamps.add(timestampToken.getDSSIdAsString());
+			timestampedTimestamps.add(timestampToken);
 		}
 	}
 
@@ -1085,7 +1081,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Returns the list of certificates encapsulated in the KeyInfo segment
 	 */
 	public List<CertificateToken> getKeyInfoCertificates() {
-
 		return getCertificateSource().getKeyInfoCertificates();
 	}
 
@@ -1093,7 +1088,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Returns the list of certificates encapsulated in the KeyInfo segment
 	 */
 	public List<CertificateToken> getTimestampCertificates() {
-
 		return getCertificateSource().getTimestampCertificates();
 	}
 
@@ -1170,6 +1164,16 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			signatureCryptographicVerification.setErrorMessage(e.getMessage() + "/ XAdESSignature/Line number/" + lineNumber);
 		}
 	}
+	
+	public boolean isKeyInfoCovered() {
+		List<ReferenceValidation> refValidations = getReferenceValidations();
+		for (ReferenceValidation referenceValidation : refValidations) {
+			if (DigestMatcherType.KEY_INFO.equals(referenceValidation.getType()) && referenceValidation.isFound() && referenceValidation.isIntact()) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public List<ReferenceValidation> getReferenceValidations() {
@@ -1204,6 +1208,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						validation.setType(DigestMatcherType.SIGNED_PROPERTIES);
 						found = found && (noDuplicateIdFound && findSignedPropertiesById(uri));
 						signedPropertiesFound = signedPropertiesFound || found;
+					} else if (isKeyInfoReference(reference, santuarioSignature.getElement())) {
+						validation.setType(DigestMatcherType.KEY_INFO);
+						found = true; // we check it in prior inside "isKeyInfoReference" method
 					} else if (reference.typeIsReferenceToObject()) {
 						validation.setType(DigestMatcherType.OBJECT);
 						found = found &&  (noDuplicateIdFound && findObjectById(uri));
@@ -1263,6 +1270,22 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	private Node getSignedPropertiesById(String uri) {
 		String signedPropertiesById = xPathQueryHolder.XPATH_SIGNED_PROPERTIES + DomUtils.getXPathByIdAttribute(uri);
 		return DomUtils.getNode(signatureElement, signedPropertiesById);
+	}
+	
+	/**
+	 * Checks if the given {@value reference} is linked to a <KeyInfo> element
+	 * @param reference - {@link Reference} to check
+	 * @param signature - {@link Element} signature the given {@value reference} belongs to
+	 * @return - TRUE if the {@value reference} is a <KeyInfo> reference, FALSE otherwise
+	 */
+	private boolean isKeyInfoReference(final Reference reference, final Element signature) {
+		String uri = reference.getURI();
+		uri = DomUtils.getId(uri);
+		Element element = DomUtils.getElement(signature, "./" + xPathQueryHolder.XPATH_KEY_INFO + DomUtils.getXPathByIdAttribute(uri));
+		if (element != null) {
+			return true;
+		}
+		return false;
 	}
 
 	private boolean findObjectById(String uri) {

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -561,7 +562,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 				for (BasicOCSPResp basicOCSPResp : containedOCSPResponses) {
 					OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(basicOCSPResp);
 					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DSSRevocationUtils.getEncoded(ocspResp));
-					references.add(new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), TimestampedObjectType.REVOCATION));
+					addReference(references, new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), TimestampedObjectType.REVOCATION));
 				}
 			}
 		}
@@ -581,8 +582,28 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 				usedCertificatesDigestAlgorithms.add(DigestAlgorithm.SHA1);
 				for (byte[] x509crl : containedX509CRLs) {
 					final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, x509crl);
-					references.add(new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), TimestampedObjectType.REVOCATION));
+					addReference(references, new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), TimestampedObjectType.REVOCATION));
 				}
+			}
+		}
+	}
+	/**
+	 * Adds {@code referenceToAdd} to {@code referenceList} without duplicates
+	 * @param referenceList - list of {@link TimestampReference}s to be extended
+	 * @param referenceToAdd - {@link TimestampReference} to be added
+	 */
+	protected void addReference(List<TimestampReference> referenceList, TimestampReference referenceToAdd) {
+		addReferences(referenceList, Arrays.asList(referenceToAdd));
+	}
+	/**
+	 * Adds {@code referencesToAdd} to {@code referenceList} without duplicates
+	 * @param referenceList - list of {@link TimestampReference}s to be extended
+	 * @param referencesToAdd - {@link TimestampReference}s to be added
+	 */
+	protected void addReferences(List<TimestampReference> referenceList, List<TimestampReference> referencesToAdd) {
+		for (TimestampReference reference : referencesToAdd) {
+			if (!referenceList.contains(reference)) {
+				referenceList.add(reference);
 			}
 		}
 	}
