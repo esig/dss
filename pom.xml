@@ -5,7 +5,7 @@
 
 	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>sd-dss</artifactId>
-	<version>5.4-SNAPSHOT</version>
+	<version>5.4.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Digital Signature Services</name>
 
@@ -34,6 +34,13 @@
 		<developer>
 			<id>abinet</id>
 			<name>Axel Abinet</name>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>beliakov</id>
+			<name>Aleksandr Beliakov</name>
 			<roles>
 				<role>developer</role>
 			</roles>
@@ -381,7 +388,7 @@
 		<url>https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</url>
 		<connection>scm:git:https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</connection>
 		<developerConnection>scm:git:https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</developerConnection>
-		<tag>5.4.RC1</tag>
+		<tag>5.4.1.RC1</tag>
 	</scm>
 
 	<dependencyManagement>
