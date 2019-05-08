@@ -30,17 +30,17 @@ public class ASiCWithCAdESContainerExtractor extends AbstractASiCContainerExtrac
 
 	@Override
 	boolean isAllowedManifest(String entryName) {
-		return entryName.startsWith(META_INF_FOLDER) && entryName.contains("ASiCManifest") && entryName.endsWith(".xml");
+		return entryName.startsWith(ASiCUtils.META_INF_FOLDER) && entryName.contains("ASiCManifest") && entryName.endsWith(".xml");
 	}
 
 	@Override
 	boolean isAllowedArchiveManifest(String entryName) {
-		return entryName.startsWith(META_INF_FOLDER) && entryName.contains("ASiCArchiveManifest") && entryName.endsWith(".xml");
+		return entryName.startsWith(ASiCUtils.META_INF_FOLDER) && entryName.contains("ASiCArchiveManifest") && entryName.endsWith(".xml");
 	}
 
 	@Override
 	boolean isAllowedTimestamp(String entryName) {
-		return entryName.startsWith(META_INF_FOLDER) && entryName.contains("timestamp") && entryName.endsWith(".tst");
+		return entryName.startsWith(ASiCUtils.META_INF_FOLDER) && entryName.contains("timestamp") && entryName.endsWith(".tst");
 	}
 
 	@Override

@@ -552,6 +552,19 @@ public final class DSSUtils {
 			throw new DSSException(e);
 		}
 	}
+	
+	/**
+	 * Returns byte size of the given document
+	 * @param dssDocument {@link DSSDocument} to get size for
+	 * @return long size of the given document
+	 */
+	public static long getFileByteSize(DSSDocument dssDocument) {
+		try (InputStream is = dssDocument.openStream()) {
+			return Utils.getInputStreamSize(is);
+		} catch (IOException e) {
+			throw new DSSException(String.format("Cannot read the document with name [%s]", dssDocument.getName()));
+		}
+	}
 
 	/**
 	 * This method saves the given array of {@code byte} to the provided {@code File}.

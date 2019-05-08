@@ -33,6 +33,7 @@ import java.util.zip.ZipOutputStream;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.InMemoryDocument;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
@@ -122,6 +123,7 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 	}
 
 	private void copyArchiveContentWithoutSignatures(DSSDocument archiveDocument, ZipOutputStream zos) throws IOException {
+		long containerSize = DSSUtils.getFileByteSize(archiveDocument);
 		try (InputStream is = archiveDocument.openStream(); ZipInputStream zis = new ZipInputStream(is)) {
 			ZipEntry entry;
 			while ((entry = zis.getNextEntry()) != null) {
@@ -129,7 +131,7 @@ public abstract class AbstractASiCSignatureService<SP extends AbstractSignatureP
 				final ZipEntry newEntry = new ZipEntry(name);
 				if (!isSignatureFilename(name)) {
 					zos.putNextEntry(newEntry);
-					Utils.copy(zis, zos);
+					ASiCUtils.secureCopy(zis, zos, containerSize);
 				}
 			}
 		}
