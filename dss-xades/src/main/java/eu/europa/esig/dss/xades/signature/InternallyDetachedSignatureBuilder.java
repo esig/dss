@@ -86,7 +86,7 @@ class InternallyDetachedSignatureBuilder extends XAdESSignatureBuilder {
 	@Override
 	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
 		final DSSReference reference = new DSSReference();
-		reference.setId("r-id-" + referenceIndex);
+		reference.setId(REFERENCE_ID_SUFFIX + deterministicId + "-" + referenceIndex);
 
 		Document dom = DomUtils.buildDOM(document);
 		String identifier = DSSXMLUtils.getIDIdentifier(dom.getDocumentElement());

@@ -103,6 +103,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	protected Element signedDataObjectPropertiesDom;
 	protected Element unsignedSignaturePropertiesDom;
 
+	protected static final String OBJECT_ID_SUFFIX = "o-";
+	protected static final String REFERENCE_ID_SUFFIX = "r-";
+
 	/**
 	 * Creates the signature according to the packaging
 	 *
@@ -148,6 +151,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		super(certificateVerifier);
 		this.params = params;
 		this.detachedDocument = detachedDocument;
+
+		this.deterministicId = params.getDeterministicId();
 	}
 
 	protected void setCanonicalizationMethods(final XAdESSignatureParameters params, final String canonicalizationMethod) {
@@ -177,8 +182,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	public byte[] build() throws DSSException {
 
 		documentDom = buildRootDocumentDom();
-
-		deterministicId = params.getDeterministicId();
 
 		final List<DSSReference> references = params.getReferences();
 		if (Utils.isCollectionEmpty(references)) {

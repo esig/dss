@@ -74,8 +74,9 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
 		// <ds:Reference Id="signed-data-ref" Type="http://www.w3.org/2000/09/xmldsig#Object"
 		// URI="#signed-data-idfc5ff27ee49763d9ba88ba5bbc49f732">
+		final String suffix = deterministicId + "-" + referenceIndex;
 		final DSSReference reference = new DSSReference();
-		reference.setId("r-id-" + referenceIndex);
+		reference.setId(REFERENCE_ID_SUFFIX + suffix);
 		reference.setContents(document);
 		DigestAlgorithm digestAlgorithm = params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
 		reference.setDigestMethodAlgorithm(digestAlgorithm);
@@ -90,14 +91,14 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 			reference.setTransforms(Arrays.asList(xmlTransform));
 		} else if (params.isEmbedXML()) {
 			reference.setType(HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT);
-			reference.setUri("#o-id-" + referenceIndex);
+			reference.setUri("#" + OBJECT_ID_SUFFIX + suffix);
 
 			DSSTransform xmlTransform = new DSSTransform();
 			xmlTransform.setAlgorithm(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
 			reference.setTransforms(Arrays.asList(xmlTransform));
 		} else {
 			reference.setType(HTTP_WWW_W3_ORG_2000_09_XMLDSIG_OBJECT);
-			reference.setUri("#o-id-" + referenceIndex);
+			reference.setUri("#" + OBJECT_ID_SUFFIX + suffix);
 
 			DSSTransform base64Transform = new DSSTransform();
 			base64Transform.setAlgorithm(CanonicalizationMethod.BASE64);

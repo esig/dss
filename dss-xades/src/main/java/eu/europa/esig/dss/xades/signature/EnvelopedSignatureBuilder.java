@@ -87,16 +87,16 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 	@Override
 	protected DSSReference createReference(DSSDocument document, int referenceIndex) {
 
-		DSSReference dssReference = new DSSReference();
-		dssReference.setId("r-id-" + referenceIndex);
+		DSSReference reference = new DSSReference();
+		reference.setId(REFERENCE_ID_SUFFIX + deterministicId + "-" + referenceIndex);
 		// XMLDSIG : 4.4.3.2
 		// URI=""
 		// Identifies the node-set (minus any comment nodes) of the XML resource
 		// containing the signature
-		dssReference.setUri("");
-		dssReference.setContents(document);
+		reference.setUri("");
+		reference.setContents(document);
 		DigestAlgorithm digestAlgorithm = params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
-		dssReference.setDigestMethodAlgorithm(digestAlgorithm);
+		reference.setDigestMethodAlgorithm(digestAlgorithm);
 
 		final List<DSSTransform> dssTransformList = new ArrayList<DSSTransform>();
 
@@ -113,9 +113,9 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 		dssTransform.setAlgorithm(CanonicalizationMethod.EXCLUSIVE);
 		dssTransformList.add(dssTransform);
 
-		dssReference.setTransforms(dssTransformList);
+		reference.setTransforms(dssTransformList);
 
-		return dssReference;
+		return reference;
 	}
 
 	/**

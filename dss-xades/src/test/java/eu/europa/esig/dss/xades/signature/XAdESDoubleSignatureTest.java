@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -42,6 +43,7 @@ import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 @RunWith(Parameterized.class)
@@ -92,6 +94,8 @@ public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 		for (String signatureId : signatureIdList) {
 			assertTrue(diagnosticData.isBLevelTechnicallyValid(signatureId));
 		}
+		
+		assertFalse(DSSXMLUtils.isDuplicateIdsDetected(doubleSignedDocument));
 	}
 
 	@Override
