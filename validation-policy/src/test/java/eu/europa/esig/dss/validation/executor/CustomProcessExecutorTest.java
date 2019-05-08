@@ -1060,6 +1060,21 @@ public class CustomProcessExecutorTest {
 
 		executor.execute();
 	}
+	
+	@Test
+	public void dss1635Test() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/dss-1635-diag-data.xml");
+		DiagnosticData diagnosticData = getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadPolicy());
+		executor.setCurrentTime(new Date());
+
+		Reports reports = executor.execute();
+		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
 
 	private void checkReports(Reports reports) {
 		// reports.print();

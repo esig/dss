@@ -921,6 +921,28 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 		return true;
 	}
+	
+	private List<TimestampReference> getTimeStampValidationDataReferences(Node timeStampValidationDataNode) {
+		List<TimestampReference> timeStampValidationDataReferences = new ArrayList<TimestampReference>();
+		timeStampValidationDataReferences.addAll(collectEncapsulatedReferences(timeStampValidationDataNode, 
+				xPathQueryHolder.XPATH__ENCAPSULATED_X509_CERTIFICATE, TimestampedObjectType.CERTIFICATE));
+		timeStampValidationDataReferences.addAll(collectEncapsulatedReferences(timeStampValidationDataNode, 
+				xPathQueryHolder.XPATH__ENCAPSULATED_CRL_VALUES, TimestampedObjectType.REVOCATION));
+		timeStampValidationDataReferences.addAll(collectEncapsulatedReferences(timeStampValidationDataNode, 
+				xPathQueryHolder.XPATH__ENCAPSULATED_OCSP_VALUES, TimestampedObjectType.REVOCATION));
+		return timeStampValidationDataReferences;
+	}
+	
+	private List<TimestampReference> collectEncapsulatedReferences(Node node, String xPathString, TimestampedObjectType timestampedType) {
+		List<TimestampReference> timestampReferences = new ArrayList<TimestampReference>();
+		final NodeList list = DomUtils.getNodeList(node, xPathString);
+		for (int jj = 0; jj < list.getLength(); jj++) {
+			final Element element = (Element) list.item(jj);
+			final TimestampReference reference = createEncapsulatedTimestampReference(element, timestampedType);
+			timestampReferences.add(reference);
+		}
+		return timestampReferences;
+	}
 
 	@Override
 	public List<TimestampToken> getContentTimestamps() {
@@ -982,8 +1004,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		if (unsignedSignaturePropertiesDom == null) {
 			return;
 		}
-		final List<TimestampToken> timestampedTimestamps = new ArrayList<TimestampToken>();
+		final List<String> timestampedTimestamps = new ArrayList<String>();
 		final NodeList unsignedProperties = unsignedSignaturePropertiesDom.getChildNodes();
+		
+		/* Used to store certificate tokens embedded to timestamps */
+		List<CertificateToken> embeddedCertificates = new ArrayList<CertificateToken>();
+		/* Used to store timestamp validation references found on previous steps */
+		List<TimestampReference> timeStampValidationDataReferences = new ArrayList<TimestampReference>();
+		
 		for (int ii = 0; ii < unsignedProperties.getLength(); ii++) {
 
 			final Node node = unsignedProperties.item(ii);
@@ -1000,6 +1028,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					continue;
 				}
 				timestampToken.setTimestampedReferences(getSignatureTimestampedReferences());
+				embeddedCertificates.addAll(timestampToken.getCertificates());
 				signatureTimestamps.add(timestampToken);
 			} else if (XPathQueryHolder.XMLE_REFS_ONLY_TIME_STAMP.equals(localName) || XPathQueryHolder.XMLE_REFS_ONLY_TIME_STAMP_V2.equals(localName)) {
 
@@ -1008,6 +1037,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					continue;
 				}
 				timestampToken.setTimestampedReferences(getTimestampedReferences());
+				embeddedCertificates.addAll(timestampToken.getCertificates());
 				refsOnlyTimestamps.add(timestampToken);
 			} else if (XPathQueryHolder.XMLE_SIG_AND_REFS_TIME_STAMP.equals(localName) || XPathQueryHolder.XMLE_SIG_AND_REFS_TIME_STAMP_V2.equals(localName)) {
 
@@ -1018,6 +1048,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final List<TimestampReference> references = getSignatureTimestampedReferences();
 				addReferences(references, getTimestampedReferences());
 				timestampToken.setTimestampedReferences(references);
+				embeddedCertificates.addAll(timestampToken.getCertificates());
 				sigAndRefsTimestamps.add(timestampToken);
 			} else if (XPathQueryHolder.XMLE_ARCHIVE_TIME_STAMP.equals(localName)) {
 
@@ -1029,28 +1060,31 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				timestampToken.setArchiveTimestampType(archiveTimestampType);
 
 				final List<TimestampReference> references = getSignatureTimestampedReferences();
-				for (final TimestampToken timestamp : timestampedTimestamps) {
-					addReference(references, new TimestampReference(timestamp.getDSSIdAsString(), TimestampedObjectType.TIMESTAMP));
-					List<CertificateToken> wrappedCertificates = timestamp.getCertificates();
-					for (CertificateToken certificateToken : wrappedCertificates) {
-						addReference(references, createCertificateTimestampReference(certificateToken));
-					}
+				for (final String timestampId : timestampedTimestamps) {
+					addReference(references, new TimestampReference(timestampId, TimestampedObjectType.TIMESTAMP));
 				}
 				addReferences(references, getTimestampedReferences());
 				final List<CertificateToken> encapsulatedCertificates = getCertificateSource().getEncapsulatedCertificates();
-				for (final CertificateToken certificateToken : encapsulatedCertificates) {
-					addReference(references, createCertificateTimestampReference(certificateToken));
-				}
+				addCertificateTokenReferences(references, encapsulatedCertificates);
 
 				addReferencesFromOfflineCRLSource(references);
 				addReferencesFromOfflineOCSPSource(references);
+				
+				addReferences(references, timeStampValidationDataReferences);
+				addCertificateTokenReferences(references, embeddedCertificates);
 
 				timestampToken.setTimestampedReferences(references);
 				archiveTimestamps.add(timestampToken);
+				
+				embeddedCertificates.addAll(timestampToken.getCertificates());
+				
+			} else if (XPathQueryHolder.XMLE_TIMESTAMP_VALIDATION_DATA.equals(localName)) {
+				timeStampValidationDataReferences.addAll(getTimeStampValidationDataReferences(node));
+				continue;
 			} else {
 				continue;
 			}
-			timestampedTimestamps.add(timestampToken);
+			timestampedTimestamps.add(timestampToken.getDSSIdAsString());
 		}
 	}
 
@@ -1075,6 +1109,17 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			return canonicalizationMethodElement.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
 		}
 		return null;
+	}
+	
+	private void addCertificateTokenReferences(List<TimestampReference> listToExtend, List<CertificateToken> certificateTokens) {
+		if (Utils.isCollectionNotEmpty(certificateTokens)) {
+			for (CertificateToken certificateToken : certificateTokens) {
+				TimestampReference certificateTimestampReference = createCertificateTimestampReference(certificateToken);
+				if (!listToExtend.contains(certificateTimestampReference)) {
+					listToExtend.add(certificateTimestampReference);
+				}
+			}
+		}
 	}
 
 	/*
@@ -1954,6 +1999,19 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		final TimestampReference reference = new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(certificateToken.getDigest(DigestAlgorithm.SHA1)));
 		return reference;
+	}
+	
+	private TimestampReference createEncapsulatedTimestampReference(Element element, TimestampedObjectType timestampedType) {
+		if (element.hasChildNodes()) {
+			Node firstChild = element.getFirstChild();
+			if (Node.TEXT_NODE == firstChild.getNodeType()) {
+				String base64String = firstChild.getTextContent();
+				byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, Utils.fromBase64(base64String));
+				return new TimestampReference(DigestAlgorithm.SHA1, Utils.toBase64(digest), timestampedType);
+			}
+		}
+		throw new DSSException(String.format("The element with name [%s] must have encapsulated digest value! Cannot create a timestamp reference", 
+				element.getLocalName()));
 	}
 
 	@Override
