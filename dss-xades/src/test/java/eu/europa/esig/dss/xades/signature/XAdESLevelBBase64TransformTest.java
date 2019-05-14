@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -11,20 +12,27 @@ import javax.xml.crypto.dsig.CanonicalizationMethod;
 
 import org.apache.xml.security.signature.Reference;
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
+import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
@@ -56,6 +64,51 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 		
 	}
 	
+	@Test
+	public void imageSignTest() {
+		
+		String imageFileName = "sample.png";
+		DSSDocument image = new FileDocument("src/test/resources/" + imageFileName);
+		
+		List<DSSTransform> transforms = new ArrayList<DSSTransform>();
+		Base64Transform dssTransform = new Base64Transform();
+		transforms.add(dssTransform);
+		
+		List<DSSReference> refs = buildReferences(image, transforms);
+		
+		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+		signatureParameters.bLevel().setSigningDate(new Date());
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
+		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		signatureParameters.setReferences(refs);
+
+		DSSDocument signedDocument = sign(image, signatureParameters);
+		DiagnosticData diagnosticData = validate(signedDocument, signatureParameters);
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
+		assertNotNull(digestMatchers);
+		
+		boolean objectFound = false;
+		for (XmlDigestMatcher digestMatcher : digestMatchers) {
+			if (DigestMatcherType.OBJECT.equals(digestMatcher.getType())) {
+				DigestAlgorithm digestAlgorithm = DigestAlgorithm.forName(digestMatcher.getDigestMethod());
+				assertEquals(image.getDigest(digestAlgorithm), digestMatcher.getDigestValue());
+				objectFound = true;
+			}
+		}
+		assertTrue(objectFound);
+		
+		String originalBase64 = Utils.toBase64(DSSUtils.toByteArray(image));
+		assertTrue(Utils.isStringNotBlank(originalBase64));
+		Document documentDom = DomUtils.buildDOM(signedDocument);
+		Element objectElement = DomUtils.getElement(documentDom, ".//*" + DomUtils.getXPathByIdAttribute(imageFileName));
+		assertNotNull(objectElement);
+		assertEquals(originalBase64, objectElement.getTextContent());
+		
+	}
+	
 	@Test(expected = DSSException.class)
 	public void embedXmlWithBase64Test() {
 
@@ -73,7 +126,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setEmbedXML(true);
 		signatureParameters.setReferences(refs);
-
+		
 		signAndValidate(document, signatureParameters);
 		
 	}
@@ -191,25 +244,27 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 		
 	}
 	
-	private void signAndValidate(DSSDocument document, XAdESSignatureParameters signatureParameters) {
-
+	private DiagnosticData signAndValidate(DSSDocument document, XAdESSignatureParameters signatureParameters) {
+		DSSDocument result = sign(document, signatureParameters);
+		return validate(result, signatureParameters);
+	}
+	
+	private DSSDocument sign(DSSDocument document, XAdESSignatureParameters signatureParameters) {
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
-
 		ToBeSigned toSign1 = service.getDataToSign(document, signatureParameters);
 		SignatureValue value = getToken().sign(toSign1, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument result = service.signDocument(document, signatureParameters, value);
-
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(result);
+		return service.signDocument(document, signatureParameters, value);
+	}
+	
+	private DiagnosticData validate(DSSDocument signedDocument, XAdESSignatureParameters signatureParameters) {
+		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		Reports reports = validator.validateDocument();
-
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertEquals(1, Utils.collectionSize(diagnosticData.getSignatureIdList()));
-
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-
 		assertEquals(signatureParameters.getSignatureLevel().toString(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
-		
+		return diagnosticData;
 	}
 
 	@Override
