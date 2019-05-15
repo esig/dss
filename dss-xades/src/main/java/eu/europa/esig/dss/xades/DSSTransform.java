@@ -26,6 +26,7 @@ public class DSSTransform {
 	private String elementName;
 	private String namespace;
 	private String textContent;
+	private String filter;
 
 	public DSSTransform() {
 	}
@@ -61,10 +62,18 @@ public class DSSTransform {
 	public void setTextContent(String textContent) {
 		this.textContent = textContent;
 	}
+	
+	public String getFilter() {
+		return filter;
+	}
+
+	public void setFilter(String filter) {
+		this.filter = filter;
+	}
 
 	@Override
 	public String toString() {
 		return "DSSTransform{" + "algorithm='" + algorithm + '\'' + ", elementName='" + elementName + '\'' + ", namespace='" + namespace + '\''
-				+ ", textContent='" + textContent + "\'}";
+				+ ", textContent='" + textContent + "\', filter='" + filter +"}";
 	}
 }

@@ -157,7 +157,7 @@ class EnvelopedSignatureBuilder extends XAdESSignatureBuilder {
 		for (final DSSTransform transform : transforms) {
 
 			final String transformAlgorithm = transform.getAlgorithm();
-			if (Transforms.TRANSFORM_XPATH.equals(transformAlgorithm)) {
+			if (Transforms.TRANSFORM_XPATH.equals(transformAlgorithm) || Transforms.TRANSFORM_XPATH2FILTER.equals(transformAlgorithm)) {
 
 				final DSSTransformXPath transformXPath = new DSSTransformXPath(transform);
 				// At the moment it is impossible to go through a medium other than byte array (Set<Node>, octet stream,

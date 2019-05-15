@@ -30,8 +30,10 @@ import java.util.List;
 import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
+import javax.xml.XMLConstants;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -92,6 +94,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * This variable represents the current DOM signature object.
 	 */
 	protected Element signatureDom;
+
+	protected Element keyInfoDom;
 
 	protected Element signedInfoDom;
 	protected Element signatureValueDom;
@@ -198,6 +202,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		 * calculate the digest of references.
 		 */
 		incorporateReferences();
+		incorporateReferenceKeyInfo();
 		incorporateReferenceSignedProperties();
 
 		// Preparation of SignedInfo
@@ -345,7 +350,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		}
 
 		// <ds:KeyInfo>
-		final Element keyInfoDom = DomUtils.addElement(documentDom, signatureDom, XMLNS, DS_KEY_INFO);
+		keyInfoDom = DomUtils.addElement(documentDom, signatureDom, XMLNS, DS_KEY_INFO);
+		keyInfoDom.setAttribute(ID, "keyinfo-" + deterministicId);
+		
 		BaselineBCertificateSelector certSelector = new BaselineBCertificateSelector(certificateVerifier, params);
 		List<CertificateToken> certificates = certSelector.getCertificates();
 
@@ -435,6 +442,38 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 		incorporateSignedProperties();
 
+	}
+
+	/**
+	 * This method incorporates a reference within the keyInfoDom
+	 *
+	 */
+	protected void incorporateReferenceKeyInfo() {
+		if (params.getSignedData() != null) {
+			return;
+		}
+
+		final Element reference = DomUtils.addElement(documentDom, signedInfoDom, XMLNS, DS_REFERENCE);
+		reference.setAttribute(URI, "#keyinfo-" + deterministicId);
+
+		final Element transforms = DomUtils.addElement(documentDom, reference, XMLNS, DS_TRANSFORMS);
+		final Element transform = DomUtils.addElement(documentDom, transforms, XMLNS, DS_TRANSFORM);
+		transform.setAttribute(ALGORITHM, signedPropertiesCanonicalizationMethod);
+
+		final DigestAlgorithm digestAlgorithm = params.getDigestAlgorithm();
+		incorporateDigestMethod(reference, digestAlgorithm);
+
+		final byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeOrSerializeSubtree(signedInfoCanonicalizationMethod, keyInfoDom);
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Canonicalization method  --> {}", signedPropertiesCanonicalizationMethod);
+			LOG.trace("Canonicalised REF_2      --> {}", new String(canonicalizedBytes));
+		}
+
+		final Element digestValueDom = documentDom.createElementNS(XMLNS, DS_DIGEST_VALUE);
+		final String base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, canonicalizedBytes));
+		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
+		digestValueDom.appendChild(textNode);
+		reference.appendChild(digestValueDom);
 	}
 
 	/**
@@ -532,7 +571,18 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		if (Utils.isStringNotBlank(elementName)) {
 
 			final String namespace = dssTransform.getNamespace();
-			DomUtils.addTextElement(document, transformDom, namespace, elementName, textContent);
+			if (dssTransform.getAlgorithm().equals(Transforms.TRANSFORM_XPATH2FILTER)) {
+				final Element dom = document.createElementNS(namespace, elementName);
+				dom.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:dsig-xpath", namespace);
+				dom.setPrefix("dsig-xpath");
+				
+				dom.setAttribute("Filter", dssTransform.getFilter());
+				transformDom.appendChild(dom);
+				final Text valueNode = document.createTextNode(textContent);
+				dom.appendChild(valueNode);
+			} else {
+				DomUtils.addTextElement(document, transformDom, namespace, elementName, textContent);
+			}
 		} else if (Utils.isStringNotBlank(textContent)) {
 
 			final Document transformContentDoc = DomUtils.buildDOM(textContent);
