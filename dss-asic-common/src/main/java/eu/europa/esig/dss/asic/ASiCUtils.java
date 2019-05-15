@@ -165,6 +165,9 @@ public final class ASiCUtils {
 	}
 
 	public static MimeType getMimeType(final DSSDocument mimeTypeDocument) {
+		if (mimeTypeDocument == null) {
+			return null;
+		}
 		try (InputStream is = mimeTypeDocument.openStream()) {
 			byte[] byteArray = Utils.toByteArray(is);
 			final String mimeTypeString = new String(byteArray, "UTF-8");
