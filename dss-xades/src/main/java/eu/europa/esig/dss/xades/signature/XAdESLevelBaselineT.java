@@ -430,7 +430,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 					Utils.toBase64(digestValue));
 		}
 		final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digestValue);
-		final String base64EncodedTimeStampToken = Utils.toBase64(DSSASN1Utils.getEncoded(timeStampToken));
+		final String base64EncodedTimeStampToken = Utils.toBase64(DSSASN1Utils.getDEREncoded(timeStampToken));
 
 		final String timestampId = UUID.randomUUID().toString();
 		timeStampDom.setAttribute(ID, "TS-" + timestampId);

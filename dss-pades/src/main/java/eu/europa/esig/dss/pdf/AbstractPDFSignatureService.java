@@ -37,7 +37,6 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
-import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
@@ -134,7 +133,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
 		final byte[] digest = digest(document, parameters, timestampDigestAlgorithm);
 		final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digest);
-		final byte[] encoded = CMSUtils.getEncoded(timeStampToken.toCMSSignedData());
+		final byte[] encoded = DSSASN1Utils.getDEREncoded(timeStampToken);
 		return sign(document, encoded, parameters, timestampDigestAlgorithm);
 	}
 

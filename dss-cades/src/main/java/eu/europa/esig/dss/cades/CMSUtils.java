@@ -30,7 +30,6 @@ import java.io.IOException;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.DEROutputStream;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.DERTaggedObject;
@@ -67,24 +66,6 @@ public final class CMSUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(CMSUtils.class);
 
 	private CMSUtils() {
-	}
-
-	/**
-	 * Returns the ASN.1 encoded representation of {@code CMSSignedData}.
-	 *
-	 * @param data
-	 *             the CMSSignedData to be encoded
-	 * @return the DER encoded CMSSignedData
-	 */
-	public static byte[] getEncoded(final CMSSignedData data) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			DEROutputStream deros = new DEROutputStream(baos);
-			deros.writeObject(data.toASN1Structure());
-			deros.close();
-			return baos.toByteArray();
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
 	}
 
 	/**
