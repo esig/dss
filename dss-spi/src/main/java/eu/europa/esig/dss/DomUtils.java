@@ -94,33 +94,40 @@ public final class DomUtils {
 
 		dbFactory = DocumentBuilderFactory.newInstance();
 		dbFactory.setNamespaceAware(true);
-		try {
-			// disable external entities details :
-			// https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#Java
+		dbFactory.setXIncludeAware(false);
+		dbFactory.setExpandEntityReferences(false);
 
-			dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-			dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-			dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-			dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-
-			dbFactory.setXIncludeAware(false);
-			dbFactory.setExpandEntityReferences(false);
-		} catch (ParserConfigurationException e) {
-			throw new DSSException("Unable to initialize the DocumentBuilderFactory", e);
-		}
+		// disable external entities details :
+		// https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#Java
+		setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+		setFeature("http://xml.org/sax/features/external-general-entities", false);
+		setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+		setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 	}
 
 	/**
 	 * This method registers the default namespaces.
 	 */
 	private static void registerDefaultNamespaces() {
-
 		registerNamespace("ds", XMLSignature.XMLNS);
 		registerNamespace("dsig", XMLSignature.XMLNS);
 		registerNamespace("xades", XAdESNamespaces.XAdES); // 1.3.2
 		registerNamespace("xades141", XAdESNamespaces.XAdES141);
 		registerNamespace("xades122", XAdESNamespaces.XAdES122);
 		registerNamespace("xades111", XAdESNamespaces.XAdES111);
+	}
+
+	private static void setFeature(String property, boolean enable) {
+		try {
+			dbFactory.setFeature(property, enable);
+		} catch (ParserConfigurationException e) {
+			String message = String.format("SECURITY : unable to set feature %s = %s (more details in LOG debug)", property, enable);
+			if (LOG.isDebugEnabled()) {
+				LOG.debug(message, e);
+			} else {
+				LOG.warn(message);
+			}
+		}
 	}
 
 	/**
