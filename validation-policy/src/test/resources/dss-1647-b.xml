@@ -1,0 +1,987 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>OJ_L_2018_109_FULL (1).xml</DocumentName>
+    <ValidationDate>2019-05-17T12:00:24</ValidationDate>
+    <Signatures>
+        <Signature Id="Signature_1524814320911">
+            <SignatureFilename>OJ_L_2018_109_FULL.xml</SignatureFilename>
+            <DateTime>2018-04-27T07:32:00</DateTime>
+            <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
+            <StructuralValidation>
+                <Valid>true</Valid>
+            </StructuralValidation>
+            <DigestMatchers>
+                <DigestMatcher type="MANIFEST" name="Signature_1524814320911-Reference-0">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>wkgvvi1hZ62gUALKD0AsLuJBN4jvYlzQ0NRxLhgeKrR96uRceRNZrgLZ//w8ptYJQxEZkxToC1SGDVeb51x5qQ==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES" name="#Signature_1524814320911_SignedProperties">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>MqqvrUdTXBSq/2yhdnE6WxfyngCti/hCs2Bwx0OxAY3Nt+x6ZWcICFdZbm8b609Z/e9Gwvxb2AA4gKwVYuHQUw==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="FE2461CBA57FE78B4D8FD8B72730C49F9370C38002E3AA0340795395513FB26E">
+                <AttributePresent>true</AttributePresent>
+                <DigestValuePresent>true</DigestValuePresent>
+                <DigestValueMatch>true</DigestValueMatch>
+                <IssuerSerialMatch>true</IssuerSerialMatch>
+            </SigningCertificate>
+            <CertificateChain>
+                <ChainItem Id="FE2461CBA57FE78B4D8FD8B72730C49F9370C38002E3AA0340795395513FB26E">
+                    <Source>SIGNATURE</Source>
+                </ChainItem>
+                <ChainItem Id="7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+            <ContentType>text/xml</ContentType>
+            <CommitmentTypeIndication/>
+            <ClaimedRoles/>
+            <Timestamps>
+                <Timestamp Id="FB6A7EA61BCE6E3C2545CB591DF4D68D14B8124EDAEC9D1A1F76096B16739A61" Type="SIGNATURE_TIMESTAMP">
+                    <ProductionTime>2018-04-27T07:32:10</ProductionTime>
+                    <DigestMatcher type="MESSAGE_IMPRINT">
+                        <DigestMethod>SHA256</DigestMethod>
+                        <DigestValue>xmjgNSsV89fEqhKMqNPns6zxsUJ8eOJZQhIpEMStuJc=</DigestValue>
+                        <DataFound>true</DataFound>
+                        <DataIntact>true</DataIntact>
+                    </DigestMatcher>
+                    <BasicSignature>
+                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                        <SignatureIntact>true</SignatureIntact>
+                        <SignatureValid>true</SignatureValid>
+                    </BasicSignature>
+                    <SigningCertificate Id="F4E7DF969A590AF41E38E5854542EBF9DF6A5BE9B16FD31494FA689509057494"/>
+                    <CertificateChain>
+                        <ChainItem Id="F4E7DF969A590AF41E38E5854542EBF9DF6A5BE9B16FD31494FA689509057494">
+                            <Source>SIGNATURE</Source>
+                        </ChainItem>
+                        <ChainItem Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                            <Source>TRUSTED_LIST</Source>
+                        </ChainItem>
+                    </CertificateChain>
+                    <TimestampedObjects>
+                        <TimestampedObject Id="Signature_1524814320911" Category="SIGNATURE"/>
+                        <TimestampedObject Category="CERTIFICATE">
+                            <DigestAlgoAndValue>
+                                <DigestMethod>SHA256</DigestMethod>
+                                <DigestValue>/iRhy6V/54tNj9i3JzDEn5Nww4AC46oDQHlTlVE/sm4=</DigestValue>
+                            </DigestAlgoAndValue>
+                        </TimestampedObject>
+                    </TimestampedObjects>
+                </Timestamp>
+                <Timestamp Id="BFABE9A8842579041A9CFC30DBE5BDE4A606F2C52D6A7BEDAE3B31F34F9D16DB" Type="ARCHIVE_TIMESTAMP">
+                    <ProductionTime>2018-04-28T07:42:49</ProductionTime>
+                    <DigestMatcher type="MESSAGE_IMPRINT">
+                        <DigestMethod>SHA256</DigestMethod>
+                        <DigestValue>cagohp3jzS4CFiCQ5WyZvSxIRAASpxZmJnaYlDwZEbk=</DigestValue>
+                        <DataFound>true</DataFound>
+                        <DataIntact>true</DataIntact>
+                    </DigestMatcher>
+                    <BasicSignature>
+                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                        <SignatureIntact>true</SignatureIntact>
+                        <SignatureValid>true</SignatureValid>
+                    </BasicSignature>
+                    <SigningCertificate Id="64EE60788051EF086692103DC87CC088354A836C207B91D14E2F0878E5F28FEC"/>
+                    <CertificateChain>
+                        <ChainItem Id="64EE60788051EF086692103DC87CC088354A836C207B91D14E2F0878E5F28FEC">
+                            <Source>TIMESTAMP</Source>
+                        </ChainItem>
+                        <ChainItem Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                            <Source>TRUSTED_LIST</Source>
+                        </ChainItem>
+                    </CertificateChain>
+                    <TimestampedObjects>
+                        <TimestampedObject Id="Signature_1524814320911" Category="SIGNATURE"/>
+                        <TimestampedObject Category="CERTIFICATE">
+                            <DigestAlgoAndValue>
+                                <DigestMethod>SHA256</DigestMethod>
+                                <DigestValue>/iRhy6V/54tNj9i3JzDEn5Nww4AC46oDQHlTlVE/sm4=</DigestValue>
+                            </DigestAlgoAndValue>
+                        </TimestampedObject>
+                        <TimestampedObject Id="FB6A7EA61BCE6E3C2545CB591DF4D68D14B8124EDAEC9D1A1F76096B16739A61" Category="TIMESTAMP"/>
+                        <TimestampedObject Category="CERTIFICATE">
+                            <DigestAlgoAndValue>
+                                <DigestMethod>SHA1</DigestMethod>
+                                <DigestValue>vzBVS+gxTQYQ1HTM1C0CjieTPvQ=</DigestValue>
+                            </DigestAlgoAndValue>
+                        </TimestampedObject>
+                        <TimestampedObject Category="CERTIFICATE">
+                            <DigestAlgoAndValue>
+                                <DigestMethod>SHA1</DigestMethod>
+                                <DigestValue>axGJ+ZGcnQYSN/OgIl2uyZKpbi4=</DigestValue>
+                            </DigestAlgoAndValue>
+                        </TimestampedObject>
+                        <TimestampedObject Category="CERTIFICATE">
+                            <DigestAlgoAndValue>
+                                <DigestMethod>SHA1</DigestMethod>
+                                <DigestValue>nvlqndYTISWGvHKbCj/Kz63HoCQ=</DigestValue>
+                            </DigestAlgoAndValue>
+                        </TimestampedObject>
+                        <TimestampedObject Category="REVOCATION">
+                            <DigestAlgoAndValue>
+                                <DigestMethod>SHA1</DigestMethod>
+                                <DigestValue>Sfo81RGneC3jZAF0AL85ZPAPD+Y=</DigestValue>
+                            </DigestAlgoAndValue>
+                        </TimestampedObject>
+                        <TimestampedObject Category="REVOCATION">
+                            <DigestAlgoAndValue>
+                                <DigestMethod>SHA1</DigestMethod>
+                                <DigestValue>17M83VS9hAbcNWauQc7qNyuqF1w=</DigestValue>
+                            </DigestAlgoAndValue>
+                        </TimestampedObject>
+                        <TimestampedObject Category="REVOCATION">
+                            <DigestAlgoAndValue>
+                                <DigestMethod>SHA1</DigestMethod>
+                                <DigestValue>qC20dfUWD4Oc0mLfGDlQK7CciYU=</DigestValue>
+                            </DigestAlgoAndValue>
+                        </TimestampedObject>
+                    </TimestampedObjects>
+                </Timestamp>
+            </Timestamps>
+            <SignatureScopes>
+                <SignatureScope name="manifest" scope="PARTIAL">The XML element with ID 'manifest'</SignatureScope>
+            </SignatureScopes>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484">
+            <SubjectDistinguishedName Format="CANONICAL">cn=luxtrust global qualified ca 2,o=luxtrust s.a.,c=lu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=LuxTrust Global Qualified CA 2,O=LuxTrust S.A.,C=LU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=luxtrust global root,o=luxtrust s.a.,c=lu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=LuxTrust Global Root,O=LuxTrust s.a.,C=LU</IssuerDistinguishedName>
+            <SerialNumber>4803</SerialNumber>
+            <CommonName>LuxTrust Global Qualified CA 2</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>LuxTrust S.A.</OrganizationName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <Url>http://crl.luxtrust.lu/LTGRCA.crl</Url>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>fnbanqjQ5sXGMCPQ2MBuVVrs5P40bA5QaT32vVRo5IQ=</DigestValue>
+                </DigestAlgoAndValue>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>vzBVS+gxTQYQ1HTM1C0CjieTPvQ=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <NotAfter>2020-05-28T13:09:18</NotAfter>
+            <NotBefore>2014-05-28T13:09:18</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="A1B2DBEB64E706C6169E3C4118B23BAA09018A8427666D8BF0E28891EC051950"/>
+            <CertificateChain>
+                <ChainItem Id="A1B2DBEB64E706C6169E3C4118B23BAA09018A8427666D8BF0E28891EC051950">
+                    <Source>SIGNATURE</Source>
+                </ChainItem>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.1.10.3</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>LuxTrust S.A.</TSPName>
+                    <TSPRegistrationIdentifier>VATLU-20976985</TSPRegistrationIdentifier>
+                    <CountryCode>LU</CountryCode>
+                    <TrustedServices>
+                        <TrustedService>
+                        	<ServiceDigitalIdentifier>7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484</ServiceDigitalIdentifier>
+                            <ServiceName>LuxTrust Global Qualified Certification Authority 2</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService>
+                        	<ServiceDigitalIdentifier>7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484</ServiceDigitalIdentifier>
+                            <ServiceName>LuxTrust Global Qualified Certification Authority 2</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                            <StartDate>2014-11-19T00:00:00</StartDate>
+                            <EndDate>2016-06-30T22:00:00</EndDate>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations/>
+        </Certificate>
+        <Certificate Id="A1B2DBEB64E706C6169E3C4118B23BAA09018A8427666D8BF0E28891EC051950">
+            <SubjectDistinguishedName Format="CANONICAL">cn=luxtrust global root,o=luxtrust s.a.,c=lu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=LuxTrust Global Root,O=LuxTrust s.a.,C=LU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=luxtrust global root,o=luxtrust s.a.,c=lu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=LuxTrust Global Root,O=LuxTrust s.a.,C=LU</IssuerDistinguishedName>
+            <SerialNumber>3000</SerialNumber>
+            <CommonName>LuxTrust Global Root</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>LuxTrust s.a.</OrganizationName>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>obLb62TnBsYWnjxBGLI7qgkBioQnZm2L8OKIkewFGVA=</DigestValue>
+                </DigestAlgoAndValue>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>yTw06pDZEwwPAwBLmL2LNXCRVhE=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <NotAfter>2021-03-17T09:51:37</NotAfter>
+            <NotBefore>2011-03-17T09:51:37</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="A1B2DBEB64E706C6169E3C4118B23BAA09018A8427666D8BF0E28891EC051950"/>
+            <CertificateChain>
+                <ChainItem Id="A1B2DBEB64E706C6169E3C4118B23BAA09018A8427666D8BF0E28891EC051950">
+                    <Source>SIGNATURE</Source>
+                </ChainItem>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders/>
+            <Revocations/>
+        </Certificate>
+        <Certificate Id="F4E7DF969A590AF41E38E5854542EBF9DF6A5BE9B16FD31494FA689509057494">
+            <SubjectDistinguishedName Format="CANONICAL">c=fr,o=cryptolog international,ou=0002 43912916400026,cn=universign timestamping unit 018</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=FR,O=Cryptolog International,OU=0002 43912916400026,CN=Universign Timestamping Unit 018</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=universign timestamping ca 2015,ou=0002 43912916400026,o=cryptolog international,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Universign Timestamping CA 2015,OU=0002 43912916400026,O=Cryptolog International,C=FR</IssuerDistinguishedName>
+            <SerialNumber>144440652068579617862909512827429075476</SerialNumber>
+            <CommonName>Universign Timestamping Unit 018</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>Cryptolog International</OrganizationName>
+            <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <Url>http://crl.universign.eu/universign_tsa_root_2015.crl</Url>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>9OfflppZCvQeOOWFRULr+d9qW+mxb9MUlPpolQkFdJQ=</DigestValue>
+                </DigestAlgoAndValue>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>IljaXi+nn6J0JKa04KJUr8ZQwrk=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <NotAfter>2023-04-21T13:18:51</NotAfter>
+            <NotBefore>2017-04-21T13:18:51</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <oid Description="timeStamping">1.3.6.1.5.5.7.3.8</oid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+            <CertificateChain>
+                <ChainItem Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://docs.universign.eu/">1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>Cryptolog International</TSPName>
+                    <TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier>
+                    <CountryCode>FR</CountryCode>
+                    <TrustedServices>
+                        <TrustedService>
+                        	<ServiceDigitalIdentifier>9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2019-04-03T00:00:00</StartDate>
+                        </TrustedService>
+                        <TrustedService>
+                        	<ServiceDigitalIdentifier>9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-12-01T01:00:00</StartDate>
+                            <EndDate>2019-04-03T00:00:00</EndDate>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations>
+                <Revocation Id="f4e7df969a590af41e38e5854542ebf9df6a5be9b16fd31494fa689509057494a0251aaa80d3ee17433de0af36396dbc75a60880afff1598eefffba393bcb5d0">
+                    <Origin>EXTERNAL</Origin>
+                    <Source>CRLToken</Source>
+                    <SourceAddress>http://crl.universign.eu/universign_tsa_root_2015.crl</SourceAddress>
+                    <Available>false</Available>
+                    <Status>true</Status>
+                    <ProductionDate>2019-05-14T15:30:30</ProductionDate>
+                    <ThisUpdate>2019-05-14T15:30:30</ThisUpdate>
+                    <NextUpdate>2019-05-21T14:30:30</NextUpdate>
+                    <DigestAlgoAndValues>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>oCUaqoDT7hdDPeCvNjltvHWmCICv/xWY7v/7o5O8tdA=</DigestValue>
+                        </DigestAlgoAndValue>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>qbAw+eIaKuielf7YC7BIw2tp194=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </DigestAlgoAndValues>
+                    <BasicSignature>
+                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                        <SignatureIntact>true</SignatureIntact>
+                        <SignatureValid>true</SignatureValid>
+                    </BasicSignature>
+                    <SigningCertificate Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+                    <CertificateChain>
+                        <ChainItem Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                            <Source>TRUSTED_LIST</Source>
+                        </ChainItem>
+                    </CertificateChain>
+                </Revocation>
+                <Revocation Id="f4e7df969a590af41e38e5854542ebf9df6a5be9b16fd31494fa68950905749452755f1b968292da7d64235fc8bee11023ae65436db62822de853b0f3b94a279">
+                    <Origin>SIGNATURE</Origin>
+                    <Source>CRLToken</Source>
+                    <Status>true</Status>
+                    <ProductionDate>2018-04-25T00:30:30</ProductionDate>
+                    <ThisUpdate>2018-04-25T00:30:30</ThisUpdate>
+                    <NextUpdate>2018-05-01T23:30:30</NextUpdate>
+                    <DigestAlgoAndValues>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>UnVfG5aCktp9ZCNfyL7hECOuZUNttigi3oU7DzuUonk=</DigestValue>
+                        </DigestAlgoAndValue>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>Sfo81RGneC3jZAF0AL85ZPAPD+Y=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </DigestAlgoAndValues>
+                    <BasicSignature>
+                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                        <SignatureIntact>true</SignatureIntact>
+                        <SignatureValid>true</SignatureValid>
+                    </BasicSignature>
+                    <SigningCertificate Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+                    <CertificateChain>
+                        <ChainItem Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                            <Source>TRUSTED_LIST</Source>
+                        </ChainItem>
+                    </CertificateChain>
+                </Revocation>
+            </Revocations>
+        </Certificate>
+        <Certificate Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+            <SubjectDistinguishedName Format="CANONICAL">cn=universign timestamping ca 2015,ou=0002 43912916400026,o=cryptolog international,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Universign Timestamping CA 2015,OU=0002 43912916400026,O=Cryptolog International,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=universign timestamping ca 2015,ou=0002 43912916400026,o=cryptolog international,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Universign Timestamping CA 2015,OU=0002 43912916400026,O=Cryptolog International,C=FR</IssuerDistinguishedName>
+            <SerialNumber>84798768403750469096602040280354891940</SerialNumber>
+            <CommonName>Universign Timestamping CA 2015</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>Cryptolog International</OrganizationName>
+            <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>nPPJZpe3IFibEMwTuKK9Nf+8QXtwUKOCCvWZpDnedeU=</DigestValue>
+                </DigestAlgoAndValue>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>ZWVjr7hEZgvQtCGLkeGXbI6NHXM=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <NotAfter>2025-01-29T14:03:15</NotAfter>
+            <NotBefore>2015-01-29T14:03:15</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://docs.universign.eu/">1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>Cryptolog International</TSPName>
+                    <TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier>
+                    <CountryCode>FR</CountryCode>
+                    <TrustedServices>
+                        <TrustedService>
+                        	<ServiceDigitalIdentifier>9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2019-04-03T00:00:00</StartDate>
+                        </TrustedService>
+                        <TrustedService>
+                        	<ServiceDigitalIdentifier>9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-12-01T01:00:00</StartDate>
+                            <EndDate>2019-04-03T00:00:00</EndDate>
+                        </TrustedService>
+                        <TrustedService>
+                        	<ServiceDigitalIdentifier>9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
+                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <EndDate>2016-12-01T01:00:00</EndDate>
+                        </TrustedService>
+                        <TrustedService>
+                        	<ServiceDigitalIdentifier>9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                            <StartDate>2015-04-13T22:00:00</StartDate>
+                            <EndDate>2016-06-30T22:00:00</EndDate>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations/>
+        </Certificate>
+        <Certificate Id="FE2461CBA57FE78B4D8FD8B72730C49F9370C38002E3AA0340795395513FB26E">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.12=#131350726f66657373696f6e616c20506572736f6e,1.2.840.113549.1.9.1=#16226a616e657a2e7365766572407075626c69636174696f6e732e6575726f70612e6575,2.5.4.5=#13143131313035383538363130303534393930363037,2.5.4.42=#13054a616e657a,2.5.4.4=#13055365766572,cn=J S,ou=00000,o=P office,l=lu,c=si</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.12=#131350726f66657373696f6e616c20506572736f6e,1.2.840.113549.1.9.1=#16226a616e657a2e7365766572407075626c69636174696f6e732e6575726f70612e6575,2.5.4.5=#13143131313035383538363130303534393930363037,2.5.4.42=#13054a616e657a,2.5.4.4=#13055365766572,CN=J S,OU=00000,O=P Office,L=LU,C=SI</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=luxtrust global qualified ca 2,o=luxtrust s.a.,c=lu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=LuxTrust Global Qualified CA 2,O=LuxTrust S.A.,C=LU</IssuerDistinguishedName>
+            <SerialNumber>1359832</SerialNumber>
+            <CommonName>J S</CommonName>
+            <Locality>LU</Locality>
+            <CountryName>SI</CountryName>
+            <OrganizationName>P Office</OrganizationName>
+            <GivenName>J</GivenName>
+            <OrganizationalUnit>00000</OrganizationalUnit>
+            <Surname>S</Surname>
+            <Email>J.S@P.europa.eu</Email>
+            <AuthorityInformationAccessUrls>
+                <Url>http://ca.luxtrust.lu/LTGQCA2.crt</Url>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <Url>http://crl.luxtrust.lu/LTGQCA2.crl</Url>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <Url>http://ocsp.luxtrust.lu</Url>
+            </OCSPAccessUrls>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>/iRhy6V/54tNj9i3JzDEn5Nww4AC46oDQHlTlVE/sm4=</DigestValue>
+                </DigestAlgoAndValue>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>axGJ+ZGcnQYSN/OgIl2uyZKpbi4=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <NotAfter>2018-11-23T10:02:37</NotAfter>
+            <NotBefore>2015-11-23T10:02:37</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484"/>
+            <CertificateChain>
+                <ChainItem Id="7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.10.3.1</certificatePolicy>
+                <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds>
+                <oid Description="qc-compliance">0.4.0.1862.1.1</oid>
+                <oid Description="qc-sscd">0.4.0.1862.1.4</oid>
+            </QCStatementIds>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>LuxTrust S.A.</TSPName>
+                    <TSPRegistrationIdentifier>VATLU-20976985</TSPRegistrationIdentifier>
+                    <CountryCode>LU</CountryCode>
+                    <TrustedServices>
+                        <TrustedService>
+                        	<ServiceDigitalIdentifier>7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484</ServiceDigitalIdentifier>
+                            <ServiceName>LuxTrust Global Qualified Certification Authority 2</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService>
+                        	<ServiceDigitalIdentifier>7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484</ServiceDigitalIdentifier>
+                            <ServiceName>LuxTrust Global Qualified Certification Authority 2</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                            <StartDate>2014-11-19T00:00:00</StartDate>
+                            <EndDate>2016-06-30T22:00:00</EndDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations>
+                <Revocation Id="fe2461cba57fe78b4d8fd8b72730c49f9370c38002e3aa0340795395513fb26e5be1d322fc8aea14b2b21ec20ada7052f8ded3537320559bf12b72f3f184a6bc">
+                    <Origin>SIGNATURE</Origin>
+                    <Source>OCSPToken</Source>
+                    <Status>true</Status>
+                    <ProductionDate>2018-01-15T07:19:35</ProductionDate>
+                    <ThisUpdate>2018-01-15T07:05:58</ThisUpdate>
+                    <DigestAlgoAndValues>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>W+HTIvyK6hSysh7CCtpwUvje01NzIFWb8Sty8/GEprw=</DigestValue>
+                        </DigestAlgoAndValue>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>qC20dfUWD4Oc0mLfGDlQK7CciYU=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </DigestAlgoAndValues>
+                    <BasicSignature>
+                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                        <SignatureIntact>true</SignatureIntact>
+                        <SignatureValid>true</SignatureValid>
+                    </BasicSignature>
+                    <SigningCertificate Id="948A9632F4F6BBADFC34A23C428CDD0BEA40D397796D4CABD0F80792A62FFFB3"/>
+                    <CertificateChain>
+                        <ChainItem Id="948A9632F4F6BBADFC34A23C428CDD0BEA40D397796D4CABD0F80792A62FFFB3">
+                            <Source>SIGNATURE</Source>
+                        </ChainItem>
+                        <ChainItem Id="7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484">
+                            <Source>TRUSTED_LIST</Source>
+                        </ChainItem>
+                    </CertificateChain>
+                </Revocation>
+                <Revocation Id="fe2461cba57fe78b4d8fd8b72730c49f9370c38002e3aa0340795395513fb26e7d7676569deb225f315c8d1486a78ea2a1ba5c19828b97466e84e6bdd761a65e">
+                    <Origin>SIGNATURE</Origin>
+                    <Source>CRLToken</Source>
+                    <Status>true</Status>
+                    <ProductionDate>2018-04-28T07:30:02</ProductionDate>
+                    <ThisUpdate>2018-04-28T07:30:02</ThisUpdate>
+                    <NextUpdate>2018-04-28T12:00:02</NextUpdate>
+                    <DigestAlgoAndValues>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>fXZ2Vp3rIl8xXI0UhqeOoqG6XBmCi5dGboTmvddhpl4=</DigestValue>
+                        </DigestAlgoAndValue>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>17M83VS9hAbcNWauQc7qNyuqF1w=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </DigestAlgoAndValues>
+                    <BasicSignature>
+                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                        <SignatureIntact>true</SignatureIntact>
+                        <SignatureValid>true</SignatureValid>
+                    </BasicSignature>
+                    <SigningCertificate Id="7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484"/>
+                    <CertificateChain>
+                        <ChainItem Id="7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484">
+                            <Source>TRUSTED_LIST</Source>
+                        </ChainItem>
+                    </CertificateChain>
+                </Revocation>
+            </Revocations>
+        </Certificate>
+        <Certificate Id="64EE60788051EF086692103DC87CC088354A836C207B91D14E2F0878E5F28FEC">
+            <SubjectDistinguishedName Format="CANONICAL">c=fr,o=cryptolog international,ou=0002 43912916400026,cn=universign timestamping unit 020</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=FR,O=Cryptolog International,OU=0002 43912916400026,CN=Universign Timestamping Unit 020</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=universign timestamping ca 2015,ou=0002 43912916400026,o=cryptolog international,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Universign Timestamping CA 2015,OU=0002 43912916400026,O=Cryptolog International,C=FR</IssuerDistinguishedName>
+            <SerialNumber>228750952263477982521625869100810600284</SerialNumber>
+            <CommonName>Universign Timestamping Unit 020</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>Cryptolog International</OrganizationName>
+            <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <Url>http://crl.universign.eu/universign_tsa_root_2015.crl</Url>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>ZO5geIBR7whmkhA9yHzAiDVKg2wge5HRTi8IeOXyj+w=</DigestValue>
+                </DigestAlgoAndValue>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>HjaBYD8SRrMVsdRR0u5Nl29t5zE=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <NotAfter>2024-04-26T16:10:21</NotAfter>
+            <NotBefore>2018-04-26T16:10:21</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <oid Description="timeStamping">1.3.6.1.5.5.7.3.8</oid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+            <CertificateChain>
+                <ChainItem Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://docs.universign.eu/">1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
+            </CertificatePolicies>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>Cryptolog International</TSPName>
+                    <TSPRegistrationIdentifier>VATFR-46439129164</TSPRegistrationIdentifier>
+                    <CountryCode>FR</CountryCode>
+                    <TrustedServices>
+                        <TrustedService>
+                        	<ServiceDigitalIdentifier>9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2019-04-03T00:00:00</StartDate>
+                        </TrustedService>
+                        <TrustedService>
+                        	<ServiceDigitalIdentifier>9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</ServiceDigitalIdentifier>
+                            <ServiceName>Universign Time Stamping 2015</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-12-01T01:00:00</StartDate>
+                            <EndDate>2019-04-03T00:00:00</EndDate>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations>
+                <Revocation Id="64ee60788051ef086692103dc87cc088354a836c207b91d14e2f0878e5f28feca0251aaa80d3ee17433de0af36396dbc75a60880afff1598eefffba393bcb5d0">
+                    <Origin>EXTERNAL</Origin>
+                    <Source>CRLToken</Source>
+                    <SourceAddress>http://crl.universign.eu/universign_tsa_root_2015.crl</SourceAddress>
+                    <Available>false</Available>
+                    <Status>true</Status>
+                    <ProductionDate>2019-05-14T15:30:30</ProductionDate>
+                    <ThisUpdate>2019-05-14T15:30:30</ThisUpdate>
+                    <NextUpdate>2019-05-21T14:30:30</NextUpdate>
+                    <DigestAlgoAndValues>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>oCUaqoDT7hdDPeCvNjltvHWmCICv/xWY7v/7o5O8tdA=</DigestValue>
+                        </DigestAlgoAndValue>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>qbAw+eIaKuielf7YC7BIw2tp194=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </DigestAlgoAndValues>
+                    <BasicSignature>
+                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                        <SignatureIntact>true</SignatureIntact>
+                        <SignatureValid>true</SignatureValid>
+                    </BasicSignature>
+                    <SigningCertificate Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+                    <CertificateChain>
+                        <ChainItem Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                            <Source>TRUSTED_LIST</Source>
+                        </ChainItem>
+                    </CertificateChain>
+                </Revocation>
+                <Revocation Id="64ee60788051ef086692103dc87cc088354a836c207b91d14e2f0878e5f28fec52755f1b968292da7d64235fc8bee11023ae65436db62822de853b0f3b94a279">
+                    <Origin>SIGNATURE</Origin>
+                    <Source>CRLToken</Source>
+                    <Status>true</Status>
+                    <ProductionDate>2018-04-25T00:30:30</ProductionDate>
+                    <ThisUpdate>2018-04-25T00:30:30</ThisUpdate>
+                    <NextUpdate>2018-05-01T23:30:30</NextUpdate>
+                    <DigestAlgoAndValues>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>UnVfG5aCktp9ZCNfyL7hECOuZUNttigi3oU7DzuUonk=</DigestValue>
+                        </DigestAlgoAndValue>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>Sfo81RGneC3jZAF0AL85ZPAPD+Y=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </DigestAlgoAndValues>
+                    <BasicSignature>
+                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                        <SignatureIntact>true</SignatureIntact>
+                        <SignatureValid>true</SignatureValid>
+                    </BasicSignature>
+                    <SigningCertificate Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5"/>
+                    <CertificateChain>
+                        <ChainItem Id="9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5">
+                            <Source>TRUSTED_LIST</Source>
+                        </ChainItem>
+                    </CertificateChain>
+                </Revocation>
+            </Revocations>
+        </Certificate>
+        <Certificate Id="948A9632F4F6BBADFC34A23C428CDD0BEA40D397796D4CABD0F80792A62FFFB3">
+            <SubjectDistinguishedName Format="CANONICAL">cn=luxtrust s.a. ocsp server,ou=pki entity,o=luxtrust s.a.,c=lu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=LuxTrust S.A. OCSP Server,OU=Pki entity,O=LuxTrust S.A.,C=LU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=luxtrust global qualified ca 2,o=luxtrust s.a.,c=lu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=LuxTrust Global Qualified CA 2,O=LuxTrust S.A.,C=LU</IssuerDistinguishedName>
+            <SerialNumber>1372433</SerialNumber>
+            <CommonName>LuxTrust S.A. OCSP Server</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>LuxTrust S.A.</OrganizationName>
+            <OrganizationalUnit>Pki entity</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <Url>http://crl.luxtrust.lu/LTGQCA2.crl</Url>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <DigestAlgoAndValues>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>lIqWMvT2u638NKI8QozdC+pA05d5bUyr0PgHkqYv/7M=</DigestValue>
+                </DigestAlgoAndValue>
+                <DigestAlgoAndValue>
+                    <DigestMethod>SHA1</DigestMethod>
+                    <DigestValue>nvlqndYTISWGvHKbCj/Kz63HoCQ=</DigestValue>
+                </DigestAlgoAndValue>
+            </DigestAlgoAndValues>
+            <NotAfter>2018-06-27T08:58:25</NotAfter>
+            <NotBefore>2017-06-27T08:58:25</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <oid Description="ocspSigning">1.3.6.1.5.5.7.3.9</oid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Id="7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484"/>
+            <CertificateChain>
+                <ChainItem Id="7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484">
+                    <Source>TRUSTED_LIST</Source>
+                </ChainItem>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <QCStatementIds/>
+            <QCTypes/>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider>
+                    <TSPName>LuxTrust S.A.</TSPName>
+                    <TSPRegistrationIdentifier>VATLU-20976985</TSPRegistrationIdentifier>
+                    <CountryCode>LU</CountryCode>
+                    <TrustedServices>
+                        <TrustedService>
+                        	<ServiceDigitalIdentifier>7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484</ServiceDigitalIdentifier>
+                            <ServiceName>LuxTrust Global Qualified Certification Authority 2</ServiceName>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <URI>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations>
+                <Revocation Id="948a9632f4f6bbadfc34a23c428cdd0bea40d397796d4cabd0f80792a62fffb37d7676569deb225f315c8d1486a78ea2a1ba5c19828b97466e84e6bdd761a65e">
+                    <Origin>SIGNATURE</Origin>
+                    <Source>CRLToken</Source>
+                    <Status>true</Status>
+                    <ProductionDate>2018-04-28T07:30:02</ProductionDate>
+                    <ThisUpdate>2018-04-28T07:30:02</ThisUpdate>
+                    <NextUpdate>2018-04-28T12:00:02</NextUpdate>
+                    <DigestAlgoAndValues>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>fXZ2Vp3rIl8xXI0UhqeOoqG6XBmCi5dGboTmvddhpl4=</DigestValue>
+                        </DigestAlgoAndValue>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>17M83VS9hAbcNWauQc7qNyuqF1w=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </DigestAlgoAndValues>
+                    <BasicSignature>
+                        <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                        <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                        <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                        <SignatureIntact>true</SignatureIntact>
+                        <SignatureValid>true</SignatureValid>
+                    </BasicSignature>
+                    <SigningCertificate Id="7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484"/>
+                    <CertificateChain>
+                        <ChainItem Id="7E76DA9EA8D0E6C5C63023D0D8C06E555AECE4FE346C0E50693DF6BD5468E484">
+                            <Source>TRUSTED_LIST</Source>
+                        </ChainItem>
+                    </CertificateChain>
+                </Revocation>
+            </Revocations>
+        </Certificate>
+    </UsedCertificates>
+    <TrustedLists>
+        <TrustedList>
+            <CountryCode>LU</CountryCode>
+            <Url>https://portail-qualite.public.lu/content/dam/qualite/fr/P/confiance-numerique/liste-confiance-nationale/tsl-xml/tsl.xml</Url>
+            <SequenceNumber>36</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2019-05-17T09:52:11</LastLoading>
+            <IssueDate>2019-02-20T01:00:00</IssueDate>
+            <NextUpdate>2019-08-20T00:00:00</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList>
+            <CountryCode>FR</CountryCode>
+            <Url>http://www.ssi.gouv.fr/eidas/TL-FR.xml</Url>
+            <SequenceNumber>51</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2019-05-17T09:52:10</LastLoading>
+            <IssueDate>2019-05-09T01:00:00</IssueDate>
+            <NextUpdate>2019-11-09T00:00:00</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+    <ListOfTrustedLists>
+        <CountryCode>EU</CountryCode>
+        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
+        <SequenceNumber>240</SequenceNumber>
+        <Version>5</Version>
+        <LastLoading>2019-05-17T09:52:06</LastLoading>
+        <IssueDate>2019-05-17T06:00:00</IssueDate>
+        <NextUpdate>2019-11-17T00:00:00</NextUpdate>
+        <WellSigned>true</WellSigned>
+    </ListOfTrustedLists>
+</DiagnosticData>

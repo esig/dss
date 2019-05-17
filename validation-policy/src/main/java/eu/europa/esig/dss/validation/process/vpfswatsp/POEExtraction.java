@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.process.vpfswatsp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -96,13 +97,13 @@ public class POEExtraction {
 					// SIGNATURES and TIMESTAMPS
 					addPOE(xmlTimestampedObject.getId(), productionTime);
 				} else if (TimestampedObjectType.CERTIFICATE == xmlTimestampedObject.getCategory()) {
-					String certificateId = getCertificateIdByDigest(xmlTimestampedObject.getDigestAlgoAndValue(), diagnosticData);
-					if (certificateId != null) {
+					Set<String> certificateIds = getCertificateIdsByDigest(xmlTimestampedObject.getDigestAlgoAndValue(), diagnosticData);
+					for (String certificateId : certificateIds) {
 						addPOE(certificateId, productionTime);
 					}
 				} else if (TimestampedObjectType.REVOCATION == xmlTimestampedObject.getCategory()) {
-					String revocationId = getRevocationIdByDigest(xmlTimestampedObject.getDigestAlgoAndValue(), diagnosticData);
-					if (revocationId != null) {
+					Set<String> revocationIds = getRevocationIdsByDigest(xmlTimestampedObject.getDigestAlgoAndValue(), diagnosticData);
+					for (String revocationId : revocationIds) {
 						addPOE(revocationId, productionTime);
 					}
 				}
@@ -111,25 +112,26 @@ public class POEExtraction {
 		}
 	}
 
-	private String getCertificateIdByDigest(XmlDigestAlgoAndValue digestAlgoValue, DiagnosticData diagnosticData) {
+	private Set<String> getCertificateIdsByDigest(XmlDigestAlgoAndValue digestAlgoValue, DiagnosticData diagnosticData) {
+		Set<String> result = new HashSet<String>();
 		List<CertificateWrapper> certificates = diagnosticData.getUsedCertificates();
 		if (Utils.isCollectionNotEmpty(certificates)) {
 			for (CertificateWrapper certificate : certificates) {
 				List<XmlDigestAlgoAndValue> digestAlgAndValues = certificate.getDigestAlgoAndValues();
 				if (Utils.isCollectionNotEmpty(digestAlgAndValues)) {
 					for (XmlDigestAlgoAndValue certificateDigestAndValue : digestAlgAndValues) {
-						if (Utils.areStringsEqual(certificateDigestAndValue.getDigestMethod(), digestAlgoValue.getDigestMethod())
-								&& Utils.areStringsEqual(certificateDigestAndValue.getDigestValue(), digestAlgoValue.getDigestValue())) {
-							return certificate.getId();
+						if (isDigestAndAlgoEquals(digestAlgoValue, certificateDigestAndValue)) {
+							result.add(certificate.getId());
 						}
 					}
 				}
 			}
 		}
-		return null;
+		return result;
 	}
 
-	private String getRevocationIdByDigest(XmlDigestAlgoAndValue digestAlgoValue, DiagnosticData diagnosticData) {
+	private Set<String> getRevocationIdsByDigest(XmlDigestAlgoAndValue digestAlgoValue, DiagnosticData diagnosticData) {
+		Set<String> result = new HashSet<String>();
 		List<CertificateWrapper> certificates = diagnosticData.getUsedCertificates();
 		if (Utils.isCollectionNotEmpty(certificates)) {
 			for (CertificateWrapper certificate : certificates) {
@@ -138,16 +140,20 @@ public class POEExtraction {
 					for (RevocationWrapper revocationData : revocations) {
 						List<XmlDigestAlgoAndValue> digestAlgAndValues = revocationData.getDigestAlgoAndValues();
 						for (XmlDigestAlgoAndValue revocDigestAndValue : digestAlgAndValues) {
-							if (Utils.areStringsEqual(revocDigestAndValue.getDigestMethod(), digestAlgoValue.getDigestMethod())
-									&& Utils.areStringsEqual(revocDigestAndValue.getDigestValue(), digestAlgoValue.getDigestValue())) {
-								return revocationData.getId();
+							if (isDigestAndAlgoEquals(digestAlgoValue, revocDigestAndValue)) {
+								result.add(revocationData.getId());
 							}
 						}
 					}
 				}
 			}
 		}
-		return null;
+		return result;
+	}
+
+	private boolean isDigestAndAlgoEquals(XmlDigestAlgoAndValue expectedDigestAlgoValue, XmlDigestAlgoAndValue digestAlgoValue) {
+		return Utils.areStringsEqual(expectedDigestAlgoValue.getDigestMethod(), digestAlgoValue.getDigestMethod())
+				&& Utils.areStringsEqual(expectedDigestAlgoValue.getDigestValue(), digestAlgoValue.getDigestValue());
 	}
 
 	private void addPOE(String poeId, Date productionTime) {
