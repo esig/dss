@@ -35,8 +35,6 @@ import java.util.List;
 import javax.xml.bind.JAXB;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.jaxb.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
@@ -52,10 +50,9 @@ import eu.europa.esig.dss.validation.reports.DetailedReport;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.SimpleReport;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
+import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 
 public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
-
-	private static final Logger LOG = LoggerFactory.getLogger(CustomProcessExecutorTest.class);
 
 	@Test
 	public void skipRevocationDataValidation() throws Exception {
@@ -989,6 +986,22 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 		assertEquals(SubIndication.FORMAT_FAILURE, detailedReport.getArchiveDataValidationSubIndication(detailedReport.getFirstSignatureId()));
 	}
 
+	@Test
+	public void testTLNoSigCertEmptyPolicy() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/tl-no-signing-cert.xml");
+		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(new EtsiValidationPolicy(new ConstraintsParameters()));
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+	
 	@Test
 	public void LTAandAIAforTrustAnchor() throws Exception {
 		FileInputStream fis = new FileInputStream("src/test/resources/LTAandAIAforTrustAnchor.xml");
