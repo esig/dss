@@ -22,7 +22,10 @@ package eu.europa.esig.dss.crl;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Date;
+
+import org.bouncycastle.asn1.x509.ReasonFlags;
 
 import eu.europa.esig.dss.SignatureAlgorithm;
 import eu.europa.esig.dss.x509.CertificateToken;
@@ -34,20 +37,26 @@ import eu.europa.esig.dss.x509.RevocationOrigin;
  */
 public class CRLValidity {
 
-	private String key;
-	private byte[] crlEncoded = null;
-	private SignatureAlgorithm signatureAlgorithm;
-	private Date nextUpdate;
-	private Date thisUpdate;
-	private Date expiredCertsOnCRL;
+	private boolean indirectCrl;
+	private boolean onlyAttributeCerts;
+	private boolean onlyCaCerts;
+	private boolean onlyUserCerts;
+	private boolean crlSignKeyUsage = false;
 	private boolean issuerX509PrincipalMatches = false;
 	private boolean signatureIntact = false;
-	private boolean crlSignKeyUsage = false;
-	private boolean unknownCriticalExtension = true;
+	private Boolean unknownCriticalExtension;
+	private byte[] crlEncoded = null;
 	private CertificateToken issuerToken = null;
+	private Collection<String> criticalExtensionsOid;
+	private Date expiredCertsOnCRL;
+	private Date nextUpdate;
+	private Date thisUpdate;
+	private ReasonFlags onlySomeReasonFlags;
+	private RevocationOrigin origin;
+	private SignatureAlgorithm signatureAlgorithm;
+	private String key;
 	private String signatureInvalidityReason;
 	private String url;
-	private RevocationOrigin origin;
 
 	public String getKey() {
 		return key;
@@ -125,14 +134,6 @@ public class CRLValidity {
 		this.crlSignKeyUsage = crlSignKeyUsage;
 	}
 
-	public boolean isUnknownCriticalExtension() {
-		return unknownCriticalExtension;
-	}
-
-	public void setUnknownCriticalExtension(boolean unknownCriticalExtension) {
-		this.unknownCriticalExtension = unknownCriticalExtension;
-	}
-
 	public CertificateToken getIssuerToken() {
 		return issuerToken;
 	}
@@ -164,6 +165,34 @@ public class CRLValidity {
 	public void setRevocationOrigin(RevocationOrigin origin) {
 		this.origin = origin;
 	}
+	
+	public void setOnlyAttributeCerts(boolean onlyAttributeCerts) {
+		this.onlyAttributeCerts = onlyAttributeCerts;
+	}
+	
+	public void setOnlyCaCerts(boolean onlyCaCerts) {
+		this.onlyCaCerts = onlyCaCerts;
+	}
+	
+	public void setOnlyUserCerts(boolean onlyUserCerts) {
+		this.onlyUserCerts = onlyUserCerts;
+	}
+	
+	public void setIndirectCrl(boolean indirectCrl) {
+		this.indirectCrl = indirectCrl;
+	}
+	
+	public void setReasonFlags(ReasonFlags reasonFlags) {
+		this.onlySomeReasonFlags = reasonFlags;
+	}
+	
+	public void setCriticalExtensionsOid(Collection<String> criticalExtensionsOid) {
+		this.criticalExtensionsOid = criticalExtensionsOid;
+	}
+	
+	public void setUnknownCriticalExtension(boolean unknownCriticalExtension) {
+		this.unknownCriticalExtension = unknownCriticalExtension;
+	}
 
 	/**
 	 * This method indicates if the CRL is valid. To be valid the CRL must full
@@ -176,13 +205,25 @@ public class CRLValidity {
 	 * @return {@code true} if the CRL is valid {@code false} otherwise.
 	 */
 	public boolean isValid() {
-		return issuerX509PrincipalMatches && signatureIntact && crlSignKeyUsage && !unknownCriticalExtension;
+		return issuerX509PrincipalMatches && signatureIntact && crlSignKeyUsage && !isUnknownCriticalExtension();
+	}
+	
+	public boolean areCriticalExtensionsOidNotEmpty() {
+		return criticalExtensionsOid != null && !criticalExtensionsOid.isEmpty();
+	}
+	
+	public boolean isUnknownCriticalExtension() {
+		if (unknownCriticalExtension == null) {
+			unknownCriticalExtension = areCriticalExtensionsOidNotEmpty() && 
+					((onlyAttributeCerts && onlyCaCerts && onlyUserCerts && indirectCrl) || (onlySomeReasonFlags != null) || (url == null));
+		}
+		return unknownCriticalExtension;
 	}
 
 	@Override
 	public String toString() {
 		return "CRLValidity{" + "issuerX509PrincipalMatches=" + issuerX509PrincipalMatches + ", signatureIntact=" + signatureIntact + ", crlSignKeyUsage="
-				+ crlSignKeyUsage + ", unknownCriticalExtension=" + unknownCriticalExtension + ", issuerToken=" + issuerToken + ", signatureInvalidityReason='"
+				+ crlSignKeyUsage + ", unknownCriticalExtension=" + isUnknownCriticalExtension() + ", issuerToken=" + issuerToken + ", signatureInvalidityReason='"
 				+ signatureInvalidityReason + '\'' + '}';
 	}
 }
