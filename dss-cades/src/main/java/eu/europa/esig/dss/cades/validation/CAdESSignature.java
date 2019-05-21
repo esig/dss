@@ -141,7 +141,7 @@ import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
-import eu.europa.esig.dss.validation.TimestampReference;
+import eu.europa.esig.dss.validation.TimestampedReference;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.x509.ArchiveTimestampType;
@@ -186,7 +186,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * Cached list of the Signing Certificate Timestamp References.
 	 */
-	private List<TimestampReference> signingCertificateTimestampReferences;
+	private List<TimestampedReference> signingCertificateTimestampReferences;
 
 	/**
 	 * @param data
@@ -746,12 +746,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				timestampToken.setTimestampedReferences(getTimestampedReferences());
 				break;
 			case VALIDATION_DATA_TIMESTAMP:
-				final List<TimestampReference> validationDataReferences = getSignatureTimestampReferences();
+				final List<TimestampedReference> validationDataReferences = getSignatureTimestampReferences();
 				addReferences(validationDataReferences, getTimestampedReferences());
 				timestampToken.setTimestampedReferences(validationDataReferences);
 				break;
 			case ARCHIVE_TIMESTAMP:
-				final List<TimestampReference> references = getSignatureTimestampReferences();
+				final List<TimestampedReference> references = getSignatureTimestampReferences();
 				addReferencesFromRevocationData(references);
 				addReferencesForCertificates(references);
 				addReferencesForPreviousTimestamps(references, timestampedTimestamps);
@@ -764,8 +764,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 	}
 
-	public List<TimestampReference> getTimestampReferencesForArchiveTimestamp(final List<TimestampToken> timestampedTimestamps) {
-		final List<TimestampReference> archiveReferences = getSignatureTimestampReferences();
+	public List<TimestampedReference> getTimestampReferencesForArchiveTimestamp(final List<TimestampToken> timestampedTimestamps) {
+		final List<TimestampedReference> archiveReferences = getSignatureTimestampReferences();
 		addReferencesForPreviousTimestamps(archiveReferences, timestampedTimestamps);
 		addReferences(archiveReferences, getTimestampedReferences());
 		return archiveReferences;
@@ -789,7 +789,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		final AttributeTable attributes = attrType.equals(id_aa_ets_contentTimestamp) ? signerInformation.getSignedAttributes()
 				: signerInformation.getUnsignedAttributes();
 		if (attributes != null) {
-
 			final ASN1EncodableVector allAttributes = attributes.getAll(attrType);
 			for (int ii = 0; ii < allAttributes.size(); ii++) {
 				final Attribute attribute = (Attribute) allAttributes.get(ii);
@@ -1529,11 +1528,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public List<TimestampReference> getTimestampedReferences() {
-		final List<TimestampReference> references = new ArrayList<TimestampReference>();
+	public List<TimestampedReference> getTimestampedReferences() {
+		final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
 		final List<CertificateToken> certs = getCertificateSource().getCompleteCertificates();
 		for (final CertificateToken certificate : certs) {
-			references.add(new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+			references.add(new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 
 		addReferencesFromRevocationData(references);

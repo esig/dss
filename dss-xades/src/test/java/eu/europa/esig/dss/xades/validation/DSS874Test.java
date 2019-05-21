@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.validation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -37,13 +38,21 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.XmlRevocationOrigin;
+import eu.europa.esig.dss.validation.XmlRevocationRefLocation;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
 import eu.europa.esig.dss.validation.reports.wrapper.SignatureWrapper;
+import eu.europa.esig.jaxb.validationreport.ValidationObjectListType;
+import eu.europa.esig.jaxb.validationreport.ValidationObjectType;
+import eu.europa.esig.jaxb.validationreport.ValidationReportType;
+import eu.europa.esig.jaxb.validationreport.enums.ObjectType;
 
 public class DSS874Test {
 
@@ -73,6 +82,34 @@ public class DSS874Test {
 		assertTrue(signatureWrapper.isPolicyStatus());
 		assertTrue(signatureWrapper.isPolicyIdentified());
 		assertEquals("https://sede.060.gob.es/politica_de_firma_anexo_1.pdf", signatureWrapper.getPolicyUrl());
+		
+		assertEquals(5, signatureWrapper.getRevocationIdsByType(RevocationType.OCSP).size());
+		
+		assertEquals(5, signatureWrapper.getFoundCertificatesByLocation(XmlCertificateLocationType.COMPLETE_CERTIFICATE_REFS).size());
+		assertEquals(3, signatureWrapper.getFoundRevocationRefsByLocation(XmlRevocationRefLocation.COMPLETE_REVOCATION_REFS).size());
+		assertEquals(5, signatureWrapper.getFoundCertificatesByLocation(XmlCertificateLocationType.CERTIFICATE_VALUES).size());
+		assertEquals(5, signatureWrapper.getRevocationIdsByOrigin(XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
+		
+		assertEquals(3, signatureWrapper.getRelatedRevocationsByOrigin(XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
+		assertEquals(2, signatureWrapper.getOrphanRevocationsByOrigin(XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
+		
+		List<String> revocationIds = signatureWrapper.getRevocationIds();
+		
+		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
+		assertNotNull(etsiValidationReportJaxb);
+		ValidationObjectListType signatureValidationObjects = etsiValidationReportJaxb.getSignatureValidationObjects();
+		List<ValidationObjectType> validationObjects = signatureValidationObjects.getValidationObject();
+		
+		int ocspRevocationsCounter = 0;
+		for (ValidationObjectType validationObject : validationObjects) {
+			if (ObjectType.OCSP_RESPONSE.equals(validationObject.getObjectType())) {
+				assertTrue(revocationIds.contains(validationObject.getId()));
+				ocspRevocationsCounter++;
+			}
+		}
+		
+		assertEquals(5, ocspRevocationsCounter);
+		
 	}
 
 	@Test

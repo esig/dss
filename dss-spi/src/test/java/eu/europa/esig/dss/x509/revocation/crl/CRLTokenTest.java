@@ -41,7 +41,8 @@ public class CRLTokenTest {
 			assertNotNull(crl.getDSSId());
 			assertNotNull(crl.getIssuerX500Principal());
 			assertNotNull(crl.getPublicKeyOfTheSigner());
-			assertNotNull(crl.getOrigin());
+			assertNotNull(crl.getOrigins());
+			assertTrue(crl.getOrigins().size() > 0);
 			assertNotNull(crl.toString());
 
 			assertEquals(crlValidity.getExpiredCertsOnCRL(), crl.getExpiredCertsOnCRL());

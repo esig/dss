@@ -51,7 +51,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertifiedRole;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
-import eu.europa.esig.dss.validation.TimestampReference;
+import eu.europa.esig.dss.validation.TimestampedReference;
 import eu.europa.esig.dss.validation.TimestampToken;
 import eu.europa.esig.dss.validation.TimestampedObjectType;
 import eu.europa.esig.dss.x509.CertificatePool;
@@ -211,7 +211,7 @@ public class PAdESSignature extends CAdESSignature {
 				final TimestampToken timestampToken = timestampInfo.getTimestampToken();
 				if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampToken.getTimeStampType())) {
 
-					final List<TimestampReference> references = getSignatureTimestampReferences();
+					final List<TimestampedReference> references = getSignatureTimestampReferences();
 
 					addReferencesForPreviousTimestamps(references, timestampedTimestamps);
 					addReferencesForCertificates(references);
@@ -243,14 +243,14 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	protected void addReferencesForCertificates(List<TimestampReference> references) {
+	protected void addReferencesForCertificates(List<TimestampedReference> references) {
 		List<CertificateToken> dssDictionaryCertValues = getCertificateSource().getDSSDictionaryCertValues();
 		for (CertificateToken certificate : dssDictionaryCertValues) {
-			addReference(references, new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+			addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 		List<CertificateToken> vriDictionaryCertValues = getCertificateSource().getVRIDictionaryCertValues();
 		for (CertificateToken certificate : vriDictionaryCertValues) {
-			addReference(references, new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+			addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 	}
 
@@ -260,15 +260,15 @@ public class PAdESSignature extends CAdESSignature {
 	 * @param references
 	 */
 	@Override
-	protected void addReferencesFromRevocationData(List<TimestampReference> references) {
+	protected void addReferencesFromRevocationData(List<TimestampedReference> references) {
 		List<RevocationToken> vriRevocationTokens = getVRIDictionaryRevocationTokens();
 		for (RevocationToken revocationToken : vriRevocationTokens) {
-			addReference(references, new TimestampReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
+			addReference(references, new TimestampedReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
 		}
 
 		List<RevocationToken> dssRevocationTokens = getDSSDictionaryRevocationTokens();
 		for (RevocationToken revocationToken : dssRevocationTokens) {
-			addReference(references, new TimestampReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
+			addReference(references, new TimestampedReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
 		}
 	}
 
@@ -372,7 +372,7 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	public List<TimestampReference> getTimestampedReferences() {
+	public List<TimestampedReference> getTimestampedReferences() {
 		/* Not applicable for PAdES */
 		return Collections.emptyList();
 	}

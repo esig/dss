@@ -175,9 +175,9 @@ public class DiagnosticDataComplete extends PKIFactoryAccess {
 		assertNotNull(signatures);
 		
 		SignatureWrapper signature = signatures.get(0);
-		assertEquals(2, diagnosticData.getAllRevocationForSignature(signature.getId()).size());
+		assertEquals(1, diagnosticData.getAllRevocationForSignature(signature.getId()).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByType(signature.getId(), RevocationType.CRL).size());
-		assertEquals(2, diagnosticData.getAllRevocationForSignatureByType(signature.getId(), RevocationType.OCSP).size());
+		assertEquals(1, diagnosticData.getAllRevocationForSignatureByType(signature.getId(), RevocationType.OCSP).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signature.getId(), 
 				RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
 		assertEquals(0, diagnosticData.getAllRevocationForSignatureByTypeAndOrigin(signature.getId(), 

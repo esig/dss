@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponse;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
@@ -239,7 +239,13 @@ public class CAdESOCSPSource extends SignatureOCSPSource {
 
 	private void addBasicOcspResp(final BasicOCSPResp basicOCSPResp, RevocationOrigin origin) {
 		if (basicOCSPResp != null) {
-			ocspResponses.add(new OCSPResponse(basicOCSPResp, origin));
+			OCSPResponseIdentifier ocspResponse = OCSPResponseIdentifier.build(basicOCSPResp, origin);
+			if (ocspResponses.containsKey(ocspResponse.asXmlId())) {
+				OCSPResponseIdentifier storedOCSPResponse = ocspResponses.get(ocspResponse.asXmlId());
+				storedOCSPResponse.addOrigin(origin);
+			} else {
+				ocspResponses.put(ocspResponse.asXmlId(), ocspResponse);
+			}
 		}
 	}
 

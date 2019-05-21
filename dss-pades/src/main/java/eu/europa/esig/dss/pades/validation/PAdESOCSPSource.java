@@ -31,7 +31,7 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.RevocationOrigin;
-import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponse;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
 /**
@@ -99,7 +99,8 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 	
 	private void extractDSSOCSPs() {
 		for (BasicOCSPResp basicOCSPResp : getDssOcspMap().values()) {
-			ocspResponses.add(new OCSPResponse(basicOCSPResp, RevocationOrigin.INTERNAL_DSS));
+			OCSPResponseIdentifier ocspResponse = OCSPResponseIdentifier.build(basicOCSPResp, RevocationOrigin.INTERNAL_DSS);
+			ocspResponses.put(ocspResponse.asXmlId(), ocspResponse);
 		}
 	}
 	
@@ -126,7 +127,13 @@ public class PAdESOCSPSource extends SignatureOCSPSource {
 				if (!ocspMap.containsKey(ocspEntry.getKey())) {
 					ocspMap.put(ocspEntry.getKey(), ocspEntry.getValue());
 				}
-				ocspResponses.add(new OCSPResponse(ocspEntry.getValue(), RevocationOrigin.INTERNAL_VRI));
+				OCSPResponseIdentifier ocspResponse = OCSPResponseIdentifier.build(ocspEntry.getValue(), RevocationOrigin.INTERNAL_VRI);
+				if (ocspResponses.containsKey(ocspResponse.asXmlId())) {
+					OCSPResponseIdentifier storedOCSPResponse = ocspResponses.get(ocspResponse.asXmlId());
+					storedOCSPResponse.addOrigin(RevocationOrigin.INTERNAL_VRI);
+				} else {
+					ocspResponses.put(ocspResponse.asXmlId(), ocspResponse);
+				}
 			}
 		}
 	}

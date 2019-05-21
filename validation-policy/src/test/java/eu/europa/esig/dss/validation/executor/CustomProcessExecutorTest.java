@@ -1049,6 +1049,24 @@ public class CustomProcessExecutorTest extends AbstractValidationExecutorTest {
 
 	}
 
+	@Test
+	public void testDSS1647() throws Exception {
+		FileInputStream fis = new FileInputStream("src/test/resources/dss-1647.xml");
+		DiagnosticData diagnosticData = XmlUtils.getJAXBObjectFromString(fis, DiagnosticData.class, "/xsd/DiagnosticData.xsd");
+		assertNotNull(diagnosticData);
+
+		CustomProcessExecutor executor = new CustomProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		validateBestSigningTimes(reports);
+	}
+
 	@Test(expected = NullPointerException.class)
 	public void diagDataNotNull() throws Exception {
 		CustomProcessExecutor executor = new CustomProcessExecutor();

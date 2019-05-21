@@ -189,7 +189,12 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 		}
 	}
 
-	private List<CertificateToken> findTokensFromRefs(List<CertificateRef> certificateRefs) {
+	/**
+	 * Returns list of {@link CertificateToken}s for the provided {@link CertificateRef}s
+	 * @param certificateRefs list of {@link CertificateRef}s
+	 * @return list of {@link CertificateToken}s
+	 */
+	public List<CertificateToken> findTokensFromRefs(List<CertificateRef> certificateRefs) {
 		if (Utils.isMapEmpty(certificateRefsMap)) {
 			collectCertificateRefsMap();
 		}

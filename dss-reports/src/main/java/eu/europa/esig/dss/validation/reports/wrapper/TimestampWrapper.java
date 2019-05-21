@@ -31,16 +31,19 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanToken;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestamp;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedObject;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedOrphanToken;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedRevocationData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignature;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedSignerData;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlTimestampedTimestamp;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.OrphanTokenType;
 import eu.europa.esig.dss.x509.TimestampType;
 
 public class TimestampWrapper extends AbstractTokenProxy {
@@ -142,6 +145,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 			if (timestampedObject instanceof XmlTimestampedCertificate) {
 				timestampedObjectIds.add(timestampedObject.getToken().getId());
 			}
+			timestampedObjectIds.addAll(getTimestampedOrphanTokenIdsByType(OrphanTokenType.CERTIFICATE));
 		}
 		return timestampedObjectIds;
 	}
@@ -157,6 +161,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 				timestampedObjectIds.add(timestampedObject.getToken().getId());
 			}
 		}
+		timestampedObjectIds.addAll(getTimestampedOrphanTokenIdsByType(OrphanTokenType.REVOCATION));
 		return timestampedObjectIds;
 	}
 	
@@ -183,6 +188,33 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {
 			if (timestampedObject instanceof XmlTimestampedSignerData) {
 				timestampedObjectIds.add(timestampedObject.getToken().getId());
+			}
+		}
+		return timestampedObjectIds;
+	}
+	
+
+	/**
+	 * Returns a list of all {@link XmlTimestampedOrphanToken} ids
+	 * @return list of ids
+	 */
+	public List<String> getAllTimestampedOrphanTokenIds() {
+		return getTimestampedOrphanTokenIdsByType(null);
+	}
+	
+	/**
+	 * Returns a list of {@link XmlTimestampedOrphanToken} ids by provided {@code tokenType}
+	 * @param tokenType {@link OrphanTokenType} to get values for
+	 * @return list of ids
+	 */
+	public List<String> getTimestampedOrphanTokenIdsByType(OrphanTokenType tokenType) {
+		List<String> timestampedObjectIds = new ArrayList<String>();
+		for (XmlTimestampedObject timestampedObject : getTimestampedObjects()) {
+			if (timestampedObject instanceof XmlTimestampedOrphanToken) {
+				XmlOrphanToken orphanToken = (XmlOrphanToken) timestampedObject.getToken();
+				if (tokenType == null || tokenType.equals(orphanToken.getType())) {
+					timestampedObjectIds.add(orphanToken.getId());
+				}
 			}
 		}
 		return timestampedObjectIds;

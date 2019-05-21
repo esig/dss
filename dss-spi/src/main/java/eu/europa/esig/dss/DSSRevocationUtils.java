@@ -27,16 +27,22 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1OctetString;
+import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DEROctetString;
+import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
 import org.bouncycastle.asn1.ocsp.OCSPResponseStatus;
+import org.bouncycastle.asn1.ocsp.ResponderID;
 import org.bouncycastle.asn1.ocsp.ResponseBytes;
+import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateID;
 import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPResp;
+import org.bouncycastle.cert.ocsp.RespID;
 import org.bouncycastle.cert.ocsp.SingleResp;
 import org.bouncycastle.operator.DigestCalculator;
 import org.bouncycastle.operator.DigestCalculatorProvider;
@@ -47,6 +53,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.x509.revocation.ocsp.ResponderId;
 
 /**
  * Utility class used to manipulate revocation data (OCSP, CRL)
@@ -92,6 +99,19 @@ public final class DSSRevocationUtils {
 			return fromBasicToResp(encoded);
 		} catch (IOException e) {
 			throw new DSSException(e);
+		}
+	}
+	
+	public static byte[] getEncodedFromBasicResp(final BasicOCSPResp basicOCSPResp) {
+		try {
+			if (basicOCSPResp != null) {
+				final OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(basicOCSPResp);
+				return ocspResp.getEncoded();
+			} else {
+				throw new DSSException("Empty OCSP response");
+			}
+		} catch (IOException e) {
+			throw new DSSException("OCSP encoding error: " + e.getMessage(), e);
 		}
 	}
 
@@ -183,7 +203,20 @@ public final class DSSRevocationUtils {
 	 */
 	public static BasicOCSPResp loadOCSPBase64Encoded(final String base64Encoded) throws IOException {
 		final byte[] derEncoded = Utils.fromBase64(base64Encoded);
-		final OCSPResp ocspResp = new OCSPResp(derEncoded);
+		return loadOCSPFromBinaries(derEncoded);
+	}
+
+	/**
+	 * This method loads an OCSP response from the given binaries.
+	 *
+	 * @param binaries
+	 *            byte array of OCSP response
+	 * @return the {@code BasicOCSPResp} object
+	 * @throws IOException
+	 *             if IO error occurred
+	 */
+	public static BasicOCSPResp loadOCSPFromBinaries(final byte[] binaries) throws IOException {
+		final OCSPResp ocspResp = new OCSPResp(binaries);
 		return fromRespToBasic(ocspResp);
 	}
 
@@ -192,6 +225,28 @@ public final class DSSRevocationUtils {
 			return ocspResp.getEncoded();
 		} catch (IOException e) {
 			throw new DSSException(e);
+		}
+	}
+	
+	/**
+	 * Transforms {@link RespID} to {@link ResponderId}
+	 * @param respID {@link RespID} to get values from
+	 * @return {@link ResponderId}
+	 */
+	public static ResponderId getDSSResponderId(RespID respID) {
+		ResponderId dssResponderId = new ResponderId();
+		final ResponderID responderIdAsASN1Object = respID.toASN1Primitive();
+		final DERTaggedObject derTaggedObject = (DERTaggedObject) responderIdAsASN1Object.toASN1Primitive();
+		if (2 == derTaggedObject.getTagNo()) {
+			final ASN1OctetString keyHashOctetString = (ASN1OctetString) derTaggedObject.getObject();
+			final byte[] keyHashOctetStringBytes = keyHashOctetString.getOctets();
+			dssResponderId.setKey(keyHashOctetStringBytes);
+			return dssResponderId;
+		} else {
+			final ASN1Primitive derObject = derTaggedObject.getObject();
+			final X500Name name = X500Name.getInstance(derObject);
+			dssResponderId.setName(name.toString());
+			return dssResponderId;
 		}
 	}
 	

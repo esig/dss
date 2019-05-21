@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.x509.revocation.ocsp;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.text.ParseException;
 import java.util.Arrays;
@@ -37,7 +36,6 @@ import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateID;
 import org.bouncycastle.cert.ocsp.CertificateStatus;
-import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cert.ocsp.RevokedStatus;
 import org.bouncycastle.cert.ocsp.SingleResp;
 import org.bouncycastle.cert.ocsp.UnknownStatus;
@@ -47,7 +45,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSASN1Utils;
-import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSRevocationUtils;
 import eu.europa.esig.dss.DSSSecurityProvider;
 import eu.europa.esig.dss.DSSUtils;
@@ -310,16 +307,7 @@ public class OCSPToken extends RevocationToken {
 
 	@Override
 	public byte[] getEncoded() {
-		try {
-			if (basicOCSPResp != null) {
-				final OCSPResp ocspResp = DSSRevocationUtils.fromBasicToResp(basicOCSPResp);
-				return ocspResp.getEncoded();
-			} else {
-				throw new DSSException("Empty OCSP response");
-			}
-		} catch (IOException e) {
-			throw new DSSException("OCSP encoding error: " + e.getMessage(), e);
-		}
+		return DSSRevocationUtils.getEncodedFromBasicResp(basicOCSPResp);
 	}
 
 	public void setIssuerX500Principal(X500Principal issuerX500Principal) {

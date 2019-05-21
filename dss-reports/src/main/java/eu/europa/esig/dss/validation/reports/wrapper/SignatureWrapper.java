@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.reports.wrapper;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -34,8 +35,10 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocations;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundTimestamp;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedRevocation;
@@ -47,9 +50,9 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DigestMatcherType;
-import eu.europa.esig.dss.validation.RevocationRefLocation;
 import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.XmlRevocationOrigin;
+import eu.europa.esig.dss.validation.XmlRevocationRefLocation;
 import eu.europa.esig.dss.x509.TimestampLocation;
 import eu.europa.esig.dss.x509.TimestampType;
 
@@ -499,30 +502,38 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return signature.getFoundRevocations();
 	}
 	
-	public List<XmlRevocationRef> getOrphanRevocationRefs() {
-		return getFoundRevocations().getOrphanRevocationRefs();
+	public List<XmlOrphanRevocation> getOrphanRevocations() {
+		return getFoundRevocations().getOrphanRevocations();
 	}
 	
 	public List<XmlRevocationRef> getAllFoundRevocationRefs() {
+		List<XmlRevocationRef> revocationRefs = getAllRelatedRevocationRefs();
+		revocationRefs.addAll(getAllOrphanRevocationRefs());
+		return revocationRefs;
+	}
+	
+	public List<XmlRevocationRef> getAllRelatedRevocationRefs() {
+		return getRevocationRefsFromListOfRevocations(getFoundRevocations().getRelatedRevocations());
+	}
+	
+	public List<XmlRevocationRef> getAllOrphanRevocationRefs() {
+		return getRevocationRefsFromListOfRevocations(getFoundRevocations().getOrphanRevocations());
+	}
+	
+	private <T extends XmlFoundRevocation> List<XmlRevocationRef> getRevocationRefsFromListOfRevocations(Collection<T> foundRevocations) {
 		List<XmlRevocationRef> revocationRefs = new ArrayList<XmlRevocationRef>();
-		List<String> storedXmlRevocationIds = new ArrayList<String>(); // we do not need to collect references for the same revocations twice
-		XmlFoundRevocations foundRevocations = getFoundRevocations();
 		if (foundRevocations != null) {
-			for (XmlRelatedRevocation revocation : foundRevocations.getRelatedRevocations()) {
-				if (!storedXmlRevocationIds.contains(revocation.getRevocation().getId())) {
-					storedXmlRevocationIds.add(revocation.getRevocation().getId());
-					revocationRefs.addAll(revocation.getRevocationReferences());
-				}
+			for (T revocation : foundRevocations) {
+				revocationRefs.addAll(revocation.getRevocationReferences());
 			}
-			revocationRefs.addAll(foundRevocations.getOrphanRevocationRefs());
 		}
 		return revocationRefs;
 	}
 	
-	public List<XmlRevocationRef> getFoundRevocationRefsByLocation(RevocationRefLocation revocationRefLocation) {
+	public List<XmlRevocationRef> getFoundRevocationRefsByLocation(XmlRevocationRefLocation location) {
 		List<XmlRevocationRef> revocationRefs = new ArrayList<XmlRevocationRef>();
 		for (XmlRevocationRef ref : getAllFoundRevocationRefs()) {
-			if (ref.getLocation().equals(revocationRefLocation)) {
+			if (ref.getLocation().equals(location)) {
 				revocationRefs.add(ref);
 			}
 		}
@@ -530,25 +541,39 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 	
 	public Set<XmlRelatedRevocation> getRelatedRevocationsByOrigin(XmlRevocationOrigin originType) {
-		Set<XmlRelatedRevocation> revocationWithOrigin = new HashSet<XmlRelatedRevocation>();
-		XmlFoundRevocations foundRevocations = getFoundRevocations();
-		if (foundRevocations != null) {
-			for (XmlRelatedRevocation revocationRef : foundRevocations.getRelatedRevocations()) {
-				if (revocationRef.getOrigin().equals(originType)) {
-					revocationWithOrigin.add(revocationRef);
+		return filterRevocationsByOrigin(getFoundRevocations().getRelatedRevocations(), originType);
+	}
+	
+	public Set<XmlOrphanRevocation> getOrphanRevocationsByOrigin(XmlRevocationOrigin originType) {
+		return filterRevocationsByOrigin(getFoundRevocations().getOrphanRevocations(), originType);
+	}
+	
+	private <T extends XmlFoundRevocation> Set<T> filterRevocationsByOrigin(List<T> revocations, XmlRevocationOrigin originType) {
+		Set<T> revocationsWithOrigin = new HashSet<T>();
+		if (revocations != null) {
+			for (T relatedRevocation : revocations) {
+				if (relatedRevocation.getOrigins().contains(originType)) {
+					revocationsWithOrigin.add(relatedRevocation);
 				}
 			}
 		}
-		return revocationWithOrigin;
+		return revocationsWithOrigin;
 	}
 	
 	public Set<XmlRelatedRevocation> getRelatedRevocationsByType(RevocationType type) {
-		Set<XmlRelatedRevocation> revocationWithType = new HashSet<XmlRelatedRevocation>();
-		XmlFoundRevocations foundRevocations = getFoundRevocations();
-		if (foundRevocations != null) {
-			for (XmlRelatedRevocation revocationRef : foundRevocations.getRelatedRevocations()) {
-				if (revocationRef.getType().equals(type)) {
-					revocationWithType.add(revocationRef);
+		return filterRevocationsByType(getFoundRevocations().getRelatedRevocations(), type);
+	}
+	
+	public Set<XmlOrphanRevocation> getOrphanRevocationsByType(RevocationType type) {
+		return filterRevocationsByType(getFoundRevocations().getOrphanRevocations(), type);
+	}
+	
+	public <T extends XmlFoundRevocation> Set<T> filterRevocationsByType(List<T> revocations, RevocationType type) {
+		Set<T> revocationWithType = new HashSet<T>();
+		if (revocations != null) {
+			for (T revocation : revocations) {
+				if (revocation.getType().equals(type)) {
+					revocationWithType.add(revocation);
 				}
 			}
 		}
@@ -564,7 +589,10 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		XmlFoundRevocations foundRevocations = getFoundRevocations();
 		if (foundRevocations != null) {
 			for (XmlRelatedRevocation revocationRef : foundRevocations.getRelatedRevocations()) {
-			revocationIds.add(revocationRef.getRevocation().getId());
+				revocationIds.add(revocationRef.getRevocation().getId());
+			}
+			for (XmlOrphanRevocation revocationRef : foundRevocations.getOrphanRevocations()) {
+				revocationIds.add(revocationRef.getToken().getId());
 			}
 		}
 		return revocationIds;
@@ -580,6 +608,9 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		for (XmlRelatedRevocation revocationRef : getRelatedRevocationsByType(type)) {
 			revocationIds.add(revocationRef.getRevocation().getId());
 		}
+		for (XmlOrphanRevocation revocationRef : getOrphanRevocationsByType(type)) {
+			revocationIds.add(revocationRef.getToken().getId());
+		}
 		return revocationIds;
 	}
 
@@ -592,6 +623,9 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		List<String> revocationIds = new ArrayList<String>();
 		for (XmlRelatedRevocation revocationRef : getRelatedRevocationsByOrigin(origin)) {
 			revocationIds.add(revocationRef.getRevocation().getId());
+		}
+		for (XmlOrphanRevocation revocationRef : getOrphanRevocationsByOrigin(origin)) {
+			revocationIds.add(revocationRef.getToken().getId());
 		}
 		return revocationIds;
 	}

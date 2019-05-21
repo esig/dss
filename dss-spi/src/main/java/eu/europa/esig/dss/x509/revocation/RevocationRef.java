@@ -14,6 +14,8 @@ public abstract class RevocationRef {
 	protected byte[] digestValue = DSSUtils.EMPTY_BYTE_ARRAY;
 	
 	protected RevocationOrigin location;
+	
+	private String dssId;
 
 	public DigestAlgorithm getDigestAlgorithm() {
 		return digestAlgorithm;
@@ -25,6 +27,17 @@ public abstract class RevocationRef {
 	
 	public RevocationOrigin getLocation() {
 		return location;
+	}
+	
+	/**
+	 * Returns revocation reference {@link String} id
+	 * @return {@link String} id
+	 */
+	public String getDSSIdAsString() {
+		if (dssId == null) {
+			dssId = "R-" + Utils.toHex(digestValue).toUpperCase();
+		}
+		return dssId;
 	}
 	
 	@Override

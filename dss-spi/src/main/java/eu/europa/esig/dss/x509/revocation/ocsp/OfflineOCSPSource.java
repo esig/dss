@@ -23,10 +23,12 @@ package eu.europa.esig.dss.x509.revocation.ocsp;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -37,6 +39,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSRevocationUtils;
+import eu.europa.esig.dss.Digest;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 
@@ -49,16 +53,13 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OfflineOCSPSource.class);
 
-	protected final List<OCSPResponse> ocspResponses = new ArrayList<OCSPResponse>();
+	protected final Map<String, OCSPResponseIdentifier> ocspResponses = new HashMap<String, OCSPResponseIdentifier>();
 
 	@Override
 	public final OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		
-		if (ocspResponses.isEmpty()) {
-			appendContainedOCSPResponses();
-			if (ocspResponses.isEmpty()) {
-				return null;
-			}
+		if (isEmpty()) {
+			return null;
 		}
 		
 		if (LOG.isTraceEnabled()) {
@@ -69,12 +70,12 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 		Entry<BasicOCSPResp, List<RevocationOrigin>> bestOCSPResponse = findBestOcspResponse(certificateToken, issuerCertificateToken);
 		if (bestOCSPResponse != null) {
 			OCSPTokenBuilder ocspTokenBuilder = new OCSPTokenBuilder(bestOCSPResponse.getKey(), certificateToken, issuerCertificateToken);
-			ocspTokenBuilder.setOrigin(bestOCSPResponse.getValue().get(0));
+			ocspTokenBuilder.setOrigins(bestOCSPResponse.getValue());
 			try {
 				OCSPToken ocspToken = ocspTokenBuilder.build();
 				OCSPTokenUtils.checkTokenValidity(ocspToken, certificateToken, issuerCertificateToken);
 				for (RevocationOrigin origin : bestOCSPResponse.getValue()) {
-					OCSPResponse ocspResponse = new OCSPResponse(bestOCSPResponse.getKey(), origin);
+					OCSPResponseIdentifier ocspResponse = OCSPResponseIdentifier.build(bestOCSPResponse.getKey(), origin);
 					storeOCSPToken(ocspResponse, ocspToken);
 				}
 				return ocspToken;
@@ -90,56 +91,66 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 		Entry<BasicOCSPResp, List<RevocationOrigin>> bestOCSPResponse = null;
 		Date bestUpdate = null;
 		final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken);
-		for (final OCSPResponse response : ocspResponses) {
+		for (final OCSPResponseIdentifier response : ocspResponses.values()) {
 			for (final SingleResp singleResp : response.getBasicOCSPResp().getResponses()) {
 				if (DSSRevocationUtils.matches(certId, singleResp)) {
 					final Date thisUpdate = singleResp.getThisUpdate();
 					if ((bestUpdate == null) || thisUpdate.after(bestUpdate)) {
 						bestOCSPResponse = new AbstractMap.SimpleEntry<BasicOCSPResp, List<RevocationOrigin>>(
-								response.getBasicOCSPResp(), new ArrayList<>(Arrays.asList(response.getOrigin())));
+								response.getBasicOCSPResp(), response.getOrigins());
 						bestUpdate = thisUpdate;
 					} else if (thisUpdate.equals(bestUpdate)) {
-						bestOCSPResponse.getValue().add(response.getOrigin());
+						bestOCSPResponse.getValue().addAll(response.getOrigins());
 					}
 				}
 			}
 		}
 		return bestOCSPResponse;
 	}
-	
-	/**
-	 * Returns list containing all OCSP responses
-	 * @return list of {@code OCSPResponse}s
-	 */
-	public List<OCSPResponse> getOCSPResponsesList() {
-		if (ocspResponses.isEmpty()) {
-			appendContainedOCSPResponses();
-		}
-		return ocspResponses;
-	}
-	
-	/**
-	 * Retrieves a list of {@code BasicOCSPResp}s contained in the source
-	 * @return list of {@code BasicOCSPResp}s
-	 */
-	public Set<BasicOCSPResp> getBasicOCSPResponses() {
-		if (ocspResponses.isEmpty()) {
-			appendContainedOCSPResponses();
-		}
-		Set<BasicOCSPResp> basicOCSPRespSet = new HashSet<BasicOCSPResp>();
-		for (OCSPResponse ocspResponse : ocspResponses) {
-			basicOCSPRespSet.add(ocspResponse.getBasicOCSPResp());
-		}
-		return basicOCSPRespSet;
-	}
 
 	/**
 	 * Retrieves the map of {@code BasicOCSPResp}/{@code RevocationOrigin} contained in the source and appends result entries to {@code ocspResponses}.
 	 */
 	public abstract void appendContainedOCSPResponses();
+
+	/**
+	 * Returns a collection containing all OCSP responses
+	 * @return unmodifiable collection of {@code OCSPResponse}s
+	 */
+	public Collection<OCSPResponseIdentifier> getOCSPResponsesList() {
+		Collection<OCSPResponseIdentifier> ocspResponsesList = new ArrayList<OCSPResponseIdentifier>();
+		if (!isEmpty()) {
+			for (OCSPResponseIdentifier ocspResponse : ocspResponses.values()) {
+				ocspResponsesList.add(ocspResponse);
+			}
+		}
+		return Collections.unmodifiableCollection(ocspResponsesList);
+	}
 	
-	protected void storeOCSPToken(OCSPResponse ocspResponse, OCSPToken ocspToken) {
+	public boolean isEmpty() {
+		if (Utils.isMapEmpty(ocspResponses)) {
+			appendContainedOCSPResponses();
+		}
+		return Utils.isMapEmpty(ocspResponses);
+	}
+	
+	protected void storeOCSPToken(OCSPResponseIdentifier ocspResponse, OCSPToken ocspToken) {
 		// do nothing
+	}
+	
+	/**
+	 * Returns the identifier related to the provided {@node base64value} of reference
+	 * @param digest {@link Digest} of the reference
+	 * @return {@link OCSPResponseIdentifier} for the reference
+	 */
+	public OCSPResponseIdentifier getIdentifier(Digest digest) {
+		for (OCSPResponseIdentifier ocspResponse : ocspResponses.values()) {
+			byte[] digestValue = ocspResponse.getDigestValue(digest.getAlgorithm());
+			if (Arrays.equals(digest.getValue(), digestValue)) {
+				return ocspResponse;
+			}
+		}
+		return null;
 	}
 
 }

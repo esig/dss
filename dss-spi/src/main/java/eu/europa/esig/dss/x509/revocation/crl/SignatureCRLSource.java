@@ -1,13 +1,13 @@
 package eu.europa.esig.dss.x509.revocation.crl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import eu.europa.esig.dss.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 import eu.europa.esig.dss.x509.revocation.SignatureRevocationSource;
 
@@ -63,6 +63,13 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 		return attributeRevocationRefsCRLs;
 	}
 	
+	public List<CRLRef> getAllCRLReferences() {
+		List<CRLRef> crlRefs = new ArrayList<CRLRef>();
+		crlRefs.addAll(getCompleteRevocationRefs());
+		crlRefs.addAll(getAttributeRevocationRefs());
+		return crlRefs;
+	}
+	
 	public Map<CRLBinaryIdentifier, List<CRLToken>> getCRLTokenMap() {
 		return crlTokenMap;
 	}
@@ -82,14 +89,16 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 	
 	@Override
 	protected void storeCRLToken(CRLBinaryIdentifier crlBinary, CRLToken crlToken) {
-		if (crlsBinaryList.contains(crlBinary)) {
+		if (crlsBinaryMap.containsKey(crlBinary.asXmlId())) {
 			List<CRLToken> tokensList = crlTokenMap.get(crlBinary);
 			if (tokensList == null) {
 				tokensList = new ArrayList<CRLToken>();
 				crlTokenMap.put(crlBinary, tokensList);
 			}
 			tokensList.add(crlToken);
-			addToRelevantList(crlToken, crlBinary.getOrigin());
+			for (RevocationOrigin origin : crlBinary.getOrigins()) {
+				addToRelevantList(crlToken, origin);
+			}
 		}
 	}
 	
@@ -142,6 +151,22 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 				usedIds.add(revocationRefId);
 			}
 		}
+	}
+	
+	/**
+	 * Returns a list of {@link CRLRef}s assigned to the given {@code crlBinary}
+	 * @param crlBinary {@link CRLBinaryIdentifier} to get references for
+	 * @return list of {@link CRLRef}s
+	 */
+	public List<CRLRef> getReferencesForCRLIdentifier(CRLBinaryIdentifier crlBinary) {
+		List<CRLRef> relatedRefs = new ArrayList<CRLRef>();
+		for (CRLRef crlRef : getAllCRLReferences()) {
+			byte[] digestValue = crlBinary.getDigestValue(crlRef.getDigestAlgorithm());
+			if (Arrays.equals(crlRef.getDigestValue(), digestValue)) {
+				relatedRefs.add(crlRef);
+			}
+		}
+		return relatedRefs;
 	}
 
 }

@@ -28,6 +28,7 @@ import java.util.Set;
 import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.EncryptionAlgorithm;
 import eu.europa.esig.dss.MaskGenerationFunction;
 import eu.europa.esig.dss.SignatureAlgorithm;
@@ -411,7 +412,7 @@ public interface AdvancedSignature extends Serializable {
 	 *
 	 * @return a {@code List} of {@code TimestampReference}
 	 */
-	List<TimestampReference> getTimestampedReferences();
+	List<TimestampedReference> getTimestampedReferences();
 
 	/**
 	 * Retrieve list of certificate ref
@@ -606,6 +607,12 @@ public interface AdvancedSignature extends Serializable {
 	List<OCSPRef> getAttributeRevocationOCSPReferences();
 	
 	/**
+	 * Returns a list of all {@link EncapsulatedRevocationTokenIdentifier}s found in CRL and OCSP sources
+	 * @return list of all {@link EncapsulatedRevocationTokenIdentifier}s
+	 */
+	List<EncapsulatedRevocationTokenIdentifier> getAllFoundRevocationIdentifiers();
+	
+	/**
 	 * Retrieves a list of all found {@link RevocationRef}s present in the signature
 	 * @return list of {@link RevocationRef}s
 	 */
@@ -617,14 +624,13 @@ public interface AdvancedSignature extends Serializable {
 	 * @return list of {@link RevocationRef}s
 	 */
 	List<RevocationRef> findRefsForRevocationToken(RevocationToken revocationToken);
-
+	
 	/**
-	 * Retrieves a list of found {@link RevocationRef}s which were not assigned to
-	 * one of used {@code revocationToken}s
-	 * 
+	 * Retrieves a list of found {@link RevocationRef}s for the given {@code revocationIdentifier}
+	 * @param revocationIdentifier {@link EncapsulatedRevocationTokenIdentifier} to get references for
 	 * @return list of {@link RevocationRef}s
 	 */
-	List<RevocationRef> getOrphanRevocationRefs();
+	List<RevocationRef> findRefsForRevocationIdentifier(EncapsulatedRevocationTokenIdentifier revocationIdentifier);
 
 	// ------------------------ CAdES Specifics for TS 119 102-2
 

@@ -45,7 +45,7 @@
 		</jaxb:bindings>
 		
   <jaxb:bindings node="//xs:simpleType[@name='RevocationRefLocationType']">
-			<jaxb:javaType name="eu.europa.esig.dss.validation.RevocationRefLocation" 
+			<jaxb:javaType name="eu.europa.esig.dss.validation.XmlRevocationRefLocation" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.RevocationRefLocationParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationRefLocationParser.print" />
 		</jaxb:bindings>
@@ -74,14 +74,25 @@
 				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.print" />
 		</jaxb:bindings>
 		
+  	<jaxb:bindings node="//xs:simpleType[@name='OrphanTokenType']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.OrphanTokenType" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.OrphanTokenTypeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.OrphanTokenTypeParser.print" />
+		</jaxb:bindings>
+		
  	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:element[@name='Parent']">
         <jaxb:property>
             <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlSignature" />
         </jaxb:property>
     </jaxb:bindings>
- 	<jaxb:bindings node="//xs:complexType[@name='RelatedRevocation']//xs:element[@name='Revocation']">
+ 	<jaxb:bindings node="//xs:complexType[@name='RelatedRevocation']//xs:attribute[@name='Revocation']">
         <jaxb:property>
             <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlRevocation" />
+        </jaxb:property>
+    </jaxb:bindings>
+    <jaxb:bindings node="//xs:complexType[@name='OrphanRevocation']//xs:attribute[@name='Token']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanToken" />
         </jaxb:property>
     </jaxb:bindings>
     <jaxb:bindings node="//xs:complexType[@name='SigningCertificate']//xs:attribute[@name='Certificate']">

@@ -203,7 +203,12 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		return result;
 	}
 
-	private Digest getCertDigest(Element element) {
+	/**
+	 * Returns {@link Digest} found in the given {@code element}
+	 * @param element {@link Element} to get digest from
+	 * @return {@link Digest}
+	 */
+	public Digest getCertDigest(Element element) {
 		final Element certDigestElement = DomUtils.getElement(element, xPathQueryHolder.XPATH__CERT_DIGEST);
 		if (certDigestElement == null) {
 			return null;

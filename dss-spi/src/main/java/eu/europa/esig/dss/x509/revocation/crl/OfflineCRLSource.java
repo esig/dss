@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -34,9 +35,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.CRLBinaryIdentifier;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.x509.CertificateToken;
 import eu.europa.esig.dss.x509.RevocationOrigin;
 
@@ -53,7 +55,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 	 * This {@code HashMap} contains not validated CRL binaries. When the validation passes, the entry will be removed.
 	 * The key is the SHA256 digest of the CRL binaries.
 	 */
-	protected List<CRLBinaryIdentifier> crlsBinaryList = new ArrayList<CRLBinaryIdentifier>();
+	protected Map<String, CRLBinaryIdentifier> crlsBinaryMap = new HashMap<String, CRLBinaryIdentifier>();
 
 	/**
 	 * This {@code HashMap} contains the {@code CRLValidity} object for each
@@ -109,7 +111,7 @@ public abstract class OfflineCRLSource implements CRLSource {
 		CRLValidity bestCRLValidity = null;
 		Date bestX509UpdateDate = null;
 
-		for (CRLBinaryIdentifier crlEntry : crlsBinaryList) {
+		for (CRLBinaryIdentifier crlEntry : crlsBinaryMap.values()) {
 			final CRLValidity crlValidity = getCrlValidity(crlEntry, issuerToken);
 			if (crlValidity == null || !crlValidity.isValid()) {
 				continue;
@@ -164,36 +166,62 @@ public abstract class OfflineCRLSource implements CRLSource {
 				LOG.error("Unable to parse CRL", e);
 			}
 		}
-		if (crlValidity.getRevocationOrigin() == null) {
-			crlValidity.setRevocationOrigin(crlBinary.getOrigin());
+		if (crlValidity.getRevocationOrigins() == null) {
+			crlValidity.setRevocationOrigins(crlBinary.getOrigins());
 		}
 		return crlValidity;
+	}
+
+	protected void addCRLBinary(byte[] binaries, RevocationOrigin origin) {
+		CRLBinaryIdentifier crlBinary = CRLBinaryIdentifier.build(binaries, origin);
+		addCRLBinary(crlBinary, origin);
+	}
+
+	protected void addCRLBinary(CRLBinaryIdentifier crlBinary, RevocationOrigin origin) {
+		if (!crlValidityMap.containsKey(crlBinary)) {
+			if (crlsBinaryMap.containsKey(crlBinary.asXmlId())) {
+				CRLBinaryIdentifier storedCrlBinary = crlsBinaryMap.get(crlBinary.asXmlId());
+				storedCrlBinary.addOrigin(origin);
+			} else {
+				crlsBinaryMap.put(crlBinary.asXmlId(), crlBinary);
+			}
+		}
 	}
 
 	/**
 	 * @return unmodifiable {@code Collection}
 	 */
-	public Collection<byte[]> getContainedX509CRLs() {
-		Collection<byte[]> binaries = new ArrayList<byte[]>();
-		for (CRLBinaryIdentifier crlBinary : crlsBinaryList) {
-			binaries.add(crlBinary.getBinaries());
+	public Collection<CRLBinaryIdentifier> getContainedX509CRLs() {
+		Collection<CRLBinaryIdentifier> crlBinaries = new ArrayList<CRLBinaryIdentifier>();
+		if (!isEmpty()) {
+			for (CRLBinaryIdentifier crlBinary : crlsBinaryMap.values()) {
+				crlBinaries.add(crlBinary);
+			}
 		}
-		return Collections.unmodifiableCollection(binaries);
+		return Collections.unmodifiableCollection(crlBinaries);
 	}
-
-	protected void addCRLBinary(byte[] binaries, RevocationOrigin origin) {
-		CRLBinaryIdentifier crlBinary = CRLBinaryIdentifier.build(binaries, origin);
-		addCRLBinary(crlBinary);
-	}
-
-	protected void addCRLBinary(CRLBinaryIdentifier crlBinary) {
-		if (!crlsBinaryList.contains(crlBinary) && !crlValidityMap.containsKey(crlBinary)) {
-			crlsBinaryList.add(crlBinary);
-		}
+	
+	public boolean isEmpty() {
+		return Utils.isMapEmpty(crlsBinaryMap);
 	}
 	
 	protected void storeCRLToken(final CRLBinaryIdentifier crlBinary, final CRLToken crlToken) {
 		// do nothing
+	}
+	
+	/**
+	 * Returns the identifier related to the provided {@node base64value} of reference
+	 * @param digest {@link Digest} of the reference
+	 * @return {@link CRLBinaryIdentifier} for the reference
+	 */
+	public CRLBinaryIdentifier getIdentifier(Digest digest) {
+		for (CRLBinaryIdentifier crlBinary : crlsBinaryMap.values()) {
+			byte[] digestValue = crlBinary.getDigestValue(digest.getAlgorithm());
+			if (Arrays.equals(digest.getValue(), digestValue)) {
+				return crlBinary;
+			}
+		}
+		return null;
 	}
 
 }

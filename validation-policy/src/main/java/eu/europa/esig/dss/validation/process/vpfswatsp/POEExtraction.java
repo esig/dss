@@ -85,11 +85,11 @@ public class POEExtraction {
 	
 	public void collectAllPOE(DiagnosticData diagnosticData) {
 		for (TimestampWrapper timestamp : diagnosticData.getAllTimestamps()) {
-			extractPOE(timestamp, diagnosticData);
+			extractPOE(timestamp);
 		}
 	}
 
-	public void extractPOE(TimestampWrapper timestamp, DiagnosticData diagnosticData) {
+	public void extractPOE(TimestampWrapper timestamp) {
 		List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
 		if (Utils.isCollectionNotEmpty(timestampedObjects)) {
 			XmlProofOfExistence poe = new XmlProofOfExistence();

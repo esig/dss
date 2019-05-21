@@ -25,6 +25,7 @@ import java.util.Objects;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -75,18 +76,28 @@ public class XAdESCRLSource extends SignatureCRLSource {
 			final String xPathQuery, RevocationOrigin revocationOrigin) {
 		final Element crlRefsElement = DomUtils.getElement(signatureElement, xPathQuery);
 		if (crlRefsElement != null) {
-			final NodeList crlRefNodes = DomUtils.getNodeList(crlRefsElement, xPathQueryHolder.XPATH__CRL_REF);
+			final NodeList crlRefNodes = DomUtils.getNodeList(crlRefsElement, xPathQueryHolder.XPATH__CRLREF);
 			for (int i = 0; i < crlRefNodes.getLength(); i++) {
 				final Element crlRefNode = (Element) crlRefNodes.item(i);
-				final Element digestAlgorithmEl = DomUtils.getElement(crlRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_METHOD);
-				final Element digestValueEl = DomUtils.getElement(crlRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_VALUE);
-				final String xmlName = digestAlgorithmEl.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
-				final DigestAlgorithm digestAlgo = DigestAlgorithm.forXML(xmlName);
-				
-				CRLRef crlRef = new CRLRef(digestAlgo, Utils.fromBase64(digestValueEl.getTextContent()), revocationOrigin);
+				final Digest digest = getRevocationDigest(crlRefNode, xPathQueryHolder);
+				CRLRef crlRef = new CRLRef(digest.getAlgorithm(), digest.getValue(), revocationOrigin);
 				addReference(crlRef, revocationOrigin);
 			}
 		}
+	}
+	
+	/**
+	 * Returns {@link Digest} found in the given {@code revocationRefNode}
+	 * @param revocationRefNode {@link Element} to get digest from
+	 * @param xPathQueryHolder {@link XPathQueryHolder}
+	 * @return {@link Digest}
+	 */
+	public Digest getRevocationDigest(Element revocationRefNode, final XPathQueryHolder xPathQueryHolder) {
+		final Element digestAlgorithmEl = DomUtils.getElement(revocationRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_METHOD);
+		final Element digestValueEl = DomUtils.getElement(revocationRefNode, xPathQueryHolder.XPATH__DAAV_DIGEST_VALUE);
+		final String xmlName = digestAlgorithmEl.getAttribute(XPathQueryHolder.XMLE_ALGORITHM);
+		final DigestAlgorithm digestAlgo = DigestAlgorithm.forXML(xmlName);
+		return new Digest(digestAlgo, Utils.fromBase64(digestValueEl.getTextContent()));
 	}
 
 }

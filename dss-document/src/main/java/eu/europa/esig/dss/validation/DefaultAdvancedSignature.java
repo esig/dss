@@ -38,6 +38,7 @@ import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DigestDocument;
+import eu.europa.esig.dss.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.SignatureIdentifier;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.TokenIdentifier;
@@ -49,12 +50,14 @@ import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.SignaturePolicy;
 import eu.europa.esig.dss.x509.TimestampType;
 import eu.europa.esig.dss.x509.revocation.RevocationRef;
+import eu.europa.esig.dss.x509.revocation.crl.CRLBinaryIdentifier;
 import eu.europa.esig.dss.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.x509.revocation.crl.ListCRLSource;
 import eu.europa.esig.dss.x509.revocation.crl.SignatureCRLSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.ListOCSPSource;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPResponseIdentifier;
 import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.x509.revocation.ocsp.SignatureOCSPSource;
 
@@ -629,48 +632,69 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return structureValidation;
 	}
 	
-	protected List<TimestampReference> getContentTimestampReferences() {
-		final List<TimestampReference> references = new ArrayList<TimestampReference>();
+	protected List<TimestampedReference> getContentTimestampReferences() {
+		final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
 		if (Utils.isCollectionNotEmpty(signatureScopes)) {
 			for (SignatureScope signatureScope : signatureScopes) {
-				addReference(references, new TimestampReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
+				addReference(references, new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
 			}
 		}
 		return references;
 	}
 
-	protected List<TimestampReference> getSignatureTimestampReferences() {
-		final List<TimestampReference> references = new ArrayList<TimestampReference>();
+	protected List<TimestampedReference> getSignatureTimestampReferences() {
+		final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
 		addReferences(references, getContentTimestampReferences());
-		addReference(references, new TimestampReference(getId(), TimestampedObjectType.SIGNATURE));
+		addReference(references, new TimestampedReference(getId(), TimestampedObjectType.SIGNATURE));
 		addReferences(references, getSigningCertificateTimestampReferences());
 		return references;
 	}
 
-	protected List<TimestampReference> getSigningCertificateTimestampReferences() {
-		final List<TimestampReference> references = new ArrayList<TimestampReference>();
+	protected List<TimestampedReference> getSigningCertificateTimestampReferences() {
+		final List<TimestampedReference> references = new ArrayList<TimestampedReference>();
 		List<CertificateToken> signingCertificates = getCertificateSource().getSigningCertificates();
 		for (CertificateToken certificateToken : signingCertificates) {
-			addReference(references, new TimestampReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+			addReference(references, new TimestampedReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 		return references;
 	}
 
-	protected void addReferencesForPreviousTimestamps(List<TimestampReference> references, List<TimestampToken> timestampedTimestamps) {
+	protected void addReferencesForPreviousTimestamps(List<TimestampedReference> references, List<TimestampToken> timestampedTimestamps) {
 		for (final TimestampToken timestampToken : timestampedTimestamps) {
-			addReference(references, new TimestampReference(timestampToken.getDSSIdAsString(), TimestampedObjectType.TIMESTAMP));
+			addReference(references, new TimestampedReference(timestampToken.getDSSIdAsString(), TimestampedObjectType.TIMESTAMP));
+			addEncapsulatedCertificatesFromTimestamp(references, timestampToken);
+		}
+	}
+	
+	protected void addEncapsulatedCertificatesFromTimestamp(List<TimestampedReference> references, TimestampToken timestampedTimestamp) {
+		List<CertificateToken> certificates = timestampedTimestamp.getCertificates();
+		for (final CertificateToken certificate : certificates) {
+			addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 	}
 
-	protected void addReferencesForCertificates(List<TimestampReference> references) {
+	protected void addReferencesForCertificates(List<TimestampedReference> references) {
 		List<CertificateToken> certValues = getCertificateSource().getCertificateValues();
 		for (CertificateToken certificate : certValues) {
-			addReference(references, new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+			addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
 		List<CertificateToken> completeCertValues = getCertificateSource().getCompleteCertificates();
 		for (CertificateToken certificate : completeCertValues) {
-			addReference(references, new TimestampReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+			addReference(references, new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
 		}
+	}
+	
+	/**
+	 * Creates a list of {@link TimestampedReference}s for the provided {@code certificateTokens}
+	 * @param certificateTokens list of {@link CertificateToken}s to create timestamped references for
+	 * @return list of {@link TimestampedReference}s
+	 */
+	protected List<TimestampedReference> getTimestampedReferencesFromCertificates(List<CertificateToken> certificateTokens) {
+		List<TimestampedReference> timestampedReferences = new ArrayList<TimestampedReference>();
+		for (final CertificateToken certificateToken : certificateTokens) {
+			timestampedReferences.add(new TimestampedReference(certificateToken.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+		}
+		return timestampedReferences;
 	}
 
 	/**
@@ -678,28 +702,28 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * 
 	 * @param references
 	 */
-	protected void addReferencesFromRevocationData(List<TimestampReference> references) {
+	protected void addReferencesFromRevocationData(List<TimestampedReference> references) {
 		List<RevocationToken> completeRevocationTokens = getCompleteRevocationTokens();
 		for (RevocationToken revocationToken : completeRevocationTokens) {
-			addReference(references, new TimestampReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
+			addReference(references, new TimestampedReference(revocationToken.getDSSIdAsString(), TimestampedObjectType.REVOCATION));
 		}
 	}
 	
 	/**
 	 * Adds {@code referenceToAdd} to {@code referenceList} without duplicates
-	 * @param referenceList - list of {@link TimestampReference}s to be extended
-	 * @param referenceToAdd - {@link TimestampReference} to be added
+	 * @param referenceList - list of {@link TimestampedReference}s to be extended
+	 * @param referenceToAdd - {@link TimestampedReference} to be added
 	 */
-	protected void addReference(List<TimestampReference> referenceList, TimestampReference referenceToAdd) {
+	protected void addReference(List<TimestampedReference> referenceList, TimestampedReference referenceToAdd) {
 		addReferences(referenceList, Arrays.asList(referenceToAdd));
 	}
 	/**
 	 * Adds {@code referencesToAdd} to {@code referenceList} without duplicates
-	 * @param referenceList - list of {@link TimestampReference}s to be extended
-	 * @param referencesToAdd - {@link TimestampReference}s to be added
+	 * @param referenceList - list of {@link TimestampedReference}s to be extended
+	 * @param referencesToAdd - {@link TimestampedReference}s to be added
 	 */
-	protected void addReferences(List<TimestampReference> referenceList, List<TimestampReference> referencesToAdd) {
-		for (TimestampReference reference : referencesToAdd) {
+	protected void addReferences(List<TimestampedReference> referenceList, List<TimestampedReference> referencesToAdd) {
+		for (TimestampedReference reference : referencesToAdd) {
 			if (!referenceList.contains(reference)) {
 				referenceList.add(reference);
 			}
@@ -760,8 +784,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public boolean hasLTProfile() {
 		Map<String, List<CertificateToken>> certificateChains = getCertificatesWithinSignatureAndTimestamps(true);
 		
-		boolean emptyOCSPs = getOCSPSource().getBasicOCSPResponses().isEmpty();
-		boolean emptyCRLs = Utils.isCollectionEmpty(getCRLSource().getContainedX509CRLs());
+		boolean emptyOCSPs = getOCSPSource().isEmpty();
+		boolean emptyCRLs = getCRLSource().isEmpty();
 
 		if (certificateChains.isEmpty() && (emptyOCSPs || emptyCRLs)) {
 			return false;
@@ -923,27 +947,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		revocationRefs.addAll(getAttributeRevocationOCSPReferences());
 		return revocationRefs;
 	}
-	
-	@Override
-	public List<RevocationRef> getOrphanRevocationRefs() {
-		if (Utils.isMapEmpty(revocationRefsMap)) {
-			collectRevocationRefsMap();
-		}
-		List<RevocationRef> unusedRevocationRefs = new ArrayList<RevocationRef>();
-		for (RevocationRef revocationRef : getAllFoundRevocationRefs()) {
-			boolean used = false;
-			for (List<RevocationRef> referenceList : revocationRefsMap.values()) {
-				if (referenceList.contains(revocationRef)) {
-					used = true;
-					break;
-				}
-			}
-			if (!used) {
-				unusedRevocationRefs.add(revocationRef);
-			}
-		}
-		return unusedRevocationRefs;
-	}
 
 	@Override
 	public List<RevocationToken> getCompleteRevocationTokens() {
@@ -990,6 +993,17 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		}
 	}
 	
+	@Override
+	public List<RevocationRef> findRefsForRevocationIdentifier(EncapsulatedRevocationTokenIdentifier revocationIdentifier) {
+		List<RevocationRef> revocationRefs = new ArrayList<RevocationRef>();
+		if (revocationIdentifier instanceof CRLBinaryIdentifier) {
+			revocationRefs.addAll(getCRLSource().getReferencesForCRLIdentifier((CRLBinaryIdentifier) revocationIdentifier));
+		} else {
+			revocationRefs.addAll(getOCSPSource().getReferencesForOCSPIdentifier((OCSPResponseIdentifier) revocationIdentifier));
+		}
+		return revocationRefs;
+	}
+	
 	private void collectRevocationRefsMap() {
 		revocationRefsMap = new HashMap<RevocationToken, List<RevocationRef>>();
 		for (RevocationToken revocationToken : getAllRevocationTokens()) {
@@ -1023,6 +1037,14 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		} else {
 			revocationRefsMap.put(revocationToken, new ArrayList<RevocationRef>(Arrays.asList(reference)));
 		}
+	}
+	
+	@Override
+	public List<EncapsulatedRevocationTokenIdentifier> getAllFoundRevocationIdentifiers() {
+		List<EncapsulatedRevocationTokenIdentifier> allFoundRevocationTokens = new ArrayList<EncapsulatedRevocationTokenIdentifier>();
+		allFoundRevocationTokens.addAll(getCRLSource().getContainedX509CRLs());
+		allFoundRevocationTokens.addAll(getOCSPSource().getOCSPResponsesList());
+		return allFoundRevocationTokens;
 	}
 	
 	@Override

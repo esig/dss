@@ -90,8 +90,8 @@ public class CRLToken extends RevocationToken {
 
 		this.signatureValid = crlValidity.isSignatureIntact();
 		this.signatureInvalidityReason = crlValidity.getSignatureInvalidityReason();
-		if (crlValidity.getRevocationOrigin() != null) {
-			this.origin = crlValidity.getRevocationOrigin();
+		if (crlValidity.getRevocationOrigins() != null) {
+			this.origins = crlValidity.getRevocationOrigins();
 		}
 	}
 

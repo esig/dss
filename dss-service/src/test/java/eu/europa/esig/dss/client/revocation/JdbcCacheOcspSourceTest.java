@@ -49,7 +49,7 @@ public class JdbcCacheOcspSourceTest {
 		revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(revocationToken);
 		assertNotNull(revocationToken.getRevocationTokenKey());
-		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getOrigin());
+		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getOrigins().get(0));
 
 		RevocationToken savedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(savedRevocationToken);
@@ -60,8 +60,8 @@ public class JdbcCacheOcspSourceTest {
 		assertEquals(Hex.encodeHexString(revocationToken.getEncoded()), Hex.encodeHexString(savedRevocationToken.getEncoded()));
 		assertEquals(Hex.encodeHexString(revocationToken.getIssuerX500Principal().getEncoded()), Hex.encodeHexString(savedRevocationToken.getIssuerX500Principal().getEncoded()));
 		assertEquals(revocationToken.getNextUpdate(), savedRevocationToken.getNextUpdate());
-		assertEquals(RevocationOrigin.CACHED, savedRevocationToken.getOrigin());
-		assertNotEquals(revocationToken.getOrigin(), savedRevocationToken.getOrigin());
+		assertEquals(RevocationOrigin.CACHED, savedRevocationToken.getOrigins().get(0));
+		assertNotEquals(revocationToken.getOrigins().get(0), savedRevocationToken.getOrigins().get(0));
 		assertEquals(revocationToken.getProductionDate(), savedRevocationToken.getProductionDate());
 		assertEquals(Hex.encodeHexString(revocationToken.getPublicKeyOfTheSigner().getEncoded()), Hex.encodeHexString(savedRevocationToken.getPublicKeyOfTheSigner().getEncoded()));
 		assertEquals(revocationToken.getReason(), savedRevocationToken.getReason());
@@ -76,7 +76,7 @@ public class JdbcCacheOcspSourceTest {
 		ocspSource.setMaxNexUpdateDelay(1L);
 		RevocationToken refreshedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(refreshedRevocationToken);
-		assertEquals(RevocationOrigin.EXTERNAL, refreshedRevocationToken.getOrigin());
+		assertEquals(RevocationOrigin.EXTERNAL, refreshedRevocationToken.getOrigins().get(0));
 
 	}
 	

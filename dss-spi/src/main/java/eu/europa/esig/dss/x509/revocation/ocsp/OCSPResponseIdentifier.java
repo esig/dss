@@ -1,0 +1,40 @@
+package eu.europa.esig.dss.x509.revocation.ocsp;
+
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+
+import eu.europa.esig.dss.DSSRevocationUtils;
+import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DigestAlgorithm;
+import eu.europa.esig.dss.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.x509.RevocationOrigin;
+
+public class OCSPResponseIdentifier extends EncapsulatedRevocationTokenIdentifier {
+
+	private static final long serialVersionUID = 6693521503459405568L;
+	
+	private final BasicOCSPResp basicOCSPResp;
+	
+	public static OCSPResponseIdentifier build(BasicOCSPResp basicOCSPResp, RevocationOrigin origin) {
+		byte[] ocspRespBinary = DSSRevocationUtils.getEncodedFromBasicResp(basicOCSPResp);
+		return new OCSPResponseIdentifier(basicOCSPResp, ocspRespBinary, origin);
+	}
+	
+	OCSPResponseIdentifier(BasicOCSPResp basicOCSPResp, byte[] encoded, RevocationOrigin origin) {
+		super(encoded, origin);
+		this.basicOCSPResp = basicOCSPResp;
+	}
+	
+	public BasicOCSPResp getBasicOCSPResp() {
+		return basicOCSPResp;
+	}
+	
+	public byte[] getDigestValue(DigestAlgorithm digestAlgorithm) {
+		byte[] digestValue = super.getDigestValue(digestAlgorithm);
+		if (digestValue == null) {
+			digestValue = DSSUtils.digest(digestAlgorithm, getBinaries());
+			digestMap.put(digestAlgorithm, digestValue);
+		}
+		return digestValue;
+	}
+
+}

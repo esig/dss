@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.bouncycastle.asn1.x509.ReasonFlags;
 
@@ -52,7 +53,7 @@ public class CRLValidity {
 	private Date nextUpdate;
 	private Date thisUpdate;
 	private ReasonFlags onlySomeReasonFlags;
-	private RevocationOrigin origin;
+	private List<RevocationOrigin> origins;
 	private SignatureAlgorithm signatureAlgorithm;
 	private String key;
 	private String signatureInvalidityReason;
@@ -158,12 +159,12 @@ public class CRLValidity {
 		this.url = url;
 	}
 	
-	public RevocationOrigin getRevocationOrigin() {
-		return origin;
+	public List<RevocationOrigin> getRevocationOrigins() {
+		return origins;
 	}
 	
-	public void setRevocationOrigin(RevocationOrigin origin) {
-		this.origin = origin;
+	public void setRevocationOrigins(List<RevocationOrigin> origins) {
+		this.origins = origins;
 	}
 	
 	public void setOnlyAttributeCerts(boolean onlyAttributeCerts) {

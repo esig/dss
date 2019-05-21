@@ -79,7 +79,7 @@ public class TimestampToken extends Token {
 	
 	private TimestampLocation timeStampLocation;
 
-	private List<TimestampReference> timestampedReferences;
+	private List<TimestampedReference> timestampedReferences;
 
 	/**
 	 * In case of XAdES IndividualDataObjectsTimeStamp, Includes shall be specified
@@ -315,7 +315,7 @@ public class TimestampToken extends Token {
 	/**
 	 * @return {@code List} of {@code TimestampReference}s
 	 */
-	public List<TimestampReference> getTimestampedReferences() {
+	public List<TimestampedReference> getTimestampedReferences() {
 		return timestampedReferences;
 	}
 
@@ -327,7 +327,7 @@ public class TimestampToken extends Token {
 	 * @param timestampedReferences
 	 *            {@code List} of {@code TimestampReference}
 	 */
-	public void setTimestampedReferences(final List<TimestampReference> timestampedReferences) {
+	public void setTimestampedReferences(final List<TimestampedReference> timestampedReferences) {
 		this.timestampedReferences = timestampedReferences;
 	}
 

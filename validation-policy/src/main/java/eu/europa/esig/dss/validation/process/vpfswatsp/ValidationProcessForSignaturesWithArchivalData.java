@@ -157,7 +157,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 					 * add the returned POEs to the set of POEs.
 					 */
 					if (isValid(timestampValidation) && isValid(savResult)) {
-						poe.extractPOE(newestTimestamp, diagnosticData);
+						poe.extractPOE(newestTimestamp);
 					}
 					
 					/*
@@ -184,7 +184,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 						 * step 5a using the next timestamp attribute.
 						 */
 						if (isValid(psvResult) && isValid(savResult)) {
-							poe.extractPOE(newestTimestamp, diagnosticData);
+							poe.extractPOE(newestTimestamp);
 						}
 						
 					}
