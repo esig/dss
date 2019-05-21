@@ -805,6 +805,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			CRLBinaryIdentifier identifier = crlSource.getIdentifier(digest);
 			if (identifier != null) {
 				timestampedReferences.add(new TimestampedReference(identifier.asXmlId(), TimestampedObjectType.REVOCATION));
+				break;
 			}
 		}
 		
@@ -817,6 +818,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				OCSPResponseIdentifier identifier = ocspSource.getIdentifier(digest);
 				if (identifier != null) {
 					timestampedReferences.add(new TimestampedReference(identifier.asXmlId(), TimestampedObjectType.REVOCATION));
+					break;
 				}
 			}
 		}

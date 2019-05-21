@@ -3,7 +3,6 @@ package eu.europa.esig.dss.x509.revocation.crl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,31 +26,26 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 
 	@Override
 	public List<CRLToken> getRevocationValuesTokens() {
-		removeDuplicates(revocationValuesCRLs);
 		return revocationValuesCRLs;
 	}
 
 	@Override
 	public List<CRLToken> getAttributeRevocationValuesTokens() {
-		removeDuplicates(attributeRevocationValuesCRLs);
 		return attributeRevocationValuesCRLs;
 	}
 
 	@Override
 	public List<CRLToken> getTimestampRevocationValuesTokens() {
-		removeDuplicates(timestampRevocationValuesCRLs);
 		return timestampRevocationValuesCRLs;
 	}
 
 	@Override
 	public List<CRLToken> getDSSDictionaryTokens() {
-		removeDuplicates(dssDictionaryCRLs);
 		return dssDictionaryCRLs;
 	}
 
 	@Override
 	public List<CRLToken> getVRIDictionaryTokens() {
-		removeDuplicates(vriDictionaryCRLs);
 		return vriDictionaryCRLs;
 	}
 
@@ -136,20 +130,6 @@ public abstract class SignatureCRLSource extends OfflineCRLSource implements Sig
 			}
 		default:
 			break;
-		}
-	}
-	
-	private void removeDuplicates(List<CRLToken> crlTokenList) {
-		List<String> usedIds = new ArrayList<String>();
-		Iterator<CRLToken> iterator = crlTokenList.iterator();
-		while (iterator.hasNext()) {
-			CRLToken crlToken = iterator.next();
-			String revocationRefId = crlToken.getDSSIdAsString() + crlToken.getRelatedCertificateID();
-			if (usedIds.contains(crlToken.getDSSIdAsString() + crlToken.getRelatedCertificateID())) {
-				iterator.remove();
-			} else {
-				usedIds.add(revocationRefId);
-			}
 		}
 	}
 	

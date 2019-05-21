@@ -948,23 +948,12 @@ public class DiagnosticDataBuilder {
 
 	private List<XmlRelatedRevocation> getXmlRelatedRevocations(AdvancedSignature signature) {
 		List<XmlRelatedRevocation> xmlRevocationRefs = new ArrayList<XmlRelatedRevocation>();
-		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature, signature.getRevocationValuesTokens(), 
-				XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES));
-		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature, signature.getAttributeRevocationValuesTokens(), 
-				XmlRevocationOrigin.INTERNAL_ATTRIBUTE_REVOCATION_VALUES));
-		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature, signature.getTimestampRevocationValuesTokens(), 
-				XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES));
-		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature, signature.getDSSDictionaryRevocationTokens(), 
-				XmlRevocationOrigin.INTERNAL_DSS));
-		xmlRevocationRefs.addAll(getXmlRevocationsRefsByType(signature, signature.getVRIDictionaryRevocationTokens(), 
-				XmlRevocationOrigin.INTERNAL_VRI));
+		xmlRevocationRefs.addAll(getXmlRevocationsByType(signature, signature.getAllRevocationTokens()));
 		return xmlRevocationRefs;
 	}
 
-	private List<XmlRelatedRevocation> getXmlRevocationsRefsByType(AdvancedSignature signature, List<RevocationToken> revocationTokens,
-			XmlRevocationOrigin originType) {
-		List<XmlRelatedRevocation> xmlRevocationRefs = new ArrayList<XmlRelatedRevocation>();
-		// Avoid multiple entries for CRL + origin
+	private List<XmlRelatedRevocation> getXmlRevocationsByType(AdvancedSignature signature, Collection<RevocationToken> revocationTokens) {
+		List<XmlRelatedRevocation> xmlRelatedRevocations = new ArrayList<XmlRelatedRevocation>();
 		Set<String> revocationKeys = new HashSet<String>();
 		for (RevocationToken revocationToken : revocationTokens) {
 			if (!revocationKeys.contains(revocationToken.getDSSIdAsString())) {
@@ -981,12 +970,13 @@ public class DiagnosticDataBuilder {
 						xmlRelatedRevocation.getRevocationReferences().addAll(getXmlRevocationRefs(revocationRefs));
 					}
 
-					xmlRevocationRefs.add(xmlRelatedRevocation);
+					xmlRelatedRevocations.add(xmlRelatedRevocation);
 					revocationKeys.add(revocationToken.getDSSIdAsString());
+					revocationRefsMap.put(revocationToken.getDSSIdAsString(), revocationRefs);
 				}
 			}
 		}
-		return xmlRevocationRefs;
+		return xmlRelatedRevocations;
 	}
 
 	private List<XmlRevocationRef> getXmlRevocationRefs(List<RevocationRef> revocationRefs) {

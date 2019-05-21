@@ -74,10 +74,8 @@ public abstract class OfflineOCSPSource implements OCSPSource {
 			try {
 				OCSPToken ocspToken = ocspTokenBuilder.build();
 				OCSPTokenUtils.checkTokenValidity(ocspToken, certificateToken, issuerCertificateToken);
-				for (RevocationOrigin origin : bestOCSPResponse.getValue()) {
-					OCSPResponseIdentifier ocspResponse = OCSPResponseIdentifier.build(bestOCSPResponse.getKey(), origin);
-					storeOCSPToken(ocspResponse, ocspToken);
-				}
+				OCSPResponseIdentifier ocspResponse = OCSPResponseIdentifier.build(bestOCSPResponse.getKey(), bestOCSPResponse.getValue());
+				storeOCSPToken(ocspResponse, ocspToken);
 				return ocspToken;
 			} catch (OCSPException e) {
 				LOG.error("An error occurred during an attempt to build OCSP Token. Return null", e);

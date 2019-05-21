@@ -23,7 +23,7 @@ public abstract class EncapsulatedTokenIdentifier extends Identifier {
 	EncapsulatedTokenIdentifier(byte[] binaries, RevocationOrigin origin) {
 		super(binaries);
 		this.binaries = binaries;
-		this.origins.add(origin);
+		addOrigin(origin);
 	}
 	
 	public byte[] getBinaries() {
@@ -35,7 +35,7 @@ public abstract class EncapsulatedTokenIdentifier extends Identifier {
 	}
 	
 	public void addOrigin(RevocationOrigin origin) {
-		if (!origins.contains(origin)) {
+		if (origin != null && !origins.contains(origin)) {
 			origins.add(origin);
 		}
 	}
