@@ -38,8 +38,9 @@ import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CertificateOriginType;
+import eu.europa.esig.dss.validation.CertificateRefLocationType;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
@@ -85,9 +86,9 @@ public class DSS874Test {
 		
 		assertEquals(5, signatureWrapper.getRevocationIdsByType(RevocationType.OCSP).size());
 		
-		assertEquals(5, signatureWrapper.getFoundCertificatesByLocation(XmlCertificateLocationType.COMPLETE_CERTIFICATE_REFS).size());
+		assertEquals(5, signatureWrapper.getFoundCertificatesByRefLocation(CertificateRefLocationType.COMPLETE_CERTIFICATE_REFS).size());
 		assertEquals(3, signatureWrapper.getFoundRevocationRefsByLocation(XmlRevocationRefLocation.COMPLETE_REVOCATION_REFS).size());
-		assertEquals(5, signatureWrapper.getFoundCertificatesByLocation(XmlCertificateLocationType.CERTIFICATE_VALUES).size());
+		assertEquals(5, signatureWrapper.getRelatedCertificatesByOrigin(CertificateOriginType.CERTIFICATE_VALUES).size());
 		assertEquals(5, signatureWrapper.getRevocationIdsByOrigin(XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());
 		
 		assertEquals(3, signatureWrapper.getRelatedRevocationsByOrigin(XmlRevocationOrigin.INTERNAL_REVOCATION_VALUES).size());

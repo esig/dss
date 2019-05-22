@@ -12,10 +12,11 @@ import org.junit.Test;
 
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.FileDocument;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedCertificate;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
+import eu.europa.esig.dss.validation.CertificateRefLocationType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.XmlCertificateSourceType;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -59,10 +60,10 @@ public class CAdESCertificateWrapperTest extends PKIFactoryAccess {
 		assertEquals(1, certsFromMoreThanTwoSources);
 		
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		List<XmlFoundCertificate> foundCertificates = signatureWrapper.getFoundCertificates();
+		List<XmlRelatedCertificate> foundCertificates = signatureWrapper.getRelatedCertificates();
 		assertNotNull(foundCertificates);
-		assertEquals(6, foundCertificates.size());
-		List<XmlFoundCertificate> signinigCertificates = signatureWrapper.getFoundCertificatesByLocation(XmlCertificateLocationType.SIGNING_CERTIFICATE);
+		assertEquals(5, foundCertificates.size());
+		List<XmlFoundCertificate> signinigCertificates = signatureWrapper.getFoundCertificatesByRefLocation(CertificateRefLocationType.SIGNING_CERTIFICATE);
 		assertNotNull(foundCertificates);
 		assertEquals(1, signinigCertificates.size());
 		XmlFoundCertificate signCertificate = signinigCertificates.get(0);

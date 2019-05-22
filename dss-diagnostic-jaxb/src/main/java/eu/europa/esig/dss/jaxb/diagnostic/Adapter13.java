@@ -9,19 +9,19 @@
 package eu.europa.esig.dss.jaxb.diagnostic;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import eu.europa.esig.dss.validation.XmlRevocationOrigin;
+import eu.europa.esig.dss.validation.OrphanTokenType;
 
-public class Adapter11
-    extends XmlAdapter<String, XmlRevocationOrigin>
+public class Adapter13
+    extends XmlAdapter<String, OrphanTokenType>
 {
 
 
-    public XmlRevocationOrigin unmarshal(String value) {
-        return (eu.europa.esig.dss.jaxb.parsers.RevocationOriginTypeParser.parse(value));
+    public OrphanTokenType unmarshal(String value) {
+        return (eu.europa.esig.dss.jaxb.parsers.OrphanTokenTypeParser.parse(value));
     }
 
-    public String marshal(XmlRevocationOrigin value) {
-        return (eu.europa.esig.dss.jaxb.parsers.RevocationOriginTypeParser.print(value));
+    public String marshal(OrphanTokenType value) {
+        return (eu.europa.esig.dss.jaxb.parsers.OrphanTokenTypeParser.print(value));
     }
 
 }

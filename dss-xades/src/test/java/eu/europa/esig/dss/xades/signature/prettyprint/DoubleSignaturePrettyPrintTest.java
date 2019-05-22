@@ -17,12 +17,12 @@ import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.SignatureValue;
 import eu.europa.esig.dss.ToBeSigned;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocations;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.signature.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CertificateOriginType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.wrapper.DiagnosticData;
@@ -211,29 +211,7 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, params, signatureValue);
 		// doubleSignedDocument.save("target/" + "doubleSignedTestSecond.xml");
 
-		DiagnosticData diagnosticData = validate(doubleSignedDocument);
-		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
-		assertEquals(2, signatures.size());
-		SignatureWrapper signatureWrapper = signatures.get(0);
-		List<XmlRevocationRef> allFoundRevocationRefs = signatureWrapper.getAllFoundRevocationRefs();
-		assertNotNull(allFoundRevocationRefs);
-		assertEquals(0, allFoundRevocationRefs.size());
-		XmlFoundRevocations foundRevocations = signatureWrapper.getFoundRevocations();
-		assertEquals(1, foundRevocations.getRelatedRevocations().size());
-		assertEquals(1, foundRevocations.getOrphanRevocations().size());
-		
-		List<XmlFoundCertificate> foundCertificatesByLocation = signatureWrapper.getFoundCertificatesByLocation(XmlCertificateLocationType.CERTIFICATE_VALUES);
-		assertNotNull(foundCertificatesByLocation);
-		assertEquals(2, foundCertificatesByLocation.size());
-		
-		SignatureWrapper signature2Wrapper = signatures.get(1);
-		allFoundRevocationRefs = signature2Wrapper.getAllFoundRevocationRefs();
-		assertNotNull(allFoundRevocationRefs);
-		assertEquals(2, allFoundRevocationRefs.size());
-		foundRevocations = signature2Wrapper.getFoundRevocations();
-		assertNotNull(foundRevocations);
-		assertEquals(2, foundRevocations.getRelatedRevocations().size());
-		assertEquals(0, foundRevocations.getOrphanRevocations().size());
+		validate(doubleSignedDocument);
 
 		assertFalse(DSSXMLUtils.isDuplicateIdsDetected(doubleSignedDocument));
 		
@@ -254,7 +232,7 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 		assertEquals(1, foundRevocations.getRelatedRevocations().size());
 		assertEquals(1, foundRevocations.getOrphanRevocations().size());
 		
-		List<XmlFoundCertificate> foundCertificatesByLocation = signatureWrapper.getFoundCertificatesByLocation(XmlCertificateLocationType.CERTIFICATE_VALUES);
+		List<XmlRelatedCertificate> foundCertificatesByLocation = signatureWrapper.getRelatedCertificatesByOrigin(CertificateOriginType.CERTIFICATE_VALUES);
 		assertNotNull(foundCertificatesByLocation);
 		assertEquals(2, foundCertificatesByLocation.size());
 		

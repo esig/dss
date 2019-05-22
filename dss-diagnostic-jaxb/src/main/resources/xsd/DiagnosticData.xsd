@@ -166,7 +166,20 @@
 					<xs:element name="FoundCertificates" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="FoundCertificate" type="FoundCertificate" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="RelatedCertificates" minOccurs="0">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="RelatedCertificate" type="RelatedCertificate" minOccurs="0" maxOccurs="unbounded" />
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="OrphanCertificates" minOccurs="0">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="OrphanCertificate" type="OrphanCertificate" minOccurs="0" maxOccurs="unbounded" />
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
@@ -580,16 +593,32 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:complexType name="FoundCertificate">
+	<xs:complexType name="FoundCertificate" abstract="true">
 		<xs:sequence>
+			<xs:element name="Origin" type="CertificateOriginType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="CertificateRef" type="CertificateRef" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
-		<xs:attribute name="Certificate" type="xs:IDREF" use="required" />
-		<xs:attribute name="Location" type="CertificateLocationType" use="required" />
+	</xs:complexType>
+	
+	<xs:complexType name="RelatedCertificate">
+		<xs:complexContent>
+            <xs:extension base="FoundCertificate">
+				<xs:attribute name="Certificate" type="xs:IDREF" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="OrphanCertificate">
+		<xs:complexContent>
+            <xs:extension base="FoundCertificate">
+            	<xs:attribute name="Token" type="xs:IDREF" use="required" />
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	
 	<xs:complexType name="CertificateRef">
 		<xs:sequence>
+			<xs:element name="Location" type="CertificateRefLocationType" />
 			<xs:element name="IssuerSerial" type="xs:base64Binary" />
 			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
 		</xs:sequence>
@@ -608,17 +637,22 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:simpleType name="CertificateLocationType" final="restriction">
+	<xs:simpleType name="CertificateOriginType" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="KEY_INFO" />
-			<xs:enumeration value="SIGNING_CERTIFICATE" />
-			<xs:enumeration value="COMPLETE_CERTIFICATE_REFS" />
-			<xs:enumeration value="ATTRIBUTE_CERTIFICATE_REFS" />
 			<xs:enumeration value="CERTIFICATE_VALUES" />
 			<xs:enumeration value="ATTR_AUTORITIES_CERT_VALUES" />
 			<xs:enumeration value="TIMESTAMP_DATA_VALIDATION" />
 			<xs:enumeration value="DSS" />
 			<xs:enumeration value="VRI" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="CertificateRefLocationType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SIGNING_CERTIFICATE" />
+			<xs:enumeration value="COMPLETE_CERTIFICATE_REFS" />
+			<xs:enumeration value="ATTRIBUTE_CERTIFICATE_REFS" />
 		</xs:restriction>
 	</xs:simpleType>
 	

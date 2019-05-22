@@ -30,17 +30,20 @@ import java.util.List;
 import java.util.Set;
 
 import eu.europa.esig.dss.jaxb.diagnostic.XmlBasicSignature;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertifiedRole;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlChainItem;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificates;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundRevocations;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundTimestamp;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlPolicy;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignature;
@@ -49,6 +52,8 @@ import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerDocumentRepresentations;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSigningCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlStructuralValidation;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CertificateOriginType;
+import eu.europa.esig.dss.validation.CertificateRefLocationType;
 import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.XmlRevocationOrigin;
@@ -494,8 +499,23 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return false;
 	}
 	
-	public List<XmlFoundCertificate> getFoundCertificates() {
-		return signature.getFoundCertificates();
+	public List<XmlFoundCertificate> getAllFoundCertificates() {
+		List<XmlFoundCertificate> foundCertificates = new ArrayList<XmlFoundCertificate>();
+		for (XmlFoundCertificate foundCertificate : getRelatedCertificates()) {
+			foundCertificates.add(foundCertificate);
+		}
+		for (XmlFoundCertificate foundCertificate : getOrphanCertificates()) {
+			foundCertificates.add(foundCertificate);
+		}
+		return foundCertificates;
+	}
+	
+	public List<XmlRelatedCertificate> getRelatedCertificates() {
+		return signature.getFoundCertificates().getRelatedCertificates();
+	}
+	
+	public List<XmlOrphanCertificate> getOrphanCertificates() {
+		return signature.getFoundCertificates().getOrphanCertificates();
 	}
 	
 	public XmlFoundRevocations getFoundRevocations() {
@@ -643,17 +663,22 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	/**
-	 * Returns a list of found certificate ids based on the requested {@code locationType}
-	 * @param locationType {@link XmlCertificateLocationType} to get certificate ids for
+	 * Returns a list of found certificate ids based on the requested {@code origin}
+	 * @param origin {@link CertificateOriginType} to get certificate ids for
 	 * @return list of certificate ids
 	 */
-	public List<String> getFoundCertificateIds(XmlCertificateLocationType locationType) {
+	public List<String> getFoundCertificateIds(CertificateOriginType origin) {
 		List<String> result = new ArrayList<String>();
-		List<XmlFoundCertificate> foundCertificates = signature.getFoundCertificates();
-		if (Utils.isCollectionNotEmpty(foundCertificates)) {
-			for (XmlFoundCertificate xmlFoundCertificate : foundCertificates) {
-				if (locationType.equals(xmlFoundCertificate.getLocation())) {
-					result.add(xmlFoundCertificate.getCertificate().getId());
+		XmlFoundCertificates foundCertificates = signature.getFoundCertificates();
+		if (foundCertificates != null) {
+			for (XmlRelatedCertificate xmlRelatedCertificate : foundCertificates.getRelatedCertificates()) {
+				if (xmlRelatedCertificate.getOrigin().contains(origin)) {
+					result.add(xmlRelatedCertificate.getCertificate().getId());
+				}
+			}
+			for (XmlOrphanCertificate xmlOrphanCertificate : foundCertificates.getOrphanCertificates()) {
+				if (xmlOrphanCertificate.getOrigin().contains(origin)) {
+					result.add(xmlOrphanCertificate.getToken().getId());
 				}
 			}
 		}
@@ -661,17 +686,34 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 	
 	/**
-	 * Returns a list of found {@link XmlFoundCertificate} from the given {@code locationType}
-	 * @param locationType {@link XmlCertificateLocationType} to get certificates from
+	 * Returns a list of found {@link XmlRelatedCertificate}s with the given {@code origin}
+	 * @param origin {@link CertificateOriginType} to get certificates with
+	 * @return list of {@link XmlRelatedCertificate}
+	 */
+	public List<XmlRelatedCertificate> getRelatedCertificatesByOrigin(CertificateOriginType origin) {
+		List<XmlRelatedCertificate> certificatesByOrigin = new ArrayList<XmlRelatedCertificate>();
+		XmlFoundCertificates foundCertificates = signature.getFoundCertificates();
+		if (foundCertificates != null) {
+			for (XmlRelatedCertificate foundCertificate : foundCertificates.getRelatedCertificates()) {
+				if (foundCertificate.getOrigin().contains(origin)) {
+					certificatesByOrigin.add(foundCertificate);
+				}
+			}
+		}
+		return certificatesByOrigin;
+	}
+	
+	/**
+	 * Returns a list of found {@link XmlFoundCertificate} containing a reference from the given {@code locationType}
+	 * @param location {@link CertificateRefLocationType} of a certificate reference
 	 * @return list of found {@link XmlFoundCertificate}
 	 */
-	public List<XmlFoundCertificate> getFoundCertificatesByLocation(XmlCertificateLocationType locationType) {
+	public List<XmlFoundCertificate> getFoundCertificatesByRefLocation(CertificateRefLocationType location) {
 		List<XmlFoundCertificate> certificatesByLocation = new ArrayList<XmlFoundCertificate>();
-		List<XmlFoundCertificate> allFoundCertificates = signature.getFoundCertificates();
-		if (Utils.isCollectionNotEmpty(allFoundCertificates)) {
-			for (XmlFoundCertificate xmlFoundCertificate : allFoundCertificates) {
-				if (locationType.equals(xmlFoundCertificate.getLocation())) {
-					certificatesByLocation.add(xmlFoundCertificate);
+		for (XmlFoundCertificate foundCertificate : getAllFoundCertificates()) {
+			for (XmlCertificateRef certificateRef : foundCertificate.getCertificateRef()) {
+				if (location.equals(certificateRef.getLocation())) {
+					certificatesByLocation.add(foundCertificate);
 				}
 			}
 		}

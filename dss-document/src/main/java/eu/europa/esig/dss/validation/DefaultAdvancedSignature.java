@@ -33,10 +33,12 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.CertificateRef;
 import eu.europa.esig.dss.CertificateReorderer;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.Digest;
 import eu.europa.esig.dss.DigestDocument;
 import eu.europa.esig.dss.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.SignatureIdentifier;
@@ -152,6 +154,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	private Map<RevocationToken, List<RevocationRef>> revocationRefsMap;
 	
 	/**
+	 * List of found certificate refs which values were not found in the certificate source
+	 */
+	protected List<CertificateRef> orphanCertificateRefs = new ArrayList<CertificateRef>();
+	
+	/**
 	 * Build and defines {@code signatureIdentifier} value
 	 */
 	protected abstract SignatureIdentifier buildSignatureIdentifier();
@@ -193,9 +200,15 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public void setContainerContents(List<DSSDocument> containerContents) {
 		this.containerContents = containerContents;
 	}
+	
 	@Override
 	public void setManifestFiles(List<ManifestFile> manifestFiles) {
 		this.manifestFiles = manifestFiles;
+	}
+	
+	@Override
+	public List<CertificateRef> getOrphanCertificateRefs() {
+		return orphanCertificateRefs;
 	}
 	
 	@Override

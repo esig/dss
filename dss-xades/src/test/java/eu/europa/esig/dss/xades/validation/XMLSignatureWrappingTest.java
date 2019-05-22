@@ -38,14 +38,19 @@ import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.FileDocument;
 import eu.europa.esig.dss.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.tsl.ServiceInfo;
 import eu.europa.esig.dss.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.validation.CertificateRefLocationType;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.DigestMatcherType;
+import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.SignatureScopeType;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.XmlRevocationRefLocation;
 import eu.europa.esig.dss.validation.policy.rules.Indication;
 import eu.europa.esig.dss.validation.policy.rules.SubIndication;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -451,6 +456,40 @@ public class XMLSignatureWrappingTest {
 		}
 		assertEquals(10, signedDataCounter);
 
+	}
+	
+	@Test
+	public void xadesXLevelTest() {
+		SignedDocumentValidator validator = SignedDocumentValidator
+				.fromDocument(new FileDocument(new File("src/test/resources/validation/xades-x-level.xml")));
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setDataLoader(new IgnoreDataLoader());
+		validator.setCertificateVerifier(certificateVerifier);
+		
+		Reports reports = validator.validateDocument();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertNotNull(diagnosticData);
+		
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signatureWrapper);
+		
+		List<XmlFoundCertificate> completeCertificateRefs = signatureWrapper.getFoundCertificatesByRefLocation(CertificateRefLocationType.COMPLETE_CERTIFICATE_REFS);
+		assertNotNull(completeCertificateRefs);
+		assertEquals(3, completeCertificateRefs.size());
+		
+		List<XmlRevocationRef> completeRevocationRefs = signatureWrapper.getFoundRevocationRefsByLocation(XmlRevocationRefLocation.COMPLETE_REVOCATION_REFS);
+		assertNotNull(completeRevocationRefs);
+		assertEquals(2, completeRevocationRefs.size());
+		
+		List<String> completeCRLRefs = signatureWrapper.getRevocationIdsByType(RevocationType.CRL);
+		assertNotNull(completeCRLRefs);
+		assertEquals(1, completeCRLRefs.size());
+		
+		List<String> completeOCSPRefs = signatureWrapper.getRevocationIdsByType(RevocationType.OCSP);
+		assertNotNull(completeOCSPRefs);
+		assertEquals(1, completeOCSPRefs.size());
+		
 	}
 	
 	/**

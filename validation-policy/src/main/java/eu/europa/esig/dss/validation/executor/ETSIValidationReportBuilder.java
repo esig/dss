@@ -20,17 +20,20 @@ import eu.europa.esig.dss.jaxb.detailedreport.XmlRevocationInformation;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSAV;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlStatus;
 import eu.europa.esig.dss.jaxb.detailedreport.XmlSubXCV;
-import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateLocationType;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlCertificateRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlDigestMatcher;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlFoundCertificate;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanRevocation;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanToken;
+import eu.europa.esig.dss.jaxb.diagnostic.XmlRelatedCertificate;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlRevocationRef;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignatureScope;
 import eu.europa.esig.dss.jaxb.diagnostic.XmlSignerData;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CertificateOriginType;
+import eu.europa.esig.dss.validation.CertificateRefLocationType;
 import eu.europa.esig.dss.validation.DigestMatcherType;
 import eu.europa.esig.dss.validation.RevocationType;
 import eu.europa.esig.dss.validation.XmlCertificateSourceType;
@@ -666,7 +669,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addAttrAuthoritiesCertValues(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.ATTR_AUTORITIES_CERT_VALUES);
+		List<String> certIds = sigWrapper.getFoundCertificateIds(CertificateOriginType.ATTR_AUTORITIES_CERT_VALUES);
 		if (Utils.isCollectionNotEmpty(certIds)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeAttrAuthoritiesCertValues(buildTokenList(certIds)));
@@ -674,7 +677,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addTimeStampValidationData(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> refIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.TIMESTAMP_DATA_VALIDATION);
+		List<String> refIds = sigWrapper.getFoundCertificateIds(CertificateOriginType.TIMESTAMP_DATA_VALIDATION);
 		refIds.addAll(sigWrapper.getRevocationIdsByOrigin(XmlRevocationOrigin.INTERNAL_TIMESTAMP_REVOCATION_VALUES));
 		if (Utils.isCollectionNotEmpty(refIds)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
@@ -683,7 +686,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addCertificateValues(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.CERTIFICATE_VALUES);
+		List<String> certIds = sigWrapper.getFoundCertificateIds(CertificateOriginType.CERTIFICATE_VALUES);
 		if (Utils.isCollectionNotEmpty(certIds)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeCertificateValues(buildTokenList(certIds)));
@@ -691,7 +694,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addAttributeCertificateRefs(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<XmlFoundCertificate> certs = sigWrapper.getFoundCertificatesByLocation(XmlCertificateLocationType.ATTRIBUTE_CERTIFICATE_REFS);
+		List<XmlFoundCertificate> certs = sigWrapper.getFoundCertificatesByRefLocation(CertificateRefLocationType.ATTRIBUTE_CERTIFICATE_REFS);
 		if (Utils.isCollectionNotEmpty(certs)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeAttributeCertificateRefs(buildCertIDListType(certs)));
@@ -699,7 +702,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addCompleteCertificateRefs(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<XmlFoundCertificate> certs = sigWrapper.getFoundCertificatesByLocation(XmlCertificateLocationType.COMPLETE_CERTIFICATE_REFS);
+		List<XmlFoundCertificate> certs = sigWrapper.getFoundCertificatesByRefLocation(CertificateRefLocationType.COMPLETE_CERTIFICATE_REFS);
 		if (Utils.isCollectionNotEmpty(certs)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeCompleteCertificateRefs(buildCertIDListType(certs)));
@@ -707,7 +710,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addSigningCertificate(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<XmlFoundCertificate> certs = sigWrapper.getFoundCertificatesByLocation(XmlCertificateLocationType.SIGNING_CERTIFICATE);
+		List<XmlFoundCertificate> certs = sigWrapper.getFoundCertificatesByRefLocation(CertificateRefLocationType.SIGNING_CERTIFICATE);
 		if (Utils.isCollectionNotEmpty(certs)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeSigningCertificate(buildCertIDListType(certs)));
@@ -725,7 +728,13 @@ public class ETSIValidationReportBuilder {
 	private SACertIDListType buildCertIDListType(List<XmlFoundCertificate> certs) {
 		SACertIDListType certIdList = objectFactory.createSACertIDListType();
 		for (XmlFoundCertificate cert : certs) {
-			certIdList.getAttributeObject().add(getVOReference(cert.getCertificate().getId()));
+			String id;
+			if (cert instanceof XmlRelatedCertificate) {
+				id = ((XmlRelatedCertificate)cert).getCertificate().getId();
+			} else {
+				id = ((XmlOrphanCertificate)cert).getToken().getId();
+			}
+			certIdList.getAttributeObject().add(getVOReference(id));
 			List<XmlCertificateRef> certificateRefs = cert.getCertificateRef();
 			for (XmlCertificateRef certificateRef : certificateRefs) {
 				if (certificateRef != null && certificateRef.getDigestAlgoAndValue() != null) {
@@ -1025,7 +1034,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addDSS(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.DSS);
+		List<String> certIds = sigWrapper.getFoundCertificateIds(CertificateOriginType.DSS);
 		List<String> crlIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_DSS);
 		List<String> ocspIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_DSS);
 		if (Utils.isCollectionNotEmpty(certIds) || Utils.isCollectionNotEmpty(crlIds) || Utils.isCollectionNotEmpty(ocspIds)) {
@@ -1044,7 +1053,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private void addVRI(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
-		List<String> certIds = sigWrapper.getFoundCertificateIds(XmlCertificateLocationType.VRI);
+		List<String> certIds = sigWrapper.getFoundCertificateIds(CertificateOriginType.VRI);
 		List<String> crlIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.CRL, XmlRevocationOrigin.INTERNAL_VRI);
 		List<String> ocspIds = sigWrapper.getRevocationIdsByTypeAndOrigin(RevocationType.OCSP, XmlRevocationOrigin.INTERNAL_VRI);
 

@@ -48,6 +48,11 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 	private static final Logger LOG = LoggerFactory.getLogger(SignatureCertificateSource.class);
 	
 	/**
+	 * Contains a list of all found {@link CertificateRef}s
+	 */
+	private List<CertificateRef> certificateRefs;
+	
+	/**
 	 * Contains a list of found {@link CertificateRef}s for each {@link CertificateToken}
 	 */
 	private Map<CertificateToken, List<CertificateRef>> certificateRefsMap;
@@ -210,12 +215,28 @@ public abstract class SignatureCertificateSource extends CommonCertificateSource
 		return tokensFromRefs;
 	}
 	
-	private List<CertificateRef> getAllCertificateRefs() {
-		List<CertificateRef> allCertificateRefs = new ArrayList<CertificateRef>();
-		allCertificateRefs.addAll(getCompleteCertificateRefs());
-		allCertificateRefs.addAll(getAttributeCertificateRefs());
-		allCertificateRefs.addAll(getSigningCertificateValues());
-		return allCertificateRefs;
+	public List<CertificateRef> getAllCertificateRefs() {
+		if (certificateRefs == null) {
+			certificateRefs = new ArrayList<CertificateRef>();
+			certificateRefs.addAll(getCompleteCertificateRefs());
+			certificateRefs.addAll(getAttributeCertificateRefs());
+			certificateRefs.addAll(getSigningCertificateValues());
+		}
+		return certificateRefs;
+	}
+	
+	/**
+	 * Returns a contained {@link CertificateRef} with the given {@code digest}
+	 * @param digest {@link Digest} to find a {@link CertificateRef} with
+	 * @return {@link CertificateRef}
+	 */
+	public CertificateRef getCertificateRefByDigest(Digest digest) {
+		for (CertificateRef certificateRef : getAllCertificateRefs()) {
+			if (digest.equals(certificateRef.getCertDigest())) {
+				return certificateRef;
+			}
+		}
+		return null;
 	}
 	
 	private void collectCertificateRefsMap() {

@@ -778,12 +778,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			Element certElement = (Element) nodeList.item(ii);
 			Digest certDigest = getCertificateSource().getCertDigest(certElement);
 			if (certDigest != null) {
-				List<CertificateToken> certificates = getCertificateSource().getCertificates();
-				for (CertificateToken certificate : certificates) {
-					byte[] digest = certificate.getDigest(certDigest.getAlgorithm());
-					if (Arrays.equals(digest, certDigest.getValue())) {
-						timestampedReferences.add(new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
-					}
+				CertificateToken certificate = getCertificateSource().getCertificateTokenByDigest(certDigest);
+				if (certificate != null) {
+					timestampedReferences.add(new TimestampedReference(certificate.getDSSIdAsString(), TimestampedObjectType.CERTIFICATE));
+				} else {
+					// if CertificateToken is not found, add reference value to the orphan refs list
+					orphanCertificateRefs.add(getCertificateSource().getCertificateRefByDigest(certDigest));
 				}
 			}
 		}
@@ -805,7 +805,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			CRLBinaryIdentifier identifier = crlSource.getIdentifier(digest);
 			if (identifier != null) {
 				timestampedReferences.add(new TimestampedReference(identifier.asXmlId(), TimestampedObjectType.REVOCATION));
-				break;
 			}
 		}
 		
@@ -818,7 +817,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				OCSPResponseIdentifier identifier = ocspSource.getIdentifier(digest);
 				if (identifier != null) {
 					timestampedReferences.add(new TimestampedReference(identifier.asXmlId(), TimestampedObjectType.REVOCATION));
-					break;
 				}
 			}
 		}

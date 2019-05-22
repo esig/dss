@@ -422,6 +422,12 @@ public interface AdvancedSignature extends Serializable {
 	List<CertificateRef> getCertificateRefs();
 	
 	/**
+	 * Returns a list of orphan certificate refs, that are not associated to any {@link CertificateToken}
+	 * @return list of found {@link CertificateRef}s
+	 */
+	List<CertificateRef> getOrphanCertificateRefs();
+	
+	/**
 	 * This method returns the {@link SignatureIdentifier}.
 	 * 
 	 * @return unique {@link SignatureIdentifier}

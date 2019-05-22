@@ -50,6 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.CertificateRef;
+import eu.europa.esig.dss.CertificateRefLocation;
 import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.Digest;
@@ -158,12 +159,12 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 
 	@Override
 	public List<CertificateRef> getCompleteCertificateRefs() {
-		return getCertificateRefsFromUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_certificateRefs);
+		return getCertificateRefsFromUnsignedAttribute(PKCSObjectIdentifiers.id_aa_ets_certificateRefs, CertificateRefLocation.COMPLETE_CERTIFICATE_REFS);
 	}
 
 	@Override
 	public List<CertificateRef> getAttributeCertificateRefs() {
-		return getCertificateRefsFromUnsignedAttribute(attributeCertificateRefsOid);
+		return getCertificateRefsFromUnsignedAttribute(attributeCertificateRefsOid, CertificateRefLocation.ATTRIBUTE_CERTIFICATE_REFS);
 	}
 
 	private List<CertificateRef> extractSigningCertificateV1(Attribute attribute) {
@@ -173,7 +174,7 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 			final ASN1Encodable asn1Encodable = attrValues.getObjectAt(ii);
 			final SigningCertificate signingCertificate = SigningCertificate.getInstance(asn1Encodable);
 			if (signingCertificate != null) {
-				certificateRefs.addAll(extractESSCertIDs(signingCertificate.getCerts()));
+				certificateRefs.addAll(extractESSCertIDs(signingCertificate.getCerts(), CertificateRefLocation.SIGNING_CERTIFICATE));
 			} else {
 				LOG.warn("SigningCertificate attribute is not well defined!");
 			}
@@ -181,7 +182,7 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 		return certificateRefs;
 	}
 
-	private List<CertificateRef> extractESSCertIDs(final ESSCertID[] essCertIDs) {
+	private List<CertificateRef> extractESSCertIDs(final ESSCertID[] essCertIDs, CertificateRefLocation location) {
 		List<CertificateRef> certificateRefs = new ArrayList<CertificateRef>();
 		for (final ESSCertID essCertID : essCertIDs) {
 			CertificateRef certRef = new CertificateRef();
@@ -198,6 +199,7 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 			if (issuerSerial != null) {
 				certRef.setIssuerInfo(DSSASN1Utils.getIssuerInfo(issuerSerial));
 			}
+			certRef.setLocation(location);
 
 			certificateRefs.add(certRef);
 		}
@@ -211,13 +213,13 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 			final ASN1Encodable asn1Encodable = attrValues.getObjectAt(ii);
 			final SigningCertificateV2 signingCertificate = SigningCertificateV2.getInstance(asn1Encodable);
 			if (signingCertificate != null) {
-				certificateRefs.addAll(extractESSCertIDv2s(signingCertificate.getCerts()));
+				certificateRefs.addAll(extractESSCertIDv2s(signingCertificate.getCerts(), CertificateRefLocation.SIGNING_CERTIFICATE));
 			}
 		}
 		return certificateRefs;
 	}
 
-	private List<CertificateRef> extractESSCertIDv2s(ESSCertIDv2[] essCertIDv2s) {
+	private List<CertificateRef> extractESSCertIDv2s(ESSCertIDv2[] essCertIDv2s, CertificateRefLocation location) {
 		List<CertificateRef> certificateRefs = new ArrayList<CertificateRef>();
 		for (final ESSCertIDv2 essCertIDv2 : essCertIDv2s) {
 			CertificateRef certRef = new CertificateRef();
@@ -232,6 +234,7 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 			if (issuerSerial != null) {
 				certRef.setIssuerInfo(DSSASN1Utils.getIssuerInfo(issuerSerial));
 			}
+			certRef.setLocation(location);
 			certificateRefs.add(certRef);
 		}
 		return certificateRefs;
@@ -260,7 +263,7 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 		return certs;
 	}
 
-	private List<CertificateRef> getCertificateRefsFromUnsignedAttribute(ASN1ObjectIdentifier attributeOid) {
+	private List<CertificateRef> getCertificateRefsFromUnsignedAttribute(ASN1ObjectIdentifier attributeOid, CertificateRefLocation location) {
 		List<CertificateRef> result = new ArrayList<CertificateRef>();
 		if ((signerInformation != null) && (signerInformation.getUnsignedAttributes() != null)) {
 			AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
@@ -277,6 +280,7 @@ public class CAdESCertificateSource extends SignatureCertificateSource {
 						if (issuerSerial != null) {
 							certRef.setIssuerInfo(DSSASN1Utils.getIssuerInfo(issuerSerial));
 						}
+						certRef.setLocation(location);
 						result.add(certRef);
 					} catch (Exception e) {
 						LOG.warn("Unable to parse encapsulated OtherCertID : {}", e.getMessage());

@@ -4,6 +4,9 @@ public class CertificateRef {
 
 	private Digest certDigest;
 	private IssuerSerialInfo issuerInfo;
+	private CertificateRefLocation location;
+	
+	private String dssId;
 
 	public Digest getCertDigest() {
 		return certDigest;
@@ -20,10 +23,29 @@ public class CertificateRef {
 	public void setIssuerInfo(IssuerSerialInfo issuerInfo) {
 		this.issuerInfo = issuerInfo;
 	}
+	
+	public CertificateRefLocation getLocation() {
+		return location;
+	}
+	
+	public void setLocation(CertificateRefLocation location) {
+		this.location = location;
+	}
+	
+	/**
+	 * Returns revocation reference {@link String} id
+	 * @return {@link String} id
+	 */
+	public String getDSSIdAsString() {
+		if (dssId == null) {
+			dssId = "C-" + certDigest.getHexValue().toUpperCase();
+		}
+		return dssId;
+	}
 
 	@Override
 	public String toString() {
-		return "CertificateRef [certDigest=" + certDigest + ", issuerInfo=" + issuerInfo + "]";
+		return "CertificateRef [certDigest=" + certDigest + ", issuerInfo=" + issuerInfo + ", location=" + location + "]";
 	}
 	
 	@Override
@@ -43,6 +65,10 @@ public class CertificateRef {
 				(issuerInfo != null && !issuerInfo.equals(o.getIssuerInfo()))) {
 			return false;
 		}
+		if ((location == null && o.getLocation() != null) || 
+				(location != null && !location.equals(o.getLocation()))) {
+			return false;
+		}
 		return true;
 	}
 
@@ -52,6 +78,7 @@ public class CertificateRef {
 		int result = 1;
 		result = (prime * result) + ((certDigest == null) ? 0 : certDigest.hashCode());
 		result = (prime * result) + ((issuerInfo == null) ? 0 : issuerInfo.hashCode());
+		result = (prime * result) + ((location == null) ? 0 : location.hashCode());
 		return result;
 	}
 

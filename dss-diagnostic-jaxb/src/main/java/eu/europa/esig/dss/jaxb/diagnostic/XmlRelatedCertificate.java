@@ -18,15 +18,15 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for RelatedRevocation complex type.
+ * <p>Java class for RelatedCertificate complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="RelatedRevocation"&gt;
+ * &lt;complexType name="RelatedCertificate"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://dss.esig.europa.eu/validation/diagnostic}FoundRevocation"&gt;
- *       &lt;attribute name="Revocation" use="required" type="{http://www.w3.org/2001/XMLSchema}IDREF" /&gt;
+ *     &lt;extension base="{http://dss.esig.europa.eu/validation/diagnostic}FoundCertificate"&gt;
+ *       &lt;attribute name="Certificate" use="required" type="{http://www.w3.org/2001/XMLSchema}IDREF" /&gt;
  *     &lt;/extension&gt;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
@@ -35,40 +35,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RelatedRevocation")
-public class XmlRelatedRevocation
-    extends XmlFoundRevocation
+@XmlType(name = "RelatedCertificate")
+public class XmlRelatedCertificate
+    extends XmlFoundCertificate
     implements Serializable
 {
 
     private final static long serialVersionUID = 1L;
-    @XmlAttribute(name = "Revocation", required = true)
+    @XmlAttribute(name = "Certificate", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    protected XmlRevocation revocation;
+    protected XmlCertificate certificate;
 
     /**
-     * Gets the value of the revocation property.
+     * Gets the value of the certificate property.
      * 
      * @return
      *     possible object is
      *     {@link Object }
      *     
      */
-    public XmlRevocation getRevocation() {
-        return revocation;
+    public XmlCertificate getCertificate() {
+        return certificate;
     }
 
     /**
-     * Sets the value of the revocation property.
+     * Sets the value of the certificate property.
      * 
      * @param value
      *     allowed object is
      *     {@link Object }
      *     
      */
-    public void setRevocation(XmlRevocation value) {
-        this.revocation = value;
+    public void setCertificate(XmlCertificate value) {
+        this.certificate = value;
     }
 
 }

@@ -56,6 +56,18 @@
 				printMethod="eu.europa.esig.dss.jaxb.parsers.CertificateSourceTypeParser.print" />
 		</jaxb:bindings>
 		
+  <jaxb:bindings node="//xs:simpleType[@name='CertificateOriginType']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.CertificateOriginType" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.CertificateOriginTypeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.CertificateOriginTypeParser.print" />
+		</jaxb:bindings>
+		
+  <jaxb:bindings node="//xs:simpleType[@name='CertificateRefLocationType']">
+			<jaxb:javaType name="eu.europa.esig.dss.validation.CertificateRefLocationType" 
+				parseMethod="eu.europa.esig.dss.jaxb.parsers.CertificateRefLocationTypeParser.parse" 
+				printMethod="eu.europa.esig.dss.jaxb.parsers.CertificateRefLocationTypeParser.print" />
+		</jaxb:bindings>
+		
   <jaxb:bindings node="//xs:simpleType[@name='TimestampType']">
 			<jaxb:javaType name="eu.europa.esig.dss.validation.XmlTimestampType" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.TimestampTypeParser.parse" 
@@ -105,9 +117,14 @@
             <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
         </jaxb:property>
     </jaxb:bindings>
-    <jaxb:bindings node="//xs:complexType[@name='FoundCertificate']//xs:attribute[@name='Certificate']">
+    <jaxb:bindings node="//xs:complexType[@name='RelatedCertificate']//xs:attribute[@name='Certificate']">
         <jaxb:property>
             <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlCertificate" />
+        </jaxb:property>
+    </jaxb:bindings>
+    <jaxb:bindings node="//xs:complexType[@name='OrphanCertificate']//xs:attribute[@name='Token']">
+        <jaxb:property>
+            <jaxb:baseType name="eu.europa.esig.dss.jaxb.diagnostic.XmlOrphanToken" />
         </jaxb:property>
     </jaxb:bindings>
     <jaxb:bindings node="//xs:complexType[@name='CertificateRevocation']//xs:attribute[@name='Revocation']">
