@@ -162,7 +162,7 @@ public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature
 			params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 			params.setSignedPropertiesCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
 			params.setSignedInfoCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
-			params.getBLevelParams().setSigningDate(signingDate);
+			params.bLevel().setSigningDate(signingDate);
 			params.setSigningCertificate(signingCertificate);
 			return super.build();
 		}

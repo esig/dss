@@ -30,6 +30,7 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.europa.esig.dss.DSSASN1Utils;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
@@ -171,7 +172,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 			data = cadesLevelBaselineT.extendCMSSignatures(data, parameters);
 		}
 
-		return CMSUtils.getEncoded(data);
+		return DSSASN1Utils.getDEREncoded(data);
 	}
 
 	@Override

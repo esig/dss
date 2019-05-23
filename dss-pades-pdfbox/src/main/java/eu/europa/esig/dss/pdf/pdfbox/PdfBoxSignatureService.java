@@ -335,17 +335,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 						validateByteRange(byteRange);
 
 						final byte[] cms = signatureDictionary.getContents();
-
-						byte[] cmsWithByteRange = signature.getContents(originalBytes);
-
-						if (!Arrays.equals(cmsWithByteRange, cms)) {
-							LOG.warn("The byte range doesn't match found /Content value!");
-						}
-
-						String subFilter = signatureDictionary.getSubFilter();
-						if (Utils.isStringEmpty(subFilter) || Utils.isArrayEmpty(cms)) {
-							LOG.warn("Wrong signature with empty subfilter or cms.");
-							continue;
+						if (!isContentValueEqualsByteRangeExtraction(cms, signature, originalBytes)) {
+							LOG.warn("Conflict between /Content and ByteRange for Signature '{}'.", signature.getName());
 						}
 
 						byte[] signedContent = signature.getSignedContent(originalBytes);
@@ -359,6 +350,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 						boolean coverAllOriginalBytes = (originalBytesLength == totalCoveredByByteRange);
 
 						PdfSignatureOrDocTimestampInfo signatureInfo = null;
+						final String subFilter = signatureDictionary.getSubFilter();
 						if (PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(subFilter)) {
 							boolean isArchiveTimestamp = false;
 
@@ -392,6 +384,22 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		}
 
 		return signatures;
+	}
+
+	private boolean isContentValueEqualsByteRangeExtraction(byte[] cms, PDSignature signature, byte[] originalBytes) {
+		try {
+			byte[] cmsWithByteRange = signature.getContents(originalBytes);
+			return Arrays.equals(cms, cmsWithByteRange);
+		} catch (Exception e) {
+			String message = String.format("Unable to retrieve data from the ByteRange (signature name: %s)", signature.getName());
+			if (LOG.isDebugEnabled()) {
+				// Exception displays the (long) hex value
+				LOG.debug(message, e);
+			} else {
+				LOG.error(message);
+			}
+			return false;
+		}
 	}
 
 	private boolean isDSSDictionaryPresentInPreviousRevision(byte[] originalBytes) {

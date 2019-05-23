@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.DSSException;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.jaxb.policy.ConstraintsParameters;
 import eu.europa.esig.jaxb.policy.ObjectFactory;
@@ -125,7 +126,7 @@ public class ValidationResourceManager {
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 			unmarshaller.setSchema(schema);
 
-			return (ConstraintsParameters) unmarshaller.unmarshal(inputStream);
+			return (ConstraintsParameters) unmarshaller.unmarshal(DomUtils.getSecureXMLStreamReader(inputStream));
 		} catch (Exception e) {
 			throw new DSSException("Unable to load policy : " + e.getMessage(), e);
 		}

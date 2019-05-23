@@ -46,6 +46,7 @@ import org.w3c.dom.Element;
 import eu.europa.esig.dss.DSSDocument;
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.tsl.CertSubjectDNAttributeCondition;
 import eu.europa.esig.dss.tsl.CompositeCondition;
 import eu.europa.esig.dss.tsl.Condition;
@@ -136,7 +137,7 @@ public class TSLParser implements Callable<TSLParserResult> {
 	public TSLParserResult call() throws Exception {
 		try (InputStream is = trustedList.openStream()) {
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			JAXBElement<TrustStatusListType> jaxbElement = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(is);
+			JAXBElement<TrustStatusListType> jaxbElement = (JAXBElement<TrustStatusListType>) unmarshaller.unmarshal(DomUtils.getSecureXMLStreamReader(is));
 			TrustStatusListType trustStatusList = jaxbElement.getValue();
 			return getTslModel(trustStatusList);
 		} catch (Exception e) {

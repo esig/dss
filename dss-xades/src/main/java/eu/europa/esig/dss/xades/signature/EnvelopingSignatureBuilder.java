@@ -169,11 +169,7 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 				objectDom.setAttribute(ID, id);
 			}
 		}
-
-		byte[] documentBytes = DSSXMLUtils.serializeNode(documentDom);
-		final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
-		inMemoryDocument.setMimeType(MimeType.XML);
-		return inMemoryDocument;
+		return createXmlDocument();
 	}
 
 }

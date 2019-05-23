@@ -182,10 +182,11 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	private List<DSSDocument> getPackageZipContent(DSSDocument packageZip) {
 		List<DSSDocument> result = new ArrayList<DSSDocument>();
+		long containerSize = DSSUtils.getFileByteSize(packageZip);
 		try (InputStream is = packageZip.openStream(); ZipInputStream packageZipInputStream = new ZipInputStream(is)) {
 			ZipEntry entry;
 			while ((entry = packageZipInputStream.getNextEntry()) != null) {
-				result.add(ASiCUtils.getCurrentDocument(entry.getName(), packageZipInputStream));
+				result.add(ASiCUtils.getCurrentDocument(entry.getName(), packageZipInputStream, containerSize));
 			}
 		} catch (IOException e) {
 			throw new DSSException("Unable to extract package.zip", e);

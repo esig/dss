@@ -30,7 +30,7 @@ public class ASiCWithXAdESContainerExtractor extends AbstractASiCContainerExtrac
 
 	@Override
 	boolean isAllowedManifest(String entryName) {
-		return entryName.equals(META_INF_FOLDER + "manifest.xml");
+		return entryName.equals(ASiCUtils.META_INF_FOLDER + "manifest.xml");
 	}
 
 	@Override

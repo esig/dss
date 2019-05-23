@@ -25,6 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testDoubleSignature() {
+	public void testDoubleSignature() throws IOException {
 
 		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -82,6 +83,7 @@ public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 		dataToSign = service.getDataToSign(signedDocument, params);
 		signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, params, signatureValue);
+		doubleSignedDocument.save("target/" + "doubleSignedTest.xml");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doubleSignedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());

@@ -73,6 +73,7 @@ public class TSLRepository {
 
 	private Map<String, TSLValidationModel> tsls = new HashMap<String, TSLValidationModel>();
 	private Map<String, TSLValidationModel> pivots = new HashMap<String, TSLValidationModel>();
+	private String ojActualUrl;
 
 	private TrustedListsCertificateSource trustedListsCertificateSource;
 
@@ -94,6 +95,14 @@ public class TSLRepository {
 
 	public TSLValidationModel getPivotByUrl(String pivotUrl) {
 		return pivots.get(pivotUrl);
+	}
+	
+	public String getActualOjUrl() {
+		return ojActualUrl;
+	}
+	
+	public void setActualOjUrl(String ojActualUrl) {
+		this.ojActualUrl = ojActualUrl;
 	}
 
 	public Map<String, TSLValidationModel> getAllMapTSLValidationModels() {

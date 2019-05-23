@@ -247,6 +247,11 @@ public class GoogleGuavaUtils implements IUtils {
 	public void write(byte[] content, OutputStream os) throws IOException {
 		ByteStreams.copy(new ByteArrayInputStream(content), os);
 	}
+	
+	@Override
+	public long getInputStreamSize(InputStream is) throws IOException {
+		return ByteStreams.exhaust(is);
+	}
 
 	@Override
 	public void cleanDirectory(File directory) throws IOException {

@@ -28,6 +28,7 @@ import static eu.europa.esig.dss.x509.TimestampType.SIGNATURE_TIMESTAMP;
 import static eu.europa.esig.dss.xades.ProfileParameters.Operation.SIGNING;
 import static javax.xml.crypto.dsig.XMLSignature.XMLNS;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -43,18 +44,21 @@ import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.InMemoryDocument;
-import eu.europa.esig.dss.MimeType;
 import eu.europa.esig.dss.SignatureLevel;
 import eu.europa.esig.dss.SignaturePackaging;
 import eu.europa.esig.dss.TimestampParameters;
+import eu.europa.esig.dss.XAdESNamespaces;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.x509.CertificateSource;
 import eu.europa.esig.dss.x509.CertificateToken;
+import eu.europa.esig.dss.x509.RevocationToken;
 import eu.europa.esig.dss.x509.TimestampType;
+import eu.europa.esig.dss.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.x509.tsp.TSPSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.ProfileParameters;
@@ -94,7 +98,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	}
 
 	@Override
-	public InMemoryDocument extendSignatures(final DSSDocument dssDocument, final XAdESSignatureParameters params) throws DSSException {
+	public DSSDocument extendSignatures(final DSSDocument dssDocument, final XAdESSignatureParameters params) throws DSSException {
 
 		if (dssDocument == null) {
 			throw new NullPointerException();
@@ -135,10 +139,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			xadesSignature.setDetachedContents(params.getDetachedContents());
 			extendSignatureTag();
 		}
-		final byte[] documentBytes = DSSXMLUtils.serializeNode(documentDom);
-		final InMemoryDocument inMemoryDocument = new InMemoryDocument(documentBytes);
-		inMemoryDocument.setMimeType(MimeType.XML);
-		return inMemoryDocument;
+		return createXmlDocument();
 	}
 
 	/**
@@ -159,6 +160,8 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		ensureUnsignedSignatureProperties();
 		ensureSignedDataObjectProperties();
 		assertSignatureValid(xadesSignature);
+		
+		Element levelBUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
 		// The timestamp must be added only if there is no one or the extension -T level is being created
 		if (!xadesSignature.hasTProfile() || XAdES_BASELINE_T.equals(params.getSignatureLevel())) {
@@ -169,6 +172,8 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			final DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
 			final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, canonicalisedValue);
 			createXAdESTimeStampType(SIGNATURE_TIMESTAMP, canonicalizationMethod, digestValue);
+			
+			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelBUnsignedProperties);
 		}
 	}
 
@@ -209,14 +214,15 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * @param parentDom
 	 *            the parent element
 	 * @param validationContext
-	 *            the validation context with all cerrtificates
+	 *            the validation context with all certificates
 	 */
-	protected void incorporateCertificateValues(final Element parentDom, final ValidationContext validationContext) {
+	protected Element incorporateCertificateValues(final Element parentDom, final ValidationContext validationContext) {
 
+		Element certificateValuesDom = null;
 		final Set<CertificateToken> toIncludeCertificates = xadesSignature.getCertificatesForInclusion(validationContext);
 		if (!toIncludeCertificates.isEmpty()) {
 
-			final Element certificateValuesDom = DomUtils.addElement(documentDom, parentDom, XAdES, XADES_CERTIFICATE_VALUES);
+			certificateValuesDom = DomUtils.addElement(documentDom, parentDom, XAdES, XADES_CERTIFICATE_VALUES);
 
 			CertificateSource trustedCertSource = certificateVerifier.getTrustedCertSource();
 
@@ -235,6 +241,146 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			if (trustAnchorBPPolicy && !trustAnchorIncluded) {
 				LOG.warn("The trust anchor is missing but its inclusion is required by the signature policy!");
 			}
+		}
+		return certificateValuesDom;
+	}
+
+	/**
+	 * This method incorporates revocation values.
+	 * 
+	 * <pre>
+	 * 	{@code
+	 * 		<xades:RevocationValues>
+	 * 	}
+	 * </pre>
+	 *
+	 * @param parentDom
+	 *            the parent element
+	 * @param validationContext
+	 *            the validation context with the revocation data
+	 */
+	protected Element incorporateRevocationValues(final Element parentDom, final ValidationContext validationContext) {
+		Element revocationValuesDom = null;
+		final DefaultAdvancedSignature.RevocationDataForInclusion revocationsForInclusion = xadesSignature.getRevocationDataForInclusion(validationContext);
+		if (!revocationsForInclusion.isEmpty()) {
+
+			revocationValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:RevocationValues");
+
+			incorporateCrlTokens(revocationValuesDom, revocationsForInclusion.crlTokens);
+			incorporateOcspTokens(revocationValuesDom, revocationsForInclusion.ocspTokens);
+		}
+		return revocationValuesDom;
+	}
+
+	/**
+	 * This method incorporates the CRLValues :
+	 * 
+	 * <pre>
+	 * 	{@code
+	 * 		<xades:CRLValues>
+	 * 			<xades:EncapsulatedCRLValue>...</xades:EncapsulatedCRLValue>
+	 * 			...
+	 * 		</xades:CRLValues>
+	 * 	}
+	 * </pre>
+	 * 
+	 * @param parentDom
+	 *            the parent element
+	 * @param crlTokens
+	 *            the list of CRL Tokens to be added
+	 */
+	private void incorporateCrlTokens(final Element parentDom, final List<CRLToken> crlTokens) {
+		if (crlTokens.isEmpty()) {
+			return;
+		}
+		final Element crlValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:CRLValues");
+
+		for (final RevocationToken revocationToken : crlTokens) {
+			final byte[] encodedCRL = revocationToken.getEncoded();
+			final String base64EncodedCRL = Utils.toBase64(encodedCRL);
+			DomUtils.addTextElement(documentDom, crlValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedCRLValue", base64EncodedCRL);
+		}
+	}
+
+	/**
+	 * This method incorporates the OCSP responses :
+	 * 
+	 * <pre>
+	 * 	{@code
+	 * 		<xades:OCSPValues>
+	 * 			<xades:EncapsulatedOCSPValue>...</xades:EncapsulatedOCSPValue>
+	 * 			...
+	 * 		</xades:OCSPValues>
+	 * 	}
+	 * </pre>
+	 * 
+	 * @param parentDom
+	 *            the parent element
+	 * @param ocspTokens
+	 *            the list of OCSP Tokens to be added
+	 */
+	private void incorporateOcspTokens(Element parentDom, final List<OCSPToken> ocspTokens) {
+		if (ocspTokens.isEmpty()) {
+			return;
+		}
+		final Element ocspValuesDom = DomUtils.addElement(documentDom, parentDom, XAdESNamespaces.XAdES, "xades:OCSPValues");
+
+		for (final RevocationToken revocationToken : ocspTokens) {
+			final byte[] encodedOCSP = revocationToken.getEncoded();
+			final String base64EncodedOCSP = Utils.toBase64(encodedOCSP);
+			DomUtils.addTextElement(documentDom, ocspValuesDom, XAdESNamespaces.XAdES, "xades:EncapsulatedOCSPValue", base64EncodedOCSP);
+		}
+	}
+	
+	/**
+	 * This method incorporates all certificates passed as parameter, as well as adds missing indents if the parameter is specified
+	 * 
+	 * <pre>
+	 * {@code
+	 * 	<xades:CertificateValues>
+	 *		<xades:EncapsulatedX509Certificate>MIIC9TC...</xades:EncapsulatedX509Certificate>
+	 *		...
+	 * 	</xades:CertificateValues>
+	 * }
+	 * </pre>
+	 *
+	 * @param parentDom
+	 *            the parent element
+	 * @param validationContext
+	 *            the validation context with all certificates
+	 * @param indent
+	 *            {@link String} to add between elements (if not NULL)
+	 */
+	protected void incorporateCertificateValues(final Element parentDom, final ValidationContext validationContext, String indent) {
+		Element certificatesDom = incorporateCertificateValues(parentDom, validationContext);
+		if (certificatesDom != null && indent != null) {
+			DomUtils.setTextNode(documentDom, unsignedSignaturePropertiesDom, indent);
+			DSSXMLUtils.indentAndReplace(documentDom, certificatesDom);
+		}
+	}
+
+
+	/**
+	 * This method incorporates revocation values, as well as adds missing indents if the parameter is specified:
+	 * 
+	 * <pre>
+	 * 	{@code
+	 * 		<xades:RevocationValues>
+	 * 	}
+	 * </pre>
+	 *
+	 * @param parentDom
+	 *            the parent element
+	 * @param validationContext
+	 *            the validation context with the revocation data
+	 * @param indent
+	 *            {@link String} to add between elements (if not NULL)
+	 */
+	protected void incorporateRevocationValues(final Element parentDom, final ValidationContext validationContext, String indent) {
+		Element revocationDom = incorporateRevocationValues(parentDom, validationContext);
+		if (revocationDom != null && indent != null) {
+			DomUtils.setTextNode(documentDom, unsignedSignaturePropertiesDom, indent);
+			DSSXMLUtils.indentAndReplace(documentDom, revocationDom);
 		}
 	}
 
@@ -284,7 +430,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 					Utils.toBase64(digestValue));
 		}
 		final TimeStampToken timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digestValue);
-		final String base64EncodedTimeStampToken = Utils.toBase64(DSSASN1Utils.getEncoded(timeStampToken));
+		final String base64EncodedTimeStampToken = Utils.toBase64(DSSASN1Utils.getDEREncoded(timeStampToken));
 
 		final String timestampId = UUID.randomUUID().toString();
 		timeStampDom.setAttribute(ID, "TS-" + timestampId);

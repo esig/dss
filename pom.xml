@@ -51,9 +51,9 @@
 
 		<bouncycastle.version>1.61</bouncycastle.version>
 		<xmlsec.version>2.0.10</xmlsec.version>
-		<pdfbox.version>2.0.14</pdfbox.version>
-		<openpdf.version>1.2.11</openpdf.version>
-		<httpclient.version>4.5.6</httpclient.version>
+		<pdfbox.version>2.0.15</pdfbox.version>
+		<openpdf.version>1.2.16</openpdf.version>
+		<httpclient.version>4.5.8</httpclient.version>
 		<rs-api.version>2.0.1</rs-api.version>
 		
 		<!-- JDK9+ -->
@@ -285,6 +285,30 @@
 	                </reportPlugins>
 	            </configuration>
 	        </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.0.0-M2</version>
+				<executions>
+					<execution>
+						<id>enforce</id>
+				        <goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+                				<banDuplicatePomDependencyVersions />
+								<dependencyConvergence />
+								<bannedDependencies>
+									<excludes>
+										<exclude>xalan:xalan</exclude>
+									</excludes>
+								</bannedDependencies>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			
 		</plugins>
 

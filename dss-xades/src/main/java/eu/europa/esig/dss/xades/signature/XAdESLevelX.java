@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -60,6 +61,7 @@ public class XAdESLevelX extends XAdESLevelC {
 
 		/* Go up to -C */
 		super.extendSignatureTag();
+		Element levelCUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
 		// for XAdES_XL the development is not conform with the standard
@@ -71,7 +73,7 @@ public class XAdESLevelX extends XAdESLevelC {
 				for (int index = 0; index < toRemoveList.getLength(); index++) {
 
 					final Node item = toRemoveList.item(index);
-					unsignedSignaturePropertiesDom.removeChild(item);
+					removeChild(unsignedSignaturePropertiesDom, item);
 				}
 			}
 
@@ -81,6 +83,8 @@ public class XAdESLevelX extends XAdESLevelC {
 			final DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
 			final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, timestampX1Data);
 			createXAdESTimeStampType(TimestampType.VALIDATION_DATA_TIMESTAMP, canonicalizationMethod, digestValue);
+			
+			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelCUnsignedProperties);
 		}
 	}
 }

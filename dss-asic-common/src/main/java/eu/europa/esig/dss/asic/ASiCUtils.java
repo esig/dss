@@ -23,6 +23,8 @@ package eu.europa.esig.dss.asic;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -41,10 +43,25 @@ public final class ASiCUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCUtils.class);
 
-	private static final String MIME_TYPE = "mimetype";
+	public static final String MIME_TYPE = "mimetype";
 	public static final String MIME_TYPE_COMMENT = MIME_TYPE + "=";
-	private static final String META_INF_FOLDER = "META-INF/";
+	public static final String META_INF_FOLDER = "META-INF/";
 	public static final String PACKAGE_ZIP = "package.zip";
+	
+	/**
+	 * Defines the maximal amount of files that can be inside a ZIP container
+	 */
+	private static final int MAXIMAL_ALLOWED_FILE_AMOUNT = 1024;
+
+    /**
+     * Minimum file size to be analized on zip bombing
+     */
+	private static final long ZIP_ENTRY_THRESHOLD = 1000000; // 1 MB
+	
+    /**
+     * Maximum compression ratio.
+     */
+    private static final long ZIP_ENTRY_RATIO = 100;
 
 	private ASiCUtils() {
 	}
@@ -148,6 +165,9 @@ public final class ASiCUtils {
 	}
 
 	public static MimeType getMimeType(final DSSDocument mimeTypeDocument) {
+		if (mimeTypeDocument == null) {
+			return null;
+		}
 		try (InputStream is = mimeTypeDocument.openStream()) {
 			byte[] byteArray = Utils.toByteArray(is);
 			final String mimeTypeString = new String(byteArray, "UTF-8");
@@ -221,12 +241,52 @@ public final class ASiCUtils {
 
 		return false;
 	}
+	
+	/**
+	 * Reads and copies InputStream in a secure way, depending on the provided container size
+	 * This method allows to detect "ZipBombing" (large files inside a zip container)
+	 * @param is {@link InputStream} of file
+	 * @param os {@link OutputStream} where save file to
+	 * @param containerSize - zip container size
+	 */
+	public static void secureCopy(InputStream is, OutputStream os, long containerSize) throws IOException {
+		byte[] data = new byte[8192];
+		int nRead;
+	    int byteCounter = 0;
+	    while ((nRead = is.read(data)) != -1) {
+	    	byteCounter += nRead;
+	    	if (byteCounter > ZIP_ENTRY_THRESHOLD && 
+	    			byteCounter > containerSize * ZIP_ENTRY_RATIO) {
+	    		throw new DSSException("Zip Bomb detected in the ZIP container. Validation is interrupted.");
+	    	}
+			Utils.write(Arrays.copyOfRange(data, 0, nRead), os);
+	    }
+	}
 
-	public static DSSDocument getCurrentDocument(String filepath, ZipInputStream zis) throws IOException {
+    /**
+     * Returns file from the given ZipInputStream
+     * @param filepath {@link String} filepath where the file is located
+     * @param zis {@link ZipInputStream} of the file
+     * @param containerSize - long byte size of the parent container
+     * @return {@link DSSDocument} created from the given {@code zis}
+     * @throws IOException in case of ZipInputStream read error
+     */
+	public static DSSDocument getCurrentDocument(String filepath, ZipInputStream zis, long containerSize) throws IOException {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			Utils.copy(zis, baos);
+		    secureCopy(zis, baos, containerSize);
 			baos.flush();
 			return new InMemoryDocument(baos.toByteArray(), filepath);
+		}
+	}
+	
+	/**
+	 * Validates if the given {@code filesAmount} is not bigger than the predefined threshold
+	 * If FALSE throws a {@link DSSException}
+	 * @param filesAmount - amount of files extracted from an archive
+	 */
+	public static void validateAllowedFilesAmount(int filesAmount) {
+		if (filesAmount > MAXIMAL_ALLOWED_FILE_AMOUNT) {
+			throw new DSSException("Too many files detected. Cannot extract ASiC content");
 		}
 	}
 

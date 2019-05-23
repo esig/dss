@@ -41,6 +41,9 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -49,6 +52,7 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -66,6 +70,13 @@ import org.w3c.dom.Text;
 public final class DomUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DomUtils.class);
+	
+	// values used to pretty print xades signature
+	private static final String TRANSFORMER_INDENT_AMOUNT_ATTRIBUTE = "{http://xml.apache.org/xslt}indent-amount";
+	public static final int TRANSFORMER_INDENT_NUMBER = 4;
+	private static final String TRANSFORMER_INDENT_NUMBER_VALUE = String.valueOf(TRANSFORMER_INDENT_NUMBER);
+	private static final String TRANSFORMER_METHOD_VALUE = "xml";
+	private static final String TRANSFORMER_VALUE_YES = "yes";
 
 	private DomUtils() {
 	}
@@ -83,33 +94,40 @@ public final class DomUtils {
 
 		dbFactory = DocumentBuilderFactory.newInstance();
 		dbFactory.setNamespaceAware(true);
-		try {
-			// disable external entities details :
-			// https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#Java
+		dbFactory.setXIncludeAware(false);
+		dbFactory.setExpandEntityReferences(false);
 
-			dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-			dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-			dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-			dbFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-
-			dbFactory.setXIncludeAware(false);
-			dbFactory.setExpandEntityReferences(false);
-		} catch (ParserConfigurationException e) {
-			throw new DSSException("Unable to initialize the DocumentBuilderFactory", e);
-		}
+		// disable external entities details :
+		// https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#Java
+		setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+		setFeature("http://xml.org/sax/features/external-general-entities", false);
+		setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+		setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 	}
 
 	/**
 	 * This method registers the default namespaces.
 	 */
 	private static void registerDefaultNamespaces() {
-
 		registerNamespace("ds", XMLSignature.XMLNS);
 		registerNamespace("dsig", XMLSignature.XMLNS);
 		registerNamespace("xades", XAdESNamespaces.XAdES); // 1.3.2
 		registerNamespace("xades141", XAdESNamespaces.XAdES141);
 		registerNamespace("xades122", XAdESNamespaces.XAdES122);
 		registerNamespace("xades111", XAdESNamespaces.XAdES111);
+	}
+
+	private static void setFeature(String property, boolean enable) {
+		try {
+			dbFactory.setFeature(property, enable);
+		} catch (ParserConfigurationException e) {
+			String message = String.format("SECURITY : unable to set feature %s = %s (more details in LOG debug)", property, enable);
+			if (LOG.isDebugEnabled()) {
+				LOG.debug(message, e);
+			} else {
+				LOG.warn(message);
+			}
+		}
 	}
 
 	/**
@@ -155,11 +173,24 @@ public final class DomUtils {
 		Transformer transformer = null;
 		try {
 			transformer = transformerFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+			transformer.setOutputProperty(OutputKeys.METHOD, TRANSFORMER_METHOD_VALUE);
 		} catch (TransformerConfigurationException e) {
 			throw new DSSException(e);
 		}
 		transformer.setErrorListener(new DSSXmlErrorListener());
+		return transformer;
+	}
+	
+	/**
+	 * This method returns a new instance of Transformer with secured and pretty print features enabled
+	 * 
+	 * @return an instance of Transformer with enabled secure and pretty print features
+	 */
+	public static Transformer getPrettyPrintTransformer() {
+		Transformer transformer = getSecureTransformer();
+		transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, TRANSFORMER_VALUE_YES);
+		transformer.setOutputProperty(OutputKeys.INDENT, TRANSFORMER_VALUE_YES);
+		transformer.setOutputProperty(TRANSFORMER_INDENT_AMOUNT_ATTRIBUTE, TRANSFORMER_INDENT_NUMBER_VALUE);
 		return transformer;
 	}
 
@@ -543,6 +574,13 @@ public final class DomUtils {
 			id = id.substring(1);
 		}
 		return id;
+	}
+
+	public static XMLStreamReader getSecureXMLStreamReader(InputStream is) throws XMLStreamException {
+		XMLInputFactory xif = XMLInputFactory.newFactory();
+		xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+		xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+		return xif.createXMLStreamReader(new StreamSource(is));
 	}
 
 }

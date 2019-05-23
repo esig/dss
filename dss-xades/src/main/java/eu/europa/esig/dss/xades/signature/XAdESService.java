@@ -90,6 +90,10 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		assertSigningDateInCertificateValidityRange(parameters);
 		final XAdESLevelBaselineB levelBaselineB = new XAdESLevelBaselineB(certificateVerifier);
 		final byte[] dataToSign = levelBaselineB.getDataToSign(toSignDocument, parameters);
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Data to sign: ");
+			LOG.trace(new String(dataToSign));
+		}
 		parameters.getContext().setProfile(levelBaselineB);
 		return new ToBeSigned(dataToSign);
 	}

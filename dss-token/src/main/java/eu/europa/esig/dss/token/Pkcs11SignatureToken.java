@@ -297,7 +297,6 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	}
 
 	@Override
-	@SuppressWarnings("restriction")
 	KeyStore getKeyStore() throws DSSException {
 		try {
 			KeyStore keyStore = KeyStore.getInstance(SUN_PKCS11_KEYSTORE_TYPE, getProvider());
@@ -322,10 +321,8 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 			});
 			return keyStore;
 		} catch (Exception e) {
-			if (e instanceof sun.security.pkcs11.wrapper.PKCS11Exception) {
-				if ("CKR_PIN_INCORRECT".equals(e.getMessage())) {
-					throw new DSSException("Bad password for PKCS11", e);
-				}
+			if ("CKR_PIN_INCORRECT".equals(e.getMessage())) {
+				throw new DSSException("Bad password for PKCS11", e);
 			}
 			throw new DSSException("Can't initialize Sun PKCS#11 security provider. Reason: " + e.getMessage(), e);
 		}

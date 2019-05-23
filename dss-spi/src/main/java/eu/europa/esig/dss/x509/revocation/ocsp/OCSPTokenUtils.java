@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.x509.revocation.ocsp;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.security.auth.x500.X500Principal;
 
@@ -63,21 +65,21 @@ public class OCSPTokenUtils {
 				final ASN1Primitive derObject = derTaggedObject.getObject();
 				final byte[] derEncoded = DSSASN1Utils.getDEREncoded(derObject);
 				final X500Principal x500Principal = DSSUtils.getNormalizedX500Principal(new X500Principal(derEncoded));
-				final List<CertificateToken> certificateTokens = validationCertPool.get(x500Principal);
-				setIssuerToOcspToken(ocspToken, certificateTokens);
+				final Set<CertificateToken> candidates = validationCertPool.get(x500Principal);
+				setIssuerToOcspToken(ocspToken, candidates);
 			} else if (2 == derTaggedObject.getTagNo()) {
 				final ASN1OctetString hashOctetString = (ASN1OctetString) derTaggedObject.getObject();
 				final byte[] expectedHash = hashOctetString.getOctets();
-				final List<CertificateToken> certificateTokens = validationCertPool.getBySki(expectedHash);
-				setIssuerToOcspToken(ocspToken, certificateTokens);
+				final List<CertificateToken> candidates = validationCertPool.getBySki(expectedHash);
+				setIssuerToOcspToken(ocspToken, candidates);
 			} else {
 				throw new DSSException("Unsupported tag No " + derTaggedObject.getTagNo());
 			}
 		}
 	}
 	
-	private static void setIssuerToOcspToken(OCSPToken ocspToken, List<CertificateToken> issuerCandidateTokens) {
-		for (CertificateToken issuerCertificateToken : issuerCandidateTokens) {
+	private static void setIssuerToOcspToken(OCSPToken ocspToken, Collection<CertificateToken> candidates) {
+		for (CertificateToken issuerCertificateToken : candidates) {
 			if (ocspToken.isSignedBy(issuerCertificateToken)) {
 				ocspToken.setIssuerX500Principal(issuerCertificateToken.getSubjectX500Principal());
 				return;

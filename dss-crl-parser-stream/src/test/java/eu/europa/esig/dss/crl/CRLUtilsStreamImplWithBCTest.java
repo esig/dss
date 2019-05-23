@@ -20,6 +20,6 @@
  */
 package eu.europa.esig.dss.crl;
 
-public class CRLUtilsStreamImplWithBCTest extends AbstractTestCRLUtils {
+public class CRLUtilsStreamImplWithBCTest extends AbstractBCTestCRLUtils {
 
 }

@@ -107,6 +107,8 @@ import eu.europa.esig.dss.xades.XPathQueryHolder;
  *
  */
 public class XAdESSignature extends DefaultAdvancedSignature {
+	
+	private static final long serialVersionUID = -2639858392612722185L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESSignature.class);
 
@@ -855,8 +857,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				LOG.trace("IndividualDataObjectsTimestampData/AllDataObjectsTimestampData bytes: {}", new String(byteArray));
 			}
 			return byteArray;
-		} catch (IOException | XMLSecurityException e) {
+		} catch (IOException e) {
 			throw new DSSException("Unable to extract IndividualDataObjectsTimestampData/AllDataObjectsTimestampData", e);
+		} catch (XMLSecurityException e) {
+			throw new DSSException("Unable to extract IndividualDataObjectsTimestampData/AllDataObjectsTimestampData. "
+					+ "A reference is broken or detached content is not provided.", e);
 		}
 
 	}
@@ -1808,7 +1813,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				byte[] canonicalizedValue = DSSXMLUtils.canonicalizeOrSerializeSubtree(canonicalizationMethod, node);
 				buffer.write(canonicalizedValue);
 			}
-			return buffer.toByteArray();
+			
+			byte[] bytes = buffer.toByteArray();
+			if(LOG.isTraceEnabled()) {
+				LOG.trace("Data to TimeStamp:");
+				LOG.trace(new String(bytes));
+			}
+			return bytes;
 		} catch (IOException e) {
 			throw new DSSException("Error when computing the archive data", e);
 		}

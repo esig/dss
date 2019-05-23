@@ -22,10 +22,8 @@ package eu.europa.esig.dss.crl;
 
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.security.KeyException;
-import java.security.NoSuchAlgorithmException;
+import java.security.GeneralSecurityException;
 import java.security.NoSuchProviderException;
-import java.security.SignatureException;
 import java.security.cert.CRLException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -102,10 +100,14 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 			x509CRL.verify(issuerToken.getPublicKey());
 			crlValidity.setSignatureIntact(true);
 			crlValidity.setIssuerToken(issuerToken);
-		} catch (KeyException | CRLException | NoSuchAlgorithmException | SignatureException e) {
-			crlValidity.setSignatureInvalidityReason(e.getClass().getSimpleName() + " - " + e.getMessage());
-		} catch (NoSuchProviderException e) {
-			throw new DSSException(e);
+		} catch (GeneralSecurityException e) {
+			String msg = String.format("CRL Signature cannot be validated : %s", e.getMessage());
+			if (LOG.isDebugEnabled()) {
+				LOG.debug(msg, e);
+			} else {
+				LOG.warn(msg);
+			}
+			crlValidity.setSignatureInvalidityReason(msg);
 		}
 	}
 

@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import org.w3c.dom.Element;
+
 import eu.europa.esig.dss.DSSException;
 import eu.europa.esig.dss.DSSUtils;
 import eu.europa.esig.dss.DigestAlgorithm;
@@ -53,6 +55,7 @@ public class XAdESLevelA extends XAdESLevelXL {
 
 		/* Up to -XL */
 		super.extendSignatureTag();
+		Element levelXLUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
 		xadesSignature.checkSignatureIntegrity();
 
@@ -62,5 +65,7 @@ public class XAdESLevelA extends XAdESLevelXL {
 		final DigestAlgorithm timestampDigestAlgorithm = archiveTimestampParameters.getDigestAlgorithm();
 		final byte[] digestBytes = DSSUtils.digest(timestampDigestAlgorithm, data);
 		createXAdESTimeStampType(TimestampType.ARCHIVE_TIMESTAMP, canonicalizationMethod, digestBytes);
+		
+		unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelXLUnsignedProperties);
 	}
 }
